@@ -23,8 +23,6 @@ import doctest
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
-from zope.app.site.interfaces import ISite
-from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from BTrees.IIBTree import IISet
@@ -33,7 +31,6 @@ from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.index.interfaces import IInjection, ISimpleQuery
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
-from zope.app.index.interfaces.field import IUIFieldCatalogIndex
 
 
 class ReferenceStub:
@@ -42,6 +39,7 @@ class ReferenceStub:
 
     def __call__(self):
         return self.obj
+
 
 class UniqueIdUtilityStub:
     """A stub for UniqueIdUtility."""
@@ -80,6 +78,8 @@ class UniqueIdUtilityStub:
 
 
 class StubIndex:
+    """A stub for Index."""
+
     implements(ISimpleQuery, IInjection)
 
     def __init__(self, field_name, interface=None):
@@ -142,7 +142,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             uidutil.register(stoopid(simiantype='punyhuman', name='kev'))
 
     def test_updateindexes(self):
-        "test a full refresh"
+        """Test a full refresh."""
         self._frob_uniqueidutil()
         catalog = Catalog()
         catalog['author'] = StubIndex('author', None)
@@ -151,45 +151,51 @@ class Test(PlacelessSetup, unittest.TestCase):
         for index in catalog.values():
             checkNotifies = index.doc
             self.assertEqual(len(checkNotifies), 18)
-###            notifLocs = [ x.location for x in checkNotifies ]
-###            notifLocs.sort()
-###            expected = [ "/%s"%(i+1) for i in range(18) ]
-###            expected.sort()
-###            self.assertEqual(notifLocs, expected)
+            ### notifLocs = [ x.location for x in checkNotifies ]
+            ### notifLocs.sort()
+            ### expected = [ "/%s"%(i+1) for i in range(18) ]
+            ### expected.sort()
+            ### self.assertEqual(notifLocs, expected)
 
     def test_basicsearch(self):
-        "test the simple searchresults interface"
+        """Test the simple search results interface."""
         self._frob_uniqueidutil(ints=0)
         catalog = Catalog()
         catalog['simiantype'] = StubIndex('simiantype', None)
         catalog['name'] = StubIndex('name', None)
         catalog.updateIndexes()
+
         res = catalog.searchResults(simiantype='monkey')
         names = [x.name for x in res]
         names.sort()
         self.assertEqual(len(names), 3)
         self.assertEqual(names, ['bobo', 'bubbles', 'ginger'])
+
         res = catalog.searchResults(name='bobo')
         names = [x.simiantype for x in res]
         names.sort()
         self.assertEqual(len(names), 2)
         self.assertEqual(names, ['bonobo', 'monkey'])
+
         res = catalog.searchResults(simiantype='punyhuman', name='anthony')
         self.assertEqual(len(res), 1)
         ob = iter(res).next()
-        self.assertEqual((ob.name,ob.simiantype), ('anthony', 'punyhuman'))
+        self.assertEqual((ob.name, ob.simiantype), ('anthony', 'punyhuman'))
+
         res = catalog.searchResults(simiantype='ape', name='bobo')
         self.assertEqual(len(res), 0)
+
         res = catalog.searchResults(simiantype='ape', name='mwumi')
         self.assertEqual(len(res), 0)
         self.assertRaises(ValueError, catalog.searchResults,
                           simiantype='monkey', hat='beret')
-        res = list(res)
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     return suite
+
 
 if __name__ == "__main__":
     unittest.main()
