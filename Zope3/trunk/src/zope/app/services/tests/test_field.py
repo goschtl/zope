@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.4 2003/01/10 18:46:27 stevea Exp $
+$Id: test_field.py,v 1.5 2003/01/12 21:23:16 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -36,7 +36,7 @@ class NameResolver:
         if self.lookup.has_key(dotted_name):
             return self.lookup[dotted_name]
         raise ImportError, dotted_name
-        
+
     def getService(self, name):
         from zope.component import getService
         return getService(None, name)
