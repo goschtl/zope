@@ -66,7 +66,7 @@ table = [
      'remote': None},
 
     {'path': "Custom/ZapMedia",
-     'addrs': ["jim@digicool.com", "klm@digicool.com", "chrism@digicool.com",
+     'addrs': ["klm@digicool.com", "chrism@digicool.com",
                "karl@digicool.com", "evan@digicool.com"],
      'remote': None},
 
