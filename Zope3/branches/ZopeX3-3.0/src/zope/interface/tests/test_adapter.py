@@ -134,9 +134,10 @@ def test_multi_adapter_check_non_default_dont_hide_default():
 
 
 def test_suite():
-    from docfilesuite import DocFileSuite
+    from zope.testing.doctestunit import DocFileSuite
     return unittest.TestSuite((
-        DocFileSuite('../adapter.txt', 'foodforthought.txt'),
+        DocFileSuite('../adapter.txt', 'foodforthought.txt',
+                     globs={'__name__': '__main__'}),
         doctest.DocTestSuite(),
         ))
 
