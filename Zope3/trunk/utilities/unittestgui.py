@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.5 $"[11:-2]
+__version__ = "$Revision: 1.6 $"[11:-2]
 
 import linecache
 import unittest
@@ -512,8 +512,10 @@ class TkTestRunner(BaseGUITestRunner):
         tk.Label(window, text=str(test),
                  foreground="black", justify=tk.LEFT).pack(anchor=tk.W)
         tk.Label(window, text=error, justify=tk.LEFT).pack()
-        tk.Button(window, text="Close",
-                  command=window.quit).pack(side=tk.BOTTOM)
+        b = tk.Button(window, text="Close",
+                      command=window.quit)
+        b.pack(side=tk.BOTTOM)
+        b.focus_set()
         window.bind('<Key-Return>', lambda e, w=window: w.quit())
         window.mainloop()
         window.destroy()
