@@ -233,8 +233,6 @@ Multiple pages example
         />
   </browser:pages>
 
-Default view
-
 %page
 
 Default view for object
@@ -244,7 +242,7 @@ Default view for object
 
 	What if we traverse to the object itself?
 
-	Use defaultViewable and defaultView
+	Use five:defaultViewable and browser:defaultView
 
 %page
 
@@ -266,3 +264,14 @@ DefaultView example
   <browser:defaultView
      for=".democontent.IDemoContent"
      name="someview.html" />
+
+%page
+
+Conclusions
+
+
+	This works much the same way as Zope 3 does too
+
+	Can supplement existing view systems in Zope 2
+
+	Five specific code is mostly isolated in five:traversable and five:defaultViewable
