@@ -44,6 +44,24 @@ class IDAVOpaqueNamespaces(IMapping):
     actual opaque value, of the form (((attr1, val1), (attr2, val2)), value) 
     
     """
+    
+    def renderProperty(ns, nsprefix, prop, propel):
+        """Render the named property to a DOM subtree
+        
+        ns and prop are keys defining the property, nsprefix is the namespace
+        prefix used in the DOM for the namespace of the property, and propel
+        is the <prop> element in the target DOM to which the property DOM 
+        elements need to be added.
+        
+        """
+        
+    def setProperty(propel):
+        """Store a DOM property in the opaque storage
+        
+        propel is expected to be a DOM element from which the namespace and
+        property name are taken to be stored.
+        
+        """
 
     
 class DAVOpaqueNamespacesAdapter(DictMixin, Location):
