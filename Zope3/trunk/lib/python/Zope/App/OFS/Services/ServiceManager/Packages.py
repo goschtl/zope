@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Packages.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: Packages.py,v 1.2 2002/07/17 23:04:02 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -24,6 +24,10 @@ from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.Traversing import getPhysicalPathString
+from Zope.ComponentArchitecture \
+     import getNextServiceManager
+from Zope.App.OFS.Services.ServiceManager.IServiceManager \
+     import IServiceManager
 
 from IPackages import IPackages
 from IPackage import IPackage
@@ -52,7 +56,7 @@ class Packages(BTreeContainer):
         if all:
             next_service_manager = getNextServiceManager(self)
             if IComponentManager.isImplementedBy(next_service_manager):
-                more = next_service_manager.queryComponent(type, filter, all)
+                next_service_manager.queryComponent(type, filter, all)
 
             local += list(all)
 
