@@ -127,6 +127,33 @@ class VocabularyFieldTests(BaseTest):
         self.assertRaises(NotImplementedError,
                           vocabulary.VocabularyMultiField, vocabulary="foo")
 
+    def check_constructed_vocabulary_multi_default(self, cls):
+        # make sure these don't die during construction:
+        cls(vocabulary="testvocab", default=None)
+        L = []
+        unbound = cls(vocabulary="testvocab", default=L)
+        self.assertEqual(L, unbound.default)
+        self.assert_(unbound.default is not L)
+        # XXX this does, but not clear that it should:
+        self.assertRaises(ValueError,
+                          cls, vocabulary="testvocab", default=['xy'])
+
+    def test_constructed_vocabulary_bag_default(self):
+        self.check_constructed_vocabulary_multi_default(
+            vocabulary.VocabularyBagField)
+
+    def test_constructed_vocabulary_list_default(self):
+        self.check_constructed_vocabulary_multi_default(
+            vocabulary.VocabularyListField)
+
+    def test_constructed_vocabulary_set_default(self):
+        self.check_constructed_vocabulary_multi_default(
+            vocabulary.VocabularySetField)
+
+    def test_constructed_vocabulary_unique_list_default(self):
+        self.check_constructed_vocabulary_multi_default(
+            vocabulary.VocabularyUniqueListField)
+
 
 class SimpleVocabularyTests(unittest.TestCase):
 
