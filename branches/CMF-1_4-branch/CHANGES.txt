@@ -1,3 +1,14 @@
+CMF 1.4.1 (unreleased)
+
+  Bug Fixes
+
+    - MembershipTool (CMFCore and CMFDefault): Made sure 'createMemberarea()'
+      always grants the right Ownership and Owner role for new member folders.
+      This doesn't fix existing member folders with wrong Owner roles.
+      If you use a customized MembershipTool, make sure your createMemberarea
+      method does the Right Thing.
+      (Collector #162)
+
 CMF 1.4 (2003/05/19)
 
   Bug Fixes
