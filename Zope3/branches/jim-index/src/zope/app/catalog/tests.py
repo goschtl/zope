@@ -23,40 +23,44 @@ import doctest
 
 from zope.interface import implements
 from zope.app.index.interfaces.field import IUIFieldCatalogIndex
-from zope.app.event.interfaces import ISubscriber
-from zope.app.hub.interfaces import IObjectHub
+### from zope.app.event.interfaces import ISubscriber
+### from zope.app.hub.interfaces import IObjectHub
 from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.index.interfaces import ISimpleQuery
 from zope.app.site.interfaces import ISite
 from zope.app import zapi
 
 from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.catalog import CatalogBaseAddSubscriber
-from zope.app.catalog.catalog import CatalogBaseRemoveSubscriber
+### from zope.app.catalog.catalog import CatalogBaseAddSubscriber
+### from zope.app.catalog.catalog import CatalogBaseRemoveSubscriber
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getGlobalServices
-from zope.app.servicenames import HubIds
+### from zope.app.servicenames import HubIds
 from BTrees.IIBTree import IISet
 
-from zope.app.index.tests.test_objectretrievingprocessor import FakeObjectHub
+### from zope.app.index.tests.test_objectretrievingprocessor import FakeObjectHub
 
-import zope.app.hub as Hub
+### import zope.app.hub as Hub
 
-regEvt = Hub.ObjectRegisteredHubEvent
-unregEvt = Hub.ObjectUnregisteredHubEvent
-modEvt = Hub.ObjectModifiedHubEvent
+#XXX XXX XXX these will need to be changed XXX XXX XXX
+### regEvt = Hub.ObjectRegisteredHubEvent
+### unregEvt = Hub.ObjectUnregisteredHubEvent
+### modEvt = Hub.ObjectModifiedHubEvent
 
-class CFakeObjectHub(FakeObjectHub):
-    def iterObjectRegistrations(self):
-        def gen(things):
-            for hubid, obj in things:
-                loc = "/%s"%hubid
-                yield loc,hubid,obj
-        return gen(self.data.items())
+#XXX XXX XXX this will probably need to be reimplemented XXX XXX XXX
+class CFakeObjectHub: pass
+#class CFakeObjectHub(FakeObjectHub):
+#    def iterObjectRegistrations(self):
+#        def gen(things):
+#            for hubid, obj in things:
+#                loc = "/%s"%hubid
+#                yield loc,hubid,obj
+#        return gen(self.data.items())
 
 
-class StubIndex(object):
-    implements(ISimpleQuery, ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
+class StubIndex:
+    implements(ISimpleQuery, ICatalogIndex, IUIFieldCatalogIndex)
+    ### implements (ISubscriber)
 
     def __init__(self, field_name, interface=None):
         self._field_name = field_name
@@ -74,7 +78,8 @@ class StubIndex(object):
         for e in self._notifies:
             ob = e.object
             term = getattr(e.object ,self._field_name, '')
-            d.setdefault(term, []).append(e.hubid)
+###            d.setdefault(term, []).append(e.hubid)
+            d.setdefault(term, []).append(e.uid)
         return d
 
     def query(self, term, start=0, count=None):
@@ -82,7 +87,7 @@ class StubIndex(object):
         res = termdict.get(term, [])
         return IISet(res)
 
-class stoopid(object):
+class stoopid:
     def __init__(self, **kw):
         self.__dict__ = kw
 
@@ -93,18 +98,18 @@ class DummyCatalog:
 
     def subscribeEvents(self, update=False):
         self.subscribed = True
-        
+
     def getSubscribed(self):
         return self.subscribed
 
     def unsubscribeEvents(self):
         self.subscribed = False
-        
+
 class TestEventAdapters:
     def test_addNotify(self):
         """
         First we create a dummy catalog and an adapter for it.
-        
+
         >>> catalog = DummyCatalog()
         >>> adapter = CatalogBaseAddSubscriber(catalog, None)
 
@@ -115,11 +120,11 @@ class TestEventAdapters:
         >>> catalog.getSubscribed()
         True
         """
-    
+
     def test_deleteNotify(self):
         """
         First we create a dummy catalog and an adapter for it.
-        
+
         >>> catalog = DummyCatalog()
         >>> adapter = CatalogBaseAddSubscriber(catalog, None)
 
@@ -180,8 +185,8 @@ class Test(PlacelessSetup, unittest.TestCase):
     def _frob_objecthub(self, ints=1, apes=1):
         hub = CFakeObjectHub()
         service_manager = getGlobalServices()
-        service_manager.defineService(HubIds, IObjectHub)
-        service_manager.provideService(HubIds, hub)
+###        service_manager.defineService(HubIds, IObjectHub)
+###        service_manager.provideService(HubIds, hub)
         # whack some objects in our little objecthub
         if ints:
             for i in range(10):

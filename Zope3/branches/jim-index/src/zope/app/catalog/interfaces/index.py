@@ -14,10 +14,10 @@
 """
 $Id$
 """
-from zope.app.event.interfaces import ISubscriber
+### from zope.app.event.interfaces import ISubscriber
 from zope.interface import Interface
 
-class ICatalogIndexUpdate(ISubscriber):
+class ICatalogIndexUpdate(Interface): ### ISubscriber
     "A wrapper around an Index that's in a Catalog"
 
     def clear():

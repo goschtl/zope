@@ -23,60 +23,60 @@ from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.index.interfaces import ISimpleQuery
 
 from zope.app.zapi import getService
-from zope.app.servicenames import HubIds
-from zope.app.event.interfaces import ISubscriber
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.container.interfaces import IContainer
 
-import zope.app.hub.interfaces as IHub
-import zope.app.hub as Hub
+### import zope.app.hub.interfaces as IHub
+### import zope.app.hub as Hub
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.container.sample import SampleContainer
 from zope.app.catalog.interfaces.catalog import ICatalog
 
 class ResultSet:
     "Lazily accessed set of objects"
 
-    def __init__(self, hubidset, hub):
-        self.hubidset = hubidset
-        self.hub = hub
+    def __init__(self, uids, uidutil):
+        self.uids = uids
+        self.uidutil = uidutil
 
     def __len__(self):
-        return len(self.hubidset)
+        return len(self.uids)
 
     def __iter__(self):
-        for hubid in self.hubidset:
-            obj = self.hub.getObject(hubid)
-            yield obj
+        for uid in self.uids:
+            obj = self.uidutil[uid]
+            yield obj()
 
-class CatalogBaseAddSubscriber:
-
-    implements(ISubscriber)
-
-    def __init__(self, catalog, event):
-        self.catalog = catalog
-
-    def notify(self, event):
-        """Receive notification of add events."""
-        self.catalog.subscribeEvents(update=False)
-
-class CatalogBaseRemoveSubscriber:
-
-    implements(ISubscriber)
-
-    def __init__(self, catalog, event):
-        self.catalog = catalog
-
-    def notify(self, event):
-        """Receive notification of remove events."""
-        if self.catalog.getSubscribed():
-            self.catalog.unsubscribeEvents()
+### class CatalogBaseAddSubscriber:
+### 
+###     implements(ISubscriber)
+### 
+###     def __init__(self, catalog, event):
+###         self.catalog = catalog
+### 
+###     def notify(self, event):
+###         """Receive notification of add events."""
+###         self.catalog.subscribeEvents(update=False)
+### 
+### class CatalogBaseRemoveSubscriber:
+### 
+###     implements(ISubscriber)
+### 
+###     def __init__(self, catalog, event):
+###         self.catalog = catalog
+### 
+###     def notify(self, event):
+###         """Receive notification of remove events."""
+###         if self.catalog.getSubscribed():
+###             self.catalog.unsubscribeEvents()
 
 class CatalogBase(Persistent, SampleContainer):
 
-    implements(ICatalog, ISubscriber, IContainer, IAttributeAnnotatable)
+    implements(ICatalog, IContainer, IAttributeAnnotatable)
 
-    _subscribed = False
+###     implements(ISubscriber)
+###    _subscribed = False
 
     def _newContainerData(self):
         return PersistentDict()
@@ -150,8 +150,10 @@ class CatalogBase(Persistent, SampleContainer):
                 # nothing left, short-circuit
                 break
         # Next we turn the IISet of hubids into a generator of objects
-        objectHub = getService(HubIds)
-        results = ResultSet(pendingResults, objectHub)
+###        objectHub = getService(HubIds)
+###        results = ResultSet(pendingResults, objectHub)
+        uidutil = getUtility(IUniqueIdUtility)
+        results = ResultSet(pendingResults, uidutil)
         return results
 
 class CatalogUtility(CatalogBase):
