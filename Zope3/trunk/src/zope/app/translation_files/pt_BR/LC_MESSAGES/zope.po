@@ -4,13 +4,13 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: zpe\n"
+"Project-Id-Version: zope\n"
 "POT-Creation-Date: Thu Aug  7 16:04:15 2003\n"
-"PO-Revision-Date: 2003-08-07 18:45-0300\n"
-"Last-Translator: Sidnei da Siilva <sidnei@plone.org>\n"
+"PO-Revision-Date: 2003-08-07 18:51-0300\n"
+"Last-Translator: Sidnei da Silva <sidnei@plone.org>\n"
 "Language-Team: Brazilian Portuguese <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Zope 3 0.1\n"
 #: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
