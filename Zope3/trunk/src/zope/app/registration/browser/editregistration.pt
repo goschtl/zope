@@ -9,7 +9,7 @@
 
   <h2 i18n:translate="">Registration Manager</h2>
 
-  <form action="." method="POST"
+  <form action="." method="post"
         tal:define="message view/update"
         tal:attributes="action request/URL">
 

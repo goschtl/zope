@@ -7,7 +7,7 @@
      tal:content="status" />
 
   <form action="./@@edit.html"
-        tal:attributes="action request/URL" method="POST">
+        tal:attributes="action request/URL" method="post">
 
     <tal:block define="widgets view/getPermissionWidgets"
                condition="widgets">

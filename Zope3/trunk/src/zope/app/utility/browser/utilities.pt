@@ -13,7 +13,7 @@
 
   <p tal:condition="not:configs">None</p>
 
-  <form method="POST" action="utilities.html" tal:condition="configs">
+  <form method="post" action="utilities.html" tal:condition="configs">
 
     <table>
       <tr tal:repeat="config configs">

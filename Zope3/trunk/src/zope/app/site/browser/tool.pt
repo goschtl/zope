@@ -31,7 +31,7 @@
          active tool. ...
       </p>
 
-      <form method="POST">
+      <form method="post">
 
         <table width="100%" tal:condition="registries">
           <tr>

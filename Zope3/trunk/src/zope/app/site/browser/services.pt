@@ -28,7 +28,7 @@
          disabling the service altogether.
       </p>
 
-      <form method="POST" action="services.html">
+      <form method="post" action="services.html">
 
         <table>
           <tr tal:repeat="reg registries">

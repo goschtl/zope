@@ -2,7 +2,7 @@
 <body>
 <div metal:fill-slot="body">
 
-<form tal:attributes="action request/URL" method="POST"
+<form tal:attributes="action request/URL" method="post"
       tal:define="ignored view/update">
 
   <div tal:condition="view/registered">

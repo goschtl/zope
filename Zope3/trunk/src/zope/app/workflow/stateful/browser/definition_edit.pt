@@ -12,7 +12,7 @@
      tal:condition="status"
      tal:content="status" />
 
-  <form action="./@@edit.html" method="POST">
+  <form action="./@@edit.html" method="post">
     <h3 i18n:translate="">Set Workflow-Relevant Data Schema</h3>
 
     <div class="row" tal:define="widget nocall:view/relevantDataSchema_widget">

@@ -17,7 +17,7 @@
     </tr>
 </table>
 
-<form method="POST" action="reindex.html">
+<form method="post" action="reindex.html">
     <input type="submit" value="Reindex"
            i18n:attributes="value reindex-button"/>
 </form>

@@ -16,7 +16,7 @@
     This screen let's you specify which content types (by interface) can
     receive which workflows (process definitions).</p>
 
-  <form action="." method="POST">
+  <form action="." method="post">
     <h3 i18n:translate="">Available Mappings</h3>
      
     <ul tal:condition="view/process_based">

@@ -7,7 +7,7 @@
      tal:condition="status"
      tal:content="status" />
 
-  <form action="" method="POST">
+  <form action="" method="post">
     <h3 i18n:translate="">Assign a Principal</h3>
 
     <div class="row" tal:define="widget nocall:view/principal_widget">
