@@ -38,7 +38,7 @@ class Principals(BrowserView):
         request = self.request
         try:
             print "START Principals getPrincipals"
-            principals = self.context.getPrincipals()
+            principals = self.context.getPrincipals(name='')
             print "END Principals getPrincipals"
         except :
             principals = []
