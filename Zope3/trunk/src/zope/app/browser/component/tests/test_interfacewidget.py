@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.6 2003/01/06 19:09:57 stevea Exp $
+$Id: test_interfacewidget.py,v 1.7 2003/01/08 18:39:21 stevea Exp $
 """
 
 __metaclass__ = type
@@ -28,7 +28,7 @@ from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
 from zope.component.service import serviceManager, defineService
-
+from zope.app.interfaces.forms import ConversionError
 
 class I(Interface):
     """bah blah
@@ -63,6 +63,19 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
 
 
 class TestInterfaceWidget(BaseInterfaceWidgetTest):
+
+    def testBadInterface(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=False)
+
+        widget = InterfaceWidget(field, request)
+
+        request.form["field.TestName"] = (
+        'bad interface name'
+        )
+        self.assertRaises(ConversionError, widget.getData)
 
     def testInterfaceWidget(self):
         request = self.request

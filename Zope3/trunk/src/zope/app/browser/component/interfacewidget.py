@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.11 2003/01/07 18:20:41 stevea Exp $
+$Id: interfacewidget.py,v 1.12 2003/01/08 18:39:20 stevea Exp $
 """
 
 import sys
@@ -51,7 +51,6 @@ class InterfaceWidget(Widget, BrowserView):
             try:
                 value = nameToInterface(field, value)
             except ComponentLookupError:
-                # XXX this code path needs a test!
                 # Convert to conversion error
                 exc = ConversionError(sys.exc_info()[1])
                 raise ConversionError, exc, sys.exc_info()[2]
