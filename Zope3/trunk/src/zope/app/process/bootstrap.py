@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.9 2003/09/21 17:32:34 jim Exp $
+$Id: bootstrap.py,v 1.10 2003/10/20 18:41:15 fdrake Exp $
 """
 
 from zope.app import zapi
@@ -86,12 +86,12 @@ class BootstrapSubscriberBase:
     def ensureObject(self, object_name, object_type, object_factory):
         """Check that there's a basic object in the service
         manager. If not, add one.
-        
+
         Return the name added, if we added an object, otherwise None.
         """
         package = getServiceManagerDefault(self.root_folder)
         valid_objects = [ name
-                          for name in package 
+                          for name in package
                           if object_type.isImplementedBy(package[name]) ]
         if valid_objects:
             return None
@@ -137,20 +137,20 @@ class BootstrapInstance(BootstrapSubscriberBase):
             pub = self.service_manager.queryLocalService(EventPublication)
             name = zapi.getName(pub)
             configureService(self.root_folder, EventSubscription, name)
-    
+
         # Add the HubIds service, which subscribes itself to the event service
         name = self.ensureService(HubIds, ObjectHub)
         # Add a Registration object so that the Hub has something to do.
-        name = self.ensureObject('Registration', 
+        name = self.ensureObject('Registration',
                                  ISubscriptionControl, Registration)
         if name:
             package = getServiceManagerDefault(self.root_folder)
             reg = package[name]
             # It's possible that we would want to reindex all objects when
             # this is added - this seems like a very site-specific decision,
-            # though. 
+            # though.
             reg.subscribe()
-            
+
 
         # Sundry other services
         self.ensureService(ErrorLogging,
