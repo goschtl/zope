@@ -17,7 +17,7 @@
       tal:condition="status"
       tal:content="status" />
 
-  <form action="AllRolePermissions.html" method="post">
+  <form action="AllRolePermissions.html" method="POST">
 
     <table width="100%" cellspacing="0" cellpadding="2" border="0" 
            nowrap="nowrap">
