@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.5 2003/04/28 15:54:11 gvanrossum Exp $
+$Id: __init__.py,v 1.6 2003/04/30 16:09:21 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -89,6 +89,10 @@ class NameUseConfiguration:
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)
+            description = None
+            summaryMethod = getattr(config, "usageSummary", None)
+            if summaryMethod:
+                description = summaryMethod()
             url = getView(config, 'absolute_url', self.request)
             # XXX This assumes the configuration implements
             #     INamedComponentConfiguration rather than just
@@ -101,6 +105,7 @@ class NameUseConfiguration:
                            'path': path,
                            'url': url(),
                            'status': config.status,
+                           'description': description or config.name,
                            })
         return result
 

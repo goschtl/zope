@@ -10,9 +10,8 @@
 
 	  <a href="http://."
 	     tal:attributes="href use/url"
-	     tal:content="use/name">
-	   Example Object
-	   </a> (<span tal:replace="use/status">Active</span>)
+	     tal:content="use/description">Description</a>
+	  (<span tal:replace="use/status">Active</span>)
 
 	</li>
       </ul>
