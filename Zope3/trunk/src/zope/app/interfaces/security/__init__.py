@@ -31,7 +31,8 @@ class IPrincipal(Interface):
         """Return a description of the principal."""
 
     def getRoles():
-        """Return a possibly empty list of Roles held by this Principal"""
+        """Return a possibly empty list of ids of roles held by this principal.
+        """
 
 
 class IUnauthenticatedPrincipal(IPrincipal):
@@ -39,6 +40,7 @@ class IUnauthenticatedPrincipal(IPrincipal):
 
     Authenticated principals are preferable to UnauthenticatedPrincipals.
     """
+
 
 class IAuthenticationService(Interface):
     """Provide support for establishing principals for requests.
@@ -161,6 +163,7 @@ class ILoginPassword(Interface):
 
 
 class IRegisteredObject(Interface):
+
     def getId():
         """Get the id of the registered object."""
 
@@ -251,7 +254,7 @@ class IPrincipalRoleMap(Interface):
     def getPrincipalsForRole(role_id):
         """Get the principals that have been granted a role.
 
-        Return the list of (principal, setting) who have been assigned or
+        Return the list of (principal id, setting) who have been assigned or
         removed from a role.
 
         If no principals have been assigned this role,
@@ -261,7 +264,7 @@ class IPrincipalRoleMap(Interface):
     def getRolesForPrincipal(principal_id):
         """Get the roles granted to a principal.
 
-        Return the list of (role, setting) assigned or removed from
+        Return the list of (role id, setting) assigned or removed from
         this principal.
 
         If no roles have been assigned to
@@ -277,8 +280,7 @@ class IPrincipalRoleMap(Interface):
 
         Return all the principal/role combinations along with the
         setting for each combination as a sequence of tuples with the
-        role, principal, and setting, in that order.
-
+        role id, principal id, and setting, in that order.
         """
 
 
@@ -286,15 +288,13 @@ class IPrincipalRoleManager(IPrincipalRoleMap):
     """Management interface for mappings between principals and roles."""
 
     def assignRoleToPrincipal(role_id, principal_id):
-        """Assign the role to the principal.
-        """
+        """Assign the role to the principal."""
 
     def removeRoleFromPrincipal(role_id, principal_id):
-        """ remove a role from the principal """
+        """Remove a role from the principal."""
 
     def unsetRoleForPrincipal(role_id, principal_id):
-        """ unset the role for the principal
-        """
+        """Unset the role for the principal."""
 
 
 class IRolePermissionMap(Interface):
@@ -327,7 +327,7 @@ class IRolePermissionMap(Interface):
         """
 
     def getRolesAndPermissions():
-        """Return a sequence of (principal_id, role_id, setting) here.
+        """Return a sequence of (permission_id, role_id, setting) here.
 
         The settings are returned as a sequence of permission, role,
         setting tuples.
@@ -335,7 +335,6 @@ class IRolePermissionMap(Interface):
         If no principal/role assertions have been made here, then the empty
         list is returned.
         """
-
 
 
 class IRolePermissionManager(IRolePermissionMap):
@@ -391,8 +390,6 @@ class IPrincipalPermissionMap(Interface):
         of a list of three tuple containing
         (permission id, principal id, setting)
         """
-
-
 
 
 class IPrincipalPermissionManager(IPrincipalPermissionMap):

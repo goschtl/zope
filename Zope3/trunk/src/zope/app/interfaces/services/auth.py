@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.3 2002/12/27 20:16:34 rdmurray Exp $
+$Id: auth.py,v 1.4 2003/02/07 18:18:56 mgedmin Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.security import IPrincipal
@@ -24,7 +24,7 @@ class IReadUser(IPrincipal):
         """Get the login for the user."""
 
     def validate(pw):
-        """Seee whether the password is valid."""
+        """See whether the password is valid."""
 
 
 class IWriteUser(Interface):
@@ -40,7 +40,10 @@ class IWriteUser(Interface):
         """Set login of User."""
 
     def setRoles(roles):
-        """Set roles of User."""
+        """Set roles of User.
+
+        Roles should be a sequence of role ids.
+        """
 
     def setPassword(password):
         """Set password of User."""
