@@ -13,15 +13,22 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: interfaces.py,v 1.2 2004/03/13 18:01:23 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/04/15 15:29:42 jim Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.registration.interfaces import IComponentRegistration
 from zope.app.registration.interfaces import IRegisterable
 from zope.app.registration.interfaces import ComponentPath
-from zope.component.interfaces import IUtilityService
+import zope.component.interfaces
 from zope.schema import TextLine
+
+class ILocalUtilityService(
+        zope.component.interfaces.IUtilityService,
+        zope.component.interfaces.IComponentRegistry,
+        ):
+    """Local Utility Service
+    """
 
 class IUtilityRegistration(IComponentRegistration):
     """Utility registration object.
@@ -52,8 +59,6 @@ class IUtilityRegistration(IComponentRegistration):
         readonly=True,
         )
 
-
-
 class ILocalUtility(IRegisterable):
     """Local utility marker.
 
@@ -65,41 +70,3 @@ class ILocalUtility(IRegisterable):
     IRegistered can be used; otherwise, they must provide
     another way to be adaptable to IRegistered.
     """
-
-
-class ILocalUtilityService(IUtilityService):
-    """Local utility service interface.
-
-    Methods which must be implemented by a local utility service to
-    allow views to retrieve sufficient information from the service.
-    """
-    
-    def getLocalUtilitiesFor(interface):
-        """Returns all active (registered is not enough) utilities that are
-        directly registered with this utility service.
-
-        An empty list is returned, if no local utilities for this interface
-        were found. If the interface is None, all utilities will be retruned.
-        """ 
-
-    def getRegisteredMatching(interface=None, name=None):
-        """Return the registered utilities.
-
-        The return value is an iterable object for which each item
-        is a three-element tuple:
-
-        - provided interface
-
-        - name
-
-        - registration stack
-
-        One item is present for each registration.
-
-        If interface is None, all registered registrations are returned.
-        Otherwise, only registrations that provide the given interface
-        are returned.
-
-        Also, if name is provided and is contained in the name of the
-        registered utility, we use that to filter the returned values.
-        """
