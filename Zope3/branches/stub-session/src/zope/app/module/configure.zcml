@@ -1,0 +1,27 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <content class=".Manager">
+    <require
+        permission="zope.ManageCode"
+        interface=".interfaces.IModuleManager"
+        set_schema=".interfaces.IModuleManager"
+        />
+  </content>
+
+  <adapter
+      for="zope.app.site.interfaces.ISiteManagementFolder"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      name=".py"
+      factory=".ModuleFactory"
+      permission="zope.ManageContent"
+      />
+
+  <!-- Enable import of persistent modules -->
+  <subscriber
+      factory=".installPersistentModuleImporter"
+      for="zope.app.appsetup.IProcessStartingEvent"
+      />
+
+  <include package=".browser" />
+
+</configure>
