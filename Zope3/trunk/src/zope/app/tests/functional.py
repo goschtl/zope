@@ -38,7 +38,7 @@ from zope.publisher.publish import publish
 from zope.publisher.xmlrpc import XMLRPCRequest
 from zope.security.interfaces import Forbidden, Unauthorized
 from zope.security.management import endInteraction
-import zope.server.interfaces
+import zope.publisher.interfaces.http
 from zope.testing import doctest
 
 import zope.app.pluggableauth
@@ -424,7 +424,7 @@ class HTTPTestCase(FunctionalTestCase):
 
 class HTTPHeaderOutput:
 
-    zope.interface.implements(zope.server.interfaces.IHeaderOutput)
+    zope.interface.implements(zope.publisher.interfaces.http.IHeaderOutput)
 
     def __init__(self, protocol, omit):
         self.headers = {}
