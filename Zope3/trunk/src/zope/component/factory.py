@@ -63,6 +63,18 @@ class GlobalFactoryService:
         except KeyError:
             raise ComponentLookupError(name)
 
+    def getFactoriesFor(self, iface):
+        """See IFactoryService interface"""
+        factories = self.queryFactoriesFor(iface, None)
+        if factories is None:
+            raise ComponentLookupError(iface)
+        return factories
+
+    def queryFactoriesFor(self, iface, default=None):
+        """See IFactoryService interface"""
+        return [factory for factory in self.__factories.values() \
+                if iface in factory.getInterfaces()] or default
+
     _clear = __init__
 
 # the global factory service instance (see component.zcml )

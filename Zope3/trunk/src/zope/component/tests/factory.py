@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: factory.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
+$Id: factory.py,v 1.4 2003/08/05 14:25:16 sidnei Exp $
 """
 from zope.component.interfaces import IFactory
 from zope.interface import Interface, implements, implementedBy
@@ -21,6 +21,9 @@ from zope.interface import Interface, implements, implementedBy
 class IX(Interface):
     """the dummy interface which class X supposedly implements,
     according to the factory"""
+
+class IFoo(Interface):
+    """an even more dummy interface just for testing """
 
 class X:
     implements(IX)

@@ -1,13 +1,13 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
   <include package=".registries" file="meta.zcml" />
   <include package=".grants" file="meta.zcml" />
 
-  <meta:directive 
+  <meta:directive
      namespace="http://namespaces.zope.org/zope"
-     name="securityPolicy" 
+     name="securityPolicy"
      schema=".metadirectives.ISecurityPolicyDirective"
      handler=".metaconfigure.securityPolicy" />
 

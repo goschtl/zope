@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.27 2003/07/28 22:22:27 jim Exp $
+$Id: interfaces.py,v 1.28 2003/08/05 14:25:19 sidnei Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -54,7 +54,6 @@ class IFromUnicode(Interface):
 # Delay these imports to avoid circular import problems
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
-
 
 class IField(Interface):
     """Basic Schema Field Interface.

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.2 2003/08/02 11:20:09 srichter Exp $
+$Id: test_directives.py,v 1.3 2003/08/05 14:25:00 sidnei Exp $
 """
 import unittest
 
@@ -32,7 +32,7 @@ class ITestSource(Interface):
 
 class TestSource(unicode):
     implements(ITestSource)
-    
+
 
 class TestRenderer(BrowserView):
     __used_for__ = ITestSource
@@ -42,12 +42,12 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_sourcetype(self):
         self.assertEqual(SourceTypes.getAllTitles(), [])
-        self.context = xmlconfig.file("tests/renderer.zcml", zope.app.renderer)
+        context = xmlconfig.file("tests/renderer.zcml", zope.app.renderer)
         self.assertEqual(SourceTypes.getAllTitles(), ['Test Text'])
         self.assertEqual(
             SourceTypes.get('Test Text'),
             zope.app.renderer.tests.test_directives.ITestSource)
-        
+
         obj = SourceTypes.createObject('Test Text', 'Source')
         self.assertEqual(
             getView(obj, None, TestRequest()).__class__,
