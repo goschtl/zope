@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.18 2003/10/30 21:55:15 fdrake Exp $
+$Id: registration.py,v 1.19 2003/11/21 17:09:56 jim Exp $
 """
 __metaclass__ = type
 
@@ -153,9 +153,12 @@ class RegistrationStack(Persistent, Contained):
         data = self._data
         if data:
             if data[0] == cid:
+                data = data[1:]
+                self._data = data
+
                 # Tell it that it is no longer active
                 registration.deactivated()
-                data = data[1:]
+
                 if data and data[0] is not None:
                     # Activate the newly active component
                     sm = zapi.getServiceManager(self)
@@ -169,8 +172,7 @@ class RegistrationStack(Persistent, Contained):
                 if data and data[-1] is None:
                     data = data[:-1]
 
-            # Write data back
-            self._data = data
+                self._data = data
 
     def registered(self, registration):
         cid = self._id(registration)
@@ -187,15 +189,9 @@ class RegistrationStack(Persistent, Contained):
             return # already in the state we want
 
         if cid is None or cid in data:
-
-            if data[0] == cid:
+            old = data[0]
+            if old == cid:
                 return # already active
-
-            if data[0] is not None:
-                # Deactivate the currently active component
-                sm = zapi.getServiceManager(self)
-                old = zapi.traverse(sm, data[0])
-                old.deactivated()
 
             # Insert it in front, removing it from back
             data = (cid, ) + tuple([item for item in data if item != cid])
@@ -206,6 +202,12 @@ class RegistrationStack(Persistent, Contained):
 
             # Write data back
             self._data = data
+
+            if old is not None:
+                # Deactivated the currently active component
+                sm = zapi.getServiceManager(self)
+                old = zapi.traverse(sm, old)
+                old.deactivated()
 
             if registration is not None:
                 # Tell it that it is now active
@@ -228,9 +230,6 @@ class RegistrationStack(Persistent, Contained):
         if data[0] != cid:
             return # already inactive
 
-        # Tell it that it is no longer active
-        registration.deactivated()
-
         if None not in data:
             # Append None
             data += (None,)
@@ -238,14 +237,17 @@ class RegistrationStack(Persistent, Contained):
         # Move it to the end
         data = data[1:] + data[:1]
 
+        # Write data back
+        self._data = data
+
+        # Tell it that it is no longer active
+        registration.deactivated()
+
         if data[0] is not None:
             # Activate the newly active component
             sm = zapi.getServiceManager(self)
             new = zapi.traverse(sm, data[0])
             new.activated()
-
-        # Write data back
-        self._data = data
 
     def active(self):
         if self._data:
@@ -283,6 +285,15 @@ class RegistrationStack(Persistent, Contained):
 
         return result
 
+class NotifyingRegistrationStack(RegistrationStack):
+
+    def activate(self, registration):
+        RegistrationStack.activate(self, registration)
+        self.__parent__.notifyActivated(self, registration)
+
+    def deactivate(self, registration):
+        RegistrationStack.deactivate(self, registration)
+        self.__parent__.notifyDeactivated(self, registration)
 
 class SimpleRegistration(Persistent, Contained):
     """Registration objects that just contain registration data

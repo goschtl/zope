@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstack.py,v 1.3 2003/09/21 17:33:24 jim Exp $
+$Id: test_registrationstack.py,v 1.4 2003/11/21 17:09:56 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,11 +26,17 @@ from zope.app.traversing import traverse
 class Registration:
 
     active = 0
+    registry = None
 
     def activated(self):
+        if (self.registry is not None) and (self.registry.active() != self):
+            raise AssertionError("Told active but not the active registration")
         self.active += 1
 
     def deactivated(self):
+        if (self.registry is not None) and (self.registry.active() == self):
+            raise AssertionError(
+                "Told deactivated but still the active registration")
         self.active -= 1
 
 
@@ -53,6 +59,7 @@ class Test(PlacefulSetup, TestCase):
 
         self.failIf(registry)
         self.__c1 = c1 = self.__config("1")
+        c1.registry = registry
         registry.register(c1)
         self.failUnless(registry)
         self.failUnless(registry.registered(c1))
@@ -61,6 +68,7 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(registry.active(), None)
 
         self.__c2 = c2 = self.__config("2")
+        c2.registry = registry
         self.failIf(registry.registered(c2))
         registry.register(c2)
         self.failUnless(registry)
