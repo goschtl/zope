@@ -20,7 +20,7 @@ from zope.exceptions import DuplicationError
 from zope.security.interfaces import Unauthorized, Forbidden
 from zope.interface import implements, implementedBy
 from zope.security.checker import CheckerPublic
-from zope.security import checkPermission
+from security import checkPermission
 from zope.app.component.metaconfigure import handler
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
 from zope.app.publisher.interfaces.browser import IGlobalBrowserMenuService
@@ -32,8 +32,6 @@ from zope.security.proxy import ProxyFactory
 from zope.app import zapi
 from zope.app.component.interface import provideInterface
 from zope.app.servicenames import BrowserMenu
-
-from AccessControl import getSecurityManager
 
 # TODO: This was copied and trimmed down from zope.interface.
 # Eventually, this will be eliminated when the browser menu
@@ -89,11 +87,11 @@ class BaseBrowserMenuService(object):
 
             permission = item.permission
             action = item.action
-            
+
             if permission:
                 # If we have an explicit permission, check that we
-                # can access it. #diff
-                if not getSecurityManager().checkPermission(permission, object):
+                # can access it.
+                if not checkPermission(permission, object):
                     continue
 
             elif action:
@@ -232,7 +230,7 @@ class menuItemsDirective(object):
             args = (self.interface.__module__+'.'+self.interface.getName(),
                     self.interface)
             )
-        
+
 
 globalBrowserMenuService = GlobalBrowserMenuService()
 
