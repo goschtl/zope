@@ -41,7 +41,7 @@ class UtilityService(AdapterRegistry):
         c = self.queryUtility(interface, None, name)
         if c is not None:
             return c
-        raise ComponentLookupError(interface)
+        raise ComponentLookupError(interface, name)
 
     def queryUtility(self, interface, default=None, name=''):
         """See IUtilityService interface"""
