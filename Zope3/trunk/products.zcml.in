@@ -1,14 +1,13 @@
-<configure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns="http://namespaces.zope.org/zope">
 
-<!-- add include directives for products here -->
+  <!-- Add include directives for your custom products -->
+  <!-- or 3rd-party installed products here. -->
 
-<!-- The default security policy, including roles
-     stuff.
+  <!-- The default security policy, including roles. -->
+  <include package="zope.products.securitypolicy"/>
+
+  <!-- Example:
+       <include package="zopeproducts.demo.jobboard" />
   -->
-<include package="zope.products.securitypolicy"/>
-
-<!-- Example:
-<include package="zopeproducts.demo.jobboard" />
--->
 
 </configure>

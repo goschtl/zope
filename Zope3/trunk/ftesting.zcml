@@ -1,8 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           i18n_domain="zope"
-           >
+           i18n_domain="zope">
 
-  <!-- This file is the equivalent of site.zcml used for functional testing -->
+  <!-- This file is the equivalent of site.zcml and it is -->
+  <!-- used for functional testing setup -->
 
   <include package="zope.app" />
   <include file="products.zcml" />
@@ -20,5 +20,7 @@
       password="mgrpw" />
 
   <grant role="zope.Manager" principal="zope.mgr" />
+
+  <include file="products_ftesting.zcml" />
 
 </configure>
