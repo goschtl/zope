@@ -13,22 +13,19 @@
                condition="widgets">
       <h4 i18n:translate="">Map permissions to Schema fields</h4>
 
-      <tal:block repeat="widget widgets">
-        <h5 tal:content="string:${widget/fieldTitle} (${widget/fieldName})">
+      <tal:block repeat="pwidget widgets">
+        <h5 tal:content="string:${pwidget/fieldTitle} (${pwidget/fieldName})">
           FieldName (Field Title)
         </h5>
-        <div class="row" tal:replace="structure widget/getter/row">
-          <div class="label" i18n:translate="">Get Permission</div>
-          <div class="field">
-
-          </div>
+        
+        <div class="row" tal:define="widget nocall:pwidget/getter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
         </div>
-        <div class="row" tal:replace="structure widget/setter/row">
-          <div class="label" i18n:translate="">Set Permission</div>
-          <div class="field">
-
-          </div>
-        </div>
+    
+        <div class="row" tal:define="widget nocall:pwidget/setter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
+        </div>        
+        
         <br />
       </tal:block>
       <div class="row">
