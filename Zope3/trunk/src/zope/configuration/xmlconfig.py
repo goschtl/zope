@@ -38,10 +38,6 @@ from zope.interface import Interface
 
 logger = logging.getLogger("config")
 
-ZCML_NAMESPACE = "http://namespaces.zope.org/zcml"
-ZCML_CONDITION = (ZCML_NAMESPACE, u"condition")
-
-
 class ZopeXMLConfigurationError(ConfigurationError):
     """Zope XML Configuration error
 
@@ -185,7 +181,6 @@ class ConfigurationHandler(ContentHandler):
     def __init__(self, context, testing=0):
         self.context = context
         self.testing = testing
-        self.ignore_depth = 0
 
     def setDocumentLocator(self, locator):
         self.locator = locator
@@ -194,22 +189,12 @@ class ConfigurationHandler(ContentHandler):
         self.context.getInfo().characters(text)
 
     def startElementNS(self, name, qname, attrs):
-        if self.ignore_depth:
-            self.ignore_depth += 1
-            return
 
         data = {}
         for (ns, aname), value in attrs.items():
             if ns is None:
                 aname = str(aname)
                 data[aname] = value
-            if (ns, aname) == ZCML_CONDITION:
-                # need to process TALES expression to determine if we
-                # use this element and it's descendents
-                use = self.evaluateTalesCondition(value)
-                if not use:
-                    self.ignore_depth = 1
-                    return
 
         info = ParserInfo(
             self.locator.getSystemId(),
@@ -228,20 +213,8 @@ class ConfigurationHandler(ContentHandler):
 
         self.context.setInfo(info)
 
-    def evaluateTalesCondition(self, expression):
-        import zope.tales.engine
-        engine = zope.tales.engine.Engine
-        code = engine.compile(expression)
-        context = engine.getContext(engine.getBaseNames())
-        return context.evaluateBoolean(code)
 
     def endElementNS(self, name, qname):
-        # If ignore_depth is set, this element will be ignored, even
-        # if this this decrements ignore_depth to 0.
-        if self.ignore_depth:
-            self.ignore_depth -= 1
-            return
-
         info = self.context.getInfo()
         info.end(
             self.locator.getLineNumber(),
