@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Emit some audit info into the history file - for use, eg, from the
+# update hook in the history file.
+
+/bin/echo "[`date` update $@]"
