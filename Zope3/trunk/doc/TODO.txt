@@ -3,30 +3,12 @@ to get done by the first Zope X3 beta release.
 
 The order that items are listed here is not significant.
 
-- Fill out TALES path api defined in
-  zope.app.interfaces.talesapi.IZopeTalesAPI and implemented in 
-  zope.app.pagetemplate.talesapi.ZopeTalesAPI.
-
-  Codeworks is currently signed up for this.
-
-- Provide a simple Python api accessable from the module
-  zope.app.zapi.  The interface for this module should be defined in
-  zope.app.interfaces.zapi.IZAPI.
-
-  This is meant to support usage like:
-
-  import zapi
-
-  ....
-
-
-  p = zapi.path(someob)
-
-  Codeworks is currently signed up for this.
-
 - Finish cache framework:
 
   http://dev.zope.org/Zope3/Zope.App.Caching
+
+- Write documentation on how to develop principal sources for the
+  pluggable auth service.
 
 - Fill out an authentication service based on the architecture
   that Itamar came up with in Rotterdam. See
@@ -135,6 +117,8 @@ The order that items are listed here is not significant.
     defined for the system.  You can select a type and see all of the
     configuration for that type.
 
+- Fix a number of bugs and rough edges in page folders
+
 - Finish WebDAV
 
 - Finish XML-RPC
@@ -142,8 +126,6 @@ The order that items are listed here is not significant.
   There are some issues in the current implementation.  I need to
   review this. For one thing, object methods are implicitly published,
   which is bad.
-
-- Convert to use ZConfig
 
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
@@ -169,14 +151,13 @@ The order that items are listed here is not significant.
   See http://collector.zope.org/Zope3-dev/109
   This requires a hook in the ZODB that Zope can override.
 
-- Supply a generic property mechanism?
-
 - Python scipts
 
   What form should these take? Should they be like Zope 2 Python
   scipts? or should they by like Python modules.
 
-- Properties
+
+- Supply a generic property mechanism?
 
   In Zope 2, folders and many other objects could have arbitrary
   properties.  This was very useful to storing little bits of
@@ -207,3 +188,4 @@ The order that items are listed here is not significant.
   sent) and reliable (does not lose mail on crashes, keeps a queue that can
   survive server restarts).
 
+  Codeworks is working on this.
