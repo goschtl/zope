@@ -25,7 +25,9 @@
       <td class="form-element">
         <input type="checkbox" name="chosen:list"
                value="&dtml-sequence-item;">
-             &dtml-sequence-item;
+        <a href="../&dtml-sequence-item;/manage_workspace">
+          &dtml-sequence-item;
+        </a>
       </td>
     </tr>
   </dtml-in>

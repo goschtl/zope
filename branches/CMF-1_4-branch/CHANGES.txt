@@ -1,5 +1,11 @@
 After CMF 1.4.6
 
+  New Features
+
+    - Minor featurelet: The "Action Providers" ZMI tab on the portal_actions 
+      tool now links directly to the tools shown 
+      http://www.zope.org/Collectors/CMF/181)
+
   Bug Fixes
 
     - CMFTopic: Change topic_view template to show title and ID (it only
