@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.16 2003/06/07 06:37:26 stevea Exp $
+$Id: subscribers.py,v 1.17 2003/06/13 18:10:18 stevea Exp $
 """
 __metaclass__ = type
 
@@ -35,8 +35,9 @@ from persistence import Persistent
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
+from zope.app.interfaces.traversing import ITraversable
 from zope.context import ContextMethod
-from zope.component import getService
+from zope.component import getService, getAdapter
 from zope.app.services.servicenames import HubIds
 from zope.app.services.servicenames import EventSubscription
 
@@ -102,10 +103,9 @@ class Registration(Persistent):
             return
         # Register subobjects
         names = object.keys()
+        traversable = getAdapter(object, ITraversable)
         for name in names:
-            # XXX Once traverseName is refactored, should get an
-            #     ITraversable from object and pass it to traverseName
-            sub_object = traverseName(object, name)
+            sub_object = traverseName(object, name, traversable=traversable)
             wrapped_self._registerTree(sub_object, hub)
     _registerTree = ContextMethod(_registerTree)
 
