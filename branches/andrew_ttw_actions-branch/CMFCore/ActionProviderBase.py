@@ -67,7 +67,7 @@ class ActionProviderBase:
                 a1['category'] = a.getCategory() or 'object'
                 a1['visible'] = a.getVisibility()
                 if a._action:
-                    a1['action'] = a._action.text
+                    a1['action'] = a.getActionExpression()
                 else:
                     a1['action'] = ''
                 if a.condition:
@@ -148,8 +148,6 @@ class ActionProviderBase:
             a.title = action['name']
             if action['action'] is not '':
                 a._action = Expression(text=action['action'])
-            #if not a._action:
-            #    a._action = Expression(text=action['action'])
             else:
                 a._action = ''
             if action['condition'] is not '':
