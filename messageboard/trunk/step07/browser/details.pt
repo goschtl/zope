@@ -1,0 +1,38 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" i18n:domain="messageboard">
+
+      <h1 i18n:translate="">Message Details</h1>
+
+        <div class="row">
+            <div class="label" i18n:translate="">Title</div>
+            <div class="field" tal:content="context/title" />
+        </div>
+
+        <div class="row">
+            <div class="label" i18n:translate="">Author</div>
+            <div class="field" tal:content="view/author"/>
+        </div>
+
+        <div class="row">
+            <div class="label" i18n:translate="">Date/Time</div>
+            <div class="field" tal:content="view/modified"/>
+        </div>
+
+        <div class="row">
+            <div class="label" i18n:translate="">Parent</div>
+            <div class="field" tal:define="info view/parent_info">
+              <a href="../" 
+                  tal:condition="info"
+                  tal:content="info/title" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label" i18n:translate="">Body</div>
+            <div class="field" tal:content="structure context/body"/>
+        </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <addform
+      label="Add Message Board"
+      name="AddMessageBoard.html"
+      schema="book.messageboard.interfaces.IMessageBoard"
+      content_factory="book.messageboard.messageboard.MessageBoard"
+      fields="description"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="book.messageboard.messageboard.MessageBoard"
+      title="Message Board"
+      description="A Message Board"
+      permission="zope.ManageContent"
+      view="AddMessageBoard.html" 
+      />
+
+  <editform
+      schema="book.messageboard.interfaces.IMessageBoard"
+      for="book.messageboard.interfaces.IMessageBoard"
+      label="Change Message Board"
+      name="edit.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit" 
+      />
+
+  <containerViews
+      for="book.messageboard.interfaces.IMessageBoard"
+      index="book.messageboard.View"
+      contents="book.messageboard.Edit"
+      add="book.messageboard.Add"
+      />
+
+  <page
+      name="thread.html"
+      for="book.messageboard.interfaces.IMessageBoard"
+      class=".thread.Thread"
+      template="thread.pt"
+      permission="book.messageboard.View"
+      menu="zmi_views" title="Thread"/>
+
+  <defaultView
+      for="book.messageboard.interfaces.IMessageBoard"
+      name="thread.html"/>
+
+  <icon
+      name="zmi_icon"
+      for="book.messageboard.interfaces.IMessageBoard"
+      file="messageboard.png" />
+
+  <addform
+      label="Add Message"
+      name="AddMessage.html"
+      schema="book.messageboard.interfaces.IMessage"
+      content_factory="book.messageboard.message.Message"
+      fields="title body"
+      permission="book.messageboard.Add"
+      />
+
+  <addMenuItem
+      class="book.messageboard.message.Message"
+      title="Message"
+      description="A Message"
+      permission="book.messageboard.Add"
+      view="AddMessage.html" 
+      />
+
+  <editform
+      schema="book.messageboard.interfaces.IMessage"
+      for="book.messageboard.interfaces.IMessage"
+      label="Change Message"
+      fields="title body"
+      name="edit.html"
+      permission="book.messageboard.Edit"
+      menu="zmi_views" title="Edit" 
+      />
+
+  <containerViews
+      for="book.messageboard.interfaces.IMessage"
+      index="book.messageboard.View"
+      contents="book.messageboard.Edit"
+      add="book.messageboard.Add"
+      />
+
+  <page
+      name="details.html"
+      for="book.messageboard.interfaces.IMessage"
+      class=".message.MessageDetails"
+      template="details.pt"
+      permission="book.messageboard.View"
+      menu="zmi_views" title="Preview"/>
+
+  <defaultView
+      for="book.messageboard.interfaces.IMessage"
+      name="details.html"/>
+
+  <page
+      name="thread.html"
+      for="book.messageboard.interfaces.IMessage"
+      class=".thread.Thread"
+      template="thread.pt"
+      permission="book.messageboard.View"
+      menu="zmi_views" title="Thread"/>
+
+  <icon
+      name="zmi_icon"
+      for="book.messageboard.interfaces.IMessage"
+      file="message.png" />
+
+
+  <zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="book.messageboard.interfaces.IHTML"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widgets.HTMLSourceWidget"
+      permission="zope.Public"
+      />
+
+  <pages
+      for="book.messageboard.interfaces.IMessage"
+      class=".message.MailSubscriptions"
+      permission="book.messageboard.Edit"
+      >
+    <page 
+        name="subscriptions.html" 
+        template="subscriptions.pt"
+        menu="zmi_views" title="Subscriptions" 
+        />
+    <page 
+       name="changeSubscriptions.html" 
+       attribute="change" 
+       />
+  </pages>
+
+</configure>
