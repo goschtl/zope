@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.41 2003/11/05 03:08:10 jeremy Exp $
+$Id: checker.py,v 1.42 2003/11/21 17:12:43 jim Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -25,14 +25,13 @@ import os
 import sys
 import types
 import datetime
+import weakref
 
 from zope.interface import directlyProvides, Interface, implements
-from zope.interface.interfaces import IInterface, IInterfaceSpecification
-from zope.interface.declarations import ObjectSpecification
-from zope.interface.declarations import ProvidesSpecification
-from zope.interface.declarations import ImplementsOnlySpecification
-from zope.interface.declarations import ImplementsSpecification
-from zope.interface.declarations import InterfaceSpecification
+from zope.interface.interfaces import IInterface, IDeclaration
+from zope.interface.declarations import ProvidesClass
+from zope.interface.declarations import Implements
+from zope.interface.declarations import Declaration
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityManager
@@ -702,7 +701,10 @@ class _Sequence(object):
     def __len__(self): return 0
     def __getitem__(self, i): raise IndexError
 
-_InterfaceSpecification_checker = InterfaceChecker(IInterfaceSpecification)
+_Declaration_checker = InterfaceChecker(
+    IDeclaration,
+    _implied=CheckerPublic,
+    subscribe=CheckerPublic)
 
 def f():
     yield f
@@ -723,6 +725,7 @@ _default_checkers = {
                          '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
+    type(weakref.ref(_Sequence())): NamesChecker(['__call__']),
     types.ClassType: _classChecker,
     types.FunctionType: _callableChecker,
     types.MethodType: _callableChecker,
@@ -736,12 +739,13 @@ _default_checkers = {
     type(iter({})): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
     type(f()): _iteratorChecker,
-    type(Interface): InterfaceChecker(IInterface, __str__=CheckerPublic),
-    ObjectSpecification: _InterfaceSpecification_checker,
-    ProvidesSpecification: _InterfaceSpecification_checker,
-    ImplementsSpecification: _InterfaceSpecification_checker,
-    ImplementsOnlySpecification: _InterfaceSpecification_checker,
-    InterfaceSpecification: _InterfaceSpecification_checker,
+    type(Interface): InterfaceChecker(IInterface,
+                                      __str__=CheckerPublic,
+                                      _implied=CheckerPublic,
+                                      subscribe=CheckerPublic),
+    ProvidesClass: _Declaration_checker,
+    Implements: _Declaration_checker,
+    Declaration: _Declaration_checker,
 }
 
 def _clear():
