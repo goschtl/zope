@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testUtility.py,v 1.7 2002/12/11 13:57:32 jim Exp $
+$Id: testUtility.py,v 1.8 2002/12/19 19:51:43 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -291,6 +291,23 @@ class Test(PlacelessSetup, TestCase):
         setUpEditWidgets(view, I)
         self.assertEqual(view.title(), u'title: ct')
         self.assertEqual(view.description(), u'description: cd')
+
+    def test_setupEditWidgets_w_bad_data(self):
+        class Forbidden(AttributeError): pass
+        
+        class C(object):
+            title = u'foo'
+
+            def d(self):
+                raise Forbidden()
+            
+            description = property(d)
+
+        c = C()
+
+        request = TestRequest()
+        view = BrowserView(c, request)
+        self.assertRaises(Forbidden, setUpEditWidgets, view, I)
 
     def test_getSetupWidgets_w_form_data(self):
         c = C()
