@@ -67,7 +67,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         file = open(fp, 'rb')
         try: data = file.read()
         finally: file.close()
-        self.write(data)
+        if reparse:
+            self.write(data)
 
     security.declarePrivate('read')
     def read(self):
