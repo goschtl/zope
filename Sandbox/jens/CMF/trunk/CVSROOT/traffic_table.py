@@ -120,7 +120,7 @@ def init_table():
          'addrs': ["zope-checkins@zope.org"]},
 
         {'path': 'Packages/ZConfig',
-         'addrs': ['zope-checkins@zope.com']},
+         'addrs': ['zope-checkins@zope.org']},
     ])
 
 init_table()
