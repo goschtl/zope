@@ -2,7 +2,7 @@
 Zope X3
 =======
 
-Welcome to the Zope X3 source distribution!
+Welcome to the Zope X3 distribution!
 
 Zope X3 is the next major Zope release and has been written from
 scratch based on the latest software design patterns and the
@@ -105,8 +105,33 @@ To install the software, run "make" again:
 You now have a complete Zope X3 installation.
 
 
-Windows
-~~~~~~~
+Windows (installer)
+~~~~~~~~~~~~~~~~~~~
+
+On Windows it's easiest to use the Windows installer.  The instructions here
+assume you installed Python in its default location, \Python23.
+
+If you have a previous version of Zope3 installed, use the Windows Control
+Panel's Add/Remove Programs applet to uninstall the old version first. The
+name of the appropriate entry starts with "Python 2.3 Zope X3-".
+
+Run the installer.  Note that the installer creates an uninstallation
+program, and an entry to run it under Control Panel's Add/Remove Programs
+applet.  This will remove the files installed under \Python23, but will not
+remove anything in the instance directory (which you create next).
+
+cd to the \Python23\Scripts directory and create an instance:
+
+  ..\python mkzopeinstance -d <instance dir> -u <username>:<password>
+
+cd to the instance directory (this is the new directory you specified as the
+-d argument to mkzopeinstance) and start Zope:
+
+  \Python23\python bin/runzope
+
+
+Windows (source)
+~~~~~~~~~~~~~~~~
 
 Using the source distribution on Windows is possible, but is somewhat
 different from using the distribution on Unix.  You may want to use
@@ -151,7 +176,7 @@ At this point, you can install the software using the command:
   C:\ZopeX3-3.0.0> \Python23\python install.py -q install
 
 You now have a complete Zope X3 installation.  Note that this method
-of installing Zope does not allow for easy uninstallation later: you
+of installing Zope does not allow for easy uninstallation later:  you
 will need to delete Zope files manually from your Python's
 Lib\site-packages\ and Scripts\ directories, and remove the directory
 zopeskel\ from your Python installation entirely.  If you use the
