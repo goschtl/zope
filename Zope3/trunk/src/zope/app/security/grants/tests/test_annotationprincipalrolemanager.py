@@ -23,7 +23,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.registries.roleregistry import roleRegistry as rregistry
 from zope.app.security.registries.principalregistry \
      import principalRegistry as pregistry
-from zope.app.security.grants.annotationprincipalrolemanager \
+from zope.app.security.grants.principalrole \
         import AnnotationPrincipalRoleManager
 from zope.app.security.settings import Allow, Deny
 from zope.app.services.tests.placefulsetup \

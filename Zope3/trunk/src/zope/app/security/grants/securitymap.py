@@ -13,11 +13,13 @@
 ##############################################################################
 """ Generic two-dimensional array type """
 
-from zope.app.interfaces.security.grants.localsecuritymap import ILocalSecurityMap
+from persistence import Persistent
+from persistence.dict import PersistentDict
+from zope.app.interfaces.security.grants.securitymap import ISecurityMap
 
-class LocalSecurityMap(object):
+class SecurityMap(object):
 
-    __implements__ = ILocalSecurityMap
+    __implements__ = ISecurityMap
 
     def __init__(self):
         self._clear()
@@ -71,3 +73,15 @@ class LocalSecurityMap(object):
             for c in self._byrow[r].items():
                 res.append((r,) + c)
         return res
+
+
+class PersistentSecurityMap(SecurityMap, Persistent):
+
+    __implements__ = ISecurityMap
+
+    def _clear(self):
+        self._byrow = PersistentDict()
+        self._bycol = PersistentDict()
+
+    def _empty_mapping(self):
+        return PersistentDict()

@@ -14,11 +14,15 @@
 """Mappings between principals and permissions, stored in an object locally."""
 
 from zope.component import getAdapter
+
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.security \
-     import IPrincipalPermissionManager
-from zope.app.security.grants.localsecuritymap import LocalSecurityMap
+from zope.app.interfaces.security import IPrincipalPermissionManager
+
 from zope.app.security.settings import Allow, Deny, Unset
+from zope.app.security.principal import checkPrincipal
+from zope.app.security.permission import checkPermission
+
+from zope.app.security.grants.securitymap import SecurityMap
 
 annotation_key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 
@@ -93,6 +97,66 @@ class AnnotationPrincipalPermissionManager:
             return annotations[annotation_key]
         except KeyError:
             if create:
-                rp = annotations[annotation_key] = LocalSecurityMap()
+                rp = annotations[annotation_key] = SecurityMap()
                 return rp
         return None
+
+
+class PrincipalPermissionManager(SecurityMap):
+    """Mappings between principals and permissions."""
+
+    __implements__ = IPrincipalPermissionManager
+
+    def grantPermissionToPrincipal(self, permission_id, principal_id,
+                                   check=True):
+        ''' See the interface IPrincipalPermissionManager '''
+
+        if check:
+            checkPermission(None, permission_id)
+            checkPrincipal(None, principal_id)
+        
+        self.addCell(permission_id, principal_id, Allow)
+
+    def denyPermissionToPrincipal(self, permission_id, principal_id,
+                                  check=True):
+        ''' See the interface IPrincipalPermissionManager '''
+
+        if check:
+            checkPermission(None, permission_id)
+            checkPrincipal(None, principal_id)
+
+        self.addCell(permission_id, principal_id, Deny)
+
+    def unsetPermissionForPrincipal(self, permission_id, principal_id):
+        ''' See the interface IPrincipalPermissionManager '''
+
+        # Don't check validity intentionally.
+        # After all, we certianly want to unset invalid ids.
+        
+        self.delCell(permission_id, principal_id)
+
+    def getPrincipalsForPermission(self, permission_id):
+        ''' See the interface IPrincipalPermissionManager '''
+        return self.getRow(permission_id)
+
+    def getPermissionsForPrincipal(self, principal_id):
+        ''' See the interface IPrincipalPermissionManager '''
+        return self.getCol(principal_id)
+
+    def getSetting(self, permission_id, principal_id):
+        ''' See the interface IPrincipalPermissionManager '''
+        return self.getCell(permission_id, principal_id, default=Unset)
+
+    def getPrincipalsAndPermissions(self):
+        ''' See the interface IPrincipalPermissionManager '''
+        return self.getAllCells()
+
+
+# Permissions are our rows, and principals are our columns
+principalPermissionManager = PrincipalPermissionManager()
+
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(principalPermissionManager._clear)
+del addCleanUp

@@ -14,10 +14,16 @@
 """
 
 
-Revision information: $Id: test_zsp.py,v 1.2 2002/12/25 14:13:18 jim Exp $
+Revision information: $Id: test_zsp.py,v 1.3 2002/12/26 18:49:09 jim Exp $
 """
 
 import unittest
+
+from zope.component.service import serviceManager as services
+
+from zope.app.interfaces.security import IPermissionService
+from zope.app.interfaces.security import IRoleService
+from zope.app.interfaces.security import IAuthenticationService
 
 from zope.proxy.context import ContextWrapper
 from zope.component import getService
@@ -25,19 +31,16 @@ from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.roleregistry import roleRegistry
-from zope.app.security.grants.principalpermissionmanager \
+from zope.app.security.grants.principalpermission \
      import principalPermissionManager
-from zope.app.security.grants.rolepermissionmanager \
-     import rolePermissionManager
-from zope.app.security.grants.principalrolemanager \
-     import principalRoleManager
-from zope.app.security.grants.annotationprincipalpermissionmanager \
+from zope.app.security.grants.rolepermission import rolePermissionManager
+from zope.app.security.grants.principalrole import principalRoleManager
+from zope.app.security.grants.principalpermission \
     import AnnotationPrincipalPermissionManager
-from zope.app.interfaces.security \
-    import IPrincipalPermissionManager
-from zope.app.security.grants.annotationprincipalrolemanager \
-    import AnnotationPrincipalRoleManager
-from zope.app.security.grants.annotationrolepermissionmanager \
+from zope.app.interfaces.security import IPrincipalPermissionManager
+from zope.app.security.grants.principalrole \
+     import AnnotationPrincipalRoleManager
+from zope.app.security.grants.rolepermission \
     import AnnotationRolePermissionManager
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
@@ -59,6 +62,19 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
+
+    
+        services.defineService('Permissions', IPermissionService)
+        services.provideService('Permissions', permissionRegistry)
+        
+        services.defineService('Roles', IRoleService)
+        services.provideService('Roles', roleRegistry)
+        
+        services.defineService('Authentication', IAuthenticationService)
+        services.provideService('Authentication', principalRegistry)
+
+
+
         getService(None,"Adapters").provideAdapter(
                        IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)
@@ -88,7 +104,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.create = create.getId()
         update = permissionRegistry.definePermission('update', 'Update',
                                                      'Update something')
-        self.update = update
+        self.update = update.getId()
 
         # ... and some roles...
         peon = roleRegistry.defineRole('Peon', 'Site Peon')

@@ -14,12 +14,17 @@
 """Mappings between principals and roles, stored in an object locally."""
 
 from zope.component import getAdapter
+
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.security \
-     import IPrincipalRoleManager
-from zope.app.security.grants.persistentlocalsecuritymap import \
-     PersistentLocalSecurityMap
+from zope.app.interfaces.security import IPrincipalRoleManager
+from zope.app.interfaces.security import IPrincipalRoleMap
+
 from zope.app.security.settings import Allow, Deny, Unset
+from zope.app.security.grants.securitymap import SecurityMap
+from zope.app.security.grants.securitymap import PersistentSecurityMap
+
+from zope.app.security.principal import checkPrincipal
+from zope.app.security.role import checkRole
 
 annotation_key = 'zope.app.security.AnnotationPrincipalRoleManager'
 
@@ -86,6 +91,62 @@ class AnnotationPrincipalRoleManager:
             return annotations[annotation_key]
         except KeyError:
             if create:
-                rp = annotations[annotation_key] = PersistentLocalSecurityMap()
+                rp = annotations[annotation_key] = PersistentSecurityMap()
                 return rp
         return None
+
+
+class PrincipalRoleManager(SecurityMap):
+    """Mappings between principals and roles."""
+
+    __implements__ = (IPrincipalRoleManager, IPrincipalRoleMap)
+
+    def assignRoleToPrincipal(self, role_id, principal_id, check=True):
+        ''' See the interface IPrincipalRoleManager '''
+
+        if check:
+            checkPrincipal(None, principal_id)
+            checkRole(None, role_id)
+
+        self.addCell(role_id, principal_id, Allow)
+
+    def removeRoleFromPrincipal(self, role_id, principal_id, check=True):
+        ''' See the interface IPrincipalRoleManager '''
+
+        if check:
+            checkPrincipal(None, principal_id)
+            checkRole(None, role_id)
+
+        self.addCell(role_id, principal_id, Deny)
+
+    def unsetRoleForPrincipal(self, role_id, principal_id):
+        ''' See the interface IPrincipalRoleManager '''
+
+        # Don't check validity intentionally.
+        # After all, we certianly want to unset invalid ids.
+
+        self.delCell(role_id, principal_id)
+
+    def getPrincipalsForRole(self, role_id):
+        ''' See the interface IPrincipalRoleMap '''
+        return self.getRow(role_id)
+
+    def getRolesForPrincipal(self, principal_id):
+        ''' See the interface IPrincipalRoleMap '''
+        return self.getCol(principal_id)
+
+    def getSetting(self, role_id, principal_id):
+        ''' See the interface IPrincipalRoleMap '''
+        return self.getCell(role_id, principal_id, default=Unset)
+
+    def getPrincipalsAndRoles(self):
+        ''' See the interface IPrincipalRoleMap '''
+        return self.getAllCells()
+
+# Roles are our rows, and principals are our columns
+principalRoleManager = PrincipalRoleManager()
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(principalRoleManager._clear)
+del addCleanUp

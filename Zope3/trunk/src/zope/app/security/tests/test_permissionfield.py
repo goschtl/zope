@@ -13,11 +13,11 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.2 2002/12/25 14:13:18 jim Exp $
+$Id: test_permissionfield.py,v 1.3 2002/12/26 18:49:09 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.security.permissionfield import PermissionField
+from zope.app.security.permission import PermissionField
 from zope.schema.interfaces import ValidationError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.security.registries.permissionregistry import permissionRegistry

@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopesecuritypolicy.py,v 1.2 2002/12/25 14:13:16 jim Exp $
+$Id: zopesecuritypolicy.py,v 1.3 2002/12/26 18:49:06 jim Exp $
 """
-__version__='$Revision: 1.2 $'[11:-2]
+__version__='$Revision: 1.3 $'[11:-2]
 
 from zope.component import queryAdapter
 
@@ -36,12 +36,10 @@ from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.roleregistry import roleRegistry
-from zope.app.security.grants.principalpermissionmanager \
+from zope.app.security.grants.principalpermission \
      import principalPermissionManager
-from zope.app.security.grants.rolepermissionmanager \
-     import rolePermissionManager
-from zope.app.security.grants.principalrolemanager \
-     import principalRoleManager
+from zope.app.security.grants.rolepermission import rolePermissionManager
+from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.security.settings import Allow, Deny
 
 getPermissionsForPrincipal = \

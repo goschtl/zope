@@ -16,16 +16,31 @@
 import sys
 import unittest
 
+from zope.component.service import serviceManager as services
+
+from zope.app.interfaces.security import IPermissionService
+from zope.app.interfaces.security import IAuthenticationService
+
 from zope.app.security.registries.permissionregistry \
     import permissionRegistry as permregistry
 from zope.app.security.registries.principalregistry \
     import principalRegistry as prinregistry
-from zope.app.security.grants.principalpermissionmanager \
+from zope.app.security.grants.principalpermission \
     import principalPermissionManager as manager
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 class Test(CleanUp, unittest.TestCase):
+
+    def setUp(self):
+        CleanUp.setUp(self)
+
+        services.defineService('Permissions', IPermissionService)
+        services.provideService('Permissions', permregistry)
+
+        services.defineService('Authentication', IAuthenticationService)
+        services.provideService('Authentication', prinregistry)
+
 
     def _make_principal(self, id=None, title=None):
         p = prinregistry.definePrincipal(
@@ -39,6 +54,23 @@ class Test(CleanUp, unittest.TestCase):
         principal = self._make_principal()
         self.assertEqual(manager.getPrincipalsForPermission(permission), [])
         self.assertEqual(manager.getPermissionsForPrincipal(principal), [])
+
+
+    def test_invalidPermission(self):
+        self.assertRaises(ValueError,
+                          manager.grantPermissionToPrincipal,
+                          'permission', 'principal')
+        principal = self._make_principal()
+        self.assertRaises(ValueError,
+                          manager.grantPermissionToPrincipal,
+                          'permission', principal)
+
+    def test_invalidPrincipal(self):
+        permission = permregistry.definePermission('APerm', 'title').getId()
+        self.assertRaises(ValueError,
+                          manager.grantPermissionToPrincipal,
+                          permission, 'principal')
+        
 
     def testPrincipalPermission(self):
         permission = permregistry.definePermission('APerm', 'title').getId()

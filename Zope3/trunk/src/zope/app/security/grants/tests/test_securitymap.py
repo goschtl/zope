@@ -13,22 +13,27 @@
 #############################################################################
 import unittest
 from zope.interface.verify import verifyClass
-from zope.app.interfaces.security.grants.localsecuritymap import ILocalSecurityMap
-from zope.app.security.grants.persistentlocalsecuritymap import PersistentLocalSecurityMap
-from zope.app.security.grants.tests.test_localsecuritymap import \
-     TestLocalSecurityMap
+from zope.app.interfaces.security.grants.securitymap import ISecurityMap
+from zope.app.security.grants.securitymap import SecurityMap
+from zope.app.security.grants.securitymap import PersistentSecurityMap
 
-class TestPersistentLocalSecurityMap(TestLocalSecurityMap):
+class TestSecurityMap(unittest.TestCase):
 
     def testInterface(self):
-        verifyClass(ILocalSecurityMap, PersistentLocalSecurityMap)
+        verifyClass(ISecurityMap, SecurityMap)
+
+    # XXX Test the map. Grrrrr.
+
+class TestPersistentSecurityMap(TestSecurityMap):
+
+    def testInterface(self):
+        verifyClass(ISecurityMap, PersistentSecurityMap)
 
     # XXX test persistence...
 
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(TestPersistentLocalSecurityMap)
-
-if __name__ == '__main__':
-    unittest.main()
+    return unittest.TestSuite((
+        unittest.makeSuite(TestSecurityMap),
+        unittest.makeSuite(TestPersistentSecurityMap),
+        ))

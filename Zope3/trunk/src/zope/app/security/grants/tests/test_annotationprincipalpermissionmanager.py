@@ -24,7 +24,7 @@ from zope.app.security.registries.permissionregistry \
     import permissionRegistry as permregistry
 from zope.app.security.registries.principalregistry \
     import principalRegistry as prinregistry
-from zope.app.security.grants.annotationprincipalpermissionmanager \
+from zope.app.security.grants.principalpermission \
     import AnnotationPrincipalPermissionManager
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.tests.placelesssetup import PlacelessSetup

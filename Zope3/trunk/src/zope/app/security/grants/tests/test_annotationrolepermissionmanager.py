@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.app.security.grants.annotationrolepermissionmanager \
+from zope.app.security.grants.rolepermission \
      import AnnotationRolePermissionManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations

@@ -13,20 +13,12 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permissionfield.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: role.py,v 1.1 2002/12/26 18:49:06 jim Exp $
 """
 
-from zope.schema import ValueSet
-from zope.schema.interfaces import ValidationError
 from zope.component import getService
-from zope.app.interfaces.security import IPermissionField
 
-class PermissionField(ValueSet):
-    __doc__ = IPermissionField.__doc__
-    __implements__ = IPermissionField
-
-    def _validate(self, value):
-        super(PermissionField, self)._validate(value)
-        service = getService(self.context, 'Permissions')
-        if service.getPermission(value.getId()) is None:
-            raise ValidationError("Unknown permission", value)
+def checkRole(context, role_id):
+    
+    if not getService(context, 'Roles').getRole(role_id):
+        raise ValueError("Undefined role id", role_id)

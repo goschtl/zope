@@ -13,11 +13,17 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.2 2002/12/25 14:13:18 jim Exp $
+$Id: test_securitydirectives.py,v 1.3 2002/12/26 18:49:09 jim Exp $
 """
 
 import unittest
 from StringIO import StringIO
+
+from zope.component.service import serviceManager as services
+
+from zope.app.interfaces.security import IPermissionService
+from zope.app.interfaces.security import IRoleService
+from zope.app.interfaces.security import IAuthenticationService
 
 from zope.configuration.xmlconfig import ZopeXMLConfigurationError
 from zope.configuration.xmlconfig import XMLConfig, xmlconfig
@@ -30,11 +36,11 @@ from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry \
         import permissionRegistry as pregistry
 from zope.app.security.registries.roleregistry import roleRegistry as rregistry
-from zope.app.security.grants.rolepermissionmanager \
+from zope.app.security.grants.rolepermission \
         import rolePermissionManager as role_perm_mgr
-from zope.app.security.grants.principalpermissionmanager \
+from zope.app.security.grants.principalpermission \
     import principalPermissionManager as principal_perm_mgr
-from zope.app.security.grants.principalrolemanager \
+from zope.app.security.grants.principalrole \
     import principalRoleManager as principal_role_mgr
 
 
@@ -45,8 +51,24 @@ def configfile(s):
       </zopeConfigure>
       """ % s)
 
+def setUp(self):
+    CleanUp.setUp(self)
+    
+    services.defineService('Permissions', IPermissionService)
+    services.provideService('Permissions', pregistry)
+    
+    services.defineService('Roles', IRoleService)
+    services.provideService('Roles', rregistry)
+    
+    services.defineService('Authentication', IAuthenticationService)
+    services.provideService('Authentication', principalRegistry)
+    
+
 class TestPrincipalDirective(CleanUp, unittest.TestCase):
+
+
     def setUp(self):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testRegister(self):
@@ -76,6 +98,7 @@ class TestPrincipalDirective(CleanUp, unittest.TestCase):
 
 class TestPermissionDirective(CleanUp, unittest.TestCase):
     def setUp(self):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testRegister(self):
@@ -111,6 +134,7 @@ class TestPermissionDirective(CleanUp, unittest.TestCase):
 
 class TestRoleDirective(CleanUp, unittest.TestCase):
     def setUp(self):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testRegister(self):
@@ -148,9 +172,12 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
 class TestRolePermission(CleanUp, unittest.TestCase):
 
     def setUp( self ):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testMap( self ):
+        pregistry.definePermission("Foo", '', '')
+        rregistry.defineRole("Bar", '', '')
         f = configfile("""
  <grant
      permission="Foo"
@@ -171,9 +198,12 @@ class TestRolePermission(CleanUp, unittest.TestCase):
 class TestPrincipalPermission(CleanUp, unittest.TestCase):
 
     def setUp( self ):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testMap( self ):
+        pregistry.definePermission("Foo", '', '')
+        principalRegistry.definePrincipal("Bar", '', '')
         f = configfile("""
  <grant
      permission="Foo"
@@ -194,9 +224,12 @@ class TestPrincipalPermission(CleanUp, unittest.TestCase):
 class TestPrincipalRole(CleanUp, unittest.TestCase):
 
     def setUp( self ):
+        setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testMap( self ):
+        rregistry.defineRole("Foo", '', '')
+        principalRegistry.definePrincipal("Bar", '', '')
         f = configfile("""
  <grant
      role="Foo"

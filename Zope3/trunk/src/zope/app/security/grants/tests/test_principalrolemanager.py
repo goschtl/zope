@@ -16,16 +16,29 @@
 import sys
 import unittest
 
+from zope.component.service import serviceManager as services
+
+from zope.app.interfaces.security import IRoleService
+from zope.app.interfaces.security import IAuthenticationService
+
 from zope.app.security.registries.roleregistry \
      import roleRegistry as rregistry
 from zope.app.security.registries.principalregistry \
      import principalRegistry as pregistry
-from zope.app.security.grants.principalrolemanager \
-     import principalRoleManager
+from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.security.settings import Allow, Deny
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 class Test(CleanUp, unittest.TestCase):
+
+    def setUp(self):
+        CleanUp.setUp(self)
+
+        services.defineService('Roles', IRoleService)
+        services.provideService('Roles', rregistry)
+
+        services.defineService('Authentication', IAuthenticationService)
+        services.provideService('Authentication', pregistry)
 
     def _make_principal(self, id=None, title=None):
         p = pregistry.definePrincipal(
@@ -68,6 +81,23 @@ class Test(CleanUp, unittest.TestCase):
                          [])
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
                          [])
+
+
+    def test_invalidPrincipal(self):
+        self.assertRaises(ValueError,
+                          principalRoleManager.assignRoleToPrincipal,
+                          'role1', 'prin1')
+        role1 = rregistry.defineRole('Role One', 'Role #1').getId()
+        self.assertRaises(ValueError,
+                          principalRoleManager.assignRoleToPrincipal,
+                          role1, 'prin1')
+
+    def test_invalidRole(self):
+        prin1 = self._make_principal()
+        self.assertRaises(ValueError,
+                          principalRoleManager.assignRoleToPrincipal,
+                          'role1', prin1)
+        
 
     def testManyRolesOnePrincipal(self):
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
