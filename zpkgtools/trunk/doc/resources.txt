@@ -3,11 +3,12 @@ Resource Locations
 ==================
 
 .. This is a reStructuredText document.
+.. include:: links.rst
 
 Overview
 --------
 
-The **zpkg** tool uses URLs to identify external resources.  In most
+The |zpkg|_ tool uses URLs to identify external resources.  In most
 cases, any URL type supported by Python's "urllib2" module is
 supported if the identified resource is a simple file.  (Directories
 are *not* handled well via HTTP or FTP in the current implementation,
