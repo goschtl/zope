@@ -155,7 +155,7 @@ class DefaultWorkflowDefinition (SimpleItemWithProperties):
                     {'name': 'Pending review (%d)' % pending,
                      'url': info.portal_url +
                      '/search?review_state=pending',
-                     'permissions': (ReviewPortalContent),
+                     'permissions': (ReviewPortalContent, ),
                      'category': 'global'}
                     )
         return actions
