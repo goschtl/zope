@@ -1,16 +1,19 @@
 <zopeConfigure xmlns="http://namespaces.zope.org/browser">
 
-<defaultView 
-    for="zope.exceptions.IUnauthorized"
-    name="exception"
-    />
-
 <page
     for="zope.exceptions.IUnauthorized"
-    name="exception"
+    name="index.html"
     permission="zope.Public"
     template="unauthorized.pt"
     class=".unauthorized.Unauthorized"
+    />
+
+<page
+    for="zope.app.interfaces.exceptions.IUserError"
+    name="index.html"
+    permission="zope.Public"
+    template="user.pt"
+    class=".user.UserErrorView"
     />
 
 </zopeConfigure>
