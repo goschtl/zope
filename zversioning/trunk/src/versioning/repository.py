@@ -76,21 +76,6 @@ class DummyCheckoutAware(object):
 
 class CopyModifyMergeRepository(object):
     """The repository handles simple linear histories.
-    
-    x>>> class IPyRefHistoryStorage(Interface):
-    x....   pass
-    x
-    x>>> class DummyHistoryStorage:
-    x...    pass
-    x
-    x>>> ztapi.provideUtility(IPyRefHistoryStorage, DummyHistoryStorage):
-    
-    XXX VersionableData vermittelt zwischen den Daten und der Storage, was gespeichert werden soll
-    >>> ztapi.provideAdapter((IVersionable, IHistoryStorage), IVersionableAspects, VersionableAspects)
-
-    >>> repo = Repository()
-    
-    >>>
     """
 
     zope.interface.implements(
@@ -100,7 +85,6 @@ class CopyModifyMergeRepository(object):
 
     def __init__(self):
         self.histories = zapi.getUtility(IHistoryStorage)
-        #self.checkout_blah = zapi.
         
     def applyVersionControl(self, obj):
         """Put the passed object under version control.
@@ -121,9 +105,9 @@ class CopyModifyMergeRepository(object):
         # 
         # Why register?
         # We like to give the IHistoryStorage component the possibility
-        # to veto as early as possible (e.g. to raise "connection to 
-        # backend repository lost" or "quota for user Ben exceded" 
-        # exceptions or similar)
+        # to do inevitable things or veto as early as possible (e.g. to 
+        # raise "connection to backend repository lost" or "quota for 
+        # user John exceded" exceptions or similar)
         self.histories.register(obj)
 
     def _declare_versioned(obj):
@@ -131,7 +115,7 @@ class CopyModifyMergeRepository(object):
         """
         ifaces = zope.interface.directlyProvidedBy(obj)
         ifaces += IVersioned
-        zope.interface.directlyProvides(object, *ifaces)
+        zope.interface.directlyProvides(obj, *ifaces)
 
     def saveAsVersion(self, obj):
         """Save the current state of the object for later retreival.
