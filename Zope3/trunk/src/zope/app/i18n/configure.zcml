@@ -46,13 +46,6 @@
      factory=".translationdomain.unsetDomainOnDeactivation"
      />  
 
-  <content class=".translationdomain.DomainRegistration">
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.utility.interfaces.IUtilityRegistration"
-        set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
-  </content>
-  
   <!-- Setup Message Catalogs -->
   <content class=".messagecatalog.MessageCatalog">
     <factory id="zope.app.MessageCatalog" />
