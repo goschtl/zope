@@ -13,12 +13,13 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.14 2004/04/09 11:36:13 jim Exp $
+$Id: presentation.py,v 1.15 2004/04/15 13:25:33 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.component.presentation import IDefaultViewName
+from zope.component.presentation import PresentationRegistration
 from zope.security.checker import NamesChecker, ProxyFactory
 
 import zope.app.component.interfacefield
@@ -225,33 +226,18 @@ class LocalPresentationService(
             yield registration
 
     def getRegistrationsForInterface(self, required):
-        # XXX relying on global service for layer definitions
-
         iro = required.__iro__ + (None,)
-        for layername in self.base._layers:
-            layer = self.queryLayer(layername)
-            if isinstance(layer, LocalLayer):
-                while layer is not None:
-                    for iface in iro:
-                        stacks = layer.stacks.get(iface)
-                        if not stacks:
-                            continue
-                        for stack in stacks.itervalues():
-                            registration = stack.active()
-                            if registration is not None:
-                                yield registration
-                    layer = layer.next
-                layer = self.base.queryLayer(layername)
-            if layer is None:
-                continue
 
-            for (req, provided, with, name, factories
-                 ) in layer.getRegisteredMatching(required=required):
-                # XXX just do views for now. We need a more general
-                # solution
-                if len(with) == 1:
-                    yield GlobalViewRegistration(req, with[0], factories,
-                                                 layername, name)
+        for registration in self.registrations():
+            if IViewRegistration.providedBy(registration):
+                if registration.required in iro:
+                    yield registration
+
+            if isinstance(registration, PresentationRegistration):
+                if registration.required[0] in iro:
+                    # Not using an adapter here, since it would be just
+                    # overhead.
+                    yield GlobalViewRegistration(registration)
                     
                 
 
@@ -264,12 +250,13 @@ class GlobalViewRegistration:
     serviceType = zapi.servicenames.Presentation
     status = zope.app.registration.interfaces.ActiveStatus
 
-    def __init__(self, req, ptype, factories, layer, viewName):
-        self.required = req
-        self.ptype = ptype
-        self.factories = factories
-        self.layer = layer
-        self.viewName = viewName
+    def __init__(self, context):
+        self.context = context
+        self.required = context.required[0]
+        self.ptype = context.required[-1]
+        self.factories = context.factory
+        self.layer = context.layer
+        self.viewName = context.name
 
     def usageSummary(self):
         if self.required is None:
