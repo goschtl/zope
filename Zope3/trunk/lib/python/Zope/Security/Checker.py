@@ -344,7 +344,7 @@ _default_checkers = {
                         '__contains__', 'index', 'count']),
 
     # YAGNI: () a rock
-    tuple: NamesChecker(['__getitem__', '__getslice__',
+    tuple: NamesChecker(['__getitem__', '__getslice__', '__add__',
                          '__contains__', '__len__', '__iter__', '__iadd__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
