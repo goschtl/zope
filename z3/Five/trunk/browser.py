@@ -26,6 +26,7 @@ from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
+from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 
@@ -160,7 +161,7 @@ class EditView(BrowserView):
                     notify(ObjectModifiedEvent(content))
             except WidgetsError, errors:
                 self.errors = errors
-                status = _("An error occured.")
+                status = "An error occured."
                 get_transaction().abort()
             else:
                 setUpEditWidgets(self, self.schema, source=self.adapted,

@@ -35,6 +35,18 @@ class EditFormTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.assertEquals('FooTitle', self.folder.edittest.title)
         self.assertEquals('FooDescription', self.folder.edittest.description)
 
+    def test_editform_invalid(self):
+        # missing title, which is required
+        self.folder.edittest.description = ''
+        
+        response = self.publish(
+            '/test_folder_1_/edittest/edit.html?%s=1&field.title=&field.description=BarDescription' % Update,
+            basic='manager:r00t')
+        # we expect that we get a 200 Ok
+        self.assertEqual(200, response.getStatus())
+        self.assertEquals('Test', self.folder.edittest.title)
+        self.assertEquals('', self.folder.edittest.description)
+    
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EditFormTestCase))
