@@ -13,10 +13,11 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.6 2003/05/29 15:07:29 gvanrossum Exp $
+$Id: fsmerger.py,v 1.7 2003/06/03 18:24:35 gvanrossum Exp $
 """
 
 import os
+import shutil
 
 from os.path import exists, isfile, isdir, split, join
 from os.path import realpath, normcase, normpath
@@ -118,12 +119,7 @@ class FSMerger(object):
                 return
 
             if not rentry:
-                try:
-                    os.rmdir(localdir)
-                except os.error:
-                    pass
-                self.reportdir("D", localdir)
-                lentry.clear()
+                self.clear_dir(localdir)
                 return
 
         if exists(localdir):
@@ -134,11 +130,23 @@ class FSMerger(object):
                 else:
                     self.reportdir("A", localdir)
             else:
-                self.reportdir("/", localdir)
+                if rentry or exists(remotedir):
+                    self.reportdir("/", localdir)
+                else:
+                    # Tree removed remotely, must recurse down locally
+                    for name in lentrynames:
+                        self.merge(join(localdir, name), join(remotedir, name))
+                    self.clear_dir(localdir)
+                    return
+
             lnames = dict([(normcase(name), name)
                            for name in os.listdir(localdir)])
         else:
-            if lentry.get("flag") != "removed" and (rentry or rentrynames):
+            flag = lentry.get("flag")
+            if flag == "removed":
+                self.reportdir("R", localdir)
+                return # There's no point in recursing down!
+            if rentry or rentrynames:
                 fsutil.ensuredir(localdir)
                 lentry.update(rentry)
                 self.reportdir("N", localdir)
@@ -167,6 +175,19 @@ class FSMerger(object):
         for ncname in ncnames:
             name = names[ncname]
             self.merge(join(localdir, name), join(remotedir, name))
+
+    def clear_dir(self, localdir):
+        lentry = self.metadata.getentry(localdir)
+        lentry.clear()
+        localzopedir = join(localdir, "@@Zope")
+        if os.path.isdir(localzopedir):
+            shutil.rmtree(localzopedir)
+        try:
+            os.rmdir(localdir)
+        except os.error:
+            self.reportdir("?", localdir)
+        else:
+            self.reportdir("D", localdir)
 
     def reportdir(self, letter, localdir):
         """Helper to report something for a directory.

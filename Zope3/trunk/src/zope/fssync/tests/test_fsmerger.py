@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.9 2003/05/29 15:07:30 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.10 2003/06/03 18:24:35 gvanrossum Exp $
 """
 
 import os
@@ -365,7 +365,7 @@ class TestFSMerger(TempFiles):
 
     # Tests for added empty directories: local, remote, both
 
-    def test_added_emptydir_local(self):
+    def test_added_dir_local(self):
         added_entry = {"flag": "added"}
         added_entry.update(self.entry)
         self.mergetest("foo", {}, None, None,
@@ -374,14 +374,14 @@ class TestFSMerger(TempFiles):
                        {}, None, None,
                        added_entry, {})
 
-    def test_added__emptydir_remote(self):
+    def test_added__dir_remote(self):
         self.mergetest("foo", None, None, {},
                        None, self.entry,
                        ["N %l/"],
                        {}, {}, {},
                        self.entry, self.entry)
 
-    def test_added_emptydir_both(self):
+    def test_added_dir_both(self):
         added_entry = {"flag": "added"}
         added_entry.update(self.entry)
         self.mergetest("foo", {}, None, {},
@@ -390,9 +390,9 @@ class TestFSMerger(TempFiles):
                        {}, None, {},
                        self.entry, self.entry)
 
-    # Tests for added non-empty directories: local, remote, both
+    # Tests for added directory trees: local, remote, both
 
-    def test_added_dir_local(self):
+    def test_added_tree_local(self):
         added_entry = {"flag": "added"}
         added_entry.update(self.entry)
         self.mergetest("foo", {"x": "x"}, None, None,
@@ -401,14 +401,14 @@ class TestFSMerger(TempFiles):
                        {"x": "x"}, None, None,
                        added_entry, {})
 
-    def test_added_dir_remote(self):
+    def test_added_tree_remote(self):
         self.mergetest("foo", None, None, {"x": "x"},
                        None, self.entry,
                        ["N %l/", "U %l/x"],
                        {"x": "x"}, {"x": "x"}, {"x": "x"},
                        self.entry, self.entry)
 
-    def test_added_dir_both(self):
+    def test_added_tree_both(self):
         added_entry = {"flag": "added"}
         added_entry.update(self.entry)
         self.mergetest("foo", {"x": "x"}, None, {"x": "x"},
@@ -419,7 +419,7 @@ class TestFSMerger(TempFiles):
 
     # Tests for removed empty directories: local, remote, both
 
-    def test_removed_emptydir_local(self):
+    def test_removed_dir_local(self):
         removed_entry = {"flag": "removed"}
         removed_entry.update(self.entry)
         self.mergetest("foo", None, None, {},
@@ -428,14 +428,14 @@ class TestFSMerger(TempFiles):
                        None, None, {},
                        removed_entry, self.entry)
 
-    def test_removed_emptydir_remote(self):
+    def test_removed_dir_remote(self):
         self.mergetest("foo", {}, None, None,
                        self.entry, {},
                        ["D %l/"],
                        None, None, None,
                        {}, {})
 
-    def test_removed_emptydir_both(self):
+    def test_removed_dir_both(self):
         removed_entry = {"flag": "removed"}
         removed_entry.update(self.entry)
         self.mergetest("foo", None, None, None,
@@ -444,7 +444,32 @@ class TestFSMerger(TempFiles):
                        None, None, None,
                        {}, {})
 
-    # XXX Tests for removed non-empty directories?
+    # Tests for removed non-empty directories: local, remote, both
+
+    def test_removed_tree_local(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, None, {"x": "x"},
+                       removed_entry, self.entry,
+                       ["R %l/"],
+                       None, None, {"x": "x"},
+                       removed_entry, self.entry)
+
+    def test_removed_tree_remote(self):
+        self.mergetest("foo", {"x": "x"}, {"x": "x"}, None,
+                       self.entry, {},
+                       ["D %l/x", "D %l/"],
+                       None, None, None,
+                       {}, {})
+
+    def test_removed_tree_both(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, None, None,
+                       removed_entry, {},
+                       ["D %l"],
+                       None, None, None,
+                       {}, {})
 
 def test_suite():
     s = unittest.TestSuite()
