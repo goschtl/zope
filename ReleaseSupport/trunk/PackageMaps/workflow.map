@@ -1,7 +1,0 @@
-# This map contains only the psycopgda package.
-#
-# This package map can be addressed as
-#
-#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/workflow.map
-#
-workflow         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/workflow
