@@ -11,6 +11,9 @@
 
  Bugs Fixed
 
+  - Worked around Opera's strange insistence on selecting an option,
+    even for multi-select lists (Tracker #332).
+
   - Hardened CMFCore to initialize correctly in the absence of
     the PageTemplates product (Tracker #430).
 
