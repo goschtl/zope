@@ -157,7 +157,7 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
         cmd = cmd + ' --exclude "/*/*"'
         bg = RSYNC_IN_BACKGROUND
 
-    os.system("%s%s%s %s/%s %s:%s %s"
+    os.system("%s%s%s %s/%s/ %s:%s %s"
               % ((VERBOSE and "set -x; ") or "",
                  (DRYRUN and "echo ") or "",
                  cmd,
