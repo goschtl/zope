@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.5 2004/04/15 22:11:10 srichter Exp $
+$Id: __init__.py,v 1.6 2004/04/16 11:51:43 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -81,35 +81,14 @@ class IWorklistHandler(Interface):
         """Return a sequence of workitem."""
 
 
-class IProcessDefinitionImportExport(Interface):
-    """ProcessDefinition Import/Export."""
-
-    def importProcessDefinition(context, data):
-        """Import a Process Definition"""
-
-    def exportProcessDefinition(context, process_definition):
-        """Export a Process Definition"""
-
-
-class IGlobalProcessDefinitionImportExport(IProcessDefinitionImportExport):
-    """Global ImportExport with additional method to register import/export
-    handlers."""
-
-    def addImportHandler(interface, factory):
-        """Add a factory for an import handler for a certain interface."""
-
-    def addExportHandler(interface, factory):
-        """Add a factory for an export handler for a certain interface."""
-
-
 class IProcessDefinitionImportHandler(Interface):
     """Handler for Import of ProcessDefinitions."""
 
-    def canImport(context, data):
+    def canImport(data):
         """Check if handler can import a processdefinition
            based on the data given."""
 
-    def doImport(context, data):
+    def doImport(data):
         """Create a ProcessDefinition from the data given.
 
         Returns a ProcessDefinition Instance."""
@@ -117,7 +96,7 @@ class IProcessDefinitionImportHandler(Interface):
 class IProcessDefinitionExportHandler(Interface):
     """Handler for Export of ProcessDefinitions."""
 
-    def doExport(context, process_definition):
+    def doExport():
         """Export a ProcessDefinition into a specific format.
 
         Returns the serialized value of the given ProcessDefintion."""
