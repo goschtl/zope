@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for Security Policy's Grant screens.
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from zope.app.tests.functional import BrowserTestCase
