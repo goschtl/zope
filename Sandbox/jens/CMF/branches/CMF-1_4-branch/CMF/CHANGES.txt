@@ -1,7 +1,9 @@
 CMF 1.4.1 (unreleased)
 
   Bug Fixes
-  
+
+    - skins (CMFDefault): Fixed permission name and html in roster.
+
     - type actions: Made sure oldstyle fti data is always converted.
       Actions are now completely migrated during TypeInformation creation.
 
