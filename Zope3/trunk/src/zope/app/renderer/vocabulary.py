@@ -18,7 +18,6 @@ $Id: vocabulary.py,v 1.10 2004/05/06 16:13:42 poster Exp $
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from zope.app import zapi
-from zope.app.form.browser import DropdownWidget
 from zope.app.renderer.interfaces import ISource
 
 def SourceTypeVocabulary(context):

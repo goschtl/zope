@@ -4,12 +4,6 @@
 
   <meta:directive
      namespace="http://namespaces.zope.org/renderer"
-     name="sourcetype"
-     schema=".metaconfigure.ISourceTypeDirective"
-     handler=".metaconfigure.sourcetype" />
-
-  <meta:directive
-     namespace="http://namespaces.zope.org/renderer"
      name="renderer"
      schema=".metaconfigure.IRendererDirective"
      handler=".metaconfigure.renderer" />
