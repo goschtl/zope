@@ -11,25 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""View package tests.
+"""Page folder tests.
 
-$Id: test_pagefolder.py,v 1.8 2003/09/21 17:32:56 jim Exp $
+$Id: test_pagefolder.py,v 1.9 2003/11/21 17:09:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app import zapi
 from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.pagefolder import PageFolder
-from zope.app.interfaces.services.pagefolder import IPageFolder
-from zope.app.traversing import traverse
+from zope.app.services.pagefolder import PageFolder, IPageFolder
 from zope.app.services.zpt import ZPTTemplate
-from zope.app.services.view import ViewService
+from zope.app.services.presentation import LocalPresentationService
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.services.tests.test_registrationmanager \
      import RegistrationManagerContainerTests
-from zope.component.adapter import provideAdapter
+from zope.component.servicenames import Presentation
 
 class I(Interface):
     pass
@@ -41,68 +40,70 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
-        setup.addService(sm, 'Views', ViewService(), suffix='service')
-        default = traverse(self.rootFolder, '++etc++site/default')
-        default['Views'] = PageFolder()
-        views = traverse(default, 'Views')
-        views.forInterface = I
-        views.factoryName = None
-        views.permission = 'zope.View'
+        zapi.getService(None, Presentation).defineLayer('debug')
+        setup.addService(sm, Presentation, LocalPresentationService(),
+                         suffix='service')
+        default = zapi.traverse(self.rootFolder, '++etc++site/default')
+        default["PF"] = PageFolder()
+        pagefolder = zapi.traverse(default, "PF")
+        pagefolder.required = I
+        pagefolder.factoryName = None
+        pagefolder.permission = 'zope.View'
 
-        self.__views = views
+        self.__pagefolder = pagefolder
 
     def test___setitem__(self):
 
-        views = self.__views
+        pagefolder = self.__pagefolder
 
-        views['foo.html'] = ZPTTemplate()
+        pagefolder['foo.html'] = ZPTTemplate()
 
-        rm = views.getRegistrationManager()
+        rm = pagefolder.getRegistrationManager()
         name = rm.keys()[-1]
-        registration = traverse(views.getRegistrationManager(), name)
+        registration = zapi.traverse(pagefolder.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
-        self.assertEqual(registration.forInterface, I)
-        self.assertEqual(registration.presentationType, IBrowserPresentation)
-        self.assertEqual(registration.viewName, u'foo.html')
+        self.assertEqual(registration.required, I)
+        self.assertEqual(registration.requestType, IBrowserRequest)
+        self.assertEqual(registration.name, u'foo.html')
         self.assertEqual(registration.layer, 'default')
-        self.assertEqual(registration.class_, None)
+        self.assertEqual(registration.factoryName, None)
         self.assertEqual(registration.permission, 'zope.View')
         self.assertEqual(registration.attribute, None)
 
         self.assertRaises(TypeError,
-                          views.__setitem__, 'bar.html', PageFolder())
+                          pagefolder.__setitem__, 'bar.html', PageFolder())
 
     def test_applyDefaults(self):
 
-        views = self.__views
+        pagefolder = self.__pagefolder
 
-        views['foo.html'] = ZPTTemplate()
+        pagefolder['foo.html'] = ZPTTemplate()
 
-        rm = views.getRegistrationManager()
+        rm = pagefolder.getRegistrationManager()
         name = rm.keys()[-1]
-        registration = traverse(views.getRegistrationManager(), name)
+        registration = zapi.traverse(pagefolder.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
-        self.assertEqual(registration.forInterface, I)
-        self.assertEqual(registration.presentationType, IBrowserPresentation)
-        self.assertEqual(registration.viewName, u'foo.html')
+        self.assertEqual(registration.required, I)
+        self.assertEqual(registration.requestType, IBrowserRequest)
+        self.assertEqual(registration.name, u'foo.html')
         self.assertEqual(registration.layer, 'default')
-        self.assertEqual(registration.class_, None)
+        self.assertEqual(registration.factoryName, None)
         self.assertEqual(registration.permission, 'zope.View')
         self.assertEqual(registration.attribute, None)
 
-        views.forInterface = I2
-        views.permission = 'zope.ManageContent'
-        views.layer = 'debug'
+        pagefolder.required = I2
+        pagefolder.permission = 'zope.ManageContent'
+        pagefolder.layer = 'debug'
 
-        views.applyDefaults()
+        pagefolder.applyDefaults()
 
-        registration = traverse(views.getRegistrationManager(), name)
+        registration = zapi.traverse(pagefolder.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
-        self.assertEqual(registration.forInterface, I2)
-        self.assertEqual(registration.presentationType, IBrowserPresentation)
-        self.assertEqual(registration.viewName, u'foo.html')
+        self.assertEqual(registration.required, I2)
+        self.assertEqual(registration.requestType, IBrowserRequest)
+        self.assertEqual(registration.name, u'foo.html')
         self.assertEqual(registration.layer, 'debug')
-        self.assertEqual(registration.class_, None)
+        self.assertEqual(registration.factoryName, None)
         self.assertEqual(registration.permission, 'zope.ManageContent')
         self.assertEqual(registration.attribute, None)
 
