@@ -15,7 +15,7 @@
 
 Perform important XML import checks.
 
-$Id: __init__.py,v 1.1 2004/04/01 17:09:25 philikon Exp $
+$Id: __init__.py,v 1.2 2004/04/01 17:40:49 philikon Exp $
 """
 _MAXIMUM_XMLMINUS_VERSION = (0, 6, 1)
 
@@ -27,7 +27,7 @@ else:
     try:
         v = _xmlminus.version_info
     except AttributeError:
-        # _xmlminue is too young; ignore it
+        # _xmlminus is too young; ignore it
         pass
     else:
         if v >= _MAXIMUM_XMLMINUS_VERSION:
