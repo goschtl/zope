@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_undo.py,v 1.4 2003/06/06 21:35:20 philikon Exp $
+$Id: test_undo.py,v 1.5 2003/07/11 03:51:04 anthony Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -33,12 +33,16 @@ class TestIUndoManager:
  'time': 'today'}
         dict2 = {'id': '2', 'user_name': 'monkey', 'description': 'thing2',
  'time': 'today'}
-        dict3 = {'id': '3', 'user_name': 'monkey', 'description': 'thing3',
+        dict3 = {'id': '3', 'user_name': 'bonobo', 'description': 'thing3',
+ 'time': 'today'}
+        dict4 = {'id': '4', 'user_name': 'monkey', 'description': 'thing4',
+ 'time': 'today'}
+        dict5 = {'id': '5', 'user_name': 'bonobo', 'description': 'thing5',
  'time': 'today'}
 
-        self.dummy_db = [dict1, dict2, dict3]
+        self.dummy_db = [dict1, dict2, dict3, dict4, dict5]
 
-    def getUndoInfo(self):
+    def getUndoInfo(self, first=0, last=-20, user_name=None):
         return self.dummy_db
 
     def undoTransaction(self, id_list):
