@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zopedublincore.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
+$Id: zopedublincore.py,v 1.5 2003/10/06 22:08:52 sidnei Exp $
 """
 
 __metaclass__ = type
@@ -41,7 +41,6 @@ class ScalarProperty(SimpleProperty):
     def __set__(self, inst, value):
         if not isinstance(value, unicode):
             raise TypeError("Element must be unicode")
-
         dict = inst._mapping
         __name__ = self.__name__
         inst._changed()

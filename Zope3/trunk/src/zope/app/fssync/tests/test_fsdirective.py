@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsdirective.py,v 1.3 2003/08/01 23:31:50 srichter Exp $
+$Id: test_fsdirective.py,v 1.4 2003/10/06 22:08:52 sidnei Exp $
 """
 import unittest
 
@@ -38,7 +38,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     def testFSDirectiveDefaultAdapter(self):
         self.context = xmlconfig.file("fssync.zcml", zope.app.fssync.tests)
         self.assertEqual(getSynchronizer(C1()).__class__, CDefaultAdapter)
-        
+
     def testFSDirectiveDuplicate(self):
         self.assertRaises(ConfigurationConflictError, xmlconfig.file,
                           "fssync_duplicate.zcml", zope.app.fssync.tests)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsregistry.py,v 1.3 2003/08/17 06:06:38 philikon Exp $
+$Id: test_fsregistry.py,v 1.4 2003/10/06 22:08:52 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,7 +31,7 @@ class Test(CleanUp, TestCase):
     """Test Interface for FSRegistry Instance.
     """
 
-    def testInterfaceVerification(self):        
+    def testInterfaceVerification(self):
         verifyObject(IGlobalFSSyncService, fsRegistry)
 
     def testFSRegistry(self):
@@ -45,7 +45,7 @@ class Test(CleanUp, TestCase):
         fac = getSynchronizer(cl)
         self.assertEqual(fac.__class__, CFileAdapter)
         self.assertEqual(fac.getBody(), C1.__doc__)
-        
+
         provideSynchronizer(C2, CDirAdapter)
         fac = getSynchronizer(C2())
         self.assertEqual(fac.__class__, CDirAdapter)
@@ -65,7 +65,7 @@ class Test(CleanUp, TestCase):
         """Test for duplication in registring the same class in
         to the Registry.
         """
-        provideSynchronizer(C2, CFileAdapter)       
+        provideSynchronizer(C2, CFileAdapter)
         #Try to change the adapter for same class should
         #throw a duplication error
         self.assertRaises(DuplicationError,

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.4 2003/06/04 09:09:45 stevea Exp $
+$Id: service.py,v 1.5 2003/10/06 22:08:54 sidnei Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -73,7 +73,7 @@ class GlobalServiceManager:
 
     def provideService(self, name, component, force=False):
         """see IGlobalServiceManager interface, above
-        
+
         The force keyword allows one to replace an existing
         service.  This is mostly useful in testing scenarios.
         """

@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.32 2003/09/24 01:12:59 garrett Exp $
+$Id: add.py,v 1.33 2003/10/06 22:08:51 sidnei Exp $
 """
 import sys
 
@@ -130,7 +130,6 @@ class AddView(EditView):
         return self.context.add(content)
 
     def nextURL(self):
-
         return self.context.nextURL()
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id: test_rolepermissionview.py,v 1.6 2003/08/07 17:41:00 srichter Exp $
+$Id: test_rolepermissionview.py,v 1.7 2003/10/06 22:08:51 sidnei Exp $
 """
 import unittest
 from zope.app.services.tests.placefulsetup\
@@ -85,7 +85,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             'p1r0': 'Unset', 'p1r1': 'Deny',
             'SUBMIT': 1
             }
-        self.view.request = TestRequest(environ=env)        
+        self.view.request = TestRequest(environ=env)
         self.view.update()
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
@@ -112,7 +112,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             'p1r0': 'Allow', 'p1r1': 'Unset',
             'SUBMIT': 1
             }
-        self.view.request = TestRequest(environ=env)        
+        self.view.request = TestRequest(environ=env)
         self.view.update()
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
@@ -133,7 +133,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         env={'permission_id': 'write',
              'settings': ['Allow', 'Unset'],
              'SUBMIT_PERMS': 1}
-        self.view.request = TestRequest(environ=env)        
+        self.view.request = TestRequest(environ=env)
         self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
@@ -143,7 +143,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         env={'permission_id': 'write',
              'settings': ['Unset', 'Deny'],
              'SUBMIT_PERMS': 1}
-        self.view.request = TestRequest(environ=env)        
+        self.view.request = TestRequest(environ=env)
         self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
@@ -152,7 +152,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         env={'permission_id': 'write',
              'settings': ['Unset', 'foo'],
              'SUBMIT_PERMS': 1}
-        self.view.request = TestRequest(environ=env)        
+        self.view.request = TestRequest(environ=env)
         self.assertRaises(ValueError, self.view.update)
 
     def testRolePermissions(self):

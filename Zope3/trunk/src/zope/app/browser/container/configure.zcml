@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
@@ -9,10 +9,10 @@
       class="zope.app.browser.container.adding.Adding"
       permission="zope.ManageContent"
       allowed_attributes="addingInfo">
-      
+
     <page name="index.html"  template="add.pt" />
     <page name="action.html" attribute="action" />
-      
+
   </view>
 
   <page
@@ -23,7 +23,7 @@
       template="find.pt"
       menu="zmi_actions" title="Find" />
 
-  <page 
+  <page
       for="zope.app.interfaces.container.IWriteContainer"
       permission="zope.ManageContent"
       name="commonTasks"
