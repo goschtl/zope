@@ -71,7 +71,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         repo = cvsloader.RepositoryUrl("/absolute/path")
         cvsurl = cvsloader.CvsUrl("", "cvs.example.org", "/cvsroot",
                                   "project/module")
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -79,7 +79,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assert_(not result.tag)
 
         cvsurl.tag = "TAG"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -87,12 +87,12 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assertEqual(result.tag, "TAG")
 
         repo.tag = "FOO"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "absolute/path")
         self.assertEqual(result.tag, "FOO")
 
         cvsurl.tag = None
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "absolute/path")
         self.assertEqual(result.tag, "FOO")
 
@@ -100,7 +100,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         repo = cvsloader.RepositoryUrl("relative/path")
         cvsurl = cvsloader.CvsUrl("", "cvs.example.org", "/cvsroot",
                                   "project/module")
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -108,7 +108,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assert_(not result.tag)
 
         cvsurl.tag = "TAG"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -116,12 +116,12 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assertEqual(result.tag, "TAG")
 
         repo.tag = "FOO"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "project/module/relative/path")
         self.assertEqual(result.tag, "FOO")
 
         cvsurl.tag = None
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "project/module/relative/path")
         self.assertEqual(result.tag, "FOO")
 
@@ -129,7 +129,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         repo = cvsloader.RepositoryUrl(None)
         cvsurl = cvsloader.CvsUrl("", "cvs.example.org", "/cvsroot",
                                   "project/module")
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -137,7 +137,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assert_(not result.tag)
 
         cvsurl.tag = "TAG"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assert_(not result.type)
         self.assertEqual(result.host, "cvs.example.org")
         self.assertEqual(result.cvsroot, "/cvsroot")
@@ -145,12 +145,12 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assertEqual(result.tag, "TAG")
 
         repo.tag = "FOO"
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "project/module")
         self.assertEqual(result.tag, "FOO")
 
         cvsurl.tag = None
-        result = repo.join(cvsurl)
+        result = cvsurl.join(repo)
         self.assertEqual(result.path, "project/module")
         self.assertEqual(result.tag, "FOO")
 
