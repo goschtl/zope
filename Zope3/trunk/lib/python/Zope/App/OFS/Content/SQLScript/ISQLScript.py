@@ -2,17 +2,17 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.3 2002/07/25 22:09:31 faassen Exp $
+$Id: ISQLScript.py,v 1.4 2002/08/08 11:10:23 ersab Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -30,7 +30,7 @@ class SQLConnectionName(Schema.Str):
         return connections
 
     items = ContextMethod(items)
-    
+
 class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""
 
@@ -45,12 +45,12 @@ class ISQLScript(ISQLCommand):
         title="Arguments",
         description='A set of attributes that can be used during the DTML '
                     'rendering process to provide dynamic data.',
-        required=1)
+        required=0)
 
     source = Schema.Str(
         id="source",
         title="Source",
-        description="""The source od the page template.""",
+        description="""The source of the page template.""",
         required=1)
 
     def setArguments(arguments):
