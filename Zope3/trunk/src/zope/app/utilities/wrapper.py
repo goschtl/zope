@@ -99,7 +99,12 @@ class Struct(Persistent):
       # And also handle descriptors for the proxied object,
       # but using the proxied object on __get__ calls.
       if hasattr(v, '__get__'):
-          return v.__get__(proxied, type(proxied))
+          # We should call it only if it came from the class,
+          # otherwise its a descriptor being used as an instance
+          # attribute, so just return it.
+          if (hasattr(proxied, '__class__') and
+              getattr(proxied.__class__, name) is v):
+              return v.__get__(proxied, type(proxied))
       return v
 
   def __setattr__(self, name, v):

@@ -16,8 +16,13 @@ import unittest
 from persistence import Persistent, PersistentMetaClass
 from persistence.tests.test_persistence import DM as BaseDM, BrokenDM
 
+from zope.interface import Interface, directlyProvides, directlyProvidedBy
+
 from zope.app.utilities.wrapper import Struct
 from zope.app.container.contained import ContainedProxy, getProxiedObject
+
+
+class IDummy(Interface): pass
 
 class Dummy(object):
 
@@ -334,6 +339,13 @@ class PersistentTest(Test):
         self.failUnless(pb.__dict__.has_key('__proxied__'))
         self.assertEqual(pb.__dict__['__proxied__'].__dict__,
                          pa.__dict__['__proxied__'].__dict__)
+
+    def testDirectlyProvides(self):
+        p = self.klass()
+        self.failIf(IDummy.isImplementedBy(p))
+        directlyProvides(p, directlyProvidedBy(p), IDummy)
+        self.failUnless(IDummy.isImplementedBy(p))
+
 
 def test_suite():
     s = unittest.TestSuite()
