@@ -122,7 +122,7 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
 
     def test_no_doc_string(self):
 	response = self.publish('/test_folder_1_/testoid/no_doc_string')
-	self.assertEquals("No docsring", response.getBody())
+	self.assertEquals("No docstring", response.getBody())
 
 def test_suite():
     suite = unittest.TestSuite()
