@@ -30,12 +30,10 @@ from ldap import MOD_ADD
 from ldap import MOD_DELETE
 from ldap import MOD_REPLACE
 
-class INVALID_CREDENTIALS(Exception): pass
-class ALREADY_EXISTS(Exception): pass
-class NO_SUCH_OBJECT(Exception): pass
-#class SERVER_DOWN(Exception): pass
-#class SIZELIMIT_EXCEEDED(Exception): pass
-
+from ldap import SERVER_DOWN
+from ldap import INVALID_CREDENTIALS
+from ldap import ALREADY_EXISTS
+from ldap import NO_SUCH_OBJECT
 
 the_data = {}
 # Data is a mapping of {dnl -> entry}, dnl is a tuple of rdns
@@ -45,42 +43,29 @@ explode_dn = ldap.explode_dn
 
 class FakeLDAPObject(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, conn_str):
+        self.conn_str = conn_str
 
     def set_option(self, option, value):
         pass
 
     def simple_bind_s(self, dn, password):
-        if dn.find('Manager') >= 0:
-            # Fake authentified connection.
-            return 1
+        if self.conn_str.startswith('ldap://down'):
+            raise SERVER_DOWN
 
         if dn == '' and password == '':
             # Fake anonymous connection.
             return 1
 
-        results = self.search_s(dn)
-        pwd = None
-        for key, values in results:
-            if key == 'userPassword':
-                pwd = values[0]
-                break
+        if dn.find('Manager') >= 0:
+            # Fake authentified connection.
+            return 1
 
-        if pwd is None:
-            raise INVALID_CREDENTIALS
+        if password == 'pwd_for_'+dn:
+            # Fake allowed connection.
+            return 1
 
-        # Check password encoding
-        if pwd.startswith('{SHA}'):
-            s = sha.new(password)
-            enc = '{SHA}' + base64.encodestring(s.digest())
-        else:
-            enc = password
-
-        if pwd != enc:
-            raise INVALID_CREDENTIALS
-
-        return 1
+        raise INVALID_CREDENTIALS
 
     def add_s(self, dn, attr_list):
         dnl = tuple(dn.split(','))
@@ -118,10 +103,12 @@ class FakeLDAPObject(object):
 
         # Iterate on all entries and do the search
         res = []
-        #import pdb; pdb.set_trace()
+        has_base = False
         for dnl, entry in the_data.iteritems():
             if dnl[-basellen:] != basel:
                 continue
+            if dnl == basel:
+                has_base = True
             dnllen = len(dnl)
             if not ((scope == SCOPE_SUBTREE) or
                     (scope == SCOPE_ONELEVEL and dnllen == basellen+1) or
@@ -168,6 +155,8 @@ class FakeLDAPObject(object):
             else:
                 res_entry = deepcopy(entry)
             res.append((dn, res_entry))
+        if not has_base:
+            raise NO_SUCH_OBJECT
         return res
 
     def modify_s(self, dn, mod_list):
@@ -207,5 +196,5 @@ class FakeLDAPObject(object):
 
 def initialize(conn_str):
     """Initialize."""
-    return FakeLDAPObject()
+    return FakeLDAPObject(conn_str)
 
