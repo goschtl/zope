@@ -21,28 +21,28 @@ from zope.app.component.interface import provideInterface
 from viewable import Viewable
 
 def loadProducts(_context):
-    import sys, os
+    import os
     import Products
+    from types import ModuleType
     products = []
     for name in dir(Products):
-	name = "Products." + name
-	module = sys.modules.get(name, None)
-	if module:
-	    products.append(module)
+        product = getattr(Products, name)
+        if isinstance(product, ModuleType):
+            products.append(product)
 
     # first load meta.zcml files
     for product in products:
-	zcml = os.path.join(os.path.dirname(product.__file__), "meta.zcml")
-	if os.path.isfile(zcml):
-	    xmlconfig.file(zcml, context=_context, execute=True,
-			   package=product)
+        zcml = os.path.join(os.path.dirname(product.__file__), "meta.zcml")
+        if os.path.isfile(zcml):
+            xmlconfig.file(zcml, context=_context, execute=True,
+                           package=product)
 
     # now load their configure.zcml
     for product in products:
-	zcml = os.path.join(os.path.dirname(product.__file__), "configure.zcml")
-	if os.path.isfile(zcml):
-	    xmlconfig.file(zcml, context=_context, execute=True,
-			   package=product)
+        zcml = os.path.join(os.path.dirname(product.__file__), "configure.zcml")
+        if os.path.isfile(zcml):
+            xmlconfig.file(zcml, context=_context, execute=True,
+                           package=product)
 
 def implements(_context, class_, interface):
     for interface in interface:
