@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.15 2003/06/12 09:29:00 jim Exp $
+$Id: interfaces.py,v 1.16 2003/06/14 12:32:38 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -176,7 +176,6 @@ class IContextAwareDescriptorSupport(Interface):
 
         The first argument passed to methods will be context wrapped
         if the method is called on a context-wrapped instance.
-        
         """
 
     def ContextProperty(fget, fset=None, fdel=None):
@@ -184,10 +183,16 @@ class IContextAwareDescriptorSupport(Interface):
         Create a property with functions to be passed context-wrapped instances
 
         This function works like Python's property function, except
-        that the access functions are passed context-warpped instances.
+        that the access functions are passed context-wrapped instances.
         """
 
     def ContextSuper(cls, wrapped_instance):
         """Call an inherited method on a wrapped instances
         """
 
+    def ContextAwareDescriptors():
+        """Function used in a class suite to advise use of context descriptors
+
+        All descriptors defined in that class suite will be made
+        context-aware.
+        """

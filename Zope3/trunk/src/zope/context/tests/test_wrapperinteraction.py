@@ -18,7 +18,7 @@ ContextMethod and ContextProperty, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.7 2003/06/07 19:05:20 stevea Exp $
+$Id: test_wrapperinteraction.py,v 1.8 2003/06/14 12:32:38 stevea Exp $
 """
 import sys
 import unittest
@@ -542,28 +542,32 @@ class TestContextAwareDataDescriptor(TestContextAwareDescriptor):
         self.assertEquals(d.checkClear(), [('del', inst)])
 
 
-class TestContextAware(unittest.TestCase):
+class Test_contextAwareDescriptors(unittest.TestCase):
 
-    def test_ContextAwareMetaClass(self):
-        from zope.context import ContextAwareMetaClass, ContextAware
+    def test_advice(self):
         from zope.context import ContextMethod, ContextProperty
+        from zope.context import ContextAwareDescriptors
+        from zope.interface import implements
         normal_data_descriptor = LoggingDataDescriptor(23)
         normal_descriptor = LoggingDescriptor(23)
         context_method = ContextMethod(lambda s: None)
         context_descriptor = ContextProperty()
 
         # Check that nothing in particular happens if the class doesn't
-        # derive directly from ContextAware.
-        class X:
-            __metaclass__ = ContextAwareMetaClass
+        # have the advice, but its superclass does.
+        class SuperX:
 
             ndd = normal_data_descriptor
             nd = normal_descriptor
 
+        class X(SuperX):
+            ContextAwareDescriptors()
+
         self.assert_(X.ndd is normal_data_descriptor)
         self.assert_(X.nd is normal_descriptor)
 
-        class X(ContextAware):
+        class X:
+            ContextAwareDescriptors()
 
             cm = context_method
             ndd = normal_data_descriptor
@@ -587,10 +591,6 @@ class TestContextAware(unittest.TestCase):
         # descriptor. The rest is covered by the ContextAware(Data)Descriptor
         # unit tests.
 
-    def test_ContextAware(self):
-        from zope.context import ContextAware, ContextAwareMetaClass
-        self.assert_(type(ContextAware) is ContextAwareMetaClass)
-
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestNewStyleClass),
@@ -599,7 +599,7 @@ def test_suite():
         unittest.makeSuite(TestWrapperOnObjectsWithDifferentSlots),
         unittest.makeSuite(TestContextAwareDataDescriptor),
         unittest.makeSuite(TestContextAwareDescriptor),
-        unittest.makeSuite(TestContextAware),
+        unittest.makeSuite(Test_contextAwareDescriptors),
         ))
 
 

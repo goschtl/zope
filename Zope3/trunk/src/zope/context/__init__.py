@@ -16,13 +16,15 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.23 2003/06/12 09:28:33 jim Exp $
+$Id: __init__.py,v 1.24 2003/06/14 12:32:38 stevea Exp $
 """
 from __future__ import generators
 
 __metaclass__ = type
 
+import sys
 from zope.interface import moduleProvides
+from zope.interface.advice import addClassAdvisor
 from zope.context.wrapper import getdict, getdictcreate
 from zope.context.wrapper import getcontext, getinnercontext
 from zope.context.wrapper import getinnerwrapper, getbaseobject
@@ -122,23 +124,24 @@ class ContextAwareDataDescriptor(ContextAwareDescriptor):
     def __delete__(self, inst):
         self.descriptor.__delete__(inst)
 
-ContextAware = None # this will be replaced a few lines down
-class ContextAwareMetaClass(type):
+def _context_aware_advice(cls):
+    for name, obj in cls.__dict__.items():
+        if not isinstance(obj, ContextDescriptor):
+            if getattr(obj, '__set__', None) is not None:
+                d = ContextAwareDataDescriptor(obj)
+                setattr(cls, name, d)
+            elif getattr(obj, '__get__', None) is not None:
+                m = ContextAwareDescriptor(obj)
+                setattr(cls, name, m)
+    return cls
 
-    def __init__(self, name, bases, namespace):
-        if ContextAware in bases:
-            for name, obj in namespace.items():
-                if not isinstance(obj, ContextDescriptor):
-                    if getattr(obj, '__set__', None) is not None:
-                        d = ContextAwareDataDescriptor(obj)
-                        setattr(self, name, d)
-                        namespace[name] = d
-                    elif getattr(obj, '__get__', None) is not None:
-                        m = ContextAwareDescriptor(obj)
-                        setattr(self, name, m)
-                        namespace[name] = m
-        super(ContextAwareMetaClass, self).__init__(name, bases, namespace)
+def ContextAwareDescriptors():
+    frame = sys._getframe(1)
+    locals = frame.f_locals
 
-class ContextAware:
-    __metaclass__ = ContextAwareMetaClass
+    # Try to make sure we were called from a class def
+    if (locals is frame.f_globals) or ('__module__' not in locals):
+        raise TypeError("ContextAwareDescriptors() can be used only from a"
+                        " class definition.")
+    addClassAdvisor(_context_aware_advice, depth=2)
 
