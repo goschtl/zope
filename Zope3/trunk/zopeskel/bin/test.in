@@ -1,4 +1,4 @@
-#!<<PYTHON>>
+#!<<PYTHON>> -u
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
