@@ -2,11 +2,16 @@ After CMF 1.4.6
 
   Bug Fixes
 
-    - Use the 'portal_metadata' tool's 'getPublisher' for the DublinCore
-      'Publisher' element (thanks to Eric Brown for the patch).
+    - CMFCalendar.CalendarTool: (Lost) fix for issues 65 and 159.
+      The determination of the date/time range constituting a specific month
+      was faulty.
 
-    - Make Document render compliant XHTML when format is 'plain' (thanks to
-      Eric Brown for the patch).
+    - CMFDefault.DublinCore: Use the portal_metadata tool's 'getPublisher'
+      for the DublinCore 'Publisher' element (thanks to Eric Brown for the 
+      patch).
+
+    - CMFDefault.Document: Make Document render compliant XHTML when format
+      is 'plain' (thanks to Eric Brown for the patch).
 
 CMF 1.4.6 (2004/07/30)
 
