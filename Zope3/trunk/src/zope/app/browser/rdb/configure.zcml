@@ -51,8 +51,17 @@
 
     </view>
 
+  <!-- Menu entry for "add component" menu -->
   <menuItem
       menu="add_component"
+      for="zope.app.interfaces.container.IAdding"
+      title="Gadfly Database Adapter" 
+      action="zope.app.rdb.gadflyda.GadflyAdapter"
+      />
+
+  <!-- Menu entry for "add connection" menu -->
+  <menuItem
+      menu="add_connection"
       for="zope.app.interfaces.container.IAdding"
       title="Gadfly Database Adapter" 
       action="zope.app.rdb.gadflyda.GadflyAdapter"

@@ -30,6 +30,16 @@
          usage="addingdialog"
          />
 
+   <menu id="add_connection"
+         title="Menu of database connections to be added"
+         usage="addingdialog"
+         />
+
+   <menu id="add_cache"
+         title="Menu of database connections to be added"
+         usage="addingdialog"
+         />
+
    <menu id="add_configuration"
          title="Menu of addable configuration objects"
          usage="addingdialog"
