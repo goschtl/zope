@@ -1,0 +1,7 @@
+# This map contains only the bugtracker package.
+#
+# This package map can be addressed as
+#
+#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/bugtracker.map
+#
+bugtracker         svn://svn.zope.org/repos/main/Zope3/tags/*/src/bugtracker
