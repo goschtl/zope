@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.9 2003/05/27 14:18:23 jim Exp $
+$Id: zopepolicy.py,v 1.10 2003/06/02 16:55:47 jim Exp $
 """
-__version__='$Revision: 1.9 $'[11:-2]
+__version__='$Revision: 1.10 $'[11:-2]
 
 from zope.component import queryAdapter
 from zope.context import ContainmentIterator
@@ -38,13 +38,6 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 
 globalContext = object()
 
-
-def _computeBasePrincipalRoles(principal, object):
-    roles = tuple(principal.getRoles()) + ('Anonymous',)
-    roledict = {}
-    for role in roles:
-        roledict[role] = Allow
-    return roledict
 
 
 class ZopeSecurityPolicy:
@@ -84,7 +77,8 @@ class ZopeSecurityPolicy:
         user = context.user
         if user is system_user:
             return 1
-        roledict = _computeBasePrincipalRoles(user, object)
+
+        roledict = {'Anonymous': Allow}
         principals = {user.getId() : roledict}
 
         role_permissions = {}
@@ -230,7 +224,8 @@ class ZopeSecurityPolicy:
 
 def permissionsOfPrincipal(principal, object):
     permissions = {}
-    roles = _computeBasePrincipalRoles(principal, object)
+
+    roles = {'Anonymous': Allow}
     role_permissions = {}
     principalid = principal.getId()
 

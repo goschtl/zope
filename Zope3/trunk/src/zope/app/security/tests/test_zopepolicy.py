@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.11 2003/06/01 15:59:35 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.12 2003/06/02 16:55:49 jim Exp $
 """
 
 import unittest
@@ -61,7 +61,7 @@ class Unprotected:
     pass
 
 class Principal(PrincipalBase):
-    def getRoles(self): return ['Manager']
+    pass
 
 
 class Test(PlacefulSetup, unittest.TestCase):
@@ -185,14 +185,6 @@ class Test(PlacefulSetup, unittest.TestCase):
             self.policy.checkPermission(self.write, None, Context(self.jim)))
 
         self.__assertPermissions(self.jim, ['create', 'read', 'write'])
-
-
-    def testUserWithRoles(self):
-        jim = Principal('jim','Jim','Jim Fulton')
-        self.failUnless(
-            self.policy.checkPermission(self.write, None, Context(jim)))
-        self.__assertPermissions(jim, ['create', 'read', 'write'])
-
 
     def testPlayfulPrincipalRole(self):
         getService(None,Adapters).provideAdapter(

@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.4 2003/06/02 14:49:36 stevea Exp $
+$Id: context.py,v 1.5 2003/06/02 16:55:46 jim Exp $
 """
 
 from pickle import PicklingError
@@ -75,6 +75,8 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
 
     >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
     ['I4', 'I3', 'I1', 'I2']
+
+    $Id: context.py,v 1.5 2003/06/02 16:55:46 jim Exp $
     """
 
     def __get__(self, inst, cls):
@@ -87,7 +89,7 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
             # will return the proxied object's class.
             cls = type(inst) 
             return ObjectSpecification(provided, cls)
-
+        
 
 class Wrapper(BaseWrapper):
     """Zope-specific context wrapper
@@ -102,7 +104,7 @@ class Wrapper(BaseWrapper):
 
 
 def ContextWrapper(_ob, _parent, **kw):
-
+    
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
@@ -113,14 +115,14 @@ def ContextWrapper(_ob, _parent, **kw):
             # This would be a redundant wrapper. We'll just use the
             # one we've got.
 
-            # But we want to make sure we have the same data.
+            # But we want tp make sure we have the same data
             if kw:
                 dict = getdictcreate(wrapper)
                 dict.update(kw)
             return _ob
 
     if type(_ob) is Proxy:
-        # Insert into proxies.
+        # insert into proxies
         checker = getChecker(_ob)
         _ob = getProxiedObject(_ob)
         _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)

@@ -30,10 +30,6 @@ class IPrincipal(Interface):
     def getDescription():
         """Return a description of the principal."""
 
-    def getRoles():
-        """Return a possibly empty list of ids of roles held by this principal.
-        """
-
 
 class IUnauthenticatedPrincipal(IPrincipal):
     """A principal that hasn't been authenticated.

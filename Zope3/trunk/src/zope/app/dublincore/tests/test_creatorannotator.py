@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.2 2003/05/01 19:35:15 faassen Exp $
+$Id: test_creatorannotator.py,v 1.3 2003/06/02 16:55:47 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -69,9 +69,6 @@ class DummyPrincipal:
 
     def getDescription(self):
         return self._description
-
-    def getRoles(self):
-        return self._roles
 
 class Test(PlacefulSetup, TestCase, CleanUp):
 
