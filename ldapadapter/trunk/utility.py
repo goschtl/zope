@@ -109,9 +109,9 @@ class LDAPAdapter(object):
             if len(urlList) == 3:
                 port = int(urlList[2])
         else:
-            URLFormatError(LDAP_url_format_error)
+            LDAPURIParseError(LDAP_uri_parse_error)
         #else:
-        #    raise URLFormatError(LDAP_url_format_error)
+        #    raise LDAPURIParseError(LDAP_uri_parse_error)
          
         self.host = host
         self.port = port
