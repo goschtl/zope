@@ -108,19 +108,22 @@ class SubversionWorkingDirBase(SubversionTestBase):
 
         This does not add an entry to .svn/entries for the new file.
         """
-        self.writeFile(name, text)
+        path = self.writeFile(name, text)
         self.writeFile(os.path.join(".svn", "text-base", name + ".svn-base"),
                        text)
         self.writeFile(os.path.join(".svn", "prop-base", name + ".svn-base"),
                        "END\n")
         self.writeFile(os.path.join(".svn", "props", name + ".svn-work"),
                        "END\n")
+        return path
 
     def writeFile(self, name, text):
         """Write a file within the simulated checkout."""
-        f = open(os.path.join(self.svnworkdir, name), "w")
+        path = os.path.join(self.svnworkdir, name)
+        f = open(path, "w")
         f.write(text)
         f.close()
+        return path
 
 
 class SubversionUrlTestCase(SubversionTestBase):
@@ -234,12 +237,85 @@ class SubversionLocalhostFileUrlTestCase(SubversionFileUrlTestCase):
     HOSTPART = "localhost"
 
 
+class FromPathTestCase(SubversionWorkingDirBase):
+    """Tests of the zpkgtools.svnloader.fromPath() function."""
+
+    def test_fromPath_without_subversion_working_dir(self):
+        # remove the .svn directory to disassociate with Subversion
+        shutil.rmtree(self.svndir)
+        self.assert_(svnloader.fromPath(self.svnworkdir) is None)
+        filename = self.writeFile("file.txt", "phooey!")
+        self.assert_(svnloader.fromPath(filename) is None)
+
+    def test_fromPath_with_directory(self):
+        self.writeSvnMetafile("entries", SUBVERSION_ENTRIES_FILE)
+        svnurl = svnloader.fromPath(self.svnworkdir)
+        self.assertEqual(svnurl.tag, "HEAD")
+        self.assertEqual(svnurl.tail, "")
+        self.assertEqual(svnurl.prefix,
+                         "svn+ssh://svn.example.org/repos/main/ZConfig")
+
+    def test_fromPath_with_file(self):
+        self.writeSvnMetafile("entries", SUBVERSION_ENTRIES_FILE)
+        path = self.writeSvnUserfile("SETUP.cfg", "# yee haw!\n")
+        svnurl = svnloader.fromPath(path)
+        self.assertEqual(svnurl.tag, "HEAD")
+        self.assertEqual(svnurl.tail, "SETUP.cfg")
+        self.assertEqual(svnurl.prefix,
+                         "svn+ssh://svn.example.org/repos/main/ZConfig")
+
+    def test_fromPath_with_unregistered_directory(self):
+        # an unregistered directory should look exactly like a
+        # directory that isn't related to Subversion at all, so let's
+        # check that:
+        self.writeSvnMetafile("entries", SUBVERSION_ENTRIES_FILE)
+        path = os.path.join(self.svnworkdir, "splat")
+        os.mkdir(path)
+        self.assert_(svnloader.fromPath(path) is None)
+
+    def test_fromPath_with_unregistered_file(self):
+        self.writeSvnMetafile("entries", SUBVERSION_ENTRIES_FILE)
+        path = self.writeSvnUserfile("file.txt", "# yee haw!\n")
+        self.assert_(svnloader.fromPath(path) is None)
+
+
+# This sample of a .svn/entries file was derived from one of the test
+# repositories built while evaluating use of Subversion for the
+# zope.org codebase; the host names have been modified.
+#
+SUBVERSION_ENTRIES_FILE = '''\
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="24339"
+   name=""
+   committed-date="2004-05-05T06:57:11.458839Z"
+   url="svn+ssh://svn.example.org/repos/main/ZConfig/trunk"
+   last-author="fdrake"
+   kind="dir"
+   uuid="d01a3465-94d9-0310-b8d5-84ac064563bc"
+   revision="24339"/>
+<entry
+   committed-rev="24338"
+   name="SETUP.cfg"
+   text-time="2004-05-05T06:42:32.000000Z"
+   committed-date="2004-05-05T06:46:17.523287Z"
+   checksum="5d4b02a83e1af0e7bb5bd339a3b5cf9f"
+   last-author="fdrake"
+   kind="file"
+   prop-time="2004-05-05T06:24:05.000000Z"/>
+</wc-entries>
+'''
+
+
 def test_suite():
     suite = unittest.makeSuite(SubversionUrlTestCase)
     suite.addTest(unittest.makeSuite(SubversionSshUrlTestCase))
     suite.addTest(unittest.makeSuite(SubversionPlusSpecialUrlTestCase))
     suite.addTest(unittest.makeSuite(SubversionFileUrlTestCase))
     suite.addTest(unittest.makeSuite(SubversionLocalhostFileUrlTestCase))
+    suite.addTest(unittest.makeSuite(FromPathTestCase))
     return suite
 
 if __name__ == "__main__":

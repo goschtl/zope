@@ -22,6 +22,8 @@ import posixpath
 import sys
 import urllib
 import urlparse
+import xml.sax
+import xml.sax.handler
 
 from zpkgtools import LoadingError
 from zpkgtools import runlog
@@ -110,7 +112,7 @@ class SubversionUrl(cvsloader.UrlBase):
     """
     def __init__(self, prefix, tail, tag=None):
         self.prefix = prefix
-        self.tail = tail
+        self.tail = tail or ""
         self.tag = tag or None
 
     def getUrl(self):
@@ -185,6 +187,82 @@ def parse(url):
         return TaglessSubversionUrl(url)
     else:
         return SubversionUrl(*parts)
+
+
+def fromPath(path):
+    """Return a parsed Subversion URL from a path.
+
+    :param path: Path to a file or directory.
+
+    """
+    path = os.path.realpath(path)
+    if os.path.isdir(path):
+        dirname = path
+        basename = ""
+    elif os.path.isfile(path):
+        dirname, basename = os.path.split(path)
+    else:
+        # doesn't exist, or at least isn't a normal directory or file
+        return None
+    svndir = os.path.join(dirname, ".svn")
+    entriesfile = os.path.join(svndir, "entries")
+    try:
+        f = open(entriesfile, "rb")
+    except IOError:
+        # not under Subversion control
+        return None
+    h = EntriesHandler()
+    p = xml.sax.make_parser()
+    p.setFeature(xml.sax.handler.feature_namespaces, True)
+    p.setContentHandler(h)
+    s = xml.sax.xmlreader.InputSource(
+        "file://" + urllib.pathname2url(entriesfile))
+    s.setByteStream(f)
+    p.parse(s)
+    if basename in h.entries:
+        return parse(h.entries[basename])
+    else:
+        return None
+
+
+class EntriesHandler(xml.sax.ContentHandler):
+    """SAX ContentHandler used to extract Subversion URLs from a checkout."""
+
+    SVN_ENTRY = ("svn:", "entry")
+
+    KIND_ATTR = (None, "kind")
+    NAME_ATTR = (None, "name")
+    URL_ATTR = (None, "url")
+
+    def startDocument(self):
+        self.entries = {}
+
+    def startElementNS(self, name, qname, attrs):
+        if name == self.SVN_ENTRY:
+            fn = attrs.getValue(self.NAME_ATTR)
+            names = attrs.getNames()
+            if self.URL_ATTR in names:
+                url = attrs.getValue(self.URL_ATTR)
+            else:
+                url = None
+            if (self.KIND_ATTR in names
+                and attrs.getValue(self.KIND_ATTR) == "dir"
+                and fn):
+                fn = posixpath.join(fn, "")
+            self.entries[fn] = url
+
+    def endDocument(self):
+        base = self.entries.get("")
+        if base is None:
+            # no entry for the directory itself!
+            raise ValueError("missing URL for containing directory!")
+        # make sure the entry for the directory ends in a trailing
+        # slash so the search for the tagging convention succeeds
+        # wherever possible
+        self.entries[""] = posixpath.join(base, "")
+        for fn, url in self.entries.items():
+            if not url:
+                self.entries[fn] = posixpath.join(base, fn)
 
 
 def split_on_tag(url):
