@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.7 2002/07/14 20:00:56 faassen Exp $
+$Id: _Field.py,v 1.8 2002/07/16 23:25:58 jeremy Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -49,7 +49,9 @@ class Str(Field):
 
 class Bool(Field):
     """A field representing a Bool."""
-    type = type(not 1) 
+    # XXX Do we really expect this to be an int?
+    # The BoolTest only work if Bool corresponds to Python's int.
+    type = int
 
 class Int(Field):
     """A field representing a Integer."""
