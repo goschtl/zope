@@ -20,6 +20,67 @@ Zope Changes
     - New schema field types for vocabularies.  See
       schema/vocabularies.txt for detailed documentation.
 
+    - Added low-level support in TALES for path expressions of the form 
+      'a/b:c', which work by finding an adapter named 'b' for the
+      object named by 'a' and traversing the adapter with the name
+      'c'.
+
+      Also defined and registered an adapter named 'zope', that
+      provides a number of handy functions. For example, to gewt an
+      object's name, use::
+
+         someobject/zope:name
+
+      Many more utility functions will be added over time.
+
+      We still need a way to define other adapters. The mechanism for
+      doing so is still undecided.
+
+   - Added zope.app.zapi module that collects common application
+     functions and other objects. This is to simplify imports for
+     application code.  To get at many common objects, you can simply
+     import zapi and then access the functions through zapi::
+
+        from zope.app import zapi
+
+        ...
+
+        adapter = zapi.getAdapter(x, IFoo)
+
+   - Added a pluggable authentication service.  The service supports
+     pluggable principal sources and authentication methods (through
+     views on principal sources). 
+
+     Deprecated the simple auth service.
+
+   - Initial implementation of file-system synchronization.  This
+     allows:
+
+     * Checking out objects from Zope to files in a local directory
+
+     * Checking in Zope objects, with conflict resolution
+
+     * Exporting objects
+
+     * Importing objects
+
+     (We need docs for this.)
+
+   - Very preliminary local interface service
+
+     The interface service will someday provide a tool for browsing 
+     and modifying all of the configurtions for a interface (type).
+
+     The inistal version demostrates browsing component configurations
+     be showing you all views configured for an interface.
+
+   - WebDAV:
+
+     Added PROPFIND and MKCOL to DAV support. Also added
+     IDAVSchemaService, to allow registering an adapter to be used for
+     a given namespace on PROPFIND requests.
+
+
 
   ------------------------------------------------------------------
 
@@ -29,7 +90,6 @@ Zope Changes
     that will provide the new features of Zope 3 without any Zope 2
     support.   Zope 3.0 will provide support for Zope 2 content and
     products, probably using conversion utilities of some sort. 
-
     This release is the second Zope 3 release. The goals of
     this release are to:
 
