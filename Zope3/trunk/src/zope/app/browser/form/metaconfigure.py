@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.4 2003/08/12 12:47:55 Zen Exp $
+$Id: metaconfigure.py,v 1.5 2003/10/22 19:13:55 sidnei Exp $
 """
 
 __metaclass__ = type
@@ -115,7 +115,7 @@ class BaseWizardDirective(BaseFormDirective):
         self.panes = []
 
     def _args(self):
-        return (self.name, self.schema, self.permission, self.layer, 
+        return (self.name, self.schema, self.permission, self.layer,
                 self.panes, self.fields, self.template, self.default_template,
                 self.bases, self.for_)
 
@@ -123,7 +123,7 @@ class BaseWizardDirective(BaseFormDirective):
         for f in fields:
             if f not in self.fields:
                 raise ValueError(
-                    'Field name is not in schema', 
+                    'Field name is not in schema',
                     f, self.schema
                     )
         self.panes.append(Pane(fields, label))
@@ -217,7 +217,7 @@ class AddFormDirective(BaseFormDirective):
             )
 
 class EditFormDirective(BaseFormDirective):
-    
+
     view = EditView
     default_template = 'edit.pt'
     usage = None
@@ -257,6 +257,7 @@ class AddWizardDirective(BaseWizardDirective, AddFormDirective):
 
     view = AddWizardView
     default_template = 'addwizard.pt'
+    use_session = False
 
     def __call__(self):
         self._handle_menu()
