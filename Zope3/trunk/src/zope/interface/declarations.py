@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.8 2003/05/21 17:26:39 sidnei Exp $
+$Id: declarations.py,v 1.9 2003/05/31 22:12:17 jim Exp $
 """
 
 import sys
@@ -146,63 +146,137 @@ def oldSpecSig(cls, implements):
     return implements.__signature__
 
 # This is overridden by _zope_interface_ospec.
-class ObjectSpecificationBase:
 
-    __slots__ = ['ob']
+def combinedSpec(provides, cls):
+    if provides is not None:
+        result = [provides]
+    else:
+        result = []
 
-    def __init__(self, ob):
-        self.ob = ob
+    _gatherSpecs(cls, result)
+
+    return InterfaceSpecification(*result)
+
+class ObjectSpecification_py:
+    """Provide object specifications
+
+    These combine information for the object and for it's classes.
+
+    For example::
+
+        >>> from zope.interface import Interface
+        >>> class I1(Interface): pass
+        ...
+        >>> class I2(Interface): pass
+        ...
+        >>> class I3(Interface): pass
+        ...
+        >>> class I31(I3): pass
+        ...
+        >>> class I4(Interface): pass
+        ...
+        >>> class I5(Interface): pass
+        ...
+        >>> class A: implements(I1)
+        ...
+        >>> class B: __implements__ = I2
+        ...
+        >>> class C(A, B): implements(I31)
+        ...
+        >>> c = C()
+        >>> directlyProvides(c, I4)
+        >>> [i.__name__ for i in providedBy(c)]
+        ['I4', 'I31', 'I1', 'I2']
+        >>> [i.__name__ for i in providedBy(c).flattened()]
+        ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
+        >>> int(I1 in providedBy(c))
+        1
+        >>> int(I3 in providedBy(c))
+        0
+        >>> int(providedBy(c).extends(I3))
+        1
+        >>> int(providedBy(c).extends(I31))
+        1
+        >>> int(providedBy(c).extends(I5))
+        0
+        >>> class COnly(A, B): implementsOnly(I31)
+        ...
+        >>> class D(COnly): implements(I5)
+        ...
+        >>> c = D()
+        >>> directlyProvides(c, I4)
+        >>> [i.__name__ for i in providedBy(c)]
+        ['I4', 'I5', 'I31']
+        >>> [i.__name__ for i in providedBy(c).flattened()]
+        ['I4', 'I5', 'I31', 'I3', 'Interface']
+        >>> int(I1 in providedBy(c))
+        0
+        >>> int(I3 in providedBy(c))
+        0
+        >>> int(providedBy(c).extends(I3))
+        1
+        >>> int(providedBy(c).extends(I1))
+        0
+        >>> int(providedBy(c).extends(I31))
+        1
+        >>> int(providedBy(c).extends(I5))
+        1
+    """
+
+    __slots__ = ['provides', 'cls', '_specslot']
+
+    only = True
+
+    def __init__(self, provides, cls):
+        self.provides = provides
+        self.cls = cls
 
     def __signature__(self):
-        ob = self.ob
 
-        provides = getattr(ob, '__provides__', None)
+        provides = self.provides
         if provides is not None:
             provides = provides.__signature__
         else:
             provides = ''
+
+
         sig = ''
-
+        cls = self.cls
         try:
-            cls = ob.__class__
+            flags = cls.__flags__
         except AttributeError:
-            # If there's no class, we'll just use the instance spec
-            pass
-        else:
+            flags = heap
 
+        if flags & heap:
             try:
-                flags = cls.__flags__
+                dict = cls.__dict__
             except AttributeError:
-                flags = heap
-
-            if flags & heap:
-                try:
-                    dict = cls.__dict__
-                except AttributeError:
-                    sig = proxySig(cls)
-
-                else:
-                    # Normal case
-                    implements = dict.get('__implements__')
-                    if implements is None:
-                        # No implements spec, lets add one:
-                        classImplements(cls)
-                        implements = dict['__implements__']
-
-                    try:
-                        sig = implements.__signature__
-                    except AttributeError:
-                        # Old-style implements!  Fix it up.
-                        sig = oldSpecSig(cls, implements)
+                sig = proxySig(cls)
 
             else:
-                # Look in reg
-                implements = _implements_reg.get(cls)
+                # Normal case
+                implements = dict.get('__implements__')
                 if implements is None:
-                        # No implements spec, lets add one:
-                        classImplements(cls)
-                        implements = _implements_reg[cls]
-                sig = implements.__signature__
+                    # No implements spec, lets add one:
+                    classImplements(cls)
+                    implements = dict['__implements__']
+
+                try:
+                    sig = implements.__signature__
+                except AttributeError:
+                    # Old-style implements!  Fix it up.
+                    sig = oldSpecSig(cls, implements)
+
+        else:
+            # Look in reg
+            implements = _implements_reg.get(cls)
+            if implements is None:
+                # No implements spec, lets add one:
+                classImplements(cls)
+                implements = _implements_reg[cls]
+            sig = implements.__signature__
+
+
 
         if sig:
             if provides:
@@ -213,10 +287,112 @@ class ObjectSpecificationBase:
 
     __signature__ = property(__signature__)
 
-from _zope_interface_ospec import _implements_reg
-from _zope_interface_ospec import InterfaceSpecificationBase
-from _zope_interface_ospec import ObjectSpecificationBase
+    def _v_spec(self):
+        spec = getattr(self, '_specslot', self)
+        if spec is not self:
+            return spec
 
+        spec = combinedSpec(self.provides, self.cls)
+
+        self._specslot = spec
+
+        return spec
+
+    _v_spec = property(_v_spec)
+
+    def __contains__(self, interface):
+        return interface in self._v_spec
+
+    def __iter__(self):
+        return iter(self._v_spec)
+
+    def flattened(self):
+        return self._v_spec.flattened()
+
+    def extends(self, interface):
+        return self._v_spec.extends(interface)
+
+    def __add__(self, other):
+        return self._v_spec + other
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        return self._v_spec - other
+
+# We keep ObjectSpecification_py around for doctest. :)
+ObjectSpecification = ObjectSpecification_py
+
+def getObjectSpecification(ob):
+
+    provides = getattr(ob, '__provides__', None)
+    try:
+        cls = ob.__class__
+    except AttributeError:
+        # We can't get the class, so just consider provides
+        if provides is not None:
+            # Just use the provides spec
+            return provides
+        
+        # No interfaces
+        return _empty
+        
+    return ObjectSpecification(provides, cls)
+
+def providedBy(ob):
+
+    # Here we have either a special object, an old-style declaration
+    # or a descriptor
+
+    try:
+        r = ob.__providedBy__
+
+        # We might have gotten a descriptor from an instance of a
+        # class (like an ExtensionClass) that doesn't support
+        # descriptors.  We'll make sure we got one by trying to get
+        # the only attribute, which all specs have.
+        r.only
+
+    except AttributeError:
+        # No descriptor, so fall back to a plain object spec
+        r = getObjectSpecification(ob)
+
+    return r
+
+class ObjectSpecificationDescriptor:
+
+    def __get__(self, inst, cls):
+        """Get an object specification for an object
+
+        For example::
+
+          >>> from zope.interface import Interface
+          >>> class IFoo(Interface): pass
+          ...
+          >>> class IFooFactory(Interface): pass
+          ...
+          >>> class C:
+          ...   implements(IFoo)
+          ...   classProvides(IFooFactory)
+          >>> [i.__name__ for i in C.__providedBy__]
+          ['IFooFactory']
+          >>> [i.__name__ for i in C().__providedBy__]
+          ['IFoo']
+
+        """
+
+        # Get an ObjectSpecification bound to either an instance or a class,
+        # depending on how we were accessed.
+        
+        if inst is None:
+            return getObjectSpecification(cls)
+        else:
+            return getObjectSpecification(inst)
+
+## from _zope_interface_ospec import _implements_reg
+## from _zope_interface_ospec import InterfaceSpecificationBase
+## from _zope_interface_ospec import ObjectSpecification
+## from _zope_interface_ospec import getObjectSpecification, providedBy
+## from _zope_interface_ospec import ObjectSpecificationDescriptor
 
 class InterfaceSpecification(InterfaceSpecificationBase):
     """Create an interface specification
@@ -482,6 +658,40 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         return self.__class__(*ifaces)
 
 
+def _flattenSpecs(specs, result):
+    """Flatten a sequence of interfaces and interface specs to interfaces
+
+    >>> I1 = InterfaceClass('I1', (), {})
+    >>> I2 = InterfaceClass('I2', (), {})
+    >>> I3 = InterfaceClass('I3', (), {})
+    >>> spec = InterfaceSpecification(I1, I2)
+    >>> r = _flattenSpecs((I3, spec), [])
+    >>> int(r == [I3, I1, I2])
+    1
+
+    """
+    try:
+        # catch bad spec by seeing if we can iterate over it
+        ispecs = iter(specs)
+    except TypeError:
+        # Must be a bad spec
+        raise exceptions.BadImplements(specs)
+
+    for spec in ispecs:
+        # We do this rather than isinstance because it works w proxies classes
+        if InterfaceClass in spec.__class__.__mro__:
+            if spec not in result:
+                result.append(spec)
+        elif spec is specs:
+            # Try to avoid an infinate loop by getting a string!
+            raise TypeError("Bad interface specification", spec)
+        else:
+            _flattenSpecs(spec, result)
+
+    return result
+
+_empty = InterfaceSpecification()
+
 class ImplementsSpecification(InterfaceSpecification):
 
     _cspec = None
@@ -520,6 +730,7 @@ class ImplementsSpecification(InterfaceSpecification):
         """
 
         return InterfaceSpecification(_gatherSpecs(cls, []))
+
 
 class OnlyImplementsSpecification(ImplementsSpecification):
 
@@ -560,169 +771,7 @@ class ProvidesSpecification(InterfaceSpecification):
         raise AttributeError, '__provides__'
 
 
-class ObjectSpecificationDescriptor:
-
-    def __get__(self, inst, cls):
-        """Get an object specification for an object
-
-        For example::
-
-          >>> from zope.interface import Interface
-          >>> class IFoo(Interface): pass
-          ...
-          >>> class IFooFactory(Interface): pass
-          ...
-          >>> class C:
-          ...   implements(IFoo)
-          ...   classProvides(IFooFactory)
-          >>> [i.__name__ for i in C.__providedBy__]
-          ['IFooFactory']
-          >>> [i.__name__ for i in C().__providedBy__]
-          ['IFoo']
-
-        """
-
-        # Get an ObjectSpecification bound to either an instance or a class,
-        # depending on how we were accessed.
-        if inst is None:
-            return ObjectSpecification(cls)
-        else:
-            return ObjectSpecification(inst)
-
 _objectSpecificationDescriptor = ObjectSpecificationDescriptor()
-
-class ObjectSpecification(ObjectSpecificationBase):
-    """Provide object specifications
-
-    These combine information for the object and for it's classes.
-
-    For example::
-
-        >>> from zope.interface import Interface
-        >>> class I1(Interface): pass
-        ...
-        >>> class I2(Interface): pass
-        ...
-        >>> class I3(Interface): pass
-        ...
-        >>> class I31(I3): pass
-        ...
-        >>> class I4(Interface): pass
-        ...
-        >>> class I5(Interface): pass
-        ...
-        >>> class A: implements(I1)
-        ...
-        >>> class B: __implements__ = I2
-        ...
-        >>> class C(A, B): implements(I31)
-        ...
-        >>> c = C()
-        >>> directlyProvides(c, I4)
-        >>> [i.__name__ for i in providedBy(c)]
-        ['I4', 'I31', 'I1', 'I2']
-        >>> [i.__name__ for i in providedBy(c).flattened()]
-        ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
-        >>> int(I1 in providedBy(c))
-        1
-        >>> int(I3 in providedBy(c))
-        0
-        >>> int(providedBy(c).extends(I3))
-        1
-        >>> int(providedBy(c).extends(I31))
-        1
-        >>> int(providedBy(c).extends(I5))
-        0
-        >>> class COnly(A, B): implementsOnly(I31)
-        ...
-        >>> class D(COnly): implements(I5)
-        ...
-        >>> c = D()
-        >>> directlyProvides(c, I4)
-        >>> [i.__name__ for i in providedBy(c)]
-        ['I4', 'I5', 'I31']
-        >>> [i.__name__ for i in providedBy(c).flattened()]
-        ['I4', 'I5', 'I31', 'I3', 'Interface']
-        >>> int(I1 in providedBy(c))
-        0
-        >>> int(I3 in providedBy(c))
-        0
-        >>> int(providedBy(c).extends(I3))
-        1
-        >>> int(providedBy(c).extends(I1))
-        0
-        >>> int(providedBy(c).extends(I31))
-        1
-        >>> int(providedBy(c).extends(I5))
-        1
-    """
-
-    __slots__ = ['_specslot']
-    only = True
-
-    def _v_spec(self):
-        spec = getattr(self, '_specslot', self)
-        if spec is not self:
-            return spec
-
-        ob = self.ob
-        provides = getattr(ob, '__provides__', None)
-        if provides is not None:
-            result = [provides]
-        else:
-            result = []
-
-        try:
-            cls = ob.__class__
-        except AttributeError:
-            pass
-        else:
-            _gatherSpecs(cls, result)
-
-        self._specslot = spec = InterfaceSpecification(*result)
-
-        return spec
-
-    _v_spec = property(_v_spec)
-
-    def __contains__(self, interface):
-        return interface in self._v_spec
-
-    def __iter__(self):
-        return iter(self._v_spec)
-
-    def flattened(self):
-        return self._v_spec.flattened()
-
-    def extends(self, interface):
-        return self._v_spec.extends(interface)
-
-    def __add__(self, other):
-        return self._v_spec + other
-    __radd__ = __add__
-
-    def __sub__(self, other):
-        return self._v_spec - other
-
-def providedBy(ob):
-
-    # Here we have either a special object, an old-style declaration
-    # or a descriptor
-
-    try:
-        r = ob.__providedBy__
-
-        # We might have gotten a descriptor from an instance of a
-        # class (like an ExtensionClass) that doesn't support
-        # descriptors.  We'll make sure we got one by trying to get
-        # the only attribute, which all specs have.
-        r.only
-
-    except AttributeError:
-        # No descriptor, so fall back to a plain object spec
-        r = ObjectSpecification(ob)
-
-    return r
 
 def classImplementsOnly(cls, *interfaces):
     """Declare the only interfaces implemented by instances of a class
@@ -1202,48 +1251,65 @@ def _getImplements(cls):
 
     return d.get(k)
 
+def _finddescr(cls):
+    # Try to find the __providedBy__ descriptor. If we can't find it,
+    # just return the class. 
+    
+    d = cls.__dict__.get("__providedBy__", cls)
+    if d is not cls:
+        return d
+    for b in cls.__bases__:
+        d = _finddescr(b)
+        if d is not cls:
+            return d
+
+    return cls
+
 def _setImplements(cls, v):
     flags = getattr(cls, '__flags__', heap)
 
     if flags & heap:
         cls.__implements__ = v
-        cls.__providedBy__ = _objectSpecificationDescriptor
+
+        # Add a __providedBy__ descriptor if there isn't already one.
+        # If there is one and it's not in the dict, then make a copy
+        # here.
+
+        try:
+            cls.__providedBy__
+        except AttributeError:
+            # No existing descriptor, add one
+            cls.__providedBy__ = _objectSpecificationDescriptor
+        else:
+            # Hm, the class already has a descriptor, let's get it and
+            # see if it's the right kind.
+            try:
+                mro = cls.__mro__
+            except AttributeError:
+                pb = _finddescr(cls)
+                if pb is cls:
+                    pb = None
+            else:
+                for c in mro:
+                    pb = c.__dict__.get("__providedBy__", c)
+                    if pb is not c:
+                        break
+                else: # no break
+                    pb = None
+                    
+            if not isinstance(pb, ObjectSpecificationDescriptor):
+                raise TypeError(
+                    cls,
+                    "has a __providedBy__ descriptor of the wrong type",
+                    pb)
+
+            if "__providedBy__" not in cls.__dict__:
+                cls.__providedBy__ = pb
+
     else:
         _implements_reg[cls] = v
 
     v.setClass(cls)
-
-def _flattenSpecs(specs, result):
-    """Flatten a sequence of interfaces and interface specs to interfaces
-
-    >>> I1 = InterfaceClass('I1', (), {})
-    >>> I2 = InterfaceClass('I2', (), {})
-    >>> I3 = InterfaceClass('I3', (), {})
-    >>> spec = InterfaceSpecification(I1, I2)
-    >>> r = _flattenSpecs((I3, spec), [])
-    >>> int(r == [I3, I1, I2])
-    1
-
-    """
-    try:
-        # catch bad spec by seeing if we can iterate over it
-        ispecs = iter(specs)
-    except TypeError:
-        # Must be a bad spec
-        raise exceptions.BadImplements(specs)
-
-    for spec in ispecs:
-        # We do this rather than isinstance because it works w proxies classes
-        if InterfaceClass in spec.__class__.__mro__:
-            if spec not in result:
-                result.append(spec)
-        elif spec is specs:
-            # Try to avoid an infinate loop by getting a string!
-            raise TypeError("Bad interface specification", spec)
-        else:
-            _flattenSpecs(spec, result)
-
-    return result
 
 def _getmro(C, r):
   if C not in r: r.append(C)
@@ -1310,8 +1376,6 @@ def _gatherSpecs(cls, result):
         _gatherSpecs(b, result)
 
     return result
-
-_empty = InterfaceSpecification()
 
 
 # DocTest:

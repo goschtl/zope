@@ -17,8 +17,10 @@
 #include "structmember.h"
 
 static PyObject *str___provides__, *str___implements__, *str___class__;
-static PyObject *str___dict__, *str___signature__;
+static PyObject *str___dict__, *str___signature__, *str_flattened;
 static PyObject *_implements_reg, *classImplements, *proxySig, *oldSpecSig;
+static PyObject *combinedSpec, *str_extends, *declarations;
+static PyObject *str___providedBy__, *str_only;
 
 #define TYPE(O) ((PyTypeObject*)(O))
 #define OBJECT(O) ((PyObject*)(O))
@@ -67,7 +69,9 @@ static PyTypeObject ISBType = {
         /* tp_getattro       */ (getattrofunc)0,
         /* tp_setattro       */ (setattrofunc)0,
         /* tp_as_buffer      */ 0,
-        /* tp_flags          */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+        /* tp_flags          */ Py_TPFLAGS_DEFAULT 
+                                | Py_TPFLAGS_BASETYPE
+                                ,
 	/* tp_doc            */ ISBtype__doc__,
         /* tp_traverse       */ (traverseproc)0,
         /* tp_clear          */ (inquiry)0,
@@ -90,42 +94,58 @@ static PyTypeObject ISBType = {
 
 typedef struct {
   PyObject_HEAD
-  PyObject *ob;
+  PyObject *provides;
+  PyObject *cls;
+  PyObject *spec;
 } OSpec;
+
+static PyTypeObject OSpecType;
 
 static int
 OSpec_init(OSpec *self, PyObject *args, PyObject *kwds)
 {
-	static char *kwlist[] = {"ob", NULL};
-        PyObject *ob;
+	static char *kwlist[] = {"provides", "cls", NULL};
+        PyObject *provides, *cls;
 
-        if (! PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, 
-                                          &ob))
-        	return 0; 
+        if (! PyArg_ParseTupleAndKeywords(args, kwds, "OO", kwlist, 
+                                          &provides, &cls))
+        	return -1; 
 
-        Py_INCREF(ob);
-        self->ob = ob;
+        Py_INCREF(provides);
+        self->provides = provides;
+        Py_INCREF(cls);
+        self->cls = cls;
 
         return 0;
+}
+
+static int
+OSpec_traverse(OSpec *self, visitproc visit, void *arg)
+{
+  if (self->provides != Py_None && visit(self->provides, arg) < 0)
+    return -1;
+  if (visit(self->cls, arg) < 0)
+    return -1;
+  if (self->spec && visit(self->spec, arg) < 0)
+    return -1;
+  return 0;
+}
+
+static int
+OSpec_clear(OSpec *self)
+{
+  Py_XDECREF(self->provides);
+  Py_XDECREF(self->cls);
+  Py_XDECREF(self->spec);
+  return 0;
 }
 
 static void
 OSpec_dealloc(OSpec *self)
 {
-  Py_XDECREF(self->ob);
+  PyObject_GC_UnTrack((PyObject *) self);
+  OSpec_clear(self);
   self->ob_type->tp_free((PyObject*)self);
-}
-
-static PyObject *
-OSpec_getob(OSpec *self, void *closure)
-{
-  if (self->ob == NULL) {
-    PyErr_SetString(PyExc_AttributeError, "No ob attribute set");
-    return NULL;
-  }
-
-  Py_INCREF(self->ob);
-  return self->ob;
 }
 
 static PyObject *
@@ -167,31 +187,17 @@ OSpec_getsig(OSpec *self, void *closure)
 {
   PyObject *provides, *psig=0, *cls, *key, *dict, *implements, *sig=0, *result;
 
-  if (self->ob == NULL) {
-    PyErr_SetString(PyExc_AttributeError, "No ob attribute set");
-    return NULL;
-  }
-
-  provides = PyObject_GetAttr(self->ob, str___provides__);
-  if (provides == NULL)
-    PyErr_Clear();
-  else 
+  provides = self->provides;
+  if (provides != Py_None)
     {
       psig = getsig(provides, NULL);
-      Py_DECREF(provides);
       if (psig == NULL)
         return NULL;
     }
 
   /* Own: psig */
 
-  /* Whimper. We have to do a getattr, because ob may be a proxy */
-  cls = PyObject_GetAttr(self->ob, str___class__);
-  if (cls == NULL)
-    {
-      PyErr_Clear();
-      goto done;
-    }
+  cls = self->cls;
 
   /* Own: psig, cls */
 
@@ -220,7 +226,7 @@ OSpec_getsig(OSpec *self, void *closure)
   else
     dict = PyObject_GetAttr(cls, str___dict__);
 
-  /* Own: psig, cls, dict */
+  /* Own: psig, dict */
 
   if (dict == NULL)
     {
@@ -254,9 +260,6 @@ OSpec_getsig(OSpec *self, void *closure)
       Py_DECREF(dict);
     }
 
-  Py_DECREF(cls);
-
-
   /* Own: psig */
 
 
@@ -266,7 +269,6 @@ OSpec_getsig(OSpec *self, void *closure)
       return NULL;
     }
 
- done:
   if (sig == Py_None && psig != NULL)
     {
       /* We have a provided sig, but the class sig was None, so make class
@@ -301,10 +303,6 @@ OSpec_getsig(OSpec *self, void *closure)
 }    
 
 static PyGetSetDef OSpec_getset[] = {
-    {"ob", 
-     (getter)OSpec_getob, (setter)0,
-     "Subject of the object specification",
-     NULL},
     {"__signature__", 
      (getter)OSpec_getsig, (setter)0,
      "Specification signature",
@@ -312,7 +310,133 @@ static PyGetSetDef OSpec_getset[] = {
     {NULL}  /* Sentinel */
 };
 
+static PyObject *
+getspec(OSpec *self)
+{
+  if (self->spec == NULL)
+    self->spec = PyObject_CallFunctionObjArgs(combinedSpec, 
+                                              self->provides, self->cls,
+                                              NULL);
+  return self->spec;
+}
 
+static PyObject *
+OSpec_add(PyObject *v, PyObject *w)
+{
+  if (PyObject_TypeCheck(v, &OSpecType))
+    {
+      v = getspec((OSpec*)v);
+      if (v == NULL) 
+        return NULL;
+    }
+  else if (PyObject_TypeCheck(w, &OSpecType))
+    {
+      w = getspec((OSpec*)w);
+      if (w == NULL) 
+        return NULL;
+    }
+  else
+    {
+      PyErr_SetString(PyExc_TypeError, "Invalid types for add");
+    }
+
+  return PyNumber_Add(v, w);
+}
+
+static PyObject *
+OSpec_sub(PyObject *v, PyObject *w)
+{
+  if (PyObject_TypeCheck(v, &OSpecType))
+    {
+      v = getspec((OSpec*)v);
+      if (v == NULL) 
+        return NULL;
+    }
+  else if (PyObject_TypeCheck(w, &OSpecType))
+    {
+      w = getspec((OSpec*)w);
+      if (w == NULL) 
+        return NULL;
+    }
+  else
+    {
+      PyErr_SetString(PyExc_TypeError, "Invalid types for subtract");
+    }
+
+  return PyNumber_Subtract(v, w);
+}
+
+static PyNumberMethods OSpec_as_number = {
+    /* nb_add                  */ (binaryfunc)OSpec_add,
+    /* nb_subtract             */ (binaryfunc)OSpec_sub,
+};
+
+static int
+OSpec_contains(OSpec *self, PyObject *v)
+{
+  PyObject *spec;
+
+  spec = getspec(self);
+  if (spec == NULL)
+    return -1;
+
+  return PySequence_In(spec, v);
+}
+
+
+static PySequenceMethods OSpec_as_sequence = {
+	/* sq_length         */ 0,
+	/* sq_concat         */ 0,
+	/* sq_repeat         */ 0,
+	/* sq_item           */ 0,
+	/* sq_slice          */ 0,
+	/* sq_ass_item       */ 0,
+	/* sq_ass_slice      */ 0,
+	/* sq_contains       */ (objobjproc)OSpec_contains,
+};
+
+static PyObject *
+OSpec_iter(OSpec *self)
+{
+  PyObject *spec;
+
+  spec = getspec(self);
+  if (spec == NULL)
+    return NULL;
+
+  return PyObject_GetIter(spec);
+}
+
+static PyObject *
+OSpec_flattened(OSpec *self)
+{
+  PyObject *spec;
+
+  spec = getspec(self);
+  if (spec == NULL)
+    return NULL;
+
+  return PyObject_CallMethodObjArgs(spec, str_flattened, NULL);
+}
+
+static PyObject *
+OSpec_extends(OSpec *self, PyObject *other)
+{
+  PyObject *spec;
+
+  spec = getspec(self);
+  if (spec == NULL)
+    return NULL;
+
+  return PyObject_CallMethodObjArgs(spec, str_extends, other, NULL);
+}
+
+
+static struct PyMethodDef OSpec_methods[] = {
+	{"flattened",	(PyCFunction)OSpec_flattened,	METH_NOARGS, ""},
+	{"extends",	(PyCFunction)OSpec_extends,	METH_O, ""},
+	{NULL,		NULL}		/* sentinel */
+};
 
 
 static char OSpecType__doc__[] = 
@@ -323,7 +447,7 @@ static PyTypeObject OSpecType = {
 	PyObject_HEAD_INIT(NULL)
 	/* ob_size           */ 0,
 	/* tp_name           */ "zope.interface._zope_interface_ospec."
-                                "ObjectSpecificationBase",
+                                "ObjectSpecification",
 	/* tp_basicsize      */ sizeof(OSpec),
 	/* tp_itemsize       */ 0,
 	/* tp_dealloc        */ (destructor)OSpec_dealloc,
@@ -332,8 +456,8 @@ static PyTypeObject OSpecType = {
 	/* tp_setattr        */ (setattrfunc)0,
 	/* tp_compare        */ (cmpfunc)0,
 	/* tp_repr           */ (reprfunc)0,
-	/* tp_as_number      */ 0,
-	/* tp_as_sequence    */ 0,
+	/* tp_as_number      */ &OSpec_as_number,
+	/* tp_as_sequence    */ &OSpec_as_sequence,
 	/* tp_as_mapping     */ 0,
 	/* tp_hash           */ (hashfunc)0,
 	/* tp_call           */ (ternaryfunc)0,
@@ -341,15 +465,19 @@ static PyTypeObject OSpecType = {
         /* tp_getattro       */ (getattrofunc)0,
         /* tp_setattro       */ (setattrofunc)0,
         /* tp_as_buffer      */ 0,
-        /* tp_flags          */ Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+        /* tp_flags          */ Py_TPFLAGS_DEFAULT
+                                | Py_TPFLAGS_BASETYPE
+                                | Py_TPFLAGS_CHECKTYPES
+                                | Py_TPFLAGS_HAVE_GC
+                                ,
 	/* tp_doc            */ OSpecType__doc__,
-        /* tp_traverse       */ (traverseproc)0,
-        /* tp_clear          */ (inquiry)0,
+        /* tp_traverse       */ (traverseproc)OSpec_traverse,
+        /* tp_clear          */ (inquiry)OSpec_clear,
         /* tp_richcompare    */ (richcmpfunc)0,
         /* tp_weaklistoffset */ (long)0,
-        /* tp_iter           */ (getiterfunc)0,
+        /* tp_iter           */ (getiterfunc)OSpec_iter,
         /* tp_iternext       */ (iternextfunc)0,
-        /* tp_methods        */ 0,
+        /* tp_methods        */ OSpec_methods,
         /* tp_members        */ 0,
         /* tp_getset         */ OSpec_getset,
         /* tp_base           */ 0,
@@ -362,16 +490,119 @@ static PyTypeObject OSpecType = {
         /* tp_new            */ (newfunc)0 /*PyType_GenericNew*/,
 };
 
-/* List of methods defined in the module */
+static PyObject *
+getObjectSpecification(PyObject *ignored, PyObject *ob)
+{
+  PyObject *provides, *cls, *result;
+  static PyObject *empty = NULL;
+
+  provides = PyObject_GetAttr(ob, str___provides__);
+  if (provides == NULL)
+    PyErr_Clear();
+
+  cls = PyObject_GetAttr(ob, str___class__);
+  if (cls == NULL)
+    {
+      PyErr_Clear();
+      if (provides == NULL)
+        {
+          if (empty == NULL)
+            {
+              empty = PyObject_GetAttrString(declarations, "_empty");
+              if (empty == NULL)
+                return NULL;
+            }
+          Py_INCREF(empty);
+          return empty;
+        }
+      return provides;
+    }
+
+  if (provides == NULL)
+    {
+      Py_INCREF(Py_None);
+      provides = Py_None;
+    }
+  
+  result = PyObject_CallFunctionObjArgs(OBJECT(&OSpecType), provides, cls, 
+                                        NULL);
+  Py_DECREF(provides);
+  Py_DECREF(cls);
+
+  return result;
+}
+
+static PyObject *
+providedBy(PyObject *ignored, PyObject *ob)
+{
+  PyObject *result;
+  
+  result = PyObject_GetAttr(ob, str___providedBy__);
+  if (result != NULL)
+    {
+      /* We want to make sure we have a spec. We can't do a type check
+         because we may have a proxy, so we'll just try to get the
+         only attribute.
+      */
+      ignored = PyObject_GetAttr(result, str_only);
+      if (ignored == NULL)
+        PyErr_Clear();
+      else
+        {
+          Py_DECREF(ignored);
+          return result;
+        }
+    }
+
+  PyErr_Clear();
+
+  return getObjectSpecification(NULL, ob);
+}
+
+typedef struct {
+  PyObject_HEAD
+} OSpecDescr;
+
+static PyObject *
+OSpecDescr_descr_get(PyObject *self, PyObject *inst, PyObject *cls)
+{
+  if (inst == NULL)
+    inst = cls;
+
+  return getObjectSpecification(NULL, inst);
+}
+
+static PyTypeObject OSpecDescrType = {
+	PyObject_HEAD_INIT(NULL)
+	/* ob_size           */ 0,
+	/* tp_name           */ "zope.interface._zope_interface_ospec."
+                                "ObjectSpecificationDescriptor",
+	/* tp_basicsize      */ sizeof(OSpecDescr),
+	
+        /* tp_itemsize to tp_as_buffer */ 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+        /* tp_flags          */ Py_TPFLAGS_DEFAULT
+				| Py_TPFLAGS_BASETYPE ,
+	/* tp_doc            */ "ObjectSpecification descriptor",
+        
+        /* tp_traverse to tp_dict */
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+        /* tp_descr_get      */ (descrgetfunc)OSpecDescr_descr_get,
+};
 
 static struct PyMethodDef module_methods[] = {
-
+	{"getObjectSpecification",  (PyCFunction)getObjectSpecification,
+         METH_O, "internal function to compute an object spec"},
+	{"providedBy",  (PyCFunction)providedBy, METH_O, 
+         "Return a specification for the interfaces of an object"},
 	{NULL,	 (PyCFunction)NULL, 0, NULL}		/* sentinel */
 };
 
 
 static char _zope_interface_ospec_module_documentation[] = 
-""
+"C implementation of parts of zope.interface.declarations"
 ;
 
 #ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
@@ -381,13 +612,17 @@ PyMODINIT_FUNC
 init_zope_interface_ospec(void)
 {
   PyObject *module;
-  
+
   str___implements__ = PyString_FromString("__implements__");
   if (str___implements__ == NULL)
     return;
   
   str___provides__ = PyString_FromString("__provides__");
   if (str___provides__ == NULL)
+    return;
+  
+  str___providedBy__ = PyString_FromString("__providedBy__");
+  if (str___providedBy__ == NULL)
     return;
   
   str___class__ = PyString_FromString("__class__");
@@ -402,35 +637,62 @@ init_zope_interface_ospec(void)
   if (str___signature__ == NULL)
     return;
   
+  str_flattened = PyString_FromString("flattened");
+  if (str_flattened == NULL)
+    return;
+  
+  str_extends = PyString_FromString("extends");
+  if (str_extends == NULL)
+    return;
+  
+  str_only = PyString_FromString("only");
+  if (str_only == NULL)
+    return;
+  
   _implements_reg = PyDict_New();
   if (_implements_reg == NULL)
     return;
 
-  module = PyImport_ImportModule("zope.interface.declarations");
-  if (module == NULL) 
+  declarations = PyImport_ImportModule("zope.interface.declarations");
+  if (declarations == NULL) 
     return;
 
-  classImplements = PyObject_GetAttrString(module, "classImplements");
+  classImplements = PyObject_GetAttrString(declarations, "classImplements");
   if (classImplements == NULL)
     return;
 
-  proxySig = PyObject_GetAttrString(module, "proxySig");
+  proxySig = PyObject_GetAttrString(declarations, "proxySig");
   if (proxySig == NULL)
     return;
 
-  oldSpecSig = PyObject_GetAttrString(module, "oldSpecSig");
+  oldSpecSig = PyObject_GetAttrString(declarations, "oldSpecSig");
   if (oldSpecSig == NULL)
     return;
 
-  Py_DECREF(module);
+  combinedSpec = PyObject_GetAttrString(declarations, "combinedSpec");
+  if (combinedSpec == NULL)
+    return;
  
-  OSpecType.tp_new = PyType_GenericNew;
-  ISBType.tp_new = PyType_GenericNew;
   
   /* Initialize types: */  
+
+  ISBType.tp_new = PyType_GenericNew;
   if (PyType_Ready(&ISBType) < 0)
     return;
+
+
+  OSpecType.tp_new = PyType_GenericNew;
+  OSpecType.tp_free = _PyObject_GC_Del;
   if (PyType_Ready(&OSpecType) < 0)
+    return;
+  if (OSpecType.tp_dict && 
+      PyMapping_SetItemString(OSpecType.tp_dict, "only", Py_True) < 0
+      )
+    return;
+
+ 
+  OSpecDescrType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&OSpecDescrType) < 0)
     return;
 
 
@@ -445,8 +707,11 @@ init_zope_interface_ospec(void)
   if (PyModule_AddObject(module, "InterfaceSpecificationBase", 
                          (PyObject *)&ISBType) < 0)
     return;
-  if (PyModule_AddObject(module, "ObjectSpecificationBase", 
+  if (PyModule_AddObject(module, "ObjectSpecification", 
                          (PyObject *)&OSpecType) < 0)
+    return;
+  if (PyModule_AddObject(module, "ObjectSpecificationDescriptor", 
+                         (PyObject *)&OSpecDescrType) < 0)
     return;
   if (PyModule_AddObject(module, "_implements_reg", _implements_reg) < 0)
     return;
