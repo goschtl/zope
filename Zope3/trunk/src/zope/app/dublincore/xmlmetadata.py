@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: xmlmetadata.py,v 1.4 2003/08/28 23:27:32 fdrake Exp $
+$Id: xmlmetadata.py,v 1.5 2003/09/05 18:34:15 fdrake Exp $
 """
 
 import xml.sax
@@ -209,7 +209,12 @@ class DublinCoreHandler(PrefixManager, xml.sax.handler.ContentHandler):
             if type not in dcterms.encodings:
                 raise ValueError("unknown data type: %r" % type)
             allowed_in, validator = dcterms.encodings[type]
-            if dcelem not in allowed_in:
+            dcelem_split = dcelem.split(".")
+            for elem in allowed_in:
+                elem_split = elem.split(".")
+                if dcelem_split[:len(elem_split)] == elem_split:
+                    break
+            else:
                 raise ValueError("%s values are not allowed for %r"
                                  % (type, dcelem))
             dcelem = "%s.%s" % (dcelem, type)
