@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.6 2002/12/09 16:09:18 jim Exp $
+$Id: Utility.py,v 1.7 2002/12/11 13:57:31 jim Exp $
 """
 __metaclass__ = type
 
@@ -41,7 +41,8 @@ from Zope.App.Forms.Exceptions import WidgetsError, MissingInputError
 from Zope.ComponentArchitecture.IView import IViewFactory
 
 
-def setUpWidget(view, name, field, value=None, prefix=None, force=0, vname=None):
+def setUpWidget(view, name, field, value=None, prefix=None,
+                force=0, vname=None):
     """Set up a single view widget
 
     The widget will be an attribute of the view. If there is already
@@ -98,20 +99,21 @@ def fieldNames(schema):
 
     return [name[1] for name in names]
 
-def setUpWidgets(view, schema, prefix=None, force=0, **kw):
+def setUpWidgets(view, schema, prefix=None, force=0,
+                 initial={}, names=None):
     """Set up widgets for the fields defined by a schema
 
-    Initial data is provided by keyword arguments.
     """
-    
-    for name in schema:
+
+    for name in (names or schema):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
-            setUpWidget(view, name, field, kw.get(name),
+            setUpWidget(view, name, field, initial.get(name),
                         prefix=prefix, force=force)
 
-def setUpEditWidgets(view, schema, content=None, prefix=None, force=0):
+def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
+                     names=None):
     """Set up widgets for the fields defined by a schema
 
     Initial data is provided by content object attributes.
@@ -121,7 +123,7 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0):
     if content is None:
         content = view.context
 
-    for name in schema:
+    for name in (names or schema):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
@@ -133,7 +135,7 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0):
             setUpWidget(view, name, field, getattr(content, name, None),
                         prefix = prefix, force = force, vname = vname)
 
-def haveWidgetsData(view, schema):
+def haveWidgetsData(view, schema, names=None):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -142,7 +144,7 @@ def haveWidgetsData(view, schema):
     The data are returned in a mapping from field name to value.
     """
 
-    for name in schema:
+    for name in (names or schema):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
@@ -151,7 +153,7 @@ def haveWidgetsData(view, schema):
 
     return False
 
-def getWidgetsData(view, schema, required=1):
+def getWidgetsData(view, schema, required=1, names=None):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -167,7 +169,7 @@ def getWidgetsData(view, schema, required=1):
     result = {}
     errors = []
 
-    for name in schema:
+    for name in (names or schema):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
@@ -186,7 +188,8 @@ def getWidgetsData(view, schema, required=1):
     
     return result
 
-def getWidgetsDataForContent(view, schema, content=None, required=0):
+def getWidgetsDataForContent(view, schema, content=None, required=0,
+                             names=None):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -199,7 +202,7 @@ def getWidgetsDataForContent(view, schema, content=None, required=0):
     input, an error will be raised.
     """
     
-    data = getWidgetsData(view, schema, required)
+    data = getWidgetsData(view, schema, required, names)
     
     if content is None:
         content = view.context
