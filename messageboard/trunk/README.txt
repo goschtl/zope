@@ -35,6 +35,6 @@ Step 13: Integrating Smiley Service
 
 IMPORTANT: Please do not edit any of the steps (except adding comments)
            unless you are willing to make the correct modifications in the
-           corresponding recipe as well!
+           corresponding Zope 3 Book chapter as well!
 
 Feel free to send comments to srichter@cosmos.phy.tufts.edu.
