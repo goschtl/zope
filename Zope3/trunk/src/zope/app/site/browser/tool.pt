@@ -1,0 +1,94 @@
+<html metal:use-macro="views/standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+
+  <h2 tal:content="view/title" i18n:translate="">
+    IInterface Tools
+  </h2>
+
+  <p tal:content="view/description" i18n:translate="">
+    Some description here.
+  </p>
+
+  <div tal:define="message view/update;
+                   registries view/getComponents">
+
+    
+    <p tal:condition="not:registries" i18n:translate="">
+      No tools are registered.
+    </p>
+    
+    <div tal:condition="registries">
+      <p i18n:translate="">
+         Unless a tool is disabled the tool name links to the
+         active tool. ...
+      </p>
+    
+      <form method="POST" action=".">
+    
+        <table width="100%">
+          <tr>
+            <th width="5%"> </th>
+            <th width="35%">Name</th>
+            <th width="20%">Registration</th>
+            <th width="40%">Parent</th>
+          </tr>
+          <tr tal:repeat="reg registries">
+            <td>
+              <input type="checkbox"
+                  name="selected:list" tal:attributes="value reg/name" />
+            </td>
+            <td>
+             <a href=""
+                tal:attributes= "href reg/url"
+                tal:content="reg/name">
+               Foobar (the tool)
+             </a>
+            </td>
+            <td>
+             <tal:block>
+              <a href="" 
+                 tal:attributes="href string:${reg/url}/@@registration.html"
+                 tal:condition="reg/active" i18n:translate="">
+                active
+              </a>
+              <a href="" 
+                 tal:attributes="href string:${reg/url}/@@registration.html"
+                 tal:condition="not: reg/active" i18n:translate="">
+                disabled
+              </a>
+             </tal:block>
+            </td>
+            <td>
+             <a href=""
+                tal:condition="reg/parent_url"
+                tal:attributes= "href reg/parent_url"
+                tal:content="reg/parent_name">
+               Foobar (the tool)
+             </a>
+            </td>
+          </tr>
+        </table>
+
+        <input type="submit" name="Activate" value="Activate" 
+               i18n:attributes="value activate-button"/>
+        <input type="submit" name="Deactivate" value="Deactivate"
+               i18n:attributes="value deactivate-button"/>
+        &nbsp;
+        <input type="submit" name="Add" value="Add"
+               i18n:attributes="value add-button"/>
+         &nbsp;
+        <input type="submit" name="Delete" value="Delete"
+               i18n:attributes="value delete-button"/>
+        &nbsp;
+        <input type="submit" name="Refresh" value="Refresh"
+               i18n:attributes="value refresh-button"/>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
