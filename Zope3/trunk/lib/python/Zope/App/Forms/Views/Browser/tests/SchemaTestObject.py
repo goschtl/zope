@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.9 2002/09/07 16:18:48 jim Exp $
+$Id: SchemaTestObject.py,v 1.10 2002/09/11 22:08:34 jim Exp $
 """
 from Interface import Interface
 import Zope.Schema
@@ -47,21 +47,21 @@ class ITestObject(Interface):
     """A simple Schema."""
 
     id = Zope.Schema.Int(
-        title="Id",
+        title=u"Id",
         required=1)
     
     title = Zope.Schema.Bytes(
-        title="Title",
+        title=u"Title",
         required=0)
     
     data = Zope.Schema.Bytes(
-        title="Data",
-        description="Data stored by the object",
+        title=u"Data",
+        description=u"Data stored by the object",
         required=0)
     
     creator = Email(
-        title="Creator",
-        description="Email of the creator of the content object",
+        title=u"Creator",
+        description=u"Email of the creator of the content object",
         default="foo@bar.com",
         required=1)
     

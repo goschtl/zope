@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.8 2002/09/07 16:18:50 jim Exp $
+$Id: ZPTPage.py,v 1.9 2002/09/11 22:08:35 jim Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -43,8 +43,8 @@ class IZPTPage(Interface):
         """Get the source of the page template."""
 
     source = Zope.Schema.Text(
-        title="Source",
-        description="""The source of the page template.""",
+        title=u"Source",
+        description=u"""The source of the page template.""",
         required=1)
     
 

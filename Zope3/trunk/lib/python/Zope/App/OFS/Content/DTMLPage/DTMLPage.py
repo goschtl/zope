@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: DTMLPage.py,v 1.6 2002/09/07 16:18:49 jim Exp $
+$Id: DTMLPage.py,v 1.7 2002/09/11 22:08:34 jim Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -39,8 +39,8 @@ class IDTMLPage(Interface):
         """Get the source of the page template."""
 
     source = Zope.Schema.Bytes(
-        title="Source",
-        description="""The source od the page template.""",
+        title=u"Source",
+        description=u"""The source od the page template.""",
         required=1)
 
 

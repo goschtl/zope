@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IFile.py,v 1.6 2002/09/07 16:18:49 jim Exp $
+$Id: IFile.py,v 1.7 2002/09/11 22:08:35 jim Exp $
 """
 
 from Interface import Interface
@@ -23,15 +23,15 @@ import Zope.Schema
 class IReadFile(IFileContent):
     
     contentType = Zope.Schema.Bytes(
-        title = 'Content Type',
-        description = 'The content type identifies the type of data.',
+        title = u'Content Type',
+        description=u'The content type identifies the type of data.',
         default = 'text/plain',
         )
 
 
     data = Zope.Schema.Bytes(
-        title = 'Data',
-        description = 'The actual content of the object.',
+        title = u'Data',
+        description = u'The actual content of the object.',
         )
 
     def getData():
