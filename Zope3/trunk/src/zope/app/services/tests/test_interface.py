@@ -59,10 +59,6 @@ class PersistentInterfaceTest(unittest.TestCase):
         self.registry.newModule("imodule", code)
         get_transaction().commit()
         imodule = self.registry.findModule("imodule")
-        print imodule.aFoo
-        print imodule.aFoo.__implements__
-        print imodule.IFoo
-        print imodule.IFoo.isImplementedBy(imodule.aFoo)
         self.assert_(imodule.IFoo.isImplementedBy(imodule.aFoo))
         
 
