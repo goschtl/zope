@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.10 2002/07/19 13:12:30 srichter Exp $
+$Id: testFormView.py,v 1.11 2002/07/24 10:53:48 srichter Exp $
 """
 from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -94,12 +94,12 @@ class TestFormView(TestCase, PlacelessSetup):
     def testRenderField(self):
         field = SchemaTestObject.STestObject.getDescriptionFor('id')
         self.assertEqual(
-            '<input name="field_id" type="text" value="1" size="20"  />',
+            '<input name="field_id" type="text" value="5" size="20"  />',
             self._form.renderField(field))
 
         field = SchemaTestObject.STestObject.getDescriptionFor('creator')
         self.assertEqual('<input name="field_creator" type="text" '
-                         'value="srichter@cbu.edu" size="30"  />',
+                         'value="strichter@yahoo.com" size="30"  />',
                          self._form.renderField(field))
 
 

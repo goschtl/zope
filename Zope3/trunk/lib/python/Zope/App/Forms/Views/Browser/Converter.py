@@ -12,40 +12,19 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.2 2002/07/14 17:31:17 faassen Exp $
+$Id: Converter.py,v 1.3 2002/07/24 10:53:48 srichter Exp $
 """
 from Zope.App.Forms.Converter import *
 from Schema.IField import *
 
 
-class RequestToFieldConverter(Converter):
-    """Base class that defines how to convert from the Request to a Field.
-    Note that the value argument for the convert method is a string
-    containing the name of the variable in the Request."""
-    __convert_from__ = IRequest
-    __convert_to__ = IField
-    
-    field_prefix = 'field_'        
+class NoneToEmptyListConverter(Converter):
+    """Converts None object to an empty list."""
 
     def convert(self, value):
-        'See Zope.App.Forms.IConverter.IConverter'
-        request = self.context
-        raw_value = request.form.get(self.field_prefix+value)
-        return raw_value
+        if value is None:
+            return []
+        else:
+            return value
 
 
-class RequestToStrConverter(Converter):
-    """A specific class converting the in the request contained variable to
-    a string."""
-    __convert_from__ = IRequest
-    __convert_to__ = IStr
-
-
-class RequestToIntConverter(ContainerConverter):
-    """Convert from Request to an Int."""
-    converters = [RequestToStrConverter, StrToIntrConverter]
-
-
-class RequestToFloatConverter(ContainerConverter):
-    """Convert from Request to an Float."""
-    converters = [RequestToStrConverter, StrToFloatConverter]

@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: Converter.py,v 1.4 2002/07/19 13:12:30 srichter Exp $
+"""
+$Id: Converter.py,v 1.5 2002/07/24 10:53:48 srichter Exp $
 """
 from IConverter import IConverter
 from Exceptions import ConversionError

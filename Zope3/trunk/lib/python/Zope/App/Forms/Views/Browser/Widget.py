@@ -12,14 +12,17 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.5 2002/07/19 13:12:30 srichter Exp $
+$Id: Widget.py,v 1.6 2002/07/24 10:53:48 srichter Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
 from Schema import Converter
 from Zope.ComponentArchitecture import getAdapter
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
+from Zope.App.Forms.Converter import \
+     NoneToEmptyListConverter, ValueToSingleItemListConverter
 from Zope.App.Forms.Widget import Widget
 
 
@@ -201,10 +204,10 @@ class SingleItemsWidget(ItemsWidget):
         rendered_items = []
         for item in items:
             try:
-                item_text, item_value = item
+                item_value, item_text = item
             except ValueError:
-                item_text = item
                 item_value = item
+                item_text = item
 
             if item_value == value:
                 rendered_item = self.renderSelectedItem(item_text,
@@ -282,21 +285,27 @@ class RadioWidget(SingleItemsWidget):
 class MultiItemsWidget(ItemsWidget):
     """A widget with a number of items that has multiple selectable items."""
     default = []
+    converter = Converter.CombinedConverter(
+        (NoneToEmptyListConverter(), ValueToSingleItemListConverter()))
         
     def renderItems(self, value):
         # need to deal with single item selects
+        value = removeAllProxies(value)
+
         if not isinstance(value, ListTypes):
             value = [value]
         name = self.context.id
-        items = self.context.get('items')
+        items = self.context.items
+        if callable(items):
+            items = items()
         cssClass = self.getValue('cssClass')
         rendered_items = []
         for item in items:
             try:
-                item_text, item_value = item
+                item_value, item_text = item
             except ValueError:
-                item_text = item
                 item_value = item
+                item_text = item
 
             if item_value in value:
                 rendered_item = self.renderSelectedItem(item_text,

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testListWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: testListWidget.py,v 1.3 2002/07/24 10:53:48 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import ListWidget
@@ -22,7 +22,7 @@ from testBrowserWidget import BrowserWidgetTest
 class Field:
     """Field Stub """
     id = 'foo'
-    items = [('Foo', 'foo'), ('Bar', 'bar')]
+    items = [('foo', 'Foo'), ('bar', 'Bar')]
 
     def get(self, name):
         return getattr(self, name)

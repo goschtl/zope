@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.8 2002/07/19 13:12:30 srichter Exp $
+$Id: FormView.py,v 1.9 2002/07/24 10:53:48 srichter Exp $
 """
 from Interface.Implements import flattenInterfaces
 from Schema.IField import IField
@@ -64,15 +64,22 @@ class FormView(BrowserView):
         return result
 
 
-    def getWidgetForFieldId(self, id):
+    def getField(self, id):
         'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
         # XXX This needs to be optimized!
         field = None
         for f in self.getFields():
             if f.id == id:
                 field = f
+                break
         if field is None:
             raise KeyError, 'Field id "%s" does not exist.' %id
+        return field
+
+
+    def getWidgetForFieldId(self, id):
+        'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
+        field = self.getField(id)
         return self.getWidgetForField(field)
 
 
@@ -84,10 +91,12 @@ class FormView(BrowserView):
         return getView(field, 'widget', self.request)
 
 
-    def renderField(self, field):
+    def renderField(self, field, useRequest=0):
         'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
         widget = self.getWidgetForField(field)
-        value = self.request.form.get('field_' + field.id)
+        value = None
+        if useRequest:
+            value = self.request.form.get('field_' + field.id)
         if value is None:
             value = getattr(self.context, field.id)
         return widget.render(value)
@@ -155,6 +164,7 @@ class FormView(BrowserView):
         try:
             self.saveValuesInContext()
         except (ValidationErrorsAll, ConversionErrorsAll), e:
+            print e[0]
             return self.form(self, errors=e)
         else:
             # XXX This should do a redirect by looking up the object in

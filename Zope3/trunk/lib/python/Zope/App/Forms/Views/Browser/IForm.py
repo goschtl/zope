@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IForm.py,v 1.5 2002/07/17 18:43:41 srichter Exp $
+$Id: IForm.py,v 1.6 2002/07/24 10:53:48 srichter Exp $
 """
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Interface.Attribute import Attribute
@@ -38,6 +38,9 @@ class IReadForm(IBrowserView):
 
     def getFields():
         """Get all the fields that need input from the content object."""
+
+    def getField(id):
+        """Get a field by id from the content object schemas."""
 
     def getWidgetForFieldId(id):
         """Lookup the widget of the field having id."""

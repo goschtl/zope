@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testRadioWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: testRadioWidget.py,v 1.3 2002/07/24 10:53:48 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import RadioWidget
@@ -22,7 +22,7 @@ from testBrowserWidget import BrowserWidgetTest
 class Field:
     """Field Stub """
     id = 'foo'
-    items = [('Foo', 'foo1'), ('Bar', 'bar1')]
+    items = [('foo1', 'Foo'), ('bar1', 'Bar')]
 
     def get(self, name):
         return getattr(self, name)
