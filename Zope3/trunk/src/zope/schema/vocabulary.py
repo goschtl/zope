@@ -103,6 +103,8 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
         if self.__class__ is VocabularyMultiField:
             raise NotImplementedError(
                 "The VocabularyMultiField class cannot be used directly.")
+        if "default" not in kw:
+            kw["default"] = []
         super(VocabularyMultiField, self).__init__(**kw)
 
     def _validate(self, value):
