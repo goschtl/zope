@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_contents.py,v 1.3 2003/06/21 21:21:59 jim Exp $
+$Id: test_contents.py,v 1.4 2003/09/21 17:30:27 jim Exp $
 """
 
 import unittest
@@ -53,7 +53,7 @@ class Test(BrowserTestCase):
 
     def test_inplace_rename_multiple(self):
         root = self.getRootFolder()
-        root.setObject('foo', File())
+        root['foo'] = File()
         self.assert_('foo' in root)
         get_transaction().commit()
 
@@ -101,7 +101,7 @@ class Test(BrowserTestCase):
 
     def test_inplace_rename_single(self):
         root = self.getRootFolder()
-        root.setObject('foo', File())
+        root['foo'] = File()
         self.assert_('foo' in root)
         get_transaction().commit()
         
@@ -129,7 +129,7 @@ class Test(BrowserTestCase):
 
     def test_inplace_change_title(self):
         root = self.getRootFolder()
-        root.setObject('foo', File())
+        root['foo'] = File()
         get_transaction().commit()
         self.assert_('foo' in root)
         dc = zapi.getAdapter(root['foo'], IZopeDublinCore)
