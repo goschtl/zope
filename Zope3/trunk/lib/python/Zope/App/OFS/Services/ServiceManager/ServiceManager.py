@@ -17,7 +17,7 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: ServiceManager.py,v 1.16 2002/12/18 20:23:05 stevea Exp $
+$Id: ServiceManager.py,v 1.17 2002/12/19 20:38:24 jim Exp $
 """
 
 import sys
@@ -145,11 +145,12 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         if key == 'Packages':
             return wrapped_self.Packages
 
-        directives = wrapped_self.queryConfigurations(key)
-        if directives and directives[0] is not None:
-            return wrapped_self.queryService(key, default)
+        service = wrapped_self.queryActiveComponent(key)
+        if service is None:
+            return default
 
-        return default
+        return service
+
     get = ContextMethod(get)
 
     def __contains__(self, key):

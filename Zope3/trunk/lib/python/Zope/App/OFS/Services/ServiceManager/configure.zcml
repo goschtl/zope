@@ -23,6 +23,7 @@
     <require
         permission="Zope.ManageServices"
         interface=".IComponentManager." />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 
   </content>
 
@@ -33,10 +34,15 @@
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 
   </content>
 
    <content class=".ConfigurationManager.">
+    <factory
+        id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager"
+        permission = "Zope.ManageServices"
+        title = "Configuration Manager" />
     <require
         permission="Zope.View"
         interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
@@ -49,10 +55,7 @@
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IDeleteNotifiable." />
-    <factory
-        id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager"
-        permission = "Zope.ManageServices"
-        title = "Configuration Manager" />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
   </content>
 
   <content class=".Module.Manager.">
@@ -82,6 +85,27 @@
 
   </content>
 
+  <content class=".viewpackage.ViewPackage">
+    <factory 
+        id = "Zope.App.OFS.Services.ServiceManager.viewpackage.ViewPackage" 
+	permission = "Zope.ManageServices"
+	title = "View Package" />
+    <require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
+        set_schema=".interfaces.IViewPackageInfo"
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface=".interfaces.IViewPackageInfo"
+        />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+  </content>
+
+  
   <include package="Zope.App.OFS.Services.ServiceManager.Browser" />
 
 </zopeConfigure>

@@ -149,7 +149,7 @@
   <view for="Persistence.IPersistentModuleManager."
         factory=".Browser.EditModule."
         >
-      <page name="edit.html" template="Views/Browser/edit_module.pt" />
+      <page name="edit.html" template="Browser/edit_module.pt" />
   </view>
 
   <menuItems menu="zmi_views" for="Persistence.IPersistentModuleManager.">
@@ -159,12 +159,54 @@
   <view for="Zope.App.OFS.Container.IAdding."
         name="Module"
         factory=".Browser.AddModule."
+        permission="Zope.ManageServices"
         >
-      <page name="index.html" template="Views/Browser/add_module.pt" />
+      <page name="index.html" template="Browser/add_module.pt" />
       <page name="action.html" attribute="action" />
   </view>
 
   <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
      action="Module"  title="Module" />
+
+
+<!-- View Package -->
+
+  <defaultView for=".interfaces.IViewPackage." name="contents.html" />
+
+  <view
+      for=".interfaces.IViewPackage."
+      permission="Zope.ManageServices" 
+      factory=".Browser.viewpackage.ViewPackageContents.">
+
+    <page name="contents.html"
+                  attribute="index"
+                  />
+    <page name="add.html"
+                  attribute="add"
+                  />
+    <page name="removeObjects.html"
+                  attribute="removeObjects"
+                  />
+  </view>
+
+  <form:edit
+     schema=".interfaces.IViewPackageInfo."
+     name="DefaultConfiguration.html"
+     permission="Zope.ManageServices"
+     label="Default configuration parameters"
+     />
+
+  <menuItems menu="zmi_views" for=".interfaces.IViewPackage.">
+    <menuItem title="Contents"
+              action="@@contents.html"/>
+    <menuItem title="Default Configuration"
+              action="@@DefaultConfiguration.html"/>
+  </menuItems>
+
+  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+     action="Zope.App.OFS.Services.ServiceManager.viewpackage.ViewPackage" 
+     title="View Sub-Package" />
+
+
 
 </zope:zopeConfigure>

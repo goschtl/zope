@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.8 2002/12/18 20:23:02 stevea Exp $
+$Id: ConfigurationInterfaces.py,v 1.9 2002/12/19 20:38:21 jim Exp $
 """
 
 from Interface import Interface
@@ -181,6 +181,10 @@ class IConfigurable(Interface):
         implement a method named queryConfigurations, which takes
         arguments for each of the parameters needed to specify a set
         of configurations.
+
+        The registry must be returned in the context of the context of
+        the configurable.
+        
         """
 
     def createConfigurationsFor(configuration):

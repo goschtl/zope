@@ -34,7 +34,7 @@
      </tr>
 
   </table>
-  <input type="submit" />
+  <input type="submit" value="Finish" />
 </form>
 
 </div></body></html>

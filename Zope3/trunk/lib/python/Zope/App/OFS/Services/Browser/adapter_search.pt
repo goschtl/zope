@@ -1,0 +1,48 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title></title></head>
+<body>
+<div metal:fill-slot="body">
+
+<form action="." method="GET"
+      tal:attributes="action request/URL"
+      >
+  <table>
+    <tr tal:content="structure view/forInterface/row" />
+    <tr tal:content="structure view/providedInterface/row" />
+    <tr>
+      <td></td>
+      <td> 
+         <input type="submit" value="Refresh">
+         <input type="submit" value="Search" name="SEARCH">
+     </td>
+    </tr>
+  </table>
+</form>
+
+<form action="." method="POST"
+      tal:attributes="action request/URL"
+      tal:condition="request/SEARCH|nothing"
+      >
+  <table>
+    <tr>
+       <th>For/<br>Provided</th>
+       <th>Configuration</th>
+    </tr>
+    
+    <tr tal:repeat="config view/configInfo">
+      <td> <span tal:content="config/forInterface" />/<br>
+           <span tal:content="config/providedInterface" />
+      </td>
+      <td tal:content="structure config/view" />
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td> 
+         <input type="submit" value="Update" name="UPDATE_SUBMIT">
+      </td>
+    </tr>
+  </table>
+</form>
+
+</div></body></html>

@@ -3,10 +3,99 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    >
 
+<!-- Configuration registries -->
+
 <content class=".Configuration.ConfigurationRegistry">
    <require permission="Zope.ManageServices"
             interface=".ConfigurationInterfaces.IConfigurationRegistry"
             />
+</content>
+
+<!-- Adapter Service -->
+
+<content class=".adapter.AdapterService">
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+    <factory id="Zope.App.OFS.Services.AdapterService"
+             permission="Zope.ManageServices"
+             />
+    <require permission="Zope.ManageServices"
+             interface=".ConfigurationInterfaces.IConfigurable"
+             attributes="getRegisteredMatching"
+             />
+</content>
+
+<content class=".adapter.AdapterConfiguration">
+    <require
+        permission="Zope.ManageServices"
+        interface=".interfaces.IAdapterConfiguration"
+        set_schema=
+            "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration"
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable."
+        />
+</content>    
+
+<!-- View Service -->
+
+<content class=".view.ViewService">
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+    <factory id="Zope.App.OFS.Services.ViewService"
+             permission="Zope.ManageServices"
+             />
+    <require permission="Zope.ManageServices"
+             interface=".ConfigurationInterfaces.IConfigurable"
+             attributes="getRegisteredMatching"
+             />
+</content>
+
+<content class=".view.ViewConfiguration">
+    <require
+        permission="Zope.ManageServices"
+        interface=".interfaces.IViewConfiguration"
+        set_schema=
+            "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration"
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable."
+        />
+</content>    
+
+<content class=".view.PageConfiguration">
+    <require
+        permission="Zope.ManageServices"
+        interface=".interfaces.IPageConfiguration"
+        set_schema=
+            "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration"
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable."
+        />
+</content>    
+
+<!-- Page Templates -->
+
+<content class=".zpt.ZPTTemplate">
+  <factory
+      id="Zope.app.services.zpt.template"
+      permission="Zope.ManageServices"
+      title="ZPT Template"
+      description="Page Template" />
+
+  <require
+      permission="Zope.View"
+      attributes="__call__" />
+
+  <require
+      permission="Zope.ManageServices"
+      interface=".interfaces.IZPTTemplate"
+      set_schema=".interfaces.IZPTTemplate" />
+
+  <implements
+      interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 </content>
 
 <include package=".ServiceManager" />
@@ -18,8 +107,9 @@
 <include package=".CachingService" />
 <include package=".ObjectHub" />
 <include package=".ErrorReportingService" />
-<include package=".Browser" />
 <include package=".PrincipalAnnotationService" />
 <include package=".SessionService" />
+
+<include package=".Browser" />
 
 </zopeConfigure>
