@@ -117,21 +117,37 @@ class PROPFIND(object):
                     count += 1
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
-                adapter = iface(self.context, None)
                 initial = {}
-                for name in avail.get(ns):
-                    value = getattr(adapter, name, None)
-                    if value is not None:
-                        initial[name] = value
-                setUpWidgets(self, iface, IDAVWidget,
-                    ignoreStickyValues=True, initial=initial, 
-                    names=avail.get(ns))
+
+                if iface:
+                    # The registered namespace case
+                    adapter = iface(self.context, None)
+                    for name in avail.get(ns):
+                        value = getattr(adapter, name, None)
+                        if value is not None:
+                            initial[name] = value
+                    setUpWidgets(self, iface, IDAVWidget,
+                        ignoreStickyValues=True, initial=initial, 
+                        names=avail.get(ns))
+                else:
+                    # The opaque properties case
+                    oprops = IDAVOpaqueNamespaces(self.context, {})
+                    for name in avail.get(ns):
+                        value = oprops.get(ns, {}).get(name)
+                        if value is not None:
+                            initial[name] = value[1]
+                            
                 for p in avail.get(ns):
                     el = response.createElement('%s' % p )
                     if ns is not None and ns != self.default_ns:
                         el.setAttribute('xmlns', attr_name)
                     prop.appendChild(el)
-                    value = getattr(self, p+'_widget')()
+                    if iface:
+                        # A registered namespace property
+                        value = getattr(self, p+'_widget')()
+                    else:
+                        value = initial[p]
+                        
                     if isinstance(value, (unicode, str)):
                         # Get the widget value here
                         value = response.createTextNode(value)
@@ -235,13 +251,19 @@ class PROPFIND(object):
     def _propertyResolver(self, _props):
         avail = {}
         not_avail = {}
+        oprops = IDAVOpaqueNamespaces(self.context, {})
         for ns in _props.keys():
             iface = _props[ns]['iface']
             for p in _props[ns]['props']:
                 if iface is None:
-                    l = not_avail.get(ns, [])
-                    l.append(p)
-                    not_avail[ns] = l
+                    if oprops.get(ns, {}).get(p):
+                        l = avail.get(ns, [])
+                        l.append(p)
+                        avail[ns] = l
+                    else:    
+                        l = not_avail.get(ns, [])
+                        l.append(p)
+                        not_avail[ns] = l
                     continue
                 adapter = iface(self.context, None)
                 if adapter is None:
