@@ -62,10 +62,9 @@ class LoaderTestCase(LoaderTestBase,
         # Subversion:
         self.check_changing_subversion_urls("svn", "svn.example.org")
         self.check_changing_subversion_urls("svn+ssh", "svn.example.org")
-        self.check_changing_subversion_urls("file", "",
-                                            prefix=self.svnrepodir)
-        self.check_changing_subversion_urls("file", "localhost",
-                                            prefix=self.svnrepodir)
+        repodir = urlutils.pathname2url(self.svnrepodir)
+        self.check_changing_subversion_urls("file", "", repodir)
+        self.check_changing_subversion_urls("file", "localhost", repodir)
 
     def check_changing_subversion_urls(self, scheme, hostname, prefix=None):
         if not prefix:
