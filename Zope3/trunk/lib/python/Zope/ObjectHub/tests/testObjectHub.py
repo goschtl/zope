@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: testObjectHub.py,v 1.3 2002/06/24 15:07:04 dannu Exp $
 """
 
 import unittest, sys
@@ -28,6 +28,17 @@ from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectAddedEvent
 from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectRemovedEvent
 from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectModifiedEvent
 from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectContextChangedEvent
+from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectRegisteredEvent
+from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectUnregisteredEvent
+
+import Zope.ObjectHub.RuidObjectEvent as RuidObjectEvent
+
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectRegisteredEvent
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectAddedEvent
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectUnregisteredEvent
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectModifiedEvent
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectContextChangedEvent
+#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectRemovedEvent
 
 from Zope.Exceptions import NotFoundError
 from types import StringTypes
@@ -77,7 +88,54 @@ class LoggingSubscriber:
             # it is passed into the spec as None.
             if ruid is not None:
                 testcase.assertEqual(event.getRuid(), ruid)
-            
+  
+class TransmitRuidObjectEventTest(unittest.TestCase):
+    ruid = 23
+    location = '/foo/bar'
+    # Don't test the RuidObjectEvent base class.
+    # See below for testing subclasses / subinterfaces
+    # klass = RuidObjectEvent
+    # interface = IRuidObjectEvent
+    
+    def setUp(self):
+        self.object_hub = ObjectHub()
+        self.ruidobject_event = self.klass(self.object_hub, self.ruid, self.location)
+
+        self.subscriber = LoggingSubscriber()
+        self.object_hub.subscribe(self.subscriber)
+
+    def testTransmittedEvent(self):
+        """Test that the RuidObjectEvents are transmitted by the notify method     
+        """ 
+        self.object_hub.notify(self.ruidobject_event)
+       
+        self.subscriber.verifyEventsReceived(self, [
+                (self.interface, self.ruid, self.location)
+            ])
+   
+class TransmitRuidObjectAddedEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectAddedEvent
+    klass = RuidObjectEvent.RuidObjectAddedEvent
+
+class TransmitRuidObjectRemovedEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectRemovedEvent
+    klass = RuidObjectEvent.RuidObjectRemovedEvent
+
+class TransmitRuidObjectModifiedEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectModifiedEvent
+    klass = RuidObjectEvent.RuidObjectModifiedEvent
+
+class TransmitRuidObjectContextChangedEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectContextChangedEvent
+    klass = RuidObjectEvent.RuidObjectContextChangedEvent
+
+class TransmitRuidObjectRegisteredEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectRegisteredEvent
+    klass = RuidObjectEvent.RuidObjectRegisteredEvent
+
+class TransmitRuidObjectUnregisteredEventTest(TransmitRuidObjectEventTest):
+    interface = IRuidObjectUnregisteredEvent
+    klass = RuidObjectEvent.RuidObjectUnregisteredEvent
     
 class BasicHubTest(unittest.TestCase):
 
@@ -332,6 +390,12 @@ def test_suite():
         unittest.makeSuite(TestObjectRemovedEvent),
         unittest.makeSuite(TestObjectModifiedEvent),
         unittest.makeSuite(TestObjectMovedEvent),
+        unittest.makeSuite(TransmitRuidObjectAddedEventTest),
+        unittest.makeSuite(TransmitRuidObjectRemovedEventTest),
+        unittest.makeSuite(TransmitRuidObjectModifiedEventTest),
+        unittest.makeSuite(TransmitRuidObjectContextChangedEventTest),
+        unittest.makeSuite(TransmitRuidObjectRegisteredEventTest),
+        unittest.makeSuite(TransmitRuidObjectUnregisteredEventTest),
         ))
 
 if __name__=='__main__':

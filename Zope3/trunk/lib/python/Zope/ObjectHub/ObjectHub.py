@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: ObjectHub.py,v 1.3 2002/06/24 15:07:03 dannu Exp $
 """
 
 from IObjectHub import IObjectHub
@@ -28,6 +28,7 @@ from RuidObjectEvent import RuidObjectAddedEvent
 from RuidObjectEvent import RuidObjectModifiedEvent
 from RuidObjectEvent import RuidObjectContextChangedEvent
 from RuidObjectEvent import RuidObjectRemovedEvent
+from IRuidObjectEvent import IRuidObjectEvent
 
 from Zope.Exceptions import NotFoundError
 from Persistence import Persistent
@@ -93,7 +94,10 @@ class ObjectHub(Persistent):
                               
         elif IObjectRemovedEvent.isImplementedBy(event):
             self._objectRemoved(event.getLocation(), event.getObject())
-            
+        
+        elif IRuidObjectEvent.isImplementedBy(event):
+            self.__eventchannel.notify(event)
+
         # otherwise, ignore the event
 
     def lookupRuid(self, location):
