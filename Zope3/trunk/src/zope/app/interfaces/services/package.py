@@ -11,46 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Interfaces for packages.
 
-from zope.app.interfaces.container import IContainer
+$Id: package.py,v 1.3 2002/12/30 20:07:20 jeremy Exp $
+"""
+
+from zope.app.interfaces.container import IAdding, IContainer
 from zope.app.interfaces.services.service import IComponentManager
 
-class IPackages(IContainer, IComponentManager):
-    """Packages objects contain database packages
-
-    They support simple containment as well as package query and lookup.
-    """
-
-doc = IPackages.__doc__ + """
-$Id: package.py,v 1.2 2002/12/25 14:13:02 jim Exp $
-"""
-
-
-
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: package.py,v 1.2 2002/12/25 14:13:02 jim Exp $
-"""
-
-from zope.app.interfaces.container import IContainer
-
 class IPackage(IContainer):
-    """Component and component configuration containers.
+    """Component and component configuration containers."""
+
+class IPackages(IContainer, IComponentManager):
+    """A collection of IPackage objects.
+
+    An IPackages object supports simple containment as well as package
+    query and lookup.
     """
-
-
-
-
-"""IPackageAdding
-
-$Id: package.py,v 1.2 2002/12/25 14:13:02 jim Exp $
-"""
-from zope.app.interfaces.container import IAdding
 
 class IPackageAdding(IAdding):
-    """The Package Adding is special, since it is not part of the content
-    namespace, but has a similar functionality as a Folder. Therefore there
-    are views that overlap; this interface was created so that there are no
-    configuration conflicts."""
+    """A special package that is not content but is similar to a folder.
+    
+    The Package Adding is special, since it is not part of the content
+    namespace, but has a similar functionality as a Folder. Therefore
+    there are views that overlap; this interface was created so that
+    there are no configuration conflicts.
+    """
