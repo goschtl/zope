@@ -438,15 +438,18 @@ def do_chmod(subjs):
             fnames.append(i[0])
     if not fnames:
         fnames = ["."]
-    cmd = ("%s%schmod %s g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                    (DRYRUN and "echo would do: ") or "",
-                                    (CHMOD_CASUAL and "-f") or "",
-                                    string.join(fnames, " ")))
+    cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
+                                 (DRYRUN and "echo would do: ") or "",
+                                 string.join(fnames, " ")))
     if VERBOSE:
         complain("Reexecing, cmd:\n\t%s\n", cmd)
     result = os.system(cmd)
     if result:
-        note_failure("*** Chmod returned %s...", result)
+        msg = "*** Chmod returned %s..."
+        if CHMOD_CASUAL:
+            complain(msg, result)
+        else:
+            note_failure(msg, result)
 
 def loosen_file(fname):
     """Relax permissions on (newly created) file so others can use it too."""
@@ -480,7 +483,7 @@ def handle_failures(argstring):
     import time
 
     if os.environ.has_key('HOSTNAME'):
-        host = os.environ['HOSTNAME')
+        host = os.environ['HOSTNAME']
     else:
         host = "<unidentified host>"
 
