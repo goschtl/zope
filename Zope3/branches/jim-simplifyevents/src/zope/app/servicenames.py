@@ -1,3 +1,4 @@
+
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -22,7 +23,5 @@ from zope.component.servicenames import *
 
 Authentication = 'Authentication'
 BrowserMenu = 'BrowserMenu'
-EventPublication = 'EventPublication'
-EventSubscription = 'Subscription'
 ErrorLogging = 'ErrorLogging'
 PrincipalAnnotation = 'PrincipalAnnotation'

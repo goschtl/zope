@@ -3,38 +3,9 @@
     xmlns:event="http://namespaces.zope.org/event"
     >
 
-<serviceType
-    id="EventPublication" 
-    interface="zope.app.event.interfaces.IPublisher" />
-
-<service
-    serviceType="EventPublication"
-    component="zope.app.event.globalservice.eventPublisher" />
-
 <subscriber
     for="zope.app.event.interfaces.IObjectEvent" 
     factory=".objectevent.objectEventNotify"
-    />
-
-<!-- Local Event Service -->
-<content class=".localservice.EventService">
-  <factory
-      id="Events"
-      />
-  <require
-      permission="zope.View"
-      attributes="publish notify"
-      />
-  <require
-      permission="zope.ManageServices"
-      attributes="bound unbound subscribe unsubscribe subscribeOnBind
-                  unsubscribedFrom subscribedTo"
-      />
-</content>
-
-<serviceType
-    id="Subscription"
-    interface=".interfaces.ISubscriptionService"
     />
 
 </configure>

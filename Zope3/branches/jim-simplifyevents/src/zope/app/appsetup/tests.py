@@ -24,7 +24,6 @@ from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.errorservice.interfaces import IErrorReportingService
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
-from zope.app.event.interfaces import IEventService
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.errorservice import ErrorReportingService
@@ -126,9 +125,6 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package_name = '/++etc++site/default'
         package = traverse(root_folder, package_name)
 
-        self.assert_(IEventService.providedBy(
-            traverse(package, 'EventPublication')))
-
         self.assert_(IErrorReportingService.providedBy(
             traverse(package, 'ErrorLogging')))
 
@@ -156,17 +152,11 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package_name = '/++etc++site/default'
         package = traverse(root_folder, package_name)
 
-        self.assert_(IEventService.providedBy(
-            traverse(package, 'EventPublication')))
-
         self.assertRaises(NotFoundError, traverse, root_folder,
                           '/++etc++site/default/ErrorLogging')
 
         self.assert_(IErrorReportingService.providedBy(
             traverse(package, 'Errors')))
-
-        self.assert_(IEventService.providedBy(
-            traverse(package, 'EventPublication')))
 
         self.assert_(IPrincipalAnnotationService.providedBy(
             traverse(package, 'PrincipalAnnotation')))

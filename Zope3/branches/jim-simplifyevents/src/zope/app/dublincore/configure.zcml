@@ -1,6 +1,4 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:event="http://namespaces.zope.org/event">
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <permission 
       id="zope.app.dublincore.view" 
@@ -42,21 +40,25 @@
         />
   </content>
 
-  <event:subscribe
-      subscriber=".timeannotators.ModifiedAnnotator"
-      event_types="zope.app.event.interfaces.IObjectModifiedEvent"
+  <subscriber
+      factory=".timeannotators.ModifiedAnnotator"
+      for="zope.app.event.interfaces.IObjectModifiedEvent"
       />
 
-  <event:subscribe
-      subscriber=".timeannotators.CreatedAnnotator"
-      event_types="zope.app.event.interfaces.IObjectCreatedEvent"
+  <subscriber
+      factory=".timeannotators.CreatedAnnotator"
+      for="zope.app.event.interfaces.IObjectCreatedEvent"
       />
 
-  <event:subscribe
-      subscriber=".creatorannotator.CreatorAnnotator"
-      event_types="zope.app.event.interfaces.IObjectModifiedEvent
-                   zope.app.event.interfaces.IObjectCreatedEvent"
-    />
+  <subscribe
+      factory=".creatorannotator.CreatorAnnotator"
+      for="zope.app.event.interfaces.IObjectModifiedEvent"
+      />
+
+  <subscribe
+      factory=".creatorannotator.CreatorAnnotator"
+      for="zope.app.event.interfaces.IObjectCreatedEvent"
+      />
 
 
   <!-- Include browser package -->

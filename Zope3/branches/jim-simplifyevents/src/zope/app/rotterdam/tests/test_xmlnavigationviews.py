@@ -23,20 +23,22 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.app.tests import ztapi
 from zope.app.traversing.api import traverse
-from zope.app.event.tests.eventsetup import EventSetup
 from zope.app.container.interfaces import IReadContainer
 
 from zope.app.rotterdam.tests import util
 from zope.app.rotterdam.xmlobject import ReadContainerXmlObjectView
 from zope.app.rotterdam.xmlobject import XmlObjectView
 
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+
 class File:
     pass
 
-class TestXmlObject(EventSetup, TestCase):
+class TestXmlObject(PlacefulSetup, TestCase):
     
     def setUp(self):
-        super(TestXmlObject, self).setUp()
+        PlacefulSetup.setUp(self, site=True)
+        self.createStandardServices()
 
     def testXMLTreeViews(self):
         rcxov = ReadContainerXmlObjectView

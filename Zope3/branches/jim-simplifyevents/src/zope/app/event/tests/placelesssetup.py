@@ -23,9 +23,6 @@ from zope.component import getGlobalServices
 
 events = []
 
-def record(event):
-    events.append(event)
-
 def getEvents(event_type=None, filter=None):
     r = []
     for event in events:
@@ -44,7 +41,7 @@ class PlacelessSetup:
 
     def setUp(self):
         clearEvents()
-        ztapi.subscribe([None], None, record)
+        ztapi.handle([None], events.append)
 
 import zope.testing.cleanup
 zope.testing.cleanup.addCleanUp(clearEvents)

@@ -33,9 +33,7 @@ from zope.app.servicenames import PrincipalAnnotation
 from zope.app.servicenames import EventPublication, EventSubscription
 from zope.app.servicenames import ErrorLogging, Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
-from zope.app.event.localservice import EventService
 from zope.app.errorservice import RootErrorReportingService
-from zope.app.event import function
 from zope.app.container.interfaces import INameChooser
 from zope.app.utility import UtilityRegistration, LocalUtilityService
 
@@ -161,14 +159,6 @@ class BootstrapInstance(BootstrapSubscriberBase):
         XXX This ought to be configurable.  For now, hardcode some
         services we know we all need.
         """
-        # The EventService class implements two services
-        name = self.ensureService(EventPublication, EventService)
-        if name:
-            configureService(self.root_folder, EventSubscription, name)
-        elif not self.service_manager.queryLocalService(EventSubscription):
-            pub = self.service_manager.queryLocalService(EventPublication)
-            name = zapi.getName(pub)
-            configureService(self.root_folder, EventSubscription, name)
 
         # Sundry other services
         self.ensureService(ErrorLogging,

@@ -23,7 +23,6 @@ from zope.component.presentation import IDefaultViewName
 from zope.component.presentation import PresentationRegistration
 
 import zope.app.container.contained
-import zope.app.event.interfaces
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter

@@ -58,7 +58,6 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.schema import Object, TextLine, Int, Password, BytesLine
 
-from zope.app.event.interfaces import IEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
@@ -176,7 +175,7 @@ class ISendmailMailer(IMailer):
         default="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s")
 
 
-class IMailEvent(IEvent):
+class IMailEvent(Interface):
     """Generic mail event."""
 
     messageId = Attribute("Message id according to RFC 2822")

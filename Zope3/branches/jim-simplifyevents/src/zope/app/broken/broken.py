@@ -20,7 +20,6 @@ $Id$
 import ZODB.broken
 import zope.interface
 import zope.app.location.interfaces
-import zope.app.event.function
 import zope.security.checker
 
 

@@ -25,14 +25,13 @@ from zope.app.tests import ztapi
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPrincipal
-from zope.app.event.interfaces import IEvent
 from zope.security.management import newInteraction, endInteraction
 
 class IDummyContent(Interface):
     pass
 
 class DummyEvent:
-    implements(IEvent)
+    pass
 
 class DummyDCAdapter(object):
 

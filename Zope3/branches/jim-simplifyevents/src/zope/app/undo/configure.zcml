@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:event="http://namespaces.zope.org/event"
     i18n_domain="zope"
     >
 
@@ -20,9 +19,9 @@
       />
 
 
-  <event:subscribe
-      subscriber=".undoSetup"
-      event_types="zope.app.appsetup.IDatabaseOpenedEvent"
+  <subscriber
+      factory=".undoSetup"
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
       />
 
 

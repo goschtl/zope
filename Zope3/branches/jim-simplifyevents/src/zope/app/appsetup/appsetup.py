@@ -18,9 +18,8 @@ $Id$
 import zope.interface
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
-from zope.app.event.interfaces import IEvent
 
-class IDatabaseOpenedEvent(IEvent):
+class IDatabaseOpenedEvent(zope.interface.Interface):
     """The main database has been opened."""
 
     database = zope.interface.Attribute("The main database.")
@@ -31,7 +30,7 @@ class DatabaseOpened:
     def __init__(self, database):
         self.database = database
 
-class IProcessStartingEvent(IEvent):
+class IProcessStartingEvent(zope.interface.Interface):
     """The application server process is starting."""
 
 class ProcessStarting:

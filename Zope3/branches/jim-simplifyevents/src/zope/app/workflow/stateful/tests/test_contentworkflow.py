@@ -24,8 +24,6 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
-from zope.app.event.tests.placelesssetup import clearEvents
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.utility import UtilityRegistration

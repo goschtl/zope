@@ -1,6 +1,5 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:event="http://namespaces.zope.org/event"
    xmlns:mail="http://namespaces.zope.org/mail"
    i18n_domain="zope"
    >
@@ -206,12 +205,13 @@
       mailer="wiki-smtp" />
 
   <!-- Register event listener for change mails -->
-  <event:subscribe
-      subscriber=".wikipage.mailer"
-      event_types="zope.app.container.interfaces.IObjectAddedEvent
-                   zope.app.event.interfaces.IObjectModifiedEvent
-                   zope.app.container.interfaces.IObjectRemovedEvent
-                   zope.app.container.interfaces.IObjectMovedEvent"
+  <subscriber
+      factory=".wikipage.mailer"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
+      />
+  <subscriber
+      factory=".wikipage.mailer"
+      for="zope.app.event.interfaces.IMovedEvent"
       />
 
 
