@@ -108,5 +108,11 @@ a collection distribution:
   few others).  Given this limitation, the collection would need to
   have a different name (``ZODB3`` comes to mind).
 
+- We're not currently loading any sort of "package information" for
+  collections, but that's what we need to do so we can identify
+  scripts and documentation files so we can properly deal with
+  installation.  It seems odd for a collection to have a
+  `package.conf` file for a collection distribution.
+
 
 .. include:: links.rst
