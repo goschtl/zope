@@ -25,7 +25,7 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
+from zope.app.intid.interfaces import IIntIds
 from zope.index.interfaces import ISimpleQuery
 
 
@@ -64,13 +64,13 @@ class Catalog(BTreeContainer):
             index.unindex_doc(docid)
 
     def updateIndex(self, index):
-        uidutil = zapi.getUtility(IUniqueIdUtility)
+        uidutil = zapi.getUtility(IIntIds)
         for uid, ref in uidutil.items():
             obj = ref()
             index.index_doc(uid, obj)
 
     def updateIndexes(self):
-        uidutil = zapi.getUtility(IUniqueIdUtility)
+        uidutil = zapi.getUtility(IIntIds)
         for uid, ref in uidutil.items():
             obj = ref()
             for index in self.values():
@@ -96,7 +96,7 @@ class Catalog(BTreeContainer):
             if not pendingResults:
                 break # nothing left, short-circuit
         # Next we turn the IISet of docids into a generator of objects
-        uidutil = zapi.getUtility(IUniqueIdUtility)
+        uidutil = zapi.getUtility(IIntIds)
         results = ResultSet(pendingResults, uidutil)
         return results
 
@@ -122,10 +122,10 @@ def indexAdded(index, event):
     index.__parent__.updateIndex(index)
     
 def indexDocSubscriber(event):
-    """A subscriber to UniqueIdAddedEvent"""
+    """A subscriber to IntIdAddedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
+        id = zapi.getUtility(IIntIds, context=cat).getId(ob)
         cat.index_doc(id, ob)
 
 
@@ -133,15 +133,15 @@ def reindexDocSubscriber(event):
     """A subscriber to ObjectModifiedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IUniqueIdUtility, context=cat).queryId(ob)
+        id = zapi.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.index_doc(id, ob)
 
 
 def unindexDocSubscriber(event):
-    """A subscriber to UniqueIdRemovedEvent"""
+    """A subscriber to IntIdRemovedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IUniqueIdUtility, context=cat).queryId(ob)
+        id = zapi.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.unindex_doc(id)

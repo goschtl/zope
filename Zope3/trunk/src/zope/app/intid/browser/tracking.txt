@@ -9,24 +9,24 @@ example. First, we'll create a unique Id utility:
    created.  We really need to rethink how we manage TTW utilities.)
 
   >>> print http(r"""
-  ... GET /++etc++site/AddIUniqueIdUtilityTool HTTP/1.1
+  ... GET /++etc++site/AddIIntIdsTool HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageIUniqueIdUtilityTool.html
+  ... Referer: http://localhost:8081/++etc++site/@@manageIIntIdsTool.html
   ... """)
   HTTP/1.1 200 Ok
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/AddIUniqueIdUtilityTool/action.html HTTP/1.1
+  ... POST /++etc++site/AddIIntIdsTool/action.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 69
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/AddIUniqueIdUtilityTool
+  ... Referer: http://localhost:8081/++etc++site/AddIIntIdsTool
   ... 
-  ... type_name=BrowserAdd__zope.app.uniqueid.UniqueIdUtility&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
   HTTP/1.1 303 See Other
   ...
-  Location: ../@@manageIUniqueIdUtilityTool.html
+  Location: ../@@manageIIntIdsTool.html
   ...
 
 Now, we'll add a few folders:
@@ -75,7 +75,7 @@ Now, if we look at the index page for the unique id utility, we'll see
 the objects we added:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/UniqueIdUtility/@@index.html HTTP/1.1
+  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
   ... """)
@@ -102,7 +102,7 @@ If we move the top object:
 We'll see that reflected in the utility:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/UniqueIdUtility/@@index.html HTTP/1.1
+  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
   ... """)
@@ -129,7 +129,7 @@ And if we delete the top object:
 all of the objects will go away:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/UniqueIdUtility/@@index.html HTTP/1.1
+  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
   ... """)

@@ -57,7 +57,8 @@
 
   <!-- Utilities -->
   <include package="zope.app.schema" />
-  <include package="zope.app.uniqueid" />
+  <include package="zope.app.intid" />
+  <include package="zope.app.keyreference" />
 
   <!-- Misc. Service Manager objects -->
   <include package="zope.app.module" />
