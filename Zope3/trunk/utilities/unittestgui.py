@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.2 $"[11:-2]
+__version__ = "$Revision: 1.3 $"[11:-2]
 
 import linecache
 import unittest
@@ -89,6 +89,7 @@ class BaseGUITestRunner:
         if self.__rollbackImporter:
             self.__rollbackImporter.rollbackImports()
         self.__rollbackImporter = RollbackImporter()
+        self.notifyStartImport()
         try:
             test = unittest.defaultTestLoader.loadTestsFromNames(
                                 COMMA_SPACE.split( testName ) )
@@ -120,6 +121,10 @@ class BaseGUITestRunner:
             self.currentResult.stop()
 
     # Required callbacks
+
+    def notifyStartImport(self):
+        "Override to display a message that imports are about to start"
+        pass
 
     def notifyRunning(self):
         "Override to set GUI in 'running' mode, enabling 'stop' button etc."
@@ -218,11 +223,12 @@ or see the bundled documentation
 class TkTestRunner(BaseGUITestRunner):
     """An implementation of BaseGUITestRunner using Tkinter.
     """
-    def initGUI(self, root, initialTestName):
+    def initGUI(self, root, initialTestName, minimal=0):
         """Set up the GUI inside the given root window. The test name entry
         field will be pre-filled with the given initialTestName.
         """
         self.root = root
+        self.minimal = minimal
         # Set up values that will be tied to widgets
         self.suiteNameVar = tk.StringVar()
         self.suiteNameVar.set(initialTestName)
@@ -244,14 +250,16 @@ class TkTestRunner(BaseGUITestRunner):
         """
         # Status bar
         statusFrame = tk.Frame(self.top, relief=tk.SUNKEN, borderwidth=2)
-        statusFrame.pack(anchor=tk.SW, fill=tk.X, side=tk.BOTTOM)
+        if not self.minimal:
+            statusFrame.pack(anchor=tk.SW, fill=tk.X, side=tk.BOTTOM)
         tk.Label(statusFrame, textvariable=self.statusVar).pack(side=tk.LEFT)
 
         # Area to enter name of test to run
         leftFrame = tk.Frame(self.top, borderwidth=3)
         leftFrame.pack(fill=tk.BOTH, side=tk.LEFT, anchor=tk.NW, expand=1)
         suiteNameFrame = tk.Frame(leftFrame, borderwidth=3)
-        suiteNameFrame.pack(fill=tk.X)
+        if not self.minimal:
+            suiteNameFrame.pack(fill=tk.X)
         tk.Label(suiteNameFrame, text="Enter test name:").pack(side=tk.LEFT)
         e = tk.Entry(suiteNameFrame, textvariable=self.suiteNameVar, width=80)
         e.pack(side=tk.LEFT, fill=tk.X, expand=1)
@@ -261,14 +269,20 @@ class TkTestRunner(BaseGUITestRunner):
         # Progress bar
         progressFrame = tk.Frame(leftFrame, relief=tk.GROOVE, borderwidth=2)
         progressFrame.pack(fill=tk.X, expand=0, anchor=tk.NW)
-        tk.Label(progressFrame, text="Progress:").pack(anchor=tk.W)
+        if not self.minimal:
+            tk.Label(progressFrame, text="Progress:").pack(anchor=tk.W)
         self.progressBar = ProgressBar(progressFrame, relief=tk.SUNKEN,
                                        borderwidth=2)
+        if self.minimal:
+            self.progressBar.setProgressFraction(0.0, '0/0')
         self.progressBar.pack(fill=tk.X, expand=1)
+        self.progressBar.bind('<Double-Button-1>',
+            lambda e, self=self: self.runClicked())
 
         # Area with buttons to start/stop tests and quit
         buttonFrame = tk.Frame(self.top, borderwidth=3)
-        buttonFrame.pack(side=tk.LEFT, anchor=tk.NW, fill=tk.Y)
+        if not self.minimal:
+            buttonFrame.pack(side=tk.LEFT, anchor=tk.NW, fill=tk.Y)
         self.stopGoButton = tk.Button(buttonFrame, text="Start",
                                       command=self.runClicked)
         self.stopGoButton.pack(fill=tk.X)
@@ -280,19 +294,22 @@ class TkTestRunner(BaseGUITestRunner):
                   command=self.showHelpDialog).pack(side=tk.BOTTOM, fill=tk.X)
 
         # Area with labels reporting results
-        for label, var in (('Run:', self.runCountVar),
-                           ('Failures:', self.failCountVar),
-                           ('Errors:', self.errorCountVar),
-                           ('Remaining:', self.remainingCountVar)):
-            tk.Label(progressFrame, text=label).pack(side=tk.LEFT)
-            tk.Label(progressFrame, textvariable=var,
-                     foreground="blue").pack(side=tk.LEFT, fill=tk.X,
-                                             expand=1, anchor=tk.W)
+        if not self.minimal:
+            for label, var in (('Run:', self.runCountVar),
+                            ('Failures:', self.failCountVar),
+                            ('Errors:', self.errorCountVar),
+                            ('Remaining:', self.remainingCountVar)):
+                tk.Label(progressFrame, text=label).pack(side=tk.LEFT)
+                tk.Label(progressFrame, textvariable=var,
+                        foreground="blue").pack(side=tk.LEFT, fill=tk.X,
+                                                expand=1, anchor=tk.W)
 
         # List box showing errors and failures
-        tk.Label(leftFrame, text="Failures and errors:").pack(anchor=tk.W)
+        if not self.minimal:
+            tk.Label(leftFrame, text="Failures and errors:").pack(anchor=tk.W)
         listFrame = tk.Frame(leftFrame, relief=tk.SUNKEN, borderwidth=2)
-        listFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
+        if not self.minimal:
+            listFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
         self.errorListbox = tk.Listbox(listFrame, foreground='red',
                                        selectmode=tk.SINGLE,
                                        selectborderwidth=0)
@@ -305,9 +322,11 @@ class TkTestRunner(BaseGUITestRunner):
         self.errorListbox.configure(yscrollcommand=listScroll.set)
 
         # List box showing warnings
-        tk.Label(leftFrame, text="Warnings:").pack(anchor=tk.W)
+        if not self.minimal:
+            tk.Label(leftFrame, text="Warnings:").pack(anchor=tk.W)
         warnFrame = tk.Frame(leftFrame, relief=tk.SUNKEN, borderwidth=2)
-        warnFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
+        if not self.minimal:
+            warnFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
         self.warningListbox = tk.Listbox(warnFrame, foreground='black',
                                        selectmode=tk.SINGLE,
                                        selectborderwidth=0)
@@ -327,6 +346,13 @@ class TkTestRunner(BaseGUITestRunner):
         tkMessageBox.showerror(parent=self.root, title=title,
                                message=message)
 
+    def notifyStartImport(self):
+        if self.minimal:
+            self.progressBar.setProgressFraction(0.0, 'Importing...')
+        else:
+            self.statusVar.set("Importing tests...")
+        self.top.update_idletasks()
+
     def notifyRunning(self):
         self.runCountVar.set(0)
         self.failCountVar.set(0)
@@ -341,7 +367,8 @@ class TkTestRunner(BaseGUITestRunner):
         #Stopping seems not to work, so simply disable the start button
         #self.stopGoButton.config(command=self.stopClicked, text="Stop")
         self.stopGoButton.config(state=tk.DISABLED)
-        self.progressBar.setProgressFraction(0.0)
+        progressText = self.minimal and ('0/%d' % self.totalTests) or None
+        self.progressBar.setProgressFraction(0.0, progressText)
         self.top.update_idletasks()
 
     def notifyStopped(self):
@@ -350,7 +377,10 @@ class TkTestRunner(BaseGUITestRunner):
         self.statusVar.set("Idle")
 
     def notifyTestStarted(self, test):
-        self.statusVar.set(str(test))
+        test = str(test)
+        if len(test) > 60:
+            test = test[:30] + ' ... ' + test[-25:]
+        self.statusVar.set(test)
         self.top.update_idletasks()
 
     def notifyWarning(self, msg, tb_str):
@@ -369,10 +399,19 @@ class TkTestRunner(BaseGUITestRunner):
 
     def notifyTestFinished(self, test):
         self.remainingCountVar.set(self.remainingCountVar.get() - 1)
-        self.runCountVar.set(1 + self.runCountVar.get())
-        fractionDone = float(self.runCountVar.get())/float(self.totalTests)
+        run = self.runCountVar.get() + 1
+        self.runCountVar.set(run)
+        fractionDone = float(run)/float(self.totalTests)
+        progressText = ''
+        if self.minimal:
+            progressText = '%d/%d' % (run, self.totalTests)
+        if self.failCountVar.get():
+            progressText += ' (F: %d)' % self.failCountVar.get()
+        if self.errorCountVar.get():
+            progressText += ' (E: %d)' % self.errorCountVar.get()
         fillColor = len(self.errorInfo) and "red" or "green"
-        self.progressBar.setProgressFraction(fractionDone, fillColor)
+        self.progressBar.setProgressFraction(fractionDone, progressText,
+            fillColor)
 
     def showAboutDialog(self):
         tkMessageBox.showinfo(parent=self.root, title="About PyUnit",
@@ -443,11 +482,32 @@ class ProgressBar(tk.Frame):
         self.canvas.bind('<Configure>', self.paint)
         self.setProgressFraction(0.0)
 
-    def setProgressFraction(self, fraction, color='blue'):
+    def setProgressFraction(self, fraction, label='', color='blue'):
         self.fraction = fraction
+        self.label = label
         self.color = color
         self.paint()
         self.canvas.update_idletasks()
+
+    def bind(self, sequence=None, callback=None, add=None):
+        "Bindings should be propagated to the contained canvas."
+        tk.Frame.bind(self, sequence, callback, add)
+        self.canvas.bind(sequence, callback, add)
+        
+    def unbind(self, sequence):
+        "Bindings should be propagated to the contained canvas."
+        tk.Frame.unbind(self, sequence)
+        self.canvas.unbind(sequence)
+        
+    def bind_class(self, className, sequence=None, callback=None, add=None):
+        "Bindings should be propagated to the contained canvas."
+        tk.Frame.bind_class(self, className, sequence, callback, add)
+        self.canvas.bind_class(className, sequence, callback, add)
+        
+    def unbind_class(self, className, sequence):
+        "Bindings should be propagated to the contained canvas."
+        tk.Frame.bind_class(self, className, sequence)
+        self.canvas.bind_class(className, sequence)
         
     def paint(self, *args):
         totalWidth = self.canvas.winfo_width()
@@ -457,22 +517,28 @@ class ProgressBar(tk.Frame):
         if self.text is not None: self.canvas.delete(self.text)
         self.rect = self.canvas.create_rectangle(0, 0, width, height,
                                                  fill=self.color)
-        percentString = "%3.0f%%" % (100.0 * self.fraction)
+        if self.label:
+            label = self.label
+        else:
+            label = "%3.0f%%" % (100.0 * self.fraction)
         self.text = self.canvas.create_text(totalWidth/2, height/2,
                                             anchor=tk.CENTER,
-                                            text=percentString)
+                                            text=label)
 
-def main(initialTestName=""):
+def main(initialTestName="", minimal=0):
     root = tk.Tk()
     root.title("PyUnit")
-    runner = TkTestRunner(root, initialTestName)
+    runner = TkTestRunner(root, initialTestName, minimal)
     root.protocol('WM_DELETE_WINDOW', root.quit)
     root.mainloop()
 
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) == 2:
-        main(sys.argv[1])
+    import getopt
+    opts, args = getopt.getopt(sys.argv[1:], 'm')
+    minimal = ('-m', '') in opts
+    if args:
+        main(args[0], minimal=minimal)
     else:
         main()
