@@ -6,6 +6,17 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  Zope X3.0.0 Beta 2
+
+    New features
+
+    Bug fixes
+
+    - utilities/runurl.py hadn't been updated to relect recent changes
+      in the debugging support.
+
+    Restructuring
+
   Zope X3.0.0 Beta 1
 
     New features
@@ -35,6 +46,8 @@ Zope Changes
       - Made AbsoluteURL handle unicode names. __str__ and __call__ encode
         the name into UTF-8 and url quote it to convert the name to ASCII.
         Also added __unicode__ to get a unicode representation of the url.
+
+      - Cut startup time in half
 
     Restructuring
 
