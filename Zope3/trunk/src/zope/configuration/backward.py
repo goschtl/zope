@@ -33,7 +33,7 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.1 2003/07/28 22:22:39 jim Exp $
+$Id: backward.py,v 1.2 2003/07/30 18:35:09 jim Exp $
 """
 
 from keyword import iskeyword
@@ -139,7 +139,7 @@ class Attributed(config.GroupingContextDecorator):
     constructor:
 
     >>> context = config.ConfigurationMachine()
-    >>> x = Attributed(config, attributes=u"a b c")
+    >>> x = Attributed(context, attributes=u"a b c")
 
     Or the can be provides as keys added to the attributes disctionary:
 
@@ -156,11 +156,38 @@ class Attributed(config.GroupingContextDecorator):
     Text b b 0
     Int foo Foo 1
 
+    If you need to be able to accept arbritrary parameters, include an
+    attribute named "*" in the list of attributes:
+
+    >>> context = config.ConfigurationMachine()
+    >>> x = Attributed(context, attributes=u"a b c *")
+    >>> x._schema_from_attrs()
+    >>> for name in x.schema:
+    ...   f = x.schema[name]
+    ...   print f.__class__.__name__, f.__name__, f.title, int(f.required)
+    Text a a 0
+    Text c c 0
+    Text b b 0
+
+    Note that we don't see "*" in the schema. Rather, we see that the
+    schema as a tagged value:
+
+    >>> x.schema.getTaggedValue("keyword_arguments")
+    1
+
+    Indicating that the directive handler accepts extra keyword
+    arguments, which means that arbitrary extra parameters can be given.
     """
 
     interface.implementsOnly(IDescribed)
 
+    __keyword_arguments = False
+
     def attribute(self, name, required=False, description=u''):
+        if name == '*':
+            self.__keyword_arguments = True
+            return
+        
         aname = str(name)
         if iskeyword(name):
             aname += '_'
@@ -186,6 +213,9 @@ class Attributed(config.GroupingContextDecorator):
             # No attribute definitions, allow keyword args
             schema.setTaggedValue('keyword_arguments', True)
         self.schema = schema
+
+        if self.__keyword_arguments:
+            schema.setTaggedValue('keyword_arguments', True)
     
 
 class Directive(Attributed, Described):

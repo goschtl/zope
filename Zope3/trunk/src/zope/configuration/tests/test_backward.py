@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_backward.py,v 1.2 2003/07/30 14:35:13 jim Exp $
+$Id: test_backward.py,v 1.3 2003/07/30 18:35:12 jim Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
@@ -96,6 +96,21 @@ def test_directive_and_integration_w_python_keywords():
         <test:k2 for="ff" class="cc" x="xx">second</test:k2>
     second
     
+    """
+
+def test_directive_and_integration_w_extra_arguments():
+    r"""
+
+    >>> from zope.configuration import tests
+    >>> context = xmlconfig.file("backwardkwextra.zcml", tests, execute=False)
+    >>> for action in context.actions:
+    ...   print action[:2]
+    ...   print action[2]
+    ...   print clean_text_w_paths(unicode(action[5]))
+    (('k', u'f'), f)
+    (u'f', u'c', u'x', {'a': u'a', 'b': u'b'})
+    File "tests/backwardkwextra.zcml", line 14.2-14.51
+        <test:k  for="f"  class="c"  x="x" a="a" b="b" />
     """
 
 def test_suite():

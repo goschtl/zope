@@ -13,7 +13,7 @@
 ##############################################################################
 """Test directives
 
-$Id: directives.py,v 1.6 2003/07/28 22:22:47 jim Exp $
+$Id: directives.py,v 1.7 2003/07/30 18:35:12 jim Exp $
 """
 
 from zope.interface import Interface, implements
@@ -86,3 +86,6 @@ class Ik(Interface):
     
 def k(context, for_, class_, x):
     context.action(('k', for_), f, (for_, class_, x))
+
+def kkw(context, for_, class_, x, **kw):
+    context.action(('k', for_), f, (for_, class_, x, kw))
