@@ -3,8 +3,15 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope"
     >
-  
-  <localUtility class=".zodb.PersistentPrincipalStorage">
+  <content class=".zodb.InternalPrincipal">
+    <require
+        permission="zope.ManageServices"
+        interface=".zodb.IInternalPrincipal"
+        set_schema=".zodb.IInternalPrincipal" 
+        />
+  </content>
+
+  <localUtility class=".zodb.PersistentPrincipalFolder">
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -15,10 +22,16 @@
 
   </localUtility>
 
+  <adapter
+      provides="zope.app.container.interfaces.INameChooser"
+      for=".zodb.IInternalPrincipalContainer"
+      factory=".zodb.NameChooser"
+      />
+
   <browser:addMenuItem
-      title="PAS Authentication Plugin"
-      description="A PAS Authentication Plugin"
-      class="zope.app.pas.zodb.PersistentPrincipalStorage"
+      title="PAS Persistent Authentication Plugin"
+      description="A PAS Persistent Authentication Plugin"
+      class="zope.app.pas.zodb.PersistentPrincipalFolder"
       permission="zope.ManageServices"
       />
       

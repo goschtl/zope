@@ -8,17 +8,38 @@
       template="loginform.pt"
       permission="zope.Public" />
 
-  <pages 
-      permission="zope.ManageServices" 
-      for="..zodb.IPersistentPrincipalStorage"
-      class=".zodb.PrincipalManagement">
-    
-    <page name="editForm.html" template="zodb_overview.pt"
-          menu="zmi_views" title="Managament" />
-    <page name="add.html" attribute="add" />
-    <page name="delete.html" attribute="delete" />
 
-  </pages>
+  <addform
+      schema="..zodb.IInternalPrincipal"
+      label="Add Internal Principal"
+      content_factory="..zodb.InternalPrincipal"
+      arguments="id login password title"
+      keyword_arguments="description"
+      name="AddInternalPrincipalForm.html"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      title="Persistent Principal" 
+      class="..zodb.InternalPrincipal"
+      permission="zope.ManageServices"
+      view="AddInternalPrincipalForm.html"
+      />
+
+  <editform
+      schema="..zodb.IInternalPrincipal"
+      label="Change Internal Principal"
+      name="edit.html"
+      fields="login password title description"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Edit" />
+
+  <containerViews
+      for="..zodb.IInternalPrincipalContainer"
+      add="zope.ManageServices"
+      contents="zope.ManageServices"
+      index="zope.ManageServices"
+      />
 
   <editform
       schema="..httpplugins.IHTTPBasicAuthRealm"
