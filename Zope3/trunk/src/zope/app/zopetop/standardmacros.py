@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,30 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Standard macros for page templates in the ZMI
+
+The macros are drawn from various different page templates.
+
+$Id: standardmacros.py,v 1.1 2004/03/02 17:11:32 philikon Exp $
 """
+from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 
-$Id: sampleinterfaces.py,v 1.4 2003/06/06 21:35:18 philikon Exp $
-"""
-
-from zope.interface import Interface, implements
-
-from zope.app.interfaces.traversing import ITraverser
-
-class FakeTraverser:
-
-    implements(ITraverser)
-
-    def __init__(self, *args, **kw): pass
-
-    def traverse(self, *args, **kw):
-        return None
-
-
-class I1(Interface): pass
-class I2(I1): pass
-
-class O1:
-    implements(I1)
-
-class O2:
-    implements(I2)
+class StandardMacros(BaseMacros):
+    macro_pages = ('view_macros', 'widget_macros', 'dialog_macros',
+                   'navigation_macros')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.14 2004/02/20 09:16:43 philikon Exp $
+$Id: xmlobject.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
 """
 
 from zope.publisher.browser import BrowserView

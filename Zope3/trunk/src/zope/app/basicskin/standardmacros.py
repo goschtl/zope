@@ -15,7 +15,7 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.5 2003/06/06 21:35:18 philikon Exp $
+$Id: standardmacros.py,v 1.1 2004/03/02 17:11:10 philikon Exp $
 """
 from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping

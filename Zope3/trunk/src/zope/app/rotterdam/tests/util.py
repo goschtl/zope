@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Standard macros for page templates in the ZMI
-
-The macros are drawn from various different page templates.
-
-$Id: standardmacros.py,v 1.7 2003/12/06 17:03:32 philikon Exp $
 """
-from zope.app.browser.skins.basic.standardmacros import \
-     StandardMacros as BaseMacros
+$Id: util.py,v 1.1 2004/03/02 17:11:31 philikon Exp $
+"""
+import os
+import zope.app.rotterdam.tests
 
-class StandardMacros(BaseMacros):
-    macro_pages = ('view_macros', 'widget_macros', 'dialog_macros',
-                   'navigation_macros')
+dir = os.path.dirname(zope.app.rotterdam.tests.__file__)
+input_dir = os.path.join(dir, 'input')
+output_dir = os.path.join(dir, 'output')
+
+def read_input(filename):
+    filename = os.path.join(input_dir, filename)
+    return open(filename, 'r').read()
+
+def read_output(filename):
+    filename = os.path.join(output_dir, filename)
+    return open(filename, 'r').read()

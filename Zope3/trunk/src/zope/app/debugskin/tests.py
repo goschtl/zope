@@ -13,16 +13,15 @@
 ##############################################################################
 """ Unit tests for the 'exceptions' view.
 
-Revision information:
-$Id: test_exceptions.py,v 1.2 2003/03/12 14:35:50 tseaver Exp $
+$Id: tests.py,v 1.1 2004/03/02 17:11:29 philikon Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
+from zope.app.debugskin.exceptions import ExceptionDebugView
 
 class TestExceptions(TestCase):
     
     def _getTargetClass(self):
-        from zope.app.browser.skins.debug.exceptions import ExceptionDebugView
         return ExceptionDebugView
 
     def _makeOne(self, *args, **kw):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.4 2003/08/21 14:19:22 srichter Exp $
+$Id: editingwidgets.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
 """
 __metaclass__ = type
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.9 2004/02/25 23:02:20 faassen Exp $
+$Id: test_standardmacros.py,v 1.1 2004/03/02 17:11:11 philikon Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.app.services.tests.placefulsetup \
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.interface import Interface
-from zope.app.browser.skins.basic.standardmacros import Macros
+from zope.app.basicskin.standardmacros import Macros
 
 
 class ViewWithMacros:
@@ -60,7 +60,7 @@ class works_with_page1(ViewWithMacros):
              'tree':'works_with_page1_tree'}
 
 def createMacrosInstance(pages):
-    from zope.app.browser.skins.basic.standardmacros import Macros
+    from zope.app.basicskin.standardmacros import Macros
     class T(Macros):
         def __init__(self, context, request):
             self.context = context

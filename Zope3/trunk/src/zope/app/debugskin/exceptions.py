@@ -11,13 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: standardmacros.py,v 1.3 2003/12/06 17:03:32 philikon Exp $
-"""
-from zope.app.browser.skins.basic.standardmacros import StandardMacros
+"""View that renders a traceback for exceptions.
 
-BaseMacros = StandardMacros
+$Id: exceptions.py,v 1.1 2004/03/02 17:11:29 philikon Exp $
+"""
+import sys
+import traceback
 
-class StandardMacros(BaseMacros):
-    macro_pages = ('skin_macros', 'view_macros', 'dialog_macros',
-                   'navigation_macros')
+from zope.interface.common.interfaces import IException
+
+__metaclass__ = type
+
+
+class ExceptionDebugView:
+    """ Render exceptions for debugging."""
+    __used_for__ = IException
+
+    def __init__(self, context, request):
+
+        self.context = context
+        self.request = request
+
+        self.error_type, self.error_object, tb = sys.exc_info()
+        try:
+            self.traceback_lines = traceback.format_tb(tb)
+        finally:
+            del tb

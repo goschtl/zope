@@ -11,18 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os
+"""
 
-import zope.app.browser.skins.rotterdam.tests
+$Id: sampleinterfaces.py,v 1.1 2004/03/02 17:11:11 philikon Exp $
+"""
 
-dir = os.path.dirname(zope.app.browser.skins.rotterdam.tests.__file__)
-input_dir = os.path.join(dir, 'input')
-output_dir = os.path.join(dir, 'output')
+from zope.interface import Interface, implements
 
-def read_input(filename):
-    filename = os.path.join(input_dir, filename)
-    return open(filename, 'r').read()
+from zope.app.interfaces.traversing import ITraverser
 
-def read_output(filename):
-    filename = os.path.join(output_dir, filename)
-    return open(filename, 'r').read()
+class FakeTraverser:
+
+    implements(ITraverser)
+
+    def __init__(self, *args, **kw): pass
+
+    def traverse(self, *args, **kw):
+        return None
+
+
+class I1(Interface): pass
+class I2(I1): pass
+
+class O1:
+    implements(I1)
+
+class O2:
+    implements(I2)

@@ -12,7 +12,6 @@
   <include package=".security" />
   <include package=".services" />
   <include package=".utilities" />
-  <include package=".skins" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

@@ -99,6 +99,15 @@
   <include package="zope.app.process" />
 
 
+  <!-- Skins -->
+
+  <include package="zope.app.basicskin" />
+  <include package="zope.app.rotterdam" />
+  <include package="zope.app.zopetop" />
+  <include package="zope.app.debugskin" />
+  <defaultSkin name="Rotterdam" />
+
+
   <!-- Additional packages -->
 
   <include package="zope.app.undo" />
@@ -129,5 +138,6 @@
   <!-- Module aliases -->
 
   <include file="zodbaliases.zcml" />
+
 
 </configure>
