@@ -11,15 +11,62 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Translation Service Message Import Filter
+"""Translation Service Message Export and Import Filters
 
-$Id: gettextimportfilter.py,v 1.3 2002/12/31 02:52:05 jim Exp $
+$Id: filters.py,v 1.1 2003/03/25 18:21:35 srichter Exp $
 """
 import time, re
 from types import StringTypes
 
+from zope.i18n.interfaces import IMessageExportFilter
 from zope.i18n.interfaces import IMessageImportFilter
 from zope.i18n.interfaces import IWriteTranslationService
+
+
+class GettextExportFilter:
+
+    __implements__ =  IMessageExportFilter
+    __used_for__ = IWriteTranslationService
+
+
+    def __init__(self, service):
+        self.service = service
+
+    def exportMessages(self, domains, languages):
+        'See IMessageExportFilter'
+
+        if isinstance(domains, StringTypes):
+            domain = domains
+        elif len(domains) == 1:
+            domain = domains[0]
+        else:
+            raise TypeError, \
+                  'Only one domain at a time is supported for gettext export.'
+
+        if isinstance(languages, StringTypes):
+            language = languages
+        elif len(languages) == 1:
+            language = languages[0]
+        else:
+            raise TypeError, \
+                'Only one language at a time is supported for gettext export.'
+
+        dt = time.time()
+        dt = time.localtime(dt)
+        dt = time.strftime('%Y/%m/%d %H:%M', dt)
+        output = _file_header %(dt, language.encode('UTF-8'),
+                                domain.encode('UTF-8'))
+        service = self.service
+
+        for msgid in service.getMessageIdsOfDomain(domain):
+            msgstr = service.translate(domain, msgid,
+                                       target_language=language)
+            msgstr = msgstr.encode('UTF-8')
+            msgid = msgid.encode('UTF-8')
+            output += _msg_template %(msgid, msgstr)
+
+        return output
+
 
 
 class GettextImportFilter:
@@ -62,8 +109,6 @@ class GettextImportFilter:
             msgstr = msgstr.replace('\\n', '\n')
             service.addMessage(domain, msgid, msgstr, language)
 
-    #
-    ############################################################
 
 
 def extractCharset(header):
@@ -162,3 +207,22 @@ def parseGetText(content):
         trans[tuple(MSGID)] = (COM, MSGSTR)
 
     return COM, MSGID, MSGSTR, trans
+
+
+_file_header = '''
+msgid ""
+msgstr ""
+"Project-Id-Version: Zope 3\\n"
+"PO-Revision-Date: %s\\n"
+"Last-Translator: Zope 3 Gettext Export Filter\\n"
+"Zope-Language: %s\\n"
+"Zope-Domain: %s\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=UTF-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+'''
+
+_msg_template = '''
+msgid "%s"
+msgstr "%s"
+'''

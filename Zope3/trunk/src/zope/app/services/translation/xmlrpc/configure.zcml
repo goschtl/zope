@@ -9,7 +9,7 @@
       name="methods"
       for="zope.i18n.interfaces.ITranslationService"
       permission="zope.ManageContent" 
-      allowed_methods="getAllLanguages getAllDomains"
+      allowed_methods="getAllLanguages getAllDomains getMessagesFor"
       factory="zope.app.services.translation.xmlrpc.methods.Methods" />
       
 </zopeConfigure>

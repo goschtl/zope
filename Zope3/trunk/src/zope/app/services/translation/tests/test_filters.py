@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_gettextexportimport.py,v 1.6 2003/02/12 02:17:35 seanb Exp $
+$Id: test_filters.py,v 1.1 2003/03/25 18:21:37 srichter Exp $
 """
 import unittest, time
 
@@ -24,21 +24,16 @@ from zope.app.services.servicenames import Factories
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.component.metaconfigure import \
-     provideService, managerHandler
-from zope.app.component.metaconfigure import handler
+     provideService, managerHandler, handler
 
-from zope.app.services.translation.messagecatalog import \
-     MessageCatalog
+from zope.app.services.translation.messagecatalog import MessageCatalog
 from zope.i18n.negotiator import negotiator
-from zope.i18n.interfaces import INegotiator
-from zope.i18n.interfaces import IUserPreferredLanguages
+from zope.i18n.interfaces import INegotiator, IUserPreferredLanguages
 
 from zope.app.services.translation.translationservice import \
      TranslationService
-from zope.app.services.translation.gettextimportfilter import \
-     GettextImportFilter
-from zope.app.services.translation.gettextexportfilter import \
-     GettextExportFilter
+from zope.app.services.translation.filters import GettextImportFilter
+from zope.app.services.translation.filters import GettextExportFilter
 
 
 
@@ -54,7 +49,6 @@ class Environment:
 
 
 class TestGettextExportImport(PlacelessSetup, unittest.TestCase):
-
 
     _data = '''msgid ""
 msgstr ""
