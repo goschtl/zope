@@ -111,7 +111,7 @@ class BuilderApplication(Application):
     def build_package_distribution(self):
         pkgname = self.metadata.name
         pkgdest = os.path.join(self.destination, pkgname)
-        specs = include.load(self.source)
+        specs = include.load(self.source, url=self.resource_url)
         self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
@@ -120,8 +120,7 @@ class BuilderApplication(Application):
         except zpkgtools.LoadingError, e:
             self.error(str(e))
         self.ip.addIncludes(self.destination, specs.distribution)
-        pkgdir = os.path.join(self.destination, pkgname)
-        pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
+        pkginfo = package.loadPackageInfo(pkgname, pkgdest, pkgname)
         setup_cfg = os.path.join(self.destination, "setup.cfg")
         if not os.path.exists(setup_cfg):
             # only generate setup.cfg if it doesn't exist already
