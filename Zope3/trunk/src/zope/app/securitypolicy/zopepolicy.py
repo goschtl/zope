@@ -24,7 +24,9 @@ from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.security.settings import Allow, Deny
+from zope.app import zapi
+
+from zope.app.security.settings import Allow, Deny, Unset
 
 from zope.app.securitypolicy.principalpermission \
      import principalPermissionManager
@@ -41,9 +43,11 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.app.securitypolicy.interfaces import IGrantInfo
 
+SettingAsBoolean = {Allow: True, Deny: False, Unset: None, None: None}
+
 class CacheEntry:
     pass
-    
+        
 class ZopeSecurityPolicy(ParanoidSecurityPolicy):
     zope.interface.classProvides(ISecurityPolicy)
 
@@ -63,7 +67,9 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
             self._cache[id(parent)] = cache, parent
         return cache
     
-    def cached_decision(self, parent, principal, permission):
+    def cached_decision(self, parent, principal, groups, permission):
+        # Return the decision for a principal and permission
+
         cache = self.cache(parent)
         try:
             cache_decision = cache.decision
@@ -78,23 +84,34 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
             return cache_decision_prin[permission]
         except KeyError:
             pass
+
+        # cache_decision_prin[permission] is the cached decision for a
+        # principal and permission.
             
-        decision = self.cached_prinper(parent, principal, permission)
+        decision = self.cached_prinper(parent, principal, groups, permission)
+        if (decision is None) and groups:
+            decision = self._group_based_cashed_prinper(parent, principal,
+                                                        groups, permission)
         if decision is not None:
             cache_decision_prin[permission] = decision
             return decision
 
         roles = self.cached_roles(parent, permission)
         if roles:
-            for role in self.cached_principal_roles(parent, principal):
-                if role in roles:
+            prin_roles = self.cached_principal_roles(parent, principal)
+            if groups:
+                prin_roles = self.cached_principal_roles_w_groups(
+                    parent, principal, groups, prin_roles)
+            for role, setting in prin_roles.items():
+                if setting and (role in roles):
                     cache_decision_prin[permission] = decision = True
                     return decision
 
         cache_decision_prin[permission] = decision = False
         return decision
         
-    def cached_prinper(self, parent, principal, permission):
+    def cached_prinper(self, parent, principal, groups, permission):
+        # Compute the permission, if any, for the principal.
         cache = self.cache(parent)
         try:
             cache_prin = cache.prin
@@ -111,25 +128,48 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
             pass
 
         if parent is None:
-            prinper = globalPrincipalPermissionSetting(
-                permission, principal, None)
-            if prinper is not None:
-                prinper = prinper is Allow
+            prinper = SettingAsBoolean[
+                globalPrincipalPermissionSetting(permission, principal, None)
+                ]
             cache_prin_per[permission] = prinper
             return prinper
 
         prinper = IPrincipalPermissionMap(parent, None)
         if prinper is not None:
-            prinper = prinper.getSetting(permission, principal, None)
+            prinper = SettingAsBoolean[
+                prinper.getSetting(permission, principal, None)
+                ]
             if prinper is not None:
-                prinper = prinper is Allow
                 cache_prin_per[permission] = prinper
                 return prinper
 
         parent = removeSecurityProxy(getattr(parent, '__parent__', None))
-        prinper = self.cached_prinper(parent, principal, permission)
+        prinper = self.cached_prinper(parent, principal, groups, permission)
         cache_prin_per[permission] = prinper
         return prinper
+
+    def _group_based_cashed_prinper(self, parent, principal, groups,
+                                    permission):
+        denied = False
+        for group_id, ggroups in groups:
+            decision = self.cached_prinper(parent, group_id, ggroups,
+                                           permission)
+            if (decision is None) and ggroups:
+                decision = self._group_based_cashed_prinper(
+                    parent, group_id, ggroups, permission)
+            
+            if decision is None:
+                continue
+            
+            if decision:
+                return decision
+
+            denied = True
+
+        if denied:
+            return False
+
+        return None
         
     def cached_roles(self, parent, permission):
         cache = self.cache(parent)
@@ -167,6 +207,25 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
         cache_roles[permission] = roles
         return roles
 
+    def cached_principal_roles_w_groups(self, parent,
+                                        principal, groups, prin_roles):
+        denied = {}
+        allowed = {}
+        for group_id, ggroups in groups:
+            group_roles = dict(self.cached_principal_roles(parent, group_id))
+            if ggroups:
+                group_roles = self.cached_principal_roles_w_groups(
+                    parent, group_id, ggroups, group_roles)
+            for role, setting in group_roles.items():
+                if setting:
+                    allowed[role] = setting
+                else:
+                    denied[role] = setting
+
+        denied.update(allowed)
+        denied.update(prin_roles)
+        return denied
+
     def cached_principal_roles(self, parent, principal):
         cache = self.cache(parent)
         try:
@@ -180,107 +239,137 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
 
         if parent is None:
             roles = dict(
-                [(role, 1)
+                [(role, SettingAsBoolean[setting])
                  for (role, setting) in globalRolesForPrincipal(principal)
-                 if setting is Allow
                  ]
                  )
-            roles['zope.Anonymous'] = 1 # Everybody has Anonymous
+            roles['zope.Anonymous'] = True # Everybody has Anonymous
             cache_principal_roles[principal] = roles
             return roles
             
         roles = self.cached_principal_roles(
             removeSecurityProxy(getattr(parent, '__parent__', None)),
             principal)
+
         prinrole = IPrincipalRoleMap(parent, None)
         if prinrole:
             roles = roles.copy()
             for role, setting in prinrole.getRolesForPrincipal(principal):
-                if setting is Allow:
-                    roles[role] = 1
-                elif role in roles:
-                    del roles[role]
+                roles[role] = SettingAsBoolean[setting]
 
         cache_principal_roles[principal] = roles
         return roles
-        
 
     def checkPermission(self, permission, object):
         if permission is CheckerPublic:
             return True
 
-        principals = {}
+        object = removeSecurityProxy(object)
+        seen = {}
         for participation in self.participations:
             principal = participation.principal
             if principal is system_user:
                 continue # always allow system_user
-            principals[principal.id] = 1
 
-        if not principals:
-            return True
-
-        object = removeSecurityProxy(object)
-        parent = removeSecurityProxy(getattr(object, '__parent__', None))
-
-        grant_info = IGrantInfo(object, None)
-        if not grant_info:
-            # No local grants; just use cached decision for parent
-            for principal in principals:
-                if not self.cached_decision(parent, principal, permission):
-                    return False
-            return True
-
-        # We need to combine local and parent info
-            
-        # First, look for principal grants
-        for principal in principals.keys():
-            setting = grant_info.principalPermissionGrant(
-                principal, permission)
-            if setting is Deny:
-                return False
-            elif setting is Allow: # setting could be None
-                del principals[principal]
-                if not principals:
-                    return True
+            if principal.id in seen:
                 continue
 
-            decision = self.cached_prinper(parent, principal, permission)
-            if decision is not None:
-                if decision:
-                    del principals[principal]
-                    if not principals:
-                        return True
-                else:
-                    return decision # False
+            if not self.cached_decision(
+                object, principal.id, self._groupsFor(principal), permission,
+                ):
+                return False
 
-        roles = self.cached_roles(parent, permission)
-        local_roles = grant_info.getRolesForPermission(permission)
-        if local_roles:
-            roles = roles.copy()
-            for role, setting in local_roles:
-                if setting is Allow:
-                    roles[role] = 1
-                elif role in roles:
-                    del roles[role]
+            seen[principal.id] = 1
 
-        for principal in principals.keys():
-            proles = self.cached_principal_roles(parent, principal).copy()
-            for role, setting in grant_info.getRolesForPrincipal(principal):
-                if setting is Allow:
-                    if role in roles:
-                        del principals[principal]
-                        if not principals:
-                            return True
-                        break
-                elif role in proles:
-                    del proles[role]
+        return True
+
+    def _findGroupsFor(self, principal, getPrincipal, seen):
+        result = []
+        for group_id in getattr(principal, 'groups', ()):
+            if group_id in seen:
+                # Dang, we have a cycle.  We don't want to
+                # raise an exception here (or do we), so we'll skip it
+                continue
+            seen.append(group_id)
+            
+            try:
+                group = getPrincipal(group_id)
+            except PrincipalLookupError:
+                # It's bad if we have an undefined principal,
+                # but we don't want to fail here.  But we won't
+                # honor any grants for the group. We'll just skip it.
+                continue
+
+            result.append((group_id,
+                           self._findGroupsFor(group, getPrincipal, seen)))
+            seen.pop()
+            
+        return tuple(result)
+
+    def _groupsFor(self, principal):
+        groups = self._cache.get(principal.id)
+        if groups is None:
+            groups = getattr(principal, 'groups', ())
+            if groups:
+                getPrincipal = zapi.principals().getPrincipal
+                groups = self._findGroupsFor(principal, getPrincipal, [])
             else:
-                for role in proles:
-                    if role in roles:
-                        del principals[principal]
-                        if not principals:
-                            return True
-                        break                        
+                groups = ()
+
+            self._cache[principal.id] = groups
+
+        return groups
+
+def settingsForObject(ob):
+    """Analysis tool to show all of the grants to a process
+    """
+    result = []
+    while ob is not None:
+        data = {}
+        result.append((getattr(ob, '__name__', '(no name)'), data))
+        
+        principalPermissions = IPrincipalPermissionMap(ob, None)
+        if principalPermissions is not None:
+            settings = principalPermissions.getPrincipalsAndPermissions()
+            settings.sort()
+            data['principalPermissions'] = [
+                {'principal': pr, 'permission': p, 'setting': s}
+                for (p, pr, s) in settings]
+
+        principalRoles = IPrincipalRoleMap(ob, None)
+        if principalRoles is not None:
+            settings = principalRoles.getPrincipalsAndRoles()
+            data['principalRoles'] = [
+                {'principal': p, 'role': r, 'setting': s}
+                for (r, p, s) in settings]
+
+        rolePermissions = IRolePermissionMap(ob, None)
+        if rolePermissions is not None:
+            settings = rolePermissions.getRolesAndPermissions()
+            data['rolePermissions'] = [
+                {'permission': p, 'role': r, 'setting': s}
+                for (p, r, s) in settings]
                 
-        return False
+        ob = getattr(ob, '__parent__', None)
+
+    data = {}
+    result.append(('global settings', data))
+
+    settings = principalPermissionManager.getPrincipalsAndPermissions()
+    settings.sort()
+    data['principalPermissions'] = [
+        {'principal': pr, 'permission': p, 'setting': s}
+        for (p, pr, s) in settings]
+
+    settings = principalRoleManager.getPrincipalsAndRoles()
+    data['principalRoles'] = [
+        {'principal': p, 'role': r, 'setting': s}
+        for (r, p, s) in settings]
+
+    settings = rolePermissionManager.getRolesAndPermissions()
+    data['rolePermissions'] = [
+        {'permission': p, 'role': r, 'setting': s}
+        for (p, r, s) in settings]
+
+    return result
 
