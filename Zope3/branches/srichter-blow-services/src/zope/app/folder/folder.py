@@ -21,14 +21,13 @@ from BTrees.OOBTree import OOBTree
 from interfaces import IFolder, IRootFolder
 from persistent import Persistent
 from zope.app.container.contained import Contained, setitem, uncontained
-from zope.app.site.interfaces import ISite
-from zope.app.site.servicecontainer import ServiceManagerContainer
+from zope.app.component.interfaces import ISite
+from zope.app.component.site import SiteManagerContainer
 from zope.exceptions import DuplicationError
 from zope.interface import implements, directlyProvides
 
-class Folder(Persistent, ServiceManagerContainer, Contained):
-    """The standard Zope Folder implementation.
-    """
+class Folder(Persistent, SiteManagerContainer, Contained):
+    """The standard Zope Folder implementation."""
 
     implements(IFolder)
 
