@@ -11,6 +11,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - WorkflowTool: Fixed 'setChainForPortalTypes'.
+      If 'chain' was an empty string, it wasn't set correctly.
+
     - FSFile, FSImage: Made available to caching policy manager as
       standard content. (http://zope.org/Collectors/CMF/299)
 
