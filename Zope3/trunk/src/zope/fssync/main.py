@@ -32,14 +32,12 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.33 2003/08/12 18:06:20 fdrake Exp $
+$Id: main.py,v 1.34 2003/08/12 18:11:14 fdrake Exp $
 """
 
 import os
-import sys
 
 from zope.fssync.command import Command, Usage
-from zope.fssync.fsutil import Error
 from zope.fssync.fssync import FSSync
 
 
@@ -305,6 +303,3 @@ command_table = [
     (status,   "stat st", "",           ""),
     (update,   "up",      "",           ""),
     ]
-
-if __name__ == "__main__":
-    sys.exit(main())
