@@ -1,6 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:fssync="http://namespaces.zope.org/fssync"
     >
 
   <!-- Registration registries -->
@@ -67,12 +66,5 @@
     for=".interfaces.IRegistrationManager
          zope.app.container.interfaces.IObjectRemovedEvent"
     />
-
-  <!-- Filesystem synchronization support -->
-  
-  <fssync:adapter
-      class=".registration.RegistrationManager"
-      factory="zope.fssync.server.entryadapter.DirectoryAdapter"
-      />
 
 </configure>

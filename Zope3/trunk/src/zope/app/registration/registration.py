@@ -21,12 +21,9 @@ from persistent import Persistent
 import zope.cachedescriptors.property
 from zope.interface import implements
 from zope.exceptions import DuplicationError
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.fssync.server.interfaces import IObjectFile
 from zope.proxy import removeAllProxies, getProxiedObject
 from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
-from zope.xmlpickle import dumps, loads
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -904,53 +901,3 @@ class RegisterableContainer(object):
         l = name.rfind('.')
         mod = self.findModule(name[:l])
         return getattr(mod, name[l+1:])
-
-
-class ComponentRegistrationAdapter(ObjectEntryAdapter):
-    """Fssync adapter for ComponentRegistration objects and subclasses.
-
-    This is fairly generic -- it should apply to most subclasses of
-    ComponentRegistration.  But in order for it to work for a
-    specific subclass (say, UtilityRegistration), you have to (a) add
-    an entry to configure.zcml, like this:
-
-        <fssync:adapter
-            class=".utility.UtilityRegistration"
-            factory=".registration.ComponentRegistrationAdapter"
-            />
-
-    and (b) add a function to factories.py, like this:
-
-        def UtilityRegistration():
-            from zope.app.utility import UtilityRegistration
-            return UtilityRegistration("", None, "")
-
-    The file representation of a registration object is an XML pickle
-    for a modified version of the instance dict.  In this version of
-    the instance dict, the __annotations__ attribute is omitted,
-    because annotations are already stored on the filesystem in a
-    different way (in @@Zope/Annotations/<file>).
-    """
-
-    implements(IObjectFile)
-
-    def factory(self):
-        """See IObjectEntry."""
-        name = self.context.__class__.__name__
-        return "zope.app.registration.factories." + name
-
-    def getBody(self):
-        """See IObjectEntry."""
-        obj = removeAllProxies(self.context)
-        ivars = {}
-        ivars.update(obj.__getstate__())
-        aname = "__annotations__"
-        if aname in ivars:
-            del ivars[aname]
-        return dumps(ivars)
-
-    def setBody(self, body):
-        """See IObjectEntry."""
-        obj = removeAllProxies(self.context)
-        ivars = loads(body)
-        obj.__setstate__(ivars)
