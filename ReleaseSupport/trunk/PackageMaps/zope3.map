@@ -5,8 +5,13 @@
 
 # These packages are the Zope 3 components.
 #
+docutils       svn://svn.zope.org/repos/main/Zope3/tags/*/src/docutils
 zodbcode       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
 zope           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
+
+# Related components for use with Zope 3:
+buddydemo      svn://svn.zope.org/repos/main/Zope3/tags/*/src/buddydemo
+z3checkins     svn://svn.zope.org/repos/main/Zope3/tags/*/src/z3checkins
 
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
 #
