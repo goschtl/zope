@@ -164,7 +164,6 @@ def testNotObservableEvents(self):
     """
 
 def test_suite():
-    import sys
     return unittest.TestSuite((
         doctest.DocTestSuite(),
         doctest.DocTestSuite('zope.app.observable.observers'),
@@ -172,4 +171,3 @@ def test_suite():
 
 if __name__ == '__main__':
     test_suite()
-    
