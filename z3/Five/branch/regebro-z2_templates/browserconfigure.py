@@ -13,7 +13,7 @@ namespace in ZCML known from zope.app.
 
 $Id$
 """
-import os
+import os, sys
 
 from zope.interface import Interface
 from zope.component import getGlobalService, ComponentLookupError
@@ -23,9 +23,11 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
+from zope.app.publisher.browser.globalbrowsermenuservice import menuItemDirective
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 from zope.app.form.browser.metaconfigure import BaseFormDirective
+from zope.app.container.interfaces import IAdding
 
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
@@ -33,7 +35,66 @@ from resource import DirectoryResourceFactory
 from browser import BrowserView, EditView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
-from globalbrowsermenuservice import menuItemDirective
+
+from Products.CMFCore.FSPageTemplate import FSPageTemplate
+from Products.PageTemplates.Expressions import SecureModuleImporter
+
+def package_home(gdict):
+    filename = gdict["__file__"]
+    return os.path.dirname(filename)
+
+from Products.TrustedExecutables.TrustedPageTemplateFile import TrustedPageTemplateFile
+
+class TwoPageTemplateFile(TrustedPageTemplateFile):
+
+    def __init__(self, filename, _prefix=None, **kw):
+        self.ZBindings_edit(self._default_bindings)
+        if _prefix is None:
+            _prefix = sys._getframe(2).f_globals
+        if not isinstance(_prefix, str):
+            _prefix = package_home(_prefix)
+        name = kw.get('__name__')
+        basepath, ext = os.path.splitext(filename)
+        if name:
+            self._need__name__ = 0
+            self.__name__ = name
+        else:
+            self.__name__ = os.path.basename(basepath)
+        if not ext:
+            # XXX This is pretty bogus, but can't be removed since
+            # it's been released this way.
+            filename = filename + '.zpt'
+        self.filename = os.path.join(_prefix, filename)
+
+    def pt_getContext(self):
+        view = self._getContext()
+        try:
+            root = self.getPhysicalRoot()
+            here = view.context
+        except AttributeError:
+            # self has no attribute getPhysicalRoot. This typically happens when the template has
+            # no proper acquisition context. That means it has no view, since that's the normal
+            # context for a template in Five. /regebro
+            root = self.context.getPhysicalRoot()
+            here = self.context
+            view = None
+
+        request = getattr(root, 'REQUEST', None)
+        c = {'template': self,
+             'here': here,
+             'context': here,
+             'container': self._getContainer(),
+             'nothing': None,
+             'options': {},
+             'root': root,
+             'request': request,
+             'modules': SecureModuleImporter,
+             }
+        if view:
+            c['view'] = view
+            c['views'] = ViewMapper(here, request)
+
+        return c
 
 class FivePageTemplateFile(ViewPageTemplateFile):
 
@@ -374,6 +435,37 @@ class EditFormDirective(BaseFormDirective):
             kw={'menu': self.menu},
         )
 
+
+def AddViewFactory(name, schema, label, permission, layer,
+                   template, default_template, bases, for_,
+                   fields, content_factory, arguments,
+                   keyword_arguments, set_before_add, set_after_add,
+                   menu=u''):
+
+    s = getGlobalService(Presentation)
+    class_ = makeClassForTemplate(template, used_for=schema, bases=bases)
+
+    class_.schema = schema
+    class_.label = label
+    class_.fieldNames = fields
+    class_._factory = content_factory
+    class_._arguments = arguments
+    class_._keyword_arguments = keyword_arguments
+    class_._set_before_add = set_before_add
+    class_._set_after_add = set_after_add
+
+    class_.generated_form = ViewPageTemplateFile(default_template)
+
+#     defineChecker(class_,
+#                   NamesChecker(
+#                     ("__call__", "__getitem__",
+#                      "browserDefault", "publishTraverse"),
+#                     permission,
+#                     )
+#                   )
+
+    s.provideView(for_, name, IBrowserRequest, class_, layer)
+
 #
 # mixin classes / class factories
 #
@@ -409,7 +501,7 @@ def makeClassForTemplate(src, template=None, used_for=None,
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': FivePageTemplateFile(src, template)})
+    cdict.update({'index': TwoPageTemplateFile(src, template)})
     bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 
