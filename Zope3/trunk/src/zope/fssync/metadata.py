@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.1 2003/05/12 20:19:38 gvanrossum Exp $
+$Id: metadata.py,v 1.2 2003/05/13 16:15:21 gvanrossum Exp $
 """
 
 import os
@@ -30,17 +30,12 @@ from os.path import exists, isdir, isfile, split, join, realpath, normcase
 
 from zope.xmlpickle import loads, dumps
 
+case_insensitive = (normcase("ABC") == normcase("abc"))
+
 class Metadata(object):
 
-    def __init__(self, case_insensitive=None):
-        """Constructor.
-
-        The case_insensitive can be passed as an argument for testing;
-        by default, it is set by observing the behavior of normcase().
-        """
-        if case_insensitive is None:
-            case_insensitive = (normcase("ABC") == normcase("abc"))
-        self.case_insensitive = case_insensitive
+    def __init__(self):
+        """Constructor."""
         self.cache = {} # Keyed by normcase(dirname(realpath(file)))
         self.originals = {} # Original copy as read from file
 
@@ -65,14 +60,15 @@ class Metadata(object):
         entries = self._getentries(dir)
         if base in entries:
             return entries[base]
-        if self.case_insensitive:
+        if case_insensitive:
             # Look for a case-insensitive match -- expensive!
             # XXX There's no test case for this code!
-            # XXX What if there are multiple matches?
             nbase = normcase(base)
-            for b in entries:
-                if normcase(b) == nbase:
-                    return entries[b]
+            matches = [b for b in entries if normcase(b) == nbase]
+            if matches:
+                if len(matches) > 1:
+                    raise KeyError("multiple entries match %r" % nbase)
+                return entries[matches[0]]
         # Create a new entry
         entries[base] = entry = {}
         return entry
