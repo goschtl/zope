@@ -1,0 +1,81 @@
+Future
+
+  New Features
+  
+    - Added .js to the extensions that create FSFile objects in
+      DirectoryViews
+
+    - (__future__) Exposed role management for manager users on the
+      default roster:  managers can now "promote" members without going
+      to the ZMI.
+
+    - (__future__) Added "custom schema" mechanism for content objects:
+      site managers can now define additional propertysheets for a
+      content type, which will then be reflected in instances created
+      from the type.
+
+    - (__future__) Added simple link extraction / checking for textual
+      content.  Link checking also works for Link objects.
+
+    - (__future__) Added "composite content" types (see the "dogbowl
+      proposal",
+      (http://cmf.zope.org/rqmts/proposals/compounds/compoundproposal.txt).
+
+    - (__future__) Added DCWorkflow (through-the-web configurable
+      workflows) to the core set of CMF products.
+
+    - Cleaned up Interfaces and API Help (Collector #96):
+
+      o  Removed redundant 'Syndicatable' and 'IndexableContent' interfaces.
+
+      o  Removed unfixable 'Membership' and 'ReviewableContent' interfaces.
+
+      o  Removed listActions() from 'Contentish' and 'portal_workflow'
+         interface.
+
+      o  Removed redundant or 'None' overriding of listActions().
+
+      o  Updated all interfaces to work with new Zope 2.6 Interface API.
+
+      o  Added 'portal_properties' and 'Dynamic' interfaces.
+
+      o  Added many interface implementation tests and made them pass.
+
+    - Removed deprecated 'register' module and 'PortalContentRegistration'
+      interface.
+
+    - Moved URLTool to CMFCore. Added interface and basic tests.
+      (Collector #67)
+
+    - Added FSFile skin object, in order to allow .swf files (et al.) in 
+      skins
+
+    - Added 'listMetaTags' skin method, which filters the DublinCore
+      metadata into a form suitable for inclusion as <meta> tags.
+
+  Bug Fixes
+
+    - Multimodule checkin to convert calls from user.getUserName() to
+      user.getId() where appropriate.  User names should not be used
+      as immutable references, while user ids should.  The distinction
+      is not clearly enforcd in the stock user folder or any current user
+      folder implementations, but newer user folder implementations
+      will rely upon it.
+
+    - Remove redundant VERSION.txt files;  the canonical spelling is
+      'version.txt' (Collector #13).
+
+    - Fixed a race condition in CMFCore.FSObject._updateFromFS() which
+      sometimes led to initialization problems in FSPythonScripts.
+      (Collector #37)
+
+    - FSPageTemplates overwrote a user-generated 'Content-Type' header.
+      We now check to make sure a Content-Type header is not already set
+      before allowing a page template to set its own.
+
+    - Fixed CalendarTool to use portal_type and not Type to search for
+      events in the catalog (Collector #28, thanks to Heimo Laukkanen
+      for the report).
+
+    - Fixed a bug in CalendarTool where events were not showing on the
+      last day of the month.
