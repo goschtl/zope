@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testUtility.py,v 1.5 2002/12/05 13:27:05 dannu Exp $
+$Id: testUtility.py,v 1.6 2002/12/09 16:09:18 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -94,8 +94,8 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        setDefaultViewName(IText, IBrowserPresentation, 'normal')
-        provideView(IText, 'normal', IBrowserPresentation, W)
+        setDefaultViewName(IText, IBrowserPresentation, 'edit')
+        provideView(IText, 'edit', IBrowserPresentation, W)
 
     def test_fieldNames(self):
 

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.5 2002/11/11 20:52:57 jim Exp $
+$Id: Utility.py,v 1.6 2002/12/09 16:09:18 jim Exp $
 """
 __metaclass__ = type
 
@@ -41,7 +41,7 @@ from Zope.App.Forms.Exceptions import WidgetsError, MissingInputError
 from Zope.ComponentArchitecture.IView import IViewFactory
 
 
-def setUpWidget(view, name, field, value=None, prefix=None, force=0):
+def setUpWidget(view, name, field, value=None, prefix=None, force=0, vname=None):
     """Set up a single view widget
 
     The widget will be an attribute of the view. If there is already
@@ -58,7 +58,8 @@ def setUpWidget(view, name, field, value=None, prefix=None, force=0):
     if widget is None:
         # There isn't already a widget, create one
         field = field.bind(view.context)
-        vname = getDefaultViewName(field, view.request)
+        if vname is None:
+            vname = getDefaultViewName(field, view.request)
         widget = getView(field, vname, view.request)
         setattr(view, name, widget)
 
@@ -124,8 +125,13 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
+            if field.readonly:
+                vname = 'display'
+            else:
+                vname = 'edit'
+                
             setUpWidget(view, name, field, getattr(content, name, None),
-                        prefix = prefix, force = force)
+                        prefix = prefix, force = force, vname = vname)
 
 def haveWidgetsData(view, schema):
     """Collect the user-entered data defined by a schema

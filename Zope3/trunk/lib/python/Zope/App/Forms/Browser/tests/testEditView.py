@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: testEditView.py,v 1.3 2002/12/01 10:22:33 jim Exp $
+"""$Id: testEditView.py,v 1.4 2002/12/09 16:09:18 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
@@ -48,8 +48,8 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideView(ITextLine, 'widget', IBrowserPresentation, TextWidget)
-        setDefaultViewName(ITextLine, IBrowserPresentation, "widget")
+        provideView(ITextLine, 'edit', IBrowserPresentation, TextWidget)
+        setDefaultViewName(ITextLine, IBrowserPresentation, "edit")
 
     def test_setPrefix_and_widgets(self):
         v = EV(C(), TestRequest())

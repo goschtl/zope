@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testAddServiceContainer.py,v 1.2 2002/11/30 18:39:17 jim Exp $
+$Id: testAddServiceContainer.py,v 1.3 2002/12/09 16:09:20 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -85,11 +85,11 @@ class Test(PlacefulSetup, TestCase):
             self.rootFolder, "folder1/folder1_1/++etc++Services/Packages")
         self.__default = traverse(self.__Packages, 'default')
 
-        setDefaultViewName(IField, IBrowserPresentation, "widget")
-        provideView(IConfigurationStatus, "widget", IBrowserPresentation,
+        setDefaultViewName(IField, IBrowserPresentation, 'edit')
+        provideView(IConfigurationStatus, 'edit', IBrowserPresentation,
                     ConfigurationStatusWidget)
-        provideView(ITextLine, "widget", IBrowserPresentation, TextWidget)
-        provideView(IText, "widget", IBrowserPresentation, TextAreaWidget)
+        provideView(ITextLine, 'edit', IBrowserPresentation, TextWidget)
+        provideView(IText, 'edit', IBrowserPresentation, TextAreaWidget)
 
     def test_services(self):
         

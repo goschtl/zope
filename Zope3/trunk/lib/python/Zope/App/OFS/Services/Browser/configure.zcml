@@ -6,7 +6,7 @@
 
 <view
     for=".ConfigurationInterfaces.IConfigurationStatus"
-    name="widget"
+    name="edit"
     factory=".Browser.ConfigurationStatusWidget."
     allowed_interface="Zope.App.Forms.Views.Browser.IBrowserWidget."
     permission="Zope.ManageServices"

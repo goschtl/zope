@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testImageUpload.py,v 1.2 2002/12/05 13:27:05 dannu Exp $
+$Id: testImageUpload.py,v 1.3 2002/12/09 16:09:18 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -42,9 +42,9 @@ class Test(PlacelessSetup, TestCase):
         PlacelessSetup.setUp(self)
 
         # Configure the widget views
-        setDefaultViewName(IField, IBrowserPresentation, "widget")
-        provideView(IBytesLine, "widget", IBrowserPresentation, BytesWidget)
-        provideView(IBytes, "widget", IBrowserPresentation, BytesAreaWidget)
+        setDefaultViewName(IField, IBrowserPresentation, 'edit')
+        provideView(IBytesLine, 'edit', IBrowserPresentation, BytesWidget)
+        provideView(IBytes, 'edit', IBrowserPresentation, BytesAreaWidget)
 
         icondir = os.path.split(Zope.App.OFS.Content.Image.__file__)[0]
         data = open(os.path.join(icondir, 'Image_icon.gif'), 'rb').read()

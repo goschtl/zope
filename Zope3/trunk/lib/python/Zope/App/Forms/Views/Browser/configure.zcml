@@ -5,69 +5,69 @@
 >
 
   <!-- Form Widget View Directives -->
-  <browser:defaultView for="Zope.Schema.IField." name="widget" />
+  <browser:defaultView for="Zope.Schema.IField." name="edit" />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.ITextLine"
-      name="widget"
+      name="edit"
       factory=".Widget.TextWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IText"
-      name="widget"
+      name="edit"
       factory=".Widget.TextAreaWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IBytesLine"
-      name="widget"
+      name="edit"
       factory=".Widget.BytesWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IBytes"
-      name="widget"
+      name="edit"
       factory=".Widget.BytesAreaWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IInt"
-      name="widget"
+      name="edit"
       factory=".Widget.IntWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IFloat"
-      name="widget"
+      name="edit"
       factory=".Widget.FloatWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IBool"
-      name="widget"
+      name="edit"
       factory=".Widget.CheckBoxWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.ITuple"
-      name="widget"
+      name="edit"
       factory=".Widget.TextAreaWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IList"
-      name="widget"
+      name="edit"
       factory=".Widget.TextAreaWidget." />
 
   
