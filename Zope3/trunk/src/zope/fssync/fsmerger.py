@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.9 2003/06/04 11:11:29 gvanrossum Exp $
+$Id: fsmerger.py,v 1.10 2003/06/05 14:41:55 gvanrossum Exp $
 """
 
 import os
@@ -56,32 +56,38 @@ class FSMerger(object):
             self.reporter("XXX %s" % local)
         self.merge_extra(local, remote)
         self.merge_annotations(local, remote)
+        if not exists(local) and not self.metadata.getentry(local):
+            self.remove_special(local, "Extra")
+            self.remove_special(local, "Annotations")
+            self.remove_special(local, "Original")
 
     def merge_extra(self, local, remote):
         """Helper to merge the Extra trees."""
         lextra = fsutil.getextra(local)
         rextra = fsutil.getextra(remote)
         self.merge_dirs(lextra, rextra)
-        if not exists(local):
-            self.remove_special(local, "Extra")
 
     def merge_annotations(self, local, remote):
         """Helper to merge the Anotations trees."""
         lannotations = fsutil.getannotations(local)
         rannotations = fsutil.getannotations(remote)
         self.merge_dirs(lannotations, rannotations)
-        if not exists(local):
-            self.remove_special(local, "Annotations")
 
     def remove_special(self, local, what):
-        """Helper to remove an Extra or Annotations tree."""
-        lextra = fsutil.getextra(local)
-        if isdir(lextra):
-            shutil.rmtree(lextra)
-        try:
-            os.rmdir(join(local, "@@Zope", "Extra"))
-        except os.error:
-            pass
+        """Helper to remove an Original, Extra or Annotations file/tree."""
+        head, tail = fsutil.split(local)
+        dir = join(head, "@@Zope", what)
+        target = join(dir, tail)
+        if exists(target):
+            if isdir(target):
+                shutil.rmtree(target)
+            else:
+                os.remove(target)
+        if isdir(dir):
+            try:
+                os.rmdir(dir)
+            except os.error:
+                pass
 
     def merge_files(self, local, remote):
         """Merge remote file into local file."""
