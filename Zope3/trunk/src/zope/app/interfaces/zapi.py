@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.7 2003/06/12 09:33:47 jim Exp $
+$Id: zapi.py,v 1.8 2003/06/27 02:50:11 fdrake Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
 from zope.app.interfaces.context import IContextWrapper
@@ -36,4 +36,13 @@ class IZAPI(
 
         This is the name the object is stored under in the container
         it was accessed in.  If the name is unknown, None is returned.
+        """
+
+    def UserError(*args):
+        """Return an error message to a user.
+
+        The error is an exception to be raised.
+
+        The given args will be converted to strings and displayed in
+        the message shown the user.
         """
