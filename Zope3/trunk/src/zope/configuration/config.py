@@ -1133,6 +1133,7 @@ def defineSimpleDirective(context, name, schema, handler,
 
     def factory(context, data, info):
         return SimpleStackItem(context, handler, info, schema, data)
+    factory.schema = schema
 
     context.register(usedIn, name, factory)
     context.document(name, schema, usedIn, handler, context.info)
@@ -1192,6 +1193,7 @@ def defineGroupingDirective(context, name, schema, handler,
         newcontext = handler(context, **args)
         newcontext.info = info
         return GroupingStackItem(newcontext)
+    factory.schema = schema
 
     context.register(usedIn, name, factory)
     context.document(name, schema, usedIn, handler, context.info)
@@ -1212,6 +1214,7 @@ class ComplexDirectiveDefinition(GroupingContextDecorator, dict):
 
         def factory(context, data, info):
             return ComplexStackItem(self, context, data, info)
+        factory.schema = self.schema
 
         self.register(self.usedIn, (self.namespace, self.name), factory)
         self.document((self.namespace, self.name), self.schema, self.usedIn,
