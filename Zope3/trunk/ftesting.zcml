@@ -37,7 +37,4 @@
 
   <grant role="Manager" principal="mgr" />
 
-  <include package="zopeproducts.sfbr.ftests" file="test.zcml" />
-  <includeOverrides file="overrides.zcml" />
-
 </configure>
