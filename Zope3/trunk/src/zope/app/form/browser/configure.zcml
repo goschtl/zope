@@ -1,4 +1,23 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+  
+  <!-- Form Macros -->
+  
+  <browser:page
+      for="*"
+      name="form_macros"
+      permission="zope.Public"
+      class=".macros.FormMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping" 
+      />
+      
+  <browser:page 
+      for="*"
+      name="widget_macros"
+      permission="zope.Public"
+      template="widget_macros.pt"
+      />
 
   <!-- Views for Widget Errors -->
 
