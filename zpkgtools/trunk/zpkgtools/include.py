@@ -34,6 +34,7 @@ import urllib2
 
 from zpkgtools import Error
 
+from zpkgtools import cfgparser
 from zpkgtools import cvsloader
 from zpkgtools import publication
 
@@ -42,16 +43,41 @@ from zpkgtools import publication
 EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
 EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]", ".#*", "*~"]
 
+# Name of the configuration file:
+PACKAGE_CONF = "PACKAGE.cfg"
+
 
 class InclusionError(Error):
     pass
 
 
-class InclusionSpecificationError(ValueError, InclusionError):
-    def __init__(self, message, filename, lineno):
+class InclusionSpecificationError(cfgparser.ConfigurationError, InclusionError):
+    def __init__(self, message, filename=None, lineno=None):
+        InclusionError.__init__(self, message)
+        cfgparser.ConfigurationError.__init__(self, message)
         self.filename = filename
         self.lineno = lineno
-        ValueError.__init__(self, message)
+
+
+def load(sourcedir):
+    """Return the specifications for populating the distribution and
+    collection directories.
+
+    If there is not specification file, return empty specifications.
+    """
+    package_conf = os.path.join(sourcedir, PACKAGE_CONF)
+    schema = SpecificationSchema(sourcedir, package_conf)
+    if os.path.isfile(package_conf):
+        f = open(package_conf, "rU")
+        try:
+            parser = cfgparser.Parser(f, package_conf, schema)
+            config = parser.load()
+        finally:
+            f.close()
+        config.collection.excludes[package_conf] = package_conf
+    else:
+        config = schema.getConfiguration()
+    return config.collection, config.distribution
 
 
 def filter_names(names):
@@ -67,33 +93,88 @@ def filter_names(names):
     return names
 
 
-def normalize_path(path, type, filename, lineno):
+def normalize_path(path, type):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) == 1:
             # looks like a drive letter for Windows; scream,
             # 'cause that's not allowable:
             raise InclusionSpecificationError(
-                "drive letters are not allowed in inclusions: %r"
-                % path,
-                filename, lineno)
+                "drive letters are not allowed in inclusions: %r" % path)
     np = posixpath.normpath(path)
     if posixpath.isabs(np) or np[:1] == ".":
         raise InclusionSpecificationError(
             "%s path must not be absolute or refer to a location"
             " not contained in the source directory"
-            % path,
-            filename, lineno)
+            % path)
     return np.replace("/", os.sep)
 
 
-def normalize_path_or_url(path, type, filename, lineno):
+def normalize_path_or_url(path, type):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) != 1:
             # should normalize the URL, but skip that for now
             return path
-    return normalize_path(path, type, filename, lineno)
+    return normalize_path(path, type)
+
+
+class SpecificationSchema(cfgparser.Schema):
+    """Specialized schema that handles populating a pair of Specifications.
+    """
+
+    def __init__(self, source, filename):
+        self.filename = filename
+        self.source = source
+
+    def getConfiguration(self):
+        conf = cfgparser.SectionValue(None, None, None)
+        conf.collection = self.collection = Specification(self.source)
+        conf.distribution = self.distribution = Specification(self.source)
+        return conf
+
+    def startSection(self, parent, typename, name):
+        if not isinstance(parent, cfgparser.SectionValue):
+            raise cfgparser.ConfigurationError("unexpected section")
+        if typename == "collection":
+            return parent.collection
+        elif typename == "distribution":
+            return parent.distribution
+        raise cfgparser.ConfigurationError("unknown section type: %s"
+                                           % typename)
+                                           
+    def endSection(self, parent, typename, name, child):
+        pass
+
+    def createSection(self, name, typename, typedef):
+        raise NotImplementedError(
+            "createSection() should not be called for SpecificationSchema")
+
+    def finishSection(self, section):
+        return section
+
+    def addValue(self, section, dest, src):
+        if not isinstance(section, Specification):
+            raise cfgparser.ConfigurationError(
+                "all inclusion lines must be in a <collection> or"
+                " <distribution> section")
+        dest = normalize_path(dest, "destination")
+        src = normalize_path_or_url(src, "source")
+        if src == "-":
+            if section is self.distribution:
+                raise InclusionSpecificationError(
+                    "cannot exclude files from the distribution root",
+                    self.filename)
+            path = os.path.join(self.source, dest)
+            expansions = filter_names(glob.glob(path))
+            if not expansions:
+                raise InclusionSpecificationError(
+                    "exclusion %r doesn't match any files" % dest,
+                    self.filename)
+            for fn in expansions:
+                section.excludes[fn] = fn
+        else:
+            section.includes[dest] = src
 
 
 class Specification:
@@ -111,7 +192,7 @@ class Specification:
     """
 
     # XXX Needing to pass the source directory to the constructor is a
-    # bit of a hack, and is only needed to support exclusions.  A
+    # bit of a hack, ...  A
     # better approach may be to have "raw" and "cooked" versions of
     # the specification object; the raw version would only have the
     # information loaded from a specification file, and the cooked
@@ -132,47 +213,6 @@ class Specification:
         self.excludes = {}
         self.includes = {}
         self.source = source
-
-    def load(self, f, filename):
-        """Load the specification data from a stream.
-
-        :Parameters:
-          - `f`: An open stream to read from.
-
-          - `filename`: A name to associate with the stream.  This is
-            only used for reporting information in exceptions.
-
-        :Exceptions:
-          - `InclusionSpecificationError`: Raised for any error in the
-            input specification.
-
-        """
-        lineno = 0
-        for line in f:
-            lineno += 1
-            line = line.strip()
-            if line[:1] in ("", "#"):
-                continue
-            parts = line.split(None, 1)
-            if len(parts) != 2:
-                raise InclusionSpecificationError(
-                    "inclusion specifications require"
-                    " both target and source parts",
-                    filename, lineno)
-            dest, src = parts
-            dest = normalize_path(dest, "destination", filename, lineno)
-            src = normalize_path_or_url(src, "source", filename, lineno)
-            if src == "-":
-                path = os.path.join(self.source, dest)
-                expansions = filter_names(glob.glob(path))
-                if not expansions:
-                    raise InclusionSpecificationError(
-                        "exclusion %r doesn't match any files" % dest,
-                        filename, lineno)
-                for fn in expansions:
-                    self.excludes[fn] = fn
-            else:
-                self.includes[dest] = src
 
 
 class InclusionProcessor:

@@ -33,60 +33,98 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.source = os.path.dirname(__file__)
         self.destination = tempfile.mkdtemp(prefix="test_include_")
         self.processor = include.InclusionProcessor(self.source)
-        self.spec = include.Specification(self.source)
         self.source = os.path.abspath(self.source)
 
     def tearDown(self):
         shutil.rmtree(self.destination)
 
+    def write_file(self, name, text):
+        path = join(self.source, name)
+        if text and not text[-1:] == "\n":
+            text += "\n"
+        f = open(path, "w")
+        f.write(text)
+        f.close()
+
     def test_simple_includespec(self):
-        f = StringIO("""
-          # This is a comment.  It should be ignored.
+        self.write_file(include.PACKAGE_CONF, """\
+          <collection>
+            # This is a comment.  It should be ignored.
 
-          foo.html         http://www.python.org/index.html
-          doc/whatzit.txt  repository:doc/whatzit.txt
-          ignorethis.txt   -
+            foo.html         http://www.python.org/index.html
+            doc/whatzit.txt  repository:doc/whatzit.txt
+            ignorethis.txt   -
 
-          # Another comment.
+            # Another comment.
+          </collection>
+          <distribution>
+            # A comment.
+            destination.txt  source.txt
+          </distribution>
           """)
-        self.spec.load(f, "<string>")
-        self.assertEqual(len(self.spec.excludes), 1)
-        self.assertEqual(len(self.spec.includes), 2)
+        coll, dest = include.load(self.source)
+        self.assertEqual(len(coll.excludes), 2)
+        self.assertEqual(len(coll.includes), 2)
         self.assert_(join(self.source, "ignorethis.txt")
-                     in self.spec.excludes)
-        self.assertEqual(self.spec.includes["foo.html"],
+                     in coll.excludes)
+        self.assert_(join(self.source, include.PACKAGE_CONF)
+                     in coll.excludes)
+        self.assertEqual(coll.includes["foo.html"],
                          "http://www.python.org/index.html")
-        self.assertEqual(self.spec.includes[join("doc", "whatzit.txt")],
+        self.assertEqual(coll.includes[join("doc", "whatzit.txt")],
                          "repository:doc/whatzit.txt")
 
     def test_error_on_nonexistant_ignore(self):
-        f = StringIO("""
-            does-not-exist.txt  -
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              does-not-exist.txt  -
+            </collection>
             """)
         try:
-            self.spec.load(f, "<string>")
+            include.load(self.source)
         except include.InclusionSpecificationError, e:
-            self.assertEqual(e.filename, "<string>")
+            self.assertEqual(e.filename,
+                             join(self.source, include.PACKAGE_CONF))
             self.assertEqual(e.lineno, 2)
         else:
             self.fail("expected InclusionSpecificationError")
 
     def test_error_on_omitted_source(self):
-        f = StringIO("whatzit.txt \n")
+        f = StringIO("""\
+            <collection>
+              whatzit.txt
+            </collection>
+            """)
         try:
-            self.spec.load(f, "<string>")
+            coll, dist = include.load(self.source)
         except include.InclusionSpecificationError, e:
-            self.assertEqual(e.filename, "<string>")
-            self.assertEqual(e.lineno, 1)
+            self.assertEqual(e.filename,
+                             join(self.source, include.PACKAGE_CONF))
+            self.assertEqual(e.lineno, 2)
         else:
             self.fail("expected InclusionSpecificationError")
 
     def test_globbing_on_ignore(self):
-        f = StringIO("*.txt -")
-        self.spec.load(f, "<string>")
-        self.assertEqual(len(self.spec.excludes), 1)
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              *.txt -
+            </collection>
+            """)
+        coll, dist = include.load(self.source)
+        self.assertEqual(len(coll.excludes), 2)
         self.assert_(join(self.source, "ignorethis.txt")
-                     in self.spec.excludes)
+                     in coll.excludes)
+        self.assert_(join(self.source, include.PACKAGE_CONF)
+                     in coll.excludes)
+
+    def test_disallow_exclude_in_distribution_spec(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <distribution>
+              ignorethis.txt  -
+            </distribution>
+            """)
+        self.assertRaises(include.InclusionSpecificationError,
+                          include.load, self.source)
 
     # These two tests are really checking internal helpers, but
     # they're a lot more reasonable to express separately from the
@@ -103,28 +141,28 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def check_normalize_paths(self, normalize):
         INCLUDES = "INCLUDES.txt"
-        self.assertEqual(normalize("README.txt", "t", INCLUDES, 1),
+        self.assertEqual(normalize("README.txt", "t"),
                          "README.txt")
-        self.assertEqual(normalize("doc/README.txt", "t", INCLUDES, 2),
+        self.assertEqual(normalize("doc/README.txt", "t"),
                          join("doc", "README.txt"))
         # Ignore this because it looks like a Windows drive letter:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "c:foo/bar", "t", INCLUDES, 3)
+                          normalize, "c:foo/bar", "t")
         # Absolute paths are an error as well:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "/absolute/path", "t", INCLUDES, 4)
+                          normalize, "/absolute/path", "t")
         # Relative paths that point up the hierarchy are also disallowed:
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "abc/../../def.txt", "t", INCLUDES, 5)
+                          normalize, "abc/../../def.txt", "t")
         self.assertRaises(include.InclusionSpecificationError,
-                          normalize, "../def.txt", "t", INCLUDES, 6)
+                          normalize, "../def.txt", "t")
 
     def check_normalize_urls(self, normalize):
         INCLUDES = "INCLUDES.txt"
         for url in ("http://www.example.com/index.html",
                     "repository:/Zope3/doc",
                     "cvs://cvs.zope.com/cvs-repository:/Zope3/doc:HEAD"):
-            self.assertEqual(normalize(url, "t", INCLUDES, 1), url)
+            self.assertEqual(normalize(url, "t"), url)
 
     def test_createDistributionTree_creates_destination(self):
         os.rmdir(self.destination)
@@ -133,8 +171,13 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assert_(os.path.isfile(join(self.destination, "ignorethis.txt")))
 
     def test_createDistributionTree(self):
-        self.spec.load(StringIO("__init__.py -"), "<string>")
-        self.processor.createDistributionTree(self.destination, self.spec)
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              __init__.py -
+            </collection>
+            """)
+        coll, dist = include.load(self.source)
+        self.processor.createDistributionTree(self.destination, coll)
         self.check_file("ignorethis.txt")
         self.check_file("somescript.py")
         self.assert_(not os.path.exists(join(self.destination, "__init__.py")))
@@ -161,7 +204,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assertEqual(cvsurl.getUrl(),
                          "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
         self.assertEqual(destination,
-                         os.path.join(self.destination, "somedir"))
+                         join(self.destination, "somedir"))
 
     def test_including_from_cvs_url_without_base(self):
         self.start_including_from_cvs_url()
@@ -173,7 +216,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assertEqual(cvsurl.getUrl(),
                          "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
         self.assertEqual(destination,
-                         os.path.join(self.destination, "somedir"))
+                         join(self.destination, "somedir"))
 
     def start_including_from_cvs_url(self):
         self.processor.includeFromUrl = lambda src, dst: self.fail(
@@ -210,7 +253,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         finally:
             urllib2.urlopen = old_urlopen
         self.assert_(self.called)
-        resultfile = os.path.join(self.destination, "somefile.txt")
+        resultfile = join(self.destination, "somefile.txt")
         self.assert_(os.path.isfile(resultfile))
         f = open(resultfile, "rU")
         text = f.read()
@@ -228,8 +271,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.processor.addSingleInclude("foo/splat.txt",
                                         FILENAME,
                                         self.destination)
-        sourcefile = os.path.join(self.source, FILENAME)
-        resultfile = os.path.join(self.destination, "foo", "splat.txt")
+        sourcefile = join(self.source, FILENAME)
+        resultfile = join(self.destination, "foo", "splat.txt")
         self.assert_(os.path.isfile(resultfile))
         self.assert_(filecmp.cmp(resultfile, sourcefile, shallow=False))
 

@@ -229,14 +229,7 @@ class Application:
         """
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
-        spec = include.Specification(source)
-        include_path = os.path.join(source, "INCLUDE.cfg")
-        if os.path.isfile(include_path):
-            f = open(include_path)
-            try:
-                spec.load(f, include_path)
-            finally:
-                f.close()
+        spec, dist = include.load(source)
 
         if type == "package":
             self.add_package_component(name, destination, spec)
