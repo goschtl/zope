@@ -18,12 +18,16 @@ $Id: simplepolicies.py,v 1.6 2004/02/20 20:42:12 srichter Exp $
 
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
+from zope.security.simpleinteraction import createInteraction \
+                                            as _createInteraction
 import zope.security.checker
 from zope.interface import implements
 
 class ParanoidSecurityPolicy:
     """Deny all access."""
     implements(ISecurityPolicy)
+
+    createInteraction = staticmethod(_createInteraction)
 
     def checkPermission(self, permission, object, context):
         if permission is zope.security.checker.CheckerPublic:
@@ -38,6 +42,8 @@ class ParanoidSecurityPolicy:
 class PermissiveSecurityPolicy:
     """Allow all access."""
     implements(ISecurityPolicy)
+
+    createInteraction = staticmethod(_createInteraction)
 
     def checkPermission(self, permission, object, context):
         return True

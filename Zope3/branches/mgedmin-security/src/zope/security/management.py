@@ -19,6 +19,8 @@ $Id: management.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
 # zope.security.manager needs it
 system_user = object()
 
+import traceback
+
 from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import ISecurityManagementSetup
@@ -115,7 +117,7 @@ def newInteraction(participation=None, _thread=None, _policy=None):
         raise AssertionError("newInteraction called"
                              " while another interaction is active:\n%s"
                              % "".join(traceback.format_list(stack)))
-    interaction = _defaultPolicy.createInteraction(participation)
+    interaction = getSecurityPolicy().createInteraction(participation)
     interaction._newInteraction_called_from = traceback.extract_stack()
     thread_globals(_thread).interaction = interaction
 

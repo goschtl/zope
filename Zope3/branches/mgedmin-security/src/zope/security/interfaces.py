@@ -189,6 +189,16 @@ class INameBasedChecker(IChecker):
 
 class ISecurityPolicy(Interface):   # XXX: will change
 
+    def createInteraction(participation=None):
+        """Creates a new interaction for a given request.
+
+        If participation is not None, it is added to the new interaction.
+
+        XXX perhaps this should be a separate interface IInteractionFactory,
+            and the factory registered by calling
+            ISecurityManagement.global setInteractionFactory(factory).
+        """
+
     def checkPermission(permission, object, context):
         """Return whether security context allows permission on object.
 

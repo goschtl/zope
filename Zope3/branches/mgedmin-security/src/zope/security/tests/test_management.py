@@ -110,6 +110,59 @@ class Test(CleanUp, unittest.TestCase):
         mgr = getSecurityManager()
         self.failIf(mgr.checkPermission(None, None))
 
+    def test_securityPolicy(self):
+        from zope.security.management import setSecurityPolicy
+        from zope.security.management import getSecurityPolicy
+        from zope.security.simplepolicies import PermissiveSecurityPolicy
+
+        policy = PermissiveSecurityPolicy()
+        setSecurityPolicy(policy)
+        self.assert_(getSecurityPolicy() is policy)
+
+    def test_getInteraction(self):
+        # XXX this test is a bit obfuscated
+        from zope.security.management import getInteraction
+
+        marker = object()
+        class ThreadVars:
+            interaction = marker
+        class ThreadStub:
+            __zope3_thread_globals__ = ThreadVars()
+
+        self.assert_(getInteraction(_thread=ThreadStub()) is marker)
+
+    def test_newInteraction(self):
+        # XXX this test is a bit obfuscated
+        from zope.security.management import newInteraction
+
+        class ThreadVars:
+            interaction = None
+        class ThreadStub:
+            __zope3_thread_globals__ = ThreadVars()
+
+        rq = None
+        thread = ThreadStub()
+        newInteraction(rq, _thread=thread)
+        self.assert_(thread.__zope3_thread_globals__.interaction is not None)
+
+        self.assertRaises(AssertionError, newInteraction, rq, _thread=thread)
+
+    def test_endInteraction(self):
+        # XXX this test is a bit obfuscated
+        from zope.security.management import endInteraction
+
+        marker = object()
+        class ThreadVars:
+            interaction = marker
+        class ThreadStub:
+            __zope3_thread_globals__ = ThreadVars()
+
+        thread = ThreadStub()
+        endInteraction(_thread=thread)
+        self.assert_(thread.__zope3_thread_globals__.interaction is None)
+
+        self.assertRaises(AssertionError, endInteraction, _thread=thread)
+
 
 def test_suite():
     loader=unittest.TestLoader()
