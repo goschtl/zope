@@ -15,9 +15,7 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-
 <div metal:define-macro="contents">
-
   <div>Contents <a href="+"> Add... </a> </div>
 
   <form name="containerContentsForm" method="get" action="." 
@@ -69,8 +67,10 @@
                  >foo</a> 
             </td>          
             <td><span tal:content="item/title|default">&nbsp;</span></td>
-            <td><span tal:content="item/created|default">&nbsp;</span></td>
-            <td><span tal:content="item/modified|default">&nbsp;</span></td>
+            <td><span tal:define="created item/created|default"
+                      tal:content="python:view.formatTime(created)">&nbsp;</span></td>
+            <td><span tal:define="modified item/modified|default"
+                      tal:content="python:view.formatTime(modified)">&nbsp;</span></td>
           </tr>
         </metal:block>
         </tbody> 
