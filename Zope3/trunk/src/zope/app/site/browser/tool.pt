@@ -48,7 +48,8 @@
             </td>
             <td>
              <a href=""
-                tal:attributes= "href reg/url"
+                tal:attributes="
+                    href string:${reg/url}/@@SelectedManagementView.html"
                 tal:content="reg/name"
                 tal:condition="python: not reg['name'] in rename_list">
                Foobar (the tool)
