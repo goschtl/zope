@@ -316,7 +316,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
-        self.assert_(w.haveData())
+        self.assert_(not w.haveData())
         self.verifyResult(w(), [
             'selected="selected"',
             'id="field.f"',
@@ -352,8 +352,10 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         # report haveData() properly.
         bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
         bound.context.f = "splat"
-        w = getView(bound, "edit", self.makeRequest())
+        w = getView(bound, "edit", self.makeRequest(
+            'field.f-empty-marker='))
         self.assert_(w.haveData())
+        self.assertEqual(w.getData(), None) # XXX might be []...
 
 class SingleSelectionTests(SingleSelectionTestsBase):
     """Test single-selection with the selection-box widget."""
@@ -393,7 +395,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
                                ["foobar", "frob"])
         w = getView(bound, "display", self.makeRequest())
         w.setData(bound.context.f)
-        self.assert_(w.haveData())
+        self.assert_(not w.haveData())
         self.verifyResult(w(), [
             '<ol',
             'id="field.f"',
@@ -432,7 +434,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
     def test_edit(self):
         bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]))
         w = getView(bound, "edit", self.makeRequest())
-        self.assert_(w.haveData())
+        self.assert_(not w.haveData())
         self.verifyResult(w(), [
             'id="field.f"',
             'name="field.f:list"',
@@ -561,4 +563,4 @@ def test_suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest="test_suite")

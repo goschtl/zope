@@ -31,6 +31,7 @@ from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import IVocabularyTokenized
+from zope.schema.interfaces import ValidationError
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -88,7 +89,7 @@ def _get_vocabulary_edit_widget(field, request, modifier=''):
     return view
 
 
-class IterableVocabularyQuery:
+class IterableVocabularyQuery(object):
     """Simple query object used to invoke the simple selection mechanism."""
 
     __implements__ = IIterableVocabularyQuery
@@ -99,7 +100,7 @@ class IterableVocabularyQuery:
 
 # Widget implementation:
 
-class ViewSupport:
+class ViewSupport(object):
     """Helper class for vocabulary and vocabulary-query widgets."""
 
     def textForValue(self, term):
@@ -133,25 +134,29 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
     extra = ""
     type = "vocabulary"
+    context = None
 
     def __init__(self, context, request):
         self.request = request
-        self.context = None
-
-    def _getDefault(self):
-        # Override this since the context is not the field for
-        # vocabulary-based widgets.
-        return self.context.default
+        self.vocabulary = context
+        # self.context is set to the field in setField below
 
     def setField(self, field):
         assert self.context is None
         # only allow this to happen for a bound field
         assert field.context is not None
         self.context = field
-        self.name = self._prefix + field.__name__
+        self.setPrefix(self._prefix)
 
     def __call__(self):
-        return self.render(self.getData(True))
+        if self._data is None:
+            if self.haveData():
+                data = self.getData(True)
+            else:
+                data = self._getDefault()
+        else:
+            data = self._data
+        return self.render(data)
 
     def render(self, value):
         raise NotImplementedError(
@@ -171,40 +176,45 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
                 L.append(term.value)
         return L
 
-    # The *Data() methods have tightly bound semantics.  Subclasses
-    # need to be really careful about dealing with these, and should
-    # enlist this version for help whenever possible to make sure
-    # internal state is maintained.
-
     _have_field_data = False
 
-    def getData(self, optional=0):
-        data = getattr(self, "_field_data", self)
-        if data is self:
-            data = self._compute_data(self)
+    def getData(self, optional=False):
+        data = self._compute_data()
+        field = self.context
+        if data is None:
+            if field.required and not optional:
+                raise MissingInputError(field.__name__, field.title,
+                                        'the field is required')
+            return self._getDefault()
+        elif not optional:
+            try:
+                field.validate(data)
+            except ValidationError, v:
+                raise WidgetInputError(self.context.__name__,
+                                       self.title, str(v))
         return data
 
+    def setPrefix(self, prefix):
+        super(VocabularyWidgetBase, self).setPrefix(prefix)
+        # names for other information from the form
+        self.empty_marker_name = self.name + "-empty-marker"
+
+    def _emptyMarker(self):
+        return "<input name='%s' type='hidden' value='1' />" % (
+            self.empty_marker_name)
+
     def haveData(self):
-        self.getData()
-        return self._have_field_data
+        return (self.name in self.request.form or
+                self.empty_marker_name in self.request.form)
 
     def setData(self, value):
-        self._field_data = value
-        self._have_field_data = True
+        self._data = value
 
-    def _compute_data(self, optional):
+    def _compute_data(self):
         raise NotImplementedError(
             "_compute_data() must be implemented by a subclass\n"
             "It may be inherited from the mix-in classes SingleDataHelper\n"
             "or MultiDataHelper (from zope.app.browser.form.vocabularywidget)")
-
-    def _setup_default_data(self, optional):
-        # not on the content object either
-        if self.context.required and not optional:
-            raise MissingInputError(self.context.__name__,
-                                    self.title,
-                                    "required field not present")
-        return self._getDefault()
 
     def _showData(self):
         raise NotImplementedError(
@@ -218,39 +228,23 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         raise NotImplementedError(
             "vocabulary-based widgets don't use the _unconvert() method")
 
-class SingleDataHelper:
+class SingleDataHelper(object):
 
-    def _compute_data(self, optional):
+    def _compute_data(self):
         if self.name in self.request.form:
             token = self.request.form[self.name]
-            data = self.convertTokensToValues([token])[0]
-            self.setData(data)
-            return data
-        data = self.context.query(self.context.context, self)
-        if data is self:
-            data = self._setup_default_data(optional)
-        else:
-            self.setData(data)
-        return data
+            return self.convertTokensToValues([token])[0]
+        return None
 
-class MultiDataHelper:
+class MultiDataHelper(object):
 
-    def _compute_data(self, optional):
+    def _compute_data(self):
         if self.name in self.request.form:
             tokens = self.request.form[self.name]
             if not isinstance(tokens, list):
                 tokens = [tokens]
-            data = self.convertTokensToValues(tokens)
-            self.setData(data)
-            return data
-        data = self.context.query(self.context.context, self)
-        if data is self:
-            data = self._setup_default_data(optional)
-        else:
-            data = []
-            self.setData(data)
-        return data
-
+            return self.convertTokensToValues(tokens)
+        return []
 
 class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
@@ -302,7 +296,7 @@ class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
         return L
 
 
-class ActionHelper:
+class ActionHelper(object):
     __actions = None
 
     def addAction(self, action, msgid):
@@ -354,7 +348,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
             queryview.setName(self.name + "-query")
 
     def setPrefix(self, prefix):
-        VocabularyWidgetBase.setPrefix(self, prefix)
+        super(VocabularyEditWidgetBase, self).setPrefix(prefix)
         if self.queryview is not None:
             self.queryview.setName(self.name + "-query")
 
@@ -369,6 +363,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
                 contents.append(self._div('queryinput', s))
                 have_results = True
         contents.append(self._div('value', self.renderValue(value)))
+        contents.append(self._emptyMarker())
         if self.queryview and not have_results:
             s = self.queryview.renderInput()
             if s:
@@ -576,6 +571,8 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
                                "More")
     _msg_no_results = _message(_("vocabulary-query-message-no-results"),
                                "No Results")
+    _msg_results_header = _message(_("vocabulary-query-header-results"),
+                                  "Search results")
 
     def setName(self, name):
         VocabularyQueryViewBase.setName(self, name)
@@ -658,6 +655,8 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         self.query_selections = QS
         return ''.join(
             ["<div class='results'>\n",
+             "<h4>%s</h4>\n" % (
+                 self.translate(self._msg_results_header)),
              self.makeSelectionList(items, self.query_selections_name),
              "\n",
              self.renderAction(ADD_DONE), "\n",
@@ -700,3 +699,4 @@ class IterableVocabularyQueryMultiView(IterableVocabularyQueryViewBase):
 
     def makeSelectionList(self, items, name):
         return self.mkselectionlist("checkbox", items, name)
+
