@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.3 2002/07/14 17:30:32 faassen Exp $
+$Id: IField.py,v 1.4 2002/07/14 18:51:27 faassen Exp $
 """
 from Interface import Interface
 import _Field as Field
@@ -79,18 +79,6 @@ class IStr(ISingleValueField):
         description="Default.",
         default="")
     
-    whitespace = Field.Str(
-        title="Whitespace",
-        description="preserve: whitespace is preserved."
-                    "replace: all occurences of tab, line feed and "
-                    "carriage return are replaced with space characters. "
-                    "collapse: first process as in 'replace', then "
-                    "collapse all spaces to a single space, and strip any "
-                    "spaces from front and back."
-                    "strip: strip off whitespace from front and back.",
-        allowed_values=("preserve", "replace", "collapse", "strip"),
-        default="strip")
-
     min_length = Field.Int(
         title="Minimum length",
         description=("Value after whitespace processing cannot have less than "

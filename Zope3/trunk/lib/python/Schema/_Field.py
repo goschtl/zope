@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.5 2002/07/14 17:30:32 faassen Exp $
+$Id: _Field.py,v 1.6 2002/07/14 18:51:27 faassen Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -49,7 +49,6 @@ class Str(SingleValueField):
     type = str
     min_length = None
     max_length = None
-    whitespaces = "preserve"
 
 class Bool(SingleValueField):
     """A field representing a Bool."""

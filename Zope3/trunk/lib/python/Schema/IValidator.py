@@ -12,18 +12,24 @@
 # 
 ##############################################################################
 """
-$Id: IValidator.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: IValidator.py,v 1.2 2002/07/14 18:51:27 faassen Exp $
 """
 from Interface import Interface
 
 class IValidator(Interface):
-    """It's repsonsibility lies in validating a particular value against the
-    specifed field. Each Validator just does one check, like check for the
-    max value or the min value!
+    """Validates a particular value against the specifed field. Each
+    Validator just does one check, like check for the max value or the
+    min value!
 
+    Note that the responsibility of Validator is not to change the
+    value, only to raise an exception in case the value was incorrect.
+    Converters are used to change values.
+    
     It should be always implemented as an adapter.
     """
 
     def validate(value):
-        """Validate the the value. Note that this method must always
-        return the value.""" 
+        """Validate the the value.
+
+        This should not return anything, only raise an exception in case
+        of an invalid value.""" 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.5 2002/07/14 17:30:32 faassen Exp $
+$Id: testSchema.py,v 1.6 2002/07/14 18:51:27 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema.Exceptions import StopValidation, ValidationError, \
@@ -46,21 +46,24 @@ class SchemaTest(TestCase):
         dict = {'title': 'A title',
                 'description': 'A particular description.',
                 'spam': 'Spam'}
-        self.assertEqual(1, validateMapping(ISchemaTest, dict))
-
+        try:
+            validateMapping(ISchemaTest, dict)
+        except ValidationError, e:
+            self.fail("Unexpected ValidationError: %s" % e.error_name)
 
     def testValidateBadMapping(self):
         dict = {'title': 'A title'}
         self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
-
 
     def testValidateMappingAll(self):
         dict = {'title': 'A title',
                 'description': 'A particular description.',
                 'spam': 'Spam',
                 }
-        self.assertEqual(1, validateMappingAll(ISchemaTest, dict))
-
+        try:
+            validateMappingAll(ISchemaTest, dict)
+        except ValidationErrorsAll:
+            self.fail("Unexpected ValidationErrors")
 
     def test_validateBadMappingAll(self):
         dict = {'title': 'A title'}
@@ -73,7 +76,7 @@ class SchemaTest(TestCase):
             self.assertRaises(ValidationError, validateMapping, ISchemaTest,
                               dict)
             return
-        self.fail()
+        self.fail('Expected ValidationErrors, but none detected')
 
 
 def test_suite():

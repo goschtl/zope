@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Validator.py,v 1.2 2002/07/14 17:30:32 faassen Exp $
+$Id: Validator.py,v 1.3 2002/07/14 18:51:27 faassen Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -35,7 +35,7 @@ class Validator:
 
     def validate(self, value):
         'See Schema.IValidator.IValidator'
-        return value
+        pass
 
 
 class TypeValidator(Validator):
@@ -45,7 +45,6 @@ class TypeValidator(Validator):
         t = self.field.type
         if t is not None and value is not None and not isinstance(value, t):
             raise ValidationError, ErrorNames.WrongType
-        return value
 
 class RequiredValidator(Validator):
     """If no value was passed, check whether the field was required."""
@@ -57,7 +56,6 @@ class RequiredValidator(Validator):
             else:
                 # we are done with validation for sure
                 raise StopValidation
-        return value
 
 class StrRequiredValidator(Validator):
     """Empty Str are not acceptable for a required field."""
@@ -65,7 +63,6 @@ class StrRequiredValidator(Validator):
         'See Schema.IValidator.IValidator'
         if self.field.required and value == '':
             raise ValidationError, ErrorNames.RequiredEmptyStr
-        return value
 
 class MinimumLengthValidator(Validator):
     """Check that the length is larger than the minimum value."""
@@ -75,7 +72,6 @@ class MinimumLengthValidator(Validator):
         if self.field.min_length is not None and \
                length < self.field.min_length:
             raise ValidationError, ErrorNames.TooShort
-        return value
 
 class MaximumLengthValidator(Validator):
     """Check that the length is smaller than the maximum value."""
@@ -85,7 +81,6 @@ class MaximumLengthValidator(Validator):
         if self.field.max_length is not None and \
                length > self.field.max_length:
             raise ValidationError, ErrorNames.TooLong
-        return value
 
 class MinimumValueValidator(Validator):
     """Check that the value is larger than the minimum value."""
@@ -93,7 +88,6 @@ class MinimumValueValidator(Validator):
         'See Schema.IValidator.IValidator'
         if self.field.min is not None and value < self.field.min:
             raise ValidationError, ErrorNames.TooSmall
-        return value
 
 class MaximumValueValidator(Validator):
     """Check that the value is smaller than the maximum value."""
@@ -101,7 +95,6 @@ class MaximumValueValidator(Validator):
         'See Schema.IValidator.IValidator'
         if self.field.max is not None and value > self.field.max:
             raise ValidationError, ErrorNames.TooBig
-        return value
 
 class AllowedValuesValidator(Validator):
     """Check whether the value is in one of the allowed values."""
@@ -110,22 +103,6 @@ class AllowedValuesValidator(Validator):
         allowed = self.field.allowed_values
         if len(allowed) > 0 and value not in allowed:
             raise ValidationError, ErrorNames.InvalidValue
-        return value
-
-class WhitespaceValidator(Validator):
-    """Check and convert the whitespaces of the value."""
-    def validate(self, value):
-        'See Schema.IValidator.IValidator'
-        option = self.field.whitespaces 
-        if option in ('replace', 'collapse'):
-            value = value.replace('\t', ' ')
-            value = value.replace('\r', ' ')
-            value = value.replace('\n', ' ')
-        if option == 'collapse':
-            value = ' '.join(value.split())
-        if option == 'strip':
-            value = value.strip()
-        return value
 
 class DecimalsValidator(Validator):
     """Check that the float value has the right precision."""
@@ -138,7 +115,6 @@ class DecimalsValidator(Validator):
             decimals = 0
         if self.field.decimals and  decimals > self.field.decimals:
             raise ValidationError, ErrorNames.TooManyDecimals
-        return value
 
 def _flatten(list):
     out = []
@@ -159,7 +135,6 @@ class ListValueTypeValidator(Validator):
             for val in value:
                 if not isinstance(val, types):
                     raise ValidationError, ErrorNames.WrongContainedType
-        return value
 
 class MinimumAmountOfItemsValidator(Validator):
     """Check whether the list contains enough items."""
@@ -168,7 +143,6 @@ class MinimumAmountOfItemsValidator(Validator):
         if self.field.min_values and value is not None and \
                len(value) < self.field.min_values:
             raise ValidationError, ErrorNames.NotEnoughElements
-        return value
 
 class MaximumAmountOfItemsValidator(Validator):
     """Check whether the list contains not too many items."""
@@ -176,7 +150,6 @@ class MaximumAmountOfItemsValidator(Validator):
         'See Schema.IValidator.IValidator'
         if self.field.max_values and len(value) > self.field.max_values:
             raise ValidationError, ErrorNames.TooManyElements
-        return value
 
 class DictKeyTypeValidator(Validator):
     """Check that the values in the value have the right type."""
@@ -187,7 +160,6 @@ class DictKeyTypeValidator(Validator):
                      value_types=self.field.key_types)
         validator = ListValueTypeValidator(field)
         validator.validate(keys)
-        return value
 
 class DictValueTypeValidator(Validator):
     """Check that the values in the value have the right type."""
@@ -198,7 +170,6 @@ class DictValueTypeValidator(Validator):
                      value_types=self.field.value_types)
         validator = ListValueTypeValidator(field)
         validator.validate(values)
-        return value
 
 class ContainerValidator(Validator):
     """ """
@@ -208,10 +179,9 @@ class ContainerValidator(Validator):
         'See Schema.IValidator.IValidator'        
         for validator in self.validators:
             try:
-                value = validator(self.field).validate(value)
+                validator(self.field).validate(value)
             except StopValidation:
-                return value
-        return value
+                return
 
 class SingleValueValidator(ContainerValidator):
     """Validator for Single Value Fields"""
@@ -220,7 +190,6 @@ class SingleValueValidator(ContainerValidator):
 class StrValidator(SingleValueValidator):
     """Completely validates a Str Field."""
     validators = SingleValueValidator.validators + [StrRequiredValidator,
-                                                    WhitespaceValidator,
                                                     MinimumLengthValidator,
                                                     MaximumLengthValidator]
 

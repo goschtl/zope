@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testListField.py,v 1.2 2002/07/14 17:30:32 faassen Exp $
+$Id: testListField.py,v 1.3 2002/07/14 18:51:27 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import List, Int, Float, ErrorNames
@@ -24,26 +24,36 @@ class ListTest(FieldTest):
     def testValidate(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0)
-        self.assertEqual(None, field.validate(None))
-        self.assertEqual( [] , field.validate([]))
-        self.assertEqual( [1, 2] , field.validate( [1, 2] ))
-        self.assertEqual( [3,] , field.validate( [3,] ))
-
+        try:
+            field.validate(None)
+            field.validate([])
+            field.validate([1, 2])
+            field.validate([3,])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
+            
     def testValidateRequired(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=1)
-        self.assertEqual( [] , field.validate([]))
-        self.assertEqual( [1, 2] , field.validate( [1, 2] ))
-        self.assertEqual( [3,] , field.validate( [3,] ))
+        try:
+            field.validate([])
+            field.validate([1, 2])
+            field.validate([3,])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
+            
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
 
     def testValidateMinValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, min_values=2)
-        self.assertEqual(None, field.validate(None))
-        self.assertEqual( [1, 2], field.validate( [1, 2] ))
-        self.assertEqual( [1, 2, 3], field.validate( [1, 2, 3] ))
+        try:
+            field.validate(None)
+            field.validate([1, 2])
+            field.validate([1, 2, 3])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, [])
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
@@ -52,9 +62,12 @@ class ListTest(FieldTest):
     def testValidateMaxValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, max_values=2)
-        self.assertEqual(None, field.validate(None))
-        self.assertEqual( [], field.validate( [] ))
-        self.assertEqual( [1, 2], field.validate( [1, 2] ))
+        try:
+            field.validate(None)
+            field.validate([])
+            field.validate([1, 2])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
                                     field.validate, [1, 2, 3, 4])
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -63,9 +76,12 @@ class ListTest(FieldTest):
     def testValidateMinValuesAndMaxValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, min_values=1, max_values=2)
-        self.assertEqual(None, field.validate(None))
-        self.assertEqual( [1, ], field.validate( [1, ] ))
-        self.assertEqual( [1, 2], field.validate( [1, 2] ))
+        try:
+            field.validate(None)
+            field.validate([1, ])
+            field.validate([1, 2])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, [])
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -74,9 +90,12 @@ class ListTest(FieldTest):
     def testValidateValueTypes(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, value_types=(Int, Float))
-        self.assertEqual(None, field.validate(None))
-        self.assertEqual( [5.3,] , field.validate( [5.3,] ))
-        self.assertEqual( [2, 2.3], field.validate( [2, 2.3] ))
+        try:
+            field.validate(None)
+            field.validate([5.3,])
+            field.validate([2, 2.3])
+        except ValidationError, e:
+            self.unexpectedValidationError(e)
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, ['',] )
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
