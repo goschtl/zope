@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.17 2004/03/13 23:55:31 srichter Exp $
+$Id: test_contentworkflow.py,v 1.18 2004/04/15 22:11:40 srichter Exp $
 """
 import unittest
 
@@ -22,14 +22,17 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
 from zope.app import zapi
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.container.contained import Contained
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.tests.placelesssetup import \
-     eventPublisher, EventRecorder, clearEvents
+from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
+from zope.app.event.tests.placelesssetup import clearEvents
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriptionService
 from zope.app.event.localservice import EventService
 from zope.app.servicenames import EventSubscription
 from zope.app.utility import UtilityRegistration
+from zope.app.utility.interfaces import ILocalUtility
 from zope.app.registration.interfaces import ActiveStatus
 
 from zope.app.workflow.interfaces import IProcessDefinition
@@ -39,10 +42,27 @@ from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter
 from zope.app.workflow.stateful.contentworkflow import ContentWorkflowsManager
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.workflow.tests.test_service import DummyProcessDefinition
 
 from zope.app.tests import ztapi, setup
 
+# define and create dummy ProcessDefinition (PD) for tests
+class DummyProcessDefinition(Contained):
+    implements(IProcessDefinition, IAttributeAnnotatable, ILocalUtility)
+
+    def __init__(self, n):
+        self.n = n
+
+    def __str__(self):
+        return'PD #%d' % self.n
+
+    def createProcessInstance(self, definition_name):
+        return 'PI #%d' % self.n
+
+    # Implements (incompletely) IRegistered to satisfy the promise that
+    # it is IRegisterable.
+    # Only the method addUsage is implemented.
+    def addUsage(self, location):
+        pass
 
 class IFace1(Interface):
     pass
