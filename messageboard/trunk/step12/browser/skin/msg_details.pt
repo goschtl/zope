@@ -1,0 +1,31 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" i18n:domain="messageboard">
+
+      <h2 id="details_title" tal:content="context/title" 
+        i18n:translate="">Post Title</h2>
+
+      <div id="details_metadata" tal:define="md view/metadata">
+        Posted by <b tal:content="md/creator">Creator</b> 
+        on <b tal:replace="md/created">2003/01/01</b>
+      </div>
+
+      <div id="details_body" tal:content="structure view/htmlBody">
+        Message Body goes here
+      </div>
+
+      <b>Replies:</b>
+      <div id="details_thread">
+        <div tal:replace="structure view/subthread" />
+      </div>
+
+    </div>
+    <div id="actions" metal:fill-slot="actions">
+      <a href="" tal:attributes="href view/getParentURL"
+        i18n:translate="">Back to Parent</a>
+      |
+      <a href="+/ReplyMessage="
+        i18n:translate="">Reply to Post</a>
+    </div>
+  </body>
+</html>

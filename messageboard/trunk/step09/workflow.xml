@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<workflow type="StatefulWorkflow" title="Message Publication Review">
+  <schema name=""/>
+  <states>
+    <state name="INITIAL" title="initial" />
+    <state name="private" title="Private" />
+    <state name="pending" title="Pending Publication" />
+    <state name="published" title="Public" />
+  </states>
+  <transitions>
+     
+    <transition 
+        sourceState="published"
+        destinationState="private"
+        name="published_private"
+        title="Unpublish Message"
+        permission="book.messageboard.PublishContent"
+        triggerMode="Manual" />
+
+    <transition 
+        sourceState="private"
+        destinationState="pending"
+        name="private_pending"
+        title="Submit Message"
+        permission="book.messageboard.Edit"
+        triggerMode="Manual" />
+
+    <transition 
+        sourceState="INITIAL" 
+        destinationState="private"
+        name="initial_private"
+        title="Make Private"
+        triggerMode="Automatic" />
+
+    <transition 
+        sourceState="pending"
+        destinationState="published"
+        name="pending_published"
+        title="Publish Message"
+        permission="book.messageboard.PublishContent"
+        triggerMode="Manual" />
+
+    <transition 
+        sourceState="pending"
+        destinationState="private"
+        name="pending_private"
+        title="Retract Message"
+        permission="book.messageboard.Edit"
+        triggerMode="Manual" />
+
+    <transition 
+        sourceState="pending"
+        destinationState="private"
+        name="pending_private_reject"
+        title="Reject Message"
+        permission="book.messageboard.PublishContent"
+        triggerMode="Manual" />
+    
+  </transitions>
+  
+</workflow>

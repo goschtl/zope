@@ -1,0 +1,25 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" i18n:domain="messageboard">
+
+      <div metal:use-macro="views/form_macros/addform">
+
+        <div metal:fill-slot="extra_bottom" class="row">
+          <div class="field">
+            <h3><input type="checkbox" name="workflow:int" 
+                    value="1" checked=""/>
+              <span i18n:translate="">Create Workflow</span>
+            </h3>
+            <span i18n:translate="">Without the workflow you will 
+              not be able to review messages before they are 
+              published. Note that you can always modify the 
+              messageboard workflow later to make all transitions 
+              automatically.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" i18n:domain="messageboard">
+
+      <h2 i18n:translate="">Posts</h2>
+
+      <div id="summary" tal:repeat="post view/getPosts">
+        <div id="summary_title" >
+          <a href="" tal:attributes="href post/url"
+             tal:content="post/title">Message Title</a>
+        </div>
+
+        <div id="summary_body" tal:content="post/body">
+          Message Description Sneak Preview goes here...
+        </div>
+
+        <div id="summary_metadata">
+          Posted by <b tal:content="post/creator">Creator</b> 
+          on <b tal:replace="post/created">2003/01/01</b>
+          - <b tal:replace="post/replies">3</b> replies
+        </div>
+      </div>
+
+    </div>
+    <div id="actions" metal:fill-slot="actions">
+      <a href="" tal:attributes="href string:+/AddMessage.html="
+        i18n:translate="">Create new Post</a> 
+      |
+      <a href="./@@review.html"
+        i18n:translate="">Review Messages</a>
+    </div>
+  </body>
+</html>

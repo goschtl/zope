@@ -1,0 +1,124 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:mail="http://namespaces.zope.org/mail"
+    i18n_domain="messageboard">
+
+  <permission
+      id="book.messageboard.View"
+      title="View Message Board and Messages"
+      description="View the Message Board and all its content."
+      />
+  <permission
+      id="book.messageboard.Add"
+      title="Add Message"
+      description="Add Message."
+      />
+  <permission
+      id="book.messageboard.Edit"
+      title="Edit Messages"
+      description="Edit Messages."
+      />
+  <permission
+      id="book.messageboard.Delete"
+      title="Delete Message"
+      description="Delete Message."
+      />
+
+  <permission
+      id="book.messageboard.PublishContent"
+      title="Publish Message"
+      description="Publish Message."/>
+
+  <interface 
+      interface=".interfaces.IMessageBoard" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".messageboard.MessageBoard">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements
+        interface="zope.app.container.interfaces.IContentContainer" 
+        />
+    <factory
+        id="book.messageboard.MessageBoard"
+        description="Message Board" 
+        />
+    <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessageBoard"
+        />
+    <require
+        permission="book.messageboard.Edit"
+        set_schema=".interfaces.IMessageBoard"
+        />
+  </content>
+
+  <interface 
+      interface=".interfaces.IMessage" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".message.Message">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements
+        interface="zope.app.container.interfaces.IContentContainer" 
+        />
+    <implements interface=
+        "zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"/>
+    <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessage"
+        />
+    <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessageContainer"
+        />
+    <require
+        permission="book.messageboard.Add"
+        set_schema=".interfaces.IMessage"
+        />
+  </content>
+
+  <adapter
+      factory=".message.MessageSized"
+      provides="zope.app.size.interfaces.ISized"
+      for=".interfaces.IMessage"
+      />
+
+  <adapter
+      factory=".message.MailSubscriptions"
+      provides=".interfaces.IMailSubscriptions"
+      for=".interfaces.IMessage"
+      permission="book.messageboard.Add"      
+      trusted="true" />
+
+  <mail:smtpMailer name="msgboard-smtp" hostname="localhost" port="25" />
+  
+  <mail:queuedDelivery 
+      name="msgboard-delivery"
+      permission="zope.SendMail"
+      queuePath="./mail-queue"
+      mailer="msgboard-smtp" />
+
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.event.interfaces.IObjectModifiedEvent" />
+
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.container.interfaces.IObjectAddedEvent" />
+
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.container.interfaces.IObjectRemovedEvent" />
+
+  <i18n:registerTranslations directory="locales" />
+
+  <include package=".browser" />
+
+</configure>

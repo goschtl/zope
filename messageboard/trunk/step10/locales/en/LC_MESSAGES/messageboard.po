@@ -1,0 +1,297 @@
+# translation of messageboard.po to German
+# translation of messageboard.po to English US
+# Copyright (C) YEAR ORGANIZATION.
+# Stephan Richter <stephan.richter@tufts.edu>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: messageboard\n"
+"POT-Creation-Date: Mon Dec 15 09:36:12 2003\n"
+"PO-Revision-Date: 2003-12-15 00:16-0500\n"
+"Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
+"Language-Team: German <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.4\n"
+"X-Generator: KBabel 1.3\n"
+
+#: src/zopeproducts/messageboard/browser/add.pt:65
+#: src/zopeproducts/messageboard/browser/subscriptions.pt:37
+msgid "add-button"
+msgstr "  Add  "
+
+#: src/zopeproducts/messageboard/browser/add.pt:8
+msgid "Add Content"
+msgstr "Add Content"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:109
+msgid "Menu of objects to be added to Messages."
+msgstr "Menu of objects to be added to Messages."
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:132
+#: src/zopeproducts/messageboard/browser/configure.zcml:140
+msgid "Change Message"
+msgstr "Change Message"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:148
+msgid "Preview"
+msgstr "Preview"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:156
+#: src/zopeproducts/messageboard/browser/details.pt:5
+msgid "Message Details"
+msgstr "Message Details"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:16
+msgid "Menu of objects to be added to Message Boards."
+msgstr "Menu of objects to be added to Message Boards."
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:184
+msgid "Subscriptions"
+msgstr "Subscriptions"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:189
+msgid "Message Mail Subscriptions"
+msgstr "Message Mail Subscriptions"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:20
+#: src/zopeproducts/messageboard/browser/configure.zcml:113
+msgid "Add"
+msgstr "Add"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:203
+msgid "Image"
+msgstr "Image"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:209
+msgid "File"
+msgstr "File"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:32
+msgid "Add Message Board"
+msgstr "Add Message Board"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:42
+#: src/zopeproducts/messageboard/browser/configure.zcml:132
+msgid "Edit"
+msgstr "Edit"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:42
+#: src/zopeproducts/messageboard/browser/configure.zcml:50
+msgid "Change Message Board"
+msgstr "Change Message Board"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:58
+#: src/zopeproducts/messageboard/browser/configure.zcml:164
+msgid "Thread"
+msgstr "Thread"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:66
+#: src/zopeproducts/messageboard/browser/configure.zcml:172
+#: src/zopeproducts/messageboard/browser/thread.pt:5
+msgid "Discussion Thread"
+msgstr "Discussion Thread"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:74
+#: src/zopeproducts/messageboard/browser/configure.zcml:215
+msgid "Contents"
+msgstr "Contents"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:8
+msgid "Message Board Help"
+msgstr "Message Board Help"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:82
+msgid "Review Messages"
+msgstr "Review Messages"
+
+#: src/zopeproducts/messageboard/browser/configure.zcml:90
+msgid "Publication Review"
+msgstr "Publication Review"
+
+#: src/zopeproducts/messageboard/browser/details.pt:13
+msgid "Author"
+msgstr "Author"
+
+#: src/zopeproducts/messageboard/browser/details.pt:18
+msgid "Date/Time"
+msgstr "Date/Time"
+
+#: src/zopeproducts/messageboard/browser/details.pt:23
+msgid "Parent"
+msgstr "Parent"
+
+#: src/zopeproducts/messageboard/browser/details.pt:32
+msgid "Body"
+msgstr "Body"
+
+#: src/zopeproducts/messageboard/browser/details.pt:8
+msgid "Title"
+msgstr "Title"
+
+# 8/browser/messageboard_add.pt:19
+#: src/zopeproducts/messageboard/browser/messageboard_add.pt:19
+msgid "Create Workflow"
+msgstr "Create Workflow"
+
+# 8/browser/messageboard_add.pt:21
+#: src/zopeproducts/messageboard/browser/messageboard_add.pt:21
+msgid ""
+"Without the workflow you will not be able to review messages before they are "
+"published. Note that you can always modify the messageboard workflow later "
+"to make all transitions automatically."
+msgstr ""
+"Without the workflow you will not be able to review messages before they are "
+"published. Note that you can always modify the messageboard workflow later "
+"to make all transitions automatically."
+
+# 8/browser/messageboard_add.pt:30
+# 8/browser/subscriptions.pt:35
+# Default: "Refresh"
+#: src/zopeproducts/messageboard/browser/messageboard_add.pt:30
+#: src/zopeproducts/messageboard/browser/subscriptions.pt:35
+msgid "refresh-button"
+msgstr "Refresh"
+
+#: src/zopeproducts/messageboard/browser/messageboard_add.pt:32
+msgid "submit-button"
+msgstr "Submit"
+
+# 8/browser/review.pt:5
+#: src/zopeproducts/messageboard/browser/review.pt:5
+msgid "Pending Messages"
+msgstr "Pending Messages"
+
+#: src/zopeproducts/messageboard/browser/subscriptions.pt:12
+msgid "Current Subscriptions"
+msgstr "Current Subscriptions"
+
+#: src/zopeproducts/messageboard/browser/subscriptions.pt:19
+msgid "remove-button"
+msgstr "Remove"
+
+# 8/browser/subscriptions.pt:25
+#: src/zopeproducts/messageboard/browser/subscriptions.pt:25
+msgid "Enter new Users (separate by 'Return')"
+msgstr "Enter new Users (separate by 'Return')"
+
+#: src/zopeproducts/messageboard/configure.zcml:10
+msgid "Users that actually use the Message Board."
+msgstr "Users that actually use the Message Board."
+
+#: src/zopeproducts/messageboard/configure.zcml:10
+msgid "Message Board User"
+msgstr "Message Board User"
+
+#: src/zopeproducts/messageboard/configure.zcml:108
+#: src/zopeproducts/messageboard/browser/configure.zcml:124
+#: src/zopeproducts/messageboard/browser/configure.zcml:197
+msgid "Message"
+msgstr "Message"
+
+#: src/zopeproducts/messageboard/configure.zcml:15
+msgid "Message Board Editor"
+msgstr "Message Board Editor"
+
+#: src/zopeproducts/messageboard/configure.zcml:15
+msgid "The Editor can edit and delete Messages."
+msgstr "The Editor can edit and delete Messages."
+
+#: src/zopeproducts/messageboard/configure.zcml:20
+msgid "View the Message Board and all its content."
+msgstr "View the Message Board and all its content."
+
+#: src/zopeproducts/messageboard/configure.zcml:20
+msgid "View Message Board and Messages"
+msgstr "View Message Board and Messages"
+
+#: src/zopeproducts/messageboard/configure.zcml:29
+msgid "Add Message."
+msgstr "Add Message."
+
+#: src/zopeproducts/messageboard/configure.zcml:29
+#: src/zopeproducts/messageboard/browser/configure.zcml:124
+msgid "Add Message"
+msgstr "Add Message"
+
+#: src/zopeproducts/messageboard/configure.zcml:38
+msgid "Edit Messages."
+msgstr "Edit Messages."
+
+#: src/zopeproducts/messageboard/configure.zcml:38
+msgid "Edit Messages"
+msgstr "Edit Messages"
+
+#: src/zopeproducts/messageboard/configure.zcml:47
+msgid "Delete Message."
+msgstr "Delete Message."
+
+#: src/zopeproducts/messageboard/configure.zcml:47
+msgid "Delete Message"
+msgstr "Delete Message"
+
+#: src/zopeproducts/messageboard/configure.zcml:57
+msgid "Publish Message"
+msgstr "Publish Message"
+
+#: src/zopeproducts/messageboard/configure.zcml:57
+msgid "Publish Message."
+msgstr "Publish Message."
+
+#: src/zopeproducts/messageboard/configure.zcml:77
+#: src/zopeproducts/messageboard/browser/configure.zcml:32
+msgid "Message Board"
+msgstr "Message Board"
+
+#: src/zopeproducts/messageboard/fields.py:26
+msgid "Forbidden HTML Tags used."
+msgstr "Forbidden HTML Tags used."
+
+#: src/zopeproducts/messageboard/interfaces.py:112
+msgid "Allowed HTML Tags"
+msgstr "Allowed HTML Tags"
+
+#: src/zopeproducts/messageboard/interfaces.py:113
+msgid ""
+"        Listed tags can be used in the value of the field.\n"
+"        "
+msgstr ""
+"        Listed tags can be used in the value of the field.\n"
+"        "
+
+#: src/zopeproducts/messageboard/interfaces.py:119
+msgid "Forbidden HTML Tags"
+msgstr "Forbidden HTML Tags"
+
+#: src/zopeproducts/messageboard/interfaces.py:120
+msgid ""
+"        Listed tags cannot be used in the value of the field.\n"
+"        "
+msgstr ""
+"        Listed tags cannot be used in the value of the field.\n"
+"        "
+
+#: src/zopeproducts/messageboard/interfaces.py:39
+msgid "Description"
+msgstr "Description"
+
+#: src/zopeproducts/messageboard/interfaces.py:40
+msgid "A detailed description of the content of the board."
+msgstr "A detailed description of the content of the board."
+
+#: src/zopeproducts/messageboard/interfaces.py:49
+msgid "Title/Subject"
+msgstr "Title/Subject"
+
+#: src/zopeproducts/messageboard/interfaces.py:50
+msgid "Title and/or subject of the message."
+msgstr "Title and/or subject of the message."
+
+#: src/zopeproducts/messageboard/interfaces.py:55
+msgid "Message Body"
+msgstr "Message Body"
+
+#: src/zopeproducts/messageboard/interfaces.py:56
+msgid "This is the actual message. Type whatever!"
+msgstr "This is the actual message. Type whatever!"

@@ -1,0 +1,78 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser">
+
+  <layer name="board"/>
+
+  <skin name="board" layers="board rotterdam default" />
+  
+  <resource 
+      name="board.css" file="board.css" layer="board" />
+  
+  <resource 
+      name="logo.png" file="logo.png" layer="board" />
+
+  <page 
+      for="*"
+      name="skin_macros"
+      permission="zope.View"
+      layer="board"
+      template="template.pt" />
+  
+  <page
+      for="*"
+      name="dialog_macros"
+      permission="zope.View"
+      layer="board"
+      template="dialog_macros.pt" />
+
+  <page 
+      for="book.messageboard.interfaces.IMessageBoard"
+      name="intro.html"
+      permission="book.messageboard.View"
+      layer="board"
+      template="board_intro.pt" />
+
+  <page 
+      for="book.messageboard.interfaces.IMessageBoard"
+      name="posts.html"
+      permission="book.messageboard.View"
+      layer="board"
+      class=".views.Posts"
+      template="board_posts.pt" />
+
+  <addform
+      label="Add Message"
+      name="AddMessage.html"
+      schema="book.messageboard.interfaces.IMessage"
+      content_factory="book.messageboard.message.Message"
+      permission="book.messageboard.Add"
+      class=".views.AddMessage"
+      layer="board"/>
+
+  <pages
+      for="book.messageboard.interfaces.IMessageBoard"
+      class=".views.Review"
+      permission="book.messageboard.PublishContent"
+      layer="board">
+      <page name="review.html" template="board_review.pt"/>
+      <page name="updateStatus.html" attribute="updateStatus"/>
+  </pages>
+
+  <page
+      for="book.messageboard.interfaces.IMessage"
+      name="details.html"
+      permission="book.messageboard.View"
+      layer="board"
+      class=".views.Details"
+      template="msg_details.pt" />
+
+  <addform
+      label="Reply to Message"
+      name="ReplyMessage"
+      schema="book.messageboard.interfaces.IMessage"
+      content_factory="book.messageboard.message.Message"
+      permission="book.messageboard.Add"
+      class=".views.ReplyMessage"
+      layer="board"/>
+
+</configure>

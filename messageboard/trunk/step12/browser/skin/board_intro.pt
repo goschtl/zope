@@ -1,0 +1,18 @@
+  <html metal:use-macro="views/standard_macros/page">
+    <body>
+      <div id="content" metal:fill-slot="body" 
+          i18n:domain="messageboard">
+  
+        <h2 i18n:translate="">Welcome to the Message Board</h2>
+  
+        <p class="board_description" tal:content="context/description">
+          Description of the Message Board goes here.
+        </p>
+  
+        <div id="login_link">
+          <a href="./posts.html">Click here to enter the board.</a>
+        </div>
+  
+      </div>
+    </body>
+  </html>

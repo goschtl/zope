@@ -1,0 +1,187 @@
+/*******************************************************************************
+*
+* Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+* All Rights Reserved.
+*
+* This software is subject to the provisions of the Zope Public License,
+* Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+* THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+* WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+* FOR A PARTICULAR PURPOSE.
+*
+*******************************************************************************/
+/*
+  CSS 2 compatible stylesheet for the board skin
+
+  $Id: board.css,v 1.1 2003/08/23 01:18:46 srichter Exp $
+*/
+
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    background: white;
+    color: black;
+    margin: 0;
+    padding: 0pt;
+}
+
+h1, h2, h3, h4, h5, h6 { 
+    font-weight: bold; 
+    color: black; 
+}
+
+/* Different headers are used for the same purpose, so make them all equal. */
+
+h1, h2, h3 { 
+    font-size: 20pt;
+    margin-top: 0px; 
+    margin-bottom: .8em;
+    border-bottom: solid 1px #1E5ADB;
+}
+
+p {
+    margin-top: 0.4em; 
+    margin-bottom: 0.4em;  
+}
+
+a {
+    color: #1E5ADB;
+}
+
+a:visited {
+    color: #000066;
+}
+
+textarea {
+  font-family: monospace;
+}
+
+
+/* Header Stuff */
+
+#board_header {
+    background: #EEEEEE;
+    border: solid 1px #AAAAAA;
+    padding: 3pt;
+    clear: both;
+}
+
+#board_logo {
+    float: left;
+    height: 63px;
+}
+
+#board_greeting {
+    font-size: 30pt;
+    padding-top: 5pt;
+    padding-bottom: 5pt;
+    font-weight: bold;
+    color: #1E5ADB;
+}
+
+/* Footer stuff */
+
+#footer {
+    background: #EEEEEE;
+    border: solid 1px #AAAAAA;
+    padding: 0.5em;
+    font-size: 85%;
+}
+
+#actions {
+    float: left;
+    vertical-align: middle;
+}
+
+#credits {
+    font-size: 10pt;
+    text-align: right;
+}
+
+/* Generic Content */
+
+#content {
+    padding: 1em 2em;
+}
+
+/* Intro */
+
+p.board_description {
+    background: #EEEEEE;
+    border: solid 1px #1E5ADB;
+    padding: 0.5em;
+}
+
+#login_link {
+    padding: 1em 0em;
+    text-decoration: underline;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Posts */
+
+#summary {
+    padding-bottom: 1em;
+}
+
+#summary_title {
+    font-weight: bold;
+}
+
+#summary_body {
+    font-size: 80%;
+}
+
+#summary_metadata {
+    font-size: 70%;
+    color: #444444;
+}
+
+/* Review */
+
+#message_line {
+    padding: 0.2em 0.2em;
+}
+
+/* Details */
+
+#details_title {
+    margin-bottom: 2pt;
+}
+
+#details_body {
+    background: #EEEEEE;
+    padding: 0.5em;
+    margin-bottom: 20pt;
+}
+
+#details_metadata {
+    font-size: 70%;
+    padding-bottom: 15pt;
+}
+
+#details_thread {
+    font-size: 70%;
+}
+
+/* Structural Elements */
+
+div.row {
+    clear: both;
+    padding-top: 10px;
+}
+
+div.row div.label {
+    float: left;
+    font-size: 80%;
+    width: 100px;
+    text-align: right;
+    margin-right: 0.8em;
+}
+
+div.row div.field {
+    float: left;
+    font-size: 80%;
+    text-align: left;
+}
