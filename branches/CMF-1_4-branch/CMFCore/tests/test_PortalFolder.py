@@ -24,6 +24,7 @@ from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.PortalFolder import ContentFilter
 from Products.CMFCore.interfaces.Dynamic import DynamicType as IDynamicType
 from webdav.WriteLockInterface import WriteLockInterface
+from zExceptions import BadRequest
 
 def extra_meta_types():
     return [  { 'name' : 'Dummy', 'action' : 'manage_addFolder' } ]
@@ -387,6 +388,27 @@ class PortalFolderTests( SecurityTest ):
         assert not has_path( catalog._catalog, '/test/sub1/dummy' )
         assert has_path( catalog._catalog, '/test/sub2/dummy' )
         assert has_path( catalog._catalog, '/test/sub3/dummy' )
+
+    def test_setObjectRaisesBadRequest(self):
+        # _setObject() should raise zExceptions.BadRequest
+        # on duplicate id.
+        test = self.root.test
+        test._setObject('foo', DummyContent('foo'))
+        try:
+            test._setObject('foo', DummyContent('foo'))
+        except BadRequest:
+            pass
+        except:
+            # Zope < 2.7
+            e, v, tb = sys.exc_info(); del tb
+            if str(e) != 'Bad Request':
+                raise
+
+    def test_checkIdAvailableCatchesBadRequest(self):
+        # checkIdAvailable() should catch zExceptions.BadRequest
+        test = self.root.test
+        test._setObject('foo', DummyContent('foo'))
+        self.failIf(test.checkIdAvailable('foo'))
 
 class ContentFilterTests( TestCase ):
 

@@ -31,6 +31,7 @@ from AccessControl import getSecurityManager, ClassSecurityInfo, Unauthorized
 from Acquisition import aq_parent, aq_inner, aq_base
 from DynamicType import DynamicType
 from utils import getToolByName, _checkPermission
+from zExceptions import BadRequest
 
 factory_type_information = (
   { 'id'             : 'Folder'
@@ -367,8 +368,12 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
     def checkIdAvailable(self, id):
         try:
             self._checkId(id)
+        except BadRequest:
+            return 0
         except:
-            if sys.exc_info()[0] == 'Bad Request':
+            # Zope < 2.7
+            e, v, tb = sys.exc_info(); del tb
+            if str(e) == 'Bad Request':
                 return 0
             raise  # Some other exception.
         else:

@@ -1,3 +1,10 @@
+Next release
+
+  Bug Fixes
+
+    - CMFCore.PortalFolder: checkIdAvailable failed to catch 
+      zExceptions.BadRequest.
+
 CMF 1.4.5 (2004/07/08)
 
   Bug Fixes
