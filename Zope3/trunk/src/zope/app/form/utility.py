@@ -19,7 +19,7 @@ them, especially editing interfaces.
 
 In Zope 3, formulator's forms are replaced by Schema (See
 zope.schema). In addition, the Formulator fields have been replaced by
-schema fields and form widgets. Schema fields just express the sematics
+schema fields and form widgets. Schema fields just express the semantics
 of data values. They contain no presentation logic or parameters.
 Widgets are views on fields that take care of presentation. The widget
 view names represent styles that can be selected by applications to

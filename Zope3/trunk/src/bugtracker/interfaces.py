@@ -197,7 +197,7 @@ class IComment(IAttachment):
 
 
 class IManagableVocabulary(IVocabulary, IVocabularyTokenized):
-    """Vocabulary that can be modified by addign and deleting terms.
+    """Vocabulary that can be modified by adding and deleting terms.
 
     Note that this is a simple interface, where vocabularies are simple
     value-title mappings. The values should be preferibly in ASCII, so that
