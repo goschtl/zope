@@ -15,7 +15,7 @@
 event service when bound, and unsubscribe
 when unbound, as one needs for an event channel that will be a service
 
-$Id: ProtoServiceEventChannel.py,v 1.1 2002/10/21 06:14:46 poster Exp $
+$Id: ProtoServiceEventChannel.py,v 1.2 2002/11/08 01:33:08 poster Exp $
 """
 
 from Zope.App.Traversing.ITraverser import ITraverser
@@ -32,6 +32,8 @@ from LocalServiceSubscribable import LocalServiceSubscribable
 from Interface.Attribute import Attribute
 from Zope.Event.IEventChannel import IEventChannel
 from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
+from Zope.Proxy.ContextWrapper import isWrapper
+from Zope.Event.IEvent import IEvent
 
 class ProtoServiceEventChannel(
     LocalSubscriptionAware,
@@ -62,18 +64,27 @@ class ProtoServiceEventChannel(
         # the name of the service that this object is providing, or
         # None if unbound
     
+    _subscribeToServiceName = "Events"
+    _subscribeToServiceInterface = IEvent
+    _subscribeToServiceFilter = None
+    
     def bound(wrapped_self, name):
         "see IBindingAware"
         clean_self=removeAllProxies(wrapped_self)
         clean_self._serviceName = name # for LocalServiceSubscribable
         if clean_self.subscribeOnBind:
-            es=getService(wrapped_self, "Events")
-            if es is not eventService:
-                # XXX if we really want to receive events from the
-                # global event service we're going to have to
+            es=getService(
+                wrapped_self,
+                clean_self._subscribeToServiceName)
+            if isWrapper(es):
+                # if we really want to receive events from a
+                # global event-type service we're going to have to
                 # set something special up--something that subscribes
                 # every startup...
-                es.subscribe(PathSubscriber(wrapped_self))
+                es.subscribe(
+                    PathSubscriber(wrapped_self),
+                    clean_self._subscribeToServiceInterface,
+                    clean_self._subscribeToServiceFilter)
     
     bound=ContextMethod(bound)
     

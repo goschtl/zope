@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventChannel.py,v 1.4 2002/10/21 06:22:40 poster Exp $
+$Id: LocalEventChannel.py,v 1.5 2002/11/08 01:33:08 poster Exp $
 """
 
 from LocalSubscribable import LocalSubscribable
@@ -23,11 +23,7 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
-class LocalEventChannel:
-    # a mix-in: also needs LocalSubscribable to work.
-    # LocalSubscribable was in base class but produced
-    # TypeError: multiple bases have instance lay-out conflict
-    # when used in ProtoServiceEventChannel
+class LocalEventChannel(LocalSubscribable):
     
     __implements__ = IEventChannel
     
