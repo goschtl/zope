@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopeconnection.py,v 1.6 2004/03/05 22:09:15 jim Exp $
+$Id: test_zopeconnection.py,v 1.7 2004/04/01 03:56:55 jeremy Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -39,7 +39,7 @@ class ZopeConnectionTests(TestCase):
         cursor.execute('select * from blah')
 
         self.assertEqual(zc._txn_registered, True)
-        self.assertEqual(len(t._objects), 1)
+        self.assertEqual(len(t._resources), 1)
 
     def test_commit(self):
         t = get_transaction()
