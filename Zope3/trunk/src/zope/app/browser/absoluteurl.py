@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: absoluteurl.py,v 1.3 2003/03/01 21:13:59 sidnei Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.proxy.context import getWrapperContainer, getInnerWrapperData
@@ -53,7 +53,7 @@ class AbsoluteURL(BrowserView):
                            self.request).breadcrumbs()
 
             # replace the last step in base with a step with the same
-            # name ans an augmented url
+            # name and an augmented url
             base = base[:-1] + ({
                 'name': base[-1]['name'],
                 'url': ("%s/%s" % (base[-1]['url'], name)),
