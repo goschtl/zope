@@ -27,6 +27,12 @@ Zope Changes
 
         http://localhost:8080/++apidoc++/
 
+    - Added a stateful tree implementation, e.g. to produce static
+      trees in page templates. It includes browser views that store the
+      tree state in cookies, a browser layer that replaces the tree
+      navigation with a cookie-based stateful tree and a skin using that
+      layer based on Rotterdam.
+
     - Copy/Move now checks constraints and preconditions, instead of just
       expecting the source's and target's class to be the same.
 
