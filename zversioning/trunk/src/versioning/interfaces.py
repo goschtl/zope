@@ -250,10 +250,14 @@ class IHistoryStorage(Interface) : # IHistories
     IHistoryStorage components store IVersionableAspects of objects.
     """
 
-    def createVersionHistory(obj) :
+    def register(obj) :
         """ Puts some object under version control. Returns an IHistory.
         
-        XXX YAGNI?
+        Why register?
+        We like to give the IHistoryStorage component the possibility
+        to veto as early as possible (e.g. to raise "connection to 
+        backend repository lost" or "quota for user Ben exceded" 
+        exceptions or similar)
         """
     
     def getVersion(history, selector):
