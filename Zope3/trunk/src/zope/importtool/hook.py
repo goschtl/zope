@@ -68,7 +68,12 @@ class ReportingHook:
             globals = sys._getframe(1).f_globals
         importer = globals.get("__name__")
         self.reporter.request(importer, name, fromlist)
-        v = self.previous(name, globals, locals, fromlist)
+        try:
+            v = self.previous(name, globals, locals, fromlist)
+        except:
+            self.reporter.exception(importer, name, fromlist,
+                                    sys.exc_info())
+            raise
         if fromlist:
             imported = getattr(v, "__name__", None)
         else:

@@ -61,16 +61,19 @@ class HookTestCase(unittest.TestCase):
             reporter = self
         return hook.ReportingHook(reporter)
 
+    # reporter methods
+
     def request(self, importer, name, fromlist):
-        self.reports.append(name)
+        self.reports.append(("<request>", importer, name))
 
     def found(self, importer, imported, fromlist):
-        name = self.reports.pop()
-        self.reports.append((importer, imported, name, fromlist))
+        self.reports.append(("<found>", importer, imported, fromlist))
 
-    def raise_error(self, *args):
-        self.reports.append(args)
-        raise TestException()
+    def exception(self, importer, name, fromlist, exc_info):
+        self.reports.append(("<exception>", importer, name, fromlist))
+        self.exc_info = exc_info
+
+    # test methods
 
     def test_normal_installation(self):
         h = self.get_hook()
@@ -113,13 +116,16 @@ class HookTestCase(unittest.TestCase):
         import sys
         import sys
         from sample import THE_ANSWER
-        self.assertEqual(
-            self.reports,
-            [(__name__, "sys", "sys", None),
-             (__name__, "sys", "sys", None),
-             (__name__, "zope.importtool.tests.sample", "sample",
-              ("THE_ANSWER",)),
-             ])
+        expected = [
+            ("<request>", __name__, "sys"),
+            ("<found>",   __name__, "sys", None),
+            ("<request>", __name__, "sys"),
+            ("<found>",   __name__, "sys", None),
+            ("<request>", __name__, "sample"),
+            ("<found>",   __name__, "zope.importtool.tests.sample",
+             ("THE_ANSWER",)),
+            ]
+        self.assertEqual(self.reports, expected)
 
     def test_exception_on_request(self):
         h = self.get_hook(ReporterRaiseOnRequest())
@@ -148,23 +154,36 @@ class HookTestCase(unittest.TestCase):
         h.install()
         m = __import__("sys")
         self.assertEqual(self.reports[-1],
-                         (__name__, "sys", "sys", None))
+                         ("<found>", __name__, "sys", None))
         self.failUnless(m is sys)
         m = __import__("sample")
         self.assertEqual(self.reports[-1],
-                         (__name__, "zope.importtool.tests.sample", "sample",
+                         ("<found>", __name__, "zope.importtool.tests.sample",
                           None))
         self.failUnless(m is sample)
         m = __import__("sys", {"__name__": "foo.bar"})
         self.assertEqual(self.reports[-1],
-                         ("foo.bar", "sys", "sys", None))
+                         ("<found>", "foo.bar", "sys", None))
         self.failUnless(m is sys)
         __import__("sys", {"__name__": "foo.bar"}, {}, ("splat", "splurt"))
         self.assertEqual(self.reports[-1],
-                         ("foo.bar", "sys", "sys", ("splat", "splurt")))
+                         ("<found>", "foo.bar", "sys", ("splat", "splurt")))
         m = __import__("zope.importtool.tests.sample", globals(), {},
                        ("THE_ANSWER",))
         self.failUnless(m is sample)
+
+    def test_reporting_exception_during_import(self):
+        h = self.get_hook()
+        h.install()
+        try:
+            import error
+        except TestException, e:
+            self.failUnless(e is self.exc_info[1])
+            self.assertEqual(self.reports[-1],
+                             ("<exception>", __name__, "error", None))
+        else:
+            self.fail("expected TestException")
+        self.exc_info = None
 
 
 def test_suite():
