@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Mon Aug 18 16:33:53 2003\n"
+"POT-Creation-Date: Wed Aug 20 12:31:53 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -174,15 +174,15 @@ msgstr ""
 msgid "ZODB successfully packed."
 msgstr ""
 
-#: src/zope/app/browser/cache/cacheable.py:60
+#: src/zope/app/browser/cache/cacheable.py:57
 msgid "Invalidated."
 msgstr ""
 
-#: src/zope/app/browser/cache/cacheable.py:62
+#: src/zope/app/browser/cache/cacheable.py:59
 msgid "No cache associated with object."
 msgstr ""
 
-#: src/zope/app/browser/cache/cacheable.py:73
+#: src/zope/app/browser/cache/cacheable.py:70
 msgid "Saved changes."
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 msgid "Currently there is no cache associated with the object."
 msgstr ""
 
-#: src/zope/app/browser/cache/configure.zcml:30
+#: src/zope/app/browser/cache/configure.zcml:23
 #: src/zope/app/browser/content/configure.zcml:13
 #: src/zope/app/browser/content/configure.zcml:84
 #: src/zope/app/browser/content/configure.zcml:167
@@ -235,7 +235,6 @@ msgstr ""
 #: src/zope/app/browser/services/pluggableauth/configure.zcml:74
 #: src/zope/app/browser/services/menu.zcml:61
 #: src/zope/app/browser/services/menu.zcml:107
-#: src/zope/app/browser/services/connection.zcml:62
 #: src/zope/app/browser/services/module/configure.zcml:8
 #: src/zope/app/browser/services/utility/configure.zcml:62
 #: src/zope/app/browser/utilities/configure.zcml:150
@@ -243,7 +242,7 @@ msgstr ""
 #: src/zope/app/browser/index/text/configure.zcml:21
 #: src/zope/app/browser/index/field/configure.zcml:21
 #: src/zope/app/browser/index/keyword/configure.zcml:3
-#: src/zope/app/browser/rdb/configure.zcml:12
+#: src/zope/app/browser/rdb/configure.zcml:18
 #: src/zope/app/browser/workflow/configure.zcml:46
 #: src/zope/app/schema/fieldforms.zcml:18
 #: src/zope/app/schema/fieldforms.zcml:44
@@ -254,16 +253,16 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: src/zope/app/browser/cache/configure.zcml:31
+#: src/zope/app/browser/cache/configure.zcml:25
 msgid "Statistics"
 msgstr ""
 
-#: src/zope/app/browser/cache/configure.zcml:38
+#: src/zope/app/browser/cache/configure.zcml:33
 msgid "Caching"
 msgstr ""
 
-#: src/zope/app/browser/cache/configure.zcml:6
-#: src/zope/app/browser/cache/configure.zcml:13
+#: src/zope/app/browser/cache/configure.zcml:5
+#: src/zope/app/browser/cache/configure.zcml:12
 msgid "RAM Cache"
 msgstr ""
 
@@ -543,7 +542,7 @@ msgid "Preview"
 msgstr ""
 
 #: src/zope/app/browser/content/configure.zcml:281
-#: src/zope/app/browser/rdb/configure.zcml:24
+#: src/zope/app/browser/rdb/configure.zcml:30
 msgid "Test"
 msgstr ""
 
@@ -678,8 +677,6 @@ msgstr ""
 #: src/zope/app/browser/form/edit.pt:55
 #: src/zope/app/browser/services/adapter_search.pt:10
 #: src/zope/app/browser/services/add_adapter_config.pt:23
-#: src/zope/app/browser/services/caches.pt:54
-#: src/zope/app/browser/services/connections.pt:53
 #: src/zope/app/browser/services/error.pt:94
 #: src/zope/app/browser/services/services.pt:65
 #: src/zope/app/browser/services/views.pt:49
@@ -1103,7 +1100,6 @@ msgid "Add Interfaces:"
 msgstr ""
 
 #: src/zope/app/browser/marker.pt:115
-#: src/zope/app/browser/rdb/rdbadd.pt:27
 #: src/zope/app/browser/container/add.pt:39
 #: src/zope/app/browser/services/adduser.pt:56
 #: src/zope/app/browser/services/translation/translate.pt:78
@@ -1125,15 +1121,15 @@ msgid "Menu for displaying help actions to be performed with popup"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:18
-msgid "Menu of objects to be added to content folders"
+msgid "Menu of caches to be added"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:23
-msgid "Menu of objects to be added to service manager packages"
+msgid "Menu of objects to be added to content folders"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:28
-msgid "Menu of services to be added"
+msgid "Menu of objects to be added to service manager packages"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:3
@@ -1141,16 +1137,19 @@ msgid "Menu for displaying alternate representations of an object"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:33
-msgid "Menu of utilities to be added"
-msgstr ""
-
-#: src/zope/app/browser/menus.zcml:38
-#: src/zope/app/browser/menus.zcml:43
 msgid "Menu of database connections to be added"
 msgstr ""
 
-#: src/zope/app/browser/menus.zcml:48
+#: src/zope/app/browser/menus.zcml:38
 msgid "Menu of addable configuration objects"
+msgstr ""
+
+#: src/zope/app/browser/menus.zcml:43
+msgid "Menu of services to be added"
+msgstr ""
+
+#: src/zope/app/browser/menus.zcml:48
+msgid "Menu of utilities to be added"
 msgstr ""
 
 #: src/zope/app/browser/menus.zcml:8
@@ -1162,28 +1161,30 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-#: src/zope/app/browser/rdb/configure.zcml:48
-#: src/zope/app/browser/rdb/configure.zcml:56
+#: src/zope/app/browser/rdb/configure.zcml:40
+msgid "Add Database Connection Registration"
+msgstr ""
+
+#: src/zope/app/browser/rdb/gadflyda.zcml:13
+#: src/zope/app/browser/rdb/gadflyda.zcml:21
 msgid "Gadfly DA"
 msgstr ""
 
-#: src/zope/app/browser/rdb/configure.zcml:48
-#: src/zope/app/browser/rdb/configure.zcml:56
+#: src/zope/app/browser/rdb/gadflyda.zcml:13
+#: src/zope/app/browser/rdb/gadflyda.zcml:21
 msgid "A DA for the built-in 100% Pure Python Gadfly Database"
 msgstr ""
 
-#: src/zope/app/browser/rdb/rdbadd.pt:14
+#: src/zope/app/browser/rdb/gadflyda.zcml:3
+msgid "Add Gadfly Database Adapter"
+msgstr ""
+
 #: src/zope/app/browser/rdb/rdbconnection.pt:14
 msgid "Connection URI:"
 msgstr ""
 
-#: src/zope/app/browser/rdb/rdbadd.pt:16
 #: src/zope/app/browser/rdb/rdbconnection.pt:16
 msgid "Template: dbi://username:password@host:port/dbname;param1=value..."
-msgstr ""
-
-#: src/zope/app/browser/rdb/rdbadd.pt:3
-msgid "Add Relational Database Adapter"
 msgstr ""
 
 #: src/zope/app/browser/rdb/rdbconnection.pt:3
@@ -1515,110 +1516,40 @@ msgstr ""
 msgid "unregistered ${count} registrations"
 msgstr ""
 
-#: src/zope/app/browser/services/cache.py:121
-#: src/zope/app/browser/services/view.py:180
-msgid "Deleted: ${cache_names}"
+#: src/zope/app/browser/services/cache.py:55
+msgid "${object} is not a Cache."
 msgstr ""
 
-#: src/zope/app/browser/services/cache.py:42
-#: src/zope/app/browser/services/connection.py:43
-#: src/zope/app/browser/services/utility/__init__.py:73
-msgid "Please select at least one checkbox"
+#: src/zope/app/browser/services/cache.zcml:13
+msgid "Add Cache"
 msgstr ""
 
-#: src/zope/app/browser/services/cache.py:62
-msgid "Activated: ${activated_caches}"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.py:66
-msgid "All of the checked caches were already active"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.py:77
-msgid "Deactivated: ${deactivated_caches}"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.py:81
-msgid "None of the checked caches were active"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.py:92
-msgid "Can't delete active cache(s): ${cache_names}; use the Deactivate button to deactivate"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.zcml:16
-msgid "Caches"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.zcml:45
-msgid "New Cache Registration"
-msgstr ""
-
-#: src/zope/app/browser/services/cache.zcml:8
+#: src/zope/app/browser/services/cache.zcml:33
 msgid "A Persistent Caching Service for TTW development"
 msgstr ""
 
-#: src/zope/app/browser/services/cache.zcml:8
+#: src/zope/app/browser/services/cache.zcml:33
 msgid "Caching Service"
 msgstr ""
 
-#: src/zope/app/browser/services/caches.pt:11
-#: src/zope/app/browser/services/connections.pt:11
-#: src/zope/app/browser/services/services.pt:15
-#: src/zope/app/browser/services/views.pt:11
-#: src/zope/app/browser/services/bundle.pt:49
-#: src/zope/app/browser/services/utility/utilities.pt:11
-msgid "(click to clear message)"
+#: src/zope/app/browser/services/cache.zcml:41
+msgid "Caches"
 msgstr ""
 
-#: src/zope/app/browser/services/caches.pt:33
-#: src/zope/app/browser/services/connections.pt:33
-msgid "(inactive)"
+#: src/zope/app/browser/services/cache.zcml:5
+msgid "Cache"
 msgstr ""
 
-#: src/zope/app/browser/services/caches.pt:38
-#: src/zope/app/browser/services/connections.pt:38
-#: src/zope/app/browser/services/services.pt:47
-#: src/zope/app/browser/services/views.pt:33
-msgid "(change registration)"
+#: src/zope/app/browser/services/cache.zcml:5
+msgid "Takes you to a menu of Caches to add"
 msgstr ""
 
-#: src/zope/app/browser/services/caches.pt:46
-#: src/zope/app/browser/services/connections.pt:45
-#: src/zope/app/browser/services/services.pt:57
-#: src/zope/app/browser/services/views.pt:41
-#: src/zope/app/browser/services/utility/utilities.pt:42
-# Default: "Activate"
-msgid "activate-button"
+#: src/zope/app/browser/services/caches.pt:15
+msgid "Inherited Caches"
 msgstr ""
 
-#: src/zope/app/browser/services/caches.pt:48
-#: src/zope/app/browser/services/connections.pt:47
-#: src/zope/app/browser/services/services.pt:59
-#: src/zope/app/browser/services/views.pt:43
-#: src/zope/app/browser/services/utility/utilities.pt:44
-# Default: "Deactivate"
-msgid "deactivate-button"
-msgstr ""
-
-#: src/zope/app/browser/services/caches.pt:51
-#: src/zope/app/browser/services/connections.pt:50
-#: src/zope/app/browser/services/services.pt:62
-#: src/zope/app/browser/services/views.pt:46
-#: src/zope/app/browser/services/utility/utilities.pt:47
-#: src/zope/app/browser/services/translation/translate.pt:37
-#: src/zope/app/browser/services/translation/translate.pt:67
-#: src/zope/app/browser/workflow/instancecontainer_main.pt:47
-# Default: "Delete"
-msgid "delete-button"
-msgstr ""
-
-#: src/zope/app/browser/services/caches.pt:59
-msgid "Add a cache to this cache service"
-msgstr ""
-
-#: src/zope/app/browser/services/caches.pt:6
-msgid "Caches registered in this cache service:"
+#: src/zope/app/browser/services/caches.pt:5
+msgid "Local Caches"
 msgstr ""
 
 #: src/zope/app/browser/services/configure.zcml:135
@@ -1712,7 +1643,7 @@ msgstr ""
 msgid "Service"
 msgstr ""
 
-#: src/zope/app/browser/services/configure.zcml:487
+#: src/zope/app/browser/services/configure.zcml:460
 msgid "Bundle"
 msgstr ""
 
@@ -1736,8 +1667,6 @@ msgstr ""
 msgid "Role Service"
 msgstr ""
 
-#: src/zope/app/browser/services/configureCache.pt:19
-#: src/zope/app/browser/services/configureConnection.pt:19
 #: src/zope/app/browser/services/configureView.pt:18
 #: src/zope/app/browser/services/utility/configureutility.pt:29
 #: src/zope/app/browser/services/registration/namecomponentregistry.pt:42
@@ -1747,68 +1676,44 @@ msgstr ""
 msgid "update-button"
 msgstr ""
 
-#: src/zope/app/browser/services/configureCache.pt:7
-msgid "Cache registrations for ${cache_name}"
-msgstr ""
-
-#: src/zope/app/browser/services/configureConnection.pt:7
-msgid "Connection registrations for ${connection_name}"
-msgstr ""
-
 #: src/zope/app/browser/services/configureView.pt:6
 msgid "View registrations for ${key_name}"
 msgstr ""
 
-#: src/zope/app/browser/services/connection.py:122
-msgid "Deleted: ${connection_names}"
+#: src/zope/app/browser/services/connection.py:56
+msgid "${object} is not a Zope database adapter."
 msgstr ""
 
-#: src/zope/app/browser/services/connection.py:63
-msgid "Activated: ${activated_connections}"
+#: src/zope/app/browser/services/connection.zcml:13
+msgid "Add DA"
 msgstr ""
 
-#: src/zope/app/browser/services/connection.py:67
-msgid "All of the checked connections were already active"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.py:78
-msgid "Deactivated: ${deactivated_connections}"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.py:82
-msgid "None of the checked connections were active"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.py:93
-msgid "Can't delete active connection(s): ${connection_names}; use the Deactivate button to deactivate"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.zcml:17
-msgid "Connections"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.zcml:46
-msgid "New Connection Registration"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.zcml:62
-msgid "Edit Connection Registration"
-msgstr ""
-
-#: src/zope/app/browser/services/connection.zcml:8
+#: src/zope/app/browser/services/connection.zcml:33
 msgid "A Persistent SQL Connection Service for TTW development"
 msgstr ""
 
-#: src/zope/app/browser/services/connection.zcml:8
+#: src/zope/app/browser/services/connection.zcml:33
 msgid "SQL Connection Service"
 msgstr ""
 
-#: src/zope/app/browser/services/connections.pt:58
-msgid "Add a connection to this connection service"
+#: src/zope/app/browser/services/connection.zcml:40
+msgid "Connections"
 msgstr ""
 
-#: src/zope/app/browser/services/connections.pt:6
-msgid "Connections registered in this connection service:"
+#: src/zope/app/browser/services/connection.zcml:5
+msgid "SQL Connection"
+msgstr ""
+
+#: src/zope/app/browser/services/connection.zcml:5
+msgid "Takes you to a menu of SQL Connections to add"
+msgstr ""
+
+#: src/zope/app/browser/services/connections.pt:15
+msgid "Inherited Connections"
+msgstr ""
+
+#: src/zope/app/browser/services/connections.pt:5
+msgid "Local Connections"
 msgstr ""
 
 #: src/zope/app/browser/services/edituser.pt:11
@@ -2125,44 +2030,51 @@ msgstr ""
 msgid "Registrations for this object:"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:183
+#: src/zope/app/browser/services/service.py:176
 msgid "Activated: ${activated_services}"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:187
+#: src/zope/app/browser/services/service.py:180
 msgid "All of the checked services were already active"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:198
+#: src/zope/app/browser/services/service.py:191
 msgid "Deactivated: ${deactivated_services}"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:202
+#: src/zope/app/browser/services/service.py:195
 msgid "None of the checked services were active"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:213
+#: src/zope/app/browser/services/service.py:206
 msgid "Can't delete active service(s): ${service_names}; use the Deactivate button to deactivate"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:249
+#: src/zope/app/browser/services/service.py:242
 msgid "Deleted: ${service_names}"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:331
+#: src/zope/app/browser/services/service.py:324
 msgid "Invalid service type specified"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:338
+#: src/zope/app/browser/services/service.py:331
 msgid "No change"
 msgstr ""
 
-#: src/zope/app/browser/services/service.py:342
+#: src/zope/app/browser/services/service.py:335
 msgid "Service deactivated"
 msgstr ""
 
 #: src/zope/app/browser/services/serviceactivation.pt:13
 msgid "Registrations for service ${service_type}"
+msgstr ""
+
+#: src/zope/app/browser/services/services.pt:15
+#: src/zope/app/browser/services/views.pt:11
+#: src/zope/app/browser/services/bundle.pt:49
+#: src/zope/app/browser/services/utility/utilities.pt:11
+msgid "(click to clear message)"
 msgstr ""
 
 #: src/zope/app/browser/services/services.pt:18
@@ -2173,8 +2085,37 @@ msgstr ""
 msgid "Unless a service is disabled, the service name links to the active service. The (change registration) link allows activating a different implementation or disabling the service altogether."
 msgstr ""
 
+#: src/zope/app/browser/services/services.pt:47
+#: src/zope/app/browser/services/views.pt:33
+msgid "(change registration)"
+msgstr ""
+
 #: src/zope/app/browser/services/services.pt:5
 msgid "Services registered in this service manager"
+msgstr ""
+
+#: src/zope/app/browser/services/services.pt:57
+#: src/zope/app/browser/services/views.pt:41
+#: src/zope/app/browser/services/utility/utilities.pt:42
+# Default: "Activate"
+msgid "activate-button"
+msgstr ""
+
+#: src/zope/app/browser/services/services.pt:59
+#: src/zope/app/browser/services/views.pt:43
+#: src/zope/app/browser/services/utility/utilities.pt:44
+# Default: "Deactivate"
+msgid "deactivate-button"
+msgstr ""
+
+#: src/zope/app/browser/services/services.pt:62
+#: src/zope/app/browser/services/views.pt:46
+#: src/zope/app/browser/services/utility/utilities.pt:47
+#: src/zope/app/browser/services/translation/translate.pt:37
+#: src/zope/app/browser/services/translation/translate.pt:67
+#: src/zope/app/browser/workflow/instancecontainer_main.pt:47
+# Default: "Delete"
+msgid "delete-button"
 msgstr ""
 
 #: src/zope/app/browser/services/services.pt:70
@@ -2313,11 +2254,11 @@ msgstr ""
 msgid "Newer Local"
 msgstr ""
 
-#: src/zope/app/browser/services/translation/translate.pt:181
+#: src/zope/app/browser/services/translation/translate.pt:183
 msgid "Edit Messages"
 msgstr ""
 
-#: src/zope/app/browser/services/translation/translate.pt:184
+#: src/zope/app/browser/services/translation/translate.pt:186
 msgid "Delete Messages"
 msgstr ""
 
@@ -2355,6 +2296,10 @@ msgstr ""
 
 #: src/zope/app/browser/services/utility/__init__.py:164
 msgid "Deleted: ${utility_names}"
+msgstr ""
+
+#: src/zope/app/browser/services/utility/__init__.py:73
+msgid "Please select at least one checkbox"
 msgstr ""
 
 #: src/zope/app/browser/services/utility/__init__.py:99
@@ -2415,6 +2360,10 @@ msgstr ""
 
 #: src/zope/app/browser/services/view.py:161
 msgid "Can't delete active view(s): ${view_names}; use the Deactivate button to deactivate"
+msgstr ""
+
+#: src/zope/app/browser/services/view.py:180
+msgid "Deleted: ${cache_names}"
 msgstr ""
 
 #: src/zope/app/browser/services/view.zcml:13
@@ -3088,7 +3037,7 @@ msgstr ""
 msgid "XML Document"
 msgstr ""
 
-#: src/zope/app/content/image.py:75
+#: src/zope/app/content/image.py:74
 msgid " ${width}x${height}"
 msgstr ""
 
@@ -3302,34 +3251,20 @@ msgstr ""
 msgid "See the usage documentation in the README.txt in the zope/app/browser/skins directory. If a view is associated with a menu item, the view will get its usage from the menu the menu item is registered to."
 msgstr ""
 
-#: src/zope/app/interfaces/services/connection.py:34
-#: src/zope/app/interfaces/services/registration.py:112
-#: src/zope/app/interfaces/services/utility.py:35
-#: src/zope/app/browser/container/index.pt:26
-#: src/zope/app/browser/container/contents.pt:33
-#: src/zope/app/browser/workflow/instancecontainer_index.pt:19
-#: src/zope/app/browser/workflow/instancecontainer_main.pt:18
-#: src/zope/app/browser/utilities/edit.pt:36
-msgid "Name"
+#: src/zope/app/interfaces/rdb.py:389
+msgid "DSN"
 msgstr ""
 
-#: src/zope/app/interfaces/services/connection.py:35
-#: src/zope/app/interfaces/services/registration.py:113
-#: src/zope/app/interfaces/services/utility.py:36
-msgid "The name that is registered"
-msgstr ""
-
-#: src/zope/app/interfaces/services/connection.py:42
-#: src/zope/app/interfaces/services/registration.py:145
-#: src/zope/app/interfaces/services/utility.py:49
-#: src/zope/app/interfaces/workflow/__init__.py:57
-msgid "Component path"
-msgstr ""
-
-#: src/zope/app/interfaces/services/connection.py:43
-#: src/zope/app/interfaces/services/utility.py:50
-#: src/zope/app/interfaces/workflow/__init__.py:58
-msgid "The physical path to the component"
+#: src/zope/app/interfaces/rdb.py:390
+msgid ""
+"Specify the DSN (Data Source Name) of the database. Examples include:\n"
+"\n"
+"dbi://dbname\n"
+"dbi://dbname;param1=value...\n"
+"dbi://user:passwd/dbname\n"
+"dbi://user:passwd/dbname;param1=value...\n"
+"dbi://user:passwd@host:port/dbname\n"
+"dbi://user:passwd@host:port/dbname;param1=value...\n"
 msgstr ""
 
 #: src/zope/app/interfaces/services/pluggableauth/__init__.py:28
@@ -3374,6 +3309,27 @@ msgstr ""
 msgid "The password for the user."
 msgstr ""
 
+#: src/zope/app/interfaces/services/registration.py:112
+#: src/zope/app/interfaces/services/utility.py:35
+#: src/zope/app/browser/container/index.pt:26
+#: src/zope/app/browser/container/contents.pt:33
+#: src/zope/app/browser/workflow/instancecontainer_index.pt:19
+#: src/zope/app/browser/workflow/instancecontainer_main.pt:18
+#: src/zope/app/browser/utilities/edit.pt:36
+msgid "Name"
+msgstr ""
+
+#: src/zope/app/interfaces/services/registration.py:113
+#: src/zope/app/interfaces/services/utility.py:36
+msgid "The name that is registered"
+msgstr ""
+
+#: src/zope/app/interfaces/services/registration.py:145
+#: src/zope/app/interfaces/services/utility.py:49
+#: src/zope/app/interfaces/workflow/__init__.py:57
+msgid "Component path"
+msgstr ""
+
 #: src/zope/app/interfaces/services/registration.py:146
 msgid "The path to the component; this may be absolute, or relative to the nearest site management folder"
 msgstr ""
@@ -3400,6 +3356,11 @@ msgstr ""
 
 #: src/zope/app/interfaces/services/utility.py:43
 msgid "The interface provided by the adapter"
+msgstr ""
+
+#: src/zope/app/interfaces/services/utility.py:50
+#: src/zope/app/interfaces/workflow/__init__.py:58
+msgid "The physical path to the component"
 msgstr ""
 
 #: src/zope/app/interfaces/utilities/content.py:45
@@ -3461,6 +3422,10 @@ msgstr ""
 
 #: src/zope/app/onlinehelp/configure.zcml:33
 msgid "Online help system"
+msgstr ""
+
+#: src/zope/app/rdb/gadflyda.zcml:4
+msgid "Gadfly Database Adapter"
 msgstr ""
 
 #: src/zope/app/schema/fieldforms.zcml:108
@@ -3680,11 +3645,11 @@ msgid "Manage Services"
 msgstr ""
 
 #: src/zope/app/security/configure.zcml:35
-msgid "Manage Application"
+msgid "Manage the Zope Application, such as Restart/Shutdown or                     packing the ZODB."
 msgstr ""
 
 #: src/zope/app/security/configure.zcml:35
-msgid "Manage the Zope Application, such as Restart/Shutdown or                     packing the ZODB."
+msgid "Manage Application"
 msgstr ""
 
 #: src/zope/app/services/configure.zcml:113
@@ -3697,7 +3662,7 @@ msgstr ""
 msgid "ZPT Template"
 msgstr ""
 
-#: src/zope/app/services/configure.zcml:310
+#: src/zope/app/services/configure.zcml:292
 #: src/zope/app/browser/services/registration/editregistration.pt:10
 msgid "Registration Manager"
 msgstr ""

@@ -32,7 +32,7 @@ Options:
         Specifies the package that is supposed to be searched
         (i.e. 'zope/app')
 """
-__id__ = "$Id: extract.py,v 1.9 2003/08/20 16:29:55 srichter Exp $"
+__id__ = "$Id: extract.py,v 1.10 2003/08/20 16:33:08 srichter Exp $"
 
 import os, sys, fnmatch
 import getopt
@@ -40,7 +40,6 @@ import time
 import tokenize
 import traceback
 from pygettext import safe_eval, normalize, make_escapes
-from zope.i18n.messageid import MessageID
 
 __meta_class__ = type
 
@@ -98,9 +97,7 @@ class POTEntry:
         from zope.i18n.messageid import MessageID
         if isinstance(self.msgid, MessageID) and \
                self.msgid != self.msgid.default:
-            default = self.msgid.default.strip()
-            default.replace('\n', '\n# ')
-            file.write('# Default: %s\n' % normalize(default))
+            file.write('# Default: %s\n' %normalize(self.msgid.default))
         file.write('msgid %s\n' %normalize(self.msgid))
         file.write('msgstr ""\n')
         file.write('\n')
@@ -232,6 +229,7 @@ class TokenEater:
             lineno = self.__lineno
 
         if default is not None:
+            from zope.i18n.messageid import MessageID
             msg = MessageID(msg, default=default)
         entry = (self.__curfile, lineno)
         self.__messages.setdefault(msg, {})[entry] = isdocstring
