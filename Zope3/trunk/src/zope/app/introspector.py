@@ -119,7 +119,7 @@ class Introspector:
                 # XXX According to Jim, Introspector is going away soon
                 # to be replaced with something else, so just add
                 # 'removeAllProxies' for now
-                desc = removeAllProxies(desc)
+                #desc = removeAllProxies(desc)
                 if hasattr(desc, 'getSignatureString'):
                     methods.append((desc.getName(),
                                     desc.getSignatureString(),

@@ -11,7 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+
+Revision information:
+$Id: test_introspector.py,v 1.4 2003/07/02 11:02:18 alga Exp $
+"""
+
+from unittest import TestCase, TestSuite, main, makeSuite
+from zope.testing.cleanup import CleanUp
+from zope.app.introspector import Introspector
 from zope.interface import Interface, Attribute, implements
+
 
 class ITestClass(Interface):
     def drool():
@@ -46,39 +56,31 @@ class I3(I, I2):
         """method two"""
 
 
-"""
-
-Revision information:
-$Id: test_introspector.py,v 1.3 2003/06/03 15:45:09 stevea Exp $
-"""
-
-from zope.interface import Interface
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.testing.cleanup import CleanUp
-from zope.app.introspector import Introspector
-
-
-
 class Test(CleanUp, TestCase):
     """Test Introspector."""
 
-    def testIntrospector(self):
-        # Testing introspector
+    def test_isInterface(self):
         ints = Introspector(ITestClass)
         self.assertEqual(ints.isInterface(), 1)
 
         ints = Introspector(TestClass())
         self.assertEqual(ints.isInterface(), 0)
+
+    def test_getClass(self):
+        ints = Introspector(TestClass())
         request = {}
         ints.setRequest(request)
         self.assertEqual(ints.getClass(), 'TestClass')
 
+    def testIntrospectorOnClass(self):
+        request = {}
         ints = Introspector(TestClass)
         self.assertEqual(ints.isInterface(), 0)
         request['PATH_INFO'] = (
             '++module++zope.app.tests.test_introspector.TestClass')
         ints.setRequest(request)
         self.assertEqual(ints.getClass(), 'TestClass')
+
         self.assertEqual(
             ints.getBaseClassNames(),
             ['zope.app.tests.test_introspector.BaseTestClass'])
@@ -92,6 +94,8 @@ class Test(CleanUp, TestCase):
             ['zope.app.tests.test_introspector.ITestClass'])
         self.assertEqual(ints.getExtends(), (BaseTestClass,))
 
+    def testIntrospectorOnInterface(self):
+        request = {}
         ints = Introspector(I3)
         self.assertEqual(ints.isInterface(), 1)
         request['PATH_INFO'] = (

@@ -14,10 +14,12 @@
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.introspector import IIntrospector
 from zope.component import getAdapter
+from zope.app import zapi
+from zope.app.services.servicenames import Interfaces
+from zope.component.exceptions import ComponentLookupError
 # XXX only used for commented-out section below
 # from zope.component import getServiceManager, getServiceDefinitions, \
 #      queryAdapter, getService
-# from zope.component.exceptions import ComponentLookupError
 
 
 class IntrospectorView(BrowserView):
@@ -26,6 +28,15 @@ class IntrospectorView(BrowserView):
         introspector = getAdapter(self.context, IIntrospector)
         introspector.setRequest(self.request)
         return introspector
+
+    def getInterfaceURL(self, name):
+        interfaces = zapi.getService(self.context, Interfaces)
+        try:
+            interfaces.getInterface(name)
+            url = zapi.getView(interfaces, 'absolute_url', self.request)
+            return "%s/detail.html?id=%s" % (url, name)
+        except ComponentLookupError:
+            return ""
 
     def getServicesFor(self):
         services = []
