@@ -13,8 +13,8 @@
 ##############################################################################
 """Observer Registry
 
-Observers observe other objects by getting notified of object events
-on those objects. Observers subscribe to particular types of events.
+`Observers` observe other objects by getting notified of object events
+on those objects. `Observers` subscribe to particular types of events.
 
   >>> registry = Observers()
 
@@ -40,7 +40,7 @@ You can have multiple subscribers for the same specification::
   >>> subs
   ['sub12 1', 'sub12 2']
 
-You can register subscribers for all specifications using None::
+You can register subscribers for all specifications using ``None``::
 
   >>> class IR2(IR1):
   ...     pass
@@ -106,7 +106,7 @@ You can unsubscribe:
     
 $Id$  
 """
-
+__docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 from zope.interface.adapter import Default, Null

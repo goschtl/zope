@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema import Bool
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.publisher.interfaces.browser import \
@@ -47,26 +49,26 @@ class ILocalBrowserMenuService(IBrowserMenuService):
         """Get a local menu by id.
 
         If there is no such menu found locally, this method needs to raise a
-        ComponentLookupError.
+        ``ComponentLookupError``.
         """
 
     def queryLocalMenu(menu_id, default=None):
         """Get a local menu by id.
 
-        If no menu was found, the default value is returned.
+        If no menu was found, the `default` value is returned.
         """
 
     def getInheritedMenu(menu_id, canBeLocal=False):
         """Tries to get the first available menu.
 
-        If canBeLocal is True, then it also looks locally for a matching
-        menu. This method should return a ComponentLookupError, if the menu
+        If `canBeLocal` is ``True``, then it also looks locally for a matching
+        menu. This method should return a ``ComponentLookupError``, if the menu
         was not found.
         """
 
     def queryInheritedMenu(menu_id, canBeLocal=False, default=None):
         """Tries to get the first available menu.
 
-        If canBeLocal is True, then it also looks locally for a matching
-        menu. If no menu was ound, default is returned.
+        If `canBeLocal` is ``True``, then it also looks locally for a matching
+        menu. If no menu was found, `default` is returned.
         """

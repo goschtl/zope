@@ -17,6 +17,8 @@ Each expression engine can have its own expression types and base names.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import sys
 
 from zope.interface import implements
@@ -224,8 +226,8 @@ class ZopeEngine(ExpressionEngine):
         ...
       KeyError: 'zope.app.pagetemplate.tests.trusted'
 
-    (The use of KeyError is an unfortunate implementation detail; I
-    think this should be a NotFoundError.)
+    (The use of ``KeyError`` is an unfortunate implementation detail; I
+    think this should be a ``NotFoundError``.)
 
     Modules which have already been imported by trusted code are
     available, wrapped in security proxies::

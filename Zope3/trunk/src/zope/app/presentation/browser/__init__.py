@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 class PageRegistrationView(object):
     """Helper class for the page edit form."""

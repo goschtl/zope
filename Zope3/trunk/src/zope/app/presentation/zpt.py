@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re
 
 from zope.security.proxy import ProxyFactory
@@ -57,11 +59,11 @@ class IZPTTemplate(IZPTInfo, IRegisterable):
     def render(context, request, *args, **kw):
         """Render the page template.
 
-        The context argument is bound to the top-level 'context'
+        The context argument is bound to the top-level `context`
         variable.  The request argument is bound to the top-level
-        'request' variable. The positional arguments are bound to the
-        'args' variable and the keyword arguments are bound to the
-        'options' variable.
+        `request` variable. The positional arguments are bound to the
+        `args` variable and the keyword arguments are bound to the
+        `options` variable.
 
         """
 
@@ -74,11 +76,11 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
     usage = u''
 
     def getSource(self):
-        """See zope.app.presentation.zpt.IZPTInfo"""
+        """See `zope.app.presentation.zpt.IZPTInfo`"""
         return self.read()
 
     def setSource(self, text):
-        """See zope.app.presentation.zpt.IZPTInfo"""
+        """See `zope.app.presentation.zpt.IZPTInfo`"""
         if not isinstance(text, unicode):
             raise TypeError("source text must be Unicode" , text)
         self.pt_edit(text, self.contentType)
@@ -161,7 +163,7 @@ class ZPTFactory(object):
 
 
 class ZPTPageAdapter(ObjectEntryAdapter):
-    """ObjectFile adapter for ZPTTemplate objects."""
+    """ObjectFile adapter for `ZPTTemplate` objects."""
 
     implements(IObjectFile)
 

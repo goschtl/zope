@@ -11,10 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""OnlineHelp views
+"""`OnlineHelp` views
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.proxy import removeAllProxies
 
 from zope.app import zapi

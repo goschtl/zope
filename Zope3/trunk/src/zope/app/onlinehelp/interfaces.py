@@ -13,10 +13,12 @@
 ##############################################################################
 """OnlineHelp Interfaces
 
-These are the interfaces designed for the OnlineHelp system.
+These are the interfaces designed for the `OnlineHelp` system.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema import TextLine, SourceText, Choice
 from zope.configuration.fields import GlobalObject
 from zope.app.container.interfaces import IContainer
@@ -38,7 +40,7 @@ class IOnlineHelpTopic(IContainer):
     The Content is stored in a file and not the Topic itself.
     The file is only read when required.
     
-    Note that all the Sub-Topic management is done by the IContainer
+    Note that all the Sub-Topic management is done by the `IContainer`
     interface. 
     """
 
@@ -111,26 +113,26 @@ class IOnlineHelp(IOnlineHelpTopic):
                           interface=None, view=None, resources=None):
         """This method registers a topic at the correct place.
 
-           parent_path -- Location of this topic's parent in the OnlineHelp
+           `parent_path` -- Location of this topic's parent in the OnlineHelp
            tree. Need not to exist at time of creation. 
 
-           id -- Specifies the id of the topic 
+           `id` -- Specifies the id of the topic 
 
-           title -- Specifies title of the topic. This title will be used in
+           `title` -- Specifies title of the topic. This title will be used in
            the tree as Identification.
 
-           doc_path -- Specifies where the file that contains the topic
+           `doc_path` -- Specifies where the file that contains the topic
            content is located.
 
-           interface -- Name of the interface for which the help topic is
+           `interface` -- Name of the interface for which the help topic is
            being registered. This can be optional, since not all topics must
            be bound to a particular interface.
 
-           view -- This attribute specifies the name of the view for which
+           `view` -- This attribute specifies the name of the view for which
            this topic is registered. Note that this attribute is also
            optional.
 
-           resources -- Specifies a list of resources for the topic,
+           `resources` -- Specifies a list of resources for the topic,
            for example images that are included by the rendered topic content.
            Optional.
         """

@@ -15,6 +15,7 @@
 
 $Id: simpleviewclass.py 25177 2004-06-02 13:17:31Z jim $
 """
+__docformat__ = 'restructuredtext'
 
 import urllib
 from zope.interface import implements

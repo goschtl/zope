@@ -18,6 +18,8 @@ using folders of templates.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field, Choice
 
@@ -177,7 +179,7 @@ _attrNames = (
     )
 
 class PageFolderAdapter(ObjectEntryAdapter):
-    """ObjectFile adapter for PageFolder objects."""
+    """ObjectFile adapter for `PageFolder` objects."""
 
     implements(IObjectDirectory)
 

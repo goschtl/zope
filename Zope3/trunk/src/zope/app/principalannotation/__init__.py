@@ -11,10 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Implementation of IPrincipalAnnotationService.
+"""Implementation of `IPrincipalAnnotationService`.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 # TODO: register service as adapter for IAnnotations on service activation
 # this depends on existence of LocalAdapterService, so once that's done
@@ -35,7 +36,7 @@ from zope.app.container.contained import Contained
 from zope.app.location import Location
 
 class PrincipalAnnotationService(Persistent, Contained):
-    """Stores IAnnotations for IPrinicipals.
+    """Stores `IAnnotations` for `IPrinicipals`.
 
     The service ID is 'PrincipalAnnotation'.
     """
@@ -48,14 +49,14 @@ class PrincipalAnnotationService(Persistent, Contained):
     def getAnnotations(self, principal):
         """Return object implementing IAnnotations for the given principal.
 
-        If there is no IAnnotations it will be created and then returned.
+        If there is no `IAnnotations` it will be created and then returned.
         """
         return self.getAnnotationsById(principal.id)
 
     def getAnnotationsById(self, principalId):
-        """Return object implementing IAnnotations for the given principal.
+        """Return object implementing `IAnnotations` for the given principal.
 
-        If there is no IAnnotations it will be created and then returned.
+        If there is no `IAnnotations` it will be created and then returned.
         """
 
         annotations = self.annotations.get(principalId)
@@ -67,7 +68,7 @@ class PrincipalAnnotationService(Persistent, Contained):
         return annotations
 
     def hasAnnotations(self, principal):
-        """Return boolean indicating if given principal has IAnnotations."""
+        """Return boolean indicating if given principal has `IAnnotations`."""
         return principal.id in self.annotations
 
 
@@ -112,7 +113,8 @@ class Annotations(Persistent, Location):
 
 
 class AnnotationsForPrincipal(object):
-    """Adapter from IPrincipal to IAnnotations for a PrincipalAnnotationService.
+    """Adapter from IPrincipal to `IAnnotations` for a
+    `PrincipalAnnotationService`.
 
     Register an *instance* of this class as an adapter.
     """

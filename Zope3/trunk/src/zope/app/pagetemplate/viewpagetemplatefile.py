@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.component import getView
 from zope.app.pagetemplate.engine import TrustedAppPT

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements, providedBy
 from zope.app.observable.interfaces import IObservable
 from zope.app.annotation.interfaces import IAnnotations

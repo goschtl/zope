@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import persistent.dict
 
 from zope.interface import implements, providedBy, Interface, Attribute
@@ -91,7 +93,7 @@ class LocalPresentationService(
                   providing=Interface):
         """Look for a named view for a given object and request
 
-        The request must implement IPresentationRequest.
+        The request must implement `IPresentationRequest`.
 
         The default will be returned if the component can't be found.
         """
@@ -116,7 +118,7 @@ class LocalPresentationService(
     def queryResource(self, name, request, default=None, providing=Interface):
         """Look up a named resource for a given request
         
-        The request must implement IPresentationRequest.
+        The request must implement `IPresentationRequest`.
         
         The default will be returned if the component can't be found.
         """

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.presentation.pagefolder import IPageFolder
 
 class PageFolderDefaultConfiguration(object):

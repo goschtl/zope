@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
 from zope.interface import implements, providedBy
 from zope.component.exceptions import ComponentLookupError
@@ -100,7 +102,7 @@ class LocalBrowserMenu(OrderedContainer):
 
 class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
     """This implementation strongly depends on the semantics of
-    GlobalBrowserMenuService."""
+    `GlobalBrowserMenuService`."""
 
     implements(ILocalBrowserMenuService, ISimpleService)
 
@@ -109,14 +111,14 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getAllLocalMenus(self):
-        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
+        """See `zope.app.publisher.interfaces.browser.IBrowserMenuService`"""
         utilities = zapi.getService(Utilities, self)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         return map(lambda m: m[1], menus)
 
 
     def getLocalMenu(self, menu_id):
-        """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
+        """See `zope.app.interfaces.services.menu.ILocalBrowserMenuService`"""
         menu = self.queryLocalMenu(menu_id)
         if menu is None:
             raise ComponentLookupError(menu_id)
@@ -124,7 +126,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def queryLocalMenu(self, menu_id, default=None):
-        """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
+        """See `zope.app.interfaces.services.menu.ILocalBrowserMenuService`"""
         utilities = zapi.getService(Utilities, self)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         for name, menu in menus:
@@ -134,7 +136,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getInheritedMenu(self, menu_id, canBeLocal=False):
-        """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
+        """See `zope.app.interfaces.services.menu.ILocalBrowserMenuService`"""
         menu = self.queryInheritedMenu(menu_id, canBeLocal)
         if menu is None:
             raise ComponentLookupError(menu_id)
@@ -142,7 +144,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def queryInheritedMenu(self, menu_id, canBeLocal=False, default=None):
-        """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
+        """See `zope.app.interfaces.services.menu.ILocalBrowserMenuService`"""
         if canBeLocal and self.queryLocalMenu(menu_id) is not None:
             return self.queryLocalMenu(menu_id)
         # Another service (global) should always be available
@@ -156,7 +158,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getAllMenuItems(self, menu_id, object):
-        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
+        """See `zope.app.publisher.interfaces.browser.IBrowserMenuService`"""
         result = []
 
         # Find the local items, if available
@@ -176,13 +178,13 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getMenu(self, menu_id, object, request, max=999999):
-        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
+        """See `zope.app.publisher.interfaces.browser.IBrowserMenuService`"""
         return super(LocalBrowserMenuService,
                      self).getMenu(menu_id, object, request, max)
 
 
     def getFirstMenuItem(self, menu_id, object, request):
-        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
+        """See `zope.app.publisher.interfaces.browser.IBrowserMenuService`"""
         return super(LocalBrowserMenuService,
                      self).getFirstMenuItem(menu_id, object, request)
 

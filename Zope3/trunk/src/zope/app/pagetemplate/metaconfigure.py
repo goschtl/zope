@@ -16,6 +16,8 @@ namespace in TALES.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.pagetemplate.engine import Engine, _Engine
 from zope.app.pagetemplate.engine import TrustedEngine, _TrustedEngine
 from zope.testing.cleanup import addCleanUp

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer, IContained
 from zope.app.container.constraints import ItemTypePrecondition
@@ -42,14 +44,14 @@ class IUserSchemafied(IPrincipal):
 
 
 class IPrincipalSource(Interface):
-    """A read-only source of IPrincipals.
+    """A read-only source of `IPrincipals`.
     """
 
     def getPrincipal(id):
         """Get principal meta-data.
 
-        Returns an object of type IPrincipal for the given principal
-        id. A NotFoundError is raised if the principal cannot be
+        Returns an object of type `IPrincipal` for the given principal
+        id. A ``NotFoundError`` is raised if the principal cannot be
         found.
 
         Note that the id has three parts, separated by tabs.  The
@@ -73,7 +75,7 @@ class IPrincipalSource(Interface):
 
 
 class IPluggableAuthenticationService(IAuthenticationService, IContainer):
-    """An AuthenticationService that can contain multiple pricipal sources.
+    """An `AuthenticationService` that can contain multiple pricipal sources.
     """
 
     def __setitem__(id, principal_source):
@@ -81,9 +83,9 @@ class IPluggableAuthenticationService(IAuthenticationService, IContainer):
     __setitem__.precondition = ItemTypePrecondition(IPrincipalSource)
   
     def removePrincipalSource(id):
-        """Remove a PrincipalSource.
+        """Remove a `PrincipalSource`.
 
-        If id is not present, raise KeyError.
+        If id is not present, raise ``KeyError``.
         """
 
 
@@ -95,7 +97,7 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
         """ Return a principal matching the login/password pair.
 
         If there is no principal in this principal source which
-        matches the login/password pair, return None.
+        matches the login/password pair, return ``None``.
 
         Note: A login is different than an id.  Principals may have
         logins that differ from their id.  For example, a user may
