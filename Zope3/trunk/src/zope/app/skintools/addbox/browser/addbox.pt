@@ -1,12 +1,11 @@
 <html>
 <body>
 
-<div metal:define-macro="addbox"
+<metal:block define-macro="addbox"
      tal:define="global addingInfo context/@@+/addingInfo"
-     tal:repeat="pagelet pagelets:zope.app.skintools.addbox.IAddBoxLayout"
-     tal:omit-tag="">
+     tal:repeat="pagelet pagelets:zope.app.skintools.addbox.IAddBoxLayout">
 
-  <metal:block use-macro="pagelet">
+  <tal:block metal:use-macro="pagelet">
 
     <metal:block fill-slot="header">
       <div class="title" i18n:translate="">Quick add</div>
@@ -32,7 +31,6 @@
              tal:content="info/title" i18n:translate="">
             Folder
           </a>
-                                        
           <a href="#"
              tal:define="baseurl python:request.getURL(1)"
              tal:condition="
@@ -44,7 +42,6 @@
              tal:content="info/title" i18n:translate="">
             Folder
           </a>
-                
           <a href="#"
              tal:define="baseurl python:request.getURL(1)"
              tal:condition="python: info['action'].startswith('../')"
@@ -56,10 +53,8 @@
         </div>
       </span>
     </metal:block>
-
-  </metal:block>
-
-</div>
+  </tal:block>
+</metal:block>
 
 </body>
 </html>

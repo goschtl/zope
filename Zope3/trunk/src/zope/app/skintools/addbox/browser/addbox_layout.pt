@@ -4,11 +4,9 @@
 <metal:block define-macro="addbox_layout">
   <div class="slotbox" id="addbox">
     <div class="header"> 
-        
       <metal:block define-slot="header">
         This text will be replace by the content of the pagelet.
       </metal:block>
-
       <span>
         <img id="arrowAddBox" class="icon" style="cursor:hand" 
              onClick="javascript:toggle(
@@ -18,11 +16,9 @@
       </span>
     </div>
     <div class="toggle body" id="adddboxToggle">
-        
       <metal:block define-slot="body">
         This text will be replace by the content of the pagelet.
       </metal:block>
-        
     </div>
   </div>
 </metal:block>

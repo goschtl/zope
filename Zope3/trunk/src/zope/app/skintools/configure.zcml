@@ -15,9 +15,12 @@
   <include package="zope.app.skintools.tooltipbox" />
   <include package="zope.app.skintools.zmicookietreebox" />
 
-  <!-- menu actions -->
-  <include package="zope.app.skintools.helpaction" />
+  <!-- toolbar (zmi and help actions) -->
   <include package="zope.app.skintools.toolbar" />
+  <include package="zope.app.skintools.helpaction" />
+
+  <!-- context menu (zmi views) -->
+  <include package="zope.app.skintools.contextmenu" />
 
   <configure zcml:condition="have onlinehelp">
     <help:register

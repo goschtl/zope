@@ -2,11 +2,11 @@
 <body>
 
 <metal:block define-macro="toolbar_layout">
-	<div class="viewaction" id="actions">
-		<metal:block define-slot="toolbar">
-			zmi actions
-		</metal:block>
-	</div>
+  <div class="actions">
+    <metal:block define-slot="toolbar">
+      zmi actions
+    </metal:block>
+  </div>
 </metal:block>
 
 </body>

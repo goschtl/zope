@@ -2,22 +2,18 @@
 <body>
 
 <metal:block define-macro="zmicookietreebox_layout">
-	<div class="slotbox" id="zmicookietreebox">
-		<div class="header"> 
-	
-			<metal:block define-slot="header">
-				This text will be replace by the content of the pagelet.
-			</metal:block>
-	
-		</div>
-		<div class="toggle treebody">
-	
-			<metal:block define-slot="body">
-				This text will be replace by the content of the pagelet.
-			</metal:block>
-	
-		</div>
-	</div>
+  <div class="slotbox" id="zmicookietreebox">
+    <div class="header">
+      <metal:block define-slot="header">
+        This text will be replace by the content of the pagelet.
+      </metal:block>
+    </div>
+    <div class="toggle treebody">
+      <metal:block define-slot="body">
+        This text will be replace by the content of the pagelet.
+      </metal:block>
+    </div>
+  </div>
 </metal:block>
 
 </body>
