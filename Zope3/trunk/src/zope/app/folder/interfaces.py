@@ -27,6 +27,3 @@ class IFolder(IContainer, IContentContainer, IPossibleSite,
 
 class IRootFolder(IFolder, IContainmentRoot):
     """The standard Zope root Folder object interface."""
-
-class IFolderAdding(IAdding):
-    pass
