@@ -68,7 +68,7 @@ if not "depends" in Extension.__init__.func_code.co_varnames:
 
 # We have to snoop for file types that distutils doesn't copy correctly when
 # doing a non-build-in-place.
-EXTS = ['.conf', '.css', '.dtd', '.gif', '.html',
+EXTS = ['.conf', '.css', '.dtd', '.gif', '.jpg', '.html',
         '.js',   '.mo',  '.png', '.pt', '.stx', '.ref',
         '.txt',  '.xml', '.zcml', '.mar',
         ]
