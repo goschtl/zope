@@ -116,6 +116,7 @@ class FauxRequest:
         self.steps = steps
         self._dict = {}
         self._dict.update( kw )
+        self._held = []
 
     def get( self, key, default=None ):
 
@@ -134,7 +135,7 @@ class FauxRequest:
         self._dict[ key ] = value
 
     def _hold(self, something):
-        pass
+        self._held.append(something)
 
 class FauxNotFoundError( Exception ):
 
@@ -1614,28 +1615,37 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         from Products.PluggableAuthService.interfaces.plugins \
              import IChallengePlugin
         rc, root, folder, object = self._makeTree()
+        response = FauxResponse()
+        request = FauxRequest(RESPONSE=response)
+        root.REQUEST =  request
+
         plugins = self._makePlugins()
         zcuf = self._makeOne(plugins)
         root._setObject( 'acl_users', zcuf )
+        zcuf = root._getOb('acl_users')
+
         challenger = self._makeChallengePlugin('challenger')
         zcuf._setObject( 'challenger', challenger )
         zcuf.plugins.activatePlugin( IChallengePlugin, 'challenger' )
 
+        # Emulate publishing traverse through the root
+        zcuf(root, request)
+
         inner_plugins = self._makePlugins()
         inner_zcuf = self._makeOne(inner_plugins)
-        folder._setObject( 'acl_users', zcuf)
+        folder._setObject('acl_users', inner_zcuf)
+        inner_zcuf = folder._getOb('acl_users')
+
         bad_challenger = self._makeBadChallengePlugin('bad_challenger')
         inner_zcuf._setObject( 'bad_challenger', bad_challenger )
         inner_zcuf.plugins.activatePlugin( IChallengePlugin, 'bad_challenger' )
 
-        response = FauxResponse()
-        request = FauxRequest(RESPONSE=response)
-        inner_zcuf.REQUEST = request
+        # Emulate publishing traverse through the subfolder
+        inner_zcuf(folder, request)
 
-        # First call the userfolders before_traverse hook, to set things up:
-        inner_zcuf(self, request)
         # Call unauthorized to make sure Unauthorized is raised.
-        self.failUnlessRaises( Unauthorized, response.unauthorized)
+        self.failUnlessRaises(Unauthorized, response.unauthorized)
+
         # Since we have two challengers in play, we end up calling
         # PluggableAuthService._unauthorized(), which allows the
         # challengers to play. DummyChallenger sets '.challenger' on

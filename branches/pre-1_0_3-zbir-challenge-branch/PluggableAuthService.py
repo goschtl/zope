@@ -1097,6 +1097,9 @@ class PluggableAuthService( Folder ):
         """
         resp = req['RESPONSE']
         req._hold(ResponseCleanup(resp))
+        stack = getattr(resp, '_unauthorized_stack', [])
+        stack.append(resp._unauthorized)
+        resp._unauthorized_stack = stack
         resp._unauthorized = self._unauthorized
 
     #
@@ -1135,10 +1138,16 @@ class PluggableAuthService( Folder ):
         resp = self.REQUEST['RESPONSE']
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
-        try: del resp.unauthorized
-        except: pass
-        try: del resp._unauthorized
-        except: pass
+        stack = getattr(resp, '_unauthorized_stack', [])
+
+        if stack:
+            resp._unauthorized = stack.pop()
+        else:
+            try:
+                del resp._unauthorized
+            except:
+                pass
+
         return resp
 
     security.declarePublic( 'hasUsers' )
@@ -1274,10 +1283,22 @@ class ResponseCleanup:
         #
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
-        try: del self.resp.unauthorized
-        except: pass
-        try: del self.resp._unauthorized
-        except: pass
-        try: del self.resp
-        except: pass
+        stack = getattr(self.resp, '_unauthorized_stack', [])
+        old = None
+
+        while stack:
+            old = stack.pop()
+
+        if old is not None:
+            self.resp._unauthorized = old
+        else:
+            try:
+                del self.resp._unauthorized
+            except:
+                pass
+
+        try:
+            del self.resp
+        except:
+            pass
 
