@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.17 2003/10/16 16:25:36 fdrake Exp $
+$Id: registration.py,v 1.18 2003/10/30 21:55:15 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -294,13 +294,12 @@ class SimpleRegistration(Persistent, Contained):
     """
 
     implements(interfaces.IRegistration, IRemoveNotifiable,
-                      # We are including this here because we want all of the
-                      # subclasses to get it and we don't really need to be
-                      # flexible about the policy here. At least we don't
-                      # *think* we do. :)
-                      IAttributeAnnotatable,
-                      )
-
+               # We are including this here because we want all of the
+               # subclasses to get it and we don't really need to be
+               # flexible about the policy here. At least we don't
+               # *think* we do. :)
+               IAttributeAnnotatable,
+               )
 
     status = RegistrationStatusProperty()
 
@@ -464,7 +463,7 @@ class NameRegistry:
     def queryRegistrations(self, name, default=None):
         """See INameRegistry"""
         return self._bindings.get(name, default)
-        
+
     def createRegistrationsFor(self, cfg):
         """See IRegistry"""
         return self.createRegistrations(cfg.name)
@@ -576,7 +575,7 @@ class RegistrationManager(Persistent, Contained):
 
     def __setitem__(self, key, v):
         setitem(self, self.__setitem, key, v)
-        
+
     def __setitem(self, key, v):
         if key in self:
             raise DuplicationError(key)
