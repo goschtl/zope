@@ -48,12 +48,12 @@ navigationTreeNode.prototype.setPath = function(path) {
 
 navigationTreeNode.prototype.collapse = function() {
  	this.isCollapsed = 1;
-        this.changeExpandIcon("pl.gif"); 
+        this.changeExpandIcon("pl.gif");
 }
 
 navigationTreeNode.prototype.expand = function() {
  	this.isCollapsed = 0;
-        this.changeExpandIcon("mi.gif"); 
+        this.changeExpandIcon("mi.gif");
 }
 
 navigationTreeNode.prototype.changeExpandIcon = function(icon) {
@@ -72,7 +72,7 @@ navigationTreeNode.prototype.getNodeByPath = function(path) {
                         if (foundChild) {
                                 return foundChild;
                                 }
-                        }        
+                        }
                 }
         return null;
 }
@@ -91,7 +91,7 @@ with (this) {
                 }
 
         }
-} 
+}
 
 navigationTreeNode.prototype.startLoadingChildren = function() {
 with (this) {
@@ -208,7 +208,7 @@ function checkTagName(elem, tagName) {
 function getCollectionChildNodes(xmlDomElem) {
         // get collection element nodes among childNodes of elem
         var result = new Array();
-        
+
         var items = xmlDomElem.childNodes;
         var numitems = items.length;
         var currentItem;
@@ -246,7 +246,7 @@ function treeclicked (e) {
 function getControlPrefix() {
         if (getControlPrefix.prefix)
                 return getControlPrefix.prefix;
-   
+
         var prefixes = ["MSXML2", "Microsoft", "MSXML", "MSXML3"];
         var o, o2;
         for (var i = 0; i < prefixes.length; i++) {
@@ -258,7 +258,7 @@ function getControlPrefix() {
                         }
                 catch (ex) {};
                 }
-   
+
         throw new Error("Could not find an installed XML parser");
         }
 
@@ -270,7 +270,7 @@ function XmlHttp() {}
 XmlHttp.create = function () {
 if (window.XMLHttpRequest) {
         var req = new XMLHttpRequest();
-         
+
         // some older versions of Moz did not support the readyState property
         // and the onreadystate event so we patch it!
         if (req.readyState == null) {
@@ -280,7 +280,7 @@ if (window.XMLHttpRequest) {
                                 if (typeof req.onreadystatechange == "function")
                                 req.onreadystatechange();}, false);
                 }
- 
+
                 return req;
         }
 if (window.ActiveXObject) {
@@ -291,10 +291,10 @@ return;
 };
 
 function loadtreexml (url, node) {
-        var xmlHttp = XmlHttp.create(); 
+        var xmlHttp = XmlHttp.create();
         if (xmlHttp) {
                 prettydump('URL ' + url, LG_INFO);
-                xmlHttp.open('GET', url, true); 
+                xmlHttp.open('GET', url, true);
 
 
                 xmlHttp.onreadystatechange = function () {
@@ -311,12 +311,12 @@ function loadtreexml (url, node) {
                 }
         else {
                 }
-        }  
+        }
 
 function loadtree (rooturl, thisbaseurl) {
         baseurl = rooturl;  // Global baseurl
         docNavTree = document.getElementById('navtreecontents');
-  
+
 	var url = thisbaseurl + SINGLE_BRANCH_TREE_VIEW;
         loadtreexml(url, null);
         }
@@ -345,11 +345,11 @@ function parseXML(responseXML, node) {
                         addNavigationTreeNodes(data, node, 0);
                         node.finishLoadingChildren();
                         }
-                }             
+                }
         }
 
 function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
-        // create tree nodes from XML children nodes of sourceNode         
+        // create tree nodes from XML children nodes of sourceNode
         // and add them to targetNode
         // if deep, create all descendants of sourceNode
         var basePath = "";
@@ -364,12 +364,12 @@ function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
                         targetNavTreeNode.appendChild(navTreeChild);
                         }
                 }
-        }       
+        }
 
 
 function createPresentationNodes(title, targetUrl, icon_url, length) {
         // create nodes hierarchy for one collection (without children)
-        
+
         // create elem for plus/minus icon
         var expandElem = document.createElement('expand');
         // create elem for item icon
@@ -382,11 +382,11 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
         // create link
         var linkElem = document.createElement('a');
         var titleTextNode = document.createTextNode(title);
-        
+
         linkElem.appendChild(titleTextNode);
         linkElem.setAttribute('title', 'Contains ' + length + ' item(s)');
         linkElem.setAttribute('href', targetUrl);
-        
+
         iconElem.appendChild(linkElem);
 
         return expandElem;
@@ -396,7 +396,7 @@ function createLoadingNode() {
         var loadingElem = document.createElement('loading');
         //XXX should not hardcode loading string
         var titleTextNode = document.createTextNode('Loading...');
-        
+
         loadingElem.appendChild(titleTextNode);
 
         return loadingElem;
@@ -421,15 +421,15 @@ function createNavigationTreeNode(source, basePath, deep) {
                 elemPath = basePath + elemTitle + '/';
                 }
         navTreeNode.setPath(elemPath);
-        
+
         //could show number of child items
         var length = source.getAttribute('length');
-        
-        var icon_url = source.getAttribute('icon_url');  
+
+        var icon_url = source.getAttribute('icon_url');
 
         var targetUrl = baseurl;
 	targetUrl = targetUrl + elemPath;
-	targetUrl = targetUrl + CONTENT_VIEW;        
+	targetUrl = targetUrl + CONTENT_VIEW;
 
         var expandElem = createPresentationNodes(elemTitle, targetUrl, icon_url, length);
         newelem.appendChild(expandElem);
@@ -439,7 +439,7 @@ function createNavigationTreeNode(source, basePath, deep) {
                 var children = getCollectionChildNodes(source);
                 var numchildren = children.length;
                 for (var i=0; i< numchildren; i++) {
-                        var navTreeNodeChild =  createNavigationTreeNode(children[i], navTreeNode.path, deep); 
+                        var navTreeNodeChild =  createNavigationTreeNode(children[i], navTreeNode.path, deep);
                         navTreeNode.appendChild(navTreeNodeChild);
                         }
                 if (numchildren) {

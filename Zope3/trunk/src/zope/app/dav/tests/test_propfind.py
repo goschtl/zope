@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.7 2003/06/06 19:29:02 stevea Exp $
+$Id: test_propfind.py,v 1.8 2003/06/23 17:17:03 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -422,6 +422,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'0'})
 
         resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
@@ -468,6 +469,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'1'})
 
         resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
@@ -514,6 +516,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'infinity'})
 
         resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:

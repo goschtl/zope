@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.10 2003/06/05 20:13:08 jim Exp $
+$Id: propfind.py,v 1.11 2003/06/23 17:17:02 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -45,6 +45,8 @@ class PROPFIND:
     def PROPFIND(self):
         request = self.request
         resource_url = str(getView(self.context, 'absolute_url', request))
+        if IReadContainer.isImplementedBy(self.context):
+            resource_url = resource_url + '/'
         data = request.bodyFile
         data.seek(0)
         response = ''

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: notfound.py,v 1.2 2003/06/06 20:55:09 stevea Exp $
+$Id: notfound.py,v 1.3 2003/06/23 17:17:05 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -29,7 +29,11 @@ class NotFound:
         self.request = request
 
     def __call__(self):
-        self.request.response.setStatus(404)
+        if self.request.method in ['MKCOL'] and self.request.getTraversalStack():
+            # MKCOL with non-existing parent.
+            self.request.response.setStatus(409)
+        else:
+            self.request.response.setStatus(404)
         return ''
 
     __str__ = __call__

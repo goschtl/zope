@@ -13,7 +13,7 @@
 ##############################################################################
 """WebDAV Adapters
 
-$Id: adapter.py,v 1.3 2003/06/13 17:41:16 stevea Exp $
+$Id: adapter.py,v 1.4 2003/06/23 17:17:02 sidnei Exp $
 """
 
 from xml.dom import minidom
@@ -29,7 +29,10 @@ class DAVSchemaAdapter:
         self.context = object
 
     def displayname(self):
-        return zapi.name(self.context)
+        value = zapi.name(self.context)
+        if queryAdapter(self.context, IReadDirectory, None) is not None:
+            value = value + '/'
+        return value
 
     def creationdate(self):
         value = getAdapter(self.context, IDCTimes).created

@@ -2,18 +2,18 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.8 2003/04/30 23:37:58 faassen Exp $
+$Id: xmlobject.py,v 1.9 2003/06/23 17:17:01 sidnei Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -29,7 +29,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def getIconUrl(self, item):
         result = ''
-        icon = queryView(item, 'zmi_icon', self.request) 
+        icon = queryView(item, 'zmi_icon', self.request)
         if icon:
             result = icon.url()
         return result
@@ -49,7 +49,7 @@ class ReadContainerXmlObjectView(BrowserView):
             item = traverse(container, name, None)
             if item is None:
                 continue
-            
+
             iconUrl = self.getIconUrl(item)
             if IReadContainer.isImplementedBy(item):
                 result.append(
@@ -62,7 +62,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
         return ' '.join(result)
 
-        
+
     def children(self):
         """ """
         container = self.context
@@ -73,7 +73,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def singleBranchTree(self, root=''):
         """Return an XML document with the siblings and parents of an object.
-        
+
         There is only one branch expanded, in other words, the tree is
         filled with the object, its siblings and its parents with
         their respective siblings.
@@ -83,7 +83,7 @@ class ReadContainerXmlObjectView(BrowserView):
         oldItem = self.context
         for item in getParents(self.context):
             # skip skin if present
-            if item == oldItem:                
+            if item == oldItem:
                     continue
             subItems = []
             keys = list(item.keys())
@@ -121,10 +121,10 @@ class ReadContainerXmlObjectView(BrowserView):
                   'isroot="">%s</collection>'
                   % ('', len(oldItem), iconUrl, result)
                   )
-        
+
         self.request.response.setHeader('Content-Type', 'text/xml')
         return u'<?xml version="1.0" ?><children> %s </children>' % result
- 
+
 class XmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
 
@@ -134,7 +134,7 @@ class XmlObjectView(BrowserView):
         parent = getParent(self.context)
         while parent is not None:
                 if IReadContainer.isImplementedBy(parent):
-                        view = queryView(parent, 
+                        view = queryView(parent,
                                          'singleBranchTree.xml',
                                          self.request)
                         return view()

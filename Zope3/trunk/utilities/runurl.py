@@ -65,8 +65,8 @@
       --build
 
         Run from a build directory
-         
-$Id: runurl.py,v 1.4 2003/06/11 20:13:02 jim Exp $
+
+$Id: runurl.py,v 1.5 2003/06/23 17:17:07 sidnei Exp $
 """
 
 import sys, os, getopt
@@ -78,7 +78,7 @@ def main(argv=None):
         argv = sys.argv
 
     script = argv[0]
-    
+
     args = argv[1:]
 
     try:
@@ -91,7 +91,7 @@ def main(argv=None):
         print __doc__ % {'script': script}
         raise
 
-    
+
     basic = run = warm = profilef = database = config = hotshotf = None
     stdin = ''
     src = 'src'
@@ -108,7 +108,7 @@ def main(argv=None):
             from distutils.util import get_platform
             PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
             src = os.path.join("build", "lib.%s" % PLAT_SPEC)
-            
+
         elif name in ('-d', '--database'):
              database = value
         elif name in ('-c', '--config'):
@@ -132,9 +132,9 @@ def main(argv=None):
             name, value = arg.split('=', 1)
             env[name]=value
 
-    app = _doimport(script, src) 
+    app = _doimport(script, src)
     app = app.Application(database, config)
-    
+
     if warm:
         _mainrun(app, path, basic, 1, stdin, env)
 
@@ -156,10 +156,10 @@ def main(argv=None):
             import marshal
             marshal.dump(p.stats, open(hotshotf, 'w'))
             print 'Wrote', hotshotf
-            
+
     else:
         _mainrun(app, path, basic, run, stdin, env)
-        
+
 resultfmt = "elapsed: %.4f, cpu=%.4f, status=%s"
 def _mainrun(app, path, basic, run, stdin, environment):
     if run:
@@ -182,7 +182,7 @@ def _mainrun(app, path, basic, run, stdin, environment):
     else:
         print resultfmt % app.publish(path=path, basic=basic, stdin=stdin,
                                       environment=environment)
-        
+
 
 def _doimport(script, src):
     try:

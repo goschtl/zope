@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -14,7 +14,7 @@
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
 
-$Id: traversal.py,v 1.3 2003/06/06 20:55:09 stevea Exp $
+$Id: traversal.py,v 1.4 2003/06/23 17:17:04 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -27,6 +27,7 @@ from zope.interface import implements
 class ContainerTraverser:
 
     implements(IPublishTraverse)
+
     __used_for__ = ISimpleReadContainer
 
     def __init__(self, container, request):

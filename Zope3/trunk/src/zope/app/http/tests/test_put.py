@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_put.py,v 1.4 2003/06/06 20:55:09 stevea Exp $
+$Id: test_put.py,v 1.5 2003/06/23 17:17:05 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -46,7 +46,7 @@ class Container:
 
     def __call__(self, name, content_type, data):
         return File(name, content_type, data)
-        
+
 
 class TestNullPUT(PlacelessSetup, TestCase):
 
@@ -66,7 +66,7 @@ class TestNullPUT(PlacelessSetup, TestCase):
         self.assertEqual(file.__class__, File)
         self.assertEqual(file.name, 'spam')
         self.assertEqual(file.content_type, 'test/foo')
-        self.assertEqual(file.data, content)        
+        self.assertEqual(file.data, content)
 
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 201)
@@ -100,7 +100,7 @@ class TestFilePUT(PlacelessSetup, TestCase):
         put = zope.app.http.put.FilePUT(file, request)
         self.assertEqual(put.PUT(), '')
         request.response.setBody('')
-        self.assertEqual(file.data, content)        
+        self.assertEqual(file.data, content)
 
     def test_bad_content_header(self):
         file = File("thefile", "text/x", "initial content")
@@ -113,7 +113,7 @@ class TestFilePUT(PlacelessSetup, TestCase):
         put = zope.app.http.put.FilePUT(file, request)
         self.assertEqual(put.PUT(), '')
         request.response.setBody('')
-        self.assertEqual(file.data, "initial content")        
+        self.assertEqual(file.data, "initial content")
 
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 501)

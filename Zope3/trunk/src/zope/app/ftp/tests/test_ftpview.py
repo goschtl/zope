@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ftpview.py,v 1.2 2003/06/04 11:13:48 stevea Exp $
+$Id: test_ftpview.py,v 1.3 2003/06/23 17:17:03 sidnei Exp $
 """
 
 import datetime
@@ -159,7 +159,7 @@ class Test(PlacelessSetup, TestCase):
         f = StringIO()
         self.__view.readfile('f', f, 3, 9)
         self.assertEqual(f.getvalue(), 'contents of\nf'[3:9])
-        
+
     def test_lsinfo(self):
         self.assertEqual(
             norm_info(self.__view.lsinfo('test')),

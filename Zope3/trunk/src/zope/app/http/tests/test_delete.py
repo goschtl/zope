@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_delete.py,v 1.5 2003/06/06 20:55:09 stevea Exp $
+$Id: test_delete.py,v 1.6 2003/06/23 17:17:05 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -42,9 +42,9 @@ class TestDelete(PlacelessSetup, TestCase):
 
         request = TestRequest()
         delete = zope.app.http.delete.DELETE(item, request)
-        self.assert_(hasattr(container, 'a'))        
+        self.assert_(hasattr(container, 'a'))
         self.assertEqual(delete.DELETE(), '')
-        self.assert_(not hasattr(container, 'a'))        
+        self.assert_(not hasattr(container, 'a'))
 
 def test_suite():
     return TestSuite((

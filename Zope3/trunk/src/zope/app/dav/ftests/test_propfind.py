@@ -11,25 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Functional tests for virtual hosting.
+"""Functional tests for PROPFIND.
 
-$Id: test_propfind.py,v 1.2 2003/05/22 15:10:58 sidnei Exp $
+$Id: test_propfind.py,v 1.3 2003/06/23 17:17:02 sidnei Exp $
 """
 
 import unittest
 from datetime import datetime
-from zope.testing.functional import HTTPTestCase
-from zope.app.content.zpt import ZPTPage
-from zope.app.content.folder import Folder
-from transaction import get_transaction
-from zope.pagetemplate.tests.util import normalize_xml
+from zope.app.dav.ftests.dav import DAVTestCase
 from zope.component import getAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.traversing import traverse
+from transaction import get_transaction
+from zope.pagetemplate.tests.util import normalize_xml
 
 __metaclass__ = type
 
-class TestPROPFIND(HTTPTestCase):
+class TestPROPFIND(DAVTestCase):
 
     def test_dctitle(self):
         self.addPage('/pt', u'<span />')
@@ -91,32 +89,6 @@ class TestPROPFIND(HTTPTestCase):
         </response>
         </multistatus>""" % {'ns':ns, 'prop':prop, 'expect':expect})
         self.assertEquals(s1, s2)
-
-    def createFolders(self, path):
-        """addFolders('/a/b/c/d') would traverse and/or create three nested
-        folders (a, b, c) and return a tuple (c, 'd') where c is a Folder
-        instance at /a/b/c."""
-        folder = self.getRootFolder()
-        if path[0] == '/':
-            path = path[1:]
-        path = path.split('/')
-        for id in path[:-1]:
-            try:
-                folder = folder[id]
-            except KeyError:
-                folder.setObject(id, Folder())
-                folder = folder[id]
-        return folder, path[-1]
-
-    def createObject(self, path, obj):
-        folder, id = self.createFolders(path)
-        folder.setObject(id, obj)
-        get_transaction().commit()
-
-    def addPage(self, path, content):
-        page = ZPTPage()
-        page.source = content
-        self.createObject(path, page)
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -82,7 +82,7 @@ There are three issues we need to deal with:
       For reading, there must be a class adapter to IReadSync.  We will
       then apply rules similar to those above.
 
-$Id: file.py,v 1.1 2003/02/03 15:08:39 jim Exp $
+$Id: file.py,v 1.2 2003/06/23 17:17:06 sidnei Exp $
 """
 
 from zope.interface import Interface
@@ -114,9 +114,9 @@ class IReadDirectory(IReadContainer):
     """
 
 class IWriteDirectory(IWriteContainer):
-    """Objects that should be treated as directories for reading
+    """Objects that should be treated as directories for writing
     """
-    
+
 class IDirectoryFactory(Interface):
 
     def __call__(name):
@@ -126,7 +126,7 @@ class IDirectoryFactory(Interface):
         and IWriteDirectory.
 
         """
-    
+
 class IFileFactory(Interface):
 
     def __call__(name, content_type, data):
