@@ -13,6 +13,7 @@
 ##############################################################################
 """Tests of zpkgtools.cvsloader."""
 
+import doctest
 import os.path
 import shutil
 import tempfile
@@ -469,6 +470,7 @@ def test_suite():
     suite = unittest.makeSuite(UrlUtilitiesTestCase)
     suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
     suite.addTest(unittest.makeSuite(CvsLoaderTestCase))
+    suite.addTest(doctest.DocTestSuite("zpkgtools.cvsloader"))
     return suite
 
 if __name__ == "__main__":
