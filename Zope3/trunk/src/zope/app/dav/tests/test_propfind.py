@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.22 2004/03/15 20:42:05 jim Exp $
+$Id: test_propfind.py,v 1.23 2004/05/06 15:42:34 fdrake Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -107,7 +107,7 @@ def _createRequest(body=None, headers=None, skip_headers=None):
 
     if headers is not None:
         for key, value in headers.items():
-            _environ[key.upper()] = value
+            _environ[key.upper().replace("-", "_")] = value
 
     if skip_headers is not None:
         for key in skip_headers:
@@ -168,6 +168,18 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
 
+    def test_contenttype3(self):
+        # Check for an appropriate response when the content-type has
+        # parameters, and that the major/minor parts are treated in a
+        # case-insensitive way.
+        file = self.file
+        request = _createRequest(headers={'Content-type':
+                                          'TEXT/XML; charset="utf-8"'})
+        pfind = propfind.PROPFIND(file, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+
     def test_bad_contenttype(self):
         file = self.file
         request = _createRequest(headers={'Content-type':'text/foo'})
@@ -175,7 +187,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         pfind = propfind.PROPFIND(file, request)
         pfind.PROPFIND()
         # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(request.response.getStatus(), 400)
 
     def test_no_contenttype(self):
         file = self.file
