@@ -54,7 +54,7 @@
      factory="Zope.App.OFS.Container.Views.Browser.Contents."
      >
 
-    <page name="index.html" attribute="index" />
+    <page name="index.html" attribute="contents" />
     <page name="removeObjects.html" attribute="removeObjects" />
    </view>
 
