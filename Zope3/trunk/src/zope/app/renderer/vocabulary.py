@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.7 2004/04/11 18:16:26 jim Exp $
+$Id: vocabulary.py,v 1.8 2004/04/24 23:19:52 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -23,8 +23,11 @@ from zope.schema.vocabulary import getVocabularyRegistry
 from zope.component.interfaces import IFactory
 
 from zope.app import zapi
-from zope.app.form.browser.vocabularywidget import DropdownListWidget
+from zope.app.form.browser import DropdownWidget
 from zope.app.renderer.interfaces import ISource
+
+class ISourceTypeVocabulary(IVocabulary, IVocabularyTokenized):
+    """Marker interface, so we can register a special widget for it."""
 
 class SourceTypeTerm:
 
@@ -66,13 +69,7 @@ class SourceTypeVocabulary(object):
         return self.getTerm(token)
 
 
-class SourceTypeEditWidget(DropdownListWidget):
-
-    def __init__(self, field, request):
-        self.request = request
-        registry = getVocabularyRegistry()
-        self.vocabulary = registry.get(field, "SourceTypes")
-        self.setField(field)
+class SourceTypeEditWidget(DropdownWidget):
 
     def textForValue(self, term):
         return term.title

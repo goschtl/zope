@@ -61,4 +61,15 @@
       class=".rest.ReStructuredTextToHTMLRenderer"
       permission="zope.Public" />
 
+  <!-- Special widget for Choice fields with ISourceType vocabularies -->
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoice
+           .vocabulary.ISourceTypeVocabulary"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".vocabulary.SourceTypeEditWidget"
+      permission="zope.Public"
+      />
+
 </configure>
