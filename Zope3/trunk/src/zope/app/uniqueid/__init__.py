@@ -31,6 +31,7 @@ from zope.app.location.interfaces import ILocation
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.event import notify
 
+
 class UniqueIdUtility(object):
     """This utility provides a two way mapping between objects and
     integer ids.

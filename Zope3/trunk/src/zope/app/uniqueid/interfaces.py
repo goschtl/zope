@@ -33,7 +33,7 @@ class IUniqueIdUtilityQuery(Interface):
 class IUniqueIdUtilitySet(Interface):
 
     def register(ob):
-        """Registers an object and returns a unique id generated for it.
+        """Register an object and returns a unique id generated for it.
 
         If the object is already registered, its id is returned anyway.
         """
@@ -45,35 +45,38 @@ class IUniqueIdUtilitySet(Interface):
         """
 
 class IUniqueIdUtilityManage(Interface):
-    """Some methods used by the view"""
+    """Some methods used by the view."""
 
     def __len__():
-        """Returns the number of objects indexed"""
+        """Return the number of objects indexed."""
 
     def items():
-        """Returns a list of (id, object) pairs"""
+        """Return a list of (id, object) pairs."""
 
 
 class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
                        IUniqueIdUtilityManage):
-    """A utility that assigns unique ids to the objects
+    """A utility that assigns unique ids to objects.
 
     Allows to query object by id and id by object.
     """
 
 
-class  IUniqueIdRemovedEvent(Interface):
-    """The event which get published before the unique id is removed
-    from the utility so that the catalogs can unindex  the object.
+class IUniqueIdRemovedEvent(Interface):
+    """The event which is published before the unique id is removed
+    from the utility so that the catalogs can unindex the object.
     """
+
     original_event = Attribute(
         """The IObjectRemoveEvent related to this event""")
 
 
 class UniqueIdRemovedEvent(object):
-    """The event which get published before the unique id is removed
-    from the utility so that the catalogs can unindex  the object.
+    """The event which is published before the unique id is removed
+    from the utility so that the catalogs can unindex the object.
     """
+
     implements(IUniqueIdRemovedEvent)
+
     def __init__(self, event):
         self.original_event = event
