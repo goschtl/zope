@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Aug  7 16:57:18 2003\n"
-"PO-Revision-Date: 2003-08-07 16:07-0400\n"
+"POT-Creation-Date: Thu Aug  7 19:35:50 2003\n"
+"PO-Revision-Date: 2003-08-07 19:51-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: English US <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.2beta3\n"
 
-#: /home/philipp/dev/Zope3/site.zcml:8
+#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
 msgid "Site Manager"
 msgstr "Webseiten-Verwalter"
 
-#: /home/philipp/dev/Zope3/site.zcml:9
+#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:9
 msgid "Site Member"
 msgstr "Webseiten-Mitglied"
 
@@ -225,11 +225,11 @@ msgid "You can configure the RAM Cache here."
 msgstr "Hier können sie den RAM Cache konfigurieren."
 
 #: zope/app/browser/cache/ramedit.pt:51
+#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/content/i18n_edit.pt:87
 #: zope/app/browser/content/i18nimageedit.pt:101
 #: zope/app/browser/content/imageedit.pt:17
 #: zope/app/browser/dublincore/edit.pt:33
-#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/security/grants/manage_permissionform.pt:86
 #: zope/app/browser/security/grants/manage_roleform.pt:63
 #: zope/app/browser/services/error.pt:46
@@ -237,8 +237,8 @@ msgid "save-changes-button"
 msgstr "Änderungen Speichern"
 
 #: zope/app/browser/cache/ramedit.pt:53
-#: zope/app/browser/services/add_svc_config.pt:35
 #: zope/app/browser/services/bundle.pt:120
+#: zope/app/browser/services/add_svc_config.pt:35
 msgid "reset-button"
 msgstr "Zurücksetzen"
 
@@ -403,13 +403,6 @@ msgstr "Suchen"
 #: zope/app/browser/container/contents.pt:27
 msgid "Content listing"
 msgstr "Inhaltsauflistung"
-
-#: zope/app/browser/container/index.pt:26
-#: zope/app/browser/container/contents.pt:33
-#: zope/app/browser/workflow/instancecontainer_index.pt:19
-#: zope/app/browser/workflow/instancecontainer_main.pt:18
-msgid "Name"
-msgstr "Name"
 
 #: zope/app/browser/container/index.pt:28
 #: zope/app/browser/container/contents.pt:36
@@ -637,10 +630,10 @@ msgstr "Metadaten"
 #: zope/app/browser/services/views.pt:49 zope/app/browser/services/views.pt:72
 #: zope/app/browser/services/utility/utilities.pt:50
 #: zope/app/browser/services/registration/editregistration.pt:49
+#: zope/app/browser/catalog/advanced.pt:51
 #: zope/app/browser/workflow/stateful/instance_manage.pt:77
 #: zope/app/browser/workflow/stateful/definition_edit.pt:21
 #: zope/app/browser/workflow/stateful/definition_edit.pt:50
-#: zope/app/browser/catalog/advanced.pt:51
 msgid "refresh-button"
 msgstr "Auffrischen"
 
@@ -663,8 +656,8 @@ msgstr "Es gab ${num_errors} Eingabefehler."
 #: zope/app/browser/form/add.pt:51 zope/app/browser/form/edit.pt:53
 #: zope/app/browser/form/addwizard.pt:62
 #: zope/app/browser/form/editwizard.pt:53
-#: zope/app/browser/services/add_svc_config.pt:37
 #: zope/app/browser/services/serviceactivation.pt:54
+#: zope/app/browser/services/add_svc_config.pt:37
 #: zope/app/browser/workflow/stateful/instance_manage.pt:79
 msgid "submit-button"
 msgstr "Abschicken"
@@ -1042,8 +1035,9 @@ msgstr "Entfernen"
 msgid "Add Interfaces:"
 msgstr "Interfaces hinzufügen:"
 
-#: zope/app/browser/marker.pt:115 zope/app/browser/container/add.pt:39
-#: zope/app/browser/rdb/rdbadd.pt:27 zope/app/browser/services/adduser.pt:56
+#: zope/app/browser/marker.pt:115 zope/app/browser/rdb/rdbadd.pt:27
+#: zope/app/browser/container/add.pt:39
+#: zope/app/browser/services/adduser.pt:56
 #: zope/app/browser/services/translation/translate.pt:78
 #: zope/app/browser/services/translation/translate.pt:84
 #: zope/app/browser/workflow/stateful/add.pt:65
@@ -1070,7 +1064,7 @@ msgstr "Menü der Objekte die zu Diensteverwalter-Paketen hinzugefügt werden k�
 
 #: zope/app/browser/menus.zcml:28
 msgid "Menu of services to be added"
-msgstr "Menü der hinzufügbaren Services"
+msgstr "Menü der hinzufügbaren Dienste"
 
 #: zope/app/browser/menus.zcml:3
 msgid "Menu for displaying alternate representations of an object"
@@ -1168,7 +1162,7 @@ msgstr "Gewähren"
 
 #: zope/app/browser/security/grants/grant.pt:14
 msgid "Grant permissions to roles"
-msgstr "Rollen Erlaubnisse gewähren"
+msgstr "Rollen-Berechtigungen gewähren"
 
 #: zope/app/browser/security/grants/grant.pt:18
 msgid "Grant roles to principals"
@@ -1177,7 +1171,7 @@ msgstr "Prinzipal Erlaubnisse gewähren"
 #: zope/app/browser/security/grants/manage_access.pt:28
 #: zope/app/browser/workflow/stateful/addtransition.pt:46
 msgid "Permission"
-msgstr "Erlaubnis"
+msgstr "Berechtigung"
 
 #: zope/app/browser/security/grants/manage_access.pt:33
 #: zope/app/browser/services/adduser.pt:46
@@ -1191,7 +1185,7 @@ msgstr "Hiflreiche Nachricht"
 
 #: zope/app/browser/security/grants/manage_permissionform.pt:35
 msgid "Roles assigned to the permission ${perm_title} (id: ${perm_id})"
-msgstr "Der Erlaubnis zugewiesene Rollen ${perm_title} (id: ${perm_id})"
+msgstr "Der Berechtigung zugewiesene Rollen ${perm_title} (id: ${perm_id})"
 
 #: zope/app/browser/security/grants/manage_permissionform.pt:52
 msgid "Role"
@@ -1203,7 +1197,7 @@ msgstr "Einstellung"
 
 #: zope/app/browser/security/grants/manage_roleform.pt:20
 msgid "Permissions assigned to the role ${role_title} (id: ${role_id})"
-msgstr "Der Rolle zugewiesene Erlaubnisse ${perm_title} (id: ${perm_id})"
+msgstr "Der Rolle zugewiesene Berechtigungen ${perm_title} (id: ${perm_id})"
 
 #: zope/app/browser/security/grants/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
@@ -1211,27 +1205,27 @@ msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:12
 msgid "Permission Settings"
-msgstr "Erlaubniseinstellungen"
+msgstr "Berechtigungseinstellungen"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:19
 msgid "Allowed Permissions"
-msgstr "Zugelassene Erlaubnisse"
+msgstr "Zugelassene Berechtigungen"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:44
 msgid "Denied Permissions"
-msgstr "Verweigerte Erlaubnisse"
+msgstr "Verweigerte Berechtigungen"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:63
 msgid "Remove selected permission settings"
-msgstr "Ausgewählte Erlaubniseinstellungen entfernen"
+msgstr "Ausgewählte Berechtigungseinstellungen entfernen"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:7
 msgid "Permission settings for ${principal_title}"
-msgstr "Erlaubniseinstellungen für ${principal_title}"
+msgstr "Berechtigungseinstellungen für ${principal_title}"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:74
 msgid "Add permission settings"
-msgstr "Erlaubniseinstellungen hinzufügen"
+msgstr "Berechtigungseinstellungen hinzufügen"
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:91
 #: zope/app/browser/security/grants/principal_permission_edit.pt:95
@@ -1278,13 +1272,14 @@ msgstr "Verweigern"
 
 #: zope/app/browser/security/permissionwidget.py:66
 msgid "---select permission---"
-msgstr "---Erlaubnis wählen---"
+msgstr "---Berechtigung wählen---"
 
 #: zope/app/browser/services/adapter.py:50
 msgid "For interface"
 msgstr "Für Interface:"
 
 #: zope/app/browser/services/adapter.py:54
+#: zope/app/interfaces/services/utility.py:42
 msgid "Provided interface"
 msgstr "Gegebene Interfaces:"
 
@@ -1489,17 +1484,17 @@ msgstr "Neue Cache-Registrierung"
 
 #: zope/app/browser/services/cache.zcml:8
 msgid "A Persistent Caching Service for TTW development"
-msgstr "Ein persistenter Caching-Service für die TTW Entwicklung"
+msgstr "Ein persistenter Cachingdienst für die TTW Entwicklung"
 
 #: zope/app/browser/services/cache.zcml:8
 msgid "Caching Service"
-msgstr "Caching Service"
+msgstr "Cachingdienst"
 
 #: zope/app/browser/services/caches.pt:11
 #: zope/app/browser/services/connections.pt:11
 #: zope/app/browser/services/services.pt:15
-#: zope/app/browser/services/bundle.pt:49
 #: zope/app/browser/services/views.pt:11
+#: zope/app/browser/services/bundle.pt:49
 #: zope/app/browser/services/utility/utilities.pt:11
 msgid "(click to clear message)"
 msgstr "(Nachricht löschen)"
@@ -1536,9 +1531,9 @@ msgstr "Deaktivieren"
 #: zope/app/browser/services/connections.pt:50
 #: zope/app/browser/services/services.pt:62
 #: zope/app/browser/services/views.pt:46
+#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/services/translation/translate.pt:37
 #: zope/app/browser/services/translation/translate.pt:67
-#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/workflow/instancecontainer_main.pt:47
 msgid "delete-button"
 msgstr "Löschen"
@@ -1549,7 +1544,7 @@ msgstr "Einen Cache zum Cachedienst hinzufügen"
 
 #: zope/app/browser/services/caches.pt:6
 msgid "Caches registered in this cache service:"
-msgstr "Caches die mit diesem Cache Service registriert wurden:"
+msgstr "Caches die mit diesem Cachedienst registriert wurden:"
 
 #: zope/app/browser/services/configure.zcml:135
 msgid "Change adapter"
@@ -1561,11 +1556,11 @@ msgstr "Adapter"
 
 #: zope/app/browser/services/configure.zcml:161
 msgid "Adapter Service"
-msgstr "Adapter Service"
+msgstr "Adapterdienst"
 
 #: zope/app/browser/services/configure.zcml:204
 msgid "Manage Local Services"
-msgstr "Lokale Services verwalten"
+msgstr "Lokale Dienste verwalten"
 
 #: zope/app/browser/services/configure.zcml:209
 msgid "Turn On Local Service Manager"
@@ -1574,7 +1569,7 @@ msgstr "Lokalen Serive Verwalter anschalten"
 #: zope/app/browser/services/configure.zcml:221
 #: zope/app/browser/skins/zopetop/widget_macros.pt:42
 msgid "Services"
-msgstr "Services"
+msgstr "Dienste"
 
 #: zope/app/browser/services/configure.zcml:245
 msgid "Visit default package"
@@ -1582,7 +1577,7 @@ msgstr "Direkt zum 'default' Paket"
 
 #: zope/app/browser/services/configure.zcml:249
 msgid "Add service"
-msgstr "Service hinzufügen"
+msgstr "Dienst hinzufügen"
 
 #: zope/app/browser/services/configure.zcml:312
 #: zope/app/browser/workflow/configure.zcml:26
@@ -1599,7 +1594,7 @@ msgstr "Einfache Session Unterstützungen durch Cookies"
 
 #: zope/app/browser/services/configure.zcml:344
 msgid "Cookie Session Service"
-msgstr "Cookie-Sitzungs-Service"
+msgstr "Cookie-Sitzungsdienst"
 
 #: zope/app/browser/services/configure.zcml:352
 msgid "Stores Annotations for Principals"
@@ -1607,7 +1602,7 @@ msgstr "Speichert Anmerkungen für Prinzipal"
 
 #: zope/app/browser/services/configure.zcml:352
 msgid "Principal Annotation Service"
-msgstr "Prinzipal Anmerkungen Service"
+msgstr "Prinzipal-Anmerkungsdienst"
 
 #: zope/app/browser/services/configure.zcml:370
 msgid ""
@@ -1619,15 +1614,15 @@ msgstr ""
 
 #: zope/app/browser/services/configure.zcml:370
 msgid "HubIds Service"
-msgstr "Hub-Ids Service"
+msgstr "Hub-Ids-Dienst"
 
 #: zope/app/browser/services/configure.zcml:38
 msgid "Error Logging Service"
-msgstr "Fehlermelde-Service"
+msgstr "Fehlermeldedienst"
 
 #: zope/app/browser/services/configure.zcml:38
 msgid "Error Reporting Service for Logging Errors"
-msgstr "Fehlermelde-Service für Logging Fehler"
+msgstr "Fehlermeldedienst für Logging Fehler"
 
 #: zope/app/browser/services/configure.zcml:385
 msgid "Registration subscriber"
@@ -1639,12 +1634,12 @@ msgstr "Ein Ereignis-Abonnent der Inhälte mit der Objekt-Hub registriert"
 
 #: zope/app/browser/services/configure.zcml:406
 msgid "Takes you to a menu of services to add"
-msgstr "Bringt sie zu einem Menü zum hinzufügen von Services"
+msgstr "Bringt sie zu einem Menü zum hinzufügen von Diensten"
 
 #: zope/app/browser/services/configure.zcml:406
 #: zope/app/browser/services/serviceactivation.pt:26
 msgid "Service"
-msgstr "Service"
+msgstr "Dienst"
 
 #: zope/app/browser/services/configure.zcml:467
 msgid "Bundle"
@@ -1660,17 +1655,27 @@ msgstr "Kontrolle"
 
 #: zope/app/browser/services/configure.zcml:62
 msgid "Event Service"
-msgstr "Ereignis-Service"
+msgstr "Ereignisdienst"
 
 #: zope/app/browser/services/configure.zcml:62
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
-"Ein Ereignis-Service. Einer dieser im Wurzelelement ist normalerweise "
+"Ein Ereignisdienst. Einer dieser im Wurzelelement ist normalerweise "
 "ausreichend"
 
 #: zope/app/browser/services/configure.zcml:76
 msgid "Role Service"
-msgstr "Rollen-Service"
+msgstr "Rollendienst"
+
+#: zope/app/browser/services/configureCache.pt:19
+#: zope/app/browser/services/configureConnection.pt:19
+#: zope/app/browser/services/configureView.pt:18
+#: zope/app/browser/services/utility/configureutility.pt:29
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
+#: zope/app/browser/services/registration/nameregistry.pt:44
+#: zope/app/browser/services/translation/synchronize.pt:142
+msgid "update-button"
+msgstr "Aktualisieren"
 
 #: zope/app/browser/services/configureCache.pt:7
 msgid "Cache registrations for ${cache_name}"
@@ -1679,16 +1684,6 @@ msgstr "Cache Registrierung für ${cache_name}"
 #: zope/app/browser/services/configureConnection.pt:7
 msgid "Connection registrations for ${connection_name}"
 msgstr "Verbindungs-Registrierungen für ${connection_name}"
-
-#: zope/app/browser/services/configureView.pt:18
-#: zope/app/browser/services/configureConnection.pt:19
-#: zope/app/browser/services/configureCache.pt:19
-#: zope/app/browser/services/translation/synchronize.pt:142
-#: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:42
-#: zope/app/browser/services/registration/nameregistry.pt:44
-msgid "update-button"
-msgstr "Aktualisieren"
 
 #: zope/app/browser/services/configureView.pt:6
 msgid "View registrations for ${key_name}"
@@ -1736,11 +1731,11 @@ msgstr "Bearbeite Verbindungs-Registrierung"
 
 #: zope/app/browser/services/connection.zcml:8
 msgid "A Persistent SQL Connection Service for TTW development"
-msgstr "Ein persistenter SQL-Verbindungs-Service für die TTW Entwicklung"
+msgstr "Ein persistenter SQL-Verbindungsdienst für die TTW Entwicklung"
 
 #: zope/app/browser/services/connection.zcml:8
 msgid "SQL Connection Service"
-msgstr "SQL-Verbindungs-Service"
+msgstr "SQL-Verbindungsdienst"
 
 #: zope/app/browser/services/connections.pt:58
 msgid "Add a connection to this connection service"
@@ -1748,7 +1743,7 @@ msgstr "Verbindung zu diesem Verbindungsdienst hinzufügen"
 
 #: zope/app/browser/services/connections.pt:6
 msgid "Connections registered in this connection service:"
-msgstr "Verbindungen, die mit diesem Verbindungs-Service registriert sind:"
+msgstr "Verbindungen, die mit diesem Verbindungsdienst registriert sind:"
 
 #: zope/app/browser/services/edituser.pt:11
 msgid "User id: ${user_id}"
@@ -1865,7 +1860,7 @@ msgstr "Registrierung von ${missing_num} Objekt(en) gelöscht."
 
 #: zope/app/browser/services/interface/browse.pt:5
 msgid "Interfaces registered with the interface service"
-msgstr "Interfaces die mit dem Interface Service registriert sind"
+msgstr "Interfaces die mit dem Interfacedienst registriert sind"
 
 #: zope/app/browser/services/interface/configure.zcml:10
 msgid "Browse"
@@ -1877,7 +1872,7 @@ msgstr "Detail"
 
 #: zope/app/browser/services/interface/configure.zcml:3
 msgid "Local Interface Service"
-msgstr "Lokaler Interface Service"
+msgstr "Lokaler Interfacedienst"
 
 #: zope/app/browser/services/interface/detail.pt:11
 msgid "Documentation"
@@ -1960,12 +1955,12 @@ msgid ""
 "A Pluggable Authentication Service                      Uses plug-in "
 "principal sources."
 msgstr ""
-"Ein einfügbarer Legitimations-Service                  Nutzt einfügbare "
+"Ein einfügbarer Legitimationsdienst                  Nutzt einfügbare "
 "Prinzipalquellen."
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:5
 msgid "Authentication Service"
-msgstr "Legitimations-Service"
+msgstr "Legitimationsdienst"
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:59
 msgid "Add Principal"
@@ -2133,7 +2128,7 @@ msgstr "Synchronisieren"
 
 #: zope/app/browser/services/translation/configure.zcml:54
 msgid "A Persistent Translation Service for TTW development"
-msgstr "Ein persistenter Übersetzungsservice für die TTW Entwicklung"
+msgstr "Ein persistenter Übersetzungsdienst für die TTW Entwicklung"
 
 #: zope/app/browser/services/translation/configure.zcml:54
 msgid "Translation Service"
@@ -2163,7 +2158,7 @@ msgstr "Sprachen auswählen:"
 #: zope/app/browser/services/translation/translate.pt:3
 #: zope/app/browser/services/translation/translatemessage.pt:3
 msgid "Translation Service - Translate"
-msgstr "Übersetzungsservice - Übersetzen"
+msgstr "Übersetzungsdienst - Übersetzen"
 
 #: zope/app/browser/services/translation/exportimport.pt:32
 #: zope/app/browser/services/translation/synchronize.pt:43
@@ -2209,7 +2204,7 @@ msgstr "Server URL"
 
 #: zope/app/browser/services/translation/synchronize.pt:3
 msgid "Translation Service - Synchronize"
-msgstr "Übersetzungsservice - Synchronisieren"
+msgstr "Übersetzungsdienst - Synchronisieren"
 
 #: zope/app/browser/services/translation/synchronize.pt:85
 msgid "save-settings-button"
@@ -2795,7 +2790,7 @@ msgstr "Zuweisung Hinzufügen"
 
 #: zope/app/browser/workflow/stateful/definition_edit.pt:29
 msgid "Map permissions to Schema fields"
-msgstr "Erlaubnisse auf Schema-Felder zuweisen"
+msgstr "Berechtigungen auf Schema-Felder zuweisen"
 
 #: zope/app/browser/workflow/stateful/definition_edit.pt:52
 msgid "change-button"
@@ -3145,6 +3140,35 @@ msgstr "Befehl"
 msgid "Command used to send email."
 msgstr "Befehl zum Emai versenden"
 
+#: zope/app/interfaces/services/connection.py:34
+#: zope/app/interfaces/services/registration.py:112
+#: zope/app/interfaces/services/utility.py:35
+#: zope/app/browser/container/index.pt:26
+#: zope/app/browser/container/contents.pt:33
+#: zope/app/browser/workflow/instancecontainer_index.pt:19
+#: zope/app/browser/workflow/instancecontainer_main.pt:18
+msgid "Name"
+msgstr "Name"
+
+#: zope/app/interfaces/services/connection.py:35
+#: zope/app/interfaces/services/registration.py:113
+#: zope/app/interfaces/services/utility.py:36
+msgid "The name that is registered"
+msgstr "Der Name der registriert ist"
+
+#: zope/app/interfaces/services/connection.py:42
+#: zope/app/interfaces/services/registration.py:145
+#: zope/app/interfaces/services/utility.py:49
+#: zope/app/interfaces/workflow/__init__.py:57
+msgid "Component path"
+msgstr "Komponenten-Pfad"
+
+#: zope/app/interfaces/services/connection.py:43
+#: zope/app/interfaces/services/utility.py:50
+#: zope/app/interfaces/workflow/__init__.py:58
+msgid "The physical path to the component"
+msgstr "Der physische Pfad zu der Komponente"
+
 #: zope/app/interfaces/services/pluggableauth/__init__.py:29
 #: zope/app/browser/services/addrole.pt:13
 #: zope/app/browser/services/adduser.pt:11
@@ -3167,6 +3191,18 @@ msgstr "Beschreibung"
 msgid "Login"
 msgstr "Anmeldung"
 
+#: zope/app/interfaces/services/registration.py:146
+msgid ""
+"The path to the component; this may be absolute, or relative to the nearest "
+"site management folder"
+msgstr ""
+"Der Pfad zu der Komponente; dieser kann absolut oder relative zu dem "
+"nächsten Webseiten-Verwaltungs-Ordner"
+
+#: zope/app/interfaces/services/registration.py:151
+msgid "The permission needed to use the component"
+msgstr "Die Berechtigung, die zur Verwendung der Komponente benötigt wird"
+
 #: zope/app/interfaces/services/registration.py:27
 msgid "Unregistered"
 msgstr "Nicht registriert"
@@ -3178,6 +3214,14 @@ msgstr "Registriert"
 #: zope/app/interfaces/services/registration.py:29
 msgid "Active"
 msgstr "Aktiviert"
+
+#: zope/app/interfaces/services/registration.py:76
+msgid "Registration status"
+msgstr "Registrierungsstatus"
+
+#: zope/app/interfaces/services/utility.py:43
+msgid "The interface provided by the adapter"
+msgstr "Das Interface das von dem Adapter bereitgestellt wird"
 
 #: zope/app/mail/configure.zcml:11
 msgid "Send out mail with arbitrary from and to addresses"
@@ -3481,10 +3525,4 @@ msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 #: zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
-
-#~ msgid "for"
-#~ msgstr "für"
-
-#~ msgid "in layer"
-#~ msgstr "in Ebene"
 

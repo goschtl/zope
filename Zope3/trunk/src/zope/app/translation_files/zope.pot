@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu Aug  7 16:57:18 2003\n"
+"POT-Creation-Date: Thu Aug  7 19:35:50 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: Zope 3 0.1\n"
-#: /home/philipp/dev/Zope3/site.zcml:8
+#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
 msgid "Site Manager"
 msgstr ""
 
-#: /home/philipp/dev/Zope3/site.zcml:9
+#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:9
 msgid "Site Member"
 msgstr ""
 
@@ -219,11 +219,11 @@ msgid "You can configure the RAM Cache here."
 msgstr ""
 
 #: zope/app/browser/cache/ramedit.pt:51
+#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/content/i18n_edit.pt:87
 #: zope/app/browser/content/i18nimageedit.pt:101
 #: zope/app/browser/content/imageedit.pt:17
 #: zope/app/browser/dublincore/edit.pt:33
-#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/security/grants/manage_permissionform.pt:86
 #: zope/app/browser/security/grants/manage_roleform.pt:63
 #: zope/app/browser/services/error.pt:46
@@ -231,8 +231,8 @@ msgid "save-changes-button"
 msgstr ""
 
 #: zope/app/browser/cache/ramedit.pt:53
-#: zope/app/browser/services/add_svc_config.pt:35
 #: zope/app/browser/services/bundle.pt:120
+#: zope/app/browser/services/add_svc_config.pt:35
 msgid "reset-button"
 msgstr ""
 
@@ -397,13 +397,6 @@ msgstr ""
 #: zope/app/browser/container/index.pt:18
 #: zope/app/browser/container/contents.pt:27
 msgid "Content listing"
-msgstr ""
-
-#: zope/app/browser/container/index.pt:26
-#: zope/app/browser/container/contents.pt:33
-#: zope/app/browser/workflow/instancecontainer_index.pt:19
-#: zope/app/browser/workflow/instancecontainer_main.pt:18
-msgid "Name"
 msgstr ""
 
 #: zope/app/browser/container/index.pt:28
@@ -632,10 +625,10 @@ msgstr ""
 #: zope/app/browser/services/views.pt:72
 #: zope/app/browser/services/utility/utilities.pt:50
 #: zope/app/browser/services/registration/editregistration.pt:49
+#: zope/app/browser/catalog/advanced.pt:51
 #: zope/app/browser/workflow/stateful/instance_manage.pt:77
 #: zope/app/browser/workflow/stateful/definition_edit.pt:21
 #: zope/app/browser/workflow/stateful/definition_edit.pt:50
-#: zope/app/browser/catalog/advanced.pt:51
 msgid "refresh-button"
 msgstr ""
 
@@ -660,8 +653,8 @@ msgstr ""
 #: zope/app/browser/form/edit.pt:53
 #: zope/app/browser/form/addwizard.pt:62
 #: zope/app/browser/form/editwizard.pt:53
-#: zope/app/browser/services/add_svc_config.pt:37
 #: zope/app/browser/services/serviceactivation.pt:54
+#: zope/app/browser/services/add_svc_config.pt:37
 #: zope/app/browser/workflow/stateful/instance_manage.pt:79
 msgid "submit-button"
 msgstr ""
@@ -1027,8 +1020,8 @@ msgid "Add Interfaces:"
 msgstr ""
 
 #: zope/app/browser/marker.pt:115
-#: zope/app/browser/container/add.pt:39
 #: zope/app/browser/rdb/rdbadd.pt:27
+#: zope/app/browser/container/add.pt:39
 #: zope/app/browser/services/adduser.pt:56
 #: zope/app/browser/services/translation/translate.pt:78
 #: zope/app/browser/services/translation/translate.pt:84
@@ -1272,6 +1265,7 @@ msgid "For interface"
 msgstr ""
 
 #: zope/app/browser/services/adapter.py:54
+#: zope/app/interfaces/services/utility.py:42
 msgid "Provided interface"
 msgstr ""
 
@@ -1475,8 +1469,8 @@ msgstr ""
 #: zope/app/browser/services/caches.pt:11
 #: zope/app/browser/services/connections.pt:11
 #: zope/app/browser/services/services.pt:15
-#: zope/app/browser/services/bundle.pt:49
 #: zope/app/browser/services/views.pt:11
+#: zope/app/browser/services/bundle.pt:49
 #: zope/app/browser/services/utility/utilities.pt:11
 msgid "(click to clear message)"
 msgstr ""
@@ -1513,9 +1507,9 @@ msgstr ""
 #: zope/app/browser/services/connections.pt:50
 #: zope/app/browser/services/services.pt:62
 #: zope/app/browser/services/views.pt:46
+#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/services/translation/translate.pt:37
 #: zope/app/browser/services/translation/translate.pt:67
-#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/workflow/instancecontainer_main.pt:47
 msgid "delete-button"
 msgstr ""
@@ -1643,22 +1637,22 @@ msgstr ""
 msgid "Role Service"
 msgstr ""
 
+#: zope/app/browser/services/configureCache.pt:19
+#: zope/app/browser/services/configureConnection.pt:19
+#: zope/app/browser/services/configureView.pt:18
+#: zope/app/browser/services/utility/configureutility.pt:29
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
+#: zope/app/browser/services/registration/nameregistry.pt:44
+#: zope/app/browser/services/translation/synchronize.pt:142
+msgid "update-button"
+msgstr ""
+
 #: zope/app/browser/services/configureCache.pt:7
 msgid "Cache registrations for ${cache_name}"
 msgstr ""
 
 #: zope/app/browser/services/configureConnection.pt:7
 msgid "Connection registrations for ${connection_name}"
-msgstr ""
-
-#: zope/app/browser/services/configureView.pt:18
-#: zope/app/browser/services/configureConnection.pt:19
-#: zope/app/browser/services/configureCache.pt:19
-#: zope/app/browser/services/translation/synchronize.pt:142
-#: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:42
-#: zope/app/browser/services/registration/nameregistry.pt:44
-msgid "update-button"
 msgstr ""
 
 #: zope/app/browser/services/configureView.pt:6
@@ -3018,6 +3012,35 @@ msgstr ""
 msgid "Command used to send email."
 msgstr ""
 
+#: zope/app/interfaces/services/connection.py:34
+#: zope/app/interfaces/services/registration.py:112
+#: zope/app/interfaces/services/utility.py:35
+#: zope/app/browser/container/index.pt:26
+#: zope/app/browser/container/contents.pt:33
+#: zope/app/browser/workflow/instancecontainer_index.pt:19
+#: zope/app/browser/workflow/instancecontainer_main.pt:18
+msgid "Name"
+msgstr ""
+
+#: zope/app/interfaces/services/connection.py:35
+#: zope/app/interfaces/services/registration.py:113
+#: zope/app/interfaces/services/utility.py:36
+msgid "The name that is registered"
+msgstr ""
+
+#: zope/app/interfaces/services/connection.py:42
+#: zope/app/interfaces/services/registration.py:145
+#: zope/app/interfaces/services/utility.py:49
+#: zope/app/interfaces/workflow/__init__.py:57
+msgid "Component path"
+msgstr ""
+
+#: zope/app/interfaces/services/connection.py:43
+#: zope/app/interfaces/services/utility.py:50
+#: zope/app/interfaces/workflow/__init__.py:58
+msgid "The physical path to the component"
+msgstr ""
+
 #: zope/app/interfaces/services/pluggableauth/__init__.py:29
 #: zope/app/browser/services/addrole.pt:13
 #: zope/app/browser/services/adduser.pt:11
@@ -3040,6 +3063,14 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: zope/app/interfaces/services/registration.py:146
+msgid "The path to the component; this may be absolute, or relative to the nearest site management folder"
+msgstr ""
+
+#: zope/app/interfaces/services/registration.py:151
+msgid "The permission needed to use the component"
+msgstr ""
+
 #: zope/app/interfaces/services/registration.py:27
 msgid "Unregistered"
 msgstr ""
@@ -3050,6 +3081,14 @@ msgstr ""
 
 #: zope/app/interfaces/services/registration.py:29
 msgid "Active"
+msgstr ""
+
+#: zope/app/interfaces/services/registration.py:76
+msgid "Registration status"
+msgstr ""
+
+#: zope/app/interfaces/services/utility.py:43
+msgid "The interface provided by the adapter"
 msgstr ""
 
 #: zope/app/mail/configure.zcml:11
