@@ -1,0 +1,7 @@
+<zopeConfigure
+     xmlns='http://namespaces.zope.org/zope'>
+
+<serviceType id="ErrorReporting"  interface=".IErrorReportingService." />
+
+
+</zopeConfigure>
