@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog Views
 
-$Id: catalog.py,v 1.2 2004/03/14 02:17:01 srichter Exp $
+$Id: catalog.py,v 1.3 2004/03/17 17:59:28 srichter Exp $
 """
 from zope.app.container.browser.adding import Adding
 from zope.app.catalog.interfaces.catalog import ICatalog
@@ -24,24 +24,24 @@ class CatalogEditView:
     __used_for__ = ICatalog
 
     def __init__(self, context, request):
-	self.context = context
-	self.request = request
+        self.context = context
+        self.request = request
 
     def subscribe(self, update=False):
         self.context.subscribeEvents(update)
-	self.request.response.redirect(".")
+        self.request.response.redirect(".")
 
     def unsubscribe(self):
         self.context.unsubscribeEvents()
-	self.request.response.redirect(".")
+        self.request.response.redirect(".")
 
     def clear(self):
         self.context.clearIndexes()
-	self.request.response.redirect(".")
+        self.request.response.redirect(".")
 
     def reindex(self):
         self.context.updateIndexes()
-	self.request.response.redirect(".")
+        self.request.response.redirect(".")
 
 
 class IndexAdding(Adding):

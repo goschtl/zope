@@ -15,7 +15,7 @@
 
 Should be refactored (along with text and field)
 
-$Id: keyword.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
+$Id: keyword.py,v 1.2 2004/03/17 17:59:29 srichter Exp $
 """
 
 from zope.interface import Interface
@@ -26,11 +26,11 @@ class IUIKeywordCatalogIndex(Interface):
     """Interface for creating a KeywordIndex in a catalog from the ZMI."""
 
     interface = InterfaceField(
-		title=u"Interface",
-		description=u"Objects will be adapted to this interface",
-		required=False)
+        title=u"Interface",
+        description=u"Objects will be adapted to this interface",
+        required=False)
 
     field_name = BytesLine(
-		title=u"Field Name",
-		description=u"Name of the field to index")
+        title=u"Field Name",
+        description=u"Name of the field to index")
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: index.py,v 1.2 2004/03/02 18:50:57 philikon Exp $
+$Id: index.py,v 1.3 2004/03/17 17:59:28 srichter Exp $
 """
 from zope.app.event.interfaces import ISubscriber
 from zope.interface import Interface
@@ -21,13 +21,13 @@ class ICatalogIndexUpdate(ISubscriber):
     "A wrapper around an Index that's in a Catalog"
 
     def clear():
-	"Clear everything from the index"
+        "Clear everything from the index"
 
 class ICatalogIndexQuery(Interface):
     "la la la la la"
 
     def search(term): 
-	"do a search"
+        "do a search"
 
 class ICatalogIndex(ICatalogIndexUpdate, ICatalogIndexQuery): 
     pass

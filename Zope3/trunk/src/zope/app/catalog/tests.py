@@ -16,7 +16,7 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.5 2004/03/13 23:54:57 srichter Exp $
+$Id: tests.py,v 1.6 2004/03/17 17:59:27 srichter Exp $
 """
 import unittest
 
@@ -53,15 +53,15 @@ class StubIndex(object):
     implements(ISimpleQuery, ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
 
     def __init__(self, field_name, interface=None):
-	self._field_name = field_name
-	self.interface = interface
-	self._notifies = []
+        self._field_name = field_name
+        self.interface = interface
+        self._notifies = []
 
     def notify(self, event):
-	self._notifies.append(event)
+        self._notifies.append(event)
 
     def clear(self):
-	self._notifies = []
+        self._notifies = []
 
     def _getterms(self):
         d = {}
@@ -83,22 +83,22 @@ class stoopid(object):
 class Test(PlacelessSetup, unittest.TestCase):
 
     def test_catalog_add_del_indexes(self):
-	catalog = Catalog()
-	index = StubIndex('author', None)
-	catalog['author'] = index
-	self.assertEqual(catalog.keys(), ['author'])
-	index = StubIndex('title', None)
-	catalog['title'] = index
-	indexes = catalog.keys()
-	indexes.sort()
-	self.assertEqual(indexes, ['author', 'title'])
-	del catalog['author']
-	self.assertEqual(catalog.keys(), ['title'])
+        catalog = Catalog()
+        index = StubIndex('author', None)
+        catalog['author'] = index
+        self.assertEqual(catalog.keys(), ['author'])
+        index = StubIndex('title', None)
+        catalog['title'] = index
+        indexes = catalog.keys()
+        indexes.sort()
+        self.assertEqual(indexes, ['author', 'title'])
+        del catalog['author']
+        self.assertEqual(catalog.keys(), ['title'])
 
     def test_catalog_notification_passing(self):
-	catalog = Catalog()
-	catalog['author'] = StubIndex('author', None)
-	catalog['title'] = StubIndex('title', None)
+        catalog = Catalog()
+        catalog['author'] = StubIndex('author', None)
+        catalog['title'] = StubIndex('title', None)
         catalog.notify(regEvt(None, None, 'reg1', 1))
         catalog.notify(regEvt(None, None, 'reg2', 2))
         catalog.notify(regEvt(None, None, 'reg3', 3))
@@ -141,8 +141,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         "test a full refresh"
         self._frob_objecthub()
         catalog = Catalog()
-	catalog['author'] = StubIndex('author', None)
-	catalog['title'] = StubIndex('author', None)
+        catalog['author'] = StubIndex('author', None)
+        catalog['title'] = StubIndex('author', None)
         catalog.updateIndexes()
         for index in catalog.values():
             checkNotifies = index._notifies
@@ -157,8 +157,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         "test the simple searchresults interface"
         self._frob_objecthub(ints=0)
         catalog = Catalog()
-	catalog['simiantype'] = StubIndex('simiantype', None)
-	catalog['name'] = StubIndex('name', None)
+        catalog['simiantype'] = StubIndex('simiantype', None)
+        catalog['name'] = StubIndex('name', None)
         catalog.updateIndexes()
         res = catalog.searchResults(simiantype='monkey')
         names = [ x.name for x in res ]
@@ -188,4 +188,4 @@ def test_suite():
 
 if __name__ == "__main__":
     unittest.main()
-	
+        

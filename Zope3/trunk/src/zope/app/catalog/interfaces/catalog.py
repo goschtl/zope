@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog Interfaces
 
-$Id: catalog.py,v 1.1 2004/03/01 11:46:24 philikon Exp $
+$Id: catalog.py,v 1.2 2004/03/17 17:59:28 srichter Exp $
 """
 from zope.interface import Interface
 
@@ -29,7 +29,7 @@ class ICatalogQuery(Interface):
     "Provides Catalog Queries"
 
     def searchResults(**kw):
-	"search on the given indexes"
+        "search on the given indexes"
 
 
 class ICatalogEdit(Interface):
@@ -45,7 +45,7 @@ class ICatalogEdit(Interface):
         """Start listening for events.
 
         Starts listening to events for possible index updating. If 'update' is
-	'True', always reindex all objects.
+        'True', always reindex all objects.
         """
 
     def unsubscribeEvents(): 

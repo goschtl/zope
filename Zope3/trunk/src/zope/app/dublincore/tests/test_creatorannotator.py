@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.11 2004/03/13 15:21:15 srichter Exp $
+$Id: test_creatorannotator.py,v 1.12 2004/03/17 17:59:29 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup
@@ -114,7 +114,7 @@ class Test(PlacefulSetup, TestCase, CleanUp):
         security = newSecurityManager(bad_author)
         CreatorAnnotator.notify(event)
 
-	# Check that the bad author hasn't been added twice.
+        # Check that the bad author hasn't been added twice.
         self.failIf(len(data.creators) != 2)
         self.failUnless(good_author.id in data.creators)
         self.failUnless(bad_author.id in data.creators)

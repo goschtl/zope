@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.3 2004/03/05 22:09:16 jim Exp $
+$Id: xmlobject.py,v 1.4 2004/03/17 17:59:30 srichter Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -33,13 +33,13 @@ def setNoCacheHeaders(response):
 def xmlEscape(format, *args):
     quotedArgs = [ quoteattr(str(arg)) for arg in args ]
     return format%tuple(quotedArgs)
-	
+        
 def xmlEscapeWithCData(format, *args):
     cData = args[-1]
     quotedArgs = [ quoteattr(str(arg)) for arg in args[:-1] ]
     quotedArgsWithCData = quotedArgs + [cData]
     return format%tuple(quotedArgsWithCData)
-	
+        
 
 class ReadContainerXmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
@@ -90,7 +90,7 @@ class ReadContainerXmlObjectView(BrowserView):
         setNoCacheHeaders(self.request.response)
         res = (u'<?xml version="1.0" ?><children> %s </children>'
                 % self.children_utility(container))
-	return res
+        return res
 
     def singleBranchTree(self, root=''):
         """Return an XML document with the siblings and parents of an object.
@@ -120,7 +120,7 @@ class ReadContainerXmlObjectView(BrowserView):
                 subItem = traverse(item, name, None)
                 if IReadContainer.providedBy(subItem):
                     iconUrl = self.getIconUrl(subItem)
-		    # the test below seems to be browken with the ++etc++site case
+                    # the test below seems to be browken with the ++etc++site case
                     if subItem == oldItem:
                         subItems.append(xmlEscapeWithCData(
                             '<collection name=%s length=%s '
@@ -140,13 +140,13 @@ class ReadContainerXmlObjectView(BrowserView):
         # do not forget root folder
         iconUrl = self.getIconUrl(oldItem)
         result = (xmlEscapeWithCData('<collection name="" length=%s '
-	          'icon_url=%s isroot="">%s</collection>',
+                  'icon_url=%s isroot="">%s</collection>',
                   len(oldItem), iconUrl, result))
 
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)
         res= u'<?xml version="1.0" ?><children> %s </children>' % result
-	return res
+        return res
 
 class XmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""

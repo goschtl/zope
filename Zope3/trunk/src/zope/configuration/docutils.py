@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper Utility to wrap a text to a set width of characters
 
-$Id: docutils.py,v 1.2 2004/01/23 17:00:31 srichter Exp $
+$Id: docutils.py,v 1.3 2004/03/17 17:59:30 srichter Exp $
 """
 import re
 
@@ -42,7 +42,7 @@ def wrap(text, width=78, indent=0):
 
     new_paras = []
     for par in paras:
-	words= filter(None, whitespace.split(par))
+        words= filter(None, whitespace.split(par))
         
         lines = []
         line = []

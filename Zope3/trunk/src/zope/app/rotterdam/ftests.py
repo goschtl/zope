@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: ftests.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
+"""$Id: ftests.py,v 1.2 2004/03/17 17:59:30 srichter Exp $
 """
 import unittest
 from xml.dom import minidom
@@ -42,28 +42,28 @@ class TestNavTree(BrowserTestCase):
                                       'id':u'somesite'})
         self.assertEqual(response.getStatus(), 302)
 
-	#add a site manager This will break when site adding is fixed
-	# see above for examples to fix by filling out a form
-	# when further action is required to make a site
+        #add a site manager This will break when site adding is fixed
+        # see above for examples to fix by filling out a form
+        # when further action is required to make a site
         response = self.publish("/First/somesite/addServiceManager.html",
-						basic='mgr:mgrpw')
+                                                basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 302)
         # /First/FirstsFolder/@@singleBranchTree.xml 
         # contains those 4 elements above
         # /@@children.xml 
-	# contains First Second and Third
-	
+        # contains First Second and Third
+        
         response = self.publish(
-	              "/First/somesite/++etc++site/@@singleBranchTree.xml",
-						basic='mgr:mgrpw')
+                      "/First/somesite/++etc++site/@@singleBranchTree.xml",
+                                                basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
 
-	tree = minidom.parseString(response.getBody())
+        tree = minidom.parseString(response.getBody())
 
         response = self.publish("/@@children.xml", basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
 
-	tree = minidom.parseString(response.getBody())
+        tree = minidom.parseString(response.getBody())
 
         response = self.publish("/First/+/action.html", basic='mgr:mgrpw', 
                                 form={'type_name':u'Folder', 
