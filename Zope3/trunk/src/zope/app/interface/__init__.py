@@ -15,13 +15,14 @@
 
 This module contains code for interfaces in persistent modules.
 
-$Id: __init__.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/20 22:10:06 nathan Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
+from zope.app.content.interfaces import IContentType
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
@@ -56,3 +57,70 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
                 lambda iface: (),
                 getInterfaceStateForPersistentInterfaceCreation,
                 )
+
+from zope.interface.declarations import providedBy
+
+def queryType(object, interface):
+    """Returns the object's interface which implements interface.
+
+    >>> from zope.interface import Interface, implements, directlyProvides
+    >>> class I(Interface):
+    ...     pass
+    >>> class J(Interface):
+    ...     pass
+    >>> directlyProvides(I, IContentType)
+    >>> class C:
+    ...     implements(I)
+    >>> class D:
+    ...     implements(J,I)
+    >>> obj = C()
+    >>> c1_ctype = queryType(obj, IContentType)
+    >>> c1_ctype.__name__
+    'I'
+    >>> class I1(I):
+    ...     pass
+    >>> class I2(I1):
+    ...     pass
+    >>> class I3(Interface):
+    ...     pass
+    >>> class C1:
+    ...     implements(I1)
+    >>> obj1 = C1()
+    >>> c1_ctype = queryType(obj1, IContentType)
+    >>> c1_ctype.__name__
+    'I'
+    >>> class C2:
+    ...     implements(I2)
+    >>> obj2 = C2()
+    >>> c2_ctype = queryType(obj2, IContentType)
+    >>> c2_ctype.__name__
+    'I'
+
+    >>> class C3:
+    ...     implements(I3)
+    >>> obj3 = C3()
+
+    If Interface doesn't provide IContentType, queryType returns None.
+    
+    >>> c3_ctype = queryType(obj3, IContentType)
+    >>> c3_ctype
+    >>> c3_ctype is None
+    True
+    >>> class I4(I):
+    ...     pass
+    >>> directlyProvides(I4, IContentType)
+    >>> class C4:
+    ...     implements(I4)
+    >>> obj4 = C4()
+    >>> c4_ctype = queryType(obj4, IContentType)
+    >>> c4_ctype.__name__
+    'I4'
+
+    """
+    
+    object_iro = providedBy(object).__iro__
+    for iface in object_iro:
+        if interface.providedBy(iface):
+            return iface
+        
+    return None
