@@ -63,6 +63,7 @@ def test_suite():
 if __name__=='__main__':
     import ldap
     l = ldap.initialize('ldap://localhost:389')
+    l.simple_bind_s('cn=Manager,dc=fake', 'root')
     l.add_s('uid=toto_l,ou=people,dc=fake',
             (('uid', 'toto_l'),
              ('userPassword', 'toto_p')))
