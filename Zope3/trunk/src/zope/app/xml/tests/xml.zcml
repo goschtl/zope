@@ -1,5 +1,5 @@
 <configure 
-    xmlns="http://namespaces.zope.org/xml"
+    xmlns="http://namespaces.zope.org/zope"
     xmlns:xml="http://namespaces.zope.org/xml">
 
   <include package="zope.app.xml" file="meta.zcml"/>
