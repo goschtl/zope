@@ -19,7 +19,8 @@
   <vocabulary
       name="Connection Names"
       factory="zope.app.utility.vocabulary.UtilityVocabulary"
-      interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
+      interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" 
+      nameOnly="True" />
 
   <permission
       id="zope.AddSQLScripts"
