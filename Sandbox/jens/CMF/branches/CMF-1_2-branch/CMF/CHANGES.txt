@@ -23,6 +23,9 @@ Somewhere over the rainbow
 
  Bugs Fixed
 
+  - Ensured that Documents created with initial STX get cooked
+    (Tracker #435).
+
   - Made links emitted by 'topic_view' play nice with virtual hosting
     (Tracker #433).
 
