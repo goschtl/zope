@@ -16,12 +16,12 @@
 This module provides constant definitions for the three registration states,
 Unregistered, Registered, and Active.
 
-$Id: Configuration.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: Configuration.py,v 1.3 2002/12/05 17:00:44 jim Exp $
 """
 __metaclass__ = type
 
 from Persistence import Persistent
-from ConfigurationInterfaces import IConfigurationRegistry
+from ConfigurationInterfaces import IConfigurationRegistry, IConfiguration
 from Zope.Schema import Text
 from Zope.ComponentArchitecture import getService, getServiceManager
 from Zope.App.Traversing import getPhysicalPathString, traverse
@@ -29,6 +29,13 @@ from Zope.App.OFS.Services.ConfigurationInterfaces \
      import Unregistered, Registered, Active
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ContextWrapper import ContextMethod
+from Zope.App.OFS.Container.IAddNotifiable import IAddNotifiable
+from Zope.App.OFS.Container.IDeleteNotifiable import IDeleteNotifiable
+from Zope.App.DependencyFramework.IDependable import IDependable
+from Zope.App.DependencyFramework.Exceptions import DependencyError
+from Zope.ComponentArchitecture import getServiceManager, getAdapter
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
+from Zope.App.Traversing import getPhysicalRoot, traverse
 
 class ConfigurationStatusProperty:
 
@@ -238,3 +245,100 @@ class ConfigurationRegistry(Persistent):
         return result
 
     info = ContextMethod(info)
+
+class SimpleConfiguration(Persistent):
+    """Configutaion objects that just contain configuration data
+    """
+    
+    __implements__ = IConfiguration, IDeleteNotifiable
+
+    title = description = u''
+
+    def activated(self):
+        pass
+
+    def deactivated(self):
+        pass
+        
+    def manage_beforeDelete(self, configuration, container):
+        "See Zope.App.OFS.Container.IDeleteNotifiable"
+        
+        objectstatus = configuration.status
+        
+        if objectstatus == Active:
+            raise DependencyError("Can't delete active configurations")
+        elif objectstatus == Registered:
+            configuration.status = Unregistered
+
+class ComponentConfiguration(SimpleConfiguration):
+    """Component configuration
+    """
+
+    __implements__ = SimpleConfiguration.__implements__, IAddNotifiable
+
+    def __init__(self, component_path, permission=None):
+        self.componentPath = component_path
+        if permission == 'Zope.Public':
+            permission = CheckerPublic
+            
+        self.permission = permission
+
+    ############################################################
+    # Implementation methods for interface
+    # Zope.App.OFS.Services.ServiceManager.IServiceConfiguration.
+
+    def getComponent(self):
+        service_manager = getServiceManager(self)
+        
+        service = getattr(self, '_v_service', None)
+        if service is None:
+            
+            # We have to be clever here. We need to do an honest to
+            # god unrestricted traveral, which means we have to
+            # traverse from an unproxied object. But, it's not enough
+            # for the service manager to be unproxies, because the
+            # path is an absolute path. When absolute paths are
+            # traversed, the traverser finds the physical root and
+            # traverses from there, so we need to make sure the
+            # physical root isn;t proxied.
+
+            # get the root and unproxy it.
+            root = removeAllProxies(getPhysicalRoot(service_manager))            
+            service = traverse(root, self.componentPath)
+
+            if self.permission:
+                if type(service) is Proxy:
+                    # XXX what is this?
+                    service = removeSecurityProxy(service)
+
+                interface = service_manager.getInterfaceFor(self.serviceType)
+
+                checker = InterfaceChecker(interface, self.permission)
+
+                service = Proxy(service, checker)
+
+            
+            self._v_service = service
+
+
+        return service
+
+    getComponent = ContextMethod(getComponent)
+
+    ############################################################
+
+    def manage_afterAdd(self, configuration, container):
+        "See Zope.App.OFS.Container.IAddNotifiable"
+        component = configuration.getComponent()
+        dependents = getAdapter(component, IDependable)
+        objectpath = getPhysicalPathString(configuration)
+        dependents.addDependent(objectpath)
+        
+    def manage_beforeDelete(self, configuration, container):
+        "See Zope.App.OFS.Container.IDeleteNotifiable"
+        super(ComponentConfiguration, self
+              ).manage_beforeDelete(configuration, container)        
+        component = configuration.getComponent()
+        dependents = getAdapter(component, IDependable)
+        objectpath = getPhysicalPathString(configuration)
+        dependents.removeDependent(objectpath)

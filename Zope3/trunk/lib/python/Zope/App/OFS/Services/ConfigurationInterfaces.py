@@ -13,10 +13,11 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: ConfigurationInterfaces.py,v 1.3 2002/12/05 17:00:44 jim Exp $
 """
 
 from Interface import Interface
+from Interface.Attribute import Attribute
 from Zope.Schema import Text, TextLine
 from Zope.Schema.IField import ITextLine
 
@@ -66,6 +67,14 @@ class IConfiguration(IConfigurationSummary):
 
     def deactivated():
         """Method called when a configuration is made inactive
+        """
+
+class IComponentConfiguration(IConfiguration):
+
+    componentPath = Attribute("The physical path to the component")
+
+    def getComponent():
+        """Return the component named in the configuration.
         """
 
 

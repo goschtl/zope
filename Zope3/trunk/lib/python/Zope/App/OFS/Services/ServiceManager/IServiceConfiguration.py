@@ -12,13 +12,14 @@
 # 
 ##############################################################################
 """
-$Id: IServiceConfiguration.py,v 1.3 2002/12/03 18:15:30 efge Exp $
+$Id: IServiceConfiguration.py,v 1.4 2002/12/05 17:00:44 jim Exp $
 """
 
 from Interface.Attribute import Attribute
-from Zope.App.OFS.Services.ConfigurationInterfaces import IConfiguration
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+     import IComponentConfiguration
 
-class IServiceConfiguration(IConfiguration):
+class IServiceConfiguration(IComponentConfiguration):
     """Service Configuration
 
     Service configurations are dependent on the components that they
@@ -27,12 +28,6 @@ class IServiceConfiguration(IConfiguration):
     """
 
     serviceType = Attribute("The service type id")
-
-    componentPath = Attribute("The physical path to the component")
-
-    def getService():
-        """Return the service component named in the directive.
-        """
 
 __doc__ = IServiceConfiguration.__doc__ + __doc__
 

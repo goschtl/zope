@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testServiceConfiguration.py,v 1.2 2002/11/30 18:39:18 jim Exp $
+$Id: testServiceConfiguration.py,v 1.3 2002/12/05 17:00:44 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -98,8 +98,8 @@ class Test(PlacefulSetup, TestCase):
 
         self.__config = traverse(default, 'configure/1')
 
-    def test_getService(self):
-        self.assertEqual(self.__config.getService(), self.__c)
+    def test_getComponent(self):
+        self.assertEqual(self.__config.getComponent(), self.__c)
 
     def test_activated(self):
         old = self.__c._bound
