@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.4 2003/01/25 01:58:05 rdmurray Exp $
+$Id: _bootstrapfields.py,v 1.5 2003/01/25 02:52:27 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -270,6 +270,6 @@ class Bool(Field):
         _type = bool
 
 class Int(ValueSet, Orderable):
-    """A field representing a Integer."""
+    """A field representing an Integer."""
     _type = int, long
 
