@@ -95,7 +95,7 @@ class FSZSQLMethod(SQL, FSObject):
         try:            
             title =         parameters.get('title','')
             connection_id = parameters.get('connection id',parameters['connection_id'])
-            arguments =     parameters.get('arguments','').replace(',','\n')
+            arguments =     parameters.get('arguments','')
             max_rows =      parameters.get('max_rows',1000)
             max_cache =     parameters.get('max_cache',100)
             cache_time =    parameters.get('cache_time',0)            
