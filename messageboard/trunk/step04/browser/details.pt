@@ -1,0 +1,38 @@
+<html metal:use-macro="views/standard_macros/view">
+  <body>
+    <div metal:fill-slot="body">
+
+      <h1>Message Details</h1>
+
+        <div class="row">
+            <div class="label">Title</div>
+            <div class="field" tal:content="context/title" />
+        </div>
+
+        <div class="row">
+            <div class="label">Author</div>
+            <div class="field" tal:content="view/author"/>
+        </div>
+
+        <div class="row">
+            <div class="label">Date/Time</div>
+            <div class="field" tal:content="view/modified"/>
+        </div>
+
+        <div class="row">
+            <div class="label">Parent</div>
+            <div class="field" tal:define="info view/parent_info">
+              <a href="../details.html" 
+	          tal:condition="info"
+                  tal:content="info/title" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="label">Body</div>
+            <div class="field" tal:content="context/body"/>
+        </div>
+
+    </div>
+  </body>
+</html>

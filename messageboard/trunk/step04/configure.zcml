@@ -1,0 +1,76 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <permission
+      id="book.messageboard.View"
+      title="View Message Board and Messages"
+      description="View the Message Board and all its content."
+      />
+  <permission
+      id="book.messageboard.Add"
+      title="Add Message"
+      description="Add Message."
+      />
+  <permission
+      id="book.messageboard.Edit"
+      title="Edit Messages"
+      description="Edit Messages."
+      />
+  <permission
+      id="book.messageboard.Delete"
+      title="Delete Message"
+      description="Delete Message."
+      />
+
+  <interface 
+      interface=".interfaces.IMessageBoard" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".messageboard.MessageBoard">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements
+        interface="zope.app.container.interfaces.IContentContainer" 
+        />
+    <factory
+        id="book.messageboard.MessageBoard"
+        description="Message Board" 
+        />
+    <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessageBoard"
+        />
+    <require
+        permission="book.messageboard.Edit"
+        set_schema=".interfaces.IMessageBoard"
+        />
+  </content>
+
+  <interface 
+      interface=".interfaces.IMessage" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".message.Message">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements
+        interface="zope.app.container.interfaces.IContentContainer" 
+        />
+    <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessage"
+        />
+    <require
+        permission="book.messageboard.Add"
+        set_schema=".interfaces.IMessage"
+        />
+  </content>
+
+  <include package=".browser" />
+  <include file="security.zcml" />
+
+</configure>
