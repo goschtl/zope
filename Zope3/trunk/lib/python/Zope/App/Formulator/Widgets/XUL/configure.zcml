@@ -1,9 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-
-  <content class=".TextWidget.">
-    <require    
-        permission="Zope.ManageContent" 
-        attributes="render getContext" />
-  </content>
-
-</zopeConfigure>
