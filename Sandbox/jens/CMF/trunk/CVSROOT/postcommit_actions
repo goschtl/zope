@@ -46,14 +46,20 @@ containing multiple, space-delimited parts:
 
 \(See the CVS Gnu INFO file for loginfo for more format-string details.)
 
-Currently the actions are:
+The actions are configured in traffic_table.py.  The only remaining relevant
+one is:
 
- - do a g+w chmod of the subject files - unset CHMOD_GW to disable this
  - email checkin messages to designated recipients
- - do an rsync of the repository to the public repository host.
 
-... with settings for the latter two configured in the traffic_table.py
-module.
+The following two actions are deprecated:
+
+ - do an rsync of the repository to the public repository host.
+   - With the separation of the public and private repositories, and the
+     ability to checkin directly to the public repository, this is no longer
+     necessary.  The setup for it (rsync, identity files, etc) are not
+     established in the public repo.
+ - do a g+w chmod of the subject files - unset CHMOD_GW to disable this
+   - This does not seem to be necessary, and has not worked for a while.
 
 Note that any intervening directories between the CVSROOT and the root of
 the repository project directory will not be created on the mirror by the
@@ -67,9 +73,11 @@ import getopt
 import smtplib
 import socket, whrandom, getpass
 
+CVSROOT = os.environ.get('CVSROOT', '/cvs-repository')
+
 #SMTP_SERVER = 'smtp.digicool.com'
 #SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
-CUSTOM_TRAFFIC_TABLE = "/cvs-repository/custom_traffic_table.py"
+CUSTOM_TRAFFIC_TABLE = "%s/custom_traffic_table.py" % CVSROOT
 
 try:
     import re
@@ -85,7 +93,7 @@ if os.path.exists(CUSTOM_TRAFFIC_TABLE):
 
 # OUTPUT_LOG must be writable by anyone whose checkins will invoke this
 # script in order for their logging to happen.
-OUTPUT_LOG = "/cvs-repository/cvs-postcommit_actions.log"
+OUTPUT_LOG = "%s/cvs-postcommit_actions.log" % CVSROOT
 
 # Set CVSMASTER to the email address of someone managing your CVS mirroring.
 # Notices about any caught malfunctions will be sent to this address.
@@ -109,8 +117,8 @@ SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 #     files when no central one exists.
 
 IDENTITY_ACCT = "dccvs"
-IDENTITY_FILE = "/cvs-repository/cvsidentity"
-KNOWN_HOSTS_FILE = "/cvs-repository/cvs-known_hosts"
+IDENTITY_FILE = "%s/cvsidentity" % CVSROOT
+KNOWN_HOSTS_FILE = "%s/cvs-known_hosts" % CVSROOT
 
 
 WAIT = 0                                # Fork unless --wait is requested.
@@ -218,11 +226,11 @@ def main(args):
 
         entries = find_entries(repo)
 
-    if CHMOD_GW and not only_sync:
-        if doing_directory:
-            do_chmod(['.'])
-        elif not no_files:
-            do_chmod(subjs)
+##    if CHMOD_GW and not only_sync:
+##        if doing_directory:
+##            do_chmod(['.'])
+##        elif not no_files:
+##            do_chmod(subjs)
 
     for entry in entries:
         wasVerbose = VERBOSE
@@ -276,7 +284,9 @@ def detach(args):
     doctored_args.append(msgfilenm)
     for i in args[1:]:
         doctored_args.append('"%s"' % i)
-    cmd = (("( exec 1>>%s 2>&1; " + string.join(doctored_args, " ") +  " &)")
+    cmd = (("( exec 1>>%s 2>&1; "
+            + ("export CVSROOT=%s; " % CVSROOT)
+            + string.join(doctored_args, " ") +  " &)")
            % OUTPUT_LOG)
     
     if VERBOSE:
@@ -396,7 +406,8 @@ def create_diff(name, repo, file, old, new):
                      str(e), '\n***** file: ', file, ' cwd: ', os.getcwd()]
 
     else:                # A "normal" update happened
-        diff_cmd = 'cvs -f diff -kk -u -r %s -r %s %s' % (old, new, file)
+        diff_cmd = ('cvs -d %s -f diff -kk -u -r %s -r %s %s'
+                    % (CVSROOT, old, new, file))
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
@@ -527,6 +538,7 @@ def do_sync(path, repo, remote, receiverid, subjs=None,
         note_failure("*** Rsync returned %s...", result)
 
 def do_chmod(subjs):
+    # DEFUNCT.
     fnames = []
     for i in subjs:
         if len(i) == 3 and i[2] != "NONE":
