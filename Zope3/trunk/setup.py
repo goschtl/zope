@@ -24,8 +24,15 @@ import os
 import sys
 import glob
 
+# provide a bunch of custom components that make it possible to install a non
+# .py file into one of the packages
+from distutils import dir_util
 from distutils.core import setup
+from distutils.dist import Distribution
 from distutils.extension import Extension
+from distutils.command.install_lib import install_lib
+from distutils.command.build_py import build_py
+
 
 # A hack to determine if Extension objects support the depends keyword arg,
 # which only exists in Python 2.3's distutils.
@@ -38,6 +45,109 @@ if not "depends" in Extension.__init__.func_code.co_varnames:
             if "depends" in kwargs:
                 del kwargs["depends"]
             _Extension.__init__(self, name, sources, **kwargs)
+
+
+# We have to snoop for file types that distutils doesn't copy correctly when
+# doing a non-build-in-place.
+EXTS = ['.zcml', '.pt', '.gif', '.xml', '.html', '.png',
+        '.css', '.js', '.conf']
+
+
+class Finder:
+    def __init__(self, exts, prefix):
+        self._files = []
+        self._pkgs = {}
+        self._exts = exts
+        self._plen = len(prefix)
+        self._skips = ['ZopeProducts']
+
+    def visit(self, ignore, dir, files):
+        for file in files[:]:
+            # First see if this is one of the packages we want to add, or if
+            # we're really skipping this package.
+            if '__init__.py' in files:
+                aspkg = dir[len(self._prefix):].replace(os.sep, '.')
+                if aspkg in self._skips:
+                    del files[:]
+                    return
+                else:
+                    self._pkgs[aspkg] = True
+            # Otherwise, als
+            base, ext = os.path.splitext(file)
+            if ext in self._exts:
+                self._files.append(os.path.join(dir, file))
+
+    def copy_files(self, cmd, outputbase):
+        dest = os.path.join(outputbase, file)
+        # Make sure the destination directory exists
+        dir = os.path.dirname(dest)
+        if not os.path.exists(dir):
+            dir_util.mkpath(dir)
+        for file in self._files:
+            cmd.copy_file(file, dest)
+
+
+extra = ExtraFileFinder(EXTS)
+os.path.walk('.', extra.visit, None)
+
+
+class MyLibInstaller(install_lib):
+    """Custom library installer, used to put hosttab in the right place."""
+    # We use the install_lib command since we need to put hosttab
+    # inside the library directory.  This is where we already have the
+    # real information about where to install it after the library
+    # location has been set by any relevant distutils command line
+    # options.
+    def run(self):
+        install_lib.run(self)
+        extra.copy_files(self, self.install_dir)
+
+class MyPyBuilder(build_py):
+    def build_packages(self):
+        build_py.build_packages(self)
+        extra.copy_files(self, self.build_lib)
+
+class MyDistribution(Distribution):
+    # To control the selection of MyLibInstaller and MyPyBuilder, we
+    # have to set it into the cmdclass instance variable, set in
+    # Distribution.__init__().
+    def __init__(self, *attrs):
+        Distribution.__init__(self, *attrs)
+        self.cmdclass['build_py'] = MyPyBuilder
+        self.cmdclass['install_lib'] = MyLibInstaller
+
+
+# Sniff for packages we want to install
+class PackageFinder:
+    def __init__(self, prefix):
+        self._pkgs = {}
+        self._prefix = prefix
+        self._skips = ['ZopeProducts']
+
+    def visit(self, ignore, dir, files):
+        for file in files[:]:
+            if '__init__.py' in files:
+                aspkg = dir[len(self._prefix):].replace(os.sep, '.')
+                if aspkg in self._skips:
+                    del files[:]
+                else:
+                    self._pkgs[aspkg] = True
+
+    def get_packages(self):
+        return self._pkgs.keys()
+
+
+pkgfinder = PackageFinder('./lib/python/')
+os.path.walk('.', pkgfinder.visit, None)
+packages = pkgfinder.get_packages()
+
+# XXX
+if sys.version_info < (2, 3):
+    # the logging package becomes a std feature in 2.3
+    packages.append("logging")
+
+
+doclines = __doc__.split("\n")
 
 base_btrees_depends = [
     "lib/python/Persistence/cPersistence.h",
@@ -107,4 +217,6 @@ setup(name="Zope3",
       platforms = ["any"],
       description = doclines[0],
       long_description = "\n".join(doclines[2:]),
+      packages = packages,
+      package_dir = {'': 'lib/python'},
       )
