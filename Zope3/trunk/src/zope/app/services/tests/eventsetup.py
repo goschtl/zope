@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: eventsetup.py,v 1.4 2002/12/30 14:03:17 stevea Exp $
+$Id: eventsetup.py,v 1.5 2003/01/27 18:31:51 stevea Exp $
 """
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager, ServiceConfiguration
@@ -24,7 +24,7 @@ from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.event import ISubscriptionService
 
 class EventSetup(PlacefulSetup):
-    
+
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()

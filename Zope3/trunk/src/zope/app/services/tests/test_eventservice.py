@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
+$Id: test_eventservice.py,v 1.4 2003/01/27 18:31:51 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -62,10 +62,10 @@ class IObjectHub(Interface):
 
 class DumbObjectHub:
     __implements__ = IObjectHub
-    
+
     def __init__(self):
         self.lib = []
-    
+
     def getObject(self, hubid):
         try:
             return self.lib[hubid]
@@ -80,7 +80,7 @@ class DumbObjectHub:
 
 
 class DummySubscriptionAwareSubscriber(DummySubscriber):
-    __implements__ = ISubscribingAware
+    __implements__ = ISubscribingAware, ISubscriber
 
     def subscribedTo(self, subscribable, event_type, filter):
         self.subscribable = subscribable
@@ -93,7 +93,7 @@ class DummySubscriptionAwareSubscriber(DummySubscriber):
         self.un_filter = filter
 
 class TestEventPublisher(EventSetup, TestCase):
-    
+
     def setUp(self):
         EventSetup.setUp(self)
         #sm = getServiceManager(None)
@@ -129,7 +129,7 @@ class TestEventPublisher(EventSetup, TestCase):
             self.folder1_1["folder1_1Subscriber"],
             self.folder1_1,
             name="folder1_1Subscriber")
-    
+
     def _createHubIdSubscribers(self):
         self._createSubscribers()
         self.objectHub.lib = [self.rootFolderSubscriber,
@@ -315,11 +315,11 @@ class TestEventPublisher(EventSetup, TestCase):
 
         self.assertEqual(events.listSubscriptions(self.rootFolderSubscriber),
                          [])
-    
+
     def testPathListSubscriptions1(self):
         self._createSubscribers()
         self._testListSubscriptions1()
-    
+
     def testHubIdListSubscriptions1(self):
         self._createHubIdSubscribers()
         self._testListSubscriptions1()
@@ -333,11 +333,11 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual([(IObjectAddedEvent,None)],
                          getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber))
-    
+
     def testPathListSubscriptions2(self):
         self._createSubscribers()
         self._testListSubscriptions2()
-    
+
     def testHubIdListSubscriptions2(self):
         self._createHubIdSubscribers()
         self._testListSubscriptions2()
@@ -352,11 +352,11 @@ class TestEventPublisher(EventSetup, TestCase):
                          getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber,
                                                IObjectRemovedEvent))
-    
+
     def testPathListSubscriptions3(self):
         self._createSubscribers()
         self._testListSubscriptions3()
-    
+
     def testHubIdListSubscriptions3(self):
         self._createHubIdSubscribers()
         self._testListSubscriptions3()
@@ -385,11 +385,11 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual([(IObjectAddedEvent,None)],
                          getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber))
-    
+
     def testPathListSubscriptions5(self):
         self._createSubscribers()
         self._testListSubscriptions5()
-    
+
     def testHubIdListSubscriptions5(self):
         self._createHubIdSubscribers()
         self._testListSubscriptions5()
@@ -404,11 +404,11 @@ class TestEventPublisher(EventSetup, TestCase):
                          getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber,
                                                IObjectRemovedEvent))
-    
+
     def testPathListSubscriptions6(self):
         self._createSubscribers()
         self._testListSubscriptions6()
-    
+
     def testHubIdListSubscriptions6(self):
         self._createHubIdSubscribers()
         self._testListSubscriptions6()
@@ -418,11 +418,11 @@ class TestEventPublisher(EventSetup, TestCase):
         subscribe(self.rootFolderSubscriber)
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathSubscribe1(self):
         self._createSubscribers()
         self._testSubscribe1()
-    
+
     def testHubIdSubscribe1(self):
         self._createHubIdSubscribers()
         self._testSubscribe1()
@@ -435,11 +435,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathSubscribe2(self):
         self._createSubscribers()
         self._testSubscribe2()
-    
+
     def testHubIdSubscribe2(self):
         self._createHubIdSubscribers()
         self._testSubscribe2()
@@ -453,11 +453,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathSubscribe3(self):
         self._createSubscribers()
         self._testSubscribe3()
-    
+
     def testHubIdSubscribe3(self):
         self._createHubIdSubscribers()
         self._testSubscribe3()
@@ -472,11 +472,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
-    
+
     def testPathSubscribe4(self):
         self._createSubscribers()
         self._testSubscribe4()
-    
+
     def testHubIdSubscribe4(self):
         self._createHubIdSubscribers()
         self._testSubscribe4()
@@ -491,11 +491,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
-    
+
     def testPathSubscribe5(self):
         self._createSubscribers()
         self._testSubscribe5()
-    
+
     def testHubIdSubscribe5(self):
         self._createHubIdSubscribers()
         self._testSubscribe5()
@@ -509,11 +509,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathSubscribe6(self):
         self._createSubscribers()
         self._testSubscribe6()
-    
+
     def testHubIdSubscribe6(self):
         self._createHubIdSubscribers()
         self._testSubscribe6()
@@ -531,11 +531,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathSubscribe7(self):
         self._createSubscribers()
         self._testSubscribe7()
-    
+
     def testHubIdSubscribe7(self):
         self._createHubIdSubscribers()
         self._testSubscribe7()
@@ -558,15 +558,15 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 2)
-    
+
     def testPathSubscribe8(self):
         self._createSubscribers()
         self._testSubscribe8()
-    
+
     def testHubIdSubscribe8(self):
         self._createHubIdSubscribers()
         self._testSubscribe8()
-    
+
     def _testUnsubscribe1(self):
         # Test unsubscribe method
         subscribe(
@@ -579,11 +579,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testPathUnsubscribe1(self):
         self._createSubscribers()
         self._testUnsubscribe1()
-    
+
     def testHubIdUnsubscribe1(self):
         self._createHubIdSubscribers()
         self._testUnsubscribe1()
@@ -596,11 +596,11 @@ class TestEventPublisher(EventSetup, TestCase):
                           IObjectEvent)
         self.assertEqual(None,
                          unsubscribe(self.rootFolderSubscriber))
-    
+
     def testPathUnsubscribe2(self):
         self._createSubscribers()
         self._testUnsubscribe2()
-    
+
     def testHubIdUnsubscribe2(self):
         self._createHubIdSubscribers()
         self._testUnsubscribe2()
@@ -654,20 +654,20 @@ class TestEventPublisher(EventSetup, TestCase):
         publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 4)
-    
+
     def testPathUnsubscribe3(self):
         self._createSubscribers()
         self._testUnsubscribe3()
-    
+
     def testHubIdUnsubscribe3(self):
         self._createHubIdSubscribers()
         self._testUnsubscribe3()
-    
+
     def testPathUnsubscribe4(self):
         self._createNestedServices()
         self._createSubscribers()
         self._testUnsubscribe3()
-    
+
     def testHubIdUnsubscribe4(self):
         self._createNestedServices()
         self._createHubIdSubscribers()
@@ -680,11 +680,11 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(subscriber.notified, 0)
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 1)
-    
+
     def testPathPublish1(self):
         self._createSubscribers()
         self._testpublish1()
-    
+
     def testHubIdPublish1(self):
         self._createHubIdSubscribers()
         self._testpublish1()
@@ -704,11 +704,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 2)
-    
+
     def testPathPublish2(self):
         self._createSubscribers()
         self._testpublish2()
-    
+
     def testHubIdPublish2(self):
         self._createHubIdSubscribers()
         self._testpublish2()
@@ -727,11 +727,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, DummyEvent())
         self.assertEqual(subscriber.notified, 2)
-    
+
     def testPathPublish3(self):
         self._createSubscribers()
         self._testpublish3()
-    
+
     def testHubIdPublish3(self):
         self._createHubIdSubscribers()
         self._testpublish3()
@@ -750,11 +750,11 @@ class TestEventPublisher(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectEvent())
         self.assertEqual(subscriber.notified, 1)
-    
+
     def testPathPublish4(self):
         self._createSubscribers()
         self._testpublish4()
-    
+
     def testHubIdPublish4(self):
         self._createHubIdSubscribers()
         self._testpublish4()
@@ -778,7 +778,7 @@ class TestEventPublisher(EventSetup, TestCase):
         configuration = ServiceConfiguration("Events", path)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
-        
+
         configuration = ServiceConfiguration("Subscription", path)
         default['configure'].setObject("mySubscriptionServiceDir",
                                        configuration)
@@ -838,7 +838,7 @@ class TestEventPublisher(EventSetup, TestCase):
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
-        
+
         configuration = sm.queryConfigurations("Subscription").active()
         configuration.status = Registered
 
