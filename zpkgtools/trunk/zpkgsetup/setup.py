@@ -71,6 +71,7 @@ class SetupContext:
         self.platforms = None
         self.classifiers = None
         self.data_files = []
+        self.headers = []
 
     def initialize(self):
         metadata_file = os.path.join(self._working_dir, self._pkgname,
@@ -232,6 +233,9 @@ class SetupContext:
                 self.data_files = d.items()
             else:
                 self.data_files = pkginfo.data_files
+        for fn in pkginfo.header:
+            if fn not in self.headers:
+                self.headers.append(fn)
 
     def add_package_dir(self, pkgname, reldir):
         self.packages.append(pkgname)
