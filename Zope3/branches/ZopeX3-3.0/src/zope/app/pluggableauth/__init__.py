@@ -90,8 +90,9 @@ class PluggableAuthenticationService(OrderedContainer):
         return None
 
     def unauthenticatedPrincipal(self):
-        """ See IAuthenticationService. """
-        return None # XXX Do we need to implement or use another?
+        # It's safe to assume that the global auth service will
+        # provide an unauthenticated principal, so we won't bother.
+        return None
 
     def unauthorized(self, id, request):
         """ See IAuthenticationService. """
@@ -570,6 +571,14 @@ class SimplePrincipal(Persistent, Contained):
         return test_password == self.password
 
 class PrincipalAuthenticationView:
+    """Simple basic authentication view
+
+    This only handles requests which have basic auth credentials
+    in them currently (ILoginPassword-based requests).
+    If you want a different policy, you'll need to write and register
+    a different view, replacing this one.
+    
+    """
     implements(IViewFactory)
 
     def __init__(self, context, request):
@@ -577,10 +586,6 @@ class PrincipalAuthenticationView:
         self.request = request
 
     def authenticate(self):
-        # XXX we only handle requests which have basic auth credentials
-        # in them currently (ILoginPassword-based requests)
-        # If you want a different policy, you'll need to write and register
-        # a different view, replacing this one.
         a = ILoginPassword(self.request, None)
         if a is None:
             return
