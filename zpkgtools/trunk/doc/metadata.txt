@@ -27,9 +27,14 @@ contain different aspects of the relevant metadata.
   what the distribution contains, while dependencies serve as
   constraints on any software included in the distribution.
 
-`INLCUDES.cfg`
+`PACKAGE.cfg`
   List of inclusions (and exclusions) that are added/removed from the
-  distribution as it's constructed.
+  distribution as it's constructed.  This file can contain two
+  distinct sections; the <distribution> section is used to include
+  files in the distribution root, and the <collection> section is used
+  to include files in the component itself (even if the component
+  isn't a collection; this name is used since it usually will be a
+  collection).
 
 `INSTALL.cfg`
   This file contains information on building extension modules.
