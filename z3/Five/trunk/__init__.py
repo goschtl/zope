@@ -11,7 +11,13 @@
 $Id$
 """
 import Acquisition
+from Globals import INSTANCE_HOME
+
 import monkey
+import zcml
 
 # trigger monkey patches
 monkey.monkeyPatch()
+
+def initialize(context):
+    zcml.load_site()

@@ -44,13 +44,13 @@ class Viewable:
             except (AttributeError, KeyError):
                 pass
             # XXX not sure this is very useful
-            method = REQUEST.get('REQUEST_METHOD', 'GET')
-            if not method in ('GET', 'POST'):
-                return NullResource(self, name, REQUEST).__of__(self)
+            #method = REQUEST.get('REQUEST_METHOD', 'GET')
+            #if not method in ('GET', 'POST'):
+            #    return NullResource(self, name, REQUEST).__of__(self)
 
             # Waaa. See Application.py
             try:
-                REQUEST.RESPONSE.notFoundError("%s %s" % (name, method))
+                REQUEST.RESPONSE.notFoundError("%s " % name)
             except AttributeError:
                 raise KeyError, name
         except:

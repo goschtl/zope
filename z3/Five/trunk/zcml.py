@@ -21,7 +21,6 @@ def initialize(execute=True):
     global _initialized, _global_context
     if _initialized:
         return _global_context
-    _global_context = xmlconfig.file('five.zcml', package=Products.Five)
     _initialized = True
     return _global_context
 
@@ -50,3 +49,14 @@ def string(s, execute=True):
     """
     context = initialize()
     return xmlconfig.string(s, context=context, execute=execute)
+
+import os
+
+def load_site():
+    # load instance site configuration file
+    site_zcml = os.path.join(INSTANCE_HOME, "site.zcml")
+    if os.path.exists(site_zcml):
+        process(site_zcml)
+    else:
+        fallback = os.path.join(os.path.dirname(__file__), "fallback.zcml")
+        process(fallback)
