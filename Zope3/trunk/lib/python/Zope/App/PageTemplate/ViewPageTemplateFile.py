@@ -45,6 +45,9 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
     def __get__(self, instance, type=None):
         return BoundPageTemplate(self, instance)
 
+    # Instances of this class are pretending to be methods.
+    # In general, they need to be ContextMethods.
+    __Zope_ContextWrapper_contextful_get__ = True
 
 class ViewMapper:
     def __init__(self, ob, request):
