@@ -136,7 +136,7 @@ class MyExtBuilder(build_ext):
 class MyLibInstaller(installcmd):
     def run(self):
         installcmd.run(self)
-        extra.copy_files(self, self.install_dir)
+        finder.copy_files(self, self.install_dir)
 
 class MyDistribution(Distribution):
     # To control the selection of MyLibInstaller and MyPyBuilder, we
