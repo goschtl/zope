@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: typereg.py,v 1.3 2003/01/08 20:18:29 tim_one Exp $
+$Id: typereg.py,v 1.4 2003/06/04 10:46:37 stevea Exp $
 """
 
-from zope.interface.implements import visitImplements
+from zope.interface import implements, providedBy
 from zope.schema import getFields
 
 from zope.app.interfaces.schemagen import ITypeRepresentation
@@ -43,7 +43,7 @@ class TypeRepresentationRegistry:
             self._registry[type] = representation
 
 class DefaultTypeRepresentation:
-    __implements__ = ITypeRepresentation
+    implements(ITypeRepresentation)
 
     def __init__(self, object):
         self.text = repr(object)
@@ -59,7 +59,7 @@ class DefaultTypeRepresentation:
     getTypes = staticmethod(getTypes)
 
 class DatetimeRepresentation:
-    __implements__ = ITypeRepresentation
+    implements(ITypeRepresentation)
 
     def __init__(self, dt):
         r = repr(dt)
@@ -79,18 +79,18 @@ class DatetimeRepresentation:
     getTypes = staticmethod(getTypes)
 
 class DefaultFieldRepresentation:
-    __implements__ = ITypeRepresentation
+    implements(ITypeRepresentation)
 
     def __init__(self, field):
-        # This field is described by a schema, or schemas, as found in its
-        # __implements__ attribute. The fields of this field's schema are
+        # This field is described by a schema, or schemas, as found by
+        # providedBy. The fields of this field's schema are
         # its properties -- that is, the things we give as arguments when
         # constructing this field.
         # We're going to get these properties, get source-code
         # representations of them, and sort out appropriate imports.
         names = {} # used as set of property names, ignoring values
-        visitImplements(field.__implements__, field,
-                        lambda interface: names.update(getFields(interface)))
+        for interface in providedBy(field):
+            names.update(getFields(interface))
         # getFields only returns data for Fields in the interface.
         # Otherwise, it returns an empty dict.
 

@@ -14,12 +14,14 @@
 
 """Implementation of ZCML action to register vocabulary factories."""
 
+from zope.interface import implements
 from zope.component import getService
 from zope.configuration.action import Action
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.testing import cleanup
 
+__metaclass__ = type
 
 def register(_context, name, factory, **kw):
     factory = _context.resolve(factory.strip())
@@ -43,10 +45,10 @@ class FactoryKeywordPasser:
         return self.factory(object, **self.kwargs)
 
 
-class ZopeVocabularyRegistry(object):
+class ZopeVocabularyRegistry:
     """IVocabularyRegistry that supports local vocabulary services."""
 
-    __implements__ = IVocabularyRegistry
+    implements(IVocabularyRegistry)
     __slots__ = ()
 
     def get(self, context, name):

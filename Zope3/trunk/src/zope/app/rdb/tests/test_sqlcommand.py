@@ -12,10 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_sqlcommand.py,v 1.4 2003/03/11 16:11:15 jim Exp $
+$Id: test_sqlcommand.py,v 1.5 2003/06/04 10:46:37 stevea Exp $
 """
 
 import unittest
+
+from zope.interface import implements
 
 from zope.app.component import nextservice
 from zope.app.interfaces.rdb import IConnectionService
@@ -33,7 +35,7 @@ def getNextServiceManager(context):
 
 class CursorStub:
 
-    __implements__ = IZopeCursor
+    implements(IZopeCursor)
 
     description = (('id', 'int'),)
 
@@ -46,7 +48,7 @@ class CursorStub:
 
 class ConnectionStub:
 
-    __implements__ = IZopeConnection
+    implements(IZopeConnection)
 
     def cursor(self):
         return CursorStub()
@@ -54,7 +56,7 @@ class ConnectionStub:
 
 class ConnectionServiceStub:
 
-    __implements__ = IConnectionService, ISimpleService
+    implements(IConnectionService, ISimpleService)
 
     def getConnection(self, name):
         return ConnectionStub()

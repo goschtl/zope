@@ -14,7 +14,7 @@
 """
 Gadfly Database Adapter (batteries included)
 
-$Id: gadflyda.py,v 1.3 2003/05/01 19:35:30 faassen Exp $
+$Id: gadflyda.py,v 1.4 2003/06/04 10:46:36 stevea Exp $
 """
 
 import gadfly
@@ -28,8 +28,6 @@ GadflyError = DatabaseAdapterError
 
 class GadflyAdapter(ZopeDatabaseAdapter):
     """A Gadfly adapter for Zope3"""
-
-    __implements__ = ZopeDatabaseAdapter.__implements__
 
     def _getGadflyRoot(self):
         # XXX: Need to write a configuration directive for setting this up

@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_modulegen.py,v 1.3 2003/05/01 19:35:31 faassen Exp $
+$Id: test_modulegen.py,v 1.4 2003/06/04 10:46:38 stevea Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from zope.schema import Text, Int, Float, getFieldsInOrder
-
+from zope.interface import implementedBy
+from persistence.interfaces import IPersistent
 from zope.app.schemagen.modulegen import generateModuleSource
 
 class GenerateModuleSourceTestsBase(TestCase):
@@ -51,7 +52,8 @@ class GenerateModuleSourceTestsBase(TestCase):
         # we don't want a schema version attribute on the class, just
         # on the individual instances
         self.assertRaises(AttributeError, getattr, Foo, '__schema_version__')
-        self.assertEquals(Foo.__implements__, IFoo)
+        self.assertEquals([i for i in implementedBy(Foo)],
+                          [IFoo, IPersistent])
         for field_name, field in self.fields:
             prop = getattr(Foo, field_name, None)
             self.assert_(prop is not None)

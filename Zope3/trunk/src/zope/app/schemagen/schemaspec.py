@@ -12,19 +12,20 @@
 #
 ##############################################################################
 """
-$Id: schemaspec.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: schemaspec.py,v 1.3 2003/06/04 10:46:37 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.app.interfaces.schemagen import ISchemaSpec
 from persistence import Persistent
 from zope.app.schemagen.modulegen import generateModuleSource
+from zope.interface import implements
 
 _helper_import = 'from zope.app.schemagen import schemaspec'
 _helper_module = 'schemaspec'
 
 class SchemaSpec(Persistent):
-    __implements__ = ISchemaSpec
+    implements(ISchemaSpec)
 
     def __init__(self, schema_name, class_name=None):
         if class_name is None:

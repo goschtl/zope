@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.7 2003/05/12 09:01:24 ryzaja Exp $
+$Id: __init__.py,v 1.8 2003/06/04 10:46:36 stevea Exp $
 """
 from types import StringTypes
 
@@ -27,6 +27,8 @@ from transaction import get_transaction
 from transaction.interfaces import IDataManager
 
 from zope.security import checker
+
+from zope.interface import implements
 
 from zope.app.interfaces.rdb import DatabaseException
 from zope.app.interfaces.rdb import IResultSet, ISQLCommand
@@ -42,7 +44,7 @@ class ResultSet(list):
     Currently we don't do lazy instantation of rows.
     """
 
-    __implements__ = IResultSet
+    implements(IResultSet)
     __slots__ = ('columns',)
 
     def __init__(self, columns, rows):
@@ -74,7 +76,7 @@ class ResultSet(list):
 class SQLCommand:
     """A simple version of a SQL Command."""
 
-    __implements__ = ISQLCommand
+    implements(ISQLCommand)
 
     def __init__(self, connection_name='', sql=''):
         self.connectionName = connection_name
@@ -96,7 +98,7 @@ class DatabaseAdapterError(Exception):
 
 class ZopeDatabaseAdapter(Persistent):
 
-    __implements__ = IZopeDatabaseAdapter
+    implements(IZopeDatabaseAdapter)
     _v_connection =  None
 
     def __init__(self, dsn):
@@ -218,7 +220,7 @@ def parseDSN(dsn):
 
 
 class ZopeCursor:
-    __implements__ = IZopeCursor
+    implements(IZopeCursor)
 
     def __init__(self, cursor, connection):
         self.cursor = cursor
@@ -266,7 +268,7 @@ class ZopeCursor:
 
 class ZopeConnection:
 
-    __implements__ =  IZopeConnection
+    implements(IZopeConnection)
 
     def __init__(self, conn, typeinfo):
         self.conn = conn
@@ -328,7 +330,7 @@ def queryForResults(conn, query):
 
 class ZopeDBTransactionManager:
 
-    __implements__ =  IDataManager
+    implements(IDataManager)
 
     def __init__(self, dbconn):
         self._dbconn = dbconn

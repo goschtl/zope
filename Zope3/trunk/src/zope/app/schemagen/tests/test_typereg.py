@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_typereg.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: test_typereg.py,v 1.3 2003/06/04 10:46:38 stevea Exp $
 """
 
 import datetime
@@ -23,6 +23,7 @@ from zope.app.schemagen.typereg import TypeRepresentationRegistry,\
      DefaultFieldRepresentation
 
 from zope import schema
+from zope.interface import implements
 
 from zope.schema.interfaces import IField
 
@@ -103,7 +104,7 @@ class TypeRepresentationRegistryTests(unittest.TestCase):
     def test_register(self):
         from zope.app.interfaces.schemagen import ITypeRepresentation
         class IntRepresentation:
-            __implements__ = ITypeRepresentation
+            implements(ITypeRepresentation)
             def __init__(self, obj):
                 pass
             def getTypes():
@@ -129,7 +130,7 @@ class IFieldSchema(IField):
     delta = schema.Int(title=u"Delta", default=0)
 
 class MyField(schema.Field):
-    __implements__ = IFieldSchema
+    implements(IFieldSchema)
 
     def __init__(self, alpha=u'', beta=0, gamma=u'', delta=0, **kw):
         super(MyField, self).__init__(**kw)
