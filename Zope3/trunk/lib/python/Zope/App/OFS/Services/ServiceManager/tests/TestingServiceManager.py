@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: TestServiceManager.py,v 1.1 2002/11/11 20:17:51 jim Exp $
+$Id: TestingServiceManager.py,v 1.1 2002/11/13 20:34:03 gvanrossum Exp $
 """
 
 __metaclass__ = type
@@ -22,7 +22,7 @@ from Zope.App.ComponentArchitecture.NextService \
      import getNextService, getNextServiceManager
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
-class TestServiceManager:
+class TestingServiceManager:
     """Simple placeful service manager used for writing tests
     """
     __implements__ =  IServiceService
@@ -48,5 +48,5 @@ class TestServiceManager:
             return ContextWrapper(getattr(self, name), self, name=name)
         return getNextServiceManager.queryService(name, default)
 
-__doc__ = TestServiceManager.__doc__ + __doc__
+__doc__ = TestingServiceManager.__doc__ + __doc__
 

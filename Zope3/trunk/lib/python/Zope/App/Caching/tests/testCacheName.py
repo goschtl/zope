@@ -15,7 +15,7 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: testCacheName.py,v 1.1 2002/11/11 20:57:20 jim Exp $
+$Id: testCacheName.py,v 1.2 2002/11/13 20:34:03 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,8 +23,8 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
      import PlacefulSetup
-from Zope.App.OFS.Services.ServiceManager.tests.TestServiceManager \
-     import TestServiceManager
+from Zope.App.OFS.Services.ServiceManager.tests.TestingServiceManager \
+     import TestingServiceManager
 
 from Zope.App.Caching.ICacheable import CacheName
 
@@ -39,7 +39,7 @@ class Test(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()
-        sm = TestServiceManager()
+        sm = TestingServiceManager()
         self.rootFolder.setServiceManager(sm)
         sm.Caching = CachingServiceStub()        
 
