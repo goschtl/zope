@@ -94,7 +94,7 @@ GreyThing -d lib/python Components/GreyThing
 
 Zope ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
-  &ZClasses &lpWebdav \
+  &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
   &lpHelpSys \
   &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
