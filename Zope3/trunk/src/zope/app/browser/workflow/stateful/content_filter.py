@@ -13,7 +13,7 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: content_filter.py,v 1.2 2003/06/03 22:46:18 jim Exp $
+$Id: content_filter.py,v 1.3 2003/07/15 14:16:34 srichter Exp $
 """
 __metaclass__ = type
 
@@ -53,6 +53,7 @@ class FilterList(Contents):
 
     published_content = ViewPageTemplateFile('published_content.pt')
 
+    # XXX: This method assumes you have a publishing workflow (SR) 
     def listPublishedItems(self):
         return self.filterByState(self.listContentInfo(), 'published')
 
