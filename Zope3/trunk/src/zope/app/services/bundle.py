@@ -13,12 +13,14 @@
 ##############################################################################
 """The basic bundle.
 
-$Id: bundle.py,v 1.1 2003/08/08 21:56:22 fdrake Exp $
+$Id: bundle.py,v 1.2 2003/08/12 21:58:47 fdrake Exp $
 """
 
 from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.services.bundle import IBundle
 from zope.app.services.registration import RegistrationManagerContainer
+from zope.interface import implements
+
 
 class Bundle(RegistrationManagerContainer, BTreeContainer):
     implements(IBundle)
