@@ -2,6 +2,11 @@
 The Zope Packaging Tools
 ========================
 
+:Date: $Date: 2004/05/06 16:26:32 $
+:Revision: $Revision: 1.6 $
+:Copyright:
+     `Zope Public License, version 2.0 <http://www.zope.org/Resources/ZPL>`_
+
 Overview
 --------
 
