@@ -1,7 +1,19 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+               xmlns:tales='http://namespaces.zope.org/tales'>
 
   <content class=".viewpagetemplatefile.BoundPageTemplate">
     <allow attributes="__call__ __str__ __name__" />
   </content>
+
+  <adapter
+      for="*"
+      provides="zope.app.interfaces.talesapi.IZopeTalesAPI"
+      factory=".talesapi.ZopeTalesAPI" 
+      />
+
+  <tales:namespace 
+      prefix="zope"
+      interface="zope.app.interfaces.talesapi.IZopeTalesAPI"
+      />
 
 </zopeConfigure>

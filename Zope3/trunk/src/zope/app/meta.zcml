@@ -15,5 +15,6 @@
 <include package="zope.app.applicationcontrol" file="meta.zcml" />
 <include package="zope.app.onlinehelp" file="meta.zcml" />
 <include package="zope.app.xml" file="meta.zcml" />
+<include package="zope.app.pagetemplate" file="meta.zcml" />
 
 </zopeConfigure>
