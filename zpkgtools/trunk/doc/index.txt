@@ -70,6 +70,6 @@ Related Links
 .. __: http://www.python.org/peps/pep-0241.html
 .. __: http://www.python.org/peps/pep-0262.html
 .. __: http://www.amk.ca/diary/2003/03/28#2003-03-28-4
-.. __: http://www.python.org/cgi-bin/moinmoin/DistUtils20
 .. __: http://www.python.org/cgi-bin/moinmoin/DistutilsDependencies
+.. __: http://www.python.org/cgi-bin/moinmoin/DistUtils20
 .. include:: links.rst
