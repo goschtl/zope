@@ -109,6 +109,8 @@ TO DO
 - Improve some common data file formats (for example, simplify the
   Entries.xml file, possibly using ZConfig instead of XML).
 
+- Figure out how to write meaningful adapter tests.
+
 - More adapters.  Should make sure that an XML Pickle will always work
   as a serialization, even if an adapter gets added.
 
