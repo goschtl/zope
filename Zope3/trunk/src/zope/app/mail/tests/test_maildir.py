@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.7 2004/03/03 09:15:43 srichter Exp $
+$Id$
 """
 import unittest
 import stat

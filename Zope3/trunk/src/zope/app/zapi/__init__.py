@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: __init__.py,v 1.3 2004/04/27 10:53:57 jim Exp $
+$Id$
 """
 
 from interfaces import IZAPI

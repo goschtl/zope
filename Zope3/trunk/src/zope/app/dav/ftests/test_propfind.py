@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for PROPFIND.
 
-$Id: test_propfind.py,v 1.6 2004/03/06 16:50:20 jim Exp $
+$Id$
 """
 import unittest
 from datetime import datetime

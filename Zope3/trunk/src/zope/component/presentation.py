@@ -24,7 +24,7 @@ service. Additionally it contains all registration classes that can occur:
 
   - PresentationRegistration
 
-$Id: presentation.py,v 1.16 2004/04/23 19:18:17 jim Exp $
+$Id$
 """
 from types import ClassType
 from zope.component.interfaces import IPresentationService, IRegistry

@@ -13,7 +13,7 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.14 2004/04/20 11:01:09 stevea Exp $
+$Id$
 """
 from zope.component.exceptions import Invalid, ComponentLookupError
 from zope.component.interfaces import IUtilityService, IRegistry

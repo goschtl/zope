@@ -13,7 +13,7 @@
 ##############################################################################
 """Functions that control how the Zope appserver knits itself together.
 
-$Id: main.py,v 1.6 2004/04/17 21:49:06 gintautasm Exp $
+$Id$
 """
 
 import logging

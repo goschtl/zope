@@ -13,7 +13,7 @@
 ##############################################################################
 """Object Interface Vocabulary Tests
 
-$Id: test_vocabulary.py,v 1.1 2004/04/24 23:17:36 srichter Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: interfaces.py,v 1.1 2004/03/13 20:24:15 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

@@ -33,7 +33,7 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.6 2004/04/26 23:14:56 srichter Exp $
+$Id$
 """
 
 from keyword import iskeyword

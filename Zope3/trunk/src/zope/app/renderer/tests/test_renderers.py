@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer Tests
 
-$Id: test_renderers.py,v 1.1 2004/03/02 14:24:45 srichter Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

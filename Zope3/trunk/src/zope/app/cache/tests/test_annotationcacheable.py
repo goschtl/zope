@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.15 2004/03/13 23:00:46 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

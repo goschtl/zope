@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.47 2003/11/03 21:37:51 jeremy Exp $
+$Id$
 """
 
 import os

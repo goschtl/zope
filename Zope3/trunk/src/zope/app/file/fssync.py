@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.3 2004/03/19 03:17:38 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.fssync.server.entryadapter import ObjectEntryAdapter

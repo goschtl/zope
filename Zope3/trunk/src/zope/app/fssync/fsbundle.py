@@ -13,7 +13,7 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.5 2004/02/25 23:02:26 faassen Exp $
+$Id$
 """
 
 import os

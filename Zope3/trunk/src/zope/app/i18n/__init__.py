@@ -13,7 +13,7 @@
 ##############################################################################
 """Customization of zope.i18n for the Zope application server
 
-$Id: __init__.py,v 1.5 2004/03/08 23:35:04 srichter Exp $
+$Id$
 """
 from zope.i18n.messageid import MessageIDFactory
 

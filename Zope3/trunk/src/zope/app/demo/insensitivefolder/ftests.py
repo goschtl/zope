@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for the case-insensitive traverser and folder.
 
-$Id: ftests.py,v 1.3 2004/04/06 20:58:07 jim Exp $
+$Id$
 """
 import unittest
 from zope.app.tests.functional import BrowserTestCase

@@ -13,7 +13,7 @@
 ##############################################################################
 """File content component
 
-$Id: file.py,v 1.5 2004/03/19 03:17:38 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from transaction import get_transaction

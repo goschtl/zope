@@ -13,7 +13,7 @@
 ##############################################################################
 """Plain Text Renderer Classes
 
-$Id: __init__.py,v 1.6 2004/03/19 20:26:32 srichter Exp $
+$Id$
 """
 from zope.component.interfaces import IFactory
 from zope.interface import implements, directlyProvides, Declaration

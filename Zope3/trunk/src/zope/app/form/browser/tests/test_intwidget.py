@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_intwidget.py,v 1.3 2004/05/11 11:17:36 garrett Exp $
+$Id$
 """
 import unittest, doctest
 from unittest import main, makeSuite

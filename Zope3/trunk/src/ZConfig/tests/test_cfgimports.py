@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of the %import mechanism.
 
-$Id: test_cfgimports.py,v 1.1 2003/10/03 20:01:57 fdrake Exp $
+$Id$
 """
 
 import unittest

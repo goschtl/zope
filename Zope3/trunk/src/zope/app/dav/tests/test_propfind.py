@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.23 2004/05/06 15:42:34 fdrake Exp $
+$Id$
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.1 2004/03/13 15:21:56 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app.tests import ztapi

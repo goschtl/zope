@@ -13,7 +13,7 @@
 ##############################################################################
 """Test 'rdb' ZCML Namespace Directives
 
-$Id: test_directives.py,v 1.5 2004/04/11 18:16:25 jim Exp $
+$Id$
 """
 import unittest
 from zope.app import zapi

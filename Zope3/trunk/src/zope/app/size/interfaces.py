@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: interfaces.py,v 1.1 2004/03/03 11:04:03 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """This module handles the 'startup' ZCML namespace directives.
 
-$Id: metaconfigure.py,v 1.3 2003/08/02 16:34:53 srichter Exp $
+$Id$
 """
 from zope.app.process import requestfactoryregistry
 from zope.app.process import servertyperegistry

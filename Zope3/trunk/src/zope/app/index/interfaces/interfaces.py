@@ -19,7 +19,7 @@ IBatchedQuery and ITextIndexQuery to ask the TextIndex for a batched query.
 The lookup for the query processor will try to find an appropriate adapter to
 the index.
 
-$Id: interfaces.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

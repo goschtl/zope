@@ -16,7 +16,7 @@
 The source renderer takes a special type of string, an ISource, and is able to
 produce 
 
-$Id: interfaces.py,v 1.1 2004/03/02 14:24:45 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

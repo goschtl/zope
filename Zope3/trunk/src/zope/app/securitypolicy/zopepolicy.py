@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.security.interfaces import ISecurityPolicy

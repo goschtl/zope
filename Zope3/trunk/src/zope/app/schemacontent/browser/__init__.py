@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: __init__.py,v 1.6 2004/04/24 23:17:59 srichter Exp $
+$Id$
 """
 import copy
 from zope.app import zapi

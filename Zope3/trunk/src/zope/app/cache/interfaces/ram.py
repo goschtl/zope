@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache interface.
 
-$Id: ram.py,v 1.3 2004/03/13 18:01:11 srichter Exp $
+$Id$
 """
 from zope.interface import Attribute
 

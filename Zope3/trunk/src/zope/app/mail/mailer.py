@@ -15,7 +15,7 @@
 """These are classes which abstract different channels an email
 message could be sent out by.
 
-$Id: mailer.py,v 1.6 2004/03/03 09:15:41 srichter Exp $
+$Id$
 """
 from os import popen
 from smtplib import SMTP

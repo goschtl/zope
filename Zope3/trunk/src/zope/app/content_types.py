@@ -12,7 +12,7 @@
 ##############################################################################
 """A utility module for content-type handling.
 
-$Id: content_types.py,v 1.8 2004/04/29 14:59:09 fdrake Exp $
+$Id$
 """
 
 # XXX This is handled through configuration in Zope 2 now.  Perhaps

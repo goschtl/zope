@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.9 2004/03/13 23:55:06 srichter Exp $
+$Id$
 """
 import unittest
 

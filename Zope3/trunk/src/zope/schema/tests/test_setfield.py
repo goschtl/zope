@@ -13,7 +13,7 @@
 ##############################################################################
 """Set field tests.
 
-$Id: test_setfield.py,v 1.2 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 from unittest import TestSuite, main, makeSuite
 import sets

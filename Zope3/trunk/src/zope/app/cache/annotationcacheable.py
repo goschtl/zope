@@ -13,7 +13,7 @@
 ##############################################################################
 """An adapter of annotatable objects.
 
-$Id: annotationcacheable.py,v 1.8 2004/03/13 23:00:44 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test that the package's configure.zcml can be loaded.
 
-$Id: test_configure.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id$
 """
 import unittest
 

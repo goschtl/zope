@@ -15,7 +15,7 @@
 
 This acts as a global (placeless) service.
 
-$Id: fsregistry.py,v 1.6 2004/03/01 13:07:16 philikon Exp $
+$Id$
 """
 
 from zope.exceptions import DuplicationError, NotFoundError

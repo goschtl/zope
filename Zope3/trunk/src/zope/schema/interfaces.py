@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.45 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

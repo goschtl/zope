@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of the filesystem side of the bundle management code.
 
-$Id: test_fsbundle.py,v 1.1 2003/10/06 20:05:14 fdrake Exp $
+$Id$
 """
 
 import os

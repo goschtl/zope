@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.19 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 from zope.schema._field import Field, Container, Iterable, Orderable
 from zope.schema._field import MinMaxLen, Choice

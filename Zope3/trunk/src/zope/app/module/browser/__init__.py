@@ -13,7 +13,7 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.3 2004/04/13 14:40:44 hdima Exp $
+$Id$
 """
 from zope.app.module import Manager
 from zope.app.event import publish

@@ -13,7 +13,7 @@
 ##############################################################################
 """Gadfly DA View Classes
 
-$Id: gadflyda.py,v 1.1 2004/03/02 13:48:28 philikon Exp $
+$Id$
 """
 from zope.app.rdb.browser.rdb import AdapterAdd
 

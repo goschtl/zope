@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary support for schema.
 
-$Id: vocabulary.py,v 1.23 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 from zope.interface.declarations import directlyProvides, implements
 from zope.schema.interfaces import ValidationError

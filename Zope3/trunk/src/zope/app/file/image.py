@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.4 2004/03/19 03:17:38 srichter Exp $
+$Id$
 """
 import struct
 from cStringIO import StringIO

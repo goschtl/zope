@@ -13,7 +13,7 @@
 ##############################################################################
 """Gadfly Database Adapter (batteries included)
 
-$Id: gadflyda.py,v 1.6 2003/12/19 16:53:17 mchandra Exp $
+$Id$
 """
 import gadfly
 import os

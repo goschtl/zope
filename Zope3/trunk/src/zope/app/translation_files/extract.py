@@ -15,7 +15,7 @@
 """Extract message strings from python modules, page template files
 and ZCML files.
 
-$Id: extract.py,v 1.18 2004/04/30 14:28:51 fdrake Exp $
+$Id$
 """
 
 import os, sys, fnmatch

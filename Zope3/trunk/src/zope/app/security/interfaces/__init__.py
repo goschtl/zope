@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope Application-specific Security Interfaces
 
-$Id: __init__.py,v 1.2 2004/04/24 23:20:04 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _

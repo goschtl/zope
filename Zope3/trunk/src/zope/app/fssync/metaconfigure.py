@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: metaconfigure.py,v 1.1 2003/08/01 23:31:46 srichter Exp $
+$Id$
 """
 from zope.app.fssync.fsregistry import provideSynchronizer
 

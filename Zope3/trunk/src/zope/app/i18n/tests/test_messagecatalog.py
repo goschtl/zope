@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the generic persistent Message Catalog.
 
-$Id: test_messagecatalog.py,v 1.1 2004/03/08 23:34:51 srichter Exp $
+$Id$
 """
 import unittest
 

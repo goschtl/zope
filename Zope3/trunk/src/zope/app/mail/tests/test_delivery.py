@@ -15,7 +15,7 @@
 
 Simple implementation of the MailDelivery, Mailers and MailEvents.
 
-$Id: test_delivery.py,v 1.1 2004/03/03 09:15:43 srichter Exp $
+$Id$
 """
 import os.path
 from tempfile import mktemp

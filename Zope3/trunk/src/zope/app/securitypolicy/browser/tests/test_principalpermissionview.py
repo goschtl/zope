@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Tests
 
-$Id: test_principalpermissionview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
+$Id$
 """
 import unittest
 

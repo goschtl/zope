@@ -13,7 +13,7 @@
 ##############################################################################
 """Handy mixin for test case classes to manipulate temporary files.
 
-$Id: tempfiles.py,v 1.3 2003/05/28 14:53:41 gvanrossum Exp $
+$Id$
 """
 
 import os

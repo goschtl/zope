@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
+$Id$
 """
 from zope.interface import classProvides, providedBy, implements
 import time

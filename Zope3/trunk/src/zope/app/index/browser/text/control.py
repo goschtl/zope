@@ -13,7 +13,7 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.3 2004/03/19 20:26:27 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.component import getService, queryAdapter

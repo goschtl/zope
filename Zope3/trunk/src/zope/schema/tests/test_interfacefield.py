@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_interfacefield.py,v 1.3 2004/04/11 10:35:17 srichter Exp $
+$Id$
 """
 from unittest import main, makeSuite
 from zope.schema import InterfaceField

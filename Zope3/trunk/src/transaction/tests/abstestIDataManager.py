@@ -27,7 +27,7 @@ the data actually gets written/not written to the storge.
 
 Obviously this test suite should be expanded.
 
-$Id: abstestIDataManager.py,v 1.5 2004/03/05 22:08:50 jim Exp $
+$Id$
 """
 
 from unittest import TestCase

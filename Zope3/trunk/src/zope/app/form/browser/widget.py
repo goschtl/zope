@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.10 2004/05/11 11:16:28 garrett Exp $
+$Id$
 """
 import re, cgi
 import traceback

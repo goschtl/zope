@@ -13,7 +13,7 @@
 ##############################################################################
 """Form-related exception views
 
-$Id: exception.py,v 1.1 2004/04/11 12:31:48 philikon Exp $
+$Id$
 """
 from cgi import escape
 

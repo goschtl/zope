@@ -13,7 +13,7 @@
 ##############################################################################
 """Computed attributes based on schema fields
 
-$Id: fieldproperty.py,v 1.3 2004/04/24 23:20:49 srichter Exp $
+$Id$
 """
 _marker = object()
 

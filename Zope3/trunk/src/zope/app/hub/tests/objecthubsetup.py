@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: objecthubsetup.py,v 1.2 2004/03/13 23:55:02 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.event.tests.eventsetup import EventSetup

@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: __init__.py,v 1.3 2004/03/15 13:10:52 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from zodbcode.module import PersistentModule, compileModule

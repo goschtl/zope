@@ -13,7 +13,7 @@
 ##############################################################################
 """Sequence variables support
 
-$Id: dt_insv.py,v 1.3 2002/12/27 20:06:53 gvanrossum Exp $
+$Id$
 """
 
 from math import sqrt

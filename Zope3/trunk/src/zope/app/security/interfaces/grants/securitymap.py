@@ -13,7 +13,7 @@
 ##############################################################################
 """Security map to hold matrix-like relationships.
 
-$Id: securitymap.py,v 1.1 2004/03/08 12:07:34 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the RegistrationView view class.
 
-$Id: test_registrationview.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.publisher.browser import TestRequest

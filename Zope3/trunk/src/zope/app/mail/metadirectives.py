@@ -13,7 +13,7 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.6 2004/04/25 04:41:00 srichter Exp $
+$Id$
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface

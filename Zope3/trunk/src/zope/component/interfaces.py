@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.34 2004/04/20 11:01:09 stevea Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *

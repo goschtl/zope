@@ -13,7 +13,7 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.3 2004/04/23 06:27:01 philikon Exp $
+$Id$
 """
 
 from zope.interface import implements

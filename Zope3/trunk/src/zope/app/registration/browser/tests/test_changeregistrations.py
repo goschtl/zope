@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Change Tests
 
-$Id: test_changeregistrations.py,v 1.2 2004/04/08 21:02:40 jim Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

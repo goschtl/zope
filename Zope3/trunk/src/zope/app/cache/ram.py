@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.15 2004/03/05 22:08:57 jim Exp $
+$Id$
 """
 from time import time
 from thread import allocate_lock

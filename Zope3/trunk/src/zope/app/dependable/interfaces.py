@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.1 2004/03/13 22:02:04 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface
@@ -41,7 +41,7 @@ __doc__ = IDependable.__doc__ + __doc__
 
 
 """
-$Id: interfaces.py,v 1.1 2004/03/13 22:02:04 srichter Exp $
+$Id$
 """
 
 class DependencyError(Exception):

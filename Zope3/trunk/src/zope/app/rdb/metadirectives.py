@@ -13,7 +13,7 @@
 ##############################################################################
 """'rdb' ZCML Namespace Directives
 
-$Id: metadirectives.py,v 1.1 2003/08/03 16:07:39 srichter Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Persistent Type Registry Tests
 
-$Id: test_type.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+$Id$
 """
 
 from unittest import TestSuite, makeSuite

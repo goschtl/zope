@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.13 2003/08/11 22:02:09 fdrake Exp $
+$Id$
 """
 
 import os

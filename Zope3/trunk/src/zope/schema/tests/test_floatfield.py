@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_floatfield.py,v 1.5 2004/04/24 23:21:06 srichter Exp $
+$Id$
 """
 from unittest import main, makeSuite
 from zope.schema import Float

@@ -13,5 +13,5 @@
 ##############################################################################
 """Tests for the configuration data structures and loader.
 
-$Id: __init__.py,v 1.2 2003/01/03 21:05:56 fdrake Exp $
+$Id$
 """

@@ -13,7 +13,7 @@
 ##############################################################################
 """Persistent PageTemplate-based View
 
-$Id: zpt.py,v 1.3 2004/03/15 13:10:53 srichter Exp $
+$Id$
 """
 import re
 

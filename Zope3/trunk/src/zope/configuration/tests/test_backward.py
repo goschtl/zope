@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_backward.py,v 1.3 2003/07/30 18:35:12 jim Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

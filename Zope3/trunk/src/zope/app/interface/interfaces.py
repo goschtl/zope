@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to the local interface service.
 
-$Id: interfaces.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

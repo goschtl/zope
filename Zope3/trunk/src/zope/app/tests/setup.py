@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.27 2004/04/23 11:38:57 jim Exp $
+$Id$
 """
 
 import zope.component

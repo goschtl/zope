@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: __init__.py,v 1.4 2004/03/23 22:09:40 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from zope.interface import implements, providedBy

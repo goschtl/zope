@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-$Id: placelesssetup.py,v 1.5 2004/03/08 23:35:17 srichter Exp $
+$Id$
 """
 from zope.app.tests import ztapi
 from zope.component import getServiceManager

@@ -13,7 +13,7 @@
 ##############################################################################
 """Experimental support for application database generations
 
-$Id: generations.py,v 1.1 2004/04/22 18:51:07 jim Exp $
+$Id$
 """
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve

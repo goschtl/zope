@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_ftpauth.py,v 1.2 2003/06/07 05:46:06 stevea Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

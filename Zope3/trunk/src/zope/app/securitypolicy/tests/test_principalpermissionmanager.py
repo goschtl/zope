@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for PrincipalPermissionManager module.
 
-$Id: test_principalpermissionmanager.py,v 1.4 2004/03/13 23:55:25 srichter Exp $
+$Id$
 """
 import unittest
 

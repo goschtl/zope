@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Definition Tests
 
-$Id: test_definition.py,v 1.5 2004/03/17 16:38:13 srichter Exp $
+$Id$
 """
 import unittest
 

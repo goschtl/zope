@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.14 2004/04/24 23:18:26 srichter Exp $
+$Id$
 """
 from xml.sax import parseString
 from xml.sax.handler import ContentHandler

@@ -13,7 +13,7 @@
 ##############################################################################
 """Undo Tests
 
-$Id: test_undoview.py,v 1.1 2004/03/21 17:20:28 philikon Exp $
+$Id$
 """
 from datetime import datetime
 from unittest import TestCase, main, makeSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.4 2004/04/25 16:19:18 srichter Exp $
+$Id$
 """
 import os
 import unittest

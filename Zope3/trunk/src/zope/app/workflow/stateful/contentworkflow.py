@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.16 2004/04/24 23:18:25 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for field index browser views
 
-$Id: tests.py,v 1.3 2004/03/13 23:55:04 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

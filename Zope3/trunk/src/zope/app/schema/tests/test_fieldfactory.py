@@ -13,7 +13,7 @@
 ##############################################################################
 """Field Factory Tests
 
-$Id: test_fieldfactory.py,v 1.6 2004/04/11 18:16:27 jim Exp $
+$Id$
 """
 import unittest
 

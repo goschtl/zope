@@ -11,7 +11,7 @@
 ##############################################################################
 """Local utility service implementation.
 
-$Id: __init__.py,v 1.5 2004/04/15 15:29:31 jim Exp $
+$Id$
 """
 
 from utility import UtilityRegistration, LocalUtilityService

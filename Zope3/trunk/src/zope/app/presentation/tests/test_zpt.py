@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.3 2004/03/29 15:08:58 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.presentation.zpt import ZPTTemplate, ZPTFactory

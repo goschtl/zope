@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.5 2004/03/13 23:55:22 srichter Exp $
+$Id$
 """
 import unittest
 

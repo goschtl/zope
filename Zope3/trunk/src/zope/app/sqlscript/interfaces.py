@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.6 2004/04/26 23:58:37 srichter Exp $
+$Id$
 """
 import zope.schema
 from zope.app import zapi

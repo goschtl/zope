@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: __init__.py,v 1.1 2004/03/03 11:04:03 philikon Exp $
+$Id$
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.size.interfaces import ISized

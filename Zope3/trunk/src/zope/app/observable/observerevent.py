@@ -13,7 +13,7 @@
 ##############################################################################
 """Event channel class for observable events.
 
-$Id: observerevent.py,v 1.1 2004/03/30 21:47:38 nathan Exp $
+$Id$
 """
 
 from zope.app.event.interfaces import ISubscriber

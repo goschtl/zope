@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.3 2004/03/13 23:01:05 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.registration.registration import Registered

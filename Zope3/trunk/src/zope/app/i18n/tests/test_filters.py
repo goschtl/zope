@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Domain.
 
-$Id: test_filters.py,v 1.2 2004/03/09 12:39:05 srichter Exp $
+$Id$
 """
 import unittest
 import time

@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Expression Type Tests
 
-$Id: test_sqlexpr.py,v 1.3 2004/03/09 12:39:11 srichter Exp $
+$Id$
 """
 import unittest
 

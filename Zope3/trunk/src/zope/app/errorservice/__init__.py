@@ -15,7 +15,7 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: __init__.py,v 1.2 2004/03/13 15:21:16 srichter Exp $
+$Id$
 """
 import time
 import logging

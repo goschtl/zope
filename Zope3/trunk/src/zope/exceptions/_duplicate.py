@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _duplicate.py,v 1.5 2003/06/07 06:54:24 stevea Exp $
+$Id$
 """
 from zope.exceptions import ZopeError, IZopeError
 from zope.interface import implements

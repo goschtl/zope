@@ -13,7 +13,7 @@
 ##############################################################################
 """Class to create an event subscriber from a simple function.
 
-$Id: function.py,v 1.3 2004/03/02 18:50:59 philikon Exp $
+$Id$
 """
 
 from zope.interface import implements

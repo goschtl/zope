@@ -13,7 +13,7 @@
 ##############################################################################
 """Presentation-service presentations
 
-$Id: __init__.py,v 1.1 2004/03/08 19:40:27 jim Exp $
+$Id$
 """
 
 class PageRegistrationView(object):

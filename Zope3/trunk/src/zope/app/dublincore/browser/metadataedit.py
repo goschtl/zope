@@ -13,7 +13,7 @@
 ##############################################################################
 """Dublin Core Meta Data View
 
-$Id: metadataedit.py,v 1.3 2004/03/06 16:50:22 jim Exp $
+$Id$
 """
 from datetime import datetime
 from zope.app.event import publish

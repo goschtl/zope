@@ -16,7 +16,7 @@
 The evolution scripts in this package are pretty dumb. The just call
 the evolve function defined here with a generation number. 
 
-$Id: __init__.py,v 1.1 2004/04/22 18:58:10 jim Exp $
+$Id$
 """
 
 key = 'zope.app.generations.demo-generation'

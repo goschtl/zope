@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope Python Expression Tests
 
-$Id: test_zopepythonexpr.py,v 1.4 2003/08/21 14:19:28 srichter Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp

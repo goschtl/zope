@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.9 2004/04/15 22:11:17 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

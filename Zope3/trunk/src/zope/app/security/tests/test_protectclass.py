@@ -13,7 +13,7 @@
 ##############################################################################
 """ Test handler for 'protectClass' directive
 
-$Id: test_protectclass.py,v 1.6 2004/03/08 12:06:02 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

@@ -1,4 +1,4 @@
-$Id: README.txt,v 1.2 2004/04/02 13:54:20 nathan Exp $
+$Id$
 
 Instance and Based Event Subscription Support
 

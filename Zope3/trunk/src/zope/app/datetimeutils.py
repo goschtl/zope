@@ -15,7 +15,7 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.10 2003/11/04 04:04:28 jeremy Exp $
+$Id$
 """
 
 __version__='$Revision: 1.10 $'[11:-2]

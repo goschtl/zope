@@ -12,7 +12,7 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pdocumenttemplate.py,v 1.4 2004/02/24 14:04:02 srichter Exp $
+$Id$
 """
 import sys
 from types import StringTypes, TupleType, ClassType

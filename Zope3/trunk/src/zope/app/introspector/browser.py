@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.6 2004/04/08 13:09:35 hdima Exp $
+$Id$
 """
 from zope.app.publisher.browser import BrowserView
 from zope.app.introspector.interfaces import IIntrospector

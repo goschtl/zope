@@ -13,7 +13,7 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.5 2004/05/06 10:20:43 philikon Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.component.nextservice import getNextServiceManager

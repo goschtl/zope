@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration data structures and loader for the ZRS.
 
-$Id: __init__.py,v 1.18 2004/04/15 20:33:32 fdrake Exp $
+$Id$
 """
 version_info = (2, 2)
 __version__ = ".".join([str(n) for n in version_info])

@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.11 2004/03/05 22:09:30 jim Exp $
+$Id$
 """
 
 import unittest

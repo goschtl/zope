@@ -13,7 +13,7 @@
 ##############################################################################
 """HTTP Basic Authentication adapter
 
-$Id: basicauthadapter.py,v 1.3 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 from zope.publisher.interfaces.http import IHTTPCredentials
 from loginpassword import LoginPassword

@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.26 2004/04/11 10:35:00 srichter Exp $
+$Id$
 """
 
 import os.path

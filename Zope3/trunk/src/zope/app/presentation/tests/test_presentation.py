@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.16 2004/05/10 06:35:35 philikon Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

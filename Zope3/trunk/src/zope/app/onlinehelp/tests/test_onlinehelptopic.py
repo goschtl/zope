@@ -13,7 +13,7 @@
 ##############################################################################
 """Test OnlineHelpTopic
 
-$Id: test_onlinehelptopic.py,v 1.3 2004/02/27 16:15:26 philikon Exp $
+$Id$
 """
 import os
 from unittest import TestCase, TestSuite, makeSuite

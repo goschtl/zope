@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.7 2004/05/06 10:14:12 philikon Exp $
+$Id$
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field, Choice

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.6 2004/04/11 10:35:17 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.schema import Field, Text, Int

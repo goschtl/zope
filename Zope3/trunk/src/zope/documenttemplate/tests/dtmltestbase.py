@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: dtmltestbase.py,v 1.3 2004/03/19 04:26:25 srichter Exp $
+$Id$
 """
 import os
 import unittest

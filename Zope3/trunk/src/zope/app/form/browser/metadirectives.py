@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.5 2004/04/25 16:19:14 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \

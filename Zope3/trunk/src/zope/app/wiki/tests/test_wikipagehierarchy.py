@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipagehierarchy.py,v 1.6 2004/03/13 23:01:15 srichter Exp $
+$Id$
 """
 import unittest
 

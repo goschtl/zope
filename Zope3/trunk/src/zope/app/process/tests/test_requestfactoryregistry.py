@@ -15,7 +15,7 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: test_requestfactoryregistry.py,v 1.2 2003/06/25 15:29:33 fdrake Exp $
+$Id$
 """
 
 import unittest

@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.28 2004/04/29 16:10:02 fdrake Exp $
+$Id$
 """
 import sys
 from types import StringTypes

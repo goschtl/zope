@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wiki.py,v 1.1 2004/02/27 11:06:58 philikon Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.folder import Folder

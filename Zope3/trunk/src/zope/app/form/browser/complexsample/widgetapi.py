@@ -16,7 +16,7 @@
 The base classes provided here implement the IBrowserWidget API and
 provide a simpler API that derived classes are expected to implement.
 
-$Id: widgetapi.py,v 1.2 2004/03/17 17:37:04 philikon Exp $
+$Id$
 """
 from xml.sax.saxutils import escape, quoteattr
 

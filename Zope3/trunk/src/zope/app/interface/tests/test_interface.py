@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface Service Tests
 
-$Id: test_interface.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+$Id$
 """
 import unittest
 

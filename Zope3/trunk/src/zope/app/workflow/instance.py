@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.14 2004/04/15 22:11:24 srichter Exp $
+$Id$
 """
 from types import StringTypes
 from persistent.dict import PersistentDict

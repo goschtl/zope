@@ -15,7 +15,7 @@
 
 Status: Draft
 
-$Id: wfmc.py,v 1.2 2004/03/03 10:38:58 philikon Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 

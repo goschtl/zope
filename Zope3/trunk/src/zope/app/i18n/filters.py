@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Domain Message Export and Import Filters
 
-$Id: filters.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
+$Id$
 """
 import time, re
 from types import StringTypes

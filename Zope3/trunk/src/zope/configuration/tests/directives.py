@@ -13,7 +13,7 @@
 ##############################################################################
 """Test directives
 
-$Id: directives.py,v 1.7 2003/07/30 18:35:12 jim Exp $
+$Id$
 """
 
 from zope.interface import Interface, implements

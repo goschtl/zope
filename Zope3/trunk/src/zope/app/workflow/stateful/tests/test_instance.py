@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.19 2004/04/24 23:18:32 srichter Exp $
+$Id$
 """
 import unittest
 

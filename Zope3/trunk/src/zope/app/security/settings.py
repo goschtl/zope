@@ -13,7 +13,7 @@
 ##############################################################################
 """Security setting constants
 
-$Id: settings.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 
 class PermissionSetting(object):

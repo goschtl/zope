@@ -13,7 +13,7 @@
 ##############################################################################
 """Error Reporting Service Tests
 
-$Id: tests.py,v 1.1 2004/03/10 13:43:35 srichter Exp $
+$Id$
 """
 import sys
 from unittest import TestCase, TestLoader, TextTestRunner

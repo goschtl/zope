@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces used with the sample widget.
 
-$Id: interfaces.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id$
 """
 from zope.schema import BytesLine
 from zope.schema.interfaces import IVocabularyQuery

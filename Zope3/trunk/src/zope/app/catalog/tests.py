@@ -16,7 +16,7 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.7 2004/03/23 15:52:27 mmceahern Exp $
+$Id$
 """
 import unittest
 import doctest

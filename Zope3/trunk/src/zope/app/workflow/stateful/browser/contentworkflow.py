@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.introspector import interfaceToName

@@ -14,7 +14,7 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.10 2004/03/17 18:24:24 philikon Exp $
+$Id$
 """
 __metaclass__ = type
 

@@ -15,7 +15,7 @@
 
 XXX Incomplete.
 
-$Id: tests.py,v 1.2 2004/03/13 21:03:06 srichter Exp $
+$Id$
 """
 import unittest
 

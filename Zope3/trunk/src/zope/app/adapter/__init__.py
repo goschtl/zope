@@ -13,7 +13,7 @@
 ##############################################################################
 """Local-adapter support
 
-$Id: __init__.py,v 1.1 2004/03/08 19:40:25 jim Exp $
+$Id$
 """
 
 from zope.app.adapter.adapter import IAdapterRegistration

@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample module used for testing
 
-$Id: foo.py,v 1.1 2003/07/28 22:23:08 jim Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope import schema

@@ -13,7 +13,7 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: timeannotators.py,v 1.8 2004/03/06 17:48:48 jim Exp $
+$Id$
 """
 __metaclass__ = type
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.26 2004/03/15 13:10:49 srichter Exp $
+$Id$
 """
 
 import os

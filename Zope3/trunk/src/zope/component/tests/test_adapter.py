@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Adapter Service Tests
 
-$Id: test_adapter.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
+$Id$
 """
 import unittest
 from doctest import DocTestSuite

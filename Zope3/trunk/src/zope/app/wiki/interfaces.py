@@ -15,7 +15,7 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.4 2004/04/24 23:20:30 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText, Choice

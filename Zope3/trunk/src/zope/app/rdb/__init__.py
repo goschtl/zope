@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.24 2004/03/02 13:48:27 philikon Exp $
+$Id$
 """
 __metaclass__ = type
 

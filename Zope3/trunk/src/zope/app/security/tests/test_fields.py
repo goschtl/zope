@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration field doc tests.
 
-$Id: test_fields.py,v 1.1 2004/03/20 19:52:42 srichter Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _notfounderror.py,v 1.6 2003/06/03 15:35:28 stevea Exp $
+$Id$
 """
 from zope.exceptions import ZopeError, IZopeError
 from zope.interface.common.interfaces import IKeyError

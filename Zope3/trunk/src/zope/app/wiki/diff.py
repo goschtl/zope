@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: diff.py,v 1.1 2004/02/27 11:06:58 philikon Exp $
+$Id$
 """
 from difflib import ndiff
 

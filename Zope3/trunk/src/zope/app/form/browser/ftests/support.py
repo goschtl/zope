@@ -13,7 +13,7 @@
 ##############################################################################
 """Support Functions for Widget Functional Tests
 
-$Id: support.py,v 1.2 2004/04/11 10:34:56 srichter Exp $
+$Id$
 """
 import re
 from zope.configuration import xmlconfig

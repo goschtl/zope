@@ -13,7 +13,7 @@
 ##############################################################################
 """Test widget registrations.
 
-$Id: test_registrations.py,v 1.2 2004/05/06 16:13:41 poster Exp $
+$Id$
 """
 import unittest
 

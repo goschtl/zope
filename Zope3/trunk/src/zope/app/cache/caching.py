@@ -13,7 +13,7 @@
 ##############################################################################
 """Helpers for caching.
 
-$Id: caching.py,v 1.9 2004/03/10 19:41:00 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.cache.interfaces import ICacheable, ICache

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of the vocabulary queries.
 
-$Id: test_vocabularyquery.py,v 1.2 2004/05/06 16:13:41 poster Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

@@ -15,7 +15,7 @@
 This contains some dummy stuff to do with subscribing to event channels
 that's useful in several test modules.
 
-$Id: subscriber.py,v 1.4 2004/03/02 18:50:59 philikon Exp $
+$Id$
 """
 from zope.app.event.interfaces import IFilter, ISubscriber
 from zope.interface import implements

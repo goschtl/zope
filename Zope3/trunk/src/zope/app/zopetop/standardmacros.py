@@ -15,7 +15,7 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.1 2004/03/02 17:11:32 philikon Exp $
+$Id$
 """
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 

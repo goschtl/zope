@@ -13,7 +13,7 @@
 ##############################################################################
 """An adapter from IPrincipal to the ILoggingInfo.
 
-$Id: principallogging.py,v 1.2 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.publisher.interfaces.logginginfo import ILoggingInfo

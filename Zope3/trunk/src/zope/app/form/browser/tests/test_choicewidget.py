@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Choice display and edit widget (function).
 
-$Id: test_choicewidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
+$Id$
 """
 import unittest
 from zope.publisher.interfaces.browser import IBrowserRequest

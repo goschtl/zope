@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_prefix.py,v 1.1 2004/03/21 17:20:32 philikon Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

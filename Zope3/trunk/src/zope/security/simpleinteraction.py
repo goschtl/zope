@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define Zope\'s default interaction class
 
-$Id: simpleinteraction.py,v 1.1.2.2 2004/03/19 18:50:56 mgedmin Exp $
+$Id$
 """
 
 import sets

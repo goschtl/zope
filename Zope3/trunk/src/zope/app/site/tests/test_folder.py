@@ -13,7 +13,7 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.3 2004/04/17 15:13:14 jim Exp $
+$Id$
 """
 import unittest
 from zope.app.registration.tests.test_registrationmanager \

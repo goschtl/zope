@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.18 2004/03/13 23:55:05 srichter Exp $
+$Id$
 """
 from zope.component import getService
 from zope.app.servicenames import HubIds

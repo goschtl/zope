@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_equality.py,v 1.3 2003/05/12 10:02:41 ryzaja Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.schema import Text, Int

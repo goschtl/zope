@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_file.py,v 1.2 2004/02/24 16:49:50 philikon Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

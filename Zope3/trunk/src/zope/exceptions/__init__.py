@@ -16,7 +16,7 @@
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
 
-$Id: __init__.py,v 1.5 2003/08/12 19:14:50 srichter Exp $
+$Id$
 """
 # This module should be independent of I18n, so let's not require it.
 try:

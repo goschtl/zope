@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: ftests.py,v 1.3 2004/04/06 20:58:10 jim Exp $
+"""$Id$
 """
 import unittest
 from xml.dom import minidom

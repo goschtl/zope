@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.11 2003/09/05 19:09:36 fdrake Exp $
+$Id$
 """
 
 import os

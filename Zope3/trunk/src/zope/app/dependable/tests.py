@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for Dependable class.
 
-$Id: tests.py,v 1.1 2004/03/13 23:34:34 srichter Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

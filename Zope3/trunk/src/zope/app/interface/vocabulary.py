@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary that provides a list of all interfaces its context provides.
 
-$Id: vocabulary.py,v 1.1 2004/04/24 23:17:35 srichter Exp $
+$Id$
 """
 from zope.interface import providedBy
 from zope.security.proxy import trustedRemoveSecurityProxy

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of ZCML action to register vocabulary factories.
 
-$Id: vocabulary.py,v 1.6 2004/03/04 18:48:21 poster Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.interface import Interface, implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Python Page
 
-$Id: tests.py,v 1.4 2004/03/13 21:03:19 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app import zapi

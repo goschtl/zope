@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.16 2003/11/04 04:04:23 jeremy Exp $
+$Id$
 """
 import pickle
 import sys

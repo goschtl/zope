@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Authentication Service or Principal Registry
 
-$Id: principalregistry.py,v 1.4 2004/04/06 17:55:38 jim Exp $
+$Id$
 """
 from warnings import warn
 from zope.interface import implements

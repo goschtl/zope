@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.10 2004/05/06 16:13:42 poster Exp $
+$Id$
 """
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 

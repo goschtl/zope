@@ -13,7 +13,7 @@
 ##############################################################################
 """Example of a package that extends its __path__.
 
-$Id: __init__.py,v 1.2 2003/10/03 17:11:33 fdrake Exp $
+$Id$
 """
 
 import os

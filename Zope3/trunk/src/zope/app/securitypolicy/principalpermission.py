@@ -13,7 +13,7 @@
 ##############################################################################
 """Mappings between principals and permissions, stored in an object locally.
 
-$Id: principalpermission.py,v 1.3 2004/03/13 23:01:07 srichter Exp $
+$Id$
 """
 
 from zope.interface import implements

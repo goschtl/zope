@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal-Role View Tests
 
-$Id: test_principalroleview.py,v 1.6 2004/03/19 20:26:36 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample Component
 
-$Id: sample.py,v 1.3 2003/08/21 14:19:28 srichter Exp $
+$Id$
 """
 from zope.app.pagetemplate import ViewPageTemplateFile
 

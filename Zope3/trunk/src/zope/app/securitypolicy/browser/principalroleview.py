@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 'local roles').
 
-$Id: principalroleview.py,v 1.6 2004/04/11 18:16:33 jim Exp $
+$Id$
 """
 from datetime import datetime
 

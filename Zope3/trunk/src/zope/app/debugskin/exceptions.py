@@ -13,7 +13,7 @@
 ##############################################################################
 """View that renders a traceback for exceptions.
 
-$Id: exceptions.py,v 1.1 2004/03/02 17:11:29 philikon Exp $
+$Id$
 """
 import sys
 import traceback

@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Script Views
 
-$Id: sqlscript.py,v 1.5 2004/03/14 01:11:42 srichter Exp $
+$Id$
 """
 from zope.app.form.browser.add import AddView
 from zope.app.form.browser.submit import Update

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: i18nfile.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from zope.interface import implements

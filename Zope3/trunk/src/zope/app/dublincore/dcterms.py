@@ -13,7 +13,7 @@
 ##############################################################################
 """Support information for qualified Dublin Core metadata.
 
-$Id: dcterms.py,v 1.5 2003/08/27 04:43:55 fdrake Exp $
+$Id$
 """
 
 from zope.app.dublincore import dcsv

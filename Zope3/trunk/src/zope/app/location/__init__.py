@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.8 2004/04/27 10:53:46 jim Exp $
+$Id$
 """
 import zope.interface
 from zope.app.location.interfaces import ILocation

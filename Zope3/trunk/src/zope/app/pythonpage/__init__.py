@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.10 2004/04/12 10:37:14 hdima Exp $
+$Id$
 """
 import re
 from persistent import Persistent

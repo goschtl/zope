@@ -15,7 +15,7 @@
 
 (This is slightly non-trivial because it has a bunch of conveniences.)
 
-$Id: test_error.py,v 1.2 2003/05/14 22:16:09 gvanrossum Exp $
+$Id$
 """
 
 import unittest

@@ -13,7 +13,7 @@
 ##############################################################################
 """Login and Logout screens
 
-$Id: auth.py,v 1.1 2004/03/14 04:45:00 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.publisher.interfaces.http import ILogin, ILogout

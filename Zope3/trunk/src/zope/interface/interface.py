@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface object implementation
 
-$Id: interface.py,v 1.25 2004/04/30 17:37:10 itamar Exp $
+$Id$
 """
 
 from __future__ import generators

@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.6 2004/05/05 08:42:06 philikon Exp $
+$Id$
 """
 import sys
 from transaction import get_transaction

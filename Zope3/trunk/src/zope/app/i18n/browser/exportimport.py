@@ -13,7 +13,7 @@
 ##############################################################################
 """Message Export/Import View
 
-$Id: exportimport.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
+$Id$
 """
 from zope.app.i18n.browser import BaseView
 from zope.i18n.interfaces import IMessageExportFilter, IMessageImportFilter

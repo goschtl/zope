@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_interfaceutility.py,v 1.8 2004/04/17 14:33:34 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app.tests import setup

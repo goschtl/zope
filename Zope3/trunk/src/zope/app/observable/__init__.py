@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope.app Observable package
 
-$Id: __init__.py,v 1.2 2004/03/30 14:13:57 nathan Exp $
+$Id$
 """
 
 from interfaces import IObservable

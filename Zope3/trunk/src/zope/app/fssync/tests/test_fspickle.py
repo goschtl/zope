@@ -13,7 +13,7 @@
 ##############################################################################
 """Location support tests
 
-$Id: test_fspickle.py,v 1.4 2004/03/13 21:03:11 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing vocabulary directive.
 
-$Id: test_directives.py,v 1.3 2004/03/03 22:54:27 srichter Exp $
+$Id$
 """
 import unittest
 

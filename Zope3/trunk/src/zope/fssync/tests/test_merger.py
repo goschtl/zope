@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.13 2003/05/29 15:07:30 gvanrossum Exp $
+$Id$
 """
 
 import os

@@ -13,7 +13,7 @@
 ##############################################################################
 """Compute a resolution order for an object and it's bases
 
-$Id: ro.py,v 1.2 2003/11/21 17:11:43 jim Exp $
+$Id$
 """
 
 def ro(object):

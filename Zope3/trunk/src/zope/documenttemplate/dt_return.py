@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: dt_return.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
+$Id$
 """
 from zope.documenttemplate.dt_util import parse_params, name_param
 

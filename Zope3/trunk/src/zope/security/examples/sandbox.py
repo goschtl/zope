@@ -13,7 +13,7 @@
 ##############################################################################
 """A small sandbox application.
 
-$Id: sandbox.py,v 1.7 2004/03/05 22:09:33 jim Exp $
+$Id$
 """
 import time, whrandom
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.8 2004/04/03 07:26:10 fdrake Exp $
+$Id$
 """
 import docutils.core, docutils.io
 from docutils import nodes, writers

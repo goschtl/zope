@@ -15,7 +15,7 @@
 
 XXX check exception types
 
-$Id: maildir.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
+$Id$
 """
 import os
 import socket

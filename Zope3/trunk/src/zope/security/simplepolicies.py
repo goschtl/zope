@@ -13,7 +13,7 @@
 ##############################################################################
 """Simple 'ISecurityPolicy' implementations.
 
-$Id: simplepolicies.py,v 1.6 2004/02/20 20:42:12 srichter Exp $
+$Id$
 """
 
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Abstract objects for the i18n extraction machinery
 
-$Id: interfaces.py,v 1.1 2003/12/17 13:58:53 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface

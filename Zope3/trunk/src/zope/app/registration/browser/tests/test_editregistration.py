@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Editing Tests
 
-$Id: test_editregistration.py,v 1.3 2004/03/19 20:26:31 srichter Exp $
+$Id$
 """
 from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite

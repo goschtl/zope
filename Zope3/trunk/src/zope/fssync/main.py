@@ -35,7 +35,7 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.38 2003/09/05 21:52:50 fdrake Exp $
+$Id$
 """
 
 import os

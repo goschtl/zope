@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.3 2004/05/06 16:13:40 poster Exp $
+$Id$
 """
 
 from zope.app.annotation.interfaces import IAnnotatable

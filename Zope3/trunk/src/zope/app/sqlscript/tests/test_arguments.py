@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_arguments.py,v 1.2 2004/02/24 16:50:39 philikon Exp $
+$Id$
 """
 
 import unittest

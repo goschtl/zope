@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopeconnection.py,v 1.7 2004/04/01 03:56:55 jeremy Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

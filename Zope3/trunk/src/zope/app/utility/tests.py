@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.8 2004/04/24 23:20:26 srichter Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

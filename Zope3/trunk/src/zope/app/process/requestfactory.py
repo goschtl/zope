@@ -13,7 +13,7 @@
 ##############################################################################
 """Request Factory
 
-$Id: requestfactory.py,v 1.3 2004/03/13 20:24:21 srichter Exp $
+$Id$
 """
 import copy
 from zope.app.process.interfaces import IRequestFactory

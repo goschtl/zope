@@ -13,7 +13,7 @@
 ##############################################################################
 """Basic File interfaces.
 
-$Id: interfaces.py,v 1.3 2004/03/19 03:17:38 srichter Exp $
+$Id$
 """
 from zope.schema import BytesLine, Bytes
 from zope.interface import Interface

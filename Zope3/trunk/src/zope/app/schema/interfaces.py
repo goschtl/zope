@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: interfaces.py,v 1.3 2004/04/24 23:19:56 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface

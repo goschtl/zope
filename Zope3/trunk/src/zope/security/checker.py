@@ -20,7 +20,7 @@ Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 
-$Id: checker.py,v 1.45 2004/03/05 22:09:32 jim Exp $
+$Id$
 """
 import os
 import sys

@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Views
 
-$Id: __init__.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
+$Id$
 """
 from zope.i18n.interfaces import ITranslationDomain
 

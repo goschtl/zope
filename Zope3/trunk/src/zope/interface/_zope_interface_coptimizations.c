@@ -535,7 +535,7 @@ init_zope_interface_coptimizations(void)
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
                      "C optimizations for zope.interface\n\n"
-                     "$Id: _zope_interface_coptimizations.c,v 1.6 2004/05/03 20:31:27 spascoe Exp $");  
+                     "$Id$");  
   if (m == NULL)
     return;
   

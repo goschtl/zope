@@ -13,7 +13,7 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.6 2004/04/17 15:13:11 jim Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools Overview Functional Tests
 
-$Id: test_toolsoverview.py,v 1.2 2004/04/06 20:58:11 jim Exp $
+$Id$
 """
 import unittest
 

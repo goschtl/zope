@@ -12,7 +12,7 @@
  #
  ############################################################################*/
 
-#define _ZOPE_HOOKABLE_C "$Id: _zope_hookable.c,v 1.3 2004/05/03 20:27:16 spascoe Exp $\n"
+#define _ZOPE_HOOKABLE_C "$Id$\n"
 
 /* _zope_hookable.c
 

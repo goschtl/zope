@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for Annotation Principal Permission Manager module.
 
-$Id: test_annotationprincipalpermissionmanager.py,v 1.4 2004/03/13 23:01:09 srichter Exp $
+$Id$
 """
 import unittest
 

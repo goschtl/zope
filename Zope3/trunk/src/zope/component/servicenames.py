@@ -13,7 +13,7 @@
 ##############################################################################
 """Default service names for CA core services
 
-$Id: servicenames.py,v 1.8 2004/03/09 12:40:46 srichter Exp $
+$Id$
 """
 
 Adapters = 'Adapters'

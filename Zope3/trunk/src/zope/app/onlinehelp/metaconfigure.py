@@ -16,7 +16,7 @@
 These handlers process the registerTopic() and unregisterTopic() directives of
 the "help" ZCML namespace.
 
-$Id: metaconfigure.py,v 1.7 2003/08/17 06:07:19 philikon Exp $
+$Id$
 """
 from zope.app.onlinehelp import help
 

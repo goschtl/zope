@@ -13,7 +13,7 @@
 ##############################################################################
 """This module exists soley to e imported by atestmodule
 
-$Id: tobeimportedbyatestmodule.py,v 1.1 2004/02/20 22:02:24 fdrake Exp $
+$Id$
 """
 
 x = 1

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: modulegen.py,v 1.5 2004/03/13 20:24:15 srichter Exp $
+$Id$
 """
 from zope.app.schemagen.typereg import fieldRegistry
 

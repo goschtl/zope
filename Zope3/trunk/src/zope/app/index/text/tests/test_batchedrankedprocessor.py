@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.12 2004/03/13 20:24:11 srichter Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup

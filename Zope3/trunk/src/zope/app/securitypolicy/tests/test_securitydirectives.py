@@ -13,7 +13,7 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.4 2004/03/13 23:55:25 srichter Exp $
+$Id$
 """
 import unittest
 

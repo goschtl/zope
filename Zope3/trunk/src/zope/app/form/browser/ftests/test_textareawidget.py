@@ -13,7 +13,7 @@
 ##############################################################################
 """TextArea Functional Tests
 
-$Id: test_textareawidget.py,v 1.4 2004/05/10 15:50:10 fdrake Exp $
+$Id$
 """
 
 import unittest

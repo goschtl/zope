@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metaconfigure.py,v 1.4 2003/11/21 17:10:52 jim Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler

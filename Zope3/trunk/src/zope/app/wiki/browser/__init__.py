@@ -13,5 +13,5 @@
 ##############################################################################
 """Browser Views for the wiki for Zope 3 Product
 
-$Id: __init__.py,v 1.1 2004/02/27 11:06:59 philikon Exp $
+$Id$
 """

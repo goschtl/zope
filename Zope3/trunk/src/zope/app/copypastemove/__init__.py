@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.2 2004/03/06 16:50:19 jim Exp $
+$Id$
 """
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError

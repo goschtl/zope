@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.12 2003/08/17 06:09:00 philikon Exp $
+$Id$
 """
 
 import os

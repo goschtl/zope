@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.2 2004/03/23 22:08:10 srichter Exp $
+$Id$
 """
 from datetime import datetime
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: synchronize.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
+$Id$
 """
 import httplib
 import urllib

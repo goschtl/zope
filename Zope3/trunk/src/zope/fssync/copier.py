@@ -13,7 +13,7 @@
 ##############################################################################
 """Tree-copy helpers for 'zsync copy' and 'zbundle create'.
 
-$Id: copier.py,v 1.2 2003/09/05 20:32:08 fdrake Exp $
+$Id$
 """
 
 import os

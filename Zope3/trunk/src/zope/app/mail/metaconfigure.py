@@ -13,7 +13,7 @@
 ##############################################################################
 """mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.7 2004/04/25 04:41:00 srichter Exp $
+$Id$
 """
 from zope.configuration.exceptions import ConfigurationError
 

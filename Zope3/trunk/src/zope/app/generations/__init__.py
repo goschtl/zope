@@ -13,5 +13,5 @@
 ##############################################################################
 """Experimental support for application database generations
 
-$Id: __init__.py,v 1.1 2004/04/22 18:51:07 jim Exp $
+$Id$
 """

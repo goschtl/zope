@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper functions for Proxies.
 
-$Id: proxy.py,v 1.9 2004/02/20 20:42:12 srichter Exp $
+$Id$
 """
 from zope.proxy import getProxiedObject
 from zope.security._proxy import getChecker

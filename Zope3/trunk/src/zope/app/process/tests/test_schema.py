@@ -13,7 +13,7 @@
 ##############################################################################
 """Test that the Zope appserver configuration schema can be loaded.
 
-$Id: test_schema.py,v 1.2 2003/06/25 15:29:33 fdrake Exp $
+$Id$
 """
 
 import os.path

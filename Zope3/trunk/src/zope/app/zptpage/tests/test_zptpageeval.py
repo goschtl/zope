@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zptpageeval.py,v 1.2 2004/02/24 16:50:48 philikon Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

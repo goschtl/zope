@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.2 2004/03/05 18:38:35 srichter Exp $
+$Id$
 """
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.metaconfigure import utility

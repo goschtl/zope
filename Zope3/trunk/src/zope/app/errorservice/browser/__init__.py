@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for event service control.
 
-$Id: __init__.py,v 1.3 2004/03/19 20:26:25 srichter Exp $
+$Id$
 """
 from zope.app.publisher.browser import BrowserView
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the case-insensitive Folder.
 
-$Id: tests.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
+$Id$
 """
 import unittest
 from zope.app.container.tests import test_containertraverser  

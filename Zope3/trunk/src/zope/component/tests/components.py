@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: components.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
+$Id$
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Status Property Tests
 
-$Id: test_registrationstatusproperty.py,v 1.2 2004/04/08 21:02:45 jim Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_iterablefield.py,v 1.3 2004/04/11 10:35:17 srichter Exp $
+$Id$
 """
 from UserDict import UserDict, IterableUserDict
 from unittest import main, makeSuite

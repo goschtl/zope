@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_verify.py,v 1.4 2003/06/07 06:37:30 stevea Exp $
+$Id$
 """
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pickle-based serialization of Python objects to and from XML.
 
-$Id: xmlpickle.py,v 1.5 2004/01/13 17:21:45 jim Exp $
+$Id$
 """
 
 from xml.parsers import expat

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for standard python exceptions
 
-$Id: interfaces.py,v 1.4 2003/05/03 16:36:52 jim Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.interface import classImplements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.2 2003/10/29 20:26:59 sidnei Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets with text-based input
 
-$Id: textwidgets.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
+$Id$
 """
 from zope.interface import implements
 

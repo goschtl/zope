@@ -15,7 +15,7 @@
 
 Should be refactored (along with text and field)
 
-$Id: keyword.py,v 1.3 2004/04/24 23:17:57 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.schema import BytesLine, Choice

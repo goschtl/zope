@@ -13,7 +13,7 @@
 ##############################################################################
 """Security related configuration fields.
 
-$Id: fields.py,v 1.2 2004/04/11 10:34:41 srichter Exp $
+$Id$
 """
 from zope import schema
 from zope.interface import implements

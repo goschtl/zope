@@ -13,7 +13,7 @@
 ##############################################################################
 """Message ID tests.
 
-$Id: tests.py,v 1.2 2004/04/15 14:44:01 fdrake Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

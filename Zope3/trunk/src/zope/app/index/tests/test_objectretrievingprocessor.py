@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_objectretrievingprocessor.py,v 1.15 2004/03/13 23:55:07 srichter Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.4 2004/04/17 15:13:13 jim Exp $
+$Id$
 """
 from unittest import TestSuite, TestCase, main, makeSuite
 from doctest import DocTestSuite

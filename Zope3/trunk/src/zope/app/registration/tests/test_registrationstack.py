@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Stack tests
 
-$Id: test_registrationstack.py,v 1.2 2004/04/08 21:02:41 jim Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup

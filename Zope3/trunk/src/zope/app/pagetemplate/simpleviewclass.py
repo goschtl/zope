@@ -13,7 +13,7 @@
 ##############################################################################
 """Simple View Class
 
-$Id: simpleviewclass.py,v 1.11 2004/03/29 05:12:38 srichter Exp $
+$Id$
 """
 import sys
 from zope.app.publisher.browser import BrowserView

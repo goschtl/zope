@@ -14,7 +14,7 @@
 """Make assertions about permissions needed to access class instances
 attributes
 
-$Id: protectclass.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 from zope.security.checker import defineChecker, getCheckerForInstancesOf
 from zope.security.checker import Checker, CheckerPublic

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.5 2004/03/02 18:50:59 philikon Exp $
+$Id$
 """
 
 from zope.app.event.interfaces import IEvent

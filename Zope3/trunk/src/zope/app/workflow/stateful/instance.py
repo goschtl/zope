@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.19 2004/04/24 23:18:25 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

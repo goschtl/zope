@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Content
 
-$Id: content.py,v 1.4 2003/08/21 14:19:28 srichter Exp $
+$Id$
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 

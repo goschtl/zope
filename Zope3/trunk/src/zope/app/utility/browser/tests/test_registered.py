@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the registered view support.
 
-$Id: test_registered.py,v 1.3 2004/04/17 14:33:47 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -132,7 +132,7 @@
 
    This shows only the local registrations in L1.
 
-   $Id: tests.py,v 1.8 2004/04/17 14:33:06 srichter Exp $
+   $Id$
    """
 
 def test_named_adapters():
@@ -862,7 +862,7 @@ def test_service_registrations():
        ...     print registration
        Registration('IF0', (), 'IB1', u'', 'A011')
 
-       $Id: tests.py,v 1.8 2004/04/17 14:33:06 srichter Exp $
+       $Id$
        """
     
     

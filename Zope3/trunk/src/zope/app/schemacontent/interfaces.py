@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: interfaces.py,v 1.2 2004/04/24 23:17:58 srichter Exp $
+$Id$
 """
 from zope.app.container.interfaces import IAdding
 from zope.app.i18n import ZopeMessageIDFactory as _

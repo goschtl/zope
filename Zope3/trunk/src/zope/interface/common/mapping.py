@@ -13,7 +13,7 @@
 ##############################################################################
 """Mapping Interfaces
 
-$Id: mapping.py,v 1.5 2004/02/24 14:28:28 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

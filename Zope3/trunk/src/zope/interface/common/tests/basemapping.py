@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: basemapping.py,v 1.3 2003/02/03 14:58:46 jim Exp $
+$Id$
 """
 
 from operator import __getitem__

@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for MKCOL.
 
-$Id: test_mkcol.py,v 1.2 2003/08/17 06:06:27 philikon Exp $
+$Id$
 """
 
 import unittest

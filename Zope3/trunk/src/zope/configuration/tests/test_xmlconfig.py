@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.6 2004/03/01 21:22:08 jim Exp $
+$Id$
 """
 
 import unittest

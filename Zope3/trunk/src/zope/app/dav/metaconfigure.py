@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration handlers for 'dav' namespace.
 
-$Id: metaconfigure.py,v 1.3 2004/03/03 17:06:30 srichter Exp $
+$Id$
 """
 from zope.app.component.metaconfigure import utility
 from zope.interface import directlyProvides

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for yet another command-line handler.
 
-$Id: test_command.py,v 1.1 2003/08/11 20:55:24 fdrake Exp $
+$Id$
 """
 
 import sys

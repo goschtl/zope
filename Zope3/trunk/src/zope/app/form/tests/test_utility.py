@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Utilities Tests
 
-$Id: test_utility.py,v 1.23 2004/03/19 20:26:26 srichter Exp $
+$Id$
 """
 import doctest
 

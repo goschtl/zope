@@ -13,7 +13,7 @@
 ##############################################################################
 """Generation-browser tests
 
-$Id: tests.py,v 1.1 2004/04/23 19:39:29 jim Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

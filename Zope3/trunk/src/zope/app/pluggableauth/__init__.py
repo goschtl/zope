@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.4 2004/03/23 00:23:08 maru Exp $
+$Id$
 """
 import random
 import sys

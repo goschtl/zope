@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Global Wiki Source Type Service.
 
-$Id: test_vocabulary.py,v 1.6 2004/05/06 16:13:48 poster Exp $
+$Id$
 """
 import unittest
 

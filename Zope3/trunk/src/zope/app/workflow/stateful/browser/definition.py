@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
+$Id$
 """
 __metaclass__ = type
 

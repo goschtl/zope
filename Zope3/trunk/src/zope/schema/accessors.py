@@ -33,7 +33,7 @@ read accessor is defined for read-only fields.
 Read accessors function as access method specifications and as field
 specifications.  Write accessors are solely method specifications.
 
-$Id: accessors.py,v 1.7 2004/01/20 19:45:07 poster Exp $
+$Id$
 """
 from zope.interface import providedBy, implementedBy
 from zope.interface.interface import Method

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_strfield.py,v 1.5 2004/04/24 23:21:06 srichter Exp $
+$Id$
 """
 from unittest import TestSuite, main, makeSuite
 from zope.schema import Bytes, BytesLine, Text, TextLine

@@ -20,7 +20,7 @@ XXX (SR) Yes the code is used for the inline Python support. As far as I can
 tell the security works well, as I had to make all sorts of security
 declarations to make it work. 
 
-$Id: interpreter.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
+$Id$
 """
 from zope.security.builtins import RestrictedBuiltins
 

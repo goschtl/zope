@@ -13,7 +13,7 @@
 ##############################################################################
 """Permissions
 
-$Id: permission.py,v 1.13 2004/04/24 23:20:01 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.schema.interfaces import ValidationError

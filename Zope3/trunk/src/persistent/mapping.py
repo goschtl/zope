@@ -14,7 +14,7 @@
 
 """Python implementation of persistent base types
 
-$Id: mapping.py,v 1.22 2003/11/28 16:44:55 jim Exp $"""
+$Id$"""
 
 __version__='$Revision: 1.22 $'[11:-2]
 

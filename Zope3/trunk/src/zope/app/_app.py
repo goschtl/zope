@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.17 2004/04/23 06:24:37 philikon Exp $
+$Id$
 """
 
 import base64, time

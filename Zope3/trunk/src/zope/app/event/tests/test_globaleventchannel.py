@@ -13,7 +13,7 @@
 ##############################################################################
 """A functional GlobalEventChannel test.
 
-$Id: test_globaleventchannel.py,v 1.6 2004/03/02 18:50:59 philikon Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 

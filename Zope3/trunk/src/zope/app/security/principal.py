@@ -13,7 +13,7 @@
 ##############################################################################
 """Principals.
 
-$Id: principal.py,v 1.7 2004/03/13 23:55:23 srichter Exp $
+$Id$
 """
 from zope.exceptions import NotFoundError
 from zope.app import zapi

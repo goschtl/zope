@@ -14,7 +14,7 @@
 ##############################################################################
 """Tool backlink generation tests
 
-$Id: test_toolbacklink.py,v 1.1 2004/03/21 17:09:33 srichter Exp $
+$Id$
 """
 
 import unittest

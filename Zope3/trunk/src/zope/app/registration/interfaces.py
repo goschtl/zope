@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.9 2004/04/30 16:45:29 jim Exp $
+$Id$
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable

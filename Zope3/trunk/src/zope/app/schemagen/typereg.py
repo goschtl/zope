@@ -13,7 +13,7 @@
 ##############################################################################
 """Type Reprsentation Registry
 
-$Id: typereg.py,v 1.6 2004/03/13 20:24:15 srichter Exp $
+$Id$
 """
 from zope.interface import implements, providedBy
 import zope.schema

@@ -18,7 +18,7 @@ e.g.:
 
 <modulealias module="some.existing.package" alias="some.nonexistent.package" />
 
-$Id: metaconfigure.py,v 1.3 2004/03/10 12:11:35 srichter Exp $
+$Id$
 """
 import sys
 import types

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test IRolePermissionManager class that has no context.
 
-$Id: rolepermissionmanager.py,v 1.1 2004/02/27 12:46:32 philikon Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.securitypolicy.interfaces import IRolePermissionManager

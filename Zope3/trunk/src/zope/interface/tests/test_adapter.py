@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter registry tests
 
-$Id: test_adapter.py,v 1.7 2004/04/20 11:38:06 jim Exp $
+$Id$
 """
 import unittest, doctest
 import zope.interface

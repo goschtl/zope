@@ -22,7 +22,7 @@ find machinery may be used with statictree just as well.
 Since commonly needed, this module provides two filters that filter by
 interface.
 
-$Id: filters.py,v 1.3 2004/03/13 22:02:10 srichter Exp $
+$Id$
 """
 
 from zope.interface import implements

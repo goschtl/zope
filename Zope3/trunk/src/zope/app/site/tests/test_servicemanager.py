@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Manager Tests
 
-$Id: test_servicemanager.py,v 1.3 2004/03/13 23:01:12 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 

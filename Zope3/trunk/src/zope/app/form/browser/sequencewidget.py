@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for sequences
 
-$Id: sequencewidget.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
+$Id$
 """
 import re
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Dublib Core Structured Value support functions.
 
-$Id: test_dcsv.py,v 1.2 2003/08/26 14:45:01 fdrake Exp $
+$Id$
 """
 import unittest
 

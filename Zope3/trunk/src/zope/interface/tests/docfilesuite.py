@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility to create doc tests from readme files
 
-$Id: docfilesuite.py,v 1.1 2004/04/05 19:43:41 jim Exp $
+$Id$
 """
 
 import os, doctest, new, unittest

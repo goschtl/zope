@@ -13,7 +13,7 @@
 ##############################################################################
 """'dav' ZCML namespace schemas
 
-$Id: metadirectives.py,v 1.1 2003/08/02 17:26:12 srichter Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface

@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_if.py,v 1.5 2004/03/19 04:26:25 srichter Exp $
+$Id$
 """
 import unittest
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase

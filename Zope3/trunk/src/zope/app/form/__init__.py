@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.5 2004/05/11 11:11:52 garrett Exp $
+$Id$
 """
 import traceback
 from warnings import warn

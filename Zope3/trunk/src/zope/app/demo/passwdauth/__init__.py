@@ -16,7 +16,7 @@
 This package defines a new authentication plugin, which can use textfiles to
 authenticate users.
 
-$Id: __init__.py,v 1.4 2004/05/10 15:50:09 fdrake Exp $
+$Id$
 """
 import os
 from persistent import Persistent

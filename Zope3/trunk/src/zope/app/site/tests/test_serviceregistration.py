@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Registration tests.
 
-$Id: test_serviceregistration.py,v 1.4 2004/03/23 15:15:06 mmceahern Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

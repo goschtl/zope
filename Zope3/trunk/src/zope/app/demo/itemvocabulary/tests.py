@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Item Vocabulary
 
-$Id: tests.py,v 1.1 2004/02/27 14:50:23 philikon Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

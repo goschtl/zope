@@ -16,7 +16,7 @@
 These tests are to make sure we do something sane in the presense of
 classic ExtensionClass classes and instances.
 
-$Id: test_odd_declarations.py,v 1.4 2003/08/16 00:44:48 srichter Exp $
+$Id$
 """
 
 import unittest, odd

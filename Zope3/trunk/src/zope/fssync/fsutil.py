@@ -28,7 +28,7 @@ Variables:
 - unwanted -- the tuple ("", os.curdir, os.pardir)
 - nczope   -- the string os.path.normcase("@@Zope")
 
-$Id: fsutil.py,v 1.3 2003/09/05 16:02:56 fdrake Exp $
+$Id$
 """
 
 import os

@@ -13,7 +13,7 @@
 ##############################################################################
 """UI for browsing database schema managers
 
-$Id: managers.py,v 1.1 2004/04/23 19:39:29 jim Exp $
+$Id$
 """
 
 from zope.app import zapi

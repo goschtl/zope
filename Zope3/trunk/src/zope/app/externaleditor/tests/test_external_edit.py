@@ -11,7 +11,7 @@
 ##############################################################################
 """External Editor Tests
 
-$Id: test_external_edit.py,v 1.5 2004/03/19 03:17:18 srichter Exp $
+$Id$
 """
 import unittest
 from base64 import encodestring

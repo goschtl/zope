@@ -11,7 +11,7 @@
 ##############################################################################
 """Persistent type registry
 
-$Id: type.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

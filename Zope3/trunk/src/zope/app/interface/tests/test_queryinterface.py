@@ -13,7 +13,7 @@
 ##############################################################################
 """Doc test harness for queryType function.
 
-$Id: test_queryinterface.py,v 1.1 2004/03/20 22:08:26 nathan Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

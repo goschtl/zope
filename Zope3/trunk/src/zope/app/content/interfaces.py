@@ -13,7 +13,7 @@
 ##############################################################################
 """Content-related interfaces.
 
-$Id: interfaces.py,v 1.1 2004/03/02 18:16:12 philikon Exp $
+$Id$
 """
 from zope.interface.interfaces import IInterface
 

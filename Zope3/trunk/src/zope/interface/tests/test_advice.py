@@ -25,7 +25,7 @@ not require) Zope 3 and Twisted.  It provides tools for manipulating UML
 models, object-relational persistence, aspect-oriented programming, and more.
 Visit the PEAK home page at http://peak.telecommunity.com for more information.
 
-$Id: test_advice.py,v 1.4 2003/06/04 13:58:43 stevea Exp $
+$Id$
 """
 
 from unittest import TestCase, makeSuite, TestSuite

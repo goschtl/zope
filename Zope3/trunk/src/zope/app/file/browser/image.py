@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for naive file editing.
 
-$Id: image.py,v 1.3 2004/03/19 03:17:39 srichter Exp $
+$Id$
 """
 from zope.app.size import byteDisplay
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.14 2004/03/30 21:47:38 nathan Exp $
+$Id$
 """
 
 __metaclass__ = type

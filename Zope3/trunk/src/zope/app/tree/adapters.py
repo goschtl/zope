@@ -18,7 +18,7 @@ statictree. The most prominent ones are those for ILocation and
 IContainer. We also provide adapters for any object, so we don't end
 up with ComponentLookupErrors whenever encounter unknown objects.
 
-$Id: adapters.py,v 1.5 2004/04/23 06:27:01 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface, implements

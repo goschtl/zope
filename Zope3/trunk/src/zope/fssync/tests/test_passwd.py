@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the authentication token manager.
 
-$Id: test_passwd.py,v 1.1 2003/08/27 19:33:49 fdrake Exp $
+$Id$
 """
 
 import os

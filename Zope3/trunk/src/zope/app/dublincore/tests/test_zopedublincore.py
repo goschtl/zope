@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_zopedublincore.py,v 1.3 2004/03/01 15:02:50 philikon Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checker.py,v 1.15 2004/03/13 17:21:51 philikon Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

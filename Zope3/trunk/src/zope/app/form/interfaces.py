@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: interfaces.py,v 1.5 2004/05/11 11:14:09 garrett Exp $
+$Id$
 """
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView

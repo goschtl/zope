@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.4 2004/03/10 19:41:01 srichter Exp $
+$Id$
 """
 from zope.component.exceptions import ComponentLookupError  
 from zope.interface import Interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.11 2004/05/05 12:14:41 philikon Exp $
+$Id$
 """
 import sys
 from persistent import Persistent

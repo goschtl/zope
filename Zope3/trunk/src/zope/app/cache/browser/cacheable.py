@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.5 2004/03/13 23:00:45 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.cache.caching import getCacheForObject, getLocationForCache

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_widgetdocs.py,v 1.1 2004/03/18 00:49:07 srichter Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

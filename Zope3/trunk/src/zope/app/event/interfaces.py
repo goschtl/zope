@@ -13,7 +13,7 @@
 ##############################################################################
 """Event-related interfaces
 
-$Id: interfaces.py,v 1.3 2004/03/11 08:14:02 srichter Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 

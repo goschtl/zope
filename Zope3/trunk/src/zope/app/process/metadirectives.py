@@ -13,7 +13,7 @@
 ##############################################################################
 """Schemas for the 'startup' ZCML Namespace
 
-$Id: metadirectives.py,v 1.2 2003/08/17 06:07:26 philikon Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject, Bool
 from zope.interface import Interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: interfaces.py,v 1.3 2004/04/17 15:13:13 jim Exp $
+$Id$
 """
 from zope.interface import Interface
 import zope.schema

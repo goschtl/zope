@@ -13,7 +13,7 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: __init__.py,v 1.3 2004/03/19 20:26:35 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.form.browser.editview import EditView

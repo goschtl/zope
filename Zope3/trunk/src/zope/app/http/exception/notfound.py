@@ -13,7 +13,7 @@
 ##############################################################################
 """Not found Exception
 
-$Id: notfound.py,v 1.4 2004/03/13 23:34:28 srichter Exp $
+$Id$
 """
 from zope.app.http.interfaces import IHTTPException
 from zope.interface import implements

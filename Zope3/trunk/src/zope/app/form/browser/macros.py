@@ -13,7 +13,7 @@
 ##############################################################################
 """API Documentation macros
 
-$Id: macros.py,v 1.1 2004/05/04 02:01:24 garrett Exp $
+$Id$
 """
 from zope.app.basicskin.standardmacros import StandardMacros
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.7 2004/03/13 23:55:21 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

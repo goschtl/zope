@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: index.py,v 1.3 2004/03/17 17:59:28 srichter Exp $
+$Id$
 """
 from zope.app.event.interfaces import ISubscriber
 from zope.interface import Interface

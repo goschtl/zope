@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
+$Id$
 """
 from unittest import TestCase, makeSuite, TestSuite
 

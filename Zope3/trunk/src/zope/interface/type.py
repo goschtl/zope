@@ -13,7 +13,7 @@
 ##############################################################################
 """This module is DEPRECATED. Don't use it!
 
-$Id: type.py,v 1.13 2004/03/30 22:01:34 jim Exp $
+$Id$
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 

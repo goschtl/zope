@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.19 2004/05/05 12:14:43 philikon Exp $
+$Id$
 """
 import unittest
 from transaction import get_transaction

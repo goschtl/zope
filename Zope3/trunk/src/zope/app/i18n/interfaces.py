@@ -13,7 +13,7 @@
 ##############################################################################
 """Placeful internationalization of content objects.
 
-$Id: interfaces.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.i18n.interfaces import ITranslationDomain, IMessageCatalog

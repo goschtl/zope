@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of IPrincipalAnnotationService.
 
-$Id: __init__.py,v 1.2 2004/03/13 23:01:02 srichter Exp $
+$Id$
 """
 
 # TODO: register service as adapter for IAnnotations on service activation

@@ -13,7 +13,7 @@
 ##############################################################################
 """securityPolicy Directive Schema
 
-$Id: metadirectives.py,v 1.4 2004/05/06 10:07:46 philikon Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier

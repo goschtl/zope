@@ -13,7 +13,7 @@
 ##############################################################################
 """Default service names
 
-$Id: servicenames.py,v 1.3 2004/04/29 15:15:09 fdrake Exp $
+$Id$
 """
 
 # XXX should check that all of the names are still used

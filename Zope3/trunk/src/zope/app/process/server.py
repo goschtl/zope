@@ -16,7 +16,7 @@
 
 This is called by the ZConfig machinery while processing a configuration.
 
-$Id: server.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id$
 """
 
 from zope.app.process.servertyperegistry import getServerType

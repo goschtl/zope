@@ -15,7 +15,7 @@
 
 These are the interfaces designed for the OnlineHelp system.
 
-$Id: interfaces.py,v 1.2 2004/03/03 10:38:47 philikon Exp $
+$Id$
 """
 from zope.app.container.interfaces import IContainer
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: tests.py,v 1.1 2004/04/22 18:51:12 jim Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.8 2004/04/25 16:19:22 srichter Exp $
+$Id$
 """
 from zope.app.registration.browser import AddComponentRegistration
 from zope.app.registration.interfaces import ActiveStatus

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_dsnparser.py,v 1.4 2003/06/09 15:02:46 stevea Exp $
+$Id$
 """
 import unittest
 from zope.app.rdb import parseDSN

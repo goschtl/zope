@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspectorview.py,v 1.4 2004/04/08 13:09:35 hdima Exp $
+$Id$
 """
 
 import unittest

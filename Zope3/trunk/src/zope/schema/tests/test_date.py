@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_date.py,v 1.4 2004/04/24 23:21:06 srichter Exp $
+$Id$
 """
 from unittest import main, makeSuite
 from zope.schema import Date

@@ -17,7 +17,7 @@ This module provides a function, asStructuredText, for rendering an
 interface as structured text.
 
 Revision information:
-$Id: document.py,v 1.5 2003/11/21 17:11:43 jim Exp $
+$Id$
 """
 
 import zope.interface

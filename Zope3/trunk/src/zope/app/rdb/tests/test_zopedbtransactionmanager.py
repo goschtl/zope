@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopedbtransactionmanager.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite, TestSuite

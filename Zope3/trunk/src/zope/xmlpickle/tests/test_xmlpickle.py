@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of xmlpickle package
 
-$Id: test_xmlpickle.py,v 1.7 2004/01/13 17:21:46 jim Exp $
+$Id$
 """
 
 import unittest

@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: __init__.py,v 1.4 2004/03/19 20:26:21 srichter Exp $
+$Id$
 """
 __metaclass__ = type
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """FTP Standard Authentication adapter
 
-$Id: ftpauth.py,v 1.2 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 from zope.publisher.interfaces.ftp import IFTPCredentials
 from loginpassword import LoginPassword

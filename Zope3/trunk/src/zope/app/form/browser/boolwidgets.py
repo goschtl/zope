@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for items
 
-$Id: boolwidgets.py,v 1.2 2004/05/11 11:17:12 garrett Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary

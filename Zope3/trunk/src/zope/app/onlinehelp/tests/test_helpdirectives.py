@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.9 2004/03/13 21:03:16 srichter Exp $
+$Id$
 """
 import unittest
 

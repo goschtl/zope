@@ -13,7 +13,7 @@
 ##############################################################################
 """Test for datetime interfaces
 
-$Id: test_idatetime.py,v 1.2 2003/05/05 08:26:14 ryzaja Exp $
+$Id$
 """
 
 import unittest

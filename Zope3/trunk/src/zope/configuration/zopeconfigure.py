@@ -97,7 +97,7 @@ documentation, which is provided by the schema.
 lower-level Python API because it is registered for all namespaces,
 which isn't supported using the meta-configuration directives.)
 
-$Id: zopeconfigure.py,v 1.4 2004/04/26 23:14:56 srichter Exp $
+$Id$
 """
 
 import os

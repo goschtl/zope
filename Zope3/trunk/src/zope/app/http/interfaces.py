@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: interfaces.py,v 1.1 2004/03/13 23:34:28 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.9 2004/03/13 23:55:27 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements, classImplements

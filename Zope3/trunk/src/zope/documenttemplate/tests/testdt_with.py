@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_with.py,v 1.4 2004/03/19 04:26:25 srichter Exp $
+$Id$
 """
 
 import unittest

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for RolePermissionManager module.
 
-$Id: test_rolepermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -15,7 +15,7 @@
 
 This implementation is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.20 2004/05/01 14:35:32 philikon Exp $
+$Id$
 """
 
 # Implementation notes

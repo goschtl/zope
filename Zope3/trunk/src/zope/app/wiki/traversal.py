@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.4 2004/04/17 17:15:35 jim Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies

@@ -35,7 +35,7 @@ addCleanup::
   addCleanUp(pigRegistry._clear)
 
 
-$Id: cleanup.py,v 1.7 2004/03/01 12:55:39 philikon Exp $
+$Id$
 """
 _cleanups = []
 

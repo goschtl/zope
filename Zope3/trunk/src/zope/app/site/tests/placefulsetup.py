@@ -13,7 +13,7 @@
 ##############################################################################
 """Base Mix-in class for Placeful Setups 
 
-$Id: placefulsetup.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.tests import setup

@@ -13,7 +13,7 @@
 ##############################################################################
 """Password manager for fssync clients.
 
-$Id: passwd.py,v 1.1 2003/08/27 19:33:49 fdrake Exp $
+$Id$
 """
 
 import base64

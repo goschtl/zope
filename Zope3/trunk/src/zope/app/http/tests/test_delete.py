@@ -13,7 +13,7 @@
 ##############################################################################
 """Test HTTP DELETE verb
 
-$Id: test_delete.py,v 1.8 2004/03/15 13:10:52 srichter Exp $
+$Id$
 """
 __metaclass__ = type
 

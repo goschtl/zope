@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the functions in the fsutil module.
 
-$Id: test_fsutil.py,v 1.4 2003/08/17 06:09:00 philikon Exp $
+$Id$
 """
 
 import os

@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: queries.py,v 1.5 2004/03/02 14:40:13 philikon Exp $
+$Id$
 """
 
 from zope.app.index.interfaces.interfaces import IBatchedTextIndexQuery

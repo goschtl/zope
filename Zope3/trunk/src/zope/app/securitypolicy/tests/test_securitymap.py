@@ -12,7 +12,7 @@
 #
 #############################################################################
 """
-$Id: test_securitymap.py,v 1.1 2004/02/27 12:46:33 philikon Exp $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyClass

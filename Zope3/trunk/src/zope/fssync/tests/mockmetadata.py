@@ -13,7 +13,7 @@
 ##############################################################################
 """Mock Metadata class used for testing.
 
-$Id: mockmetadata.py,v 1.2 2003/05/28 18:08:10 gvanrossum Exp $
+$Id$
 """
 
 import os

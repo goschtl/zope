@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.31 2004/04/24 23:20:34 srichter Exp $
+$Id$
 """
 import sys
 import warnings

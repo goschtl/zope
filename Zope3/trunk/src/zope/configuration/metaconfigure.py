@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.4 2003/08/17 06:22:25 philikon Exp $
+$Id$
 """
 
 def hook(_context, name, implementation, module=None):

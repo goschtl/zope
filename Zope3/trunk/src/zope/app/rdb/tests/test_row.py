@@ -13,7 +13,7 @@
 ##############################################################################
 """Row class tests.
 
-$Id: test_row.py,v 1.6 2004/03/05 22:09:15 jim Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

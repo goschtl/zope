@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: tests.py,v 1.6 2004/03/23 22:09:40 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Role implementation
 
-$Id: role.py,v 1.5 2004/05/10 15:50:11 fdrake Exp $
+$Id$
 """
 from persistent import Persistent
 from zope.interface import implements

@@ -55,7 +55,7 @@
    TypeError: readonly attribute
 
    
-$Id: __init__.py,v 1.2 2003/05/20 20:27:47 jim Exp $
+$Id$
 """
 from _zope_hookable import *
 

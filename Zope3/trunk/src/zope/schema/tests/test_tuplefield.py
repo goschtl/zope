@@ -13,7 +13,7 @@
 ##############################################################################
 """Tuple field tests.
 
-$Id: test_tuplefield.py,v 1.9 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 from unittest import TestSuite, main, makeSuite
 

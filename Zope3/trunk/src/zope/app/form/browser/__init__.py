@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets
 
-$Id: __init__.py,v 1.4 2004/05/06 16:13:41 poster Exp $
+$Id$
 """
 from zope.app.form.browser.widget import BrowserWidget, DisplayWidget
 

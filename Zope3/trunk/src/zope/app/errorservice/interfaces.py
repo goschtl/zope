@@ -13,7 +13,7 @@
 ##############################################################################
 """Error Reporting Service interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/10 13:43:35 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

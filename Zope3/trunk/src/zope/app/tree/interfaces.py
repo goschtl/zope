@@ -13,7 +13,7 @@
 ##############################################################################
 """Static tree interfaces
 
-$Id: interfaces.py,v 1.1 2004/02/19 20:43:04 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

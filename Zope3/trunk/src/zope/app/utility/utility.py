@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.3 2004/04/24 23:20:14 srichter Exp $
+$Id$
 """
 
 from zope.app.adapter.adapter import LocalAdapterService

@@ -11,7 +11,7 @@
 ##############################################################################
 """HTTP PUT verb
 
-$Id: put.py,v 1.11 2004/03/15 13:10:51 srichter Exp $
+$Id$
 """
 from zope.component import queryNamedAdapter
 from zope.app.http.interfaces import INullResource

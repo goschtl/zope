@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_objectevent.py,v 1.11 2004/03/30 21:47:50 nathan Exp $
+$Id$
 """
 
 import unittest

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: standardmacros.py,v 1.2 2004/03/23 22:08:28 srichter Exp $
+$Id$
 """
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 

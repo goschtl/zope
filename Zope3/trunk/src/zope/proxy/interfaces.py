@@ -13,7 +13,7 @@
 ##############################################################################
 """Proxy-related interfaces.
 
-$Id: interfaces.py,v 1.6 2004/02/24 14:02:39 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface

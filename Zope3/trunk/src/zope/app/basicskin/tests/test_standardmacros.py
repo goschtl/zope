@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.5 2004/03/23 22:08:29 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app.tests import ztapi

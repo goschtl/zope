@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.19 2004/04/24 23:18:31 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic queries for indexes.
 
-$Id: queries.py,v 1.6 2004/03/02 14:40:04 philikon Exp $
+$Id$
 """
 
 from zope.app.index.interfaces.interfaces import IBatchedResult

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Snarfer and Unsnarfer classes.
 
-$Id: test_snarf.py,v 1.2 2003/05/28 14:40:04 gvanrossum Exp $
+$Id$
 """
 
 import os

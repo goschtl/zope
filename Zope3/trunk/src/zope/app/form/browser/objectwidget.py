@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for text-like data
 
-$Id: objectwidget.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder

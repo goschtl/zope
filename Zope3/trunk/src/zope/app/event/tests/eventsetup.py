@@ -13,7 +13,7 @@
 ##############################################################################
 """Event Setup
 
-$Id: eventsetup.py,v 1.2 2004/03/13 15:21:17 srichter Exp $
+$Id$
 """
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 

@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests.
 
-$Id: doctestunit.py,v 1.12 2004/05/11 11:23:58 garrett Exp $
+$Id$
 """
 
 from StringIO import StringIO

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: interfaces.py,v 1.1 2004/04/24 23:18:25 srichter Exp $
+$Id$
 """
 import zope.schema
 

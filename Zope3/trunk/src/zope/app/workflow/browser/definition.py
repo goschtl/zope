@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.5 2004/04/16 11:51:35 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.traversing import traverse

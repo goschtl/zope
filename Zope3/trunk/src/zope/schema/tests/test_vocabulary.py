@@ -13,7 +13,7 @@
 ##############################################################################
 """Test of the Vocabulary and related support APIs.
 
-$Id: test_vocabulary.py,v 1.14 2004/04/24 23:21:06 srichter Exp $
+$Id$
 """
 import unittest
 

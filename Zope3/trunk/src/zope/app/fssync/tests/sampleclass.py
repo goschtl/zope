@@ -13,7 +13,7 @@
 ##############################################################################
 """Test SampleClass for testing File-system synchronization services
 
-$Id: sampleclass.py,v 1.4 2004/01/13 19:32:22 fdrake Exp $
+$Id$
 """
 
 from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile

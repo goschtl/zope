@@ -15,7 +15,7 @@
 
 This module contains various implementations of MailDeliverys.
 
-$Id: delivery.py,v 1.1 2004/03/03 09:15:41 srichter Exp $
+$Id$
 """
 import rfc822
 import threading

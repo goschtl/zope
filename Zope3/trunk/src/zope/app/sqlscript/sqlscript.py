@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sqlscript.py,v 1.5 2004/03/10 19:41:08 srichter Exp $
+$Id$
 """
 import re
 from types import StringTypes

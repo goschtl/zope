@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.14 2004/03/13 21:03:07 srichter Exp $
+$Id$
 """
 from time import time
 from unittest import TestCase, TestSuite, main, makeSuite

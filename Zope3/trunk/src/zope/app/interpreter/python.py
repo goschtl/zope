@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Code Interpreter
 
-$Id: python.py,v 1.6 2004/03/02 15:49:02 srichter Exp $
+$Id$
 """
 import StringIO
 import sys

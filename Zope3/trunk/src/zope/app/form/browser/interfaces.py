@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.5 2004/05/11 11:16:28 garrett Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.schema import TextLine, Bool

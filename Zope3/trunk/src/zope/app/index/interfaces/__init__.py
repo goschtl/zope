@@ -13,7 +13,7 @@
 ##############################################################################
 """Index Interfaces
 
-$Id: __init__.py,v 1.2 2004/03/13 20:24:09 srichter Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """File Functional Tests
 
-$Id: test_image.py,v 1.2 2004/04/06 20:58:07 jim Exp $
+$Id$
 """
 import unittest
 import cgi

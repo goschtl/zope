@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_hookedhubevent.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
+$Id$
 """
 # in this version of these tests, we are no longer using a fake
 # ObjectHub, which makes these tests less pure...but still useful

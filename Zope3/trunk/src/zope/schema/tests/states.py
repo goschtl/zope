@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample vocabulary supporting state abbreviations.
 
-$Id: states.py,v 1.5 2004/04/24 23:21:02 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.schema import interfaces

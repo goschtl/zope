@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: placelesssetup.py,v 1.10 2004/04/20 11:01:21 stevea Exp $
+$Id$
 """
 
 # A mix-in class inheriting from CleanUp that also connects the CA services

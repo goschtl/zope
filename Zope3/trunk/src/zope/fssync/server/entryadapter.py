@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: entryadapter.py,v 1.5 2004/03/06 17:48:55 jim Exp $
+$Id$
 """
 
 from zope.fssync.server.interfaces import IObjectFile, IContentDirectory

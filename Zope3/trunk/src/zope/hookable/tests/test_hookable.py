@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the hookable support Extension
 
-$Id: test_hookable.py,v 1.1 2003/05/18 18:03:56 jim Exp $
+$Id$
 """
 
 from zope.testing.doctestunit import DocTestSuite

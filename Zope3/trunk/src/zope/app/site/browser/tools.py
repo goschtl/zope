@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools View
 
-$Id: tools.py,v 1.5 2004/04/17 14:33:38 srichter Exp $
+$Id$
 """
 from zope.interface import implements, Attribute
 from zope.interface.interfaces import IInterface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: zptpage.py,v 1.2 2004/02/24 16:50:48 philikon Exp $
+$Id$
 """
 class ZPTPageEval:
 

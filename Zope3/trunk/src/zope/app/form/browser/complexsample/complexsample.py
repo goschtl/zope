@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample complex vocabulary widget with query support.
 
-$Id: complexsample.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id$
 """
 from xml.sax.saxutils import escape, quoteattr
 

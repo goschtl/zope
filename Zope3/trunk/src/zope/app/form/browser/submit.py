@@ -15,7 +15,7 @@
 
 Update -- Name of the standard update submit button
 
-$Id: submit.py,v 1.2 2004/03/17 17:35:53 philikon Exp $
+$Id$
 """
 
 Next = "NEXT_SUBMIT"

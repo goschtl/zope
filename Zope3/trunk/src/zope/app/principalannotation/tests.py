@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Annotation Tests
 
-$Id: tests.py,v 1.2 2004/03/13 23:01:02 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.site.tests.placefulsetup import PlacefulSetup

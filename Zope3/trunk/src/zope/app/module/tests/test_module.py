@@ -13,7 +13,7 @@
 ##############################################################################
 """Peristent Module tests
 
-$Id: test_module.py,v 1.4 2004/04/17 15:13:10 jim Exp $
+$Id$
 """
 import unittest
 

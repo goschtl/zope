@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.5 2004/05/11 11:17:36 garrett Exp $
+$Id$
 """
 import os
 import unittest, doctest

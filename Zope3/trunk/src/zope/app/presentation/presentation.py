@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.19 2004/05/10 06:44:48 philikon Exp $
+$Id$
 """
 import persistent.dict
 

@@ -39,7 +39,7 @@
    reference and/or overwrite the results of previous assignments,
    as desired.
 
-$Id: dt_let.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
+$Id$
 """
 from zope.documenttemplate.dt_util import render_blocks, Eval, ParseError
 

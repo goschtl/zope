@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_tzinfo.py,v 1.2 2003/03/13 18:49:11 alga Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -163,7 +163,7 @@ We'll clean up after ourselves:
 
 >>> del file_registry[:]
 
-$Id: test_simple.py,v 1.5 2004/04/26 23:14:57 srichter Exp $
+$Id$
 """
 
 file_registry = []

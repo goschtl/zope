@@ -13,7 +13,7 @@
 ##############################################################################
 """Setup for Placeful Worfklow Tests
 
-$Id: workflowsetup.py,v 1.14 2004/04/15 22:11:07 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.component.interfaces import IUtilityService

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.9 2004/03/08 12:05:56 srichter Exp $
+$Id$
 """
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.event.interfaces import ISubscriber

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: xmlmetadata.py,v 1.5 2003/09/05 18:34:15 fdrake Exp $
+$Id$
 """
 
 import xml.sax

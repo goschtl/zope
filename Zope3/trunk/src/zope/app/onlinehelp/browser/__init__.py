@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: __init__.py,v 1.1 2004/02/27 16:15:25 philikon Exp $
+$Id$
 """
 from zope.interface import providedBy
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog
 
-$Id: catalog.py,v 1.27 2004/03/23 16:37:19 nathan Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

@@ -14,7 +14,7 @@
 """
 See ViewPageTemplateFile
 
-$Id: viewpagetemplatefile.py,v 1.11 2004/03/29 05:12:38 srichter Exp $
+$Id$
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.7 2003/06/07 06:37:30 stevea Exp $
+$Id$
 """
 
 import unittest

@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory-related Tests
 
-$Id: test_factory.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
+$Id$
 """
 import unittest
 from zope.interface import Interface, implements

@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: _flatten.py,v 1.7 2003/11/21 17:11:43 jim Exp $
+$Id$
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 

@@ -11,7 +11,7 @@
 ##############################################################################
 """General exceptions
 
-$Id: interfaces.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface, implements

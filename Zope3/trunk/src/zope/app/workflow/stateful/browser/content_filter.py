@@ -13,7 +13,7 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: content_filter.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
+$Id$
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.container.browser.contents import Contents

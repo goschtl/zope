@@ -11,5 +11,5 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"$Id: __init__.py,v 1.1 2004/03/19 12:00:05 jim Exp $"
+"$Id$"
 from messageid import MessageID, MessageIDFactory

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Historical timezone data, ported from Zope2's DateTime.DateTimeZone.
 
-$Id: timezones.py,v 1.3 2003/03/13 18:48:59 alga Exp $
+$Id$
 """
 
 historical_zone_info = {

@@ -13,7 +13,7 @@
 ##############################################################################
 """Folder-specific view classes
 
-$Id: folder.py,v 1.3 2004/03/14 02:17:04 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.container.browser.adding import Adding

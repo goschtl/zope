@@ -13,7 +13,7 @@
 ##############################################################################
 """Grant Directive Schema
 
-$Id: metadirectives.py,v 1.3 2004/03/20 19:52:47 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.schema import Id 

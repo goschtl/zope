@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schema.py,v 1.5 2003/05/01 19:35:46 faassen Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import Interface

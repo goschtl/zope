@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_localservice.py,v 1.5 2004/03/13 23:55:00 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 

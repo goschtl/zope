@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.10 2004/03/11 09:19:26 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.index.interfaces import IInterfaceIndexer

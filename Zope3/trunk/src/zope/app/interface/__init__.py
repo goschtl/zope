@@ -15,7 +15,7 @@
 
 This module contains code for interfaces in persistent modules.
 
-$Id: __init__.py,v 1.4 2004/03/21 17:09:39 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

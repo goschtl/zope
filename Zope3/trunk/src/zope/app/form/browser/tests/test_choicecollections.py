@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the choice collections widgets (function).
 
-$Id: test_choicecollections.py,v 1.1 2004/05/06 16:13:41 poster Exp $
+$Id$
 """
 import unittest
 from zope.publisher.interfaces.browser import IBrowserRequest

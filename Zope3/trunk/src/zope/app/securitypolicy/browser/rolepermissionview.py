@@ -13,7 +13,7 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.4 2004/03/08 12:06:05 srichter Exp $
+$Id$
 """
 from datetime import datetime
 

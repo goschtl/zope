@@ -13,7 +13,7 @@
 ##############################################################################
 """Process-lifetime related events.
 
-$Id: event.py,v 1.3 2004/03/02 18:51:02 philikon Exp $
+$Id$
 """
 
 from zope.interface import implements

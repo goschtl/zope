@@ -13,7 +13,7 @@
 ##############################################################################
 """Sequence Field Widget tests.
 
-$Id: test_sequencewidget.py,v 1.5 2004/05/07 19:43:26 garrett Exp $
+$Id$
 """
 import unittest, doctest
 

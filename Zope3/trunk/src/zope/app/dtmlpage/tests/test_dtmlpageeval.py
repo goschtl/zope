@@ -13,7 +13,7 @@
 ##############################################################################
 """DTML Page Evaluation Tests
 
-$Id: test_dtmlpageeval.py,v 1.2 2004/02/24 16:49:38 philikon Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.app.container.contained import contained

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.30 2004/05/07 19:43:49 garrett Exp $
+$Id$
 """
 __metaclass__ = type
 

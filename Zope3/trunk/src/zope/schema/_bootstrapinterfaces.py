@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap schema interfaces and exceptions
 
-$Id: _bootstrapinterfaces.py,v 1.3 2004/04/11 10:35:08 srichter Exp $
+$Id$
 """
 import zope.interface
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Item Vocabulary Views
 
-$Id: browser.py,v 1.1 2004/02/27 14:50:23 philikon Exp $
+$Id$
 """
 from zope.interface import implements, Interface
 from zope.schema.vocabulary import VocabularyField

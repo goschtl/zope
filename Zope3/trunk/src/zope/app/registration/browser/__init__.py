@@ -13,7 +13,7 @@
 ##############################################################################
 """General registry-related views
 
-$Id: __init__.py,v 1.8 2004/05/11 11:18:23 garrett Exp $
+$Id$
 """
 from zope.app.container.browser.adding import Adding
 from zope.app.container.interfaces import INameChooser

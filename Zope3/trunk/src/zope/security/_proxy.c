@@ -13,7 +13,7 @@
 ******************************************************************************
 Security Proxy Implementation
 
-$Id: _proxy.c,v 1.6 2004/02/24 14:01:33 srichter Exp $
+$Id$
 */
 
 #include <Python.h>

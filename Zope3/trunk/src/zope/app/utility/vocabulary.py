@@ -15,7 +15,7 @@
 
 This vocabulary provides terms for all utilities providing a given interface.
 
-$Id: vocabulary.py,v 1.5 2004/05/08 00:20:45 garrett Exp $
+$Id$
 """
 from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface

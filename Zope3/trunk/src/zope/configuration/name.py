@@ -13,7 +13,7 @@
 ##############################################################################
 """Provide configuration object name resolution
 
-$Id: name.py,v 1.3 2003/05/01 19:35:39 faassen Exp $
+$Id$
 """
 
 import os

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for experimental support for application database generations
 
-$Id: interfaces.py,v 1.1 2004/04/22 18:51:07 jim Exp $
+$Id$
 """
 
 import zope.interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for apis to make available to TALES
 
-$Id: interfaces.py,v 1.1 2004/03/13 21:02:53 srichter Exp $
+$Id$
 """
 from zope.app.dublincore.interfaces import IDCDescriptiveProperties
 from zope.app.dublincore.interfaces import IDCTimes

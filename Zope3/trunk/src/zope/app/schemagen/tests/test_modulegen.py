@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_modulegen.py,v 1.5 2004/02/20 16:57:29 fdrake Exp $
+$Id$
 """
 
 from unittest import TestCase, makeSuite, TestSuite

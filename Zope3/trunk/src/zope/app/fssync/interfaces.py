@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for filesystem synchronization.
 
-$Id: interfaces.py,v 1.1 2004/03/01 13:07:16 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface

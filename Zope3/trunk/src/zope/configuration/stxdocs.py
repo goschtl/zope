@@ -27,7 +27,7 @@ Options:
         documentation is stored. Note that this tool will create
         sub-directories with files in them. 
 
-$Id: stxdocs.py,v 1.2 2004/03/29 15:09:08 srichter Exp $
+$Id$
 """
 import sys, os, getopt
 import zope

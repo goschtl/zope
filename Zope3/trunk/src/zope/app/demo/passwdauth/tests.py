@@ -13,7 +13,7 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin Tests
 
-$Id: tests.py,v 1.3 2004/03/08 12:05:55 srichter Exp $
+$Id$
 """
 import os
 from zope.app.demo import passwdauth

@@ -13,7 +13,7 @@
 ##############################################################################
 """Protection of builtin objects.
 
-$Id: builtins.py,v 1.3 2004/03/21 16:57:09 philikon Exp $
+$Id$
 """
 import sys
 

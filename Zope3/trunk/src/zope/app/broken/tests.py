@@ -13,7 +13,7 @@
 ##############################################################################
 """Broken-object tests
 
-$Id: tests.py,v 1.1 2004/03/04 22:41:47 jim Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

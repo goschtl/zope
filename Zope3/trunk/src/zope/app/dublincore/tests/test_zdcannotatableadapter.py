@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Dublin Core annotations adapter.
 
-$Id: test_zdcannotatableadapter.py,v 1.5 2004/03/13 23:00:53 srichter Exp $
+$Id$
 """
 
 import unittest

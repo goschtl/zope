@@ -13,7 +13,7 @@
 ##############################################################################
 """WebDAV-related Adapters
 
-$Id: adapter.py,v 1.10 2004/03/15 13:10:45 srichter Exp $
+$Id$
 """
 from xml.dom import minidom
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test of the Choice field.
 
-$Id: test_choice.py,v 1.2 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 import unittest
 

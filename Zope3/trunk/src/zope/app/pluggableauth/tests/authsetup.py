@@ -16,7 +16,7 @@
 This setup class can be used, if a set of local principals are required for a
 test.
 
-$Id: authsetup.py,v 1.3 2004/03/15 20:42:08 jim Exp $
+$Id$
 """
 import base64
 from zope.publisher.browser import TestRequest as Request

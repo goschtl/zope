@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.16 2004/03/13 23:00:46 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

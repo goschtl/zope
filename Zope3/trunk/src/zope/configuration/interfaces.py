@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope Configuration (ZCML) interfaces
 
-$Id: interfaces.py,v 1.6 2004/04/11 10:35:00 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 from zope.schema import BytesLine

@@ -13,7 +13,7 @@
 ##############################################################################
 """startup ZCML namespace directive tests
 
-$Id: test_directives.py,v 1.2 2004/03/13 20:24:22 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app.process.interfaces import IPublicationRequestFactoryFactory

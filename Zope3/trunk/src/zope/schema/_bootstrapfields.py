@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.31 2004/05/11 11:20:09 garrett Exp $
+$Id$
 """
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation

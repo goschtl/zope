@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample IRegistry Implementation
 
-$Id: iregistry.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id$
 """
 from zope.app.registration.interfaces import IRegistry
 from zope.interface.verify import verifyObject

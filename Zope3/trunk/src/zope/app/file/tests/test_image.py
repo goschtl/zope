@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.5 2004/03/19 03:17:40 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyClass

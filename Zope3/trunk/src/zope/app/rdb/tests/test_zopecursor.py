@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopecursor.py,v 1.7 2003/07/05 13:34:47 stevea Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

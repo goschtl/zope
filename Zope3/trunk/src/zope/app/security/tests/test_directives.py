@@ -13,7 +13,7 @@
 ##############################################################################
 """Directives Tests
 
-$Id: test_directives.py,v 1.2 2004/03/20 19:52:48 srichter Exp $
+$Id$
 """
 import unittest
 from pprint import PrettyPrinter

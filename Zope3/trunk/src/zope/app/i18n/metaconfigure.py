@@ -13,7 +13,7 @@
 ##############################################################################
 """This module handles the 'i18n' namespace directives.
 
-$Id: metaconfigure.py,v 1.5 2004/03/31 14:18:13 gintautasm Exp $
+$Id$
 """
 import os
 

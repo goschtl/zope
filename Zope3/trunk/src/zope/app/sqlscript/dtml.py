@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtml.py,v 1.2 2004/02/24 16:50:36 philikon Exp $
+$Id$
 """
 import sys
 from types import StringTypes

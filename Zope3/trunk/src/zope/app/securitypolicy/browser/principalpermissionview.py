@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.6 2004/03/19 20:26:35 srichter Exp $
+$Id$
 """
 import time
 

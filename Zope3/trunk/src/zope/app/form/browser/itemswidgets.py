@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for items
 
-$Id: itemswidgets.py,v 1.4 2004/05/11 11:17:12 garrett Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.i18n import translate

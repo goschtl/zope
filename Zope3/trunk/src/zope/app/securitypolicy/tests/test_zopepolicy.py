@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests the standard zope policy.
 
-$Id: test_zopepolicy.py,v 1.6 2004/03/13 23:55:25 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

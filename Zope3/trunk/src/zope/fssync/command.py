@@ -16,7 +16,7 @@
 This dispatcher supports a 'named command' dispatch similar to that
 found in the standard CVS and Subversion client applications.
 
-$Id: command.py,v 1.5 2003/08/12 18:06:20 fdrake Exp $
+$Id$
 """
 
 import getopt

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_fieldproperty.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsregistry.py,v 1.5 2004/03/01 13:07:18 philikon Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

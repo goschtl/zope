@@ -13,7 +13,7 @@
 ##############################################################################
 """ResultSet unit tests.
 
-$Id: test_resultset.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

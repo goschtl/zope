@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: __init__.py,v 1.14 2004/04/27 10:53:45 jim Exp $
+$Id$
 """
 from zope.component import getService
 from zope.app.servicenames import EventPublication

@@ -13,7 +13,7 @@
 ##############################################################################
 """Plain Text Renderer Classes
 
-$Id: plaintext.py,v 1.3 2004/03/19 20:26:32 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.publisher.browser import BrowserView

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.31 2004/04/17 17:15:33 jim Exp $
+$Id$
 """
 
 import os

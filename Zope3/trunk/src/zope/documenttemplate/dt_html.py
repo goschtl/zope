@@ -13,7 +13,7 @@
 ##############################################################################
 """HTML formated DocumentTemplates
 
-$Id: dt_html.py,v 1.5 2004/03/19 08:03:23 philikon Exp $
+$Id$
 """
 import re
 from zope.documenttemplate.dt_string import String

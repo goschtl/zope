@@ -13,7 +13,7 @@
 ##############################################################################
 """Directives Tests
 
-$Id: test_directives.py,v 1.3 2004/04/15 13:25:44 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import Interface

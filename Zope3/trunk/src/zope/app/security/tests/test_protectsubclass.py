@@ -13,7 +13,7 @@
 ##############################################################################
 """Test proper protection of inherited methods
 
-$Id: test_protectsubclass.py,v 1.4 2004/03/08 12:06:02 srichter Exp $
+$Id$
 """
 import unittest
 from zope.security.checker import selectChecker

@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory object
 
-$Id: factory.py,v 1.12 2004/04/05 19:43:43 jim Exp $
+$Id$
 """
 from zope.interface import implements, implementedBy
 from zope.component.interfaces import IFactory

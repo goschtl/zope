@@ -145,7 +145,7 @@ Evaluating expressions without rendering results
    without rendering the result.
 
 
-$Id: dt_var.py,v 1.3 2003/11/04 04:04:24 jeremy Exp $
+$Id$
 """
 from zope.documenttemplate.dt_util import parse_params, name_param, html_quote, str
 import re, sys

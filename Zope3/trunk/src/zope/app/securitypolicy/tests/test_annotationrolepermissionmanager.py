@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for Annotation Role Permission Manager.
 
-$Id: test_annotationrolepermissionmanager.py,v 1.5 2004/03/13 23:01:09 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

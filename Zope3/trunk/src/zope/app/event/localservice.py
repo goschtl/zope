@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: localservice.py,v 1.3 2004/03/13 23:55:00 srichter Exp $
+$Id$
 """
 import logging
 from zope.exceptions import NotFoundError

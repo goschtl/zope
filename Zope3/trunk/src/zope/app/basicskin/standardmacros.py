@@ -15,7 +15,7 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.3 2004/03/23 22:08:28 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping

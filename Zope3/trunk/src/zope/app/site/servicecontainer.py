@@ -13,7 +13,7 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.3 2004/05/05 08:42:06 philikon Exp $
+$Id$
 """
 
 import zope.interface

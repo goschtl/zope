@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: interfaces.py,v 1.6 2004/05/07 23:21:13 garrett Exp $
+$Id$
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.registration.interfaces import IComponentRegistration

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_directives.py,v 1.16 2004/03/13 23:55:00 srichter Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 

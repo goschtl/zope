@@ -13,7 +13,7 @@
 ##############################################################################
 """Menu Access and Local Menu Service Views
 
-$Id: __init__.py,v 1.4 2004/03/19 20:26:28 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.app.publisher.browser import BrowserView

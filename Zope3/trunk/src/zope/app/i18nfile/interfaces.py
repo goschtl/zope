@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
+$Id$
 """
 from zope.i18n.interfaces import II18nAware
 from zope.app.file.interfaces import IFile, IImage

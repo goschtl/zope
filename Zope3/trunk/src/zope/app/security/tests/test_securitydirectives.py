@@ -13,7 +13,7 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.15 2004/03/13 23:55:23 srichter Exp $
+$Id$
 """
 import unittest
 from zope.configuration.config import ConfigurationConflictError

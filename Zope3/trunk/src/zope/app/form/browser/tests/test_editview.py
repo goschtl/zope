@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+"""$Id$
 """
 import unittest
 

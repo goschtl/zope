@@ -13,7 +13,7 @@
 ##############################################################################
 """'rdb' ZCML Namespace Directive Handler
 
-$Id: metaconfigure.py,v 1.5 2004/03/02 13:48:27 philikon Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter

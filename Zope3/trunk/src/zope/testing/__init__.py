@@ -14,7 +14,7 @@
 """
 Set up testing environment
 
-$Id: __init__.py,v 1.2 2002/12/25 14:15:34 jim Exp $
+$Id$
 """
 import os
 

@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.4 2004/03/19 04:26:24 srichter Exp $
+$Id$
 """
 
 import unittest

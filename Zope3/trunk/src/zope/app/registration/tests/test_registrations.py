@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.4 2004/04/15 15:29:40 jim Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

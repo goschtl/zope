@@ -61,7 +61,7 @@ This is used for testing support for ExtensionClass in new interfaces.
   >>> int(C.__class__.__class__ is C.__class__)
   1
 
-$Id: odd.py,v 1.2 2003/05/03 16:38:00 jim Exp $
+$Id$
 """
 
 # class OddClass is an odd meta class

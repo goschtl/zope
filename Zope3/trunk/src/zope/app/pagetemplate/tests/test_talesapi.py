@@ -13,7 +13,7 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.10 2004/03/13 21:03:17 srichter Exp $
+$Id$
 """
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Location support tests
 
-$Id: tests.py,v 1.1 2004/03/02 17:51:52 philikon Exp $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

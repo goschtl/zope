@@ -13,7 +13,7 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.9 2004/03/13 21:03:16 srichter Exp $
+$Id$
 """
 import os
 from unittest import TestSuite, makeSuite

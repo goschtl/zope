@@ -25,7 +25,7 @@ module, by calling defineProxyType, however, it short-circuits the definitions
 for two types, which, hopefully will be the only two types that need to get
 registered. ;)
 
-$Id: introspection.py,v 1.6 2003/05/28 15:49:11 jim Exp $
+$Id$
 """
 
 import warnings

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.7 2003/08/17 06:09:00 philikon Exp $
+$Id$
 """
 
 import unittest

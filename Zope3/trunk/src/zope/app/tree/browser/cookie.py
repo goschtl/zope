@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful cookie tree
 
-$Id: cookie.py,v 1.6 2004/03/17 21:56:42 srichter Exp $
+$Id$
 """
 
 from zope.app import zapi

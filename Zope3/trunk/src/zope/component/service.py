@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.9 2004/04/20 11:01:09 stevea Exp $
+$Id$
 """
 
 from zope.exceptions import DuplicationError

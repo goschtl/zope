@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-__version__ = '$Id: testBTreesUnicode.py,v 1.8 2003/11/28 16:44:45 jim Exp $'
+__version__ = '$Id$'
 
 import unittest
 from BTrees.OOBTree import OOBTree

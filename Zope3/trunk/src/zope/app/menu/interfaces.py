@@ -13,7 +13,7 @@
 ##############################################################################
 """Locale Menu Service interfaces
 
-$Id: interfaces.py,v 1.2 2004/04/23 13:43:35 hdima Exp $
+$Id$
 """
 from zope.schema import Bool
 from zope.app.i18n import ZopeMessageIDFactory as _

@@ -13,7 +13,7 @@
 ##############################################################################
 """Default 'ISecurityManagement' and 'IInteractionManagement' implementation
 
-$Id: management.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
+$Id$
 """
 # Special system user that has all permissions
 # zope.security.simplepolicies needs it

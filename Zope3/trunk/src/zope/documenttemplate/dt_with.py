@@ -32,7 +32,7 @@
    should be treated as mapping object, rather than as an object with
    named attributes.
 
-$Id: dt_with.py,v 1.4 2004/03/19 04:26:20 srichter Exp $
+$Id$
 """
 
 from zope.documenttemplate.dt_util import \

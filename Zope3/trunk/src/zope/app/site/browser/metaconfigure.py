@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration handlers for 'tools' directive.
 
-$Id: metaconfigure.py,v 1.2 2004/03/22 00:52:24 srichter Exp $
+$Id$
 """
 from zope.publisher.interfaces.browser import IBrowserRequest, IBrowserPublisher
 from zope.app.component.metaconfigure import view, interface as ifaceDirective

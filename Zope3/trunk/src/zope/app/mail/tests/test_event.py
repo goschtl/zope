@@ -15,7 +15,7 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_event.py,v 1.3 2004/03/03 09:15:43 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, makeSuite
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.thread.
 
-$Id: test_thread.py,v 1.2 2004/03/19 16:33:31 stevea Exp $
+$Id$
 """
 
 import unittest

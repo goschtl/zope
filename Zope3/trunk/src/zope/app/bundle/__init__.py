@@ -13,7 +13,7 @@
 ##############################################################################
 """The basic bundle.
 
-$Id: __init__.py,v 1.3 2004/04/17 15:13:01 jim Exp $
+$Id$
 """
 from zope.app.container.btree import BTreeContainer
 from interfaces import IBundle

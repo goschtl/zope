@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id$
 """
 
 from zope.component import getAdapter

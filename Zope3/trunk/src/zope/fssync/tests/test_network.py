@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.9 2003/09/22 20:32:35 fdrake Exp $
+$Id$
 """
 
 import os

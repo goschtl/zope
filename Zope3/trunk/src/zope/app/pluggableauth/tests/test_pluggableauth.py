@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Auth Tests
 
-$Id: test_pluggableauth.py,v 1.3 2004/03/15 20:42:08 jim Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite

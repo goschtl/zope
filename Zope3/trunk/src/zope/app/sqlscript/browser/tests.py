@@ -13,7 +13,7 @@
 ##############################################################################
 """DTML Page Evaluation Tests
 
-$Id: tests.py,v 1.2 2004/02/24 16:50:37 philikon Exp $
+$Id$
 """
 import unittest, doctest
 

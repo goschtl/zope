@@ -13,7 +13,7 @@
 ##############################################################################
 """Collection of possible Mail Events.
 
-$Id: event.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 

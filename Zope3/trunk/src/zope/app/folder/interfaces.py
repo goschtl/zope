@@ -13,7 +13,7 @@
 ##############################################################################
 """Folder interfaces
 
-$Id: interfaces.py,v 1.6 2004/03/13 23:00:54 srichter Exp $
+$Id$
 """
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IContainer, IContentContainer

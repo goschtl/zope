@@ -13,7 +13,7 @@
 ##############################################################################
 """Index-relevant adapters.
 
-$Id: adapters.py,v 1.8 2004/02/25 23:02:26 faassen Exp $
+$Id$
 """
 from zope.index.interfaces import IQuerying, IKeywordQuerying
 from BTrees.IIBTree import IISet

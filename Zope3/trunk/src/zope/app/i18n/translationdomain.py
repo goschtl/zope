@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Domain for TTW development.
 
-$Id: translationdomain.py,v 1.2 2004/03/11 12:38:11 srichter Exp $
+$Id$
 """
 import re
 from BTrees.OOBTree import OOBTree

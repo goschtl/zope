@@ -13,7 +13,7 @@
 ##############################################################################
 """Observable adapter
 
-$Id: observable.py,v 1.2 2004/03/30 14:13:57 nathan Exp $
+$Id$
 """
 from zope.interface import implements, providedBy
 from zope.app.observable.interfaces import IObservable

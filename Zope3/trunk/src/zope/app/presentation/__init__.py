@@ -13,7 +13,7 @@
 ##############################################################################
 """Presentation-component support
 
-$Id: __init__.py,v 1.1 2004/03/08 19:40:26 jim Exp $
+$Id$
 """
 
 from zope.app.presentation.presentation import IPageRegistration

@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration handlers for forms and widgets
 
-$Id: metaconfigure.py,v 1.3 2004/04/25 16:19:14 srichter Exp $
+$Id$
 """
 import os
 

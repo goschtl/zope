@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_listfield.py,v 1.7 2004/05/06 16:13:50 poster Exp $
+$Id$
 """
 from unittest import main, makeSuite
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: stx.py,v 1.5 2004/03/19 20:26:32 srichter Exp $
+$Id$
 """
 import re
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.5 2004/03/19 04:26:16 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 

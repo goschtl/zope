@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Unauthorized Exception Views
 
-$Id: test_unauthorized.py,v 1.1 2004/03/14 04:44:52 srichter Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements

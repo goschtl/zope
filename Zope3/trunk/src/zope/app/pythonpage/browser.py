@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page Browser Views 
 
-$Id: browser.py,v 1.3 2004/03/14 01:11:38 srichter Exp $
+$Id$
 """
 from zope.app.form.browser.editview import EditView
 from zope.app.i18n import ZopeMessageIDFactory as _

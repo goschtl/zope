@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Object Instance
 
-$Id: instance.py,v 1.2 2004/04/24 23:17:58 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict

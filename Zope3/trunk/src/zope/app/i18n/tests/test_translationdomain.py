@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Domain.
 
-$Id: test_translationdomain.py,v 1.6 2004/03/13 23:55:03 srichter Exp $
+$Id$
 """
 import unittest
 

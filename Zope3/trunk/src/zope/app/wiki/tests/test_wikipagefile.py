@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipagefile.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id$
 """
 import unittest
 

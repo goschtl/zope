@@ -13,7 +13,7 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin interfaces
 
-$Id: interfaces.py,v 1.2 2004/03/10 17:56:30 srichter Exp $
+$Id$
 """
 from zope.schema import TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _

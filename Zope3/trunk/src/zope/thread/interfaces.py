@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for zope.thread.
 
-$Id: interfaces.py,v 1.2 2004/03/19 16:33:30 stevea Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute

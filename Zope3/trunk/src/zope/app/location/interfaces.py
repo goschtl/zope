@@ -13,7 +13,7 @@
 ##############################################################################
 """Location framework interfaces
 
-$Id: interfaces.py,v 1.2 2004/04/26 23:14:56 srichter Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 from zope import schema

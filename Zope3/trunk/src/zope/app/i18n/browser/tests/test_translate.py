@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.2 2004/03/09 12:39:05 srichter Exp $
+$Id$
 """
 import unittest
 from StringIO import StringIO

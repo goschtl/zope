@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.9 2004/05/10 13:32:13 eckart Exp $
+$Id$
 """
 import smtplib
 from persistent import Persistent

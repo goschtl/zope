@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Authentication Serive or Principal Registry Tests
 
-$Id: test_principalregistry.py,v 1.3 2004/03/13 23:55:23 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

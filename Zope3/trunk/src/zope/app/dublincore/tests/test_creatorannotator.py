@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.12 2004/03/17 17:59:29 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup

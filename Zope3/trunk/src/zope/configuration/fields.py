@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.20 2004/05/06 16:13:49 poster Exp $
+$Id$
 """
 import os, re, warnings
 from zope import schema

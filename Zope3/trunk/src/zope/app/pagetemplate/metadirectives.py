@@ -14,7 +14,7 @@
 """ZCML configuration directives for configuring the default zope:
 namespace in TALES.
 
-$Id: metadirectives.py,v 1.2 2004/03/04 02:10:09 philikon Exp $
+$Id$
 """
 
 from zope.interface import Interface

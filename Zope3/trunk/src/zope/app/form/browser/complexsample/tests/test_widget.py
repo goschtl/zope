@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the sample complex widgets.
 
-$Id: test_widget.py,v 1.2 2004/04/24 23:19:37 srichter Exp $
+$Id$
 """
 import unittest
 # 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.8 2004/05/06 10:07:46 philikon Exp $
+$Id$
 """
 from zope.app.component.metaconfigure import utility
 

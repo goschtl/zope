@@ -13,7 +13,7 @@
 ##############################################################################
 """Int Widget Functional Tests
 
-$Id: test_intwidget.py,v 1.5 2004/05/10 15:50:10 fdrake Exp $
+$Id$
 """
 import unittest
 from persistent import Persistent

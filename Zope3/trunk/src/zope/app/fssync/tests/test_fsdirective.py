@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsdirective.py,v 1.4 2003/10/06 22:08:52 sidnei Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Login/Password provider
 
-$Id: loginpassword.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from interfaces import ILoginPassword

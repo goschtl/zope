@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: browser.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
+$Id$
 """
 __metaclass__ = type
 

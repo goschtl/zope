@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.8 2004/04/23 13:43:36 hdima Exp $
+$Id$
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi

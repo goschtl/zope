@@ -82,7 +82,7 @@ There are three issues we need to deal with:
       For reading, there must be a class adapter to IReadSync.  We will
       then apply rules similar to those above.
 
-$Id: interfaces.py,v 1.1 2004/03/15 13:10:59 srichter Exp $
+$Id$
 """
 
 from zope.interface import Interface

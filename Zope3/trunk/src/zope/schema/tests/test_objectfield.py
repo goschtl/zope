@@ -14,7 +14,7 @@
 """
 This set of tests exercises Objects.
 
-$Id: test_objectfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
+$Id$
 """
 from unittest import TestSuite, main, makeSuite
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id: test_rolepermissionview.py,v 1.5 2004/03/19 20:26:36 srichter Exp $
+$Id$
 """
 import unittest
 

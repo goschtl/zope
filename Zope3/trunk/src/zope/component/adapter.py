@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Adapter Service
 
-$Id: adapter.py,v 1.14 2004/04/23 19:18:17 jim Exp $
+$Id$
 """
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IRegistry

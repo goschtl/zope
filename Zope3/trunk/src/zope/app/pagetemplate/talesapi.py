@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of the Zope TALES API
 
-$Id: talesapi.py,v 1.11 2004/03/13 21:03:16 srichter Exp $
+$Id$
 """
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.size.interfaces import ISized

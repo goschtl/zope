@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_utilityservice.py,v 1.12 2004/04/20 11:01:21 stevea Exp $
+$Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.component import \

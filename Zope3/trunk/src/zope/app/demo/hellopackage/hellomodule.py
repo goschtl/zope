@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: hellomodule.py,v 1.2 2004/05/10 15:50:08 fdrake Exp $
+$Id$
 """
 from interfaces import IHello
 from persistent import Persistent

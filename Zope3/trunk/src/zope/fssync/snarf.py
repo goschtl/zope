@@ -27,7 +27,7 @@ Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
 and written in binary mode.
 
-$Id: snarf.py,v 1.4 2003/07/08 16:00:56 fdrake Exp $
+$Id$
 """
 
 import os

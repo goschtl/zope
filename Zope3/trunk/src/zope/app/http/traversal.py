@@ -14,7 +14,7 @@
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
 
-$Id: traversal.py,v 1.6 2004/03/17 18:24:24 philikon Exp $
+$Id$
 """
 __metaclass__ = type
 

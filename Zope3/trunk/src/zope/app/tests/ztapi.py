@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.10 2004/04/23 19:39:31 jim Exp $
+$Id$
 """
 from zope.app import zapi
 import zope.interface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.10 2004/04/25 16:19:26 srichter Exp $
+$Id$
 """
 import re
 from urllib import quote, unquote

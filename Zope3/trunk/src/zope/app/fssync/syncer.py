@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.35 2004/03/13 23:00:55 srichter Exp $
+$Id$
 """
 
 from zope.component import getService

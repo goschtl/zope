@@ -13,7 +13,7 @@
 ##############################################################################
 """Test for PrincipalLogging.
 
-$Id: test_principallogging.py,v 1.3 2004/03/08 12:06:02 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyObject

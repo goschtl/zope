@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: test_icache.py,v 1.4 2004/03/01 10:57:36 philikon Exp $
+$Id$
 """
 
 from unittest import TestSuite, main

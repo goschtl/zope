@@ -13,7 +13,7 @@
 ##############################################################################
 """ Unit tests for SecurityManagement
 
-$Id: test_management.py,v 1.2 2003/05/01 19:35:47 faassen Exp $
+$Id$
 """
 
 import unittest

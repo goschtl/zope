@@ -13,7 +13,7 @@
 ##############################################################################
 """testObjectHub
 
-$Id: test_objecthub.py,v 1.2 2004/03/13 21:03:13 srichter Exp $
+$Id$
 """
 import unittest
 from zope.app.tests import ztapi

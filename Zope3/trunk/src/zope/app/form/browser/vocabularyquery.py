@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser views for vocabulary widgets.
 
-$Id: vocabularyquery.py,v 1.1 2004/04/24 23:18:16 srichter Exp $
+$Id$
 """
 from zope.interface import implements
 from zope.schema.interfaces import IIterableVocabularyQuery

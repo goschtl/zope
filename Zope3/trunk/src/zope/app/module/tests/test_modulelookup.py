@@ -16,7 +16,7 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.4 2004/04/30 16:45:28 jim Exp $
+$Id$
 """
 from zope.testing.doctestunit import DocTestSuite
 

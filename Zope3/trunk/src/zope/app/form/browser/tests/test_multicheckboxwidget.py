@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.6 2004/05/11 11:17:36 garrett Exp $
+$Id$
 """
 import unittest, doctest
 from zope.interface import Interface, implements

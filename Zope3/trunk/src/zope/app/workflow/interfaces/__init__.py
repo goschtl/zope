@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.6 2004/04/16 11:51:43 srichter Exp $
+$Id$
 """
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _

@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: test_definition.py,v 1.6 2004/04/24 23:18:32 srichter Exp $
+$Id$
 """
 import unittest
 

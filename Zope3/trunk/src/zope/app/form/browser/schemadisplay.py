@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Base class for DAV functional tests.
 
-$Id: dav.py,v 1.6 2004/04/06 20:58:06 jim Exp $
+$Id$
 """
 from persistent import Persistent
 from transaction import get_transaction

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
+$Id$
 """
 import zope.schema
 from zope.interface import Interface, Attribute

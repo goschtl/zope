@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.18 2004/05/06 15:36:45 fdrake Exp $
+$Id$
 """
 from xml.dom import minidom
 from zope.proxy import removeAllProxies

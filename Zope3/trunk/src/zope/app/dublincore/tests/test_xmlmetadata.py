@@ -13,7 +13,7 @@
 ##############################################################################
 """Test loading of Dublin Core metadata from the XML representation.
 
-$Id: test_xmlmetadata.py,v 1.2 2003/08/27 04:47:55 fdrake Exp $
+$Id$
 """
 
 import unittest

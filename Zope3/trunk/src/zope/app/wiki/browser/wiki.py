@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for Wikis
 
-$Id: wiki.py,v 1.7 2004/03/14 02:17:08 srichter Exp $
+$Id$
 """
 from datetime import datetime
 from zope.proxy import removeAllProxies

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_registration.py,v 1.3 2004/03/13 23:55:02 srichter Exp $
+$Id$
 """
 from unittest import makeSuite, main, TestCase
 

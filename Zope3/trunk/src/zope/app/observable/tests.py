@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Observable event infrastructure.
 
-$Id: tests.py,v 1.3 2004/03/30 21:47:50 nathan Exp $
+$Id$
 """
 
 import doctest

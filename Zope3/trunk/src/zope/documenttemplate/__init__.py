@@ -16,7 +16,7 @@
 This wrapper allows the (now many) document template modules to be
 segregated in a separate package.
 
-$Id: __init__.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id$
 """
 
 from zope.documenttemplate.documenttemplate import String, HTML

@@ -312,7 +312,7 @@
         - The 'next' attribute was used and their are no
           next batches, or
 
-$Id: dt_in.py,v 1.4 2003/05/01 19:35:40 faassen Exp $
+$Id$
 """
 
 from zope.documenttemplate.dt_util import \

@@ -13,7 +13,7 @@
 ##############################################################################
 """Undo view
 
-$Id: browser.py,v 1.2 2004/03/21 17:20:28 philikon Exp $
+$Id$
 """
 from zope.exceptions import ForbiddenAttribute
 

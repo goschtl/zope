@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for keyword index.
 
-$Id: test_index.py,v 1.6 2004/03/13 15:21:20 srichter Exp $
+$Id$
 """
 import unittest
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper Utility to wrap a text to a set width of characters
 
-$Id: docutils.py,v 1.4 2004/03/29 15:09:05 srichter Exp $
+$Id$
 """
 import re
 

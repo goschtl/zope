@@ -13,7 +13,7 @@
 ##############################################################################
 """Unauthorized Exception
 
-$Id: unauthorized.py,v 1.3 2004/03/13 23:34:29 srichter Exp $
+$Id$
 """
 from zope.app.http.interfaces import IHTTPException
 from zope.interface import implements

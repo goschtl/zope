@@ -13,7 +13,7 @@
 ##############################################################################
 """General test support.
 
-$Id: support.py,v 1.2 2004/04/24 23:19:43 srichter Exp $
+$Id$
 """
 class VerifyResults(object):
     """Mix-in for test classes with helpers for checking string data."""

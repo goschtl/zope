@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: interfaces.py,v 1.1 2004/03/11 09:19:24 srichter Exp $
+$Id$
 """
 from zope.interface import Attribute, Interface
 from zope.app.event.interfaces import IEvent, IEventChannel

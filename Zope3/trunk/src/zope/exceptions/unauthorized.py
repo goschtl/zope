@@ -13,7 +13,7 @@
 ##############################################################################
 """Unauthorized Exception definition
 
-$Id: unauthorized.py,v 1.9 2003/08/12 19:14:50 srichter Exp $
+$Id$
 """
 from types import StringType
 from zope.exceptions import ZopeError

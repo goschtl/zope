@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_element.py,v 1.1 2003/07/30 18:35:21 jim Exp $
+$Id$
 """
 
 import unittest

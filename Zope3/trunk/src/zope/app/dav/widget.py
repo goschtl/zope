@@ -13,7 +13,7 @@
 ##############################################################################
 """Widgets specific to WebDAV
 
-$Id: widget.py,v 1.9 2004/03/18 17:01:01 philikon Exp $
+$Id$
 """
 
 from zope.app.dav.interfaces import IDAVWidget

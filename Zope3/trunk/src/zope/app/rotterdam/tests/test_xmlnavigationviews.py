@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_xmlnavigationviews.py,v 1.3 2004/03/11 08:14:09 srichter Exp $
+$Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 

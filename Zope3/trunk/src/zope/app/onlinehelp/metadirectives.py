@@ -13,7 +13,7 @@
 ##############################################################################
 """Schemas for the 'help' ZCML namespace 
 
-$Id: metadirectives.py,v 1.3 2003/08/17 06:07:19 philikon Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject, Path, MessageID
 from zope.interface import Interface

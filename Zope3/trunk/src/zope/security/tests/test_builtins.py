@@ -13,7 +13,7 @@
 ##############################################################################
 """Restricted Builtins Tests
 
-$Id: test_builtins.py,v 1.3 2004/02/20 20:42:12 srichter Exp $
+$Id$
 """
 
 from unittest import makeSuite, TestCase, main

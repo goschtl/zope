@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.4 2004/04/24 23:18:31 srichter Exp $
+$Id$
 """
 from zope.schema import getFieldNames
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

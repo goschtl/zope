@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/03/15 13:10:47 srichter Exp $
+$Id$
 """
 from zope.interface import Interface
 

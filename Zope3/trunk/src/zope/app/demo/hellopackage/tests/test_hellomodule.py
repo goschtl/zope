@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for HelloPDF.
 
-$Id: test_hellomodule.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
+$Id$
 """
 
 import unittest

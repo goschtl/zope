@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: pagefolder.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
+$Id$
 """
 from zope.app.presentation.pagefolder import IPageFolder
 

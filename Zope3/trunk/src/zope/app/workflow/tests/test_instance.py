@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Instance Tests
 
-$Id: test_instance.py,v 1.6 2004/03/13 23:01:18 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyClass

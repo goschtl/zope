@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: __init__.py,v 1.1 2004/03/02 13:48:28 philikon Exp $
+$Id$
 """
 from zope.proxy import removeAllProxies
 

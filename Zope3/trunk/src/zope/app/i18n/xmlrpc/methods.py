@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Domain XML-RPC Methods 
 
-$Id: methods.py,v 1.2 2004/03/19 20:26:26 srichter Exp $
+$Id$
 """
 from zope.proxy import removeAllProxies
 from zope.app.publisher.xmlrpc import XMLRPCView

@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for object hub.
 
-$Id: __init__.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
+$Id$
 """
 from zope.exceptions import NotFoundError
 from zope.app.hub.interfaces import IObjectHub

@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
+$Id$
 """
 
 from zope.interface import implements

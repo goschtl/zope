@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of the states example.
 
-$Id: test_states.py,v 1.6 2004/04/24 23:21:06 srichter Exp $
+$Id$
 """
 import unittest
 

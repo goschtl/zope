@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.20 2003/09/05 19:09:36 fdrake Exp $
+$Id$
 """
 
 import os

@@ -11,7 +11,7 @@
 ##############################################################################
 """DAV method MKCOL
 
-$Id: mkcol.py,v 1.6 2004/03/15 13:10:45 srichter Exp $
+$Id$
 """
 from zope.app import zapi
 from zope.app.filerepresentation.interfaces import IWriteDirectory

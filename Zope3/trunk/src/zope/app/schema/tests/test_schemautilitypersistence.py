@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Schema Utility Persistence
 
-$Id: test_schemautilitypersistence.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
+$Id$
 """
 import unittest
 

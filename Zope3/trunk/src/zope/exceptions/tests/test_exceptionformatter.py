@@ -15,7 +15,7 @@
 ExceptionFormatter tests.
 
 Revision information:
-$Id: test_exceptionformatter.py,v 1.3 2003/05/01 19:35:41 faassen Exp $
+$Id$
 """
 
 from unittest import TestCase, main, makeSuite

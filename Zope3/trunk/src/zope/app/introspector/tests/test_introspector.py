@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_introspector.py,v 1.2 2004/03/05 15:54:39 eddala Exp $
+$Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.3 2004/03/21 17:20:28 philikon Exp $
+$Id$
 """
 from datetime import datetime
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """'tool' directive for 'browser' namespace
 
-$Id: metadirectives.py,v 1.2 2004/03/22 00:52:23 srichter Exp $
+$Id$
 """
 from zope.configuration.fields import GlobalObject, PythonIdentifier, MessageID
 from zope.interface import Interface

@@ -18,7 +18,7 @@ labelled values in a text string', at:
 
 http://dublincore.org/documents/dcmi-dcsv/
 
-$Id: dcsv.py,v 1.3 2003/08/22 13:08:40 fdrake Exp $
+$Id$
 """
 
 import re

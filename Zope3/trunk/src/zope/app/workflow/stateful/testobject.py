@@ -15,7 +15,7 @@
 
 This represents a simple content object that can receive workflows.
 
-$Id: testobject.py,v 1.3 2004/04/15 22:11:37 srichter Exp $
+$Id$
 """
 from persistent import Persistent
 from zope.interface import Interface, implements

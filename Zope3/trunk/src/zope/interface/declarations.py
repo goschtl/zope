@@ -24,7 +24,7 @@ There are three flavors of declarations:
     provided by objects.
     
 
-$Id: declarations.py,v 1.22 2004/04/30 17:37:10 itamar Exp $
+$Id$
 """
 
 import sys

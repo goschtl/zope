@@ -13,7 +13,7 @@
 ##############################################################################
 """XML import/export tests
 
-$Id: test_xmlimportexport.py,v 1.16 2004/04/16 11:51:59 srichter Exp $
+$Id$
 """
 import unittest
 from StringIO import StringIO

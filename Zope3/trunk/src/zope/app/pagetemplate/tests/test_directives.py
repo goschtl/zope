@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.10 2004/03/13 21:03:17 srichter Exp $
+$Id$
 """
 
 import unittest

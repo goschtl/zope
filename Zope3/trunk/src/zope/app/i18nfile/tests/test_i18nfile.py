@@ -13,7 +13,7 @@
 ##############################################################################
 """I18n File Tests
 
-$Id: test_i18nfile.py,v 1.4 2004/03/19 03:17:42 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyClass

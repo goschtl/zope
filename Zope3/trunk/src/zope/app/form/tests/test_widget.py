@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic Widget Tests
 
-$Id: test_widget.py,v 1.11 2004/05/11 11:17:36 garrett Exp $
+$Id$
 """
 from unittest import TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite

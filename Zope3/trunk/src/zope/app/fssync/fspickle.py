@@ -58,7 +58,7 @@ the pickle unless it is stored in the object.
 >>> c4.__parent__ is c3
 1
 
-$Id: fspickle.py,v 1.7 2004/03/13 21:03:11 srichter Exp $
+$Id$
 """
 
 import cPickle

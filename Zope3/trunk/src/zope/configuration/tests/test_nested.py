@@ -181,7 +181,7 @@ Let's see what happens if we declare duplicate fields:
 File "<string>", line 5.7-5.24
     ValueError: ('Duplicate field', 'x')
 
-$Id: test_nested.py,v 1.3 2004/04/26 23:14:57 srichter Exp $
+$Id$
 """
 
 import unittest

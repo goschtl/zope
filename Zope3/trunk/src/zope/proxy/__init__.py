@@ -13,7 +13,7 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.9 2004/01/14 13:40:18 sidnei Exp $
+$Id$
 """
 from zope.interface import moduleProvides
 from zope.proxy.interfaces import IProxyIntrospection

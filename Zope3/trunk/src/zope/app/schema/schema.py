@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.4 2004/03/14 02:17:07 srichter Exp $
+$Id$
 """
 from types import FunctionType
 

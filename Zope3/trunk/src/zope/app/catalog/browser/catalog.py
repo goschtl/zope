@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog Views
 
-$Id: catalog.py,v 1.3 2004/03/17 17:59:28 srichter Exp $
+$Id$
 """
 from zope.app.container.browser.adding import Adding
 from zope.app.catalog.interfaces.catalog import ICatalog

@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.28 2004/03/13 23:55:00 srichter Exp $
+$Id$
 """
 from zope.exceptions import NotFoundError
 from persistent import Persistent

@@ -15,7 +15,7 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.12 2004/03/13 23:00:46 srichter Exp $
+$Id$
 """
 import unittest
 from zope.interface import implements

@@ -26,7 +26,7 @@ secure mode. There are several steps that are taken to set up the security
   
   5. proxy wrap as necessary
 
-$Id: sandbox_security.py,v 1.10 2004/03/05 22:09:33 jim Exp $
+$Id$
 """
 import sandbox
 from zope.security.interfaces import ISecurityPolicy, IParticipation

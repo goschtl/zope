@@ -13,7 +13,7 @@
 ##############################################################################
 """ZCML special vocabulary directive handlers
 
-$Id: metaconfigure.py,v 1.2 2004/03/03 22:54:27 srichter Exp $
+$Id$
 """
 from zope.interface import directlyProvides
 from vocabulary import IVocabularyFactory
