@@ -67,7 +67,7 @@ rsync procedure - they must be created somehow else.  Though this can be
 inconvenient, it is beneficial in that it provides a sort of sanity check
 on the target directories."""
 
-import sys, os, tempfile, time
+import sys, os, tempfile, time, pwd
 import string
 import getopt
 import smtplib
@@ -106,7 +106,8 @@ CHMOD_GW = 1
 # eg, people doing remote :ext: and :pserver: checkins).
 CHMOD_CASUAL = 1
 
-MAIL_CMD = "/bin/mail"
+MAIL_CMD = "/usr/lib/sendmail"
+MAIL_CMD_FULLNAME_SLOT = "-F'%s'"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 
 # IDENTITY_FILE must be readable by anyone doing a checkin that uses the
@@ -370,14 +371,26 @@ def do_mail(name, remote, repo, addrs, subjs,
 
             diff_msg = diff_msg + new_msg + '\n'
 
-    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+    mailcmd = MAIL_CMD
+    user = getuser()
+    if user:
+        try: fullname = pwd.getpwnam(user)[4]
+        except KeyError: fullname = ''
+        if fullname:
+            mailcmd = "%s %s" % (MAIL_CMD, MAIL_CMD_FULLNAME_SLOT % fullname)
+
+    cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
                                      (DRYRUN and "echo Would do: ") or "",
-                                     MAIL_CMD,
+                                     mailcmd,
                                      (VERBOSE and "-v") or "",
-                                     subject,
                                      string.join(addrs, ",")))
-    mf = open(msgfilenm, 'a')
-    mf.write("\n%s" % diff_msg)
+
+    # Prepend the subject line and and append the diff:
+    mf = open(msgfilenm, 'rw')
+    oldcontents = mf.read()
+    mf.seek(0)
+    mf.write("Subject: %s\n\n%s %s"
+             % (subject, oldcontents, diff_msg))
     mf.close()
     cmd = cmd + "< %s" % msgfilenm
 
@@ -587,6 +600,11 @@ def note_failure(msg, *args):
     failures = 1
     apply(complain, (msg,) + args)
 
+def getuser():
+    """Try to get the user's login name."""
+    try: return getpass.getuser()
+    except: return None
+
 def handle_failures(argstring):
     """On serious failures, send the complaints log to CVSMASTER."""
 
@@ -597,10 +615,7 @@ def handle_failures(argstring):
         if not host:
             host = "nohost.digicool.com"
 
-    user = None
-    try: user = getpass.getuser()
-    except: pass
-    if not user: user = "unidentified"
+    user = getuser() or "unidentified"
 
     if os.path.isfile(OUTPUT_LOG):
         log_file_expr = ("\n\tSee log file for application errors:\n\t\t%s"
