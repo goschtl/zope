@@ -15,7 +15,7 @@
 
 This script extracts translatable strings and creates a single zope.pot file.
 
-$Id: extract.py,v 1.1 2003/04/03 16:18:36 jim Exp $
+$Id: extract.py,v 1.2 2003/08/04 11:11:55 jim Exp $
 """
 
 import os, sys, fnmatch
@@ -59,8 +59,22 @@ def find_files(dir, pattern, exclude=()):
 
     return files
 
+def zcml_strings(dir, domain="zope"):
+    from zope.app._app import config
+    dirname = os.path.dirname
+    site_zcml = os.path.join(dirname(dirname(dirname(dir))), "site.zcml")
+    context = config(site_zcml, execute=False)
+    return context.i18n_strings.get(domain, {})
+
 def main(argv=sys.argv):
     dir = app_dir()
+
+    strings = zcml_strings(dir)
+
+    # OK, now what. I need someone who knows POT files.
+    # Stephan, heeeeelp.
+    print strings
+
     sys.argv[1:] = ['-ozope.pot',]+find_files(dir, '*.py',
                                             exclude=["pygettext.py"])
     pygettext.main()
