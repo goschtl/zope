@@ -21,6 +21,7 @@ resource can depend on other resources.  The packaging tool can be
 told to collect the dependencies of the primary resource into the
 distribution using a command-line option.
 
+
 Preparation
 -----------
 
@@ -90,6 +91,74 @@ Run |zpkg|_ using this command::
 After listening to a good CD, or perhaps having some good Thai food,
 you should find a very large tarball named *ZopeX3-VERSION.tgz* in the
 current directory.
+
+
+Defining a New Resource
+-----------------------
+
+The next step in using |zpkg|_ is to define new resources that can be
+used in constructing distributions.  Most resources are Python
+packages, so we'll start with a simple package.  It will contain some
+Python modules, a data file that should be installed inside the
+package (this is how ZCML files are handled for Zope 3), and a
+sub-package.
+
+Our sample package will be called ``samplepkg``.  For now, we aren't
+going to worry about package hierarchies; we'll see later how a
+hierarchy can be broken down into a collection of packages.  Our
+package is represented by the following files::
+
+  samplepkg/
+      __init__.py
+      interfaces.py
+      module1.py
+      module2.py
+      configuration.zcml
+      helpers/
+          __init__.py
+          useful.py
+          stuff.py
+          tests/
+              __init__.py
+              test_useful.py
+              test_stuff.py
+      tests/
+          __init__.py
+          test_module1.py
+          test_module2.py
+
+So, what's needed to make this Python package "play nice" with the
+packaging tool?  Fortunately, not a lot.
+
+Most packages depend on some external libraries; we need to identify
+the libraries that are required before ``samplepkg`` can be used.
+It's safe to assume that all packages depend on the Python standard
+library, but since that's always available, we don't require that that
+dependency be spelled out.  Since this package contains some ZCML,
+it's a good bet that this package depends on Zope in some way.  Let's
+say that the *interfaces.py* file (at least) imports
+``zope.interface``, and some other module depends on
+``zope.app.zapi``.  These dependencies need to be recorded inside the
+package so that |zpkg|_ knows about them.  This is done by listing
+them inside a simple text file named *DEPENDENCIES.cfg* inside the
+package (parallel to the *__init__.py* file)::
+
+  zope.app
+  zope.interface
+
+Notice that we didn't list ``zope.app.zapi``, but simply ``zope.app``;
+this is because ``zope.app`` is the resource that contains the
+``zope.app.zapi`` module.  The *DEPENDENCIES.cfg* file lists
+*resources*, not arbitrary Python modules and packages.
+
+Now, what do we need to do about *configuration.zcml*?  Distutils
+normally would not pick this file up as part of the package, and
+|zpkg|_ definately generates distutils packages.  What |zpkg|_ does
+do, however, is control how distutils is used, so is able to provide
+the support needed to include additional data files inside the
+package; that's what it does with all files in Python packages by
+default.  Non-Python files inside your package are included as package
+data by default by |zpkg|_.
 
 
 .. include:: links.rst
