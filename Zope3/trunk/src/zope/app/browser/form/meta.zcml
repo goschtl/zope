@@ -7,7 +7,7 @@
       <description>
         Define an automatically generated edit form
 
-        The editForm directive creates and register's a view for
+        The editform directive creates and register's a view for
         editing an object based on a schema.
       </description>
 
@@ -248,6 +248,102 @@
           the menu in the page directive, rather than having to give a
           separate menuItem directive.
           </description>
+        </attribute>
+
+      </directive>
+
+    <directive name="schemadisplay" handler=".schemadisplay.display">
+
+      <description>
+        Define an automatically generated display form.
+
+        The schemadisplay directive creates and register's a view for
+        displaying an object based on a schema.
+      </description>
+
+      <attribute name="name" required="yes">
+        <description>
+        The name of the generated display view.
+        </description>
+        </attribute>
+
+      <attribute name="schema" required="yes">
+        <description>
+        The schema from which the display form is generated.
+
+        A schema is an interface that includes fields.
+        </description>
+        </attribute>
+
+      <attribute name="label" required="no">
+        <description>
+        A label to be used as the heading for the form.
+        </description>
+        </attribute>
+
+      <attribute name="for" required="no">
+        <description>
+        The interface this page (view) applies to. 
+
+        The view will be for all objects that implement this interface.
+
+        The schema is used if the for attribute is not specified.
+
+        If the for attribute is specified, then the objects views must
+        implement or be adaptable to the schema.
+        </description>
+        </attribute>
+
+      <attribute name="layer" required="no">
+        <description>
+        The layer the view is in. 
+
+        A skin is composed of layers. It is common to put skin specific
+        views in a layer named after the skin. If the 'layer' attribute
+        is not supplied, it defaults to 'default'. 
+        </description>
+        </attribute>
+
+      <attribute name="permission" required="yes">
+        <description>
+        The permission needed to use the view. 
+        </description>
+        </attribute>
+
+      <attribute name="template" required="no">
+        <description>
+        An alternate template to use for the display form.
+
+        XXX Need to document how to extend the default.
+        </description>
+        </attribute>
+
+      <attribute name="class" required="no">
+        <description>
+        A class to provide custom widget definitions or methods to be
+        used by a custom template.
+
+        This class is used as a mix-in class. As a result, it needn't
+        subclass any special classes, such as BrowserView.
+        </description>
+        </attribute>
+
+      <attribute name="menu" required="no">
+        <description>
+        The browser menu to include the display form in.
+
+        Many views are included in menus. It's convenient to name
+        the menu in the page directive, rather than having to give a
+        separate menuItem directive.
+        </description>
+        </attribute>
+
+      <attribute name="title" required="no">
+        <description>
+        The browser menu label for the display form
+
+        This attribute defaults to "Display".
+        </description>
         </attribute>
 
       </directive>
