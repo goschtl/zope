@@ -4,33 +4,12 @@
 
 <!-- PageFolder -->
 
-  <page 
-      name="index.html" 
+  <containerViews
       for="zope.app.services.pagefolder.IPageFolder"
-      permission="zope.ManageServices" 
-      class="zope.app.browser.container.contents.JustContents"
-      attribute="index" />
-
-  <view
-      for="zope.app.services.pagefolder.IPageFolder"
-      name="+"
-      menu="zmi_actions" title="Add"
-      class="zope.app.browser.container.adding.Adding"
-      permission="zope.ManageServices"
-      allowed_attributes="addingInfo"
-      usage="addingdialog" >
-
-    <page name="index.html"  attribute="index" />
-    <page name="action.html" attribute="action" />
-
-  </view>
-
-  <page name="contents.html"
-        for="zope.app.services.pagefolder.IPageFolder"
-        permission="zope.ManageServices" 
-        class="zope.app.browser.container.contents.Contents"
-        menu="zmi_views" title="Contents"
-        attribute="contents" />
+      index="zope.ManageServices"
+      contents="zope.ManageServices"
+      add="zope.ManageServices"
+      />
 
   <editform
         name="DefaultRegistration.html"
