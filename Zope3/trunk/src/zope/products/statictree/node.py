@@ -13,7 +13,7 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.3 2004/02/15 19:28:19 philikon Exp $
+$Id: node.py,v 1.4 2004/02/16 15:12:25 philikon Exp $
 """
 
 from zope.interface import implements
@@ -117,7 +117,7 @@ class Node:
     def getFlatDicts(self, maxdepth=0, row_state=None):
         """See zope.products.statictree.interfaces.INode"""
         nodes = []
-        if row_state == None:
+        if row_state is None:
             row_state = []
         encoder = zapi.getUtility(self.context, ITreeStateEncoder)
 
