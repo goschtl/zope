@@ -9,6 +9,7 @@
 
     <title metal:define-slot="title">Z3 UI</title>
 
+
     <style type="text/css" 
            media="all"
            tal:content=
@@ -17,6 +18,7 @@
       @import url(zope3.css);
     </style>
 
+    <metal:block define-slot="headers" />
     <metal:block define-slot="style_slot" />
     <metal:block define-slot="ecmascript_slot" />
 
@@ -208,24 +210,16 @@
 
     <div id="helpers">
 
-      <div class="box" id="itemHelp">
+      <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
 
-        <h3>
-
-          <metal:block define-slot="itemHelpTitle">
-            item help
-          </metal:block>
-
-        </h3>
+        <h3>Tip</h3>
 
         <div class="body">
 
           <div class="content odd">
 
-            <metal:block define-slot="itemHelp">
-              Lorem ipsum dolor sit amet, consec tetuer adipiscing elit, sed
-              diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-              aliquam erat volutpat.
+            <metal:block define-slot="pagetip" tal:replace="pagetip">
+              A short tip goes here              
             </metal:block>
 
           </div>
