@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.13 2003/06/03 19:52:39 pje Exp $
+$Id: declarations.py,v 1.14 2003/06/04 22:24:59 jim Exp $
 """
 
 import sys
@@ -142,7 +142,7 @@ def proxySig(cls):
 # This function is needed by _zope_interface_ospec and, so, must be
 # defined before _zope_interface_ospec is imported.
 def oldSpecSig(cls, implements):
-    implements = OnlyImplementsSpecification(implements)
+    implements = ImplementsOnlySpecification(implements)
     _setImplements(cls, implements)
     return implements.__signature__
 
@@ -421,7 +421,7 @@ from _zope_interface_ospec import ObjectSpecification
 from _zope_interface_ospec import getObjectSpecification, providedBy
 from _zope_interface_ospec import ObjectSpecificationDescriptor
 
-class InterfaceSpecification(InterfaceSpecificationBase):
+def InterfaceSpecification(*interfaces):
     """Create an interface specification
 
     The arguments are one or more interfaces or interface
@@ -430,19 +430,33 @@ class InterfaceSpecification(InterfaceSpecificationBase):
     A new interface specification (IInterfaceSpecification) with
     the given interfaces is returned.
     """
+    return Spec(*_flattenSpecs(interfaces, []))
+
+
+_spec_cache = {}
+
+class Spec(InterfaceSpecificationBase):
 
     only = False
 
-    def __init__(self, *interfaces):
-        self.interfaces = tuple(_flattenSpecs(interfaces, []))
-        set = {}
-        iro = mergeOrderings(
-            [iface.__iro__ for iface in self.interfaces],
-            set)
-        self.__iro__ = iro
-        self.set = set
+    # We don't want to pickle these
+    def __reduce__(self):
+        raise TypeError, "can't pickle InterfaceSpecification objects"
 
-        self._computeSignature(iro)
+    def __init__(self, *interfaces):
+        self.interfaces = interfaces
+
+        cached = _spec_cache.get(interfaces)
+        if not cached:
+            set = {}
+            iro = mergeOrderings(
+                [iface.__iro__ for iface in self.interfaces],
+                set)
+            sig = '\t'.join([iface.__identifier__ for iface in iro])
+            cached = iro, set, sig
+            _spec_cache[interfaces] = cached
+
+        self.__iro__, self.set, self.__signature__ = cached
 
     def __nonzero__(self):
         """Test whether there are any interfaces in a specification.
@@ -458,26 +472,6 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         0
         """
         return bool(self.interfaces)
-
-    def _computeSignature(self, iro):
-        """Compute a specification signature
-
-        For example::
-
-          >>> from zope.interface import Interface
-          >>> class I1(Interface): pass
-          ...
-          >>> class I2(I1): pass
-          ...
-          >>> spec = InterfaceSpecification(I2)
-          >>> int(spec.__signature__ == "%s\\t%s\\t%s" % (
-          ...    I2.__identifier__, I1.__identifier__,
-          ...    Interface.__identifier__))
-          1
-
-        """
-        self.__signature__ = '\t'.join([iface.__identifier__ for iface in iro])
-
 
     def __contains__(self, interface):
         """Test whether an interface is in the specification
@@ -643,7 +637,7 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         """
         if other is None:
             other = _empty
-        return self.__class__(self, other)
+        return self.__class__(*_flattenSpecs((self, other), []))
 
     __radd__ = __add__
 
@@ -683,9 +677,9 @@ class InterfaceSpecification(InterfaceSpecificationBase):
 
         """
         if other is None:
-            other = _empty
+            other = ()
         else:
-            other = InterfaceSpecification(other)
+            other = _flattenSpecs((other,), [])
 
         ifaces = []
 
@@ -694,10 +688,25 @@ class InterfaceSpecification(InterfaceSpecificationBase):
             for oface in other:
                 if oface in iface.__iro__:
                     break
-                else:
-                    ifaces.append(iface)
+            else:
+                ifaces.append(iface)
 
         return self.__class__(*ifaces)
+
+
+class PicklableSpec(Spec):
+    """Mix-in that adds picklability
+
+    This is done using a mix-in to prevent regular interface specs
+    from being pickled.
+    
+    """
+
+    __safe_for_unpickling__ = True
+
+    def __reduce__(self):
+        return self.__class__, self.interfaces
+
 
 
 def _flattenSpecs(specs, result):
@@ -734,11 +743,16 @@ def _flattenSpecs(specs, result):
 
 _empty = InterfaceSpecification()
 
-class ImplementsSpecification(InterfaceSpecification):
+def ImplementsSpecification(*interfaces):
+    return Implements(*_flattenSpecs(interfaces, []))
+    
+class Implements(PicklableSpec):
+
+    __module__ = 'zope.interface'
 
     _cspec = None
     def setClass(self, cls):
-        self._cspec = ImplementsSpecification(_gatherSpecs(cls, []))
+        self._cspec = Spec(*_flattenSpecs(_gatherSpecs(cls, []), []))
         self.__signature__ = self._cspec.__signature__
 
     def __get__(self, inst, cls):
@@ -774,16 +788,26 @@ class ImplementsSpecification(InterfaceSpecification):
         return InterfaceSpecification(_gatherSpecs(cls, []))
 
 
-class OnlyImplementsSpecification(ImplementsSpecification):
+def ImplementsOnlySpecification(*interfaces):
+    return Only(*_flattenSpecs(interfaces, []))
+
+class Only(Implements):
+
+    __module__ = 'zope.interface'
 
     only = True
 
     def __init__(self, *interfaces):
-        ImplementsSpecification.__init__(self, *interfaces)
+        Spec.__init__(self, *interfaces)
         self.__signature__ = "only(%s)" % self.__signature__
 
 
-class ProvidesSpecification(InterfaceSpecification):
+def ProvidesSpecification(*interfaces):
+    return Provides(*_flattenSpecs(interfaces, []))
+
+class Provides(PicklableSpec):
+
+    __module__ = 'zope.interface'
 
     def __get__(self, inst, cls):
         """Make sure that a class __provides__ doesn't leak to an instance
@@ -849,9 +873,9 @@ def classImplementsOnly(cls, *interfaces):
     whatever interfaces instances of ``A`` and ``B`` implement.
 
     """
-    spec = OnlyImplementsSpecification(*interfaces)
+    spec = ImplementsOnlySpecification(*interfaces)
     spec.only = True
-    _setImplements(cls, OnlyImplementsSpecification(*interfaces))
+    _setImplements(cls, ImplementsOnlySpecification(*interfaces))
 
 def directlyProvides(object, *interfaces):
     """Declare interfaces declared directly for an object
@@ -1117,7 +1141,7 @@ def implementsOnly(*interfaces):
     instances of ``A`` and ``B`` implement.
 
     """
-    spec = ImplementsSpecification(interfaces)
+    spec = ImplementsOnlySpecification(interfaces)
     spec.only = True
     _implements("implements", spec)
 
@@ -1263,7 +1287,7 @@ def _getImplements(cls):
 
             implements = getattr(cls, '__implements__', None)
             if implements is not None:
-                implements = OnlyImplementsSpecification(implements)
+                implements = ImplementsOnlySpecification(implements)
 
             return implements
 
@@ -1347,7 +1371,7 @@ def _gatherSpecs(cls, result):
             stop = implements.only
         except AttributeError:
             # Must be an old-style interface spec
-            implements = OnlyImplementsSpecification(
+            implements = ImplementsOnlySpecification(
                 _flattenSpecs([implements], []))
             stop = 1
             _setImplements(cls, implements)
@@ -1369,7 +1393,7 @@ def _gatherSpecs(cls, result):
             stop = implements.only
         except AttributeError:
             # Must be an old-style interface spec
-            implements = OnlyImplementsSpecification(
+            implements = ImplementsOnlySpecification(
                 _flattenSpecs([implements], []))
             stop = 1
             _setImplements(cls, implements)
@@ -1385,7 +1409,8 @@ def _gatherSpecs(cls, result):
             result.append(cspec)
             return result
 
-        # No cached cspec. Compute one if we're being called recursively:
+        # No cached cspec. Compute one if we're being called recursively.
+        # We know we're being called recursively is result is not empty!
         if result:
             implements.setClass(cls)
             cspec = implements._cspec
@@ -1399,7 +1424,6 @@ def _gatherSpecs(cls, result):
         _gatherSpecs(b, result)
 
     return result
-
 
 # DocTest:
 if __name__ == "__main__":

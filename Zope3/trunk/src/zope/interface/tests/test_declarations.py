@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.6 2003/06/02 14:46:16 jim Exp $
+$Id: test_declarations.py,v 1.7 2003/06/04 22:25:00 jim Exp $
 """
 
 import unittest
@@ -189,6 +189,100 @@ def test_classImplement_on_deeply_nested_classes():
     descriptors for old-style classes.
 
     """
+
+def test_computeSignature():
+    """Compute a specification signature
+
+    For example::
+
+      >>> from zope.interface import Interface
+      >>> class I1(Interface): pass
+      ...
+      >>> class I2(I1): pass
+      ...
+      >>> spec = InterfaceSpecification(I2)
+      >>> int(spec.__signature__ == "%s\\t%s\\t%s" % (
+      ...    I2.__identifier__, I1.__identifier__,
+      ...    Interface.__identifier__))
+      1
+
+    """
+
+def test_cant_pickle_plain_specs():
+    """
+    >>> from pickle import dumps
+    >>> dumps(InterfaceSpecification())
+    Traceback (most recent call last):
+    ...
+    TypeError: can't pickle InterfaceSpecification objects
+    >>> dumps(InterfaceSpecification(), 2)
+    Traceback (most recent call last):
+    ...
+    TypeError: can't pickle InterfaceSpecification objects
+    
+    """
+
+def test_pickle_provides_specs():
+    """
+    >>> from pickle import dumps, loads
+    >>> a = A()
+    >>> int(I2.isImplementedBy(a))
+    0
+    >>> directlyProvides(a, I2)
+    >>> int(I2.isImplementedBy(a))
+    1
+    >>> a2 = loads(dumps(a))
+    >>> int(I2.isImplementedBy(a2))
+    1
+    
+    """
+
+def test_pickle_implements_specs():
+    """
+    >>> from pickle import dumps, loads
+    >>> class A:
+    ...   implements(I1)
+    >>> class B(A):
+    ...   implements(I2)
+    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names
+    ['I2', 'I1']
+    >>> old = B.__dict__['__implements__']
+    >>> new = loads(dumps(old))
+    >>> names =  [i.__name__ for i in new]
+    >>> names
+    ['I2']
+    >>> classImplements(A, I3)
+    >>> B.__implements__ = new
+    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names
+    ['I2', 'I1', 'I3']
+    
+    """
+
+def test_pickle_only_specs():
+    """
+    >>> from pickle import dumps, loads
+    >>> class A:
+    ...   implements(I1)
+    >>> class B(A):
+    ...   implementsOnly(I2)
+    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names
+    ['I2']
+    >>> old = B.__dict__['__implements__']
+    >>> new = loads(dumps(old))
+    >>> names =  [i.__name__ for i in new]
+    >>> names
+    ['I2']
+    >>> classImplements(A, I3)
+    >>> B.__implements__ = new
+    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names
+    ['I2']
+    
+    """
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.28 2003/06/02 17:43:03 stevea Exp $
+$Id: checker.py,v 1.29 2003/06/04 22:25:00 jim Exp $
 """
 
 import os
@@ -24,7 +24,7 @@ from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IInterfaceSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ProvidesSpecification
-from zope.interface.declarations import OnlyImplementsSpecification
+from zope.interface.declarations import ImplementsOnlySpecification
 from zope.interface.declarations import ImplementsSpecification
 from zope.interface.declarations import InterfaceSpecification
 from zope.security.interfaces import IChecker
@@ -679,7 +679,7 @@ _default_checkers = {
     ObjectSpecification: _InterfaceSpecification_checker,
     ProvidesSpecification: _InterfaceSpecification_checker,
     ImplementsSpecification: _InterfaceSpecification_checker,
-    OnlyImplementsSpecification: _InterfaceSpecification_checker,
+    ImplementsOnlySpecification: _InterfaceSpecification_checker,
     InterfaceSpecification: _InterfaceSpecification_checker,
 }
 
