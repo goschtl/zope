@@ -11,7 +11,7 @@
       <td>
        <a href="."
           tal:content="context/componentPath"
-          tal:define="service context/getService"
+          tal:define="service context/getComponent"
           tal:attributes="href service/@@absolute_url"
           >Foo</a>
       </td>    
