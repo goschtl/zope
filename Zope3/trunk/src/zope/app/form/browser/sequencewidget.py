@@ -45,9 +45,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
     def __call__(self):
         """Render the widget
         """
-        # XXX we really shouldn't allow value_type of None
-        if self.context.value_type is None:
-            return ''
+        assert self.context.value_type is not None
 
         render = []
 
@@ -148,7 +146,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
             self.context.value_type.validate(value)
         return self._type(sequence)
 
-    # XXX applyChanges isn't reporting "change" correctly (we're
+    # TODO: applyChanges isn't reporting "change" correctly (we're
     # re-generating the sequence with every edit, and need to be smarter)
     def applyChanges(self, content):
         field = self.context
