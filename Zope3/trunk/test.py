@@ -12,61 +12,66 @@
 # 
 ##############################################################################
 """
-test.py [-bdvvL] [modfilter [testfilter]]
+Run the test suite.
 
-Test harness.
+Usage: %(PROGRAM)s [options] [modfilter [testfilter]]
+Options:
 
--b  build
-    Run "python setup.py -q build" before running tests, where "python"
-    is the version of python used to run test.py.  Highly recommended.
+-b
+    Run "python setup.py -q build" before running tests, where "python" is the
+    version of python used to run test.py.  Highly recommended.
 
--d  debug
-    Instead of the normal test harness, run a debug version which
-    doesn't catch any exceptions.  This is occasionally handy when the
-    unittest code catching the exception doesn't work right.
-    Unfortunately, the debug harness doesn't print the name of the
-    test, so Use With Care.
+-c
+    Use pychecker.
 
--D  debugger
+-d
+    Instead of the normal test harness, run a debug version which doesn't
+    catch any exceptions.  This is occasionally handy when the unittest code
+    catching the exception doesn't work right.  Unfortunately, the debug
+    harness doesn't print the name of the test, so Use With Care.
+
+-D
     Works like -d, except that it loads pdb when an exception occurs.
 
--v  verbose
-    With one -v, unittest prints a dot (".") for each test run.  With
-    -vv, unittest prints the name of each test (for some definition of
-    "name" ...).  Witn no -v, unittest is silent until the end of the
-    run, except when errors occur.
-
--p  progress
-    Show running progress.  It can be combined with -v or -vv.
-
--L  Loop
-    Keep running the selected tests in a loop.  You may experience
-    memory leakage.
-
--g  threshold
+-g threshold
     Set the garbage collector generation0 threshold.  This can be used to
     stress memory and gc correctness.  Some crashes are only reproducible when
-    the threshold is set to 1 (agressive garbage collection).  Do "-g 0" to
+    the threshold is set to 1 (aggressive garbage collection).  Do "-g 0" to
     disable garbage collection altogether.
 
--G flag
-    Set garbage collector debug flag.  The flag argument should be the name
-    of a DEBUG_ attribute of the gc module.  This argument can be repeated.
+-G gc_option
+    Set the garbage collection debugging flags.  The argument must be one of
+    the DEBUG_ flags defined by the Python gc module.  Multiple options can be
+    specified by using "-G OPTION1 -G OPTION2."
 
--u  Use unittestgui
--m  Use unittestgui; start minimized
-    Use the PyUnit GUI instead of output to the command line. The GUI
-    imports tests on its own, taking care to reload all dependencies on each
-    run. The debug (-d), verbose (-v), and Loop (-L) options will be
-    ignored. The testfilter filter is also not applied.
+-h / --help
+    Print this help text and exit.
 
--C  use pychecker
+-L
+    Keep running the selected tests in a loop.  You may experience memory
+    leakage, but this is a handy option for catching race conditions.
 
--T  use trace module from Python for code coverage
-    XXX This only works if trace.py is explicitly added to PYTHONPATH.
-    The current utility writes coverage files to a directory named
-    coverage that is parallel to build.  It also prints a summary
-    to stdout.
+-u
+-m
+    Use the PyUnit GUI instead of output to the command line.  The GUI imports
+    tests on its own, taking care to reload all dependencies on each run.  The
+    debug (-d), verbose (-v), and Loop (-L) options will be ignored.  The
+    testfilter filter is also not applied.  -m starts the gui minimized.
+
+-p
+    Show running progress.  It can be combined with -v or -vv.
+
+-T
+    Use the trace module from Python for code coverage.  XXX This only works
+    if trace.py is explicitly added to PYTHONPATH.  The current utility writes
+    coverage files to a directory named `coverage' that is parallel to
+    `build'.  It also prints a summary to stdout.
+
+-v
+    Verbose output.  With one -v, unittest prints a dot (".") for each test
+    run.  With -vv, unittest prints the name of each test (for some definition
+    of "name" ...).  With no -v, unittest is silent until the end of the run,
+    except when errors occur.
 
 modfilter
 testfilter
@@ -100,9 +105,9 @@ Extreme (yet useful) examples:
     test.py -m . "!^checkWriteClient$"
 
     As before, but now opens up a minimized PyUnit GUI window (only showing
-    the progressbar). Double-clicking the progressbar will start the import
-    and run all tests. Useful for refactoring runs where you continually
-    want to make sure all tests still pass.
+    the progressbar).  Double-clicking the progressbar will start the import
+    and run all tests.  Useful for refactoring runs where you continually want
+    to make sure all tests still pass.
 """
 
 import os
@@ -115,6 +120,16 @@ import linecache
 from os.path import join, commonprefix
 
 from distutils.util import get_platform
+
+PROGRAM = sys.argv[0]
+
+# For Python's earlier than 2.2.2
+try:
+    True, False
+except NameError:
+    True = 1
+    False = 0
+
 
 # We know we're going to need this so import it now.  Python 2.2 does not come
 # with the pyexpat library by default, although Python 2.3 will.
@@ -413,56 +428,59 @@ def process_args(argv=None):
     module_filter = None
     test_filter = None
     VERBOSE = 0
-    LOOP = 0
+    LOOP = False
     GUI = 0
-    TRACE = 0
-    debug = 0 # Don't collect test results; simply let tests crash
-    debugger = 0
-    build = 0
+    TRACE = False
+    # Don't collect test results; simply let tests crash
+    debug = False
+    debugger = False
+    build = False
     gcthresh = None
     gcflags = []
-    progress = 0
+    progress = False
 
     try:
-        opts, args = getopt.getopt(argv[1:], 'vpdDLbhCumg:G:T', ['help'])
+        opts, args = getopt.getopt(
+            argv[1:], 'bcdDg:G:hLumpTv',
+            ['help'])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
         sys.exit(2)
 
     for k, v in opts:
-        if k == '-v':
-            VERBOSE += 1
-        elif k == '-p':
-            progress = 1
-        elif k == '-d':
-            debug = 1
-        elif k == '-D':
-            debug = 1
-            debugger = 1
-        elif k == '-L':
-            LOOP = 1
-        elif k == '-b':
-            build = 1
-        elif k in ('-h', '--help'):
-            print __doc__
-            sys.exit(0)
-        elif k == '-C':
-            os.environ['PYCHECKER'] = "-e -q"
+        if k == '-b':
+            build = True
+        elif k == '-c':
+            os.environ['PYCHECKER'] = "-q"
             import pychecker.checker
+        elif k == '-d':
+            debug = True
+        elif k == '-D':
+            debug = True
+            debugger = True
         elif k == '-g':
             gcthresh = int(v)
-        elif k == '-u':
-            GUI = 1
-        elif k == '-m':
-            GUI = 'minimal'
         elif k == '-G':
             if not v.startswith("DEBUG_"):
                 print "-G argument must be DEBUG_ flag, not", repr(v)
                 sys.exit(1)
             gcflags.append(v)
+        elif k in ('-h', '--help'):
+            print __doc__ % globals()
+            sys.exit(0)
+        elif k == '-L':
+            LOOP = True
+        elif k == '-u':
+            GUI = 1
+        elif k == '-m':
+            GUI = 'minimal'
+        elif k == '-p':
+            progress = True
         elif k == '-T':
-            TRACE = 1
+            TRACE = True
+        elif k == '-v':
+            VERBOSE += 1
 
     if gcthresh is not None:
         import gc
