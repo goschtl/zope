@@ -167,7 +167,15 @@ class ImmediateTestResult(unittest._TextTestResult):
             self.dots = False
             self._progressWithNames = True
             self._lastWidth = 0
-            self._maxWidth = 80 # would be nice to determine terminal width
+            try:
+                import curses
+            except ImportError:
+                self._maxWidth = 80
+            else:
+                import curses.wrapper
+                def get_max_width(scr, self=self):
+                    self._maxWidth = scr.getmaxyx()[1]
+                curses.wrapper(get_max_width)
             self._maxWidth -= len("xxxx/xxxx (xxx.x%): ") + 1
 
     def stopTest(self, test):
@@ -205,8 +213,8 @@ class ImmediateTestResult(unittest._TextTestResult):
                 self.stream.write(": ")
             elif self._progressWithNames:
                 # XXX will break with multibyte strings
-                name = self.getDescription(test)
-                width = len(name)
+                name = self.getShortDescription(test)
+                width = min(len(name), self._maxWidth)
                 if width < self._lastWidth:
                     name += " " * (self._lastWidth - width)
                 self.stream.write(": %s" % name[:self._maxWidth])
@@ -214,6 +222,19 @@ class ImmediateTestResult(unittest._TextTestResult):
             self.stream.flush()
         self.__super_startTest(test)
         self._testtimes[test] = time.time()
+
+    def getShortDescription(self, test):
+        s = self.getDescription(test)
+        if len(s) > self._maxWidth:
+            pos = s.find(" (")
+            if pos >= 0:
+                pre = s[:pos+2]
+                w = self._maxWidth - (pos + 5)
+                post = s[-w:]
+                if post[:1] == ".":
+                    post = post[1:]
+                s = "%s...%s" % (pre, post)
+        return s
 
     def addError(self, test, err):
         if self._progress:
