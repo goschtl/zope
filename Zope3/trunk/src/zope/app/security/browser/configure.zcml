@@ -1,17 +1,17 @@
-<zope:configure 
-   xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser">
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <page
+  <view
       for="zope.app.security.interfaces.IPermissionField"
-      name="edit"
-      class=".permissionwidget.SinglePermissionWidget"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IInputWidget"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      factory=".permissionwidget.SinglePermissionWidget"
+      />
 
-  <page 
+  <view 
       for="zope.app.security.interfaces.IPermissionField"
-      name="display"
-      class=".permissionwidget.DisplayWidget"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      factory=".permissionwidget.DisplayWidget"
+      />
 
-</zope:configure>
+</configure>
