@@ -16,7 +16,7 @@ creating a local service; see README.txt.
 
 $Id$
 """
-
+from persistent.interfaces import IPersistent
 from zope.app.adapter.adapter import LocalAdapterService
 from zope.app import zapi
 from zope.app.registration.registration import ComponentRegistration
@@ -38,6 +38,7 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
         ILocalUtilityService,
         zope.app.site.interfaces.ISimpleService,
         zope.app.site.interfaces.IBindingAware,
+        IPersistent # used for IKeyReference adaption
         )
 
 

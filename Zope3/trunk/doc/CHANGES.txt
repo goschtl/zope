@@ -197,6 +197,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed intid utility: Registration and unregistration of
+        local utitlity services, context aware registration of nested 
+        components that may provide their own intids utiltities.
+
       - Fixed browser:defaultView metaconfigure: for_ passes a GlobalObject
         and not a Token of GlobalObjects.
 

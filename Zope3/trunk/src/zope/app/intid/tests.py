@@ -210,7 +210,10 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
 
-    def test_localutilityservice_bug(self):
+    def test_addIntIdSubscriber_and_localutilityservice(self):
+        # Their was a bug caused when a local utility service was
+        # registered within a intid utility
+
         # setup first some stuff
         from zope.app.intid import addIntIdSubscriber
         from zope.app.container.contained import ObjectAddedEvent
@@ -225,18 +228,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         utils = LocalUtilityService()
         utils.__parent__ = folder # cheat IConnection adapter
 
-        # try to register the local utility sevice
-        self.assertRaises(TypeError, addIntIdSubscriber, utils, ObjectAddedEvent(parent_folder))
-
-        # problem: local utility sevice does not provide IPersistent
-        # -> LocalUtilityService implementsOnly(ILocalUtilityService, ISimpleService, IBindingAware)
-        self.assertEquals(False, IPersistent.providedBy(utils))
-
-        # add IPersistent to utils
-        from zope.interface import directlyProvides, directlyProvidedBy
-        directlyProvides(utils, IPersistent, directlyProvidedBy(utils))
-
-        # try another time...
+        # register utils
         addIntIdSubscriber(utils, ObjectAddedEvent(parent_folder))
 
         # check that the utilis got registered
