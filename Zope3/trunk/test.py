@@ -348,7 +348,7 @@ def match(rx, s):
 class TestFileFinder:
     def __init__(self, prefix):
         self.files = []
-		# XXX will break if prefix ends with a slash
+        # XXX will break if prefix ends with a slash
         self._plen = len(prefix)+1
 
     def visit(self, rx, dir, files):
@@ -450,11 +450,10 @@ def gui_runner(files, test_filter):
 class TrackRefs:
     """Object to track reference counts across test runs."""
 
-
     def __init__(self):
         self.type2count = {}
         self.type2all = {}
-        
+
     def update(self):
         obs = sys.getobjects(0)
         type2count = {}
