@@ -46,6 +46,9 @@ table = [
 
     {'path': "test", 'addrs': "klm@digicool.com"},
 
+    {'path': "ZSrc", 'addrs': zopeaddr},
+    {'path': "ZUtil", 'addrs': zopeaddr},
+    {'path': "cvs-indirect/Zope", 'addrs': zopeaddr},
     {'path': "Components/GreyThing", 'addrs': zopeaddr},
     {'path': "Components/ZopeHTTPServer", 'addrs': zopeaddr},
     {'path': "Components/ExtensionClass", 'addrs': zopeaddr},
