@@ -71,16 +71,16 @@ utilities.
 
   >>> class Content(persistent.Persistent):
   ...     """A sample content object"""
-
+  ...
   ...     def __init__(self, value):
   ...         self.value = value
-
+  ...
   ...     def __call__(self):
   ...         return self
-
+  ...
   ...     def __hash__(self):
   ...         return self.value
-
+  ...
   ...     def __cmp__(self, other):
   ...         return cmp(self.value, other.value)
 
