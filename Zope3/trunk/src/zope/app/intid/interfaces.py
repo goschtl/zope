@@ -27,6 +27,10 @@ class IIntIdsQuery(Interface):
         Return the default if the object isn't registered
         """
 
+    def __iter__():
+        """Return an iteration on the ids"""
+        
+
 class IIntIdsSet(Interface):
 
     def register(ob):
