@@ -25,7 +25,7 @@ Options:
     -l / --locales-dir
         Specify the 'locales' directory for which to generate the statistics.
 
-$Id: i18nstats.py,v 1.1 2004/04/09 12:11:25 srichter Exp $
+$Id$
 """
 import sys
 import os

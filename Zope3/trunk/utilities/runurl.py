@@ -66,7 +66,7 @@
 
         Run from a build directory
 
-$Id: runurl.py,v 1.6 2003/11/21 17:12:47 jim Exp $
+$Id$
 """
 
 import sys, os, getopt, gc
