@@ -90,14 +90,14 @@ class IFormChallengerLoginPageName(Interface):
     loginpagename = TextLine(title=u'loginpagename',
                      description=u'Name of the login form used by challenger',
                      required=True,
-                     default=u'/@@loginForm.html')
+                     default=u'loginForm.html')
 
 
 class FormChallenger(Persistent, Contained):
     """ Query the user for credentials using a browser form.
 
         First we need a request and a response.
-        
+
         >>> from zope.app.tests.setup import placefulSetUp
         >>> site = placefulSetUp(True)
 
@@ -120,7 +120,7 @@ class FormChallenger(Persistent, Contained):
 
     implements(IChallengePlugin, IFormChallengerLoginPageName)
     
-    loginpagename = '/@@loginForm.html'
+    loginpagename = 'loginForm.html'
 
     def challenge(self, request, response):
         """ Response shuold redirect to login page cause Credebtials
@@ -130,8 +130,9 @@ class FormChallenger(Persistent, Contained):
         
         camefrom = request.getURL()
 
-        url = absoluteURL(site, request)
-        url += self.loginpagename + '?' + urlencode({'camefrom' :camefrom})
+        url = '%s/@@%s?%s' % (absoluteURL(site, request),
+                              self.loginpagename,
+                              urlencode({'camefrom' :camefrom}))
         response.redirect(url)
 
         return True
