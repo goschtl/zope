@@ -25,7 +25,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import getAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
@@ -87,7 +86,7 @@ class AddView(EditView):
                     kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
-        adapted = getAdapter(content, self.schema)
+        adapted = self.schema(content)
 
         errors = []
 
@@ -107,7 +106,7 @@ class AddView(EditView):
 
         content = self.add(content)
 
-        adapted = getAdapter(content, self.schema)
+        adapted = self.schema(content)
 
         if self._set_after_add:
             for name in self._set_after_add:

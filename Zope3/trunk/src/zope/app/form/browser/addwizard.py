@@ -24,7 +24,6 @@ from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import WidgetsError, IInputWidget
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component import getAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
@@ -72,7 +71,7 @@ class AddWizardView(EditWizardView):
                 kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
-        adapted = getAdapter(content, self.schema, context=self.context)
+        adapted = self.schema(content)
 
         errors = []
 
@@ -91,7 +90,7 @@ class AddWizardView(EditWizardView):
 
         content = self.context.add(content)
 
-        adapted = getAdapter(content, self.schema)
+        adapted = self.schema(content)
 
         for name in self._set_after_add:
             if name in data:

@@ -15,7 +15,7 @@
  
 $Id$
 """
-from zope.app import zapi
+
 from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import IRegistered
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
@@ -33,11 +33,8 @@ class ImportExportView(object):
     def importDefinition(self):
         xml = self.request.get('definition')
         if xml:
-            zapi.getAdapter(
-                self.context, IProcessDefinitionImportHandler, context=self
-                ).doImport(xml)
+            IProcessDefinitionImportHandler(self.context).doImport(xml)
         self.request.response.redirect('@@importexport.html?success=1')
 
     def exportDefinition(self):
-        return zapi.getAdapter(self.context, IProcessDefinitionExportHandler,
-                               context=self).doExport()
+        return IProcessDefinitionExportHandler(self.context).doExport()

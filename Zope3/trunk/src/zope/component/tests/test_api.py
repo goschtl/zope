@@ -17,6 +17,7 @@ import unittest
 from zope import component
 from zope.component import servicenames
 from zope.component import getAdapter, queryAdapter
+from zope.component import getAdapterInContext, queryAdapterInContext
 from zope.component import getService
 from zope.component import getUtility, queryUtility
 from zope.component import getDefaultViewName
@@ -152,80 +153,71 @@ class Test(PlacelessSetup, unittest.TestCase):
         ##self.assertRaises(ComponentLookupError,
         ##                  getService, Adapters, object())
 
-    def testAdapter_via_conform(self):
-        ob = Conforming()
+    def testAdapterInContext(self):
+        class I1(Interface):
+            pass
+        class I2(Interface):
+            pass
+        class C:
+            implements(I1)
+            def __conform__(self, iface, default=None):
+                if iface == I2:
+                    return 42
+                
+        ob = C()
+
+        servicemanager = StubServiceService()
+        context = ConformsToIServiceService(servicemanager)
+        class I3(Interface):
+            pass
+        class StubAdapterService:
+            def queryAdapter(self, ob, iface, name, default=None):
+                if iface is I3:
+                    return 43
+                return default
+        servicemanager.services[Adapters] = StubAdapterService()
 
         # If an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object.
-        self.assertEquals(getAdapter(ob, I1), ob)
+        # getAdapterInContext should simply return the object.
+        self.assertEquals(getAdapterInContext(ob, I1, context), ob)
+        self.assertEquals(queryAdapterInContext(ob, I1, context), ob)
 
+        # If an object conforms to the interface you want to adapt to,
+        # getAdapterInContext should simply return the conformed object.
+        self.assertEquals(getAdapterInContext(ob, I2, context), 42)
+        self.assertEquals(queryAdapterInContext(ob, I2, context), 42)
+
+        class I4(Interface):
+            pass
         # If an adapter isn't registered for the given object and interface,
         # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, ob, I2)
-
-        # If an adapter isn't registered for the given object and interface,
-        # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, Conforming, I2)
+        self.assertRaises(ComponentLookupError,
+                          getAdapterInContext, ob, I4, context)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, '', Test), Test)
+        self.assertEquals(queryAdapterInContext(ob, I4, context, 44), 44)
 
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I2, '', Test), Test)
-
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I3, '', Test), Test)
-
-        getService(Adapters).register([I1], I2, '', Comp)
-        c = getAdapter(ob, I2)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context, ob)
-
-        c = getAdapter(ob, I3)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context, ob)
+        # If you ask for an adapter for which something's registered
+        # you get the registered adapter
+        self.assertEquals(getAdapterInContext(ob, I3, context), 43)
+        self.assertEquals(queryAdapterInContext(ob, I3, context), 43)
 
     def testAdapter(self):
-        # If an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object.
-        self.assertEquals(getAdapter(ob, I1), ob)
-
         # If an adapter isn't registered for the given object and interface,
         # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, ob, I2)
+        self.assertRaises(ComponentLookupError, getAdapter, ob, I2, '')
 
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, '', Test), Test)
 
         getService(Adapters).register([I1], I2, '', Comp)
-        c = getAdapter(ob, I2)
+        c = getAdapter(ob, I2, '')
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
     def testInterfaceCall(self):
         getService(Adapters).register([I1], I2, '', Comp)
         c = I2(ob)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context, ob)
-
-    def testContextArgument(self):
-        # Basically, the same tests as in testAdapter, but with the
-        # 'context' argument given. As this is only testing the global
-        # service, this is pretty much a no-operation.
-
-        self.assertEquals(getAdapter(ob, I1, context=None), ob)
-        self.assertEquals(getAdapter(ob, I1, context=ob), ob)
-
-        # If an adapter isn't registered for the given object and interface,
-        # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, ob, I2,
-                          context=ob)
-
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, '', Test, context=ob), Test)
-
-        getService(Adapters).register([I1], I2, '', Comp)
-        c = getAdapter(ob, I2, context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
@@ -268,7 +260,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # providing an adapter for None says that your adapter can
         # adapt anything to I2.
         getService(Adapters).register([None], I2, '', Comp)
-        c = getAdapter(ob, I2)
+        c = I2(ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 

@@ -20,7 +20,6 @@ from datetime import datetime
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component import getAdapter
 
 from zope.app import zapi
 from zope.event import notify
@@ -63,7 +62,7 @@ class EditView(BrowserView):
         self._setUpWidgets()
 
     def _setUpWidgets(self):
-        adapted = getAdapter(self.context, self.schema)
+        adapted = self.schema(self.context)
         if adapted is not self.context:
             if not ILocation.providedBy(adapted):
                 adapted = LocationProxy(adapted)

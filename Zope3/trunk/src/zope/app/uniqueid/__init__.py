@@ -59,7 +59,7 @@ class UniqueIdUtility:
         return self.refs[id]()
 
     def getId(self, ob):
-        ref = zapi.getAdapter(ob, IReference)
+        ref = IReference(ob)
         return self.ids[ref]
 
     def _generateId(self):
@@ -80,7 +80,7 @@ class UniqueIdUtility:
 
     def register(self, ob):
         ob = trustedRemoveSecurityProxy(ob)
-        ref = zapi.getAdapter(ob, IReference)
+        ref = IReference(ob)
         if ref in self.ids:
             return self.ids[ref]
         uid = self._generateId()
@@ -89,7 +89,7 @@ class UniqueIdUtility:
         return uid
 
     def unregister(self, ob):
-        ref = zapi.getAdapter(ob, IReference)
+        ref = IReference(ob)
         uid = self.ids[ref]
         del self.refs[uid]
         del self.ids[ref]
@@ -105,7 +105,7 @@ class ReferenceToPersistent:
     def __init__(self, object):
         self.object = object
         if not getattr(object, '_p_oid', None):
-            zapi.getAdapter(object, IConnection).add(object)
+            IConnection(object).add(object)
 
     def __call__(self):
         return self.object

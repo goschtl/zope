@@ -22,7 +22,7 @@ from zope.app.container.interfaces import IReadContainer
 from zope.app.datetimeutils import parseDatetimetz, DateTimeError
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.component import getUtility, getAdapter, queryAdapter
+from zope.component import getUtility
 from zope.component import getView
 from zope.exceptions import DuplicationError
 from zope.interface import implements
@@ -361,7 +361,7 @@ class MessageUpload:
                 for message in messages:
                     try:
                         self.add(message)
-                        dc = queryAdapter(message, IZopeDublinCore)
+                        dc = IZopeDublinCore(message, None)
                         if dc is not None:
                             # XXX should handle RFC-2047
                             dc.title = unicode(message.subject)
@@ -384,7 +384,7 @@ class ContainerView:
         Title is obtained from Dublin Core metadata of the folder.  If it is
         empty, "Zope 3 Checkins" is used.
         """
-        dc = queryAdapter(self.context, IZopeDublinCore)
+        dc = IZopeDublinCore(self.context, None)
         if dc is not None:
             title = dc.title
         else:
@@ -420,7 +420,7 @@ class ContainerView:
         if int(self.request.get('start', 0)) > 0:
             return # The user can't see the newest checkins
         if not hasattr(self, '_archive'):
-            self._archive = getAdapter(self.context, IMessageArchive)
+            self._archive = IMessageArchive(self.context)
         if not self._archive:
             return # No messages -- no bookmarks
         bookmarks = self.bookmarks()
@@ -443,7 +443,7 @@ class ContainerView:
         if start is None: start = int(self.request.get('start', 0))
         if size is None: size = int(self.request.get('size', 20))
         if not hasattr(self, '_archive'):
-            self._archive = getAdapter(self.context, IMessageArchive)
+            self._archive = IMessageArchive(self.context)
         idx = len(self._archive) - start
         items = self._archive[max(0, idx-size):idx]
         items = removeAllProxies(items)
@@ -491,7 +491,7 @@ class ContainerView:
     def count(self):
         """Returns the number of checkin messages in the archive."""
         if not hasattr(self, '_archive'):
-            self._archive = getAdapter(self.context, IMessageArchive)
+            self._archive = IMessageArchive(self.context)
         return len(self._archive)
 
 
@@ -510,8 +510,7 @@ class MessageView:
     def _calc_index(self):
         if not hasattr(self, '_archive'):
             container = self.context.__parent__
-            self._archive = container and queryAdapter(container,
-                                                       IMessageArchive)
+            self._archive = container and IMessageArchive(container, None)
         if not self._archive:
             self._index = None
         elif not hasattr(self, '_index'):

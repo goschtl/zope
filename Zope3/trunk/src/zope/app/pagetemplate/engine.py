@@ -155,7 +155,7 @@ class AdapterNamespaces(object):
         if namespace is None:
             def namespace(object):
                 try:
-                    return zapi.getAdapter(object, IPathAdapter, name=name)
+                    return zapi.getAdapter(object, IPathAdapter, name)
                 except ComponentLookupError:
                     raise KeyError, name
                 
