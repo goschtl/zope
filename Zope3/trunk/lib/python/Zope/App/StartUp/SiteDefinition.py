@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.11 2002/12/20 01:56:39 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.12 2002/12/20 02:39:30 gvanrossum Exp $
 """
 
 import sys
@@ -40,7 +40,7 @@ from Persistence.Module import PersistentModuleImporter
 
 DEFAULT_STORAGE_FILE = 'Data.fs'
 DEFAULT_LOG_FILE = 'STDERR'
-DEFAULT_LOG_CLASS = 'Zope.Server.HTTPServer.CommonHitLogger'
+DEFAULT_LOG_LEVEL = 'INFO'
 
 
 class SiteDefinition:
@@ -51,6 +51,16 @@ class SiteDefinition:
     # Some special file names for log files
     _special_log_files = {'STDERR': sys.stderr,
                           'STDOUT': sys.stdout}
+
+    # Mapping from log level names to numeric log levels
+    _log_levels = {
+        'CRITICAL' : logging.CRITICAL,
+        'ERROR' : logging.ERROR,
+        'WARN' : logging.WARN,
+        'INFO' : logging.INFO,
+        'DEBUG' : logging.DEBUG,
+        'NOTSET' : logging.NOTSET,
+        }
 
     
     def __init__(self, _context, name="default", threads=4):
@@ -79,11 +89,17 @@ class SiteDefinition:
         return []
 
 
-    def useLog(self, _context, file=DEFAULT_LOG_FILE):
-        """Lets you specify the log file to use"""
+    def useLog(self, _context, file=DEFAULT_LOG_FILE, level=DEFAULT_LOG_LEVEL):
+        """Lets you specify the log file and level to use"""
 
-        # Get the root logger
+        # Translate the level to logging
+        loglevel = self._log_levels.get(level.upper())
+        if loglevel is None:
+            raise ValueError, "unknown log level %r" % level
+
+        # Get the root logger and set its logging level
         root = logging.root
+        root.setLevel(loglevel)
 
         # Remove previous handlers
         for h in root.handlers[:]:

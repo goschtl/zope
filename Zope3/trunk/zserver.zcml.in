@@ -19,13 +19,15 @@
     <!--startup:useMappingStorage /-->
 
 
-    <!-- Setup the log file.
+    <!-- Setup the log file and level.
+
+         Levels are DEBUG, INFO, WARN, ERROR, CRITICAL.
 
          There are two special file names:
              STDERR - sends output to standard error
              STDOUT - sends output to standard output -->
 
-    <startup:useLog file="STDERR" />
+    <startup:useLog file="STDERR" level="INFO" />
 
 
     <!-- Now define the servers you would like to start. All you need

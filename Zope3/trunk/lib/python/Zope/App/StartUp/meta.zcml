@@ -11,7 +11,7 @@
 
       <subdirective name="useMappingStorage" />
 
-      <subdirective name="useLog" attributes="file" />
+      <subdirective name="useLog" attributes="file level" />
 
       <subdirective name="addServer"
                     attributes="type port verbose logClass" />
