@@ -1,0 +1,17 @@
+<html>
+
+  <body>
+
+    <h1>TextIndex</h1>
+
+    <div>
+    	Documents: <span tal:replace="context/documentCount" />
+    </div>
+
+    <div>
+    	Words: <span tal:replace="context/wordCount" />
+    </div>
+
+  </body>
+
+</html>
