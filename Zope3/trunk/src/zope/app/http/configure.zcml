@@ -10,6 +10,7 @@
   provides="zope.publisher.interfaces.IPublishTraverse"
   factory=".traversal.ContainerTraverser"
   permission="zope.Public"
+  allowed_interface="zope.publisher.interfaces.IPublishTraverse"
   />
 
 <view
