@@ -391,6 +391,7 @@ src/zope/app/browser/security/configure.zcml
 src/zope/app/browser/security/permissionwidget.py
 src/zope/app/browser/security/grants/__init__.py
 src/zope/app/browser/security/grants/configure.zcml
+src/zope/app/browser/security/grants/grant.pt
 src/zope/app/browser/security/grants/manage_access.pt
 src/zope/app/browser/security/grants/manage_permissionform.pt
 src/zope/app/browser/security/grants/manage_roleform.pt
@@ -518,7 +519,6 @@ src/zope/app/browser/skins/rotterdam/folder_contents.pt
 src/zope/app/browser/skins/rotterdam/logo.gif
 src/zope/app/browser/skins/rotterdam/mi.gif
 src/zope/app/browser/skins/rotterdam/pl.gif
-src/zope/app/browser/skins/rotterdam/service_manager.pt
 src/zope/app/browser/skins/rotterdam/standardmacros.py
 src/zope/app/browser/skins/rotterdam/template.pt
 src/zope/app/browser/skins/rotterdam/view_macros.pt
@@ -656,15 +656,16 @@ src/zope/app/dublincore/tests/test_zdcannotatableadapter.py
 src/zope/app/dublincore/tests/test_zopedublincore.py
 src/zope/app/event/__init__.py
 src/zope/app/event/configure.zcml
-src/zope/app/event/globaleventservice.py
-src/zope/app/event/logger.py
+src/zope/app/event/globalservice.py
 src/zope/app/event/meta.zcml
-src/zope/app/event/metaconfigure.py
 src/zope/app/event/objectevent.py
+src/zope/app/event/subs.py
 src/zope/app/event/tests/__init__.py
 src/zope/app/event/tests/placelesssetup.py
+src/zope/app/event/tests/subscriber.py
 src/zope/app/event/tests/test_directives.py
-src/zope/app/event/tests/test_eventservice.py
+src/zope/app/event/tests/test_eventpublisher.py
+src/zope/app/event/tests/test_globaleventchannel.py
 src/zope/app/event/tests/test_logger.py
 src/zope/app/event/tests/test_objectevent.py
 src/zope/app/form/__init__.py
@@ -1193,12 +1194,6 @@ src/zope/documenttemplate/tests/testdt_in.py
 src/zope/documenttemplate/tests/testdt_try.py
 src/zope/documenttemplate/tests/testdt_var.py
 src/zope/documenttemplate/tests/testdt_with.py
-src/zope/event/__init__.py
-src/zope/event/eventchannel.py
-src/zope/event/subscribable.py
-src/zope/event/tests/__init__.py
-src/zope/event/tests/subscriber.py
-src/zope/event/tests/test_eventchannel.py
 src/zope/exceptions/__init__.py
 src/zope/exceptions/_duplicate.py
 src/zope/exceptions/_forbidden.py
@@ -1270,7 +1265,6 @@ src/zope/interface/tests/test_visitimplements.py
 src/zope/interface/tests/unitfixtures.py
 src/zope/interfaces/__init__.py
 src/zope/interfaces/configuration.py
-src/zope/interfaces/event.py
 src/zope/interfaces/i18n.py
 src/zope/pagetemplate/__init__.py
 src/zope/pagetemplate/engine.py
