@@ -13,17 +13,17 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.13 2004/03/13 23:01:15 srichter Exp $
+$Id: instance.py,v 1.14 2004/04/15 22:11:24 srichter Exp $
 """
-__metaclass__ = type
-
 from types import StringTypes
 from persistent.dict import PersistentDict
 from zope.proxy import removeAllProxies
 
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.workflow.interfaces \
-     import IProcessInstance, IProcessInstanceContainer
+from zope.app.servicenames import Utilities
+from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
+from zope.app.workflow.interfaces import IProcessInstanceContainer
 
 from zope.interface import implements
 
@@ -47,11 +47,19 @@ class ProcessInstance(Contained):
     ## should probably have a method "getProcessDefinition"
 
 
+def createProcessInstance(context, name):
+    """Helper function to create a process instance from a process definition
+    name."""
+    utils = zapi.getService(context, Utilities)
+    pd = utils.getUtility(IProcessDefinition, name)
+    return pd.createProcessInstance(name)
+
+
 _marker = object()
 
 WFKey = "zope.app.worfklow.ProcessInstanceContainer"
 
-class ProcessInstanceContainerAdapter:
+class ProcessInstanceContainerAdapter(object):
 
     implements(IProcessInstanceContainer)
 
