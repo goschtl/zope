@@ -149,6 +149,7 @@ class CommandLineTestCase(unittest.TestCase):
         # Test only the version_from_tagname() function
         convert = app.version_from_tagname
         eq = self.assertEqual
+        # Test with underscores (CVS style)
         eq(convert("my-package-1_0"), "1.0")
         eq(convert("my-package-1_0_42"), "1.0.42")
         eq(convert("my-package-1_0_42_24"), "1.0.42.24")
@@ -157,6 +158,15 @@ class CommandLineTestCase(unittest.TestCase):
         eq(convert("my-package-1_0a666"), "1.0a666")
         eq(convert("my-package-1_0b777"), "1.0b777")
         eq(convert("my-package-1_0c888"), "1.0c888")
+        # Test with underscores (Subversion style?)
+        eq(convert("my-package-1.0"), "1.0")
+        eq(convert("my-package-1.0.42"), "1.0.42")
+        eq(convert("my-package-1.0.42.24"), "1.0.42.24")
+        eq(convert("my-package-1.0.42alpha42"), "1.0.42alpha42")
+        eq(convert("my-package-1.0beta"), "1.0beta")
+        eq(convert("my-package-1.0a666"), "1.0a666")
+        eq(convert("my-package-1.0b777"), "1.0b777")
+        eq(convert("my-package-1.0c888"), "1.0c888")
         #
         # Check that unparsable tags return None
         #
