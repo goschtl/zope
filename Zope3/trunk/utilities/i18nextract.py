@@ -37,7 +37,7 @@ Options:
         Specifies a directory, relative to the package in which to put the
         output translation template.
 
-$Id: i18nextract.py,v 1.3 2004/03/23 09:11:16 hdima Exp $
+$Id: i18nextract.py,v 1.4 2004/04/01 18:09:35 sidnei Exp $
 """
 
 import os, sys, getopt
@@ -75,7 +75,7 @@ def main(argv=sys.argv):
         opts, args = getopt.getopt(
             sys.argv[1:],
             'hd:p:o:',
-            ['help', 'domain=', 'path='])
+            ['help', 'domain=', 'path=', 'python-only'])
     except getopt.error, msg:
         usage(1, msg)
 
@@ -83,6 +83,7 @@ def main(argv=sys.argv):
     path = app_dir()
     include_default_domain = True
     output_dir = None
+    python_only = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
@@ -91,6 +92,8 @@ def main(argv=sys.argv):
             include_default_domain = False
         elif opt in ('-o', ):
             output_dir = arg
+        elif opt in ('--python-only',):
+            python_only = True
         elif opt in ('-p', '--path'):
             if not os.path.exists(arg):
                 usage(1, 'The specified path does not exist.')
@@ -121,8 +124,9 @@ def main(argv=sys.argv):
          py_strings, tal_strings, zcml_strings
     maker = POTMaker(output_file, path)
     maker.add(py_strings(path, domain), base_dir)
-    maker.add(zcml_strings(path, domain), base_dir)
-    maker.add(tal_strings(path, domain, include_default_domain), base_dir)
+    if not python_only:
+        maker.add(zcml_strings(path, domain), base_dir)
+        maker.add(tal_strings(path, domain, include_default_domain), base_dir)
     maker.write()
 
 if __name__ == '__main__':
