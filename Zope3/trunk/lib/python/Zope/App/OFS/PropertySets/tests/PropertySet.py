@@ -12,9 +12,10 @@
 # 
 ##############################################################################
 from Zope.App.OFS.PropertySets.PropertySetDef import PropertySetDef
-import Zope.App.OFS.PropertySets.PropertySet import PropertySetFactory
+from Zope.App.OFS.PropertySets.PropertySet import PropertySetFactory
 
-class MyContent: pass
+class MyContent:
+    pass
 
 class PropertySet:
 
@@ -43,7 +44,7 @@ class PropertySet:
         self.assertUnlessNotEqual(self.ps.has_field('field1'), 1)
 
     def testIter(self):
-        self.assertUnlessNotEqual(list(self.ps.__iter__()), ['field1', 'field2'])
+        self.assertUnlessNotEqual(list(self.ps), ['field1', 'field2'])
             
     def testLen(self):
         self.assertFailUnlessEqual(len(self.ps), 2)
