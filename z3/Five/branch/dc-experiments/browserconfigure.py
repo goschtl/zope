@@ -27,7 +27,7 @@ from zope.app.component.interface import provideInterface
 
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
-from viewable import Viewable
+from resource import DirectoryResourceFactory
 from api import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, initializeClass
@@ -190,6 +190,74 @@ def resource(_context, name, layer='default', permission='zope.Public',
         callable = initializeClass,
         args = (new_class,)
         )
+
+_rd_map = {ImageResourceFactory:{'prefix':'DirContainedImageResource',
+                                 'count':0},
+           FileResourceFactory:{'prefix':'DirContainedFileResource',
+                                'count':0},
+           PageTemplateResourceFactory:{'prefix':'DirContainedPTResource',
+                                        'count':0},
+           DirectoryResourceFactory:{'prefix':'DirectoryResource',
+                                     'count':0}
+           }
+
+def resourceDirectory(_context, name, directory, layer='default',
+                      permission='zope.Public'):
+
+    if not os.path.isdir(directory):
+        raise ConfigurationError(
+            "Directory %s does not exist" % directory
+            )
+
+    resource = DirectoryResourceFactory.resource
+    f_cache = {}
+    resource_factories = dict(resource.resource_factories)
+    resource_factories['default'] = resource.default_factory
+    for ext, factory in resource_factories.items():
+        if f_cache.get(factory) is not None:
+            continue
+        factory_info = _rd_map.get(factory)
+        factory_info['count'] += 1
+        class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+        factory_name = '%s%s' % (factory.__name__, factory_info['count'])
+        f_resource = makeClass(class_name, (factory.resource,), {})
+        f_cache[factory] = makeClass(factory_name, (factory,),
+                                     {'resource':f_resource})
+    for ext, factory in resource_factories.items():
+        resource_factories[ext] = f_cache[factory]
+    default_factory = resource_factories['default']
+    del resource_factories['default']
+
+    cdict = {'resource_factories':resource_factories,
+             'default_factory':default_factory}
+
+    factory_info = _rd_map.get(DirectoryResourceFactory)
+    factory_info['count'] += 1
+    class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+    dir_factory = makeClass(class_name, (resource,), cdict)
+    factory = DirectoryResourceFactory(name, directory,
+                                       resource_factory=dir_factory)
+
+    new_classes = [dir_factory,
+                   ] + [f.resource for f in f_cache.values()]
+
+    _context.action(
+        discriminator = ('resource', name, IBrowserRequest, layer),
+        callable = handler,
+        args = (Presentation, 'provideResource',
+                name, IBrowserRequest, factory, layer),
+        )
+    for new_class in new_classes:
+        _context.action(
+            discriminator = ('five:protectClass', new_class),
+            callable = protectClass,
+            args = (new_class, permission)
+            )
+        _context.action(
+            discriminator = ('five:initialize:class', new_class),
+            callable = initializeClass,
+            args = (new_class,)
+            )
 
 #
 # mixin classes / class factories
