@@ -43,6 +43,9 @@ $(LOCAL_HTML): links.rst
 apiref:
 	./mkapiref.sh
 
+apicheck:
+	cd .. && epydoc -n 'Zope Packaging Tools' \
+	    --docformat restructuredtext --check zpkgtools
 
 clean:
 	rm -f *.html
