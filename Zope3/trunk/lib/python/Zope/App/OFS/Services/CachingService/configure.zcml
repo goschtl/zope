@@ -1,0 +1,17 @@
+<zopeConfigure
+     xmlns='http://namespaces.zope.org/zope'>
+
+  <content class=".CachingService.">
+    <factory id="CachingService" permission="Zope.ManageServices" />
+      <require
+          permission="Zope.View"
+          interface="Zope.App.Caching.ICachingService." />
+      <require
+          permission="Zope.ManageServices"
+          interface="Zope.App.OFS.Container.IContainer." />
+  </content>
+
+  <include package=".Views" />
+
+</zopeConfigure>
+

@@ -1,0 +1,63 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Services.CachingService">
+
+<!-- Handle all Caching Service configuration -->
+
+  <browser:menu id="add_cache"
+      title="Menu for adding new caches." />
+
+  <browser:defaultView
+     for=".CachingService.ILocalCachingService"
+     name="index.html" />
+
+  <browser:view
+     permission="Zope.ManageServices"
+     for=".CachingService.ILocalCachingService"
+     factory="Zope.App.OFS.Container.Views.Browser.Contents.">
+
+     <browser:page name="index.html" attribute="index" />
+
+  </browser:view>
+
+  <browser:view
+      name="+"
+      for=".CachingService.ILocalCachingService"
+      permission="Zope.ManageContent"
+      factory=".Views.Browser.Adding." >
+
+    <browser:page name="index.html"  attribute="index" />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view>
+
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+       action="CachingService"  title="Caching Service"
+       description="A Persistent Caching Service for TTW
+       development"
+       />
+
+  <!-- Handle all generic Cache configuration -->
+
+<!-- TODO
+
+  <browser:defaultView for="Zope.App.Caching.ICache."
+      name="editForm.html" />
+
+  <browser:view
+      for="Zope.App.Caching.ICache."
+      permission="Zope.View"
+      factory=".Views.Browser.Caching.">
+    <browser:page name="editForm.html"
+        template="Views/Browser/caching.pt" />
+    <browser:page name="edit.html" attribute="edit" />
+  </browser:view>
+
+  <browser:menuItems menu="zmi_views" for="Zope.App.Caching.ICache.">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+  </browser:menuItems>
+
+  -->
+
+</zopeConfigure>
