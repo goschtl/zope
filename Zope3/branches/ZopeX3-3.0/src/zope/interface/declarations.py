@@ -391,7 +391,7 @@ def implementedByFallback(cls):
             # Return it.
             return spec
 
-        # XXX need old style __implements__ compatibility?
+        # TODO: need old style __implements__ compatibility?
         # Hm, there's an __implemented__, but it's not a spec. Must be
         # an old-style declaration. Just compute a spec for it
         return Declaration(*_normalizeargs((spec, )))
@@ -404,7 +404,7 @@ def implementedByFallback(cls):
         if spec is not None:
             return spec
 
-    # XXX need old style __implements__ comptability?
+    # TODO: need old style __implements__ comptability?
     if spec is not None:
         # old-style __implemented__ = foo declaration
         spec = (spec, ) # tuplefy, as it might be just an int

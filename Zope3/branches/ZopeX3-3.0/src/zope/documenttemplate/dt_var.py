@@ -395,7 +395,7 @@ special_formats={
     'whole-dollars': whole_dollars,
     'dollars-and-cents': dollars_and_cents,
     'collection-length': len_format,
-    # XXX: Gone for now
+    # TODO: Gone for now
     # 'structured-text': structured_text,
 
     # The rest are depricated:

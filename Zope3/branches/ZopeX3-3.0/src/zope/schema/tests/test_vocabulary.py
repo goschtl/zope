@@ -55,7 +55,7 @@ class RegistryTests(BaseTest):
         r = vocabulary.getVocabularyRegistry()
         self.assert_(interfaces.IVocabularyRegistry.providedBy(r))
 
-    # XXX still need to test the default implementation
+    # TODO: still need to test the default implementation
 
 class SampleTerm:
     pass

@@ -173,23 +173,5 @@ TestClasses = (AdviceTests, FrameInfoTest)
 def test_suite():
     return TestSuite([makeSuite(t,'check') for t in TestClasses])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    unittest.main(defaultTest=test_suite)

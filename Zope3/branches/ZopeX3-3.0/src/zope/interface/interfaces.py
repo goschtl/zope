@@ -52,10 +52,29 @@ class IAttribute(IElement):
 class IMethod(IAttribute):
     """Method attributes
     """
-    # XXX What the heck should methods provide? Grrrr
+
+    def getSignatureInfo():
+        """Returns the signature information.
+
+        This method returns a dictionary with the following keys:
+
+        o `positional` - All positional arguments.
+
+        o `required` - A list of all required arguments.
+
+        o `optional` - A list of all optional arguments.
+
+        o `varargs' - The name of the varargs argument.
+
+        o `kwargs` - The name of the kwargs argument.
+        """
 
     def getSignatureString():
         """Return a signature string suitable for inclusion in documentation.
+
+        This method returns the function signature string. For example, if you
+        have `func(a, b, c=1, d='f')`, then the signature string is `(a, b,
+        c=1, d='f')`.
         """
 
 class ISpecification(Interface):

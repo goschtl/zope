@@ -36,9 +36,9 @@ class Odd: __metaclass__ = odd.MetaClass
 class B(Odd): __implemented__ = I2
 
 
-# XXX We are going to need more magic to make classProvides work with odd
-#     classes. This will work in the next iteration. For now, we'll use
-#     a different mechanism.
+# TODO: We are going to need more magic to make classProvides work with odd
+#       classes. This will work in the next iteration. For now, we'll use
+#       a different mechanism.
 
 # from zope.interface import classProvides
 
