@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.4 2003/02/06 01:26:13 seanb Exp $
+$Id: subscribers.py,v 1.5 2003/02/06 04:30:46 seanb Exp $
 """
 __metaclass__ = type
 
@@ -37,6 +37,7 @@ from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
 from zope.proxy.context import ContextMethod
 from zope.component import getService, queryAdapter
+from zope.component.servicenames import HubIds, Events
 
 from zope.app.traversing import traverse, traverseName, \
      getPhysicalPath, getPhysicalRoot
@@ -61,7 +62,7 @@ class Registration(Persistent):
 
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""
-        hub = getService(wrapped_self, "HubIds")
+        hub = getService(wrapped_self, HubIds)
         wrapped_self._registerObject(event.object, hub)
     notify = ContextMethod(notify)
 
@@ -70,7 +71,7 @@ class Registration(Persistent):
     def subscribe(wrapped_self):
         if wrapped_self.currentlySubscribed:
             raise RuntimeError, "already subscribed; please unsubscribe first"
-        events = getService(wrapped_self, "Events")
+        events = getService(wrapped_self, Events)
         events.subscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = True
     subscribe = ContextMethod(subscribe)
@@ -78,7 +79,7 @@ class Registration(Persistent):
     def unsubscribe(wrapped_self):
         if not wrapped_self.currentlySubscribed:
             raise RuntimeError, "not subscribed; please subscribe first"
-        events = getService(wrapped_self, "Events")
+        events = getService(wrapped_self, Events)
         events.unsubscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = False
     unsubscribe = ContextMethod(unsubscribe)
@@ -88,7 +89,7 @@ class Registration(Persistent):
 
     def registerExisting(wrapped_self):
         object = findContentObject(wrapped_self)
-        hub = getService(wrapped_self, "HubIds")
+        hub = getService(wrapped_self, HubIds)
         wrapped_self._registerTree(object, hub)
     registerExisting = ContextMethod(registerExisting)
 

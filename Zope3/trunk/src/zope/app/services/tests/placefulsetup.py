@@ -14,11 +14,12 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.5 2002/12/30 14:03:17 stevea Exp $
+$Id: placefulsetup.py,v 1.6 2003/02/06 04:30:54 seanb Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
+from zope.component.servicenames import HubIds, Events, Subscription
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -155,12 +156,12 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject(service_name, EventService())
 
         path = "%s/%s" % (getPhysicalPathString(default), service_name)
-        configuration = ServiceConfiguration("Events", path)
+        configuration = ServiceConfiguration(Events, path)
         default['configure'].setObject(
                 "%sEventsDir" % service_name, configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration("Subscription", path)
+        configuration = ServiceConfiguration(Subscription, path)
         default['configure'].setObject(
                 "%sSubscriptionServiceDir" % service_name, configuration)
         traverse(default, 'configure/2').status = Active
@@ -180,12 +181,12 @@ class PlacefulSetup(PlacelessSetup):
         from zope.app.interfaces.services.hub import IObjectHub
         from zope.app.interfaces.services.event import ISubscriptionService
         from zope.app.services.event import EventService
-        defineService("Subscription", ISubscriptionService)
+        defineService(Subscription, ISubscriptionService)
 
         # Events service already defined by
         # zope.app.events.tests.PlacelessSetup
 
-        defineService("HubIds", IObjectHub)
+        defineService(HubIds, IObjectHub)
 
         sm = traverse(root, '++etc++Services')
         default = traverse(sm, 'Packages/default')
@@ -193,17 +194,17 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myObjectHub", self.getObjectHub())
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration("Events", path)
+        configuration = ServiceConfiguration(Events, path)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration("Subscription", path)
+        configuration = ServiceConfiguration(Subscription, path)
         default['configure'].setObject(
                 "mySubscriptionServiceDir", configuration)
         traverse(default, 'configure/2').status = Active
 
         path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration("HubIds", path)
+        configuration = ServiceConfiguration(HubIds, path)
         default['configure'].setObject("myHubIdsServiceDir", configuration)
         traverse(default, 'configure/3').status = Active
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 Revision information:
-$Id: subs.py,v 1.4 2003/02/03 15:59:10 stevea Exp $
+$Id: subs.py,v 1.5 2003/02/06 04:30:43 seanb Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -32,6 +32,7 @@ from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
 from zope.component import getService, getAdapter, queryAdapter
+from zope.component.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
 import logging
@@ -485,7 +486,7 @@ def getWaysToSubscribe(context, reference, allways=True):
     if isinstance(clean_reference, int):
         reftype = int
         hubId = clean_reference
-        hub = getService(context, "HubIds")
+        hub = getService(context, HubIds)
         try:
             wrappedobj = hub.getObject(hubId)
         except NotFoundError:
@@ -511,7 +512,7 @@ def getWaysToSubscribe(context, reference, allways=True):
         else:
             cleanobj = removeAllProxies(wrappedobj)
             if allways:
-                hub = getService(context, 'HubIds')
+                hub = getService(context, HubIds)
                 try:
                     hubId = hub.getHubId(path)
                 except NotFoundError:
@@ -521,7 +522,7 @@ def getWaysToSubscribe(context, reference, allways=True):
         wrappedobj = reference
         cleanobj = clean_reference
         path = getPhysicalPathString(wrappedobj)
-        hub = getService(context, "HubIds")
+        hub = getService(context, HubIds)
         try:
             hubId = hub.getHubId(path)
         except NotFoundError:

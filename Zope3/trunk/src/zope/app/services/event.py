@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.8 2003/02/03 15:59:16 stevea Exp $
+$Id: event.py,v 1.9 2003/02/06 04:30:52 seanb Exp $
 """
 
 from __future__ import generators
@@ -28,6 +28,7 @@ from zope.app.interfaces.services.service import IBindingAware
 
 from zope.component import getAdapter, queryAdapter, getService, queryService
 from zope.component import ComponentLookupError
+from zope.component.servicenames import HubIds, Events, Subscription
 from zope.app.component.nextservice import getNextService, queryNextService
 
 from zope.proxy.context import ContextMethod, ContextSuper
@@ -37,7 +38,7 @@ from zope.app.event.subs import Subscribable, SubscriptionTracker
 
 
 def getSubscriptionService(context):
-    return getService(context, "Subscription")
+    return getService(context, Subscription)
 
 def subscribe(subscriber, event_type=IEvent, filter=None, context=None):
     if context is None and not isinstance(subscriber, (int, str, unicode)):
@@ -81,7 +82,7 @@ class EventChannel(Subscribable):
 
     def _notify(clean_self, wrapped_self, event):
         subscriptionsForEvent = clean_self._registry.getAllForObject(event)
-        hubGet = getService(wrapped_self, "HubIds").getObject
+        hubGet = getService(wrapped_self, HubIds).getObject
         pathGet = getAdapter(wrapped_self, ITraverser).traverse
 
         badSubscribers = {}
@@ -321,7 +322,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         else:
             publishedEvents.append(event)
         if (clean_self.isPromotableEvent(event)):
-            getNextService(wrapped_self, 'Events').publish(event)
+            getNextService(wrapped_self, Events).publish(event)
         publishedEvents.remove(event)
     publish = ContextMethod(publish)
 
@@ -336,12 +337,12 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
     def bound(wrapped_self, name):
         "See IBindingAware"
         ContextSuper(EventService, wrapped_self).bound(name)
-        if name == "Subscription":
+        if name == Subscription:
             clean_self = removeAllProxies(wrapped_self)
             clean_self._serviceName = name # for LocalServiceSubscribable
             if clean_self.subscribeOnBind:
                 try:
-                    es = getNextService(wrapped_self, "Subscription")
+                    es = getNextService(wrapped_self, Subscription)
                 except ComponentLookupError:
                     pass
                 else:
@@ -350,7 +351,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     def unbound(wrapped_self, name):
         "See IBindingAware"
-        if name == "Subscription":
+        if name == Subscription:
             clean_self = removeAllProxies(wrapped_self)
             clean_self._v_unbinding = True
             try:
@@ -392,13 +393,13 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             if ISubscriptionService.isImplementedBy(
                 removeAllProxies(clean_subscribable)):
                 try:
-                    context = getService(wrapped_self, "Subscription")
+                    context = getService(wrapped_self, Subscription)
                     # we do this instead of getNextService because the order
                     # of unbinding and notification of unbinding is not
                     # guaranteed
                     while removeAllProxies(context) in (
                         clean_subscribable, clean_self): 
-                        context = getNextService(context, "Subscription")
+                        context = getNextService(context, Subscription)
                 except ComponentLookupError:
                     pass
                 else:

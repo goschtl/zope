@@ -12,13 +12,14 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.3 2002/12/30 14:03:07 stevea Exp $
+$Id: test_objectretrievingprocessor.py,v 1.4 2003/02/06 04:30:47 seanb Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component import getAdapter
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
+from zope.component.servicenames import HubIds
 
 from zope.interface.verify import verifyObject
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -85,8 +86,8 @@ class Test(PlacelessSetup, TestCase):
         # Register the objecthub as a service
         hub = FakeObjectHub()
         service_manager = getServiceManager(None)
-        service_manager.defineService("HubIds", IObjectHub)
-        service_manager.provideService("HubIds", hub)
+        service_manager.defineService(HubIds, IObjectHub)
+        service_manager.provideService(HubIds, hub)
 
         # Insert our objects into the hub and remember their ids
         for x in objects:

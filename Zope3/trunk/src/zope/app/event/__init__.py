@@ -14,15 +14,16 @@
 """
 
 Revision information:
-$Id: __init__.py,v 1.4 2003/01/27 18:16:20 stevea Exp $
+$Id: __init__.py,v 1.5 2003/02/06 04:30:43 seanb Exp $
 """
 
 from zope.component import getService
+from zope.component.servicenames import Events
 from zope.app.interfaces.event import IEvent
 from zope.app.event.globalservice import eventPublisher, checkEventType
 
 def getEventService(context): # the "publish" service
-    return getService(context, 'Events')
+    return getService(context, Events)
 
 def publish(context, event):
     return getEventService(context).publish(event)

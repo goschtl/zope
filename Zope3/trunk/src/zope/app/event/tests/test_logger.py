@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.3 2002/12/30 14:03:05 stevea Exp $
+$Id: test_logger.py,v 1.4 2003/02/06 04:30:44 seanb Exp $
 """
 
 import unittest
@@ -20,6 +20,7 @@ import logging
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
+from zope.component.servicenames import Events
 
 from zope.app.event import globalSubscribe, globalUnsubscribe, publish
 from zope.app.event.objectevent import ObjectAddedEvent
@@ -41,9 +42,9 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         from zope.app.interfaces.event import IPublisher
-        getServiceManager(None).defineService("Events", IPublisher)
+        getServiceManager(None).defineService(Events, IPublisher)
         from zope.app.event.globalservice import eventPublisher
-        getServiceManager(None).provideService("Events", eventPublisher)
+        getServiceManager(None).provideService(Events, eventPublisher)
         # futz a handler in for testing
         self.logger = logging.getLogger("Event.Logger")
         self.oldlevel = self.logger.level

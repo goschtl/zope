@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.3 2002/12/30 14:03:05 stevea Exp $
+$Id: test_directives.py,v 1.4 2003/02/06 04:30:44 seanb Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -32,6 +32,7 @@ from zope.app.event.tests.test_eventpublisher \
      import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
+from zope.component.servicenames import Events
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.interfaces.event import IEvent
 
@@ -40,9 +41,9 @@ class Test(PlacelessSetup, TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         from zope.app.interfaces.event import IPublisher
-        getServiceManager(None).defineService("Events", IPublisher)
+        getServiceManager(None).defineService(Events, IPublisher)
         from zope.app.event.globalservice import eventPublisher
-        getServiceManager(None).provideService("Events", eventPublisher)
+        getServiceManager(None).provideService(Events, eventPublisher)
 
     def testSubscribe(self):
         from zope.app.event.tests.subscriber import subscriber

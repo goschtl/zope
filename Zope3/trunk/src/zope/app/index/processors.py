@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.5 2002/12/30 18:43:06 stevea Exp $
+$Id: processors.py,v 1.6 2003/02/06 04:30:46 seanb Exp $
 """
 
 from __future__ import generators
@@ -24,6 +24,7 @@ from zope.app.interfaces.index.interfaces import \
 from zope.app.interfaces.services.query import IQueryProcessor
 
 from zope.component import getAdapter, getService
+from zope.component.servicenames import HubIds
 from zope.proxy.context import ContextMethod
 
 class ObjectRetrievingProcessor:
@@ -41,7 +42,7 @@ class ObjectRetrievingProcessor:
         list = getAdapter(query, IRankedHubIdList)
         batch = getAdapter(query, IBatchedResult)
 
-        objectHub = getService(wrapped_self, "HubIds")
+        objectHub = getService(wrapped_self, HubIds)
 
         # XXX do we need wrapping for the objects returned by the hub?
         iterator = RankedObjectIterator(

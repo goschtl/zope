@@ -15,12 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.4 2002/12/30 14:02:53 stevea Exp $
+$Id: control.py,v 1.5 2003/02/06 04:30:41 seanb Exp $
 """
 
 from __future__ import generators
 
 from zope.component import getService, queryAdapter
+from zope.component.servicenames import HubIds
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.browser import BrowserView
@@ -38,7 +39,7 @@ class ControlView(BrowserView):
 
     def __init__(self, context, request):
         super(ControlView, self).__init__(context, request)
-        self.hub = getService(context, "HubIds")
+        self.hub = getService(context, HubIds)
 
     def nextBatch(self):
         start = int(self.request.get('start', self.default_start))

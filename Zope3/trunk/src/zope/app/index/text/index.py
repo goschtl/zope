@@ -18,10 +18,11 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.4 2002/12/30 14:03:08 stevea Exp $
+$Id: index.py,v 1.5 2003/02/06 04:30:48 seanb Exp $
 """
 
 from zope.component import getService, queryAdapter
+from zope.component.servicenames import HubIds
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.event import ISubscriber
 from zope.exceptions import NotFoundError
@@ -90,7 +91,7 @@ class TextIndex(TextIndexWrapper):
 
     def _getChannel(wrapped_self, channel):
         if channel is None:
-            channel = getService(wrapped_self, "HubIds")
+            channel = getService(wrapped_self, HubIds)
         return channel
     _getChannel = ContextMethod(_getChannel)
 

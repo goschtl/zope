@@ -14,13 +14,14 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.7 2003/02/03 15:59:17 stevea Exp $
+$Id: test_eventservice.py,v 1.8 2003/02/06 04:30:54 seanb Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.interface import Interface
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.component import getServiceManager
+from zope.component.servicenames import Events, Subscription
 from zope.app.services.event import EventService
 from zope.app.traversing import getPhysicalPathString, traverse
 from zope.exceptions import NotFoundError
@@ -810,11 +811,11 @@ class TestEventPublisher(EventSetup, TestCase):
         default.setObject("myEventService", service)
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration("Events", path)
+        configuration = ServiceConfiguration(Events, path)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration("Subscription", path)
+        configuration = ServiceConfiguration(Subscription, path)
         default['configure'].setObject("mySubscriptionServiceDir",
                                        configuration)
         traverse(
@@ -867,13 +868,13 @@ class TestEventPublisher(EventSetup, TestCase):
             )
 
         sm = traverse(self.rootFolder, "folder1/++etc++Services")
-        configuration = sm.queryConfigurations("Events").active()
+        configuration = sm.queryConfigurations(Events).active()
         configuration.status = Registered
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
 
-        configuration = sm.queryConfigurations("Subscription").active()
+        configuration = sm.queryConfigurations(Subscription).active()
         configuration.status = Registered
 
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
@@ -891,10 +892,10 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
         sm = traverse(self.rootFolder, "folder2/++etc++Services")
-        configuration = sm.queryConfigurations("Subscription").active()
+        configuration = sm.queryConfigurations(Subscription).active()
         # make sure it doesn't raise any errors
         configuration.status = Registered
-        configuration = sm.queryConfigurations("Events").active()
+        configuration = sm.queryConfigurations(Events).active()
         # make sure it doesn't raise any errors
         configuration.status = Registered
 

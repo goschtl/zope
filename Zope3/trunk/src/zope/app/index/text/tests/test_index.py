@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.5 2002/12/30 14:03:08 stevea Exp $
+$Id: test_index.py,v 1.6 2003/02/06 04:30:49 seanb Exp $
 """
 
 import unittest
@@ -26,6 +26,7 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing import locationAsUnicode, traverse
 from zope.component import getService
+from zope.component.servicenames import HubIds
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.services.hub import \
@@ -95,7 +96,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         # Technically this is a functional test
         self.createStandardServices()
         index = traverse(self.rootFolder, '/myIndex')
-        hub = getService(self.rootFolder, 'HubIds')
+        hub = getService(self.rootFolder, HubIds)
         
         hub.subscribe(index, IRegistrationHubEvent)
         hub.subscribe(index, IObjectModifiedHubEvent)
@@ -125,7 +126,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertAbsent(Bruce)
         self.assertAbsent(Sheila)
         location = '/bruce'
-        hub = getService(self.rootFolder, 'HubIds')
+        hub = getService(self.rootFolder, HubIds)
         hubid = hub.register(location)
         index.subscribe(hub)
         self.assertEqual(index.isSubscribed(), True)

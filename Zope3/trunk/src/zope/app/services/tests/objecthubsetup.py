@@ -14,11 +14,12 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.4 2002/12/30 15:08:17 stevea Exp $
+$Id: objecthubsetup.py,v 1.5 2003/02/06 04:30:54 seanb Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component import getServiceManager, getService
+from zope.component.servicenames import HubIds
 from zope.app.services.service import ServiceConfiguration
 from zope.app.traversing import getPhysicalPathString, traverse
 from zope.app.traversing import locationAsTuple
@@ -98,5 +99,5 @@ class ObjectHubSetup(EventSetup):
         
     def setUp(self):
         EventSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, 'HubIds')
+        self.object_hub = getService(self.rootFolder, HubIds)
 
