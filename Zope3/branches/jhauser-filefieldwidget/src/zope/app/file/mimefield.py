@@ -13,7 +13,7 @@
 ##############################################################################
 """File content component
 
-$Id: $
+$Id:$
 """
 __docformat__ = 'restructuredtext'
 
@@ -21,10 +21,10 @@ from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
 
-from zope.schema.interfaces import IBytesLine
+from zope.schema.interfaces import IBytes
 from zope.schema._bootstrapfields import Field
 from zope.schema._bootstrapfields import TextLine
-from zope.schema._field import BytesLine
+from zope.schema._field import Bytes
 from zope.app.file.file import File
 
 from zope.i18nmessageid import MessageIDFactory
@@ -35,7 +35,7 @@ from interfaces import IFile
 #
 # The basic schema interface
 #
-class IMime(IBytesLine):
+class IMime(IBytes):
     u"""Fields which hold data characterized by a mime type.
 
     The data is stored memory effecient.
@@ -56,10 +56,9 @@ class IFileData(IMime):
     filename = TextLine(title=_(u"Filename"),
                         description=_(u"The Filename of the uploaded file"),
                         required=False)
-
     
- # The field implementation                       
-class FileData(BytesLine, File):
+# The field implementation                       
+class FileData(Bytes, File):
     """A field implementation for uploaded files. 
 
     Let's test the constructor:
@@ -147,29 +146,29 @@ class FileData(BytesLine, File):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> IFile.implementedBy(File)
+    >>> IFile.implementedBy(FileData)
     True
-    >>> verifyClass(IFile, File)
+    >>> verifyClass(IFile, FileData)
     True
     """
 
     implements(IFileData, IFile)
 
-    def __init__(self, data='', contentType=''):
-        self.data = data
-        # instead of mimeType we use contentType as it is mandated by IFile
-        self.contentType = contentType
-        self.filename = self._extractFilename(data)
-
     def _setdata(self, data):
         File._setdata(data)
+        print 'setting data', type(data)
         self.filename = self._extractFilename(data)
+        self.contentType = self._extractContentType(data)
 
+    def _extractContentType(self, data):
+        u"""Extract the content type for the given data"""
+        return 'application/octet-stream'
+    
     def _extractFilename(self, data):
         # if it is a fileupload object
         if hasattr(data,'filename'):
             fid = data.filename
-            # prepare from ospath filenames from explorer.
+            # some browsers include the full pathname
             fid=fid[max(fid.rfind('/'),
                         fid.rfind('\\'),
                         fid.rfind(':')
