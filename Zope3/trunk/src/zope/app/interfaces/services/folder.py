@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for packages.
+"""Interfaces for folders.
 
-$Id: folder.py,v 1.5 2003/06/21 21:22:10 jim Exp $
+$Id: folder.py,v 1.6 2003/08/08 15:23:21 fdrake Exp $
 """
 
 from zope.app.interfaces.container import IAdding, IContainer
