@@ -52,9 +52,15 @@ class Stub:
         else:
             return None
 
+    def info(self):
+        return [{'configuration': self}]
+
     # configuration
     def getComponent(self):
         return self
+
+    def usageSummary(self):
+        return ""
 
 class StubAbsoluteURL(BrowserView):
     def __str__(self):
@@ -90,22 +96,27 @@ class UseConfigurationTest(placelesssetup.PlacelessSetup, unittest.TestCase):
         expected = [{"interface": ifname2,
                      "name": "",
                      "url": "",
+                     "summary": "",
                      "configurl": confurl(ifname2, '')},
                     {"interface": ifname2,
                      "name": "mybar-1",
                      "url": "3",
+                     "summary": "",
                      "configurl": confurl(ifname2, 'mybar-1')},
                     {"interface": ifname1,
                      "name": "",
                      "url": "1",
+                     "summary": "",
                      "configurl": confurl(ifname1, '')},
                     {"interface": ifname1,
                      "name": "myfoo-1",
                      "url": "2",
+                     "summary": "",
                      "configurl": confurl(ifname1, 'myfoo-1')},
                     {"interface": ifname1,
                      "name": "myfoo-2",
                      "url": "",
+                     "summary": "",
                      "configurl": confurl(ifname1, 'myfoo-2')},
                     ]
         result = utilities.getConfigs()
