@@ -122,18 +122,38 @@ Groups can contain groups:
   >>> groups.getGroupsForPrincipal('group.G1')
   (u'group.G2',)
 
-But, of course, they cannot contain cycles:
+Groups cannot contain cycles:
 
   >>> g1.principals = ('p1', 'p2', 'group.G2')
   Traceback (most recent call last):
   ...
-  GroupCycle: group.G1
+  GroupCycle: (u'group.G1', [u'group.G1', u'group.G2'])
+  
+They need not be hierarchical:
+
+  >>> ga = zope.app.pas.groupfolder.GroupInformation("Group A")
+  >>> groups['GA'] = ga
+
+  >>> gb = zope.app.pas.groupfolder.GroupInformation("Group B")
+  >>> groups['GB'] = gb
+  >>> gb.principals = ['group.GA']
+
+  >>> gc = zope.app.pas.groupfolder.GroupInformation("Group C")
+  >>> groups['GC'] = gc
+  >>> gc.principals = ['group.GA']
+
+  >>> gd = zope.app.pas.groupfolder.GroupInformation("Group D")
+  >>> groups['GD'] = gd
+  >>> gd.principals = ['group.GA', 'group.GB']
+
+  >>> ga.principals = ['p1']
 
 Group folders provide a very simple search interface.  They perform
 simple string searches on group titles and descriptions.
 
-  >>> list(groups.search({'search': 'grou'}))
-  [u'group.G1', u'group.G2']
+  >>> list(groups.search({'search': 'grou'})) # doctest: +NORMALIZE_WHITESPACE
+  [u'group.G1', u'group.G2',
+   u'group.GA', u'group.GB', u'group.GC', u'group.GD']
 
   >>> list(groups.search({'search': 'two'}))
   [u'group.G2']

@@ -166,22 +166,15 @@ class InvalidGroupId(Exception):
     """A user has a group id for a group that can't be found
     """
 
-def nocycles(principal_ids, seen=None, getPrincipal=None):
-    if seen is None:
-        seen = {}
-        getPrincipal = zapi.principals().getPrincipal
-
-    for principal_id in principal_ids:
+def nocycles(principal_id, seen, getPrincipal):
+    if principal_id in seen:
         if principal_id in seen:
-            raise GroupCycle(principal_id)
-        seen[principal_id] = 1
-
-    for principal_id in principal_ids:
-        principal = getPrincipal(principal_id)
-        if principal is None:
-            raise InvalidGroupId(principal_id)
-
-        nocycles(principal.groups, seen, getPrincipal)
+            raise GroupCycle(principal_id, seen)
+    seen.append(principal_id)
+    principal = getPrincipal(principal_id)
+    for group_id in principal.groups:
+        nocycles(group_id, seen, getPrincipal)
+    seen.pop()
 
 class GroupInformation(Persistent):
 
@@ -214,7 +207,7 @@ class GroupInformation(Persistent):
                 except AttributeError:
                     pass
 
-            nocycles((group_id, ))
+            nocycles(group_id, [], zapi.principals().getPrincipal)
 
         self._principals = tuple(prinlist)
         
