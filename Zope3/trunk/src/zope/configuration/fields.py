@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.12 2003/08/05 14:56:05 srichter Exp $
+$Id: fields.py,v 1.13 2003/08/18 19:20:18 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -347,6 +347,20 @@ class MessageID(schema.Text):
     {'testing': {u'Foo Bar': [('file location', 8)],
                  u'Hello world!': [('file location', 8),
                                    ('file location', 8)]}}
+
+    Explicit Message IDs
+
+    >>> i = field.fromUnicode(u'[View-Permission] View')
+    >>> i
+    u'View-Permission'
+    >>> i.default
+    u'View'
+
+    >>> i = field.fromUnicode(u'[] [Some] text')
+    >>> i
+    u'[Some] text'
+    >>> i.default
+    u'[Some] text'
     """
 
     implements(IFromUnicode)
@@ -364,6 +378,15 @@ class MessageID(schema.Text):
                 )
         v = super(MessageID, self).fromUnicode(u)
 
+        # Check whether there is an explicit message is specified
+        default = None
+        if v.startswith('[]'):
+            v = v[3:]
+        elif v.startswith('['):
+            end = v.find(']')
+            default = v[end+2:]
+            v = v[1:end]
+
         # Record the string we got for the domain
         i18n_strings = context.i18n_strings
         strings = i18n_strings.get(domain)
@@ -379,4 +402,4 @@ class MessageID(schema.Text):
             factory = zope.i18n.messageid.MessageIDFactory(domain)
             self.__factories[domain] = factory
 
-        return factory(v)
+        return factory(v, default)
