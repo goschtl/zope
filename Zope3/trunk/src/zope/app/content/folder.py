@@ -82,7 +82,7 @@ class Folder(Persistent, ServiceManagerContainer):
         try:
             unicode(name)
         except UnicodeError:
-            raise TypeError("Name may not contain non-7-bit-ascii codes")
+            raise TypeError("Non-unicode names must be 7-bit-ascii only")
         if not name:
             raise TypeError("Name must not be empty")
 
