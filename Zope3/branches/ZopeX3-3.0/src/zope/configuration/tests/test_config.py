@@ -260,8 +260,10 @@ def test_bad_import():
 
     Cleanup:
 
-    >>> del sys.modules['zope.configuration.tests.victim']
-    >>> del sys.modules['zope.configuration.tests.bad']
+    >>> if 'zope.configuration.tests.victim' in sys.modules:
+    ...     del sys.modules['zope.configuration.tests.victim']
+    >>> if 'zope.configuration.tests.bad' in sys.modules:
+    ...     del sys.modules['zope.configuration.tests.bad']
 
     """
     
