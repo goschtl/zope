@@ -20,14 +20,16 @@
 
 # Zope3 imports
 from persistence import Persistent
+from persistence.dict import PersistentDict
 from zodb.btrees.OOBTree import OOBTree
-from zope.app.component.nextservice import getNextService
+from zope.app.component.nextservice import queryNextService
 from zope.context import ContextMethod
 from zope.context import ContextWrapper
 from zope.app.interfaces.annotation import IAnnotations
 
 # Sibling imports
-from zope.app.interfaces.services.principalannotation import IPrincipalAnnotationService
+from zope.app.interfaces.services.principalannotation \
+     import IPrincipalAnnotationService
 from zope.app.interfaces.services.service import ISimpleService
 
 class PrincipalAnnotationService(Persistent):
@@ -45,20 +47,33 @@ class PrincipalAnnotationService(Persistent):
 
     # implementation of IPrincipalAnnotationService
 
-    def getAnnotation(self, principalId):
+    def getAnnotations(self, principal):
         """Return object implementing IAnnotations for the given principal.
 
         If there is no IAnnotations it will be created and then returned.
         """
-        if not self.annotations.has_key(principalId):
-            self.annotations[principalId] = Annotations(principalId)
-        return ContextWrapper(self.annotations[principalId], self, name=principalId)
 
-    getAnnotation = ContextMethod(getAnnotation)
+        return self.getAnnotationsById(principal.getId())
+            
+    getAnnotations = ContextMethod(getAnnotations)
 
-    def hasAnnotation(self, principalId):
+    def getAnnotationsById(self, principalId):
+        """Return object implementing IAnnotations for the given principal.
+
+        If there is no IAnnotations it will be created and then returned.
+        """
+
+        annotations = self.annotations.get(principalId)
+        if annotations is None:
+            annotations = Annotations(principalId, store=self.annotations)
+
+        return ContextWrapper(annotations, self, name=principalId)
+            
+    getAnnotationsById = ContextMethod(getAnnotationsById)
+
+    def hasAnnotations(self, principal):
         """Return boolean indicating if given principal has IAnnotations."""
-        return self.annotations.has_key(principalId)
+        return principal.getId() in self.annotations
 
 
 class Annotations(Persistent):
@@ -66,33 +81,43 @@ class Annotations(Persistent):
 
     __implements__ = IAnnotations, Persistent.__implements__
 
-    def __init__(self, principalId):
+    def __init__(self, principalId, store=None):
         self.principalId = principalId
-        self.data = OOBTree()
+        self.data = PersistentDict() # We don't really expect that many
+
+        # _v_store is used to remember a mapping object that we should
+        # be saved in if we ever change
+        self._v_store = store
 
     def __getitem__(wrapped_self, key):
         try:
             return wrapped_self.data[key]
         except KeyError:
             # We failed locally: delegate to a higher-level service.
-            service = getNextService(wrapped_self, 'PrincipalAnnotation')
-            if service:
-                return service.getAnnotation(wrapped_self.principalId)[key]
+            service = queryNextService(wrapped_self, 'PrincipalAnnotation')
+            if service is not None:
+                annotations = service.getAnnotationsById(
+                    wrapped_self.principalId)
+                return annotations[key]
             raise
 
     __getitem__ = ContextMethod(__getitem__)
 
     def __setitem__(self, key, value):
+
+        if getattr(self, '_v_store', None) is not None:
+            # _v_store is used to remember a mapping object that we should
+            # be saved in if we ever change
+            self._v_store[self.principalId] = self
+            del self._v_store
+
         self.data[key] = value
 
     def __delitem__(self, key):
         del self.data[key]
 
     def get(self, key, default=None):
-        try:
-            return self.data[key]
-        except KeyError:
-            return default
+        return self.data.get(key, default)
 
 
 class AnnotationsForPrincipal(object):
@@ -105,4 +130,4 @@ class AnnotationsForPrincipal(object):
         self.service = service
 
     def __call__(self, principal):
-        return self.service.getAnnotation(principal.getId())
+        return self.service.getAnnotationsById(principal.getId())

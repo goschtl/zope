@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.3 2003/05/01 19:35:35 faassen Exp $
+$Id: test_principalannotation.py,v 1.4 2003/05/29 18:16:55 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -63,12 +63,17 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
     def testGetSimple(self):
         prince = Principal('somebody')
-        self.assert_(not self.svc.hasAnnotation(prince.getId()))
+        self.assert_(not self.svc.hasAnnotations(prince))
 
-        princeAnnotation = self.svc.getAnnotation(prince.getId())
-        self.assert_(self.svc.hasAnnotation(prince.getId()))
+        princeAnnotation = self.svc.getAnnotations(prince)
+        # Just getting doesn't actualy store. We don't want to store unless
+        # we make a change.
+        self.assert_(not self.svc.hasAnnotations(prince))
 
         princeAnnotation['something'] = 'whatever'
+
+        # But now we should have the annotation:
+        self.assert_(self.svc.hasAnnotations(prince))
 
     def testGetFromLayered(self):
         princeSomebody = Principal('somebody')
@@ -77,13 +82,18 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         sm1.PrincipalAnnotation = PrincipalAnnotationService()
         subService = getService(self.folder1, "PrincipalAnnotation")
 
-        parentAnnotation = self.svc.getAnnotation(princeSomebody.getId())
-        self.assert_(self.svc.hasAnnotation(princeSomebody.getId()))
-        self.assert_(not subService.hasAnnotation(princeSomebody.getId()))
+        parentAnnotation = self.svc.getAnnotations(princeSomebody)
+
+        # Just getting doesn't actualy store. We don't want to store unless
+        # we make a change.
+        self.assert_(not subService.hasAnnotations(princeSomebody))
 
         parentAnnotation['hair_color'] = 'blue'
 
-        subAnnotation = subService.getAnnotation(princeSomebody.getId())
+        # But now we should have the annotation:
+        self.assert_(self.svc.hasAnnotations(princeSomebody))
+
+        subAnnotation = subService.getAnnotations(princeSomebody)
         self.assertEquals(subAnnotation['hair_color'], 'blue')
 
         subAnnotation['foo'] = 'bar'
@@ -93,7 +103,8 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
     def testAdapter(self):
         p = Principal('somebody')
-        provideAdapter(IPrincipal, IAnnotations, AnnotationsForPrincipal(self.svc))
+        provideAdapter(IPrincipal, IAnnotations,
+                       AnnotationsForPrincipal(self.svc))
         annotations = getAdapter(p, IAnnotations)
         annotations["test"] = "bar"
         annotations = getAdapter(p, IAnnotations)
