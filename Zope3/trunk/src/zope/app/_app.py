@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.6 2003/02/11 15:59:28 sidnei Exp $
+$Id: _app.py,v 1.7 2003/03/21 19:29:11 alga Exp $
 """
 
 import base64
@@ -130,7 +130,9 @@ class Application:
         request = request(stdin, stdout, env)
         request.setPublication(pub)
         if form:
-            request.update(form)
+            # This requires that request class has an attribute 'form'
+            # (BrowserRequest has, TestRequest hasn't)
+            request.form.update(form)
 
         return request
 
