@@ -10,15 +10,20 @@ Zope Changes
 
     New features
 
+      - Page templates now allow metal:define-macro and
+        metal:use-macro in the same tag.  This allows a macro to
+        extend another macro, which is particularly useful for writing
+        a skin that customizes another skin.
+
       - Added pagelet concept. Pagelets are responsible for a piece 
         of content in a view. They can be used to render additionaly 
         provided information into a pagetemplate.
 
-        + Added tal expression 'pagelet'
+        + Added tales expression 'pagelet'
 
-        + Added tal expression 'pagelets'
+        + Added tales expression 'pagelets'
 
-        + Added tal expression 'pagedata'
+        + Added tales expression 'pagedata'
         
       - Added pagelet chooser for store pagelet name in the annotation
         of a object.
