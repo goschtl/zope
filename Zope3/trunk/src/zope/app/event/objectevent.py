@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.13 2004/03/30 14:13:24 nathan Exp $
+$Id: objectevent.py,v 1.14 2004/03/30 21:47:38 nathan Exp $
 """
 
 __metaclass__ = type
@@ -85,18 +85,6 @@ class ObjectEventNotifier:
             adapter.notify(event)
 
 objectEventNotifierInstance = ObjectEventNotifier()
-
-class ObserverEventNotifier:
-
-    implements(ISubscriber)
-
-    def notify (self, event):
-        adapter = IObservable(event.object, None)
-
-        if adapter is not None:
-            adapter.notify(event, ISubscriber)
-
-observerEventNotifierInstance = ObserverEventNotifier()
 
 def objectEventCallbackHelper(callback):
     """Build a factory implementing ISubscriber that just calls a callback
