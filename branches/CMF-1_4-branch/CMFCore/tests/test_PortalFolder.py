@@ -404,7 +404,7 @@ class PortalFolderTests( SecurityTest ):
             pass
         except:
             # Zope < 2.7
-            e, v, tb = sys.exc_info(); del tb
+            import sys; e, v, tb = sys.exc_info(); del tb
             if str(e) != 'Bad Request':
                 raise
 
