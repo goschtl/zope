@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: ut.py,v 1.7 2003/01/20 21:51:51 jim Exp $
+$Id: ut.py,v 1.8 2003/03/25 13:45:48 ctheune Exp $
 """
 
 import unittest
@@ -29,7 +29,7 @@ import unittest
 # tearDown from them, or the benefits of using CleanUp will be lost.
 # Don't use CleanUp based tests outside the Zope package.
 
-# from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+# from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 #############################################################################
 
