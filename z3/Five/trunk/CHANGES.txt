@@ -1,8 +1,8 @@
 Five Changes
 ============
 
-Five 0.2
---------
+Five 0.2b
+---------
 
 * Added utility module, 'bridge', allowing reuse of Zope 2 interfaces
   (by introspecting them to create equivalent Zope 3 interfaces).
