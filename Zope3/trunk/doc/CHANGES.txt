@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added virtual host support in xml and static tree. The tree will 
+        switch the root to the virtualhost base. 
+
       - Change addMenuItem directive. Make use of class and menu attributes.
         This makes it possible to use the directive for own IAdding menu
         implementation. The addMenuItem directive supports now also the order
