@@ -25,7 +25,7 @@ from xml.sax.saxutils import quoteattr
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
-from zope.app.interfaces.form import WidgetInputError
+from zope.app.interfaces.form import WidgetInputError, MissingInputError
 from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
@@ -162,6 +162,28 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
     def render(self, value):
         raise NotImplementedError(
             "render() must be implemented by a subclass")
+
+    # The *Data() methods have tightly bound semantics.  Subclasses
+    # need to be really careful about dealing with these, and should
+    # enlist this version for help whenever possible to make sure
+    # internal state is maintained.
+
+    _have_field_data = False
+
+    def getData(self, optional=0):
+        if self._have_field_data:
+            return super(VocabularyWidgetBase, self).getData()
+        elif self.context.required:
+            raise MissingInputError()
+
+    def haveData(self):
+        if self.name in self.request.form:
+            self._have_field_data = True
+        return self._have_field_data
+
+    def setData(self, value):
+        super(VocabularyWidgetBase, self).setData(value)
+        self._have_field_data = True
 
 
 class VocabularyDisplayWidget(VocabularyWidgetBase):
@@ -393,9 +415,6 @@ class DropdownListWidget(SelectListWidget):
 
 class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
-
-    def haveData(self):
-        return True
 
     def renderItems(self, value):
         if value == self._missing:

@@ -425,7 +425,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
     def test_edit(self):
         bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]))
         w = getView(bound, "edit", self.makeRequest())
-        self.assert_(w.haveData())
+        self.assert_(not w.haveData())
         self.verifyResult(w(), [
             'id="field.f"',
             'name="field.f:list"',
