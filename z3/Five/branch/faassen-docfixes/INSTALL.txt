@@ -1,15 +1,25 @@
 How to install Five
 -------------------
 
+Requirements for Five 0.1
+=========================
+
+* Zope 2.7.x with python 2.3.x
+
+* Zope X3.0.0 Beta 2
+
+Installing Five
+===============
+
 Installing Five is relatively straightforward. 
 
-* You need a Zope 2.7 instance.
+* Select a Zope 2.7 instance.
 
-* You also need an installation of Zope 3. Later on we may produce a
-  Five-specific distribution of the Zope 3 components that are needed,
-  but for now just use Zope 3. You can install it by typing 'make'.
+* Download and install Zope X3.00 Beta 2. You can compile its C code
+  by typing ``make``. On windows it is easier to use a binary release
+  of Zope X3 instead.
 
-* You need to make your Zope 2.7 instance aware of Zope 3 it can
+* You need to make your Zope 2.7 instance aware of Zope 3 so it can
   import packages from it. To do this, go to the etc/zope.conf of your
   Zope 2.7 instance and add a ``path`` entry to your Zope 3's ``src``
   directory, i.e.::
@@ -19,6 +29,11 @@ Installing Five is relatively straightforward.
 * Next, install the Five product into your Zope 2.7 instance as a
   product and restart Zope. Five should now be installed.
 
-* You can also install ``demo/FiveDemo`` and
-  ``demo/FiveViewsDemo``. For more about what these demos, see
-  ``README.txt``.
+* You can also install various products in the ``demo`` subdirectory of
+  Five by copying them into your ``Products`` directory.
+
+Installing the tests
+====================
+
+For information on how to install the automatic Five tests, please see
+``tests/README.txt``.
