@@ -50,16 +50,17 @@ class QuerySchemaSearchView(object):
             html.append('</div>')
             html.append('<div class="field">')
             html.append(widget())
+
+            html.append('<input type="submit" name="%s" value="%s" />'
+                     % (name+'.search',
+                        translate(search_label, context=self.request)))
+
             html.append('</div>')
             if widget.error():
                 html.append('<div class="error">')
                 html.append(widget.error())
                 html.append('</div>')
             html.append('</div>')
-
-        html.append('<br /><input type="submit" name="%s" value="%s" />'
-                    % (name+'.search',
-                       translate(search_label, context=self.request)))
 
         return '\n'.join(html)
 
