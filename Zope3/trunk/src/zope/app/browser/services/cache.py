@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache configuration adding view
 
-$Id: cache.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: cache.py,v 1.3 2003/02/21 14:53:34 alga Exp $
 """
 __metaclass__ = type
 
@@ -43,5 +43,6 @@ class AddCacheConfiguration(BrowserView):
             raise ValueError, 'You must specify a cache name'
         cd = CacheConfiguration(cache_name, component_path)
         cd = self.context.add(cd)
-        getWidgetsDataForContent(self, ICacheConfiguration, content=cd)
+        getWidgetsDataForContent(self, ICacheConfiguration, content=cd,
+                                 strict=False)
         self.request.response.redirect(self.context.nextURL())

@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.4 2003/01/12 21:22:16 stevea Exp $
+$Id: test_field_widget.py,v 1.5 2003/02/21 14:53:33 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -107,6 +107,23 @@ class TestComponentPathWidget(BaseTest):
         widget = self.createWidget(fake, self.request)
         self.assertEqual(widget._convert(u''), None)
         self.assertEqual(widget._convert(u'/a'), u'/a')
+
+    def test_haveData(self):
+
+        # Empty string means we don't have data
+        fake = FakeComponentPath(None, I1)
+        self.request.form['field.X'] = ''
+        widget = self.createWidget(fake, self.request)
+        self.failIf(widget.haveData())
+
+        self.request.form['field.X'] = '/foo'
+        widget = self.createWidget(fake, self.request)
+        self.failUnless(widget.haveData())
+
+        self.request.form['field.X'] = None
+        widget = self.createWidget(fake, self.request)
+        self.failIf(widget.haveData())
+
 
 class TestComponentLocationWidget(BaseTest):
 

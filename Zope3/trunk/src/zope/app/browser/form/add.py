@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.8 2003/02/11 15:59:32 sidnei Exp $
+$Id: add.py,v 1.9 2003/02/21 14:53:35 alga Exp $
 """
 
 import sys
@@ -94,7 +94,9 @@ class AddView(EditView):
         if Update in self.request:
             try:
                 data = getWidgetsData(self, self.schema,
-                                      required=0, names=self.fieldNames)
+                                      strict=False,
+                                      names=self.fieldNames,
+                                      set_missing=False)
                 content = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors

@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection configuration adding view
 
-$Id: connection.py,v 1.3 2002/12/31 13:15:37 stevea Exp $
+$Id: connection.py,v 1.4 2003/02/21 14:53:34 alga Exp $
 """
 __metaclass__ = type
 
@@ -44,5 +44,6 @@ class AddConnectionConfiguration(BrowserView):
             raise ValueError('You must specify a component path')
         cd = ConnectionConfiguration(connection_name, component_path)
         cd = self.context.add(cd)
-        getWidgetsDataForContent(self, IConnectionConfiguration, content=cd)
+        getWidgetsDataForContent(self, IConnectionConfiguration, content=cd,
+                                 strict=False)
         self.request.response.redirect(self.context.nextURL())

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.11 2003/01/28 11:26:41 stevea Exp $
+$Id: utility.py,v 1.12 2003/02/21 14:53:33 alga Exp $
 """
 __metaclass__ = type
 
@@ -144,7 +144,7 @@ def haveWidgetsData(view, schema, names=None):
 
     return False
 
-def getWidgetsData(view, schema, required=1, names=None):
+def getWidgetsData(view, schema, strict=True, names=None, set_missing=True):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -152,32 +152,46 @@ def getWidgetsData(view, schema, required=1, names=None):
 
     The data are returned in a mapping from field name to value.
 
-    If the required argument is true, then all of the data defined by
+    If the strict argument is true, then all of the data defined by
     the schema will be returned. If some required data are missing
     from the input, an error will be raised.
 
-    """
+    If set_missing is true and the widget has no data, then the
+    field's value is set to its missing value.  Otherwise, a widget
+    with no data is ignored. (However, if that field is required and
+    strict is true, an error will be raised.)
+
+    E.g., a typical text line widget should have a min_length of 1,
+    and if it is required, it has got to have something in, otherwise
+    WidgetsError is raised.  If it's not required and it's empty, its
+    value will be the appropriate missing value.  Right now this is
+    hardcoded as None, but it should be changed so the field can
+    provide it as an empty string."""
+
     result = {}
     errors = []
 
     for name, field in _fieldlist(names, schema):
         widget = getattr(view, name)
-        if widget.haveData():
-            try:
-                result[name] = widget.getData()
-            except InputErrors, v:
-                errors.append(v)
-        elif required and field.required:
-            raise MissingInputError(
-                widget.name, widget.title, name)
+        if not field.readonly:
+            if widget.haveData():
+                try:
+                    result[name] = widget.getData()
+                except InputErrors, v:
+                    errors.append(v)
+            elif strict and field.required:
+                raise MissingInputError(
+                    widget.name, widget.title, name)
+            elif set_missing:
+                result[name] = None # XXX field.missing_value
 
     if errors:
         raise WidgetsError(*errors)
 
     return result
 
-def getWidgetsDataForContent(view, schema, content=None, required=0,
-                             names=None):
+def getWidgetsDataForContent(view, schema, content=None, strict=True,
+                             names=None, set_missing=True):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -185,13 +199,21 @@ def getWidgetsDataForContent(view, schema, content=None, required=0,
 
     The data are assigned to the given content object.
 
-    If the required argument is true, then all of the data defined by
+    If the strict argument is true, then if some required data are
+    missing from the input, an error will be raised.
+
+    If set_missing is true and the widget has no data, then the
+    field's value is set to its missing value.  Otherwise, a widget
+    with no data is ignored. (However, if that field is required and
+    strict is true, an error will be raised.)
+
+    If the strict argument is true, then all of the data defined by
     the schema will be set, at least for required fields. If some data
     for required fields are missing from the input, an error will be
     raised.
 
     """
-    data = getWidgetsData(view, schema, required, names)
+    data = getWidgetsData(view, schema, strict, names)
 
     if content is None:
         content = view.context

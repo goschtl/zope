@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.5 2003/01/16 19:50:32 stevea Exp $
+$Id: field.py,v 1.6 2003/02/21 14:53:34 alga Exp $
 """
 __metaclass__ = type
 
@@ -26,6 +26,13 @@ from xml.sax.saxutils import quoteattr
 from zope.app.interfaces.form import WidgetInputError
 
 class ComponentPathWidget(BrowserWidget):
+
+    def haveData(self):
+        value = self.request.form.get(self.name, None)
+        if not value:
+            return False
+        else:
+            return super(ComponentPathWidget, self).haveData()
 
     def _convert(self, value):
         return value or None

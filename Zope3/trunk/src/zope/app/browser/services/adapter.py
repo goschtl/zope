@@ -21,7 +21,7 @@
 
   AdapterConfigurationAdd
 
-$Id: adapter.py,v 1.5 2003/01/28 02:56:41 rdmurray Exp $
+$Id: adapter.py,v 1.6 2003/02/21 14:53:34 alga Exp $
 """
 __metaclass__ = type
 
@@ -96,11 +96,12 @@ class AdapterConfigurationAdd(BrowserView):
 
     def refresh(self):
         if "FINISH" in self.request:
-            data = getWidgetsData(self, IAdapterConfigurationInfo)
+            data = getWidgetsData(self, IAdapterConfigurationInfo, strict=True)
             configuration = AdapterConfiguration(**data)
             publish(self.context.context, ObjectCreatedEvent(configuration))
             configuration = self.context.add(configuration)
-            getWidgetsDataForContent(self, IConfiguration, configuration)
+            getWidgetsDataForContent(self, IConfiguration, configuration,
+                                     strict=False)
             self.request.response.redirect(self.context.nextURL())
             return False
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.10 2003/02/11 15:59:32 sidnei Exp $
+$Id: editview.py,v 1.11 2003/02/21 14:53:35 alga Exp $
 """
 
 from datetime import datetime
@@ -57,7 +57,6 @@ class EditView(BrowserView):
 
     def _setUpWidgets(self):
         setUpEditWidgets(self, self.schema, names=self.fieldNames)
-        
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
@@ -116,7 +115,9 @@ class EditView(BrowserView):
             unchanged = True
             try:
                 data = getWidgetsData(self, self.schema,
-                                      required=0, names=self.fieldNames)
+                                      strict=False,
+                                      set_missing=True,
+                                      names=self.fieldNames)
                 unchanged = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors

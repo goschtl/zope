@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+"""$Id: test_editview.py,v 1.3 2003/02/21 14:53:34 alga Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -122,12 +122,14 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.foo'] = u'r foo'
         request.form['field.bar'] = u'r bar'
         request.form['field.baz'] = u'r baz'
+        request.form['field.a'] = u'c a'
+
         message = v.update()
         self.failUnless(message.startswith('Updated '), message)
         self.assertEqual(c.foo, u'r foo')
         self.assertEqual(c.bar, u'r bar')
         self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , u'c b')
+        self.assertEqual(c.b  , None)
         self.assertEqual(c.baz, u'r baz')
 
 def test_suite():

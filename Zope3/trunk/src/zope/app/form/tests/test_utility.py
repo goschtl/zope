@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.7 2003/01/28 04:48:09 rdmurray Exp $
+$Id: test_utility.py,v 1.8 2003/02/21 14:53:33 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -47,6 +47,10 @@ class I(Interface):
 class I2(Interface):
     title = Text(title = u"Title", required = True)
     description = Text(title = u"Description", required = True)
+
+class I3(Interface):
+    title = Text(title = u"Title", required = True)
+    description = Text(title=u"Description", required = False)
 
 class C:
     __implements__ = I
@@ -93,7 +97,9 @@ class W(TextWidget):
         return v
 
     def haveData(self):
-        return self.name in self.request
+        if self.name in self.request and self.request[self.name]:
+            return True
+        return False
 
 class Test(PlacelessSetup, TestCase):
 
@@ -360,6 +366,24 @@ class Test(PlacelessSetup, TestCase):
                          {'title': u'ft',
                           'description': u'fd'})
 
+
+        setUpWidgets(view, I3, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(getWidgetsData(view, I3),
+                         {'title': u'ft',
+                          'description': u'fd'})
+
+        request.form['field.description'] = ''
+        setUpWidgets(view, I3, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(getWidgetsData(view, I3),
+                         {'title': u'ft',
+                          'description': None})
+
+        request.form['field.description'] = u''
+        setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(getWidgetsData(view, I),
+                         {'title': u'ft',
+                          'description': None})
+
     def test_getWidgetsData_w_names(self):
         c = C()
         request = TestRequest()
@@ -402,17 +426,29 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(getWidgetsData(view, I, required=0), {})
+        self.assertEqual(getWidgetsData(view, I, strict=False, set_missing=False),
+                         {})
 
-        self.assertRaises(MissingInputError, getWidgetsData, view, I2)
-        self.assertEqual(getWidgetsData(view, I), {})
+        self.assertEqual(getWidgetsData(view, I, strict=False, set_missing=True),
+                         {'description': None,  'title': None})
+
+        self.assertRaises(MissingInputError, getWidgetsData, view, I2, strict=True)
+
+        self.assertEqual(getWidgetsData(view, I), {'description': None,
+                                                   'title': None})
 
         request.form['field.description'] = u'fd'
-        self.assertEqual(getWidgetsData(view, I2, required=0),
+        self.assertEqual(getWidgetsData(view, I2, strict=False,
+                                        set_missing=False),
                          {'description': u'fd'})
 
+        self.assertEqual(getWidgetsData(view, I2, strict=False,
+                                        set_missing=True),
+                         {'description': u'fd', 'title': None})
+
         self.assertRaises(MissingInputError, getWidgetsData, view, I2)
-        self.assertEqual(getWidgetsData(view, I), {'description': u'fd'})
+        self.assertEqual(getWidgetsData(view, I), {'description': u'fd',
+                                                   'title': None})
 
     def test_getWidgetsDataForContent(self):
         c = C()
@@ -445,7 +481,7 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'ft'
         view = BrowserView(c, request)
         setUpWidgets(view, I2, initial=kw(title=u"ttt", description=u"ddd"))
-        getWidgetsDataForContent(view, I2)
+        getWidgetsDataForContent(view, I2, names=("title",))
         self.assertEqual(c.title, u'ft')
         self.assertEqual(c.description, u'old description')
 

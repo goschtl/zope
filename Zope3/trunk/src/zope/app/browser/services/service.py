@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding components for components and configuration
 
-$Id: service.py,v 1.5 2003/02/03 19:01:21 jim Exp $
+$Id: service.py,v 1.6 2003/02/21 14:53:34 alga Exp $
 """
 
 from zope.app.browser.container.adding import Adding as ContentAdding
@@ -142,5 +142,5 @@ class AddServiceConfiguration(BrowserView):
     def action(self, service_type, component_path):
         sd = ServiceConfiguration(service_type, component_path)
         sd = self.context.add(sd)
-        getWidgetsDataForContent(self, IConfiguration, sd)
+        getWidgetsDataForContent(self, IConfiguration, sd, strict=False)
         self.request.response.redirect(self.context.nextURL())
