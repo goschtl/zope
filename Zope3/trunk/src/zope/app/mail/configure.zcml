@@ -1,0 +1,21 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:service="http://namespaces.zope.org/service"
+   xmlns:mail="http://namespaces.zope.org/mail"
+   >
+
+<serviceType id="Mail" 
+	     interface="zope.app.interfaces.mail.IMailService" />
+
+<mail:mailservice name="Mail"
+    hostname="localhost" port="25"
+    class=".service.AsyncMailService" 
+    permission="zope.Public"/>
+
+<mail:mailer name="SimpleMailer" class=".mailer.SimpleMailer" 
+             serviceType="Mail" default="True" /> 
+
+<mail:mailer name="BatchMailer" class=".mailer.BatchMailer" 
+             serviceType="Mail" /> 
+
+</zopeConfigure>
