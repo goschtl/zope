@@ -32,6 +32,7 @@ from zpkgtools import config
 from zpkgtools import cvsloader
 from zpkgtools import include
 from zpkgtools import locationmap
+from zpkgtools import package
 from zpkgtools import publication
 
 
@@ -85,6 +86,18 @@ class Application:
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
+        pkgdir = os.path.join(self.destination, pkgname)
+        pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
+        if pkginfo.documentation:
+            setup_cfg = os.path.join(self.destination, "setup.cfg")
+            prefix = "doc_files = "
+            s = "\n" + (" " * len(prefix))
+            f = open(setup_cfg, "w")
+            f.write("[bdist_rpm]\n")
+            f.write(prefix)
+            f.write(s.join(pkginfo.documentation))
+            f.write("\n")
+            f.close()
 
     def buildCollectionDistribution(self):
         # Build the destination directory:
