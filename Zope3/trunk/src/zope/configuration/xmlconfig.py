@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.12 2003/07/30 15:06:48 sidnei Exp $
+$Id: xmlconfig.py,v 1.13 2003/07/31 14:56:55 jim Exp $
 """
 
 import errno
@@ -33,6 +33,7 @@ from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import SAXParseException
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface, implements
+from zope.configuration.zopeconfigure import IZopeConfigure, ZopeConfigure
 
 logger = logging.getLogger("config")
 
@@ -229,56 +230,6 @@ class ConfigurationHandler(ContentHandler):
                 ), sys.exc_info()[2]
 
 
-class IZopeConfigure(Interface):
-
-    package = config.fields.GlobalObject(__doc__="""Package
-
-        The package to be used for evaluating relative imports and file names.
-        """,
-        required=False)
-
-    domain = schema.BytesLine(__doc__="""Internationalization domain
-
-        This is a name for the software project. It must be a legal file-system
-        name as it will be used to contruct names for directories containing
-        translation data.
-
-        The domain defines a namespace for the message ids used by a project.
-        """,
-        required=False)
-
-class ZopeConfigure(config.GroupingContextDecorator):
-
-    implements(config.IConfigurationContext)
-
-    def __init__(self, context, **kw):
-        super(ZopeConfigure, self).__init__(context, **kw)
-        if 'package' in kw:
-            # if we have a package, we want to also define basepath
-            # so we don't acquire one
-            self.basepath = os.path.split(self.package.__file__)[0]
-
-
-def _register_configure(context):
-
-    # We have to use the direct definition function to define
-    # a directive for all namespaces.
-    config.defineGroupingDirective(
-        context,
-        name="zopeConfigure",
-        namespace="*",
-        schema=IZopeConfigure,
-        handler=ZopeConfigure,
-        )
-    config.defineGroupingDirective(
-        context,
-        name="configure",
-        namespace="*",
-        schema=IZopeConfigure,
-        handler=ZopeConfigure,
-        )
-
-
 def processxmlfile(file, context, testing=0):
     """Process a configuration file
 
@@ -420,14 +371,31 @@ def includeOverrides(_context, file, package=None):
     # and replace the new actions with the munched new actions:
     _context.actions[nactions:] = newactions
 
-def _registerIncludes(context):
-    # Register the include directives
+def registerCommonDirectives(context):
+    # We have to use the direct definition functions to define
+    # a directive for all namespaces.
+
     config.defineSimpleDirective(
         context, "include", IInclude, include, namespace="*")
+
     config.defineSimpleDirective(
         context, "includeOverrides", IInclude, includeOverrides, namespace="*")
 
-    _register_configure(context)
+    config.defineGroupingDirective(
+        context,
+        name="zopeConfigure",
+        namespace="*",
+        schema=IZopeConfigure,
+        handler=ZopeConfigure,
+        )
+
+    config.defineGroupingDirective(
+        context,
+        name="configure",
+        namespace="*",
+        schema=IZopeConfigure,
+        handler=ZopeConfigure,
+        )
 
 def file(name, package=None, context=None, execute=True):
     """Execute a zcml file
@@ -435,7 +403,7 @@ def file(name, package=None, context=None, execute=True):
 
     if context is None:
         context = config.ConfigurationMachine()
-        _registerIncludes(context)
+        registerCommonDirectives(context)
         context.package = package
 
     include(context, name, package)
@@ -451,7 +419,7 @@ def string(s, context=None, name="test.string", execute=True):
 
     if context is None:
         context = config.ConfigurationMachine()
-        _registerIncludes(context)
+        registerCommonDirectives(context)
 
     f = StringIO(s)
     f.name = name
@@ -471,7 +439,7 @@ _context = None
 def _clearContext():
     global _context
     _context = config.ConfigurationMachine()
-    _registerIncludes(_context)
+    registerCommonDirectives(_context)
 
 def _getContext():
     global _context
