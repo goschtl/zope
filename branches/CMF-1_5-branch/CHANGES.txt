@@ -30,6 +30,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFDefault.DiscussionTool: 'getDiscussionFor' sometimes returned
+      unwrapped talkback objects.
+
     - CMFSite: Made 'title' and 'description' properties undeletable.
       This change has no effect on existing sites.
 
