@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.35 2003/08/08 20:53:36 sidnei Exp $
+$Id: interfacewidget.py,v 1.36 2003/08/08 23:16:39 srichter Exp $
 """
 import sys
 from zope.interface import Interface, implements
@@ -61,7 +61,8 @@ class InterfaceWidget(BrowserWidget, BrowserView):
                 # Convert to conversion error
                 exc = ConversionError(sys.exc_info()[1])
                 self.error = ConversionError, exc, sys.exc_info()[2]
-                raise self.error
+                # XXX: Error message should be better
+                raise self.error, 'Conversion Error'
 
         if not optional:
             try:
@@ -181,7 +182,8 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
             # Convert to conversion error
             exc = ConversionError(sys.exc_info()[1])
             self.error = ConversionError, exc, sys.exc_info()[2]
-            raise self.error
+            # XXX: Error message should be better
+            raise self.error, 'Conversion Error'
 
         if not optional:
             try:
