@@ -22,5 +22,10 @@
 
   <adapter factory=".PrincipalClipboard" />
 
+  <subscriber
+      for="zope.app.location.interfaces.ILocation
+           zope.app.event.interfaces.IObjectCopiedEvent"
+      handler=".dispatchToSublocations"
+      />
 
 </configure>

@@ -22,11 +22,13 @@ from zope.exceptions import NotFoundError, DuplicationError
 from zope.component import adapts
 from zope.event import notify
 
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.sample import SampleContainer
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.location.pickling import locationCopy
+from zope.app.location.interfaces import ISublocations
 from zope.app.container.interfaces import IContainer, IOrderedContainer
 from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import INameChooser
@@ -627,3 +629,78 @@ class ExampleContainer(SampleContainer):
        while name in self:
           name += '_'
        return name
+
+
+def dispatchToSublocations(object, event):
+    """Dispatches an event to sublocations of a given object.
+
+    This handler is used to dispatch copy events to sublocations.
+
+    To illustrate, we'll first create a hierarchy of objects:
+
+      >>> class L(object):
+      ...     def __init__(self, name):
+      ...         self.__name__ = name
+      ...         self.__parent__ = None
+      ...     def __repr__(self):
+      ...         return '%s(%s)' % (self.__class__.__name__, self.__name__)
+
+      >>> class C(L):
+      ...     implements(ISublocations)
+      ...     def __init__(self, name, *subs):
+      ...         L.__init__(self, name)
+      ...         self.subs = subs
+      ...         for sub in subs:
+      ...             sub.__parent__ = self
+      ...     def sublocations(self):
+      ...         return self.subs
+
+      >>> c = C(1,
+      ...       C(11,
+      ...         L(111),
+      ...         L(112),
+      ...         ),
+      ...       C(12,
+      ...         L(121),
+      ...         L(122),
+      ...         L(123),
+      ...         L(124),
+      ...         ),
+      ...       L(13),
+      ...       )
+
+    and a handler for copy events that records the objects it's seen:
+
+      >>> seen = []
+      >>> def handler(ob, event):
+      ...     seen.append((ob, event.object))
+    
+    Finally, we need to register our handler for copy events:
+
+      >>> from zope.app.tests import ztapi
+      >>> from zope.app.event.interfaces import IObjectCopiedEvent
+      >>> ztapi.handle([None, IObjectCopiedEvent], handler)
+
+    and this function as a dispatcher:
+        
+      >>> ztapi.handle([None, IObjectCopiedEvent], dispatchToSublocations)
+
+    When we notify that our root object has been copied:
+      
+      >>> notify(ObjectCopiedEvent(c))
+    
+    we see that our handler has seen all of the subobjects:
+
+      >>> seenreprs = map(repr, seen)
+      >>> seenreprs.sort()
+      >>> seenreprs #doctest: +NORMALIZE_WHITESPACE
+      ['(C(1), C(1))', '(C(11), C(1))', '(C(12), C(1))',
+       '(L(111), C(1))', '(L(112), C(1))', '(L(121), C(1))',
+       '(L(122), C(1))', '(L(123), C(1))', '(L(124), C(1))',
+       '(L(13), C(1))']
+    """
+    subs = ISublocations(object, None)
+    if subs is not None:
+        for sub in subs.sublocations():
+            for ignored in zapi.subscribers((sub, event), None):
+                pass # They do work in the adapter fetch
