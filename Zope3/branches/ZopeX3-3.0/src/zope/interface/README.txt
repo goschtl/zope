@@ -4,6 +4,11 @@ Interfaces
 
 .. contents::
 
+.. Doctest directive that causes whitespace to be normalized when
+   comparing expected and actual output. This allows us to wrap long
+   lines out output:
+   >>> doctest: +NORMALIZE_WHITESPACE
+
 Interfaces are objects that specify (document) the external behavior
 of objects that "provide" them.  An interface specifies behavior
 through: 
@@ -389,8 +394,6 @@ interfaces in the resulting declaration is different::
   [<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.ISpecial>]
 
 
-
-
 Interface Inheritance
 =====================
 
@@ -460,6 +463,40 @@ method for that::
 
   >>> list(IBaz.names())
   ['eek']
+
+
+Specifications
+--------------
+
+Interfaces and declarations are both special cases of specifications.
+What we described above for interface inheritence applies to both
+declarations and specifications.  Declarations actually extend the
+interfaces that they declare:
+
+  >>> class Baz:
+  ...     zope.interface.implements(IBaz)
+
+  >>> baz_implements = zope.interface.implementedBy(Baz)
+  >>> baz_implements.__bases__
+  (<InterfaceClass __main__.IBaz>,)
+
+  >>> baz_implements.extends(IFoo)
+  True
+
+  >>> baz_implements.isOrExtends(IFoo)
+  True
+  >>> baz_implements.isOrExtends(baz_implements)
+  True
+
+Specifications (interfaces and declarations) provide an `__sro__`
+that lists the specification and all of it's ancestors:
+
+  >>> baz_implements.__sro__
+  (<implementedBy __main__.Baz>, 
+   <InterfaceClass __main__.IBaz>, 
+   <InterfaceClass __main__.IFoo>, 
+   <InterfaceClass __main__.IBlat>, 
+   <InterfaceClass zope.interface.Interface>)
 
 
 Tagged Values
