@@ -25,7 +25,7 @@ fssync [global_options] status [options] [TARGET ...]
 For now, the only global option is -h/--help; there are no local
 options yet.
 
-$Id: main.py,v 1.4 2003/05/13 19:16:59 gvanrossum Exp $
+$Id: main.py,v 1.5 2003/05/13 20:05:17 gvanrossum Exp $
 """
 
 import os
@@ -117,7 +117,15 @@ def main(argv=None):
         return None
 
 def checkout(opts, args):
-    rooturl, target = args
+    if not args:
+        raise Usage("commit requires a URL argument")
+    rooturl = args[0]
+    if len(args) > 1:
+        target = args[0]
+        if len(args) > 2:
+            raise Usage("commit requires at most one TARGETDIR argument")
+    else:
+        target = os.curdir
     fs = FSSync(rooturl=rooturl)
     fs.checkout(target)
 
@@ -134,11 +142,20 @@ def add(opts, args):
     for a in args:
         fs.add(a)
 
+def remove(opts, args):
+    fs = FSSync()
+    for a in args:
+        fs.remove(a)
+
 command_table = {
     "checkout": ("", [], checkout),
+    "co":       ("", [], checkout),
     "update":   ("", [], update),
     "commit":   ("", [], commit),
     "add":      ("", [], add),
+    "remove":   ("", [], remove),
+    "rm":       ("", [], remove),
+    "r":        ("", [], remove),
     }
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.10 2003/05/13 19:28:56 gvanrossum Exp $
+$Id: fssync.py,v 1.11 2003/05/13 20:05:17 gvanrossum Exp $
 """
 
 import os
@@ -365,14 +365,7 @@ class FSSync(object):
         if not entry:
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
-        head, tail = split(target)
-        if tail in unwanted:
-            target = realpath(target)
-            head, tail = split(target)
-            if head == target or tail in unwanted:
-                raise Error("target '%s' is the filesystem root", target)
-        if not head:
-            head = os.curdir
+        head, tail = self.split(target)
         path = entry["path"]
         fp, headers = self.network.httpreq(path, "@@toFS.zip")
         try:
@@ -408,14 +401,7 @@ class FSSync(object):
         entry = self.metadata.getentry(path)
         if entry:
             raise Error("path '%s' is already registered", path)
-        head, tail = split(path)
-        if tail in unwanted:
-            path = realpath(path)
-            head, tail = split(path)
-            if head == path or tail in unwanted:
-                raise Error("can't add '%s': it is the filesystem root", path)
-        if not head:
-            head = os.curdir
+        head, tail = self.split(path)
         pentry = self.metadata.getentry(head)
         if not pentry:
             raise Error("can't add '%s': its parent is not registered", path)
@@ -434,6 +420,21 @@ class FSSync(object):
             entry["type"] = "zope.app.content.file.File"
         if "factory" not in entry:
             entry["factory"] = str(unicode(entry["type"]))
+        self.metadata.flush()
+
+    def remove(self, path):
+        if exists(path):
+            raise Error("'%s' still exists", path)
+        entry = self.metadata.getentry(path)
+        if not entry:
+            raise Error("nothing known about '%s'", path)
+        zpath = entry.get("path")
+        if not zpath:
+            raise Error("can't remote '%s': its zope path is unknown", path)
+        if entry.get("flag") == "added":
+            entry.clear()
+        else:
+            entry["flag"] = "removed"
         self.metadata.flush()
 
     def merge_dirs(self, localdir, remotedir):
@@ -550,3 +551,14 @@ class FSSync(object):
     def ensuredir(self, dir):
         if not isdir(dir):
             os.makedirs(dir)
+
+    def split(self, path):
+        head, tail = split(path)
+        if tail in unwanted:
+            newpath = realpath(path)
+            head, tail = split(newpath)
+            if head == newpath or tail in unwanted:
+                raise Error("path '%s' is the filesystem root", path)
+        if not head:
+            head = os.curdir
+        return head, tail
