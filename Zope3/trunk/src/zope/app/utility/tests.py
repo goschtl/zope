@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.5 2004/04/11 18:16:29 jim Exp $
+$Id: tests.py,v 1.6 2004/04/15 15:29:31 jim Exp $
 """
 import unittest
 from zope.app.tests import setup
@@ -84,7 +84,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
-        setup.addService(sm, "Utilities",
+        setup.addService(sm, zapi.servicenames.Utilities,
                          utility.LocalUtilityService())
 
     def test_queryUtility_delegates_to_global(self):
@@ -94,6 +94,12 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                                             name="bob")
 
         utility_service = getService(self.rootFolder, "Utilities")
+
+        # We changed the root (base) service. This doesn't normally
+        # occur.  We have to notify the local service that the base
+        # has changes:
+        utility_service.baseChanged()
+        
         self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.queryUtility(IFoo).foo(),
@@ -159,6 +165,12 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                                             name="bob")
 
         utilities = getService(self.rootFolder, "Utilities")
+
+        # We changed the root (base) service. This doesn't normally
+        # occur.  We have to notify the local service that the base
+        # has changes:
+        utilities.baseChanged()
+
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
@@ -202,6 +214,21 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         r = list(utilities.getRegisteredMatching())
         self.assertEqual(r, [(IFoo, "bob", cr2)])
 
+    def test_local_overrides(self):
+        # Make sure that a local utility service can override another
+        sm1 = zapi.traverse(self.rootFolder, "++etc++site")
+        setup.addUtility(sm1, 'u1', IFoo, Foo('u1'))
+        setup.addUtility(sm1, 'u2', IFoo, Foo('u2'))
+        sm2 = self.makeSite('folder1')
+        setup.addService(sm2, zapi.servicenames.Utilities,
+                         utility.LocalUtilityService())
+        setup.addUtility(sm2, 'u2', IFoo, Foo('u22'))
+
+        # Make sure we acquire:
+        self.assertEqual(zapi.getUtility(sm2, IFoo, 'u1').name, 'u1')
+
+        # Make sure we override:
+        self.assertEqual(zapi.getUtility(sm2, IFoo, 'u2').name, 'u22')
 
 def test_suite():
     return unittest.makeSuite(TestUtilityService)

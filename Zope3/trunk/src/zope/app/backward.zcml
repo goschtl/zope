@@ -5,10 +5,10 @@
   <!-- Backward compatability scripts                      -->
   <!-- We'll keep these around for two months              -->
 
-  <!-- Date Added -->
-  <!-- event:subscribe
-      subscriber="zope.app.path.fixup"
+  <!-- Added 2004-04-15 -->
+  <event:subscribe
+      subscriber="zope.app.utility.fixup.notify"
       event_types="zope.app.event.interfaces.IDatabaseOpenedEvent" 
-      /-->
+      />
  
 </configure>
