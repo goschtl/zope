@@ -237,6 +237,10 @@ ext_modules = [
               ["src/zope/hookable/_zope_hookable.c"])
     ]
 
+if sys.version_info >= (2, 2):
+    ext_modules.append(Extension("pythonlib.compat22._csv",
+                                 ["src/pythonlib/compat22/_csv.c"]))
+
 # On Window, there are more extensions that need to be built
 if sys.platform == "win32":
     ext_modules += [Extension("zodb.winlock", ["src/zodb/winlock.c"])]
