@@ -134,7 +134,4 @@ def defaultConfigurationPath():
     if os.name == "posix":
         zpkgdir = "." + zpkgdir
     name = os.path.join("~", zpkgdir, "zpkg.conf")
-    path = os.path.expanduser(name)
-    if os.path.exists(path):
-        path = os.path.realpath(path)
-    return path
+    return os.path.expanduser(name)
