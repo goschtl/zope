@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.6 2003/03/21 20:57:11 jim Exp $
+$Id: form.py,v 1.7 2003/05/01 15:10:23 gvanrossum Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserView
@@ -87,8 +87,8 @@ class IBrowserWidget(IWidget):
     def setPrefix(self, prefix):
         """Set the form-variable name prefix used for the widget
 
-        The widget will define it's own form variable names by
-        concatinating the profix and the field name using a dot. For
+        The widget will define its own form variable names by
+        concatinating the prefix and the field name using a dot. For
         example, with a prefix of "page" and a field name of "title",
         a form name of "page.title" will be used. A widget may use
         multiple form fields. If so, it should add distinguishing
