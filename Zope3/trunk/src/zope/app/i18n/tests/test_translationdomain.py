@@ -17,25 +17,28 @@ $Id$
 """
 import unittest
 
-from zope.app import zapi
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
-from zope.app.i18n.interfaces import ISyncTranslationDomain
-from zope.app.servicenames import Utilities
-from zope.app.i18n.messagecatalog import MessageCatalog
-from zope.i18n.translationdomain \
-     import TranslationDomain as GlobalTranslationDomain
-from zope.app.i18n.translationdomain import TranslationDomain
-from zope.app.tests import setup, ztapi
+from zope.i18n.interfaces import ITranslationDomain
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.tests.test_itranslationdomain import TestITranslationDomain
+from zope.i18n.translationdomain \
+     import TranslationDomain as GlobalTranslationDomain
 from zope.interface import implements, classImplements
 from zope.interface.verify import verifyObject
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.utility import LocalUtilityService
-from zope.i18n.interfaces import ITranslationDomain
-from zope.app.utility.interfaces import ILocalUtility 
+from zope.testing.doctestunit import DocTestSuite
+
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.i18n.interfaces import ISyncTranslationDomain
+from zope.app.i18n.messagecatalog import MessageCatalog
+from zope.app.i18n.translationdomain import TranslationDomain
+from zope.app.servicenames import Utilities
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.tests import setup, ztapi
+from zope.app.utility import LocalUtilityService
+from zope.app.utility.interfaces import ILocalUtility 
+
 
 class Environment(object):
 
@@ -269,9 +272,11 @@ class TestTranslationDomainInAction(unittest.TestCase):
                                   target_language='de'),
             'Hallo Welt!')
 
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestTranslationDomain),
+        DocTestSuite('zope.app.i18n.translationdomain'),
         #unittest.makeSuite(TestTranslationDomainInAction),
         ))
 
