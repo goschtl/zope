@@ -29,9 +29,9 @@ def dict(**kw):
 
 class ExpressionTests(unittest.TestCase):
 
-    def testCompile(self):
+    def setUp(self):
         # Test expression compilation
-        context = Data(
+        self.context = Data(
             vars = dict(
               x = Data(
                  name = 'xander',
@@ -47,35 +47,52 @@ class ExpressionTests(unittest.TestCase):
             )
 
 
-        engine = Engine
+        self.engine = Engine
 
-        expr = engine.compile('x')
+    def testSimple(self):
+        expr = self.engine.compile('x')
+        context=self.context
         self.assertEqual(expr(context), context.vars['x'])
 
-        expr = engine.compile('x/y')
+    def testPath(self):
+        expr = self.engine.compile('x/y')
+        context=self.context
         self.assertEqual(expr(context), context.vars['x'].y)
 
-        expr = engine.compile('x/y/z')
+    def testLongPath(self):
+        expr = self.engine.compile('x/y/z')
+        context=self.context
         self.assertEqual(expr(context), context.vars['x'].y.z)
 
-        expr = engine.compile('path:a|b|c/d/e')
+    def testOrPath(self):
+        expr = self.engine.compile('path:a|b|c/d/e')
+        context=self.context
         self.assertEqual(expr(context), 'boot')
 
-        expr = engine.compile('string:Fred')
+    def testString(self):
+        expr = self.engine.compile('string:Fred')
+        context=self.context
         self.assertEqual(expr(context), 'Fred')
 
-        expr = engine.compile('string:A$B')
+    def testStringSub(self):
+        expr = self.engine.compile('string:A$B')
+        context=self.context
         self.assertEqual(expr(context), 'A2')
 
-        expr = engine.compile('string:a ${x/y} b ${y/z} c')
+    def testStringSubComplex(self):
+        expr = self.engine.compile('string:a ${x/y} b ${y/z} c')
+        context=self.context
         self.assertEqual(expr(context), 'a yikes b 3 c')
 
-        expr = engine.compile('python: 2 + 2')
+    def testPython(self):
+        expr = self.engine.compile('python: 2 + 2')
+        context=self.context
         self.assertEqual(expr(context), 4)
 
-        expr = engine.compile('python: 2 \n+\n 2\n')
+    def testPythonNewline(self):
+        expr = self.engine.compile('python: 2 \n+\n 2\n')
+        context=self.context
         self.assertEqual(expr(context), 4)
-
 
 def test_suite():
     return unittest.makeSuite(ExpressionTests)
