@@ -14,7 +14,7 @@ prefix=@prefix@
 .PHONY: build
 
 build:
-	$(PYTHON) install.py build
+	$(PYTHON) install.py -q build
 
 install: build
-	$(PYTHON) install.py install --home "$(prefix)"
+	$(PYTHON) install.py -q install --home "$(prefix)"
