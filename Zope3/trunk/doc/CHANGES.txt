@@ -11,7 +11,7 @@ Zope Changes
     New features
 
       - Added ++debug++ traversal adapter that allows you to turn on debugging
-        flags in request.debug.  Currently there are two debug flags:
+        flags in request.debug.  Currently the following flags are defined:
 
         + "source" adds HTML comments to rendered page templates showing
            where each code snippet came from.
@@ -19,7 +19,9 @@ Zope Changes
         + "tal" leaves TAL/METAL markup in rendered page templates allowing
           you to see how it was generated.
 
-        Try http://localhost:8080/++debug++source,tal/@@contents.html
+        + "errors" shows full tracebacks when a system error occurs.
+
+        Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
         and view the source of the resulting page.
 
     Restructuring
