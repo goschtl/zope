@@ -48,12 +48,6 @@ Miscellaneous
 
 - Create a new ZODB generation for the following objects:
 
-    - PersistentRole --> LocalRole
-
-    - RoleRegistration --> UtilityRegistration
-
-    - Registration (using paths) --> Registration (using objects)
-
     - PluggableAuthenticationService --> PAS
 
 Bug Fixes
