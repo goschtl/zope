@@ -11,6 +11,20 @@
       class="zope.app.browser.container.contents.JustContents"
       attribute="index" />
 
+  <view
+      for="zope.app.services.pagefolder.IPageFolder"
+      name="+"
+      menu="zmi_actions" title="Add"
+      class="zope.app.browser.container.adding.Adding"
+      permission="zope.ManageServices"
+      allowed_attributes="addingInfo"
+      usage="addingdialog" >
+
+    <page name="index.html"  attribute="index" />
+    <page name="action.html" attribute="action" />
+
+  </view>
+
   <page name="contents.html"
         for="zope.app.services.pagefolder.IPageFolder"
         permission="zope.ManageServices" 
@@ -27,14 +41,6 @@
         class=".pagefolder.PageFolderDefaultConfiguration" 
         />
 
-  
-  <!-- Override the add action with a link to add a template -->
-  <menuItem
-     menu="zmi_actions"
-     for="zope.app.services.pagefolder.IPageFolder"
-     title="Add"
-     action="contents.html?type_name=zope.app.services.zpt.ZPTTemplate"
-     permission="zope.ManageServices" />
 
   <menuItem
      menu="add_component"
