@@ -148,6 +148,11 @@
 
 <!-- Generic page for objects that keep track of their registrations -->
 
+<!--
+
+ This page has been replaced (or should be) replaced by the
+ Registration page specific to each Service
+
   <page
       for="zope.app.interfaces.services.registration.IRegisterable"
       name="registrations.html"
@@ -155,6 +160,7 @@
       class=".registration.NameRegistered"
       permission="zope.ManageServices"
       menu="zmi_views" title="Registrations" />
+-->
 
 <!-- Persistent Modules --> 
   <zope:include package=".module" />
