@@ -20,7 +20,7 @@ from zope.component import getGlobalService, ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile as VPT
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
@@ -31,7 +31,6 @@ from resource import DirectoryResourceFactory
 from browser import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
-from Products.PageTemplates.Expressions import SecureModuleImporter
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -307,10 +306,6 @@ class ViewMixinForAttributes(BrowserView):
         meth = getattr(self, attr)
         return meth(*args, **kw)
 
-# VPT is of the Trusted kind, so it allows access to sys.modules
-# directly and allows importing of not-yet imported modules.
-class ViewPageTemplateFile(VPT): pass
-
 class ViewMixinForTemplates(BrowserView):
 
     # short cut to get to macros more easily
@@ -321,7 +316,8 @@ class ViewMixinForTemplates(BrowserView):
     def __call__(self, *args, **kw):
         return self.index(self, *args, **kw)
 
-def makeClassForTemplate(src, template=None, used_for=None, bases=(), cdict=None):
+def makeClassForTemplate(src, template=None, used_for=None,
+                         bases=(), cdict=None):
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
