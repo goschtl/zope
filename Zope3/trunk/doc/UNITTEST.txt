@@ -178,6 +178,8 @@ Zope 3 Unit Testing
    - An individual test module should take no longer than 60 seconds
      to complete.
 
+  more information available at http://dev.zope.org/Zope3/WritingUnitTests
+
  Writing Unit Tests For Applications Based On Zope
 
   Zope uses the standard Python unittest module.  See the Python docs
@@ -234,3 +236,5 @@ Zope 3 Unit Testing
   Programming methodologies in its software development process, we've
   found unit tests a way to speed development and produce
   higher-quality code.
+
+
