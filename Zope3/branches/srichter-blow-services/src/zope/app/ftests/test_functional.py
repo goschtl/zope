@@ -19,8 +19,8 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 import transaction
-from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
-from zope.app.tests.functional import FunctionalDocFileSuite
+from zope.app.testing.functional import SampleFunctionalTest, BrowserTestCase
+from zope.app.testing.functional import FunctionalDocFileSuite
 
 class CookieFunctionalTest(BrowserTestCase):
 

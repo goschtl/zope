@@ -16,9 +16,9 @@
 $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing import functional
 
-class RolePermissionsTest(BrowserTestCase):
+class RolePermissionsTest(functional.BrowserTestCase):
 
     def testAllRolePermissionsForm(self):
         response = self.publish(
@@ -85,10 +85,9 @@ _result = '''\
 '''
 
 def test_suite():
-    import zope.app.tests.functional
     return unittest.TestSuite((
         unittest.makeSuite(RolePermissionsTest),
-        zope.app.tests.functional.FunctionalDocFileSuite('granting_ftest.txt'),
+        functional.FunctionalDocFileSuite('granting_ftest.txt'),
         ))
 
 if __name__ == '__main__':

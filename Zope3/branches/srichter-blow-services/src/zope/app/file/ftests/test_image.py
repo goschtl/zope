@@ -19,7 +19,7 @@ import unittest
 import cgi
 from cStringIO import StringIO
 from transaction import get_transaction
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.publisher.browser import FileUpload
 
 from zope.app.file.image import Image

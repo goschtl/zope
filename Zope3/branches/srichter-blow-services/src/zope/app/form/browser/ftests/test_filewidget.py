@@ -31,7 +31,7 @@ from zope.app.form.browser.textwidgets import FileWidget
 from support import *
 from zope.app.traversing.api import traverse
 
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.interfaces import IInputWidget
 
 class IFileField(IField):

@@ -15,9 +15,9 @@
 
 $Id: ftests.py 27323 2004-08-28 19:31:22Z jim $
 """
+from zope.app.testing.functional import FunctionalDocFileSuite
 
 def test_suite():
-    from zope.app.tests.functional import FunctionalDocFileSuite
     return FunctionalDocFileSuite('README.txt')
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ $Id: test_templatedpage.py,v 1.1.1.1 2004/02/18 18:07:08 srichter Exp $
 __docformat__ = 'restructuredtext'
 import unittest
 
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 class ZopeTopSkinTests(BrowserTestCase):
     """Funcional tests for ZopeTop skin."""

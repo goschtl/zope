@@ -13,7 +13,7 @@
       title="Unique Id Utility"
       description="A utility that provides unique ids to objects"
       class="zope.app.intid.IntIds"
-      permission="zope.ManageServices"
+      permission="zope.ManageSite"
     />
 
   <page

@@ -17,7 +17,7 @@ $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
 from zope.publisher.interfaces import NotFound
-from zope.app.tests import functional
+from zope.app.testing import functional
 
 class TestNotFound(functional.BrowserTestCase):
 

@@ -154,10 +154,6 @@ class ZPTFactory(object):
 
 class ZPTSourceView(object):
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
     def __str__(self):
         return self.context.getSource()
 

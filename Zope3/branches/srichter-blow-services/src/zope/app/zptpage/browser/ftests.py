@@ -16,7 +16,7 @@
 $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.zptpage.zptpage import ZPTPage
 from xml.sax.saxutils import escape
 
@@ -174,7 +174,7 @@ class ZPTPageTest(BrowserTestCase):
 
 
 def test_suite():
-    from zope.app.tests.functional import FunctionalDocFileSuite
+    from zope.app.testing.functional import FunctionalDocFileSuite
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTest),
         FunctionalDocFileSuite('collector266.txt', 'collector269.txt'),

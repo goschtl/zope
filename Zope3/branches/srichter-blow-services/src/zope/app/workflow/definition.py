@@ -110,11 +110,11 @@ class ProcessDefinitionVocabulary(object):
     implements(IVocabularyTokenized)
 
     def __init__(self, context):
-        self.utilities = zapi.getService(Utilities, context)
+        self.sm = zapi.getSiteManager(context)
 
     def __names(self):
-        return [name for name, util in self.utilities.getUtilitiesFor(
-                                            IProcessDefinition)]
+        return [name
+                for name, util in self.sm.getUtilitiesFor(IProcessDefinition)]
 
     def __contains__(self, value):
         """See zope.schema.interfaces.IVocabulary"""

@@ -17,12 +17,14 @@ $Id$
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
+from zope.app.publisher.browser import IDefaultViewNameAPI 
 from zope.app.traversing.interfaces import ITraversalAPI
 from zope.app.traversing.browser.interfaces import IAbsoluteURLAPI
 
 class IZAPI(
     IComponentArchitecture,
     ITraversalAPI, IAbsoluteURLAPI,
+    IDefaultViewNameAPI
     ):
     """Convenience API for use with Zope applications.
     """

@@ -16,8 +16,8 @@
 $Id$
 """
 import unittest
-from zope.app.tests.functional import BrowserTestCase
 from zope.publisher.interfaces import NotFound
+from zope.app.testing.functional import BrowserTestCase
 
 class TestCaseInsensitiveFolder(BrowserTestCase):
 

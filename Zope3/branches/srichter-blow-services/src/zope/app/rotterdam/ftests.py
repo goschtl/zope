@@ -15,7 +15,7 @@
 """
 import unittest
 from xml.dom import minidom
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 class TestNavTree(BrowserTestCase):
 
@@ -45,7 +45,7 @@ class TestNavTree(BrowserTestCase):
         #add a site manager This will break when site adding is fixed
         # see above for examples to fix by filling out a form
         # when further action is required to make a site
-        response = self.publish("/First/somesite/addServiceManager.html",
+        response = self.publish("/First/somesite/addSiteManager.html",
                                                 basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 302)
         # /First/FirstsFolder/@@singleBranchTree.xml 

@@ -17,11 +17,11 @@ Catalogs use a unique-id tool to assign short (integer) ids to
 objects.  Before creating a catalog, you must create a intid tool:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
+  ... POST /++etc++site/default/@@+/action.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 78
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
+  ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
   ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
   HTTP/1.1 303 ...
@@ -83,11 +83,11 @@ TODO: Filters?
 Once we have a unique-id tool, you can add a catalog:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
+  ... POST /++etc++site/default/@@+/action.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 77
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
+  ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
   ... type_name=BrowserAdd__zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
   HTTP/1.1 303 ...

@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
 from zope.app.form.browser import ObjectWidget
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.browser.tests import support
 
 
