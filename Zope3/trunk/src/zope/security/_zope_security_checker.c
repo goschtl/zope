@@ -260,6 +260,20 @@ Checker_proxy(Checker *self, PyObject *value)
           return value;
         }
     }
+  else if (checker == Py_None)
+    {
+      PyObject *errv = Py_BuildValue("sO",
+                                     "Invalid value, None. "
+                                     "for security checker",
+                                     value);
+      if (errv != NULL)
+        {
+          PyErr_SetObject(PyExc_ValueError, errv);
+          Py_DECREF(errv);
+        }
+      
+      return NULL;
+    }
     
   r = PyObject_CallFunctionObjArgs(Proxy, value, checker, NULL);
   Py_DECREF(checker);
