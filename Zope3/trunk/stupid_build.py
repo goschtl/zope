@@ -25,6 +25,8 @@ $ python2.2 stupid_build.py -c mingw32
 """
 
 import sys, os
+if not (sys.version >= "2.2" and sys.version_info >= (2, 2, 2)):
+    raise RuntimeError, "Python 2.2.2 or later is required"
 
 def remove_stale_bytecode(arg, dirname, names):
     names = map(os.path.normcase, names)
