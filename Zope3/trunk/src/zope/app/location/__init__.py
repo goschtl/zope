@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.6 2004/03/20 13:37:01 philikon Exp $
+$Id: __init__.py,v 1.7 2004/04/05 19:44:07 jim Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -447,9 +447,18 @@ class PathPersistent:
         root = LocationPhysicallyLocatable(self.location).getRoot()
         return ITraverser(root).traverse(path[1:])
 
+class ClassAndInstanceDescr(object):
+
+    def __init__(self, *args):
+        self.funcs = args
+
+    def __get__(self, inst, cls):
+        if inst is None:
+            return self.funcs[1](cls)
+        return self.funcs[0](inst)
 
 class LocationProxy(ProxyBase):
-    """Contained-object proxy
+    __doc__ = """Location-object proxy
 
     This is a non-picklable proxy that can be put around objects that
     don't implement ILocation.
@@ -469,6 +478,10 @@ class LocationProxy(ProxyBase):
     ...
     TypeError: Not picklable
 
+    Proxies should get their doc strings from the object they proxy:
+
+    >>> p.__doc__ == l.__doc__
+    True
 
     """
 
@@ -488,6 +501,12 @@ class LocationProxy(ProxyBase):
     def __reduce__(self, proto=None):
         raise TypeError, "Not picklable"
 
+
+    __doc__ = ClassAndInstanceDescr(
+        lambda inst: getProxiedObject(inst).__doc__,
+        lambda cls, __doc__ = __doc__: __doc__,
+        )
+    
     __reduce_ex__ = __reduce__
 
     __providedBy__ = DecoratorSpecificationDescriptor()
