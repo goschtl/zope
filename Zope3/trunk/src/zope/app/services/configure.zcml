@@ -132,7 +132,7 @@
 <!-- Session Templates -->
 
   <serviceType
-      id="SessionService" 
+      id="Sessions" 
       interface="zope.app.interfaces.services.session.ISessionService" />
 
   <content class="zope.app.services.session.CookieSessionService">

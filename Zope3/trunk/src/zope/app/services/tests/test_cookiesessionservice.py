@@ -13,18 +13,15 @@
 ##############################################################################
 
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.services.tests.placefulsetup \
-    import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component import getServiceManager, getService
 from zope.server.http.http_date import parse_http_date
 
-from zope.app.interfaces.services.session import \
-     ISessionService, ISessionDataManager
-from zope.app.services.session import \
-     CookieSessionService
+from zope.app.interfaces.services.session import ISessionService
+from zope.app.interfaces.services.session import ISessionDataManager
+from zope.app.services.session import CookieSessionService
 
 import time
-
 
 class DummyDataManager:
 
@@ -50,7 +47,8 @@ class FakeRequest:
     def setCookie(self, k, v, **kw):
         self.sets += 1
         self.cookies[k] = v
-        if not abs(parse_http_date(kw["expires"]) - int(time.time()) - 1800) < 3:
+        if (not abs(parse_http_date(kw["expires"]) - int(time.time()) - 1800)
+            < 3):
             raise AssertionError
 
 
@@ -63,9 +61,9 @@ class SessionServiceTestCaseMixin(PlacefulSetup):
         self.buildFolders()
         root_sm = getServiceManager(None)
         svc = self.serviceFactory()
-        root_sm.defineService("SessionService", ISessionService)
-        root_sm.provideService("SessionService", svc)
-        self.svc = getService(self.rootFolder, "SessionService")
+        root_sm.defineService("Sessions", ISessionService)
+        root_sm.provideService("Sessions", svc)
+        self.svc = getService(self.rootFolder, "Sessions")
 
     def testRegister(self):
         d = DummyDataManager()
@@ -119,8 +117,9 @@ class CookieServiceTestCase(SessionServiceTestCaseMixin, TestCase):
 
 
 def test_suite():
-    loader=TestLoader()
+    loader = TestLoader()
     return loader.loadTestsFromTestCase(CookieServiceTestCase)
 
 if __name__=='__main__':
     TextTestRunner().run(test_suite())
+

@@ -25,9 +25,11 @@ import sha, time, string, random, hmac
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.server.http.http_date import build_http_date
+from zope.component import getService
 
 # Sibling imports
-from zope.app.interfaces.services.session import ISessionService, IConfigureSessionService
+from zope.app.interfaces.services.session import ISessionService
+from zope.app.interfaces.services.session import IConfigureSessionService
 
 
 cookieSafeTrans = string.maketrans("+/", "-.")
@@ -40,7 +42,8 @@ def digestEncode(s):
 class CookieSessionService(Persistent):
     """Session service implemented using cookies."""
 
-    __implements__ = Persistent.__implements__, ISessionService, IConfigureSessionService
+    __implements__ = (Persistent.__implements__, ISessionService,
+                      IConfigureSessionService)
 
     def __init__(self):
         self.dataManagers = PersistentDict()
@@ -58,19 +61,25 @@ class CookieSessionService(Persistent):
         return s + digestEncode(mac)
 
     def getRequestId(self, request):
-        """Return the sessionId encoded in request or None if it's non-existent."""
+        """Return the sessionId encoded in request or None if it's
+        non-existent."""
         sid = request.cookies.get(self.namespace)
         if sid is None or len(sid) != 54:
             return None
         s, mac = sid[:27], sid[27:]
-        if digestEncode(hmac.new(s, self.secret, digestmod=sha).digest()) != mac:
+        if (digestEncode(hmac.new(s, self.secret, digestmod=sha).digest())
+            != mac):
             return None
         else:
             return sid
 
     def setRequestId(self, request, id):
         """Set cookie with id on request."""
-        request.response.setCookie(self.namespace, id, expires=build_http_date(time.time() + 1800))
+        request.response.setCookie(
+                self.namespace,
+                id,
+                expires=build_http_date(time.time() + 1800)
+                )
 
 
     #####################################
@@ -92,7 +101,8 @@ class CookieSessionService(Persistent):
 
     def registerDataManager(self, name, dataManager):
         if self.dataManagers.has_key(name):
-            raise ValueError, "DataManager already registered with name %r" % name
+            raise ValueError(
+                    "DataManager already registered with name %r" % name)
         self.dataManagers[name] = dataManager
 
     def unregisterDataManager(self, name):
@@ -102,6 +112,6 @@ class CookieSessionService(Persistent):
 
 def getSessionDataObject(context, request, name):
     """Get data object from appropriate ISessionDataManager."""
-    service = getService(context, "SessionService")
+    service = getService(context, "Sessions")
     sid = service.getSessionId(request)
     return service.getDataManager(name).getDataObject(sid)
