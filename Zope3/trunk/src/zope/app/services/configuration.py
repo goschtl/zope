@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.10 2003/03/10 22:37:47 gvanrossum Exp $
+$Id: configuration.py,v 1.11 2003/03/12 18:48:31 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -310,7 +310,7 @@ class NamedConfiguration(SimpleConfiguration):
         super(NamedConfiguration, self).__init__()
 
     def usageSummary(self):
-        return self.name + " " + self.__class__.__name__
+        return "%s %s" % (self.name, self.__class__.__name__)
 
 
 class NamedComponentConfiguration(NamedConfiguration):
