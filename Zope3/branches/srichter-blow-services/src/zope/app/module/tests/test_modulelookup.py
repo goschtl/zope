@@ -20,12 +20,11 @@ $Id$
 """
 from zope.testing.doctestunit import DocTestSuite
 
-
-from zope.app.registration.registration import RegisterableContainer
+from zope.app.component.registration import RegisterableContainer
 from zope.app.module.interfaces import IModuleManager
 from zope.interface import implements
 from zope.app.container.contained import Contained, setitem
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 import sys
 

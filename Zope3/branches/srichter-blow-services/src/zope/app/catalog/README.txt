@@ -195,7 +195,7 @@ create a utility to work with our catalog:
     ...         return self.data.iterkeys()
     >>> ids = Ids({1: o1, 2: o2, 3: o3, 4: o4, 5: o5, 6: o6})
     
-    >>> from zope.app.tests import ztapi
+    >>> from zope.app.testing import ztapi
     >>> ztapi.provideUtility(zope.app.intid.interfaces.IIntIds, ids)
 
 With this utility in place, catalogs can recompute indexes:

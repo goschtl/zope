@@ -18,7 +18,7 @@ $Id$
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.annotation.interfaces import IAnnotations

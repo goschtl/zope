@@ -29,7 +29,7 @@ But if we provide an authentication service:
   ...     zope.interface.implements(IAuthenticationUtility)
   >>> fake = FakeAuthenticationUtility()
   
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IAuthenticationUtility, fake)
 
 Then we should be able to get the service back when we ask for the

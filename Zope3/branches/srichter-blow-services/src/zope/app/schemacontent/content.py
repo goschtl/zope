@@ -21,10 +21,9 @@ from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.interfaces import IAdding
-from zope.app.registration.interfaces import ActiveStatus
+from zope.app.component.interfaces.registration import ActiveStatus
 from zope.app.container.contained import Contained
-from zope.app.site.service import ServiceRegistration
-from zope.app.utility import UtilityRegistration
+from zope.app.component.site import UtilityRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields

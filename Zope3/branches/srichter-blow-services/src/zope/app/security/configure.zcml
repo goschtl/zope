@@ -12,7 +12,7 @@
 
   <vocabulary 
       name="Permissions"
-      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      factory="zope.app.component.vocabulary.UtilityVocabulary"
       interface="zope.security.interfaces.IPermission" />
 
   <vocabulary
@@ -40,12 +40,12 @@
   </localUtility>
 
   <subscriber
-     for="..registration.interfaces.IRegistrationActivatedEvent"
+     for="..component.interfaces.registration.IRegistrationActivatedEvent"
      factory=".permission.setIdOnActivation"
      />
 
   <subscriber
-     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
      factory=".permission.unsetIdOnDeactivation"
      />
 

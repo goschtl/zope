@@ -11,12 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Source Widget Tests
 
 $Id$
 """
-
-from zope.app.tests import placelesssetup
+from zope.app.testing import placelesssetup
 
 def test_suite():
     from zope.testing import doctest

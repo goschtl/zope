@@ -69,7 +69,7 @@ def view(_context, for_=None, interface=None, methods=None,
         _context.action(
             discriminator = ('view', for_, name, IXMLRPCRequest),
             callable = handler,
-            args = (zapi.servicenames.Adapters, 'register',
+            args = ('provideAdapter',
                     (for_, IXMLRPCRequest), Interface, name, class_,
                     _context.info)
             )
@@ -89,7 +89,7 @@ def view(_context, for_=None, interface=None, methods=None,
             _context.action(
                 discriminator = ('view', for_, name, IXMLRPCRequest),
                 callable = handler,
-                args = (zapi.servicenames.Adapters, 'register',
+                args = ('provideAdapter',
                         (for_, IXMLRPCRequest), Interface, name, new_class,
                         _context.info)
                 )

@@ -59,8 +59,8 @@ class PROPPATCH(object):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = str(zapi.getView(self.context, 'absolute_url', 
-                                        self.request))
+        resource_url = str(zapi.getMultiAdapter((self.context, self.request),
+                                                name='absolute_url'))
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 

@@ -21,7 +21,6 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
-from zope.component.service import serviceManager
 from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
@@ -29,10 +28,9 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import newInteraction, endInteraction
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.registration.interfaces import IRegisterable
-from zope.app.registration.interfaces import IRegistered
-from zope.app.registration.interfaces import ActiveStatus
-from zope.app.servicenames import Utilities
+from zope.app.component.interfaces.registration import IRegisterable
+from zope.app.component.interfaces.registration import IRegistered
+from zope.app.component.interfaces.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition
@@ -49,9 +47,9 @@ from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.app.workflow.stateful.instance import StateChangeInfo
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.container.contained import contained
-from zope.app.utility import UtilityRegistration
+from zope.app.component.site import UtilityRegistration
 
 
 class ParticipationStub(object):
@@ -104,12 +102,11 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         name = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
                                 self.default['pd1']))
-        zapi.traverse(self.default.getRegistrationManager(),
+        zapi.traverse(self.default.registrationManager,
                       name).status = ActiveStatus
 
-        utilities = zapi.getService(Utilities, self.sm)
-        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
-        # give the pi some context to find a service
+        self.pd = self.sm.queryUtility(IProcessDefinition, 'definition1')
+        # give the pi some context to find a utility
         self.pi = createProcessInstance(self.sm, 'definition1')
         # Let's also listen to the fired events
         clearEvents()
@@ -216,12 +213,11 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         n = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
                                 self.default['pd1']))
-        zapi.traverse(self.default.getRegistrationManager(), n
+        zapi.traverse(self.default.registrationManager, n
                       ).status = ActiveStatus
 
-        utilities = zapi.getService(Utilities, self.sm)
-        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
-        # give the pi some context to find a service
+        self.pd = self.sm.queryUtility(IProcessDefinition, 'definition1')
+        # give the pi some context to find a utility
         self.pi = contained(
             createProcessInstance(self.sm, 'definition1'),
             self.rootFolder)
@@ -303,12 +299,11 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         k = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
                                 self.default['pd1']))
-        zapi.traverse(self.default.getRegistrationManager(),
+        zapi.traverse(self.default.registrationManager,
                       k).status = ActiveStatus
 
-        utilities = zapi.getService(Utilities, self.sm)
-        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
-        # give the pi some context to find a service
+        self.pd = self.sm.queryUtility(IProcessDefinition, 'definition1')
+        # give the pi some context to find a utility
         self.pi = contained(
             createProcessInstance(self.sm, 'definition1'),
             self.rootFolder)
@@ -390,13 +385,12 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         k = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
                                 self.default['pd1']))
-        zapi.traverse(self.default.getRegistrationManager(),
+        zapi.traverse(self.default.registrationManager,
                       k).status = ActiveStatus
 
-        utilities = zapi.getService(Utilities, self.sm)
-        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
+        self.pd = self.sm.queryUtility(IProcessDefinition, 'definition1')
         # give the process instance container (pic) some context to find a
-        # service (while this is not correct, it resembles the current
+        # utility (while this is not correct, it resembles the current
         # behavior.
         from zope.app.workflow.instance import ProcessInstanceContainerAdapter
         pic = ProcessInstanceContainerAdapter(self.rootFolder)

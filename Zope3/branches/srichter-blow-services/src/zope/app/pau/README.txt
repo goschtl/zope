@@ -55,7 +55,7 @@ We need to register this as a utility. Normally, we'd do this in ZCML. For the
 example here, we'll use the `provideUtility()` function from
 `zope.app.tests.ztapi`:
 
-  >>> from zope.app.tests.ztapi import provideUtility
+  >>> from zope.app.testing.ztapi import provideUtility
   >>> provideUtility(interfaces.IExtractionPlugin, MyExtractor(), name='emy')
 
 Now we also create an authenticator plugin that knows about object 42:
@@ -152,7 +152,7 @@ the title to a repr of the event info:
   >>> def add_info(event):
   ...     event.principal.title = `event.info`
 
-  >>> from zope.app.tests.ztapi import subscribe
+  >>> from zope.app.testing.ztapi import subscribe
   >>> subscribe([interfaces.IPAUPrincipalCreated], None, add_info)
 
 Now, if we authenticate a principal, its title will be set:
@@ -321,7 +321,7 @@ Our PAU will not find a principal with the ID '123'. Therefore it will
 delegate to the next utility. To make sure that it's delegated, we put in place
 a fake utility.
 
-  >>> from zope.app.utility.utility import testingNextUtility
+  >>> from zope.app.component.testing import testingNextUtility
   >>> from zope.app.security.interfaces import IAuthenticationUtility
 
   >>> class FakeAuthUtility:

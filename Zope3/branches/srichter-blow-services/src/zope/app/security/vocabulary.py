@@ -24,7 +24,7 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
 from zope.app.security.interfaces import IPermission, IAuthenticationUtility
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.utility.utility import queryNextUtility
+from zope.app.component import queryNextUtility
 
 # BBB Backward Compatibility
 from zope.exceptions import NotFoundError
@@ -46,7 +46,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
     To illustrate, we need to register the permission IDs vocab:
 
-        >>> from zope.app.tests.placelesssetup import setUp, tearDown
+        >>> from zope.app.testing.placelesssetup import setUp, tearDown
         >>> setUp()
         >>> from zope.schema.vocabulary import getVocabularyRegistry
         >>> registry = getVocabularyRegistry()
@@ -57,7 +57,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
     
         >>> from zope.app.security.interfaces import IPermission
         >>> from zope.app.security.permission import Permission
-        >>> from zope.app.tests import ztapi
+        >>> from zope.app.testing import ztapi
         >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),
         ...     'zope.Public')
         >>> ztapi.provideUtility(IPermission, Permission('b'), 'b')
@@ -192,7 +192,7 @@ class PrincipalSource(object):
         ...         return ('4', 4),
         >>> dummy3 = DummyUtility3()
 
-        >>> from zope.app.utility.utility import testingNextUtility
+        >>> from zope.app.component.testing import testingNextUtility
         >>> testingNextUtility(dummy1, dummy2, IAuthenticationUtility)
         >>> testingNextUtility(dummy2, dummy3, IAuthenticationUtility)
         

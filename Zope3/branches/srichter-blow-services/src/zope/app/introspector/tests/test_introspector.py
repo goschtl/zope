@@ -21,7 +21,7 @@ from zope.app.introspector.interfaces import IIntrospector
 from zope.interface import Interface, Attribute, implements, directlyProvides
 from zope.interface.verify import verifyObject
 from zope.app.component.interface import provideInterface
-from zope.app.tests import placelesssetup
+from zope.app.testing import placelesssetup
 
 class ITestClass(Interface):
     def drool():

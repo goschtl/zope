@@ -18,7 +18,7 @@ $Id$
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 from zope.app import zapi
 from zope.interface import Interface, directlyProvides, implements
@@ -28,7 +28,6 @@ from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
-from zope.app.site.service import ServiceManager
 from zope.app.registration.tests.iregistry import TestingIRegistry
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.presentation.presentation import ViewRegistration
@@ -41,8 +40,7 @@ from zope.app.tests import setup
 from zope.app.traversing.api import traverse
 
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IServiceService
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi, setup
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.proxy import removeAllProxies
@@ -122,10 +120,6 @@ class A(object):
     run = PhonyTemplate()
 
 
-class PhonyServiceManager(ServiceManager):
-
-    implements(IServiceService)
-
 class ModuleFinder(object):
 
     implements(IContained)
@@ -188,7 +182,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.rootFolder = rootFolder()
-        self.rootFolder.setSiteManager(PhonyServiceManager(self.rootFolder))
+        setup.createSiteManager(self.rootFolder)
         default = traverse(self.rootFolder, '++etc++site/default')
         self.__template = PhonyTemplate()
         default['t'] = self.__template

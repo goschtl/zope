@@ -15,14 +15,13 @@
 
 $Id$
 """
-
 import os
 import shutil
 import tempfile
 import unittest
 
-from zope.component.service import serviceManager
-from zope.app.tests import ztapi
+from zope.app import zapi
+from zope.app.testing import ztapi
 from zope.app.traversing.interfaces import TraversalError
 from zope.interface import implements
 
@@ -39,12 +38,12 @@ from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.interfaces import ITraversable, ITraverser
 from zope.app.location import Location
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.fssync import committer, syncer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-from zope.app.fssync.interfaces import IGlobalFSSyncService
+from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 
 
 class Sample(object):
@@ -120,12 +119,11 @@ class TestBase(PlacelessSetup, TempFiles):
     # Base class for test classes
 
     def setUp(self):
-        # Set up standard services
         super(TestBase, self).setUp()
 
-        # Set up FSRegistryService
-        serviceManager.defineService("FSRegistryService", IGlobalFSSyncService)
-        serviceManager.provideService("FSRegistryService", fsRegistry)
+        # Set up FSRegistryUtility
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IGlobalFSSyncUtility, fsRegistry)
         provideSynchronizer(None, DefaultFileAdpater)
 
         # Set up temporary name administration
@@ -135,7 +133,6 @@ class TestBase(PlacelessSetup, TempFiles):
         # Clean up temporary files and directories
         TempFiles.tearDown(self)
 
-        # Clean up service registrations etc.
         PlacelessSetup.tearDown(self)
 
 

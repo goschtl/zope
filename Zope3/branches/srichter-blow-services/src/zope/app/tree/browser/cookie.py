@@ -15,22 +15,21 @@
 
 $Id$
 """
-
 from zope.app import zapi
 from zope.app.container.interfaces import IContainer
 from zope.app.folder.interfaces import IFolder
-from zope.app.site.interfaces import ISite, ISiteManager
+from zope.app.component.interfaces import ISite
+from zope.component.interfaces import ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
 
 from zope.app.tree.filters import OnlyInterfacesFilter
 from zope.app.tree.browser import StatefulTreeView
 
 class CookieTreeView(StatefulTreeView):
-    """A stateful tree view using cookies to remember the tree state
-    """
+    """A stateful tree view using cookies to remember the tree state"""
 
     request_variable = 'tree-state'
-
+    
     def cookieTree(self, root=None, filter=None):
         """Build a tree with tree state information from a request.
         """

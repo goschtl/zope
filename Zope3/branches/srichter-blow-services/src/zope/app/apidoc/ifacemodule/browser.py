@@ -447,12 +447,12 @@ class InterfaceDetails(object):
              'zope.app.traversing.interfaces.IPhysicallyLocatable'),
             ('required', [])]]
         """
-        service = zapi.getService('Adapters')
+        sm = zapi.getSiteManager()
         # Must remove security proxies, so that we have access to the API
         # methods. 
         iface = removeSecurityProxy(self.context)
         adapters = []
-        for reg in service.registrations():
+        for reg in sm.registrations():
             # Only grab the adapters for which this interface is required
             if reg.required and reg.required[0] is not None and \
                    iface not in reg.required:
@@ -495,12 +495,12 @@ class InterfaceDetails(object):
             ('name', ''),
             ('required', ['zope.app.apidoc.ifacemodule.tests.IBar'])]]
         """
-        service = zapi.getService('Adapters')
+        sm = zapi.getSiteManager()
         # Must remove security and location proxies, so that we have access to
         # the API methods and class representation.
         iface = removeAllProxies(self.context)
         adapters = []
-        for reg in service.registrations():
+        for reg in sm.registrations():
             # Only grab adapters for which this interface is provided
             if iface is not reg.provided:
                 continue
@@ -596,10 +596,10 @@ class InterfaceDetails(object):
             ('url', 'zope/app/apidoc/ifacemodule/tests/Foo'),
             ('url_name', u'The Foo')]]
         """
-        service = zapi.getService('Utilities')
+        sm = zapi.getSiteManager()
         # Must remove security and location proxies, so that we have access to
         # the API methods and class representation.
-        utils = service.getUtilitiesFor(removeAllProxies(self.context))
+        utils = sm.getUtilitiesFor(removeAllProxies(self.context))
         info = []
         for name, util in utils:
             if type(util) in (ClassType, TypeType):
@@ -612,20 +612,3 @@ class InterfaceDetails(object):
                          'path': path,
                          'url': path.replace('.', '/')})
         return info
-
-    def getServices(self):
-        """Return all services (at most one)  that provide this interface.
-
-        Example::
-
-          >>> from tests import getInterfaceDetails
-          >>> details = getInterfaceDetails()
-          >>> details.getServices()
-          ['Foo']
-        """
-        # Must remove security and location proxies, so that we have access to
-        # the API methods and class representation.
-        iface = removeAllProxies(self.context)
-        service = zapi.getService('Services')
-        services = service.getServiceDefinitions()
-        return [ser[0] for ser in services if ser[1] is iface]

@@ -158,7 +158,7 @@ Let's start by creatig a principal:
 
 We also need to register our manager as a utility:
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> from zope.app.homefolder.interfaces import IHomeFolderManager
   >>> ztapi.provideUtility(IHomeFolderManager, manager, 'manager') 
 

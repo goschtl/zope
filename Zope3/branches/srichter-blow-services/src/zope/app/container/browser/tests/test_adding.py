@@ -28,8 +28,8 @@ from zope.security.interfaces import ForbiddenAttribute
 from zope.testing.doctestunit import DocTestSuite
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup, setUp, tearDown
 from zope.app.traversing.browser import AbsoluteURL
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.exception.interfaces import UserError
@@ -80,8 +80,8 @@ class AbsoluteURL(BrowserView):
         if IContainmentRoot.providedBy(self.context):
             return ''
         name = self.context.__name__
-        url = str(zapi.getView(
-            zapi.getParent(self.context), 'absolute_url', self.request))
+        url = str(zapi.getMultiAdapter(
+            (zapi.getParent(self.context), self.request), name='absolute_url'))
         url += '/' + name
         return url
 

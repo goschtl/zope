@@ -20,12 +20,11 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.interface.verify import verifyObject
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.site.tests import placefulsetup
+from zope.app.testing import ztapi, setup
+import zope.app.component.testing as placefulsetup
 
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.tests import setup
 
 from zope.app.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
@@ -38,7 +37,7 @@ from zope.app.security.basicauthadapter import BasicAuthAdapter
 
 from zope.publisher.browser import TestRequest as Request
 
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 import base64
 

@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.fssync.server.entryadapter import DirectoryAdapter
-from zope.app.site.interfaces import ISite
+from zope.app.component.interfaces import ISite
 
 
 class FolderAdapter(DirectoryAdapter):

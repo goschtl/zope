@@ -30,7 +30,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.contained import Contained
 from zope.app.location import Location
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.utility.utility import queryNextUtility
+from zope.app.component import queryNextUtility
 
 class PrincipalAnnotationUtility(Persistent, Contained):
     """Stores `IAnnotations` for `IPrinicipals`.

@@ -30,7 +30,7 @@ from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 class Test(PlacelessSetup, TestCase):
 

@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.app.schema.vocabulary import ZopeVocabularyRegistry
 

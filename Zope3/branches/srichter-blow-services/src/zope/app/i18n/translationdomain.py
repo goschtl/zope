@@ -29,10 +29,8 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.app.container.contained import Contained
-from zope.app.component.localservice import getNextService
-from zope.component.servicenames import Utilities
-from zope.app.utility import UtilityRegistration
-
+from zope.app.component.site import UtilityRegistration
+from zope.app.component import queryNextUtility
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
@@ -84,8 +82,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         else:
             # If nothing found, delegate to a translation server higher up the
             # tree.
-            utils = getNextService(self, Utilities)
-            domain = utils.queryUtility(ITranslationDomain, self.domain)
+            domain = queryNextUtility(ITranslationDomain, self.domain)
             if domain is not None:
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)
@@ -241,7 +238,7 @@ def setDomainOnActivation(event):
     >>> domain1.domain
     '<domain not activated>'
 
-    >>> from zope.app.registration import registration 
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationActivatedEvent(
     ...     Registration(domain1, 'domain1'))
 
@@ -283,7 +280,7 @@ def unsetDomainOnDeactivation(event):
     >>> domain1 = TranslationDomain()
     >>> domain1.domain = 'domain1'
 
-    >>> from zope.app.registration import registration 
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationDeactivatedEvent(
     ...     Registration(domain1, 'domain1'))
 

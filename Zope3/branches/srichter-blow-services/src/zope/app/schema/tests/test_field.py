@@ -23,7 +23,7 @@ from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldsInOrder
 from zope.security.checker import ProxyFactory
 from zope.security.management import system_user, newInteraction
-from zope.app.tests import setup
+from zope.app.testing import setup
 from zope.app.schema.wrapper import Struct
 from zope.security.checker import getChecker, _defaultChecker
 import zope.app.schema.tests

@@ -33,7 +33,6 @@ from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.tests import ztapi
 from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
 from zope.app.location.traversing import LocationPhysicallyLocatable

@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Attribute
 
 from zope.app.cache.interfaces import ICache
-from zope.app.registration.interfaces import IRegisterable
+from zope.app.component.interfaces.registration import IRegisterable
 
 class IRAMCache(ICache, IRegisterable):
     """Interface for the RAM Cache."""

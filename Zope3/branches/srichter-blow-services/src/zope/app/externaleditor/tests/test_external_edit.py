@@ -20,8 +20,8 @@ from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest
 
 from zope.app import zapi
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.tests import ztapi
+from zope.app.component.testing import PlacefulSetup
+from zope.app.testing import ztapi
 from zope.app.container.contained import contained
 from zope.app.content.interfaces import IContentType
 from zope.app.filerepresentation.interfaces import IReadFile
@@ -65,7 +65,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(file.data, 'Foobar')
         file = contained(file, container, 'file')
-        view = zapi.queryView(file, 'external_edit', request, None)
+        view = zapi.queryMultiAdapter((file, request), name='external_edit')
         self.failIf(view is None)
         expected = """\
 url:http://127.0.0.1/folder1/file

@@ -23,7 +23,7 @@ from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces import NotFound
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
 
@@ -31,7 +31,7 @@ from zope.app.rotterdam.tests import util
 from zope.app.rotterdam.xmlobject import ReadContainerXmlObjectView
 from zope.app.rotterdam.xmlobject import XmlObjectView
 
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 
 class File(object):
     pass
@@ -40,7 +40,6 @@ class TestXmlObject(PlacefulSetup, TestCase):
     
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
-        self.createStandardServices()
 
     def testXMLTreeViews(self):
         rcxov = ReadContainerXmlObjectView

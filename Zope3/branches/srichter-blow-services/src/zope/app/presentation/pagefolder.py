@@ -25,15 +25,13 @@ from zope.schema import BytesLine, Bool, Field, Choice
 
 from zope.app.container.btree import BTreeContainer
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
-from zope.app.registration.interfaces import ActiveStatus
-from zope.app.registration.interfaces import IRegistrationManager
-from zope.app.registration.interfaces import IRegisterableContainer
-from zope.app.registration.interfaces import RegisteredStatus
-from zope.app.registration.interfaces import UnregisteredStatus
-from zope.app.registration.interfaces import IRegisterable
+from zope.app.component.interfaces.registration import ActiveStatus
+from zope.app.component.interfaces.registration import IRegistrationManager
+from zope.app.component.interfaces.registration import IRegisterableContainer
+from zope.app.component.interfaces.registration import IRegisterable
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.presentation import PageRegistration
-from zope.app.registration.registration import RegisterableContainer
+from zope.app.component.registration import RegisterableContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zpt import IZPTTemplate
 from zope.app.traversing.api import getPath
@@ -43,7 +41,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.container.interfaces import IContainer
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.fssync.server.interfaces import IObjectDirectory
-from zope.app.registration.interfaces import IRegisterableContainer
+from zope.app.component.interfaces.registration import IRegisterableContainer
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IPageFolderInfo(Interface):

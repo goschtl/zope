@@ -30,7 +30,7 @@ class JobCreateView(BrowserView):
 
     >>> from job import JobList
     >>> from zope.publisher.browser import TestRequest
-    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> from zope.app.testing.placelesssetup import setUp, tearDown
     >>> setUp()
     >>> class TestJobList:
     ...    context = None
@@ -68,7 +68,7 @@ class ApproveJobsView(BrowserView):
 
     >>> from job import JobList
     >>> from zope.publisher.browser import TestRequest
-    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> from zope.app.testing.placelesssetup import setUp, tearDown
     >>> setUp()
     >>> 
     >>> request = TestRequest(form={'1':'approve','2':'discard'})

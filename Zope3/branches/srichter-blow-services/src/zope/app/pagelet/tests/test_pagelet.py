@@ -13,7 +13,7 @@
 ##############################################################################
 """Pagelet tests
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -26,8 +26,7 @@ from zope.security.checker import defineChecker
 from zope.testing.doctestunit import DocTestSuite
 from zope.testing.doctestunit import DocFileSuite
 
-from zope.app.tests import placelesssetup, ztapi
-from zope.app.tests import setup
+from zope.app.testing import placelesssetup, ztapi, setup
 
 
 

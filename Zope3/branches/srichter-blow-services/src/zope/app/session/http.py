@@ -21,7 +21,7 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app import zapi
 from zope.app.session.interfaces import IClientIdManager
-from zope.app.utility.interfaces import ILocalUtility
+from zope.app.component.interfaces import ILocalUtility
 from zope import schema
 from zope.interface import implements
 from zope.server.http.http_date import build_http_date

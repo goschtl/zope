@@ -149,5 +149,5 @@ def EditViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapters)
-    s.register((for_, layer), Interface, name, class_)
+    s = zapi.getGlobalSiteManager()
+    s.provideAdapter((for_, layer), Interface, name, class_)

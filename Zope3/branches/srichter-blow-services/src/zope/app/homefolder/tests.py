@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 import unittest
 from zope.security.interfaces import IPrincipal
 from zope.testing import doctest
-from zope.app.tests import placelesssetup, setup, ztapi
+from zope.app.testing import placelesssetup, setup, ztapi
 
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager

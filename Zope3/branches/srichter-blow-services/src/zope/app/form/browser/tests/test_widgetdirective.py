@@ -25,7 +25,7 @@ import zope.schema
 import zope.app.container.interfaces
 import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
-import zope.app.tests.placelesssetup
+import zope.app.testing.placelesssetup
 
 from zope.app import zapi
 
@@ -60,7 +60,7 @@ class Adding(object):
         self.content = content
 
 
-class WidgetDirectiveTestCase(zope.app.tests.placelesssetup.PlacelessSetup,
+class WidgetDirectiveTestCase(zope.app.testing.placelesssetup.PlacelessSetup,
                               unittest.TestCase):
 
     def setUp(self):
@@ -70,7 +70,7 @@ class WidgetDirectiveTestCase(zope.app.tests.placelesssetup.PlacelessSetup,
 
     def get_widget(self, name, context):
         request = zope.publisher.browser.TestRequest()
-        view = zapi.getView(context, name, request)
+        view = zapi.getMultiAdapter((context, request), name=name)
         return view.field_widget
 
     def test_addform_widget_without_class(self):

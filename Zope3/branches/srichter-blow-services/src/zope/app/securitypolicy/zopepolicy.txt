@@ -504,7 +504,7 @@ authentication service:
 
   >>> auth = FauxPrincipals()
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IAuthenticationUtility, auth)
   >>> from zope.app import zapi
 

@@ -25,7 +25,7 @@ from zope.interface import Interface, implements
 from zope.schema import Text, BytesLine, Bool
 
 from zope.app.container.contained import Contained
-from zope.app.registration.interfaces import IRegisterable
+from zope.app.component.interfaces.registration import IRegisterable
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.fssync.server.interfaces import IObjectFile
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile

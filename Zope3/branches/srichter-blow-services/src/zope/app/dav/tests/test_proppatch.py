@@ -30,11 +30,11 @@ from zope.pagetemplate.tests.util import normalize_xml
 from ZODB.tests.util import DB
 	
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.traversing.api import traverse
 from zope.publisher.browser import TestRequest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
@@ -158,14 +158,14 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
         ztapi.provideAdapter(IAnnotatable, ITestSchema, TestSchemaAdapter)
-        utils = zapi.getGlobalService('Utilities')
+        sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IZopeDublinCore,
+        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
                              'http://www.purl.org/dc/1.1')
         directlyProvides(ITestSchema, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, ITestSchema, TestURI)
+        sm.provideUtility(IDAVNamespace, ITestSchema, TestURI)
         self.db = DB()
         self.conn = self.db.open()
         root = self.conn.root()
@@ -234,7 +234,8 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
     def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
         request = _createRequest(namespaces=ns, set=set, remove=rm, 
                                  extra=extra)
-        resource_url = str(zapi.getView(obj, 'absolute_url', request))
+        resource_url = str(
+            zapi.getMultiAdapter((obj, request), name='absolute_url'))
         expect = '''<?xml version="1.0" encoding="utf-8"?>
             <multistatus xmlns="DAV:"><response>
             <href>%%(resource_url)s</href>

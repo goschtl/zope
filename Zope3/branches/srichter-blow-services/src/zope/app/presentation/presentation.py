@@ -23,9 +23,8 @@ from zope.interface import implements, providedBy, Interface, Attribute
 from zope.security.checker import NamesChecker, ProxyFactory
 
 import zope.app.container.contained
-import zope.app.registration.interfaces
-import zope.app.site.interfaces
-import zope.app.adapter
+import zope.app.component.interfaces.registration
+import zope.app.component.adapter
 import zope.app.interface.interfaces
 import zope.component.interfaces
 import zope.configuration.exceptions
@@ -36,15 +35,13 @@ import zope.schema
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
-from zope.app.registration.interfaces import IRegistered
 
 class GlobalViewRegistration(object):
     """Registrations representing global view service thingies."""
 
-    implements(zope.app.registration.interfaces.IRegistration)
+    implements(zope.app.component.interfaces.registration.IRegistration)
 
-    serviceType = zapi.servicenames.Adapters
-    status = zope.app.registration.interfaces.ActiveStatus
+    status = zope.app.component.interfaces.registration.ActiveStatus
 
     def __init__(self, context):
         self.context = context
@@ -76,7 +73,7 @@ class GlobalViewRegistration(object):
         return _("Registered by ZCML")
 
 class LocalLayer(
-    zope.app.adapter.LocalAdapterRegistry,
+    zope.app.component.adapter.LocalAdapterRegistry,
     zope.app.container.contained.Contained,
     ):
 
@@ -86,7 +83,7 @@ class LocalLayer(
         self.__parent__ = parent
         self.__name__ = name
 
-class IViewRegistration(zope.app.adapter.IAdapterRegistration):
+class IViewRegistration(zope.app.component.interfaces.IAdapterRegistration):
 
     required = zope.schema.Choice(
         title = _(u"For interface"),
@@ -113,10 +110,9 @@ class IViewRegistration(zope.app.adapter.IAdapterRegistration):
         default = "default",
         )
 
-class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
+class ViewRegistration(zope.app.component.registration.SimpleRegistration):
     implements(IViewRegistration)
 
-    serviceType = zapi.servicenames.Adapters
     provided = Interface
 
     # For usageSummary(); subclass may override
@@ -161,6 +157,7 @@ class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
         return folder.resolve(self.factoryName)
     factory = property(factory)
 
+
 class IPageRegistration(IViewRegistration):
 
     factoryName = zope.schema.BytesLine(
@@ -168,7 +165,7 @@ class IPageRegistration(IViewRegistration):
         required = False,
         )
 
-    template = zope.app.registration.interfaces.ComponentPath(
+    template = zope.app.component.interfaces.registration.Component(
         title = _(u"Page template"),
         required = False,
         )

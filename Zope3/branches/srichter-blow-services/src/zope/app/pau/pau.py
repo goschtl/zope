@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.event import notify
 import zope.interface
 import zope.schema
@@ -26,9 +25,9 @@ from zope.schema.interfaces import ISourceQueriables
 from zope.app import zapi
 
 from zope.app.security.interfaces import IAuthenticationUtility
-from zope.app.utility.utility import queryNextUtility
+from zope.app.component import queryNextUtility
 from zope.app.container.contained import Contained
-from zope.app.utility.interfaces import ILocalUtility
+from zope.app.component.interfaces import ILocalUtility
 from zope.app.location.interfaces import ILocation
 
 from zope.app.pau import interfaces

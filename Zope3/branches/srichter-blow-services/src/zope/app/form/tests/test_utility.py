@@ -25,7 +25,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Field, Int
 from zope.schema.interfaces import IField, IInt
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi, placelesssetup
 from zope.app.publisher.browser import BrowserView
 from zope.app.form import Widget
 from zope.app.form.interfaces import IWidget, IInputWidget, IDisplayWidget
@@ -35,8 +35,6 @@ from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
 from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
 from zope.app.form.utility import getWidgetsData, viewHasInput
 from zope.app.form.utility import applyWidgetsChanges
-
-from zope.app.tests import placelesssetup
 
 request = TestRequest()
 

@@ -15,10 +15,9 @@
 
 $Id$
 """
-
 import unittest, doctest
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.interface import Interface, implements
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest

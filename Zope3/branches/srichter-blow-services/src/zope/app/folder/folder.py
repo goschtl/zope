@@ -126,8 +126,8 @@ class FolderSublocations(object):
       []
 
       >>> sm = Contained()
-      >>> from zope.component.interfaces import IServiceService
-      >>> directlyProvides(sm, IServiceService)
+      >>> from zope.component.interfaces import ISiteManager
+      >>> directlyProvides(sm, ISiteManager)
       >>> folder.setSiteManager(sm)
       >>> directlyProvides(folder, ISite)
       >>> subs = list(FolderSublocations(folder).sublocations())

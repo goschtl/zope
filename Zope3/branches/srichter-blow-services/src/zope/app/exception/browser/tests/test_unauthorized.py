@@ -19,11 +19,11 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.security.interfaces import IAuthenticationUtility, IPrincipal
 from zope.app.container.contained import contained
 from zope.app.exception.browser.unauthorized import Unauthorized
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 class Unauthorized(Unauthorized):
     """Unusually done by ZCML."""

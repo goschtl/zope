@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import datetime
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -27,7 +26,7 @@ from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.ftp import FTPView
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.container.contained import setitem, Contained

@@ -163,7 +163,7 @@ def page(_context, name, permission, for_,
     _context.action(
         discriminator = ('view', for_, name, IBrowserRequest, layer),
         callable = handler,
-        args = (zapi.servicenames.Adapters, 'register',
+        args = ('provideAdapter',
                 (for_, layer), Interface, name, new_class, _context.info),
         )
 
@@ -171,7 +171,7 @@ def page(_context, name, permission, for_,
 # pages, which are just a short-hand for multiple page directives.
 
 # Note that a class might want to access one of the defined
-# templates. If it does though, it should use getView.
+# templates. If it does though, it should use getMultiAdapter.
 
 class pages(object):
 
@@ -273,7 +273,7 @@ class view(object):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = zapi.queryView(self, name, request)
+                view = zapi.queryMultiAdapter((self, request), name=name)
                 if view is not None:
                     return view
 
@@ -286,7 +286,7 @@ class view(object):
 
                 if name in pages:
                     return getattr(self, pages[name])
-                view = zapi.queryView(self, name, request)
+                view = zapi.queryMultiAdapter((self, request), name=name)
                 if view is not None:
                     return view
 
@@ -339,7 +339,7 @@ class view(object):
         _context.action(
             discriminator = ('view', (for_, layer), name, self.provides),
             callable = handler,
-            args = (zapi.servicenames.Adapters, 'register',
+            args = ('provideAdapter',
                     (for_, layer), self.provides, name, newclass,
                     _context.info),
             )
@@ -362,7 +362,7 @@ def defaultView(_context, name, for_=None):
     _context.action(
         discriminator = ('defaultViewName', for_, IBrowserRequest, name),
         callable = handler,
-        args = (zapi.servicenames.Adapters, 'register',
+        args = ('provideAdapter',
                 (for_, IBrowserRequest), IDefaultViewName, '', name,
                 _context.info)
         )

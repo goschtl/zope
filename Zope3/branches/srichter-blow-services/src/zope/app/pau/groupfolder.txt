@@ -64,7 +64,7 @@ subscriber, when principals are created.  In order for
 `setGroupsForPrincipal` to find out group folder, we have to register
 it as a utility:
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(zope.app.pau.groupfolder.IGroupFolder,
   ...                      groups)
 

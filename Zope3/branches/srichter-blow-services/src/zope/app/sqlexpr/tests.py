@@ -15,9 +15,6 @@
 
 $Id: test_sqlexpr.py 26878 2004-08-03 16:25:34Z jim $
 """
-
-
-
 import unittest
 
 from zope.interface import implements
@@ -27,7 +24,7 @@ from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
 from zope.app.rdb.tests.stubs import ConnectionStub
 from zope.app.sqlexpr.sqlexpr import SQLExpr, ConnectionError

@@ -23,10 +23,8 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation import AnnotationsForPrincipal
 from zope.app.security.interfaces import IPrincipal
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.tests import setup
-from zope.app.tests import ztapi
-from zope.app.utility.utility import LocalUtilityService
+from zope.app.component.testing import PlacefulSetup
+from zope.app.testing import ztapi, setup
 from interfaces import IPrincipalAnnotationUtility
 
 class Principal(object):
@@ -63,7 +61,6 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
     def testGetFromLayered(self):
         princeSomebody = Principal('somebody')
         sm1 = self.makeSite('folder1')
-        setup.addService(sm1, 'Utilities', LocalUtilityService())
         subUtil = setup.addUtility(sm1, '', IPrincipalAnnotationUtility,
                                    PrincipalAnnotationUtility())
 

@@ -16,28 +16,23 @@
 $Id$
 """
 import unittest
-from zope.app.tests import setup
-from zope.app.site.tests import placefulsetup
-from zope.app import utility
-from zope.app import zapi
-from zope.app.servicenames import Utilities
-from zope.app.component.interface import getInterface, searchInterface
 from zope.interface import Interface, implements
-from zope.app.container.contained import Contained
-from zope.component import getService
-from zope.component.exceptions import ComponentLookupError
-from zope.app.traversing.api import traverse
-from zope.app.registration.interfaces import IRegistrationStack
-from zope.app.registration.interfaces import UnregisteredStatus
-from zope.app.registration.interfaces import RegisteredStatus
-from zope.app.registration.interfaces import ActiveStatus
-from zope.app.registration.interfaces import IRegistered
-from zope.app.utility.interfaces import ILocalUtility
-from zope.app.dependable.interfaces import IDependable
-from zope.app.tests import setup
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.interface import Interface
+from zope.component.exceptions import ComponentLookupError
+
+from zope.app import zapi
+from zope.app.component.interfaces import ILocalUtility
+from zope.app.component.site import UtilityRegistration
+from zope.app.component.testing import PlacefulSetup
+from zope.app.component.interface import getInterface, searchInterface
+from zope.app.component.interfaces.registration import ActiveStatus
+from zope.app.component.interfaces.registration import InactiveStatus
+from zope.app.component.interfaces.registration import IRegistered
+from zope.app.container.contained import Contained
+from zope.app.dependable.interfaces import IDependable
+from zope.app.testing import setup
+from zope.app.traversing.api import traverse
 
 class IBaz(Interface): pass
 
@@ -88,20 +83,16 @@ class Foo(InterfaceClass, Baz, Contained):
 
 class Bar(Foo): pass
 
-class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
+class TestInterfaceUtility(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
-        setup.addService(sm, Utilities,
-                         utility.LocalUtilityService())
+        sm = PlacefulSetup.setUp(self, site=True)
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, Bar("blob"),
-                                            name="blob")
-        utilityService.provideUtility(IBaz, Baz("global baz"))
-        utilityService.provideUtility(IInterface, Foo("global bob"),
-                                            name="bob")
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, Bar("blob"), name="blob")
+        gsm.provideUtility(IBaz, Baz("global baz"))
+        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
 
         self.assertEqual(getInterface(None, "bob").__class__, Foo)
         self.assertEqual(getInterface(None, "blob").__class__, Bar)
@@ -111,18 +102,17 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         baz = Baz("global baz")
         foo = Foo("global bob")
 
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, foo,
-                                            name="bob")
-        utilityService.provideUtility(IInterface, bar)
-        utilityService.provideUtility(IBaz, baz)
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm.provideUtility(IInterface, bar)
+        gsm.provideUtility(IBaz, baz)
 
         ifaces = searchInterface(None)
         self.assert_(len(ifaces), 2)
         for pair in [(foo), (bar)]:
             self.assert_(pair in ifaces)
 
-        iface_utilities = utilityService.getUtilitiesFor(IInterface)
+        iface_utilities = gsm.getUtilitiesFor(IInterface)
         ifaces = [iface for (name, iface) in iface_utilities]
 
         self.assert_(len(ifaces), 2)
@@ -136,30 +126,28 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         foo = Foo("global bob")
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, foo,
-                                            name="bob")
-        utilityService.provideUtility(ILocalUtility, bar)
-        utilityService.provideUtility(IBaz, baz)
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, foo, name="bob")
+        gsm.provideUtility(ILocalUtility, bar)
+        gsm.provideUtility(IBaz, baz)
 
-        iface_utilities = utilityService.getUtilitiesFor(IInterface)
+        iface_utilities = gsm.getUtilitiesFor(IInterface)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(foo)])
 
-        iface_utilities = utilityService.getUtilitiesFor(ILocalUtility)
+        iface_utilities = gsm.getUtilitiesFor(ILocalUtility)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(bar)])
 
-        iface_utilities = utilityService.getUtilitiesFor(IBaz)
+        iface_utilities = gsm.getUtilitiesFor(IBaz)
         ifaces = [iface for (name, iface) in iface_utilities]
         self.assertEqual(ifaces, [(baz)])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, Foo("global"))
-        utilityService.provideUtility(IBaz, Baz("global baz"))
-        utilityService.provideUtility(IInterface, Foo("global bob"),
-                                            name="bob")
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, Foo("global"))
+        gsm.provideUtility(IBaz, Baz("global baz"))
+        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
 
         self.assertRaises(ComponentLookupError,
                           getInterface, None, "bobesponja")
@@ -168,105 +156,66 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, bar)
-        utilityService.provideUtility(IBaz, baz)
-        utilityService.provideUtility(IInterface, foo,
-                                            name="bob")
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, bar)
+        gsm.provideUtility(IBaz, baz)
+        gsm.provideUtility(IInterface, foo, name="bob")
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
 
     def test_localsearchInterface_delegates_to_globalUtility(self):
+        # Same test as above!
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, bar)
-        utilityService.provideUtility(IBaz, baz)
-        utilityService.provideUtility(IInterface, foo,
-                                            name="bob")
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, bar)
+        gsm.provideUtility(IBaz, baz)
+        gsm.provideUtility(IInterface, foo, name="bob")
 
         self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
 
-    def test_queryUtility_delegates_to_global(self):
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, Foo("global"))
-        utilityService.provideUtility(IInterface, Foo("global bob"),
-                                            name="bob")
+    def test_query_get_Utility_delegates_to_global(self):
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, Foo("global"))
+        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
 
-        utility_service = getService(Utilities, self.rootFolder)
-        self.assert_(utility_service != utilityService)
+        sm = zapi.getSiteManager(self.rootFolder)
+        self.assert_(gsm != sm)
 
-        self.assertEqual(utility_service.queryUtility(IInterface).foo(),
-                         "foo global")
-        self.assertEqual(
-            utility_service.queryUtility(IInterface, "bob").foo(),
-            "foo global bob")
-
-    def test_getUtility_delegates_to_global(self):
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, Foo("global"))
-        utilityService.provideUtility(IInterface, Foo("global bob"),
-                                            name="bob")
-
-        utility_service = getService(Utilities, self.rootFolder)
-        self.assert_(utility_service != utilityService)
-
-        self.assertEqual(utility_service.getUtility(IInterface).foo(),
-                         "foo global")
-        self.assertEqual(
-            utility_service.getUtility(IInterface, "bob").foo(),
-            "foo global bob")
-
-
-    def test_registrationsFor_methods(self):
-        utilities = getService(Utilities, self.rootFolder)
-        default = traverse(self.rootFolder, "++etc++site/default")
-        default['foo'] = Foo("local")
-        foo = default['foo']
-
-        for name in ('', 'bob'):
-            registration = utility.UtilityRegistration(name, IInterface, foo)
-            self.assertEqual(utilities.queryRegistrationsFor(registration),
-                             None)
-            registery = utilities.createRegistrationsFor(registration)
-            self.assert_(IRegistrationStack.providedBy(registery))
-            self.assertEqual(utilities.queryRegistrationsFor(registration),
-                             registery)
-
+        # If queryUtility works on the site manager, getUtility in zapi must
+        # also work.
+        self.assertEqual(sm.queryUtility(IInterface).foo(), "foo global")
+        self.assertEqual(sm.queryUtility(IInterface, "bob").foo(),
+                         "foo global bob")
 
     def test_local_utilities(self):
-        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-        utilityService.provideUtility(IInterface, Foo("global"))
-        utilityService.provideUtility(IInterface, Foo("global bob"),
-                                            name="bob")
+        gsm = zapi.getGlobalSiteManager()
+        gsm.provideUtility(IInterface, Foo("global"))
+        gsm.provideUtility(IInterface, Foo("global bob"), name="bob")
 
-        utilities = getService(Utilities, self.rootFolder)
+        sm = zapi.getSiteManager(self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         foo = default['foo']
-        cm = default.getRegistrationManager()
+        cm = default.registrationManager
 
         for name in ('', 'bob'):
-            registration = utility.UtilityRegistration(name, IInterface, foo)
+            registration = UtilityRegistration(name, IInterface, foo)
             cname = cm.addRegistration(registration)
             registration = traverse(cm, cname)
 
             gout = name and "foo global "+name or "foo global"
-
-            self.assertEqual(utilities.getUtility(IInterface, name).foo(),
-                             gout)
+            self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
 
             registration.status = ActiveStatus
+            self.assertEqual(
+                sm.queryUtility(IInterface, name).foo(), "foo local")
 
-            self.assertEqual(utilities.getUtility(IInterface, name).foo(),
-                             "foo local")
-
-            registration.status = RegisteredStatus
-
-            self.assertEqual(utilities.getUtility(IInterface, name).foo(), gout)
+            registration.status = InactiveStatus
+            self.assertEqual(sm.queryUtility(IInterface, name).foo(), gout)
 
 
 def test_suite():

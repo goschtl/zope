@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.component.service import serviceManager
 
 from zope.app.component.hooks import setSite
-from zope.app.site.interfaces import ISite
+from zope.app.component.interfaces import ISite
 from zope.app.traversing.interfaces import IContainmentRoot
 
 

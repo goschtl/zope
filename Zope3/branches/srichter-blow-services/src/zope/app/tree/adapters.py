@@ -26,7 +26,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.app.container.interfaces import IReadContainer
-from zope.app.site.interfaces import ISite
+from zope.app.component.interfaces import ISite
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects
 

@@ -19,8 +19,7 @@ __docformat__ = "reStructuredText"
 import unittest
 from zope.testing import doctest
 from zope.schema.interfaces import ITextLine
-from zope.app.tests import placelesssetup
-from zope.app.tests import ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.form.browser import TextWidget
 from zope.app.form.interfaces import IInputWidget
 

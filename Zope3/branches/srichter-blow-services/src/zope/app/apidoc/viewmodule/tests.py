@@ -23,7 +23,7 @@ from zope.publisher.interfaces.browser import ISkin, ILayer, IDefaultSkin
 from zope.testing.doctestunit import DocTestSuite
 
 from zope.app import zapi
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.component.interface import provideInterface
 
 class IFoo(Interface):

@@ -21,9 +21,8 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.component.localservice import queryNextService
+from zope.app.component import queryNextSiteManager
 from zope.app.location.interfaces import ILocation
-from zope.app.servicenames import Utilities
 from zope.app.apidoc.interfaces import IDocumentationModule
 from zope.app.apidoc.utilities import ReadContainerBase, getPythonPath
 
@@ -83,20 +82,20 @@ class UtilityInterface(ReadContainerBase):
 
     def get(self, key, default=None):
         """See zope.app.container.interfaces.IReadContainer"""
-        service = zapi.getService(Utilities)
+        sm = zapi.getSiteManager()
         if key == NONAME:
             key = ''
         utils = [Utility(self, reg)
-                 for reg in service.registrations()
+                 for reg in sm.registrations()
                  if reg.name == key and reg.provided == self.interface]
 
         return utils and utils[0] or default
 
     def items(self):
         """See zope.app.container.interfaces.IReadContainer"""
-        service = zapi.getService(Utilities)
+        sm = zapi.getSiteManager()
         items = [(reg.name or NONAME, Utility(self, reg))
-                 for reg in service.registrations()
+                 for reg in sm.registrations()
                  if self.interface == reg.provided]
         items.sort()
         return items
@@ -150,13 +149,13 @@ class UtilityModule(ReadContainerBase):
             return UtilityInterface(self, key, getattr(mod, parts[-1], default))
 
     def items(self):
-        service = zapi.getService(Utilities)
+        sm = zapi.getSiteManager()
         ifaces = {}
-        while service is not None:
-            for reg in service.registrations():
+        while sm is not None:
+            for reg in sm.registrations():
                 path = getPythonPath(reg.provided)
                 ifaces[path] = UtilityInterface(self, path, reg.provided)
-            service = queryNextService(service, Utilities)
+            sm = queryNextSiteManager(sm)
 
         items = ifaces.items()
         items.sort(lambda x, y: cmp(x[0].split('.')[-1], y[0].split('.')[-1]))

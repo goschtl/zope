@@ -44,7 +44,7 @@ class LocalRole(Persistent, Location):
 
 # BBB: Renamed component on 12/05/2004
 PersistentRole = LocalRole
-from zope.app.utility import UtilityRegistration
+from zope.app.component.site import UtilityRegistration
 RoleRegistration = UtilityRegistration
 
 def setIdOnActivation(event):
@@ -61,7 +61,7 @@ def setIdOnActivation(event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id
     u'<role not activated>'
-    >>> from zope.app.registration import registration 
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationActivatedEvent(
     ...     Registration(role1, 'role1'))
 
@@ -103,7 +103,7 @@ def unsetIdOnDeactivation(event):
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id = 'role1'
 
-    >>> from zope.app.registration import registration 
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationDeactivatedEvent(
     ...     Registration(role1, 'role1'))
 

@@ -23,8 +23,7 @@ from zope.app.onlinehelp import tests
 from zope.app.onlinehelp import help
 from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi, placelesssetup
 from zope.configuration import xmlconfig
 from zope.interface import Interface
 
@@ -33,7 +32,7 @@ class I1(Interface):
     pass
 
 
-class DirectivesTest(PlacelessSetup, unittest.TestCase):
+class DirectivesTest(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(DirectivesTest, self).setUp()

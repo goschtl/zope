@@ -20,7 +20,7 @@ import unittest
 from zope.app.fssync.fsregistry import getSynchronizer
 from zope.app.fssync.tests.sampleclass import \
      C1, C2, CDirAdapter, CDefaultAdapter
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.configuration.config import ConfigurationConflictError
 from zope.exceptions import NotFoundError

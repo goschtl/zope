@@ -11,12 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Implementations of the session-based and cookie-based extractor and
-    challenge plugins.
+"""Implementations of the session-based and cookie-based extractor and
+challenge plugins.
 
 $Id$
 """
-
 from zope.interface import implements, Interface
 from zope.schema import TextLine
 from persistent import Persistent
@@ -163,7 +162,7 @@ class FormChallenger(Persistent, Contained):
 
         First we need a request and a response.
 
-        >>> from zope.app.tests.setup import placefulSetUp
+        >>> from zope.app.testing.setup import placefulSetUp
         >>> site = placefulSetUp(True)
 
 

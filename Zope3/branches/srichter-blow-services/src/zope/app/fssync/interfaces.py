@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface
 
 
-class IFSSyncService(Interface):
+class IFSSyncUtility(Interface):
     """Lookup file-system representation adapters."""
 
     def getSynchronizer(object):
@@ -40,7 +40,7 @@ class IFSSyncService(Interface):
         """
 
 
-class IGlobalFSSyncService(IFSSyncService):
+class IGlobalFSSyncUtility(IFSSyncUtility):
     """Global registry for file-system representation adapters."""
 
     def provideSynchronizer(class_, factory):

@@ -17,22 +17,19 @@ $Id$
 """
 import unittest
 
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.container.interfaces import IAdding
-from zope.app.utility.interfaces import ILocalUtility
-from zope.app.schemacontent.interfaces import IContentComponentDefinition
-from zope.app.servicenames import Utilities
-from zope.app.utility import LocalUtilityService
-from zope.app.tests import setup
-from zope.app.schemacontent.content import \
-     ContentComponentDefinition, ContentComponentDefinitionRegistration, \
-     ContentComponentInstance
-from zope.component import getGlobalServices
-from zope.app.tests import ztapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import Interface, classImplements
 from zope.schema import Int, TextLine, Text
+
+from zope.app import zapi
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.component.interfaces import ILocalUtility
+from zope.app.container.interfaces import IAdding
+from zope.app.schemacontent.content import \
+     ContentComponentDefinition, ContentComponentDefinitionRegistration, \
+     ContentComponentInstance
+from zope.app.schemacontent.interfaces import IContentComponentDefinition
+from zope.app.testing import setup, ztapi
 
 class IDocument(Interface):
     id = Int(title=u"id", default=0)
@@ -48,10 +45,7 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
 
-        mgr = setup.createServiceManager(self.rootFolder)
-
-        # Setup Utility Service
-        setup.addService(mgr, Utilities, LocalUtilityService())
+        mgr = setup.createSiteManager(self.rootFolder)
 
         # Setup Definition
         classImplements(ContentComponentDefinition, ILocalUtility)
@@ -63,8 +57,8 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         path = "%s/default/%s" % (zapi.getPath(mgr), 'TestDoc')
         reg = ContentComponentDefinitionRegistration(
             'TestDoc', IContentComponentDefinition, default['TestDoc'])
-        key = default.getRegistrationManager().addRegistration(reg)
-        self.reg = zapi.traverse(default.getRegistrationManager(), key)
+        key = default.registrationManager.addRegistration(reg)
+        self.reg = zapi.traverse(default.registrationManager, key)
         
     def tearDown(self):
         setup.placefulTearDown()

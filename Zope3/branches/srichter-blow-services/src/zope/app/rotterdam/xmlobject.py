@@ -50,7 +50,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def getIconUrl(self, item):
         result = ''
-        icon = zapi.queryView(item, 'zmi_icon', self.request)
+        icon = zapi.queryMultiAdapter((item, self.request), name='zmi_icon')
         if icon:
             result = icon.url()
         return result

@@ -20,7 +20,7 @@ import unittest
 
 from zope.exceptions.exceptionformatter import format_exception
 from zope.publisher.tests.httprequest import TestRequest
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.error.error import ErrorReportingUtility
 

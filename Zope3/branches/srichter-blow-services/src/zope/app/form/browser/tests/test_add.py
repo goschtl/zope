@@ -17,13 +17,13 @@ $Id$
 """
 import unittest
 
-from zope.app.tests import ztapi
+from zope.app import zapi
+from zope.app.testing import ztapi
 from zope.interface import Interface, implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
-from zope.component import getView
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
@@ -33,7 +33,7 @@ from zope.app.container.interfaces import IAdding
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.submit import Update
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 # Foo needs to be imported as globals() are checked
 from zope.app.form.browser.tests.test_editview import IFoo, IBar, Foo
@@ -215,7 +215,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = getView(adding, 'addthis', request)
+        view = zapi.getMultiAdapter((adding, request), name='addthis')
         content = view.create('a',0,abc='def')
 
         self.failUnless(isinstance(content, C))
@@ -248,7 +248,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = getView(adding, 'addthis', request)
+        view = zapi.getMultiAdapter((adding, request), name='addthis')
 
         view.createAndAdd(SampleData.__dict__)
 
@@ -286,7 +286,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
-        view = getView(adding, 'addthis', request)
+        view = zapi.getMultiAdapter((adding, request), name='addthis')
 
         view.createAndAdd({'bar': 'bar'})
 
@@ -306,7 +306,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             for (k, v) in dict(SampleData.__dict__).items()
             ]))
         request.form[Update] = ''
-        view = getView(adding, 'addthis', request)
+        view = zapi.getMultiAdapter((adding, request), name='addthis')
 
         # Add hooks to V
 

@@ -21,9 +21,8 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.servicenames import Adapters
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.testing import ztapi
+from zope.app.component.testing import PlacefulSetup
 
 from zope.app.security.basicauthadapter import BasicAuthAdapter
 from zope.app.security.interfaces import ILoginPassword

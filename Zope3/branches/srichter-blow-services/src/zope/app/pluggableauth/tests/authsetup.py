@@ -21,8 +21,8 @@ $Id$
 import base64
 from zope.publisher.browser import TestRequest as Request
 
-from zope.app.tests import ztapi, setup
-from zope.app.site.tests import placefulsetup
+from zope.app.testing import ztapi, setup
+from zope.app.component.testing import PlacefulSetup
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter
@@ -31,10 +31,10 @@ from zope.app.pluggableauth import \
      BTreePrincipalSource, SimplePrincipal
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
-class AuthSetup(placefulsetup.PlacefulSetup):
+class AuthSetup(PlacefulSetup):
 
     def setUp(self):
-        sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
+        sm = PlacefulSetup.setUp(self, site=True)
         ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         ztapi.browserView(IPrincipalSource, "login",

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pagelet collectors
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -31,14 +31,13 @@ from zope.app.pagelet.interfaces import IMacroCollector
 class MacrosCollector(object):
     """Replaceable sample implementation of IMacrosCollector.
     
-    Collects pagelets from the adapter service.
+    Collects pagelets from the site manager.
     Pagelet adapters are registred on context, request, view and slot
     interfaces. Use your own IMacrosCollector implementation for
     to support a layout manager.
 
     Imports:
     
-        >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.publisher.browser import TestRequest
         >>> from zope.publisher.interfaces.browser import IBrowserRequest
@@ -56,12 +55,12 @@ class MacrosCollector(object):
         >>> name = 'testpagelet'
         >>> factory = TestPagelet
 
-    Register the pagelet class as a factory on the adapter service:
+    Register the pagelet class as a factory on the site manager:
 
-        >>> from zope.app.tests import placelesssetup, ztapi
+        >>> from zope.app.testing import placelesssetup, ztapi
         >>> placelesssetup.setUp()
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IBrowserRequest, IView, IPageletSlot)
         ...        , IPagelet, name, factory)
 
@@ -123,7 +122,6 @@ class MacroCollector(object):
 
     Imports:
     
-        >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.publisher.browser import TestRequest
         >>> from zope.publisher.interfaces.browser import IBrowserRequest
@@ -141,12 +139,12 @@ class MacroCollector(object):
         >>> name = 'testpagelet'
         >>> factory = TestPagelet
 
-    Register the pagelet class as a factory on the adapter service:
+    Register the pagelet class as a factory on the site manager:
 
-        >>> from zope.app.tests import placelesssetup, ztapi
+        >>> from zope.app.testing import placelesssetup, ztapi
         >>> placelesssetup.setUp()
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IBrowserRequest, IView, IPageletSlot)
         ...        , IPagelet, name, factory)
 

@@ -27,7 +27,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser import DateDisplayWidget, DatetimeDisplayWidget
 from zope.app.form.browser.textwidgets import URIDisplayWidget
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 

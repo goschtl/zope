@@ -25,7 +25,7 @@ from zope.schema import Text
 
 from zope.app.form import Widget, CustomWidgetFactory
 from zope.app.form.interfaces import IWidget
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 class TestContext(object):
     __name__ = 'Test'

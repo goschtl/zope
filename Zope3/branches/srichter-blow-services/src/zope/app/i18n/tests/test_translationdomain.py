@@ -33,11 +33,9 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n.interfaces import ISyncTranslationDomain
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain
-from zope.app.servicenames import Utilities
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.tests import setup, ztapi
-from zope.app.utility import LocalUtilityService
-from zope.app.utility.interfaces import ILocalUtility 
+from zope.app.component.testing import PlacefulSetup
+from zope.app.testing import setup, ztapi
+from zope.app.component.interfaces import ILocalUtility 
 
 
 class Environment(object):
@@ -197,7 +195,6 @@ class TestTranslationDomain(TestITranslationDomain,
         self.sm = PlacefulSetup.setUp(self, site=True)
         TestITranslationDomain.setUp(self)
 
-        setup.addService(self.sm, Utilities, LocalUtilityService())
         setup.addUtility(self.sm, 'default', ITranslationDomain, self._domain)
         
         ztapi.provideUtility(IFactory, Factory(MessageCatalog),

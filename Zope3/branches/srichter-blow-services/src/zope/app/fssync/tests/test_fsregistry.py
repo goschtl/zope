@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test FSRegistry File-system synchronization services
+"""Test FSRegistry File-system synchronization utilities
 
 $Id$
 """
@@ -22,7 +22,7 @@ from zope.testing.cleanup import CleanUp
 from zope.interface.verify import verifyObject
 from zope.exceptions import DuplicationError, NotFoundError
 
-from zope.app.fssync.interfaces import IGlobalFSSyncService
+from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 from zope.app.fssync.tests.sampleclass \
      import C1, C2, CDirAdapter, CFileAdapter, CDefaultAdapter
 from zope.app.fssync.fsregistry \
@@ -33,7 +33,7 @@ class Test(CleanUp, TestCase):
     """
 
     def testInterfaceVerification(self):
-        verifyObject(IGlobalFSSyncService, fsRegistry)
+        verifyObject(IGlobalFSSyncUtility, fsRegistry)
 
     def testFSRegistry(self):
         """ Test Class and Factory registration and getSynchronizer to get

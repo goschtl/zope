@@ -29,7 +29,7 @@ class RoleIdsVocabulary(SimpleVocabulary):
 
     To illustrate, we need to register the role IDs vocab:
 
-        >>> from zope.app.tests.placelesssetup import setUp, tearDown
+        >>> from zope.app.testing.placelesssetup import setUp, tearDown
         >>> setUp()
         >>> from zope.schema.vocabulary import getVocabularyRegistry
         >>> registry = getVocabularyRegistry()
@@ -39,7 +39,7 @@ class RoleIdsVocabulary(SimpleVocabulary):
 
        >>> from zope.app.securitypolicy.interfaces import IRole
        >>> from zope.app.securitypolicy.role import Role
-       >>> from zope.app.tests import ztapi
+       >>> from zope.app.testing import ztapi
        >>> ztapi.provideUtility(IRole, Role('a_id','a_title'), 'a_id')
        >>> ztapi.provideUtility(IRole, Role('b_id','b_title'), 'b_id')
 

@@ -31,8 +31,8 @@ def provideConnection(name, connection):
     
      Uses the Utility Service for registering
     """
-    utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
-    utilities.provideUtility(IZopeDatabaseAdapter, connection, name)
+    gsm = zapi.getGlobalSiteManager()
+    gsm.provideUtility(IZopeDatabaseAdapter, connection, name)
 
 
     

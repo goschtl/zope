@@ -26,7 +26,7 @@ from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding
 from zope.app.interface import PersistentInterfaceClass
-from zope.app.utility import UtilityRegistration
+from zope.app.component.site import UtilityRegistration
 from zope.app.container.contained import Contained, setitem, uncontained
 
 from zope.interface.interface import Attribute, Method, fromFunction

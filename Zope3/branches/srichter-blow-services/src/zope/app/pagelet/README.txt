@@ -160,7 +160,7 @@ Imports:
   
 Setup:
   
-  >>> adaptersrv = zope.component.getService('Adapters')
+  >>> gsm = zapi.getGlobalSiteManager()
   
 Register slot interface:
 
@@ -196,14 +196,14 @@ Register the pagelet:
 
   >>> pagelet_factory = TestPagelet
   >>> defineChecker(pagelet_factory, testChecker)
-  >>> adaptersrv.register(
+  >>> gsm.provideAdapter(
   ...        (Interface, IBrowserRequest, IView, IPageletSlot)
   ...        , IPagelet, name, pagelet_factory)
 
 Register pagelet collector as a adapter:
   
   >>> collector_factory = MacrosCollector
-  >>> adaptersrv.register(
+  >>> gsm.provideAdapter(
   ...        (Interface, IBrowserRequest, IView, IPageletSlot)
   ...        , IMacrosCollector, '', collector_factory)
 

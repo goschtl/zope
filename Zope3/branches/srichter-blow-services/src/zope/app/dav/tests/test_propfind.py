@@ -29,12 +29,12 @@ from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
 from zope.publisher.browser import TestRequest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
@@ -111,12 +111,12 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                              ZDCAnnotatableAdapter)
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
-        utils = zapi.getGlobalService('Utilities')
+        sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IZopeDublinCore,
-                             'http://www.purl.org/dc/1.1')
+        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
+                          'http://www.purl.org/dc/1.1')
 
     def test_contenttype1(self):
         file = self.file
@@ -226,7 +226,8 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ''' % req
         request = _createRequest(body=body, headers={
             'Content-type': 'text/xml', 'Depth': depth})
-        resource_url = str(zapi.getView(obj, 'absolute_url', request))
+        resource_url = str(zapi.getMultiAdapter((obj, request),
+                                                name='absolute_url'))
         if IReadContainer.providedBy(obj):
             resource_url += '/'
         if resp is None:

@@ -32,7 +32,7 @@ import zope.app.component
 import zope.app.form.browser
 import zope.app.publisher.browser
 from zope.app.form.browser import TextWidget
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 
 tests_path = os.path.join(
@@ -81,7 +81,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         XMLConfig('meta.zcml', zope.app.form.browser)()
         XMLConfig('meta.zcml', zope.app.publisher.browser)()
 
-        from zope.app.tests import ztapi
+        from zope.app.testing import ztapi
         from zope.app.traversing.adapters import DefaultTraversable
         from zope.app.traversing.interfaces import ITraversable
 
@@ -89,8 +89,9 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         
     def testAddForm(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='add.html'),
+            None)
         xmlconfig(StringIO(template % ("""
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -109,13 +110,14 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public" />
             """)))
 
-        v = zapi.queryView(ob, 'add.html', request)
+        v = zapi.queryMultiAdapter((ob, request), name='add.html')
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 
     def testEditForm(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='edit.html'),
+            None)
         xmlconfig(StringIO(template % ("""
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -134,13 +136,14 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public" />
             """)))
 
-        v = zapi.queryView(ob, 'edit.html', request)
+        v = zapi.queryMultiAdapter((ob, request), name='edit.html')
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 
     def testEditFormWithMenu(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='edit.html'),
+            None)
         xmlconfig(StringIO(template % ('''
           <browser:menu id="test_menu" title="Test menu"/>
           <view
@@ -162,13 +165,14 @@ class Test(PlacelessSetup, unittest.TestCase):
               />
             ''')))
 
-        v = zapi.queryView(ob, 'edit.html', request)
+        v = zapi.queryMultiAdapter((ob, request), name='edit.html')
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 
     def testAddFormWithWidget(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='add.html'),
+            None)
         xmlconfig(StringIO(template % ('''
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -196,7 +200,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           </browser:addform>
             ''')), )
 
-        view = zapi.queryView(ob, 'add.html', request)
+        view = zapi.queryMultiAdapter((ob, request), name='add.html')
         self.assert_(hasattr(view, 'text_widget'))
         self.assert_(isinstance(view.text_widget, SomeWidget))
         self.assertEqual(view.text_widget.extra, u'foo')
@@ -204,8 +208,9 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
     def testEditFormWithWidget(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='edit.html'),
+            None)
         xmlconfig(StringIO(template % ('''
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -233,7 +238,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           </browser:editform>
             ''')), )
 
-        view = zapi.queryView(ob, 'edit.html', request)
+        view = zapi.queryMultiAdapter((ob, request), name='edit.html')
         self.assert_(hasattr(view, 'text_widget'))
         self.assert_(isinstance(view.text_widget, SomeWidget))
         self.assertEqual(view.text_widget.extra, u'foo')

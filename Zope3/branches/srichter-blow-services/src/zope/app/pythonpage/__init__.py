@@ -218,8 +218,7 @@ class PythonPage(Contained, Persistent):
         kw['script'] = self
         kw['context'] = zapi.getParent(self)
 
-        service = zapi.getService(Utilities)
-        interpreter = service.queryUtility(IInterpreter, 'text/server-python')
+        interpreter = zapi.queryUtility(IInterpreter, 'text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)
 
 def _print_usrc(match):

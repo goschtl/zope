@@ -78,7 +78,7 @@ class MenuField(GlobalObject):
     Test 3: Get the menu from the utility service
     ---------------------------------------------
     
-    >>> from zope.app.tests import ztapi
+    >>> from zope.app.testing import ztapi
     >>> ztapi.provideUtility(IMenuItemType, menu1, 'menu1')
 
     >>> field.fromUnicode('menu1') is menu1

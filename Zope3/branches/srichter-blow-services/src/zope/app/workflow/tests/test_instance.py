@@ -19,7 +19,7 @@ import unittest
 from zope.interface.verify import verifyClass
 
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.workflow.interfaces import IProcessInstance
 from zope.app.workflow.instance import ProcessInstance

@@ -22,9 +22,9 @@ from zope.publisher.browser import TestRequest
 from zope.app.publisher.browser import BrowserView
 
 # All this just to get zapi.getPath() work :(
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.interface import directlyProvides
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.location.traversing import LocationPhysicallyLocatable

@@ -22,8 +22,8 @@ from zope.schema.interfaces import IChoice, IIterableVocabulary
 from zope.schema import Choice
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.browser import ChoiceDisplayWidget, ChoiceInputWidget
 from zope.app.form.browser import ItemDisplayWidget, DropdownWidget

@@ -21,7 +21,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-from zope.component.servicenames import Utilities
 from zope.app import zapi
 from zope.app.traversing.interfaces import IContainmentRoot
 
@@ -129,9 +128,7 @@ class OnlineHelp(OnlineHelpTopic):
                 topic[t[1].id] = t[1]
 
         # Add topic to utilities registry
-        zapi.getService(Utilities
-                        ).provideUtility(IOnlineHelpTopic,
-                                         topic,
-                                         topic.getTopicPath())
+        zapi.getGlobalSiteManager().provideUtility(
+            IOnlineHelpTopic, topic, topic.getTopicPath())
 
 

@@ -97,7 +97,7 @@ class SQLScriptAdd(object):
     def nextURL(self):
         """
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.app.tests.placelesssetup import setUp, tearDown
+        >>> from zope.app.testing.placelesssetup import setUp, tearDown
         >>> setUp()
         >>> rqst = TestRequest()
         >>> class Base(object):

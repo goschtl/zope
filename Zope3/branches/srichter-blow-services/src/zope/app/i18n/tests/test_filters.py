@@ -21,8 +21,8 @@ import time
 from cStringIO import StringIO
 from zope.interface import implements
 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
 

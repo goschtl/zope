@@ -78,7 +78,8 @@ class Adding(BrowserView):
 
     def nextURL(self):
         """See zope.app.container.interfaces.IAdding"""
-        return (str(zapi.getView(self.context, "absolute_url", self.request))
+        return (str(
+            zapi.getMultiAdapter((self.context, self.request), "absolute_url"))
                 + '/@@contents.html')
 
     # set in BrowserView.__init__
@@ -98,14 +99,14 @@ class Adding(BrowserView):
 
             if view_name.startswith('@@'):
                 view_name = view_name[2:]
-            return zapi.getView(self, view_name, request)
+            return zapi.getMultiAdapter((self, request), name=view_name)
 
         if name.startswith('@@'):
             view_name = name[2:]
         else:
             view_name = name
 
-        view = zapi.queryView(self, view_name, request)
+        view = zapi.queryMultiAdapter((self, request), name=view_name)
         if view is not None:
             return view
 
@@ -127,9 +128,10 @@ class Adding(BrowserView):
         else:
             view_name = type_name
 
-        if zapi.queryView(self, view_name, self.request) is not None:
+        if zapi.queryMultiAdapter((self, self.request),
+                                  name=view_name) is not None:
             url = "%s/%s=%s" % (
-                zapi.getView(self, "absolute_url", self.request),
+                zapi.getMultiAdapter((self, self.request), name="absolute_url"),
                 type_name, id)
             self.request.response.redirect(url)
             return

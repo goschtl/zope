@@ -13,20 +13,12 @@
 ##############################################################################
 """PageletChooser tests
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
-
 import unittest
-from zope.testing.doctestunit import DocTestSuite
-from zope.testing.doctestunit import DocFileSuite
-
-import zope.component
-
 from zope.security.checker import defineChecker
-
-from zope.app.tests import placelesssetup, ztapi
-from zope.app.tests import setup
+from zope.testing.doctestunit import DocTestSuite
 
 
 class TestMapping(object):

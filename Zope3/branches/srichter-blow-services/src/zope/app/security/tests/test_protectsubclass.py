@@ -17,8 +17,8 @@ $Id$
 """
 import unittest
 from zope.security.checker import selectChecker
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission

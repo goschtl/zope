@@ -35,7 +35,7 @@ from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
 from zope.app.renderer.stx import StructuredTextSourceFactory
 from zope.app.renderer.stx import IStructuredTextSource
 from zope.app.renderer.stx import StructuredTextToHTMLRenderer
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.tree.interfaces import IUniqueId

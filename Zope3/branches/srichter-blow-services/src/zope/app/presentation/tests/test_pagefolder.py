@@ -16,12 +16,11 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.tests import ztapi
-from zope.app.tests import setup
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.testing import ztapi, setup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.presentation.pagefolder import PageFolder, IPageFolder
 from zope.app.presentation.zpt import ZPTTemplate
-from zope.app.registration.interfaces import ActiveStatus
+from zope.app.component.interfaces.registration import ActiveStatus
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.registration.tests.test_registrationmanager \

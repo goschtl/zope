@@ -18,27 +18,28 @@ $Id$
 import unittest
 from StringIO import StringIO
 
-from zope.app import zapi
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.security.interfaces import IPermission
-from zope.app.registration.interfaces import IRegisterable
-from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
-from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
-from zope.app.security.permission import Permission
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.workflow.stateful.definition import StatefulProcessDefinition
-from zope.app.workflow.stateful.definition import State, Transition
-from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
-from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
-from zope.app.tests import ztapi
 from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 from zope.security.checker import CheckerPublic
+
+from zope.app import zapi
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.component.interfaces.registration import IRegisterable
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
+from zope.app.component.testing import PlacefulSetup
+from zope.app.testing import ztapi
+from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
+from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
+from zope.app.workflow.stateful.definition import StatefulProcessDefinition
+from zope.app.workflow.stateful.definition import State, Transition
+from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
+from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 
 class ISchema(Interface):
 

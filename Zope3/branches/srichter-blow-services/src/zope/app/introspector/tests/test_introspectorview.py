@@ -17,13 +17,12 @@ $Id$
 """
 
 import unittest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.publisher.browser import TestRequest
-from zope.app.tests import setup
 from zope.interface import Interface, directlyProvidedBy
 from zope.interface import directlyProvides, implements
 from zope.app.component.interface import provideInterface
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi, setup
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.introspector import Introspector
 
@@ -42,7 +41,7 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.rootFolder = setup.buildSampleFolderTree()
-        mgr = setup.createServiceManager(self.rootFolder)
+        mgr = setup.createSiteManager(self.rootFolder)
         provideInterface(id, I1)
         provideInterface(id2, I2)
         ztapi.provideAdapter(None, IIntrospector, Introspector)

@@ -3,13 +3,8 @@
     xmlns:fssync='http://namespaces.zope.org/fssync'
     >
 
-  <serviceType
-      id="FSRegistryService"
-      interface="zope.app.fssync.interfaces.IGlobalFSSyncService"
-      />
-  
-  <service
-      serviceType="FSRegistryService"
+  <utility
+      interface="zope.app.fssync.interfaces.IGlobalFSSyncUtility"
       component="zope.app.fssync.fsregistry.fsRegistry"
       />
 
