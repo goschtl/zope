@@ -305,9 +305,9 @@ pre {
     float: left;
 }
 
-#content { 
-    float: left; 
-    /* width: 75%; */
+#content {
+  float: left;
+  width: 100%;
 }
 
 #context_information {
