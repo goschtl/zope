@@ -121,7 +121,7 @@ class Application:
             }
         appsupport = os.path.join(zpkgtools.__path__[0], "appsupport")
         self.copy_template(appsupport, "configure", metavars)
-        #self.copy_template(appsupport, "Makefile.in", metavars)
+        self.copy_template(appsupport, "Makefile.in", metavars)
         self.copy_template(appsupport, "README.txt", metavars)
         self.generate_collection_setup(self.destination, self.resource_name,
                                        packages, collections,
