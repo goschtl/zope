@@ -25,7 +25,8 @@ from zodbcode.module import ManagedRegistry
 from zope.interface import Interface, implements
 from zope.app.interface import PersistentInterface
 
-# XXX for some reason changing this code to use implements() does not work
+# TODO: for some reason changing this code to use implements() does not
+# work. This is due to a bug that is supposed to be fixed after X3.0.
 code = """\
 from zope.interface import Interface
 
