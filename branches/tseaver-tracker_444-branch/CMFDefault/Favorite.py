@@ -11,9 +11,12 @@
 # 
 ##############################################################################
 """
-"""
+    Favorites represent references to other objects within the same
+    CMF site..
 
-ADD_CONTENT_PERMISSION = 'Add portal content'
+$Id$
+"""
+__version__ = "$Revision$"[11:-2]
 
 import Globals
 from Globals import HTMLFile, HTML
@@ -116,7 +119,7 @@ class Favorite( Link ):
         linking to
         """
         portal_url = getToolByName(self, 'portal_url')
-        return portal_url.getPortalObject().retrictedTraverse(self.remote_url)
+        return portal_url.getPortalObject().restrictedTraverse(self.remote_url)
 
     def edit( self, remote_url ):
         """
