@@ -7,10 +7,10 @@ Features
 
 - Finish new Message support (Phillip)
 
-- Fix final issues relating the new PAS and related UIs
-
 - Support for iterable sources
 
+- Issue 390: Request body and bodyFile are bogus, and have a 
+             misleading documentation
 
 Miscellaneous
 -------------
@@ -27,10 +27,6 @@ Bug Fixes
 
 Navigation Tree
 ~~~~~~~~~~~~~~~
-
-  * 288: IE xmltree.js line 225 error 
-
-  * 328: site & Navigation tree & Virtual Host 
 
   * 333: XML Tree doesn't load if some item contains non-ASCII characters 
 
@@ -60,64 +56,42 @@ TAL i18n-namspace
 Others
 ~~~~~~
 
-* 284: Bogus 404 errors with TALES traversal fails 
+  * 284: Bogus 404 errors with TALES traversal fails 
+  
+  * 296: missing display widgets 
+  
+  * 298: Role/permission title and description should be messageids
+  
+  * 307: browser:addMenuItem and broken view references
+  
+  * 313: importchecker.py ignores assignment to module attributes 
+  
+  * 316: Zope3X test.py truncates path with dir=
+  
+  * 332: Death to IContentContainer
+  
+  * 334: Failing RuntimeInfo tests 
+  
+  * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
+  
+  * 340: Adding a big file eats a lot of memory / memory leak? 
+  
+  * 344: PAU registration error
+  
+  * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
+  
+  * 369: DAV is hosed on the trunk
+  
+  * 372: WidgetInputError.doc is broken
+  
+  * 373: Adding objects requires permission zope.app.dublincore.change 
+  
+  * 380: Local Utility don't get correct removed  
 
-* 296: missing display widgets 
+  - 381: Handle migration of site instance 'securitypolicy.zcml' files
+ 
+  * 384: Problems with permissions in zcml utility directives
 
-* 298: Role/permission title and description should be messageids
-
-* 307: browser:addMenuItem and broken view references
-
-* 313: importchecker.py ignores assignment to module attributes 
-
-* 316: Zope3X test.py truncates path with dir=
-
-* 332: Death to IContentContainer
-
-* 334: Failing RuntimeInfo tests 
-
-* 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
-
-* 340: Adding a big file eats a lot of memory / memory leak? 
-
-* 344: PAU registration error
-
-* 356: Copy and Paste does not handle exceptions raised by __setitem__ 
-
-* 369: DAV is hosed on the trunk
-
-* 372: WidgetInputError.doc is broken
-
-* 373: Adding objects requires permission zope.app.dublincore.change 
-
-* 380: Local Utility don't get correct removed  
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
-
-Done
-----
-
-85:  Close this issue. Jim agreed that this isn't requiered. I don't 
-     think SteveA is refactoring this part. Perhaps we can open another 
-     issue for Metadata, I think the Metadata views should also make use
-     of the form framwork, there are still implemented as normal pages.
-
-216: Close or reject this issue, the preview is working correctly. We need a 
-     presentation skin for to fix this. It's not possible to use the index.html 
-     views as a enduser UI without the ZMI. If somebody don't think so, take a 
-     look at the index.html for images or files. There is no way right now
-     to use index.html views in the Rotterdam skin with only zope.View permissions
-     on objects. 
-     This is a feature not a issue and needs a additional presentation skin.
-
-243: This seems a old issue which was done for the 3.0 release, ri
-
-288: I think we can ignore this issue since we don't know in which browser 
-     this happen, ri
-
-328: Added virtual host support to the xml tree. Paul and Godefroid
-     will fix the issue 333,  ri
-
-378: It's not a bug, he just tries to use a Object field without the 
-     CustomWidgetFactory, ri
