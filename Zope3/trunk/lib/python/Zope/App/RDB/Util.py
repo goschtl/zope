@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Util.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Util.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
 """
 
 import Row
@@ -34,6 +34,9 @@ def query_for_results(conn, query):
     return ResultSet(columns,
                      cursor.fetchall(),
                      row_klass)
+
+
+
 
 
 

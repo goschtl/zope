@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Row.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Row.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
 """
 from Zope.Security import Checker
 
@@ -25,6 +25,9 @@ class row(object):
         for k, v in zip(self.__slots__, data):
             setattr(self, k, v)
 
+    def __str__(self):
+        return "row class %s"%str(self.__slots__)
+            
 def row_class_factory(columns):
 
     klass_namespace = {}

@@ -15,19 +15,20 @@
 
 XXX longer description goes here.
 
-$Id: ResultSet.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ResultSet.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
 """
+ 
+class ResultSet(list):    
+    """
+    Database Result Set. 
 
-class ResultSet(list): 
-
+    currently we don't do lazy instantation of rows.
+    """
+    
+    __slots__ = ('names', 'row_klass')
+    
     def __init__(self, names, data, row_klass):
-        self.names = names
+        self.names = tuple(names)
         self.row_klass = row_klass
-        super(ResultSet).__init__(self, data)
-
-    def __getitem__(self, idx):
-        return self.row_klass(list.__getitem__(idx))
+        super(ResultSet, self).__init__(map(row_klass, data))
     
-    
-
-
