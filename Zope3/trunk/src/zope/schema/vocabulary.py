@@ -39,6 +39,7 @@ class VocabularyField(Field):
             self.vocabulary = None
             self.vocabularyName = vocabulary
         else:
+            assert vocabulary is not None
             self.vocabulary = vocabulary
             self.vocabularyName = None
         # call the base initializer
