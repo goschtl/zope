@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.30 2003/08/16 00:44:50 srichter Exp $
+$Id: interfaces.py,v 1.31 2003/08/25 18:59:44 sidnei Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -131,6 +131,20 @@ class IField(Interface):
                           then this is the value to use""")
         )
 
+    order = Int(
+        title=_(u"Field Order"),
+        description=_(u"""\
+        The order attribute can be used to determine the order in
+        which fields in a schema were defined. If one field is created
+        after another (in the same thread), its order will be
+        greater.
+
+        (Fields in separate threads could have the same order.)
+        """),
+        required=True,
+        readonly=True,
+        )
+
     def constraint(value):
         u"""Check a customized contraint on the value.
 
@@ -147,20 +161,6 @@ class IField(Interface):
         It checks everything specific to a Field and also checks
         with the additional constraint.
         """
-
-    order = Int(
-        title=_(u"Field Order"),
-        description=_(u"""\
-        The order attribute can be used to determine the order in
-        which fields in a schema were defined. If one field is created
-        after another (in the same thread), its order will be
-        greater.
-
-        (Fields in separate threads could have the same order.)
-        """),
-        required=True,
-        readonly=True,
-        )
 
     def get(object):
         """Get the value of the field for the given object."""

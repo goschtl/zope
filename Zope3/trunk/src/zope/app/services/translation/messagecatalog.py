@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.7 2003/06/06 21:21:46 stevea Exp $
+$Id: messagecatalog.py,v 1.8 2003/08/25 18:59:43 sidnei Exp $
 """
 from zope.interface import classProvides, providedBy, implements
 import time
@@ -100,3 +100,5 @@ class MessageCatalog(RegisteredObject, Persistent):
     def getInterfaces(self):
         'See IFactory'
         return tuple(providedBy(self))
+
+    getInterfaces = classmethod(getInterfaces)

@@ -3,6 +3,7 @@
   <content class="zope.schema.Field">
 
     <factory
+        id="zope.schema.Field"
 	permission="zope.ManageContent"
 	title="Basic Field"
 	description="Basic Field" />
@@ -24,6 +25,7 @@
     <allow attributes="__name__" />
 
     <!-- XXX put the whole interface under one permission for now -->
+
     <require
 	permission="zope.ManageContent"
 	interface="zope.schema.interfaces.IField"
@@ -35,6 +37,7 @@
   <content class="zope.schema.Container">
 
     <factory
+        id="zope.schema.Container"
 	permission="zope.ManageContent"
 	title="Container Field"
 	description="Container Field" />
@@ -46,6 +49,7 @@
   <content class="zope.schema.Iterable">
 
     <factory
+        id="zope.schema.Iterable"
 	permission="zope.ManageContent"
 	title="Iterable Field"
 	description="Iterable Field" />
@@ -57,6 +61,7 @@
   <content class="zope.schema.Orderable">
 
     <factory
+        id="zope.schema.Orderable"
 	permission="zope.ManageContent"
 	title="Orderable Field"
 	description="Orderable Field" />
@@ -72,6 +77,7 @@
   <content class="zope.schema.MinMaxLen">
 
     <factory
+        id="zope.schema.MinMaxLen"
 	permission="zope.ManageContent"
 	title="MinMaxLen Field"
 	description="MinMaxLen Field" />
@@ -87,6 +93,7 @@
   <content class="zope.schema.Enumerated">
 
     <factory
+	id="zope.schema.Enumerated"
 	permission="zope.ManageContent"
 	title="Enumerated Field"
 	description="Enumerated Field" />
@@ -102,6 +109,7 @@
   <content class="zope.schema.Sequence">
 
     <factory
+	id="zope.schema.Sequence"
 	permission="zope.ManageContent"
 	title="Sequence Field"
 	description="Sequence Field" />
@@ -113,6 +121,7 @@
   <content class="zope.schema.Bytes">
 
     <factory
+	id="zope.schema.Bytes"
 	permission="zope.ManageContent"
 	title="Bytes Field"
 	description="Bytes Field" />
@@ -126,6 +135,7 @@
   <content class="zope.schema.BytesLine">
 
     <factory
+	id="zope.schema.BytesLine"
 	permission="zope.ManageContent"
 	title="BytesLine Field"
 	description="BytesLine Field" />
@@ -139,6 +149,7 @@
   <content class="zope.schema.Text">
 
     <factory
+	id="zope.schema.Text"
 	permission="zope.ManageContent"
 	title="Text Field"
 	description="Text Field" />
@@ -154,6 +165,7 @@
   <content class="zope.schema.TextLine">
 
     <factory
+	id="zope.schema.TextLine"
 	permission="zope.ManageContent"
 	title="Text Line Field"
 	description="Text Line Field" />
@@ -167,6 +179,7 @@
   <content class="zope.schema.Bool">
 
     <factory
+	id="zope.schema.Bool"
 	permission="zope.ManageContent"
 	title="Boolean Field"
 	description="Boolean Field" />
@@ -178,6 +191,7 @@
   <content class="zope.schema.Int">
 
     <factory
+	id="zope.schema.Int"
 	permission="zope.ManageContent"
 	title="Integer Field"
 	description="Integer Field" />
@@ -191,6 +205,7 @@
   <content class="zope.schema.Float">
 
     <factory
+	id="zope.schema.Float"
 	permission="zope.ManageContent"
 	title="Float Field"
 	description="Float Field" />
@@ -204,6 +219,7 @@
   <content class="zope.schema.Tuple">
 
     <factory
+	id="zope.schema.Tuple"
 	permission="zope.ManageContent"
 	title="Tuple Field"
 	description="Tuple Field" />
@@ -215,6 +231,7 @@
   <content class="zope.schema.List">
 
     <factory
+	id="zope.schema.List"
 	permission="zope.ManageContent"
 	title="List Field"
 	description="List Field" />
@@ -226,6 +243,7 @@
   <content class="zope.schema.Password">
 
     <factory
+	id="zope.schema.Password"
 	permission="zope.ManageContent"
 	title="Password Field"
 	description="Password Field" />
@@ -239,6 +257,7 @@
   <content class="zope.schema.Dict">
 
     <factory
+	id="zope.schema.Dict"
 	permission="zope.ManageContent"
 	title="Dict Field"
 	description="Dict Field" />
@@ -251,6 +270,7 @@
   <content class="zope.schema.Datetime">
 
     <factory
+	id="zope.schema.Datetime"
 	permission="zope.ManageContent"
 	title="Datetime Field"
 	description="Datetime Field" />
@@ -264,6 +284,7 @@
   <content class="zope.schema.SourceText">
 
     <factory
+	id="zope.schema.SourceText"
 	permission="zope.ManageContent"
 	title="SourceText Field"
 	description="SourceText Field" />
@@ -277,6 +298,7 @@
   <content class="zope.schema.Object">
 
     <factory
+	id="zope.schema.Object"
 	permission="zope.ManageContent"
 	title="Object Field"
 	description="Object Field" />
@@ -290,6 +312,7 @@
   <content class="zope.schema.URI">
 
     <factory
+	id="zope.schema.URI"
 	permission="zope.ManageContent"
 	title="URI Field"
 	description="URI Field" />
@@ -303,6 +326,7 @@
   <content class="zope.schema.Id">
 
     <factory
+	id="zope.schema.Id"
 	permission="zope.ManageContent"
 	title="Id Field"
 	description="Id Field" />
@@ -316,6 +340,7 @@
   <content class="zope.schema.EnumeratedTextLine">
 
     <factory
+	id="zope.schema.EnumeratedTextLine"
 	permission="zope.ManageContent"
 	title="EnumeratedTextLine Field"
 	description="EnumeratedTextLine Field" />
@@ -329,6 +354,7 @@
   <content class="zope.schema.EnumeratedInt">
 
     <factory
+	id="zope.schema.EnumeratedInt"
 	permission="zope.ManageContent"
 	title="EnumeratedInt Field"
 	description="EnumeratedInt Field" />
@@ -342,6 +368,7 @@
   <content class="zope.schema.EnumeratedFloat">
 
     <factory
+	id="zope.schema.EnumeratedFloat"
 	permission="zope.ManageContent"
 	title="EnumeratedFloat Field"
 	description="EnumeratedFloat Field" />
@@ -355,6 +382,7 @@
   <content class="zope.schema.InterfaceField">
 
     <factory
+	id="zope.schema.InterfaceField"
 	permission="zope.ManageContent"
 	title="Interface Field"
 	description="Interface Field" />
