@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.4 2003/01/28 02:56:43 rdmurray Exp $
+$Id: test_utility.py,v 1.5 2003/01/28 03:40:10 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -41,6 +41,8 @@ class I(Interface):
     title = Text(title=u"Title", required = False)
     description = Text(title=u"Description",
                        default = u'No description', required = False)
+    def foo():
+        """Does foo things"""
 
 class I2(Interface):
     title = Text(title = u"Title", required = True)
@@ -178,6 +180,24 @@ class Test(PlacelessSetup, TestCase):
         setUpWidgets(view, I)
         self.assertEqual(view.title(), u'title: ')
         self.assertEqual(view.description(), u'description: ')
+
+    def test_setupWidgets_only_some_fields(self):
+        c = C()
+        request = TestRequest()
+        view = BrowserView(c, request)
+        setUpWidgets(view, I, names=['title'])
+        self.assertEqual(view.title(), u'title: ')
+        self.failIf(hasattr(view, 'description'))
+
+    def test_setupWidgets_bad_field_name(self):
+        c = C()
+        request = TestRequest()
+        view = BrowserView(c, request)
+        self.assertRaises(KeyError, setUpWidgets, view, I, names=['bar'])
+        #This AttributeError occurs when setUpWidget tries to call
+        #bind on the non-Field (Method) object.  The point is that
+        #that *some* error should occur, not necessarily this specific one.
+        self.assertRaises(AttributeError, setUpWidgets, view, I, names=['foo'])
 
     def test_setupWidgets_w_prefix(self):
         c = C()
