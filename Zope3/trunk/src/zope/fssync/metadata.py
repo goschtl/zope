@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.2 2003/05/13 16:15:21 gvanrossum Exp $
+$Id: metadata.py,v 1.3 2003/06/04 19:00:37 gvanrossum Exp $
 """
 
 import os
@@ -106,27 +106,20 @@ class Metadata(object):
 
     def flushkey(self, key):
         entries = self.cache[key]
-        todelete = [name for name, entry in entries.iteritems() if not entry]
-        for name in todelete:
-            del entries[name]
         if entries != self.originals[key]:
+            # Make a copy containing only the "live" (non-empty) entries
+            live = {}
+            for name, entry in entries.iteritems():
+                if entry:
+                    live[name] = entry
             zdir = join(key, "@@Zope")
             efile = join(zdir, "Entries.xml")
-            if not entries:
-                if isfile(efile):
-                    os.remove(efile)
-                    if exists(zdir):
-                        try:
-                            os.rmdir(zdir)
-                        except os.error:
-                            pass
-            else:
-                data = dumps(entries)
-                if not exists(zdir):
-                    os.makedirs(zdir)
-                f = open(efile, "w")
-                try:
-                    f.write(data)
-                finally:
-                    f.close()
+            data = dumps(live)
+            if not exists(zdir):
+                os.makedirs(zdir)
+            f = open(efile, "w")
+            try:
+                f.write(data)
+            finally:
+                f.close()
             self.originals[key] = copy.deepcopy(entries)

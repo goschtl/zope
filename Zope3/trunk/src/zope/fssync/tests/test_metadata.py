@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.3 2003/05/28 14:40:04 gvanrossum Exp $
+$Id: test_metadata.py,v 1.4 2003/06/04 19:00:38 gvanrossum Exp $
 """
 
 import os
@@ -60,14 +60,15 @@ class TestMetadata(TempFiles):
         md.flush()
         efile = join(dir, "@@Zope", "Entries.xml")
         self.assert_(isfile(efile))
-        f = open(efile)
-        data = f.read()
-        f.close()
+        data = self.readfile(efile)
         entries = loads(data)
         self.assertEqual(entries, {"foo": {"hello": "world"}})
         md.getentry(foo).clear()
         md.flush()
-        self.assert_(not exists(efile))
+        self.assert_(isfile(efile))
+        data = self.readfile(efile)
+        entries = loads(data)
+        self.assertEqual(entries, {})
 
 def test_suite():
     loader = unittest.TestLoader()
