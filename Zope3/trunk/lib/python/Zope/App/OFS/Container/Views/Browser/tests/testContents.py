@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.2 2002/06/10 23:27:56 jim Exp $
+$Id: testContents.py,v 1.3 2002/06/13 23:15:41 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
-class BaseTestContentsBrowserView:
+class BaseTestContentsBrowserView(PlacelessSetup):
     """Base class for testing browser contents.
 
     Subclasses need to define a method, '_TestView__newContext', that
@@ -100,7 +100,8 @@ class Test(BaseTestContentsBrowserView, TestCase):
 
     def _TestView__newView(self, container):
         from Zope.App.OFS.Container.Views.Browser.Contents import Contents
-        return Contents(container, None)
+        from Zope.Publisher.Browser.BrowserRequest import TestRequest
+        return Contents(container, TestRequest())
 
 def test_suite():
     return TestSuite((

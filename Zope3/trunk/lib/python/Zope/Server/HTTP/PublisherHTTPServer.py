@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PublisherHTTPServer.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: PublisherHTTPServer.py,v 1.3 2002/06/13 23:15:46 jim Exp $
 """
 
 from HTTPServer import HTTPServer
@@ -26,6 +26,8 @@ class PublisherHTTPServer(HTTPServer):
     __implements__ = HTTPServer.__implements__
 
     def __init__(self, request_factory, sub_protocol=None, *args, **kw):
+        sub_protocol = str(sub_protocol)
+
         self.request_factory = request_factory
 
         # An HTTP server is not limited to server up HTML; it can be

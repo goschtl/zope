@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testContents.py,v 1.2 2002/06/10 23:28:12 jim Exp $
+$Id: testContents.py,v 1.3 2002/06/13 23:15:42 jim Exp $
 """
 
 import unittest
@@ -36,7 +36,8 @@ class Test(BaseTestContentsBrowserView, unittest.TestCase):
         return RoleService()
 
     def _TestView__newView(self, container):
-        return Contents(container, None)
+        from Zope.Publisher.Browser.BrowserRequest import TestRequest
+        return Contents(container, TestRequest())
 
 def test_suite():
     loader = unittest.TestLoader()

@@ -55,6 +55,8 @@
              action="AllRolePermissions.html"/>
   </zmi:tabs>
 
+  <zmi:icon for=".IFile." file="File_icon.gif" />
+
   <!-- Further Directives -->
 
   <include package=".Views" file="views.zcml" />

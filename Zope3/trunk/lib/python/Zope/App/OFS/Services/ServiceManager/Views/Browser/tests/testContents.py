@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testContents.py,v 1.2 2002/06/10 23:28:13 jim Exp $
+$Id: testContents.py,v 1.3 2002/06/13 23:15:43 jim Exp $
 """
 
 import unittest
@@ -24,12 +24,15 @@ from Zope.App.OFS.Services.ServiceManager.Views.Browser.Contents \
 from Zope.App.OFS.Services.ServiceManager.ServiceManager import ServiceManager
 from Zope.App.OFS.Container.Views.Browser.tests.testContents \
      import BaseTestContentsBrowserView
+from Zope.Publisher.Browser.BrowserRequest import TestRequest
 
 class IDummy(Interface):
     pass
 
 class Dummy:
     __implements__ = IDummy
+
+
     
 class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
@@ -37,12 +40,13 @@ class Test(BaseTestContentsBrowserView, unittest.TestCase):
         return ServiceManager()
 
     def _TestView__newView(self, container):
-        return ServiceManagerContents(container, None)
+        from Zope.Publisher.Browser.BrowserRequest import TestRequest
+        return ServiceManagerContents(container, TestRequest())
 
     def testExtractContents(self):
         """ Does _extractContents return the correct information? """
 
-        smc = ServiceManagerContents(None , None)
+        smc = ServiceManagerContents(None , TestRequest())
         info = smc._extractContentInfo(('dummy', Dummy(),))
 
         self.assert_('IDummy' in info['interfaces'])
@@ -56,7 +60,7 @@ class Test(BaseTestContentsBrowserView, unittest.TestCase):
         dummy = Dummy()
         sm.setObject('dummy', dummy)
 
-        smc = ServiceManagerContents(sm, None)
+        smc = ServiceManagerContents(sm, TestRequest())
         info_list = smc.listContentInfo()
 
         self.assertEquals(len(info_list), 1)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: metaConfigure.py,v 1.2 2002/06/10 23:28:15 jim Exp $
+$Id: metaConfigure.py,v 1.3 2002/06/13 23:15:43 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -30,6 +30,8 @@ from Zope.App.ComponentArchitecture.metaConfigure \
 
 from Zope.App.PageTemplate.SimpleViewClass import SimpleViewClass
 
+from Zope.App.Publisher.Browser.FileResource \
+     import FileResourceFactory, ImageResourceFactory
 
 def skin(_context, **__kw):
     return _skin(_context,
@@ -41,12 +43,13 @@ class resource(object):
     type = IBrowserPresentation
     default_allowed_attributes = '__call__'
 
-    def __init__(self, _context, factory, name=None, layer='default',
+    def __init__(self, _context, factory=None, name=None, layer='default',
                  permission=None,
-                 allowed_interface=None, allowed_attributes=None):
+                 allowed_interface=None, allowed_attributes=None,
+                 file=None, image=None):
 
         if ((allowed_attributes or allowed_interface)
-            and (not name or not permission)):
+            and ((name is None) or not permission)):
             raise ConfigurationError(
                 "Must use name attribute with allowed_interface or "
                 "allowed_attributes"
@@ -54,6 +57,9 @@ class resource(object):
 
         if allowed_interface is not None:
             allowed_interface = _context.resolve(allowed_interface)
+
+        self.__file = file
+        self.__image = image
 
         self.factory = self._factory(_context, factory)
         self.layer = layer
@@ -64,7 +70,29 @@ class resource(object):
         self.pages = 0
 
     def _factory(self, _context, factory):
-        return _context.resolve(factory)
+        if ((factory is not None)
+            + (self.__file is not None)
+            + (self.__image is not None)
+            ) > 1:
+            raise ConfigurationError(
+                "Can't use more than one of factory, file, and image "
+                "attributes for resource directives"
+                )
+            
+        if factory is not None:
+            return _context.resolve(factory)
+
+        if self.__file is not None:
+            return FileResourceFactory(_context.path(self.__file))
+
+        if self.__image is not None:
+            return FileResourceFactory(_context.path(self.__image))
+
+        raise ConfigurationError(
+            "At least one of the factory, file, and image "
+            "attributes for resource directives must be specified"
+            )
+        
 
     def page(self, _context, name, attribute, permission=None, layer=None):
 
@@ -112,7 +140,7 @@ class resource(object):
         return pageView
 
     def __call__(self):
-        if not self.name:
+        if self.name is None:
             return ()
 
         permission = self.permission
@@ -169,7 +197,7 @@ class view(resource):
                  template=None):
 
         if template:
-            if not name:
+            if name is None:
                 raise ConfigurationError(
                     "Must specify name for template view")
 
@@ -252,10 +280,11 @@ class view(resource):
 
             view = factory(context, request)
 
-            # We need this in case the resource gets unwrapped and needs to be rewrapped
+            # We need this in case the resource gets unwrapped and
+            # needs to be rewrapped
             view.__Security_checker__ = checker
 
-            return Proxy(view, checker)
+            return view
 
         factory[-1] =  proxyView
 

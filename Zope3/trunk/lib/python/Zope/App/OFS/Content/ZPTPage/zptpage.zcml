@@ -38,6 +38,8 @@
     -->
   </zmi:tabs>
 
+  <zmi:icon for=".ZPTPage.IZPTPage." file="zpt.gif" />
+
   <include package=".Views" file="views.zcml" />
 
 </zopeConfigure>

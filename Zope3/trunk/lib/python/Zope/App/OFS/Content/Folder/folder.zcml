@@ -10,7 +10,7 @@
     <zmi:factory
         id="Folder"
         permission="Zope.ManageContent"
-        title="Son of Folder"
+        title="Folder"
         description="Minimal folder" />
     <security:require
         permission="Zope.View" />
@@ -39,6 +39,8 @@
     <zmi:tab label="Role Permissions" 
              action="@@AllRolePermissions.html"/>
   </zmi:tabs>
+
+  <zmi:icon for=".Folder.IFolder." file="Folder_icon.gif" />
 
 
   <!-- Loaded Folder Directives -->
@@ -98,7 +100,6 @@
     <zmi:tab label="Role Permissions" 
              action="@@AllRolePermissions.html"/>
   </zmi:tabs>
-
 
   <!-- Further Directives -->
 

@@ -22,6 +22,7 @@ from Zope.ComponentArchitecture.tests.TestViews import IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture import getView, queryView, queryResource
 from Zope.ComponentArchitecture import getDefaultViewName, getResource
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.Security.Proxy import ProxyFactory
 from cStringIO import StringIO
 
 from Zope.ComponentArchitecture.tests.Request import Request
@@ -168,6 +169,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         v = getView(ob, 'test', request)
+        v = ProxyFactory(v)
         self.assertEqual(v.index(), 'V1 here')
         self.assertRaises(Exception, getattr, v, 'action')
 
@@ -184,6 +186,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         v = getView(ob, 'test', request)
+        v = ProxyFactory(v)
         self.assertEqual(v.action(), 'done')
         self.assertRaises(Exception, getattr, v, 'index')
 
@@ -358,6 +361,26 @@ class Test(PlacelessSetup, unittest.TestCase):
         v = getResource(ob, 'action.html', request)
         self.assertEqual(v(), 'R done')
 
+
+    def testFile(self):
+        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        
+        self.assertEqual(queryResource(ob, 'test', request),
+                         None)
+
+        xmlconfig(StringIO(template %
+            """
+            <browser:resource
+                  name="index.html"
+                  file="%s"
+                  />
+            """ % path
+            ))
+
+        v = getResource(ob, 'index.html', request)
+        self.assertEqual(v._testData(), open(path, 'rb').read())
+
+
     def testtemplate(self):
         path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
         
@@ -415,9 +438,11 @@ class Test(PlacelessSetup, unittest.TestCase):
         newSecurityManager('someuser')
         
         v = getView(ob, 'xxx.html', request)
+        v = ProxyFactory(v)
         self.assertRaises(Exception, v)
 
         v = getView(ob, 'index.html', request)
+        v = ProxyFactory(v)
         self.assertEqual(v().strip(), '<html><body><p>test</p></body></html>')
         
 

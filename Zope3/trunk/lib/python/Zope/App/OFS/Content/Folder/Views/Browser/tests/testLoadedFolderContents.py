@@ -25,7 +25,8 @@ class Test(BaseTestContentsBrowserView, unittest.TestCase):
         return LoadedFolder()
 
     def _TestView__newView(self, container):
-        return LoadedFolderContents(container, None)
+        from Zope.Publisher.Browser.BrowserRequest import TestRequest
+        return LoadedFolderContents(container, TestRequest())
 
     def testAddServiceManager(self):
         folder = LoadedFolder()

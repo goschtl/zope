@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.2 2002/06/10 23:27:56 jim Exp $
+Revision information: $Id: Contents.py,v 1.3 2002/06/13 23:15:40 jim Exp $
 """
 
 
@@ -22,6 +22,7 @@ import os
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.ComponentArchitecture import queryView
 
 class Contents(BrowserView):
 
@@ -32,9 +33,14 @@ class Contents(BrowserView):
         info['id'] = item[0]
         info['object'] = item[1]
 
-        # XXX:  We will fake this stuff out for now
         info[ 'title' ] = info[ 'url' ] = item[0]
-        info['icon'] = None
+
+        zmi_icon = queryView(item[1], 'zmi_icon', self.request)
+        if zmi_icon is None:
+            info['icon'] = None
+        else:
+            info['icon'] = zmi_icon()
+            
 
         return info
 

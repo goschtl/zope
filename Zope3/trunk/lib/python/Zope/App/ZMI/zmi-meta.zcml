@@ -8,7 +8,7 @@
         <subdirective name="tab" attributes="label action label" />
     </directive>
 
-    <directive name="icon" attributes="for file package alt layer"
+    <directive name="icon" attributes="for file image alt layer"
                handler="Zope.App.ZMI.IconDirective." />
   </directives>
 
