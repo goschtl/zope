@@ -5,28 +5,28 @@
 
 <browser:page 
     class=".interfacewidget.InterfaceWidget"
-    for="zope.app.interfaces.component.interfacefield.IInterfaceField"
+    for="zope.app.interfaces.component.IInterfaceField"
     name="edit"
     permission="zope.Public"
     />
 
 <browser:page 
     class=".interfacewidget.InterfaceDisplayWidget"
-    for="zope.app.interfaces.component.interfacefield.IInterfaceField"
+    for="zope.app.interfaces.component.IInterfaceField"
     name="display"
     permission="zope.Public"
     />
 
 <browser:page 
     class=".interfacewidget.MultiInterfaceWidget"
-    for="zope.app.interfaces.component.interfacefield.IInterfacesField"
+    for="zope.app.interfaces.component.IInterfacesField"
     name="edit"
     permission='zope.Public'
     />
 
 <browser:page 
     class=".interfacewidget.MultiInterfaceDisplayWidget"
-    for="zope.app.interfaces.component.interfacefield.IInterfacesField"
+    for="zope.app.interfaces.component.IInterfacesField"
     name="display"
     permission='zope.Public'
     />

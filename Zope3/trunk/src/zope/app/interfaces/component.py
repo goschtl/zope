@@ -12,10 +12,13 @@
 #
 ##############################################################################
 """
-$Id: interfaceservice.py,v 1.1 2003/04/09 16:35:06 philikon Exp $
+$Id: component.py,v 1.1 2003/05/13 17:08:34 alga Exp $
 """
 
 from zope.interface import Interface
+from zope.schema import Field
+from zope.schema.interfaces import IEnumerated, IField, ITuple
+
 
 class IInterfaceService(Interface):
     """Service that keeps track of used interfaces
@@ -50,3 +53,38 @@ class IInterfaceService(Interface):
         See searchInterface
 
         """
+
+
+class IGlobalInterfaceService(IInterfaceService):
+    """Global registry for Interface
+    """
+
+    def provideInterface(id, interface):
+        """Register an interface with a given id
+
+        The id is the full dotted name for the interface.
+
+        If the id is false, the id will be computed from the interface
+        module and name.
+
+        """
+
+class IInterfaceField(IEnumerated, IField):
+    u"""A type of Field that has an Interfaces as its value."""
+
+    basetype = Field(
+        title=u"Base type",
+        description=(u"All values must extend (or be) this type,"
+                     u" unless it is None which means 'anything'."),
+        default=Interface,
+        )
+
+class IInterfacesField(ITuple):
+    u"""A type of Field that is has a tuple of Interfaces as its value."""
+
+    basetype = Field(
+            title=u"Base type",
+            description=(u"All values must extend or be this type,"
+                         u" unless it is None, which means 'anything'."),
+            default=Interface,
+            )

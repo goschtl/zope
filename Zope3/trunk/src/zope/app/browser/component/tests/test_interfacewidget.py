@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.22 2003/04/30 23:37:49 faassen Exp $
+$Id: test_interfacewidget.py,v 1.23 2003/05/13 17:08:33 alga Exp $
 """
 
 __metaclass__ = type
@@ -22,7 +22,7 @@ from zope.interface import Interface
 from unittest import TestCase, TestSuite, makeSuite
 from zope.testing.cleanup import CleanUp
 from zope.app.component.globalinterfaceservice import InterfaceService
-from zope.app.component.globalinterfaceservice import IInterfaceService
+from zope.app.interfaces.component import IInterfaceService
 from zope.app.component.interfacefield import InterfaceField, InterfacesField
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
