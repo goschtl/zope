@@ -13,7 +13,7 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.3 2003/02/03 17:29:09 jim Exp $
+$Id: viewpackage.py,v 1.4 2003/02/07 15:09:51 jim Exp $
 """
 __metaclass__ = type
 
@@ -40,6 +40,8 @@ class ViewPackage(BTreeContainer):
     description = ''
     title = ''
     factoryName = None
+    attribute = None
+    template = None
 
     def __init__(self):
         super(ViewPackage, self).__init__()
@@ -55,10 +57,14 @@ class ViewPackage(BTreeContainer):
         name = super(ViewPackage, base).setObject(name, object)
         template = getItem(self, name)
         template = getPhysicalPathString(template)
-        config = PageConfiguration(self.forInterface, name,
-                                   self.permission,
-                                   self.factoryName, template,
-                                   self.layer)
+        config = PageConfiguration(
+            forInterface=self.forInterface,
+            viewName=name,
+            permission=self.permission,
+            class_=self.factoryName,
+            template=template,
+            layer=self.layer,
+            )
         configure = traverse(self, 'configure')
         id = configure.setObject('', config)
         config = getItem(configure, id)
