@@ -4,14 +4,24 @@ TESTOPTS=
 SETUPFLAGS=
 
 # XXX What should the default be?
-all: inplace
+all: inplace runners
 
 # Build in-place
 inplace:
 	$(PYTHON) setup.py $(SETUPFLAGS) build_ext -i
 
-build::
+build:
 	$(PYTHON) setup.py $(SETUPFLAGS) build
+
+runners:
+	echo "#!/bin/sh" > bin/runzope;
+	echo "exec $(PYTHON) z3.py" >> bin/runzope;
+	chmod +x bin/runzope
+	echo "#!/bin/sh" > bin/zopectl;
+	echo "$(PYTHON) $(PWD)/src/zdaemon/zdctl.py \
+	      -S schema.xml \
+	      -C zdaemon.conf -d \$$*" >> bin/zopectl
+	chmod +x bin/zopectl 
 
 test_build: build
 	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
@@ -33,13 +43,24 @@ ftest: ftest_inplace
 run: inplace
 	$(PYTHON) z3.py
 
+debug: principals.zcml
+	PYTHONPATH=`pwd`/src:$(PYTHONPATH) $(PYTHON) -i -c \
+            "from zope.app import Application;\
+             app = Application('Data.fs', 'site.zcml')()"
+
 clean:
 	find . \( -name '*.o' -o -name '*.so' -o -name '*.py[co]' -o -name '*.dll' \) -exec rm -f {} \;
 	rm -rf build
 
 realclean: clean
-	rm -f TAGS
+	rm -f TAGS tags
 	$(PYTHON) setup.py clean -a
+
+zcmldocs:
+	PYTHONPATH=`pwd`/src:$(PYTHONPATH) $(PYTHON) \
+	./src/zope/configuration/stxdocs.py \
+	-f ./src/zope/app/meta.zcml -o ./doc/zcml/namespaces.zope.org
+
 
 #
 #   Naughty, naughty!  How many Zope3 developers are going to have
