@@ -14,15 +14,13 @@
 """
 
 Revision information:
-$Id: IAddNotifiable.py,v 1.2 2002/11/18 23:52:58 jim Exp $
+$Id: IAddNotifiable.py,v 1.3 2002/12/20 22:24:29 jeremy Exp $
 """
 
 from Interface import Interface
 
 class IAddNotifiable(Interface):
-    """The Base interface for Manageing Objects
-    """
+    """The Base interface for Managing Objects."""
     
     def manage_afterAdd(object, container):
-        """Hook method will call after an object is added to container
-        """
+        """Hook method will call after an object is added to container."""

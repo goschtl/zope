@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FolderAdding.py,v 1.1 2002/06/22 17:16:11 poster Exp $
+$Id: FolderAdding.py,v 1.2 2002/12/20 22:24:29 jeremy Exp $
 """
 
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding
@@ -21,4 +21,4 @@ from Zope.App.OFS.Content.Folder.IFolderAdding import IFolderAdding
 
 class FolderAdding(Adding):
     
-    __implements__ = IFolderAdding 
+    __implements__ = IFolderAdding

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IFolderAdding.py,v 1.1 2002/06/22 17:16:11 poster Exp $
+$Id: IFolderAdding.py,v 1.2 2002/12/20 22:24:29 jeremy Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding

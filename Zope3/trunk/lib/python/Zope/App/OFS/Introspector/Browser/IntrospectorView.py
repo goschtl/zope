@@ -59,6 +59,3 @@ class IntrospectorView(BrowserView):
         #                'path': directive_path
         #                })
         return services
-                    
-                
-                

@@ -1410,4 +1410,3 @@ class DB_Logger:
            self.read_records(file)
        self.verbose = verbose
        self.restart()
-       

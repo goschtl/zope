@@ -17,6 +17,7 @@ from Interface.Attribute import Attribute
 class ITestClass(Interface):
     def drool():
         """...drool..."""
+        
 class BaseTestClass:
     """This is stupid base class"""
     pass
@@ -28,12 +29,10 @@ class TestClass(BaseTestClass):
         pass
     
 class I(Interface):
-    """bah blah
-    """
+    """bah blah"""
     
 class I2(I):
-    """eek
-    """
+    """eek"""
     
 class I3(I, I2):
     """This is dummy doc string"""

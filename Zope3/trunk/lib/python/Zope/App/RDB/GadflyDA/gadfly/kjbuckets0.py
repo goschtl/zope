@@ -1043,8 +1043,3 @@ def test():
             if x!=-y: raise "bad cmp!", (X, Y)
             print "cmp(X,Y), -cmp(Y,X)", x,-y
             print "X.subset(Y)", X.subset(Y)
-            
-
-
-           
-    
