@@ -2,7 +2,23 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-  <include package=".registries" file="meta.zcml" />
+  <meta:directive
+      namespace="http://namespaces.zope.org/zope"
+      name="permission"
+      schema=".metadirectives.IDefinePermissionDirective"
+      handler=".metaconfigure.definePermission" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="principal" 
+      schema=".metadirectives.IDefinePrincipalDirective"
+      handler=".metaconfigure.principal" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="unauthenticatedPrincipal" 
+      schema=".metadirectives.IDefineUnauthenticatedPrincipalDirective"
+      handler=".metaconfigure.unauthenticatedPrincipal" />
 
   <meta:directive
       name="securityPolicy"
@@ -14,37 +30,19 @@
   <meta:groupingDirective
       name="module"
       namespace="http://namespaces.zope.org/zope"
-      schema=".modulezcml.IModule"
-      handler="zope.configuration.config.GroupingContextDecorator"
-      >
-      Group security declarations about a module
-  </meta:groupingDirective>
+      schema=".metadirectives.IModule"
+      handler="zope.configuration.config.GroupingContextDecorator" />
 
   <meta:directive
       name="allow"
       namespace="http://namespaces.zope.org/zope"
-      schema=".modulezcml.IAllow"
-      handler=".modulezcml.allow"
-      >
-      Allow access to selected module attributes
-
-      Access is unconditionally allowed to any names provided directly
-      in the attributes attribute or to any names defined by
-      interfaces listed in the interface attribute.
-  </meta:directive>
+      schema=".metadirectives.IAllow"
+      handler=".metaconfigure.allow" />
 
   <meta:directive
       name="require"
       namespace="http://namespaces.zope.org/zope"
-      schema=".modulezcml.IRequire"
-      handler=".modulezcml.require"
-      >
-      Require a permission to access selected module attributes
-
-      The given permission is required to access any names provided
-      directly in the attributes attribute or any names defined by
-      interfaces listed in the interface attribute.  
-
-  </meta:directive>
+      schema=".metadirectives.IRequire"
+      handler=".metaconfigure.require" />
  
 </configure>

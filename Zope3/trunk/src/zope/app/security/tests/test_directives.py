@@ -11,66 +11,71 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Directives Tests
 
-$Id: test_modulezcml.py,v 1.1 2003/09/02 20:47:05 jim Exp $
+$Id: test_directives.py,v 1.1 2004/03/08 12:06:40 srichter Exp $
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
-from zope.app.security.registries.permissionregistry import permissionRegistry
-import zope.interface
-from zope.app.security import modulezcml
-from zope.security.checker import moduleChecker
 from pprint import PrettyPrinter
+from zope.interface import Interface, Attribute
+from zope.testing.doctestunit import DocTestSuite
+
+from zope.security.checker import moduleChecker
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.security import metaconfigure
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
 
 def pprint(ob, width=70):
     PrettyPrinter(width=width).pprint(ob)
 
-class I1(zope.interface.Interface):
+class I1(Interface):
     def x(): pass
-    y = zope.interface.Attribute("Y")
+    y = Attribute("Y")
 
 class I2(I1):
     def a(): pass
-    b = zope.interface.Attribute("B")
+    b = Attribute("B")
 
-test_perm = 'zope.app.security.modulezcml.test'
-test_bad_perm = 'zope.app.security.modulezcml.bad'
+test_perm = 'zope.app.security.metaconfigure.test'
+test_bad_perm = 'zope.app.security.metaconfigure.bad'
 
 def test_protectModule():
     """
-    >>> from zope.app.security.tests import test_modulezcml
+    >>> from zope.app.security.tests import test_directives
 
     Initially, there's no checker defined for the module:
 
-    >>> moduleChecker(test_modulezcml)
+    >>> moduleChecker(test_directives)
     
     Should get an ewrror if a permission is defined before it's used:
 
-    >>> modulezcml.protectModule(test_modulezcml, 'foo', test_perm)
+    >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
     Traceback (most recent call last):
     ...
-    UndefinedPermissionError: zope.app.security.modulezcml.test
+    ValueError: ('Undefined permission id', 'zope.app.security.metaconfigure.test')
     
-    >>> perm = permissionRegistry.definePermission(test_perm, '')
-    >>> modulezcml.protectModule(test_modulezcml, 'foo', test_perm)
+    >>> perm = Permission(test_perm, '')
+    >>> ztapi.provideUtility(IPermission, perm, test_perm)
+    >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
 
     Now, the checker should exist and have an access dictionary with the
     name and permission:
 
-    >>> checker = moduleChecker(test_modulezcml)
+    >>> checker = moduleChecker(test_directives)
     >>> cdict = checker.getPermission_func().__self__
     >>> pprint(cdict)
-    {'foo': 'zope.app.security.modulezcml.test'}
+    {'foo': 'zope.app.security.metaconfigure.test'}
     
     If we define additional names, they will be added to the dict:
 
-    >>> modulezcml.protectModule(test_modulezcml, 'bar', test_perm)
-    >>> modulezcml.protectModule(test_modulezcml, 'baz', test_perm)
+    >>> metaconfigure.protectModule(test_directives, 'bar', test_perm)
+    >>> metaconfigure.protectModule(test_directives, 'baz', test_perm)
     >>> pprint(cdict)
-    {'bar': 'zope.app.security.modulezcml.test',
-     'baz': 'zope.app.security.modulezcml.test',
-     'foo': 'zope.app.security.modulezcml.test'}
+    {'bar': 'zope.app.security.metaconfigure.test',
+     'baz': 'zope.app.security.metaconfigure.test',
+     'foo': 'zope.app.security.metaconfigure.test'}
         
     """
 
@@ -83,16 +88,18 @@ def test_allow():
     >>> class Context:
     ...     def __init__(self):
     ...         self.actions = []
+    ...
     ...     def action(self, discriminator, callable, args):
     ...         self.actions.append(
     ...             {'discriminator': discriminator,
-    ...              'callable': int(callable is modulezcml.protectModule),
+    ...              'callable': int(callable is metaconfigure.protectModule),
     ...              'args': args})
+    ...
     ...     module='testmodule'
 
     >>> context = Context()
-    >>> modulezcml.allow(context, attributes=['foo', 'bar'],
-    ...                           interface=[I1, I2])
+    >>> metaconfigure.allow(context, attributes=['foo', 'bar'],
+    ...                     interface=[I1, I2])
 
     >>> context.actions.sort(
     ...    lambda a, b: cmp(a['discriminator'], b['discriminator']))
@@ -139,16 +146,18 @@ def test_require():
     >>> class Context:
     ...     def __init__(self):
     ...         self.actions = []
+    ...
     ...     def action(self, discriminator, callable, args):
     ...         self.actions.append(
     ...             {'discriminator': discriminator,
-    ...              'callable': int(callable is modulezcml.protectModule),
+    ...              'callable': int(callable is metaconfigure.protectModule),
     ...              'args': args})
+    ...
     ...     module='testmodule'
 
     >>> context = Context()
-    >>> modulezcml.require(context, attributes=['foo', 'bar'],
-    ...                    interface=[I1, I2], permission='p')
+    >>> metaconfigure.require(context, attributes=['foo', 'bar'],
+    ...                       interface=[I1, I2], permission='p')
 
     >>> context.actions.sort(
     ...    lambda a, b: cmp(a['discriminator'], b['discriminator']))
@@ -189,7 +198,7 @@ def test_require():
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite(),
+        DocTestSuite(setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__': unittest.main()
