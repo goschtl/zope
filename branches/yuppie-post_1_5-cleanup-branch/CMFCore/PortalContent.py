@@ -30,10 +30,6 @@ from permissions import FTPAccess
 from permissions import View
 
 
-# Old names that some third-party packages may need.
-NoWL = 0
-
-
 class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     """
         Base class for portal objects.

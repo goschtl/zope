@@ -18,7 +18,6 @@ $Id$
 from os import path as os_path
 from os.path import abspath
 import re
-from warnings import warn
 
 from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
@@ -44,7 +43,6 @@ from OFS.PropertySheets import PropertySheets
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
-from StructuredText.StructuredText import HTML
 
 from exceptions import AccessControl_Unauthorized
 from exceptions import NotFound
@@ -182,8 +180,6 @@ def _limitGrantedRoles(roles, context, special_roles=()):
         if role not in special_roles and role not in user_roles:
             raise AccessControl_Unauthorized('Too many roles specified.')
 
-limitGrantedRoles = _limitGrantedRoles  # XXX: Deprecated spelling
-
 security.declarePrivate('_mergedLocalRoles')
 def _mergedLocalRoles(object):
     """Returns a merging of object and its ancestors'
@@ -210,8 +206,6 @@ def _mergedLocalRoles(object):
             continue
         break
     return merged
-
-mergedLocalRoles = _mergedLocalRoles    # XXX: Deprecated spelling
 
 security.declarePrivate('_ac_inherited_permissions')
 def _ac_inherited_permissions(ob, all=0):
@@ -545,15 +539,6 @@ def registerIcon(klass, iconspec, _prefix=None):
     if not hasattr(misc_images, pid):
         setattr(misc_images, pid, MiscImage(pid, {}))
     getattr(misc_images, pid)[name]=icon
-
-security.declarePublic('format_stx')
-def format_stx( text, level=1 ):
-    """ Render STX to HTML.
-    """
-    warn('format_stx() will be removed in CMF 1.6. Please use '
-         'StructuredText.StructuredText.HTML instead.',
-         DeprecationWarning)
-    return HTML(text, level=level, header=0)
 
 #
 #   Metadata Keyword splitter utilities
