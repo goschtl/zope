@@ -54,8 +54,7 @@
       permission="zope.ManageServices"
       content_factory="zope.app.services.utility.UtilityRegistration"
       arguments="name interface componentPath"
-      set_after_add="status"
-      fields="name interface componentPath permission status"
+      fields="name interface componentPath permission"
       usage="addingdialog"/>
 
   <!-- When editing the registration of an existing utility object,
@@ -69,5 +68,17 @@
       schema="zope.app.interfaces.services.utility.IUtilityRegistration"
       permission="zope.ManageServices"
       fields="name interface componentPath permission status" />
+
+ <menuItems
+    menu="zmi_actions"
+    for="zope.app.interfaces.services.utility.ILocalUtilityService">
+
+    <menuItem
+        title="Add utility"
+        action="../AddUtility"
+        permission="zope.ManageServices" />
+
+ </menuItems>
+
 
 </zope:configure>
