@@ -13,6 +13,42 @@
 ##############################################################################
 """Support for handling package configuration files.
 
+The package configuration files handled by this module provide
+information about the software and documentation contents of a
+distribution component.  The same kinds of information can be
+described for any component, with the exception that extensions only
+make sense for package components.
+
+Package configuration files use a syntax very like the `ZConfig`_
+package, but fewer features are available.  The specific syntax is
+implemented by the `cfgparser` module.
+
+.. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
+
+There are only a few types of information which can appear in a
+package configuration file; the file is intended to describe what a
+package provides that is not a module or data file.  The three types
+of things which can be listed in the file are:
+
+- scripts
+- documentation
+- extensions
+
+The scripts and documentation files are listed very simply::
+
+  documentation  *.txt
+  documentation  apiref.pdf
+
+  script  scritps/*
+
+The value to the right of the identifying keyword is a portable glob
+pattern, where *portable* here means the pattern uses the POSIX
+notation.  Path components should be separated by forward slashes
+(like all paths used with distutils), ``?`` can be replaced by any
+single character, and ``*`` can be replaced by zero or more
+characters.
+
+
 :Variables:
   - `PACKAGE_CONF`:  Name of the package information file.
   - `SCHEMA`:  Schema for the package information file.
