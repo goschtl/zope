@@ -10,6 +10,10 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - ZPT skin: Fixed 'RSS'.
+      Values are now converted to unicode, using 'default_charset'.
+      (http://collector.zope.org/CMF/261)
+
     - DublinCore: Added 'setCreators' method.
       Note that notifyModified() also modifies creators. If the current user
       should not be added to creators, make sure notifyModified() is not
