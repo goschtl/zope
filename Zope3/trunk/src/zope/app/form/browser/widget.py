@@ -26,7 +26,6 @@ from zope.schema.interfaces import ValidationError
 from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.testing import ztapi
 from zope.app.form import Widget, InputWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.form.interfaces import InputErrors
@@ -77,6 +76,7 @@ class BrowserWidget(Widget, BrowserView):
         ...         self.context = context
         ...     def snippet(self):
         ...         return "The error: " + str(self.context.errors)
+        >>> from zope.app.testing import ztapi
         >>> ztapi.browserViewProviding(IWidgetInputError, SnippetErrorView,
         ...                            IWidgetInputErrorView)
 
@@ -246,7 +246,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         ...             return float(input)
         ...         except ValueError, v:
         ...             raise ConversionError('Invalid floating point data', v)
-        
+
         >>> request = TestRequest(form={'field.price': u'32.0'})
         >>> widget = FloatWidget(field, request)
         >>> widget.getInputValue()
@@ -315,10 +315,10 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
 
     def _getFormInput(self):
         """Returns current form input.
-        
+
         The value returned must be in a format that can be used as the 'input'
         argument to `_toFieldValue`.
-        
+
         The default implementation returns the form value that corresponds to
         the widget's name. Subclasses may override this method if their form
         input consists of more than one form element or use an alternative
@@ -333,7 +333,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         perform an appropriate conversion.
 
         This method is used by getInputValue to perform the conversion
-        of form input (provided by `_getFormInput`) to an appropriate field 
+        of form input (provided by `_getFormInput`) to an appropriate field
         value.
         """
         if input == self._missing:
