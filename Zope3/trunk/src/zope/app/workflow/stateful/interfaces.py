@@ -16,6 +16,7 @@
 $Id$
 """
 import zope.schema
+from zope.security.checker import CheckerPublic
 
 from zope.interface import Interface, Attribute
 from zope.app.workflow.interfaces import IWorkflowEvent
@@ -90,36 +91,19 @@ class IStatefulStatesContainer(IProcessDefinitionElementContainer):
 
 
 
-class AvailableStatesField(zope.schema.TextLine):
-    """Available States."""
-
-    def __allowed(self):
-        pd = self.context.getProcessDefinition()
-        return pd.getStateNames()
-
-    allowed_values = property(__allowed)
-
-
-class TriggerModeField(zope.schema.TextLine):
-    """Trigger Mode."""
-
-    def __allowed(self):
-        return [MANUAL, AUTOMATIC]
-
-    allowed_values = property(__allowed)
-
-
 class ITransition(Interface):
     """Stateful workflow transition."""
 
-    sourceState = AvailableStatesField(
+    sourceState = zope.schema.Choice( 
         title=u"Source State",
         description=u"Name of the source state.",
+        vocabulary=u"Workflow State Names",
         required=True)
 
-    destinationState = AvailableStatesField(
+    destinationState = zope.schema.Choice( 
         title=u"Destination State",
         description=u"Name of the destination state.",
+        vocabulary=u"Workflow State Names",
         required=True)
 
     condition = zope.schema.TextLine(
@@ -134,58 +118,18 @@ class ITransition(Interface):
                         transition can be fired or not.""",
         required=False)
 
-    # XXX cannot add a default value -> raises
-    # ComponentLookupError: Permissions
-    # required=False does not help as well
-    # so for now the permission needs to be set ttw
-    # till we find another solution
     permission = zope.schema.Choice(
         title=u"The permission needed to fire the Transition.",
-        vocabulary="Permissions",
+        vocabulary="Permission Ids",
+        default=CheckerPublic,
         required=True)
 
 
-    triggerMode = TriggerModeField(
+    triggerMode = zope.schema.Choice(
         title=u"Trigger Mode",
         description=u"How the Transition is triggered (Automatic/Manual)",
-        default=u"Manual")
-
-
-    def getSourceState():
-        """Get Source State."""
-
-    def setSourceState(source):
-        """Set Source State."""
-
-    def getDestinationState():
-        """Get Destination State."""
-
-    def setDestinationState(destination):
-        """Set Destination State."""
-
-    def getCondition():
-        """Get Condition."""
-
-    def setCondition(condition):
-        """Set Condition."""
-
-    def getScript():
-        """Get Script."""
-
-    def setScript(script):
-        """Set Script."""
-
-    def getPermission():
-        """Get Permission."""
-
-    def setPermission(permission):
-        """Set Permission."""
-
-    def getTriggerMode():
-        """Return the TriggerMode."""
-
-    def setTriggerMode():
-        """Set TriggerMode."""
+        default=MANUAL,
+        values=[MANUAL, AUTOMATIC])
 
     def getProcessDefinition():
         """Return the ProcessDefinition Object."""
