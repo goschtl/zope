@@ -69,9 +69,9 @@ Zope Changes
    - Very preliminary local interface service
 
      The interface service will someday provide a tool for browsing 
-     and modifying all of the configurtions for a interface (type).
+     and modifying all of the configurations for a interface (type).
 
-     The inistal version demostrates browsing component configurations
+     The initial version demostrates browsing component configurations
      be showing you all views configured for an interface.
 
    - WebDAV:
