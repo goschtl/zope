@@ -405,6 +405,7 @@
     <directive
        name="addform"
        handler="zope.app.browser.form.add.add"
+       attributes="menu title"
        >
       <description>
         Define an automatically generated add form

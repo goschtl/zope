@@ -3,12 +3,13 @@
   <directives namespace="http://namespaces.zope.org/startup">
 
     <directive name="registerRequestFactory"
-               attributes="name publication request"
+               attributes="name publication request factory"
                handler="zope.app.process.metaconfigure.registerRequestFactory"
                />
 
     <directive name="registerServerType"
-               attributes="name publication request"
+               attributes="name publication request  factory requestFactory
+                               defaultPort logFactory defaultVerbose"
                handler="zope.app.process.metaconfigure.registerServerType"
                />
 

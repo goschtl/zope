@@ -36,6 +36,9 @@
       </description>
     </attribute>
 
+    <attribute name="filter" />
+    <attribute name="another" />
+
   </directive>
 
 </directives>
