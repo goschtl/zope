@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.10 2004/03/15 20:41:55 jim Exp $
+$Id: adapter.py,v 1.11 2004/03/18 12:19:29 jim Exp $
 """
 
 
@@ -180,7 +180,6 @@ class Surrogate(object):
                         oldwithobs.update(withobs)
 
         # Now flatten with mappings to tuples
-        withcmp_ = withcmp
         for key, v in implied.iteritems():
             if isinstance(key, tuple) and key[0] == 's':
                 # subscriptions
@@ -192,10 +191,7 @@ class Surrogate(object):
                     if isinstance(value, dict):
                         # We have {with -> value}
                         # convert it to sorted [(with, value]
-                        value = value.items()
-                        value.sort(withcmp_)
-                        byname[name] = value
-
+                        byname[name] = orderwith(value)
 
         self.get = implied.get
 
@@ -254,13 +250,31 @@ class Surrogate(object):
     def __repr__(self):
         return '<%s(%s)>' % (self.__class__.__name__, self.spec())
 
-def withcmp((with1, v1), (with2, v2)):
+
+def orderwith(bywith):
+
+    # Convert {with -> adapter} to withs, [(with, value)]
+    # such that there are no i, j, i < j, such that
+    #           withs[j][0] extends withs[i][0].
+
+    withs = []
+    for with, value in bywith.iteritems():
+        for i, (w, v) in enumerate(withs):
+            if withextends(with, w):
+                withs.insert(i, (with, value))
+                break
+        else:
+            withs.append((with, value))
+            
+    return withs
+    
+def withextends(with1, with2):
     for spec1, spec2 in zip(with1, with2):
         if spec1.extends(spec2):
-            return -1
-        if spec2.extends(spec1):
-            return 1
-    return 0
+            return True
+        if spec1 != spec2:
+            break
+    return False
 
 
 class AdapterRegistry(object):
