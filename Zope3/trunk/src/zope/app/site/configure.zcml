@@ -6,6 +6,11 @@
   <!-- For backward compatibility -->
 
   <modulealias
+      module="."
+      alias="zope.app.interfaces.services"
+      />
+
+  <modulealias
       module=".interfaces"
       alias="zope.app.interfaces.services.service"
       />
