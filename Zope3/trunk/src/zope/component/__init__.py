@@ -17,9 +17,11 @@ $Id$
 """
 import sys
 import warnings
+import zope.interface
 from zope.interface import moduleProvides, Interface, providedBy
 from zope.interface.interfaces import IInterface
 from zope.component.interfaces import IComponentArchitecture, IFactory
+from zope.component.interfaces import IComponentRegistrationConvenience
 from zope.component.interfaces import IServiceService
 from zope.component.interfaces import IDefaultViewName
 from zope.component.exceptions import ComponentLookupError
@@ -33,7 +35,7 @@ except ImportError:
     def hookable(ob):
         return ob
 
-moduleProvides(IComponentArchitecture)
+moduleProvides(IComponentArchitecture, IComponentRegistrationConvenience)
 __all__ = tuple(IComponentArchitecture)
 
 def warningLevel():
@@ -280,3 +282,60 @@ def getResource(name, request, providing=Interface, context=None):
 def queryResource(name, request, default=None, providing=Interface,
                   context=None):
     return queryAdapter(request, providing, name, default, context)
+
+
+# The following apis provide registration support for Python code:
+
+class _adapts_descr(object):
+
+    def __init__(self, interfaces):
+        self.interfaces = interfaces
+
+    def __get__(self, inst, cls):
+        if inst is None:
+            return self.interfaces
+        raise AttributeError, '__component_adapts__'
+
+def adapts(*interfaces):
+    frame = sys._getframe(1)
+    locals = frame.f_locals
+
+    # Try to make sure we were called from a class def. In 2.2.0 we can't
+    # check for __module__ since it doesn't seem to be added to the locals
+    # until later on.
+    if (locals is frame.f_globals) or (
+        ('__module__' not in locals) and sys.version_info[:3] > (2, 2, 0)):
+        raise TypeError(name+" can be used only from a class definition.")
+
+    if '__component_adapts__' in locals:
+        raise TypeError("adapts can be used only once in a class definition.")
+
+    locals['__component_adapts__'] = _adapts_descr(interfaces)
+
+def provideUtility(component, provides=None, name=u''):
+    if provides is None:
+        provides = list(providedBy(component))
+        if len(provides) == 1:
+            provides = provides[0]
+        else:
+            raise TypeError("Missing 'provides' argument")
+
+    getGlobalService('Utilities').provideUtility(provides, component, name)
+
+def provideAdapter(factory, adapts=None, provides=None, name=''):
+    if provides is None:
+        provides = list(zope.interface.implementedBy(factory))
+        if len(provides) == 1:
+            provides = provides[0]
+        else:
+            raise TypeError("Missing 'provides' argument")
+
+    if adapts is None:
+        try:
+            adapts = factory.__component_adapts__
+        except AttributeError:
+            raise TypeError("Missing 'adapts' argument")
+            
+    getGlobalService('Adapters').register(adapts, provides, name, factory)
+    
+    

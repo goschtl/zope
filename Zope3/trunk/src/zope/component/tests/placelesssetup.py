@@ -19,26 +19,32 @@ from zope.testing.cleanup import CleanUp
 from zope.component import getGlobalServices
 from zope.component.servicenames import Adapters, Utilities
 
+def setUp(test=None):
+    CleanUp().setUp()
+    sm = getGlobalServices()
+    defineService = sm.defineService
+    provideService = sm.provideService
+
+    # utility service
+    from zope.component.interfaces import IUtilityService
+    defineService(Utilities, IUtilityService)
+    from zope.component.utility import GlobalUtilityService
+    provideService(Utilities, GlobalUtilityService())
+
+    # adapter service
+    from zope.component.interfaces import IAdapterService
+    defineService(Adapters, IAdapterService)
+    from zope.component.adapter import GlobalAdapterService
+    provideService(Adapters, GlobalAdapterService())
+
+def tearDown(test=None):
+    CleanUp().cleanUp()
+    
 # A mix-in class inheriting from CleanUp that also connects the CA services
 class PlacelessSetup(CleanUp):
 
     def setUp(self):
-        CleanUp.setUp(self)
-        sm = getGlobalServices()
-        defineService = sm.defineService
-        provideService = sm.provideService
-
-        # utility service
-        from zope.component.interfaces import IUtilityService
-        defineService(Utilities, IUtilityService)
-        from zope.component.utility import GlobalUtilityService
-        provideService(Utilities, GlobalUtilityService())
-
-        # adapter service
-        from zope.component.interfaces import IAdapterService
-        defineService(Adapters, IAdapterService)
-        from zope.component.adapter import GlobalAdapterService
-        provideService(Adapters, GlobalAdapterService())
-
+        setUp()
+        
     def tearDown(self):
-        CleanUp.tearDown(self)
+        tearDown()

@@ -28,7 +28,7 @@ from zope.component import queryMultiAdapter
 from zope.component.service import serviceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Adapters
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.tests import placelesssetup
 from zope.component.tests.request import Request
 from zope.component.interfaces import IComponentArchitecture, IServiceService
 from zope.component.interfaces import IDefaultViewName
@@ -94,7 +94,7 @@ class ConformsToIServiceService(object):
             return self.serviceservice
 
 
-class Test(PlacelessSetup, unittest.TestCase):
+class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def testInterfaces(self):
         import zope.component
@@ -539,6 +539,25 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getDefaultViewName,
                           ob, Request(I1))
 
+def testNo__component_adapts__leakage():
+    """
+    We want to make sure that an adapts call in a class definition
+    doesn't affect instances.
+
+      >>> import zope.component
+      >>> class C:
+      ...     zope.component.adapts()
+
+      >>> C.__component_adapts__
+      ()
+      >>> C().__component_adapts__
+      Traceback (most recent call last):
+      ...
+      AttributeError: __component_adapts__
+      
+    """
+    
+
 
 class TestNoSetup(unittest.TestCase):
 
@@ -549,9 +568,15 @@ class TestNoSetup(unittest.TestCase):
         pass
 
 def test_suite():
+    from zope.testing import doctest
     return unittest.TestSuite((
         unittest.makeSuite(Test),
         unittest.makeSuite(TestNoSetup),
+        doctest.DocTestSuite(),
+        doctest.DocFileSuite('../README.txt',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown,
+                             ),
         ))
 
 if __name__ == "__main__":
