@@ -633,9 +633,15 @@ def minimalpath(p):
     #      functionality (e.g., PRODUCTS_PATH), and adds a new requirement
     #      (that 'p' include 'Products').  Reverting head to 1.26.
     p = os_path.abspath(p)
-    #abs = normalize(p)
-    p = p[p.index('Products'):]
+    abs = normalize(p)
+    l = len(normINSTANCE_HOME)
+    if abs[:l] != normINSTANCE_HOME:
+        l = len(normSOFTWARE_HOME)
+        if abs[:l] != normSOFTWARE_HOME:
+            # Can't minimize.
+            return p
+    p = p[l:]
+##     p = p[p.find('Products'):]
     while p[:1] in separators:
         p = p[1:]
     return p
-
