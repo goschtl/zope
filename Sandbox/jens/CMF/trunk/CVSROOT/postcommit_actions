@@ -92,6 +92,7 @@ SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 
 IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/cvs-repository/cvsidentity"
+KNOWN_HOSTS_FILE = "/cvs-repository/cvs-known_hosts"
 
 
 WAIT = 0                                # Fork unless waiting is requested.
@@ -326,8 +327,8 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
         complain("Sync for %s to %s; of %s/ %s / %s\n",
                  name, remote, os.environ["CVSROOT"], repo, fnames)
 
-    ssh_fragment = ('--rsh="%s %s -i %s -l %s"'
-                    % (SSH_EXE, (VERBOSE and "-v") or "",
+    ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s"'
+                    % (SSH_EXE, KNOWN_HOSTS_FILE, (VERBOSE and "-v") or "",
                        IDENTITY_FILE, IDENTITY_ACCT))
     
     if excludes:
