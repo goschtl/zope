@@ -24,7 +24,7 @@ class ISecurityContext( Interface ):
                'custom SecurityPolicy.'
              )
 
-    Attribute( 'principal'
+    Attribute( 'user'
              , 'The AUTHENTICATED_USER for the request.'
              )
 
