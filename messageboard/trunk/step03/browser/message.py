@@ -25,16 +25,16 @@ class MessageDetails:
 
     def author(self):
         """Get user who last modified the Message."""
-        creators = zapi.getAdapter(self.context, ICMFDublinCore).creators
+        creators = ICMFDublinCore(self.context).creators
         if not creators:
             return 'unknown'
         return creators[0]
 
     def modified(self):
         """Get last modification date."""
-        date = zapi.getAdapter(self.context, ICMFDublinCore).modified
+        date = ICMFDublinCore(self.context).modified
         if date is None:
-            date = zapi.getAdapter(self.context, ICMFDublinCore).created
+            date = ICMFDublinCore(self.context).created
         if date is None:
             return ''
         return date.strftime('%d/%m/%Y %H:%M:%S')
