@@ -13,12 +13,13 @@
 ##############################################################################
 """Browser widgets for text-like data
 
-$Id: objectwidget.py,v 1.2 2004/05/07 19:41:32 garrett Exp $
+$Id: objectwidget.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
 """
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
 
 from zope.app.form.interfaces import IInputWidget
+from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -36,7 +37,7 @@ class ObjectWidgetView:
         return self.template()
     
     
-class ObjectWidget(BrowserWidget):
+class ObjectWidget(BrowserWidget, InputWidget):
     """A widget over an Interface that contains Fields.
 
     "factory"  - factory used to create content that this widget (field)

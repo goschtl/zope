@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for items
 
-$Id: itemswidgets.py,v 1.3 2004/05/06 16:13:41 poster Exp $
+$Id: itemswidgets.py,v 1.4 2004/05/11 11:17:12 garrett Exp $
 """
 from zope.interface import implements
 from zope.i18n import translate
@@ -22,7 +22,7 @@ from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
 from zope.app import zapi
-from zope.app.form.browser.widget import BrowserWidget, renderElement
+from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.browser.interfaces import IVocabularyQueryView
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import WidgetInputError
@@ -32,24 +32,20 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 # For choices, we want to make the widget a view of the field and vocabulary.
 
 def ChoiceDisplayWidget(field, request):
-    return zapi.getMultiView((field, field.vocabulary), request,
-                             IDisplayWidget)
+    return zapi.getMultiView((field, field.vocabulary), request, IDisplayWidget)
 
 def ChoiceInputWidget(field, request):
-    return zapi.getMultiView((field, field.vocabulary), request,
-                             IInputWidget)
+    return zapi.getMultiView((field, field.vocabulary), request, IInputWidget)
 
 # for collections, we want to make the widget a view of the field and the 
 # value_type.  If the value_type is None we may fall over.  We may
 # not be able to do any better than that.
 
 def CollectionDisplayWidget(field, request):
-    return zapi.getMultiView((field, field.value_type), request,
-                             IDisplayWidget)
+    return zapi.getMultiView((field, field.value_type), request, IDisplayWidget)
 
 def CollectionInputWidget(field, request):
-    return zapi.getMultiView((field, field.value_type), request,
-                             IInputWidget)
+    return zapi.getMultiView((field, field.value_type), request, IInputWidget)
 
 # for collections of choices, we want to make the widget a view of the field, 
 # the value type, and the vocabulary.
@@ -75,7 +71,7 @@ def message(msgid, default):
     return msgid
 
 
-class ItemsWidgetBase(TranslationHook, BrowserWidget):
+class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
     """Convenience base class for widgets displaying items/choices."""
 
     extra = ""
@@ -97,7 +93,7 @@ class ItemsWidgetBase(TranslationHook, BrowserWidget):
     def __call__(self):
         """Render the widget to HTML."""
         raise NotImplementedError(
-            "__call__() must be implemented by a subclass; use _showData()")
+            "__call__() must be implemented by a subclass; use _getFormValue()")
 
     def textForValue(self, term):
         """Extract a string from the term.
@@ -140,7 +136,7 @@ class ItemsWidgetBase(TranslationHook, BrowserWidget):
 
         # Now let's see whether we have a valid input value
         try:
-            value = self._convert(input)
+            value = self._toFieldValue(input)
         except ValidationError, error:
             self._error = WidgetInputError(
                 self.context.__name__,
@@ -165,14 +161,14 @@ class ItemsWidgetBase(TranslationHook, BrowserWidget):
         """Store the ready-for-HTML value."""
         self._data = value
 
-    def _convert(self, input):
-        """See BrowserWidget"""
+    def _toFieldValue(self, input):
+        """See SimpleInputWidget"""
         raise NotImplementedError(
-            "_convert(input) must be implemented by a subclass\n"
+            "_toFieldValue(input) must be implemented by a subclass\n"
             "It may be inherited from the mix-in classes SingleDataHelper\n"
             "or MultiDataHelper")
 
-    def _showData(self):
+    def _getFormValue(self):
         if self._data is self._data_marker:
             # The data has not been retrieved from the form, so let's do that
             if self.hasInput():
@@ -186,11 +182,6 @@ class ItemsWidgetBase(TranslationHook, BrowserWidget):
             value = self._data
         return value
 
-    def _unconvert(self, value):
-        """Disregard this method as suggested by BrowserWidget."""
-        raise NotImplementedError(
-            "vocabulary-based widgets don't use the _unconvert() method")
-
 
 class SingleDataHelper(object):
     """Mix-in helper class for getting the term from the HTML form.
@@ -198,8 +189,7 @@ class SingleDataHelper(object):
     This is used when we expect a single input, i.e. the Choice field. 
     """
 
-    def _convert(self, input):
-        """See BrowserWidget"""
+    def _toFieldValue(self, input):
         if input:
             return self.convertTokensToValues([input])[0]
         else:
@@ -213,8 +203,8 @@ class MultiDataHelper(object):
     Choice field as value_type.
     """
 
-    def _convert(self, input):
-        """See BrowserWidget"""
+    def _toFieldValue(self, input):
+        """See SimpleInputWidget"""
         if input is self._data_marker:
             return []
         if not isinstance(input, list):
@@ -239,7 +229,7 @@ class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
 
     def __call__(self):
         """See IBrowserWidget."""
-        value = self._showData()
+        value = self._getFormValue()
         if value is None:
             return self.translate(self._messageNoValue)
         else:
@@ -258,7 +248,7 @@ class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
 
     def __call__(self):
         """See IBrowserWidget."""
-        value = self._showData()
+        value = self._getFormValue()
         if value:
             rendered_items = self.renderItems(value)
             return renderElement(self.tag,
@@ -346,7 +336,7 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
 
     def __call__(self):
         """See IBrowserWidget."""
-        value = self._showData()
+        value = self._getFormValue()
         contents = []
         have_results = False
 
@@ -572,7 +562,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
     
     def hidden(self):
         items = []
-        for item in self._showData():
+        for item in self._getFormValue():
             items.append(
                 renderElement(self.tag,
                               type='hidden',

@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.4 2004/03/14 01:11:39 srichter Exp $
+$Id: editingwidgets.py,v 1.5 2004/05/11 11:18:24 garrett Exp $
 """
 __metaclass__ = type
 
 from zope.interface import implements
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import BrowserWidget, renderElement
+from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-class SimpleEditingWidget(BrowserWidget):
+class SimpleEditingWidget(SimpleInputWidget):
     """Improved textarea editing, with async saving using JavaScript."""
 
     implements(IInputWidget)
@@ -34,7 +34,7 @@ class SimpleEditingWidget(BrowserWidget):
     rowTemplate = ViewPageTemplateFile("simpleeditingrow.pt")
     rowFragment = ViewPageTemplateFile("simpleeditingrowfragment.pt")
     
-    def _convert(self, value):
+    def _toFieldValue(self, value):
         if self.context.min_length and not value:
             return None
         return value
@@ -47,10 +47,10 @@ class SimpleEditingWidget(BrowserWidget):
                              rows=self.height,
                              cols=self.width,
                              style=self.style,
-                             contents=self._showData(),
+                             contents=self._getFormValue(),
                              extra=self.extra)
 
     def contents(self):
         """Make the contents available to the template"""
-        return self._showData()
+        return self._getFormData()
 

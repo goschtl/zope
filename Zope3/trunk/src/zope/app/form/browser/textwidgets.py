@@ -13,16 +13,18 @@
 ##############################################################################
 """Browser widgets with text-based input
 
-$Id: textwidgets.py,v 1.2 2004/03/18 00:49:07 srichter Exp $
+$Id: textwidgets.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
 """
 from zope.interface import implements
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
-from zope.app.form.browser.widget import BrowserWidget, renderElement
+from zope.app.form.browser.interfaces import ITextBrowserWidget
+from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 
-class TextWidget(BrowserWidget):
+
+class TextWidget(SimpleInputWidget):
     """Text widget.
 
     Single-line text (unicode) input
@@ -90,17 +92,15 @@ class TextWidget(BrowserWidget):
       value="&lt;h1&gt;&amp;copy;&lt;/h1&gt;"
       />
     """
-    
-    implements(IInputWidget)
+
+    implements(ITextBrowserWidget)
 
     default = ''
     displayWidth = 20
     displayMaxWidth = ""
     extra = ''
-    # XXX Alex Limi doesn't like this!
-    # style = "width:100%"
     style = ''
-    __values = None
+    convert_missing_value = True
 
     def __init__(self, *args):
         super(TextWidget, self).__init__(*args)
@@ -112,7 +112,7 @@ class TextWidget(BrowserWidget):
                                  type=self.type,
                                  name=self.name,
                                  id=self.name,
-                                 value=self._showData(),
+                                 value=self._getFormValue(),
                                  cssClass=self.cssClass,
                                  style=self.style,
                                  size=self.displayWidth,
@@ -123,31 +123,31 @@ class TextWidget(BrowserWidget):
                                  type=self.type,
                                  name=self.name,
                                  id=self.name,
-                                 value=self._showData(),
+                                 value=self._getFormValue(),
                                  cssClass=self.cssClass,
                                  style=self.style,
                                  size=self.displayWidth,
                                  extra=self.extra)
 
-    def _convert(self, value):
-        value = super(TextWidget, self)._convert(value)
-        if value:
-            value = decode_html(value)
-        return value
+    def _toFieldValue(self, input):
+        if self.convert_missing_value and input == self._missing:
+            value = self.context.missing_value
+        else:
+            value = input
+        return decode_html(value)
 
 
-class Bytes(BrowserWidget):
+class Bytes(SimpleInputWidget):
 
-    def _convert(self, value):
-        value = super(Bytes, self)._convert(value)
+    def _toFieldValue(self, input):
+        value = super(Bytes, self)._toFieldValue(input)
         if type(value) is unicode:
             try:
                 value = value.encode('ascii')
             except UnicodeError, v:
                 raise ConversionError("Invalid textual data", v)
-
         return value
-        
+
 
 class BytesWidget(Bytes, TextWidget):
     """Bytes widget.
@@ -163,11 +163,11 @@ class BytesWidget(Bytes, TextWidget):
     True
     >>> widget.getInputValue()
     'Bob'
-    """    
+    """
 
 class ASCII(Bytes):
     """ASCII"""
-    
+
 
 class ASCIIWidget(BytesWidget):
     """ASCII widget.
@@ -175,7 +175,7 @@ class ASCIIWidget(BytesWidget):
     Single-line data (string) input
     """
 
-class TextAreaWidget(BrowserWidget):
+class TextAreaWidget(SimpleInputWidget):
     """TextArea widget.
 
     Multi-line text (unicode) input.
@@ -239,10 +239,7 @@ class TextAreaWidget(BrowserWidget):
       name="field.foo"
       rows="15"
       >&lt;h1&gt;&amp;copy;&lt;/h1&gt;</textarea>
-
     """
-
-    implements(IInputWidget)
 
     default = ""
     width = 60
@@ -250,15 +247,15 @@ class TextAreaWidget(BrowserWidget):
     extra = ""
     style = ''
 
-    def _convert(self, value):
-        value = super(TextAreaWidget, self)._convert(value)
+    def _toFieldValue(self, value):
+        value = super(TextAreaWidget, self)._toFieldValue(value)
         if value:
-            value = value.replace("\r\n", "\n")
             value = decode_html(value)
+            value = value.replace("\r\n", "\n")
         return value
 
-    def _unconvert(self, value):
-        value = super(TextAreaWidget, self)._unconvert(value)
+    def _toFormValue(self, value):
+        value = super(TextAreaWidget, self)._toFormValue(value)
         if value:
             value = value.replace("\n", "\r\n")
             value = encode_html(value)
@@ -272,7 +269,7 @@ class TextAreaWidget(BrowserWidget):
                              rows=self.height,
                              cols=self.width,
                              style=self.style,
-                             contents=self._showData(),
+                             contents=self._getFormValue(),
                              extra=self.extra)
 
 class BytesAreaWidget(Bytes, TextAreaWidget):
@@ -289,11 +286,11 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     True
     >>> widget.getInputValue()
     'Hello\\nworld!'
-    """    
+    """
 
 class PasswordWidget(TextWidget):
     """Password Widget"""
-    
+
     type = 'password'
 
     def __call__(self):
@@ -326,7 +323,7 @@ class PasswordWidget(TextWidget):
 
 class FileWidget(TextWidget):
     """File Widget"""
-    
+
     type = 'file'
 
     def __call__(self):
@@ -369,16 +366,16 @@ class FileWidget(TextWidget):
 
         return False
 
-    def _convert(self, value):
+    def _toFieldValue(self, input):
         try:
-            seek = value.seek
-            read = value.read
+            seek = input.seek
+            read = input.read
         except AttributeError, e:
-            raise ConversionError('Value is not a file object', e)
+            raise ConversionError('Form input is not a file object', e)
         else:
             seek(0)
             data = read()
-            if data or getattr(value, 'filename', ''):
+            if data or getattr(input, 'filename', ''):
                 return data
             else:
                 return self.context.missing_value
@@ -386,44 +383,44 @@ class FileWidget(TextWidget):
 class IntWidget(TextWidget):
     displayWidth = 10
 
-    def _convert(self, value):
-        if value == self._missing:
+    def _toFieldValue(self, input):
+        if input == self._missing:
             return self.context.missing_value
         else:
             try:
-                return int(value)
+                return int(input)
             except ValueError, v:
                 raise ConversionError("Invalid integer data", v)
-                
+
 
 class FloatWidget(TextWidget):
     implements(IInputWidget)
     displayWidth = 10
 
-    def _convert(self, value):
-        if value == self._missing:
+    def _toFieldValue(self, input):
+        if input == self._missing:
             return self.context.missing_value
         else:
             try:
-                return float(value)
+                return float(input)
             except ValueError, v:
                 raise ConversionError("Invalid floating point data", v)
-                
+
 
 class DatetimeWidget(TextWidget):
     """Datetime entry widget."""
 
     displayWidth = 20
 
-    def _convert(self, value):
-        if value == self._missing:
+    def _toFieldValue(self, input):
+        if input == self._missing:
             return self.context.missing_value
         else:
             try:
-                return parseDatetimetz(value)
+                return parseDatetimetz(input)
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
-                
+
 
 class DateWidget(TextWidget):
     """Date entry widget.
@@ -431,26 +428,29 @@ class DateWidget(TextWidget):
 
     displayWidth = 20
 
-    def _convert(self, value):
-        if value == self._missing:
+    def _toFieldValue(self, input):
+        if input == self._missing:
             return self.context.missing_value
         else:
             try:
-                return parseDatetimetz(value).date()
+                return parseDatetimetz(input).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
 
 
 def encode_html(text):
-    text = text.replace('&', '&amp;')
-    text = text.replace('<', '&lt;')
-    text = text.replace('>', '&gt;')
-    text = text.replace('"', '&quot;')
+    if text:
+        text = text.replace('&', '&amp;')
+        text = text.replace('<', '&lt;')
+        text = text.replace('>', '&gt;')
+        text = text.replace('"', '&quot;')
     return text
 
+
 def decode_html(text):
-    text = text.replace('&amp;', '&')
-    text = text.replace('&lt;', '<')
-    text = text.replace('&gt;', '>')
-    text = text.replace('&quot;', '"')
+    if text:
+        text = text.replace('&amp;', '&')
+        text = text.replace('&lt;', '<')
+        text = text.replace('&gt;', '>')
+        text = text.replace('&quot;', '"')
     return text

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for sequences
 
-$Id: sequencewidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
+$Id: sequencewidget.py,v 1.3 2004/05/11 11:17:12 garrett Exp $
 """
 import re
 from zope.interface import implements
@@ -21,10 +21,11 @@ from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.form.interfaces import IInputWidget
+from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class SequenceWidget(BrowserWidget):
+class SequenceWidget(BrowserWidget, InputWidget):
     """A widget baseclass for a sequence of fields.
 
     subwidget  - Optional CustomWidget used to generate widgets for the

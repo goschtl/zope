@@ -13,13 +13,11 @@
 ##############################################################################
 """General registry-related views
 
-$Id: __init__.py,v 1.7 2004/04/24 23:19:47 srichter Exp $
+$Id: __init__.py,v 1.8 2004/05/11 11:18:23 garrett Exp $
 """
 from zope.app.container.browser.adding import Adding
 from zope.app.container.interfaces import INameChooser
-from zope.app.form.browser import BrowserWidget, RadioWidget
-from zope.app.form.browser.interfaces import IBrowserWidget
-from zope.app.form.interfaces import IInputWidget
+from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -156,7 +154,7 @@ class ChangeRegistrations(BrowserView):
         self.message = message
 
 
-class ComponentPathWidget(BrowserWidget):
+class ComponentPathWidget(SimpleInputWidget):
     """Widget for displaying component paths
 
     The widget doesn't actually allow editing. Rather it gets the
@@ -165,8 +163,6 @@ class ComponentPathWidget(BrowserWidget):
     component using the field's name. Otherwise, it uses the path to
     the context.
     """
-
-    implements(IBrowserWidget, IInputWidget)
 
     def __call__(self):
         """See zope.app.browser.interfaces.form.IBrowserWidget"""
