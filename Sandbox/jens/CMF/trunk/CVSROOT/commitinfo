@@ -1,2 +1,0 @@
-^test	${CVSROOT}/CVSROOT/precommit_actions
-^Zope2  ${CVSROOT}/CVSROOT/scripts/commit_hook.py
