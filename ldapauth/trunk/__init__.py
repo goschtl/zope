@@ -15,4 +15,4 @@
 
 $Id:
 """
-
+from ldapauth.source import LDAPPrincipalSource
