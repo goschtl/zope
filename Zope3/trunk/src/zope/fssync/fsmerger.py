@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.8 2003/06/03 20:01:37 gvanrossum Exp $
+$Id: fsmerger.py,v 1.9 2003/06/04 11:11:29 gvanrossum Exp $
 """
 
 import os
@@ -58,14 +58,30 @@ class FSMerger(object):
         self.merge_annotations(local, remote)
 
     def merge_extra(self, local, remote):
+        """Helper to merge the Extra trees."""
         lextra = fsutil.getextra(local)
         rextra = fsutil.getextra(remote)
         self.merge_dirs(lextra, rextra)
+        if not exists(local):
+            self.remove_special(local, "Extra")
 
     def merge_annotations(self, local, remote):
+        """Helper to merge the Anotations trees."""
         lannotations = fsutil.getannotations(local)
         rannotations = fsutil.getannotations(remote)
         self.merge_dirs(lannotations, rannotations)
+        if not exists(local):
+            self.remove_special(local, "Annotations")
+
+    def remove_special(self, local, what):
+        """Helper to remove an Extra or Annotations tree."""
+        lextra = fsutil.getextra(local)
+        if isdir(lextra):
+            shutil.rmtree(lextra)
+        try:
+            os.rmdir(join(local, "@@Zope", "Extra"))
+        except os.error:
+            pass
 
     def merge_files(self, local, remote):
         """Merge remote file into local file."""
