@@ -1,4 +1,5 @@
 import os, sys
+import glob
 
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
@@ -16,6 +17,14 @@ from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
 from Products.Five.resource import Resource
+
+from Products import FiveTest
+_prefix = os.path.dirname(FiveTest.__file__)
+dir_resource_names = [os.path.basename(r)
+                      for r in (glob.glob('%s/*.png' % _prefix) +
+                                glob.glob('%s/*.pt' % _prefix) +
+                                glob.glob('%s/[a-z]*.py' % _prefix) +
+                                glob.glob('%s/*.css' % _prefix))]
 
 class FiveTestCase(ZopeTestCase.ZopeTestCase):
 
@@ -132,20 +141,9 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 <p>maybe</p>
 """
         self.assertEquals(expected, resource())
-        resource = self.folder.unrestrictedTraverse('testoid/cockatiel.html')
-        self.assert_(isinstance(resource, Resource))
-        expected = """\
-<p>Have you ever seen a cockatiel?</p>
-<p>maybe</p>
-"""
-        self.assertEquals(expected, resource())
 
     def test_file_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++style.css')
-        self.assert_(isinstance(resource, Resource))
-        expected = 'http://nohost/test_folder_1_/testoid/++resource++style.css'
-        self.assertEquals(expected, resource())
-        resource = self.folder.unrestrictedTraverse('testoid/style.css')
         self.assert_(isinstance(resource, Resource))
         expected = 'http://nohost/test_folder_1_/testoid/++resource++style.css'
         self.assertEquals(expected, resource())
@@ -155,10 +153,12 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         expected = 'http://nohost/test_folder_1_/testoid/++resource++pattern.png'
         self.assert_(isinstance(resource, Resource))
         self.assertEquals(expected, resource())
-        resource = self.folder.unrestrictedTraverse('testoid/pattern.png')
-        expected = 'http://nohost/test_folder_1_/testoid/++resource++pattern.png'
-        self.assert_(isinstance(resource, Resource))
-        self.assertEquals(expected, resource())
+
+    def test_resource_directory(self):
+        base = 'testoid/++resource++fivetest_resources/%s'
+        for r in dir_resource_names:
+            resource = self.folder.unrestrictedTraverse(base % r)
+            self.assert_(isinstance(resource, Resource))
 
     def test_breadcrumbs(self):
         view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')

@@ -1,4 +1,5 @@
 import os, sys
+import glob
 
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
@@ -14,6 +15,14 @@ from AccessControl import Unauthorized
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('PythonScripts')
+
+from Products import FiveTest
+_prefix = os.path.dirname(FiveTest.__file__)
+dir_resource_names = [os.path.basename(r)
+                      for r in (glob.glob('%s/*.png' % _prefix) +
+                                glob.glob('%s/*.pt' % _prefix) +
+                                glob.glob('%s/[a-z]*.py' % _prefix) +
+                                glob.glob('%s/*.css' % _prefix))]
 
 ViewManagementScreens = 'View management screens'
 
@@ -91,10 +100,14 @@ class SecurityTestCase(RestrictedPythonTest):
             self.checkUnauthorized(
                 'context.restrictedTraverse("testoid/++resource++%s")()' %
                 resource)
-        for resource in resource_names:
+
+    def test_directory_resource_no_permission(self):
+        self.login('viewer')
+        base = 'testoid/++resource++fivetest_resources/%s'
+        for resource in dir_resource_names:
+            path = base % resource
             self.checkUnauthorized(
-                'context.restrictedTraverse("testoid/%s")()' %
-                resource)
+                'context.restrictedTraverse("%s")' % path)
 
     def test_permission(self):
         self.login('manager')
@@ -108,10 +121,14 @@ class SecurityTestCase(RestrictedPythonTest):
             self.check(
                 'context.restrictedTraverse("testoid/++resource++%s")()' %
                 resource)
-        for resource in resource_names:
+
+    def test_directory_resource_permission(self):
+        self.login('manager')
+        base = 'testoid/++resource++fivetest_resources/%s'
+        for resource in dir_resource_names:
+            path = base % resource
             self.check(
-                'context.restrictedTraverse("testoid/%s")()' %
-                resource)
+                'context.restrictedTraverse("%s")' % path)
 
     def test_public_permission(self):
         for view_name in public_view_names:
