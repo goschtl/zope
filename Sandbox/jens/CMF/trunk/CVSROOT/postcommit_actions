@@ -52,7 +52,13 @@ Currently the actions are:
  - do an rsync of the repository to the public repository host.
 
 ... with settings for the latter two configured in the traffic_table.py
-module."""
+module.
+
+Note that any intervening directories between the CVSROOT and the root of
+the repository project directory will not be created on the mirror by the
+rsync procedure - they must be created somehow else.  Though this can be
+inconvenient, it is beneficial in that it provides a sort of sanity check
+on the target directories."""
 
 import sys, os, tempfile
 import re, string
@@ -81,7 +87,8 @@ WAIT = 0                                # Fork unless waiting is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
-MSGFILENM = ""                            # '--msgfile' option (value of arg)
+SYNCREPO = 0                            # '--syncrepo' option
+MSGFILENM = ""                          # '--msgfile' option (value of arg)
 SCRIPT = "postcommit_actions"           # Changes to args[0], when obtained.
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
@@ -89,7 +96,7 @@ sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, MSGFILENM
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, MSGFILENM, SYNCREPO
 
     orig_args = args[:]
 
@@ -122,9 +129,9 @@ def main(args):
         elif opt == "--msgfile":
             MSGFILENM = val
         elif opt == "--syncrepo":
+            SYNCREPO = 1
             RECURSE = 1
             WAIT = 1
-            VERBOSE = 1
             only_repo = 1
         else:
             complain("Unrecognized option '%s'\n", opt)
@@ -296,7 +303,7 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0):
            + " --delete"                # keep remote directory in sync
            #+ " --compress"              # (more compression context than ssh)
            )
-    if VERBOSE:
+    if VERBOSE or SYNCREPO:
         cmd = cmd + " --verbose"
 
     if not recurse:
