@@ -636,6 +636,16 @@ NoProxy = object()
 #    o a function returning None or a Checker
 #
 _checkers = {}
+
+# Get optimized versions
+try:
+    import zope.security._zope_security_checker
+except ImportError:
+    pass
+else:
+    from zope.security._zope_security_checker import _checkers, selectChecker
+    from zope.security._zope_security_checker import NoProxy
+
 _getChecker = _checkers.get
 
 _defaultChecker = Checker({}.get)
