@@ -12,16 +12,18 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: sql.py,v 1.3 2003/01/23 09:46:28 ryzaja Exp $
 """
-from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
+from zope.proxy.context import ContextMethod
 
 class SQLScriptTest(BrowserView):
     """Edit View for SQL Scripts"""
-    __implements__ = BrowserView.__implements__
+
+    # XXX: if the following line is uncommented, @@test.html stops working
+    # __implements__ = BrowserView.__implements__
     __used_for__ = ISQLScript
 
     error = None
@@ -38,11 +40,14 @@ class SQLScriptTest(BrowserView):
         return arguments
 
     def getTestResults(self):
+        self.context.getConnection()
         try:
             return self.context(**self.getArguments())
-        except DatabaseException, error:
+        except (DatabaseException, AttributeError), error:
             self.error = error
             return []
+
+    getTestResults = ContextMethod(getTestResults)
 
     def getFormattedError(self):
         error = str(self.error)

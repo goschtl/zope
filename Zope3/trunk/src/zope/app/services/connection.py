@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.4 2003/01/17 16:33:13 stevea Exp $
+$Id: connection.py,v 1.5 2003/01/23 09:46:30 ryzaja Exp $
 """
 
 from persistence import Persistent
@@ -22,6 +22,7 @@ from zope.app.interfaces.services.configuration \
         import INameComponentConfigurable
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.interfaces.rdb import IConnectionService
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 
 
 class ILocalConnectionService(IConnectionService, INameComponentConfigurable):
@@ -89,4 +90,7 @@ class ConnectionConfiguration(NamedComponentConfiguration):
     status = ConfigurationStatusProperty('SQLDatabaseConnections')
 
     label = "Connection"
+
+    def getInterface(self):
+        return IZopeDatabaseAdapter
 
