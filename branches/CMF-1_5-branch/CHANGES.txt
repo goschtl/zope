@@ -22,6 +22,11 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFSetup utils: Modified ConfiguratorBase.
+      If the DEFAULT value is used, CONVERTER is no longer called. This makes
+      setting DEFAULT more intuitive. While very unlikely, the change might
+      break existing third party configurators.
+
     - CMFSetup: Reduced probability of profile ID conflicts.
       The first argument of 'registerProfile' is now 'name' instead of
       'profile_id'. The profile ID combines 'name' and 'product'.
