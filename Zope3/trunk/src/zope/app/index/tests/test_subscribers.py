@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_subscribers.py,v 1.3 2003/03/19 18:05:02 stevea Exp $
+$Id: test_subscribers.py,v 1.4 2003/03/20 10:58:32 stevea Exp $
 """
 
 from unittest import makeSuite, main, TestCase
@@ -34,7 +34,7 @@ class TestRegistration(PlacefulSetup, TestCase):
         self.registrar = traverse(default, 'registrar')
         self.hub = getService(self.rootFolder, HubIds)
         self.events = getService(self.rootFolder, EventPublication)
-        
+
     def testSubscribeUnsubscribe(self):
         r = self.registrar
         self.assertEqual(r.isSubscribed(), False)
