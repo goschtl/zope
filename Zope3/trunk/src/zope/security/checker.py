@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.29 2003/06/04 22:25:00 jim Exp $
+$Id: checker.py,v 1.30 2003/06/05 09:47:37 ryzaja Exp $
 """
 
 import os
@@ -330,52 +330,49 @@ class CheckerLoggingMixin:
     """
 
     def check(self, object, name):
-        print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
         try:
             super(CheckerLoggingMixin, self).check(object, name)
             if name in _always_available:
-                print >> sys.stderr, 'Always available.'
+                print >> sys.stderr, '[CHK] + Always available: %s on %r' % (name, object)
             elif self.permission_id(name) is CheckerPublic:
-                print >> sys.stderr, 'Public.'
+                print >> sys.stderr, '[CHK] + Public: %s on %r' % (name, object)
             else:
-                print >> sys.stderr, 'Granted.'
+                print >> sys.stderr, '[CHK] + Granted: %s on %r' % (name, object)
         except Unauthorized:
-            print >> sys.stderr, 'Unauthorized.'
+            print >> sys.stderr, '[CHK] - Unauthorized: %s on %r' % (name, object)
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, 'Forbidden.'
+            print >> sys.stderr, '[CHK] - Forbidden: %s on %r' % (name, object)
             raise
 
     def check_getattr(self, object, name):
-        print >> sys.stderr, ('Checking get %r.%s:' % (object, name)),
         try:
             super(CheckerLoggingMixin, self).check(object, name)
             if name in _always_available:
-                print >> sys.stderr, 'Always available.'
+                print >> sys.stderr, '[CHK] + Always available getattr: %s on %r' % (name, object)
             elif self.permission_id(name) is CheckerPublic:
-                print >> sys.stderr, 'Public.'
+                print >> sys.stderr, '[CHK] + Public getattr: %s on %r' % (name, object)
             else:
-                print >> sys.stderr, 'Granted.'
+                print >> sys.stderr, '[CHK] + Granted getattr: %s on %r' % (name, object)
         except Unauthorized:
-            print >> sys.stderr, 'Unauthorized.'
+            print >> sys.stderr, '[CHK] - Unauthorized getattr: %s on %r' % (name, object)
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, 'Forbidden.'
+            print >> sys.stderr, '[CHK] - Forbidden getattr: %s on %r' % (name, object)
             raise
 
     def check_setattr(self, object, name):
-        print >> sys.stderr, ('Checking set %r.%s:' % (object, name)),
         try:
             super(CheckerLoggingMixin, self).check_setattr(object, name)
             if self.setattr_permission_id(name) is CheckerPublic:
-                print >> sys.stderr, 'Public.'
+                print >> sys.stderr, '[CHK] + Public setattr: %s on %r' % (name, object)
             else:
-                print >> sys.stderr, 'Granted.'
+                print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
         except Unauthorized:
-            print >> sys.stderr, 'Unauthorized.'
+            print >> sys.stderr, '[CHK] - Unauthorized setattr: %s on %r' % (name, object)
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, 'Forbidden.'
+            print >> sys.stderr, '[CHK] - Forbidden setattr: %s on %r' % (name, object)
             raise
 
 if WATCH_CHECKERS:
