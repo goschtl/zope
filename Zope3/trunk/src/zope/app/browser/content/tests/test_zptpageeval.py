@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: test_zptpageeval.py,v 1.7 2003/08/06 14:41:49 srichter Exp $
+$Id: test_zptpageeval.py,v 1.8 2003/09/21 17:30:33 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 from zope.app.browser.content.zpt import ZPTPageEval
-from zope.app.context import ContextWrapper
+from zope.app.container.contained import contained
 
 class Test(CleanUp, TestCase):
 
@@ -48,7 +48,7 @@ class Test(CleanUp, TestCase):
 
         request = Request()
 
-        template = ContextWrapper(Template(), folder)
+        template = contained(Template(), folder)
 
         view = ZPTPageEval()
         # Do manually, since directive adds BrowserView as base class

@@ -13,12 +13,11 @@
 ##############################################################################
 """DTML Page Evaluation Tests
 
-$Id: test_dtmlpageeval.py,v 1.6 2003/08/06 14:41:49 srichter Exp $
+$Id: test_dtmlpageeval.py,v 1.7 2003/09/21 17:30:33 jim Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.app.browser.content.dtmlpageeval import DTMLPageEval
-from zope.app.context import ContextWrapper
-
+from zope.app.container.contained import contained
 class Test(TestCase):
 
     def test(self):
@@ -45,7 +44,7 @@ class Test(TestCase):
                 setattr(self, name, value)
 
         request = Request()
-        template = ContextWrapper(Template(), folder)
+        template = contained(Template(), folder, 'foo')
 
         view = DTMLPageEval()
         # Do manually, since directive adds BrowserView as base class

@@ -14,16 +14,16 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.9 2003/08/12 19:14:56 srichter Exp $
+$Id: test_unauthorized.py,v 1.10 2003/09/21 17:30:34 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.context import ContextWrapper
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
+from zope.app.container.contained import contained
 from zope.interface import implements
 from zope.app.browser.exception.unauthorized import Unauthorized
-
+from zope.app.event.tests.placelesssetup import PlacelessSetup
 
 class Unauthorized(Unauthorized):
     """Unusually done by ZCML."""
@@ -52,7 +52,7 @@ class DummyAuthService:
 class DummyPrincipalSource:
     pass
 
-class Test(TestCase):
+class Test(TestCase, PlacelessSetup):
 
     def test(self):
         exception = Exception()
@@ -62,7 +62,7 @@ class Test(TestCase):
             pass
         request = TestRequest('/')
         authservice = DummyAuthService()
-        request.setUser(ContextWrapper(DummyPrincipal(23), authservice))
+        request.setUser(contained(DummyPrincipal(23), authservice))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 
@@ -82,8 +82,8 @@ class Test(TestCase):
         request = TestRequest('/')
         authservice = DummyAuthService()
         psrc = DummyPrincipalSource()
-        psrc = ContextWrapper(psrc, authservice)
-        request.setUser(ContextWrapper(DummyPrincipal(23), psrc))
+        psrc = contained(psrc, authservice)
+        request.setUser(contained(DummyPrincipal(23), psrc))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 
