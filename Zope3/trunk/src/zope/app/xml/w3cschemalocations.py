@@ -14,7 +14,7 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.3 2003/04/18 22:12:30 jim Exp $
+$Id: w3cschemalocations.py,v 1.4 2003/04/30 20:13:23 jim Exp $
 """
 from zope.interface import directlyProvides
 from xml.parsers.expat import ParserCreate, ExpatError
@@ -41,40 +41,7 @@ def getInterfacesForXMLSchemaLocations(schema_uris):
     return result
 
 def setInstanceInterfaces(ob, interfaces):
-    #XXX this is really a hack. interfacegeddon will hopefully provide a better
-    # way to do this
-    
-    # if there are no interfaces, then we go back to whatever the class
-    # implements
-    if not interfaces:
-        try:
-            del ob.__implements__
-        except AttributeError:
-            pass
-        return
-
-    cls = ob.__class__
-    if isinstance(cls.__implements__, tuple):
-        implements = list(cls.__implements__)
-    else:
-        implements = [cls.__implements__]
-
-    orig_implements = implements[:]
-        
-    for interface in interfaces:
-        if interface not in implements:
-            implements.append(interface)
-
-    # if there are no changes in the interfaces, go back to whatever
-    # the class implements
-    if implements == orig_implements:
-        try:
-            del ob.__implements__
-        except AttributeError:
-            pass
-        return
-
-    directlyProvides(ob, *implements)
+    directlyProvides(ob, *interfaces)
 
 def getW3CXMLSchemaLocations(xml):
     """Give list of URIs of the schema an XML document promises to implement.

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces declarations, forward comptability versions
 
-$Id: declarations.py,v 1.1 2003/04/18 22:12:32 jim Exp $
+$Id: declarations.py,v 1.2 2003/04/30 20:13:23 jim Exp $
 """
 
 import sys
@@ -21,11 +21,49 @@ from types import ClassType
 _ClassTypes = ClassType, type
 del ClassType
 
-def directlyProvides(object, *interfaces):
-    if isinstance(object, _ClassTypes):
-        object.__class_implements__ = interfaces
+def directlyProvides(ob, *interfaces):
+    
+    if isinstance(ob, _ClassTypes):
+        ob.__class_implements__ = interfaces
+        return
+
+
+    #XXX this is really a hack. interfacegeddon will hopefully provide a better
+    # way to do this
+    
+    # if there are no interfaces, then we go back to whatever the class
+    # implements
+    if not interfaces:
+        try:
+            del ob.__implements__
+        except AttributeError:
+            pass
+        return
+
+    cls = ob.__class__
+    implements = getattr(cls, '__implements__', ())
+    if isinstance(implements, tuple):
+        implements = list(implements)
     else:
-        object.__implements__ = interfaces
+        implements = [implements]
+
+    orig_implements = implements[:]
+        
+    for interface in interfaces:
+        if interface not in implements:
+            implements.append(interface)
+
+    # if there are no changes in the interfaces, go back to whatever
+    # the class implements
+    if implements == orig_implements:
+        try:
+            del ob.__implements__
+        except AttributeError:
+            pass
+        return
+
+    ob.__implements__ = tuple(implements)
+
 
 def classProvides(*interfaces):
     f = sys._getframe(1)
