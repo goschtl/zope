@@ -1,8 +1,14 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-<subscriber
-    factory=".observerevent.observerEventNotifier"
-    for="zope.app.event.interfaces.IObjectEvent" 
-    />
+  <adapter
+      for="zope.app.annotation.interfaces.IAnnotatable"
+      provides="zope.app.observable.interfaces.IObservable"
+      factory=".observable.ObservableAdapter"
+      />
+
+  <subscriber
+      factory=".observerevent.observerEventNotifier"
+      for="zope.app.event.interfaces.IObjectEvent" 
+      />
 
 </configure>
