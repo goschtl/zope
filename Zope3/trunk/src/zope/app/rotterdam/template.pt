@@ -44,18 +44,18 @@
       <div id="userDetails">
         <metal:block define-macro="logged_user">
           <span tal:omit-tag="" i18n:translate="">User:</span>
-          <tal:block replace="request/user/title">
+          <tal:block replace="request/principal/title">
             User
           </tal:block>
         </metal:block>
           <a href="" 
             tal:attributes="href string:@@logout.html?nextURL=${request/URL}"
-            tal:condition="python: hasattr(request.user, 'getLogin')"
+            tal:condition="python: hasattr(request.principal, 'getLogin')"
             i18n:translate="">
             [Logout]</a>
           <a href="" 
             tal:attributes="href string:@@login.html?nextURL=${request/URL}"
-            tal:condition="python: not hasattr(request.user, 'getLogin')"
+            tal:condition="python: not hasattr(request.principal, 'getLogin')"
             i18n:translate="">
             [Login]</a>
       </div>

@@ -104,18 +104,18 @@ class ErrorReportingService(Persistent, Contained):
                     url = request.URL
                 try:
                     # XXX: UnauthenticatedPrincipal does not have getLogin()
-                    if hasattr(request.user, 'getLogin'):
-                        login = request.user.getLogin()
+                    if hasattr(request.principal, 'getLogin'):
+                        login = request.principal.getLogin()
                     else:
                         login = 'unauthenticated'
                     username = ', '.join(map(str, (login,
-                                          request.user.id,
-                                          request.user.title,
-                                          request.user.description
+                                          request.principal.id,
+                                          request.principal.title,
+                                          request.principal.description
                                          )))
-                # When there's an unauthorized access, request.user is
+                # When there's an unauthorized access, request.principal is
                 # not set, so we get an AttributeError
-                # XXX is this right? Surely request.user should be set!
+                # XXX is this right? Surely request.principal should be set!
                 # XXX Answer: Catching AttributeError is correct for the
                 #             simple reason that UnauthenticatedUser (which
                 #             I always use during coding), has no 'getLogin()'

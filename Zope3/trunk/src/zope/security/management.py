@@ -11,75 +11,39 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Default 'ISecurityManagement' implementation
+"""Default 'ISecurityManagement' and 'IInteractionManagement' implementation
 
 $Id: management.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
 """
 # Special system user that has all permissions
-# zope.security.manager needs it
+# zope.security.simplepolicies needs it
 system_user = object()
+
+import traceback
 
 from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
-from zope.security.interfaces import ISecurityManagementSetup
-from zope.security.manager import SecurityManager
-from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
-from zope.security.context import SecurityContext
-
-moduleProvides(ISecurityManagement, ISecurityManagementSetup)
-
-try:
-    import thread
-except:
-    get_ident = lambda: 0
-else:
-    get_ident = thread.get_ident
-
-_managers = {}
-
+from zope.security.interfaces import IInteractionManagement
 from zope.testing.cleanup import addCleanUp
-addCleanUp(_managers.clear)
+from zope.thread import thread_globals
 
-#
-#   ISecurityManagementSetup implementation
-#
-def newSecurityManager(user):
-    """Install a new SecurityManager, using user.
+moduleProvides(ISecurityManagement, IInteractionManagement)
 
-    Return the old SecurityManager, if any, or None.
-    """
-    return replaceSecurityManager(SecurityManager(SecurityContext(user)))
 
-def replaceSecurityManager(old_manager):
-    """Replace the SecurityManager with 'old_manager', which must
-    implement ISecurityManager.
-    """
+def _clear():
+    global _defaultPolicy
+    _defaultPolicy = ParanoidSecurityPolicy()
 
-    thread_id = get_ident()
-    old = _managers.get(thread_id, None)
-    _managers[thread_id] = old_manager
-    return old
+addCleanUp(_clear)
 
-def noSecurityManager():
-    """Clear any existing SecurityManager."""
-    try:
-        del _managers[get_ident()]
-    except KeyError:
-        pass
 
 #
 #   ISecurityManagement implementation
 #
-def getSecurityManager():
-    """Get a SecurityManager (create if needed)."""
-    thread_id = get_ident()
-    manager = _managers.get(thread_id, None)
 
-    if manager is None:
-        newSecurityManager(None)
-        manager = _managers.get(thread_id, None)
-
-    return manager
+def getSecurityPolicy():
+    """Get the system default security policy."""
+    return _defaultPolicy
 
 def setSecurityPolicy(aSecurityPolicy):
     """Set the system default security policy, and return the previous
@@ -88,4 +52,47 @@ def setSecurityPolicy(aSecurityPolicy):
     This method should only be called by system startup code.
     It should never, for example, be called during a web request.
     """
-    return _setSecurityPolicy(aSecurityPolicy)
+    global _defaultPolicy
+
+    last, _defaultPolicy = _defaultPolicy, aSecurityPolicy
+
+    return last
+
+
+#
+#   IInteractionManagement implementation
+#
+
+def getInteraction(_thread=None):
+    """Get the current interaction."""
+    return thread_globals(_thread).interaction
+
+def newInteraction(participation=None, _thread=None, _policy=None):
+    """Start a new interaction."""
+    if getInteraction(_thread) is not None:
+        stack = getInteraction(_thread)._newInteraction_called_from
+        raise AssertionError("newInteraction called"
+                             " while another interaction is active:\n%s"
+                             % "".join(traceback.format_list(stack)))
+    interaction = getSecurityPolicy().createInteraction(participation)
+    interaction._newInteraction_called_from = traceback.extract_stack()
+    thread_globals(_thread).interaction = interaction
+
+def endInteraction(_thread=None):
+    """End the current interaction."""
+    if getInteraction(_thread=_thread) is None:
+        raise AssertionError("endInteraction called"
+                             " without an active interaction")
+    thread_globals(_thread).interaction = None
+
+
+def _cleanUp():
+    thread_globals().interaction = None
+
+addCleanUp(_cleanUp)
+
+
+# circular imports are not fun
+
+from zope.security.simplepolicies import ParanoidSecurityPolicy
+_defaultPolicy = ParanoidSecurityPolicy()

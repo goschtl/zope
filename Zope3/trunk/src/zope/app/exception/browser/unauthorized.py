@@ -25,7 +25,7 @@ class Unauthorized(object):
         # Set the error status to 403 (Forbidden) in the case when we don't
         # challenge the user
         self.request.response.setStatus(403)
-        principal = self.request.user
+        principal = self.request.principal
         prinreg = zapi.getParent(principal)
         if not IAuthenticationService.providedBy(prinreg):
             # With PluggableAuthenticationService, principals are

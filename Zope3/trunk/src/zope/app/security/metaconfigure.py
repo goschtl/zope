@@ -19,7 +19,7 @@ from zope.app.component.metaconfigure import utility
 
 from zope.security.checker import moduleChecker, Checker, defineChecker
 from zope.security.checker import CheckerPublic
-from zope.security.manager import setSecurityPolicy
+from zope.security.management import setSecurityPolicy
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.app.security.protectclass import checkPermission

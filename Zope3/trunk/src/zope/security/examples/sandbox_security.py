@@ -29,8 +29,8 @@ secure mode. There are several steps that are taken to set up the security
 $Id: sandbox_security.py,v 1.10 2004/03/05 22:09:33 jim Exp $
 """
 import sandbox
-from zope.security.interfaces import ISecurityPolicy
-from zope.security import checker, management
+from zope.security.interfaces import ISecurityPolicy, IParticipation
+from zope.security import checker, management, simpleinteraction
 from zope.interface import implements
 
 
@@ -81,9 +81,10 @@ class SimulationSecurityPolicy:
 
     implements(ISecurityPolicy)
 
-    def checkPermission(self, permission, object, context):
+    createInteraction = staticmethod(simpleinteraction.createInteraction)
+
+    def checkPermission(self, permission, object, interaction):
         """See zope.security.interfaces.ISecurityPolicy"""
-        token = context.user.getAuthenticationToken()
         home = object.getHome()
         db = getattr(SimulationSecurityDatabase, home.getId(), None)
 
@@ -94,11 +95,30 @@ class SimulationSecurityPolicy:
         if permission in allowed or ALL in allowed:
             return True
 
-        allowed = db.get(token, ())
-        if permission in allowed:
-            return True
+        if interaction is None:
+            return False
+        if not interaction.participations:
+            return False
+        for participation in interaction.participations:
+            token = participation.principal.getAuthenticationToken()
+            allowed = db.get(token, ())
+            if permission not in allowed:
+                return False
 
-        return False
+        return True
+
+
+class AgentParticipation:
+    """Agent Participation during the Simulation.
+
+    A very simple participation that is specific to the simulations.
+    """
+
+    implements(IParticipation)
+
+    def __init__(self, agent):
+        self.principal = agent
+        self.interaction = None
 
 
 def PermissionMapChecker(permissions_map={}, setattr_permission_func=NoSetAttr):
@@ -159,9 +179,14 @@ def wire_security():
     sandbox.Sandbox.addAgent = addAgent
 
     def setupAgent(self, agent):
-        management.newSecurityManager(agent)
+        management.newInteraction(AgentParticipation(agent))
 
     sandbox.TimeGenerator.setupAgent = setupAgent
+
+    def teardownAgent(self, agent):
+        management.endInteraction()
+
+    sandbox.TimeGenerator.teardownAgent = teardownAgent
 
     def GreenerPastures(agent):
         """ where do they want to go today """

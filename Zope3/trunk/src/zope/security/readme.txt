@@ -28,26 +28,17 @@ Zope3 Security
     objects.  Attribute names are mapped onto permission names when
     checking access and the implementation of the security check is
     defined by the security policy, which receives the object, the
-    permission name, and a context.
+    permission name, and an interaction.
 
-    Security contexts are containers of transient information such as
-    the current principal and the context stack.
-
-    To explain the concept and usage of the context stack, a little
-    background into the design influences of the default Zope policy
-    is needed, namely the Java language security model.  Within the
-    base language, code is associated with identifiers. I.e. this code
-    came from "Joe Schmoe", and another code archive comes signed from
-    Verisign.  When executing restricted code, it's important access
-    is checked not only for the code currently executing but for the
-    entire call/context stack (unless explicitly short-circuited).
-    I.e.  if Joe Schmoe's code does haven't access to the filesystem,
-    but if the Verisign code does, Joe's code could circumvent the
-    security policy by accessing the filesystem via the Verisign code.
+    Interactions are objects that represent the use of the system by
+    one or more principals.  An interaction contains a list of
+    participations, which represents the way a single principal
+    participates in the interaction.  An HTTP request is one example
+    of a participation.
 
     Its important to keep in mind that the policy provided is just a
     default, and it can be substituted with one which doesn't care
-    about principals or context stacks at all.
+    about principals or interactions at all.
 
   Framework Components
 
@@ -81,24 +72,23 @@ Zope3 Security
 
       Security Management
 
-        Provides accessors for setting up security manager and global
+        Provides accessors for setting up interactions and global
         security policy.
 
-      Security Context
+      Interaction
 
-        Stores transient information on the current principal and the
-        context stack.
+        Stores transient information on the list of participations.
 
-      Security Manager
+      Participation
 
-        Manages security context (execution stack) and delegates
-        permission checks to security policy.
+        Stores information about a principal participating in the
+        interaction.
 
       Security Policy
 
         Provides a single method that accepts the object, the
-        permission, and the context of the access being checked and is
-        used to implement the application logic for the security
+        permission, and the interaction of the access being checked
+        and is used to implement the application logic for the security
         framework.
 
   Narrative (agent sandbox)
@@ -117,7 +107,7 @@ Zope3 Security
       home to home randomly.
 
       The agent simulation was constructed separately from any
-      security aspects.  now we want to define and integrate a
+      security aspects.  Now we want to define and integrate a
       security model into the simulation.  The full code for the
       simulation and the security model is available separately; we
       present only relevant code snippets here for illustration as we
@@ -162,8 +152,7 @@ Zope3 Security
         proxy wrappers to automatically check security.
 
       - inserting hooks into the original simulation to register the
-        agents as the active principal within a security manager's
-        context....
+        agents as the active principal in an interaction.
 
     Defining Permission Model
 
@@ -226,26 +215,41 @@ Zope3 Security
 
       class SimulationSecurityPolicy:
 
-          __implements__ = ISecurityPolicy
+          implements(ISecurityPolicy)
 
-        def checkPermission(self, permission, object, context):
+          createInteraction = staticmethod(simpleinteraction.createInteraction)
 
-            token = context.user.getAuthenticationToken()
-            home = object.getHome()
-            db = getattr(SimulationSecurityDatabase, home.getId(), None)
+          def checkPermission(self, permission, object, interaction):
 
-            if db is None:
-                return False
+              home = object.getHome()
+              db = getattr(SimulationSecurityDatabase, home.getId(), None)
 
-            allowed = db.get('any', ())
-            if permission in allowed or ALL in allowed:
-                return True
+              if db is None:
+                  return False
 
-            allowed = db.get(token, ())
-            if permission in allowed:
-                return True
+              allowed = db.get('any', ())
+              if permission in allowed or ALL in allowed:
+                  return True
 
-            return False
+              if interaction is None:
+                  return False
+              if not interaction.participations:
+                  return False
+              for participation in interaction.participations:
+                  token = participation.principal.getAuthenticationToken()
+                  allowed = db.get(token, ())
+                  if permission not in allowed:
+                      return False
+
+              return True
+
+      There are no specific requirements for the interaction class, so we
+      can just use zope.security.simpleinteraction.Interaction.
+
+      Since an interaction can have more than one principal, we check that
+      *all* of them are given the necessary permission.  This is not really
+      necessary since we only create interactions with a single active
+      principal.
 
       There is some additional code present to allow for shortcuts in
       defining the permission database when defining permissions for
@@ -271,13 +275,13 @@ Zope3 Security
       create custom security policies at a finer grained than global,
       but such is left as an exercise for the reader.
 
-    Security Manager Access
+    Interaction Access
 
-      The *default* implementation of the security management
-      interfaces defines security managers on a per thread basis with
+      The *default* implementation of the interaction management
+      interfaces defines interactions on a per thread basis with
       a function for an accessor.  This model is not appropriate for
-      all systems, as it restricts one to a single active user per
-      thread at any given moment.  Reimplementing the manager access
+      all systems, as it restricts one to a single active interaction per
+      thread at any given moment.  Reimplementing the interaction access
       methods though is easily doable and is noted here for
       completeness.
 
@@ -315,3 +319,6 @@ Zope3 Security
       Kapil Thangavelu <hazmat at objectrealms.net>
 
       Guido Wesdorp <guido at infrae.com>
+
+      Marius Gedminas <marius at pov.lt>
+

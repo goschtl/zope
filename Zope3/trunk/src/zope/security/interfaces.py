@@ -17,33 +17,12 @@ $Id: interfaces.py,v 1.8 2004/02/20 20:42:12 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 
-class ISecurityManagementSetup(Interface):
-    """Methods to manage the security manager.
-
-    Infrastructure (including tests, etc.) calls these things to
-    tweak the security manager.
-    """
-
-    def newSecurityManager(user):
-        """Install a new SecurityManager, using user.
-
-        Return the old SecurityManager, if any, or None.
-        """
-
-    def replaceSecurityManager(old_manager):
-        """Replace the SecurityManager with old_manager.
-
-        old_manager must implement ISecurityManager.
-        """
-
-    def noSecurityManager():
-        """Clear any existing SecurityManager."""
 
 class ISecurityManagement(Interface):
     """Public security management API."""
 
-    def getSecurityManager():
-        """Get a SecurityManager (create if needed)."""
+    def getSecurityPolicy():
+        """Get the system default security policy."""
 
     def setSecurityPolicy(aSecurityPolicy):
         """Set the system default security policy.
@@ -51,6 +30,22 @@ class ISecurityManagement(Interface):
         This method should only be called by system startup code.  It
         should never, for example, be called during a web request.
         """
+
+
+class ISecurityChecking(Interface):
+    """Public security API."""
+
+    def checkPermission(permission, object, interaction=None):
+        """Return whether security policy allows permission on object.
+
+        Arguments:
+        permission -- A permission name
+        object -- The object being accessed according to the permission
+        interaction -- An interaction, which provides access to information
+            such as authenticated principals.  If it is None, the current
+            interaction is used.
+        """
+
 
 class ISecurityProxyFactory(Interface):
 
@@ -62,56 +57,6 @@ class ISecurityProxyFactory(Interface):
 
         If the object is already a security proxy, then it will be
         returned.
-        """
-
-# XXX This interface has too much Zope application dependence. This
-# needs to be refactored somehow.
-
-class ISecurityManager(Interface):
-    """
-        A security manager provides methods for checking access and managing
-        executable context and policies.
-    """
-
-    def getPrincipal():
-        """Return the authenticated principal.
-
-        This is equivalent to something like::
-        REQUEST['AUTHENTICATED_USER']
-        but is a bit cleaner, especially if 'REQUEST' isn't handy.
-
-        An IPrincipal object wrapped in a context of its
-        AuthenticationService is returned.
-        """
-
-    def checkPermission(permission, object):
-        """Return whether security context allows permission on object.
-
-        Arguments:
-        permission -- A permission name
-        object -- The object being accessed according to the permission
-        """
-
-    def pushExecutable(anExecutableObject):
-        """
-            Push an ExecutableObject onto the manager's stack, and
-            activate its custom security policy, if any.
-        """
-
-    def popExecutable(anExecutableObject):
-        """
-            Pop the topmost ExecutableObject from the stack, deactivating
-            any custom security policy it might have installed.
-        """
-
-    def calledByExecutable():
-        """
-            Return a boolean indicating whether the current request has
-            invoked any IExecutableObjects.
-
-            This can be used to determine if an object was called
-            (more or less) directly from a URL, or if it was called by
-            through-the-web provided code.
         """
 
 
@@ -167,26 +112,62 @@ class INameBasedChecker(IChecker):
 
 class ISecurityPolicy(Interface):
 
-    def checkPermission(permission, object, context):
+    def createInteraction(participation=None):
+        """Creates a new interaction for a given request.
+
+        If participation is not None, it is added to the new interaction.
+
+        XXX perhaps this should be a separate interface IInteractionFactory,
+            and the factory registered by calling
+            ISecurityManagement.global setInteractionFactory(factory).
+        """
+
+    def checkPermission(permission, object, interaction):
         """Return whether security context allows permission on object.
 
         Arguments:
         permission -- A permission name
         object -- The object being accessed according to the permission
-        context -- A SecurityContext, which provides access to information
-            such as the context stack and AUTHENTICATED_USER.
+        interaction -- An interaction, which provides access to information
+            such as authenticated principals.
         """
 
 
-class ISecurityContext(Interface):
-    """Capture transient request-specific security information."""
+class IInteraction(Interface):
+    """A representation of an interaction between some actors and the system.
+    """
 
-    Attribute('stack',
-              'A stack of elements, each either be an ExecutableObject'
-              'or a tuple consisting of an ExecutableObject and a'
-              'custom SecurityPolicy.'
-            )
+    participations = Attribute("""An iterable of participations.""")
 
-    Attribute('user',
-              'The AUTHENTICATED_USER for the request.'
-              )
+    def add(participation):
+        """Add a participation."""
+
+    def remove(participation):
+        """Remove a participation."""
+
+
+class IParticipation(Interface):
+
+    interaction = Attribute("The interaction")
+    principal = Attribute("The authenticated principal")
+
+
+class IInteractionManagement(Interface):
+    """Interaction management API."""
+
+    def newInteraction(participation=None):
+        """Start a new interaction.
+
+        If participation is not None, it is added to the new interaction.
+        """
+
+    def getInteraction():
+        """Return the current interaction.
+
+        Returns None if called outside newInteraction/endInteraction pair.
+        XXX should it raise an exception instead?
+        """
+
+    def endInteraction():
+        """End the current interaction."""
+

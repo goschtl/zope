@@ -38,9 +38,10 @@ from zope.exceptions import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
 from zope.schema import getFields
-from zope.security.management import getSecurityManager
+from zope.security.management import getInteraction
 from zope.security.checker import CheckerPublic, Checker
 from zope.security.proxy import Proxy
+from zope.security import checkPermission
 from zope.tales.engine import Engine
 
 
@@ -224,7 +225,14 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         ctx = {}
         # data should be readonly for condition-evaluation
         ctx['data'] = self.data
-        ctx['principal'] = getSecurityManager().getPrincipal()
+        ctx['principal'] = None
+        interaction = getInteraction()
+        if interaction is not None:
+            principals = [p.principal for p in getInteraction().participations]
+            if principals:
+                # XXX There can be more than one principal
+                assert len(principals) == 1
+                ctx['principal'] = principals[0]
 
         # XXX This needs to be discussed:
         # how can we know if this ProcessInstance is annotated
@@ -273,7 +281,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         return script(contexts)
 
     def _outgoingTransitions(self, clean_pd):
-        sm = getSecurityManager()
         ret = []
         contexts = self._getContext()
 
@@ -281,11 +288,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             if self.status == trans.sourceState:
                 # check permissions
                 permission = trans.permission
-                #
-                if (permission is not None
-                    and permission is not CheckerPublic
-                    and not sm.checkPermission(permission, self)
-                    ):
+                if not checkPermission(permission, self):
                     continue
 
                 ctx = self._extendContext(trans, contexts)

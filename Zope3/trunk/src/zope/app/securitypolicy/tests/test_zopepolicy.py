@@ -17,6 +17,7 @@ $Id: test_zopepolicy.py,v 1.6 2004/03/13 23:55:25 srichter Exp $
 """
 import unittest
 from zope.interface import implements
+from zope.interface.verify import verifyObject
 
 from zope.app import zapi
 from zope.app.annotation.attribute import AttributeAnnotations
@@ -46,9 +47,15 @@ from zope.app.securitypolicy.principalrole \
 from zope.app.securitypolicy.rolepermission \
     import AnnotationRolePermissionManager
 
-class Context:
-    def __init__(self, user, stack=[]):
-        self.user, self.stack = user, stack
+
+class RequestStub:
+    def __init__(self, principal, interaction=None):
+        self.principal = principal
+        self.interaction = interaction
+
+class Interaction:
+    def __init__(self, user):
+        self.participations = [RequestStub(user, self)]
 
 class Unprotected:
     pass
@@ -141,27 +148,43 @@ class Test(PlacefulSetup, unittest.TestCase):
         permissions.sort()
         self.assertEqual(permissions, expected)
 
-
     def testImport(self):
         from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
 
+    def testInterfaces(self):
+        from zope.security.interfaces import ISecurityPolicy
+        from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
+        verifyObject(ISecurityPolicy, ZopeSecurityPolicy())
+
+    def testCreateInteraction(self):
+        from zope.security.interfaces import IInteraction
+        from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
+        i1 = ZopeSecurityPolicy().createInteraction(None)
+        verifyObject(IInteraction, i1)
+        self.assertEquals(list(i1.participations), [])
+
+        user = object()
+        rq = RequestStub(user)
+        i2 = ZopeSecurityPolicy().createInteraction(rq)
+        verifyObject(IInteraction, i2)
+        self.assertEquals(list(i2.participations), [rq])
 
     def testGlobalCheckPermission(self):
         self.failUnless(
-            self.policy.checkPermission(self.read, None, Context(self.jim)))
+            self.policy.checkPermission(self.read, None, Interaction(self.jim)))
         self.failUnless(
-            self.policy.checkPermission(self.read, None, Context(self.tim)))
+            self.policy.checkPermission(self.read, None, Interaction(self.tim)))
         self.failUnless(
-            self.policy.checkPermission(self.write, None, Context(self.tim)))
+            self.policy.checkPermission(self.write, None, Interaction(self.tim)))
 
         self.failIf(self.policy.checkPermission(
-            self.read, None, Context(self.unknown)))
+            self.read, None, Interaction(self.unknown)))
         self.failIf(self.policy.checkPermission(
-            self.write, None, Context(self.unknown)))
+            self.write, None, Interaction(self.unknown)))
 
         self.failIf(
             self.policy.checkPermission(
-            self.read, None, Context(self.unknown)))
+            self.read, None, Interaction(self.unknown)))
 
         self.__assertPermissions(self.jim, ['create', 'read'])
         self.__assertPermissions(self.tim, ['read', 'write'])
@@ -172,28 +195,28 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.failUnless(
             self.policy.checkPermission(
-            self.read, None, Context(self.unknown)))
+            self.read, None, Interaction(self.unknown)))
 
         self.__assertPermissions(self.unknown, ['read'])
 
         principalPermissionManager.grantPermissionToPrincipal(
             self.write, self.jim.id)
         self.failUnless(
-            self.policy.checkPermission(self.write, None, Context(self.jim)))
+            self.policy.checkPermission(self.write, None, Interaction(self.jim)))
 
         self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
     def testPlaylessPrincipalRole(self):
         self.failIf(self.policy.checkPermission(
-            self.write, None, Context(self.jim)))
+            self.write, None, Interaction(self.jim)))
         principalRoleManager.assignRoleToPrincipal(
             self.manager, self.jim.id)
         self.failUnless(self.policy.checkPermission(
-            self.write, None, Context(self.jim)))
+            self.write, None, Interaction(self.jim)))
         principalRoleManager.removeRoleFromPrincipal(
             self.manager, self.jim.id)
         self.failIf(self.policy.checkPermission(
-            self.write, None, Context(self.jim)))
+            self.write, None, Interaction(self.jim)))
 
     def testPlayfulPrincipalRole(self):
         ztapi.provideAdapter(
@@ -205,15 +228,15 @@ class Test(PlacefulSetup, unittest.TestCase):
         ob3 = TestClass(); ob3.__parent__ = ob2
 
         self.failIf(self.policy.checkPermission(
-            self.write, ob3, Context(self.jim)))
+            self.write, ob3, Interaction(self.jim)))
         AnnotationPrincipalRoleManager(ob3).assignRoleToPrincipal(
             self.manager, self.jim.id)
         self.failUnless(self.policy.checkPermission(
-            self.write, ob3, Context(self.jim)))
+            self.write, ob3, Interaction(self.jim)))
         AnnotationPrincipalRoleManager(ob3).removeRoleFromPrincipal(
             self.manager, self.jim.id)
         self.failIf(self.policy.checkPermission(
-            self.write, ob3, Context(self.jim)))
+            self.write, ob3, Interaction(self.jim)))
 
     def testPlayfulRolePermissions(self):
 
@@ -227,21 +250,21 @@ class Test(PlacefulSetup, unittest.TestCase):
         ob2 = TestClass(); ob2.__parent__ = ob1
         ob3 = TestClass(); ob3.__parent__ = ob2
 
-        self.failIf(self.policy.checkPermission(test, ob3, Context(self.tim)))
+        self.failIf(self.policy.checkPermission(test, ob3, Interaction(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'write'], ob3)
 
         ARPM(ob2).grantPermissionToRole(test, self.manager)
         self.failUnless(self.policy.checkPermission(test, ob3,
-                                                    Context(self.tim)))
+                                                    Interaction(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'test', 'write'], ob3)
 
-        self.failIf(self.policy.checkPermission(test, ob3, Context(self.jim)))
+        self.failIf(self.policy.checkPermission(test, ob3, Interaction(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read'], ob3)
 
 
         ARPM(ob3).grantPermissionToRole(test, self.peon)
         self.failUnless(self.policy.checkPermission(
-            test, ob3, Context(self.jim)))
+            test, ob3, Interaction(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read', 'test'], ob3)
 
 
@@ -249,7 +272,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalPermissionManager.denyPermissionToPrincipal(
             test, self.jim.id)
         self.failIf(self.policy.checkPermission(
-            test, ob3, Context(self.jim)))
+            test, ob3, Interaction(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read'], ob3)
 
         principalPermissionManager.unsetPermissionForPrincipal(
@@ -263,11 +286,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         new = principalRegistry.definePrincipal('new', 'Newbie',
                                                 'Newbie User', 'new', '098')
         principalRoleManager.assignRoleToPrincipal(self.arole, new.id)
-        self.failUnless(self.policy.checkPermission(test, ob3, Context(new)))
+        self.failUnless(self.policy.checkPermission(test, ob3, Interaction(new)))
         self.__assertPermissions(new, ['test'], ob3)
 
         principalRoleManager.assignRoleToPrincipal(self.peon, new.id)
-        self.failIf(self.policy.checkPermission(test, ob3, Context(new)))
+        self.failIf(self.policy.checkPermission(test, ob3, Interaction(new)))
         self.__assertPermissions(new, ['read'], ob3)
 
     def testPlayfulPrinciplePermissions(self):
@@ -281,30 +304,30 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         test = definePermission('test', 'Test', '').id
 
-        self.failIf(self.policy.checkPermission(test, ob3, Context(self.tim)))
+        self.failIf(self.policy.checkPermission(test, ob3, Interaction(self.tim)))
 
         self.__assertPermissions(self.tim, ['read', 'write'], ob3)
 
         APPM(ob2).grantPermissionToPrincipal(test, self.tim.id)
         self.failUnless(self.policy.checkPermission(
-            test, ob3, Context(self.tim)))
+            test, ob3, Interaction(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'test', 'write'], ob3)
 
         APPM(ob3).denyPermissionToPrincipal(test, self.tim.id)
         self.failIf(self.policy.checkPermission(
-            test, ob3, Context(self.tim)))
+            test, ob3, Interaction(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'write'], ob3)
 
         APPM(ob1).denyPermissionToPrincipal(test, self.jim.id)
         APPM(ob3).grantPermissionToPrincipal(test, self.jim.id)
         self.failUnless(self.policy.checkPermission(
-            test, ob3, Context(self.jim)))
+            test, ob3, Interaction(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read', 'test'], ob3)
 
 
         APPM(ob3).unsetPermissionForPrincipal(test, self.jim.id)
         self.failIf(self.policy.checkPermission(
-            test, ob3, Context(self.jim)))
+            test, ob3, Interaction(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read'], ob3)
 
         # make sure placeless principal permissions override placeful ones
@@ -312,7 +335,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalPermissionManager.denyPermissionToPrincipal(
             test, self.tim.id)
         self.failIf(self.policy.checkPermission(
-            test, ob3, Context(self.tim)))
+            test, ob3, Interaction(self.tim)))
 
         self.__assertPermissions(self.tim, ['read', 'write'], ob3)
 

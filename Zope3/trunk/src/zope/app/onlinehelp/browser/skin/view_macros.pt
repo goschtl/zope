@@ -25,7 +25,7 @@
   <div metal:define-macro="logged_user">
     <p i18n:translate="">
       User: 
-      <span tal:replace="request/user/title" 
+      <span tal:replace="request/principal/title" 
             i18n:name="user_title">User</span>
     </p>
   </div>
