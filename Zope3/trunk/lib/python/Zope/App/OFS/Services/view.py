@@ -14,11 +14,10 @@
 """View Service
 
 
-$Id: view.py,v 1.2 2002/12/19 20:38:21 jim Exp $
+$Id: view.py,v 1.3 2002/12/21 19:58:26 stevea Exp $
 """
 __metaclass__ = type
 
-from Interface.Registry.AdapterRegistry import AdapterRegistry
 from Persistence import Persistent
 from Persistence.PersistentDict import PersistentDict
 from Zope.ComponentArchitecture.IViewService import IViewService
