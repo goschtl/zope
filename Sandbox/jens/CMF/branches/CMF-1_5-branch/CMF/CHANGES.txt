@@ -15,6 +15,9 @@ After CMF-1.5.1beta
       costly method on the user folder.
       (http://zope.org/Collectors/CMF/300)
 
+    - CMFCatalogAware: When reindexing security, all subobjects must be
+      reindexed even if they are not visible by the current user.
+
 CMF 1.5.1beta (2005/03/24)
 
   New Features
