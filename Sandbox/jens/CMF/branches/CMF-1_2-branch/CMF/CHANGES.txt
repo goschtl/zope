@@ -17,6 +17,9 @@
 
  Bugs Fixed
 
+  - Fixed setting the Link.format to URL_FORMAT so the initially returned
+    metadata headers would return 'text/url' properly.  Added unittests.
+
   - Fixed CMFDefault.utils.parseHeadersBody to properly handle the headers
     generated on a windows app (i.e. Dreamweaver) with /r/n; added the
     compiled regular expression object to the method signature.
