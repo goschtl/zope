@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import re, cgi
 import traceback
-from xml.sax.saxutils import quoteattr
+from xml.sax.saxutils import quoteattr, escape
 
 from zope.interface import implements
 from zope.schema.interfaces import ValidationError
@@ -401,9 +401,9 @@ class DisplayWidget(BrowserWidget):
 
     def __call__(self):
         if self._renderedValueSet():
-            return self._data
+            return escape(self._data)
         else:
-            return self.context.default
+            return escape(self.context.default)
 
 
 def renderTag(tag, **kw):
