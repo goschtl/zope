@@ -249,6 +249,14 @@ class WorkflowData(persistent.Persistent):
     """Container for workflow-relevant and application-relevant data
     """
 
+    # XXX need tests for next 2 methods
+
+    def __getitem__(self, name):
+        return self.__dict__[name]
+
+    def get(self, name):
+        return self.dict.get(name)
+
 class ProcessStarted:
     interface.implements(interfaces.IProcessStarted)
 
