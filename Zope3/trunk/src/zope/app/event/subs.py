@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.17 2003/06/08 16:22:03 stevea Exp $
+$Id: subs.py,v 1.18 2003/06/30 19:52:31 jeremy Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -303,9 +303,9 @@ class Subscribable(Persistent):
                 "resubscribeByHubId for an object that doesn't exist: %s" %
                 reference)
 
-        num_converted = self._resubscribe(path, clean_self._paths,
-                                          hubId, clean_self._hubIds)
-        resubscribeByHubId = ContextMethod(resubscribeByHubId)
+        self._resubscribe(path, clean_self._paths, hubId, clean_self._hubIds)
+        
+    resubscribeByHubId = ContextMethod(resubscribeByHubId)
 
     def resubscribeByPath(wrapped_self, reference):
         clean_self = removeAllProxies(wrapped_self)
