@@ -1,50 +1,172 @@
 Zope Road Map
 
-  This file lists features planned for future releases. It is roughly
+  This file lists features or tasks planned for future releases. It is roughly
   the compliment of CHANGES.txt. Over time, entries from this file
   will migrate to CHANGES.txt and then to HISTORY.txt.
 
-  Zope X3.0.0 Milestone release 3
+  Zope X3 1.0
 
-    The third milestone release will probably happen around mid-May
-    2003.  We may skip this release and have an alpha around the
-    beginning of June instead.
+    Foundational work
 
-    The goals of the second alpha release release are to:
+      - ZODB 3.3 in Zope 3
 
-    - Evolve the Zope 3 UI.
+        See: http://zope.org/Wikis/ZODB/PersistentCodeImplementationPlan
 
-    - Flesh out through the web development and configuration.
+      - Persistent interfaces
 
-    - Provide a relatively firm foundation for beginner Zope 3
-      developers who want to start building Zope 3 products or to
-      contribute to development.
+        These were broken (I think) by recent interface and adapter
+        refactoring.
 
-    - Provide support for web "scriptors", who are creators of active
-      content.
+      - Redo event service
 
-    - Provide wider exposure of Zope 3.
+        o Simplify publication/registration framework
 
-    - Solicit input on features, current and missing.
+        o Subscribe directly, rather than by path
+
+      - Maybe: http://dev.zope.org/Zope3/FixedDefaultComponentLookup
+
+        This is extremely controversial
 
 
-    New Features
+      - Partial adapters
 
-      - A number of new services will be included:
+        http://dev.zope.org/Zope3/PartialAdapters
 
-        - A flexible and pluggable authentication service.
+      - Fix up presentation-component franeworks to use presentation
+        components registered by interface.
 
-        - Interface service, for browsing and changing configuration
-          by interface.  This will include focused browsing and
-          configuration of "content types".
+      - Revisit and, to degree necessary, implement:
 
-      - A file-system synchronization system.  Initially, this will
-        use a CVS-like command-line tool.  It allows objects to be checked out
-        of Zope to the file system, modified and then checked back
-        in. Objects can be added on the file systems and changes made
-        in the database and on the file-system can be merged.
+        http://dev.zope.org/Zope3/TTWDevelopmentScopeForZopeX310
 
-      - ...
+        I think we probably need to scale back out expectations for the code
+        to:
+
+        - Persistent modules
+
+        - Local browser menus
+
+        - Views
+
+        - Adapters
+
+        - Management of database-based services and utilities.
+
+        - File-system sync
+
+        Configuration browsing and management.
+
+        IOW, clean up what we already have.
+
+        We probably need to defer:
+
+        - Bundles
+
+        - New content types
+
+        - Local factories
+
+        Current efforts could continue to be pursued as add-on items.
+
+      - Redo object hub
+
+      - Minor refactoring of security context
+
+        http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
+
+      - Redo menu service
+
+        http://dev.zope.org/Zope3/AdaptersForMenuItems
+        http://dev.zope.org/Zope3/PartialAdapters
+
+      - Maybe rethink annotations (maybe not ;)
+
+      - Finish persistent-module refactoring
+
+        http://dev.zope.org/Zope3/ModulesAreGlobal
+
+      - Minor refactoring of adapter service to make it fast to find 
+        all names for adapters from/to a given interface
+
+      - Redo utility service
+
+      - Restructure registration framework to use direct references rather
+        than paths.
+
+      - Finish location-relevent event work to handle
+
+        Specifically, handling events on containers.  
+
+        See:
+         http://dev.zope.org/Zope3/LocationRelatedEvents
+
+      - Finish http://dev.zope.org/Zope3/ComponentArchitectureSimplification
+
+        What remains is the section "Utilities everywhere".
+
+        - Language negotiation
+
+        - Translation (?)  Note that if these were utilities, you could
+          have independent utilities prt domain
+
+        - Caching (Naveen is working on this)
+
+        - SQL Database connections (Mostly done, but Madhavi and Mohan
+          working on new UI).
+
+        - DAV schema
+
+        - Interface (Murthy and Suresh are working on these)
+
+        - Vocabularies (warn Gary and Casey :)
+
+        - Roles
+
+        - Permissions
+
+        - Session data managers
+
+        - Workflow definitions
+
+        - Rendered source types
+
+        - Interpreter types
+
+        - Mail
+
+        - HubIDs
+
+        We need to think about the UI for managing these.  For example, a
+        site manager is likely to want to "Manage Database
+        Connections". They probably don't want to think of these in terms of
+        utilities.
+
+      - Maybe redo form machinery
+
+        The existing form implementation is neither as clean or as flexible
+        as it should be, but it might be OK for the first release.
+
+      - Finish DAV?
+
+      - Finish/cleanup XML-RPC (?)
+
+      - Clean up zope.app by moving many things out
+
+    Scriptor support
+
+      What do we need for 1.0?  
+
+      I think we need to at least port (or reimplement) Evan's ZPT
+      adapter work.
+
+    Finishing
+
+      - Fix bugs 
+
+      - Fix UI
+
+      - Provide Zope-2 style installation, configuration and process
+        management.
 
   Later releases
 
