@@ -33,4 +33,12 @@ Generally, startup code that expects the root object and site to have
 been created will want to subscribe to this event, not
 IDataBaseOpenedEvent.
 
+The subscriber generates the event whether or not the root had to be
+set up:
+
+    >>> bootstrap.bootStrapSubscriber(interfaces.DatabaseOpened(db))
+    >>> [e, event] = getEvents(interfaces.IDatabaseOpenedWithRootEvent)
+    >>> event.database is db
+    True
+
 
