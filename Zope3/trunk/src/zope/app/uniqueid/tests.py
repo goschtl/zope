@@ -104,11 +104,26 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         result.sort()
         expected.sort()
         self.assertEquals(result, expected)
-        
+
         u.unregister(obj)
         u.unregister(obj2)
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
+
+    def test_getenrateId(self):
+        from zope.app.uniqueid import UniqueIdUtility
+
+        u = UniqueIdUtility()
+        self.assertEquals(u._v_nextid, None)
+        id1 = u._generateId()
+        self.assert_(u._v_nextid is not None)
+        id2 = u._generateId()
+        self.assert_(id1 + 1, id2)
+        u.refs[id2 + 1] = "Taken"
+        id3 = u._generateId()
+        self.assertNotEqual(id3, id2 + 1)
+        self.assertNotEqual(id3, id2)
+        self.assertNotEqual(id3, id1)
 
 
 class TestReferenceToPersistent(ReferenceSetupMixin, unittest.TestCase):

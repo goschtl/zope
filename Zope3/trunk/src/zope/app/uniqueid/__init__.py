@@ -41,6 +41,8 @@ class UniqueIdUtility:
     __parent__ = None
     __name__ = None
 
+    _v_nextid = None
+
     def __init__(self):
         self.ids = OIBTree.OIBTree()
         self.refs = IOBTree.IOBTree()
@@ -59,10 +61,20 @@ class UniqueIdUtility:
         return self.ids[ref]
 
     def _generateId(self):
+        """Generate an id which is not yet taken.
+
+        This tries to allocate sequential ids so they fall into the
+        same BTree bucket, and randomizes if it stumbles upon a
+        used one.
+        """
         while True:
-            uid = random.randint(0, 2**31)
+            if self._v_nextid is None:
+                self._v_nextid = random.randint(0, 2**31)
+            uid = self._v_nextid
+            self._v_nextid += 1
             if uid not in self.refs:
                 return uid
+            self._v_nextid = None
 
     def register(self, ob):
         ob = trustedRemoveSecurityProxy(ob)
