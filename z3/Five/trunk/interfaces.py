@@ -1156,7 +1156,7 @@ class IOrderedContainer(Interface):
 class IOrderedFolder(IOrderedContainer, IFolder):
     """Ordered folder"""
 
-class Application(IFolder, IFindSupport):
+class IApplication(IFolder, IFindSupport):
     """Top-level system object"""
 
     isTopLevelPrincipiaApplicationObject = Bool(
