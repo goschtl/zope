@@ -552,6 +552,10 @@ class TrackRefs:
         type2all = {}
         for o in obs:
             all = sys.getrefcount(o)
+
+            if type(o) is str and o == '<dummy key>':
+                # avoid dictionary madness
+                continue
             t = type(o)
             if t in type2count:
                 type2count[t] += 1
@@ -566,8 +570,12 @@ class TrackRefs:
               for t in type2count.iterkeys()]
         ct.sort()
         ct.reverse()
+        printed = False
         for delta1, delta2, t in ct:
             if delta1 or delta2:
+                if not printed:
+                    print "%-55s %8s %8s" % ('', 'insts', 'refs')
+                    printed = True
                 print "%-55s %8d %8d" % (t, delta1, delta2)
 
         self.type2count = type2count
