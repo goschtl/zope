@@ -57,37 +57,6 @@ class IntrospectorView(BrowserView):
                     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
     def getServicesFor(self):
-        services = []
-        #sm = getServices()
-        #for stype, interface in sm.getServiceDefinitions():
-        #    try:
-        #        service = getService(self.context, stype)
-        #    except ComponentLookupError:
-        #        pass
-        #    else:
-        #        # XXX IConfigureFor appears to have disappeared at some point
-        #        adapter = IConfigureFor(service, None)
-        #        if (adapter is not None
-        #            and adapter.hasRegistrationFor(self.context)):
-        #            search_result = service.getRegisteredMatching(
-        #                self.context, None, [], self.context)
-        #            directive_path = []
-        #            if search_result:
-        #                for eachitem in search_result:
-        #                    dir_list = eachitem['directives']
-        #                    component_path = eachitem['component_path']
-        #                    for item in dir_list:
-        #                        directives = item[2]
-        #                        if directives:
-        #                            if directives[0] is None:
-        #                                directives = directives[1:]
-        #                            for directive in directives:
-        #                                for component in component_path:
-        #                                    if component['component'] == directive:
-        #                                        directive_path.append(component['path'])
-        #            services.append({
-        #                'type': stype,
-        #                'service': service,
-        #                'path': directive_path
-        #                })
-        return services
+        # TODO: Needs implementation. However, the API doc tool does this
+        # already. 
+        return []
