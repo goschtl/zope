@@ -15,7 +15,7 @@
 
 This acts as a global (placeless) service.
 
-$Id: fsregistry.py,v 1.4 2003/06/06 19:29:02 stevea Exp $
+$Id: fsregistry.py,v 1.5 2004/01/15 19:47:14 fdrake Exp $
 """
 
 from zope.app.interfaces.fssync import IGlobalFSSyncService
@@ -55,7 +55,7 @@ class FSRegistry(object):
     def provideSynchronizer(self,class_, factory):
         """Set class_, factory into the dictionary."""
         if class_ in self._class_factory_reg:
-            raise  DuplicationError
+            raise DuplicationError
         else:
             self._class_factory_reg[class_] = factory
 
