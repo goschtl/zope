@@ -37,7 +37,9 @@ class Principals(BrowserView):
         context = self.context
         request = self.request
         try:
+            print "START Principals getPrincipals"
             principals = self.context.getPrincipals()
+            print "END Principals getPrincipals"
         except :
             principals = []
             self.error = _("Error, No LDAP server or connection found")

@@ -5,7 +5,7 @@
     i18n_domain="ldapauth"
     >
 
-    <content class=".LDAPPrincipalSource">
+    <content class="ldapauth.source.LDAPPrincipalSource">
 
         <factory
             id="ldapauth.source.LDAPPrincipalSource" />

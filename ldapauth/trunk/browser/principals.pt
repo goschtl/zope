@@ -12,7 +12,7 @@
       <tbody>
         <tr tal:repeat="principal view/getPrincipals" >
           <td>
-					  <span tal:content="python:principal.getLogin()">login</span>
+					  <!--<span tal:content="python:principal.getLogin()">login</span>-->
           </td>
         </tr>
       </tbody>
