@@ -13,33 +13,31 @@
 ##############################################################################
 """
 
-$Id: proxy.py,v 1.5 2003/05/20 20:28:50 jim Exp $
+$Id: proxy.py,v 1.6 2003/05/28 12:55:28 stevea Exp $
 """
 
 from zope.security._proxy import getObject, getChecker
 from zope.security._proxy import _Proxy as Proxy
-from zope.security.checker import Checker as _trustedChecker
+from zope.security.checker import TrustedCheckerBase
 
 # This import represents part of the API for this module
 from zope.security.checker import ProxyFactory
 
 def trustedRemoveSecurityProxy(object):
-    """Remove a security proxy if the proxy's checker came from a trusted source.
+    """Remove a security proxy if its checker came from a trusted source.
 
-    The rational is that it's OK to do this since the caller is
-    trusted and the proxy can always be recreated by callingt the
+    The rationale is that it is OK to do this since the caller is
+    trusted and the proxy can always be recreated by calling the
     proxy factory and getting back a proxy with the same checker.
 
     XXX More thought needs to be given to assuring this contact.
-    
     """
     if ((type(object) is Proxy) and
-        isinstance(getChecker(object), _trustedChecker)
+        isinstance(getChecker(object), TrustedCheckerBase)
         ):
         return getObject(object)
 
     return object
-
 
 def getTestProxyItems(proxy):
     """Try to get checker names and permissions for testing

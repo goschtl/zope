@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.23 2003/05/22 19:40:32 jim Exp $
+$Id: checker.py,v 1.24 2003/05/28 12:55:28 stevea Exp $
 """
 
 import os
@@ -20,7 +20,7 @@ import sys
 import types
 import datetime
 
-from zope.interface import directlyProvides, Interface
+from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IInterfaceSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ProvidesSpecification
@@ -30,9 +30,10 @@ from zope.interface.declarations import InterfaceSpecification
 from zope.security.interfaces import IChecker
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityManager
-from zope.security._proxy import _Proxy as Proxy
-from zope.exceptions \
-     import Unauthorized, ForbiddenAttribute, DuplicationError
+from zope.security._proxy import _Proxy as Proxy, getChecker
+from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
+
+__metaclass__ = type
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = True
@@ -45,29 +46,36 @@ def ProxyFactory(object, checker=None):
 
     The proxy checker is looked up if not provided.
     """
-
+    if type(object) is Proxy:
+        if checker is None or checker is getChecker(object):
+            return object
+        else:
+            # We have a proxy, but someone asked us to change its checker.
+            # Let's raise an exception.
+            #
+            # Other reasonable actions would be to either keep the existing
+            # proxy, or to create a new one with the given checker.
+            # The latter might be a security hole though, if untrusted code
+            # can call ProxyFactory.
+            raise TypeError("Tried to use ProxyFactory to change a Proxy's"
+                            " checker.")
     if checker is None:
         checker = getattr(object, '__Security_checker__', None)
 
-    if checker is None:
-
-        checker = selectChecker(object)
         if checker is None:
-            return object
-
-    else:
-        # Maybe someone passed us a proxy and a checker
-        if type(object) is Proxy:
-            # XXX should we keep the existing proxy or create a new one.
-            return object
+            checker = selectChecker(object)
+            if checker is None:
+                return object
 
     return Proxy(object, checker)
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
-class Checker:
+class TrustedCheckerBase:
+    """Marker type used by zope.security.proxy.trustedRemoveSecurityProxy"""
 
-    __implements__ =  IChecker
+class Checker(TrustedCheckerBase):
+    implements(IChecker)
 
     def __init__(self, permission_func,
                  setattr_permission_func=lambda name: None
@@ -117,29 +125,16 @@ class Checker:
     def check_setattr(self, object, name):
         'See IChecker'
 
-        if WATCH_CHECKERS:
-            print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
-
-        # We have the information we need already
         permission = self._setattr_permission_func(name)
-        if permission:
+        if permission is not None:
             if permission is CheckerPublic:
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Public.'
                 return # Public
             manager = getSecurityManager()
             if manager.checkPermission(permission, object):
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Granted.'
                 return
             else:
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Unauthorized.'
                 __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name)
-
-        if WATCH_CHECKERS:
-            print >> sys.stderr, 'Forbidden.'
 
         __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute(name)
@@ -147,33 +142,18 @@ class Checker:
     def check(self, object, name):
         'See IChecker'
 
-        if WATCH_CHECKERS:
-            print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
-
-        # We have the information we need already
         permission = self._permission_func(name)
-        if permission:
+        if permission is not None:
             if permission is CheckerPublic:
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Public.'
                 return # Public
             manager = getSecurityManager()
             if manager.checkPermission(permission, object):
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Granted.'
                 return
             else:
-                if WATCH_CHECKERS:
-                    print >> sys.stderr, 'Unauthorized.'
                 __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name)
         elif name in _always_available:
-            if WATCH_CHECKERS:
-                print >> sys.stderr, 'Always available.'
             return
-
-        if WATCH_CHECKERS:
-            print >> sys.stderr, 'Forbidden.'
 
         __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute(name)
@@ -189,6 +169,70 @@ class Checker:
                 return value
 
         return Proxy(value, checker)
+
+class CheckerLoggingMixin:
+    """Debugging mixin for Checker.
+
+    Prints verbose debugging information about every performed check to
+    sys.stderr.
+
+    This class relies on the class it's mixed into having permission_id
+    and setattr_permission_id methods.
+    """
+
+    def check(self, object, name):
+        print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
+        try:
+            super(CheckerLoggingMixin, self).check(object, name)
+            if name in _always_available:
+                print >> sys.stderr, 'Always available.'
+            elif self.permission_id(name) is CheckerPublic:
+                print >> sys.stderr, 'Public.'
+            else:
+                print >> sys.stderr, 'Granted.'
+        except Unauthorized:
+            print >> sys.stderr, 'Unauthorized.'
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, 'Forbidden.'
+            raise
+
+    def check_getattr(self, object, name):
+        print >> sys.stderr, ('Checking get %r.%s:' % (object, name)),
+        try:
+            super(CheckerLoggingMixin, self).check(object, name)
+            if name in _always_available:
+                print >> sys.stderr, 'Always available.'
+            elif self.permission_id(name) is CheckerPublic:
+                print >> sys.stderr, 'Public.'
+            else:
+                print >> sys.stderr, 'Granted.'
+        except Unauthorized:
+            print >> sys.stderr, 'Unauthorized.'
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, 'Forbidden.'
+            raise
+
+    def check_setattr(self, object, name):
+        print >> sys.stderr, ('Checking set %r.%s:' % (object, name)),
+        try:
+            super(CheckerLoggingMixin, self).check_setattr(object, name)
+            if self.setattr_permission_id(name) is CheckerPublic:
+                print >> sys.stderr, 'Public.'
+            else:
+                print >> sys.stderr, 'Granted.'
+        except Unauthorized:
+            print >> sys.stderr, 'Unauthorized.'
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, 'Forbidden.'
+            raise
+
+if WATCH_CHECKERS:
+    class Checker(CheckerLoggingMixin, Checker):
+        pass
+
 
 # Helper class for __traceback_supplement__
 class TracebackSupplement:
@@ -397,7 +441,9 @@ def _moduleChecker(module):
     return _checkers.get(module, _typeChecker)
 
 
-
+# The variable '_always_available' should really be called
+# '_available_by_default', as that would better reflect its meaning.
+# XXX: Fix the name.
 _always_available = ['__lt__', '__le__', '__eq__',
                      '__gt__', '__ge__', '__ne__',
                      '__hash__', '__nonzero__',
@@ -426,6 +472,23 @@ BasicTypes = {
     datetime.date: NoProxy,
     datetime.time: NoProxy,
 }
+# Available for tests. Located here so it can be kept in sync with BasicTypes.
+BasicTypes_examples = {
+    object: object(),
+    int: 65536,
+    float: -1.4142,
+    long: 65536l,
+    complex: -1.4142j,
+    types.NoneType: None,
+    str: 'abc',
+    unicode: u'uabc',
+    type(True): True,
+    datetime.timedelta: datetime.timedelta(3),
+    datetime.datetime: datetime.datetime(2003, 1, 1),
+    datetime.date: datetime.date(2003, 1, 1),
+    datetime.time: datetime.time(23, 58)
+}
+
 
 class _Sequence(object):
     def __len__(self): return 0

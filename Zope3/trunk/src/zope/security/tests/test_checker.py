@@ -14,30 +14,51 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.7 2003/04/23 18:18:02 stevea Exp $
+$Id: test_checker.py,v 1.8 2003/05/28 12:55:29 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.interface import implements
+from zope.interface.verify import verifyObject
 from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
-from zope.exceptions import Forbidden, Unauthorized
+from zope.exceptions import Forbidden, Unauthorized, ForbiddenAttribute
 from zope.security.management import setSecurityPolicy
 from zope.security.proxy import getChecker, getObject
 from zope.security.checker import defineChecker, ProxyFactory
+from zope.security.proxy import Proxy
 import types, pickle
+
+__metaclass__ = type
 
 class SecurityPolicy:
 
-    __implements__ =  ISecurityPolicy
+    implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
         'See ISecurityPolicy'
 
         return permission == 'test_allowed'
 
+class RecordedSecurityPolicy:
 
-class TransparentProxy(object):
+    implements(ISecurityPolicy)
+
+    def __init__(self):
+        self._checked = []
+
+    def checkPermission(self, permission, object, context):
+        'See ISecurityPolicy'
+        self._checked.append(permission)
+        return True
+
+    def checkChecked(self, checked):
+        res = self._checked == checked
+        self._checked = []
+        return res
+
+class TransparentProxy:
     def __init__(self, ob):
         self._ob = ob
 
@@ -46,6 +67,9 @@ class TransparentProxy(object):
         return getattr(ob, name)
 
 class OldInst:
+
+    __metaclass__ = types.ClassType
+
     a=1
 
     def b(self):
@@ -62,9 +86,13 @@ class OldInst:
 
 class NewInst(object, OldInst):
 
+    # This is not needed, but left in to show the change of metaclass
+    # __metaclass__ = type
+
     def gete(self): return 3
     def sete(self, v): pass
     e = property(gete, sete)
+
 
 class Test(TestCase, CleanUp):
 
@@ -103,8 +131,7 @@ class Test(TestCase, CleanUp):
         newinst.d = NewInst()
 
         for inst in oldinst, newinst:
-            checker = NamesChecker(['a', 'b', 'c', '__getitem__'],
-                                   'perm')
+            checker = NamesChecker(['a', 'b', 'c', '__getitem__'], 'perm')
 
             self.assertRaises(Unauthorized, checker.check_getattr, inst, 'a')
             self.assertRaises(Unauthorized, checker.check_getattr, inst, 'b')
@@ -176,12 +203,10 @@ class Test(TestCase, CleanUp):
     def test_proxy(self):
         checker = NamesChecker(())
 
-
-        for rock in (1, 1.0, 1l, 1j,
-                     '1', u'1', None,
-                     AttributeError(),
-                     AttributeError
-                     ):
+        from zope.security.checker import BasicTypes_examples
+        rocks = tuple(BasicTypes_examples.values())
+        rocks += (AttributeError(), AttributeError)
+        for rock in rocks:
             proxy = checker.proxy(rock)
 
             self.failUnless(proxy is rock, (rock, type(proxy)))
@@ -289,6 +314,59 @@ class Test(TestCase, CleanUp):
             self.assertRaises(Forbidden, checker.check_setattr, inst, 'a')
             self.assertRaises(Forbidden, checker.check_setattr, inst, 'z')
 
+    # XXX write a test to see that
+    # Checker.check/check_setattr handle permission
+    # values that evaluate to False
+
+    def test_ProxyFactory(self):
+        class SomeClass:
+            pass
+        import zope.security
+        checker = NamesChecker()
+        specific_checker = NamesChecker()
+        checker_as_magic_attr = NamesChecker()
+
+        obj = SomeClass()
+
+        proxy = ProxyFactory(obj)
+        self.assert_(type(proxy) is Proxy)
+        from zope.security.checker import _defaultChecker
+        self.assert_(getChecker(proxy) is _defaultChecker)
+
+        defineChecker(SomeClass, checker)
+
+        proxy = ProxyFactory(obj)
+        self.assert_(type(proxy) is Proxy)
+        self.assert_(getChecker(proxy) is checker)
+
+        obj.__Security_checker__ = checker_as_magic_attr
+
+        proxy = ProxyFactory(obj)
+        self.assert_(type(proxy) is Proxy)
+        self.assert_(getChecker(proxy) is checker_as_magic_attr)
+
+        proxy = ProxyFactory(obj, specific_checker)
+        self.assert_(type(proxy) is Proxy)
+        self.assert_(getChecker(proxy) is specific_checker)
+
+    def test_ProxyFactory_using_proxy(self):
+        class SomeClass:
+            pass
+        obj = SomeClass()
+        checker = NamesChecker()
+        proxy1 = ProxyFactory(obj)
+
+        proxy2 = ProxyFactory(proxy1)
+        self.assert_(proxy1 is proxy2)
+
+        # Trying to change the checker on a proxy.
+        self.assertRaises(TypeError, ProxyFactory, proxy1, checker)
+
+        # Setting exactly the same checker as the proxy already has.
+        proxy1 = ProxyFactory(obj, checker)
+        proxy2 = ProxyFactory(proxy1, checker)
+        self.assert_(proxy1 is proxy2)
+
 
 class TestCheckerPublic(TestCase):
 
@@ -299,6 +377,7 @@ class TestCheckerPublic(TestCase):
 
     def test_that_CheckerPublic_identity_works_even_when_proxied(self):
         self.assert_(ProxyFactory(CheckerPublic) is CheckerPublic)
+
 
 def test_suite():
     return TestSuite((
