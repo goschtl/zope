@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.4 2003/01/25 03:14:16 rdmurray Exp $
+$Id: _field.py,v 1.5 2003/01/25 04:05:45 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -118,23 +118,22 @@ class Sequence(MinMaxLen, Iterable):
 
     def _validate(self, value):
         super(Sequence, self)._validate(value)
-        try:
-            errors = _validate_sequence(self.value_types, value)
-            if errors:
-                raise ValidationError(WrongContainedType, errors)
+        errors = _validate_sequence(self.value_types, value)
+        if errors:
+            raise ValidationError(WrongContainedType, errors)
 
-        finally:
-            errors = None
 
 class Tuple(Sequence):
     """A field representing a Tuple."""
     __implements__ = ITuple
     _type = tuple
 
+
 class List(Sequence):
     """A field representing a List."""
     __implements__ = IList
     _type = list
+
 
 class Dict(MinMaxLen, Iterable):
     """A field representing a Dict."""
