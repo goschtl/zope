@@ -45,13 +45,15 @@ optional fields (optional fields have default values described)
 
 # Default is *no* remote - people explicitly propagation if they want it.
 remote = None
-public_remote = {'host': "cvs.zope.org",
-                 'acct': "anonymous",
-                 'repodir': "/cvs-repository"}
-products_remote = {'host': "cvs.zope.org",
-                   'acct': "anonymous",
-                   'repodir': "/cvs-repository",
-                   'leading_path': "/Products/DC"}
+public_remote = None
+## public_remote = {'host': "cvs.zope.org",
+##                  'acct': "anonymous",
+##                  'repodir': "/cvs-repository"}
+products_remote = None
+## products_remote = {'host': "cvs.zope.org",
+##                    'acct': "anonymous",
+##                    'repodir': "/cvs-repository",
+##                    'leading_path': "/Products/DC"}
 
 zopeaddr = ["zope-checkins@zope.org"]
 
