@@ -152,7 +152,8 @@ class ZPTFactory(object):
         page.setSource(data.decode('UTF-8'), content_type or 'text/html')
         return page
 
-class ZPTSourceView(object):
+from zope.app.publisher.browser import BrowserView
+class ZPTSourceView(BrowserView):
 
     def __str__(self):
         return self.context.getSource()
