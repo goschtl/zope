@@ -3,6 +3,8 @@
     i18n_domain="zope"
     >
 
+<!-- XXX: temporarily deactivated
+
 <content class=".presentation.ViewRegistration">
   <require
       permission="zope.ManageServices"
@@ -35,5 +37,7 @@
 <include file="zpt.zcml" />
 
 <include package=".browser" />
+
+-->
 
 </configure>

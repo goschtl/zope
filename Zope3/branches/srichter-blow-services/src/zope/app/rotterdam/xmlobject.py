@@ -170,9 +170,8 @@ class XmlObjectView(BrowserView):
         parent = getParent(self.context)
         while parent is not None:
                 if IReadContainer.providedBy(parent):
-                    view = zapi.queryView(parent,
-                                          'singleBranchTree.xml',
-                                          self.request)
+                    view = zapi.queryMultiAdapter(
+                        (parent, self.request), name='singleBranchTree.xml')
                     return view()
                 else:
                     parent = getParent(parent)
