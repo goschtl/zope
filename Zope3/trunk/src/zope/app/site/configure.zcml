@@ -120,6 +120,4 @@
       permission="zope.ManageContent"
       />
 
-  <include package=".tools" />
-
 </configure>
