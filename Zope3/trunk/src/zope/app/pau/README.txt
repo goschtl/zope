@@ -322,11 +322,11 @@ delegate to the next utility. To make sure that it's delegated, we put in place
 a fake utility.
 
   >>> from zope.app.utility.utility import testingNextUtility
-  >>> from zope.app.security.interfaces import IAuthenticationUtility
+  >>> from zope.app.security.interfaces import IAuthentication
 
   >>> class FakeAuthUtility:
   ...
-  ...     zope.interface.implements(IAuthenticationUtility)
+  ...     zope.interface.implements(IAuthentication)
   ...
   ...     lastGetPrincipalCall = lastUnauthorizedCall = None
   ...
@@ -337,11 +337,11 @@ a fake utility.
   ...         self.lastUnauthorizedCall = id
 
   >>> nextauth = FakeAuthUtility()
-  >>> testingNextUtility(auth, nextauth, IAuthenticationUtility)
+  >>> testingNextUtility(auth, nextauth, IAuthentication)
 
   >>> auth.getPrincipal('123')
-  >>> '123' == nextauth.lastGetPrincipalCall
-  True
+  >>> nextauth.lastGetPrincipalCall
+  '123'
 
 Issuing a challenge
 ===================

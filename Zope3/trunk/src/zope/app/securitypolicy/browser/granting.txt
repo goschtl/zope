@@ -30,11 +30,11 @@ principals. The view unfortunately depends on a lot of other components:
     >>> class Principal:
     ...     def __init__(self, id, title): self.id, self.title = id, title
 
-    >>> from zope.app.security.interfaces import IAuthenticationUtility
+    >>> from zope.app.security.interfaces import IAuthentication
     >>> from zope.app.security.interfaces import PrincipalLookupError
     >>> from zope.interface import implements
     >>> class AuthUtility:
-    ...     implements(IAuthenticationUtility)
+    ...     implements(IAuthentication)
     ...     data = {'jim': Principal('jim', 'Jim Fulton'),
     ...             'stephan': Principal('stephan', 'Stephan Richter')}
     ...
@@ -49,7 +49,7 @@ principals. The view unfortunately depends on a lot of other components:
     ...                 for principal in self.data.values()
     ...                 if search in principal.title]
 
-    >>> ztapi.provideUtility(IAuthenticationUtility, AuthUtility())
+    >>> ztapi.provideUtility(IAuthentication, AuthUtility())
 
   - Security-related Adapters
 
@@ -92,7 +92,7 @@ principals. The view unfortunately depends on a lot of other components:
 
     >>> from zope.app.security.browser.auth import AuthUtilitySearchView
     >>> from zope.app.form.browser.interfaces import ISourceQueryView
-    >>> ztapi.browserViewProviding(IAuthenticationUtility, 
+    >>> ztapi.browserViewProviding(IAuthentication, 
     ...                            AuthUtilitySearchView,
     ...                            ISourceQueryView)
 

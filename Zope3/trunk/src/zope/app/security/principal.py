@@ -17,7 +17,7 @@ $Id$
 """
 from zope.app import zapi
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.interfaces import IAuthenticationUtility
+from zope.app.security.interfaces import IAuthentication
 
 # BBB Backward Compatibility
 from zope.exceptions import NotFoundError
@@ -25,7 +25,7 @@ import warnings
 
 def checkPrincipal(context, principal_id):
 
-    auth = zapi.getUtility(IAuthenticationUtility, context=context)
+    auth = zapi.getUtility(IAuthentication, context=context)
     try:
         if auth.getPrincipal(principal_id):
             return

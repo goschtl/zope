@@ -368,7 +368,7 @@ Now, before we can define any groups, we have to add and register a PAU:
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.interface"
   ... 
-  ... zope.app.security.interfaces.IAuthenticationUtility
+  ... zope.app.security.interfaces.IAuthentication
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.interface-empty-marker"
   ... 

@@ -23,7 +23,7 @@ To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
   >>> import zope.interface
-  >>> from zope.app.security.interfaces import IAuthenticationUtility
+  >>> from zope.app.security.interfaces import IAuthentication
   >>> from zope.app.pau.groupfolder import setGroupsForPrincipal
 
   >>> class Principal:
@@ -37,7 +37,7 @@ we'll create a sample authentication service:
 
   >>> class Principals:
   ...
-  ...     zope.interface.implements(IAuthenticationUtility)
+  ...     zope.interface.implements(IAuthentication)
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
@@ -72,7 +72,7 @@ The authentication service has a very simple implementation.  It has a
 `principals` dictionary and a groups folder.
 
   >>> principals = Principals(groups)
-  >>> ztapi.provideUtility(IAuthenticationUtility, principals)
+  >>> ztapi.provideUtility(IAuthentication, principals)
 
 Now we can set the principals on the group:
 

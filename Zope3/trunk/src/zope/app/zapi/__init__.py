@@ -38,6 +38,6 @@ from zope.app.exception.interfaces import UserError
 name = getName
 
 def principals():
-    from zope.app.security.interfaces import IAuthenticationUtility
-    return getUtility(IAuthenticationUtility)
+    from zope.app.security.interfaces import IAuthentication
+    return getUtility(IAuthentication)
 

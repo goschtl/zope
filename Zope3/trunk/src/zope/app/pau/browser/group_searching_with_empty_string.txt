@@ -29,7 +29,7 @@ And register it:
   ... -----------------------------8474411127918531132143183931
   ... Content-Disposition: form-data; name="field.interface"
   ... 
-  ... zope.app.security.interfaces.IAuthenticationUtility
+  ... zope.app.security.interfaces.IAuthentication
   ... -----------------------------8474411127918531132143183931
   ... Content-Disposition: form-data; name="field.interface-empty-marker"
   ... 
