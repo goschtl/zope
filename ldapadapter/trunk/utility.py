@@ -136,7 +136,6 @@ class LDAPConnection(object):
         return results
 
 
-
 class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
     """LDAP adapter utility
     

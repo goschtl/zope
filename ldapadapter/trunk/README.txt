@@ -32,13 +32,23 @@ Let's look at an example:
 The fake implementation of ldap used for the tests returns a simpler
 result than a real server would:
 
-  >>> conn.search('o=test,dc=org', 'sub')
-  [(u'cn=yo', {'cn': [u'yo']})]
+  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
+  [(u'cn=yo,o=test,dc=org', {'cn': [u'yo']})]
 
 Modify it.
 
-  XXX>>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob']})
+  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob']})
+  >>> conn.search('cn=yo,o=test,dc=org', 'sub')[0][1]['givenName']
+  [u'bob']
+  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob', 'john']})
+  >>> conn.search('cn=yo,o=test,dc=org', 'sub')[0][1]['givenName']
+  [u'bob', u'john']
+  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': []})
+  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
+  [(u'cn=yo,o=test,dc=org', {'cn': [u'yo']})]
 
 Delete it.
 
   >>> conn.delete('cn=yo,o=test,dc=org')
+  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
+  []

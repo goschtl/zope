@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -23,12 +23,8 @@ from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 
 
-def populateFake():
-    import FakeLDAP
-    FakeLDAP.addTreeItems('o=test,dc=org')
-
 def setUp(test):
-    import FakeLDAP
+    import fakeldap
     if sys.modules.has_key('_ldap'):
         test.old_uldap = sys.modules['_ldap']
         del sys.modules['_ldap']
@@ -39,9 +35,8 @@ def setUp(test):
         del sys.modules['ldap']
     else:
         test.old_ldap = None
-    sys.modules['ldap'] = FakeLDAP
+    sys.modules['ldap'] = fakeldap
     import ldap
-    populateFake()
 
 def tearDown(test):
     del sys.modules['ldap']
