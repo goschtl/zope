@@ -545,22 +545,28 @@ class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
 
     def choices(self):
         """Return a set of tuples (text, value) that are available."""
-        # Not all content object must necessarily support the attributes
+        # Not all content objects must necessarily support the attributes
         if hasattr(self.context.context, self.context.__name__):
-            selected_values = self.context.get(self.context.context)
+            available_values = self.context.get(self.context.context)
         else:
-            selected_values = []
+            available_values = []
         return [{'text': self.textForValue(term), 'value': term.token}
                 for term in self.vocabulary
-                if term.value not in selected_values]
+                if term.value not in available_values]
         
     def selected(self):
         """Return a list of tuples (text, value) that are selected."""
-        # Not all content object must necessarily support the attributes
-        if not hasattr(self.context.context, self.context.__name__):
-            return []
+        # Get form values
+        values = self._getFormValue()
+        # Not all content objects must necessarily support the attributes
+        if hasattr(self.context.context, self.context.__name__):
+            # merge in values from content 
+            for value in self.context.get(self.context.context):
+                if value not in values:
+                    values.append(value)
+                
         terms = [self.vocabulary.getTerm(value)
-                 for value in self.context.get(self.context.context)]
+                 for value in values]
         return [{'text': self.textForValue(term), 'value': term.token}
                 for term in terms]
     

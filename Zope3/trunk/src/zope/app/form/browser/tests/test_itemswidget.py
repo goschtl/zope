@@ -448,6 +448,11 @@ class OrderedMultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
 
     def test_selected(self):
         widget = self._makeWidget(nums=['one'])
+        widget._data = ['two']
+        selected = [select['text'] for select in widget.selected()]
+        selected.sort()
+        self.assertEqual(selected, ['One', 'Two'])
+        widget._data = ['one']
         selected = [select['text'] for select in widget.selected()]
         selected.sort()
         self.assertEqual(selected, ['One'])

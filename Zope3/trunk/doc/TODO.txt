@@ -92,8 +92,6 @@ Others
 
 * 369: DAV is hosed on the trunk
 
-* 371: OrderedMultiSelectWidget ignores setRenderedValue
-
 * 372: WidgetInputError.doc is broken
 
 * 373: Adding objects requires permission zope.app.dublincore.change 
