@@ -102,6 +102,37 @@ class Test(unittest.TestCase):
         p._p_changed = 1
         self.assertEqual(dm.called, 1)
 
+    def testRegistrationFailure(self):
+        p = self.klass()
+        p._p_oid = 1
+        dm = BrokenDM()
+        p._p_jar = dm
+        self.assertEqual(p._p_changed, 0)
+        self.assertEqual(dm.called, 0)
+        try:
+            p._p_changed = 1
+        except NotImplementedError:
+            pass
+        else:
+            raise AssertionError("Exception not propagated")
+        self.assertEqual(dm.called, 1)
+        self.assertEqual(p._p_changed, 0)
+
+    def testLoadFailure(self):
+        p = self.klass()
+        p._p_oid = 1
+        dm = BrokenDM()
+        p._p_jar = dm
+        p._p_deactivate()  # make it a ghost
+        
+        try:
+            p._p_changed = 0    # request unghostification
+        except NotImplementedError:
+            pass
+        else:
+            raise AssertionError("Exception not propagated")
+        self.assertEqual(p._p_changed, None)
+
     def testActivate(self):
         p = self.klass()
         dm = DM()
@@ -245,6 +276,15 @@ class DM:
         self.called += 1
     def setstate(self, ob):
         ob.__setstate__({'x': 42})
+
+class BrokenDM(DM):
+
+    def register(self,ob):
+        self.called += 1
+        raise NotImplementedError
+
+    def setstate(self,ob):
+        raise NotImplementedError
 
 class PersistentTest(Test):
     klass = P
