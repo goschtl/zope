@@ -180,8 +180,8 @@ def test_multi_adapter_check_non_default_dont_hide_default():
 def test_changing_declarations():
     """
 
-    If we change declarations for a class, those adapter lookup should
-    eflect the changes:
+    If we change declarations for a class, then adapter lookup should
+    reflect the changes:
 
     >>> class I1(zope.interface.Interface):
     ...     pass
