@@ -10,9 +10,9 @@
     <pre tal:content="context/getSource" />
 
     <table border="1"
-        tal:define="args context/getArguments" 
+        tal:define="args context/getArguments"
         tal:condition="args">
-      <tbody>   
+      <tbody>
         <tr>
 	  <th>Argument Name</th>
 	  <th>Type</th>
@@ -21,19 +21,19 @@
 
         <tr tal:repeat="arg python: args.keys()">
 	  <td tal:content="arg"></td>
-          <td tal:content="python: args[arg]['type'] or default"> </td>
+          <td tal:content="python: args[arg].get('type')"> </td>
           <td><input type="text" name="" size="10" value=""
-                  tal:attributes="value python: args[arg]['default'] or None;
+                  tal:attributes="value python: args[arg].get('default');
                                   name arg"/></td>
         </tr>
 
-          	
-      </tbody>     
+
+      </tbody>
     </table>
-  
+
     <input type="submit" name="testResults.html:method" value="Test" />
-    
-  </form> 
+
+  </form>
   </div>
 
 </body>
