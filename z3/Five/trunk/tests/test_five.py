@@ -18,6 +18,7 @@ if __name__ == '__main__':
 from Zope.Startup.run import configure
 configure(join(_prefix, '..', '..', '..', 'etc', 'zope.conf'))
 
+import unittest
 from Testing import ZopeTestCase
 
 ZopeTestCase.installProduct('Five')
