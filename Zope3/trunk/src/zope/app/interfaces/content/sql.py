@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.6 2003/06/11 13:47:58 srichter Exp $
+$Id: sql.py,v 1.7 2003/07/03 22:46:08 sidnei Exp $
 """
 import zope.schema
 
@@ -34,7 +34,7 @@ class SQLConnectionName(zope.schema.TextLine):
                                             "SQLDatabaseConnections")
         except ComponentLookupError:
             return []
-        
+
         return connection_service.getAvailableConnections()
 
     allowed_values = ContextProperty(__allowed)
@@ -49,13 +49,13 @@ class ISQLScript(ISQLCommand):
 
     arguments = zope.schema.BytesLine(
         title=_(u"Arguments"),
-        description=_(u"A set of attributes that can be used during the DTML "
+        description=_(u"A set of attributes that can be used during the SQL command "
                       u"rendering process to provide dynamic data."),
         required=False)
 
     source = zope.schema.Bytes(
         title=_(u"Source"),
-        description=_(u"The source of the page template."),
+        description=_(u"The SQL command to be run."),
         required=True)
 
     def getArguments():

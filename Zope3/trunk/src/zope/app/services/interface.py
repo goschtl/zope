@@ -16,7 +16,7 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.10 2003/07/02 15:23:05 alga Exp $
+$Id: interface.py,v 1.11 2003/07/03 22:46:15 sidnei Exp $
 """
 
 from persistence import Persistent
@@ -53,13 +53,13 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
 
 class LocalInterfaceService(object):
     """A local interface service."""
-    
+
     implements(IInterfaceService,
                ISimpleService)
 
     # All the methods defined here are context methods
     zapi.ContextAwareDescriptors()
-    
+
     def getInterface(self, id):
         # Return the interface registered for the given id
         i = self.queryInterface(id)

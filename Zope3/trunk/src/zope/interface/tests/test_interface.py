@@ -160,8 +160,8 @@ class InterfaceTests(unittest.TestCase):
 
         self.assertEqual(I.__doc__, "")
         self.assertEqual(list(I), ['__doc__'])
-            
-        
+
+
 
 class _I1(Interface):
 

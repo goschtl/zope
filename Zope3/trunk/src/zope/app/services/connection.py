@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection service
 
-$Id: connection.py,v 1.16 2003/06/23 00:31:31 jim Exp $
+$Id: connection.py,v 1.17 2003/07/03 22:46:15 sidnei Exp $
 """
 
 from persistence import Persistent
@@ -22,9 +22,10 @@ from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.services.connection import IConnectionRegistration
 from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.services.servicenames import SQLDatabaseConnections
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
-from zope.context import ContextMethod
+from zope.app import zapi
 from zope.interface import implements
 
 class ConnectionService(Persistent, NameComponentRegistry):
@@ -38,12 +39,12 @@ class ConnectionService(Persistent, NameComponentRegistry):
         dbadapter = self.queryActiveComponent(name)
         if dbadapter is not None:
             return dbadapter()
-        service = queryNextService(self, "SQLDatabaseConnections")
+        service = queryNextService(self, SQLDatabaseConnections)
         if service is not None:
             return service.getConnection(name)
         raise KeyError, name
 
-    getConnection = ContextMethod(getConnection)
+    getConnection = zapi.ContextMethod(getConnection)
 
     def queryConnection(self, name, default=None):
         'See IConnectionService'
@@ -52,7 +53,7 @@ class ConnectionService(Persistent, NameComponentRegistry):
         except KeyError:
             return default
 
-    queryConnection = ContextMethod(queryConnection)
+    queryConnection = zapi.ContextMethod(queryConnection)
 
     def getAvailableConnections(self):
         'See IConnectionService'
@@ -61,7 +62,7 @@ class ConnectionService(Persistent, NameComponentRegistry):
             registry = self.queryRegistrations(name)
             if registry.active() is not None:
                 connections[name] = 0
-        service = queryNextService(self, "SQLDatabaseConnections")
+        service = queryNextService(self, SQLDatabaseConnections)
         if service is not None:
             # Note that this works because we're only interested in the names
             # of connections. If we wanted other data about connections, we'd
@@ -71,7 +72,7 @@ class ConnectionService(Persistent, NameComponentRegistry):
                 connections[name] = 0
         return connections.keys()
 
-    getAvailableConnections = ContextMethod(getAvailableConnections)
+    getAvailableConnections = zapi.ContextMethod(getAvailableConnections)
 
 
 class ConnectionRegistration(NamedComponentRegistration):
@@ -80,7 +81,7 @@ class ConnectionRegistration(NamedComponentRegistration):
 
     implements(IConnectionRegistration)
 
-    serviceType = 'SQLDatabaseConnections'
+    serviceType = SQLDatabaseConnections
 
     label = "Connection"
 

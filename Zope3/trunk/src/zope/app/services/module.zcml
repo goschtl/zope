@@ -17,7 +17,7 @@
     factory=".module.ModuleAdapter"
     />
 
-<adapter 
+<adapter
     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
     provides="zope.app.interfaces.file.IFileFactory"
     name=".py"
