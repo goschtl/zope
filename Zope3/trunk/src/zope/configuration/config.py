@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.11 2003/10/16 10:15:48 jim Exp $
+$Id: config.py,v 1.12 2003/11/21 17:09:17 jim Exp $
 """
 
 import os.path
@@ -852,8 +852,6 @@ class GroupingContextDecorator(ConfigurationContext):
         self.context = context
         for name, v in kw.items():
             setattr(self, name, v)
-
-        directlyProvides(self)
 
     def __getattr__(self, name,
                     getattr=getattr, setattr=setattr):
