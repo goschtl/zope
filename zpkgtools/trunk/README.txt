@@ -11,6 +11,11 @@ The "zpkg" script in the bin/ directory is the command line tool that
 ise used to generate a package from source information.  Most of the
 implementation is stored in the ``zpkgtools`` Python package.
 
+Documentation for this software can be found in the doc/ directory.
+The reStructuredText documents can be read directly or converted to
+HTML (see doc/Makefile); doc/index.txt (or doc/index.html) provides an
+overview of the available documentation and links to related material.
+
 Additional discussion related to the goals and design of this tool can
 be found in the Zope 3 wiki:
 
