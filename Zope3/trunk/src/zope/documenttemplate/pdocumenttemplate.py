@@ -12,7 +12,7 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pdocumenttemplate.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: pdocumenttemplate.py,v 1.3 2003/11/03 21:37:54 jeremy Exp $
 """
 
 import sys
@@ -151,7 +151,7 @@ class TemplateDict:
 
     def has_key(self,key):
         try:
-            v=self.dicts[key]
+            self.dicts[key]
         except KeyError:
             return 0
         return 1
@@ -175,7 +175,6 @@ class TemplateDict:
 
 def render_blocks(blocks, md):
     rendered = []
-    append = rendered.append
     for section in blocks:
         if type(section) is TupleType:
             l = len(section)

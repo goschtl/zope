@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.16 2003/10/22 19:15:02 sidnei Exp $
+$Id: editwizard.py,v 1.17 2003/11/03 21:38:01 jeremy Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -160,7 +160,7 @@ class EditWizardView(EditView):
                 if k not in self.currentPane().names:
                     getattr(self, k).getInputValue()
             self.show_submit = 1
-        except WidgetInputError,x:
+        except WidgetInputError:
             self.show_submit = 0
 
         self.show_next = (self._current_pane_idx < len(self.panes) - 1)

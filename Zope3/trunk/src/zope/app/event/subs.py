@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.19 2003/09/21 17:31:53 jim Exp $
+$Id: subs.py,v 1.20 2003/11/03 21:37:59 jeremy Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -319,8 +319,7 @@ class Subscribable(Persistent, Contained):
                 "resubscribeByPath for an object that doesn't exist: %s" %
                 reference)
 
-        num_converted = self._resubscribe(hubId, clean_self._hubIds,
-                                          path, clean_self._paths)
+        self._resubscribe(hubId, clean_self._hubIds, path, clean_self._paths)
 
     def iterSubscriptions(wrapped_self, reference=None, event_type=IEvent):
         '''See ISubscribable'''

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.55 2003/09/26 19:53:33 poster Exp $
+$Id: widget.py,v 1.56 2003/11/03 21:38:01 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -1165,7 +1165,6 @@ class SequenceWidget(BrowserWidget):
         sequence = self._generateSequence()
         num_items = len(sequence)
         min_length = self.context.min_length
-        max_length = self.context.max_length
 
         # ensure minimum number of items in the form
         if num_items < min_length:
@@ -1234,7 +1233,6 @@ class SequenceWidget(BrowserWidget):
         subprefix = re.compile(r'(\d+)\.(.+)')
         if self.context.value_type is None:
             return []
-        field = self.context.value_type
 
         # pre-populate
         found = {}

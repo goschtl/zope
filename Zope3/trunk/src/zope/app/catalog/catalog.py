@@ -1,5 +1,3 @@
-from __future__ import generators
-
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.interface import implements
@@ -99,15 +97,10 @@ class CatalogBase(Persistent, SampleContainer):
         "objecthub is my friend!"
 
         indexes = self.values()
-        if (IHub.IObjectRegisteredHubEvent.isImplementedBy(event) or
-            IHub.IObjectModifiedHubEvent.isImplementedBy(event)):
-            addobj = event.object
-        elif IHub.IObjectUnregisteredHubEvent.isImplementedBy(event):
-            delobj = event.object
         for index in indexes:
             try:
                 index.notify(event)
-            except:
+            except: # XXX bare excepts are not my friend! Please fix.
                 pass
 
     def searchResults(self, **searchterms):

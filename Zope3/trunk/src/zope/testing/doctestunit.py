@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests. 
 
-$Id: doctestunit.py,v 1.5 2003/09/23 19:12:38 jim Exp $
+$Id: doctestunit.py,v 1.6 2003/11/03 21:37:50 jeremy Exp $
 """
 
 from StringIO import StringIO
@@ -62,7 +62,6 @@ class DocTestTestCase(unittest.TestCase):
             sys.stdout = old
 
         if failures:
-            mess = new.getvalue()
             lname = '.'.join(self.__name.split('.')[-1:])
             lineno = self.__lineno or "0 (don't know line no)"
             raise self.failureException(

@@ -33,7 +33,7 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.4 2003/08/17 06:08:49 philikon Exp $
+$Id: backward.py,v 1.5 2003/11/03 21:37:55 jeremy Exp $
 """
 
 from keyword import iskeyword
@@ -199,7 +199,7 @@ class Attributed(config.GroupingContextDecorator):
 
     def __init__(self, context, attributes=u'', **kw):
         config.GroupingContextDecorator.__init__(self, context, **kw)
-        self.attributes = attrs = {}
+        self.attributes = {}
         for name in attributes.strip().split():
             self.attribute(name)
 

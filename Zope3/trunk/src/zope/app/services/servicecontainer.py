@@ -13,7 +13,7 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.6 2003/09/21 17:33:02 jim Exp $
+$Id: servicecontainer.py,v 1.7 2003/11/03 21:37:56 jeremy Exp $
 """
 
 from zope.component.exceptions import ComponentLookupError
@@ -84,7 +84,7 @@ def fixfolder(folder):
         # No need to do more, the conversion already happened!
         return
     try:
-        sm = folder.getSiteManager()
+        folder.getSiteManager()
     except ComponentLookupError:
         pass # nothing to do
     else:

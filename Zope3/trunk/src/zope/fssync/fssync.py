@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.46 2003/09/05 19:09:36 fdrake Exp $
+$Id: fssync.py,v 1.47 2003/11/03 21:37:51 jeremy Exp $
 """
 
 import os
@@ -307,7 +307,6 @@ class FSSync(object):
         self.network.addToken(scheme, host_port, user, token)
 
     def logout(self, url=None, user=None):
-        upw = self.network.user_passwd
         scheme, host_port, user = self.get_login_info(url, user)
         if scheme:
             ok = self.network.removeToken(scheme, host_port, user)

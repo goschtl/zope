@@ -13,7 +13,7 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.3 2003/09/09 06:43:32 jshell Exp $
+$Id: rest.py,v 1.4 2003/11/03 21:37:57 jeremy Exp $
 """
 import re
 import docutils.core, docutils.io
@@ -98,8 +98,6 @@ class ZopeTranslator(HTMLTranslator):
             HTMLTranslator.visit_title(self, node)
         elif self.section_level == 0:
             HTMLTranslator.visit_title(self, node)
-            # document title
-            title = node.astext()
         else:
             # offset section level to account for ``base_section``.
             self.section_level += (self.settings.base_section - 1)

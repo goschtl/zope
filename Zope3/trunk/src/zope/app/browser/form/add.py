@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.33 2003/10/06 22:08:51 sidnei Exp $
+$Id: add.py,v 1.34 2003/11/03 21:38:02 jeremy Exp $
 """
 import sys
 
@@ -58,7 +58,7 @@ class AddView(EditView):
                                       strict=True,
                                       names=self.fieldNames,
                                       set_missing=False)
-                content = self.createAndAdd(data)
+                self.createAndAdd(data)
             except WidgetsError, errors:
                 self.errors = errors
                 self.update_status = _("An error occured.")

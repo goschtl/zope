@@ -121,7 +121,6 @@ class BaseWidget(object):
             self.__initialize()
         marker_name = self.name + "-marker"
         marker = "<input type='hidden' name='%s' value='x' />\n" % marker_name
-        have_data = marker_name in self.request.form
         return marker + self.render(self.__computed_value)
 
     def row(self):

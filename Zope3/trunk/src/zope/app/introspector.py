@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.17 2003/09/02 20:45:38 jim Exp $
+$Id: introspector.py,v 1.18 2003/11/03 21:38:03 jeremy Exp $
 """
 from zope.interface import Interface
 
@@ -158,7 +158,6 @@ class Introspector:
     def getMarkerInterfaces(self):
         """See IIntrospector"""
         results = []
-        iservice = getService(self.context, Interfaces)
         todo = list(providedBy(removeAllProxies(self.context)))
         done = []
 

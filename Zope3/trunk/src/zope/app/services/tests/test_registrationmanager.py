@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.3 2003/09/21 17:33:22 jim Exp $
+$Id: test_registrationmanager.py,v 1.4 2003/11/03 21:37:56 jeremy Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -352,7 +352,6 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     #########################################################
 
     def test_removeNotify(self):
-        container = []
         manager = RegistrationManager()
         thingy = Undeletable()
         manager['xyzzy'] = thingy

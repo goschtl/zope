@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.13 2003/10/06 19:29:48 sidnei Exp $
+$Id: zopepolicy.py,v 1.14 2003/11/03 21:37:57 jeremy Exp $
 """
-__version__='$Revision: 1.13 $'[11:-2]
+__version__='$Revision: 1.14 $'[11:-2]
 
 from zope.component import queryAdapter
 from zope.app.location import LocationIterator
@@ -229,7 +229,6 @@ def permissionsOfPrincipal(principal, object):
     permissions = {}
 
     roles = {'Anonymous': Allow}
-    role_permissions = {}
     principalid = principal.getId()
 
     # Make two passes.

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.5 2003/09/21 17:32:09 jim Exp $
+$Id: test_eventpublisher.py,v 1.6 2003/11/03 21:37:59 jeremy Exp $
 """
 
 import unittest
@@ -218,7 +218,6 @@ class TestEventService(PlacelessSetup, unittest.TestCase):
         # Test publish method where subscriber has been subscribed twice, with
         # a more generalised version of the initially subscribed interface in
         # the second subscription.
-        subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectEvent,
@@ -233,7 +232,6 @@ class TestEventService(PlacelessSetup, unittest.TestCase):
     def testpublish3(self):
         # Test publish method where subscriber has been to two interfaces and
         # a single event implements both of those interfaces.
-        subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectRemovedEvent
@@ -248,7 +246,6 @@ class TestEventService(PlacelessSetup, unittest.TestCase):
     def testpublish4(self):
         # Test publish method to make sure that we don't 'leak registrations
         # up' sez Jim.
-        subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectEvent

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.5 2003/09/21 17:33:49 jim Exp $
+$Id: content.py,v 1.6 2003/11/03 21:37:55 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -52,8 +52,8 @@ class ContentComponentDefinition(Persistent):
         self.schema = schema
         self.copySchema = copySchema
         self.permissions = PersistentDict()
-        # This will set up the menu item entry.
-        adapter = zapi.getAdapter(self, IContentComponentMenuItem)
+##        # This will set up the menu item entry.
+##        zapi.getAdapter(self, IContentComponentMenuItem)
         
 
 
