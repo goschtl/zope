@@ -184,8 +184,11 @@ class ImmediateTestResult(unittest._TextTestResult):
     def stopTest(self, test):
         self._testtimes[test] = time.time() - self._testtimes[test]
         if gc.garbage:
+            print "The following test left garbage:"
             print test
             print gc.garbage
+            # XXX Perhaps eat the garbage here, so that the garbage isn't
+            #     printed for every subsequent test.
 
     def print_times(self, stream, count=None):
         results = self._testtimes.items()
