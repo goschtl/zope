@@ -4,7 +4,7 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-<form action="."
+<form action="." method="POST"
       tal:define="info view/action"
       tal:attributes="action request/URL">
 
