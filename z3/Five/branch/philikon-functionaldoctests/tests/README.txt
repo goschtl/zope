@@ -1,24 +1,14 @@
 Five tests
 ==========
 
-The tests need all products in the ``tests/products`` subdirectory
-installed in your Zope instance's Products directory. On unixy
-systems, this can be most simply done by a symlink::
-
-  cd myinstance/Products
-  ln -s Five/tests/products/FiveTest .
-
-and so on for each product in tests/products. On other platforms, you
-could manually copy these directories (though you'd need to do that
-each time you change the tests).
-
 The tests also require ZopeTestCase to be installed. ZopeTestCase can
 be downloaded from here:
 
 http://zope.org/Members/shh/ZopeTestCase
 
 it needs to be installed in your Zope software's lib/python/Testing
-directory.
+directory.  Make sure you have the latest version that supports
+functional doctests!
 
 Finally, to run the tests you need to set the following environment
 variables::
@@ -29,7 +19,3 @@ variables::
 Then you should be able to run the tests by typing::
 
   python2.3 runalltests.py
-
-If you have troubles running the tests because zope.conf is looked for
-in lib/Testing/etc/zope.conf, then you are running a Zope version
-older than Zope 2.7.2. Please upgrade to Zope 2.7.2.
