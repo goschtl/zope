@@ -7,6 +7,7 @@
       permission="Zope.Public" />
   <require permission="Zope.Public" 
       interface="Zope.App.RDB.IZopeDatabaseAdapter." />
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 </content>
 
 <include package=".Views" />

@@ -14,7 +14,7 @@
 """
 Gadfly Database Adapter (batteries included)
 
-$Id: Adapter.py,v 1.2 2002/12/09 15:26:42 ryzaja Exp $
+$Id: Adapter.py,v 1.3 2002/12/11 08:01:34 ryzaja Exp $
 """
 
 import gadfly
@@ -24,7 +24,6 @@ from Persistence import Persistent
 from Zope.App.RDB.ZopeDatabaseAdapter import ZopeDatabaseAdapter, parseDSN
 from Zope.App.RDB.ZopeDatabaseAdapter import DatabaseAdapterError
 from Zope.App.RDB.ZopeConnection import ZopeConnection
-from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 
 GadflyError = DatabaseAdapterError
 
@@ -32,7 +31,7 @@ GadflyError = DatabaseAdapterError
 class GadflyAdapter(ZopeDatabaseAdapter):
     """A Gadfly adapter for Zope3"""
     
-    __implements__ = ZopeDatabaseAdapter.__implements__, IAttributeAnnotatable
+    __implements__ = ZopeDatabaseAdapter.__implements__
 
     def _getGadflyRoot(self):
 	# XXX: Need to write a configuration directive for setting this up
