@@ -8,8 +8,3 @@ Things to do for the next release (sorted by importance)
   things, it needs to get tied into zpt.
 
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
-
-- Finish location-relevent event work;
-  specifically, handling events on containers.  
-
-  See: http://dev.zope.org/Zope3/LocationRelatedEvents

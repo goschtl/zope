@@ -23,7 +23,16 @@ Zope Changes
       - Fixed the TextWidget and TextAreaWidget, added convertion
         from string to unicode in the method _toFieldValue.
 
+      - Location-event subscribers weren't notified when containing
+        objects were moved, added, or removed.
+
     Restructuring
+
+      - New api for getting sublocations and adapters for containers
+        and folders.
+
+      - Implememented a sub-location event dispatcher do notify
+        subscribers when containing objects are removed.
 
       - The event system was completely reimplemented:
 
