@@ -53,15 +53,14 @@ class SetupContext:
         if self.platforms:
             self.platforms = ", ".join(self.platforms)
 
-    def load_package_info(self, pkgname, reldir):
-        directory = os.path.join(self._working_dir, pkgname)
+    def scan_package(self, name, directory, reldir):
+        # load the package metadata
         pkginfo = package.loadPackageInfo(pkgname, directory, reldir)
         self.scripts.extend(pkginfo.script)
         self.ext_modules.extend(pkginfo.extensions)
 
-    def scan_package(self, name, directory):
+        # scan the files in the directory:
         files = os.listdir(directory)
-        # need to load package-specific data here as well
         for fn in files:
             fnbase, ext = os.path.splitext(fn)
             if ext in (".py", ".pyc", ".pyo", ".so", ".sl", ".pyd"):
@@ -70,9 +69,13 @@ class SetupContext:
             if os.path.isdir(path):
                 init_py = os.path.join(path, "__init__.py")
                 if os.path.isfile(init_py):
+                    # if this package is published separately, skip it:
+                    if os.path.isfile(os.path.join(path, "PUBLICATION.txt")):
+                        continue
                     pkgname = "%s.%s" % (name, fn)
                     self.packages.append(pkgname)
-                    self.scan_package(pkgname, path)
+                    self.scan_package(
+                        pkgname, path, posixpath.join(reldir, fn))
                 else:
                     # an ordinary directory
                     self.scan_directory(name, path, fn)
@@ -109,10 +112,8 @@ class PackageContext(SetupContext):
         self.packages.append(pkgname)
         self.load_metadata(
             os.path.join(self._working_dir, pkgname, "PUBLICATION.txt"))
-        self.load_package_info(pkgname, pkgname)
         self.add_package_dir(pkgname, pkgname)
-        self.scan_package(
-            pkgname, os.path.join(self._working_dir, pkgname))
+        self.scan_package(pkgname, os.path.join(self._working_dir, pkgname))
 
 
 class CollectionContext(SetupContext):
