@@ -118,7 +118,6 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         """
         Manage TTW Action Providers
         """
-        #import pdb; pdb.set_trace()
         providers = list(self.listActionProviders())
         new_providers = []
         if add_provider:

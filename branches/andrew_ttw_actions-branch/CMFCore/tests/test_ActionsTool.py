@@ -6,6 +6,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl import SecurityManager
 from Products.CMFCore.ActionsTool import *
+from Products.CMFDefault.URLTool import *
 from Products.CMFCore.CMFCorePermissions import AddPortalContent
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
 from Products.CMFCore import utils
@@ -68,12 +69,26 @@ class ActionsToolTests( unittest.TestCase ):
         root.REQUEST = ZPublisher.HTTPRequest.HTTPRequest( None, env, None )
         
         root._setObject( 'portal_actions', ActionsTool() )
-        self.tool = tool = root.portal_actions
-        tool.action_providers = ('portal_actions',)
+        root._setObject('foo', URLTool() )
+        self.tool = root.portal_actions
+        self.ut = root.foo
+        self.tool.action_providers = ('portal_actions',)
 
     def test_actionProviders(self):
         tool = self.tool
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
+
+    def test_addActionProvider(self):
+        tool = self.tool
+        tool.addActionProvider('foo')
+        self.assertEqual(tool.listActionProviders(),
+                          ('portal_actions', 'foo'))
+
+    def test_delActionProvider(self):
+        tool = self.tool
+        tool.deleteActionProvider('foo')
+        self.assertEqual(tool.listActionProviders(),
+                          ('portal_actions',))
 
     def tearDown( self ):
         get_transaction().abort()
