@@ -13,11 +13,11 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: basetranslationserviceview.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: basetranslationserviceview.py,v 1.3 2002/12/31 02:51:55 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
-from zope.interfaces.i18n import ITranslationService
+from zope.i18n.interfaces import ITranslationService
 
 
 class BaseTranslationServiceView(BrowserView):

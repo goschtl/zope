@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: i18nfile.py,v 1.2 2002/12/25 14:12:59 jim Exp $
+$Id: i18nfile.py,v 1.3 2002/12/31 02:51:59 jim Exp $
 """
 
 from zope.app.interfaces.content.file import IFile
-from zope.interfaces.i18n import II18nAware
+from zope.i18n.interfaces import II18nAware
 
 class II18nFile(IFile, II18nAware):
     """I18n aware file interface."""

@@ -8,25 +8,25 @@
 <content class="zope.app.services.translation.translationservice.TranslationService">
    <factory id="TranslationService" permission="zope.ManageServices" />
    <require permission="zope.Public"
-       interface="zope.interfaces.i18n.ITranslationService" />
+       interface="zope.i18n.interfaces.ITranslationService" />
    <require permission="zope.ManageServices"
        interface="zope.app.interfaces.container.IContainer" />
    <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 </content>
 
-<browser:icon name="zmi_icon" for="zope.interfaces.i18n.ITranslationService"
+<browser:icon name="zmi_icon" for="zope.i18n.interfaces.ITranslationService"
     file="./i18n_service.gif" />
 
 <!-- Setup Message Catalogs -->
 <content class="zope.app.services.translation.messagecatalog.MessageCatalog">
 
   <require permission="zope.View" 
-      interface="zope.interfaces.i18n.IReadMessageCatalog" />
+      interface="zope.i18n.interfaces.IReadMessageCatalog" />
 
   <require permission="zope.ManageServices"
       attributes="setMessage getMessageIds" />
   <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-      interface="zope.interfaces.i18n.IWriteMessageCatalog" />
+      interface="zope.i18n.interfaces.IWriteMessageCatalog" />
 
 
 </content>
@@ -35,12 +35,12 @@
 
 <!-- Setup Export and Import Filters -->
 <adapter factory="zope.app.services.translation.gettextexportfilter.GettextExportFilter"
-    for="zope.interfaces.i18n.IWriteTranslationService"
-    provides="zope.interfaces.i18n.IMessageExportFilter" />
+    for="zope.i18n.interfaces.IWriteTranslationService"
+    provides="zope.i18n.interfaces.IMessageExportFilter" />
 
 <adapter factory="zope.app.services.translation.gettextimportfilter.GettextImportFilter"
-    for="zope.interfaces.i18n.IWriteTranslationService"
-    provides="zope.interfaces.i18n.IMessageImportFilter" />
+    for="zope.i18n.interfaces.IWriteTranslationService"
+    provides="zope.i18n.interfaces.IMessageImportFilter" />
 
 <gts:registerTranslations directory="./locale" />
 <gts:defaultLanguages languages="en" />

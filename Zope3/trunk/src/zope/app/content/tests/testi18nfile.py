@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testi18nfile.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: testi18nfile.py,v 1.3 2002/12/31 02:51:57 jim Exp $
 """
 
 import unittest
@@ -180,7 +180,7 @@ class Test(TestII18nAware):
         from zope.app.interfaces.content.file import IFile
         from zope.app.interfaces.content.i18nfile import II18nFile
         from zope.app.content.i18nfile import I18nFile
-        from zope.interfaces.i18n import II18nAware
+        from zope.i18n.interfaces import II18nAware
 
         self.failUnless(IFile.isImplementedByInstancesOf(I18nFile))
         self.failUnless(verifyClass(IFile, I18nFile))

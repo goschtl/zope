@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.2 2002/12/25 14:12:44 jim Exp $
+$Id: test_absoluteurl.py,v 1.3 2002/12/31 02:51:56 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.interface import Interface
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService, getView
 
-from zope.interfaces.i18n import IUserPreferredCharsets
+from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.publisher.tests.httprequest import TestRequest
 from zope.publisher.http import IHTTPRequest

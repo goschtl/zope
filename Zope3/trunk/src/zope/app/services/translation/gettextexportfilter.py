@@ -13,13 +13,13 @@
 ##############################################################################
 """Translation Service Message Export Filter
 
-$Id: gettextexportfilter.py,v 1.2 2002/12/25 14:13:21 jim Exp $
+$Id: gettextexportfilter.py,v 1.3 2002/12/31 02:52:05 jim Exp $
 """
 import time
 from types import StringTypes
 
-from zope.interfaces.i18n import IMessageExportFilter
-from zope.interfaces.i18n import IWriteTranslationService
+from zope.i18n.interfaces import IMessageExportFilter
+from zope.i18n.interfaces import IWriteTranslationService
 
 
 class GettextExportFilter:

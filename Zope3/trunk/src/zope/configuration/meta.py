@@ -15,12 +15,12 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.3 2002/12/28 00:02:29 jim Exp $
+$Id: meta.py,v 1.4 2002/12/31 02:52:10 jim Exp $
 """
 
 
-from zope.interfaces.configuration import INonEmptyDirective
-from zope.interfaces.configuration import ISubdirectiveHandler
+from zope.configuration.interfaces import INonEmptyDirective
+from zope.configuration.interfaces import ISubdirectiveHandler
 
 class InvalidDirective(Exception):
     """An invalid directive was used"""

@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_gettextexportimport.py,v 1.2 2002/12/25 14:13:23 jim Exp $
+$Id: test_gettextexportimport.py,v 1.3 2002/12/31 02:52:06 jim Exp $
 """
 import unittest, time
 
@@ -28,8 +28,8 @@ from zope.app.component.metaconfigure import handler
 from zope.app.services.translation.messagecatalog import \
      MessageCatalog
 from zope.i18n.negotiator import negotiator
-from zope.interfaces.i18n import INegotiator
-from zope.interfaces.i18n import IUserPreferredLanguages
+from zope.i18n.interfaces import INegotiator
+from zope.i18n.interfaces import IUserPreferredLanguages
 
 from zope.app.services.translation.translationservice import \
      TranslationService

@@ -13,11 +13,10 @@
 ##############################################################################
 """Internationalization of content objects.
 
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
+$Id: interfaces.py,v 1.1 2002/12/31 02:52:13 jim Exp $
 """
 
 from zope.interface import Interface
-
 
 class II18nAware(Interface):
     """Internationalization aware content object.
@@ -33,15 +32,6 @@ class II18nAware(Interface):
 
     def getAvailableLanguages():
         """Find all the languages that are available."""
-
-
-
-"""
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 
 class IReadMessageCatalog(Interface):
@@ -128,14 +118,6 @@ class IWriteMessageCatalog(Interface):
 class IMessageCatalog(IReadMessageCatalog, IWriteMessageCatalog):
     """Most message catalogs should support this interface.
     """
-
-
-"""Translation Service related Interfaces.
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 
 class IReadTranslationService(Interface):
@@ -303,13 +285,6 @@ class ITranslationService(IReadTranslationService, IWriteTranslationService,
     """
 
 
-"""Translation Service Message Import Filter Interface
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
-
 class IMessageImportFilter(Interface):
     """The Import Filter for Translation Service Messages.
 
@@ -326,26 +301,12 @@ class IMessageImportFilter(Interface):
         """
 
 
-"""
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
-
 class ILanguageAvailability(Interface):
 
     def getAvailableLanguages():
         """Return a sequence of language tags for available languages
         """
 
-
-"""
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 class IUserPreferredLanguages(Interface):
 
@@ -356,13 +317,6 @@ class IUserPreferredLanguages(Interface):
         """Return a sequence of user preferred languages.
         """
 
-
-"""
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 class IDomain(Interface):
     """A translation domain.
@@ -383,14 +337,6 @@ class IDomain(Interface):
         See ITranslationService for details.
         """
 
-
-"""Translation Service Message Export Filter Interface
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
-
 class IMessageExportFilter(Interface):
     """The Export Filter for Translation Service Messages.
 
@@ -405,14 +351,6 @@ class IMessageExportFilter(Interface):
            Note that some implementations might limit to only one domain and
            one language. A good example for that is a GettextFile.
         """
-
-
-"""
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 class INegotiator(Interface):
 
@@ -444,13 +382,6 @@ class INegotiator(Interface):
         # But this isn't a good match for the iTranslationService.translate()
         # method. :(
 
-
-"""See IUserPreferredCharsets.
-
-$Id: i18n.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-
-from zope.interface import Interface
 
 class IUserPreferredCharsets(Interface):
     """This interface provides charset negotiation based on user preferences.

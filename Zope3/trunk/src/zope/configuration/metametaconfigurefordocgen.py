@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigurefordocgen.py,v 1.3 2002/12/27 23:28:33 jim Exp $
+$Id: metametaconfigurefordocgen.py,v 1.4 2002/12/31 02:52:10 jim Exp $
 """
 from zope.configuration.metametaconfigure import DirectiveNamespace as baseDirectiveNamespace
 from zope.configuration.metametaconfigure import Subdirective as baseSubdirective
-from zope.interfaces.configuration import INonEmptyDirective
-from zope.interfaces.configuration import ISubdirectiveHandler
+from zope.configuration.interfaces import INonEmptyDirective
+from zope.configuration.interfaces import ISubdirectiveHandler
 
 #
 # Versions of the meta configuration directive handlers that save the

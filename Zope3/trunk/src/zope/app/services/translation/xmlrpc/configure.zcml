@@ -7,7 +7,7 @@
 
   <xmlrpc:view
       name="methods"
-      for="zope.interfaces.i18n.ITranslationService"
+      for="zope.i18n.interfaces.ITranslationService"
       permission="zope.ManageContent" 
       allowed_methods="getAllLanguages getAllDomains"
       factory="zope.app.services.translation.xmlrpc.methods.Methods" />

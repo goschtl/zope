@@ -4,7 +4,7 @@
 
 <browser:view 
    permission="zope.ManageServices" 
-   for="zope.interfaces.i18n.ITranslationService"
+   for="zope.i18n.interfaces.ITranslationService"
    factory="zope.app.browser.services.translation.translate.Translate">
 
    <browser:page name="index.html" attribute="index" />
@@ -32,7 +32,7 @@
 
 <browser:view 
    permission="zope.ManageServices" 
-   for="zope.interfaces.i18n.ITranslationService"
+   for="zope.i18n.interfaces.ITranslationService"
    factory="zope.app.browser.services.translation.exportimport.ExportImport">
 
    <browser:page name="exportImportForm.html" attribute="exportImportForm" />
@@ -44,7 +44,7 @@
 
 <browser:view 
    permission="zope.ManageServices" 
-   for="zope.interfaces.i18n.ITranslationService"
+   for="zope.i18n.interfaces.ITranslationService"
    factory="zope.app.browser.services.translation.synchronize.Synchronize">
 
    <browser:page name="synchronizeForm.html" attribute="synchronizeForm" />
@@ -56,7 +56,7 @@
 </browser:view>
 
 
-<browser:menuItems menu="zmi_views" for="zope.interfaces.i18n.ITranslationService">
+<browser:menuItems menu="zmi_views" for="zope.i18n.interfaces.ITranslationService">
   <browser:menuItem title="Translate" action="@@index.html"/>
   <browser:menuItem title="Import/Export" action="@@exportImportForm.html"/>
   <browser:menuItem title="Synchronize" action="@@synchronizeForm.html"/>

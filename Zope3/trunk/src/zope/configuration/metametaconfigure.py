@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.3 2002/12/27 23:28:33 jim Exp $
+$Id: metametaconfigure.py,v 1.4 2002/12/31 02:52:10 jim Exp $
 """
 from zope.configuration.meta import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
-from zope.interfaces.configuration import INonEmptyDirective
-from zope.interfaces.configuration import IEmptyDirective
-from zope.interfaces.configuration import ISubdirectiveHandler
+from zope.configuration.interfaces import INonEmptyDirective
+from zope.configuration.interfaces import IEmptyDirective
+from zope.configuration.interfaces import ISubdirectiveHandler
 
 #
 # Meta-meta configuration.  These routines replace the bootstrap ones

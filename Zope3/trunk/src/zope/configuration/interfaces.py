@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Configuration directives that have subdirectives
 
-$Id: configuration.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
 from zope.interface import Interface
 
 class INonEmptyDirective(Interface):
@@ -30,13 +27,6 @@ class INonEmptyDirective(Interface):
 
         Return an ISubdirectiveHandler.
         """
-
-
-"""Configuration directives that do not have subdirectives
-
-$Id: configuration.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-from zope.interface import Interface
 
 class IEmptyDirective(Interface):
 
@@ -66,12 +56,6 @@ class IEmptyDirective(Interface):
         keyword arguments to perform the action.
         """
 
-
-"""Psuedo-directive (or meta-meta directive) to handle subdirectives
-
-$Id: configuration.py,v 1.2 2002/12/25 14:15:12 jim Exp $
-"""
-from zope.interface import Interface
 
 class ISubdirectiveHandler(Interface):
     """Handle subdirectives

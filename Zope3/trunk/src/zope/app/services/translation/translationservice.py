@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.2 2002/12/25 14:13:21 jim Exp $
+$Id: translationservice.py,v 1.3 2002/12/31 02:52:05 jim Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -29,8 +29,8 @@ from zope.app.interfaces.container import IContainer
 
 from zope.i18n.negotiator import negotiator
 from zope.i18n.domain import Domain
-from zope.interfaces.i18n import IMessageCatalog
-from zope.interfaces.i18n import ITranslationService
+from zope.i18n.interfaces import IMessageCatalog
+from zope.i18n.interfaces import ITranslationService
 from zope.i18n.simpletranslationservice import SimpleTranslationService
 
 

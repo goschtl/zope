@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.2 2002/12/25 14:12:39 jim Exp $
+$Id: test_translate.py,v 1.3 2002/12/31 02:51:55 jim Exp $
 """
 
 import unittest
@@ -28,7 +28,7 @@ from zope.app.services.translation.translationservice import \
      TranslationService
 from zope.app.services.translation.messagecatalog import \
      MessageCatalog
-from zope.interfaces.i18n import IUserPreferredCharsets
+from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets

@@ -14,11 +14,11 @@
 """
 Test class for use by test modules
 
-$Id: directives.py,v 1.2 2002/12/25 14:13:34 jim Exp $
+$Id: directives.py,v 1.3 2002/12/31 02:52:12 jim Exp $
 """
 
-from zope.interfaces.configuration import INonEmptyDirective
-from zope.interfaces.configuration import ISubdirectiveHandler
+from zope.configuration.interfaces import INonEmptyDirective
+from zope.configuration.interfaces import ISubdirectiveHandler
 
 protections=[]
 

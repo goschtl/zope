@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.3 2002/12/30 22:39:30 bwarsaw Exp $
+$Id: sitedefinition.py,v 1.4 2002/12/31 02:52:09 jim Exp $
 """
 
 import logging
@@ -26,8 +26,8 @@ from zope.server import zlogintegration
 
 # Import Configuration-related classes
 from zope.configuration.action import Action
-from zope.interfaces.configuration import INonEmptyDirective
-from zope.interfaces.configuration import ISubdirectiveHandler
+from zope.configuration.interfaces import INonEmptyDirective
+from zope.configuration.interfaces import ISubdirectiveHandler
 
 from zope.app.startup.servertyperegistry import getServerType
 

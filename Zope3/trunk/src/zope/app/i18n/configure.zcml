@@ -6,22 +6,24 @@
    >
 
 <!-- Setup language negotiation -->
-<serviceType id="LanguageNegotiation" interface="zope.interfaces.i18n.INegotiator" />
+<serviceType id="LanguageNegotiation" 
+             interface="zope.i18n.interfaces.INegotiator" />
 
 <service serviceType="LanguageNegotiation" 
     component="zope.i18n.negotiator.negotiator" />
 
 <adapter factory="zope.publisher.browser.BrowserLanguages"
     for="zope.publisher.interfaces.browser.IBrowserRequest"
-    provides="zope.interfaces.i18n.IUserPreferredLanguages" />
+    provides="zope.i18n.interfaces.IUserPreferredLanguages" />
 
 <!-- Setup charset negotiation -->
 <adapter factory="zope.publisher.http.HTTPCharsets"
     for="zope.publisher.interfaces.http.IHTTPRequest"
-    provides="zope.interfaces.i18n.IUserPreferredCharsets" />
+    provides="zope.i18n.interfaces.IUserPreferredCharsets" />
 
 <!-- Setup Translation Service -->
-<serviceType id="Translation" interface="zope.interfaces.i18n.ITranslationService" />
+<serviceType id="Translation" 
+             interface="zope.i18n.interfaces.ITranslationService" />
 
 <service serviceType="Translation"
     permission="zope.Public"
