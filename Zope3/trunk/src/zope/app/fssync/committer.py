@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.12 2003/06/09 18:48:52 gvanrossum Exp $
+$Id: committer.py,v 1.13 2003/06/10 22:02:36 gvanrossum Exp $
 """
 
 import os
@@ -30,6 +30,7 @@ from zope.fssync import fsutil
 from zope.app.interfaces.fssync \
      import IObjectEntry, IObjectDirectory, IObjectFile
 
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath, traverseName, objectName
@@ -47,11 +48,12 @@ class Checker(object):
     The public API consists of __init__(), check() and errors() only.
     """
 
-    def __init__(self, metadata=None):
+    def __init__(self, metadata=None, raise_on_conflicts=False):
         """Constructor.  Optionally pass a metadata database."""
         if metadata is None:
             metadata = Metadata()
         self.metadata = metadata
+        self.raise_on_conflicts = raise_on_conflicts
         self.conflicts = []
 
     def errors(self):
@@ -183,6 +185,8 @@ class Checker(object):
 
         Conflicts can be retrieved by calling errors().
         """
+        if self.raise_on_conflicts:
+            raise SynchronizationError(fspath)
         if fspath not in self.conflicts:
             self.conflicts.append(fspath)
 
@@ -322,6 +326,7 @@ def create_object(container, name, entry, fspath, replace=False):
         # A given factory overrides everything
         factory = resolve(factory_name)
         obj = factory()
+        obj = ContextWrapper(obj, container, name=name)
         adapter = get_adapter(obj)
         if IObjectFile.isImplementedBy(adapter):
             data = read_file(fspath)
