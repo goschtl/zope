@@ -21,6 +21,7 @@ from zope.interface import implements
 from zope.app.container.btree import BTreeContainer
 
 from book.messageboard.interfaces import IMessage
+from book.messageboard.interfaces import IMessageContained, IMessageContainer
 
 class Message(BTreeContainer):
     """A simple implementation of a message.
@@ -45,7 +46,7 @@ class Message(BTreeContainer):
     >>> message.body
     u'Message Body'
     """
-    implements(IMessage)
+    implements(IMessage, IMessageContained, IMessageContainer)
 
     # See book.messageboard.interfaces.IMessage
     title = u''

@@ -45,6 +45,10 @@
         />
     <require
         permission="zope.ManageContent"
+        interface=".interfaces.IMessageContainer"
+        />
+    <require
+        permission="zope.ManageContent"
         set_schema=".interfaces.IMessage"
         />
   </content>
