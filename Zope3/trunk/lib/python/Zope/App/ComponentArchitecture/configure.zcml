@@ -45,6 +45,13 @@
         name="getServiceManager"
         implementation="
            Zope.App.ComponentArchitecture.hooks.getServiceManager_hook" />
+  
+  <serviceType id='Interfaces'
+               interface='Zope.App.ComponentArchitecture.IInterfaceService.' />
+	   
+  <service serviceType='Interfaces'
+           permission='Zope.Public'
+           component='Zope.App.ComponentArchitecture.InterfaceService.interfaceService' />
 
 </zopeConfigure>
 

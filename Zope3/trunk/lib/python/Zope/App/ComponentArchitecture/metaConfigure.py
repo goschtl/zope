@@ -18,11 +18,8 @@ from Zope.ComponentArchitecture import getService, getServiceManager
 from Zope.Configuration import namespace
 from Interface import Interface
 from Zope.Configuration.Action import Action
-
-from Zope.Security.Proxy import Proxy
 from Zope.Security.Checker \
      import InterfaceChecker, CheckerPublic, NamesChecker, Checker
-
 from Zope.ComponentArchitecture.GlobalServiceManager \
      import UndefinedService
 
@@ -35,11 +32,13 @@ from Zope.ComponentArchitecture.GlobalServiceManager \
 # But these services aren't placeful! And we need to get at things that
 # normal service clients don't need!   Jim
 
-
-
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(None, serviceName), methodName)
     method(*args, **kwargs)
+
+# We can't use the handler for serviceType, because serviceType needs
+# the interface service.
+from Zope.App.ComponentArchitecture.InterfaceService import provideInterface
 
 def managerHandler(methodName, *args, **kwargs):
     method=getattr(getServiceManager(None), methodName)
@@ -55,14 +54,32 @@ def adapter(_context, factory, provides, for_=None, permission=None):
             permission = CheckerPublic
         checker = InterfaceChecker(provides, permission)
         factory.append(lambda c: Proxy(c, checker))
-
-    return [
-        Action(
+    actions=[
+         Action(
             discriminator = ('adapter', for_, provides),
             callable = handler,
             args = ('Adapters', 'provideAdapter', for_, provides, factory),
-            )
-        ]
+               ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    provides.__module__+'.'+provides.__name__, provides)
+              )
+              ]
+    if for_ is not None:
+        actions.append
+        (
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    for_.__module__+'.'+for_.__name__, for_)
+              )
+         )
+        
+    return actions
+
 
 def utility(_context, provides, component=None, factory=None, permission=None):
     provides = _context.resolve(provides)
@@ -87,8 +104,15 @@ def utility(_context, provides, component=None, factory=None, permission=None):
             discriminator = ('utility', provides),
             callable = handler,
             args = ('Utilities', 'provideUtility', provides, component),
-            )
+            ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    provides.__module__+'.'+provides.__name__, provides)
+              )                
         ]
+
 
 def factory(_context, component, id=None):
     if id is None:
@@ -154,12 +178,17 @@ def resource(_context, factory, type, name, layer='default',
             callable = handler,
             args = ('Resources','provideResource',
                     name, type, factory, layer),
-            )
+            ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    type.__module__+'.'+type.__name__, type)
+              )                
         ]
 
 def view(_context, factory, type, name, for_=None, layer='default',
          permission=None, allowed_interface=None, allowed_attributes=None):
-
 
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
@@ -167,7 +196,6 @@ def view(_context, factory, type, name, for_=None, layer='default',
             "Must use name attribute with allowed_interface or "
             "allowed_attributes"
             )
-
 
     if for_ is not None: for_ = _context.resolve(for_)
     type = _context.resolve(type)
@@ -186,13 +214,32 @@ def view(_context, factory, type, name, for_=None, layer='default',
 
         factory[-1] = proxyView
 
-    return [
+    actions=[
         Action(
             discriminator = ('view', for_, name, type, layer),
             callable = handler,
             args = ('Views','provideView',for_, name, type, factory, layer),
-            )
-        ]
+            ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    type.__module__+'.'+type.__name__, type)
+            )        
+            ]
+    if for_ is not None:
+        actions.append
+        (
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    for_.__module__+'.'+for_.__name__,
+                    for_)
+              )
+         )
+
+    return actions
 
 def defaultView(_context, type, name, for_=None, **__kw):
 
@@ -205,20 +252,45 @@ def defaultView(_context, type, name, for_=None, **__kw):
         for_ = _context.resolve(for_)
     type = _context.resolve(type)
 
-    actions += [Action(
+    actions += [
+        Action(
         discriminator = ('defaultViewName', for_, type, name),
         callable = handler,
         args = ('Views','setDefaultViewName', for_, type, name),
-        )]
+        ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    type.__module__+'.'+type.__name__, type)
+            )                
+               ]
+    if for_ is not None:
+        actions.append
+        (
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    for_.__module__+'.'+for_.__name__, for_)
+              )
+         )
 
     return actions
 
 def serviceType(_context, id, interface):
+    interface = _context.resolve(interface)
     return [
         Action(
             discriminator = ('serviceType', id),        
             callable = managerHandler,
-            args = ('defineService', id, _context.resolve(interface)),
+            args = ('defineService', id, interface),
+            ),
+        Action(
+            discriminator = None,
+            callable = provideInterface,
+            args = (interface.__module__+'.'+interface.__name__,
+                    interface)
             )
         ]
 
@@ -272,11 +344,17 @@ def skin(_context, name, layers, type):
         raise TypeError("Commas are not allowed in layer names.")
 
     layers = layers.strip().split()
-    return [
+    actions = [
         Action(
             discriminator = ('skin', name, type),
             callable = handler,
             args = ('Skins','defineSkin',name, type, layers)
-            )
-        ]
-
+              ),
+        Action(
+            discriminator = None,
+            callable = handler,
+            args = ('Interfaces', 'provideInterface',
+                    type.__module__+'.'+type.__name__, type)
+              )             
+             ]
+    return actions
