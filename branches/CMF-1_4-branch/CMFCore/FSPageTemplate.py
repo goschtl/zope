@@ -212,7 +212,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     security.declareProtected(ViewManagementScreens, 'document_src')
     document_src = ZopePageTemplate.document_src
 
-    pt_getContext = ZopePageTemplate.pt_getContext
+    pt_getContext = ZopePageTemplate.pt_getContext.im_func
 
     ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams
 
