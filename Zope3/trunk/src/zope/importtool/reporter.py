@@ -20,7 +20,28 @@ class Reporter:
     """Trivial implementation of the reporter interface."""
 
     def request(self, importer, name, fromlist):
-        pass
+        """Called before the import is performed.
+
+        `importer` is the full name of the module performing the import.
+
+        `name` is the module name requested for the import.  This may
+        be a relative module name.  It may represent a module that has
+        already been loaded.
+
+        `fromlist` is the `fromlist` argument to `__import__()`.
+
+        This method may veto the import by raising an exception.
+        """
 
     def found(self, importer, imported, fromlist):
-        pass
+        """Called after the import has been performed.
+
+        `importer` is the full name of the module performing the import.
+
+        `imported` is the full name of the module that was actually
+        imported.
+
+        `fromlist` is the `fromlist` argument to `__import__()`.
+
+        This method may veto the import by raising an exception.
+        """
