@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.17 2003/11/21 17:09:15 jim Exp $
+$Id: fields.py,v 1.18 2004/01/05 08:06:44 philikon Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -140,7 +140,7 @@ class GlobalObject(schema.Field):
         return value
 
 class Tokens(schema.Sequence):
-    """A sequence that can be read from a spece-separated string
+    """A sequence that can be read from a space-separated string
 
     Consider GlobalObject tokens:
 

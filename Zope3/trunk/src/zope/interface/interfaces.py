@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.18 2003/12/01 16:19:33 jim Exp $
+$Id: interfaces.py,v 1.19 2004/01/05 08:07:28 philikon Exp $
 """
 
 from zope.interface import Interface
@@ -35,7 +35,7 @@ class IElement(Interface):
     def getTaggedValue(tag):
         """Returns the value associated with 'tag'.
 
-        Raise a KeyErrpr of the tag isn't set
+        Raise a KeyError of the tag isn't set
         """
 
     def queryTaggedValue(tag, default=None):
@@ -183,7 +183,7 @@ class IInterface(ISpecification, IElement):
 
            classImplements(some_class, some_interface)
 
-         This is approach is useful when it is not an option to modify
+         This approach is useful when it is not an option to modify
          the class source.  Note that this doesn't affect what the
          class itself implements, but only what its instances
          implement.
