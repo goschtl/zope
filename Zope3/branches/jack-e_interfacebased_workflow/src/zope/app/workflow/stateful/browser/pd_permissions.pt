@@ -1,0 +1,53 @@
+<html metal:use-macro='context/@@standard_macros/view'
+      i18n:domain='zope'>
+<body>
+<div metal:fill-slot='body'>
+<h1>Manage permissions</h1>
+<i>
+You may add relevant permissions for this process definition in here.  It will
+allow you to configure the permissions role mappings on the states included
+within your process definition.
+</i>
+<br />
+<tal:block define="permissions context/getProcessPermissions">
+<h2>Below are the permissions already defined on this process definition</h2>
+  <tal:block condition="not:permissions">
+    No permissions defined yet
+  </tal:block>
+  <tal:block condition="permissions">
+    Below are the permissions currently manage by this process definition
+    <br /><br />
+    <form action="pdDelPermission.py" name="form_del_permissions">
+      <tal:block repeat="permission permissions">
+        <input type="checkbox" name="permissions_to_remove:list"
+               tal:attributes="value permission" />
+        <span tal:replace="permission" /> <br />
+      </tal:block>
+      <p>
+        <input type="submit" value="Del" />
+      </p>
+    </form>
+  </tal:block>
+  <div align="left">
+    <form action="pdAddPermission.py" name="form_add_permissions">
+    <h2>Add a permission</h2>
+    <tal:block define="permissions context/getAvailablePermissions">
+      <tal:block condition="permissions"
+                 repeat="permission permissions">
+        <input type="checkbox" name="permissions_to_add:list"
+               tal:attributes="value permission" />
+        <span tal:replace="permission" /> <br />
+      </tal:block>
+      <tal:block condition="not:permissions">
+        No permissions available for this process definition
+      </tal:block>
+    </tal:block>
+    <p>
+      <input type="submit" value="Add" />
+    </p>
+    </form>
+  </div>
+</tal:block>
+</div>
+</body>
+</html>

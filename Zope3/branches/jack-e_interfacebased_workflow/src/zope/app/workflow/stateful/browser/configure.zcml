@@ -1,5 +1,6 @@
 <zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
    xmlns="http://namespaces.zope.org/browser">
 
 <!-- Workflow manager -->
@@ -36,6 +37,13 @@
       permission="zope.ManageServices"
       template="definition_index.pt" />
 
+  <page
+      name="pd_permissions.html"
+      for="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
+      template="pd_permissions.pt"
+      permission="zope.ManageServices"
+      />
+
   <menuItems
       for="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
       menu="zmi_actions">
@@ -44,11 +52,41 @@
         title="Manage States" action="states/contents.html" />
     <menuItem
         title="Manage Transitions" action="transitions/contents.html" />
+    <menuItem
+        title="Manage permissions" action="pd_permissions.html" />
+        />
 
   </menuItems>
 
+  <!-- Stateful process Permissions changed -->
 
-<!-- States/Transitions Container Adding Menus -->
+  <browser:page
+       name="pdAddPermission.py"
+       for="..interfaces.IStatefulProcessDefinition"
+       class=".pd_permissionchange_view.PermissionChangeView"
+       attribute="sendProcessDefinitionAddPermissionsEvent"
+       permission="zope.workflow.ManageProcessDefinitions"
+       />
+
+  <browser:page
+       name="pdDelPermission.py"
+       for="..interfaces.IStatefulProcessDefinition"
+       class=".pd_permissionchange_view.PermissionChangeView"
+       attribute="sendProcessDefinitionDelPermissionsEvent"
+       permission="zope.workflow.ManageProcessDefinitions"
+       />
+
+  <!-- State permissions roles mapping updated -->
+
+  <browser:page
+      name="state_permissions_role_mapping_change.py"
+      for="..interfaces.IState"
+      class=".state_permissionchange_view.PermissionsRolesMappingChangeView"
+      attribute="sendStateUpdatePermissionsRolesMappingEvent"
+      permission="zope.workflow.ManageProcessDefinitions"
+       />
+
+  <!-- States/Transitions Container Adding Menus -->
   <menu id="add_stateful_states" title="State Items" />
   <menu id="add_stateful_transitions" title="Transition Items" />
 
@@ -87,6 +125,15 @@
       arguments=""
       fields="" />
 
+  <page
+      name="state_permissions_role.html"
+      for="zope.app.workflow.stateful.interfaces.IState"
+      menu="zmi_views"
+      title="State permissions role"
+      template="state_permissions_role.pt"
+      permission="zope.Public"
+      />
+
 
 <!-- Transitions Container -->
 
@@ -102,8 +149,6 @@
     <page name="action.html" attribute="action" />
 
   </view>
-
-
 
 <!-- Transition -->
   <editform
