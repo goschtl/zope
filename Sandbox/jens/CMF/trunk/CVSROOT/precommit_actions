@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Actions executed (via commitinfo) at the start of a commit.
+
