@@ -134,7 +134,7 @@ class DirectoryManager:
             return self.entries[name]
         if case_insensitive:
             # Look for a case-insensitive match -- expensive!
-            # XXX There's no test case for this code!
+            # TODO: There's no test case for this code!
             nbase = normcase(name)
             matches = [b for b in self.entries if normcase(b) == nbase]
             if matches:

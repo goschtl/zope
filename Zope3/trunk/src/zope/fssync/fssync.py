@@ -201,9 +201,9 @@ class Network(PasswordManager):
         text/html, HTML formatting is removed using a primitive
         formatter.
 
-        XXX This doesn't support proxies or redirect responses.
+        TODO: This doesn't support proxies or redirect responses.
         """
-        # XXX Don't change the case of the header names; httplib might
+        # TODO: Don't change the case of the header names; httplib might
         # not treat them in a properly case-insensitive manner.
         assert self.rooturl
         if not path.endswith("/"):
@@ -492,7 +492,7 @@ class FSSync(object):
                 return
             shutil.copyfile(orig, target)
         elif isdir(target):
-            # XXX how to recurse?
+            # TODO: how to recurse?
             self.dirrevert(target)
         self.metadata.flush()
         if os.path.isdir(target):

@@ -20,7 +20,7 @@ from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
 from zope.xmlpickle import toxml
 
-# XXX This is a bug; we shouldn't depend on these packages at all.
+# TODO: This is a bug; we shouldn't depend on these packages at all.
 # Need to restructure.
 from zope.proxy import removeAllProxies
 from zope.app.fssync import fspickle
@@ -88,7 +88,7 @@ class DefaultFileAdpater(ObjectEntryAdapter):
     implements(IObjectFile)
 
     def __init__(self, context):
-        # XXX for now, remove all proxies.
+        # TODO: for now, remove all proxies.
         ObjectEntryAdapter.__init__(self, removeAllProxies(context))
 
     def getBody(self):

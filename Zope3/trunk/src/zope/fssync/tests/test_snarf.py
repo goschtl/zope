@@ -139,7 +139,7 @@ class TestUnsnarfer(unittest.TestCase):
         self.assertRaises(IOError, snf.translatepath, "a/")
         self.assertRaises(IOError, snf.translatepath, "")
 
-    # XXX More to add...
+    # TODO: More to add...
 
 def test_suite():
     s = unittest.TestSuite()

@@ -199,7 +199,7 @@ class TestMerger(TempFiles):
         self.assertEqual((action, state), ("Nothing", "Conflict"))
         self.assertEqual(lentry.get("conflict"), mtime)
 
-    # XXX need test cases for anomalies, e.g. files missing or present
+    # TODO: need test cases for anomalies, e.g. files missing or present
     # in spite of metadata, or directories instead of files, etc.
 
 def test_suite():

@@ -119,7 +119,7 @@ class TestNetwork(TempFiles):
         self.assertEqual(self.network.host_port, "host:8080")
 
     def test_findrooturl_notfound(self):
-        # XXX This test will fail if a file /tmp/@@Zope/Root exists :-(
+        # TODO: This test will fail if a file /tmp/@@Zope/Root exists :-(
         target = self.tempdir()
         self.assertEqual(self.network.findrooturl(target), None)
 

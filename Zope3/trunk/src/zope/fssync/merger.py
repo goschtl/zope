@@ -150,7 +150,7 @@ class Merger(object):
         return None
 
     def merge_files_merge(self, local, original, remote):
-        # XXX This is platform dependent
+        # TODO: This is platform dependent
         if exists(original):
             origfile = original
         else:

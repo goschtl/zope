@@ -52,9 +52,9 @@ class FSMerger(object):
             self.merge_dirs(local, remote)
         else:
             # One is a file, the other is a directory
-            # XXX We should be able to deal with this case, too
-            self.reporter("XXX %s" % local)
-            # XXX probably for the best; we *don't* know the right
+            # TODO: We should be able to deal with this case, too
+            self.reporter("TODO: %s" % local)
+            # TODO: probably for the best; we *don't* know the right
             # thing to do anyway
             return
         flag = self.metadata.getentry(local).get("flag")
@@ -85,7 +85,7 @@ class FSMerger(object):
             if isdir(target):
                 shutil.rmtree(target)
             else:
-                # XXX when should this ever happen?
+                # When should this ever happen?
                 os.remove(target)
         # remove the specials directory only if it's empty
         if isdir(dir):
@@ -302,7 +302,7 @@ class FSMerger(object):
         self.reporter("%s %s" % (letter, local))
 
     def ignore(self, path):
-        # XXX This should have a larger set of default patterns to
+        # TODO: This should have a larger set of default patterns to
         # ignore, and honor .cvsignore
         fn = basename(path)
         return (fn.endswith("~")
