@@ -14,15 +14,12 @@
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
 
-$Id: exceptionformatter.py,v 1.2 2002/12/25 14:13:38 jim Exp $
+$Id: exceptionformatter.py,v 1.3 2003/03/13 18:34:06 stevea Exp $
 """
-
 import sys
 import cgi
 
-
 DEBUG_EXCEPTION_FORMATTER = 1
-
 
 class TextExceptionFormatter:
 
@@ -55,6 +52,7 @@ class TextExceptionFormatter:
         if revision is not None:
             try:
                 revision = str(revision).strip()
+            # XXX bare except without a comment explaining it.
             except:
                 revision = '???'
         return revision
@@ -194,8 +192,7 @@ class TextExceptionFormatter:
         return result
 
 
-
-class HTMLExceptionFormatter (TextExceptionFormatter):
+class HTMLExceptionFormatter(TextExceptionFormatter):
 
     line_sep = '<br />\r\n'
 
@@ -219,7 +216,6 @@ class HTMLExceptionFormatter (TextExceptionFormatter):
 
     def formatLastLine(self, exc_line):
         return '</ul>%s</p>' % self.escape(exc_line)
-
 
 
 limit = 200
