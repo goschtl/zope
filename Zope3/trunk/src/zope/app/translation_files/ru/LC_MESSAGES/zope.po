@@ -16,7 +16,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Mar 24 14:22:31 2004\n"
+"POT-Creation-Date: Wed Mar 31 17:27:07 2004\n"
 "PO-Revision-Date: 2004-03-19 18:20+0000\n"
 "Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -684,7 +684,7 @@ msgstr ""
 
 #: src/zope/app/container/contained.py:582
 msgid "The given name is already being used"
-msgstr ""
+msgstr "Данное имя уже используется"
 
 #: src/zope/app/container/size.py:40
 msgid "1 item"
@@ -792,7 +792,7 @@ msgstr "Настройки"
 
 #: src/zope/app/errorservice/browser/configure.zcml:35
 msgid "Error Logging Service"
-msgstr ""
+msgstr "Сервис лога ошибок"
 
 #: src/zope/app/errorservice/browser/configure.zcml:35
 msgid "Error Reporting Service for Logging Errors"
@@ -892,7 +892,7 @@ msgstr "Заголовок"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "Event Service"
-msgstr ""
+msgstr "Сервис событий"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "An event service. One of these in the root is usually enough"
@@ -2086,12 +2086,12 @@ msgstr ""
 
 #: src/zope/app/presentation/browser/pagefolder.zcml:14
 msgid "Default Registration"
-msgstr ""
+msgstr "Регистрация по-умолчанию"
 
 #: src/zope/app/presentation/browser/pagefolder.zcml:14
 #: src/zope/app/presentation/browser/pagefolder.zcml:23
 msgid "Default registration parameters"
-msgstr ""
+msgstr "Параметры регистрации по-умолчанию"
 
 #: src/zope/app/presentation/browser/pagefolder.zcml:32
 msgid "Page Folder"
@@ -2365,7 +2365,7 @@ msgstr ""
 #: src/zope/app/registration/browser/__init__.py:115
 #: src/zope/app/registration/browser/changeregistrations.pt:19
 msgid "Disabled"
-msgstr ""
+msgstr "Заблокирован"
 
 #: src/zope/app/registration/browser/__init__.py:120
 msgid "Updated"
@@ -2387,7 +2387,7 @@ msgstr ""
 
 #: src/zope/app/registration/browser/editregistration.pt:37
 msgid "(disabled)"
-msgstr ""
+msgstr "(заблокирован)"
 
 # Default: "Top"
 #: src/zope/app/registration/browser/editregistration.pt:56
@@ -3385,7 +3385,7 @@ msgstr "Добавить сервис"
 
 #: src/zope/app/site/browser/configure.zcml:155
 msgid "Software"
-msgstr ""
+msgstr "Программное обеспечение"
 
 #: src/zope/app/site/browser/configure.zcml:163
 msgid "Add Site Management Folder"
@@ -3453,11 +3453,11 @@ msgstr "Интерфейс ${iface_name}"
 
 #: src/zope/app/site/browser/interfacedetail.pt:72
 msgid "Registrations for ${service_name} service"
-msgstr ""
+msgstr "Регистрация для ${service_name} сервиса"
 
 #: src/zope/app/site/browser/serviceactivation.pt:13
 msgid "Registrations for service ${service_type}"
-msgstr ""
+msgstr "Регистрация для сервиса ${service_type}"
 
 #: src/zope/app/site/browser/services.pt:18
 msgid "No services are registered."
@@ -3469,14 +3469,17 @@ msgid ""
 "The (change registration) link allows activating a different implementation "
 "or disabling the service altogether."
 msgstr ""
+"Если сервис не заблокирован - имя сервиса является ссылкой на активный сервис. "
+"Ссылка (изменить регистрацию) позволяет активировать другую реализацию сервиса или "
+"совсем запретить сервис."
 
 #: src/zope/app/site/browser/services.pt:5
 msgid "Services registered in this site manager"
-msgstr "Сервисы зарегистрированные в данном менеджере сайта"
+msgstr "Сервисы зарегистрированные для данной папки управления сайтом"
 
 #: src/zope/app/site/browser/services.pt:54
 msgid "(change registration)"
-msgstr ""
+msgstr "(изменить регистрацию)"
 
 # Default: "Deactivate"
 #: src/zope/app/site/browser/services.pt:68
@@ -3487,7 +3490,7 @@ msgstr "Деактивировать"
 
 #: src/zope/app/site/browser/tasks.pt:15
 msgid "label-tools"
-msgstr ""
+msgstr "Инструментарий"
 
 #: src/zope/app/site/browser/tasks.pt:18
 msgid ""
@@ -3498,28 +3501,38 @@ msgid ""
 "this site or provide new serivces and utilities (which may override existing "
 "tools)."
 msgstr ""
+"Иструментарий включает сервисы и утилиты. Сервисы регистрируют себя через "
+"Сервис Сервисов, утилиты через Сервис Утилит. Они могут выполнять следующие задачи: "
+"логгинг ошибок, переводы, аутентификацию и т.п. Вы можете конфигурировать сервисы и "
+"утилиты уже присутствующие для данного сайта или добавить новые сервисы и/или утилиты "
+"(которые могут взять на себя обязанности уже имеющегося инструментария)."
 
 # Default: "Configure services"
-#: src/zope/app/site/browser/tasks.pt:30 src/zope/app/site/browser/tasks.pt:36
+#: src/zope/app/site/browser/tasks.pt:30
 msgid "label-configure-services"
-msgstr ""
+msgstr "Конфигурировать сервисы"
+
+# Default: "Configure services"
+#: src/zope/app/site/browser/tasks.pt:36
+msgid "label-configure-utilities"
+msgstr "Конфигурировать утилиты"
 
 #: src/zope/app/site/browser/tasks.pt:43
 msgid "label-add-service"
-msgstr ""
+msgstr "Добавить сервис"
 
 #: src/zope/app/site/browser/tasks.pt:49
 msgid "label-add-utility"
-msgstr ""
+msgstr "Добавить утилиту"
 
 #: src/zope/app/site/browser/tasks.pt:5
 msgid "heading-common-site-management-tasks"
-msgstr ""
+msgstr "Общие задачи по управлению сайтом"
 
 # Default: "not available"
 #: src/zope/app/site/browser/tasks.pt:56
 msgid "label-software"
-msgstr ""
+msgstr "Программное обеспечение"
 
 #: src/zope/app/site/browser/tasks.pt:59
 msgid ""
@@ -3527,22 +3540,28 @@ msgid ""
 "The first step in creating a new software package is to create a new Site "
 "Management Folder to contain the software."
 msgstr ""
+"Вы может настроить поведение уже присутствующего программного обеспечения или "
+"определить новое. Первый шаг для создания нового пакета программного обеспечения - это "
+"создание новой папки управления сайтом которая будет содержать новое программное "
+"обеспечение."
 
 # Default: "Customize the behavior of existing software"
 #: src/zope/app/site/browser/tasks.pt:68
 msgid "label-customize-existing-software"
-msgstr ""
+msgstr "Настроить поведение имеющегося программного обеспечения"
 
 # Default: "Create a new Site Management Folder"
 #: src/zope/app/site/browser/tasks.pt:75
 msgid "label-create-new-site-management-folder"
-msgstr ""
+msgstr "Создать новую папку управления сайтом"
 
 #: src/zope/app/site/browser/tasks.pt:9
 msgid ""
 "The site management interface allows you to setup and configure software for "
 "this site."
 msgstr ""
+"Интерфейс управления сайтом позволит Вам установить и сконфигурировать "
+"программное обеспечение для данного сайта."
 
 # Default: "Remove"
 #: src/zope/app/site/browser/tool.pt:101
@@ -3561,7 +3580,7 @@ msgstr "Нет зарегистрированного инструментари
 #: src/zope/app/site/browser/tool.pt:30
 msgid "Unless a tool is disabled the tool name links to the active tool. ..."
 msgstr ""
-"Если сервис не заблокирован имя сервиса ссылается на активный "
+"Если инструментарий не заблокирован имя инструментария ссылается на активный "
 "инструментарий..."
 
 #: src/zope/app/site/browser/tool.pt:66
@@ -3842,7 +3861,7 @@ msgstr ""
 
 #: src/zope/app/utility/browser/utilities.pt:34
 msgid "change registration"
-msgstr ""
+msgstr "изменить регистрацию"
 
 #: src/zope/app/utility/browser/utilities.pt:6
 msgid "Utilities registered in this utility service"
