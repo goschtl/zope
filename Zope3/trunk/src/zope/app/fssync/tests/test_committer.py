@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.24 2004/01/14 21:50:30 fdrake Exp $
+$Id: test_committer.py,v 1.25 2004/02/24 16:50:53 philikon Exp $
 """
 
 import os
@@ -32,7 +32,7 @@ from zope.fssync.server.entryadapter import DefaultFileAdpater
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 
-from zope.app.content.fssync import DirectoryAdapter
+from zope.fssync.server.entryadapter import DirectoryAdapter
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.traversing import IContainmentRoot
@@ -163,8 +163,7 @@ class TestSyncerModule(TestBase):
         shutil.rmtree(self.location)
 
     def test_toFS(self):
-        from zope.app.content.file import File
-        obj = File(contentType='text/plain')
+        obj = Sample()
         syncer.toFS(obj, "foo", self.location)
 
     def test_getSerializer(self):
