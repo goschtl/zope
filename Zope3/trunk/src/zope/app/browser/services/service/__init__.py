@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.15 2004/02/09 03:54:06 bjdean Exp $
+$Id: __init__.py,v 1.16 2004/02/09 05:06:21 richard Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -29,8 +29,10 @@ from zope.app.interfaces.services.service import ILocalService
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.services.service import ServiceRegistration
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.services.service import ISite
+from zope.app.interfaces.services.service import ISite, ISiteManager
 from zope.app.services.service import SiteManager
+from zope.app.component.nextservice import getNextServiceManager
+from zope.component.service import IGlobalServiceManager
 
 class ComponentAdding(Adding):
     """Adding subclass used for registerable components."""
@@ -312,25 +314,59 @@ class ServiceSummary(BrowserView):
         return s
 
     def listConfiguredServices(self):
-        names = list(self.context.listRegistrationNames())
-        names.sort()
+        return gatherConfiguredServices(self.context, self.request)
 
-        items = []
-        for name in names:
-            registry = self.context.queryRegistrations(name)
-            assert registry
-            infos = [info for info in registry.info() if info['active']]
-            if infos:
-                configobj = infos[0]['registration']
-                component = configobj.getComponent()
-                url = str(
-                    zapi.getView(component, 'absolute_url', self.request))
-            else:
-                url = ""
-            items.append({'name': name, 'url': url})
+def gatherConfiguredServices(sm, request, items=None):
+    """Find all s/service/site managers up to the root and gather info
+    about their services.
+    """
+    if items is None:
+        items = {}
+        manageable = True      # is manageable from this View (easily)
+        # make sure no-one tries to use this starting at the global service
+        # manager
+        assert ISiteManager.isImplementedBy(sm)
+    else:
+        manageable = False
 
-        return items
+    if IGlobalServiceManager.isImplementedBy(sm):
+        # global service manager
+        names = []
+        for type_name, interface in sm.getServiceDefinitions():
+            if items.has_key(type_name):
+                # a child has already supplied one of these
+                continue
+            if sm.queryService(type_name) is not None:
+                names.append(type_name)
+                items[type_name] = {'name': type_name, 'url': '',
+                    'manageable': False, 'parent': 'global'}
+        return
 
+    for name in sm.listRegistrationNames():
+        if items.has_key(name):
+            # a child has already supplied one of these
+            continue
+
+        registry = sm.queryRegistrations(name)
+        assert registry
+        infos = [info for info in registry.info() if info['active']]
+        if infos:
+            configobj = infos[0]['registration']
+            component = configobj.getComponent()
+            url = str(
+                zapi.getView(component, 'absolute_url', request))
+        else:
+            url = ""
+        items[name] = {'name': name, 'url': url, 'manageable': manageable,
+            'parent': 'parent'}
+
+    # look for more
+    gatherConfiguredServices(getNextServiceManager(sm), request, items)
+
+    # make it a list and sort by name
+    items = items.values()
+    items.sort(lambda a,b:cmp(a['name'], b['name']))
+    return items
 
 class ServiceActivation(BrowserView):
     """A view on the service manager, used by serviceactivation.pt.

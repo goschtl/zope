@@ -31,25 +31,32 @@
     
         <table>
           <tr tal:repeat="reg registries">
-            <td><input type="checkbox" name="selected:list"
-                       tal:attributes="value reg/name" /></td>
+            <td><input tal:condition="reg/manageable" type="checkbox"
+                       name="selected:list" tal:attributes="value reg/name" />
+            </td>
             <td>
+             <tal:block condition="reg/manageable">
               <a href="(link to the active service)"
                  tal:condition="reg/url"
                  tal:attributes= "href reg/url"
                  tal:content="reg/name">
                 Foobar (the service type)
               </a>
-              <span tal:condition="not:reg/url">
-                <span tal:content="reg/name" />(disabled)</span>
+             <span tal:condition="not:reg/url"
+                   tal:replace="string:${reg/name} (disabled)" />
+             </tal:block>
+             <span tal:condition="not:reg/manageable" tal:replace="reg/name" />
             </td>
             <td>
+             <tal:block condition="reg/manageable">
               <a href="xxx"
-                 tal:attributes=
-                 "href string:@@serviceActivation.html?type=${reg/name}"
+                 tal:condition="reg/manageable"
+                 tal:attributes="href string:@@serviceActivation.html?type=${reg/name}"
                  i18n:translate="">
                 (change registration)
               </a>
+             </tal:block>
+              <span tal:condition="not:reg/manageable" tal:replace="reg/parent" />
             </td>
           </tr>
         </table>

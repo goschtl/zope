@@ -1,6 +1,6 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
-  <title metal:fill-slot="title" i18n:translate="">View Error Log Report</title>
+  <title metal:fill-slot="title" i18n:translate="">Configure Error Log</title>
 </head>
 <body>
 <div metal:fill-slot="body">
