@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IServiceManager.py,v 1.5 2002/11/30 18:39:16 jim Exp $
+$Id: IServiceManager.py,v 1.6 2002/12/09 15:16:35 ryzaja Exp $
 """
 from Zope.ComponentArchitecture.IServiceService import IServiceService
 from Zope.App.OFS.Services.ConfigurationInterfaces import IConfigurable
@@ -36,8 +36,8 @@ class IServiceManager(IServiceService, IComponentManager, IConfigurable):
         """Return an IConfigurationRegistry for a service type
         """
 
-    def createConfigurationsFor(configuration):
-        """Create and return an IConfigurationRegistry a service type
+    def createConfigurations(service_type):
+        """Create and return an IConfigurationRegistry for a service type
         """
 
     def getBoundService(name):
