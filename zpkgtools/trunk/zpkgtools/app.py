@@ -89,7 +89,7 @@ class BuilderApplication(Application):
         #
         release_name = self.options.release_name
         self.target_name = "%s-%s" % (release_name, self.options.version)
-        self.target_file = self.target_name + ".tar.bz2"
+        self.target_file = self.target_name + ".tgz"
         self.destination = os.path.join(self.tmpdir, self.target_name)
         os.mkdir(self.destination)
 
@@ -251,7 +251,7 @@ class BuilderApplication(Application):
         """
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
-        cmdline = ("tar", "cjf", self.target_file, self.target_name)
+        cmdline = ("tar", "czf", self.target_file, self.target_name)
         runlog.report_command(" ".join(cmdline))
         try:
             rc = os.spawnlp(os.P_WAIT, cmdline[0], *cmdline)
