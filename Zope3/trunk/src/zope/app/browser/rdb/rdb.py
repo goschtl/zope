@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.1 2003/02/07 15:48:39 jim Exp $
+$Id: rdb.py,v 1.2 2003/03/25 11:43:07 tseaver Exp $
 """
 from zope.component import getFactory
 from zope.proxy.introspection import removeAllProxies
@@ -51,7 +51,6 @@ class Connection(BrowserView):
     def disconnect(self):
         self.context.disconnect()
         return self.request.response.redirect(self.request.URL[-1])
-
 
 class AdapterAdd(BrowserView):
     """A base class for Zope database adapter adding views.
