@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Expression Type Tests
 
-$Id: test_sqlexpr.py,v 1.1 2004/02/27 14:39:41 philikon Exp $
+$Id: test_sqlexpr.py,v 1.2 2004/03/04 02:06:15 philikon Exp $
 """
 
 import unittest
@@ -33,7 +33,7 @@ __metaclass__ = type
 class ConnectionStub:
 
     def __init__(self):
-        self._called={}
+        self._called = {}
 
     def cursor(self):
         return CursorStub()
@@ -43,13 +43,13 @@ class ConnectionStub:
 
     def commit(self, *ignored):
         v = self._called.setdefault('commit',0)
-        v+=1
-        self._called['commit']=v
+        v += 1
+        self._called['commit'] = v
 
     def rollback(self, *ignored):
         v = self._called.setdefault('rollback',0)
-        v+=1
-        self._called['rollback']=v
+        v += 1
+        self._called['rollback'] = v
 
 class CursorStub:
 
@@ -86,7 +86,7 @@ class FactoryStub:
 class SQLExprTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(SQLExprTest, self).setUp()
         self.context = Data(vars = {'rdb': 'rdb_conn',
                                     'dsn': 'dbi://test'})
         self.engine = Engine
@@ -105,9 +105,7 @@ class SQLExprTest(PlacelessSetup, unittest.TestCase):
         self.assertRaises(NoConnectionSpecified, expr, Data(vars={}))
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(SQLExprTest),
-                        ))
+    return unittest.TestSuite((unittest.makeSuite(SQLExprTest),))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())
