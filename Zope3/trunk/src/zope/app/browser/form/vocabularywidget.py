@@ -103,8 +103,10 @@ class ViewSupport:
     """Helper class for vocabulary and vocabulary-query widgets."""
 
     def textForValue(self, term):
-        # Extract the value from the term.  This can be overridden to
-        # support more complex term objects.
+        # Extract a string from the term.  This can be overridden to
+        # support more complex term objects.  The token is returned
+        # here since it's the only thing known to be a string, or
+        # str()able.
         return term.token
 
     def mkselectionlist(self, type, info, name):
