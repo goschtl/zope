@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+
+<!-- Register the Traverser -->
+<browser:page
+    name="_traverse"
+    for=".ICaseInsensitiveFolder"
+    class=".CaseInsensitiveContainerTraverser"
+    permission="zope.Public"
+    />
+
+<!-- Case-insensitive Folder Registration -->
+<factory
+    id="zope.CaseInsensitiveFolder"
+    permission="zope.ManageContent"
+    component=".caseInsensitiveFolderFactory"
+    />
+
+<browser:addMenuItem
+    factory="zope.CaseInsensitiveFolder"
+    title="Case insensitive Folder" 
+    description="A simple case insensitive Folder." 
+    permission="zope.ManageContent"
+    />
+
+<browser:icon
+    name="zmi_icon"
+    for=".interfaces.ICaseInsensitiveFolder"
+    file="cifolder_icon.png"
+    />
+
+</configure>
