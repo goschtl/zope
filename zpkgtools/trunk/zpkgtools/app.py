@@ -114,6 +114,10 @@ class BuilderApplication(Application):
         self.support_packages = DEFAULT_SUPPORT_PACKAGES[:]
         self.support_packages.extend(
             [(pkg, None) for pkg in options.support_packages])
+        self.exclude_packages = sets.Set()
+        for pkg in options.exclude_packages:
+            if pkg not in self.exclude_packages:
+                self.exclude_packages.add(pkg)
 
     def build_distribution(self):
         """Create the distribution tree.
@@ -128,7 +132,7 @@ class BuilderApplication(Application):
         if self.options.collect:
             depsdir = os.path.join(self.destination, "Dependencies")
             first = True
-            handled = sets.Set()
+            handled = self.exclude_packages.copy()
             handled.add(self.resource)
             remaining = top.get_dependencies() - handled
             while remaining:
@@ -611,6 +615,11 @@ def parse_args(argv):
     parser.add_option(
         "--distribution", dest="distribution_class",
         help="name of the distribution class", metavar="CLASS")
+    parser.add_option(
+        "-x", "--exclude", dest="exclude_packages", action="append",
+        default=[], metavar="PACKAGE",
+        help=("resource to exclude the from distribution"
+              " (dependencies will be ignored)"))
 
     options, args = parser.parse_args(argv[1:])
     if len(args) != 1:

@@ -80,6 +80,12 @@ The following command line options are provided:
 --version
   Print the version number of **zpkg** and exit.
 
+-x PACKAGE, --exclude=PACKAGE
+  Name a resource (usually a Python package) to exclude the from
+  distribution.  Dependencies of the named package will be included
+  due to `PACKAGE` needing them, but may be included due to an another
+  dependency.  This option may be given as many times as needed.
+
 If neither **-C** nor **-f** is specified on the command line, a
 default configuration file is loaded if it exists.  This is
 `~/.zpkg/zpkg.conf` on Unix and `~/zpkg/zpkg.conf` on Windows (note

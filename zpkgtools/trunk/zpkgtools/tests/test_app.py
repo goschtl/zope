@@ -256,6 +256,19 @@ class CommandLineTestCase(unittest.TestCase):
         options = self.parse_args(["--support", "pkg1", "--support=pkg2"])
         self.assertEqual(options.support_packages, ["pkg1", "pkg2"])
 
+    def test_exclude_resources(self):
+        options = self.parse_args([])
+        self.assertEqual(options.exclude_packages, [])
+        # one package, short option:
+        options = self.parse_args(["-x", "pkg"])
+        self.assertEqual(options.exclude_packages, ["pkg"])
+        # one package, long option:
+        options = self.parse_args(["--exclude", "pkg"])
+        self.assertEqual(options.exclude_packages, ["pkg"])
+        # two packages:
+        options = self.parse_args(["--exclude=pkg1", "-xpkg2"])
+        self.assertEqual(options.exclude_packages, ["pkg1", "pkg2"])
+
 
 class ComponentTestCase(unittest.TestCase):
 
