@@ -712,7 +712,15 @@ class xmlPickler:
         if tag == 'global':
             top = self.global_(tag, top)
         else:
-            top = getattr(self, tag)(tag, top)
+            try:
+                m = getattr(self, tag)
+            except AttributeError:
+                try: tag = tag.encode('us-ascii')
+                except: pass
+                raise ValueError(
+                    "unrecognized element in XML pickle: %r" % tag)
+            else:
+                top = m(tag, top)
 
         self._append(top)
 
