@@ -81,12 +81,13 @@ class HookTestCase(unittest.TestCase):
         hook.install_reporter(self.report)
         import sys
         import sys
-        from hook import install_reporter
+        from sample import THE_ANSWER
         self.assertEqual(
             self.reports,
             [(__name__, "sys", "sys", None),
              (__name__, "sys", "sys", None),
-             (__name__, "zope.importtool.hook", "hook", ("install_reporter",)),
+             (__name__, "zope.importtool.tests.sample", "sample",
+              ("THE_ANSWER",)),
              ])
 
     def test_exception_from_reporter(self):
@@ -101,4 +102,3 @@ class HookTestCase(unittest.TestCase):
 
 def test_suite():
     return unittest.makeSuite(HookTestCase)
-
