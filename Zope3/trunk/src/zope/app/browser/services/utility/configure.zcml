@@ -6,9 +6,8 @@
   <!-- "Add service" menu entry to add a utility service -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
-      menu="add_service"
+      menu="add_service" title="Utility Service"
       action="zope.app.services.UtilityService"
-      title="Utility Service"
       permission="zope.ManageServices"
       />
 
@@ -31,8 +30,7 @@
       template="utilities.pt"
       class=".useconfiguration.Utilities"
       permission="zope.ManageServices"
-      menu="zmi_views"
-      title="Utilities"
+      menu="zmi_views" title="Utilities"
       />
 
   <!-- Configuration page for utility objects.  You get here by
