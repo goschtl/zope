@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.2 2002/12/31 18:41:47 jeremy Exp $
+$Id: test_module.py,v 1.3 2003/01/09 13:51:20 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -33,7 +33,7 @@ from zope.app.interfaces.services.configuration import Registered
 from zope.component.service import serviceManager
 from zope.proxy.context import ContextWrapper as cw
 from zope.app.services.module import Manager
-from zodb.storage.file import FileStorage
+from zodb.storage.mapping import MappingStorage
 from zodb.db import DB
 from transaction import get_transaction
 
@@ -68,7 +68,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
                     "x=1\n"
                     )
 
-        db = DB(FileStorage('test.fs', create=1))
+        db = DB(MappingStorage())
         conn = db.open()
         root = conn.root()
         root['Application'] = self.rootFolder
