@@ -71,24 +71,8 @@ def updateSettings(fspath, root):
             if not isNewObject(sandbox_path):
                 mappings[zopedb_path] = sandbox_path
 
-                fmt_sandbox_path = ''
-                fmt_original_path = ''
-                for dir in sandbox_path.split(os.sep):
-                    if ' ' in dir:
-                        fmt_sandbox_path = os.path.join(fmt_sandbox_path,
-                                                        "'"+dir+"'")
-                    else:
-                        fmt_sandbox_path = os.path.join(fmt_sandbox_path, dir)
-
-                for dir in original_path.split(os.sep):
-                    if ' ' in dir:
-                        fmt_original_path = os.path.join(fmt_original_path,
-                                                         "'"+dir+"'")
-                    else:
-                        fmt_original_path = os.path.join(fmt_original_path,
-                                                         dir)
-                fmt_sandbox_path = os.sep + fmt_sandbox_path
-                fmt_original_path = os.sep + fmt_original_path
+                fmt_sandbox_path = commands.mkarg(sandbox_path)
+                fmt_original_path = commands.mkarg(original_path)
 
                 ob = getObject(zopedb_path, root)
                 zopedb_temp_file = createTempfile(ob, zopedb_path)
