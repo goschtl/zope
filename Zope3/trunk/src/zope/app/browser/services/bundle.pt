@@ -1,6 +1,6 @@
 <html metal:use-macro="views/standard_macros/page">
 
-<div metal:fill-slot="body">
+<div metal:fill-slot="body" tal:define="message view/update">
 
 <h1>Bundle Information</h1>
 
@@ -8,23 +8,24 @@
 
 <ul>
   <li tal:repeat="svc view/listServices">
-    <i tal:content="svc/service">Foo</i> service
+    <i tal:content="svc/service">Foo</i> service:
     <span tal:condition="svc/insite">
       present in site at
-      <a tal:content="svc/path" tal:attributes="href svc/path">/somewhere</a>
+      <a tal:content="svc/path" tal:attributes="href svc/path">/path</a>
     </span>
     <span tal:condition="not:svc/insite">
       <span tal:condition="svc/inbundle">
-        present in bundle at
+        configured in bundle at
         <a tal:content="svc/inbundle"
-           tal:attributes="href svc/inbundle">somewhere</a>
+           tal:attributes="href svc/inbundle">path</a>
       </span>
       <span tal:condition="not:svc/inbundle">
         <font size="+1" color="red">
-          <i><b>UNFULFILLED DEPENDENCY</b></i>
+          <b>UNFULFILLED DEPENDENCY</b>
         </font>
-        <br><b>(You must add a <i tal:content="svc/service">Foo</i>
-        service to this site before you can activate this bundle)</b>
+        <br><b>(You must <a href="../default/AddService">add a
+        <i tal:content="svc/service">Foo</i>
+        service to this site</a> before you can activate this bundle)</b>
       </span>
     </span>
   </li>
@@ -32,24 +33,64 @@
 
 <h4>Configurations in this bundle</h4>
 
-<tal:block tal:repeat="svc view/listServices">
+  <div class="message" tal:condition="message">
+    <span tal:replace="message">view/update message here</span>
+    <br><br><i><a href="@@bundle.html">(click to clear message)</a></i>
+  </div>
 
-  <p>For <i tal:content="svc/service">Foo</i> service</p>
+<form action="@@bundle.html" method="GET">
 
-  <ul>
-    <tal:block tal:repeat="cnf view/listConfigurations">
-      <li tal:condition="python: cnf['service'] == svc['service']">
-        <a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
-        (status <b tal:content="cnf/status">Active</b>)
-        <br>
-        <i tal:content="cnf/usage">Usage summary</i>
-        implemented by
-        <i tal:content="cnf/implementation">Implementation summary</i>
-      </li>
-    </tal:block>
-  </ul>
+  <p><input type="submit" value="Submit all changes" /></p>
 
-</tal:block>
+  <p><input type="reset" value="Reset form" /></p>
+
+  <p>
+    <input type="checkbox" name="allclear" value="1" />
+    Unregister all configurations in this bundle (ignoring the rest of
+    this form).
+  </p>
+
+  <tal:block tal:repeat="svc view/listServices">
+
+    <p>For <i tal:content="svc/service">Foo</i> service</p>
+
+    <ul>
+      <tal:block tal:repeat="cnf view/listConfigurations">
+        <li tal:condition="python: cnf['service'] == svc['service']">
+          <a tal:content="cnf/path" tal:attributes="href cnf/path">path</a>
+          <br>
+          <i tal:content="cnf/usage">Usage summary</i>
+          implemented by
+          <i tal:content="cnf/implementation">Implementation summary</i>
+          <br>
+          <span tal:condition="not:cnf/conflict">
+            Advice:
+            <b><input type="radio" tal:attributes="name cnf/path"
+                   value="Registered" />Registered</b>
+            <b><input type="radio" tal:attributes="name cnf/path"
+                   value="Active" checked />Active</b>
+	  </span>
+          <span tal:condition="cnf/conflict">
+            <font color="red">
+              Conflicts with <a tal:content="cnf/conflict"
+                                 tal:attributes="href cnf/conflict">path</a>
+            </font>
+            <br>Advice:
+            <b><input type="radio" tal:attributes="name cnf/path"
+                   value="Registered" checked />Registered</b>
+            <b><input type="radio" tal:attributes="name cnf/path"
+                   value="Active" />Active</b>
+          </span>
+          (currently <span tal:replace="cnf/status">Active</span>)
+        </li>
+      </tal:block>
+    </ul>
+
+  </tal:block>
+
+  <p><input type="submit" value="Submit all changes" /></p>
+
+</form>
 
 </div>
 
