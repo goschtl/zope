@@ -13,7 +13,7 @@
 ##############################################################################
 """A configuration for a database adapter.
 
-$Id: connection.py,v 1.5 2003/04/24 14:36:54 gvanrossum Exp $
+$Id: connection.py,v 1.6 2003/04/24 15:00:43 gvanrossum Exp $
 """
 
 from zope.schema import TextLine
@@ -35,7 +35,7 @@ class IConnectionConfiguration(IComponentConfiguration):
                     description=u"The name that is registered",
                     readonly=True,
                     required=True,
-                    # XXX And yet, an empty name is accepted???
+                    min_length=1,
                     )
     
     componentPath = ComponentPath(
