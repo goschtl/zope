@@ -167,9 +167,6 @@ To Do
   * Something akin to **cvs -n** update, which shows what update would
     do without actually doing it.
 
-  * Make the commands more closely match Subversion, since the model
-    is more similar.
-
   * Add support for HTTP proxies.
 
   * Implement **diff** using ``difflib``.  (is this really needed?)
@@ -181,7 +178,7 @@ To Do
   * Add unit tests for ``zope.app.fssync.syncer``.
 
   * More refactoring and cleanup of the **zsync** utility (the
-    ``zope.fssync.main`` module)
+    ``zope.fssync.main`` module; partially done)
 
   * Use camelCase for public method names.
 
