@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.5 2003/02/12 20:42:46 jim Exp $
+$Id: test_contents.py,v 1.6 2003/02/12 20:46:49 fdrake Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -147,7 +147,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         urls = map( lambda x: x['url'], info_list )
         self.assert_( 'subcontainer' in urls )
 
-    # XXX This test fails dur to:
+    # XXX This test fails due to:
     # - inadequate setup and
     # - bugs in the code it's testing.
     # :(
