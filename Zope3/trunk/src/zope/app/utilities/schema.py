@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.3 2003/08/17 06:08:33 philikon Exp $
+$Id: schema.py,v 1.4 2003/08/18 18:52:55 srichter Exp $
 """
 from persistence.dict import PersistentDict
 from zope.app import zapi
@@ -156,6 +156,8 @@ class SchemaRegistration(UtilityRegistration):
         schema.setName('<schema not activated>')
     deactivated = ContextMethod(deactivated)
 
+
+# XXX: This needs refactoring
 class MutableSchemaContent:
 
     implements(IMutableSchemaContent)
