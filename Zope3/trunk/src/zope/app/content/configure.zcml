@@ -69,6 +69,47 @@
    permission="zope.View"
    />
 
+
+<!-- Copy/Paste/Move support -->
+<!-- We declare only for folders at this point because we don't yet
+     properly handle copy/cut/paste accross container types
+  -->
+
+<adapter
+   provides="zope.app.interfaces.container.ICopySource"
+   for="zope.app.interfaces.content.folder.IFolder"
+   permission="zope.ManageContent"
+   factory="zope.app.container.copypastemove.CopySource"
+   />
+
+<adapter
+   provides="zope.app.interfaces.container.INoChildrenCopySource"
+   for="zope.app.interfaces.content.folder.IFolder"
+   permission="zope.ManageContent"
+   factory="zope.app.container.copypastemove.NoChildrenCopySource"
+   />
+
+<adapter
+   provides="zope.app.interfaces.container.IMoveSource"
+   for="zope.app.interfaces.content.folder.IFolder"
+   permission="zope.ManageContent"
+   factory="zope.app.container.copypastemove.MoveSource"
+   />
+
+<adapter
+   provides="zope.app.interfaces.container.IPasteTarget"
+   for="zope.app.interfaces.content.folder.IFolder"
+   permission="zope.ManageContent"
+   factory="zope.app.container.copypastemove.PasteTarget"
+   />
+
+<adapter
+   provides="zope.app.interfaces.container.IPasteNamesChooser"
+   for="zope.app.interfaces.content.folder.IFolder"
+   permission="zope.ManageContent"
+   factory="zope.app.container.copypastemove.PasteNamesChooser"
+   />
+
 <!-- XXX Do we really need RootFolder? -->
 
 <content class="zope.app.content.folder.RootFolder">
