@@ -28,3 +28,7 @@ Let's look at an example:
   
   >>> da.useSSL
   False
+
+  >>> dn = 'Manager'
+  >>> pw = ''
+  >>> con = da.connect(dn, pw)
