@@ -26,16 +26,26 @@ from zope.app.event.tests.placelesssetup import getEvents
 def setUp(test):
     import fakeldap
     if sys.modules.has_key('_ldap'):
-        test.old_ldap = sys.modules['_ldap']
+        test.old_uldap = sys.modules['_ldap']
         del sys.modules['_ldap']
     else:
+        test.old_uldap = None
+    if sys.modules.has_key('ldap'):
+        test.old_ldap = sys.modules['ldap']
+        del sys.modules['ldap']
+    else:
         test.old_ldap = None
-    sys.modules['_ldap'] = fakeldap
+    sys.modules['ldap'] = fakeldap
+    import ldap
 
 def tearDown(test):
-    del sys.modules['_ldap']
+    del sys.modules['ldap']
+    if test.old_uldap is not None:
+        del sys.modules['_ldap']
+        sys.modules['_ldap'] = test.old_uldap
     if test.old_ldap is not None:
-        sys.modules['_ldap'] = test.old_ldap
+        sys.modules['ldap'] = test.old_ldap
+    import ldap
 
 def test_suite():
     return unittest.TestSuite((
