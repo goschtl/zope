@@ -5,7 +5,10 @@
 
   <browser:view name="SelectedManagementView.html"
                 permission="Zope.View"
-                factory=".ManagementViewSelector." />
+                factory=".ManagementViewSelector." 
+                allowed_interface="Zope.Publisher.Browser.IBrowserPublisher."
+                allowed_attributes="__call__"
+  />
 
   <include package=".ZopeTop" />
 
