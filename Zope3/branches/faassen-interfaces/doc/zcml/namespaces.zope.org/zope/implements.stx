@@ -1,0 +1,21 @@
+The implements subdirective of the content directive.
+
+See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+
+Overview
+
+  The implements subdirective lets you assert that a component
+  implements a given interface.
+  
+Attributes
+
+  * interface, the interface that is implemented
+  
+Example::
+
+  <content class=".contact.Contact">
+    <implements interface=".interfaces.IContact" />
+  </content>
+
+
+  

@@ -1,0 +1,27 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:fssync="http://namespaces.zope.org/fssync">
+
+  <content class=".Bundle">
+    <factory />
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        attributes="getRegistrationManager resolve" 
+        />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+        />
+  </content>
+
+  <fssync:adapter
+      class=".Bundle"
+      factory="zope.fssync.server.entryadapter.DirectoryAdapter"
+      />
+
+  <include package=".browser" />
+
+</configure>
