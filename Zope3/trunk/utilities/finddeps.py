@@ -41,7 +41,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.16 2004/04/07 17:27:14 fdrake Exp $
+$Id: finddeps.py,v 1.17 2004/04/07 17:47:36 fdrake Exp $
 """
 import sys
 import getopt
@@ -181,6 +181,8 @@ class ImportFinder:
             self.module_checks[name] = name in sys.modules
 
     def transition(self, type, string, lineno):
+        if type == tokenize.COMMENT:
+            return
         entry = self.state_table.get((self.state, (type, string)))
         if entry is not None:
             self.state = entry[0]
@@ -248,7 +250,7 @@ class ImportFinder:
 
     def action_save(self, type, string, lineno):
         if self.name:
-            assert not self.name.endswith(".")
+            assert not self.name.endswith("."), repr(self.name)
             name = self.name
             if self.prefix:
                 name = "%s.%s" % (self.prefix, name)
@@ -256,8 +258,8 @@ class ImportFinder:
             self.name = ""
 
     def action_setprefix(self, type, string, lineno):
-        assert self.name
-        assert not self.name.endswith(".")
+        assert self.name, repr(self.name)
+        assert not self.name.endswith("."), repr(self.name)
         self.prefix = self.name
         self.name = ""
 
