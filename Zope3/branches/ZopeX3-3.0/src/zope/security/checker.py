@@ -20,6 +20,9 @@ Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 
+Note that the ZOPE_WATCH_CHECKERS mechanism will eventually be
+replaces with a more general ecurity auditing mechanism.
+
 $Id$
 """
 import os
