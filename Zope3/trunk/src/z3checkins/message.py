@@ -15,7 +15,7 @@ import time
 from StringIO import StringIO
 from datetime import datetime, tzinfo, timedelta
 
-from persistence import Persistent
+from persistent import Persistent
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import FileWidget
 from zope.app.container.interfaces import IReadContainer
