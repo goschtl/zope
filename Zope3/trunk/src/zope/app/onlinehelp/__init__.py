@@ -16,7 +16,7 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.8 2003/06/13 17:41:18 stevea Exp $
+$Id: __init__.py,v 1.9 2003/06/24 14:58:14 rogerineichen Exp $
 """
 import os
 from zope.app.container.sample import SampleContainer
@@ -60,7 +60,13 @@ class OnlineHelpTopic(SampleContainer):
         raw = open(self._content_path).read()
 
         if self._doc_type == 'txt':
-            return '<p>' + raw.replace('\n\n', '\n</p><p>') + '</p>'
+            # XXX This should be cleaned up when reST is implemented
+            raw = raw.replace('<', '&lt;')
+            raw = raw.replace('>', '&gt;')
+            raw = '<p>' + raw.replace('\n\n', '\n</p><p>') + '</p>'
+            raw = raw.replace('\n', '<br>')
+            raw = raw.replace('  ', '&nbsp;&nbsp;')
+            return raw
         else:
             return raw
 
