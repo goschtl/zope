@@ -22,6 +22,6 @@
       filter="python:request.getURL().find('++help++')==-1"
       menu="help_actions"
       title="Help"
-      action="++help++/++skin++Onlinehelp/@@index.html" /> 
+      action="++help++/@@index.html" /> 
  
 </configure>
