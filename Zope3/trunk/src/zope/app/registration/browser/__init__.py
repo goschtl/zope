@@ -33,6 +33,12 @@ from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
 class RegistrationView(BrowserView):
+    """View for registerable objects that have at most one registration.
+
+    If the object has more than one registration, this performs a
+    redirection to the 'registrations.html' view.
+
+    """
 
     def __init__(self, context, request):
         super(RegistrationView, self).__init__(context, request)
@@ -68,6 +74,7 @@ class RegistrationView(BrowserView):
 
 
 class Registered(object):
+    """View for registerable objects that more than one registration."""
 
     def __init__(self, context, request):
         self.context = context

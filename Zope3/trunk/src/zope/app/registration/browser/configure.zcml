@@ -67,7 +67,11 @@
       class="zope.app.exception.browser.user.UserErrorView" />
 
 
-<!-- Generic page for objects that keep track of their registrations -->
+<!-- Generic page for objects that keep track of their registrations.
+     Objects that need to override one of these may need to override
+     both.  The "registrations.html" page is only used for objects
+     that have more than one registration.
+     -->
 
   <page
       for="zope.app.registration.interfaces.IRegisterable"
