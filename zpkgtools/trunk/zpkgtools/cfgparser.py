@@ -27,9 +27,28 @@ import re
 
 
 class ConfigurationError(Exception):
-    """Exception raised for errors in a configuration file."""
+    """Exception raised for errors in a configuration file.
+
+    :ivar url: URL of the resource being read when the error was
+      detected.
+
+    :ivar lineno: Line number within the resource at which the
+      error was detected.
+
+    """
 
     def __init__(self, message, url=None, lineno=None):
+        """Initialize the ConfigurationError instance.
+
+        :param message: Text of the error message.
+
+        :param url: URL of the resource being read when the error was
+          detected.
+
+        :param lineno: Line number within the resource at which the
+          error was detected.
+
+        """
         Exception.__init__(self, message)
         self.url = url
         self.lineno = lineno
@@ -54,13 +73,13 @@ class Schema:
     def __init__(self, toplevel, typedefs=None):
         """Initialize a schema definition based on type definitions.
 
-        'toplevel' is a type definition that represents the otherwise
-        anonymous top-level section of a configuration.
+        :param toplevel: Type definition that represents the otherwise
+          anonymous top-level section of a configuration.
 
-        'typedefs' is a mapping from typenames (which must be given as
-        lower-case strings) to type definitions.  Only section types
-        specified in 'typedefs' can be used anywhere in configurations
-        described by the schema.
+        :param typedefs: Mapping from typenames (which must be given
+          as lower-case strings) to type definitions.  Only section
+          types specified in `typedefs` can be used anywhere in
+          configurations described by the schema.
 
         """
         self._toplevel = toplevel
@@ -69,6 +88,14 @@ class Schema:
         self._typedefs = typedefs
 
     def getConfiguration(self):
+        """Return a configuration object for the top-level section.
+
+        :return: New configuration object.
+
+        The attributes of the configuration object represent values
+        that have not been specified in a configuration file; these
+        will be filled in during parsing.
+        """
         return self.createSection(None, None, self._toplevel)
 
     def startSection(self, parent, typename, name):
@@ -152,6 +179,7 @@ _nulljoin = "".join
 
 
 class Parser:
+    """Parser for ZConfig-like configuration files."""
 
     def __init__(self, file, url, schema):
         self.schema = schema
