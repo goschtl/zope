@@ -2,6 +2,9 @@ CMF 1.4.1 (unreleased)
 
   Bug Fixes
   
+    - utils (CMFCore): Fixed buglet in 'minimalpath()'.
+      Didn't work correctly with a second 'Products' in the path.
+
     - Skinnable: Fix acquisition wrapping so that getPhysicalPath is not
       spoofed during funny traversals.
 
