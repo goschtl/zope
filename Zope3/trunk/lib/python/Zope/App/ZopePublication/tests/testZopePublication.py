@@ -71,7 +71,6 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
             get_transaction().commit()
 
         connection.close()
-
         
         from Zope.App.Traversing.Namespaces import provideNamespaceHandler
         from Zope.App.Traversing.PresentationNamespaces import view, resource
@@ -80,8 +79,6 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         provideNamespaceHandler('resource', resource)
         provideNamespaceHandler('etc', etc)
 
-
-        
     def tearDown(self):
         setSecurityPolicy(self.policy) # XXX still needed?
         PlacelessSetup.tearDown(self)
@@ -138,16 +135,13 @@ class ServiceManager:
         return serviceManager.getService(name)
 
 
-
 class ZopePublicationTests(BasePublicationTests):
     klass = ZopePublication
 
-    def testPlacefullAuth(self):
+    def testPlacefulAuth(self):
         principalRegistry.defineDefaultPrincipal('anonymous', '')
         
-        db = self.db
-        connection = db.open()
-        root = connection.root()
+        root = self.db.open().root()
         app = root[ZopePublication.root_name]
         app.setObject('f1', Folder())
         f1 = app['f1']
@@ -156,7 +150,6 @@ class ZopePublicationTests(BasePublicationTests):
         f2 = f1['f2']
         f2.setServiceManager(ServiceManager(AuthService2()))
         get_transaction().commit()
-
 
         request = TestRequest('/f1/f2')
 
@@ -168,16 +161,12 @@ class ZopePublicationTests(BasePublicationTests):
         provideView(ISimpleReadContainer, '_traverse', IPresentation,
                     ContainerTraverser)
 
-
         from Zope.App.OFS.Content.Folder.Folder import IFolder
         from Zope.Security.Checker import defineChecker, InterfaceChecker
         defineChecker(Folder, InterfaceChecker(IFolder))
         defineChecker(RootFolder, InterfaceChecker(IFolder))
 
-        
         request.setViewType(IPresentation)
-
-
 
         publication = self.klass(self.db)
 
@@ -193,12 +182,6 @@ class ZopePublicationTests(BasePublicationTests):
         publication.afterTraversal(request, ob)
         self.assertEqual(request.user.getId(), 'test.bob')
         
-        
-
-class SimpleObject:
-    def __init__(self, v):
-        self.v = v
-
 def test_suite():
     return unittest.makeSuite(ZopePublicationTests, 'test')
 
