@@ -15,10 +15,12 @@
 
 $Id$
 """
-from zope.proxy import getProxiedObject
-from zope.security._proxy import getChecker
+
+from zope.security._proxy import getChecker, getObject
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.checker import TrustedCheckerBase
+
+getProxiedObject = getObject
 
 # This import represents part of the API for this module
 from zope.security.checker import ProxyFactory

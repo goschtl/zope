@@ -885,9 +885,25 @@ module_getChecker(PyObject *self, PyObject *arg)
   return result;
 }
 
+static PyObject *
+module_getObject(PyObject *self, PyObject *arg)
+{
+  PyObject *result;
+
+  if (!Proxy_Check(arg))
+    result = arg;
+  else
+    result = ((SecurityProxy*)arg)->proxy.proxy_object;
+  
+  Py_INCREF(result);
+  return result;
+}
+
 static PyMethodDef
 module_functions[] = {
   {"getChecker", module_getChecker, METH_O, "get checker from proxy"},
+  {"getObject", module_getObject, METH_O, 
+   "Get the proxied object\n\nReturn the original object if not proxied."},
   {NULL}
 };
 
