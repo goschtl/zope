@@ -28,11 +28,11 @@ multiple space-delimited parts:
     - The old version number, then
     - the new one, like so
 
-##     filename,1.1,1.2
+    filename,1.1,1.2
 
-## (See the CVS Gnu INFO file for loginfo for more format-string details.)
+(See the CVS Gnu INFO file for loginfo for more format-string details.)
 
-## Currently the actions are:
+Currently the actions are:
 
 ##  - doing a g+w chmod of the subject files
 ##  - emailing checkin messages to designated recipients
@@ -120,6 +120,9 @@ def main(args):
             do_mail(nm, repo, addrs, subjs)
         if remote:
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
+
+    if VERBOSE:
+        complain("Th th th th that's all folks.")
 
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
