@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.11 2002/12/07 17:27:29 ctheune Exp $
+$Id: ErrorReportingService.py,v 1.12 2002/12/10 09:24:58 stevea Exp $
 """
 
 import time
@@ -68,9 +68,6 @@ class ErrorReportingService(Persistent):
     # Exceptions that happen all the time, so we dont need
     # to log them. Eventually this should be configured
     # through-the-web.
-    #
-    # XXX If I understand that right, "request" only should
-    # be used within a view. Could someone explain why I meet that here?
     def raising(self, info, request=None):
         """Log an exception.
         Called by ZopePublication.handleException method.
