@@ -21,6 +21,7 @@ from zope.interface import Interface, implements
 from zope.component.interfaces import IViewFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import TestRequest
+from zope.security.interfaces import ForbiddenAttribute
 
 from zope.schema import Field, Int
 from zope.schema.interfaces import IField, IInt
@@ -535,6 +536,44 @@ class TestSetUpWidgets(object):
             ---
             >>> zope.app.form.utility.setUpWidget = setUpWidgetsSave
      
+        >>> tearDown()
+        """
+
+    def test_forbiddenAttributes(self):
+        """Tests that forbidden attributes cause an error in widget setup.
+
+        >>> setUp()
+
+        If an attribute cannot be read from a source object because it's
+        forbidden, the ForbiddenAttribute error is allowed to pass through
+        to the caller.
+
+        We'll create a field that raises a ForbiddenError itself to simulate
+        what would happen when a proxied object's attribute is accessed without
+        the required permission.
+
+            >>> class AlwaysForbidden(Field):
+            ...     def get(self, source):
+            ...         raise ForbiddenAttribute(source, self.__name__)
+
+        We'll also create a schema using this field:
+
+            >>> class IMySchema(Interface):
+            ...     tryme = AlwaysForbidden()
+
+        When we use setUpEditWidgets to configure a view with IMySchema:
+
+            >>> view = BrowserView('some context', TestRequest())
+            >>> setUpEditWidgets(view, IMySchema)
+            Traceback (most recent call last):
+            ForbiddenAttribute: ('some context', 'tryme')
+
+        The same applies to setUpDisplayWidgets:
+
+            >>> setUpDisplayWidgets(view, IMySchema)
+            Traceback (most recent call last):
+            ForbiddenAttribute: ('some context', 'tryme')
+
         >>> tearDown()
         """
         
