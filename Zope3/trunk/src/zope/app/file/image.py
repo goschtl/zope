@@ -107,7 +107,7 @@ def getImageInfo(data):
         width = int(w)
         height = int(h)
 
-    # See PNG v1.2 spec (http://www.cdrom.com/pub/png/spec/)
+    # See PNG 2. Edition spec (http://www.w3.org/TR/PNG/)
     # Bytes 0-7 are below, 4-byte chunk length, then 'IHDR'
     # and finally the 4-byte width, height
     elif ((size >= 24) and data.startswith('\211PNG\r\n\032\n')
