@@ -2,14 +2,20 @@
   <body>
     <metal:block define-macro="widget_rows">
       <div class="row" tal:repeat="widget view/widgets">
-        <div class="label" tal:content="structure widget/label">Name</div>
-        <div class="field" tal:content="structure widget">
-          <input type="text" style="width:100%"/>
-        </div>
-        <div class="error" tal:define="error widget/error"
-          tal:condition="error" tal:content="structure error">
-          The Error
-        </div>
+        <metal:block define-macro="widget_row">
+          <div class="label">
+            <label for="field.name" title="The widget's hint"
+              tal:attributes="for widget/name; title widget/hint"
+              tal:content="widget/label">The Label</label>
+          </div>
+          <div class="field" tal:content="structure widget">
+            <input type="text" style="width:100%"/>
+          </div>
+          <div class="error" tal:define="error widget/error"
+            tal:condition="error" tal:content="structure error">
+            The Error
+          </div>
+        </metal:block>
       </div>
     </metal:block>
   </body>
