@@ -28,7 +28,7 @@ fssync [global_options] remove [local_options] TARGET ...
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.15 2003/05/15 22:22:58 gvanrossum Exp $
+$Id: main.py,v 1.16 2003/05/29 18:23:34 gvanrossum Exp $
 """
 
 import os
@@ -199,6 +199,8 @@ def add(opts, args):
     objects.  Each TARGET must exist.  The next commit will add them
     to the Zope 3 server.
     """
+    if not args:
+        raise Usage("add requires at least one TARGET argument")
     fs = FSSync()
     for a in args:
         fs.add(a)
@@ -210,6 +212,8 @@ def remove(opts, args):
     objects.  No TARGET must exist.  The next commit will remove them
     from the Zope 3 server.
     """
+    if not args:
+        raise Usage("remove requires at least one TARGET argument")
     fs = FSSync()
     for a in args:
         fs.remove(a)
