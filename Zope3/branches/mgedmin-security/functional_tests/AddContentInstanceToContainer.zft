@@ -1,0 +1,27 @@
+[Scenario]
+Title: Add content instance to container
+Use_case: AddContentInstanceToContainer
+
+[Setup]
+URL: %(portal_url)s/%(site_path)s/contents;view/remove?name=contact_1&silent=yes
+
+[Homepage]
+URL: %(portal_url)s/%(site_path)s
+Expected_response: 200
+
+[Adder]
+URL: %(portal_url)s/%(site_path)s/adder;view
+Expected_response: 200
+
+[DoAdd]
+URL: %(portal_url)s/%(site_path)s/adder;view/action.html
+Field_1: type_name=Zope.Products.Contact.Contact.Contact
+Field_2: id=contact_1
+Expected_response: 200
+
+[View]
+URL: %(portal_url)s/%(site_path)s/contact_1
+Expected_response: 200
+
+[Teardown]
+URL: %(portal_url)s/%(site_path)s/contents;view/remove?name=contact_1&silent=yes

@@ -1,0 +1,36 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:fssync="http://namespaces.zope.org/fssync">
+
+  <content class=".LocalUtilityService">
+    
+    <factory id="zope.app.services.UtilityService" />
+    
+    <require
+      permission="zope.ManageServices"
+      attributes="queryRegistrations" />
+      
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.registration.interfaces.IRegistry" />
+      
+  </content>
+
+  <content class=".UtilityRegistration">
+    
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.utility.interfaces.IUtilityRegistration"
+      set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
+      
+   </content>
+  
+  <fssync:adapter
+    class=".UtilityRegistration"
+    factory="zope.app.registration.registration.ComponentRegistrationAdapter" />
+    
+  <vocabulary
+    name="Utility Component Interfaces"
+    factory=".vocabulary.UtilityComponentInterfacesVocabulary" />
+
+</configure>

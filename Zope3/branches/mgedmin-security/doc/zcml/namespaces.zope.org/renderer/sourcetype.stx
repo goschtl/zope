@@ -1,0 +1,28 @@
+sourcetype
+
+  File zope/app/renderer/meta.zcml, lines 5 - 9.
+
+  The renderers directive specifies how a particular source text can be
+  rendered for various view types. It also generates a registry of available
+  source types.
+
+  Attributes
+
+    interface -- GlobalObject (required)
+
+      Interface
+
+      Specifies an interface for of a particular source type.
+
+    class -- GlobalObject (required)
+
+      Class
+
+      Specifies the class that is implementing this source type.
+
+    title -- TextLine (optional, default=None)
+
+      Title
+
+      Provides a title for the source type.
+

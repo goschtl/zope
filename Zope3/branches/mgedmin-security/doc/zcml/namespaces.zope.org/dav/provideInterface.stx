@@ -1,0 +1,23 @@
+provideInterface
+
+  File zope/app/dav/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.dav.metaconfigure.interface
+
+  This directive assigns a new interface to a component. This interface will
+  be available via WebDAV for this particular component.
+
+  Attributes
+
+    for -- URI (required)
+
+      Namespace
+
+      Namespace under which this interface will be availablevia DAV.
+
+    interface -- GlobalObject (required)
+
+      Interface
+
+      Specifies an interface/schema for DAV.
+

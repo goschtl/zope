@@ -1,0 +1,33 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <addform
+      name="AddTextIndex"
+      menu="add_component" title="Text Index"
+      schema="zope.app.index.interfaces.text.IUITextIndex"
+      permission="zope.ManageServices"
+      content_factory="zope.app.index.text.index.TextIndex"
+      arguments="field_name"
+      keyword_arguments="interface"
+      />
+
+  <page
+      for="zope.app.index.interfaces.text.IUITextIndex"
+      name="index.html"
+      menu="zmi_views"
+      title="Control"
+      permission="zope.ManageServices"
+      class=".control.ControlView"
+      template="control.pt"
+      />
+
+  <editform
+      name="edit.html"
+      schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
+      label="Edit Text Index"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+</zope:configure>

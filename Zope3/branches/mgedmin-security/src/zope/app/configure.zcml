@@ -1,0 +1,126 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="zope"
+    >
+
+  <!-- Meta configuration (new directives) -->
+  <include file="meta.zcml" />
+
+  <!-- Note that we need to do this early, as later startup
+       subscribers may break without fixups -->
+ 
+  <include package=".generations" file="subscriber.zcml" />
+
+  <!-- Ordinary Application (non-view) configuration) -->
+  <include package="zope.app.component" />
+  <include package="zope.app.interface" />
+  <include package="zope.app.security" />
+  <include package="zope.app.event" />
+  <include package="zope.app.observable" />
+  <include package="zope.app.mail" />
+  <include package="zope.app.annotation" />
+  <include package="zope.app.dependable" />
+  <include package="zope.app.server" />
+  
+  <include file="menus.zcml" />
+
+  <include package="zope.app.copypastemove" />
+  <include package="zope.app.size" />
+  <include package="zope.app.location" />
+  <include package="zope.app.container" />
+
+  <include package="zope.app.publisher" />
+  <include package="zope.app.traversing" />
+  <include package="zope.app.index" />
+  <include package="zope.app.pagetemplate" />
+  <include package="zope.app.interpreter" />
+  <include package="zope.app.renderer" />
+  <include package=".generations" />
+  
+  <!-- Views -->
+  <include package="zope.app.ftp" />
+  <include package="zope.app.xmlrpc" />
+  <include package="zope.app.http" />
+
+  <!-- Translations -->
+  <i18n:registerTranslations directory="translation_files" />
+
+  <include package="zope.app.i18n" />
+
+
+  <!-- Filesystem synchronization -->
+  <include package="zope.app.fssync" />
+
+  <!-- WebDAV Support -->
+  <include package="zope.app.dav" />
+
+
+  <!-- Local Component Registration -->
+  <include package="zope.app.registration" />  
+
+  <!-- Services -->
+  <include package="zope.app.errorservice" />  
+  <include package="zope.app.hub" />  
+  <include package="zope.app.menu" />  
+  <include package="zope.app.pluggableauth" />  
+  <include package="zope.app.site" />  
+  <include package="zope.app.utility" />  
+  <include package="zope.app.principalannotation" />  
+
+  <!-- Utilities -->
+  <include package="zope.app.session" />
+  <include package="zope.app.schema" />
+  <include package="zope.app.schema" file="fieldforms.zcml" />
+
+  <!-- Misc. Service Manager objects -->
+  <include package="zope.app.bundle" />  
+  <include package="zope.app.module" />
+  <include package="zope.app.schemacontent" />
+
+  <!-- Broken-object support -->
+  <include package="zope.app.broken" />
+
+
+  <!-- Process-configuration support -->
+  <include package="zope.app.process" />
+
+
+  <!-- Skins -->
+
+  <include package="zope.app.basicskin" />
+  <include package="zope.app.rotterdam" />
+  <include package="zope.app.zopetop" />
+  <include package="zope.app.debugskin" />
+  <defaultSkin name="Rotterdam" />
+
+
+  <!-- Additional packages -->
+
+  <include package="zope.app.undo" />
+  <include package="zope.app.applicationcontrol" />
+  <include package="zope.app.dublincore" />
+  <include package="zope.app.cache" />
+  <include package="zope.app.rdb" />
+  <include package="zope.app.workflow" />
+  <include package="zope.app.catalog"/>
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.tree" />
+  <include package="zope.app.introspector" />
+  <include package="zope.app.apidoc" />
+  <include package="zope.app.onlinehelp" />
+
+
+  <!-- Content types -->
+
+  <include package="zope.app.folder" />
+  <include package="zope.app.file" />
+  <include package="zope.app.i18nfile" />
+  <include package="zope.app.zptpage" />
+  <include package="zope.app.pythonpage" />
+  <include package="zope.app.sqlscript" />
+
+  <!-- Browser Configurations -->
+  <include file="browser.zcml" />
+
+</configure>

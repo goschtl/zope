@@ -1,0 +1,80 @@
+subeditform
+
+  File zope/app/form/browser/meta.zcml, lines 40 - 44.
+
+  Handler: zope.app.form.browser.metaconfigure.SubeditFormDirective
+
+  Define a subedit form
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      The name of the generated view.
+
+    schema -- GlobalObject (required)
+
+      Schema
+
+      The schema from which the form is generated.
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
+
+      The interface this page (view) applies to.
+
+      The view will be for all objects that implement this interface. The
+      schema is used if the for attribute is not specified.
+
+      If the for attribute is specified, then the objects views must implement
+      or be adaptable to the schema.
+
+    permission -- Permission (required)
+
+      Permission
+
+      The permission needed to use the view.
+
+    layer -- TextLine (optional, default=None)
+
+      Layer
+
+      The later the view is in. Default: 'default'
+
+    template -- Path (optional, default=None)
+
+      Template
+
+      An alternate template to use for the form.
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class to provide custom widget definitions or methods to be used by a
+      custom template.
+
+      This class is used as a mix-in class. As a result, it needn't subclass
+      any special classes, such as BrowserView.
+
+    label -- TextLine (optional, default=None)
+
+      Label
+
+      A label to be used as the heading for the form.
+
+    fulledit_path -- TextLine (optional, default=None)
+
+      Path (relative URL) to the full edit form
+
+      
+
+    fulledit_label -- MessageID (optional, default=None)
+
+      Label of the full edit form
+
+      
+

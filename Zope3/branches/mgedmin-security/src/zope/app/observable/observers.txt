@@ -1,0 +1,123 @@
+=================
+Observer Registry
+=================
+
+Observer registries provide a way to register observers that depend on
+one or more interface specifications and provide (perhaps indirectly)
+some interface.  
+
+The term "interface specification" refers both to interfaces and to
+interface declarations, such as declarations of interfaces implemented
+by a class.
+
+
+
+  >>> from zope.interface.adapter import AdapterRegistry
+  >>> import zope.interface
+
+  >>> class IR1(zope.interface.Interface):
+  ...     pass
+  >>> class IP1(zope.interface.Interface):
+  ...     pass
+  >>> class IP2(IP1):
+  ...     pass
+
+  >>> registry = AdapterRegistry()
+
+
+  >>> class IR2(IR1):
+  ...     pass
+  >>> registry.lookup([IR2], IP2, '')
+  12
+
+  >>> class C2:
+  ...     zope.interface.implements(IR2)
+
+
+
+  >>> class IP3(IP2):
+  ...     pass
+
+Normally, we want to look up an object that most-closely matches a
+specification.  Sometimes, we want to get all of the objects that
+match some specification.  We use subscriptions for this.  We
+subscribe objects against specifications and then later find all of
+the subscribed objects::
+
+  >>> registry.subscribe([IR1], IP2, 'sub12 1')
+  >>> registry.subscriptions([IR1], IP2)
+  ['sub12 1']
+
+Note that, unlike regular adapters, subscriptions are unnamed.
+
+The order of returned subscriptions is not specified.
+
+You can have multiple subscribers for the same specification::
+
+  >>> registry.subscribe([IR1], IP2, 'sub12 2')
+  >>> subs = registry.subscriptions([IR1], IP2)
+  >>> subs.sort()
+  >>> subs
+  ['sub12 1', 'sub12 2']
+
+You can register subscribers for all specifications using None::
+
+  >>> registry.subscribe([None], IP1, 'sub_1')
+  >>> subs = registry.subscriptions([IR2], IP1)
+  >>> subs.sort()
+  >>> subs
+  ['sub12 1', 'sub12 2', 'sub_1']
+
+Subscriptions may be combined over multiple compatible specifications::
+
+  >>> subs = registry.subscriptions([IR2], IP1)
+  >>> subs.sort()
+  >>> subs
+  ['sub12 1', 'sub12 2', 'sub_1']
+  >>> registry.subscribe([IR1], IP1, 'sub11')
+  >>> subs = registry.subscriptions([IR2], IP1)
+  >>> subs.sort()
+  >>> subs
+  ['sub11', 'sub12 1', 'sub12 2', 'sub_1']
+  >>> registry.subscribe([IR2], IP2, 'sub22')
+  >>> subs = registry.subscriptions([IR2], IP1)
+  >>> subs.sort()
+  >>> subs
+  ['sub11', 'sub12 1', 'sub12 2', 'sub22', 'sub_1']
+  >>> subs = registry.subscriptions([IR2], IP2)
+  >>> subs.sort()
+  >>> subs
+  ['sub12 1', 'sub12 2', 'sub22']
+
+Subscriptions can be on multiple specifications::
+
+  >>> registry.subscribe([IR1, IQ], IP2, 'sub1q2')
+  >>> registry.subscriptions([IR1, IQ], IP2)
+  ['sub1q2']
+  
+As with single subscriptions and non-subscription adapters, you can
+specify None for the first required interface, to specify a default::
+
+  >>> registry.subscribe([None, IQ], IP2, 'sub_q2')
+  >>> registry.subscriptions([IS, IQ], IP2)
+  ['sub_q2']
+  >>> subs = registry.subscriptions([IR1, IQ], IP2)
+  >>> subs.sort()
+  >>> subs
+  ['sub1q2', 'sub_q2']
+
+You can have subscriptions that are indepenent of any specifications::
+  
+  >>> registry.subscriptions([], IP1)
+  []
+
+  >>> registry.subscribe([], IP2, 'sub2')
+  >>> registry.subscriptions([], IP1)
+  ['sub2']
+  >>> registry.subscribe([], IP1, 'sub1')
+  >>> subs = registry.subscriptions([], IP1)
+  >>> subs.sort()
+  >>> subs
+  ['sub1', 'sub2']
+  >>> registry.subscriptions([], IP2)
+  ['sub2']
