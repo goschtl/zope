@@ -607,7 +607,7 @@ def keywordsplitter( headers
 #
 security.declarePublic('normalize')
 def normalize(p):
-    return os_path.abspath(os_path.normcase(os_path.normpath(p)))
+    return os_path.abspath(os_path.normcase(os_path.normpath(p.replace('\\','/'))))
 
 normINSTANCE_HOME = normalize(INSTANCE_HOME)
 normSOFTWARE_HOME = normalize(SOFTWARE_HOME)
@@ -634,8 +634,9 @@ def minimalpath(p):
     index = p.find('Products')
     if index == -1:
         index = p.find('products')
-    if index != -1:
-        p = p[index:]
+    if index == -1:
+        return p
+    p = p[index:]
     while p[:1] in separators:
         p = p[1:]
     return p
