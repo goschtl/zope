@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,8 +13,8 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: Development/Revision: 26086\n"
-"POT-Creation-Date: Tue Jul  6 13:12:02 2004\n"
+"Project-Id-Version: Development/Revision: 27349\n"
+"POT-Creation-Date: Mon Aug 30 17:09:39 2004\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -23,43 +23,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
 
-#: src/bugtracker/browser/bug_edit.pt:33
-#: src/bugtracker/browser/bug_overview.pt:17
-msgid "From ${user} at ${date}"
-msgstr ""
-
-#: src/bugtracker/browser/bug_edit.pt:39
-#: src/bugtracker/browser/bug_listing_normal.pt:24
-msgid "Type:"
-msgstr ""
-
-#: src/bugtracker/browser/bug_edit.pt:42
-#: src/bugtracker/browser/bug_listing_normal.pt:18
-msgid "Status:"
-msgstr ""
-
-#: src/bugtracker/browser/bug_edit.pt:48
-#: src/bugtracker/browser/bug_listing_normal.pt:21
-#: src/bugtracker/browser/bug_overview.pt:33
-msgid "Priority:"
-msgstr ""
-
-#: src/bugtracker/browser/bug_edit.pt:51
-#: src/bugtracker/browser/bug_overview.pt:38
-msgid "Release Target:"
-msgstr ""
-
-#: src/bugtracker/browser/bug_edit.pt:57
-#: src/bugtracker/browser/bug_overview.pt:43
-msgid "Owners:"
-msgstr ""
-
 #: src/bugtracker/browser/bug_listing_normal.pt:10
 msgid "Bug #${bug_id} - ${bug_title}"
 msgstr ""
 
+#: src/bugtracker/browser/bug_listing_normal.pt:18
+#: src/bugtracker/browser/bug_edit.pt:42
+msgid "Status:"
+msgstr ""
+
+#: src/bugtracker/browser/bug_listing_normal.pt:24
+#: src/bugtracker/browser/bug_edit.pt:39
+msgid "Type:"
+msgstr ""
+
 #: src/bugtracker/browser/bug_listing_normal.pt:37
 msgid "Posted by ${submitter} on ${created_date} - ${num_comments} comments"
+msgstr ""
+
+#: src/bugtracker/browser/bug_overview.pt:17
+#: src/bugtracker/browser/bug_edit.pt:33
+msgid "From ${user} at ${date}"
+msgstr ""
+
+#: src/bugtracker/browser/bug_overview.pt:33
+#: src/bugtracker/browser/bug_listing_normal.pt:21
+#: src/bugtracker/browser/bug_edit.pt:48
+msgid "Priority:"
+msgstr ""
+
+#: src/bugtracker/browser/bug_overview.pt:38
+#: src/bugtracker/browser/bug_edit.pt:51
+msgid "Release Target:"
+msgstr ""
+
+#: src/bugtracker/browser/bug_overview.pt:43
+#: src/bugtracker/browser/bug_edit.pt:57
+msgid "Owners:"
 msgstr ""
 
 #: src/bugtracker/browser/bug_overview.pt:63
