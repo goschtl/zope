@@ -21,7 +21,7 @@
 
   ViewConfigrationAdd
 
-$Id: view.py,v 1.5 2003/01/28 02:09:19 rdmurray Exp $
+$Id: view.py,v 1.6 2003/01/28 02:21:40 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -34,17 +34,13 @@ from zope.component import getView
 from zope.proxy.context import ContextWrapper
 from zope.publisher.browser import BrowserView
 
-from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.app.form.utility import getWidgetsDataForContent, fieldNames
-from zope.app.interfaces.services.interfaces import IViewConfiguration
-from zope.app.interfaces.services.interfaces import IViewConfigurationInfo
-from zope.app.interfaces.services.interfaces import IPageConfiguration
-from zope.app.interfaces.services.interfaces import IPageConfiguration
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.event import publish
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.services.view import ViewConfiguration, PageConfiguration
+from zope.app.form.utility import setUpWidgets
 from zope.app.component.interfacefield import InterfaceField
+# XXX These are not used in this module, but are referenced in configure.zcml.
+#  either configure.zcml should be fixed, or a comment should replace
+#  this one to explain why configure.zcml is importing these two names
+#  from here rather than from where they are defined.
+from zope.app.services.view import ViewConfiguration, PageConfiguration
 
 class IViewSearch(Interface):
 
