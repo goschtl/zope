@@ -82,10 +82,6 @@ class FiveTraversable(DefaultTraversable):
             return getView(context, name, REQUEST).__of__(context)
         except ComponentLookupError:
             pass
-        # If a view can't be found, try to lookup a resource
-        resource = queryResourceInContext(context, name, REQUEST)
-        if resource is not None:
-            return resource
-        # If a resource can't be found, then use default traversable
+        # If a view can't be found, then use default traversable
         return super(FiveTraversable, self).traverse(name, furtherPath)
 
