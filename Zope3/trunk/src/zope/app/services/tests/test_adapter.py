@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.8 2003/03/30 13:30:01 srichter Exp $
+$Id: test_adapter.py,v 1.9 2003/04/07 11:30:10 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -75,7 +75,6 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
         self._service = ContextWrapper(AdapterService(), self.rootFolder)
-
 
     def test_implements_IAdapterService(self):
         from zope.component.interfaces import IAdapterService
