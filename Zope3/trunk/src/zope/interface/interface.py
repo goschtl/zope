@@ -259,6 +259,7 @@ class Specification(SpecificationBase):
         implied.clear()
 
         ancestors = ro(self)
+        self.__sro__ = tuple(ancestors)
         self.__iro__ = tuple([ancestor for ancestor in ancestors
                               if isinstance(ancestor, InterfaceClass)
                              ])

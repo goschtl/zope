@@ -112,6 +112,13 @@ class ISpecification(Interface):
 
     """)
 
+    __sro__ = Attribute("""Specification-resolution order
+
+    A tuple of the specification and all of it's ancestor
+    specifications from most specific to least specific.
+
+    (This is similar to the method-resolution order for new-style classes.)
+    """)
 
     def get(name, default=None):
         """Look up the description for a name
