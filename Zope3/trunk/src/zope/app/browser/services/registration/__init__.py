@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.10 2003/09/21 17:30:57 jim Exp $
+$Id: __init__.py,v 1.11 2003/09/24 20:43:07 fdrake Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -22,15 +22,16 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import INameChooser
 
+from zope.app.interfaces.services.registration import IComponentRegistration
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getName, traverse
 from zope.component import getView, getServiceManager, getAdapter
 from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
 
 
@@ -76,6 +77,41 @@ class NameComponentRegistryView(NameRegistryView):
             url = None
         item_dict['url'] = url
         return item_dict
+
+
+class RegistrationView(BrowserView):
+
+    def __init__(self, context, request):
+        super(RegistrationView, self).__init__(context, request)
+        useconfig = getAdapter(self.context, IRegistered)
+        self.registrations = useconfig.registrations()
+
+    def update(self):
+        """Make changes based on the form submission."""
+        if len(self.registrations) > 1:
+            self.request.response.redirect("registrations.html")
+            return
+        if "deactivate" in self.request:
+            self.registrations[0].status = RegisteredStatus
+        elif "activate" in self.request:
+            if not self.registrations:
+                # create a registration:
+                self.request.response.redirect("addRegistration.html")
+                return
+            self.registrations[0].status = ActiveStatus
+
+    def active(self):
+        return self.registrations[0].status == ActiveStatus
+
+    def registered(self):
+        return bool(self.registrations)
+
+    def registration(self):
+        """Return the first registration.
+
+        If there are no registrations, raises an error.
+        """
+        return self.registrations[0]
 
 
 class NameRegistered:

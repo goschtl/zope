@@ -96,7 +96,15 @@
       template="registered.pt"
       class=".NameRegistered"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Registrations" 
+      />
+
+  <page
+      for="zope.app.interfaces.services.registration.IRegisterable"
+      name="registration.html"
+      template="registration.pt"
+      class=".RegistrationView"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Registration"
       />
 
 
