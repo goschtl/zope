@@ -3,7 +3,7 @@ Interfaces for the unique id utility.
 
 $Id$
 """
-from zope.interface import Interface
+from zope.interface import Interface, Attribute, implements
 
 
 class IReference(Interface):
@@ -60,3 +60,20 @@ class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
 
     Allows to query object by id and id by object.
     """
+
+
+class  IUniqueIdRemovedEvent(Interface):
+    """The event which get published before the unique id is removed
+    from the utility so that the catalogs can unindex  the object.
+    """
+    original_event = Attribute(
+        """The IObjectRemoveEvent related to this event""")
+
+
+class UniqueIdRemovedEvent:
+    """The event which get published before the unique id is removed
+    from the utility so that the catalogs can unindex  the object.
+    """
+    implements(IUniqueIdRemovedEvent)
+    def __init__(self, event):
+        self.original_event = event

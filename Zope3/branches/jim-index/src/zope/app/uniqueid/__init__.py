@@ -23,12 +23,14 @@ $Id$
 """
 import random
 from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
+from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
 from zope.interface import implements
 from ZODB.interfaces import IConnection
 from BTrees import OIBTree, IOBTree
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.event import notify
 
 class UniqueIdUtility:
     """This utility provides a two way mapping between objects and
@@ -132,3 +134,21 @@ def connectionOfPersistent(ob):
         if cur is None:
             raise ValueError('Can not get connection of %r' % (ob,))
     return cur._p_jar
+
+
+def removeUniqueIdSubscriber(event):
+    """A subscriber to ObjectRemovedEvent
+
+    Removes the unique ids registered for the object in all the unique
+    id utilities.
+    """
+
+    # Notify the catalogs that this object is about to be removed.
+    notify(UniqueIdRemovedEvent(event))
+
+    for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
+        try:
+            utility.unregister(event.object)
+        except KeyError:
+            pass
+
