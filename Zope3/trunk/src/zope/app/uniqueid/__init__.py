@@ -150,7 +150,7 @@ def connectionOfPersistent(ob):
     return cur._p_jar
 
 
-def removeUniqueIdSubscriber(event):
+def removeUniqueIdSubscriber(ob, event):
     """A subscriber to ObjectRemovedEvent
 
     Removes the unique ids registered for the object in all the unique
@@ -158,21 +158,21 @@ def removeUniqueIdSubscriber(event):
     """
 
     # Notify the catalogs that this object is about to be removed.
-    notify(UniqueIdRemovedEvent(event))
+    notify(UniqueIdRemovedEvent(ob, event))
 
     for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
         try:
-            utility.unregister(event.object)
+            utility.unregister(ob)
         except KeyError:
             pass
 
-def addUniqueIdSubscriber(event):
+def addUniqueIdSubscriber(ob, event):
     """A subscriber to ObjectAddedEvent
 
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
     for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
-        utility.register(event.object)
+        utility.register(ob)
 
-    notify(UniqueIdAddedEvent(event))
+    notify(UniqueIdAddedEvent(ob, event))

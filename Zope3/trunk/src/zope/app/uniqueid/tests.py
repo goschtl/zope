@@ -226,6 +226,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         from zope.app.uniqueid import removeUniqueIdSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
         from zope.app.uniqueid.interfaces import IUniqueIdRemovedEvent
+        parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         id = self.utility.register(folder)
         id1 = self.utility1.register(folder)
@@ -238,18 +239,20 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
-        removeUniqueIdSubscriber(ObjectRemovedEvent(folder))
+        removeUniqueIdSubscriber(folder, ObjectRemovedEvent(parent_folder))
 
         self.assertRaises(KeyError, self.utility.getObject, id)
         self.assertRaises(KeyError, self.utility1.getObject, id1)
 
         self.assertEquals(len(events), 1)
-        self.assertEquals(events[0].original_event.object, folder)
+        self.assertEquals(events[0].object, folder)
+        self.assertEquals(events[0].original_event.object, parent_folder)
 
     def test_addUniqueIdSubscriber(self):
         from zope.app.uniqueid import addUniqueIdSubscriber
         from zope.app.container.contained import ObjectAddedEvent
         from zope.app.uniqueid.interfaces import IUniqueIdAddedEvent
+        parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         setSite(self.folder1_1)
 
@@ -258,14 +261,15 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
-        addUniqueIdSubscriber(ObjectAddedEvent(folder))
+        addUniqueIdSubscriber(folder, ObjectAddedEvent(parent_folder))
 
         # Check that the folder got registered
         id = self.utility.getId(folder)
         id1 = self.utility1.getId(folder)
 
         self.assertEquals(len(events), 1)
-        self.assertEquals(events[0].original_event.object, folder)
+        self.assertEquals(events[0].original_event.object, parent_folder)
+        self.assertEquals(events[0].object, folder)
 
 
 def test_suite():

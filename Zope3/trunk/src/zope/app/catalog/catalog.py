@@ -124,7 +124,7 @@ def indexAdded(index, event):
 def indexDocSubscriber(event):
     """A subscriber to UniqueIdAddedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
-        ob = event.original_event.object
+        ob = event.object
         id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
         cat.index_doc(id, ob)
 
@@ -141,7 +141,7 @@ def reindexDocSubscriber(event):
 def unindexDocSubscriber(event):
     """A subscriber to UniqueIdRemovedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
-        ob = event.original_event.object
+        ob = event.object
         id = zapi.getUtility(IUniqueIdUtility, context=cat).queryId(ob)
         if id is not None:
             cat.unindex_doc(id)

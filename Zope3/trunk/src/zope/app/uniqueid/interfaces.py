@@ -73,29 +73,38 @@ class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
 
 
 class IUniqueIdRemovedEvent(Interface):
-    """The event which is published before the unique id is removed
-    from the utility so that the catalogs can unindex the object.
+    """A unique id will be removed
+
+    The event is published before the unique id is removed
+    from the utility so that the indexing objects can unindex the object.
     """
 
-    original_event = Attribute(
-        """The IObjectRemoveEvent related to this event""")
+    object = Attribute("The object being removed")
+
+    original_event = Attribute("The IObjectRemoveEvent related to this event")
 
 
-class UniqueIdRemovedEvent(object):
+class UniqueIdRemovedEvent:
     """The event which is published before the unique id is removed
     from the utility so that the catalogs can unindex the object.
     """
 
     implements(IUniqueIdRemovedEvent)
 
-    def __init__(self, event):
+    def __init__(self, object, event):
+        self.object = object
         self.original_event = event
 
 
 class IUniqueIdAddedEvent(Interface):
-    """The event which gets sent when an object is registered in a
+    """A unique id has been added
+
+    The event gets sent when an object is registered in a
     unique id utility.
     """
+
+    object = Attribute("The object being added")
+
     original_event = Attribute("The ObjectAddedEvent related to this event")
 
 
@@ -103,6 +112,9 @@ class UniqueIdAddedEvent:
     """The event which gets sent when an object is registered in a
     unique id utility.
     """
+
     implements(IUniqueIdAddedEvent)
-    def __init__(self, event):
+
+    def __init__(self, object, event):
+        self.object = object
         self.original_event = event

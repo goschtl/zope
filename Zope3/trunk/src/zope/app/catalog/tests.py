@@ -242,9 +242,10 @@ class TestEventSubscribers(unittest.TestCase):
         from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
 
         ob = Stub()
+        ob2 = Stub()
 
         id = self.utility.register(ob)
-        indexDocSubscriber(UniqueIdAddedEvent(ObjectAddedEvent(ob)))
+        indexDocSubscriber(UniqueIdAddedEvent(ob, ObjectAddedEvent(ob2)))
 
         self.assertEqual(self.cat.regs, [(id, ob)])
         self.assertEqual(self.cat.unregs, [])
@@ -274,13 +275,16 @@ class TestEventSubscribers(unittest.TestCase):
 
         ob = Stub()
         ob2 = Stub()
+        ob3 = Stub()
         id = self.utility.register(ob)
 
-        unindexDocSubscriber(UniqueIdRemovedEvent(ObjectRemovedEvent(ob2)))
+        unindexDocSubscriber(
+            UniqueIdRemovedEvent(ob2, ObjectRemovedEvent(ob3)))
         self.assertEqual(self.cat.unregs, [])
         self.assertEqual(self.cat.regs, [])
 
-        unindexDocSubscriber(UniqueIdRemovedEvent(ObjectRemovedEvent(ob)))
+        unindexDocSubscriber(
+            UniqueIdRemovedEvent(ob, ObjectRemovedEvent(ob3)))
         self.assertEqual(self.cat.unregs, [id])
         self.assertEqual(self.cat.regs, [])
 

@@ -44,12 +44,14 @@
 
   <subscriber
       factory=".removeUniqueIdSubscriber"
-      for="zope.app.container.interfaces.IObjectRemovedEvent"
+      for="zope.app.location.interfaces.ILocation
+           zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
   <subscriber
       factory=".addUniqueIdSubscriber"
-      for="zope.app.container.interfaces.IObjectAddedEvent"
+      for="zope.app.location.interfaces.ILocation
+           zope.app.container.interfaces.IObjectAddedEvent"
       />
 
   <!-- Views -->
