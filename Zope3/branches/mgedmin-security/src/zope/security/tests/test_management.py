@@ -21,53 +21,16 @@ import unittest
 from zope.interface.verify import verifyObject
 from zope.testing.cleanup import CleanUp
 
-from zope.security.management import noSecurityManager, newSecurityManager
-from zope.security.management import setSecurityPolicy
-
 
 class Test(CleanUp, unittest.TestCase):
 
     def test_import(self):
         from zope.security import management
         from zope.security.interfaces import ISecurityManagement
-        from zope.security.interfaces \
-            import ISecurityManagementSetup
         from zope.security.interfaces import IInteractionManagement
 
-        verifyObject(ISecurityManagementSetup, management)
         verifyObject(ISecurityManagement, management)
         verifyObject(IInteractionManagement, management)
-
-    def test_ISecurityManagementSetup(self):
-
-        from zope.security.management import noSecurityManager
-        from zope.security.management import newSecurityManager
-        from zope.security.management import replaceSecurityManager
-
-        some_user = []
-        other_user = []
-        old = newSecurityManager(some_user)
-        self.assertEqual(old, None)
-
-        old = newSecurityManager(other_user)
-        self.failUnless(old is not None)
-        self.failUnless(old.getPrincipal() is some_user)
-
-        old2 = replaceSecurityManager(old)
-        self.failUnless(old2 is not None)
-        self.failUnless(old2.getPrincipal() is other_user)
-
-        noSecurityManager()
-
-    def _setPermissive(self):
-        from zope.security.management import setSecurityPolicy
-        from zope.security.simplepolicies import PermissiveSecurityPolicy
-        setSecurityPolicy(PermissiveSecurityPolicy())
-
-    def _setParanoid(self):
-        from zope.security.management import setSecurityPolicy
-        from zope.security.simplepolicies import ParanoidSecurityPolicy
-        setSecurityPolicy(ParanoidSecurityPolicy())
 
     def test_securityPolicy(self):
         from zope.security.management import setSecurityPolicy

@@ -18,29 +18,6 @@ $Id: interfaces.py,v 1.8 2004/02/20 20:42:12 srichter Exp $
 from zope.interface import Interface, Attribute
 
 
-class ISecurityManagementSetup(Interface):  # XXX: going away
-    """Methods to manage the security manager.
-
-    Infrastructure (including tests, etc.) calls these things to
-    tweak the security manager.
-    """
-
-    def newSecurityManager(user):
-        """Install a new SecurityManager, using user.
-
-        Return the old SecurityManager, if any, or None.
-        """
-
-    def replaceSecurityManager(old_manager):
-        """Replace the SecurityManager with old_manager.
-
-        old_manager must implement ISecurityManager.
-        """
-
-    def noSecurityManager():
-        """Clear any existing SecurityManager."""
-
-
 class ISecurityManagement(Interface):
     """Public security management API."""
 

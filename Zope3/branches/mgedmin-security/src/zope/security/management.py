@@ -23,56 +23,14 @@ import traceback
 
 from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
-from zope.security.interfaces import ISecurityManagementSetup
 from zope.security.interfaces import IInteractionManagement
-from zope.security.manager import SecurityManager
 from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
 from zope.security.manager import getSecurityPolicy as _getSecurityPolicy
-from zope.security.context import SecurityContext
 from zope.testing.cleanup import addCleanUp
 from zope.thread import thread_globals
 
-moduleProvides(ISecurityManagement, ISecurityManagementSetup,
-               IInteractionManagement)
+moduleProvides(ISecurityManagement, IInteractionManagement)
 
-try:
-    import thread
-except:
-    get_ident = lambda: 0
-else:
-    get_ident = thread.get_ident
-
-_managers = {}
-
-from zope.testing.cleanup import addCleanUp
-addCleanUp(_managers.clear)
-
-#
-#   ISecurityManagementSetup implementation
-#
-def newSecurityManager(user):
-    """Install a new SecurityManager, using user.
-
-    Return the old SecurityManager, if any, or None.
-    """
-    return replaceSecurityManager(SecurityManager(SecurityContext(user)))
-
-def replaceSecurityManager(old_manager):
-    """Replace the SecurityManager with 'old_manager', which must
-    implement ISecurityManager.
-    """
-
-    thread_id = get_ident()
-    old = _managers.get(thread_id, None)
-    _managers[thread_id] = old_manager
-    return old
-
-def noSecurityManager():
-    """Clear any existing SecurityManager."""
-    try:
-        del _managers[get_ident()]
-    except KeyError:
-        pass
 
 #
 #   ISecurityManagement implementation
