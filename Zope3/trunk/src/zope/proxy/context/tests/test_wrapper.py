@@ -93,17 +93,20 @@ class WrapperTestCase(ProxyTestCase):
             else:
                 return fixed_retval
 
-        # context-unaware object
-        t1 = type('ContextUnawareObj', (), {slot: doit})
-        proxy1 = self.new_proxy(t1(), context)
+        class ContextUnawareObj(object):
+            pass
+        setattr(ContextUnawareObj, slot, doit)
+        proxy1 = self.new_proxy(ContextUnawareObj(), context)
 
-        # context-aware object
-        t2 = type('ContextAwareObj', (ContextAware,), {slot: doit})
-        proxy2 = self.new_proxy(t2(), context)
+        class ContextAwareObj(ContextAware):
+            pass
+        setattr(ContextAwareObj, slot, doit)
+        proxy2 = self.new_proxy(ContextAwareObj(), context)
 
-        # object with context method
-        t3 = type('ContextMethodObj', (), {slot: ContextMethod(doit)})
-        proxy3 = self.new_proxy(t3(), context)
+        class ContextMethodObj(object):
+            pass
+        setattr(ContextMethodObj, slot, ContextMethod(doit))
+        proxy3 = self.new_proxy(ContextMethodObj(), context)
 
         return proxy1, proxy2, proxy3, context
 
