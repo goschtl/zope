@@ -13,14 +13,18 @@
 ##############################################################################
 """Local Adapter Tests
 
-   Local surrogates and surrogate registries share declarations with
+   Local surrogates and adapter registries share declarations with
    those "above" them.
 
-   Suppose we have a global AdapterRegistry:
+   Local adapter registries have "base" registries that mist be
+   IComponentRegistry objects.
 
-   >>> G = AdapterRegistry()
+   Suppose we have a global adapter service, which is a type of
+   adapter registry that is an IComponentRegistry:
 
-   we also have a local surrogate registry, with G as it's base:
+   >>> G = GlobalAdapterService()
+
+   we also have a local adapter registry, with G as it's base:
 
    >>> L1 = LocalAdapterRegistry(G)
 
@@ -124,16 +128,38 @@
    >>> L2.lookup([IF2], IB0)
    'A10G'
 
-   $Id: tests.py,v 1.4 2004/03/15 20:42:24 jim Exp $
+   We can ask for all of the registrations locally:
+
+   >>> registrations = list(L1.registrations())
+   >>> registrations.sort()
+   >>> for registration in registrations:
+   ...     print registration
+   AdapterRegistration(('IF1',), 'IB1', '', 'A10G', '')
+   Registration('IF0', (), 'IB1', u'', 'A011')
+
+   This shows the local registrations in L1 and the global registrations.
+
+   If we ask L2, we'll see the registrations from G, L1, and L2:
+   
+   >>> registrations = list(L2.registrations())
+   >>> registrations.sort()
+   >>> for registration in registrations:
+   ...     print registration
+   AdapterRegistration(('IF1',), 'IB1', '', 'A10G', '')
+   Registration('IF0', (), 'IB1', u'', 'A011')
+   Registration('IF1', (), 'IB0', u'', 'A102')
+   Registration('IF1', (), 'IB1', u'', 'A112')
+
+   $Id: tests.py,v 1.5 2004/04/07 19:18:57 jim Exp $
    """
 
 def test_named_adapters():
     """
-    Suppose we have a global AdapterRegistry:
+    Suppose we have a GlobalAdapterService:
 
-    >>> G = AdapterRegistry()
+    >>> G = GlobalAdapterService()
 
-    we also have a local surrogate registry, with G as it's base:
+    we also have a local adapter registry, with G as it's base:
 
     >>> L1 = LocalAdapterRegistry(G)
 
@@ -258,11 +284,11 @@ def test_named_adapters():
 
 def test_multi_adapters():
     """
-    Suppose we have a global AdapterRegistry:
+    Suppose we have a globalGlobalAdapterService:
 
-    >>> G = AdapterRegistry()
+    >>> G = GlobalAdapterService()
 
-    we also have a local surrogate registry, with G as it's base:
+    we also have a local adapter registry, with G as it's base:
 
     >>> L1 = LocalAdapterRegistry(G)
 
@@ -544,7 +570,7 @@ def test_persistence():
 
 def test_local_default():
     """
-    >>> G = AdapterRegistry()
+    >>> G = GlobalAdapterService()
     >>> L1 = LocalAdapterRegistry(G)
     >>> r = Registration(required = None, provided=IB1, factory='Adapter')
     >>> L1.createRegistrationsFor(r).activate(r)
@@ -555,7 +581,7 @@ def test_local_default():
 
 def test_changing_next():
     """
-    >>> G = AdapterRegistry()
+    >>> G = GlobalAdapterService()
     >>> L1 = LocalAdapterRegistry(G)
     >>> L2 = LocalAdapterRegistry(G, L1)
     >>> f2 = F2()
@@ -691,7 +717,7 @@ def test_LocalAdapterBasedService():
 
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-from zope.interface.adapter import AdapterRegistry
+from zope.component.adapter import GlobalAdapterService
 from zope.app.adapter.adapter import LocalAdapterRegistry
 from zope.app.adapter.adapter import LocalAdapterBasedService
 import zope.interface
@@ -740,15 +766,26 @@ class Registration:
         self.__dict__.update(kw)
 
     def __repr__(self):
-        return "<Registration %s>" % self.__dict__
+        return "Registration(%r, %s, %r, %r, %r)" % (
+            getattr(self.required, '__name__', None),
+            tuple([i.__name__ for i in self.with]),
+            self.provided.__name__, self.name, self.factory
+            )
+
+    def __cmp__(self, other):
+        if self.__class__ != other.__class__:
+            return cmp(repr(self.__class__), repr(other.__class__))
+
+        return cmp(repr(self), repr(other))
+    
 
     def factories(self):
         return self.factory,
     factories = property(factories)
 
 # Create a picklable global registry. The pickleability of other
-# global surrogate registries is beyond the scope of these tests:
-class GlobalAdapterRegistry(AdapterRegistry):
+# global adapter registries is beyond the scope of these tests:
+class GlobalAdapterRegistry(GlobalAdapterService):
     def __reduce__(self):
         return 'globalAdapterRegistry'
 
@@ -756,12 +793,15 @@ globalAdapterRegistry = GlobalAdapterRegistry()
 
 class TestStack:
     registration = None
+    registrations = ()
 
     def __init__(self, parent):
         self.__parent__ = parent
 
     def activate(self, registration):
         self.registration = registration
+        if registration not in self.registrations:
+            self.registrations += (registration,)
         self.__parent__.notifyActivated(self, registration)
 
     def deactivate(self, registration):
@@ -770,7 +810,10 @@ class TestStack:
 
     def active(self):
         return self.registration
-    
+
+    def info(self):
+        for registration in self.registrations:
+            yield {'registration': registration}
 
 class LocalAdapterRegistry(LocalAdapterRegistry):
     """For testing, use custom stack type

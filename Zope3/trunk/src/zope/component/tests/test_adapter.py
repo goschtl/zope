@@ -178,4 +178,7 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         testServiceManager._clear()
 
 def test_suite():
-    return unittest.makeSuite(GlobalAdapterServiceTests)
+    suite = unittest.makeSuite(GlobalAdapterServiceTests)
+    from doctest import DocTestSuite
+    suite.addTest(DocTestSuite('zope.component.adapter'))
+    return suite

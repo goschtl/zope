@@ -14,18 +14,18 @@
 """adapter service
 """
 
-__metaclass__ = type
-import sys
-from zope.interface import implements, providedBy
-from zope.interface.adapter import AdapterRegistry
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IAdapterService
+from zope.component.interfaces import IAdapterService, IComponentRegistry
 from zope.component.service import GlobalService
+from zope.interface.adapter import AdapterRegistry
+from zope.interface import implements, providedBy, Interface
+import sys
 import warnings
+import zope.schema
 
-class IGlobalAdapterService(IAdapterService):
+class IGlobalAdapterService(IAdapterService, IComponentRegistry):
 
-    def register(required, provided, name, factory):
+    def register(required, provided, name, factory, info=''):
         """Register an adapter factory
 
         :Parameters:
@@ -36,7 +36,7 @@ class IGlobalAdapterService(IAdapterService):
           - `factory`: The object used to compute the adapter
         """
 
-    def subscribe(required, provided, factory):
+    def subscribe(required, provided, factory, info=''):
         """Register a subscriber factory
         
         :Parameters:
@@ -88,8 +88,144 @@ class AdapterService(AdapterRegistry):
     def subscribers(self, objects, interface):
         subscriptions = self.subscriptions(map(providedBy, objects), interface)
         return [subscription(*objects) for subscription in subscriptions]
-    
 
 class GlobalAdapterService(AdapterService, GlobalService):
 
     implements(IGlobalAdapterService)
+
+    def __init__(self):
+        AdapterRegistry.__init__(self)
+        self._registrations = {}
+
+    def register(self, required, provided, name, factory, info=''):
+        """Register an adapter
+
+        >>> registry = GlobalAdapterService()
+        >>> class R1(Interface):
+        ...     pass
+        >>> class R2(R1):
+        ...     pass
+        >>> class P1(Interface):
+        ...     pass
+        >>> class P2(P1):
+        ...     pass
+        
+        >>> registry.register((R1, ), P2, 'bob', 'c1', 'd1')
+        >>> registry.register((R1, ), P2,    '', 'c2', 'd2')
+        >>> registry.lookup((R2, ), P1, '')
+        'c2'
+
+        >>> registrations = list(registry.registrations())
+        >>> registrations.sort()
+        >>> for registration in registrations:
+        ...    print registration
+        AdapterRegistration(('R1',), 'P2', '', 'c2', 'd2')
+        AdapterRegistration(('R1',), 'P2', 'bob', 'c1', 'd1')
+        
+        """
+        required = tuple(required)
+        self._registrations[(required, provided, name)] = AdapterRegistration(
+            required, provided, name, factory, info)
+        
+        AdapterService.register(self, required, provided, name, factory)
+    
+    def subscribe(self, required, provided, factory, info=''):
+        """Register an subscriptions adapter
+
+        >>> registry = GlobalAdapterService()
+        >>> class R1(Interface):
+        ...     pass
+        >>> class R2(R1):
+        ...     pass
+        >>> class P1(Interface):
+        ...     pass
+        >>> class P2(P1):
+        ...     pass
+        
+        >>> registry.subscribe((R1, ), P2, 'c1', 'd1')
+        >>> registry.subscribe((R1, ), P2, 'c2', 'd2')
+        >>> subscriptions = list(registry.subscriptions((R2, ), P1))
+        >>> subscriptions.sort()
+        >>> subscriptions
+        ['c1', 'c2']
+
+        >>> registrations = list(registry.registrations())
+        >>> registrations.sort()
+        >>> for registration in registrations:
+        ...    print registration
+        SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
+        SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
+        
+        """
+        required = tuple(required)
+
+        registration = SubscriptionRegistration(
+            required, provided, factory, info)
+        
+        self._registrations[(required, provided)] = (
+            self._registrations.get((required, provided), ())
+            +
+            (registration, )
+            )
+
+        AdapterService.subscribe(self, required, provided, factory)
+
+    def registrations(self):
+        for registration in self._registrations.itervalues():
+            if isinstance(registration, tuple):
+                for r in registration:
+                    yield r
+            else:
+                yield registration
+
+class AdapterRegistration(object):
+
+    def __init__(self, required, provided, name, value, doc):
+        self.required = required
+        self.provided = provided
+        self.name = name
+        self.value = value
+        self.doc = doc
+
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r, %r)' % (
+            self.__class__.__name__,
+            tuple([getattr(r, '__name__', None) for r in self.required]),
+            self.provided.__name__, self.name,
+            self.value, self.doc,
+            )
+
+    def __cmp__(self, other):
+        if self.__class__ != other.__class__:
+            return cmp(repr(self.__class__), repr(other.__class__))
+        
+        return cmp(
+            (self.required, self.provided, self.name,
+             self.value, self.doc),
+            (other.required, other.provided, other.name,
+             other.value, other.doc),
+            )
+
+class SubscriptionRegistration(object):
+
+    def __init__(self, required, provided, value, doc):
+        self.required = required
+        self.provided = provided
+        self.value = value
+        self.doc = doc
+
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r)' % (
+            self.__class__.__name__,
+            tuple([getattr(r, '__name__', None) for r in self.required]),
+            self.provided.__name__, self.value, self.doc,
+            )
+
+    def __cmp__(self, other):
+        if self.__class__ != other.__class__:
+            return cmp(repr(self.__class__), repr(other.__class__))
+
+        return cmp(
+            (self.required, self.provided, self.value, self.doc),
+            (other.required, other.provided, other.value, other.doc),
+            )

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.4 2004/03/15 20:42:24 jim Exp $
+$Id: adapter.py,v 1.5 2004/04/07 19:18:57 jim Exp $
 """
 __metaclass__ = type
 
@@ -67,14 +67,21 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
     zope.interface.implements(
         zope.app.registration.interfaces.IRegistry,
+        zope.component.interfaces.IComponentRegistry,
         )
     
     _surrogateClass = LocalSurrogate
+
+    # Next local registry, may be None
     next = None
+
     subs = ()
 
     def __init__(self, base, next=None):
+
+        # Base registry. This is always a global registry
         self.base = base
+
         self.adapters = {}
         self.stacks = PersistentDict()
         AdapterRegistry.__init__(self)
@@ -168,6 +175,19 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
     notifyActivated = notifyDeactivated = adaptersChanged
 
+    def registrations(self):
+        for stacks in self.stacks.itervalues():
+            for stack in stacks.itervalues():
+                for info in stack.info():
+                    yield info['registration']
+
+        next = self.next
+        if next is None:
+            next = self.base
+
+        for registration in next.registrations():
+            yield registration
+
 class LocalAdapterBasedService(
     zope.app.container.contained.Contained,
     Persistent,
@@ -230,7 +250,6 @@ class LocalAdapterService(LocalAdapterRegistry,
         LocalAdapterRegistry.__init__(
             self, zapi.getService(None, zapi.servicenames.Adapters)
             )
-
 
 class IAdapterRegistration(
     zope.app.registration.interfaces.IRegistration):
