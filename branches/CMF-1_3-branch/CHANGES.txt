@@ -7,6 +7,11 @@ After 1.3
 
   Bug Fixes
 
+    - Remove over-helpful default argument values in
+      'CMFDefault.DefaultDublinCoreImpl._editMetadata'.  Now, if
+      called without a value for an argument, the method will not
+      change that value.  Collector #10.
+
     - Remove workaround in CMFCore.utils for recognizing links in
       StructuredText:  STX in CMF content should now recognize exactly
       the same links as the underlying Zope.  Note that we *do* still
