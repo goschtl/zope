@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.6 2003/10/29 20:33:08 sidnei Exp $
+$Id: __init__.py,v 1.7 2003/11/21 17:11:21 jim Exp $
 """
 
 from zope.app import zapi
@@ -345,7 +345,11 @@ class MakeSite(BrowserView):
 
         XXX we should also initialize some user-selected services.
 
+        >>> from zope.app.interfaces.traversing import IContainmentRoot
+        >>> from zope.interface import implements
+
         >>> class PossibleSite:
+        ...     implements(IContainmentRoot)
         ...     def setSiteManager(self, sm):
         ...         from zope.interface import directlyProvides
         ...         directlyProvides(self, ISite)
@@ -355,8 +359,8 @@ class MakeSite(BrowserView):
 
         >>> from zope.publisher.browser import TestRequest
         >>> request = TestRequest()
-
-        Now we'll make out folder a site:
+        
+        Now we'll make our folder a site:
 
         >>> MakeSite(folder, request).addSiteManager()
 
