@@ -1,5 +1,73 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-# Actions executed via loginfo, at the end of a commit.
+"""Apply actions dictated by traffic_table.py to checkins as they occur.
 
-echo postcommit_actions: '$0': $0, '$*':, $*
+We expect to be invoked with the loginfo "%{sVv}" format string, which
+dictates causes an argument with "file-name,old-version,new-version" for
+each file being checked in.  The files are preceded by the path to the
+repository dir of the files.
+
+(An optional leading arg "--verbose" says operate verbosely.)
+
+Currently the actions are emailing checkin messages and doing an rsync 
+to the public repository."""
+
+VERBOSE = 0
+SCRIPT = "postcommit_actions"           # Changed to args[0], when obtained.
+
+import sys, os
+import re
+
+import traffic_table
+
+sVv_re = re.compile("(.*),([^,]+),([^,]+)")
+
+def main(args):
+    """Grok the args and the traffic_table and process accordingly."""
+
+    global VERBOSE, SCRIPT
+
+    print args
+
+    if not args:
+        usage()
+        raise SystemExit, 1
+    SCRIPT = args[0]
+    del args[0]
+    if not args:
+        usage()
+        raise SystemExit, 1
+    if args[0] == "--verbose":
+        VERBOSE = 1
+        del args[0]
+
+    repository = args[0]
+    del args[0]
+    files = map(grok_file, args)
+
+    ttable = grok_table()
+
+    os.system('pwd')
+
+def grok_file(s):
+    """Separate a "file,old-version,new-version" string in parts."""
+    m = sVv_re.match(s)
+    if not m:
+        raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
+    return m.groups()
+
+def grok_table():
+    return traffic_table.table
+
+def usage():
+    complain("Usage: %s repository-path file,oldv,newv f2,o2,n2 ...\n",
+             SCRIPT)
+
+def complain(msg, *args):
+    sys.stderr.write(msg % args)
+
+if __name__ == "__main__":
+    main(sys.argv)
+
+#echo postcommit_actions: '$0': $0, '$*': $*
+#/usr/bin/rsync --verbose --archive --delete test dccvs@www.zope.org:
