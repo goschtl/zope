@@ -194,6 +194,9 @@ class Application:
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
+        # load package information and generate setup.cfg
+        pkginfo = package.loadCollectionInfo(destination)
+        self.generate_setup_cfg(destination, pkginfo)
 
     def add_package_component(self, name, destination, spec):
         os.mkdir(destination)
@@ -203,7 +206,7 @@ class Application:
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
-        # load package information and generate setup.{py,cfg}
+        # load package information and generate setup.cfg
         pkginfo = package.loadPackageInfo(name, pkgdest, name)
         self.generate_setup_cfg(destination, pkginfo)
 
