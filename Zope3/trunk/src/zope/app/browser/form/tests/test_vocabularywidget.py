@@ -69,9 +69,9 @@ class BasicVocabulary(object):
         raise LookupError("%r not a vocabulary member" % value)
 
     def getTermByToken(self, token):
-        for term in self._values:
-            if term.token == token:
-                return term
+        # XXX tokens are currently the same as the values:
+        if token in self._values:
+            return SampleTerm(token)
         raise LookupError("token %r not found in vocabulary" % token)
 
 class BasicIterator(object):
