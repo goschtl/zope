@@ -15,7 +15,7 @@
 
       <attribute name="schema" required="yes">
         <description>
-        The schema from which the edir form is generated.
+        The schema from which the edit form is generated.
 
         A schema is an interface that includes fields.
         </description>
@@ -31,10 +31,10 @@
         <description>
         The interface this page (view) applies to. 
 
-        The view will be for all objects that implement this
+        The view will be for all objects that implement this interface.
 
         The schema is used if the for attribute is not specified.
-        interface. If the for attribute is specified, the given
+        If the for attribute is specified, the given
         interface must extend the schema.
         </description>
         </attribute>
@@ -45,8 +45,7 @@
 
               A skin is composed of layers. It is common to put skin specific
               views in a layer named after the skin. If the 'layer' attribute
-              is not supplied, it defaults to
-              'default'. 
+              is not supplied, it defaults to 'default'. 
           </description>
         </attribute>
 
@@ -54,9 +53,6 @@
        <attribute name="permission" required="yes">
         <description>
               The permission needed to use the view. 
-
-              This attribute is required. 
-          
           </description>
         </attribute>
 
@@ -70,7 +66,7 @@
 
       <attribute name="class" required="no">
         <description>
-        A class to provide custom widget defineitions or methods to be
+        A class to provide custom widget definitions or methods to be
         used by a custom template.
         </description>
         </attribute>
