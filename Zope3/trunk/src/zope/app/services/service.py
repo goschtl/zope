@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.21 2003/06/01 15:59:36 jim Exp $
+$Id: service.py,v 1.22 2003/06/02 14:34:40 gvanrossum Exp $
 """
 
 import sys
@@ -230,6 +230,9 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
     def setObject(self, name, value):
         return self.Packages.setObject(name, value)
+
+    def __delitem__(self, key):
+        return self.Packages.__delitem__(key)
 
     def findModule(wrapped_self, name):
         # override to pass call up to next service manager
