@@ -1,25 +1,44 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
-  <menuItems
-      menu="zmi_views"
-      for="zope.app.services.cache.ILocalCachingService">
-      <menuItem title="Caches" action="index.html"/>
-    </menuItems>
+<!-- Browser directives for the cache service -->
 
+  <!-- "Add service" menu entry to add a cache service.
+       The action attribute matches a factory id defined in
+       zope/app/services/configure.zcml. -->
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_service" title="Caching Service"
+      action="CachingService"
+      permission="zope.ManageServices"
+      description="A Persistent Caching Service for TTW development"
+      />
+
+  <!-- ZMI tab named "Caches" for the cache service -->
   <page
       for="zope.app.services.cache.ILocalCachingService"
       name="index.html"
       template="caches.pt"
-      class=".configuration.NameComponentConfigurableView"
-      permission="zope.ManageServices" 
+      class=".cache.Caches"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Caches"
       />
 
-  <menuItem
-      menu="add_service"
-      for="zope.app.interfaces.container.IAdding"
-      action="CachingService"
-      title="Caching Service"
-      description="A Persistent Caching Service for TTW development"
+<!-- Browser directives for configuring individual cache objects -->
+
+  <!-- Configuration page for cache objects.  You get here by
+       clicking on the (configure) link for a particular cache
+       in the "Caches" tab of the cache service.  It shows
+       a menu of different configurations, at most one of which
+       is active.  You can activate a different configuration, or
+       click on an individual configuration to edit it.
+       (Note that this page doesn't really apply to a single cache,
+       it applies to a single cache name. -->
+  <page
+      for="zope.app.services.cache.ILocalCachingService"
+      name="configureCache.html"
+      template="configureCache.pt"
+      class=".cache.ConfigureCache"
+      permission="zope.ManageServices"
       />
 
   <!-- ZMI tab named "Configurations" for cache objects.

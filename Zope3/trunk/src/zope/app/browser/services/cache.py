@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache configuration support classes.
 
-$Id: cache.py,v 1.5 2003/04/24 21:01:25 gvanrossum Exp $
+$Id: cache.py,v 1.6 2003/04/28 15:04:38 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
@@ -22,9 +22,38 @@ from zope.component import getAdapter, getServiceManager, getView
 from zope.publisher.browser import BrowserView
 from zope.app.traversing import traverse
 
+class Caches(BrowserView):
+
+    # self.context is the local caching service
+
+    def getConfigs(self):
+        L = []
+        for name in self.context.listConfigurationNames():
+            cr = self.context.queryConfigurations(name)
+            active = cr.active()
+            d = {"name": name,
+                 "url": "",
+                 "configurl": ("@@configureCache.html?name=%s" % name),
+                 }
+            if active is not None:
+                d["url"] = str(getView(active.getComponent(),
+                                       "absolute_url",
+                                       self.request))
+            L.append((name, d))
+        L.sort()
+        return [d for name, d in L]
+
+class ConfigureCache(BrowserView):
+
+    def update(self):
+        cr = self.context.queryConfigurations(self.request['name'])
+        form = getView(cr, "ChangeConfigurations", self.request)
+        form.update()
+        return form
+
 class UseConfiguration(BrowserView):
 
-    """View for displaying the configurations for a connection."""
+    """View for displaying the configurations for a cache."""
 
     def uses(self):
         """Get a sequence of configuration summaries."""

@@ -1,32 +1,44 @@
-<html metal:use-macro="views/standard_macros/page">
-<body metal:fill-slot="body">
-<div metal:use-macro="view/indexMacros/macros/body">
+<html metal:use-macro="context/@@standard_macros/page">
 
-  <h2 metal:fill-slot="heading">Caches configured in this cache service.</h2>
+<div metal:fill-slot="body"
+     i18n:domain="zope"
+     tal:define="configs view/getConfigs"
+     >
 
-  <p metal:fill-slot="empty_text">No caches have been configured</p>
+<h2 i18n:translate="">Configured caches in this cache service:</h2>
 
-  <div metal:fill-slot="extra_top">
+<table tal:condition="configs">
+  <tbody>
+    <tr tal:repeat="config configs">
+      <td>
 
-    <p>For each cache, the cache name is given and all of the
-       components registered to provide the cache are shown.  You
-       may select the component to provide the cache or disable the
-       cache.
-    </p>
+        <a href="."
+           tal:condition="config/url"
+           tal:attributes="href config/url"
+           >
+          <span i18n:translate="">
+            <span tal:replace="config/name" i18n:name="cache_name" />
+          </span>
+        </a>
 
-    <p>Select a cache name or a component name to visit the cache
-       or component.
-    </p>
+        <span tal:condition="not:config/url">
+          <span i18n:translate="">
+            <span tal:replace="config/name" i18n:name="cache_name" />
+          </span>
+          <span i18n:translate="">(inactive)</span>
+        </span>
 
-  </div>
-
-  <p metal:fill-slot="help_text">To configure a cache, add a database
-     adapter component to a <em>site-management folder</em>. 
-     After the component
-     is added, add a cache configuration that configures the component to
-     provide a cache.
-  </p>
+      </td>
+      <td>
+        <a href="."
+           tal:attributes="href config/configurl"
+           i18n:translate=""
+           >(configure)</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 </div>
-</body>
+
 </html>

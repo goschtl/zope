@@ -5,7 +5,7 @@
      tal:define="configs view/getConfigs"
      >
 
-<h2 i18n:translate="">Configured connections in this connection service:</h2>
+<h2 i18n:translate="">Configured caches in this cache service:</h2>
 
 <table tal:condition="configs">
   <tbody>
@@ -17,13 +17,13 @@
            tal:attributes="href config/url"
            >
           <span i18n:translate="">
-            <span tal:replace="config/name" i18n:name="connection_name" />
+            <span tal:replace="config/name" i18n:name="cache_name" />
           </span>
         </a>
 
         <span tal:condition="not:config/url">
           <span i18n:translate="">
-            <span tal:replace="config/name" i18n:name="connection_name" />
+            <span tal:replace="config/name" i18n:name="cache_name" />
           </span>
           <span i18n:translate="">(inactive)</span>
         </span>
