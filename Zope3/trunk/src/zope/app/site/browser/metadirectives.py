@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.configuration.fields import GlobalObject, PythonIdentifier, MessageID
+from zope.configuration.fields import GlobalInterface, PythonIdentifier, MessageID
 from zope.interface import Interface
 
 class IToolDirective(Interface):
@@ -42,7 +42,7 @@ class IToolDirective(Interface):
 class IUtilityToolDirective(IToolDirective):
     """Directive for creating new utility-based tools."""
 
-    interface = GlobalObject(
+    interface = GlobalInterface(
         title=u"Interface",
         description=u"Interface used to filter out the available entries in a \
                       tool",

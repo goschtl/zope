@@ -25,7 +25,7 @@ from zope.schema import Int
 from zope.app.security.fields import Permission
 from zope.app.component.fields import LayerField
 
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalObject, GlobalInterface
 
 
 
@@ -38,7 +38,7 @@ class IPageletDirective(Interface):
         required=True
         )
 
-    slot = GlobalObject(
+    slot = GlobalInterface(
         title=u"slot",
         description=u"The slot interface this pagelet is for.",
         required=True
@@ -50,7 +50,7 @@ class IPageletDirective(Interface):
         required=True
         )
 
-    for_ = GlobalObject(
+    for_ = GlobalInterface(
         title=u"for",
         description=u"The interface this pagelet is for (default IInterface)",
         required=False
@@ -64,7 +64,7 @@ class IPageletDirective(Interface):
         required=False
         )
 
-    view = GlobalObject(
+    view = GlobalInterface(
         title=u"view",
         description=u"""
             The interface of the view this pagelet is for. (default IView)""",

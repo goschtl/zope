@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.configuration.fields import GlobalObject, Path, MessageID, Tokens
+from zope.configuration.fields import GlobalInterface, Path, MessageID, Tokens
 from zope.interface import Interface
 from zope.schema import BytesLine, TextLine
 
@@ -43,7 +43,7 @@ class IRegisterDirective(Interface):
         default="",
         required=False)
 
-    for_ = GlobalObject(
+    for_ = GlobalInterface(
         title=u"Object Interface",
         description=u"Interface for which this Help Topic is registered.",
         default=None,

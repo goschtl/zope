@@ -20,7 +20,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.schema import TextLine, SourceText, Choice
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalInterface
 from zope.app.container.interfaces import IContainer
 from zope.app.file.interfaces import IFile, IFileContent
 from zope.app.i18n import ZopeMessageIDFactory as _ 
@@ -82,7 +82,7 @@ class IOnlineHelpTopic(IContainer):
         required = True,
         vocabulary = "SourceTypes")
 
-    interface = GlobalObject(
+    interface = GlobalInterface(
         title=_(u"Object Interface"),
         description=_(u"Interface for which this Help Topic is registered."),
         default=None,

@@ -27,7 +27,7 @@
       />
 
   <page
-      for="zope.publisher.interfaces.NotFound"
+      for="zope.publisher.interfaces.INotFound"
       name="index.html"
       permission="zope.Public"
       template="notfound.pt"

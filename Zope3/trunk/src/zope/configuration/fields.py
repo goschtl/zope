@@ -143,6 +143,40 @@ class GlobalObject(schema.Field):
         self.validate(value)
         return value
 
+class GlobalInterface(GlobalObject):
+    """An interface that can be accessed from a module.
+
+    First, we need to set up a stub name resolver:
+
+    >>> class Foo(object): pass
+
+    >>> from zope.interface import Interface
+    >>> class IFoo(Interface): pass
+
+    >>> d = {'Foo': Foo, 'IFoo': IFoo}
+    >>> class fakeresolver(dict):
+    ...     def resolve(self, n):
+    ...         return self[n]
+
+    >>> fake = fakeresolver(d)
+
+    Now verify constraints are checked correctly.
+
+    >>> g = GlobalInterface()
+    >>> gg = g.bind(fake)
+    >>> gg.fromUnicode('IFoo')
+    <InterfaceClass zope.configuration.fields.IFoo>
+    >>> gg.fromUnicode('  IFoo  ')
+    <InterfaceClass zope.configuration.fields.IFoo>
+    >>> gg.fromUnicode('Foo')
+    Traceback (most recent call last):
+    ...
+    WrongType: An interface is required
+    """
+
+    def __init__(self, **kw):
+        super(GlobalInterface, self).__init__(schema.InterfaceField(), **kw)
+
 class Tokens(schema.List):
     """A list that can be read from a space-separated string
 

@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalInterface
 from zope.interface import Interface
 from zope.schema import URI
 
@@ -28,10 +28,10 @@ class IProvideInterfaceDirective(Interface):
     for_ = URI(
         title=u"Namespace",
         description=u"Namespace under which this interface will be available"\
-                    u"via DAV.",
+                    u" via DAV.",
         required=True)
 
-    interface = GlobalObject(
+    interface = GlobalInterface(
         title=u"Interface",
         description=u"Specifies an interface/schema for DAV.",
         required=True)

@@ -999,15 +999,9 @@ class GroupingContextDecorator(ConfigurationContext):
 ##############################################################################
 # Directive-definition
 
-class DirectiveSchema(fields.GlobalObject):
+class DirectiveSchema(fields.GlobalInterface):
     """A field that contains a global variable value that must be a schema
     """
-
-    def _validate(self, value):
-        super(fields.GlobalObject, self)._validate(value)
-        if not IInterface.providedBy(value):
-            raise WrongType(value)
-
 
 class IDirectivesInfo(Interface):
     """Schema for the ``directives`` directive
@@ -1054,13 +1048,12 @@ class IFullInfo(IDirectiveInfo):
         description = u"The dotted name of the directive handler",
         )
 
-    usedIn = fields.GlobalObject(
+    usedIn = fields.GlobalInterface(
         title = u"The directive types the directive can be used in",
         description = (u"The interface of the directives that can contain "
                        u"the directive"
                        ),
         default = IConfigurationContext,
-        value_type = zope.schema.InterfaceField(),
         )
 
 class IStandaloneDirectiveInfo(IDirectivesInfo, IFullInfo):

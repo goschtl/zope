@@ -17,25 +17,25 @@ $Id$
 """
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalInterface
 from zope.interface import Interface
 
 class IRendererDirective(Interface):
     """Register a renderer for a paricular output interface, such as
     IBrowserView."""
 
-    sourceType = GlobalObject(
+    sourceType = GlobalInterface(
         title=u"Source Type Interface",
         description=u"Specifies an interface for of a particular source type.",
         required=True)
 
-    for_ = GlobalObject(
+    for_ = GlobalInterface(
         title=u"Interface of the output type",
         description=u"Specifies the interface of the output type (i.e. "
                     u"browser) for which this view is being registered.",
         required=True)
 
-    factory = GlobalObject(
+    factory = GlobalInterface(
         title=u"Factory",
         description=u"Specifies the factory that is used to create the "
                     u"view on the source.",

@@ -18,8 +18,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject, Tokens, Path, \
-     Bool, PythonIdentifier, MessageID
+from zope.configuration.fields import GlobalObject, GlobalInterface
+from zope.configuration.fields import Tokens, Path, Bool, PythonIdentifier
+from zope.configuration.fields import MessageID
 from zope.schema import Text, TextLine, Id
 from zope.app.component.fields import LayerField
 from zope.app.security.fields import Permission
@@ -36,13 +37,13 @@ class ICommonInformation(Interface):
         required=True
         )
 
-    schema = GlobalObject(
+    schema = GlobalInterface(
         title=u"Schema",
         description=u"The schema from which the form is generated.",
         required=True
         )
 
-    for_ = GlobalObject(
+    for_ = GlobalInterface(
         title=u"Interface",
         description=u"""
         The interface this page (view) applies to.

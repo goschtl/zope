@@ -259,7 +259,7 @@ class InterfaceField(Field):
     def _validate(self, value):
         super(InterfaceField, self)._validate(value)
         if not IInterface.providedBy(value):
-            raise WrongType
+            raise WrongType("An interface is required")
 
 def _validate_sequence(value_type, value, errors=None):
     """Validates a sequence value.

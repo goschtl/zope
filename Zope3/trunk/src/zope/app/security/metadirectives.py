@@ -16,8 +16,8 @@
 $Id$
 """
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
-from zope.configuration.fields import MessageID
+from zope.configuration.fields import GlobalObject, GlobalInterface
+from zope.configuration.fields import Tokens, PythonIdentifier, MessageID
 from zope.schema import InterfaceField, Id, TextLine
 from fields import Permission
 
@@ -58,7 +58,7 @@ class IAllow(Interface):
         description=u"Interfaces whos names to provide access to. Access "
                     u"will be provided to all of the names defined by the "
                     u"interface(s). Multiple interfaces can be supplied.",
-        value_type = GlobalObject(value_type=InterfaceField()),
+        value_type = GlobalInterface(),
         required=False)
 
 
