@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.5 2004/03/13 20:24:21 srichter Exp $
+$Id$
 """
-from interfaces.simpleregistry import ISimpleRegistry
-from types import ListType, TupleType
+from zope.app.process.interfaces import ISimpleRegistry
 from zope.interface import implements
-ListTypes = (TupleType, ListType)
+
+ListTypes = (tuple, list)
 
 
 class ZopeDuplicateRegistryEntryError(Exception):

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: servertyperegistry.py,v 1.4 2004/03/13 20:24:21 srichter Exp $
+$Id$
 """
-from interfaces.simpleregistry import ISimpleRegistry
+from zope.app.process.interfaces import ISimpleRegistry
 from zope.app.process.servertype import IServerType
 from zope.app.process.simpleregistry import SimpleRegistry
 from zope.interface import implements
