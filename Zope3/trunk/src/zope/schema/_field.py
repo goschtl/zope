@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.23 2003/11/07 22:35:10 fdrake Exp $
+$Id: _field.py,v 1.24 2003/11/24 17:02:14 dominikhuber Exp $
 """
 __metaclass__ = type
 
@@ -22,9 +22,11 @@ import re
 
 from zope.interface import classImplements, implements
 from zope.interface.interfaces import IInterface
+from zope.interface.interfaces import IMethod
 
 from zope.schema.interfaces import ValidationError
 from zope.schema.errornames import WrongContainedType, WrongType
+from zope.schema import errornames
 
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
@@ -222,36 +224,40 @@ class List(Sequence):
 
 def _validate_fields(schema, value, errors=None):
     if errors is None:
-        errors = []
-
-    for name, item in value.__dict__.items():
-        field = schema[name]
-        error = None
-        try:
-            field.validate(item)
-        except ValidationError, error:
-            pass
-        else:
-            # We validated, so clear error (if any) and done with
-            # this value
-            error = None
-            break
-
-        if error is not None:
-            errors.append(error)
-
+        errors = []  
+    for name in schema.names(all=True):
+        if not IMethod.isImplementedBy(schema[name]):
+            try:
+                field = schema[name]
+                field.validate(getattr(value, name))
+            except ValidationError, error:
+                errors.append(error)
+            except AttributeError, error:
+                # property for the given name is not implemented
+                errors.append(errornames.SchemaNotFullyImplemented)
+                
     return errors
+
 
 class Object(Field):
     __doc__ = IObject.__doc__
     implements(IObject)
 
     def __init__(self, schema, **kw):
-        super(Object, self).__init__(**kw)
+        if not IInterface.isImplementedBy(schema):
+            raise ValidationError(WrongType)
+            
         self.schema = schema
-
+        super(Object, self).__init__(**kw)
+        
     def _validate(self, value):
         super(Object, self)._validate(value)
+        
+        # schema has to be implemented by value    
+        if not self.schema.isImplementedBy(value):
+            raise ValidationError(errornames.SchemaNotProvided)
+            
+        # check the value against  schema
         errors = _validate_fields(self.schema, value)
         if errors:
             raise ValidationError(WrongContainedType, errors)

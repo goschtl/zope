@@ -13,7 +13,7 @@
 ##############################################################################
 """Common Schema Error Names
 
-$Id: errornames.py,v 1.5 2003/09/19 06:47:53 anthony Exp $
+$Id: errornames.py,v 1.6 2003/11/24 17:02:29 dominikhuber Exp $
 
 Defines common validation error messages.
 Using these symbols instead of strings makes unit tests less fragile,
@@ -52,3 +52,7 @@ ConstraintNotSatisfied = _(u'Constraint not satisfied')
 NotAContainer = _(u'Not a container')
 
 NotAnIterator = _(u'Not an iterator')
+
+SchemaNotFullyImplemented = _(u'Schema not fully implemented')
+
+SchemaNotProvided = _(u'Schema not provided')
