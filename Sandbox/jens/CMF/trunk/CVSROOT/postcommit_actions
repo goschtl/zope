@@ -5,10 +5,12 @@
 An optional leading arg "--verbose" argument says operate verbosely.
 
 We expect to be invoked from loginfo with "%{CVSROOT} %{sVv}".  The %{sVv}
-format string causes the repository directory to be passed as an argument,
-followed by an argument for each file, concatenated with the old and new
-version numbers, like so: file-name,old-version,new-version.  (See the CVS
-Gnu INFO file for the node 'loginfo' for more format-string details.)
+format string is expanded into a single argument passed in, containing
+multiple space-delimited parts.  The first part is the path of repository
+directory, then a comma-concatenated string for each file being checked in,
+consisting of the file name, the old version number, then the new one, like
+so: file-name,old-version,new-version.  (See the CVS Gnu INFO file for the
+node 'loginfo' for more format-string details.)
 
 Currently the actions are emailing checkin messages and doing an rsync 
 to the public repository."""
@@ -29,8 +31,8 @@ def main(args):
     if VERBOSE:
         complain("Initial args: %s\n", args)
 
-    if (len(args) < 3
-        or (args[1] == "--verbose" and (len(args) < 4))):
+    if (len(args) < 2
+        or (args[1] == "--verbose" and (len(args) != 3))):
         usage(); raise SystemExit, 1
 
     # Identify all the args - see usage() for expected layout.
@@ -38,6 +40,9 @@ def main(args):
     if args[0] == "--verbose":
         VERBOSE = 1
         del args[0]
+
+    # The %{sVv} args are passed in as a single token - have to split them.
+    args = string.split(args[0])
 
     repo = args[0]; del args[0]
     subjs = map(grok_file, args)
