@@ -61,9 +61,11 @@ rsync procedure - they must be created somehow else.  Though this can be
 inconvenient, it is beneficial in that it provides a sort of sanity check
 on the target directories."""
 
-import sys, os, tempfile
+import sys, os, tempfile, time
 import string
 import getopt
+
+CUSTOM_TRAFFIC_TABLE = "/cvs-repository/custom_traffic_table.py"
 
 try:
     import re
@@ -73,6 +75,9 @@ except ImportError:
     got_re = 0
 
 import traffic_table
+# Hook up with an outboard file.
+if os.path.exists(CUSTOM_TRAFFIC_TABLE):
+    execfile(CUSTOM_TRAFFIC_TABLE)
 
 # OUTPUT_LOG must be writable by anyone whose checkins will invoke this
 # script in order for their logging to happen.
@@ -218,11 +223,16 @@ def main(args):
     for entry in entries:
         path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
+        if remote:
+            receiverid = remote.get('receiverid', IDENTITY_ACCT)
+        else:
+            receiverid = None
         if addrs and not only_sync:
                 do_mail(path, remote, repo, addrs, subjs,
                         doing_directory=doing_directory, no_files=no_files)
         if remote:
-            do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE,
+            do_sync(path, repo, remote, receiverid, subjs, excludes,
+                    recurse=RECURSE, 
                     doing_directory=doing_directory, no_files=no_files)
     if not entries and only_sync:
             note_failure("*** --syncrepo invalid - no repository"
@@ -275,7 +285,7 @@ def find_entries(repo=None, all=None):
 
     all == 1 means return all entries, regardless of repo arg."""
     entries = []
-    for t in traffic_table.table:
+    for t in traffic_table.get_table():
         if all:
             is_match = 1
         elif got_re:
@@ -338,8 +348,8 @@ def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
     if MSGFILENM:
         os.unlink(MSGFILENM)
 
-def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
-            doing_directory=0, no_files=0):
+def do_sync(path, repo, remote, receiverid, subjs=None,
+            excludes=None, recurse=0, doing_directory=0, no_files=0):
     """Syncronize repository to mirror.
 
     The repository directory containing the subjects is synced.  (In fact,
@@ -370,7 +380,7 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
 
     ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s"'
                     % (SSH_EXE, KNOWN_HOSTS_FILE, (VERBOSE and "-v") or "",
-                       IDENTITY_FILE, IDENTITY_ACCT))
+                       IDENTITY_FILE, receiverid))
     
     if excludes:
         specific_excludes = ''
