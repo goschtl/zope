@@ -275,20 +275,8 @@
   <addMenuItem
       class="zope.app.content.folder.Folder"
       title="Folder"
-      view="zope.app.content.folder.Folder"
       permission="zope.ManageContent"
       />
-
-
-  <addform
-      schema="zope.app.interfaces.content.folder.IFolder"
-      label="Add a ZPT Page"
-      content_factory="zope.app.content.folder.Folder"
-      name="zope.app.content.folder.Folder"
-      permission="zope.ManageContent"
-      />
-
-
 
   <page
       name="contents.html"
