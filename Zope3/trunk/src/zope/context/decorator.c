@@ -338,11 +338,6 @@ decorate_dealloc(PyObject *self)
         } \
     }
 
-/* XXX Port improvements / fixes to wrapper.c
- *   * port string ref changes in getattro and setattro to wrapper.c
- *   * port PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS) guarding
- *     use of descriptor->ob_type->tp_descr_{get,set}
- */
 static PyObject *
 decorate_getattro(PyObject *self, PyObject *name)
 {

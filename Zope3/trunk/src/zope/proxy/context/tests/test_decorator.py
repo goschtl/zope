@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.7 2003/05/12 14:59:37 stevea Exp $
+$Id: test_decorator.py,v 1.8 2003/05/12 15:44:41 mgedmin Exp $
 """
 import unittest
 
@@ -192,11 +192,6 @@ class DecoratorTestCase(WrapperTestCase):
         f = MixinFactory
         n = ('foo', 'spoo', u's\u2323g', 'someinstanceattr')
         self.assertRaises(TypeError, self.proxy_class, obj, c, f, n)
-        n = ('foo', 'spoo', 'someinstanceattr')
-        w = self.proxy_class(obj, c, f, n)
-        self.assertRaises(UnicodeError, getattr, w, u's\u2323g')
-        self.assertRaises(UnicodeError, setattr, w, u's\u2323g', 23)
-
 
     def test_typeerror_if_no_factory(self):
         w = self.proxy_class(object(), None, None, ('foo',))

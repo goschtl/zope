@@ -640,16 +640,36 @@ wrap_getattro(PyObject *self, PyObject *name)
     PyObject *wrapped;
     PyObject *descriptor;
     PyObject *wrapped_type;
+    PyObject *res = NULL;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_getattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return NULL;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return NULL;
+    }
+    else
+        Py_INCREF(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
         PyErr_Format(PyExc_RuntimeError,
             "object is NULL; requested to get attribute '%s'",
             PyString_AS_STRING(name));
-        return NULL;
+        goto finally;
     }
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
         descriptor->ob_type->tp_descr_get != NULL &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
         /* If object is context-aware, still don't rebind __class__.
@@ -660,13 +680,17 @@ wrap_getattro(PyObject *self, PyObject *name)
         )) {
         wrapped_type = (PyObject *)wrapped->ob_type;
         if (wrapped_type == NULL)
-            return NULL;
-        return descriptor->ob_type->tp_descr_get(
+            goto finally;
+        res = descriptor->ob_type->tp_descr_get(
                 descriptor,
                 self,
                 wrapped_type);
+        goto finally;
     }
-    return PyObject_GetAttr(wrapped, name);
+    res = PyObject_GetAttr(wrapped, name);
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 static int
@@ -674,22 +698,46 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 {
     PyObject *wrapped;
     PyObject *descriptor;
+    int res = -1;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_setattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return -1;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return -1;
+    }
+    else
+        Py_INCREF(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
         PyErr_Format(PyExc_RuntimeError,
             "object is NULL; requested to set attribute '%s'",
             PyString_AS_STRING(name));
-        return -1;
+        goto finally;
     }
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
          PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
         descriptor->ob_type->tp_descr_set != NULL
         )
-        return descriptor->ob_type->tp_descr_set(descriptor, self, value);
-    return PyObject_SetAttr(wrapped, name, value);
+        res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
+    else
+        res = PyObject_SetAttr(wrapped, name, value);
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 /* What follows are specific implementations of tp_-slots for those slots
@@ -709,6 +757,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 
 #define FILLSLOTIF(BADVAL) \
     if (descriptor != NULL && \
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) && \
         descriptor->ob_type->tp_descr_get != NULL && \
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
             PyObject_TypeCheck(wrapped, &ContextAwareType))\

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.11 2003/05/08 09:40:11 stevea Exp $
+$Id: test_wrapper.py,v 1.12 2003/05/12 15:44:41 mgedmin Exp $
 """
 import pickle
 import unittest
@@ -251,6 +251,18 @@ class WrapperTestCase(ProxyTestCase):
         p.foo = 'bar'
         self.assertEqual(x.value_called, (p, 'foo', 'bar'))
         self.assert_(x.value_called[0] is x)
+
+    def test_UnicodeAttrNames(self):
+        class SomeObject(object):
+            foo = 42
+        obj = SomeObject()
+        p = self.new_proxy(obj)
+        self.assertEquals(getattr(p, u'foo'), 42)
+        self.assertRaises(AttributeError, getattr, p, u'bar')
+        self.assertRaises(UnicodeError, getattr, p, u'baz\u1234')
+        setattr(p, u'bar', 23)
+        self.assertEquals(p.bar, 23)
+        self.assertRaises(UnicodeError, setattr, p, u'baz\u1234', 23)
 
     def test_getitem(self):
         p1, p2, p3, context = self.make_proxies('__getitem__')
