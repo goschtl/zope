@@ -76,6 +76,12 @@ Credits
     the relational database support and caching infrustructure. Much
     Thanks to M. Carling for makin their time available.
 
+  o Much thanks to Alexander Limi, Alan Runyan, Godefroid Chapelle,
+    Joachim Werner, Paul Everitt, and others for the "Rotterdam Skin"
+    the default skin in Zope 3. happen. Special thanks to Godefroid
+    for the finishing work just before the alpha.
+
+
 I know I've left out some important contributors. I've run out of
 time. Watch this space!
 
