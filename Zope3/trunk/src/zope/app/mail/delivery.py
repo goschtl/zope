@@ -167,6 +167,8 @@ class QueueProcessorThread(threading.Thread):
 
         while True:
             for filename in self.maildir:
+                fromaddr = ''
+                toaddrs = ()
                 try:
                     file = open(filename)
                     message = file.read()
@@ -177,13 +179,17 @@ class QueueProcessorThread(threading.Thread):
                     # XXX maybe log the Message-Id of the message sent
                     self.log.info("Mail from %s to %s sent.",
                                   fromaddr, ", ".join(toaddrs))
-                    # Blanket except because we don't want this thread to ever die
+                    # Blanket except because we don't want
+                    # this thread to ever die
                 except:
-                    # XXX maybe throw away erroring messages here?
-                    # XXX: Note that fromaddr and toaddr is not available
-                    #      here! This needs fixing. (SR)
-                    self.log.error("Error while sending mail from %s to %s.",
-                                   fromaddr, ", ".join(toaddrs), exc_info=1)
+                    if fromaddr != '' or toaddrs != ():
+                        self.log.error(
+                            "Error while sending mail from %s to %s.",
+                            fromaddr, ", ".join(toaddrs), exc_info=1)
+                    else:
+                        self.log.error(
+                            "Error while sending mail : %s ",
+                            filename, exc_info=1)
             else:
                 if forever:
                     self.__event.wait(3)
