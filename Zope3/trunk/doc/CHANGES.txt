@@ -110,6 +110,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Small but important fix to security map. It was not marking objects
+        with modified permissions as changed, due to a missing assignment.
 
     Much thanks to everyone who contributed to this release:
 
