@@ -80,7 +80,23 @@ class Specification:
 
     """
 
+    # XXX Needing to pass the source directory to the constructor is a
+    # bit of a hack, and is only needed to support exclusions.  A
+    # better approach may be to have "raw" and "cooked" versions of
+    # the specification object; the raw version would only have the
+    # information loaded from a specification file, and the cooked
+    # version would be (essentially) a list of directory creation and
+    # file copy operations.  The input source directory would be a
+    # parameter to the "cook" operation.
+
     def __init__(self, source):
+        """Initialize the Specification object.
+
+        :Parameters:
+          - `source`: Directory that will serve as the primary source
+            directory; this is needed to support exclusions.
+
+        """
         # The source directory is needed since globbing is performed
         # to locate files if the spec includes wildcards.
         self.excludes = {}
@@ -88,6 +104,19 @@ class Specification:
         self.source = source
 
     def load(self, f, filename):
+        """Load the specification data from a stream.
+
+        :Parameters:
+          - `f`: An open stream to read from.
+
+          - `filename`: A name to associate with the stream.  This is
+            only used for reporting information in exceptions.
+
+        :Exceptions:
+          - `InclusionSpecificationError`: Raised for any error in the
+            input specification.
+
+        """
         lineno = 0
         for line in f:
             lineno += 1
@@ -159,7 +188,7 @@ class InclusionProcessor:
         self.cvs_loader = None
 
     def createDistributionTree(self, destination, spec=None):
-        """Create the output tree according to `specification`.
+        """Create the output tree according to `spec`.
 
         :Parameters:
           - `destination`: Path of the top-level output directory.
