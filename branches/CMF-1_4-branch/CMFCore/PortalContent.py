@@ -35,7 +35,7 @@ except ImportError:
     class ResourceLockedError( Exception ):
         pass
 
-try: 
+try:
     from webdav.WriteLockInterface import WriteLockInterface
     NoWL = 0
 except ImportError:
@@ -45,13 +45,13 @@ except ImportError:
 class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     """
         Base class for portal objects.
-        
+
         Provides hooks for reviewing, indexing, and CMF UI.
 
         Derived classes must implement the interface described in
         interfaces/DublinCore.py.
     """
-    
+
     if not NoWL:
         __implements__ = (WriteLockInterface,
                           Contentish,
