@@ -23,6 +23,9 @@ Somewhere over the rainbow
 
  Bugs Fixed
 
+  - Hardened CMFCore to initialize correctly in the absence of
+    the PageTemplates product (Tracker #430).
+
   - Restored slot in <head> of ZPT main template into which content
     can insert the <base> tag (Tracker #418).
 
