@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.5 2002/10/08 19:41:59 jeremy Exp $
+$Id: SiteDefinition.py,v 1.6 2002/10/08 20:41:10 jeremy Exp $
 """
 
 import sys
@@ -76,7 +76,7 @@ class SiteDefinition:
     def useMappingStorage(self, _context):
         """Lets you specify the ZODB to use."""
         from ZODB.MappingStorage import DB
-        self._zodb = DB(file)
+        self._zodb = DB()
         return []
 
 
