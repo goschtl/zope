@@ -2,6 +2,16 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
+<!-- Workflow manager -->
+
+<tool
+    interface="zope.app.workflow.stateful.interfaces.IContentWorkflowsManager"
+    title="Workflow Manager"
+    description="Workflow Manager allows you to define workflow chains for your
+                 content types"
+    />
+
+
 <!-- Stateful Workflow Process Definition -->
 
   <addMenuItem
