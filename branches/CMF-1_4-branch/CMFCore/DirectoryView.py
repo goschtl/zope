@@ -111,12 +111,13 @@ class DirectoryInformation:
             try:
                 fp = expandpath(self.filepath)
                 mtime = stat(fp)[8]
-                # some Windows directories don't change mtime 
-                # when a file is added to or deleted from them :-(
-                # So keep a list of files as well, and see if that
-                # changes
-                path.walk(fp,_walker,filelist)
-                filelist.sort()
+                if sys.platform == 'nt':
+                    # some Windows directories don't change mtime 
+                    # when a file is added to or deleted from them :-(
+                    # So keep a list of files as well, and see if that
+                    # changes
+                    path.walk(fp,_walker,filelist)
+                    filelist.sort()
             except: 
                 LOG('DirectoryView',
                     ERROR,
