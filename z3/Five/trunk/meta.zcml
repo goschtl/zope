@@ -151,7 +151,7 @@
         schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
         handler=".globalbrowsermenuservice.menuItemDirective"
         />
-    
+
     <meta:complexDirective
         name="menuItems"
         schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
@@ -162,10 +162,25 @@
           name="menuItem"
           schema="zope.app.publisher.browser.metadirectives.IMenuItemSubdirective"
           />
-    
+
     </meta:complexDirective>
-                
+
+
+    <meta:complexDirective
+        name="editform"
+        schema="zope.app.form.browser.metadirectives.IEditFormDirective"
+        handler=".browserconfigure.EditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
   </meta:directives>
+
 
   <meta:directives namespace="http://namespaces.zope.org/five">
 

@@ -20,6 +20,8 @@ Trunk
   zope.security.checkPermission, which checks if the current user
   has a permission on an object.
 
+* Support for browser:editform. You can now use schemas for editing.
+
 
 Five 0.2b
 ---------

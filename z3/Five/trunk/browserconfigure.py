@@ -25,13 +25,15 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
+from zope.app.form.browser.metaconfigure import BaseFormDirective
 
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
-from browser import BrowserView
+from browser import BrowserView, EditView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
+from globalbrowsermenuservice import menuItemDirective
 
 class FivePageTemplateFile(ViewPageTemplateFile):
 
@@ -298,6 +300,60 @@ def resourceDirectory(_context, name, directory, layer='default',
             args = (new_class,)
             )
 
+
+#
+# Form generation from schema
+#
+def EditViewFactory(name, schema, label, permission, layer,
+                    template, default_template, bases, for_, fields,
+                    fulledit_path=None, fulledit_label=None, menu=u''):
+    s = getGlobalService(Presentation)
+    class_ = makeClassForTemplate(template, used_for=schema, bases=bases)
+    class_.schema = schema
+    class_.label = label
+    class_.fieldNames = fields
+
+    class_.fulledit_path = fulledit_path
+    if fulledit_path and (fulledit_label is None):
+        fulledit_label = "Full edit"
+
+    class_.fulledit_label = fulledit_label
+
+    class_.generated_form = ViewPageTemplateFile(default_template)
+
+    # Not the prettiest solution, but it works...
+    class_.__init__ = EditView.__init__
+#     XXX: replace with proper checks
+#     defineChecker(class_,
+#                   NamesChecker(("__call__", "__getitem__",
+#                                 "browserDefault", "publishTraverse"),
+#                                permission))
+
+    s.provideView(for_, name, IBrowserRequest, class_, layer)
+
+
+class EditFormDirective(BaseFormDirective):
+
+    view = EditView
+    default_template = 'edit.pt'
+    title = 'Edit'
+
+    def _handle_menu(self):
+        if self.menu:
+            menuItemDirective(
+                self._context, self.menu, self.for_ or self.schema,
+                '@@' + self.name, self.title, permission=self.permission)
+
+    def __call__(self):
+        self._processWidgets()
+        self._handle_menu()
+        self._context.action(
+            discriminator=self._discriminator(),
+            callable=EditViewFactory,
+            args=self._args(),
+            kw={'menu': self.menu},
+        )
+
 #
 # mixin classes / class factories
 #
@@ -341,3 +397,4 @@ def makeClassForTemplate(src, template=None, used_for=None,
         class_.__used_for__ = used_for
 
     return class_
+

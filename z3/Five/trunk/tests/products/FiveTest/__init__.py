@@ -22,6 +22,15 @@ def initialize(context):
         )
 
     context.registerClass(
-	fancycontent.FancyContent,
-	constructors = (fancycontent.manage_addFancyContent,)
-	)
+        fancycontent.FancyContent,
+        constructors = (fancycontent.manage_addFancyContent,)
+        )
+
+    context.registerClass(
+        simplecontent.FieldSimpleContent,
+        constructors = (simplecontent.manage_addFieldSimpleContentForm,
+                        simplecontent.manage_addFieldSimpleContent,)
+        )
+
+
+

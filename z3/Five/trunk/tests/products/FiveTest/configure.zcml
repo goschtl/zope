@@ -283,6 +283,16 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- browser forms -->
+  <five:traversable class=".simplecontent.FieldSimpleContent" />
+
+  <browser:editform
+      schema=".interfaces.IFieldSimpleContent"
+      for=".interfaces.IFieldSimpleContent"
+      name="edit.html"
+      permission="zope2.Public"
+      />
+
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page
@@ -308,7 +318,7 @@
       attribute="method"
       permission="zope2.Public"
       />
-    
+
   <!-- browser menu support -->
   <browser:menu
       id="testmenu"
@@ -326,23 +336,23 @@
   <browser:menuItems
       for=".interfaces.ISimpleContent"
       menu="testmenu">
-      
+
       <menuItem
           title="Test Menu Item 2"
           action="parakeet.html"
           description="This is a test menu item"
           permission="zope2.Public"
           />
-      
+
       <menuItem
           title="Test Menu Item 3"
           action="falcon.html"
           description="This is a test menu item"
           permission="zope2.Public"
           />
-          
+
   </browser:menuItems>
-    
+
   <!-- subscribe to all events -->
   <five:sendEvents
       class=".simplecontent.SimpleContent"
