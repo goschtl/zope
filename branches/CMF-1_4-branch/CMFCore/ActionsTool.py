@@ -48,7 +48,7 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     _actions = (ActionInformation(id='folderContents'
                                 , title='Folder contents'
                                 , action=Expression(
-               text='string: ${folder_url}/folder_contents')
+               text='string:${folder_url}/folder_contents')
                                 , condition=Expression(
                text='python: folder is not object') 
                                 , permissions=('List folder contents',)
@@ -58,7 +58,7 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
               , ActionInformation(id='folderContents'
                                 , title='Folder contents'
                                 , action=Expression(
-               text='string: ${folder_url}/folder_contents')
+               text='string:${folder_url}/folder_contents')
                                 , condition=Expression(
                text='python: folder is object')
                                 , permissions=('List folder contents',)
