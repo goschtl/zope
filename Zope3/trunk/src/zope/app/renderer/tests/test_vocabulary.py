@@ -38,7 +38,7 @@ class IFoo2(ISource):
 
 Foo2Factory = SourceFactory(IFoo2, 'Foo2', 'Foo2 Source')
 
-# XXX the vocabulary uses SimpleVocabulary now, so these tests are a bit 
+# The vocabulary uses SimpleVocabulary now, so these tests are a bit 
 # redundant.  Leaving them in as confirmation that the replacement function 
 # works identically to the old custom vocabulary.
 class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
