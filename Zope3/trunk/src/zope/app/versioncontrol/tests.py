@@ -19,17 +19,8 @@ import sys
 import unittest
 
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.testing import doctest
+from zope.testing import doctest, module
 from transaction import abort
-
-class FakeModule:
-    def __init__(self, dict):
-        self.__dict = dict
-    def __getattr__(self, name):
-        try:
-            return self.__dict[name]
-        except KeyError:
-            raise AttributeError, name
 
 name = 'zope.app.versioncontrol.README'
 
@@ -37,13 +28,10 @@ ps = PlacelessSetup()
 
 def setUp(test):
     ps.setUp()
-    dict = test.globs
-    dict.clear()
-    dict['__name__'] = name    
-    sys.modules[name] = FakeModule(dict)
+    module.setUp(test, name)
 
 def tearDown(test):
-    del sys.modules[name]
+    module.tearDown(test, name)
     abort()
     db = test.globs.get('db')
     if db is not None:
