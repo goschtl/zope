@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.14 2003/06/01 15:59:36 jim Exp $
+$Id: test_adapter.py,v 1.15 2003/06/02 19:40:49 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,6 +29,7 @@ from zope.app.content.folder import RootFolder
 from zope.app.traversing import traverse
 from zope.component.interfaces import IServiceService
 from zope.component.adapter import provideAdapter
+from zope.component.service import serviceManager
 
 class I1(Interface):
     pass
@@ -280,6 +281,11 @@ class PhonyServiceManager:
     def resolve(self, name):
         if name == 'Foo.Bar.A':
             return A
+
+    def getService(self, name):
+        return serviceManager.getService(name)
+        
+
 
 class TestAdapterConfiguration(PlacefulSetup, TestCase):
 
