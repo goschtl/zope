@@ -13,7 +13,7 @@
 ##############################################################################
 """A registration for a database adapter.
 
-$Id: connection.py,v 1.9 2003/06/21 21:22:10 jim Exp $
+$Id: connection.py,v 1.10 2003/07/07 17:14:53 sidnei Exp $
 """
 
 from zope.schema import TextLine
@@ -36,7 +36,7 @@ class IConnectionRegistration(IComponentRegistration):
                     required=True,
                     min_length=1,
                     )
-    
+
     componentPath = ComponentPath(
         title=u"Component path",
         description=u"The physical path to the component",
@@ -46,3 +46,4 @@ class IConnectionRegistration(IComponentRegistration):
 
 class ILocalConnectionService(IConnectionService, INameComponentRegistry):
     """A local (placeful) connection service"""
+

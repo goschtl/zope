@@ -13,7 +13,7 @@
 ##############################################################################
 """Relational Database Adapter interfaces.
 
-$Id: rdb.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: rdb.py,v 1.3 2003/07/07 17:14:50 sidnei Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute
@@ -137,7 +137,7 @@ class ICursor(Interface):
 
     def fetchone():
         """Fetch the next row of a query result set, returning a single
-        sequence, or None when no more data is available. [6]
+        sequence, or None when no more data is available.
 
         An Error (or subclass) exception is raised if the previous call to
         executeXXX() did not produce any result set or no call was issued yet.
@@ -315,6 +315,13 @@ class IConnectionService(Interface):
 
     def getAvailableConnections():
         """Returns the connections available from this connection service."""
+
+
+class IGlobalConnectionService(IConnectionService):
+    """A global connection service"""
+
+    def provideConnection(name, adapter, dsn):
+        """ Register a connection instance for site-wide use """
 
 
 class IDBIConnection(Interface):

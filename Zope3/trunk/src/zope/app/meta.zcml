@@ -19,5 +19,6 @@
 <include package="zope.app.fssync" file="meta.zcml" />
 <include package="zope.app.workflow" file="meta.zcml" />
 <include package="zope.app.dav" file="meta.zcml" />
+<include package="zope.app.rdb" file="meta.zcml" />
 
 </zopeConfigure>

@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.12 2003/07/02 22:11:13 jim Exp $
+$Id: pagefolder.py,v 1.13 2003/07/07 17:15:03 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -26,7 +26,6 @@ from zope.app.interfaces.services.view import IZPTTemplate
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.traversing import getPath
 from zope.app.context import getItem
-from zope.context import ContextMethod
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.proxy import removeAllProxies
@@ -128,18 +127,18 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
                 template=template,
                 layer=self.layer,
                 )
-            
+
             registrations = self.getRegistrationManager()
             id = registrations.setObject('', registration)
             registration = getItem(registrations, id)
             registration.status = ActiveStatus
-            
+
         return name
 
     def applyDefaults(self):
-        """Apply the default configuration to the already-registered pages. 
+        """Apply the default configuration to the already-registered pages.
         """
-        
+
         rm = self.getRegistrationManager()
         for name in rm:
             registration = rm[name]
@@ -160,10 +159,6 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
             # Now restore the registration status
 
             registration.status = status
-
-
-
-
 
 
 # XXX Backward compatibility. This is needed to support old pickles.

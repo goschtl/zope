@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.19 2003/07/04 13:52:27 sidnei Exp $
+$Id: __init__.py,v 1.20 2003/07/07 17:14:55 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -36,6 +36,7 @@ from zope.app.interfaces.rdb import DatabaseException
 from zope.app.interfaces.rdb import IResultSet, ISQLCommand
 from zope.app.interfaces.rdb import IZopeConnection, IZopeCursor
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.interfaces.rdb import IGlobalConnectionService
 
 from zope.app.component.nextservice import getNextService
 
@@ -411,3 +412,47 @@ def RowClassFactory(columns):
     klass_namespace['__slots__'] = tuple(columns)
 
     return type('GeneratedRowClass', (Row,), klass_namespace)
+
+class GlobalConnectionService:
+
+    implements(IGlobalConnectionService)
+
+    def __init__(self):
+        self.__registry = {}
+
+    def getConnection(self, name):
+        """Returns a connection object by name."""
+        dbadapter = self.__registry[name]
+        if dbadapter is not None:
+            return dbadapter()
+        raise KeyError, name
+
+    def queryConnection(self, name, default=None):
+        """Returns a connection object by name or default."""
+        try:
+            return self.getConnection(name)
+        except KeyError:
+            return default
+
+    def getAvailableConnections(self):
+        """Returns the connections available from this connection service."""
+        return self.__registry.keys()
+
+    def provideConnection(self, name, connection):
+        """ Register a connection instance for site-wide use """
+        self.__registry[name] = connection
+
+    _clear = __init__
+
+connectionService = GlobalConnectionService()
+getConnection = connectionService.getConnection
+queryConnection = connectionService.queryConnection
+getAvailableConnections = connectionService.getAvailableConnections
+provideConnection = connectionService.provideConnection
+
+_clear         = connectionService._clear
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(_clear)
+del addCleanUp
