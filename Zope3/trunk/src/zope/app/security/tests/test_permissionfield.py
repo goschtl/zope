@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.3 2002/12/26 18:49:09 jim Exp $
+$Id: test_permissionfield.py,v 1.4 2003/01/21 21:21:47 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -35,7 +35,7 @@ class TestPermissionField(PlacelessSetup, TestCase):
         field = PermissionField()
         self.assertRaises(ValidationError, field.validate, dummy)
         permissionRegistry.definePermission('read', 'Read', 'Read something')
-        field.validate(permissionRegistry.getPermission('read'))
+        field.validate(permissionRegistry.getPermission('read').getId())
 
 def test_suite():
     return TestSuite((makeSuite(TestPermissionField),))

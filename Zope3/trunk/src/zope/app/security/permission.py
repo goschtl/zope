@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permission.py,v 1.1 2002/12/26 18:49:06 jim Exp $
+$Id: permission.py,v 1.2 2003/01/21 21:21:46 jim Exp $
 """
 
 from zope.schema import ValueSet
@@ -34,5 +34,5 @@ class PermissionField(ValueSet):
     def _validate(self, value):
         super(PermissionField, self)._validate(value)
         service = getService(self.context, 'Permissions')
-        if service.getPermission(value.getId()) is None:
+        if service.getPermission(value) is None:
             raise ValidationError("Unknown permission", value)

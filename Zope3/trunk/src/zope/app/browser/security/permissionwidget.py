@@ -13,7 +13,7 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.2 2002/12/25 14:12:34 jim Exp $
+$Id: permissionwidget.py,v 1.3 2003/01/21 21:22:00 jim Exp $
 """
 
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -23,15 +23,13 @@ from zope.component import getService
 class BaseWidget:
 
     def _convert(self, permission_id):
-        if not permission_id:
-            return None
-        service = getService(self.context.context, "Permissions")
-        return service.getPermission(permission_id)
+        if type(permission_id) is unicode:
+            try:
+                permission_id = permission_id.encode('ascii')
+            except UnicodeError, v:
+                raise ConversionError("Invalid textual data", v)
 
-    def _unconvert(self, permission):
-        if permission is None:
-            return None
-        return permission.getId()
+        return permission_id
 
 class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
 
@@ -40,14 +38,12 @@ class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
         search_string = self.request.form.get(search_name, '')
 
         service = getService(self.context.context, "Permissions")
-        permissions = list(service.getPermissions())
-        permissions.sort(lambda x,y: cmp(x.getId(), y.getId()))
-        permissions = map(self._unconvert, permissions)
+        permissions = [p.getId() for p in service.getPermissions()]
+        permissions.sort()
         if search_string:
             permissions = [permission
                            for permission in permissions
                            if permission.find(search_string)!=-1]
-        permissions.sort()
 
         select_name = self.name
         selected = self._showData()

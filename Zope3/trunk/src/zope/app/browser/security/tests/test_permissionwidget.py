@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.3 2002/12/26 18:50:46 jim Exp $
+$Id: test_permissionwidget.py,v 1.4 2003/01/21 21:22:01 jim Exp $
 """
 
 __metaclass__ = type
@@ -108,7 +108,7 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         )
 
         self.assertEqual(
-                widget.render(read_permission),
+                widget.render(read_permission.getId()),
                 out)
 
         self.assertEqual(widget.getData(), None)
@@ -118,7 +118,7 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         request.form["field.TestName"] = (
         'read'
         )
-        self.assertEqual(widget.getData(), read_permission)
+        self.assertEqual(widget.getData(), read_permission.getId())
 
         self.assertEqual(widget(), out)
 
