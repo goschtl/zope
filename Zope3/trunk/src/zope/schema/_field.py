@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.9 2003/04/14 18:21:36 fdrake Exp $
+$Id: _field.py,v 1.10 2003/04/14 19:24:38 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -63,7 +63,7 @@ class SourceText(Text):
     __implements__ = ISourceText
     _type = unicode
 
-class Bytes(MinMaxLen, Enumerated, Field):
+class Bytes(Enumerated, MinMaxLen, Field):
     __doc__ = IBytes.__doc__
     __implements__ = IBytes
 
@@ -141,7 +141,7 @@ def _validate_sequence(value_types, value, errors=None):
     return errors
 
 
-class Sequence(MinMaxLen, Iterable):
+class Sequence(MinMaxLen, Iterable, Field):
     __doc__ = ISequence.__doc__
     __implements__ = ISequence
     value_types = FieldProperty(ISequence['value_types'])
@@ -169,7 +169,7 @@ class List(Sequence):
     _type = list
 
 
-class Dict(MinMaxLen, Iterable):
+class Dict(MinMaxLen, Iterable, Field):
     """A field representing a Dict."""
     __implements__ = IDict
     _type = dict

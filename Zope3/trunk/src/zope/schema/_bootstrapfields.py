@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.11 2003/04/14 18:21:36 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.12 2003/04/14 19:24:38 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -162,10 +162,12 @@ class Iterable(Container):
             raise ValidationError(errornames.NotAnIterator, value)
 
 
-class Orderable(Field):
-    """Values of ordered fields can be sorted
+class Orderable:
+    """Values of ordered fields can be sorted.
 
     They can be restricted to a range of values.
+
+    Orderable is a mixin used in combination with Field.
     """
 
     min = ValidatedProperty('min')
@@ -199,7 +201,11 @@ class Orderable(Field):
             raise ValidationError(errornames.TooBig, value, self.max)
 
 _int_types = int, long
-class MinMaxLen(Field):
+class MinMaxLen:
+    """Expresses constraints on the length of a field.
+
+    MinMaxLen is a mixin used in combination with Field.
+    """
     min_length = 0
     max_length = None
 
@@ -218,7 +224,12 @@ class MinMaxLen(Field):
             raise ValidationError(errornames.TooLong, value, self.max_length)
 
 
-class Enumerated(Field):
+class Enumerated:
+    """Enumerated fields can have a value found in a constant set of
+    values given by the field definition.
+
+    Enumerated is a mixin used in combination with Field.
+    """
 
     def __init__(self, allowed_values=None, default=None, **kw):
         # Set allowed_values to None so that we can validate if
@@ -260,7 +271,7 @@ class Enumerated(Field):
                 raise ValidationError(errornames.InvalidValue, value,
                                       self.allowed_values)
 
-class Text(MinMaxLen, Enumerated, Field):
+class Text(Enumerated, MinMaxLen, Field):
     """A field containing text used for human discourse."""
     _type = unicode
 

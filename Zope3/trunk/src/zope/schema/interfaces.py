@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.9 2003/04/14 18:21:36 fdrake Exp $
+$Id: interfaces.py,v 1.10 2003/04/14 19:24:38 fdrake Exp $
 """
 from zope.interface import Interface
 
@@ -264,7 +264,7 @@ IValueSet = IEnumerated
 class IBool(IField):
     u"""a Boolean Field."""
 
-class IBytes(IMinMaxLen, IEnumerated, IIterable):
+class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""a Field containing a byte string (like the python str).
 
@@ -274,7 +274,7 @@ class IBytes(IMinMaxLen, IEnumerated, IIterable):
 class IBytesLine(IBytes):
     u"""a Field containing a byte string without newlines."""
 
-class IText(IMinMaxLen, IEnumerated, IIterable):
+class IText(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated doesn't make sense for multi-line strings, so will
     # be removed in the future.
     u"""a Field containing a unicode string."""
@@ -285,7 +285,7 @@ class ISourceText(IText):
 class ITextLine(IText):
     u"""a Field containing a unicode string without newlines."""
 
-class IEnumeratedTextLine(ITextLine, IEnumerated):
+class IEnumeratedTextLine(IEnumerated, ITextLine):
     u"""a Field containing a unicode string without newlines.
 
     The value may be constrained to an element of a specified list.
@@ -294,7 +294,7 @@ class IEnumeratedTextLine(ITextLine, IEnumerated):
 class IPassword(ITextLine):
     u"""a Field containing a unicode string without newlines that is a password."""
 
-class IInt(IMinMax, IEnumerated):
+class IInt(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedInt instead if you
     # need the IEnumerated interface.
     u"""a Field containing an Integer Value."""
@@ -305,23 +305,23 @@ class IEnumeratedInt(IInt, IEnumerated):
     The value may be constrained to an element of a specified list.
     """
 
-class IFloat(IMinMax, IEnumerated):
+class IFloat(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedFloat instead if you
     # need the IEnumerated interface.
     u"""a Field containing a Float."""
 
-class IEnumeratedFloat(IFloat, IEnumerated):
+class IEnumeratedFloat(IEnumerated, IFloat):
     u"""a Field containing a Float.
 
     The value may be constrained to an element of a specified list.
     """
 
-class IDatetime(IMinMax, IEnumerated):
+class IDatetime(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedDatetime instead
     # if you need the IEnumerated interface.
     u"""a Field containing a DateTime."""
 
-class IEnumeratedDatetime(IDatetime, IEnumerated):
+class IEnumeratedDatetime(IEnumerated, IDatetime):
     u"""a Field containing a DateTime.
 
     The value may be constrained to an element of a specified list.
@@ -333,7 +333,7 @@ def _fields(values):
             return False
     return True
 
-class ISequence(IMinMaxLen, IIterable):
+class ISequence(IMinMaxLen, IIterable, IField):
     u"""a Field containing a Sequence value.
 
     The Value must be iterable and may have a min_length/max_length.
@@ -356,7 +356,7 @@ class ITuple(ISequence):
 class IList(ISequence):
     u"""a Field containing a conventional list."""
 
-class IDict(IMinMaxLen, IIterable):
+class IDict(IMinMaxLen, IIterable, IField):
     u"""a Field containing a conventional dict.
 
     the key_types and value_types field allow specification
