@@ -1,5 +1,5 @@
 <html metal:use-macro="views/standard_macros/page">
-<body metal:fill-slot="body">
+<div metal:fill-slot="body">
 <div metal:define-macro="body">
 <div tal:define="registries view/update">
 
@@ -11,7 +11,7 @@
 
   <div tal:condition="registries">
 
-    <div metal:define-slot="extra_top">
+    <div metal:define-slot="extra_top" tal:condition="nothing">
 
       <p>For each fruit, the fruit name is given and all of the components
          registered to provide the fruit are shown.  You may select the
@@ -26,39 +26,28 @@
 
       <form action="." method="post" tal:attributes="action request/URL">
 
-      <table width="100%">
-
-         <tr tal:repeat="registry registries">
-           <td valign="top" align="right">
-              <a href="#"
-                 tal:content="registry/name"
-                 tal:attributes="href registry/url"
-                 tal:condition="registry/active"
-                 >Orange</a>
-              <span tal:replace="registry/name"
-                    tal:condition="registry/inactive" />
-           </td>
-           <td tal:content="structure registry/view">
-           </td>
-         </tr>
-
-      </table>
+         <div tal:repeat="registry registries">
+           <a href="#"
+              tal:content="registry/name"
+              tal:attributes="href registry/url"
+              tal:condition="registry/active"
+              >Orange</a>
+           <span tal:replace="registry/name"
+                 tal:condition="registry/inactive" />
+           <br>
+           <span tal:content="structure registry/view" />
+         </div>
 
       <input type=submit name="submit_update" value="Update"><br>
 
       </form>
 
-    <div metal:define-slot="extra_bottom" />
+    <div metal:define-slot="extra_bottom" tal:condition="nothing">
+    </div>
 
   </div>
 
-  <p metal:define-slot="help_text">To configure a fruit, add a fruit component
-     to a <em>package</em> in <a href="Packages">Packages</a> or to the <a
-     href="Packages/default">default package</a>. After the fruit is added, add
-     a fruit configuration that configures the component to provide a fruit.
-  </p>
-
 </div>
 </div>
-</body>
+</div>
 </html>
