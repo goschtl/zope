@@ -23,7 +23,8 @@ import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
 from zope.app.i18n import ZopeMessageIDFactory as _
-
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class SourceDisplayWidget(zope.app.form.Widget):
 
@@ -137,6 +138,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
     def error(self):
         if self._error:
+            # XXX This code path is untested.
             return zapi.getViewProviding(self._error, IWidgetInputErrorView,
                                          self.request).snippet()
         return ""
@@ -240,6 +242,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
         if token is None:
             if field.required:
+                # XXX This code path is untested.
                 raise zope.app.form.interfaces.MissingInputError(
                     field.__name__, self.label,
                     )
@@ -248,6 +251,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             value = self.terms.getValue(str(token))
         except LookupError:
+            # XXX This code path is untested.
             err = zope.schema.interfaces.ValidationError(
                 "Invalid value id", token)
             raise WidgetInputError(field.__name__, self.label, err)
@@ -258,6 +262,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             field.validate(value)
         except ValidationError, err:
+            # XXX This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 
@@ -425,9 +430,11 @@ class SourceListInputWidget(SourceInputWidget):
         # Remaining code copied from SimpleInputWidget
 
         # value must be valid per the field constraints
+        field = self.context
         try:
-            self.context.validate(value)
+            field.validate(value)
         except ValidationError, err:
+            # XXX This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 
