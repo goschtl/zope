@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.4 2003/05/01 19:35:46 faassen Exp $
+$Id: test_field.py,v 1.5 2003/07/28 22:22:32 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.schema import Field, Text, Int
 from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
+from zope.testing.doctestunit import DocTestSuite
 
 class FieldTestBase(TestCase):
 
@@ -132,6 +133,8 @@ def test_suite():
     return TestSuite((
         makeSuite(FieldTest),
         makeSuite(FieldDefaultBehaviour),
+        DocTestSuite("zope.schema._field"),
+        DocTestSuite("zope.schema._bootstrapfields"),
         ))
 
 if __name__ == '__main__':
