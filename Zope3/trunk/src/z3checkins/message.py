@@ -211,7 +211,7 @@ class CheckinMessageParser:
 
         checkin_info = self.tryToParseCheckinMessage(subject, m)
         if checkin_info is not None:
-            directory, log_message, branch = checkin_info
+            subject, directory, log_message, branch = checkin_info
             return CheckinMessage(message_id=message_id,
                                   author_name=author_name,
                                   author_email=author_email, subject=subject,
@@ -248,7 +248,10 @@ class CheckinMessageParser:
             if len(parts) < 2:
                 return None
             subject = parts[1]
-            directory = subject.split(" ", 1)[0]
+            directory = subject.split(None, 1)[0]
+            # Remove the mailing list name and the trailing note, which
+            # is shown on the next line anyway.
+            subject = "SVN: " + directory
         elif "rev " in subject:
             # [foo-bar] rev 42 - trunk/foofoofoo
             parts = subject.split(' - ')
@@ -264,7 +267,7 @@ class CheckinMessageParser:
         except FormatError:
             return None
 
-        return directory, log_message, branch
+        return subject, directory, log_message, branch
 
     def extract_log(self, lines):
         log_message = []

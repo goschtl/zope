@@ -272,6 +272,7 @@ lineum furum testum logum messageum.""")
         self.assertEquals(msg.author_email, "alga@pov.lt")
         self.assertEquals(msg.date, datetime(2004, 5, 21, 21, 57, 07,
                                              tzinfo=FixedTimezone(-4*60)))
+        self.assertEquals(msg.subject, "SVN: zope/app/traversing/interfaces.py")
         self.assertEquals(msg.directory, "zope/app/traversing/interfaces.py")
         self.assertEquals(msg.branch, None)
         self.assertEquals(msg.log_message, """Changed a comment.""")

@@ -3,7 +3,7 @@ Message-Id: <200405220157.i4M1v7YW001064@cvs.zope.org>
 From: Albertas Agejevas <alga@pov.lt>
 To: zope3-checkins@zope.org
 Subject: [Zope3-checkins]
-        SVN: zope/app/traversing/interfaces.py
+        SVN: zope/app/traversing/interfaces.py Changed a comment
 
 Log message for revision 24872:
 
