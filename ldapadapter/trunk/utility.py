@@ -32,8 +32,8 @@ from persistent import Persistent
 from zope.interface import implements
 from zope.app.container.contained import Contained
 
-from exceptions import URLFormatError
-from exceptions import LDAP_url_format_error
+from exceptions import LDAPURIParseError
+from exceptions import LDAP_uri_parse_error
 
 from interfaces import ILDAPAdapter
 from interfaces import ILDAPConnection
