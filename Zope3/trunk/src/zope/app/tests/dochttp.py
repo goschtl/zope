@@ -91,7 +91,7 @@ def dochttp(args=sys.argv[1:], default=None):
                         )
 
         # We use map so as *not* to truncate at shortest input.
-        # We want an error if the numberof requests and responses
+        # We want an error if the number of requests and responses
         # is different.
         for request, response in map(None, requests, responses):
             assert (request and response) or not (request or response)
