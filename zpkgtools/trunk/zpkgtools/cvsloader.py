@@ -206,13 +206,14 @@ class CvsLoader:
     def __init__(self, cvsurl=None, tag=None):
         self.cvsurl = cvsurl
         self.tag = tag or None
-        self.workdirs = []
+        self.workdirs = {}  # URL -> (directory, path)
 
     def cleanup(self):
         """Remove all checkouts that are present."""
         while self.workdirs:
-            d = self.workdirs.pop()
-            shutil.rmtree(d)
+            url, (directory, path) = self.workdirs.popitem()
+            if directory:
+                shutil.rmtree(directory)
 
     def load(self, url):
         """Load resource from URL into a temporary location.
@@ -220,6 +221,7 @@ class CvsLoader:
         Returns the location of the resource once loaded.
         """
         if isinstance(url, basestring):
+            key = url
             try:
                 url = parse(url)
             except ValueError:
@@ -239,12 +241,21 @@ class CvsLoader:
                     % url)
         if isinstance(url, RepositoryUrl):
             cvsurl = self.cvsurl.join(url)
+            key = cvsurl.getUrl()
         elif isinstance(url, CvsUrl):
             cvsurl = copy.copy(url)
+            key = cvsurl.getUrl()
         else:
             raise TypeError("load() requires a cvs or repository URL")
         if not cvsurl.tag:
             cvsurl.tag = self.tag
+            key = cvsurl.getUrl()
+        # If we've already loaded this, use that copy.  This doesn't
+        # consider fetching something with a different path that's
+        # represent by a previous load():
+        if key in self.workdirs:
+            return self.workdirs[key][1]
+
         workdir = tempfile.mkdtemp(prefix="cvsloader-")
         cvsroot = cvsurl.getCvsRoot()
         tag = cvsurl.tag or "HEAD"
@@ -258,16 +269,20 @@ class CvsLoader:
             # directory and toss it.
             shutil.rmtree(workdir)
             raise CvsLoadingError(cvsurl, rc)
-        self.workdirs.append(workdir)
 
         if path == ".":
+            self.workdirs[key] = (workdir, workdir)
             return workdir
         elif self.isFileResource(cvsurl):
             basename = posixpath.basename(path)
-            return os.path.join(workdir, basename, basename)
+            path = os.path.join(workdir, basename, basename)
+            self.workdirs[key] = (workdir, path)
+            return path
         else:
             basename = posixpath.basename(path)
-            return os.path.join(workdir, basename)
+            path = os.path.join(workdir, basename)
+            self.workdirs[key] = (workdir, path)
+            return path
 
     def runCvsExport(self, cvsroot, workdir, tag, path):
         # cvs -f -Q -z6 -d CVSROOT export -kk -d WORKDIR -r TAG PATH

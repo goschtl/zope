@@ -423,6 +423,20 @@ class CvsLoaderTestCase(unittest.TestCase):
         self.assert_(not os.path.exists(self.workdir),
                      "working directory must not exist after a failed run")
 
+    def test_reuse_loaded_resource(self):
+        url = "cvs://cvs.example.org/cvsroot:module/path"
+        loader = self.createLoader(None)
+        first = loader.load(url)
+        second = loader.load(url)
+        self.assertEqual(first, second)
+
+    def test_no_reuse_loaded_resource_different_tags(self):
+        url = "cvs://cvs.example.org/cvsroot:module/path"
+        loader = self.createLoader(None)
+        first = loader.load(url)
+        second = loader.load(url + ":TAG")
+        self.assertNotEqual(first, second)
+
     def test_isFileResource_file(self):
         self.check_isFileResource("/cvsroot/module/FOO,v\n",
                                   True)
