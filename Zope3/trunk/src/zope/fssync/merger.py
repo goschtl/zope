@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.3 2003/05/13 21:47:15 gvanrossum Exp $
+$Id: merger.py,v 1.4 2003/05/14 15:20:14 gvanrossum Exp $
 """
 
 import os
@@ -23,39 +23,40 @@ import shutil
 import filecmp
 import commands
 
-from os.path import exists, isdir, isfile
+from os.path import exists, isfile
 
 class Merger(object):
-    """Augmented three-way file and directory merges.
+    """Augmented three-way file merges.
 
-    An augmented merge takes into account three files (or directories)
-    and two metadata entries.  The files are labeled local, original,
-    and remote.  The metadata entries are for local and remote.  A
-    remote metadata entry is either empty or non-empty.  Empty means
-    the file does not exist remotely, non-empty means it does exist
-    remotely.  We also have to take into account the possibility that
-    the existence of the file belies what the entry declares.  A local
-    metadata entry can have those states, and in addition, if
-    non-empty, it can be flagged as added or removed.  Again, the
-    existence of the file may bely what the entry claims.  The
-    original file serves the obvious purpose.  Its existence, too, can
-    be inconsistent with the state indicated by the metadata entries.
+    An augmented merge takes into account three files and two metadata
+    entries.  The files are labeled local, original, and remote.  The
+    metadata entries are for local and remote.  A remote metadata
+    entry is either empty or non-empty.  Empty means the file does not
+    exist remotely, non-empty means it does exist remotely.  We also
+    have to take into account the possibility that the existence of
+    the file belies what the entry declares.  A local metadata entry
+    can have those states, and in addition, if non-empty, it can be
+    flagged as added or removed.  Again, the existence of the file may
+    bely what the entry claims.  The original file serves the obvious
+    purpose.  Its existence, too, can be inconsistent with the state
+    indicated by the metadata entries.
 
-    To find the metadata entry for a file, we look for a key
-    corresponding to its basename @@Zope/Entries.xml in the directory
-    that contains it.  For this purpose, we assume the filename given
-    uses the correct case even on a case-insensitive filesystem (i.e.,
-    the filesystem must be at least case-preserving).
+    To find the metadata entry for a file, we use an abstraction
+    called the metadata database; for our purposes, all we need is
+    that the metadata database supports a getentry() method which
+    returns the metadata as a dict.  Changes to this dict will cause
+    changes to the metadata.
 
-    The purpose of the merge() function is to merging the remote
+    The purpose of the merge_files() method is to merging the remote
     changes into the local copy as the best it can, resolving
     inconsistencies if possible.  It should not raise an exception
     unless there are file/directory permission problems.  Its return
-    value is an indicator of what it dit.
+    value is an indicator of the final state.
 
-    The classify() function is a helper for merge(); it looks at all
-    the evidence and decides what merge() should do, without actually
-    touching any files or the metadata.  Possible actions are:
+    The classify_files() methods is a helper for merge_files(); it
+    looks at all the evidence and decides what merge_files() should
+    do, without actually touching any files or metadata.  Possible
+    actions are:
 
     Fix      -- copy the remote copy to the local original, nothing else
     Copy     -- copy the remote copy over the local copy
@@ -68,15 +69,15 @@ class Merger(object):
     Fix, Copy and Merge; it is deleted for action Delete; it is
     untouched for action Nothing.
 
-    It should also indicate the final state of the local copy after
-    the action is taken:
+    The classify_files() method should also indicate the final state
+    of the local copy after the action is taken:
 
-    Conflict -- there is a conflict of some kind
-    Uptodate -- the local copy is the same as the remote copy
-    Modified -- the local copy is marked (to be) modified
-    Added    -- the local copy is marked (to be) added
-    Removed  -- the local copy is marked (to be) removed
-    Spurious -- there is an unregistered local file only
+    Conflict    -- there is a conflict of some kind
+    Uptodate    -- the local copy is the same as the remote copy
+    Modified    -- the local copy is marked (to be) modified
+    Added       -- the local copy is marked (to be) added
+    Removed     -- the local copy is marked (to be) removed
+    Spurious    -- there is an unregistered local file only
     Nonexistent -- there is nothing locally or remotely
 
     For Conflict, Added and Removed, the action will always be
@@ -89,9 +90,9 @@ class Merger(object):
     next commit.
 
     Note that carrying out the Merge action can change the resulting
-    state to become Uptodate or Conflict instead of Modified, if there
-    are merge conflicts (which classify() can't detect without doing
-    more work than reasonable).
+    state to become Conflict instead of Modified, if there are merge
+    conflicts (which classify_files() can't detect without doing more
+    work than reasonable).
     """
 
     def __init__(self, metadata):
@@ -114,7 +115,7 @@ class Merger(object):
         """Helper to abstract away the existence of self.metadata."""
         return self.metadata.getentry(file)
 
-    def merge_files(self, local, orig, remote, action, state):
+    def merge_files(self, local, original, remote, action, state):
         """Helper to carry out a file merge.
 
         The action and state arguments correspond to the return value
@@ -125,30 +126,30 @@ class Merger(object):
         based upon the effect of the action.
         """
         method = getattr(self, "merge_files_" + action.lower())
-        return method(local, orig, remote) or state
+        return method(local, original, remote) or state
 
-    def merge_files_nothing(self, local, orig, remote):
+    def merge_files_nothing(self, local, original, remote):
         return None
 
-    def merge_files_remove(self, local, orig, remote):
+    def merge_files_remove(self, local, original, remote):
         if isfile(local):
             os.remove(local)
-        if isfile(orig):
-            os.remove(orig)
+        if isfile(original):
+            os.remove(original)
         self.getentry(local).clear()
         return None
 
-    def merge_files_copy(self, local, orig, remote):
+    def merge_files_copy(self, local, original, remote):
         shutil.copy(remote, local)
-        shutil.copy(remote, orig)
+        shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
         return None
 
-    def merge_files_merge(self, local, orig, remote):
+    def merge_files_merge(self, local, original, remote):
         # XXX This is platform dependent
-        if exists(orig):
-            origfile = orig
+        if exists(original):
+            origfile = original
         else:
             origfile = "/dev/null"
         cmd = "diff3 -m -E %s %s %s" % (commands.mkarg(local),
@@ -160,7 +161,7 @@ class Merger(object):
             f.write(output)
         finally:
             f.close()
-        shutil.copy(remote, orig)
+        shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
         if sts:
@@ -169,8 +170,8 @@ class Merger(object):
         else:
             return "Modified"
 
-    def merge_files_fix(self, local, orig, remote):
-        shutil.copy(remote, orig)
+    def merge_files_fix(self, local, original, remote):
+        shutil.copy(remote, original)
         self.clearflag(local)
         self.getentry(local).update(self.getentry(remote))
 
@@ -180,7 +181,7 @@ class Merger(object):
         if "flag" in metadata:
             del metadata["flag"]
 
-    def classify_files(self, local, orig, remote):
+    def classify_files(self, local, original, remote):
         """Helper for merge to classify file changes.
 
         Arguments are pathnames to the local, original, and remote
@@ -227,7 +228,7 @@ class Merger(object):
                 return ("Remove", "Nonexistent")
             else:
                 # Removed locally
-                if self.cmpfile(orig, remote):
+                if self.cmpfile(original, remote):
                     return ("Nothing", "Removed")
                 else:
                     return ("Nothing", "Conflict")
@@ -246,9 +247,9 @@ class Merger(object):
 
         # Sort out cases involving simple changes to files
 
-        if self.cmpfile(orig, remote):
+        if self.cmpfile(original, remote):
             # No remote changes; classify local changes
-            if self.cmpfile(local, orig):
+            if self.cmpfile(local, original):
                 # No changes
                 return ("Nothing", "Uptodate")
             else:
@@ -256,7 +257,7 @@ class Merger(object):
                 return ("Nothing", "Modified")
         else:
             # Some local changes; classify local changes
-            if self.cmpfile(local, orig):
+            if self.cmpfile(local, original):
                 # Only remote changes
                 return ("Copy", "Uptodate")
             else:
