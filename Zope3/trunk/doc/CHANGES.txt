@@ -64,7 +64,43 @@ Zope Changes
 
   Zope X3.0.0 Beta 2
 
+    New Features
+
+      - Improved using documentation files as tests. (Needed to test
+        new security policy):
+
+        Changed DocFileSuite:
+
+        o If a package is passed, it must be passed as a keyword argument.
+          (For now, a package can also be passed before passing any file
+          names, but this generates a deprecation warning.)
+
+        o File paths may contain '/'s as separators. These will be converted
+          to native file separators at run time.
+
+        o It is now possible to pass set-up and tear-down methods
+
+        o It is now possible to pass a dictionary of initial global variables.
+
+        o Error output is improved as is meta data used for verbose output.
+
     Bug fixes
+
+      - Changed the security policy:
+
+        o Fix a bug (actually a missfeature). It wasn't possible for
+          local settings to override global (zcml) settings.
+
+        o Changed the way role denies work.  A role deny simply
+          prevents a principal from having a role.  A principal may
+          still have access through other roles or through principal
+          grants.  Role grants or denies never override principal
+          grants or denies *even* if the role-based grants or denies
+          are more local.
+
+        o Implemented a caching scheme that provides huge performance
+          benefits when the authenticated principal is defined in a
+          local auth service, rather than a global one (zcml).
 
       - Fixed bug in TypeRegistry for
         zope.app.publisher.browser.globalbrowsermenuservice which allows
