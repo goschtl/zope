@@ -52,8 +52,6 @@ class PublicationTraverse(object):
             adapter = queryViewProviding(ob, IPublishTraverse, request, self)
             if adapter is not self:
                 ob2 = adapter.publishTraverse(request, nm)
-                # ob2 will be security proxied here becuase the adapter
-                # was security proxied.
             else:
                 raise NotFound(ob, name, request)
 
