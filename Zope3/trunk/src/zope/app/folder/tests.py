@@ -11,26 +11,31 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: tests.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+"""
+
 from unittest import TestCase, TestSuite, main, makeSuite
+
 from zope.testing.doctestunit import DocTestSuite
 from zope.component import getAdapter
+
 from zope.app.tests import ztapi
 from zope.app.traversing import traverse
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.content.folder import IFolder
+from zope.app.folder.interfaces import IFolder
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.component.tests.test_servicemanagercontainer \
      import BaseTestServiceManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
-from zope.app import content
 
 
 class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
 
     def makeTestObject(self):
-        from zope.app.content.folder import Folder
+        from zope.app.folder import Folder
         return Folder()
 
     def makeTestData(self):

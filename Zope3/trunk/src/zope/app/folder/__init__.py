@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,13 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Felder-spcific view classes
-
-$Id: folder.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
-from zope.interface import implements
-from zope.app.browser.container.adding import Adding
-from zope.app.interfaces.content.folder import IFolderAdding
+$Id: __init__.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+"""
 
-class FolderAdding(Adding):
-    implements(IFolderAdding)
+from folder import Folder, rootFolder

@@ -11,19 +11,26 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: folder.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+"""
 
 from persistent import Persistent
 from BTrees.OOBTree import OOBTree
-from zope.app.content.fssync import DirectoryAdapter
-from zope.app.interfaces.content.folder import IFolder, IRootFolder
-from zope.app.interfaces.services.service import ISite
-from zope.app.services.servicecontainer import ServiceManagerContainer
 from zope.exceptions import DuplicationError
 from zope.interface import implements, directlyProvides
+
+from zope.app.interfaces.services.service import ISite
 from zope.app.container.contained import Contained, setitem, uncontained
+from zope.app.services.servicecontainer import ServiceManagerContainer
+
+from interfaces import IFolder, IRootFolder
+
+__metaclass__ = type
 
 class Folder(Persistent, ServiceManagerContainer, Contained):
-    """The standard Zope Folder implementation."""
+    """The standard Zope Folder implementation.
+    """
 
     implements(IFolder)
 
@@ -99,72 +106,7 @@ class Folder(Persistent, ServiceManagerContainer, Contained):
         uncontained(self.data[name], self, name)
         del self.data[name]
 
-RootFolder = Folder
-
 def rootFolder():
     f = Folder()
     directlyProvides(f, IRootFolder)
     return f
-
-
-class RootDirectoryFactory:
-    def __init__(self, context):
-        pass
-
-    def __call__(self, name):
-        return Folder()
-
-# Adapter to provide a file-system rendition of folders
-
-class ReadDirectory:
-
-    def __init__(self, context):
-        self.context = context
-
-    def keys(self):
-        keys = self.context.keys()
-        if ISite.isImplementedBy(self.context):
-            return list(keys) + ['++etc++site']
-        return keys
-
-    def get(self, key, default=None):
-        if key == '++etc++site' and ISite.isImplementedBy(self.context):
-            return self.context.getSiteManager()
-
-        return self.context.get(key, default)
-
-    def __iter__(self):
-        return iter(self.keys())
-
-    def __getitem__(self, key):
-        v = self.get(key, self)
-        if v is self:
-            raise KeyError, key
-        return v
-
-    def values(self):
-        return map(self.get, self.keys())
-
-    def __len__(self):
-        l = len(self.context)
-        if ISite.isImplementedBy(self.context):
-            l += 1
-        return l
-
-    def items(self):
-        get = self.get
-        return [(key, get(key)) for key in self.keys()]
-
-    def __contains__(self, key):
-        return self.get(key) is not None
-
-# Adapter to provide an fssync interpretation of folders
-
-class FolderAdapter(DirectoryAdapter):
-
-    def contents(self):
-        result = super(FolderAdapter, self).contents()
-        if ISite.isImplementedBy(self.context):
-            sm = self.context.getSiteManager()
-            result.append(('++etc++site', sm))
-        return result

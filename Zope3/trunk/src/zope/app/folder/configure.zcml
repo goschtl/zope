@@ -1,0 +1,82 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain="zope"
+    >
+
+  <!-- Module alias for backward compat
+       Will go away once we have a conversion script -->
+
+  <modulealias
+      module=".folder"
+      alias="zope.app.content.folder"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.folder"
+      />
+
+
+
+  <interface 
+      interface=".interfaces.IFolder" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
+  <content class=".folder.Folder">
+    <factory
+        id="Folder"
+        permission="zope.ManageContent"
+        title="Folder"
+        description="Minimal folder"
+        />
+
+    <allow
+        attributes="getSiteManager"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        attributes="setSiteManager"
+        />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.interfaces.container.IReadContainer" 
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.interfaces.container.IWriteContainer"
+        />
+  </content>
+
+
+  <!-- fssync directives -->
+
+  <adapter
+      for=".interfaces.IFolder"
+      provides="zope.app.interfaces.file.IDirectoryFactory"
+      factory="zope.app.container.directory.Cloner"
+      permission="zope.ManageContent"
+      />
+
+  <adapter
+      for=".interfaces.IFolder"
+      provides="zope.app.interfaces.file.IReadDirectory"
+      factory=".fssync.ReadDirectory"
+      permission="zope.View"
+      />
+
+  <fssync:adapter
+      class=".folder.Folder"
+      factory=".fssync.FolderAdapter"
+      />
+
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
+
+</configure>

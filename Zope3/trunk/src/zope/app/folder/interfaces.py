@@ -11,19 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Folder interfaces
 
-$Id: folder.py,v 1.6 2003/09/21 17:32:01 jim Exp $
+$Id: interfaces.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
 """
-
 from zope.app.interfaces.container import IAdding
+from zope.app.interfaces.container import IContainer, IContentContainer
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IPossibleSite
-from zope.interface import Interface
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-class IFolder(IContainer, IPossibleSite, IAttributeAnnotatable):
+class IFolder(IContainer, IContentContainer, IPossibleSite,
+              IAttributeAnnotatable):
     """The standard Zope Folder object interface."""
 
 class IRootFolder(IFolder, IContainmentRoot):
@@ -31,4 +30,3 @@ class IRootFolder(IFolder, IContainmentRoot):
 
 class IFolderAdding(IAdding):
     pass
-
