@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.26 2003/07/13 06:47:28 richard Exp $
+$Id: interfaces.py,v 1.27 2003/07/28 22:22:27 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -37,6 +37,19 @@ class ValidationError(Exception):
 
     def __repr__(self):
         return ' '.join(map(str, self.args))
+
+class IFromUnicode(Interface):
+    """Parse a unicode string to a value
+
+    We will often adapt fields to this interface to support views and
+    other applications that need to conver raw data as unicode
+    values.
+
+    """
+
+    def fromUnicode(str):
+        """Convert a unicode string to a value.
+        """
 
 # Delay these imports to avoid circular import problems
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
@@ -325,6 +338,20 @@ def _fields(values):
         if not _is_field(value):
             return False
     return True
+
+
+class IURI(IBytesLine):
+    """A field containing an absolute URI
+    """
+
+class IId(IBytesLine):
+    """A field containing a unique identifier
+
+    A unique identifier is either an absolute URI ir a dotted name.
+    If it's a dotted name, it should have a module/package name as a prefix.
+    
+    """
+
 
 class ISequence(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a Sequence value.
