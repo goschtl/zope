@@ -13,6 +13,11 @@ example) some object in the ZODB, a query to an external database, the
 contents of a file maintained by another process, or static data
 provided by a separately maintained piece of code.
 
+A vocabulary is an object which represents a collection of distinct
+values (where distinct means that any two of them compare as not equal
+using !=, and no two compare equal using ==).  These are most
+interesting when the set of values is highly dynamic.
+
 A vocabulary field in a schema contains either a vocabulary object
 (``IBaseVocabulary``) or a name of a vocabulary.  If a name is used,
 the specific vocabulary to use will be supplied by a registry when the
