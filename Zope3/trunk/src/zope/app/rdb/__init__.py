@@ -18,7 +18,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.2 2002/12/25 14:13:12 jim Exp $
+$Id: __init__.py,v 1.3 2002/12/31 11:50:14 stevea Exp $
 """
 from types import StringTypes
 
@@ -51,27 +51,14 @@ class ResultSet(list):
         row_class = RowClassFactory(columns)
         super(ResultSet, self).__init__(map(row_class, rows))
 
-    def __setstate__(self, data):
-        self.columns, rows = data
-        row_class = RowClassFactory(self.columns)
-        self.extend(map(row_class, rows))
-
     __safe_for_unpickling__ = True
 
     def __reduce__(self):
         cols = self.columns
-        return (ResultSet, None,
-                (self.columns,
-                 [[getattr(row, col) for col in cols]
-                  for row in self]
-                ))
-
-    # XXX __basicnew__ is deprecated in Python 2.3.
-    #     What to do instead?
-    def __basicnew__():
-        return ResultSet((), ())
-    __basicnew__ = staticmethod(__basicnew__)
-
+        return (ResultSet,
+                (cols, [[getattr(row, col) for col in cols] for row in self])
+               )
+                
     def __cmp__(self, other):
         if not isinstance(other, ResultSet):
             return super(ResultSet, self).__cmp__(other)
