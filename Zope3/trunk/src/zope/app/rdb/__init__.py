@@ -46,7 +46,7 @@ def sqlquote(x):
     """
     Escape data suitable for inclusion in generated ANSI SQL92 code for
     cases where bound variables are not suitable.
-    
+
     >>> sqlquote('''Hi''')
     "'Hi'"
     >>> sqlquote('''It's mine''')
@@ -137,7 +137,7 @@ class ZopeDatabaseAdapter(Persistent):
             # Note: I added the general Exception, since the DA can return
             # implementation-specific errors. But we really want to catch all
             # issues at this point, so that we can convert it to a
-            # DatabaseException. 
+            # DatabaseException.
             except Exception, error:
                 raise DatabaseException, str(error)
 
@@ -389,7 +389,17 @@ class ZopeDBTransactionManager:
         """
 
         return NoSavepointSupportRollback(self)
-    
+
+    def sortKey(self):
+        """
+        ZODB uses a global sort order to prevent deadlock when it commits
+        transactions involving multiple resource managers.  The resource
+        manager must define a sortKey() method that provides a global ordering
+        for resource managers.
+
+        (excerpt from transaction/notes.txt)
+        """
+        return 'rdb' + str(id(self))
 
 class Row(object):
     """Represents a row in a ResultSet"""

@@ -580,3 +580,7 @@ class DataManagerAdapter(object):
     def tpc_vote(self, transaction):
         if not self._sub:
             self._datamanager.prepare(transaction)
+
+    def sortKey(self):
+        return self._datamanager.sortKey()
+

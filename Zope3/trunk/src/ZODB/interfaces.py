@@ -144,6 +144,16 @@ class IDataManager(Interface):
 
         """
 
+    def sortKey():
+        """
+        Return a key to use for ordering registered DataManagers
+
+        ZODB uses a global sort order to prevent deadlock when it commits
+        transactions involving multiple resource managers.  The resource
+        manager must define a sortKey() method that provides a global ordering
+        for resource managers.
+        """
+
 
 class ITransaction(Interface):
     """Object representing a running transaction.
