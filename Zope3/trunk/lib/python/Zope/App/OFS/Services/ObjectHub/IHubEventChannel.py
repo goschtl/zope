@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IHubEventChannel.py,v 1.1 2002/11/29 15:51:03 stevea Exp $
+$Id: IHubEventChannel.py,v 1.2 2002/12/04 13:04:50 gvanrossum Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
@@ -30,6 +30,6 @@ class IHubEventChannel(IEventChannel):
     def iterObjectRegistrations():
         """Returns an iterator of the object registrations.
 
-        An object registration a tuple (location, hib_id, wrapped_object).
+        An object registration is a tuple (location, hubid, wrapped_object).
         """
 
