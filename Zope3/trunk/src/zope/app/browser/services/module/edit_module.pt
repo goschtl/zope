@@ -11,7 +11,8 @@
     <span tal:replace="view/update"></span>
     <textarea name="source:text" cols="65" rows="25"
               tal:content="context/source"></textarea>
-    <input type="submit" value="Edit"
+    <br />
+    <input type="submit" value="Save Changes"
            i18n:attributes="value edit-button"/>
   </form>
 
