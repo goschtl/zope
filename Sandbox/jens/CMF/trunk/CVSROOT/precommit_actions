@@ -15,5 +15,6 @@ FILES="$@"
 
 #echo script: $SCRIPT repo: $REPOSITORY files: $FILES
 
+pwd
 set -x
 /bin/chmod g+w $FILES
