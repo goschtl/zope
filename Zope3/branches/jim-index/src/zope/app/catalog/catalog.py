@@ -45,8 +45,8 @@ class ResultSet:
 
     def __iter__(self):
         for uid in self.uids:
-            obj = self.uidutil[uid]
-            yield obj()
+            obj = self.uidutil.getObject(uid)
+            yield obj
 
 ### class CatalogBaseAddSubscriber:
 ### 
