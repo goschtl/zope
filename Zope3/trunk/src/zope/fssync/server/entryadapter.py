@@ -13,15 +13,17 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: entryadapter.py,v 1.3 2004/02/24 16:50:57 philikon Exp $
+$Id: entryadapter.py,v 1.4 2004/02/25 21:13:10 fdrake Exp $
 """
 
 from zope.component import queryAdapter
 from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
-from zope.proxy import removeAllProxies
 from zope.xmlpickle import toxml
 
+# XXX This is a bug; we shouldn't depend on these packages at all.
+# Need to restructure.
+from zope.proxy import removeAllProxies
 from zope.app.fssync import fspickle
 
 class AttrMapping(object):
