@@ -15,6 +15,7 @@
  
 $Id$
 """
+import urllib
 from zope.schema import getFieldNames
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -31,10 +32,7 @@ class InstanceContainerView(object):
         info = {}
         info['id'] = id
         info['object'] = obj
-
-        # XXX need to urlencode the id in this case !!!
-        info['url'] = "processinstance.html?pi_name=%s" % id
-
+        info['url'] = "processinstance.html?pi_name=%s" %urllib.quote_plus(id)
         return info
 
     def removeObjects(self, ids):
@@ -63,10 +61,12 @@ class InstanceContainerView(object):
 
 
     # ProcessInstance Details
-    # XXX This is temporary till we find a better name to use
-    #     objects that are stored in annotations
-    #     Steve suggested a ++annotations++<key> Namespace for that.
-    #     we really want to traverse to the instance and display a view
+
+    # TODO:
+    # This is temporary till we find a better name to use
+    # objects that are stored in annotations
+    # Steve suggested a ++annotations++<key> Namespace for that.
+    # we really want to traverse to the instance and display a view
 
     def _getProcessInstanceData(self, data):
         names = []
