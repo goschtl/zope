@@ -1,4 +1,4 @@
-<configure
+<zope:configure
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
@@ -213,4 +213,4 @@
       provides="zope.app.interfaces.traversing.ITraversable"
       for="zope.app.interfaces.utilities.schema.IMutableSchema" />
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
 
   <pages 
       permission="zope.ManageServices" 
@@ -58,4 +60,4 @@
        title="Translation Service"
        description="A Persistent Translation Service for TTW development" />
 
-</configure>
+</zope:configure>

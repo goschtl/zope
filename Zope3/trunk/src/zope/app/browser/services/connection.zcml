@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
 
 <!-- Browser directives for the connection service -->
 
@@ -45,4 +47,4 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Connections" />
 
-</configure>
+</zope:configure>

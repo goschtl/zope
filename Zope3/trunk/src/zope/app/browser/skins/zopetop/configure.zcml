@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
 
   <skin name="ZopeTop" layers="templates images css rotterdam default" />
 
@@ -112,4 +114,4 @@
   <resource name="help.gif" file="help.gif" 
             layer="images"/>
 
-</configure>
+</zope:configure>

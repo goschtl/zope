@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- Browser Menu Service -->
 
@@ -116,4 +118,4 @@
       for="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
       name="edit.html" />
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <!-- Allow a catalog to be added to content space -->
   <menuItem 
@@ -92,4 +94,4 @@
     <page name="reindex.html" attribute="reindex"/>
   </pages>
 
-</configure>
+</zope:configure>

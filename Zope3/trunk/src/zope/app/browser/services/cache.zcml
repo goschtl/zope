@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
 
 <!-- Browser directives for the cache service -->
 
@@ -47,4 +49,4 @@
       menu="zmi_views" title="Caches" />
 
 
-</configure>
+</zope:configure>

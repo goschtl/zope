@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <skin name="Debug" layers="debug rotterdam default" />
 
@@ -18,5 +20,5 @@
       permission="zope.Public"
       layer="debug" />
 
-</configure>
+</zope:configure>
 

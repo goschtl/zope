@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <pages
       for="zope.app.interfaces.annotation.IAnnotatable"
@@ -11,4 +13,4 @@
 
   </pages>
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- Role Permissions -->
 
@@ -43,4 +45,4 @@
                         getPermissionsForPrincipal" 
       /  -->
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <view
       for="zope.app.interfaces.container.IContentContainer"
@@ -28,4 +30,4 @@
       class="zope.app.browser.container.contents.Contents"
       template="commontasks.pt" />
 
-</configure>
+</zope:configure>

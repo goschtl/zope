@@ -1,4 +1,4 @@
-<configure
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
@@ -171,4 +171,4 @@
 
   <!--include file="testobject.zcml"/-->
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- For services, just treat @@manage as @@index.html by default -->
 
@@ -11,7 +13,7 @@
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
 
 <!-- General registration views --> 
-  <include package=".registration" />
+   <zope:include package=".registration" />
 
 <!--Error Logging Service -->
 
@@ -47,7 +49,7 @@
       file="error_service.gif" />
 
 <!-- CachingService --> 
-  <include file="cache.zcml" />
+  <zope:include file="cache.zcml" />
 
 <!-- Event Service -->
 
@@ -107,10 +109,10 @@
     </pages>
 
 <!-- Deprecated Simple Authentication Service --> 
-  <include file="auth.zcml" />
+  <zope:include file="auth.zcml" />
 
 <!-- Pluggable Authentication Service --> 
-  <include package=".pluggableauth" />
+  <zope:include package=".pluggableauth" />
 
 <!-- Component Location widget -->
 
@@ -165,10 +167,10 @@
       title="Adapter Service" />
 
 <!-- Views -->  
-  <include file="view.zcml" />
+  <zope:include file="view.zcml" />
 
 <!-- Menu -->  
-  <include file="menu.zcml" />
+  <zope:include file="menu.zcml" />
 
 
 <!-- ZPT Templates -->
@@ -218,7 +220,7 @@
   </menuItems>
 
 <!-- ConnectionService --> 
-  <include file="connection.zcml" />
+  <zope:include file="connection.zcml" />
 
 <!-- ServiceManager -->
 
@@ -354,10 +356,10 @@
       permission="zope.ManageServices" />
 
 <!-- Persistent Modules --> 
-  <include package=".module" />
+  <zope:include package=".module" />
 
 <!-- PageFolder --> 
-  <include file="pagefolder.zcml" />
+  <zope:include file="pagefolder.zcml" />
 
 <!-- Session service -->
 
@@ -419,7 +421,7 @@
     template="subscription_control.pt" />
 
 <!-- Utility Service --> 
-  <include package=".utility" />
+  <zope:include package=".utility" />
 
 <!-- "Add Service" menu -->
 
@@ -467,9 +469,9 @@
 
 
 <!-- Translation Service Views -->
-  <include package=".translation" />
+  <zope:include package=".translation" />
 
 <!-- Local Interface Service -->
-  <include package=".interface" />
+  <zope:include package=".interface" />
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- ZopeDatabaseAdapter default views -->
 
@@ -49,6 +51,6 @@
       set_after_add="status"
       fields="name interface componentPath permission status" />
 
-  <include file="gadflyda.zcml" />
+  <zope:include file="gadflyda.zcml" />
 
-</configure>
+</zope:configure>

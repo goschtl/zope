@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- Authentication Service  -->
 
@@ -42,4 +44,4 @@
       for="zope.app.interfaces.security.IPrincipal"
       name="editForm.html" />
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <menuItem 
       menu="add_service"
@@ -23,4 +25,4 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Detail" />
 
-</configure>
+</zope:configure>

@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <addform
       name="AddGadflyDA"
@@ -25,4 +27,4 @@
       title="Gadfly DA" 
       description="A DA for the built-in 100% Pure Python Gadfly Database" />
 
-</configure>
+</zope:configure>

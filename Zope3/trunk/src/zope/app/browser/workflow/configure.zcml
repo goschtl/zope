@@ -1,4 +1,4 @@
-<configure
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
@@ -51,7 +51,6 @@
       permission="zope.workflow.ManageProcessDefinitions"
       fields="name componentPath permission status" />
 
-
   <page
       for="zope.app.interfaces.workflow.IProcessDefinition"
       name="importexport.html"
@@ -102,4 +101,4 @@
 
   <zope:include package=".stateful" />
 
-</configure>
+</zope:configure>

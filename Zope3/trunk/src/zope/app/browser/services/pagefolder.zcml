@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 <!-- PageFolder -->
 
@@ -39,4 +41,4 @@
      action="zope.app.services.PageFolder"
      title="Page Folder" />
 
-</configure>
+</zope:configure>

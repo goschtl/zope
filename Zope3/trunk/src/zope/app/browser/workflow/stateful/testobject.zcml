@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <addform
       label="Add Test Object"
@@ -16,4 +18,4 @@
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit" />
 
-</configure>
+</zope:configure>
