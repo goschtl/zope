@@ -272,9 +272,16 @@ def showDependencies(path, zcml=False, long=False, all=False, packages=False):
             print
 
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
+class DependencyOptions:
+
+    all = False
+    long = False
+    packages = False
+    path = None
+    zcml = False
+
+
+def parse_args(argv):
     try:
         opts, args = getopt.getopt(
             argv[1:],
@@ -283,40 +290,41 @@ def main(argv=None):
     except getopt.error, msg:
         usage(1, msg)
 
-    all = False
-    long = False
-    packages = False
-    path = None
-    zcml = False
+    options = DependencyOptions()
     for opt, arg in opts:
         if opt in ('-a', '--all'):
-            all = True
+            options.all = True
         elif opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-l', '--long'):
-            long = True
+            options.long = True
         elif opt in ('-d', '--dir'):
             cwd = os.getcwd()
             # This is for symlinks. Thanks to Fred for this trick.
             # XXX wha????
             if os.environ.has_key('PWD'):
                 cwd = os.environ['PWD']
-            path = os.path.normpath(os.path.join(cwd, arg))
+            options.path = os.path.normpath(os.path.join(cwd, arg))
         elif opt in ('-m', '--module'):
             try:
-                module = __import__(arg, globals(), locals(), ('something',))
-                path = os.path.dirname(module.__file__)
+                __import__(arg)
+                module = sys.modules[arg]
+                options.path = os.path.dirname(module.__file__)
             except ImportError:
                 usage(1, "Could not import module %s" % module)
         elif opt in ('-p', '--packages'):
-            packages = True
+            options.packages = True
         elif opt in ('-z', '--zcml'):
-            zcml = True
-    if path is None:
+            options.zcml = True
+    if options.path is None:
         usage(1, 'The module must be specified either by path, '
               'dotted name or ZCML file.')
-    showDependencies(path, zcml, long, all, packages)
+    return options
 
 
-if __name__ == '__main__':
-    main()
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    options = parse_args(argv)
+    showDependencies(options.path, options.zcml, options.long,
+                     options.all, options.packages)
