@@ -17,7 +17,7 @@ $Id$
 """
 from datetime import datetime
 from zope.interface import implements
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 
 from zope.app import zapi
 from zope.app.undo.interfaces import IUndoManager, UndoError
@@ -146,7 +146,7 @@ class ZODBUndoManager(object):
                 try:
                     entry['principal'] = principalRegistry.getPrincipal(
                         user_name)
-                except NotFoundError:
+                except PrincipalLookupError:
                     # principals might have passed away
                     pass
         return entries

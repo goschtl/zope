@@ -51,7 +51,7 @@ class IPrincipalSource(Interface):
         """Get principal meta-data.
 
         Returns an object of type `IPrincipal` for the given principal
-        id. A ``NotFoundError`` is raised if the principal cannot be
+        id. A ``PrincipalLookupError`` is raised if the principal cannot be
         found.
 
         Note that the id has three parts, separated by tabs.  The

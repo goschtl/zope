@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.app.servicenames import Authentication
 
@@ -24,7 +24,7 @@ def checkPrincipal(context, principal_id):
     try:
         if zapi.getService(Authentication, context).getPrincipal(principal_id):
             return
-    except NotFoundError:
+    except PrincipalLookupError:
         pass
     
     raise ValueError("Undefined principal id", principal_id)

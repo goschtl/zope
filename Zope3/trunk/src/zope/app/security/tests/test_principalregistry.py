@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from zope.interface import implements
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
 
 from zope.app import zapi
@@ -74,7 +74,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(len(self.reg.getPrincipals('')), 2)
 
     def testUnRegistered(self):
-        self.assertRaises(NotFoundError, self.reg.getPrincipal, '3')
+        self.assertRaises(PrincipalLookupError, self.reg.getPrincipal, '3')
 
     def testDup(self):
         self.assertRaises(DuplicateId,
@@ -85,7 +85,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                           self.reg.definePrincipal,
                           '3', 'Tim Peters', 'Sir Tim Peters',
                           'tim', '123')
-        self.assertRaises(NotFoundError, self.reg.getPrincipal, '3')
+        self.assertRaises(PrincipalLookupError, self.reg.getPrincipal, '3')
         self.assertEqual(len(self.reg.getPrincipals('')), 2)
 
     def testSearch(self):
@@ -98,7 +98,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEquals(tim.getLogin(), 'tim')
         jim = self.reg.getPrincipalByLogin('jim')
         self.assertEquals(jim.getLogin(), 'jim')
-        self.assertRaises(NotFoundError,
+        self.assertRaises(KeyError,
                           self.reg.getPrincipalByLogin, 'kim')
 
     def testValidation(self):
@@ -140,7 +140,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.reg.defineDefaultPrincipal("anybody", "Default Principal",
                                         "This is the default headmaster")
         self.assertEquals(self.reg.unauthenticatedPrincipal().id, "anybody")
-        self.assertRaises(NotFoundError, self.reg.getPrincipal, "everybody")
+        self.assertRaises(PrincipalLookupError,
+                          self.reg.getPrincipal, "everybody")
         p = self.reg.getPrincipal("anybody")
         self.assertEquals(p.id, "anybody")
         self.assertEquals(p.title, "Default Principal")

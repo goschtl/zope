@@ -17,7 +17,7 @@ $Id$
 """
 import os
 from zope.app.demo import passwdauth
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from unittest import TestCase, main, makeSuite
 
 class PasswdPrincipalSourceTest(TestCase):
@@ -30,7 +30,7 @@ class PasswdPrincipalSourceTest(TestCase):
     def test_getPrincipal(self):
         self.assertEqual(self.source.getPrincipal('\t\tfoo1').password, 'bar1')
         self.assertEqual(self.source.getPrincipal('\t\tfoo2').password, 'bar2')
-        self.assertRaises(NotFoundError, self.source.getPrincipal, '\t\tfoo')
+        self.assertRaises(PrincipalLookupError, self.source.getPrincipal, '\t\tfoo')
 
     def test_getPrincipals(self):
         self.assertEqual(len(self.source.getPrincipals('foo')), 2)

@@ -30,7 +30,7 @@ from BTrees.OIBTree import OIBTree
 
 from zope.interface import implements
 from zope.component.interfaces import IViewFactory
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 
 from zope.app import zapi
 from zope.app.location import locate
@@ -135,7 +135,7 @@ class PluggableAuthenticationService(OrderedContainer):
 
         source = self.get(principal_src_id)
         if source is None:
-            raise NotFoundError, principal_src_id
+            raise PrincipalLookupError, principal_src_id
         return source.getPrincipal(id)
 
     def getPrincipals(self, name):
@@ -449,7 +449,7 @@ class BTreePrincipalSource(Persistent, Contained):
         try:
             return self._principals_by_number[id]
         except KeyError:
-            raise NotFoundError, id
+            raise PrincipalLookupError, id
 
     def getPrincipals(self, name):
         """ See `IPrincipalSource`.

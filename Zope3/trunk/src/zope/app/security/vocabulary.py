@@ -23,6 +23,7 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
 from zope.app.security.interfaces import IPermission
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component.localservice import queryNextService
 
 from interfaces import IPrincipalSource
@@ -121,6 +122,7 @@ class PrincipalSource(object):
         ...     def getPrincipal(self, id):
         ...         if id == 'bob':
         ...             return id
+        ...         raise PrincipalLookupError(id)
 
         Since we do not want to bring up the entire component architecture, we
         simply monkey patch the `getService()` method to always return our
@@ -142,8 +144,12 @@ class PrincipalSource(object):
         >>> zapi.getService = temp
         """
         auth = zapi.getService(zapi.servicenames.Authentication)
-        principal = auth.getPrincipal(id)
-        return principal is not None
+        try:
+            auth.getPrincipal(id)
+        except PrincipalLookupError:
+            return False
+        else:
+            return True
 
     def getQueriables(self):
         """Returns an iteratable of queriables. 

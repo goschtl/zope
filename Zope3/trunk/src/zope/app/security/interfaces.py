@@ -21,6 +21,11 @@ from zope.schema import Text, TextLine
 from zope.security.interfaces import IPrincipal, IPermission
 from zope.schema.interfaces import ISource
 
+from zope.exceptions import NotFoundError
+
+class PrincipalLookupError(NotFoundError):
+    """A prncipal could not be found for a principal id
+    """
 
 class IUnauthenticatedPrincipal(IPrincipal):
     """A principal that hasn't been authenticated.
@@ -106,7 +111,7 @@ class IAuthenticationService(Interface):
         """Get principal meta-data.
 
         Returns an object of type IPrincipal for the given principal
-        id. A NotFoundError is raised if the principal cannot be
+        id. A PrincipalLookupError is raised if the principal cannot be
         found.
 
         Note that the authentication service nearest to the requested

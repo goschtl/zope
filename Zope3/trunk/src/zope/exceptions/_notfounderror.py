@@ -21,8 +21,15 @@ from zope.interface import implements
 class INotFoundError(IKeyError):
     pass
 
-class NotFoundError(KeyError):
+class NotFoundError(KeyError, LookupError):
     """A resource could not be found.
+
+    This exception is deprecated.  It will, over time, be replaced
+    with more specific exception types.
+
+    Eventually, when this exception type is used as a base class, it
+    will become an alias for LookupError.  Client code should not depend
+    on it extnding KeyError.
+    
     """
     implements(INotFoundError)
-

@@ -26,7 +26,7 @@ from zope.app.container.contained import Contained
 from zope.app.location import locate
 from zope.app.pluggableauth import SimplePrincipal
 from zope.app.pluggableauth.interfaces import ILoginPasswordPrincipalSource
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.interface import implements
 from interfaces import IFileBasedPrincipalSource
 
@@ -58,7 +58,7 @@ class PasswdPrincipalSource(Contained, Persistent):
         for p in self.readPrincipals():
             if p._id == id:
                 return p
-        raise NotFoundError, id
+        raise PrincipalLookupError, id
 
     def getPrincipals(self, name):
         """See `IPrincipalSource`."""

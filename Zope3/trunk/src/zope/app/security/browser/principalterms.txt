@@ -12,6 +12,7 @@ create an authentication service to demonstrate how this works:
 
   >>> from zope.interface import implements
   >>> from zope.app.security.interfaces import IAuthenticationService
+  >>> from zope.app.security.interfaces import PrincipalLookupError
   >>> class AuthService:
   ...     implements(IAuthenticationService)
   ...     data = {'jim': 'Jim Fulton', 'stephan': 'Stephan Richter'}
@@ -20,6 +21,7 @@ create an authentication service to demonstrate how this works:
   ...         title = self.data.get(id)
   ...         if title is not None:
   ...             return Principal(id, title)
+  ...         raise PrincipalLookupError
 
 Now we need to install the authentication service:
 
@@ -33,8 +35,12 @@ We need a principal source so that we can create a view from it.
   >>> class PrincipalSource:
   ...     def __contains__(self, id):
   ...          auth = zapi.getService('Authentication')
-  ...          principal = auth.getPrincipal(id)
-  ...          return principal is not None
+  ...          try:
+  ...              auth.getPrincipal(id)
+  ...          except PrincipalLookupError:
+  ...              return False
+  ...          else:
+  ...              return True
 
 Now we can create an terms view:
 

@@ -31,6 +31,7 @@ principals. The view unfortunately depends on a lot of other components:
     ...     def __init__(self, id, title): self.id, self.title = id, title
 
     >>> from zope.app.security.interfaces import IAuthenticationService
+    >>> from zope.app.security.interfaces import PrincipalLookupError
     >>> from zope.interface import implements
     >>> class AuthService:
     ...     implements(IAuthenticationService)
@@ -38,7 +39,10 @@ principals. The view unfortunately depends on a lot of other components:
     ...             'stephan': Principal('stephan', 'Stephan Richter')}
     ...
     ...     def getPrincipal(self, id):
-    ...         return self.data.get(id)
+    ...         try:
+    ...             return self.data.get(id)
+    ...         except KeyError:
+    ...             raise PrincipalLookupError(id)
     ...
     ...     def getPrincipals(self, search):
     ...         return [principal 

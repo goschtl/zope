@@ -17,7 +17,7 @@ $Id$
 """
 from warnings import warn
 from zope.interface import implements
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
@@ -71,13 +71,11 @@ class PrincipalRegistry(object):
         if r is None:
             if id == self.__defaultid:
                 return self.__defaultObject
-            raise NotFoundError(id)
+            raise PrincipalLookupError(id)
         return r
 
     def getPrincipalByLogin(self, login):
-        r = self.__principalsByLogin.get(login)
-        if r is None: raise NotFoundError(login)
-        return r
+        return self.__principalsByLogin[login]
 
     def getPrincipals(self, name):
         name = name.lower()

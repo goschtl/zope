@@ -23,10 +23,9 @@ from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.site.tests import placefulsetup
 
-from zope.exceptions import NotFoundError
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.tests import setup
-from zope.exceptions import NotFoundError
 
 from zope.app.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
@@ -125,9 +124,9 @@ class AuthServiceTest(Setup):
         auth = self._auth
         id = self._slinkp.id
         self.assertEqual(self._slinkp, auth.getPrincipal(id))
-        self.assertRaises(NotFoundError, self._fail_NoSourceId)
-        self.assertRaises(NotFoundError, self._fail_BadIdType)
-        self.assertRaises(NotFoundError, self._fail_BadIdLength)
+        self.assertRaises(PrincipalLookupError, self._fail_NoSourceId)
+        self.assertRaises(PrincipalLookupError, self._fail_BadIdType)
+        self.assertRaises(PrincipalLookupError, self._fail_BadIdLength)
 
     def testGetPrincipals(self):
         auth = self._auth
