@@ -18,6 +18,7 @@ $Id$
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
+from zope.app import zapi
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.container.contained import contained
 from zope.app.exception.browser.unauthorized import Unauthorized
@@ -47,10 +48,21 @@ class DummyAuthService(object):
         self.principal_id = principal_id
         self.request = request
 
+
 class DummyPrincipalSource(object):
     pass
 
 class Test(TestCase, PlacelessSetup):
+
+    def setUp(self):
+        super(Test, self).setUp()
+        self.temp = zapi.getService
+        self.authservice = DummyAuthService()
+        zapi.getService = lambda name: self.authservice
+
+    def tearDown(self):
+        zapi.getService = self.temp
+        super(Test, self).tearDown()
 
     def test(self):
         exception = Exception()
@@ -59,8 +71,7 @@ class Test(TestCase, PlacelessSetup):
         except:
             pass
         request = TestRequest('/')
-        authservice = DummyAuthService()
-        request.setPrincipal(contained(DummyPrincipal(23), authservice))
+        request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 
@@ -68,8 +79,8 @@ class Test(TestCase, PlacelessSetup):
         self.assertEqual(request.response.getStatus(), 403)
 
         # Make sure the auth service was called
-        self.failUnless(authservice.request is request)
-        self.assertEqual(authservice.principal_id, 23)
+        self.failUnless(self.authservice.request is request)
+        self.assertEqual(self.authservice.principal_id, 23)
 
     def testPluggableAuthService(self):
         exception = Exception()
@@ -78,10 +89,8 @@ class Test(TestCase, PlacelessSetup):
         except:
             pass
         request = TestRequest('/')
-        authservice = DummyAuthService()
         psrc = DummyPrincipalSource()
-        psrc = contained(psrc, authservice)
-        request.setPrincipal(contained(DummyPrincipal(23), psrc))
+        request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 
@@ -89,8 +98,8 @@ class Test(TestCase, PlacelessSetup):
         self.assertEqual(request.response.getStatus(), 403)
 
         # Make sure the auth service was called
-        self.failUnless(authservice.request is request)
-        self.assertEqual(authservice.principal_id, 23)
+        self.failUnless(self.authservice.request is request)
+        self.assertEqual(self.authservice.principal_id, 23)
 
 def test_suite():
     return makeSuite(Test)
