@@ -7,8 +7,10 @@
      menu="add_service"
      for="zope.app.interfaces.container.IAdding"
      action="zope.app.services.PluggableAuthenticationService"
-     title="Pluggable Authentication Service"
-     description="A Pluggable Authentication Service"
+     title="Authentication Service"
+     description="A Pluggable Authentication Service
+
+                  Uses plug-in principal sources."
      />
 
 <page
