@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.46 2004/02/05 22:52:19 srichter Exp $
+$Id: editview.py,v 1.47 2004/02/25 13:21:50 dominikhuber Exp $
 """
 from datetime import datetime
 
@@ -26,6 +26,8 @@ from zope.component import getAdapter
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.form import WidgetsError
+from zope.app.location import LocationProxy
+from zope.app.interfaces.location import ILocation
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.browser.form.submit import Update
 from zope.app.event import publish
@@ -58,6 +60,8 @@ class EditView(BrowserView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
+            if not ILocation.isImplementedBy(adapted):
+                adapted = LocationProxy(adapted)
             adapted.__parent__ = self.context
         self.adapted = adapted
         setUpEditWidgets(self, self.schema, names=self.fieldNames,

@@ -46,6 +46,9 @@ Zope Changes
     - Validation of object field fixed (zope.schema.Object). Validate only 
       attributes of the schema that are implemented as fields.
 
+    - Security-proxied adapter support for the form framework. It provides 
+      LocationProxies for all adapters which do not implement ILocation itself.
+
     Restructuring
 
     - Rearranged the package hierarchy below zope.app.

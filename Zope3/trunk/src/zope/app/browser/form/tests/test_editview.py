@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.16 2004/01/30 22:20:52 sidnei Exp $
+"""$Id: test_editview.py,v 1.17 2004/02/25 13:22:09 dominikhuber Exp $
 """
 import unittest
 
@@ -60,21 +60,41 @@ class IBar(Interface):
 class Foo:
     implements(IFoo)
 
-    foo = 'Foo foo'
+    foo = u'Foo foo'
+    
+class ConformFoo(object):
+    implements(IFoo)
 
+    foo = u'Foo foo'
+
+    def __conform__(self, interface):
+        # fake proxied adapter (attention only read proxy)
+        from zope.security.checker import InterfaceChecker
+        from zope.security.checker import ProxyFactory
+        
+        if interface is IBar:
+            checker = InterfaceChecker(IBar)
+            return ProxyFactory(OtherFooBarAdapter(self), checker)
+
+            
 class FooBarAdapter(object):
+    implements(IBar)
+    __used_for__ = IFoo
 
     def __init__(self, context):
         self.context = context
 
-    def setbar(self, v):
-        self.context.foo = v
+    def getbar(self): return self.context.foo
+    def setbar(self, v): self.context.foo = v
 
-    bar = property(lambda self: self.context.foo,
-                   setbar)
+    bar = property(getbar, setbar)
+    
+class OtherFooBarAdapter(FooBarAdapter):
+    pass
 
 class BarV(EditView):
     schema = IBar
+    object_factories = []
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -148,9 +168,29 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.getbaz(), u'c baz')
 
+    def test_update_via_adapter(self):
+        f = Foo()
+        request = TestRequest()
+        v = BarV(f, request)
+        # check adapter
+        self.assertEqual(f.foo, u'Foo foo')
+        a = ztapi.zapi.getAdapter(f, IBar)
+        self.assertEqual(a.bar, u'Foo foo')
+        # update
+        request.form[Update] = ''
+        request.form['field.bar'] = u'r bar'
+        message = v.update()
+        self.failUnless(message.startswith('Updated '), message)
+        self.assertEqual(a.bar, u'r bar')
+        # wrong update
+        self.failIf(getEvents())
 
-
-
+    def test_setUpWidget_via_conform_adapter(self):
+        
+        f = ConformFoo()
+        request = TestRequest()
+        v = BarV(f, request)
+        
 def test_suite():
     return unittest.makeSuite(Test)
 
