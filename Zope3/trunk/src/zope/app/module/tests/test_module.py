@@ -13,7 +13,7 @@
 ##############################################################################
 """Peristent Module tests
 
-$Id: test_module.py,v 1.2 2004/03/13 15:21:24 srichter Exp $
+$Id: test_module.py,v 1.3 2004/03/13 19:33:26 srichter Exp $
 """
 import unittest
 
@@ -33,7 +33,7 @@ class TestService:
     implements(ITestService)
 
 
-NAME = 'zope.app.services.tests.sample1'
+NAME = 'zope.app.module.tests.sample1'
 
 called = 0
 
