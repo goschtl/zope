@@ -1,0 +1,51 @@
+========================
+The Zope Packaging Tools
+========================
+
+Overview
+--------
+
+`Running the |zpkg|_ tool <zpkg.html>`_
+  Essentially a man page for |zpkg|_.  This describes command line
+  options and configuration of the tool.
+
+`Metadata Descriptions for Distributions <metadata.html>`_
+  Descriptions of the metadata files read by |zpkg|_ to allow it to
+  create distributions from components.
+
+`Resource Locations <resources.html>`_
+  Information about how locations for resources are specified for
+  |zpkg|_, with an emphasis on URL schemes used to support revision
+  control systems.
+
+`Collection Distributions <collections.html>`_
+  A description of how collection distributions are put together.
+
+`API documentation <apiref/index.html>`_
+  Documentation on the ``zpkgtools`` interface.  The interface to this
+  package is entirely open to change at this point, but this might
+  help to understand how to tool works.
+
+Related Links
+-------------
+
+`PEP 241 <http://www.python.org/peps/pep-0241.html>`_
+  `Distribution metadata`
+
+  This PEP describes a mechanism for adding metadata to Python
+  packages.  It includes specifics of the field names, and their
+  semantics and usage.
+
+`PEP 262 <http://www.python.org/peps/pep-0241.html>`_
+  `A Database of Installed Python Packages`
+
+  This PEP describes a mechanism for adding metadata to Python
+  packages.  It includes specifics of the field names, and their
+  semantics and usage.
+
+  Implementation of this PEP in distutils, along with a general way to
+  identify dependencies, would allow import-less dependency checking
+  as well as uninstallation.
+
+
+.. include:: links.rst
