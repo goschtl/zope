@@ -12,6 +12,14 @@ Trunk
   systems that have Page Templates macroes that need to be shared
   between Zope2 and Five.
 
+* Five.security.checkPermission has been changed from a (unused)
+  method for checking the existance of permissions. Use
+  zope.app.security.permission.checkPermission if you need that
+  functionality.
+  Instead Five.security.checkPermission is now a Five version of
+  zope.security.checkPermission, which checks if the current user
+  has a permission on an object.
+
 
 Five 0.2b
 ---------
