@@ -26,6 +26,7 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from ldapauth.interfaces import ILDAPBasedPrincipalSource
+from ldapauth.interfaces import ILDAPManager
 
 
 class PrincipalSource(BrowserView):
@@ -74,7 +75,7 @@ class PrincipalSource(BrowserView):
 
 class PrincipalSourceManager(PrincipalSource):
 
-    __used_for__ = ILDAPBasedPrincipalSource
+    __used_for__ = ILDAPManager
 
     error = ""
 
