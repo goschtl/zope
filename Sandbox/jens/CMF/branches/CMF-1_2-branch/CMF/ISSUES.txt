@@ -34,7 +34,7 @@ CMF 1.2:  Known Issues
 
   Issue:  Content constructor methods interface change
 
-    Factory methods used to construct content instances used to
+    The CMF used to require that factory methods for content instances
     return the URL of the "initial view" of the new object;  since
     August 2001, the interface has changed to require that the method
     return the new object directly, wrapped in its container.  This
