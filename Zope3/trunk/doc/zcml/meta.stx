@@ -277,8 +277,8 @@ The Meta Configuration System
         from Zope.StartUp.SiteDefinition import SiteDefinition
         class defineSite:
 
-            __class_implements__ = INonEmptyDirective
-            __implements__ = ISubdirectiveHandler
+            classProvides(INonEmptyDirective)
+            implements(ISubdirectiveHandler)
 
             def __init__(self, _context, name="default" threads=4):
                 SiteDefinition.registerSite(name)
