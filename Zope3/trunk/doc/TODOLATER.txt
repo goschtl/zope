@@ -2,6 +2,9 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- http://dev.zope.org/Zope3/ActionPlans
+
+
 - Persistent interfaces cannot be provided as providedBy or implementedBy
   interfaces anymore. This functionality was broken during some interface and
   adapter refactorings. 
