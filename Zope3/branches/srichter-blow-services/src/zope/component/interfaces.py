@@ -262,7 +262,17 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
 
 
 class ISiteManager(Interface):
-    """ """
+    """Component Manager for a Site
+
+    This object manages the components registered at a particular site. The
+    definition of a site is intentionally vague.
+    """
+
+    adapters = Attribute("Adapter Registry to manage all registered "
+                         "adapters.")
+
+    utilities = Attribute("Adapter Registry to manage all registered "
+                          "utilities.")
 
     def queryAdapter(object, interface, name, default=None):
         """Look for a named adapter to an interface for an object
