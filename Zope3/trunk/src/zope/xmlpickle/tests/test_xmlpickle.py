@@ -11,11 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Tests of xmlpickle package
 
-XXX longer description goes here.
-
-$Id: test_xmlpickle.py,v 1.2 2002/12/25 14:15:36 jim Exp $
+$Id: test_xmlpickle.py,v 1.3 2003/04/16 22:12:40 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -249,8 +247,6 @@ class WInitial(Simple):
 class newSimple(Simple, object): pass
 class newWInitial(WInitial, object): pass
 
-
-
 class DictSub(dict):
     def __eq__(self, other):
         items = self.items()
@@ -262,11 +258,8 @@ class DictSub(dict):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
