@@ -678,7 +678,7 @@ msgstr "Добавить"
 
 #: src/zope/app/container/constraints.py:187
 msgid "Container is not a valid Zope container."
-msgstr ""
+msgstr "Контейнер не является Zope контейнером."
 
 #: src/zope/app/container/contained.py:567
 msgid "An empty name was provided. Names cannot be empty."
@@ -802,7 +802,7 @@ msgstr "Сервис лога ошибок"
 
 #: src/zope/app/errorservice/browser/configure.zcml:35
 msgid "Error Reporting Service for Logging Errors"
-msgstr ""
+msgstr "Сервис для сбора сообщений об ошибках"
 
 #: src/zope/app/errorservice/browser/error.pt:10
 msgid "This page lists the exceptions that have occurred in this site recently."
@@ -833,7 +833,7 @@ msgstr "Просмотр лога ошибок"
 
 #: src/zope/app/errorservice/browser/error.pt:8
 msgid "Exception Log (most recent first)"
-msgstr "Лог ошибок (последние - в начале)"
+msgstr "Лог ошибок (более поздние - выше)"
 
 #: src/zope/app/errorservice/browser/error_config.pt:18
 msgid "Number of exceptions to keep"
@@ -1355,7 +1355,7 @@ msgstr "Сервис переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:61
 msgid "A Persistent Translation Domain"
-msgstr "Сохраняемый сервис переводов"
+msgstr "Хранимый сервис переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:69
 msgid "New Translation Domain Registration"
@@ -1795,7 +1795,7 @@ msgstr "Редактировать пункт меню"
 
 #: src/zope/app/menu/browser/configure.zcml:14
 msgid "A Service For Persistent Browser Menus"
-msgstr ""
+msgstr "Сервис хранимых меню"
 
 #: src/zope/app/menu/browser/configure.zcml:21
 #: src/zope/app/workflow/browser/stateful/configure.zcml:135
@@ -1874,7 +1874,7 @@ msgstr ""
 #: src/zope/app/menu/configure.zcml:20
 #: src/zope/app/menu/browser/configure.zcml:84
 msgid "A Persistent Browser Menu"
-msgstr ""
+msgstr "Хранимое меню"
 
 #: src/zope/app/menu/configure.zcml:48
 msgid "Browser Menu Item"
@@ -1882,11 +1882,11 @@ msgstr "Пункт меню"
 
 #: src/zope/app/menu/configure.zcml:48
 msgid "A Persistent Browser Menu Item"
-msgstr "Сохраняемый в базе пункт меню"
+msgstr "Хранимый пункт меню"
 
 #: src/zope/app/menu/configure.zcml:6
 msgid "A Persistent Browser Menu Service"
-msgstr "Сохраняемый в базе сервис меню"
+msgstr "Хранимый сервис меню"
 
 #: src/zope/app/menu/configure.zcml:6
 #: src/zope/app/menu/browser/configure.zcml:14
@@ -2609,11 +2609,11 @@ msgstr "Регистрация новой изменяемой схемы"
 
 #: src/zope/app/schema/browser/configure.zcml:5
 msgid "These are schemas that live in the ZODB and are modifiable."
-msgstr ""
+msgstr "Изменяемые схемы сохраняемые в ZODB."
 
 #: src/zope/app/schema/browser/configure.zcml:5
 msgid "Persistent, Local Schemas"
-msgstr ""
+msgstr "Хранимые локальные схемы"
 
 #: src/zope/app/schema/browser/configure.zcml:52
 msgid "Edit Schema"
@@ -2650,235 +2650,235 @@ msgstr "Изменяемая схема"
 #: src/zope/app/schema/configure.zcml:5
 #: src/zope/app/schema/browser/configure.zcml:40
 msgid "A Persistent Schema that can be edited through the web"
-msgstr "Постоянная схема которая может редактироваться через web"
+msgstr "Хранимая схема которая может редактироваться через web"
 
 #: src/zope/app/schema/fieldforms.zcml:111
 msgid "Add Float Field"
-msgstr ""
+msgstr "Добавить поле для вещественного числа"
 
 #: src/zope/app/schema/fieldforms.zcml:125
 msgid "Edit Float Field"
-msgstr ""
+msgstr "Редактировать поле для вещественного числа"
 
 #: src/zope/app/schema/fieldforms.zcml:137
 msgid "Add Datetime Field"
-msgstr ""
+msgstr "Добавить поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:151
 msgid "Edit Datetime Field"
-msgstr ""
+msgstr "Редактировать поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:166
 msgid "Enumerated TextLine Field"
-msgstr ""
+msgstr "Перечисляемое поле для текстовых строк"
 
 #: src/zope/app/schema/fieldforms.zcml:166
 msgid "Add Enumerated TextLine Field"
-msgstr ""
+msgstr "Добавить перечисляемое поле для текстовых строк"
 
 #: src/zope/app/schema/fieldforms.zcml:180
 msgid "Edit Enumerated TextLine Field"
-msgstr ""
+msgstr "Редактировать перечисляемое поле для текстовых строк"
 
 #: src/zope/app/schema/fieldforms.zcml:193
 msgid "Add Enumerated Integer Field"
-msgstr ""
+msgstr "Добавить перечисляемое поле для  целых чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:193
 msgid "Enumerated Integer Field"
-msgstr ""
+msgstr "Перечисляемое поле для целых чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:207
 msgid "Edit Enumerated Integer Field"
-msgstr ""
+msgstr "Редактировать перечисляемое поле для целых чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:21
 msgid "Edit Text Field"
-msgstr ""
+msgstr "Редактировать поле для текста"
 
 #: src/zope/app/schema/fieldforms.zcml:220
 msgid "Enumerated Float Field"
-msgstr ""
+msgstr "Перечисляемое поле для вещественных чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:220
 msgid "Add Enumerated Float Field"
-msgstr ""
+msgstr "Добавить перечисляемое поле для вещественных чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:234
 msgid "Edit Enumerated Float Field"
-msgstr ""
+msgstr "Редактировать перечисляемое поле для вещественных чисел"
 
 #: src/zope/app/schema/fieldforms.zcml:247
 msgid "Add Enumerated Datetime Field"
-msgstr ""
+msgstr "Добавить перечисляемое поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:247
 msgid "Enumerated Datetime Field"
-msgstr ""
+msgstr "Перечисляемое поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:261
 msgid "Edit Enumerated Datetime Field"
-msgstr ""
+msgstr "Редактировать перечисляемое поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:274
 msgid "Add Enumerated Date Field"
-msgstr ""
+msgstr "Добавить перечисляемое поле для даты"
 
 #: src/zope/app/schema/fieldforms.zcml:274
 msgid "Enumerated Date Field"
-msgstr ""
+msgstr "Перечисляемое поле для даты"
 
 #: src/zope/app/schema/fieldforms.zcml:288
 msgid "Edit Enumerated Date Field"
-msgstr ""
+msgstr "Редактировать перечисляемое поле для даты"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "Add TextLine Field"
-msgstr ""
+msgstr "Добавить поле для текстовой строки"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "TextLine Field"
-msgstr ""
+msgstr "Поле для текстовой строки"
 
 #: src/zope/app/schema/fieldforms.zcml:47
 msgid "Edit TextLine Field"
-msgstr ""
+msgstr "Редактировать поле для текстовой строки"
 
 #: src/zope/app/schema/fieldforms.zcml:59
 msgid "Add Boolean Field"
-msgstr ""
+msgstr "Добавить поле для булевского значения"
 
 #: src/zope/app/schema/fieldforms.zcml:7
 msgid "Add Text Field"
-msgstr ""
+msgstr "Добавить поле для текста"
 
 #: src/zope/app/schema/fieldforms.zcml:73
 msgid "Edit Boolean Field"
-msgstr ""
+msgstr "Редактировать поле для булевского значения"
 
 #: src/zope/app/schema/fieldforms.zcml:85
 msgid "Add Integer Field"
-msgstr ""
+msgstr "Добавить поле для целого числа"
 
 #: src/zope/app/schema/fieldforms.zcml:99
 msgid "Edit Integer Field"
-msgstr ""
+msgstr "Редактировать поле для целого числа"
 
 #: src/zope/app/schema/fields.zcml:105
 msgid "Sequence Field"
-msgstr ""
+msgstr "Поле для последовательности"
 
 #: src/zope/app/schema/fields.zcml:116
 msgid "Bytes Field"
-msgstr ""
+msgstr "Поле для байта"
 
 #: src/zope/app/schema/fields.zcml:129
 msgid "BytesLine Field"
-msgstr ""
+msgstr "Поле для байтовой строки"
 
 #: src/zope/app/schema/fields.zcml:142 src/zope/app/schema/fieldforms.zcml:7
 msgid "Text Field"
-msgstr ""
+msgstr "Поле для текста"
 
 #: src/zope/app/schema/fields.zcml:157
 msgid "Text Line Field"
-msgstr ""
+msgstr "Поле для текстовой строки"
 
 #: src/zope/app/schema/fields.zcml:170 src/zope/app/schema/fieldforms.zcml:59
 msgid "Boolean Field"
-msgstr ""
+msgstr "Поле для булевского значения"
 
 #: src/zope/app/schema/fields.zcml:181 src/zope/app/schema/fieldforms.zcml:85
 msgid "Integer Field"
-msgstr ""
+msgstr "Поле для целого числа"
 
 #: src/zope/app/schema/fields.zcml:194 src/zope/app/schema/fieldforms.zcml:111
 msgid "Float Field"
-msgstr ""
+msgstr "Поле для вещественного числа"
 
 #: src/zope/app/schema/fields.zcml:207
 msgid "Tuple Field"
-msgstr ""
+msgstr "Поле для кортежа"
 
 #: src/zope/app/schema/fields.zcml:218
 msgid "List Field"
-msgstr ""
+msgstr "Поле для списка"
 
 #: src/zope/app/schema/fields.zcml:229
 msgid "Password Field"
-msgstr ""
+msgstr "Поле для пароля"
 
 #: src/zope/app/schema/fields.zcml:242
 msgid "Dict Field"
-msgstr ""
+msgstr "Поле для словаря"
 
 #: src/zope/app/schema/fields.zcml:254 src/zope/app/schema/fieldforms.zcml:137
 msgid "Datetime Field"
-msgstr ""
+msgstr "Поле для даты и времени"
 
 #: src/zope/app/schema/fields.zcml:267
 msgid "SourceText Field"
-msgstr ""
+msgstr "Поле для исходного текста"
 
 #: src/zope/app/schema/fields.zcml:280
 msgid "Object Field"
-msgstr ""
+msgstr "Поле для объекта"
 
 #: src/zope/app/schema/fields.zcml:293
 msgid "URI Field"
-msgstr ""
+msgstr "Поле для URI"
 
 #: src/zope/app/schema/fields.zcml:306
 msgid "Id Field"
-msgstr ""
+msgstr "Поле для идентификатора"
 
 #: src/zope/app/schema/fields.zcml:319
 msgid "EnumeratedTextLine Field"
-msgstr ""
+msgstr "Перечисляемое поле для текстовых строк"
 
 #: src/zope/app/schema/fields.zcml:332
 msgid "EnumeratedInt Field"
-msgstr ""
+msgstr "Перечисляемое поле для целых чисел"
 
 #: src/zope/app/schema/fields.zcml:345
 msgid "EnumeratedFloat Field"
-msgstr ""
+msgstr "Перечисляемое поле для вещественных чисел"
 
 #: src/zope/app/schema/fields.zcml:358
 msgid "Interface Field"
-msgstr ""
+msgstr "Поле для интерфейса"
 
 #: src/zope/app/schema/fields.zcml:38
 msgid "Container Field"
-msgstr ""
+msgstr "Поле для контейнера"
 
 #: src/zope/app/schema/fields.zcml:49
 msgid "Iterable Field"
-msgstr ""
+msgstr "Поле для итератора"
 
 #: src/zope/app/schema/fields.zcml:5
 msgid "Basic Field"
-msgstr ""
+msgstr "Простое поле"
 
 #: src/zope/app/schema/fields.zcml:60
 msgid "Orderable Field"
-msgstr ""
+msgstr "Поле с указанием порядка"
 
 #: src/zope/app/schema/fields.zcml:75
 msgid "MinMaxLen Field"
-msgstr ""
+msgstr "Поле с ограничением длины"
 
 #: src/zope/app/schema/fields.zcml:90
 msgid "Enumerated Field"
-msgstr ""
+msgstr "Перечисляемое поле"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:106
 msgid "Schema-based Content Component Instance"
-msgstr ""
+msgstr "Контент основанный на схеме"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:106
 msgid "Schema-based Content"
-msgstr ""
+msgstr "Контент основанный на схеме"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:14
 msgid "Content Component Definition Registration"
@@ -2917,7 +2917,7 @@ msgstr ""
 #: src/zope/app/schemacontent/browser/configure.zcml:29
 #: src/zope/app/schemacontent/browser/configure.zcml:39
 msgid "A Persistent Content Component Definition"
-msgstr ""
+msgstr "Хранимое определение компонента контента"
 
 #: src/zope/app/schemacontent/configure.zcml:9
 #: src/zope/app/schemacontent/browser/configure.zcml:5
@@ -3129,7 +3129,7 @@ msgstr ""
 
 #: src/zope/app/securitypolicy/browser/configure.zcml:36
 msgid "A Persistent Role"
-msgstr ""
+msgstr "Хранимая роль"
 
 #: src/zope/app/securitypolicy/browser/configure.zcml:45
 msgid "New Role Registration"
@@ -3278,15 +3278,15 @@ msgstr ""
 
 #: src/zope/app/session/browser.zcml:31
 msgid "Stores session data persistently in the ZODB"
-msgstr ""
+msgstr "Хранит данные сессии в ZODB"
 
 #: src/zope/app/session/browser.zcml:31
 msgid "Persistent Session Data Container"
-msgstr ""
+msgstr "Контейнер для хранимых данных сессии"
 
 #: src/zope/app/session/browser.zcml:37
 msgid "Persistent Session Data Container Properties"
-msgstr "Свойства папки для хранения постоянных данных сессии"
+msgstr "Свойства контейнера для хранимых данных сессии"
 
 #: src/zope/app/session/browser.zcml:6
 msgid ""
