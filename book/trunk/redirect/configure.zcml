@@ -4,7 +4,6 @@
   <redirect
       name="manage.html"
       for="zope.app.folder.interfaces.IFolder"
-      url="manage"
-      permission="zope.Public" />
+      url="manage" />
 
 </configure>

@@ -17,7 +17,7 @@ $Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject
-from zope.schema import Id, TextLine
+from zope.schema import TextLine
 
 class IRedirectDirective(Interface):
    """Redirects clients to a specified URL."""
@@ -34,10 +34,6 @@ class IRedirectDirective(Interface):
    url = TextLine(
        title=u"URL",
        description=u"The URL the client should be redirected to.")
-
-   permission = Id(
-       title=u"Permission",
-       description=u"The permission needed to access the view.")
 
    layer = TextLine(
        title=u"Layer",

@@ -25,10 +25,11 @@ class Redirect(object):
        self.request.response.redirect(self.url)
 
 
-def redirect(_context, name, url, permission, for_=None, layer='default'):
+def redirect(_context, name, url, for_=None, layer='default'):
    
    # define the class that performs the redirect
    redirectClass = type(str("Redirect %s for %s to '%s'" %(name, for_, url)),
        (Redirect,), {'url' : url})
    
-   page(_context, name, permission, for_, layer, class_=redirectClass)
+   page(_context, name, 'zope.Public', for_, layer, class_=redirectClass)
+   
