@@ -104,8 +104,7 @@ class XMLStatefulImporter(ContentHandler):
             perms[fieldName] = (perms[fieldName][0], perm)
 
     def startState(self, attrs):
-        encoding = self.encoding
-        name  = attrs['name'].encode(encoding)
+        name  = attrs['name']
         if name == 'INITIAL':
             state = self.context.getState('INITIAL')
             dc = IZopeDublinCore(state)
@@ -117,18 +116,17 @@ class XMLStatefulImporter(ContentHandler):
             self.context.addState(name, state)
 
     def startTransition(self, attrs):
-        encoding = self.encoding
-        name = attrs['name'].encode(encoding)
-        permission = attrs.get('permission', '').encode(encoding)
-        if permission == 'zope.Public':
+        name = attrs['name']
+        permission = attrs.get('permission', u'zope.Public')
+        if permission == u'zope.Public':
             permission = CheckerPublic
         trans = Transition(
-                source = attrs['sourceState'].encode(encoding),
-                destination = attrs['destinationState'].encode(encoding),
-                condition = attrs.get('condition', '').encode(encoding),
-                script = attrs.get('script', '').encode(encoding),
+                sourceState = attrs['sourceState'],
+                destinationState = attrs['destinationState'],
+                condition = attrs.get('condition', None),
+                script = attrs.get('script', None),
                 permission = permission,
-                triggerMode = attrs['triggerMode'].encode(encoding)
+                triggerMode = attrs['triggerMode']
                 )
         dc = IZopeDublinCore(trans)
         dc.title = attrs.get('title', u'')
@@ -179,7 +177,7 @@ class XMLExportHandler(object):
             return 'zope.Public'
         if permission is None:
             return ''
-        return removeAllProxies(permission).id
+        return removeAllProxies(permission)
 
     def getSchemaPermissions(self):
         info = []
