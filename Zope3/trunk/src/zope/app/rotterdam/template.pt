@@ -1,4 +1,4 @@
-﻿<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+﻿¿<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
@@ -89,8 +89,8 @@
     <div id="workspace" metal:define-macro="workspace">
 
       <metal:slot define-slot="breadcrumbs">
-      <div id="breadcrumbs" metal:define-macro="breadcrumbs"
-       > <div tal:omit-tag="" i18n:translate="">Location:</div>&nbsp;<tal:block
+      <div id="breadcrumbs" metal:define-macro="breadcrumbs">
+        <div tal:omit-tag="" i18n:translate="">Location:</div>&nbsp;<tal:block
            repeat="breadcrumb context/@@absolute_url/breadcrumbs"
           ><a href=""
               tal:condition="repeat/breadcrumb/start"
@@ -125,13 +125,20 @@
       <div tal:condition="python: macroname == 'view'" id="actions"
            tal:define="
                help_actions context/@@view_get_menu/help_actions|nothing;
-               actions context/@@view_get_menu/zmi_actions;
-               dummy python:actions.reverse()">
-
-        <span tal:condition="help_actions"
+               actions context/@@view_get_menu/zmi_actions">
+        <span tal:condition="actions"
+              tal:omit-tag=""
+					><a href="#"
+               tal:repeat="info actions"
+               tal:attributes="href info/action"
+               tal:content="info/title"
+               i18n:translate="">
+              Action name
+          </a></span
+				><span tal:condition="help_actions"
               tal:repeat="help_info help_actions"
-              tal:omit-tag="">
-          <a href="#"
+              tal:omit-tag=""
+					><a href="#"
                tal:define="url string:'${view/__name__}/${help_info/action}';
                            name string:'OnlineHelp';
                            settings string:'height=500
@@ -149,19 +156,7 @@
                tal:content="help_info/title"
                i18n:translate="">
               Action name
-          </a>
-        </span>
-        <span tal:condition="actions"
-              tal:omit-tag="">
-          <a href="#"
-               tal:repeat="info actions"
-               tal:attributes="href info/action"
-               tal:content="info/title"
-               i18n:translate="">
-              Action name
-          </a>
-        </span>
-        &nbsp;
+          </a></span>
       </div>
       </metal:slot>
 
