@@ -13,7 +13,7 @@
 ##############################################################################
 """HTML formated DocumentTemplates
 
-$Id: dt_html.py,v 1.4 2004/01/14 22:55:30 chrism Exp $
+$Id: dt_html.py,v 1.5 2004/03/19 08:03:23 philikon Exp $
 """
 import re
 from zope.documenttemplate.dt_string import String
@@ -27,7 +27,7 @@ class DTMLRegExClass:
                ent_name=re.compile('[-a-zA-Z0-9_.]+').match
                ):
 
-        while 1:
+        while True:
             mo = start_search(text, start)
             if mo is None:
                 return None
@@ -35,7 +35,7 @@ class DTMLRegExClass:
 
             if text[s:s+6] == '<dtml-':
                 e = n = s+6
-                while 1:
+                while True:
                     e = text.find('>', e+1)
                     if e < 0:
                         return None
@@ -48,7 +48,7 @@ class DTMLRegExClass:
 
             elif text[s:s+7] == '</dtml-':
                 e=n=s+7
-                while 1:
+                while True:
                     e=text.find('>',e+1)
                     if e < 0:
                         return None

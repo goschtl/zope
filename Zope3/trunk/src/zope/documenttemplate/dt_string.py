@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: dt_string.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
+$Id: dt_string.py,v 1.4 2004/03/19 08:03:23 philikon Exp $
 """
 import re, thread
 
@@ -213,7 +213,7 @@ class String:
         sname = stag
         sstart = start
         sa = sargs
-        while 1:
+        while True:
 
             mo = tagre.search(text, start)
             if mo is None:
@@ -259,7 +259,7 @@ class String:
 
 
     def parse_close(self, text, start, tagre, stag, sloc, scommand, sa):
-        while 1:
+        while True:
             mo = tagre.search(text, start)
             if mo is None:
                 self.parse_error('No closing tag', stag, text, sloc)
