@@ -25,11 +25,11 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from ldapauth.interfaces import ILDAPBasedPrincipalSource
-from ldapauth.interfaces import ILDAPTestAdapter
+from ldapauth.interfaces import ICheckLDAPAdapter
 
 
 
-class CheckConnectionView(BrowserView):
+class CheckLDAPView(BrowserView):
 
     __used_for__ = ILDAPBasedPrincipalSource
 
@@ -60,7 +60,7 @@ class CheckConnectionView(BrowserView):
 
             # test the connection to the LDAP server
             self._addInfo("<strong>Test LDAP server connection</strong>")
-            testadapter = ILDAPTestAdapter(self.context)
+            testadapter = ICheckLDAPAdapter(self.context)
             self.report = self.report + testadapter.testConnection()
 
             # test quering the LDAP server
@@ -79,4 +79,4 @@ class CheckConnectionView(BrowserView):
         """Add traceback info to the report list"""
         self.report.append(res)
 
-    check = ViewPageTemplateFile('checkconnection.pt')
+    check = ViewPageTemplateFile('check.pt')

@@ -52,7 +52,7 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
 
 
 
-class ILDAPTestAdapter(Interface):
+class ICheckLDAPAdapter(Interface):
     """A test adapter for to test the connection between Zope and LDAP."""
 
     def testConnection():

@@ -36,9 +36,9 @@
     <!-- connetion test view -->
     <page
         for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
-        name="checkconnection.html"
+        name="check.html"
         attribute="check"
-        class=".checkconnection.CheckConnectionView"
+        class=".check.CheckLDAPView"
         menu="zmi_views" title="Test"
         permission="zope.ManageServices"/>
 

@@ -19,14 +19,14 @@ import ldap
 from zope.security.proxy import trustedRemoveSecurityProxy
 
 from zope.interface import implements
-from interfaces import ILDAPTestAdapter
+from interfaces import ICheckLDAPAdapter
 
 
 
-class LDAPTestAdapter:
+class CheckLDAPAdapter:
     """A LDAP connection test adapter."""
 
-    implements(ILDAPTestAdapter)
+    implements(ICheckLDAPAdapter)
 
     def __init__(self, context):
         self.context = context

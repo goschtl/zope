@@ -23,8 +23,8 @@
     </content>
 
     <adapter
-        factory="ldapauth.connectiontest.LDAPTestAdapter"
-        provides="ldapauth.interfaces.ILDAPTestAdapter"
+        factory="ldapauth.check.CheckLDAPAdapter"
+        provides="ldapauth.interfaces.ICheckLDAPAdapter"
         for="*"
         />
 
