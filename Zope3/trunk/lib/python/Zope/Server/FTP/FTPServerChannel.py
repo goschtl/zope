@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FTPServerChannel.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: FTPServerChannel.py,v 1.3 2002/07/19 18:07:41 shane Exp $
 """
 
 import posixpath
@@ -348,7 +348,7 @@ class FTPServerChannel(LineServerChannel):
         try:
             self._getFilesystem().rename(self._rnfr, path)
         except OSError, err:
-            self.reply('ERR_RENAME', (self._rnfr, rnto, str(err)))
+            self.reply('ERR_RENAME', (self._rnfr, path, str(err)))
         else:
             self.reply('SUCCESS_250', 'RNTO')
         self._rnfr = None
