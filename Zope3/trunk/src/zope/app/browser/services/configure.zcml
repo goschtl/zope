@@ -33,10 +33,6 @@
       for="zope.app.interfaces.services.event.IEventService" 
       file="event_service.gif" />
 
-
-<!-- Pluggable Authentication Service --> 
-  <zope:include package=".pluggableauth" />
-
 <!-- Component Location widget -->
 
 <!-- XXX we are phasing these widgets out -->

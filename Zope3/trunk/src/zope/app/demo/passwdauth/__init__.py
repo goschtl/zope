@@ -16,15 +16,14 @@
 This package defines a new authentication plugin, which can use textfiles to
 authenticate users.
 
-$Id: __init__.py,v 1.2 2004/03/08 12:05:55 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/10 17:56:30 srichter Exp $
 """
 import os
 from persistence import Persistent
 from zope.app.container.contained import Contained
 from zope.app.location import locate
-from zope.app.services.pluggableauth import SimplePrincipal
-from zope.app.interfaces.services.pluggableauth import \
-     ILoginPasswordPrincipalSource
+from zope.app.pluggableauth import SimplePrincipal
+from zope.app.pluggableauth.interfaces import ILoginPasswordPrincipalSource
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 from interfaces import IFileBasedPrincipalSource

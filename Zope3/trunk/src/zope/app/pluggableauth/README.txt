@@ -1,4 +1,4 @@
-$Id: README.txt,v 1.1 2003/06/26 14:52:04 jim Exp $
+$Id: README.txt,v 1.1 2004/03/10 17:56:32 srichter Exp $
 
 The current implementation will be replaced. Following is design
 I came up with together with Jim Fulton.

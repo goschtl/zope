@@ -16,7 +16,7 @@
 This setup class can be used, if a set of local principals are required for a
 test.
 
-$Id: authsetup.py,v 1.1 2004/03/08 12:53:27 srichter Exp $
+$Id: authsetup.py,v 1.1 2004/03/10 17:56:37 srichter Exp $
 """
 import base64
 from zope.publisher.browser import TestRequest as Request
@@ -26,10 +26,10 @@ from zope.app.services.tests import placefulsetup
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter
-from zope.app.services.pluggableauth import \
+from zope.app.pluggableauth import \
      PrincipalAuthenticationView, PluggableAuthenticationService, \
      BTreePrincipalSource, SimplePrincipal
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource
+from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 class AuthSetup(placefulsetup.PlacefulSetup):
 

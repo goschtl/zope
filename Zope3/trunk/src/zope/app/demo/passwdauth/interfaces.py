@@ -13,12 +13,12 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin interfaces
 
-$Id: interfaces.py,v 1.1 2004/02/27 14:50:24 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/10 17:56:30 srichter Exp $
 """
 from zope.schema import TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource
+from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 class IFileBasedPrincipalSource(IPrincipalSource):
     """Describes file-based principal sources."""

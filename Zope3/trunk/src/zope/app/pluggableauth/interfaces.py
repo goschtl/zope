@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.12 2004/03/08 12:05:57 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 17:56:32 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer, IContained

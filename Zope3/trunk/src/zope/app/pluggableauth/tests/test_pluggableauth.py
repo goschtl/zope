@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Auth Tests
 
-$Id: test_pluggableauth.py,v 1.9 2004/03/08 12:53:27 srichter Exp $
+$Id: test_pluggableauth.py,v 1.1 2004/03/10 17:56:37 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -28,12 +28,12 @@ from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.tests import setup
 from zope.exceptions import NotFoundError
 
-from zope.app.services.pluggableauth import BTreePrincipalSource, \
+from zope.app.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
      PrincipalAuthenticationView
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource
+from zope.app.pluggableauth.interfaces import IPrincipalSource
 
-from zope.app.interfaces.services.pluggableauth import IUserSchemafied
+from zope.app.pluggableauth.interfaces import IUserSchemafied
 from zope.app.security.interfaces import IPrincipal, ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter
 
@@ -161,7 +161,7 @@ class PrincipalAuthenticationViewTest(Setup):
 
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
-    t2 = DocTestSuite('zope.app.services.pluggableauth',
+    t2 = DocTestSuite('zope.app.pluggableauth',
                       setUp=setUp, tearDown=tearDown)
     t3 = makeSuite(BTreePrincipalSourceTest)
     t4 = makeSuite(PrincipalAuthenticationViewTest)

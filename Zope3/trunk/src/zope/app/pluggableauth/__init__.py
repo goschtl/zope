@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.18 2004/03/08 12:06:19 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/10 17:56:32 srichter Exp $
 """
 import random
 import sys
@@ -34,10 +34,8 @@ from zope.app import zapi
 from zope.app.location import locate
 from zope.app.traversing import getPath
 
-from zope.app.container.interfaces import IOrderedContainer
-from zope.app.container.interfaces import IAddNotifiable
-from zope.app.container.interfaces import INameChooser
-from zope.app.container.interfaces import IContainerNamesContainer
+from zope.app.container.interfaces import IOrderedContainer, IAddNotifiable
+from zope.app.container.interfaces import IContainerNamesContainer, INameChooser
 from zope.app.container.interfaces import IContained
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
@@ -45,14 +43,13 @@ from zope.app.container.contained import Contained, setitem, uncontained
 from zope.app.container.ordered import OrderedContainer
 
 from zope.app.services.servicenames import Authentication
-from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.security.interfaces import ILoginPassword
-from zope.app.interfaces.services.pluggableauth \
-     import IPluggableAuthenticationService
-from zope.app.interfaces.services.pluggableauth import \
-     IPrincipalSource, ILoginPasswordPrincipalSource, IContainerPrincipalSource
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
+
+from interfaces import IUserSchemafied, IPluggableAuthenticationService
+from interfaces import \
+     IPrincipalSource, ILoginPasswordPrincipalSource, IContainerPrincipalSource
 
 def gen_key():
     """Return a random int (1, MAXINT), suitable for use as a BTree key."""

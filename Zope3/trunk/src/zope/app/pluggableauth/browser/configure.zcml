@@ -1,44 +1,42 @@
 <zope:configure 
    xmlns="http://namespaces.zope.org/browser"
-   xmlns:zope='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   >
+   xmlns:zope="http://namespaces.zope.org/zope">
 
 <!-- Pluggable Authentication Service -->
 
   <addMenuItem
-       class="zope.app.services.pluggableauth.PluggableAuthenticationService"
+       class="zope.app.pluggableauth.PluggableAuthenticationService"
        title="Authentication Service"
        description="A Pluggable Authentication uses plug-in principal sources."
        permission="zope.ManageServices"
        />
 
   <containerViews
-       for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
+       for="zope.app.pluggableauth.interfaces.IPluggableAuthenticationService"
        contents="zope.ManageServices"
        add="zope.ManageServices"
        />
 
 <!-- Principal Source -->
 
-  <browser:addMenuItem
+  <addMenuItem
       title="Add Principal Source" 
-      class="zope.app.services.pluggableauth.BTreePrincipalSource"	
+      class="zope.app.pluggableauth.BTreePrincipalSource"	
       permission="zope.ManageServices"
       />
 
   <containerViews
-       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
+       for="zope.app.pluggableauth.interfaces.IContainerPrincipalSource"
        contents="zope.ManageServices"
        add="zope.ManageServices"
        />
 
 <!-- Principal -->
 
-  <browser:addform
-      schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+  <addform
+      schema="zope.app.pluggableauth.interfaces.IUserSchemafied"
       label="Add Simple User with details"
-      content_factory="zope.app.services.pluggableauth.SimplePrincipal"
+      content_factory="zope.app.pluggableauth.SimplePrincipal"
       arguments="login password"
       keyword_arguments="title description"
       fields="login password title description"
@@ -46,15 +44,15 @@
       permission="zope.ManageContent"
       />
 
-  <browser:addMenuItem
+  <addMenuItem
       title="Principal" 
-      class="zope.app.services.pluggableauth.SimplePrincipal"
+      class="zope.app.pluggableauth.SimplePrincipal"
       permission="zope.ManageServices"
       view="AddPrincipalForm.html"
       />
 
   <editform
-      schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+      schema="zope.app.pluggableauth.interfaces.IUserSchemafied"
       label="Edit User Information"
       fields="login password title description"
       name="edit.html"

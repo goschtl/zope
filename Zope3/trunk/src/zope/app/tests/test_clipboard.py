@@ -13,7 +13,7 @@
 ##############################################################################
 """Clipboard tests
 
-$Id: test_clipboard.py,v 1.10 2004/03/08 12:53:40 srichter Exp $
+$Id: test_clipboard.py,v 1.11 2004/03/10 17:56:41 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
@@ -26,7 +26,7 @@ from zope.app.interfaces.annotation import IAnnotations
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-from zope.app.services.pluggableauth.tests.authsetup import AuthSetup
+from zope.app.pluggableauth.tests.authsetup import AuthSetup
 
 
 class PrincipalClipboardTest(AuthSetup, TestCase):
