@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testFTPServer.py,v 1.3 2002/10/17 13:31:58 jim Exp $
+$Id: testFTPServer.py,v 1.4 2002/10/23 15:29:39 stevea Exp $
 """
 
 import unittest
@@ -101,11 +101,18 @@ class Tests(unittest.TestCase):
             shutil.rmtree(self.root_dir)
 
     def loop(self):
+        import select
+        from errno import EBADF
         while self.run_loop:
             self.counter = self.counter + 1
             # print 'loop', self.counter
-            poll(0.1, socket_map)
-
+            try:
+                poll(0.1, socket_map)
+            except select.error, data:
+                if data[0] == EBADF:
+                    print "exception polling in loop(): ", data
+                else:
+                    raise
 
     def getFTPConnection(self, login=1):
         ftp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
