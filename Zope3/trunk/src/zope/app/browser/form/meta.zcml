@@ -184,7 +184,7 @@
 
       <attribute name="template" required="no">
         <description>
-        An alternate template to use for the edit form.
+        An alternate template to use for the add form.
 
         XXX Need to document how to extend the default.
         </description>
@@ -242,19 +242,11 @@
 
       <attribute name="menu" required="no">
         <description>
-          The browser menu to include the edit form in.
+          The browser menu to include the add form in.
 
           Many views are included in menus. It's convenient to name
           the menu in the page directive, rather than having to give a
           separate menuItem directive.
-          </description>
-        </attribute>
-
-      <attribute name="title" required="no">
-        <description>
-          The browser menu label for the edit form
-
-          This attribute defaults to "Edit".
           </description>
         </attribute>
 
