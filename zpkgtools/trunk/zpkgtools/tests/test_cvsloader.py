@@ -381,9 +381,9 @@ class CvsLoaderTestCase(unittest.TestCase):
         self.rlog_command = command
         return StringIO(self.rlog_output)
 
-    def createLoader(self, baseurl):
+    def createLoader(self):
         """Create a loader that won't actually access CVS."""
-        loader = cvsloader.CvsLoader(baseurl)
+        loader = cvsloader.CvsLoader()
         self.loader = loader
         loader.runCvsExport = self.runCvsExport
         loader.openCvsRLog = self.openCvsRLog
@@ -393,10 +393,8 @@ class CvsLoaderTestCase(unittest.TestCase):
 
     def test_simple_load_ok(self):
         self.rlog_output = "/cvsroot/module/dir/README.txt,v\n"
-        baseurl = cvsloader.parse(
-            "cvs://cvs.example.org:ext/cvsroot:module/dir")
-        loader = self.createLoader(baseurl)
-        path = loader.load("repository:")
+        loader = self.createLoader()
+        path = loader.load("cvs://cvs.example.org:ext/cvsroot:module/dir")
         self.assertEqual(self.cvsroot, ":ext:cvs.example.org:/cvsroot")
         self.assertEqual(self.tag, "HEAD")
         self.assertEqual(self.path, "module/dir")
@@ -408,10 +406,9 @@ class CvsLoaderTestCase(unittest.TestCase):
     def test_simple_load_error(self):
         self.cvs_return_code = 1
         url = "cvs://cvs.example.org:ext/cvsroot:module/dir"
-        baseurl = cvsloader.parse(url)
-        loader = self.createLoader(baseurl)
+        loader = self.createLoader()
         try:
-            loader.load("repository:")
+            loader.load(url)
         except cvsloader.CvsLoadingError, e:
             self.assertEqual(e.exitcode, self.cvs_return_code)
             self.assertEqual(e.cvsurl.getUrl(), url)
@@ -425,14 +422,14 @@ class CvsLoaderTestCase(unittest.TestCase):
 
     def test_reuse_loaded_resource(self):
         url = "cvs://cvs.example.org/cvsroot:module/path"
-        loader = self.createLoader(None)
+        loader = self.createLoader()
         first = loader.load(url)
         second = loader.load(url)
         self.assertEqual(first, second)
 
     def test_no_reuse_loaded_resource_different_tags(self):
         url = "cvs://cvs.example.org/cvsroot:module/path"
-        loader = self.createLoader(None)
+        loader = self.createLoader()
         first = loader.load(url)
         second = loader.load(url + ":TAG")
         self.assertNotEqual(first, second)
@@ -452,11 +449,10 @@ class CvsLoaderTestCase(unittest.TestCase):
 
     def check_isFileResource(self, rlog_output, expected_result):
         self.rlog_output = rlog_output
-        baseurl = cvsloader.parse(
-            "cvs://user@cvs.example.org:pserver/cvsroot:module")
-        loader = self.createLoader(baseurl)
-        repourl = cvsloader.parse("repository:FOO:TAG")
-        self.assertEqual(not not loader.isFileResource(repourl),
+        loader = self.createLoader()
+        cvsurl = cvsloader.parse(
+            "cvs://user@cvs.example.org:pserver/cvsroot:module/FOO:TAG")
+        self.assertEqual(not not loader.isFileResource(cvsurl),
                          expected_result)
         self.assertEqual(self.rlog_path, "module/FOO")
         self.assertEqual(self.rlog_cvsroot,
