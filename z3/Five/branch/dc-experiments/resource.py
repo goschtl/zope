@@ -11,15 +11,23 @@
 $Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
 """
 
+import os
+
 from Acquisition import Explicit, aq_inner, aq_parent
 from browser import BrowserView
+from OFS.Traversable import Traversable as OFSTraversable
+from zope.exceptions import NotFoundError
 from zope.interface import implements
 from zope.component.interfaces import IResource
 from zope.component import getViewProviding
+from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.datetimeutils import time as timeFromDateTimeString
 from zope.app.publisher.fileresource import File, Image
 from zope.app.publisher.pagetemplateresource import PageTemplate
+from zope.app.publisher.browser.resources import empty
+
+_marker = []
 
 class Resource(Explicit):
     """A publishable resource
@@ -143,3 +151,62 @@ class ImageResourceFactory(ResourceFactory):
 
     factory = Image
     resource = FileResource
+
+
+# we only need this class a context for DirectoryResource
+class Directory:
+
+    def __init__(self, path):
+        self.path = path
+
+class DirectoryResource(BrowserView, Resource, OFSTraversable):
+
+    #implements(IBrowserPublisher)
+
+    resource_factories = {
+        'gif':  ImageResourceFactory,
+        'png':  ImageResourceFactory,
+        'jpg':  ImageResourceFactory,
+        'pt':   PageTemplateResourceFactory,
+        'zpt':  PageTemplateResourceFactory,
+        'html': PageTemplateResourceFactory,
+        }
+
+    default_factory = FileResourceFactory
+
+    def getId(self):
+        return self.__name__
+
+    def __browser_default__(self, request):
+        '''See interface IBrowserPublisher'''
+        return empty, ()
+
+    def __getitem__(self, name):
+        res = self.get(name, None)
+        if res is None:
+            raise KeyError, name
+        return res
+
+
+    def get(self, name, default=_marker):
+        path = self.context.path
+        filename = os.path.join(path, name)
+        if not os.path.isfile(filename):
+            if default is _marker:
+                raise NotFoundError(name)
+            return default
+        ext = name.split('.')[-1]
+        factory = self.resource_factories.get(ext, self.default_factory)
+        resource = factory(name, filename)(self.request)
+        resource.__parent__ = self
+        resource.__name__ = name
+        # XXX __of__ wrapping is usually done on traversal.
+        # However, we don't want to subclass Traversable (or do we?)
+        # The right thing should probably be a specific (and very simple)
+        # traverser that does __getitem__ and __of__.
+        return resource.__of__(self)
+
+class DirectoryResourceFactory(ResourceFactory):
+
+    factory = Directory
+    resource = DirectoryResource
