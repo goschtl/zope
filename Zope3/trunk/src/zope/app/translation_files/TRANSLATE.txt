@@ -1,4 +1,4 @@
-Internationalization (I18n) and Localalization (L10n)
+Internationalization (I18n) and Localization (L10n)
 =====================================================
 
   Crating/Updating Message Catalog Template (POT) Files
