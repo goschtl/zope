@@ -14,16 +14,15 @@
 """
 See ViewPageTemplateFile
 
-$Id: viewpagetemplatefile.py,v 1.9 2003/12/07 10:04:52 gotcha Exp $
+$Id: viewpagetemplatefile.py,v 1.10 2004/02/11 01:14:02 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.component import getView
 from zope.app.pagetemplate.engine import AppPT
-from zope.context import ContextDescriptor
 
-class ViewPageTemplateFile(AppPT, PageTemplateFile, ContextDescriptor):
+class ViewPageTemplateFile(AppPT, PageTemplateFile):
     """Page Templates used as methods of views defined as Python classes.
     """
 

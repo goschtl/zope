@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.20 2004/01/14 13:40:18 sidnei Exp $
+$Id: engine.py,v 1.21 2004/02/11 01:14:02 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -30,7 +30,6 @@ from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine
 from zope.tales.tales import Context
 
-from zope.context.wrapper import getbaseobject
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
@@ -76,7 +75,7 @@ class ZopeContext(Context):
             return text
         if isinstance(text, StringTypes):
             # text could be a proxied/wrapped object
-            return getbaseobject(text)
+            return text
         return unicode(text)
 
     def evaluateMacro(self, expr):
