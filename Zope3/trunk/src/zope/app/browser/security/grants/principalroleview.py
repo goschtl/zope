@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 "local roles").
 
-$Id: principalroleview.py,v 1.8 2003/08/07 17:40:56 srichter Exp $
+$Id: principalroleview.py,v 1.9 2003/10/07 16:53:26 sidnei Exp $
 """
 from datetime import datetime
 
@@ -24,7 +24,6 @@ from zope.app.interfaces.security import IPrincipalRoleMap
 from zope.app.security.settings import Unset, Deny, Allow
 from zope.app.services.servicenames import Authentication, Roles
 from zope.component import getService, getAdapter
-
 
 class PrincipalRoleView:
 
@@ -92,7 +91,6 @@ class PrincipalRoleView:
             status.mapping = {'date_time': formatter.format(datetime.utcnow())}
 
         return status
-
 
 class PrincipalRoleGrid:
 
