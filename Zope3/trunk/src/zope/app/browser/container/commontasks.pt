@@ -5,8 +5,9 @@
   <tal:block repeat="info addingInfo">
   <div tal:define="oddrow repeat/info/odd" class="even"
      tal:attributes="class python:oddrow and 'content even' or 'content odd'">
-      <a href="#"
-      tal:attributes="href string:${request/getURL}?type_name=${info/action};
+     <a href="#"
+        tal:define="baseurl python:request.getURL(1)"
+        tal:attributes="href string:${baseurl}/@@contents.html?type_name=${info/action};
                        class info/selected"
                        tal:content="info/title" i18n:translate="">Folder
       </a>
