@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.10 2003/03/18 12:07:42 jim Exp $
+$Id: interfaces.py,v 1.11 2003/03/18 12:29:56 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -585,7 +585,6 @@ class IImplements(Interface):
     directly.  The interfaces provided by an object are the union of
     the interfaces provided directly and the interfaces implemented by
     the class.
-
     """
 
     def providedBy(ob):
@@ -594,15 +593,14 @@ class IImplements(Interface):
         This is the union of the interfaces directly provided by an
         object and interfaces implemented by it's class.
 
+        The value returned is an IInterfaceSpecification.
         """
 
     def implementedBy(class_):
         """Return the interfaces implemented for a class' instances
 
         The value returned is an IInterfaceSpecification.
-
         """
-        
 
     def classImplements(class_, *interfaces):
         """Declare additional interfaces implemented for instances of a class
@@ -618,15 +616,14 @@ class IImplements(Interface):
 
           class C(A, B):
              ...
-             
+
           classImplements(C, I1, I2)
 
 
         Instances of ``C`` provide ``I1``, ``I2``, and whatever interfaces
         instances of ``A`` and ``B`` provide.
-        
         """
-        
+
     def classImplementsOnly(class_, *interfaces):
         """Declare the only interfaces implemented by instances of a class
 
@@ -640,16 +637,14 @@ class IImplements(Interface):
 
           class C(A, B):
              ...
-             
+
           classImplements(C, IA, IB. IC)
           classImplementsOnly(C. I1, I2)
 
-
         Instances of ``C`` provide only ``I1``, ``I2``, and regardless of
         whatever interfaces instances of ``A`` and ``B`` implement.
-        
         """
-        
+
     def classUnimplements(class_, *interfaces):
         """Declare the interfaces not implemented for instances of a class
 
@@ -664,21 +659,19 @@ class IImplements(Interface):
 
           class C(A, B):
              ...
-             
+
           classImplements(C, I1)
           classUnimplements(C, I1, I2)
 
 
         Instances of ``C`` don't provide ``I1`` and ``I2`` even if
         instances of ``A`` or ``B`` do.
-        
         """
 
     def directlyProvidedBy(object):
         """Return the interfaces directly provided by the given object
 
-        The value returned may be an IInterfaceSpecification.
-        
+        The value returned is an IInterfaceSpecification.
         """
 
     def directlyProvides(object, *interfaces):
@@ -695,7 +688,6 @@ class IImplements(Interface):
 
           class C(A, B):
              ...
-             
 
           ob = C()
           directlyProvides(ob, I1, I2)
@@ -715,13 +707,12 @@ class IImplements(Interface):
 
         To add directly provided interfaces, use ``directlyProvidedBy`` and
         include additional interfaces.  For example::
-        
+
           directlyProvides(ob, directlyProvidedBy(ob), I2)
 
         adds I2 to the interfaces directly provided by ob.
-
         """
-            
+
     def implements(*interfaces):
         """Declare interfaces implemented by instances of a class
 
@@ -739,13 +730,13 @@ class IImplements(Interface):
 
         This function is provided for convenience. It provides a more
         convenient way to call classImplements. For example::
-        
+
           implements(I1)
-        
+
         is equivalent to calling::
-        
+
           classImplements(C, I1)
-        
+
         after the class has been created.
 
         Consider the following example::
@@ -756,9 +747,8 @@ class IImplements(Interface):
 
         Instances of ``C`` implement ``I1``, ``I2``, and whatever interfaces
         instances of ``A`` and ``B`` implement.
-        
         """
-            
+
     def implementsOnly(*interfaces):
         """Declare the only interfaces implemented by instances of a class
 
@@ -772,13 +762,13 @@ class IImplements(Interface):
 
         This function is provided for convenience. It provides a more
         convenient way to call classImplementsOnly. For example::
-        
+
           implementsOnly(I1)
-        
+
         is equivalent to calling::
-        
+
           classImplementsOnly(I1)
-        
+
         after the class has been created.
 
         Consider the following example::
@@ -789,10 +779,8 @@ class IImplements(Interface):
 
         Instances of ``C`` implement ``I1``, ``I2``, regardless of what
         instances of ``A`` and ``B`` implement.
-        
         """
 
-            
     def unimplements(*interfaces):
         """Declare interfaces not implemented by instances of a class
 
@@ -810,13 +798,13 @@ class IImplements(Interface):
 
         This function is provided for convenience. It provides a more
         convenient way to call classUnimplements. For example::
-        
+
           unimplements(I1)
-        
+
         is equivalent to calling::
-        
+
           classUnimplements(I1)
-        
+
         after the class has been created.
 
         Consider the following example::
@@ -827,7 +815,6 @@ class IImplements(Interface):
 
         Instances of ``C`` don't implement ``I1``, ``I2``, even if
         instances of ``A`` and ``B`` do.
-        
         """
 
     def classProvides(*interfaces):
@@ -849,17 +836,15 @@ class IImplements(Interface):
         interfaces implemented by instances of the class.
 
         This function is provided for convenience. It provides a more
-        convenient way to call directlyProvidedByProvides for a class. For
-        example::
-        
+        convenient way to call directlyProvides for a class. For example::
+
           classProvides(I1)
-        
+
         is equivalent to calling::
-        
+
           directlyProvides(theclass, I1)
-        
+
         after the class has been created.
-        
         """
 
     def moduleProvides(*interfaces):
@@ -869,7 +854,7 @@ class IImplements(Interface):
 
         The arguments are one or more interfaces or interface
         specifications (IInterfaceSpecification objects).
-        
+
         The given interfaces (including the interfaces in the
         specifications) are used to create the module's direct-object
         interface specification.  An error will be raised if the module
@@ -878,22 +863,21 @@ class IImplements(Interface):
         definition.
 
         This function is provided for convenience. It provides a more
-        convenient way to call directlyProvides. For example::
-        
-          moduleImplements(I1)
-        
-        is equivalent to::
-        
-          directlyProvides(sys.modules[__name__], I1)
+        convenient way to call directlyProvides for a module. For example::
 
+          moduleImplements(I1)
+
+        is equivalent to::
+
+          directlyProvides(sys.modules[__name__], I1)
         """
-        
+
     def InterfaceSpecification(*interfaces):
         """Create an interface specification
 
         The arguments are one or more interfaces or interface
         specifications (IInterfaceSpecification objects).
-        
+
         A new interface specification (IInterfaceSpecification) with
         the given interfaces is returned.
         """
