@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.22 2003/08/16 00:44:50 srichter Exp $
+$Id: _field.py,v 1.23 2003/11/07 22:35:10 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -331,11 +331,13 @@ class URI(BytesLine):
         self.validate(v)
         return v
 
+
 _isdotted = re.compile(
     r"([a-zA-Z][a-zA-z0-9_]*)"
-    r"([.][a-zA-Z][a-zA-z0-9_]*)+"
+    r"([.][a-zA-Z][a-zA-z0-9_]*)*"
     r"$" # use the whole line
     ).match
+
 class Id(BytesLine):
     """Id field
 
@@ -361,7 +363,7 @@ class Id(BytesLine):
         super(Id, self)._validate(value)
         if _isuri(value):
             return
-        if _isdotted(value):
+        if _isdotted(value) and "." in value:
             return
 
         raise ValidationError("Invalid id", value)
@@ -370,6 +372,8 @@ class Id(BytesLine):
         """
         >>> id = Id(__name__='test')
         >>> id.fromUnicode("http://www.python.org/foo/bar")
+        'http://www.python.org/foo/bar'
+        >>> id.fromUnicode(u" http://www.python.org/foo/bar ")
         'http://www.python.org/foo/bar'
         >>> id.fromUnicode("http://www.python.org/ foo/bar")
         Traceback (most recent call last):
@@ -384,4 +388,109 @@ class Id(BytesLine):
         return v
 
 
+class DottedName(BytesLine):
+    """Dotted name field.
 
+    Values of DottedName fields must be Python-style dotted names.
+    """
+
+    def __init__(self, *args, **kw):
+        """
+        >>> DottedName(min_dots=-1)
+        Traceback (most recent call last):
+        ...
+        ValueError: min_dots cannot be less than zero
+
+        >>> DottedName(max_dots=-1)
+        Traceback (most recent call last):
+        ...
+        ValueError: max_dots cannot be less than min_dots
+
+        >>> DottedName(max_dots=1, min_dots=2)
+        Traceback (most recent call last):
+        ...
+        ValueError: max_dots cannot be less than min_dots
+
+        >>> dotted_name = DottedName(max_dots=1, min_dots=1)
+
+        >>> dotted_name = DottedName(max_dots=1)
+        >>> dotted_name.min_dots
+        0
+
+        >>> dotted_name = DottedName(min_dots=1)
+        >>> dotted_name.max_dots
+        >>> dotted_name.min_dots
+        1
+        """
+        self.min_dots = int(kw.pop("min_dots", 0))
+        if self.min_dots < 0:
+            raise ValueError("min_dots cannot be less than zero")
+        self.max_dots = kw.pop("max_dots", None)
+        if self.max_dots is not None:
+            self.max_dots = int(self.max_dots)
+            if self.max_dots < self.min_dots:
+                raise ValueError("max_dots cannot be less than min_dots")
+        super(DottedName, self).__init__(*args, **kw)
+
+    def _validate(self, value):
+        """
+        >>> dotted_name = DottedName(__name__='test')
+        >>> dotted_name.validate("a.b.c")
+        >>> dotted_name.validate("a")
+        >>> dotted_name.validate("   a   ")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('invalid dotted name', '   a   ')
+
+        >>> dotted_name = DottedName(__name__='test', min_dots=1)
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a.b.c.d')
+        >>> dotted_name.validate('a')
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('too few dots; 1 required', 'a')
+
+        >>> dotted_name = DottedName(__name__='test', max_dots=0)
+        >>> dotted_name.validate('a')
+        >>> dotted_name.validate('a.b')
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('too many dots; no more than 0 allowed', 'a.b')
+
+        >>> dotted_name = DottedName(__name__='test', max_dots=2)
+        >>> dotted_name.validate('a')
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a.b.c')
+        >>> dotted_name.validate('a.b.c.d')
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('too many dots; no more than 2 allowed', 'a.b.c.d')
+
+        >>> dotted_name = DottedName(__name__='test', max_dots=1, min_dots=1)
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a')
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('too few dots; 1 required', 'a')
+        >>> dotted_name.validate('a.b.c')
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('too many dots; no more than 1 allowed', 'a.b.c')
+
+        """
+        super(DottedName, self)._validate(value)
+        if not _isdotted(value):
+            raise ValidationError("invalid dotted name", value)
+        dots = value.count(".")
+        if dots < self.min_dots:
+            raise ValidationError("too few dots; %d required" % self.min_dots,
+                                  value)
+        if self.max_dots is not None and dots > self.max_dots:
+            raise ValidationError("too many dots; no more than %d allowed"
+                                  % self.max_dots,
+                                  value)
+
+    def fromUnicode(self, value):
+        v = str(value.strip())
+        self.validate(v)
+        return v
