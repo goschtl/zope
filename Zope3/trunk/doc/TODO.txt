@@ -27,19 +27,39 @@ Miscellaneous
 Bug Fixes
 ---------
 
+Navigation Tree
+~~~~~~~~~~~~~~~
+
+  * 288: IE xmltree.js line 225 error 
+
+  * 328: site & Navigation tree & Virtual Host 
+
+  * 333: XML Tree doesn't load if some item contains non-ASCII characters 
+
+FTP Server
+~~~~~~~~~~
+
+  * 287: Active ftp seems broken 
+
+  * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
+
+File Content Component
+~~~~~~~~~~~~~~~~~~~~~~
+
+  * 302: File objects can't contain non-ascii characters
+
+  * 327: File type change clears object content
+
+Others
+~~~~~~
+
 * 284: Bogus 404 errors with TALES traversal fails 
-
-* 287: Active ftp seems broken 
-
-* 288: IE xmltree.js line 225 error 
 
 * 296: missing display widgets 
 
 * 298: Role/permission title and description should be messageids
 
 * 301: Bug with i18n:name and i18n:translate on the same element 
-
-* 302: File objects can't contain non-ascii characters
 
 * 306: page/view-menu-layer configuration
 
@@ -59,13 +79,7 @@ Bug Fixes
 
 * 323: Permission zope.Public in addfrom does not work
 
-* 327: File type change clears object content
-
-* 328: site & Navigation tree & Virtual Host 
-
 * 332: Death to IContentContainer
-
-* 333: XML Tree doesn't load if some item contains non-ASCII characters 
 
 * 334: Failing RuntimeInfo tests 
 
@@ -89,8 +103,6 @@ Bug Fixes
 * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
 
 * 360: MultiSelectWidget configured for ISet but creates list
-
-* 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
 
 * 369: DAV is hosed on the trunk
 
