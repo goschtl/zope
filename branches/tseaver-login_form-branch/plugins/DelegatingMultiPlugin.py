@@ -33,8 +33,19 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-    IAuthenticationPlugin, IUserEnumerationPlugin, IRolesPlugin, \
-    ICredentialsUpdatePlugin, ICredentialsResetPlugin, IPropertiesPlugin
+    IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    IUserEnumerationPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    IRolesPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    ICredentialsInitializePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    ICredentialsResetPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+    IPropertiesPlugin
 
 manage_addDelegatingMultiPluginForm = PageTemplateFile(
     'www/dmpAdd', globals(), __name__='manage_addDelegatingMultiPluginForm' )
@@ -62,13 +73,18 @@ def manage_addDelegatingMultiPlugin( self
 
 
 class DelegatingMultiPlugin(Folder, BasePlugin):
-    """ The adapter that mediates between the PAS and the DelegatingUserFolder """
+    """ The adapter that mediates between the PAS and the DelegatingUserFolder.
+    """
     security = ClassSecurityInfo()
     meta_type = 'Delegating Multi Plugin'
 
-    __implements__ = ( IAuthenticationPlugin, IUserEnumerationPlugin
-                     , IRolesPlugin, ICredentialsUpdatePlugin
-                     , ICredentialsResetPlugin, IPropertiesPlugin
+    __implements__ = ( IAuthenticationPlugin
+                     , IUserEnumerationPlugin
+                     , IRolesPlugin
+                     , ICredentialsInitializePlugin
+                     , ICredentialsUpdatePlugin
+                     , ICredentialsResetPlugin
+                     , IPropertiesPlugin
                      )
 
     manage_options = ( BasePlugin.manage_options[:1]
@@ -123,8 +139,14 @@ class DelegatingMultiPlugin(Folder, BasePlugin):
         return (None, None)
 
 
+    security.declarePrivate('initializeCredentials')
+    def initializeCredentials(self, request, response, credentials):
+        """ Fulfill CredentialsInitializePlugin requirements """
+        pass
+
+
     security.declarePrivate('updateCredentials')
-    def updateCredentials(self, request, response, login, new_password):
+    def updateCredentials(self, request, response, credentials):
         """ Fulfill CredentialsUpdatePlugin requirements """
         # Need to at least remove user from cache
         pass

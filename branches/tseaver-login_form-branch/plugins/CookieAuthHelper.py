@@ -27,19 +27,26 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, IChallengePlugin,  \
-        ICredentialsUpdatePlugin, ICredentialsResetPlugin
+from Products.PluggableAuthService.interfaces.plugins \
+        import ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins \
+        import ICredentialsInitializePlugin
+from Products.PluggableAuthService.interfaces.plugins \
+        import ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins \
+        import ICredentialsResetPlugin
 
 
 manage_addCookieAuthHelperForm = PageTemplateFile(
     'www/caAdd', globals(), __name__='manage_addCookieAuthHelperForm')
 
 
+_DEFAULT_COOKIE_NAME = '__ginger_snap'
+
 def addCookieAuthHelper( dispatcher
                        , id
                        , title=None
-                       , cookie_name=''
+                       , cookie_name=_DEFAULT_COOKIE_NAME
                        , REQUEST=None
                        ):
     """ Add a Cookie Auth Helper to a Pluggable Auth Service. """
@@ -56,13 +63,13 @@ def addCookieAuthHelper( dispatcher
 class CookieAuthHelper(Folder, BasePlugin):
     """ Multi-plugin for managing details of Cookie Authentication. """
     __implements__ = ( ILoginPasswordHostExtractionPlugin
-                     , IChallengePlugin
+                     , ICredentialsInitializePlugin
                      , ICredentialsUpdatePlugin
                      , ICredentialsResetPlugin
                      )
 
     meta_type = 'Cookie Auth Helper'
-    cookie_name = '__ginger_snap'
+    cookie_name = _DEFAULT_COOKIE_NAME
     login_path = 'login_form'
     security = ClassSecurityInfo()
 
@@ -98,146 +105,79 @@ class CookieAuthHelper(Folder, BasePlugin):
 
     security.declarePrivate('extractCredentials')
     def extractCredentials(self, request):
-        """ Extract credentials from cookie or 'request'. """
-        creds = {}
+        """ Extract credentials from cookie or 'request'.
+        """
+        credentials = {}
         cookie = request.get(self.cookie_name, '')
 
         if cookie:
             cookie_val = decodestring(unquote(cookie))
             login, password = cookie_val.split(':')
 
-            creds['login'] = login
-            creds['password'] = password
-        else:
-            # Look in the request for the names coming from the login form
-            login = request.get('__ac_name', '')
-            password = request.get('__ac_password', '')
+            credentials['login'] = login
+            credentials['password'] = password
 
-            if login:
-                creds['login'] = login
-                creds['password'] = password
-
-        if creds:
-            creds['remote_host'] = request.get('REMOTE_HOST', '')
+        if credentials:
+            credentials['remote_host'] = request.get('REMOTE_HOST', '')
 
             try:
-                creds['remote_address'] = request.getClientAddr()
+                credentials['remote_address'] = request.getClientAddr()
             except AttributeError:
-                creds['remote_address'] = request.get('REMOTE_ADDR', '')
+                credentials['remote_address'] = request.get('REMOTE_ADDR', '')
 
-        return creds
+        return credentials
 
 
-    security.declarePrivate('challenge')
-    def challenge(self, request, response, **kw):
-        """ Challenge the user for credentials. """
-        return self.unauthorized()
+    security.declarePrivate('initializeCredentials')
+    def initializeCredentials(self, request, response, credentials):
+        """ Notification that newly-authenticated credentials exist.
+        """
+        if response.cookies.get(self.cookie_name) is not None:
+            return
 
+        login = credentials.get( 'login', '')
+        password = credentials.get( 'password', '')
+
+        if login and password:
+
+            cookie_val = encodestring('%s:%s' % (login, password))
+            cookie_val = cookie_val.rstrip()
+            response.setCookie(self.cookie_name, quote(cookie_val), path='/')
 
     security.declarePrivate('updateCredentials')
-    def updateCredentials(self, request, response, login, new_password):
-        """ Respond to change of credentials (NOOP for basic auth). """
-        cookie_val = encodestring('%s:%s' % (login, new_password))
-        cookie_val = cookie_val.rstrip()
-        response.setCookie(self.cookie_name, quote(cookie_val), path='/')
+    def updateCredentials(self, request, response, credentials):
+        """ Notification that user has changed credentials.
+        """
+        login = credentials.get( 'login', '')
+        password = credentials.get( 'password', '')
+
+        if login and password:
+
+            cookie_val = encodestring('%s:%s' % (login, new_password))
+            cookie_val = cookie_val.rstrip()
+            response.setCookie(self.cookie_name, quote(cookie_val), path='/')
+
+        else:
+            response.expireCookie(self.cookie_name, path='/')
 
 
     security.declarePrivate('resetCredentials')
     def resetCredentials(self, request, response):
-        """ Raise unauthorized to tell browser to clear credentials. """
+        """ Raise unauthorized to tell browser to clear credentials.
+        """
         response.expireCookie(self.cookie_name, path='/')
 
 
     security.declarePrivate('manage_afterAdd')
     def manage_afterAdd(self, item, container):
-        """ Setup tasks upon instantiation """
+        """ Setup tasks upon instantiation.
+        """
         login_form = ZopePageTemplate( id='login_form'
                                      , text=BASIC_LOGIN_FORM
                                      )
         login_form.title = 'Login Form'
         login_form.__roles__ = []
         self._setObject( 'login_form', login_form, set_owner=0 )
-
-
-    security.declarePrivate('unauthorized')
-    def unauthorized(self):
-        req = self.REQUEST
-        resp = req['RESPONSE']
-
-        # If we set the auth cookie before, delete it now.
-        if resp.cookies.has_key(self.cookie_name):
-            del resp.cookies[self.cookie_name]
-
-        # Redirect if desired.
-        url = self.getLoginURL()
-        if url is not None:
-            came_from = req.get('came_from', None)
-            
-            if came_from is None:
-                came_from = req.get('URL', '')
-                query = req.get('QUERY_STRING')
-                if query:
-                    if not query.startswith('?'):
-                        query = '?' + query
-                    came_from = came_from + query
-            else:
-                # If came_from contains a value it means the user
-                # must be coming through here a second time
-                # Reasons could be typos when providing credentials
-                # or a redirect loop (see below)
-                req_url = req.get('URL', '')
-
-                if req_url and req_url == url:
-                    # Oops... The login_form cannot be reached by the user -
-                    # it might be protected itself due to misconfiguration -
-                    # the only sane thing to do is to give up because we are
-                    # in an endless redirect loop.
-                    return 0
-                
-            url = url + '?came_from=%s' % quote(came_from)
-            resp.redirect(url, lock=1)
-            return 1
-
-        # Could not challenge.
-        return 0
-
-
-    security.declarePrivate('getLoginURL')
-    def getLoginURL(self):
-        """ Where to send people for logging in """
-        if self.login_path.startswith('/'):
-            return self.login_path
-        elif self.login_path != '':
-            return '%s/%s' % (self.absolute_url(), self.login_path)
-        else:
-            return None
-
-    security.declarePublic('login')
-    def login(self):
-        """ Set a cookie and redirect to the url that we tried to
-        authenticate against originally.
-        """
-        request = self.REQUEST
-        response = request['RESPONSE']
-
-        login = request.get('__ac_name', '')
-        password = request.get('__ac_password', '')
-
-        # In order to use the CookieAuthHelper for its nice login page
-        # facility but store and manage credentials somewhere else we need
-        # to make sure that upon login only plugins activated as
-        # IUpdateCredentialPlugins get their updateCredentials method
-        # called. If the method is called on the CookieAuthHelper it will
-        # simply set its own auth cookie, to the exclusion of any other
-        # plugins that might want to store the credentials.
-        pas_instance = self._getPAS()
-
-        if pas_instance is not None:
-            pas_instance.updateCredentials(request, response, login, password)
-
-        came_from = request.form['came_from']
-
-        return response.redirect(came_from)
 
 
 InitializeClass(CookieAuthHelper)

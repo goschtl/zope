@@ -33,6 +33,7 @@ from plugins import HTTPBasicAuthHelper as HBAH
 from plugins import InlineAuthHelper as IAH
 from plugins import CookieAuthHelper as CAH
 from plugins import SessionAuthHelper as SAH
+from plugins import LoginFormChallenger as LFC
 from plugins import DomainAuthHelper as DAH
 from plugins import ScriptablePlugin
 from plugins import ZODBGroupManager
@@ -46,9 +47,10 @@ from plugins import DynamicGroupsPlugin as DGP
 
 registerMultiPlugin(HBAH.HTTPBasicAuthHelper.meta_type)
 registerMultiPlugin(IAH.InlineAuthHelper.meta_type)
-registerMultiPlugin(DAH.DomainAuthHelper.meta_type)
-registerMultiPlugin(SAH.SessionAuthHelper.meta_type)
 registerMultiPlugin(CAH.CookieAuthHelper.meta_type)
+registerMultiPlugin(SAH.SessionAuthHelper.meta_type)
+registerMultiPlugin(LFC.LoginFormChallenger.meta_type)
+registerMultiPlugin(DAH.DomainAuthHelper.meta_type)
 registerMultiPlugin(ScriptablePlugin.ScriptablePlugin.meta_type)
 registerMultiPlugin(ZODBGroupManager.ZODBGroupManager.meta_type)
 registerMultiPlugin(ZODBUserManager.ZODBUserManager.meta_type)
@@ -58,6 +60,38 @@ registerMultiPlugin(DMP.DelegatingMultiPlugin.meta_type)
 registerMultiPlugin(SPP.SearchPrincipalsPlugin.meta_type)
 registerMultiPlugin(RGP.RecursiveGroupsPlugin.meta_type)
 registerMultiPlugin(DGP.DynamicGroupsPlugin.meta_type)
+
+# monkey patch Zope to cause zmi logout to be PAS-aware
+from App.Management import Navigation
+from interfaces.authservice import IPluggableAuthService
+
+def manage_zmi_logout(self, REQUEST, RESPONSE):
+    """Logout current user"""
+    p = getattr(REQUEST, '_logout_path', None)
+    if p is not None:
+        return apply(self.restrictedTraverse(p))
+    acl_users = self.acl_users
+    if IPluggableAuthService.isImplementedBy(acl_users):
+        acl_users.resetCredentials(REQUEST, RESPONSE)
+    else:
+        realm=RESPONSE.realm
+        RESPONSE.setStatus(401)
+        RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)    
+    referrer = REQUEST.get('HTTP_REFERER') # HTTP_REFERER is optional header
+    if referrer:
+        REQUEST['RESPONSE'].redirect(referrer)
+    else:
+        RESPONSE.setBody("""<html>
+<head><title>Logout</title></head>
+<body>
+<p>
+You have been logged out.
+</p>
+</body>
+</html>""")
+
+Navigation.manage_zmi_logout = manage_zmi_logout
+del manage_zmi_logout
 
 def initialize(context):
 
@@ -95,15 +129,6 @@ def initialize(context):
                          , icon='plugins/www/CookieAuthHelper.gif'
                          )
 
-    context.registerClass( DAH.DomainAuthHelper
-                         , permission=ManageUsers
-                         , constructors=(
-                            DAH.manage_addDomainAuthHelperForm,
-                            DAH.manage_addDomainAuthHelper, )
-                         , visibility=None
-                         , icon='plugins/www/DomainAuthHelper.png'
-                         )
-
     context.registerClass( SAH.SessionAuthHelper
                          , permission=ManageUsers
                          , constructors=(
@@ -111,6 +136,24 @@ def initialize(context):
                             SAH.manage_addSessionAuthHelper, )
                          , visibility=None
                          , icon='plugins/www/SessionAuthHelper.gif'
+                         )
+
+    context.registerClass( LFC.LoginFormChallenger
+                         , permission=ManageUsers
+                         , constructors=(
+                            DAH.manage_addLoginFormChallengerForm,
+                            DAH.manage_addLoginFormChallenger, )
+                         , visibility=None
+                         , icon='plugins/www/LoginFormChallenger.png'
+                         )
+
+    context.registerClass( DAH.DomainAuthHelper
+                         , permission=ManageUsers
+                         , constructors=(
+                            DAH.manage_addDomainAuthHelperForm,
+                            DAH.manage_addDomainAuthHelper, )
+                         , visibility=None
+                         , icon='plugins/www/DomainAuthHelper.png'
                          )
 
     context.registerClass( ScriptablePlugin.ScriptablePlugin

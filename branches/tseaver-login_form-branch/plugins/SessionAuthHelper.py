@@ -23,8 +23,12 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
-        ILoginPasswordHostExtractionPlugin, \
-        ICredentialsUpdatePlugin, \
+        ILoginPasswordHostExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsInitializePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
+        ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import \
         ICredentialsResetPlugin
 
 
@@ -32,9 +36,19 @@ manage_addSessionAuthHelperForm = PageTemplateFile(
     'www/saAdd', globals(), __name__='manage_addSessionAuthHelperForm')
 
 
-def manage_addSessionAuthHelper(dispatcher, id, title=None, REQUEST=None):
-    """ Add a Session Auth Helper to a Pluggable Auth Service. """
-    sp = SessionAuthHelper(id, title)
+_DEFAULT_LOGIN_KEY = '__ac_name'
+_DEFAULT_PASSWORD_KEY = '__ac_password'
+
+def manage_addSessionAuthHelper( dispatcher
+                               , id
+                               , title=None
+                               , login_key=''
+                               , password_key=''
+                               , REQUEST=None
+                               ):
+    """ Add a Session Auth Helper to a Pluggable Auth Service.
+    """
+    sp = SessionAuthHelper(id, title, login_key, password_key)
     dispatcher._setObject(sp.getId(), sp)
 
     if REQUEST is not None:
@@ -45,42 +59,60 @@ def manage_addSessionAuthHelper(dispatcher, id, title=None, REQUEST=None):
 
 
 class SessionAuthHelper(BasePlugin):
-    """ Multi-plugin for managing details of Session Authentication. """
+    """ Multi-plugin for managing details of Session Authentication.
+    """
     __implements__ = ( ILoginPasswordHostExtractionPlugin
+                     , ICredentialsInitializePlugin
                      , ICredentialsUpdatePlugin
                      , ICredentialsResetPlugin
                      )
 
     meta_type = 'Session Auth Helper'
     security = ClassSecurityInfo()
+    login_key = _DEFAULT_LOGIN_KEY
+    password_key = _DEFAULT_PASSWORD_KEY
+
+    _properties = ( { 'id'    : 'title'
+                    , 'label' : 'Title'
+                    , 'type'  : 'string'
+                    , 'mode'  : 'w'
+                    }
+                  , { 'id'    : 'login_key'
+                    , 'label' : 'Login Session Key'
+                    , 'type'  : 'string'
+                    , 'mode'  : 'w'
+                    }
+                  , { 'id'    : 'password_key'
+                    , 'label' : 'Password Session Key'
+                    , 'type'  : 'string'
+                    , 'mode'  : 'w'
+                    }
+                  )
 
 
-    def __init__(self, id, title=None):
+    def __init__( self, id, title=None, login_key='', password_key='' ):
+
         self._setId(id)
         self.title = title
 
+        if login_key:
+            self.login_key = login_key
+
+        if password_key:
+            self.password_key = password_key
+
     security.declarePrivate('extractCredentials')
     def extractCredentials(self, request):
-        """ Extract basic auth credentials from 'request'. """
+        """ Extract credentials from session.
+        """
         creds = {}
 
-        # Looking into the session first...
-        name = request.SESSION.get('__ac_name', '')
-        password = request.SESSION.get('__ac_password', '')
+        name = request.SESSION.get(self.login_key, '')
+        password = request.SESSION.get(self.password_key, '')
 
         if name:
             creds[ 'login' ] = name
             creds[ 'password' ] = password
-        else:
-            # Look into the request now
-            login_pw = request._authUserPW()
-
-            if login_pw is not None:
-                name, password = login_pw
-                creds[ 'login' ] = name
-                creds[ 'password' ] = password
-                request.SESSION.set('__ac_name', name)
-                request.SESSION.set('__ac_password', password)
 
         if creds:
             creds['remote_host'] = request.get('REMOTE_HOST', '')
@@ -92,18 +124,43 @@ class SessionAuthHelper(BasePlugin):
 
         return creds
 
+    security.declarePrivate('initializeCredentials')
+    def initializeCredentials(self, request, response, credentials ):
+        """ Respond to newly-authenticated credentials.
+        """
+        if request.SESSION.get(self.login_key) is not None:
+            return
+
+        login = credentials.get('login', '')
+        password = credentials.get('password', '')
+
+        if login and password:
+
+            request.SESSION.set(self.login_key, login)
+            request.SESSION.set(self.password_key, password)
+
     security.declarePrivate('updateCredentials')
-    def updateCredentials(self, request, response, login, new_password):
-        """ Respond to change of credentials. """
-        request.SESSION.set('__ac_name', login)
-        request.SESSION.set('__ac_password', new_password)
+    def updateCredentials(self, request, response, credentials ):
+        """ Respond to change of credentials.
+        """
+        login = credentials.get('login', '')
+        password = credentials.get('password', '')
+
+        if login and password:
+
+            request.SESSION.set(self.login_key, login)
+            request.SESSION.set(self.password_key, password)
+
+        else:
+            request.SESSION.set(self.login_key, '')
+            request.SESSION.set(self.password_key, '')
         
     security.declarePrivate('resetCredentials')
     def resetCredentials(self, request, response):
-        """ Empty out the currently-stored session values """
-        request.SESSION.set('__ac_name', '')
-        request.SESSION.set('__ac_password', '')
-
+        """ Respond to logout request or unauthorized.
+        """
+        request.SESSION.set(self.login_key, '')
+        request.SESSION.set(self.password_key, '')
 
 InitializeClass(SessionAuthHelper)
 

@@ -31,6 +31,8 @@ from Products.PluggableAuthService.utils import createViewName
 from Products.PluggableAuthService.interfaces.plugins \
     import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
+    import ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins \
     import IUserEnumerationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IUserAdderPlugin
@@ -60,6 +62,7 @@ class ZODBUserManager( BasePlugin, Cacheable ):
     """ PAS plugin for managing users in the ZODB.
     """
     __implements__ = ( IAuthenticationPlugin
+                     , ICredentialsUpdatePlugin
                      , IUserEnumerationPlugin
                      , IUserAdderPlugin
                      )
@@ -112,6 +115,17 @@ class ZODBUserManager( BasePlugin, Cacheable ):
             return userid, login
 
         return None
+
+    #
+    #   ICredentialsUpdatePlugin implementation
+    #
+    #
+    security.declarePrivate( 'updateCredentials' )
+    def updateCredentials( self, request, response, login, new_password ):
+
+        """ See ICredentialsUpdatePlugin.
+        """
+        self.manage_updatePassword(login, new_password, new_password)
 
     #
     #   IUserEnumerationPlugin implementation

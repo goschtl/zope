@@ -119,12 +119,22 @@ class IChallengePlugin( Interface ):
             login form page, for instance)
         """
 
-class ICredentialsUpdatePlugin( Interface ):
+class ICredentialsInitializePlugin( Interface ):
 
-    """ Callback:  user has changed her password.
+    """ Callback:  newly-authenticated credentials exist.
     """
 
-    def updateCredentials( request, response, login, new_password ):
+    def initializeCredentials( request, response, credentials ):
+
+        """ Scribble as appropriate.
+        """
+
+class ICredentialsUpdatePlugin( Interface ):
+
+    """ Callback:  user has changed her credentials.
+    """
+
+    def updateCredentials( request, response, credentials ):
 
         """ Scribble as appropriate.
         """

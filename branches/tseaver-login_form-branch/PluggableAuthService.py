@@ -45,7 +45,7 @@ from App.class_init import default__class_init__ as InitializeClass
 from Products.PluginRegistry.PluginRegistry import PluginRegistry
 import Products
 
-from interfaces.authservice import IUserFolder
+from interfaces.authservice import IPluggableAuthService
 from interfaces.authservice import _noroles
 from interfaces.plugins import IExtractionPlugin
 from interfaces.plugins import ILoginPasswordHostExtractionPlugin
@@ -159,7 +159,7 @@ class PluggableAuthService( Folder, Cacheable ):
 
     """ All-singing, all-dancing user folder.
     """
-    __implements__ = ( IUserFolder, )
+    __implements__ = ( IPluggableAuthService, )
 
     security = ClassSecurityInfo()
 
@@ -720,6 +720,10 @@ class PluggableAuthService( Folder, Cacheable ):
                             continue
 
                         if user_id is not None:
+                            self._notifyAuthenticatedCredentials( request
+                                                                , credentials
+                                                                , plugins
+                                                                )
                             mangled_id = self._mangleId(authenticator_id,
                                                         user_id)
                             user_ids.append( (mangled_id, name) )
@@ -734,6 +738,28 @@ class PluggableAuthService( Folder, Cacheable ):
                 result.append( ( user_id, name ) )
 
         return result
+
+    security.declarePrivate( '_notifyAuthenticatedCredentials' )
+    def _notifyAuthenticatedCredentials( self, request, credentials, plugins ):
+
+        try:
+            notifiers = plugins.listPlugins( ICredentialsInitializePlugin )
+        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+            LOG('PluggableAuthService', BLATHER,
+                'Plugin listing error',
+                error=sys.exc_info())
+            notifiers = ()
+
+        response = request['RESPONSE']
+        for notifier_id, notifier in notifiers:
+
+            try:
+                notifier.initializeCredentials( request, response, credentials )
+            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                LOG('PluggableAuthService', BLATHER,
+                    'ExtractionPlugin %s error' % extractor_id,
+                    error=sys.exc_info())
+                continue
 
     security.declarePrivate( '_unmangleId' )
     def _unmangleId( self, mangled_id ):
@@ -1192,7 +1218,23 @@ class PluggableAuthService( Folder, Cacheable ):
         """
         return True
 
-    security.declarePrivate('updateCredentials')
+    security.declarePublic('login')
+    def login(self, REQUEST):
+        """Marshall the parade for a new, explicit login.
+        """
+        request, response = REQUEST, REQUEST['RESPONSE']
+
+        self.initCredentials(request, response)
+
+        came_from = request.form['came_from']
+        return response.redirect(came_from)
+
+    security.declarePublic('initCredentials')
+    def initCredentials(self, request, response):
+        """Notify active initCredentials plugins of a new login.
+        """
+
+    security.declarePublic('updateCredentials')
     def updateCredentials(self, request, response, login, new_password):
         """Central updateCredentials method
 
@@ -1203,6 +1245,7 @@ class PluggableAuthService( Folder, Cacheable ):
         but the credentials are not stored in the CookieAuthHelper cookie
         but somewhere else, like in a Session.
         """
+        import pdb; pdb.set_trace()
         plugins = self._getOb('plugins')
         cred_updaters = plugins.listPlugins(ICredentialsUpdatePlugin)
 
@@ -1218,9 +1261,11 @@ class PluggableAuthService( Folder, Cacheable ):
         # Little bit of a hack: Issuing a redirect to the same place
         # where the user was so that in the second request the now-destroyed
         # credentials can be acted upon to e.g. go back to the login page
-        REQUEST['RESPONSE'].redirect(REQUEST['HTTP_REFERER'])
+        referrer = REQUEST.get('HTTP_REFERER') # HTTP_REFERER is optional header
+        if referrer:
+            REQUEST['RESPONSE'].redirect(referrer)
 
-    security.declarePrivate('_resetCredentials')
+    security.declarePublic('resetCredentials')
     def resetCredentials(self, request, response):
         """Reset credentials by informing all active resetCredentials plugins
         """
