@@ -13,13 +13,14 @@
 ##############################################################################
 """Connection configuration support classes.
 
-$Id: connection.py,v 1.6 2003/04/22 22:17:38 gvanrossum Exp $
+$Id: connection.py,v 1.7 2003/04/23 21:06:07 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.component import getAdapter, getServiceManager, getView
 from zope.publisher.browser import BrowserView
+from zope.app.traversing import traverse
 
 class Connections(BrowserView):
 
@@ -59,7 +60,6 @@ class UseConfiguration(BrowserView):
         component = self.context
         useconfig = getAdapter(component, IUseConfiguration)
         result = []
-        # XXX Somehow this always returns an empty list
         for path in useconfig.usages():
             config = traverse(component, path)
             url = getView(config, 'absolute_url', self.request)
