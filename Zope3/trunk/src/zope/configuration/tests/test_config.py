@@ -260,12 +260,11 @@ def test_bad_import():
 
     Cleanup:
 
-    >>> del sys.modules['zope.configuration.tests.victim']
-    >>> del sys.modules['zope.configuration.tests.bad']
-
+    >>> for name in ('zope.configuration.tests.victim',
+    ...              'zope.configuration.tests.bad'):
+    ...    if name in sys.modules:
+    ...        del sys.modules[name]
     """
-    
-
 
 def test_suite():
     return unittest.TestSuite((
