@@ -15,6 +15,7 @@
 
 $Id: functional.py 26214 2004-07-08 19:00:07Z srichter $
 """
+__docformat__ = 'restructuredtext'
 
 import unittest
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase

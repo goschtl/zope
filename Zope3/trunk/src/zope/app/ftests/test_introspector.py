@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import unittest
 from zope.app.tests.functional import BrowserTestCase
 
