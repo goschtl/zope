@@ -25,9 +25,10 @@ run:
 
 clean:
 	find . -name '*.o' -o -name '*.so' -o -name '*.py[co]' | xargs rm -f
-	rm -f TAGS
+	rm -f build
 
 realclean: clean
+	rm -f TAGS
 	$(PYTHON) setup.py clean -a
 
 TAGS:
