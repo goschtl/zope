@@ -13,13 +13,14 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.9 2002/12/19 20:38:21 jim Exp $
+$Id: ConfigurationInterfaces.py,v 1.10 2002/12/21 20:02:13 stevea Exp $
 """
 
 from Interface import Interface
 from Interface.Attribute import Attribute
 from Zope.Schema import Text, TextLine
 from Zope.Schema.IField import ITextLine
+from Zope.App.Security.PermissionField import PermissionField
 
 Unregistered = u'Unregistered'
 Registered = u'Registered'
@@ -84,6 +85,8 @@ class INamedConfiguration(IConfiguration):
 class INamedComponentConfiguration(INamedConfiguration):
     """Configuration object that configures a component associated with a name
     """
+
+    permission = PermissionField("The permission needed to use the component.")
 
     componentPath = Attribute("The physical path to the component")
 
