@@ -16,16 +16,23 @@ folder tree with the following structure :
   >>> from zope.interface import directlyProvides
   >>> from zope.app.versioncontrol.repository import declare_versioned
   >>> from versioning.tests.repository_setup import registerAdapter
-  >>> from zope.app.location.location import Location
+  >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.tests.setup import setUpTraversal
-  
+  >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+  >>> from ZODB.tests import util
+  >>> from zope.app.versioncontrol.interfaces import IVersioned
   >>> registerAdapter()
   >>> setUpTraversal()
-  >>> sample = Location()
+  >>> class TestFolder(Folder) :
+  ...   zope.interface.implements(IPhysicallyLocatable)
+  ...   def getPath(self) :
+  ...       return ""
+  
+  >>> sample = TestFolder()
   >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
-  >>> a = sample["a"] = Location()
-  >>> b = sample["b"] = Location()
-  >>> c = b["c"] = Location()
+  >>> a = sample["a"] = TestFolder()
+  >>> b = sample["b"] = TestFolder()
+  >>> c = b["c"] = TestFolder()
   >>> for x in (sample, a, b, c) :
   ...     directlyProvides(x, zope.app.versioncontrol.interfaces.IVersionable)
   
@@ -66,7 +73,7 @@ Now we can put our example data under version control:
   >>> repository.applyVersionControl(b)
   >>> repository.applyVersionControl(c)
   >>> util.commit()
-  >>> [x for interfaces.IVersioned.providedBy(x) in (sample, a, b, c)]
+  >>> [IVersioned.providedBy(x) for x in (sample, a, b, c)]
   [True, True, True, True]
     
 
@@ -76,11 +83,12 @@ outside the sub tree. In the example above this means, that the version of c los
 its reference to a because c is not contained in a. (See 
  zope.app.versioncontrol.version.cloneByPickle)
 
-  >>> a_info = repository.getVersionInfo(a)
-  >>> a_version = a_info._data
-  >>> c_info = repository.getVersionInfo(c)
-  >>> c_version = c_info._data
-  >>> c_version.refers_to == a_version
+  >>> def accessVersion(repository, obj) :
+  ...   info = repository.getVersionInfo(obj)
+  ...   return repository.getVersionOfResource(info.history_id, 'mainline')
+  >>> new_a = accessVersion(repository, a)
+  >>> new_c = accessVersion(repository, c)
+  >>> new_c.refers_to == new_a
   False
   
 
