@@ -62,8 +62,8 @@ def tearDown():
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('wiki.comment', setUp=setUp, tearDown=tearDown),
-        DocTestSuite('wiki.wikipage', setUp=setUp, tearDown=tearDown),
+        DocTestSuite('zwiki.comment', setUp=setUp, tearDown=tearDown),
+        DocTestSuite('zwiki.wikipage', setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__':
