@@ -25,6 +25,8 @@ from zope.app.component.tests.test_servicemanagercontainer \
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
 from zope.app import content
+
+
 class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
 
     def makeTestObject(self):
