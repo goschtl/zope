@@ -359,7 +359,7 @@ class ZopeDBTransactionManager:
         self._dbconn = dbconn
 
     def prepare(self, txn):
-        return True
+        pass
 
     def abort(self, txn):
         self._dbconn.rollback()
