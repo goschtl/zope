@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.2 2002/12/30 19:44:56 alga Exp $
+$Id: zpt.py,v 1.3 2003/03/25 20:46:13 jim Exp $
 """
 
 import zope.schema
-
 from zope.interface import Interface, Attribute
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IZPTPage(Interface):
     """ZPT Pages are a persistent implementation of Page Templates.
@@ -37,12 +37,12 @@ class IZPTPage(Interface):
         """Get the source of the page template."""
 
     source = zope.schema.Text(
-        title=u"Source",
-        description=u"""The source of the page template.""",
+        title=_(u"Source"),
+        description=_(u"""The source of the page template."""),
         required=True)
 
     expand = zope.schema.Bool(
-        title=u"Expand macros",
+        title=_(u"Expand macros"),
         )
 
 class IRenderZPTPage(Interface):

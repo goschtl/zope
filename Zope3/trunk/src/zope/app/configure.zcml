@@ -103,4 +103,8 @@
   <include package="zope.app.xmlrpc" />
   <include package="zope.app.http" />
 
+<!-- Interfaces, mainly to get their translations configured -->
+  <include package=".interfaces" />
+
+
 </zopeConfigure>

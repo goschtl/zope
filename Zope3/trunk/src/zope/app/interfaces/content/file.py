@@ -13,25 +13,24 @@
 ##############################################################################
 """Basic File interfaces.
 
-$Id: file.py,v 1.2 2002/12/25 14:12:59 jim Exp $
+$Id: file.py,v 1.3 2003/03/25 20:46:13 jim Exp $
 """
 import zope.schema
-
 from zope.interface import Interface
-
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IReadFile(Interface):
 
     contentType = zope.schema.BytesLine(
-        title = u'Content Type',
-        description=u'The content type identifies the type of data.',
+        title = _(u'Content Type'),
+        description=_(u'The content type identifies the type of data.'),
         default = 'text/plain',
         )
 
 
     data = zope.schema.Bytes(
-        title = u'Data',
-        description = u'The actual content of the object.',
+        title = _(u'Data'),
+        description = _(u'The actual content of the object.'),
         )
 
     def getData():

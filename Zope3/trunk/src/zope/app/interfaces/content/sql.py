@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.2 2002/12/25 14:12:59 jim Exp $
+$Id: sql.py,v 1.3 2003/03/25 20:46:13 jim Exp $
 """
 import zope.schema
 
@@ -20,6 +20,7 @@ from zope.app.interfaces.rdb import ISQLCommand
 from zope.component import getService
 from zope.interface import Attribute
 from zope.proxy.context import ContextProperty
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 class SQLConnectionName(zope.schema.TextLine):
@@ -37,19 +38,19 @@ class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""
 
     connectionName = SQLConnectionName(
-        title=u"Connection Name",
-        description=u"The Connection Name for the connection to be used.",
+        title=_(u"Connection Name"),
+        description=_(u"The Connection Name for the connection to be used."),
         required=False)
 
     arguments = zope.schema.BytesLine(
-        title=u"Arguments",
-        description=u"A set of attributes that can be used during the DTML "
-                    u"rendering process to provide dynamic data.",
+        title=_(u"Arguments"),
+        description=_(u"A set of attributes that can be used during the DTML "
+                      u"rendering process to provide dynamic data."),
         required=False)
 
     source = zope.schema.Bytes(
-        title=u"Source",
-        description=u"The source of the page template.",
+        title=_(u"Source"),
+        description=_(u"The source of the page template."),
         required=True)
 
     def setArguments(arguments):
