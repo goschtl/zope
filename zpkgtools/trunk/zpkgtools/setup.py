@@ -52,7 +52,7 @@ class SetupContext:
         depsdir = os.path.join(self._working_dir, "Dependencies")
         if os.path.isdir(depsdir):
             depnames = os.listdir(depsdir)
-            suffix = "-%s-%s" % (self._pkgname, version)
+            suffix = "-%s-%s" % (self._pkgname, self.version)
             for name in depnames:
                 if name != "Includes" and not name.endswith(suffix):
                     # an unexpected name; we didn't put this here!
