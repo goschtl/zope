@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.30 2003/05/19 20:54:03 fdrake Exp $
+$Id: widget.py,v 1.31 2003/05/22 22:49:04 jim Exp $
 """
 
 __metaclass__ = type
 
+import warnings
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -32,7 +33,50 @@ ListTypes = list, tuple
 
 
 class BrowserWidget(Widget, BrowserView):
-    """A field widget that knows how to display itself as HTML."""
+    """A field widget that knows how to display itself as HTML.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import Field
+    >>> field = Field(__name__='foo', title=u'Foo')
+    >>> request = TestRequest(form={'field.foo': u'hello\\r\\nworld'})
+    >>> widget = BrowserWidget(field, request)
+    >>> widget.name
+    'field.foo'
+    >>> widget.title
+    u'Foo'
+    >>> int(widget.haveData())
+    1
+    >>> widget.getData()
+    u'hello\\r\\nworld'
+    >>> int(widget.required)
+    1
+    >>> widget.setData('Hey\\nfolks')
+    >>> widget.getData()
+    u'hello\\r\\nworld'
+
+    >>> widget.setPrefix('test')
+    >>> widget.name
+    'test.foo'
+    >>> int(widget.haveData())
+    0
+    >>> widget.getData()
+    Traceback (most recent call last):
+    ...
+    MissingInputError: ('foo', u'Foo', 'the field is required')
+    >>> field.required = False
+    >>> int(widget.required)
+    0
+    >>> widget.getData()
+
+    When we generate labels, the labels are translated, so we need to set up
+    a lot of machinery to support translation:
+
+    >>> setUp()
+    >>> print widget.label()
+    <label for="test.foo">Foo</label>
+    >>> tearDown()
+    
+    """
 
     __implements__ = IBrowserWidget
 
@@ -47,7 +91,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def haveData(self):
         if self.name in self.request.form:
-            return self._convert(self.request[self.name]) is not None
+            return self._convert(self.request[self.name]) != self._missing
         return False
 
     def getData(self, optional=0):
@@ -116,10 +160,15 @@ class BrowserWidget(Widget, BrowserView):
                              extra = self.getValue('extra'))
 
     def render(self, value):
+        warnings.warn("The widget render method is deprecated",
+                      DeprecationWarning, 2)
+
         self.setData(value)
         return self()
 
     def renderHidden(self, value):
+        warnings.warn("The widget render method is deprecated",
+                      DeprecationWarning, 2)
         self.setData(value)
         return self.hidden()
 
@@ -143,7 +192,66 @@ class DisplayWidget(BrowserWidget):
         return self._showData()
 
 class CheckBoxWidget(BrowserWidget):
-    """Checkbox widget"""
+    """Checkbox widget
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import Bool
+    >>> field = Bool(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo.used': u'on',
+    ...                             'field.foo': u'on'})
+    >>> widget = CheckBoxWidget(field, request)
+    >>> int(widget.haveData())
+    1
+    >>> int(widget.getData())
+    1
+    
+    >>> def normalize(s):
+    ...   return '\\n  '.join(s.split())
+
+    >>> print normalize( widget() )
+    <input
+      class="hiddenType"
+      id="field.foo.used"
+      name="field.foo.used"
+      type="hidden"
+      value=""
+      />
+      <input
+      class="checkboxType"
+      checked="checked"
+      id="field.foo"
+      name="field.foo"
+      type="checkbox"
+      />
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value="1"
+      />
+
+    Calling setData will change what gets output:
+    
+    >>> widget.setData(False)
+    >>> print normalize( widget() )
+    <input
+      class="hiddenType"
+      id="field.foo.used"
+      name="field.foo.used"
+      type="hidden"
+      value=""
+      />
+      <input
+      class="checkboxType"
+      id="field.foo"
+      name="field.foo"
+      type="checkbox"
+      />
+
+    """
     propertyNames = BrowserWidget.propertyNames + \
                      ['extra', 'default']
 
@@ -157,19 +265,31 @@ class CheckBoxWidget(BrowserWidget):
             kw = {'checked': None}
         else:
             kw = {}
-        return renderElement(self.getValue('tag'),
+        return "%s %s" % (
+            renderElement(self.getValue('tag'),
+                          type = 'hidden',
+                          name = self.name+".used",
+                          id = self.name+".used",
+                          value=""
+                          ),
+            renderElement(self.getValue('tag'),
                              type = self.getValue('type'),
                              name = self.name,
                              id = self.name,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'),
-                             **kw)
+                             **kw),
+            )
 
     def _convert(self, value):
         return value == 'on'
 
     def haveData(self):
-        return True
+        return (
+            self.name+".used" in self.request.form
+            or
+            self.name in self.request.form
+            )
 
     def getData(self, optional=0):
         # When it's checked, its value is 'on'.
@@ -178,24 +298,65 @@ class CheckBoxWidget(BrowserWidget):
         value = self.request.form.get(self.name, 'off')
         return value == 'on'
 
-class PossiblyEmptyMeansMissing:
-
-    def haveData(self):
-        v = self.request.form.get(self.name)
-        if v is None:
-            return False
-        if not v and getattr(self.context, 'min_length', 1) > 0:
-            return False
-        return True
+class PossiblyEmptyMeansMissing(BrowserWidget):
 
     def _convert(self, value):
-        v = self.request.form.get(self.name)
-        if not v and getattr(self.context, 'min_length', 1) > 0:
+        value = super(PossiblyEmptyMeansMissing, self)._convert(value)
+        if not value and getattr(self.context, 'min_length', 1) > 0:
             return None
-        return v
+        return value
 
 class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
-    """Text widget."""
+    """Text widget.
+
+    Single-line text (unicode) input
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import TextLine
+    >>> field = TextLine(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Bob'})
+    >>> widget = TextWidget(field, request)
+    >>> int(widget.haveData())
+    1
+    >>> widget.getData()
+    u'Bob'
+    
+    >>> def normalize(s):
+    ...   return '\\n  '.join(filter(None, s.split(' ')))
+
+    >>> print normalize( widget() )
+    <input
+      class="textType"
+      id="field.foo"
+      name="field.foo"
+      size="20"
+      type="text"
+      value="Bob"
+      />
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value="Bob"
+      />
+
+    Calling setData will change what gets output:
+    
+    >>> widget.setData("Barry")
+    >>> print normalize( widget() )
+    <input
+      class="textType"
+      id="field.foo"
+      name="field.foo"
+      size="20"
+      type="text"
+      value="Barry"
+      />
+
+    """
     propertyNames = (BrowserWidget.propertyNames +
                      ['displayWidth', 'displayMaxWidth', 'extra', 'default']
                      )
@@ -207,11 +368,6 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     # style = "width:100%"
     style = ''
     __values = None
-
-    def _convert(self, value):
-        if self.context.min_length and not value:
-            return None
-        return value
 
     def __init__(self, *args):
         super(TextWidget, self).__init__(*args)
@@ -278,12 +434,9 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
 
-class Bytes:
+class Bytes(BrowserWidget):
 
     def _convert(self, value):
-        if self.context.min_length and not value:
-            return None
-
         value = super(Bytes, self)._convert(value)
         if type(value) is unicode:
             try:
@@ -294,7 +447,21 @@ class Bytes:
         return value
 
 class BytesWidget(Bytes, TextWidget):
-    pass
+    """Bytes widget.
+
+    Single-line data (string) input
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import BytesLine
+    >>> field = BytesLine(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Bob'})
+    >>> widget = BytesWidget(field, request)
+    >>> int(widget.haveData())
+    1
+    >>> widget.getData()
+    'Bob'
+
+    """
 
 class IntWidget(TextWidget):
     displayWidth = 10
@@ -329,7 +496,55 @@ class DatetimeWidget(TextWidget):
                 raise ConversionError("Invalid datetime data", v)
 
 class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
-    """Textarea widget."""
+    """TextArea widget.
+
+    Multi-line text (unicode) input.
+    
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import Text
+    >>> field = Text(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
+    >>> widget = TextAreaWidget(field, request)
+    >>> int(widget.haveData())
+    1
+    >>> widget.getData()
+    u'Hello\\nworld!'
+    
+    >>> def normalize(s):
+    ...   return '\\n  '.join(filter(None, s.split(' ')))
+
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >Hello\r
+    world!</textarea>
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value="Hello\r
+    world!"
+      />
+
+    Calling setData will change what gets output:
+    
+    >>> widget.setData("Hey\\ndude!")
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >Hey\r
+    dude!</textarea>
+
+    """
     propertyNames = BrowserWidget.propertyNames + ['width', 'height', 'extra']
 
     default = ""
@@ -339,9 +554,16 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     style = ''
 
     def _convert(self, value):
-        if self.context.min_length and not value:
-            return None
+        value = super(TextAreaWidget, self)._convert(value)
+        if value:
+            value = value.replace("\r\n", "\n")
         return value
+
+    def _unconvert(self, value):
+        value = super(TextAreaWidget, self)._unconvert(value)
+        if value:
+            value = value.replace("\n", "\r\n")
+        return value        
 
     def __call__(self):
         return renderElement("textarea",
@@ -362,7 +584,21 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
                 self.label(), self())
 
 class BytesAreaWidget(Bytes, TextAreaWidget):
-    pass
+    """BytesArea widget.
+
+    Multi-line text (unicode) input.
+    
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import Bytes
+    >>> field = Bytes(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
+    >>> widget = BytesAreaWidget(field, request)
+    >>> int(widget.haveData())
+    1
+    >>> widget.getData()
+    'Hello\\nworld!'
+
+    """
 
 class PasswordWidget(TextWidget):
     """Password Widget"""
@@ -734,7 +970,9 @@ def renderTag(tag, **kw):
         extra = ""
 
     # handle other attributes
-    for key, value in kw.items():
+    items = kw.items()
+    items.sort()
+    for key, value in items:
         if value == None:
             value = key
         attr_list.append('%s="%s"' % (key, str(value)))
@@ -750,3 +988,16 @@ def renderElement(tag, **kw):
         return "%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
     else:
         return renderTag(tag, **kw) + " />"
+
+def setUp():
+    import zope.app.tests.placelesssetup
+    global setUp
+    setUp = zope.app.tests.placelesssetup.setUp
+    setUp()
+
+def tearDown():
+    import zope.app.tests.placelesssetup
+    global tearDown
+    tearDown = zope.app.tests.placelesssetup.tearDown
+    tearDown()
+    

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.10 2003/04/04 15:39:29 stevea Exp $
+$Id: test_browserwidget.py,v 1.11 2003/05/22 22:49:04 jim Exp $
 """
 
 from zope.app.browser.form.widget import BrowserWidget
@@ -26,6 +26,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Text
 import os
 import unittest
+from zope.testing.doctestunit import DocTestSuite
 import zope.app.browser.form.tests
 
 class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
@@ -66,12 +67,13 @@ class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
         value = 'Foo Value'
         check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"')
-        self._verifyResult(self._widget.render(value), check_list)
+        self._widget.setData(value)
+        self._verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
         check_list = ('type="hidden"', 'style="color: red"') + check_list[1:]
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
 
     def testLabel(self):
         label = ' '.join(self._widget.label().strip().split())
@@ -161,7 +163,10 @@ class Test(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(Test)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(DocTestSuite("zope.app.browser.form.widget"))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
