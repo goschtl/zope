@@ -1387,6 +1387,9 @@ Nice to have / Future
 Notes
 =====
 
+- XXX we might want to think about realigning our terminology
+  (Access/protection/authorization)
+
 - The TOE will not have TTW created (untrusted) and stored code.
   So, no TTW templates. 
 
