@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.interface import implements
+from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
@@ -41,7 +42,7 @@ class AnnotationCacheable:
         if old_cache_id and old_cache_id != id:
             cache = zapi.getUtility(ICache, old_cache_id)
             cache.invalidate(self._context)
-        annotations = IAnnotations(self._context)
+        annotations = IAnnotations(removeAllProxies(self._context))
         annotations[annotation_key] = id
 
     cacheId = property(getCacheId, setCacheId, None, "Associated cache name")
