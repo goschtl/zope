@@ -49,6 +49,12 @@ CMF 1.5.1beta (unreleased)
       portal_registration tool (http://collector.zope.org/CMF/117)
 
   Bug Fixes
+  
+    - CMFCore.MembershipTool: Change a couple conditional tests that tried to
+      determine if the MemberDataTool had been found to explicitly test for
+      None as the return value instead of a truth test on the tool itself, which
+      would fail unexpectedly on folderish MemberDataTool implementations 
+      that don't have actual content (http://www.zope.org/Collectors/CMF/330)
 
     - CMFCore.CachingPolicyManager and CMFCore.ActionInformation: The names
       available to TALES expressions throughout the CMF showed some
