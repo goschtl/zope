@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.11 2003/06/07 05:31:58 stevea Exp $
+$Id: cache.py,v 1.12 2003/06/11 17:21:55 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -98,9 +98,6 @@ class CacheConfiguration(NamedComponentConfiguration):
     status = ConfigurationStatusProperty('Caching')
 
     label = "Cache"
-
-    def __init__(self, *args, **kw):
-        super(CacheConfiguration, self).__init__(*args, **kw)
 
     def activated(wrapped_self):
         cache = wrapped_self.getComponent()
