@@ -1,5 +1,5 @@
 This file contains short descriptions of projects or tasks that need
-to get done by the first Zope X3 beta release. 
+to get done by the first Zope X3 beta release.
 
 The order that items are listed here is not significant.
 
@@ -14,30 +14,29 @@ The order that items are listed here is not significant.
 
 - Implement a local permission service (using configurations)
 
-- Rethink the organization of the security software to reflect
-  the fact that people will likley plug in different grant and
-  owndership systems for different security policies.
+- Rethink the organization of the security software to reflect the
+  fact that people will likley plug in different grant and owndership
+  systems for different security policies.
 
   * Document the relationship between the security policy and the
     grants
 
-- Untrusted modules.  Also implement a way of
-  specifying policies for trusted and untrusted modules.
-  At a minimum:
+- Untrusted modules.  Also implement a way of specifying policies for
+  trusted and untrusted modules.  At a minimum:
 
   * Say globally whether or not modules are trusted or
     untrusted.
 
   * Say globally whether modules are editable through the web.
 
-  A slight variation on this is to have two kinds of modules and
-  say under what circumstances they are editable through the
-  web (or otherwise).
+  A slight variation on this is to have two kinds of modules and say
+  under what circumstances they are editable through the web (or
+  otherwise).
 
 - File-system synchronization
 
-  * Client command-line tool w HTTP-based interface to server
-    that provided CVS-like interface and features. Including:
+  * Client command-line tool w HTTP-based interface to server that
+    provided CVS-like interface and features. Including:
 
     + checkout and commit
 
@@ -45,23 +44,22 @@ The order that items are listed here is not significant.
 
     + diff and offline diff
 
-  * Refine the adapter protocol or implementation to leverage
-    the file-system representation protocol.
+  * Refine the adapter protocol or implementation to leverage the
+    file-system representation protocol.
 
-  * Maybe leverage adaptable storage ideas to assure
-    losslessness.
+  * Maybe leverage adaptable storage ideas to assure losslessness.
 
-  * In common case where extra data are simple values, store
-    extra data in the entries file to simplify representation
-    and updates.  Maybe do something similar w annotations.
+  * In common case where extra data are simple values, store extra
+    data in the entries file to simplify representation and updates.
+    Maybe do something similar w annotations.
 
   * Maybe do some more xmlpickle refinement with an eye toward
     impproving the usability of simple dictionary pickles.
 
   * export and import as a special case
 
-  * Improve some common data file formats (e.g. simplify
-    entries file).
+  * Improve some common data file formats (e.g. simplify entries
+    file).
 
   * Work out security details
 
@@ -69,8 +67,8 @@ The order that items are listed here is not significant.
 
 - Software bundles.
 
-- ZCML directive for layers and corresponding checks that a resource is 
-  registered in a registered layer
+- ZCML directive for layers and corresponding checks that a resource
+  is registered in a registered layer
 
   * Typos can cause new layers to be defined unintentionally
 
@@ -176,13 +174,13 @@ The order that items are listed here is not significant.
 - Python scipts
 
   What form should these take? Should they be like Zope 2 Python
-  scipts? or should they by like Python modules.
+  scripts? or should they by like Python modules.
 
 - Supply a generic property mechanism?
 
   In Zope 2, folders and many other objects could have arbitrary
-  properties.  This was very useful to storing little bits of
-  content.  What form should this take in Zope 3?
+  properties.  This was very useful to storing little bits of content.
+  What form should this take in Zope 3?
 
 - UI
 
@@ -198,15 +196,15 @@ The order that items are listed here is not significant.
 
 - Schema fields
 
-  Some kind of field that can contain objects that conform to a particular
-  schema. And, widgets for this field.
+  Some kind of field that can contain objects that conform to a
+  particular schema. And, widgets for this field.
 
 - Mailing service
 
-  Mail sending service that integrates with Zope 3 transactions and only sends
-  out email on successfull commits (and no multiple emails on ConflictErrors),
-  is asynchronous (does not force the user to wait until the mail is completely
-  sent) and reliable (does not lose mail on crashes, keeps a queue that can
-  survive server restarts).
+  Mail sending service that integrates with Zope 3 transactions and
+  only sends out email on successfull commits (and no multiple emails
+  on ConflictErrors), is asynchronous (does not force the user to wait
+  until the mail is completely sent) and reliable (does not lose mail
+  on crashes, keeps a queue that can survive server restarts).
 
   Codeworks is working on this.
