@@ -1,42 +1,9 @@
-==============
-Local Services
-==============
+============
+Registration
+============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.1 $
-
-This package includes implementations of several local services.
-It also contains infrastructure for implementing local services.
-
-Implementing local services is not too difficult, but there can be a
-lot of details that are hard to remember.
-
-A service is a component that implements a specific interface *and*
-that has the responsibility to collaborate with services above it.
-Local services are stored in the Zope object database, so they also
-need to be persistent.  Finally, many local services support modular
-registration through registration objects.
-
-A few words on the difference between local and global services:
-
-- Local services (usually) exist in the ZODB; global services don't.
-
-- Local services apply to a specific part of the object hierarchy;
-  global services (as their name suggests) don't.
-
-- Local services are (usually) created and configured through the ZMI;
-  global services are created and configured by ZCML directives.
-
-- Local services are expected to collaborate with services "above"
-  them in the object hierarchy, or with the global service; global
-  services by definition have nothing "above" them.
-
-  (Note that it's up to the service to decide what form the
-  collaboration will take.  An acceptable form of collaboration is to
-  not collaborate at all.
-
-Registration
-------------
+:Version: $Revision: 1.2 $
 
 Many services act as component registries.  Their primary job is to
 allow components to be looked up based on parameters such as names,
@@ -163,21 +130,3 @@ There are several major concepts/terms that need to be understood
   The interface ``IRegistered'' provides storage and access to the
   registrations for a registerable.  When we make a registration, we
   refer to it in a registration stack and in the registered object.
-
-
-Examples
---------
-
-Implementation of local services is described through examples.
-
-- The error reporting service is among the simplest examples because
-  error reporting services don't support registration and don't
-  delegate requests to services above.
-
-  See error.txt
-
-- The utility service is an example of a service that supports
-  local-object registration. It also provides a simple example of a
-  service that delegates to services above it.
-
-  See utility.txt.
