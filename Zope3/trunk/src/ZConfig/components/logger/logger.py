@@ -13,6 +13,7 @@
 ##############################################################################
 """ZConfig factory datatypes for loggers."""
 
+import logging
 from ZConfig.components.logger.factory import Factory
 
 
@@ -34,7 +35,6 @@ class LoggerFactoryBase(Factory):
 
     def create(self):
         # set the logger up
-        import logging
         logger = logging.getLogger(self.name)
         logger.setLevel(self.level)
         if self.handler_factories:
@@ -56,7 +56,6 @@ class LoggerFactoryBase(Factory):
         If all handlers and the logger itself have level==NOTSET, this
         returns NOTSET.
         """
-        import logging
         lowest = self.level
         for factory in self.handler_factories:
             level = factory.getLevel()
@@ -86,6 +85,21 @@ class EventLogFactory(LoggerFactoryBase):
     """Logger factory that returns the root logger."""
 
     name = None
+
+
+class HitLogFactory(LoggerFactoryBase):
+    """Logger factory that returns the hit logger."""
+
+    name = "hitlog"
+
+    def create(self):
+        logger = LoggerFactoryBase.create(self)
+        logger.setLevel(logging.INFO)
+        logger.propagate = False
+        formatter = logging.Formatter()
+        for handler in logger.handlers:
+            handler.setFormatter(formatter)
+        return logger
 
 
 class LoggerFactory(LoggerFactoryBase):

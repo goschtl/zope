@@ -11,7 +11,9 @@ Zope Changes
     New features
 
       - Event handlers can now be implemented as regular Python
-        functions. 
+        functions.
+
+      - Hit logging is now configurable in zope.conf.
 
     Bug fixes
 
@@ -35,7 +37,6 @@ Zope Changes
           interface. 
 
         - No longer have event publication or subscription services.
-
 
       - We had an object hub service. The object hub service was responsible
         for:

@@ -6,5 +6,6 @@
   <import package="ZConfig.components.logger" file="handlers.xml"/>
   <import package="ZConfig.components.logger" file="logger.xml"/>
   <import package="ZConfig.components.logger" file="eventlog.xml"/>
+  <import package="ZConfig.components.logger" file="hitlog.xml"/>
 
 </component>

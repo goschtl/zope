@@ -32,8 +32,10 @@ class LoggingTestBase(unittest.TestCase):
     # XXX This tries to save and restore the state of logging around
     # the test.  Somewhat surgical; there may be a better way.
 
+    name = None
+
     def setUp(self):
-        self._old_logger = logging.getLogger()
+        self._old_logger = logging.getLogger(self.name)
         self._old_level = self._old_logger.level
         self._old_handlers = self._old_logger.handlers[:]
         self._old_logger.handlers[:] = []
@@ -46,16 +48,7 @@ class LoggingTestBase(unittest.TestCase):
             self._old_logger.addHandler(h)
         self._old_logger.setLevel(self._old_level)
 
-
-class TestConfig(LoggingTestBase):
-
     _schema = None
-    _schematext = """
-      <schema>
-        <import package='ZConfig.components.logger'/>
-        <section type='eventlog' name='*' attribute='eventlog'/>
-      </schema>
-    """
 
     def get_schema(self):
         if self._schema is None:
@@ -68,6 +61,16 @@ class TestConfig(LoggingTestBase):
                                                StringIO.StringIO(text))
         self.assert_(not handler)
         return conf
+
+
+class TestConfig(LoggingTestBase):
+
+    _schematext = """
+      <schema>
+        <import package='ZConfig.components.logger'/>
+        <section type='eventlog' name='*' attribute='eventlog'/>
+      </schema>
+    """
 
     def test_logging_level(self):
         # Make sure the expected names are supported; it's not clear
@@ -223,8 +226,59 @@ class TestConfig(LoggingTestBase):
         return logger
 
 
+class TestHitLogging(LoggingTestBase):
+
+    name = "hitlog"
+
+    _schematext = """
+      <schema>
+        <import package='ZConfig.components.logger'/>
+        <section type='hitlog' name='*' attribute='hitlog'/>
+      </schema>
+    """
+
+    def test_config_without_logger(self):
+        conf = self.get_config("")
+        self.assert_(conf.hitlog is None)
+
+    def test_config_without_handlers(self):
+        logger = self.check_simple_logger("<hitlog/>")
+        # Make sure there's a NullHandler, since a warning gets
+        # printed if there are no handlers:
+        self.assertEqual(len(logger.handlers), 1)
+        self.assert_(isinstance(logger.handlers[0],
+                                loghandler.NullHandler))
+
+    def test_formatter(self):
+        logger = self.check_simple_logger("<hitlog>\n"
+                                          "  <syslog>\n"
+                                          "    level error\n"
+                                          "    facility local3\n"
+                                          "    format xyzzy\n"
+                                          "  </syslog>\n"
+                                          "</hitlog>")
+        self.assertEqual(len(logger.handlers), 1)
+        syslog = logger.handlers[0]
+        self.assertEqual(syslog.level, logging.ERROR)
+        self.assert_(isinstance(syslog, loghandler.SysLogHandler))
+        self.assertEqual(syslog.formatter._fmt, "%(message)s")
+
+    def check_simple_logger(self, text):
+        conf = self.get_config(text)
+        self.assert_(conf.hitlog is not None)
+        logger = conf.hitlog()
+        self.assert_(isinstance(logger, logging.Logger))
+        self.assert_(not logger.propagate)
+        self.assertEquals(logger.name, "hitlog")
+        self.assertEquals(logger.level, logging.INFO)
+        return logger
+
+
 def test_suite():
-    return unittest.makeSuite(TestConfig)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestConfig))
+    suite.addTest(unittest.makeSuite(TestHitLogging))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest="test_suite")
