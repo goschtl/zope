@@ -67,10 +67,8 @@
         permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IWriteContainer"
         />
-    <zope:require
-        permission="zope.ManageServices"
+    <zope:allow
         interface=".interfaces.ISmileyTheme"
-        set_schema=".interfaces.ISmileyTheme"
         />
   </zope:content>
 
