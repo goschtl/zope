@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.container.btree import BTreeContainer
 from interfaces import IBundle
 from zope.app.registration.registration import RegisterableContainer

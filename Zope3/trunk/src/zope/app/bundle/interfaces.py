@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.container.interfaces import IContainer
 from zope.app.registration.interfaces import IRegisterableContainer
 

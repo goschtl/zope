@@ -30,6 +30,8 @@ bundle and lets the user activate them.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re
 from transaction import get_transaction
 
@@ -207,26 +209,27 @@ class BundleView(BrowserView):
     nineDigits = re.compile(r"^\d{1,9}$")
 
     def parseVersion(self, path):
-        # Return a list containing the version numbers, suitably
-        # modified for sane version comparison.  If there is no
-        # version number, return None.  A version number is any number
-        # of dot-separated integers of at most 9 digits, optionally
-        # followed by another dot and something like "a1" or "b1"
-        # indicating an alpha or beta version.  If no alpha or beta
-        # version is present, "f" is assumed (indicating "final").
-        # ("f" is chosen to compare higher than "a1", "b1" or "c1" but
-        # lower than "p1"; "p1" is sometimes used to indicate a patch
-        # release.)  Examples:
-        #
-        # "/foo/bar-boo"        -> None
-        # "/foo/bar-boo-1.0"    -> ["f000000001", "f000000000", "f"]
-        # "/foo/bar-boo-1.0.f"  -> ["f000000001", "f000000000", "f"]
-        # "/foo/bar-boo-1.0.a1" -> ["f000000001", "f000000000", "a1"]
-        #
-        # Note that we do a string compare on the alpha/beta version
-        # number; "a10" will compare less than "a2".  OTOH, the
-        # integers are padded with leading zeros, so "10" will compare
-        # higher than "2".
+        """
+        Return a list containing the version numbers, suitably
+        modified for sane version comparison.  If there is no
+        version number, return ``None``.  A version number is any number
+        of dot-separated integers of at most 9 digits, optionally
+        followed by another dot and something like "a1" or "b1"
+        indicating an alpha or beta version.  If no alpha or beta
+        version is present, "f" is assumed (indicating "final").
+        ("f" is chosen to compare higher than "a1", "b1" or "c1" but
+        lower than "p1"; "p1" is sometimes used to indicate a patch
+        release.)  Examples::
+        
+        "/foo/bar-boo"        -> None
+        "/foo/bar-boo-1.0"    -> ["f000000001", "f000000000", "f"]
+        "/foo/bar-boo-1.0.f"  -> ["f000000001", "f000000000", "f"]
+        "/foo/bar-boo-1.0.a1" -> ["f000000001", "f000000000", "a1"]
+        
+        Note that we do a string compare on the alpha/beta version
+        number; "a10" will compare less than "a2".  OTOH, the
+        integers are padded with leading zeros, so "10" will compare
+        higher than "2"."""
         i = path.rfind("/") + 1
         base = path[i:]
         i = base.rfind("-") + 1
