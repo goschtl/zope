@@ -1,4 +1,4 @@
-<tal:tag condition="view/update" /><html metal:use-macro="views/standard_macros/page">
+<tal:tag condition="view/update" /><html metal:use-macro="context/@@standard_macros/page">
   <body>
     <div metal:fill-slot="body">
 

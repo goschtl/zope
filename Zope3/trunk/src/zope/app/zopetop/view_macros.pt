@@ -28,30 +28,30 @@
              alt="Zope 3 Logo"
              tal:attributes="src context/++resource++zope3logo.jpg" />
       </a>
-      <span metal:use-macro="views/standard_macros/logged_user">
+      <span metal:use-macro="context/@@standard_macros/logged_user">
         Logged in as user
       </span>
     </div>
     <table class="columns">
       <tr>
         <td class="left">
-          <span metal:use-macro="views/standard_macros/navigation_box" />
-          <span metal:use-macro="views/standard_macros/commontasks_box" />
+          <span metal:use-macro="context/@@standard_macros/navigation_box" />
+          <span metal:use-macro="context/@@standard_macros/commontasks_box" />
           <!--
-            <span metal:use-macro="views/standard_macros/metadata_box" />
-            <span metal:use-macro="views/standard_macros/views_box" />
-            <span metal:use-macro="views/standard_macros/actions_box" />
+            <span metal:use-macro="context/@@standard_macros/metadata_box" />
+            <span metal:use-macro="context/@@standard_macros/views_box" />
+            <span metal:use-macro="context/@@standard_macros/actions_box" />
           -->
         </td>
         <td class="main">
-          <span metal:use-macro="views/standard_macros/zmi_views" />
-          <span metal:use-macro="views/standard_macros/zmi_actions" />
-          <span metal:use-macro="views/standard_macros/content_header_bar" />
+          <span metal:use-macro="context/@@standard_macros/zmi_views" />
+          <span metal:use-macro="context/@@standard_macros/zmi_actions" />
+          <span metal:use-macro="context/@@standard_macros/content_header_bar" />
           <span metal:define-slot="body"></span>
         </td>
       </tr>
     </table>
-    <span metal:use-macro="views/standard_macros/footer" />
+    <span metal:use-macro="context/@@standard_macros/footer" />
   </body>
 </html>
 </metal:block>
