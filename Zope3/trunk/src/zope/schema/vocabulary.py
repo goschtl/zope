@@ -59,12 +59,6 @@ class VocabularyField(Field):
             # XXX can't validate without vocabulary, and can't get
             # vocabulary without context
             return
-        if IVocabularyTokenized.isImplementedBy(self.vocabulary):
-            # Get the term value from the provided token value
-            try:
-                value = self.vocabulary.getTermByToken(value).value
-            except LookupError:
-                raise ValidationError(errornames.ConstraintNotSatisfied, v)
         if value not in self.vocabulary:
             raise ValidationError(errornames.ConstraintNotSatisfied,
                                   value)
@@ -96,16 +90,6 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
         vocab = self.vocabulary
         if vocab is None:
             raise ValueError("can't validate value without vocabulary")
-        if IVocabularyTokenized.isImplementedBy(vocab):
-            # Get the term values from the provided token values
-            for token in value:
-                try:
-                    v = vocab.getTermByToken(token).value
-                except LookupError:
-                    raise ValidationError(errornames.ConstraintNotSatisfied,
-                                          "token: " + repr(token))
-                if v not in vocab:
-                    raise ValidationError(errornames.ConstraintNotSatisfied, v)
         for v in value:
             if v not in vocab:
                 raise ValidationError(errornames.ConstraintNotSatisfied, v)
