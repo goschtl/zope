@@ -11,6 +11,11 @@
 
       <subdirective name="useMappingStorage" />
 
+      <subdirective name="useBDBFullStorage"
+		    attributes="name interval kbyte min logdir
+				cachesize frequency packtime
+				classicpack read_only" />
+
       <subdirective name="useLog" attributes="file level" />
 
       <subdirective name="addServer"

@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: sitedefinition.py,v 1.3 2002/12/30 22:39:30 bwarsaw Exp $
 """
 
 import logging
@@ -99,6 +99,15 @@ class SiteDefinition:
         self._zodb = DB()
         return []
 
+
+    def useBDBFullStorage(self, _context, **kws):
+        from zodb.config import convertBDBStorageArgs
+        from zodb.storage.bdbfull import DB
+
+        kws = convertBDBStorageArgs(**kws)
+        self._zodb = DB(**kws)
+        return []
+        
 
     def useLog(self, _context, file=DEFAULT_LOG_FILE, level=DEFAULT_LOG_LEVEL):
         """Lets you specify the log file and level to use"""
