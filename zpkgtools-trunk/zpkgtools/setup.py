@@ -13,90 +13,121 @@
 ##############################################################################
 """Generator for distutils setup.py files."""
 
-import os.path
+import distutils.core
+import os
+import posixpath
+import pprint
+import sys
 
 from StringIO import StringIO
 
+from zpkgtools import publication
 
-# These are both attributes of the publication data object and keyword
-# arguments to setup().
 
-STRING_ATTRIBUTES = [
-    "name",
-    "version",
-    "license",
-    "author",
-    "author_email",
-    "maintainer",
-    "maintainer_email",
-    "description",
-    "long_description",
-    "download_url",
-    ]
-
-LIST_ATTRIBUTES = [
-    "keywords",
-    "classifiers",
-    ]
-
-def generate(directory, publication, version, packageinfo=None):
+def generate(directory, pkgname, version, type):
     setup_py = os.path.join(directory, "setup.py")
     f = open(setup_py, "w")
     try:
-        generate_py(f, publication, version, packageinfo)
+        print >>f, HEADER
+        print >>f, "context = zpkgtools.setup.%sContext(" % type.capitalize()
+        print >>f, "    %r, %r, __file__)" % (pkgname, version)
+        print >>f
+        print >>f, "context.setup()"
     finally:
         f.close()
 
-    # We don't always need to generate a setup.cfg, so use a StringIO
-    # as an intermediate:
-    f = StringIO()
-    generate_cfg(f, publication, version, packageinfo)
-    text = f.getvalue()
-    if text.strip():
-        setup_cfg = os.path.join(directory, "setup.cfg")
-        f = open(setup_cfg, "w")
-        try:
-            f.write(CONFIG_HEADER)
-            f.write(text)
-        finally:
-            f.close()
 
+class SetupContext:
+    """Object representing the arguments to distutils.core.setup()."""
 
-def generate_py(f, publication, version, packageinfo):
-    """Generate the setup.py for a release."""
-    print >>f, HEADER
-    print >>f, "setup(version=%r," % version
-    for name in STRING_ATTRIBUTES:
-        dumpString(f, publication, name)
-    if publication.platforms:
-        print >>f, "      platforms=%r," % ", ".join(publication.platforms)
-    for name in LIST_ATTRIBUTES:
-        dumpList(f, publication, name)
-    print >>f, "      )"
+    def __init__(self, pkgname, version, setup_file):
+        self._working_dir = os.path.dirname(os.path.abspath(setup_file))
+        self.version = version
+        self.packages = []
+        self.package_data = {}
+        self.package_dir = {}
+        self.extensions = []
+        self.scripts = []
+        self.platforms = None
+        self.classifiers = None
 
-
-def generate_cfg(f, publication, version, packageinfo):
-    """Generate the setup.cfg for a release."""
-    # For now, do nothing.
-
-
-def dumpString(f, publication, name):
-    value = getattr(publication, name)
-    if value is not None:
-        if "\n" in value:
-            # deal with multiline values
-            pass
+    def setup(self):
+        kwargs = self.__dict__.copy()
+        for name in self.__dict__:
+            if name[0] == "_":
+                del kwargs[name]
+        if "--debug" in sys.argv:
+            pprint.pprint(kwargs)
         else:
-            print >>f, "      %s=%r," % (name, value)
+            distutils.core.setup(**kwargs)
+
+    def loadMetadata(self, path):
+        f = open(path, "rU")
+        publication.load(f, metadata=self)
+        if self.platforms:
+            self.platforms = ", ".join(self.platforms)
+
+    def scanPackage(self, name, directory):
+        files = os.listdir(directory)
+        # need to load package-specific data here as well
+        for fn in files:
+            fnbase, ext = os.path.splitext(fn)
+            if ext in (".py", ".pyc", ".pyo", ".so", ".sl", ".pyd"):
+                continue
+            path = os.path.join(directory, fn)
+            if os.path.isdir(path):
+                init_py = os.path.join(path, "__init__.py")
+                if os.path.isfile(init_py):
+                    pkgname = "%s.%s" % (name, fn)
+                    self.packages.append(pkgname)
+                    self.scanPackage(pkgname, path)
+                else:
+                    # an ordinary directory
+                    self.scanDirectory(name, path, fn)
+            else:
+                self.addPackageFile(name, fn)
+
+    def scanDirectory(self, pkgname, directory, reldir):
+        """Scan a data directory, adding files to package_data."""
+        for fn in os.listdir(directory):
+            path = os.path.join(directory, fn)
+            if os.path.isdir(path):
+                self.scanDirectory(pkgname,
+                                   os.path.join(directory, fn),
+                                   posixpath.join(reldir, fn))
+            else:
+                fnbase, ext = os.path.splitext(fn)
+                if ext in (".pyc", ".pyo", ".so", ".sl", ".pyd"):
+                    continue
+                self.addPackageFile(pkgname, posixpath.join(reldir, fn))
+
+    def addPackageDir(self, pkgname, reldir):
+        if pkgname.replace(".", posixpath.sep) != reldir:
+            self.package_dir[pkgname] = reldir
+
+    def addPackageFile(self, pkgname, relfn):
+        L = self.package_data.setdefault(pkgname, [])
+        L.append(relfn)
 
 
-def dumpList(f, publication, name):
-    value = getattr(publication, name)
-    if value:
-        print >>f, "      %s=[" % name
-        for v in value:
-            print >>f, "          %r," % v
-        print >>f, "          ],"
+class PackageContext(SetupContext):
+
+    def __init__(self, pkgname, version, setup_file):
+        SetupContext.__init__(self, pkgname, version, setup_file)
+        self.packages.append(pkgname)
+        self.addPackageDir(pkgname, pkgname)
+        self.loadMetadata(
+            os.path.join(self._working_dir, pkgname, "PUBLICATION.txt"))
+        self.scanPackage(
+            pkgname, os.path.join(self._working_dir, pkgname))
+
+
+class CollectionContext(SetupContext):
+
+    def __init__(self, pkgname, version, setup_file):
+        SetupContext.__init__(self, pkgname, version, setup_file)
+        self.loadMetadata(os.path.join(self._working_dir,
+                                       "PUBLICATION.txt"))
 
 
 HEADER = """\
@@ -104,12 +135,6 @@ HEADER = """\
 #
 # THIS IS A GENERATED FILE.  DO NOT EDIT THIS DIRECTLY.
 
-from distutils.core import setup
-from distutils.core import Extension
-
-"""
-
-CONFIG_HEADER = """\
-# THIS IS A GENERATED FILE.  DO NOT EDIT THIS DIRECTLY.
+import zpkgtools.setup
 
 """
