@@ -13,10 +13,8 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.10 2003/06/11 17:53:42 gvanrossum Exp $
+$Id: classes.py,v 1.11 2003/06/30 17:52:22 jeremy Exp $
 """
-
-import os
 
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.annotation import IAnnotations
