@@ -11,9 +11,13 @@ optional fields (optional fields have default values described)
    specify the directory within which rsync will be applied.
 
  - 'excludes' - a regular expression identifying items within the
-   qualifying repository directory that should be excluded.  It is passed
-   to rsync, so see the section of the rsync man page about exclude
-   patterns for details.  Default is for nothing to be excluded.
+   qualifying repository directory that should be excluded.  (Be careful
+   with your regular expressions - the 're' module will be used only if the
+   local python installation has re, or else the old 'regex' module will be
+   used.  So you may want to use simple regular expressions that work for
+   both.)  It is passed to rsync, so see the section of the rsync man page
+   about exclude patterns for details.  Default is for nothing to be
+   excluded.
 
  - 'addrs' - a list of addresses to which checkin messages should be delivered.
 
