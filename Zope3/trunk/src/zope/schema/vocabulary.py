@@ -46,7 +46,7 @@ class SimpleTerm(object):
 class SimpleVocabulary(object):
     """Vocabulary that works from a sequence of terms."""
 
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(IVocabularyTokenized)
 
     def __init__(self, terms, *interfaces):
         """Initialize the vocabulary given a list of terms.

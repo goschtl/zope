@@ -79,7 +79,7 @@ class PrincipalRoleManager(SecurityMap):
         ''' See the interface IPrincipalRoleManager '''
 
         # Don't check validity intentionally.
-        # After all, we certianly want to unset invalid ids.
+        # After all, we certainly want to unset invalid ids.
 
         self.delCell(role_id, principal_id)
 

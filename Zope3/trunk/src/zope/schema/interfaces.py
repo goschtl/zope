@@ -501,8 +501,6 @@ class IVocabulary(IIterableVocabulary, IBaseVocabulary):
 class IVocabularyTokenized(IVocabulary):
     """Vocabulary that provides support for tokenized representation.
 
-    This interface must be used as a mix-in with IBaseVocabulary.
-
     Terms returned from getTerm() and provided by iteration must
     conform to ITitledTokenizedTerm.
     """

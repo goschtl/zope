@@ -356,7 +356,7 @@ documents have been indexed and that the word count has increased to 30:
 
 
 Now that we have a catalog with some documents indexed, we can search
-it.  The catalog is really meany yo be used from Python:
+it.  The catalog is really meant to be used from Python:
 
   >>> root = getRootFolder()
 
