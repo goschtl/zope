@@ -79,6 +79,7 @@ import traffic_table
 OUTPUT_LOG = "/cvs-repository/cvs-postcommit_actions.log"
 
 # Set CVSMASTER to the email address of someone managing your CVS mirroring.
+# Notices about any caught malfunctions will be sent to this address.
 CVSMASTER = "klm@digicool.com"
 
 # Zero CHMOD_GW this if you don't want automatic chmod g+w of files that were
@@ -140,16 +141,16 @@ def main(args):
     for opt, val in opts:
         if opt == "--verbose":
             VERBOSE = 1
-            complain("%s: VERBOSE mode...\n", SCRIPT)
+            complain("%s: VERBOSE\n", SCRIPT)
         elif opt == "--dryrun":
             DRYRUN = 1
-            complain("%s: DRYRUN mode...\n", SCRIPT)
+            complain("%s: DRYRUN\n", SCRIPT)
         elif opt == "--recurse":
             RECURSE = 1
-            complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
+            complain("%s: FULL-DEPTH RECURSE\n", SCRIPT)
         elif opt == "--wait":
             WAIT = 1
-            complain("%s: WAIT mode - continuing in foreground...\n", SCRIPT)
+            complain("%s: WAIT/Foreground\n", SCRIPT)
         elif opt == "--msgfile":
             # This is internal, for the script to pass itself a file.
             MSGFILENM = val
@@ -158,12 +159,14 @@ def main(args):
             RECURSE = 1
             WAIT = 1
             only_sync = 1
+            complain("%s: SYNCREPO\n", SCRIPT)
         elif opt == "--syncall":
             SYNCREPO = 1
             RECURSE = 1
             WAIT = 1
             only_sync = 1
             sync_all = 1
+            complain("%s: SYNCALL\n", SCRIPT)
         else:
             complain("Unrecognized option '%s'\n", opt)
             raise SystemExit, 1
@@ -510,7 +513,6 @@ def note_failure(msg, *args):
 
 def handle_failures(argstring):
     """On serious failures, send the complaints log to CVSMASTER."""
-    import time
 
     if os.environ.has_key('HOSTNAME'):
         host = os.environ['HOSTNAME']
@@ -562,7 +564,11 @@ def get_command(cmd, path):
 complaints = []
 def complain(msg, *args):
     global complaints
-    complaints.append(msg % args)
+
+    import time
+    t = time.strftime("%Y-%m-%d %T - ", time.localtime(time.time()))
+
+    complaints.append(t + (msg % args))
     sys.stderr.write(msg % args)
     sys.stderr.flush()
 
