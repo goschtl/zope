@@ -19,9 +19,9 @@
     search page
     browsing page
 
-  AdapterConfigrationAdd
+  AdapterConfigurationAdd
 
-$Id: adapter.py,v 1.3 2002/12/21 15:32:54 poster Exp $
+$Id: adapter.py,v 1.4 2002/12/22 21:15:45 stevea Exp $
 """
 __metaclass__ = type
 
