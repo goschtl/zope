@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.5 2002/12/30 20:41:20 gotcha Exp $
+Revision information: $Id: contents.py,v 1.6 2003/01/17 13:35:45 efge Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -85,7 +85,7 @@ class Contents(BrowserView):
 
         return self._index()
 
-# XXX Below is prime material for localization.
+# XXX L10N Below is prime material for localization.
 # We are a touchpoint that should contact the personalization
 # service so that users can see datetime and decimals
 
