@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Static Tree Tests
+
 $Id$
 """
 
@@ -36,7 +37,7 @@ class StatefulTreeViewTest(BaseTestCase):
     def makeRequest(self):
         request = self.request = TestRequest()
 
-    # XXX test stateful tree view
+    # TODO: test stateful tree view
 
 class CookieTreeViewTest(StatefulTreeViewTest):
 
