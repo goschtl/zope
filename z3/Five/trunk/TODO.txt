@@ -1,45 +1,4 @@
 
-Make adding/add views work in Five
-==================================
+- Figure out where add-view redirects should go.
 
-The participants:
-
-* zope.app.container.browser.adding (defines the + view, ContentAdding)
-
-* zope.app.form.browser.add (particular add forms, AddView)
-
-The plan (after much digging through the code):
-
-* We need to port both the ContentAdding class as well as AddView to
-  Five, both need to subclass BrowserView.
-
-* In addition, ContentAdding also needs to subclass FiveTraversable.
-
-* Probably FiveTraversable needs to be modified so it gets the request using
-  aq_explicit, as Five's BrowserView supports explicit acquisition only.
-
-This way, the following sequence should be supported:
-
-* path is foo/+/addsomething
-
-* Zope 2 traverses to object foo
-
-* Then Five's __bobo_traverse__ looks for an ITraverser to go to '+'.
-
-* The FiveTraversable adapter will find the (Five BrowserView +
-  FiveTraversable) ContentAdding.
-
-* Zope 2 tries to traverse to 'addsomething'
-
-* Again in Five's __bobo_traverse__, an ITraverser is found to go to
-  'addsomething'
-
-* The FiveTraversable adapter will now find the (Five BrowserView)
-  AddView. The FiveTraversable adapter can find the REQUEST, as is
-  (explicitly) acquired from the Five ContentAdding view.
-
-* This is published to the world.
-
-An alternative route would be to pass multiple steps (['+',
-'addsomething']) directly to the ITraverser. Care should be taken to
-make Zope 2's acquisition do the right thing for the '+' step though.
+- Instructions on using add views.
