@@ -3,7 +3,6 @@
 
 <div metal:fill-slot="body">
 
-<h1 tal:content="view/title">Error type</h1>
 <p>
 <span tal:repeat="part context"><span tal:replace="part">Error message</span>
 </span>
