@@ -12,16 +12,21 @@
 #
 ##############################################################################
 """
-$Id: unauthorized.py,v 1.5 2003/02/17 18:01:13 stevea Exp $
+$Id: unauthorized.py,v 1.6 2003/06/07 06:54:24 stevea Exp $
 """
 
 from types import StringType
 from zope.exceptions import ZopeError
 from zope.exceptions import IZopeError
-from zope.interface.implements import implements
+from zope.interface import implements
+
+class IUnauthorized(IZopeError):
+    pass
 
 class Unauthorized(ZopeError):
     """Some user wasn't allowed to access a resource"""
+
+    implements(IUnauthorized)
 
     def __init__(self, message=None, value=None, needed=None, name=None, **kw):
         """Possible signatures:
@@ -75,7 +80,3 @@ class Unauthorized(ZopeError):
         c = getattr(c, '__name__', 'object')
         return "a particular %s" % c
 
-class IUnauthorized(IZopeError):
-    pass
-
-implements(Unauthorized, IUnauthorized)

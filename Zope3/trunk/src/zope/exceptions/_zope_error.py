@@ -13,15 +13,14 @@
 ##############################################################################
 """Base class for Zope application errors.
 
-$Id: _zope_error.py,v 1.5 2003/02/17 18:01:13 stevea Exp $
+$Id: _zope_error.py,v 1.6 2003/06/07 06:54:24 stevea Exp $
 """
 from zope.interface.common.interfaces import IException
-from zope.interface.implements import implements
-
-class ZopeError(Exception):
-    """Generic base class for Zope errors."""
+from zope.interface import implements
 
 class IZopeError(IException):
     pass
 
-implements(ZopeError, IZopeError)
+class ZopeError(Exception):
+    """Generic base class for Zope errors."""
+    implements(IZopeError)

@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: queryfield.py,v 1.2 2003/02/11 15:59:56 sidnei Exp $
+$Id: queryfield.py,v 1.3 2003/06/07 06:54:23 stevea Exp $
 """
 from zope.app.services.field import locateComponent
 from zope.schema import Tuple
 from zope.schema.interfaces import ValidationError
 from zope.component import getAdapter
-from zope.interface.implements import implements
+from zope.interface import classImplements
 # See end of file for further imports
 
 class QueryProcessorsField(Tuple):
@@ -48,5 +48,5 @@ class QueryProcessorsField(Tuple):
 from zope.app.interfaces.services.query import IQueryProcessorsField
 from zope.app.interfaces.services.query import IQueryProcessable
 from zope.app.interfaces.services.query import IQueryProcessor
-implements(QueryProcessorsField, IQueryProcessorsField)
+classImplements(QueryProcessorsField, IQueryProcessorsField)
 

@@ -13,24 +13,25 @@
 ##############################################################################
 """
 
-$Id: _forbidden.py,v 1.4 2003/02/11 16:00:06 sidnei Exp $
+$Id: _forbidden.py,v 1.5 2003/06/07 06:54:24 stevea Exp $
 """
 from zope.exceptions import ZopeError, IZopeError
-from zope.interface.implements import implements
+from zope.interface import implements
 from zope.interface.common.interfaces import IAttributeError
+
+class IForbidden(IZopeError):
+    pass
 
 class Forbidden(ZopeError):
     """A resource cannot be accessed under any circumstances
     """
+    implements(IForbidden)
 
-class IForbidden(IZopeError):
+class IForbiddenAttribute(IForbidden, IAttributeError):
     pass
 
 class ForbiddenAttribute(Forbidden, AttributeError):
     """An attribute is unavailable because it is forbidden (private)
     """
-class IForbiddenAttribute(IForbidden, IAttributeError):
-    pass
+    implements(IForbiddenAttribute)
 
-implements(Forbidden, IForbidden)
-implements(ForbiddenAttribute, IForbiddenAttribute)
