@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.9 2004/02/20 16:57:30 fdrake Exp $
+$Id: menu.py,v 1.10 2004/03/02 17:40:52 philikon Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,7 @@ from zope.app.component.nextservice import getNextService
 from zope.app.container.ordered import OrderedContainer
 from zope.app.interfaces.services.menu import \
      ILocalBrowserMenu, ILocalBrowserMenuService
-from zope.app.interfaces.publisher.browser import \
+from zope.app.publisher.interfaces.browser import \
      IBrowserMenuItem, IGlobalBrowserMenuService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.publisher.browser.globalbrowsermenuservice import \
@@ -40,22 +40,22 @@ class LocalBrowserMenuItem(Persistent):
 
     implements(IBrowserMenuItem)
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     interface = None
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     action = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     title = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     description = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     permission = None
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
+    # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     filter_string = u''
 
     # XXX the filter should probably be some kind of descriptor.
@@ -69,16 +69,16 @@ class LocalBrowserMenu(OrderedContainer):
 
     implements(ILocalBrowserMenu)
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenu
+    # See zope.app.publisher.interfaces.browser.IBrowserMenu
     title = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenu
+    # See zope.app.publisher.interfaces.browser.IBrowserMenu
     description = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenu
+    # See zope.app.publisher.interfaces.browser.IBrowserMenu
     usage = u''
 
-    # See zope.app.interfaces.publisher.browser.IBrowserMenu
+    # See zope.app.publisher.interfaces.browser.IBrowserMenu
     inherit = True
 
     def __init__(self):
@@ -86,7 +86,7 @@ class LocalBrowserMenu(OrderedContainer):
         self._next = 0
 
     def getMenuItems(self, object=None):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenu"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenu"""
         result = []
         interfaces = list(providedBy(object).flattened())
         for menuitem in self.values():
@@ -116,7 +116,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getAllLocalMenus(self):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         utilities = zapi.getService(self, Utilities)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         return map(lambda m: m[1], menus)
@@ -163,7 +163,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getAllMenuItems(self, menu_id, object):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         result = []
 
         # Find the local items, if available
@@ -183,18 +183,18 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
 
     def getMenu(self, menu_id, object, request, max=999999):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         return super(LocalBrowserMenuService,
                      self).getMenu(menu_id, object, request, max)
 
 
     def getFirstMenuItem(self, menu_id, object, request):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         return super(LocalBrowserMenuService,
                      self).getFirstMenuItem(menu_id, object, request)
 
 
     def getMenuUsage(self, menu_id):
-        """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
+        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         return self.getInheritedMenu(menu_id, True).usage
 

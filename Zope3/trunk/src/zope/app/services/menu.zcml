@@ -58,8 +58,9 @@
 
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
-        set_schema="zope.app.interfaces.publisher.browser.IBrowserMenuItem" />
+        interface="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
+        set_schema="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
+        />
 
   </content>
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.9 2003/12/07 10:04:52 gotcha Exp $
+$Id: browser.py,v 1.1 2004/03/02 17:40:52 philikon Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _

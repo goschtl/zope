@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.8 2003/12/07 10:04:49 gotcha Exp $
+$Id: metadirectives.py,v 1.9 2004/03/02 17:40:48 philikon Exp $
 """
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
-from zope.app.interfaces.publisher.browser import IUsage
+from zope.app.publisher.interfaces.browser import IUsage
 
 class ICommonInformation(IUsage):
     """

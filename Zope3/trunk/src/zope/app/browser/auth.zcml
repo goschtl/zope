@@ -8,7 +8,8 @@
       class=".auth.HTTPAuthenticationLogin"
       attribute="login"
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.publisher.http.ILogin" />
+      allowed_interface="zope.app.publisher.interfaces.http.ILogin"
+      />
 
   <page
       name="logout.html"
@@ -16,6 +17,7 @@
       class=".auth.HTTPAuthenticationLogout"
       attribute="logout"
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.publisher.http.ILogout" />
+      allowed_interface="zope.app.publisher.interfaces.http.ILogout"
+      />
 
 </zope:configure>

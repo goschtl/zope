@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.25 2004/02/25 23:02:16 faassen Exp $
+$Id: test_adding.py,v 1.26 2004/03/02 17:40:48 philikon Exp $
 """
 
 import unittest
@@ -183,7 +183,7 @@ def test_constraint_driven_adding():
     """
     >>> setUp()
     >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
-    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> from zope.app.publisher.interfaces.browser import IBrowserMenuService
     >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
     ...                              IBrowserMenuService)
     >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
@@ -353,7 +353,7 @@ def test_SingleMenuItem_and_CustomAddView_NonICNC():
     
     >>> setUp()
     >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
-    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> from zope.app.publisher.interfaces.browser import IBrowserMenuService
     >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
     ...                              IBrowserMenuService)
     >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
@@ -425,7 +425,7 @@ def test_SingleMenuItem_and_NoCustomAddView_NonICNC():
     
     >>> setUp()
     >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
-    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> from zope.app.publisher.interfaces.browser import IBrowserMenuService
     >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
     ...                              IBrowserMenuService)
     >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
@@ -495,7 +495,7 @@ def test_isSingleMenuItem_with_ICNC():
     
     >>> setUp()
     >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
-    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> from zope.app.publisher.interfaces.browser import IBrowserMenuService
     >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
     ...                              IBrowserMenuService)
     >>> from zope.app.publisher.browser.globalbrowsermenuservice \

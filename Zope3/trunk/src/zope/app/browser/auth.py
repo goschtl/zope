@@ -13,17 +13,16 @@
 ##############################################################################
 """Login and Logout screens
 
-$Id: auth.py,v 1.3 2003/08/04 13:58:02 sidnei Exp $
+$Id: auth.py,v 1.4 2004/03/02 17:40:47 philikon Exp $
 """
 from zope.interface import implements
-from zope.app.interfaces.publisher.http import ILogin, ILogout
+from zope.app.publisher.interfaces.http import ILogin, ILogout
 from zope.app.security.registries.principalregistry import \
      UnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
 
 class HTTPAuthenticationLogin(object):
-
     implements(ILogin)
 
     def login(self, nextURL=None):

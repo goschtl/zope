@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.11 2004/02/25 23:02:20 faassen Exp $
+$Id: test_menu.py,v 1.12 2004/03/02 17:40:49 philikon Exp $
 """
 
 import unittest
@@ -27,11 +27,11 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.browser.menu import MenuAccessView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
+from zope.app.publisher.interfaces.browser import IBrowserMenuService
 from zope.app.publication.traversers import TestTraverser
 from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
-from zope.app.interfaces.publisher.browser import IBrowserMenuService
 from zope.app.interfaces.services.service import ISimpleService
 
 def d(title, action):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope's HTTP-specific Publisher interfaces.
 
-$Id: http.py,v 1.1 2003/08/01 03:21:35 srichter Exp $
+$Id: http.py,v 1.1 2004/03/02 17:40:52 philikon Exp $
 """
 from zope.publisher.interfaces.http import IHTTPView
 

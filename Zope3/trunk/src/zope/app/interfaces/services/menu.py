@@ -13,10 +13,10 @@
 ##############################################################################
 """Locale Menu Service interfaces
 
-$Id: menu.py,v 1.3 2003/08/17 06:07:07 philikon Exp $
+$Id: menu.py,v 1.4 2004/03/02 17:40:50 philikon Exp $
 """
 from zope.schema import Bool
-from zope.app.interfaces.publisher.browser import \
+from zope.app.publisher.interfaces.browser import \
      IBrowserMenu, IBrowserMenuService
 
 class ILocalBrowserMenu(IBrowserMenu):

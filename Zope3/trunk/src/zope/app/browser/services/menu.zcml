@@ -14,13 +14,13 @@
   <page
        name="overview.html"
        menu="zmi_views" title="Overview"
-       for="zope.app.interfaces.publisher.browser.IBrowserMenuService"
+       for="zope.app.publisher.interfaces.browser.IBrowserMenuService"
        permission="zope.ManageServices"
        class=".menu.BrowserMenuServiceOverview"
        template="menu_overview.pt" />
 
   <defaultView
-      for="zope.app.interfaces.publisher.browser.IBrowserMenuService"
+      for="zope.app.publisher.interfaces.browser.IBrowserMenuService"
       name="overview.html" />
 
 <!-- Browser Menu -->
@@ -92,7 +92,7 @@
       action="+/AddLocalBrowserMenuItemForm=name" />
 
   <addform
-      schema="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
+      schema="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
       label="Add Browser Menu Item"
       content_factory="zope.app.services.menu.LocalBrowserMenuItem"
       name="AddLocalBrowserMenuItemForm"
@@ -100,14 +100,14 @@
 
   <editform
       name="edit.html"
-      for="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
-      schema="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
+      for="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
+      schema="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
       label="Edit Browser Menu Item"
       permission="zope.ManageContent"
       menu="zmi_views" title="Edit"/>
 
   <defaultView
-      for="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
+      for="zope.app.publisher.interfaces.browser.IBrowserMenuItem"
       name="edit.html" />
 
 </zope:configure>

@@ -13,12 +13,12 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: content.py,v 1.4 2003/08/20 18:21:09 philikon Exp $
+$Id: content.py,v 1.5 2004/03/02 17:40:51 philikon Exp $
 """
 from zope.app.interfaces.container import IAdding
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.publisher.browser import IBrowserMenuItem
+from zope.app.publisher.interfaces.browser import IBrowserMenuItem
 from zope.interface import Interface, Attribute
 from zope.schema import TextLine, Bool
 
