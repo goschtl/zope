@@ -4,7 +4,7 @@
 <h1>Proposal</h1>
 <!-- * -->
   <table>
-    <caption i18n:translate="">Versionable Proposal</caption>
+    <caption tal:content="context/title">Versionable Proposal</caption>
     <tr><th i18n:translate="">Use Cases</th>
         <td tal:content="context/usecase">What Situations we will solve</td>
         </tr>

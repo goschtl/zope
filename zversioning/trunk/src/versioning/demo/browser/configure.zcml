@@ -23,6 +23,15 @@
     permission="zope.ManageContent"
     />
 
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit the Proposal"
+    name="EditProposal.html"
+    menu="zmi_views"
+    title="Edit"
+    permission="zope.ManageContent"
+    />
+
 <browser:addMenuItem
     class="..vproposal.VProposal"
     title="Proposal"

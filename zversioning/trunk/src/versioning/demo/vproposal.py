@@ -14,3 +14,15 @@ class VProposal(persistent.Persistent):
         self.concept = concept
         self.todo = todo
         self.issues = issues
+        
+    def setTitle(self, title):
+        """Set bug title."""
+        dc = IZopeDublinCore(self)
+        dc.title = title
+
+    def getTitle(self):
+        """Get bug title."""
+        dc = IZopeDublinCore(self)
+        return dc.title
+        
+    title=property(getTitle,setTitle)        
