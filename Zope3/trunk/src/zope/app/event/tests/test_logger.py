@@ -11,23 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test suite for Zope.Event.Logger.
-
-$Id: test_logger.py,v 1.2 2002/12/25 14:12:51 jim Exp $
+"""
+$Id: test_logger.py,v 1.3 2002/12/30 14:03:05 stevea Exp $
 """
 
 import unittest
 import logging
 
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.component import getServiceManager, getService
+from zope.component import getServiceManager
 
-from zope.app.event import globalSubscribe
-from zope.event import unsubscribe, publish
+from zope.app.event import globalSubscribe, globalUnsubscribe, publish
 from zope.app.event.objectevent import ObjectAddedEvent
-from zope.app.event.logger import Logger
-
-from zope.app.event.globaleventservice import GlobalEventService
+from zope.app.event.globalservice import Logger
 
 class DopeyHandler(logging.Handler):
 
@@ -44,10 +40,10 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        from zope.interfaces.event import IEventService
-        getServiceManager(None).defineService("Events", IEventService)
-        from zope.app.event.globaleventservice import eventService
-        getServiceManager(None).provideService("Events", eventService)
+        from zope.app.interfaces.event import IPublisher
+        getServiceManager(None).defineService("Events", IPublisher)
+        from zope.app.event.globalservice import eventPublisher
+        getServiceManager(None).provideService("Events", eventPublisher)
         # futz a handler in for testing
         self.logger = logging.getLogger("Event.Logger")
         self.oldlevel = self.logger.level
@@ -62,7 +58,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         publish(None, ObjectAddedEvent(None, 'foo'))
 
     def tearDown(self):
-        unsubscribe(self.eventlogger)
+        globalUnsubscribe(self.eventlogger)
         self.logger.removeHandler(self.handler)
         self.logger.setLevel(self.oldlevel)
         self.logger.propagate = self.oldprop
@@ -102,5 +98,5 @@ def test_suite():
         unittest.makeSuite(TestLogger2),
         ])
 
-if __name__=='__main__':
+if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

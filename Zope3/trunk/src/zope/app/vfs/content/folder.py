@@ -13,11 +13,11 @@
 ##############################################################################
 """VFS Folder Add View
 
-$Id: folder.py,v 1.2 2002/12/25 14:13:29 jim Exp $
+$Id: folder.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
 """
 from zope.publisher.vfs import VFSView
 
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 from zope.app.interfaces.container import IAdding
@@ -39,7 +39,7 @@ class FolderAdd(VFSView):
 
 """VFS-View for IFolder
 
-$Id: folder.py,v 1.2 2002/12/25 14:13:29 jim Exp $
+$Id: folder.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)

@@ -10,7 +10,7 @@
         <tr metal:fill-slot="extra_top">
           <td class="EditAttributeName">Size</td>
 	  <td class="EditAttributeValue" tal:content="view/size"
-             >103 x 45 pixels</td>            
+             >103 x 45 pixels, 43KB</td>            
         </tr>
       </table>
  

@@ -25,14 +25,14 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.2 2002/12/25 14:12:54 jim Exp $
+$Id: subscribers.py,v 1.3 2002/12/30 14:03:06 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.interface import Interface
 from persistence import Persistent
 
-from zope.interfaces.event import ISubscriber
+from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
 from zope.proxy.context import ContextMethod
@@ -61,7 +61,7 @@ class Registration(Persistent):
 
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""
-        hub = getService(wrapped_self, "ObjectHub")
+        hub = getService(wrapped_self, "HubIds")
         wrapped_self._registerObject(event.object, hub)
     notify = ContextMethod(notify)
 
@@ -88,7 +88,7 @@ class Registration(Persistent):
 
     def registerExisting(wrapped_self):
         object = findContentObject(wrapped_self)
-        hub = getService(wrapped_self, "ObjectHub")
+        hub = getService(wrapped_self, "HubIds")
         wrapped_self._registerTree(object, hub)
     registerExisting = ContextMethod(registerExisting)
 
@@ -117,7 +117,7 @@ class Registration(Persistent):
 
     def _getChannel(wrapped_self, channel):
         if channel is None:
-            channel = getService(wrapped_self, "ObjectHub")
+            channel = getService(wrapped_self, "HubIds")
         return channel
     _getChannel = ContextMethod(_getChannel)
 

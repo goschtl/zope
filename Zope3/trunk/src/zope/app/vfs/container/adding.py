@@ -15,11 +15,11 @@
 
 This
 
-$Id: adding.py,v 1.2 2002/12/25 14:13:28 jim Exp $
+$Id: adding.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
 """
 from zope.component import getAdapter
 
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectAddedEvent
 
 from zope.publisher.interfaces import IPublishTraverse

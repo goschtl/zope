@@ -2,33 +2,44 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-#
+# 
 ##############################################################################
 """
+This contains some dummy stuff to do with subscribing to event channels
+that's useful in several test modules.
 
 Revision information:
-$Id: eventchannel.py,v 1.2 2002/12/25 14:13:37 jim Exp $
+$Id: subscriber.py,v 1.1 2002/12/30 14:03:05 stevea Exp $
 """
 
-from zope.event.subscribable import Subscribable
-from zope.interfaces.event import IEventChannel
+from zope.app.interfaces.event import IFilter, ISubscriber
 
-class EventChannel(Subscribable):
+class DummySubscriber:
 
-    __implements__ = IEventChannel
+    __implements__ = ISubscriber
 
+    def __init__(self):
+        self.notified = 0
+        
     def notify(self, event):
+        self.notified += 1
 
-        for subscriptions in self.subscriptionsForEvent(event):
+subscriber = DummySubscriber()
 
-            for subscriber, filter in subscriptions:
-                if filter is not None and not filter(event):
-                    continue
-                subscriber.notify(event)
+class DummyFilter:
+    __implements__ = IFilter
+    
+    def __init__(self,value=1):
+        self.value = value
+        
+    def __call__(self, event):
+        return self.value
+
+filter = DummyFilter

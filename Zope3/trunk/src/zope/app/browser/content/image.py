@@ -13,15 +13,15 @@
 ##############################################################################
 """ Define view component for naive file editing.
 
-$Id: image.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: image.py,v 1.3 2002/12/30 14:02:52 stevea Exp $
 """
 
 from zope.app.browser.content.file import FileUpload
+from zope.app.size import byteDisplay
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.event import publish
+from zope.app.event import publish
 from zope.publisher.browser import BrowserView
-
 
 class ImageData(BrowserView):
 
@@ -93,7 +93,13 @@ class ImageUpload(FileUpload):
 
     def size(self):
         sx, sy = self.context.getImageSize()
-        return "%s x %s pixels" % (sx > 0 and sx or 0, sx > 0 and sy or 0)
+        if sx < 0:
+            sx = '?'
+        if sy < 0:
+            sy = '?'
+        return "%s x %s pixels, %s" % (
+                sx, sy, byteDisplay(self.context.getSize())
+                )
 
     def apply_update(self, data):
         """Apply user inputs

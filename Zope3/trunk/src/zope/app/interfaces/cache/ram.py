@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: ram.py,v 1.2 2002/12/25 14:12:58 jim Exp $
+$Id: ram.py,v 1.3 2002/12/30 14:03:12 stevea Exp $
 """
 from zope.app.interfaces.cache.cache import ICache
-from zope.interfaces.event import ISubscriber
+from zope.app.interfaces.event import ISubscriber
 from zope.interface import Attribute
 
 class IRAMCache(ICache, ISubscriber):

@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: editview.py,v 1.3 2002/12/30 14:02:53 stevea Exp $
 """
 
 from datetime import datetime
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.forms import WidgetsError

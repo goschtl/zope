@@ -14,16 +14,21 @@
 """
 
 Revision information:
-$Id: event.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: event.py,v 1.3 2002/12/30 14:03:14 stevea Exp $
 """
-from zope.interface import Attribute
-from zope.interfaces.event import IIndirectSubscriber
 
-class IPathSubscriber(IIndirectSubscriber):
+from zope.interface import Interface
+from zope.app.interfaces.event import ISubscribable, ISubscriber, IPublisher
 
-    def __init__(wrapped_subscriber):
-        """creates new PathSubscriber for the given wrapped_subscriber"""
+class ISubscriptionService(ISubscribable):
+    """A Subscribable that implements the Subscription service."""
 
-    subscriber_path = Attribute(
-        """the slash-delineated physical path to the subscriber"""
-        )
+class IEventChannel(ISubscribable, ISubscriber):
+    """Interface for objects which distribute events to subscribers. """
+
+class IEventService(ISubscriptionService, IPublisher):
+    """Local event service implementation.
+    
+    Offers the Events and Subscription services.
+    """
+    

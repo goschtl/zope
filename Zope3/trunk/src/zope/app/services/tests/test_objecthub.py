@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.4 2002/12/28 17:49:32 stevea Exp $
+$Id: test_objecthub.py,v 1.5 2002/12/30 14:03:17 stevea Exp $
 """
 
 import unittest, sys
@@ -26,14 +26,12 @@ from zope.app.interfaces.event\
 from zope.app.event.objectevent\
         import ObjectAddedEvent, ObjectModifiedEvent, ObjectRemovedEvent,\
                ObjectMovedEvent, ObjectCreatedEvent
-from zope.interfaces.event import ISubscriber
 from zope.app.interfaces.services.hub import ObjectHubError
 from zope.app.interfaces.services.hub import \
      IObjectRemovedHubEvent, IObjectModifiedHubEvent, \
      IObjectMovedHubEvent, IObjectRegisteredHubEvent, \
      IObjectUnregisteredHubEvent
 
-import zope.app.services.hub
 from zope.app.services.hub \
         import ObjectModifiedHubEvent, ObjectRemovedHubEvent, \
         ObjectMovedHubEvent, ObjectRegisteredHubEvent, \
@@ -42,9 +40,7 @@ from zope.app.services.hub \
 from zope.exceptions import NotFoundError
 from types import StringTypes
 
-from zope.app.traversing import locationAsUnicode, locationAsTuple
-
-from zope.component import getService, getServiceManager
+from zope.app.traversing import locationAsUnicode, locationAsTuple, traverse
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.
@@ -52,61 +48,6 @@ from zope.component import getService, getServiceManager
 # we'll need real tests of the placeful aspects, but for now a basic
 # test happens simply by virtue of the testHubEvent module in this
 # directory
-
-class LoggingSubscriber:
-    # XXX Jim mentioned there is a new generic
-    # version of this in zope.app somewhere...
-
-    __implements__ = ISubscriber
-
-    def __init__(self):
-        self.events_received = []
-
-    def notify(self, event):
-        self.events_received.append(event)
-
-    def verifyEventsReceived(self, testcase, event_spec_list):
-        # iterate through self.events_received and check
-        # that each one implements the interface that is
-        # in the same place, with the same location and hub id
-
-        testcase.assertEqual(len(event_spec_list), len(self.events_received))
-
-        for spec,event in zip(event_spec_list, self.events_received):
-            if len(spec)==4:
-                interface,hubid,location,obj = spec
-            elif len(spec)==3:
-                interface,hubid,location = spec
-                obj = None
-            elif len(spec)==2:
-                interface, location = spec
-                obj = None
-                hubid = None
-            location = locationAsTuple(location)
-            testcase.assert_(interface.isImplementedBy(event),
-                             'Interface %s' % interface.getName())
-            testcase.assertEqual(event.location, location)
-
-            if obj is not None:
-                testcase.assertEqual(event.object, obj)
-
-            # Sometimes, the test won't care about the hubid. In this case,
-            # it is passed into the spec as None.
-            if hubid is not None:
-                testcase.assertEqual(event.hubid, hubid)
-
-        self.events_received = []
-
-class RegistrationSubscriber(LoggingSubscriber):
-    def __init__(self, objectHub):
-        LoggingSubscriber.__init__(self)
-        self.hub = objectHub
-
-    def notify(self, event):
-        LoggingSubscriber.notify(self, event)
-        if IObjectAddedEvent.isImplementedBy(event):
-            self.hub.register(event.location)
-
 
 class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
     hubid = 23
@@ -119,14 +60,11 @@ class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpLoggingSubscriber()
         self.hub_event = self.klass(self.object_hub,
                                            self.hubid,
                                            self.location,
                                            self.obj)
-
-        self.subscriber = LoggingSubscriber()
-        self.object_hub.subscribe(self.subscriber)
 
     def testTransmittedEvent(self):
         # Test that the HubEvents are transmitted by the notify method
@@ -150,12 +88,10 @@ class TransmitObjectMovedHubEventTest(TransmitHubEventTest):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpLoggingSubscriber()
         self.hub_event = self.klass(
                 self.object_hub, self.hubid,
                 locationAsTuple('/old/location'), self.location, self.obj)
-        self.subscriber = LoggingSubscriber()
-        self.object_hub.subscribe(self.subscriber)
 
 class TransmitObjectRegisteredHubEventTest(TransmitHubEventTest):
     interface = IObjectRegisteredHubEvent
@@ -172,10 +108,8 @@ class BasicHubTest(ObjectHubSetup, unittest.TestCase):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpLoggingSubscriber()
         self.setEvents()
-        self.subscriber = LoggingSubscriber()
-        self.object_hub.subscribe(self.subscriber)
 
     def setEvents(self):
         self.created_event = ObjectCreatedEvent(object())
@@ -236,6 +170,10 @@ class TestSearchRegistrations(BasicHubTest):
         '/foo/bas',
         '/foo/bas/baz',
         )
+        
+    def setUp(self):
+        ObjectHubSetup.setUp(self)
+        
     def testSearchAll(self):
         object_hub = self.object_hub
         location_hubid = [(locationAsTuple(location),
@@ -266,8 +204,16 @@ class TestSearchRegistrations(BasicHubTest):
                           self.object_hub.register, u'/foo/\uffffstuff')
 
     def testIterObjectRegistrations(self):
+        class FakeObject:
+            def __init__(self, location):
+                self.location = location
+            def __str__(self):
+                return 'FakeObject at %s' % self.location
+            def __eq__(self, other):
+                return self.location == other.location
+
         def fake_object_for_location(location):
-            return 'object at %s' % locationAsUnicode(location)
+            return FakeObject(locationAsUnicode(location))
 
         from zope.app.interfaces.traversing import ITraverser
         class DummyTraverser:
@@ -277,12 +223,10 @@ class TestSearchRegistrations(BasicHubTest):
             def traverse(self, location):
                 return fake_object_for_location(location)
 
-        from zope.component.adapter\
-             import provideAdapter
+        from zope.component.adapter import provideAdapter
         provideAdapter(None, ITraverser, DummyTraverser)
 
         object_hub = self.object_hub
-
         location_hubid_object = [(locationAsTuple(location),
                                   object_hub.register(location),
                                   fake_object_for_location(location)
@@ -312,10 +256,8 @@ class TestNoRegistration(BasicHubTest):
 class TestObjectCreatedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpRegistrationSubscriber()
         self.setEvents()
-        self.subscriber = RegistrationSubscriber(self.object_hub)
-        self.object_hub.subscribe(self.subscriber)
 
     def testLookingUpLocation(self):
         hub = self.object_hub
@@ -346,10 +288,8 @@ class TestObjectCreatedEvent(BasicHubTest):
 class TestObjectAddedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpRegistrationSubscriber()
         self.setEvents()
-        self.subscriber = RegistrationSubscriber(self.object_hub)
-        self.object_hub.subscribe(self.subscriber)
 
     def testLookingUpLocation(self):
         # Test that the location is in the lookup
@@ -405,10 +345,8 @@ class TestObjectAddedEvent(BasicHubTest):
 class TestObjectRemovedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpRegistrationSubscriber()
         self.setEvents()
-        self.subscriber = RegistrationSubscriber(self.object_hub)
-        self.object_hub.subscribe(self.subscriber)
 
     def testRemovedLocation(self):
         # Test that a location that is added then removed is actually gone.
@@ -458,10 +396,8 @@ class TestObjectRemovedEvent(BasicHubTest):
 class TestObjectModifiedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpRegistrationSubscriber()
         self.setEvents()
-        self.subscriber = RegistrationSubscriber(self.object_hub)
-        self.object_hub.subscribe(self.subscriber)
 
     def testModifiedLocation(self):
         # Test that lookup state does not change after an object modify event.
@@ -517,10 +453,8 @@ class TestObjectModifiedEvent(BasicHubTest):
 class TestObjectMovedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setUpRegistrationSubscriber()
         self.setEvents()
-        self.subscriber = RegistrationSubscriber(self.object_hub)
-        self.object_hub.subscribe(self.subscriber)
 
     def testMovedLocation(self):
         # Test that the location does indeed change after a move.

@@ -14,66 +14,68 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.2 2002/12/25 14:12:51 jim Exp $
+$Id: test_directives.py,v 1.3 2002/12/30 14:03:05 stevea Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
+
+from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+import zope.app.event
 from StringIO import StringIO
 
-from zope.configuration.xmlconfig import xmlconfig
-
 from zope.exceptions import NotFoundError
-from zope.event import subscribe, unsubscribe, publish
+from zope.app.event import globalUnsubscribe, publish
 from zope.app.event.objectevent import ObjectAddedEvent
 from zope.app.event.objectevent import ObjectRemovedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.tests.test_eventservice \
-     import DummySubscriber, DummyFilter, DummyEvent
+from zope.app.event.tests.test_eventpublisher \
+     import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.component import getServiceManager, getService
+from zope.component import getServiceManager
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
-
+from zope.app.interfaces.event import IEvent
 
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        from zope.interfaces.event import IEventService
-        getServiceManager(None).defineService("Events", IEventService)
-        from zope.app.event.globaleventservice import eventService
-        getServiceManager(None).provideService("Events", eventService)
+        from zope.app.interfaces.event import IPublisher
+        getServiceManager(None).defineService("Events", IPublisher)
+        from zope.app.event.globalservice import eventPublisher
+        getServiceManager(None).provideService("Events", eventPublisher)
 
     def testSubscribe(self):
-        from zope.event.tests.subscriber import subscriber
+        from zope.app.event.tests.subscriber import subscriber
+        # This should do nothing silently, as the event_type is default
+        globalUnsubscribe(subscriber)
         # This should fail, since we're not subscribed
-        self.assertRaises(NotFoundError,unsubscribe,None,subscriber)
-
-        xmlconfig(makeconfig(
-            '''<directive
-                   name="subscribe"
-                   attributes="subscriber event_types filter"
-                   handler="zope.app.event.metaconfigure.subscribe" />''',
-            '''<test:subscribe
-                   subscriber="zope.event.tests.subscriber.subscriber"
+        self.assertRaises(NotFoundError, globalUnsubscribe, subscriber, IEvent)
+        XMLConfig('meta.zcml', zope.app.event)()
+        xmlconfig(StringIO(
+            '''<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+                              xmlns:test='http://namespaces.zope.org/event'>
+            <test:subscribe
+                   subscriber="zope.app.event.tests.subscriber.subscriber"
                    event_types=
                        "zope.app.interfaces.event.IObjectAddedEvent
                         zope.app.interfaces.event.IObjectRemovedEvent"
-                   filter="zope.event.tests.subscriber.filter" />'''
+                   filter="zope.app.event.tests.subscriber.filter" />
+            </zopeConfigure>'''
             ))
 
-        publish(None,ObjectAddedEvent(None, 'foo'))
-        self.assertEqual(subscriber.notified,1)
-        publish(None,ObjectRemovedEvent(object(), 'foo'))
-        self.assertEqual(subscriber.notified,2)
-        publish(None,ObjectModifiedEvent(None, 'foo'))
-        self.assertEqual(subscriber.notified,2) # NB: no increase ;-)
-        publish(None,DummyEvent())
-        self.assertEqual(subscriber.notified,4) # NB: increased by 2 ;-)
+        publish(None, ObjectAddedEvent(None, 'foo'))
+        self.assertEqual(subscriber.notified, 1)
+        publish(None, ObjectRemovedEvent(object(), 'foo'))
+        self.assertEqual(subscriber.notified, 2)
+        publish(None, ObjectModifiedEvent(None, 'foo'))
+        self.assertEqual(subscriber.notified, 2) # NB: no increase ;-)
+        publish(None, DummyEvent())
+        self.assertEqual(subscriber.notified, 4) # NB: increased by 2 ;-)
 
-        unsubscribe(subscriber)
+        globalUnsubscribe(subscriber)
 
 def test_suite():
     return makeSuite(Test)
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main(defaultTest='test_suite')

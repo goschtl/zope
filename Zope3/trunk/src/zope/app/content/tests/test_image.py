@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
+$Id: test_image.py,v 1.4 2002/12/30 14:02:59 stevea Exp $
 """
 
 import unittest
@@ -94,6 +94,12 @@ class TestSized(unittest.TestCase):
         s = ImageSized(DummyImage(34, 56, 78))
         self.assertEqual(s.sizeForSorting(), ('byte', 78))
         self.assertEqual(s.sizeForDisplay(), u'1 KB 34x56')
+
+    def test_unknownSize(self):
+        from zope.app.content.image import ImageSized
+        s = ImageSized(DummyImage(-1, -1, 23))
+        self.assertEqual(s.sizeForSorting(), ('byte', 23))
+        self.assertEqual(s.sizeForDisplay(), u'1 KB ?x?')
 
 def test_suite():
     return unittest.TestSuite((unittest.makeSuite(TestImage),

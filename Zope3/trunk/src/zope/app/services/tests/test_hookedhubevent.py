@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_hookedhubevent.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_hookedhubevent.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
 """
 
 # in this version of these tests, we are no longer using a fake
@@ -37,7 +37,6 @@ class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)
@@ -66,7 +65,6 @@ class TestEmptyObjectRegisteredHubEvent(TestObjectRegisteredHubEvent):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)
@@ -80,7 +78,6 @@ class TestEmptyObjectUnregisteredHubEvent(TestObjectUnregisteredHubEvent):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)
@@ -94,7 +91,6 @@ class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)
@@ -106,7 +102,6 @@ class TestObjectMovedHubEvent(AbstractTestHubEvent):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)
@@ -126,7 +121,6 @@ class TestEmptyObjectMovedHubEvent(TestObjectMovedHubEvent):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
         self.location = getPhysicalPath(self.obj)

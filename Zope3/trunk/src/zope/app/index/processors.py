@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.3 2002/12/28 17:49:26 stevea Exp $
+$Id: processors.py,v 1.4 2002/12/30 14:03:06 stevea Exp $
 """
 
 from __future__ import generators
@@ -43,7 +43,7 @@ class ObjectRetrievingProcessor:
         list = getAdapter(query, IRankedHubIdList)
         batch = getAdapter(query, IBatchedResult)
 
-        objectHub = getService(wrapped_self, "ObjectHub")
+        objectHub = getService(wrapped_self, "HubIds")
 
         # XXX do we need wrapping for the objects returned by the hub?
         iterator = RankedObjectIterator(list, objectHub.getObject, batch.startPosition,

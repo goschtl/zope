@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: cache.py,v 1.3 2002/12/30 14:03:16 stevea Exp $
 """
 __metaclass__ = type
 
@@ -23,10 +23,9 @@ from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.services.configuration \
         import INameComponentConfigurable
 from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.services.event \
-        import ProtoServiceEventChannel
+from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.proxy.context import ContextMethod
-from zope.interfaces.event import IEventChannel
+from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.event import IObjectModifiedEvent
 
 
@@ -35,10 +34,10 @@ class ILocalCachingService(ICachingService, IEventChannel,
     """TTW manageable caching service"""
 
 
-class CachingService(ProtoServiceEventChannel, NameComponentConfigurable):
+class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
 
     __implements__ = (ILocalCachingService,
-                      ProtoServiceEventChannel.__implements__)
+                      ServiceSubscriberEventChannel.__implements__)
 
     _subscribeToServiceInterface = IObjectModifiedEvent
 
@@ -48,7 +47,7 @@ class CachingService(ProtoServiceEventChannel, NameComponentConfigurable):
         #     super(ClassName, self).__init__(*args, **kw), then we can
         #     replace the following with just a call to super.
         Persistent.__init__(self)
-        ProtoServiceEventChannel.__init__(self)
+        ServiceSubscriberEventChannel.__init__(self)
         NameComponentConfigurable.__init__(self)
 
     def getCache(wrapped_self, name):
@@ -88,7 +87,7 @@ class CachingService(ProtoServiceEventChannel, NameComponentConfigurable):
 
 """A configuration for a cache.
 
-$Id: cache.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: cache.py,v 1.3 2002/12/30 14:03:16 stevea Exp $
 """
 
 from zope.app.interfaces.services.cache import ICacheConfiguration

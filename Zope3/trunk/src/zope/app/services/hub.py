@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
+$Id: hub.py,v 1.4 2002/12/30 14:03:16 stevea Exp $
 """
 
 from __future__ import generators
@@ -39,7 +39,7 @@ from zope.app.interfaces.event import IObjectRemovedEvent, IObjectEvent
 from zope.app.interfaces.event import IObjectMovedEvent, IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.hub import IObjectHub, ObjectHubError
-from zope.app.services.event import ProtoServiceEventChannel
+from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.app.interfaces.services.hub import IObjectRegisteredHubEvent
 from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
 from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
@@ -162,7 +162,7 @@ def randid():
     else:
         return abs
 
-class ObjectHub(ProtoServiceEventChannel):
+class ObjectHub(ServiceSubscriberEventChannel, ):
 
     # this implementation makes the decision to not interact with any
     # object hubs above it: it is a world unto itself, as far as it is
@@ -171,10 +171,10 @@ class ObjectHub(ProtoServiceEventChannel):
 
     __implements__ = (
         IObjectHub,
-        ProtoServiceEventChannel.__implements__)
+        ServiceSubscriberEventChannel.__implements__)
 
     def __init__(self):
-        ProtoServiceEventChannel.__init__(self)
+        ServiceSubscriberEventChannel.__init__(self)
         # int --> tuple of unicodes
         self.__hubid_to_location = IOBTree()
         # tuple of unicodes --> int
@@ -183,16 +183,13 @@ class ObjectHub(ProtoServiceEventChannel):
     # XXX this is copied because of some context method problems
     # with moving LocalEventChannel.notify to this _notify via a simple
     # assignment, i.e. _notify = LocalEventChannel.notify
-    def _notify(clean_self, wrapped_self, event):
-        subscriptionses = clean_self.subscriptionsForEvent(event)
-        # that's a non-interface shortcut for
-        # subscriptionses = clean_self._registry.getAllForObject(event)
-
-        for subscriptions in subscriptionses:
-            for subscriber, filter in subscriptions:
-                if filter is not None and not filter(event):
-                    continue
-                ContextWrapper(subscriber, wrapped_self).notify(event)
+    #def _notify(clean_self, wrapped_self, event):
+    #    subscriptionsForEvent = clean_self._registry.getAllForObject(event)
+    #    for subscriptions in subscriptionsForEvent:
+    #        for subscriber, filter in subscriptions:
+    #            if filter is not None and not filter(event):
+    #                continue
+    #            ContextWrapper(subscriber, wrapped_self).notify(event)
 
     def notify(wrapped_self, event):
         '''See interface ISubscriber'''

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.4 2002/12/28 17:49:32 stevea Exp $
+$Id: placefulsetup.py,v 1.5 2002/12/30 14:03:17 stevea Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -28,15 +28,15 @@ from zope.app.interfaces.container import ISimpleReadContainer
 from zope.app.interfaces.content.folder import IRootFolder
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.traversing import ITraverser
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.traversing.namespace import etc, provideNamespaceHandler
 from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.traversing.namespace import etc
-from zope.app.traversing.namespace import provideNamespaceHandler
 from zope.app.traversing.adapters import WrapperPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
-
+from zope.app.traversing import traverse, getPhysicalPathString
+from zope.app.services.service import ServiceManager, ServiceConfiguration
+from zope.app.interfaces.services.configuration import Active
 
 class PlacefulSetup(PlacelessSetup):
 
@@ -84,10 +84,9 @@ class PlacefulSetup(PlacelessSetup):
         #   |           \            |            |
         # folder1_1_1 folder1_1_2  folder1_2_1  folder2_1_1
         from zope.app.content.folder import Folder
-        from zope.app.content.folder import RootFolder
         from zope.proxy.context import ContextWrapper
         # top
-        self.rootFolder = RootFolder()
+        self.createRootFolder()
         # level 1
         self.folder1 = Folder()
         self.rootFolder.setObject("folder1", self.folder1)
@@ -128,10 +127,83 @@ class PlacefulSetup(PlacelessSetup):
         self.folder2_1_1 = ContextWrapper(self.folder2_1_1, self.folder2_1,
              name = "folder2_1_1")
 
-    def createServiceManager(self, folder = None):
+    def createServiceManager(self, folder=None):
         if folder is None:
             folder = self.rootFolder
         from zope.app.services.tests.servicemanager \
              import TestingServiceManager
-
         folder.setServiceManager(TestingServiceManager())
+
+    def createRootFolder(self):
+        from zope.app.content.folder import RootFolder
+        self.rootFolder = RootFolder()
+
+    def getObjectHub(self):
+        from zope.app.services.hub import ObjectHub
+        return ObjectHub()
+
+    def createEventService(self, folder_path):
+        """Create an event service in 'folder', and configure it for
+        Events and Subscription services."""
+        folder = traverse(self.rootFolder, folder_path)
+        if not folder.hasServiceManager():
+            folder.setServiceManager(ServiceManager())
+        sm = traverse(folder, '++etc++Services')
+        default = traverse(sm, 'Packages/default')
+        service_name = 'anEventService'
+        from zope.app.services.event import EventService
+        default.setObject(service_name, EventService())
+
+        path = "%s/%s" % (getPhysicalPathString(default), service_name)
+        configuration = ServiceConfiguration("Events", path)
+        default['configure'].setObject(
+                "%sEventsDir" % service_name, configuration)
+        traverse(default, 'configure/1').status = Active
+
+        configuration = ServiceConfiguration("Subscription", path)
+        default['configure'].setObject(
+                "%sSubscriptionServiceDir" % service_name, configuration)
+        traverse(default, 'configure/2').status = Active
+
+    def createStandardServices(self):
+        '''Create a bunch of standard placeful services'''
+        if not hasattr(self, 'rootFolder'):
+            self.createRootFolder()
+        root = self.rootFolder
+        if root.hasServiceManager():
+            raise RuntimeError('ServiceManager already exists, so cannot '
+                               'create standard services')
+        root.setServiceManager(ServiceManager())
+        from zope.component import getServiceManager        
+        defineService = getServiceManager(None).defineService
+
+        from zope.app.interfaces.services.hub import IObjectHub
+        from zope.app.interfaces.services.event import ISubscriptionService
+        from zope.app.services.event import EventService
+        defineService("Subscription", ISubscriptionService)
+
+        # Events service already defined by
+        # zope.app.events.tests.PlacelessSetup
+
+        defineService("HubIds", IObjectHub)
+
+        sm = traverse(root, '++etc++Services')
+        default = traverse(sm, 'Packages/default')
+        default.setObject("myEventService", EventService())
+        default.setObject("myObjectHub", self.getObjectHub())
+
+        path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
+        configuration = ServiceConfiguration("Events", path)
+        default['configure'].setObject("myEventServiceDir", configuration)
+        traverse(default, 'configure/1').status = Active
+
+        configuration = ServiceConfiguration("Subscription", path)
+        default['configure'].setObject(
+                "mySubscriptionServiceDir", configuration)
+        traverse(default, 'configure/2').status = Active
+
+        path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
+        configuration = ServiceConfiguration("HubIds", path)
+        default['configure'].setObject("myHubIdsServiceDir", configuration)
+        traverse(default, 'configure/3').status = Active
+

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_imageupload.py,v 1.2 2002/12/25 14:12:31 jim Exp $
+$Id: test_imageupload.py,v 1.3 2002/12/30 14:02:52 stevea Exp $
 """
 
 import os
@@ -54,7 +54,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.__view = IU(image, TestRequest())
 
     def test_size(self):
-        self.assertEqual(self.__view.size(), "16 x 16 pixels")
+        self.assertEqual(self.__view.size(), "16 x 16 pixels, 1 KB")
 
     def test_apply_update_no_data(self):
         view = self.__view

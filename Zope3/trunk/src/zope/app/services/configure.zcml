@@ -2,149 +2,154 @@
 
 <!-- Configuration registries -->
 
-  <content class="zope.app.services.configuration.ConfigurationRegistry">
-    <require
-       permission="zope.ManageServices"
-       interface=
-       "zope.app.interfaces.services.configuration.IConfigurationRegistry"
-       />
-    </content>
+<content class="zope.app.services.configuration.ConfigurationRegistry">
+  <require
+      permission="zope.ManageServices"
+      interface=
+      "zope.app.interfaces.services.configuration.IConfigurationRegistry"
+      />
+</content>
 
 <!-- Adapter Service -->
 
-  <content class="zope.app.services.adapter.AdapterService">
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
-    <factory
-       id="zope.app.services.AdapterService"
-       permission="zope.ManageServices"
-       />
-    <require
-       permission="zope.ManageServices"
-       interface="zope.app.interfaces.services.configuration.IConfigurable"
-       attributes="getRegisteredMatching"
-       />
-    </content>
+<content class="zope.app.services.adapter.AdapterService">
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      />
+  <factory
+      id="zope.app.services.AdapterService"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.configuration.IConfigurable"
+      attributes="getRegisteredMatching"
+      />
+</content>
 
-  <content class="zope.app.services.adapter.AdapterConfiguration">
-     <require
-        permission="zope.ManageServices"
-        interface=
-            "zope.app.interfaces.services.interfaces.IAdapterConfiguration"
-        set_schema=
-            "zope.app.interfaces.services.configuration.IConfiguration"
-        />
-     <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
-        />
-    </content>    
+<content class="zope.app.services.adapter.AdapterConfiguration">
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.interfaces.IAdapterConfiguration"
+      set_schema="zope.app.interfaces.services.configuration.IConfiguration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
+</content>    
 
 <!-- View Service -->
 
-  <content class="zope.app.services.view.ViewService">
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-    <factory
-       id="zope.app.services.ViewService"
-       permission="zope.ManageServices"
-       />
-    <require
-       permission="zope.ManageServices"
-       interface="zope.app.interfaces.services.configuration.IConfigurable"
-       attributes="getRegisteredMatching"
-       />
-    </content>
+<content class="zope.app.services.view.ViewService">
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+  <factory
+      id="zope.app.services.ViewService"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.configuration.IConfigurable"
+      attributes="getRegisteredMatching"
+      />
+</content>
 
-  <content class="zope.app.services.view.ViewConfiguration">
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.interfaces.IViewConfiguration"
-        set_schema=
-            "zope.app.interfaces.services.configuration.IConfiguration"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
-        />
-    </content>    
+<content class="zope.app.services.view.ViewConfiguration">
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.interfaces.IViewConfiguration"
+      set_schema="zope.app.interfaces.services.configuration.IConfiguration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
+</content>    
 
-  <content class="zope.app.services.view.PageConfiguration">
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.interfaces.IPageConfiguration"
-        set_schema=
-            "zope.app.interfaces.services.configuration.IConfiguration"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
-        />
-    </content>    
+<content class="zope.app.services.view.PageConfiguration">
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.interfaces.IPageConfiguration"
+      set_schema="zope.app.interfaces.services.configuration.IConfiguration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
+</content>    
 
 <!-- Page Templates -->
 
-  <content class="zope.app.services.zpt.ZPTTemplate">
-    <factory
-        id="zope.app.services.zpt.template"
-        permission="zope.ManageServices"
-        title="ZPT Template"
-        description="Page Template" />
-
-    <require
-        permission="zope.View"
-        attributes="__call__" />
-
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.interfaces.IZPTTemplate"
-        set_schema="zope.app.interfaces.services.interfaces.IZPTTemplate" />
-
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-    </content>
+<content class="zope.app.services.zpt.ZPTTemplate">
+  <factory
+      id="zope.app.services.zpt.template"
+      permission="zope.ManageServices"
+      title="ZPT Template"
+      description="Page Template"
+      />
+  <require
+      permission="zope.View"
+      attributes="__call__"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.interfaces.IZPTTemplate"
+      set_schema="zope.app.interfaces.services.interfaces.IZPTTemplate"
+      />
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      />
+</content>
 
 <!-- Role Templates -->
 
-  <content class="zope.app.services.role.RoleService">
-    <factory
-        id="RoleService"
-        permission="zope.ManageServices"
-        />
-    <require
-        permission="zope.Security"
-        interface="zope.app.interfaces.security.IRoleService" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IContainer" />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" /> 
-    </content>
+<content class="zope.app.services.role.RoleService">
+  <factory
+      id="RoleService"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.Security"
+      interface="zope.app.interfaces.security.IRoleService"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IContainer"
+      />
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      />
+</content>
 
-  <content class="zope.app.services.role.Role">
-    <factory />
-    <require
-        permission="zope.Security"
-        interface="zope.app.interfaces.security.IRole" />
-    </content>
+<content class="zope.app.services.role.Role">
+  <factory />
+  <require
+      permission="zope.Security"
+      interface="zope.app.interfaces.security.IRole"
+      />
+</content>
 
 <!-- Session Templates -->
 
-  <serviceType
-      id="Sessions" 
-      interface="zope.app.interfaces.services.session.ISessionService" />
+<serviceType
+    id="Sessions" 
+    interface="zope.app.interfaces.services.session.ISessionService"
+    />
 
-  <content class="zope.app.services.session.CookieSessionService">
-    <require
+<content class="zope.app.services.session.CookieSessionService">
+  <require
       permission="zope.Public"
-      interface="zope.app.interfaces.services.session.ISessionService" />
-    <factory
+      interface="zope.app.interfaces.services.session.ISessionService"
+      />
+  <factory
       id="ISessionService"
-      permission="zope.ManageServices" />
+      permission="zope.ManageServices"
+      />
   <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" /> 
-  </content>
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      />
+</content>
 
 <!-- Caching Service -->
 
@@ -361,26 +366,6 @@
        /> 
     </content>
 
-<!-- Event Service -->
-
-  <content class='zope.app.services.event.LocalEventService'>
-
-    <factory
-        id='Events'
-        permission='zope.ManageServices' />
-
-    <require
-        permission="zope.View"
-        attributes="publish notify" />
-    <require
-        permission="zope.ManageServices"
-        attributes="bound unbound subscribe unsubscribe subscribeOnBind
-                    unsubscribedFrom subscribedTo" />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
-        /> 
-    </content>
-
 <!-- Error reporting service -->
 
   <serviceType
@@ -403,7 +388,7 @@
 <!-- Object Hub -->
 
   <serviceType
-      id='ObjectHub' 
+      id='HubIds' 
       interface='zope.app.interfaces.services.hub.IObjectHub' />
 
   <content class='zope.app.services.hub.ObjectHub'>
@@ -457,5 +442,30 @@
       <implements
           interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
+
+<!-- Event Service -->
+<content class='zope.app.services.event.EventService'>
+  <factory
+      id='Events'
+      permission='zope.ManageServices'
+      />
+  <require
+      permission="zope.View"
+      attributes="publish notify"
+      />
+  <require
+      permission="zope.ManageServices"
+      attributes="bound unbound subscribe unsubscribe subscribeOnBind
+                  unsubscribedFrom subscribedTo"
+      />
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable."
+      />
+</content>
+
+<serviceType
+    id='Subscription'
+    interface='zope.app.interfaces.services.event.ISubscriptionService'
+    />
 
 </zopeConfigure>

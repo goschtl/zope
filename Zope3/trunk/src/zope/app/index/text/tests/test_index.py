@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.4 2002/12/28 17:49:27 stevea Exp $
+$Id: test_index.py,v 1.5 2002/12/30 14:03:08 stevea Exp $
 """
 
 import unittest
@@ -21,12 +21,11 @@ import unittest
 from zope.component.adapter import provideAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent
 
-from zope.app.services.tests.placefulsetup import \
-     PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 
 from zope.app.interfaces.traversing import ITraverser
-from zope.app.traversing import locationAsUnicode
-
+from zope.app.traversing import locationAsUnicode, traverse
+from zope.component import getService
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.services.hub import \
@@ -45,17 +44,6 @@ class FakeSearchableObject:
     def getSearchableText(self):
         return self.texts
 
-class FakeTraverser:
-    __implements__ = ITraverser
-    def __init__(self, object, location):
-        self.__object = object
-        self.__location = location
-    def traverse(self, path):
-        canonical_path = locationAsUnicode(path)
-        if canonical_path == self.__location:
-            return self.__object
-        raise KeyError, (path, canonical_path)
-
 Bruce = u"Bruce"
 Sheila = u"Sheila"
 
@@ -63,8 +51,11 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
+        self.buildFolders()
         self.index = TextIndex()
+        self.rootFolder.setObject('myIndex', self.index)
         self.object = FakeSearchableObject()
+        self.rootFolder.setObject('bruce', self.object)
 
     def assertPresent(self, word, docid):
         results, total = self.index.query(word)
@@ -102,12 +93,14 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testHubMachinery(self):
         # Technically this is a functional test
-        hub = ObjectHub()
-        hub.subscribe(self.index, IRegistrationHubEvent)
-        hub.subscribe(self.index, IObjectModifiedHubEvent)
+        self.createStandardServices()
+        index = traverse(self.rootFolder, '/myIndex')
+        hub = getService(self.rootFolder, 'HubIds')
+        
+        hub.subscribe(index, IRegistrationHubEvent)
+        hub.subscribe(index, IObjectModifiedHubEvent)
         location = "/bruce"
-        traverser = FakeTraverser(self.object, location)
-        provideAdapter(None, ITraverser, lambda dummy: traverser)
+        self.rootFolder.setObject(location, self.object)
 
         hubid = hub.register(location)
         self.assertPresent(Bruce, hubid)
@@ -123,21 +116,23 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertAbsent(Sheila)
 
     def testBootstrap(self):
-        self.assertEqual(self.index.isSubscribed(), False)
+        # Need to set up a HubIds service because the standard subscription
+        # mix-ins expect to see one.
+        self.createStandardServices()
+    
+        index = traverse(self.rootFolder, '/myIndex')
+        self.assertEqual(index.isSubscribed(), False)
         self.assertAbsent(Bruce)
         self.assertAbsent(Sheila)
-
-        hub = ObjectHub()
-        location = "/bruce"
-        traverser = FakeTraverser(self.object, location)
-        provideAdapter(None, ITraverser, lambda dummy: traverser)
+        location = '/bruce'
+        hub = getService(self.rootFolder, 'HubIds')
         hubid = hub.register(location)
-        self.index.subscribe(hub)
-        self.assertEqual(self.index.isSubscribed(), True)
+        index.subscribe(hub)
+        self.assertEqual(index.isSubscribed(), True)
         self.assertPresent(Bruce, hubid)
 
-        self.index.unsubscribe(hub)
-        self.assertEqual(self.index.isSubscribed(), False)
+        index.unsubscribe(hub)
+        self.assertEqual(index.isSubscribed(), False)
         self.assertPresent(Bruce, hubid)
 
         self.object.texts = [Sheila]

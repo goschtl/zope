@@ -13,12 +13,11 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: service.py,v 1.3 2002/12/30 14:03:14 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.interface import Interface
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine
 from zope.component.interfaces import IPresentation
@@ -29,13 +28,9 @@ from zope.interface import Interface, Attribute
 from zope.component.interfaces import IServiceService
 
 from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration
-
-from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable
+     import INamedComponentConfiguration, INameComponentConfigurable
 
 class IComponentManager(Interface):
-
 
     def queryComponent(type=None, filter=None, all=0):
         """Return all components that match the given type and filter
@@ -86,20 +81,19 @@ class IServiceManagerContainer(IReadServiceManagerContainer,
 class IBindingAware(Interface):
 
     def bound(name):
-        """Inform a service components that it's providing a service
+        """Inform a service component that it is providing a service
 
         Called when an immediately-containing service manager binds
         this object to perform the named service.
         """
 
     def unbound(name):
-        """Inform a service components that it's no longer providing a service
+        """Inform a service component that it is no longer providing a service
 
         Called when an immediately-containing service manager unbinds
         this object from performing the named service.
         """
 
-from zope.interface import Attribute
 
 class IServiceManager(IServiceService, IComponentManager,
                       INameComponentConfigurable):

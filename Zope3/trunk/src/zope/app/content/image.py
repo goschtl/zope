@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
+$Id: image.py,v 1.4 2002/12/30 14:02:56 stevea Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -65,8 +65,12 @@ class ImageSized:
     def sizeForDisplay(self):
         'See ISized'
         w, h = self._image.getImageSize()
+        if w < 0:
+            w = '?'
+        if h < 0:
+            h = '?'
         bytes = self._image.getSize()
-        return '%s %rx%r' % (byteDisplay(bytes), w, h)
+        return '%s %sx%s' % (byteDisplay(bytes), w, h)
     
 def getImageInfo(data):
     data = str(data)

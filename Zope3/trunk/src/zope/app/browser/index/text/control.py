@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.3 2002/12/28 17:49:24 stevea Exp $
+$Id: control.py,v 1.4 2002/12/30 14:02:53 stevea Exp $
 """
 
 from __future__ import generators
@@ -38,7 +38,7 @@ class ControlView(BrowserView):
 
     def __init__(self, context, request):
         super(ControlView, self).__init__(context, request)
-        self.hub = getService(context, "ObjectHub")
+        self.hub = getService(context, "HubIds")
 
     def nextBatch(self):
         start = int(self.request.get('start', self.default_start))

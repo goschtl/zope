@@ -83,7 +83,7 @@
 
   <browser:view 
       permission="zope.ManageServices" 
-      for="zope.interfaces.event.IEventService+"
+      for="zope.app.interfaces.services.event.IEventService"
       factory="zope.app.browser.services.event.Control">
 
       <browser:page name="index.html" attribute="index" />
@@ -91,17 +91,21 @@
   </browser:view>
 
   <browser:menuItems
-      menu="zmi_views" for="zope.interfaces.event.IEventService+">
+      menu="zmi_views" for="zope.app.interfaces.services.event.IEventService">
     <browser:menuItem title="Control" action="@@index.html" />
-    </browser:menuItems>
+  </browser:menuItems>
 
   <browser:menuItem menu="add_component" 
       for="zope.app.interfaces.container.IAdding"
       action="Events"  title="Event Service"
-      description="An event service: use sparingly" />
+      description="An event service. One of these in the root is usually enough"
+      />
 
-  <browser:icon name="zmi_icon" for="zope.interfaces.event.IEventService+" 
-              file="event_service.gif" />
+  <browser:icon
+      name="zmi_icon"
+      for="zope.app.interfaces.services.event.IEventService" 
+      file="event_service.gif"
+      />
 
 <!-- Role Service -->
 
@@ -516,18 +520,20 @@
 
 <browser:defaultView 
     name="index.html"
-    for="zope.app.interfaces.services.hub.IObjectHub+" />
+    for="zope.app.interfaces.services.hub.IObjectHub" />
 
 <browser:view 
     permission="zope.ManageServices" 
-    for="zope.app.interfaces.services.hub.IObjectHub+"
+    for="zope.app.interfaces.services.hub.IObjectHub"
     factory="zope.app.browser.services.hub.Control">
 
     <browser:page name="index.html" attribute="index" />
 
 </browser:view>
 
-<browser:menuItems menu="zmi_views" for="zope.app.interfaces.services.hub.IObjectHub+">
+<browser:menuItems
+    menu="zmi_views"
+    for="zope.app.interfaces.services.hub.IObjectHub">
   <browser:menuItem title="Control" action="@@index.html" />
 </browser:menuItems>
 

@@ -13,22 +13,18 @@
 ##############################################################################
 """ Define view component for event service control.
 
-$Id: event.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: event.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
 """
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.interfaces.event import IEventService
-from zope.proxy.introspection import removeAllProxies
+from zope.app.interfaces.services.event import IEventService
 from zope.publisher.browser import BrowserView
 
 
 class Control(BrowserView):
     __used_for__ = IEventService
 
-    def index(self, toggleSubscribeOnBind=False):
-        if toggleSubscribeOnBind:
-            cntx = removeAllProxies(self.context)
-            cntx.subscribeOnBind = not cntx.subscribeOnBind
+    def index(self):
         return self.__control()
 
-    __control = ViewPageTemplateFile("control.pt")
+    __control = ViewPageTemplateFile("eventcontrol.pt")

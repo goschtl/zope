@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: test_objectevent.py,v 1.2 2002/12/25 14:12:51 jim Exp $
+$Id: test_objectevent.py,v 1.3 2002/12/30 14:03:05 stevea Exp $
 """
 
-import unittest, sys
+import unittest
 
 from zope.app.event.objectevent import ObjectAddedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
@@ -80,12 +80,14 @@ class TestObjectMovedEvent(TestObjectAddedEvent):
         self.assertEqual(self.event.fromLocation, self.from_location)
 
 def test_suite():
-    return unittest.TestSuite((unittest.makeSuite(TestObjectAddedEvent),
-                               unittest.makeSuite(TestObjectModifiedEvent),
-                               unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
-                               unittest.makeSuite(TestObjectContentModifiedEvent),
-                               unittest.makeSuite(TestObjectRemovedEvent),
-                               unittest.makeSuite(TestObjectMovedEvent)))
+    return unittest.TestSuite((
+        unittest.makeSuite(TestObjectAddedEvent),
+        unittest.makeSuite(TestObjectModifiedEvent),
+        unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
+        unittest.makeSuite(TestObjectContentModifiedEvent),
+        unittest.makeSuite(TestObjectRemovedEvent),
+        unittest.makeSuite(TestObjectMovedEvent)
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

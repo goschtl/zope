@@ -14,22 +14,21 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.2 2002/12/25 14:12:51 jim Exp $
+$Id: test_eventpublisher.py,v 1.1 2002/12/30 14:03:05 stevea Exp $
 """
 
 import unittest, sys
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
-from zope.app.interfaces.event import IObjectEvent
-from zope.app.interfaces.event import IObjectAddedEvent
+from zope.app.interfaces.event import IObjectEvent, IObjectAddedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
-from zope.app.event.globaleventservice import GlobalEventService
+from zope.app.event.globalservice import GlobalEventPublisher
 from zope.exceptions import NotFoundError
-from zope.interfaces.event import IEvent
+from zope.app.interfaces.event import IEvent
 
-from zope.event.tests.subscriber import DummySubscriber, DummyFilter
+from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
 
 class DummyEvent:
 
@@ -43,7 +42,7 @@ class TestEventService(CleanUp, unittest.TestCase):
 
     def setUp(self):
         CleanUp.setUp(self)
-        self.service = GlobalEventService()
+        self.service = GlobalEventPublisher()
         self.event = ObjectAddedEvent(None, '/foo')
         self.subscriber = DummySubscriber()
 
@@ -279,7 +278,6 @@ class TestEventService(CleanUp, unittest.TestCase):
 
 def test_suite():
     return unittest.makeSuite(TestEventService)
-
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

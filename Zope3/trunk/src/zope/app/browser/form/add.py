@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.3 2002/12/26 22:26:27 jim Exp $
+$Id: add.py,v 1.4 2002/12/30 14:02:53 stevea Exp $
 """
 
 import sys
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.forms import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.2 2002/12/25 14:12:29 jim Exp $
+$Id: adding.py,v 1.3 2002/12/30 14:02:51 stevea Exp $
 """
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
@@ -23,7 +23,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import \
      getView, getService, createObject, queryFactory, queryView, getAdapter
-from zope.event import publish
+from zope.app.event import publish
 from zope.proxy.context import ContextSuper, ContextMethod
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse

@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.2 2002/12/25 14:12:54 jim Exp $
+$Id: test_objectretrievingprocessor.py,v 1.3 2002/12/30 14:03:07 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -85,8 +85,8 @@ class Test(PlacelessSetup, TestCase):
         # Register the objecthub as a service
         hub = FakeObjectHub()
         service_manager = getServiceManager(None)
-        service_manager.defineService("ObjectHub", IObjectHub)
-        service_manager.provideService("ObjectHub", hub)
+        service_manager.defineService("HubIds", IObjectHub)
+        service_manager.provideService("HubIds", hub)
 
         # Insert our objects into the hub and remember their ids
         for x in objects:

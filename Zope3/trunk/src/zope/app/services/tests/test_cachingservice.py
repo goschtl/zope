@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_cachingservice.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -46,8 +46,7 @@ class CacheStub:
 class CachingServiceSetup(EventSetup):
 
     def createCachingService(self, path=None):
-        from zope.app.services.cache \
-             import CachingService
+        from zope.app.services.cache import CachingService
 
         folder = self.rootFolder
         if path is not None:
@@ -55,7 +54,7 @@ class CachingServiceSetup(EventSetup):
 
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
-
+        
         default = traverse(folder, '++etc++Services/Packages/default')
         key = default.setObject("myCachingService", CachingService())
         service = traverse(default, key)

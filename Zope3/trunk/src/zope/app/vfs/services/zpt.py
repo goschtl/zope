@@ -13,11 +13,11 @@
 ##############################################################################
 """VFS ZPTTemplate Add View
 
-$Id: zpt.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: zpt.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 from zope.publisher.vfs import VFSView
 
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 from zope.app.interfaces.services.package import IPackageAdding
@@ -46,7 +46,7 @@ class ZPTTemplateAdd(VFSView):
 
 VFS-view implementation for a ZPT Template.
 
-$Id: zpt.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: zpt.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 from zope.publisher.vfs import VFSFileView
 

@@ -11,13 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A functional EventChanel test.
+"""A functional GlobalEventChannel test.
 
-$Id: test_eventchannel.py,v 1.2 2002/12/25 14:13:38 jim Exp $
+$Id: test_globaleventchannel.py,v 1.1 2002/12/30 14:03:05 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.interfaces.event import IEvent
+from zope.app.interfaces.event import IEvent
 
 class ISomeEvent(IEvent):
     pass
@@ -45,11 +45,11 @@ class SubscriberStub:
 class Test(TestCase):
 
     def test_notify(self):
-        from zope.event.eventchannel import EventChannel
+        from zope.app.event.globalservice import GlobalEventChannel
 
         subscriber = SubscriberStub()
-        ec = EventChannel()
-        ec.subscribe(subscriber, ISomeEvent)
+        ec = GlobalEventChannel()
+        ec.globalSubscribe(subscriber, ISomeEvent)
 
         ev = SomeEvent()
         ec.notify(ev)
@@ -58,21 +58,22 @@ class Test(TestCase):
 
         ev = SomeSubEvent()
         ec.notify(ev)
-        self.assertEquals(subscriber.received, ev, "Did not get subclassed event")
+        self.assertEquals(
+                subscriber.received, ev, "Did not get subclassed event")
 
         ev = SomeOtherEvent()
         ec.notify(ev)
         self.assertNotEquals(subscriber.received, ev, "Got unrelated event")
 
     def test_notify_filter(self):
-        from zope.event.eventchannel import EventChannel
+        from zope.app.event.globalservice import GlobalEventChannel
 
         true = lambda x: True
         false = lambda x: False
 
         subscriber = SubscriberStub()
-        ec = EventChannel()
-        ec.subscribe(subscriber, ISomeEvent, true)
+        ec = GlobalEventChannel()
+        ec.globalSubscribe(subscriber, ISomeEvent, true)
 
         ev = SomeEvent()
         ec.notify(ev)
@@ -80,8 +81,8 @@ class Test(TestCase):
                           "Did not get event registered for")
 
         subscriber = SubscriberStub()
-        ec = EventChannel()
-        ec.subscribe(subscriber, ISomeEvent, false)
+        ec = GlobalEventChannel()
+        ec.globalSubscribe(subscriber, ISomeEvent, false)
 
         ev = SomeEvent()
         ec.notify(ev)

@@ -14,46 +14,36 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_eventservice.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
-
-from zope.app.services.service import ServiceManager
-
-from zope.app.services.event import LocalEventService
-
-from zope.app.services.service import ServiceConfiguration
-
+from zope.interface import Interface
+from zope.app.services.service import ServiceManager, ServiceConfiguration
+from zope.component import getServiceManager
+from zope.app.services.event import EventService
 from zope.app.traversing import getPhysicalPathString, traverse
-
 from zope.exceptions import NotFoundError
-
-from zope.event import subscribe, unsubscribe, listSubscriptions, publish
-from zope.event import getEventService
-from zope.event.tests.subscriber import DummySubscriber, DummyFilter
-from zope.app.interfaces.event import IObjectEvent
-from zope.app.interfaces.event import IObjectAddedEvent
-from zope.app.interfaces.event import IObjectRemovedEvent
-from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.services.event import subscribe, unsubscribe
+from zope.app.services.event import listSubscriptions, getSubscriptionService
+from zope.app.event import getEventService, publish
+from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
+from zope.app.interfaces.event import IObjectEvent, IObjectModifiedEvent
+from zope.app.interfaces.event import IObjectRemovedEvent, IObjectAddedEvent
 from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
-from zope.app.event.objectevent import ObjectAddedEvent
-from zope.app.event.globaleventservice import GlobalEventService
-from zope.interfaces.event import IEvent
-from zope.interfaces.event import ISubscriptionAware
+from zope.app.event.globalservice import GlobalEventPublisher
+from zope.app.interfaces.event import IEvent, ISubscribingAware
 from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered
-
 from zope.proxy.context import ContextWrapper
-
 from zope.app.services.tests.eventsetup import EventSetup
 
-class UnpromotingLocalEventService(LocalEventService):
+class UnpromotingEventService(EventService):
 
     def isPromotableEvent(self, event):
-        "see ILocalEventService"
-        return 0
+        "see EventService implementation"
+        return False
 
 class DummyEvent:
 
@@ -63,10 +53,34 @@ class ObjectEvent:
 
     __implements__ = IObjectEvent
 
+class IObjectHub(Interface):
+    def getObject(hubid):
+        "gets object"
+
+    def getHubId(object):
+        "gets hubid"
+
+class DumbObjectHub:
+    __implements__ = IObjectHub
+    
+    def __init__(self):
+        self.lib = []
+    
+    def getObject(self, hubid):
+        try:
+            return self.lib[hubid]
+        except IndexError:
+            raise NotFoundError
+
+    def getHubId(self, object):
+        for i in range(len(self.lib)):
+            if self.lib[i] is object:
+                return i
+        raise NotFoundError
 
 
 class DummySubscriptionAwareSubscriber(DummySubscriber):
-    __implements__ = ISubscriptionAware
+    __implements__ = ISubscribingAware
 
     def subscribedTo(self, subscribable, event_type, filter):
         self.subscribable = subscribable
@@ -78,7 +92,21 @@ class DummySubscriptionAwareSubscriber(DummySubscriber):
         self.un_event_type = event_type
         self.un_filter = filter
 
-class EventServiceTests(EventSetup, TestCase):
+class TestEventPublisher(EventSetup, TestCase):
+    
+    def setUp(self):
+        EventSetup.setUp(self)
+        #sm = getServiceManager(None)
+        #defineService = sm.defineService
+        #provideService = sm.provideService
+        #self.objectHub = DumbObjectHub()
+
+        #defineService("HubIds", IObjectHub)
+        #provideService("HubIds", self.objectHub)
+
+    def getObjectHub(self):
+        self.objectHub = DumbObjectHub()
+        return self.objectHub
 
     def _createNestedServices(self):
         self.createEventService('folder1')
@@ -87,76 +115,337 @@ class EventServiceTests(EventSetup, TestCase):
 
     def _createSubscribers(self):
         self.rootFolder.setObject("rootFolderSubscriber", DummySubscriber())
-        self.rootFolderSubscriber=ContextWrapper(
+        self.rootFolderSubscriber = ContextWrapper(
             self.rootFolder["rootFolderSubscriber"],
             self.rootFolder,
             name="rootFolderSubscriber")
         self.folder1.setObject("folder1Subscriber", DummySubscriber())
-        self.folder1Subscriber=ContextWrapper(
+        self.folder1Subscriber = ContextWrapper(
             self.folder1["folder1Subscriber"],
             self.folder1,
             name="folder1Subscriber")
         self.folder1_1.setObject("folder1_1Subscriber", DummySubscriber())
-        self.folder1_1Subscriber=ContextWrapper(
+        self.folder1_1Subscriber = ContextWrapper(
             self.folder1_1["folder1_1Subscriber"],
             self.folder1_1,
             name="folder1_1Subscriber")
+    
+    def _createHubIdSubscribers(self):
+        self._createSubscribers()
+        self.objectHub.lib = [self.rootFolderSubscriber,
+                              self.folder1Subscriber,
+                              self.folder1_1Subscriber]
 
     def testCreateNestedServices(self):
         self._createNestedServices()
 
-    def testListSubscriptions1(self):
-        # a non-subscribed subscriber gets an empty array
+    def testByPath(self):
+        # test complex interaction, with no hubids available
         self._createSubscribers()
+        root = subscribe(
+            self.rootFolderSubscriber,
+            event_type=IObjectAddedEvent
+            )
+        folder1 = subscribe(self.folder1Subscriber,
+                            event_type=IObjectAddedEvent)
+        folder1_1 = subscribe(self.folder1_1Subscriber,
+                              event_type=IObjectAddedEvent)
+        self.assertEqual(
+            root,
+            getPhysicalPathString(self.rootFolderSubscriber))
+        self.assertEqual(
+            folder1,
+            getPhysicalPathString(self.folder1Subscriber))
+        self.assertEqual(
+            folder1_1,
+            getPhysicalPathString(self.folder1_1Subscriber))
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+        rootPath = getPhysicalPathString(self.rootFolderSubscriber)
+        folder1Path = getPhysicalPathString(self.folder1Subscriber)
+        folder1_1Path = getPhysicalPathString(self.folder1_1Subscriber)
+        unsubscribe(rootPath, context=self.rootFolder)
+            # curve ball:
+        unsubscribe(self.folder1Subscriber, context=self.folder1_1)
+        unsubscribe(folder1_1Path,
+                    event_type=IObjectAddedEvent,
+                    context=self.folder1_1)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
 
-        events = getEventService(self.rootFolder)
+    def testByHubId(self):
+        # test complex interaction, with hubids available
+        self._createHubIdSubscribers()
+        root = subscribe(
+            self.rootFolderSubscriber,
+            event_type=IObjectAddedEvent
+            )
+        folder1 = subscribe(self.folder1Subscriber,
+                            event_type=IObjectAddedEvent)
+        folder1_1 = subscribe(self.folder1_1Subscriber,
+                              event_type=IObjectAddedEvent)
+        self.assertEqual(
+            self.objectHub.lib[root],
+            self.rootFolderSubscriber)
+        self.assertEqual(
+            self.objectHub.lib[folder1],
+            self.folder1Subscriber)
+        self.assertEqual(
+            self.objectHub.lib[folder1_1],
+            self.folder1_1Subscriber)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+        self.assertRaises(
+            NotFoundError,
+            unsubscribe,
+            getPhysicalPathString(self.rootFolderSubscriber),
+            event_type=IObjectAddedEvent,
+            context=self.rootFolder)
+        unsubscribe(root, context=self.rootFolder)
+            # curve balls:
+        unsubscribe(self.folder1Subscriber, context=self.folder1_1)
+        unsubscribe(2,
+                    event_type=IObjectAddedEvent, 
+                    context=self.folder1_1)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+
+    def testByPathExplicit(self):
+        # test complex interaction, with hubids available but explicitly
+        # using paths
+        self._createHubIdSubscribers()
+        rootPath = getPhysicalPathString(self.rootFolderSubscriber)
+        folder1Path = getPhysicalPathString(self.folder1Subscriber)
+        folder1_1Path = getPhysicalPathString(self.folder1_1Subscriber)
+        self.assertEqual(
+            rootPath,
+            subscribe(
+                rootPath,
+                event_type=IObjectAddedEvent,
+                context=self.rootFolder))
+        self.assertEqual(
+            folder1Path,
+            subscribe(
+                folder1Path,
+                event_type=IObjectAddedEvent,
+                context=self.folder1))
+        self.assertEqual(
+            folder1_1Path,
+            subscribe(
+                folder1_1Path,
+                event_type=IObjectAddedEvent,
+                context=self.folder1_1))
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+        unsubscribe(rootPath, context=self.rootFolder)
+            # curve balls:
+        unsubscribe(self.folder1Subscriber, context=self.folder1_1)
+        self.assertRaises(
+            NotFoundError,
+            unsubscribe,
+            2,
+            event_type=IObjectAddedEvent,
+            context=self.folder1_1)
+        unsubscribe(folder1_1Path,
+                    event_type=IObjectAddedEvent,
+                    context=self.folder1_1)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+
+    def testByHubIdExplicit(self):
+        # test complex interaction, with hubids available and explicitly
+        # using them
+        self._createHubIdSubscribers()
+        root = subscribe(
+            0,
+            event_type=IObjectAddedEvent,
+            context = self.folder1_1
+            )
+        folder1 = subscribe(1,
+                            event_type=IObjectAddedEvent,
+                            context = self.folder1)
+        folder1_1 = subscribe(2,
+                              event_type=IObjectAddedEvent,
+                              context = self.rootFolder)
+        self.assertEqual(
+            self.objectHub.lib[root],
+            self.rootFolderSubscriber)
+        self.assertEqual(
+            self.objectHub.lib[folder1],
+            self.folder1Subscriber)
+        self.assertEqual(
+            self.objectHub.lib[folder1_1],
+            self.folder1_1Subscriber)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+        self.assertRaises(
+            NotFoundError,
+            unsubscribe,
+            getPhysicalPathString(self.rootFolderSubscriber),
+            event_type = IObjectAddedEvent,
+            context=self.rootFolder)
+        unsubscribe(root, context=self.rootFolder)
+            # curve ball:
+        unsubscribe(self.folder1Subscriber, context=self.folder1_1)
+        unsubscribe(2,
+                    event_type=IObjectAddedEvent, 
+                    context=self.folder1_1)
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+
+    def _testListSubscriptions1(self):
+        # a non-subscribed subscriber gets an empty array
+        events = getSubscriptionService(self.rootFolder)
 
         self.assertEqual(events.listSubscriptions(self.rootFolderSubscriber),
                          [])
-
-    def testListSubscriptions2(self):
-        # one subscription
+    
+    def testPathListSubscriptions1(self):
         self._createSubscribers()
+        self._testListSubscriptions1()
+    
+    def testHubIdListSubscriptions1(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions1()
+
+    def _testListSubscriptions2(self):
+        # one subscription
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
         self.assertEqual([(IObjectAddedEvent,None)],
-                         getEventService(self.rootFolder)
+                         getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber))
-
-    def testListSubscriptions3(self):
-        # listing limited subscription
+    
+    def testPathListSubscriptions2(self):
         self._createSubscribers()
+        self._testListSubscriptions2()
+    
+    def testHubIdListSubscriptions2(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions2()
+
+    def _testListSubscriptions3(self):
+        # listing limited subscription
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
         self.assertEqual([],
-                         getEventService(self.rootFolder)
+                         getSubscriptionService(self.rootFolder)
                             .listSubscriptions(self.rootFolderSubscriber,
                                                IObjectRemovedEvent))
-
-    def testSubscribe1(self):
-        # Test subscribe method with one parameter
+    
+    def testPathListSubscriptions3(self):
         self._createSubscribers()
+        self._testListSubscriptions3()
+    
+    def testHubIdListSubscriptions3(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions3()
+
+    def _testListSubscriptions4(self):
+        # a non-subscribed subscriber gets an empty array
+        events = getSubscriptionService(self.rootFolder)
+
+        self.assertEqual(events.listSubscriptions(self.rootFolderSubscriber),
+                         [])
+    
+    def testPathListSubscriptions4(self):
+        self._createSubscribers()
+        self._testListSubscriptions4()
+    
+    def testHubIdListSubscriptions4(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions4()
+
+    def _testListSubscriptions5(self):
+        # one subscription
+        subscribe(
+            self.rootFolderSubscriber,
+            event_type=IObjectAddedEvent
+            )
+        self.assertEqual([(IObjectAddedEvent,None)],
+                         getSubscriptionService(self.rootFolder)
+                            .listSubscriptions(self.rootFolderSubscriber))
+    
+    def testPathListSubscriptions5(self):
+        self._createSubscribers()
+        self._testListSubscriptions5()
+    
+    def testHubIdListSubscriptions5(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions5()
+
+    def _testListSubscriptions6(self):
+        # listing limited subscription
+        subscribe(
+            self.rootFolderSubscriber,
+            event_type=IObjectAddedEvent
+            )
+        self.assertEqual([],
+                         getSubscriptionService(self.rootFolder)
+                            .listSubscriptions(self.rootFolderSubscriber,
+                                               IObjectRemovedEvent))
+    
+    def testPathListSubscriptions6(self):
+        self._createSubscribers()
+        self._testListSubscriptions6()
+    
+    def testHubIdListSubscriptions6(self):
+        self._createHubIdSubscribers()
+        self._testListSubscriptions6()
+
+    def _testSubscribe1(self):
+        # Test subscribe method with one parameter
         subscribe(self.rootFolderSubscriber)
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-
-    def testSubscribe2(self):
-        # Test subscribe method with two parameters
+    
+    def testPathSubscribe1(self):
         self._createSubscribers()
+        self._testSubscribe1()
+    
+    def testHubIdSubscribe1(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe1()
+
+    def _testSubscribe2(self):
+        # Test subscribe method with two parameters
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-
-    def testSubscribe3(self):
-        # Test subscribe method with three parameters
+    
+    def testPathSubscribe2(self):
         self._createSubscribers()
+        self._testSubscribe2()
+    
+    def testHubIdSubscribe2(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe2()
+
+    def _testSubscribe3(self):
+        # Test subscribe method with three parameters
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent,
@@ -164,11 +453,18 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
+    
+    def testPathSubscribe3(self):
+        self._createSubscribers()
+        self._testSubscribe3()
+    
+    def testHubIdSubscribe3(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe3()
 
-    def testSubscribe4(self):
+    def _testSubscribe4(self):
         # Test subscribe method with three parameters and an always failing
         # filter.
-        self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent,
@@ -176,11 +472,18 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
+    
+    def testPathSubscribe4(self):
+        self._createSubscribers()
+        self._testSubscribe4()
+    
+    def testHubIdSubscribe4(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe4()
 
-    def testSubscribe5(self):
+    def _testSubscribe5(self):
         # Test subscribe method with three parameters and an irrelevent event
         # type.
-        self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectModifiedEvent,
@@ -188,22 +491,36 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
+    
+    def testPathSubscribe5(self):
+        self._createSubscribers()
+        self._testSubscribe5()
+    
+    def testHubIdSubscribe5(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe5()
 
-    def testSubscribe6(self):
+    def _testSubscribe6(self):
         # Test subscribe method where the event type registered is a
         # generalised interface of the event passed to the 'publish' method.
-        self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectEvent
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
+    
+    def testPathSubscribe6(self):
+        self._createSubscribers()
+        self._testSubscribe6()
+    
+    def testHubIdSubscribe6(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe6()
 
-    def testSubscribe7(self):
+    def _testSubscribe7(self):
         # Test subscribe method where one of the event types registered is not
         # interested in the published event.
-        self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectModifiedEvent
@@ -214,11 +531,18 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
+    
+    def testPathSubscribe7(self):
+        self._createSubscribers()
+        self._testSubscribe7()
+    
+    def testHubIdSubscribe7(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe7()
 
-    def testSubscribe8(self):
+    def _testSubscribe8(self):
         # Test subscribe method where the same subscriber subscribes multiple
         # times.
-        self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
@@ -234,10 +558,17 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 2)
-
-    def testUnsubscribe1(self):
-        # Test unsubscribe method
+    
+    def testPathSubscribe8(self):
         self._createSubscribers()
+        self._testSubscribe8()
+    
+    def testHubIdSubscribe8(self):
+        self._createHubIdSubscribers()
+        self._testSubscribe8()
+    
+    def _testUnsubscribe1(self):
+        # Test unsubscribe method
         subscribe(
             self.rootFolderSubscriber
             )
@@ -248,20 +579,34 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-
-    def testUnsubscribe2(self):
-        # Test unsubscribe of something that hasn't been subscribed
+    
+    def testPathUnsubscribe1(self):
         self._createSubscribers()
+        self._testUnsubscribe1()
+    
+    def testHubIdUnsubscribe1(self):
+        self._createHubIdSubscribers()
+        self._testUnsubscribe1()
+
+    def _testUnsubscribe2(self):
+        # Test unsubscribe of something that hasn't been subscribed
         self.assertRaises(NotFoundError,
                           unsubscribe,
                           self.rootFolderSubscriber,
                           IObjectEvent)
         self.assertEqual(None,
                          unsubscribe(self.rootFolderSubscriber))
-
-    def testUnsubscribe3(self):
-        # Test selective unsubscribe
+    
+    def testPathUnsubscribe2(self):
         self._createSubscribers()
+        self._testUnsubscribe2()
+    
+    def testHubIdUnsubscribe2(self):
+        self._createHubIdSubscribers()
+        self._testUnsubscribe2()
+
+    def _testUnsubscribe3(self):
+        # Test selective unsubscribe
         subscriber=self.rootFolderSubscriber
         subscriber2=self.folder1Subscriber
         filter=DummyFilter()
@@ -309,26 +654,45 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 4)
-
-    def testUnsubscribe4(self):
-        # Test selective unsubscribe with nested services
-        self._createNestedServices()
-        self.testUnsubscribe3()
-
-    def testpublish1(self):
-        # Test publish method
+    
+    def testPathUnsubscribe3(self):
         self._createSubscribers()
+        self._testUnsubscribe3()
+    
+    def testHubIdUnsubscribe3(self):
+        self._createHubIdSubscribers()
+        self._testUnsubscribe3()
+    
+    def testPathUnsubscribe4(self):
+        self._createNestedServices()
+        self._createSubscribers()
+        self._testUnsubscribe3()
+    
+    def testHubIdUnsubscribe4(self):
+        self._createNestedServices()
+        self._createHubIdSubscribers()
+        self._testUnsubscribe3()
+
+    def _testpublish1(self):
+        # Test publish method
         subscriber = self.rootFolderSubscriber
         subscribe(subscriber)
         self.assertEqual(subscriber.notified, 0)
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 1)
+    
+    def testPathPublish1(self):
+        self._createSubscribers()
+        self._testpublish1()
+    
+    def testHubIdPublish1(self):
+        self._createHubIdSubscribers()
+        self._testpublish1()
 
-    def testpublish2(self):
+    def _testpublish2(self):
         # Test publish method where subscriber has been subscribed twice, with
         # a more generalised version of the initially subscribed interface in
         # the second subscription.
-        self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
             subscriber,
@@ -340,11 +704,18 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 2)
+    
+    def testPathPublish2(self):
+        self._createSubscribers()
+        self._testpublish2()
+    
+    def testHubIdPublish2(self):
+        self._createHubIdSubscribers()
+        self._testpublish2()
 
-    def testpublish3(self):
+    def _testpublish3(self):
         # Test publish method where subscriber has been to two interfaces and
         # a single event implements both of those interfaces.
-        self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
             subscriber,
@@ -356,11 +727,18 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, DummyEvent())
         self.assertEqual(subscriber.notified, 2)
+    
+    def testPathPublish3(self):
+        self._createSubscribers()
+        self._testpublish3()
+    
+    def testHubIdPublish3(self):
+        self._createHubIdSubscribers()
+        self._testpublish3()
 
-    def testpublish4(self):
+    def _testpublish4(self):
         # Test publish method to make sure that we don't 'leak registrations
         # up' sez Jim.
-        self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
             subscriber,
@@ -372,9 +750,16 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectEvent())
         self.assertEqual(subscriber.notified, 1)
+    
+    def testPathPublish4(self):
+        self._createSubscribers()
+        self._testpublish4()
+    
+    def testHubIdPublish4(self):
+        self._createHubIdSubscribers()
+        self._testpublish4()
 
     def _createAlternateService(self, service):
-        self._createSubscribers()
         self.folder2.setObject("folder2Subscriber", DummySubscriber())
         self.folder2Subscriber = ContextWrapper(
             self.folder2["folder2Subscriber"],
@@ -393,6 +778,13 @@ class EventServiceTests(EventSetup, TestCase):
         configuration = ServiceConfiguration("Events", path)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
+        
+        configuration = ServiceConfiguration("Subscription", path)
+        default['configure'].setObject("mySubscriptionServiceDir",
+                                       configuration)
+        traverse(
+            default,
+            'configure/2').status = Active
 
         subscribe(
             self.rootFolderSubscriber,
@@ -403,18 +795,20 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectAddedEvent
             )
 
-    def testNonPromotingEventService1(self):
+    def testNonPromotingEventPublisher(self):
         # test to see if events are not passed on to a parent event service
         # with the appropriate isPromotableEvent setting
-        self._createAlternateService(UnpromotingLocalEventService())
+        self._createHubIdSubscribers()
+        self._createAlternateService(UnpromotingEventService())
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
-    def testPromotingEventService1(self):
+    def testPromotingEventPublisher1(self):
         # test to see if events are passed on to a parent event service with
         # the appropriate isPromotableEvent setting
-        self._createAlternateService(LocalEventService())
+        self._createHubIdSubscribers()
+        self._createAlternateService(EventService())
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
@@ -423,7 +817,7 @@ class EventServiceTests(EventSetup, TestCase):
         # an event service is unbound; a lower event service should then
         # rebind to upper event service
         self._createNestedServices()
-        self._createSubscribers()
+        self._createHubIdSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
@@ -442,19 +836,30 @@ class EventServiceTests(EventSetup, TestCase):
         configuration.status = Registered
 
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
-        self.assertEqual(self.folder1Subscriber.notified, 0)
+        self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
+        
+        configuration = sm.queryConfigurations("Subscription").active()
+        configuration.status = Registered
+
+        publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.folder1Subscriber.notified, 1)
+        self.assertEqual(self.folder1_1Subscriber.notified, 2)
 
     def testNoSubscribeOnBind(self):
         # if subscribeOnBind is 0, service should not subscribe to parent
-        sv=LocalEventService()
-        sv.subscribeOnBind=0
+        sv = EventService()
+        sv.subscribeOnBind = 0
+        self._createHubIdSubscribers()
         self._createAlternateService(sv)
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 0)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
         sm = traverse(self.rootFolder, "folder2/++etc++Services")
+        configuration = sm.queryConfigurations("Subscription").active()
+        # make sure it doesn't raise any errors
+        configuration.status = Registered
         configuration = sm.queryConfigurations("Events").active()
         # make sure it doesn't raise any errors
         configuration.status = Registered
@@ -464,7 +869,7 @@ class EventServiceTests(EventSetup, TestCase):
         self.rootFolder.setObject(
             "mySubscriber",
             DummySubscriptionAwareSubscriber())
-        self.mySubscriber=ContextWrapper(
+        self.mySubscriber = ContextWrapper(
             self.rootFolder["mySubscriber"],
             self.rootFolder,
             name="mySubscriber")
@@ -476,6 +881,9 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(
             self.mySubscriber.subscribable,
             getEventService(self.rootFolder))
+        self.assertEqual(
+            self.mySubscriber.subscribable,
+            getSubscriptionService(self.rootFolder))
         self.assertEqual(
             self.mySubscriber.event_type,
             IObjectAddedEvent)
@@ -490,6 +898,9 @@ class EventServiceTests(EventSetup, TestCase):
             self.mySubscriber.un_subscribable,
             getEventService(self.rootFolder))
         self.assertEqual(
+            self.mySubscriber.un_subscribable,
+            getSubscriptionService(self.rootFolder))
+        self.assertEqual(
             self.mySubscriber.un_event_type,
             IObjectAddedEvent)
         self.assertEqual(
@@ -498,8 +909,8 @@ class EventServiceTests(EventSetup, TestCase):
 
 
 def test_suite():
-    loader=TestLoader()
-    return loader.loadTestsFromTestCase(EventServiceTests)
+    loader = TestLoader()
+    return loader.loadTestsFromTestCase(TestEventPublisher)
 
 if __name__=='__main__':
     TextTestRunner().run(test_suite())

@@ -13,11 +13,11 @@
 ##############################################################################
 """VFS Package Add View
 
-$Id: package.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: package.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 from zope.publisher.vfs import VFSView
 
-from zope.event import publish
+from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 from zope.app.interfaces.container import IAdding
@@ -39,7 +39,7 @@ class PackageAdd(VFSView):
 
 """Adding View for IPackage
 
-$Id: package.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: package.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 from zope.publisher.vfs import VFSView
 from zope.app.vfs.container.adding import Adding
@@ -52,7 +52,7 @@ class PackageAdding(Adding):
 
 """VFS-View for IPackages
 
-$Id: package.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: package.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -82,7 +82,7 @@ class PackagesView(VFSContainerView):
 
 """VFS-View for IPackage
 
-$Id: package.py,v 1.2 2002/12/25 14:13:30 jim Exp $
+$Id: package.py,v 1.3 2002/12/30 14:03:21 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)

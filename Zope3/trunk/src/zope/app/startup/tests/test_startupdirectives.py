@@ -13,14 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_startupdirectives.py,v 1.2 2002/12/25 14:13:25 jim Exp $
+$Id: test_startupdirectives.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
 """
 
 import unittest, sys, tempfile, os
 import logging
 
-from zope.app.services.tests.placefulsetup import \
-     PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.startup.metaconfigure import SiteDefinition
 from zope.configuration.name import resolve
 from zope.component.adapter import provideAdapter

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define view component for object hub.
 
-$Id: hub.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: hub.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
 """
 
 from zope.app.interfaces.services.hub import IObjectHub
@@ -27,4 +27,4 @@ class Control(BrowserView):
     def index(self):
         return self.__control()
 
-    __control = ViewPageTemplateFile("control.pt")
+    __control = ViewPageTemplateFile("hubcontrol.pt")

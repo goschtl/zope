@@ -13,14 +13,14 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: timeannotators.py,v 1.2 2002/12/25 14:12:50 jim Exp $
+$Id: timeannotators.py,v 1.3 2002/12/30 14:03:00 stevea Exp $
 """
 __metaclass__ = type
 
 from datetime import datetime
 from zope.component import queryAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.interfaces.event import ISubscriber
+from zope.app.interfaces.event import ISubscriber
 
 class DCTimeAnnotatorClass:
     """Update Dublin-Core time property
