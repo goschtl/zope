@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""These are the interfaces for the common fields.
+"""Principals.
 
-$Id: principal.py,v 1.4 2003/02/12 02:17:31 seanb Exp $
+$Id: principal.py,v 1.5 2004/01/05 08:06:12 philikon Exp $
 """
 
 from zope.exceptions import NotFoundError

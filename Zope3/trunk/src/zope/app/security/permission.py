@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""These are the interfaces for the common fields.
+"""Permissions
 
-$Id: permission.py,v 1.8 2003/06/03 15:45:10 stevea Exp $
+$Id: permission.py,v 1.9 2004/01/05 08:06:12 philikon Exp $
 """
 
 from zope.schema import Enumerated, Field

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""These are the interfaces for the common fields.
+"""Interface widgets
 
-$Id: interfacewidget.py,v 1.43 2003/12/16 10:32:05 srichter Exp $
+$Id: interfacewidget.py,v 1.44 2004/01/05 08:06:12 philikon Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget

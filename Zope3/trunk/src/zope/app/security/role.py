@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""These are the interfaces for the common fields.
+"""Roles.
 
-$Id: role.py,v 1.1 2002/12/26 18:49:06 jim Exp $
+$Id: role.py,v 1.2 2004/01/05 08:06:12 philikon Exp $
 """
 
 from zope.component import getService
