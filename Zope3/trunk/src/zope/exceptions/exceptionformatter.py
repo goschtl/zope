@@ -14,10 +14,11 @@
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
 
-$Id: exceptionformatter.py,v 1.3 2003/03/13 18:34:06 stevea Exp $
+$Id: exceptionformatter.py,v 1.4 2003/04/21 19:51:10 gvanrossum Exp $
 """
 import sys
 import cgi
+import linecache
 
 DEBUG_EXCEPTION_FORMATTER = 1
 
@@ -129,6 +130,11 @@ class TextExceptionFormatter:
 
         result = []
         result.append(self.escape(s))
+
+        # Append the source line, if available
+        line = linecache.getline(filename, lineno)
+        if line:
+            result.append("    " + self.escape(line.strip()))
 
         # Output a traceback supplement, if any.
         if '__traceback_supplement__' in locals:
