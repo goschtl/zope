@@ -38,8 +38,14 @@ Zope Changes
 
         * Views are now shown in the Interface details screen.
 
-        * Adapters are split into three categories: specific, extended, and
-          generic.
+        * Adapters and Views are split into three categories: specific,
+          extended, and generic.
+
+        * User Preferences allow you to customize the behavior while using the
+          tool.
+         
+        * Using the preferences, you can select which views and adapters you
+          want to see by default in the interface details screen.
 
       - Zope 3 can now listen on specified network interfaces only.  Example
         of a server section in zope.conf:
