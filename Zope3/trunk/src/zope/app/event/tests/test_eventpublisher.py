@@ -14,15 +14,17 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.4 2003/06/07 06:37:25 stevea Exp $
+$Id: test_eventpublisher.py,v 1.5 2003/09/21 17:32:09 jim Exp $
 """
 
 import unittest
 
-from zope.app.interfaces.event import IObjectEvent, IObjectAddedEvent
-from zope.app.interfaces.event import IObjectRemovedEvent
+from zope.app.interfaces.event import IObjectEvent
+from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.interfaces.container import IObjectRemovedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.container.contained import ObjectAddedEvent
 from zope.app.event.globalservice import GlobalEventPublisher
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.event import IEvent
@@ -44,7 +46,8 @@ class TestEventService(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         self.service = GlobalEventPublisher()
-        self.event = ObjectAddedEvent(None, '/foo')
+        parent = object()
+        self.event = ObjectAddedEvent(None, parent, 'foo')
         self.subscriber = DummySubscriber()
 
     def testSubscribe1(self):
@@ -162,7 +165,7 @@ class TestEventService(PlacelessSetup, unittest.TestCase):
         # Test selective unsubscribe
         subscriber2=DummySubscriber()
         filter=DummyFilter()
-        event2=ObjectModifiedEvent(None, '/foo')
+        event2=ObjectModifiedEvent(None)
         self.service.globalSubscribe(
             self.subscriber)
         self.service.globalSubscribe(

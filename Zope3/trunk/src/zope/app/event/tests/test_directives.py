@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.10 2003/08/03 21:56:13 philikon Exp $
+$Id: test_directives.py,v 1.11 2003/09/21 17:32:09 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -25,8 +25,8 @@ from StringIO import StringIO
 
 from zope.exceptions import NotFoundError
 from zope.app.event import globalUnsubscribe, publish
-from zope.app.event.objectevent import ObjectAddedEvent
-from zope.app.event.objectevent import ObjectRemovedEvent
+from zope.app.container.contained import ObjectAddedEvent
+from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.tests.test_eventpublisher import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
@@ -56,17 +56,18 @@ class Test(PlacelessSetup, TestCase):
             <test:subscribe
                    subscriber="zope.app.event.tests.subscriber.subscriber"
                    event_types=
-                       "zope.app.interfaces.event.IObjectAddedEvent
-                        zope.app.interfaces.event.IObjectRemovedEvent"
+                       "zope.app.interfaces.container.IObjectAddedEvent
+                        zope.app.interfaces.container.IObjectRemovedEvent"
                    filter="zope.app.event.tests.subscriber.filter" />
             </configure>'''
             ))
 
-        publish(None, ObjectAddedEvent(None, 'foo'))
+        parent= object()
+        publish(None, ObjectAddedEvent(None, parent, 'foo'))
         self.assertEqual(subscriber.notified, 1)
-        publish(None, ObjectRemovedEvent(object(), 'foo'))
+        publish(None, ObjectRemovedEvent(object(), parent, 'foo'))
         self.assertEqual(subscriber.notified, 2)
-        publish(None, ObjectModifiedEvent(None, 'foo'))
+        publish(None, ObjectModifiedEvent(None))
         self.assertEqual(subscriber.notified, 2) # NB: no increase ;-)
         publish(None, DummyEvent())
         self.assertEqual(subscriber.notified, 4) # NB: increased by 2 ;-)

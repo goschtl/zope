@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.10 2003/06/30 20:48:39 jeremy Exp $
+$Id: test_logger.py,v 1.11 2003/09/21 17:32:09 jim Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
 
 from zope.app.event import globalSubscribe, globalUnsubscribe, publish
-from zope.app.event.objectevent import ObjectAddedEvent
+from zope.app.container.contained import ObjectAddedEvent
 from zope.app.event.globalservice import Logger
 
 class DopeyHandler(logging.Handler):
@@ -56,7 +56,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         # register a logger
         globalSubscribe(self.eventlogger)
         # send an event
-        publish(None, ObjectAddedEvent(None, 'foo'))
+        publish(None, ObjectAddedEvent(None, "parent", 'foo'))
 
     def tearDown(self):
         globalUnsubscribe(self.eventlogger)
@@ -72,10 +72,16 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         result = results[0]
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.INFO)
-        self.assertEqual(result.getMessage(),
-                         "zope.app.event.objectevent.ObjectAddedEvent: "
-                         "[('_ObjectEvent__location', 'foo'), "
-                         "('object', None)]\n")
+        self.assertEqual(
+            result.getMessage(),
+            "zope.app.container.contained.ObjectAddedEvent: ["
+            "('newName', 'foo'),\n "
+            "('newParent', 'parent'),\n "
+            "('object', None),\n "
+            "('oldName', None),\n "
+            "('oldParent', None)"
+            "]\n"
+            )
         self.assertEqual(result.exc_info, None)
 
 class TestLogger2(TestLogger1):
@@ -89,10 +95,16 @@ class TestLogger2(TestLogger1):
         result = results[0]
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.CRITICAL)
-        self.assertEqual(result.getMessage(),
-                         "zope.app.event.objectevent.ObjectAddedEvent: "
-                         "[('_ObjectEvent__location', 'foo'), "
-                         "('object', None)]\n")
+        self.assertEqual(
+            result.getMessage(),
+            "zope.app.container.contained.ObjectAddedEvent: ["
+            "('newName', 'foo'),\n "
+            "('newParent', 'parent'),\n "
+            "('object', None),\n "
+            "('oldName', None),\n "
+            "('oldParent', None)"
+            "]\n"
+            )
         self.assertEqual(result.exc_info, None)
 
 def test_suite():
