@@ -168,6 +168,7 @@ class BuilderApplication(Application):
                                        packages, collections)
 
     def assemble_collection(self):
+        self.name_parts = sets.Set()
         # Build the destination directory:
         deps = self.add_component("collection",
                                   self.resource_name,
@@ -241,6 +242,11 @@ class BuilderApplication(Application):
           Directory containing the source of the component.
 
         """
+        if name in self.name_parts:
+            self.error("resources of different types share the name %r;"
+                       " could not create component directories for each"
+                       % name)
+        self.name_parts.add(name)
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
         specs = include.load(source)
@@ -560,8 +566,8 @@ def parse_args(argv):
     identifier of the resource to be packaged.
 
     :return: Options object containing values derived from the command
-      line, the name of the application, and the name of the resource
-      to operate on.
+      line, including the name of the application and the name of the
+      resource to operate on.
 
     :param argv: The command line arguments, including argv[0].
 

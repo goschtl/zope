@@ -15,9 +15,12 @@
 
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 import urllib
+
+from StringIO import StringIO
 
 from zpkgtools import app
 from zpkgtools import publication
@@ -182,6 +185,50 @@ class CommandLineTestCase(unittest.TestCase):
         eq(convert("mypkg-1_2_3alpha4_5"), None)
 
 
+class DistributionWithConflictingNamesTestCase(unittest.TestCase):
+    """Test that conflicting component names generates an error message."""
+
+    def setUp(self):
+        self.old_tempdir = tempfile.tempdir
+        self.stderr = sys.stderr
+        self.tmpdir = tempfile.mkdtemp(prefix="test_app_")
+        os.mkdir(os.path.join(self.tmpdir, "d1"))
+        os.mkdir(os.path.join(self.tmpdir, "d2"))
+        # define the resource map
+        self.mapfile = os.path.join(self.tmpdir, "resource.map")
+        f = open(self.mapfile, "w")
+        f.write("package:r    d1\n")
+        f.write("collection:r d2\n")
+        f.close()
+        # make collection:r depend on package:r
+        f = open(os.path.join(self.tmpdir, "d2", "DEPENDENCIES.cfg"), "w")
+        f.write("package:r\n")
+        f.close()
+        # make collection:r packagable
+        publicationfile = os.path.join(self.tmpdir, "d2",
+                                       publication.PUBLICATION_CONF)
+        f = open(publicationfile, "w")
+        f.write("Metadata-version: 1.0\n")
+        f.write("Name: foo\n")
+        f.close()
+        sys.stderr = StringIO()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
+        tempfile.tempdir = self.old_tempdir
+        sys.stderr = self.stderr
+
+    def test_conflicting_resource_names(self):
+        resource_map = "file://" + urllib.pathname2url(self.mapfile)
+        options = app.parse_args(["-f", "-m", resource_map, "collection:r"])
+        appobj = app.BuilderApplication(options)
+        appobj.load_resource()
+        self.assertRaises(SystemExit, appobj.build_distribution)
+        appobj.cleanup()
+        # I'm undecided whether the message itself should be checked.
+        self.assert_(sys.stderr.getvalue())
+
+
 class ApplicationSupportTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -220,6 +267,7 @@ class ApplicationSupportTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
+    suite.addTest(unittest.makeSuite(DistributionWithConflictingNamesTestCase))
     suite.addTest(unittest.makeSuite(ApplicationSupportTestCase))
     return suite
 

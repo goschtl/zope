@@ -17,33 +17,6 @@ Things that need to be done
   defining package data (common in Zope, but not for everyone).  Low
   priority.
 
-- There needs to be a better error message when two resources use the
-  same name part.  The problem is that ``package:foo`` and
-  ``collection:foo`` both have the same name, and **zpkg** tries to
-  create two different directories of the same name as children of the
-  distribution root.
-
-  Other ways to solve the problem:
-
-  - Remove the resource type from the resource identifier, so names
-    have to be unique to begin with.  Each resource will be expected
-    to identify itself in some way (possibly implicitly, such as by
-    the presence of an *__init__.py* file).  This would mean we need an
-    explicit control of how we deal with dependencies (whether or not
-    we include them in the distribution package, in particular); this
-    would likely be a good thing, but doesn't depend on the change in
-    the resource identifiers.
-
-  - Change the structure of the distribution, so that collection and
-    package resources are located in different directories; for
-    ``collection:foo`` and ``package:foo``, we could end up with::
-
-      foo-x.y/
-          collections/
-              foo/
-          packages/
-              foo/
-
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
