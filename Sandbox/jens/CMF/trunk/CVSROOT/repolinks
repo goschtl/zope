@@ -116,6 +116,7 @@
 /ZODB/src/zLOG              /Packages/zLOG
 /ZODB/src/persistent	    /ZODB3/persistent
 /ZODB/src/scripts	    /ZODB3/Tools
+/ZODB/src/transaction	    /Zope3/src/transaction
 /ZODB/doc/ZEO		    /ZEO/docs
 /ZODB/doc/guide		    /ZODB3/Doc/guide
 /ZODB/doc/ZConfig	    /Packages/ZConfig/doc
