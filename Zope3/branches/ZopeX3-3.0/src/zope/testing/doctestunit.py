@@ -40,21 +40,21 @@ class DocTestTestCase(unittest.TestCase):
     def __init__(self, tester, name, doc, filename, lineno,
                  setUp=None, tearDown=None):
         unittest.TestCase.__init__(self)
-        (self.__tester, self.__name, self.__doc,
-         self.__filename, self.__lineno,
-         self.__setUp, self.__tearDown
+        (self._dt_tester, self._dt_name, self._dt_doc,
+         self._dt_filename, self._dt_lineno,
+         self._dt_setUp, self._dt_tearDown
          ) = tester, name, doc, filename, lineno, setUp, tearDown
 
     def setUp(self):
-        if self.__setUp is not None:
-            self.__setUp()
+        if self._dt_setUp is not None:
+            self._dt_setUp()
 
     def tearDown(self):
-        if self.__tearDown is not None:
-            self.__tearDown()
+        if self._dt_tearDown is not None:
+            self._dt_tearDown()
 
     def setDebugModeOn(self):
-        self.__tester.optionflags |= (
+        self._dt_tester.optionflags |= (
             doctest.RUN_DEBUGGER_ON_UNEXPECTED_EXCEPTION)
 
     def runTest(self):
@@ -62,32 +62,59 @@ class DocTestTestCase(unittest.TestCase):
         new = StringIO()
         try:
             sys.stdout = new
-            failures, tries = self.__tester.runstring(self.__doc, self.__name)
+            failures, tries = self._dt_tester.runstring(
+                self._dt_doc, self._dt_name)
         finally:
             sys.stdout = old
 
         if failures:
-            lname = '.'.join(self.__name.split('.')[-1:])
-            lineno = self.__lineno or "0 (don't know line no)"
-            raise self.failureException(
-                'Failed doctest test for %s\n'
+            raise self.failureException(self.format_failure(new.getvalue()))
+
+    def format_failure(self, err):
+        lineno = self._dt_lineno or "0 (don't know line no)"
+        lname = '.'.join(self._dt_name.split('.')[-1:]) 
+        return ('Failed doctest test for %s\n'
                 '  File "%s", line %s, in %s\n\n%s'
-                % (self.__name, self.__filename, lineno, lname, new.getvalue())
+                % (self._dt_name, self._dt_filename,
+                   lineno, lname, err)
                 )
 
     def id(self):
-        return self.__name
+        return self._dt_name
 
     def __repr__(self):
-        name = self.__name.split('.')
+        name = self._dt_name.split('.')
         return "%s (%s)" % (name[-1], '.'.join(name[:-1]))
 
     __str__ = __repr__
 
     def shortDescription(self):
-        return "Doctest: " + self.__name
+        return "Doctest: " + self._dt_name
 
-def DocFileSuite(package, *paths):
+class DocTestFileTestCase(DocTestTestCase):
+
+    def __repr__(self):
+        return self._dt_name
+    __str__ = __repr__
+
+    def format_failure(self, err):
+        return ('Failed doctest test for %s\n  File "%s", line 0\n\n%s'
+                % (self._dt_name, self._dt_filename, err)
+                )
+
+def DocFileTest(path, package=None, globs=None,
+                setUp=None, tearDown=None,
+                ):
+    
+    package = _normalizeModule(package)
+    name = path.split('/')[-1]
+    dir = os.path.split(package.__file__)[0]
+    path = os.path.join(dir, *(path.split('/')))
+    doc = open(path).read()
+    tester = doctest.Tester(globs=(globs or {}))
+    return DocTestFileTestCase(tester, name, doc, path, 0, setUp, tearDown)
+
+def DocFileSuite(*paths, **kw):
     """Creates a suite of doctest files.
     
     package is the source package containing the doctest files.
@@ -95,26 +122,20 @@ def DocFileSuite(package, *paths):
     Each subsequent argument is a string specifying the file name of the
     doctest relative to the package.
     """
+    # BBB temporarily support passing package as first argument
+    if not isinstance(paths[0], basestring):
+        import warnings
+        warnings.warn("DocFileSuite package arguemnt must be provided as a "
+                      "keyword argument",
+                      DeprecationWarning, 2)
+        kw = kw.copy()
+        kw['package'] = paths[0]
+        paths = paths[1:]
     
-    # It's not entirely obvious how to connection this single string
-    # with unittest.  For now, re-use the _utest() function that comes
-    # standard with doctest in Python 2.3.  One problem is that the
-    # error indicator doesn't point to the line of the doctest file
-    # that failed.
-    import os, doctest, new
-    t = doctest.Tester(globs={})
     suite = unittest.TestSuite()
-    dir = os.path.split(package.__file__)[0]
     for path in paths:
-        path = os.path.join(dir, path)
-        source = open(path).read()
-        def runit(path=path, source=source):
-            doctest._utest(t, path, source, path, 0)
-        runit = new.function(runit.func_code, runit.func_globals, path,
-                             runit.func_defaults, runit.func_closure)
-        f = unittest.FunctionTestCase(runit,
-                                      description="doctest from %s" % path)
-        suite.addTest(f)
+        suite.addTest(DocFileTest(path, **kw))
+
     return suite
 
 def DocTestSuite(module=None,
@@ -231,12 +252,62 @@ def _find(items, module, dict, tests, prefix, minlineno=0):
 ####################################################################
 # doctest debugger
 
-def _expect(expect):
-    # Return the expected output, if any
-    if expect:
-        expect = "\n# ".join(expect.split("\n"))
-        expect = "\n# Expect:\n# %s" % expect
-    return expect
+def invert_src(s):
+    """Invert a doctest
+
+    Examples become regular code. Everything else becomes comments    
+    """
+    isPS1, isPS2 = doctest._isPS1, doctest._isPS2
+    isEmpty, isComment = doctest._isEmpty, doctest._isComment
+    output = []
+    lines = s.split("\n")
+    i, n = 0, len(lines)
+    while i < n:
+        line = lines[i]
+        i = i + 1
+        m = isPS1(line)
+        if m is None:
+            output.append('#  '+line)
+            continue
+        j = m.end(0)  # beyond the prompt
+        if isEmpty(line, j) or isComment(line, j):
+            # a bare prompt or comment -- not interesting
+            output.append('#  '+line[j:])
+
+        lineno = i - 1
+        if line[j] != " ":
+            raise ValueError("line %r of docstring lacks blank after %s: %s" %
+                             (lineno, PS1, line))
+        j = j + 1
+        blanks = m.group(1)
+        nblanks = len(blanks)
+        # suck up this and following PS2 lines
+        while 1:
+            output.append(line[j:])
+            line = lines[i]
+            m = isPS2(line)
+            if m:
+                if m.group(1) != blanks:
+                    raise ValueError("inconsistent leading whitespace "
+                        "in line %r of docstring: %s" % (i, line))
+                i = i + 1
+            else:
+                break
+
+        # suck up response
+        if not (isPS1(line) or isEmpty(line)):
+            while 1:
+                if line[:nblanks] != blanks:
+                    raise ValueError("inconsistent leading whitespace "
+                        "in line %r of docstring: %s" % (i, line))
+                output.append('#'+line[nblanks:])
+                i = i + 1
+                line = lines[i]
+                if isPS1(line) or isEmpty(line):
+                    break
+
+    return '\n'.join(output)
+
 
 def testsource(module, name):
     """Extract the test sources from a doctest test docstring as a script
@@ -251,26 +322,15 @@ def testsource(module, name):
     test = [doc for (tname, doc, f, l) in tests if tname == name]
     if not test:
         raise ValueError(name, "not found in tests")
-    test = test[0]
-    # XXX we rely on an internal doctest function:
-    examples = doctest._extract_examples(test)
-    testsrc = '\n'.join([
-        "%s%s" % (source, _expect(expect))
-        for (source, expect, lineno) in examples
-        ])
-    return testsrc
+    return invert_src(test[0])
 
 def debug_src(src, pm=False, globs=None):
     """Debug a single doctest test doc string
 
     The string is provided directly
     """
-    # XXX we rely on an internal doctest function:
-    examples = doctest._extract_examples(src)
-    src = '\n'.join([
-        "%s%s" % (source, _expect(expect))
-        for (source, expect, lineno) in examples
-        ])
+
+    src = invert_src(src)
     debug_script(src, pm, globs)
 
 def debug_script(src, pm=False, globs=None):
