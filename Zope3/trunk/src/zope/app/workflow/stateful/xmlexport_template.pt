@@ -29,24 +29,25 @@
   <transitions>
     <tal:block tal:repeat="trans wf/getTransitionNames"> 
       <transition
-        sourceState = ""
-        destinationState = ""
-        condition = ""
-        script = ""
-        permission = ""
-        triggerMode = ""
-        title = ""
-        name = ""
-        tal:define="transObj python:wf.getTransition(trans)"
-        tal:attributes="
-            sourceState      transObj/getSourceState;
-            destinationState transObj/getDestinationState;
-            condition        transObj/getCondition;
-            script           transObj/getScript;
-            permission   python:view.getPermissionId(transObj.getPermission());
-            triggerMode      transObj/getTriggerMode;
-            title            python:view.getDublinCore(transObj).Title();
-            name             trans"/>
+          sourceState = ""
+          destinationState = ""
+          condition = ""
+          script = ""
+          permission = ""
+          triggerMode = ""
+          title = ""
+          name = ""
+          tal:define="transObj python:wf.getTransition(trans)"
+          tal:attributes="
+              sourceState      transObj/sourceState;
+              destinationState transObj/destinationState;
+              condition        transObj/condition;
+              script           transObj/script;
+              permission       python:view.getPermissionId(transObj.permission);
+              triggerMode      transObj/triggerMode;
+              title            python:view.getDublinCore(transObj).Title();
+              name             trans"
+      />
     </tal:block>
   </transitions>
   
