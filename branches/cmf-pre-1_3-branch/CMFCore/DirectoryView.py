@@ -11,8 +11,8 @@
 # 
 ##############################################################################
 """Views of filesystem directories as folders."""
-__version__='$Revision$'[11:-2]
 
+__version__='$Revision$'[11:-2]
 
 import Globals
 from Globals import HTMLFile, Persistent, package_home, DTMLFile
@@ -30,6 +30,7 @@ from FSObject import BadFile
 from utils import expandpath, minimalpath
 from zLOG import LOG, ERROR
 from sys import exc_info
+from types import StringType
 
 _dtmldir = os.path.join( package_home( globals() ), 'dtml' )
 
@@ -37,14 +38,22 @@ __reload_module__ = 0
 
 # Ignore version control subdirectories
 # and special names.
+def _filter(name):
+    return name not in ('CVS', 'SVN', '.', '..')
+
 def _filtered_listdir(path):
-    n = filter(lambda name: name not in ('CVS', 'SVN', '.', '..'),
+    n = filter(_filter,
                listdir(path))
     return n
+
+def _walker (listdir, dirname, names):
+    names[:]=filter(_filter,names)
+    listdir.extend(names)
 
 class DirectoryInformation:
     data = None
     _v_last_read = 0
+    _v_last_filelist = [] # Only used on Win32
 
     def __init__(self, expanded_fp, minimal_fp):
         self.filepath = minimal_fp
@@ -86,6 +95,7 @@ class DirectoryInformation:
                     types[strip(obname)] = strip(meta_type)
         return types
 
+
     def _readProperties(self, fp):
         """Reads the properties file next to an object.
         """
@@ -104,15 +114,54 @@ class DirectoryInformation:
                     props[strip(key)] = strip(value)
             return props
 
-    def getContents(self, registry):
-        changed = 0
-        if Globals.DevelopmentMode:
+
+    if Globals.DevelopmentMode and os.name=='nt':
+
+        def _changed(self):
+            mtime=0
+            filelist=[]
+            try:
+                fp = expandpath(self.filepath)
+                mtime = stat(fp)[8]
+                # some Windows directories don't change mtime 
+                # when a file in them changes :-(
+                # So keep a list of files as well, and see if that
+                # changes
+                path.walk(fp,_walker,filelist)
+                filelist.sort()
+            except: 
+                from zLOG import LOG, ERROR
+                import sys
+                LOG('DirectoryView',
+                    ERROR,
+                    'Error checking for directory modification',
+                    error=sys.exc_info())
+                
+            if mtime != self._v_last_read or filelist != self._v_last_filelist:
+                self._v_last_read = mtime
+                self._v_last_filelist = filelist
+                
+                return 1
+
+            return 0
+        
+    elif Globals.DevelopmentMode:
+        
+        def _changed(self):
             try: mtime = stat(expandpath(self.filepath))[8]
             except: mtime = 0
             if mtime != self._v_last_read:
                 self._v_last_read = mtime
-                changed = 1
+                return 1
+            return 0
+        
+    else:
 
+        def _changed(self):
+            return 0
+        
+    def getContents(self, registry):
+        changed = self._changed()
         if self.data is None or changed:
             try:
                 self.data, self.objects = self.prepareContents(registry,
@@ -180,6 +229,7 @@ class DirectoryInformation:
                     t = registry.getTypeByMetaType(mt)
                 if t is None:
                     t = registry.getTypeByExtension(ext)
+                
                 if t is not None:
                     properties = self._readProperties(
                         e_filepath + '.properties')
@@ -230,8 +280,10 @@ class DirectoryRegistry:
     def getTypeByMetaType(self, mt):
         return self._meta_types.get(mt, None)
 
-    def registerDirectory(self, name, parent_globals, subdirs=1):
-        filepath = path.join(package_home(parent_globals), name)
+    def registerDirectory(self, name, _prefix, subdirs=1):
+        if not isinstance(_prefix, StringType):
+            _prefix = package_home(_prefix)
+        filepath = path.join(_prefix, name)
         self.registerDirectoryByPath(filepath, subdirs)
 
     def registerDirectoryByPath(self, filepath, subdirs=1):
@@ -412,7 +464,7 @@ def createDirectoryView(parent, filepath, id=None):
     ob = DirectoryView(id, filepath)
     parent._setObject(id, ob)
 
-def addDirectoryViews(ob, name, parent_globals):
+def addDirectoryViews(ob, name, _prefix):
     '''
     Adds a directory view for every subdirectory of the
     given directory.
@@ -421,7 +473,9 @@ def addDirectoryViews(ob, name, parent_globals):
     # Note that registerDirectory() still needs to be called
     # by product initialization code to satisfy
     # persistence demands.
-    fp = path.join(package_home(parent_globals), name)
+    if not isinstance(_prefix, StringType):
+        _prefix = package_home(_prefix)
+    fp = path.join(_prefix, name)
     filepath = minimalpath(fp)
     info = _dirreg.getDirectoryInfo(filepath)
     if info is None:

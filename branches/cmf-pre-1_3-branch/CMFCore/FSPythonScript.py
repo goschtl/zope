@@ -155,7 +155,7 @@ class FSPythonScript (FSObject, Script):
 
     def params(self): return self._params
     def body(self): return self._body
-    def get_size(self): return len(self._body)
+    def get_size(self): return len(self.read())
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
     def manage_FTPget(self):

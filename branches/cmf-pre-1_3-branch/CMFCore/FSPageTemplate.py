@@ -92,23 +92,22 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return FSPageTemplate.inheritedAttribute('pt_macros')(self)
 
     def pt_render(self, source=0, extra_context={}):
-        # Tie in on an opportunity to auto-reload
-        self._updateFromFS()
-        if Globals.DevelopmentMode:
-            try:
-                return FSPageTemplate.inheritedAttribute('pt_render')( self,
-                    source, extra_context )
-            except RuntimeError:
+        self._updateFromFS()  # Make sure the template has been loaded.
+        try:
+            return FSPageTemplate.inheritedAttribute('pt_render')(
+                self, source, extra_context )
+        except RuntimeError:
+            if Globals.DevelopmentMode:
                 err = FSPageTemplate.inheritedAttribute( 'pt_errors' )( self )
                 err_type = err[0]
                 err_msg = '<pre>%s</pre>' % replace( err[1], "\'", "'" )
                 msg = 'FS Page Template %s has errors: %s.<br>%s' % (
-                    self.id, err_type, err_msg )
+                    self.id, err_type, html_quote(err_msg) )
                 raise RuntimeError, msg
-        else:
-            return FSPageTemplate.inheritedAttribute('pt_render')(self,
-                source, extra_context )
-
+            else:
+                raise
+            
+            
     # Copy over more mothods
     security.declareProtected(FTPAccess, 'manage_FTPget')
     security.declareProtected(View, 'get_size')

@@ -1,31 +1,22 @@
 import Zope
-import unittest
-from Products.CMFCore.tests import test_ContentTypeRegistry
-from Products.CMFCore.tests import test_PortalFolder
-from Products.CMFCore.tests import test_TypesTool
-from Products.CMFCore.tests import test_ActionsTool
-from Products.CMFCore.tests import test_ActionInformation
-from Products.CMFCore.tests import test_ActionProviderBase
-from Products.CMFCore.tests import test_Expression
-from Products.CMFCore.tests import test_CatalogTool
+from unittest import main
+from Products.CMFCore.tests.base.utils import build_test_suite
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest( test_ContentTypeRegistry.test_suite() )
-    suite.addTest( test_PortalFolder.test_suite() )
-    suite.addTest( test_TypesTool.test_suite() )
-    suite.addTest( test_ActionsTool.test_suite()  )
-    suite.addTest( test_ActionInformation.test_suite() )
-    suite.addTest( test_ActionProviderBase.test_suite() )
-    suite.addTest( test_Expression.test_suite() )
-    suite.addTest( test_CatalogTool.test_suite() )
-    return suite
 
-def run():
-    if hasattr( unittest, 'JUnitTextTestRunner' ):
-        unittest.JUnitTextTestRunner().run( test_suite() )
-    else:
-        unittest.TextTestRunner( verbosity=1 ).run( test_suite() )
+    return build_test_suite('Products.CMFCore.tests',[
+        'test_ContentTypeRegistry',
+        'test_PortalFolder',
+        'test_TypesTool',
+        'test_ActionsTool',
+        'test_ActionInformation',
+        'test_ActionProviderBase',
+        'test_Expression',
+        'test_CatalogTool',
+        'test_DirectoryView',
+        'test_FSPythonScript',
+        'test_FSPageTemplate'
+        ])
 
 if __name__ == '__main__':
-    run()
+    main(defaultTest='test_suite')

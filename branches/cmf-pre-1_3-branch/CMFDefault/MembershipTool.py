@@ -87,10 +87,10 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                             , visible=1
                              )
           , ActionInformation(id='mystuff'
-                            , title='my stuff'
+                            , title='My stuff'
                             , description='Goto your home folder'
                             , action=Expression(
-          text='python: portal.portal_membership.getHomeUrl()')
+          text='python: portal.portal_membership.getHomeUrl()+"/folder_contents"')
                             , permissions=(View,)
                             , category='user'
                             , condition=Expression(

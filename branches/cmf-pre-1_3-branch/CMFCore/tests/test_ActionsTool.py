@@ -1,20 +1,23 @@
-import Zope, unittest
-from Products.CMFCore.ActionsTool import *
-from Products.CMFDefault.URLTool import *
-import ZPublisher.HTTPRequest
+import Zope
+from unittest import TestCase,TestSuite,makeSuite,main
 
-class ActionsToolTests( unittest.TestCase ):
+from Products.CMFCore.tests.base.testcase import \
+     SecurityRequestTest
+
+from Products.CMFCore.ActionsTool import ActionsTool
+from Products.CMFCore.TypesTool import TypesTool
+from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFDefault.URLTool import URLTool
+from Products.CMFDefault.RegistrationTool import RegistrationTool
+from Products.CMFDefault.MembershipTool import MembershipTool
+
+class ActionsToolTests( SecurityRequestTest ):
 
     def setUp( self ):
-        get_transaction().begin()
-        self.connection = Zope.DB.open()
-        root = self.root = self.connection.root()[ 'Application' ]
-
-        env = { 'SERVER_NAME' : 'http://localhost'
-              , 'SERVER_PORT' : '80'
-              }
-        root.REQUEST = ZPublisher.HTTPRequest.HTTPRequest( None, env, None )
         
+        SecurityRequestTest.setUp(self)
+        
+        root = self.root
         root._setObject( 'portal_actions', ActionsTool() )
         root._setObject('foo', URLTool() )
         self.tool = root.portal_actions
@@ -37,17 +40,55 @@ class ActionsToolTests( unittest.TestCase ):
         self.assertEqual(tool.listActionProviders(),
                           ('portal_actions',))
 
-    def tearDown( self ):
-        get_transaction().abort()
-        self.connection.close()
+    def test_listActionInformationActions(self):
+        """
+        Check that listFilteredActionsFor works for objects
+        that return ActionInformation objects
+        """
+        root = self.root
+        tool = self.tool
+        root._setObject('portal_registration', RegistrationTool())
+        root._setObject('portal_membership', MembershipTool())
+        root._setObject('portal_types', TypesTool())
+        self.tool.action_providers = ('portal_actions','portal_registration')
+        self.assertEqual(tool.listFilteredActionsFor(root.portal_registration),
+                         {'workflow': [],
+                          'user': [],
+                          'object': [{'permissions': ('List folder contents',),
+                                      'id': 'folderContents',
+                                      'url': ' http://foo/folder_contents',
+                                      'name': 'Folder contents',
+                                      'visible': 1,
+                                      'category': 'object'}],
+                          'folder': [],
+                          'global': []})
+        
+    def test_listDictionaryActions(self):
+        """
+        Check that listFilteredActionsFor works for objects
+        that return dictionaries
+        """
+        root = self.root
+        tool = self.tool
+        root._setObject('donkey', PortalFolder('donkey'))
+        root._setObject('portal_membership', MembershipTool())
+        root._setObject('portal_types', TypesTool())
+        self.assertEqual(tool.listFilteredActionsFor(root.donkey),
+                         {'workflow': [],
+                          'user': [],
+                          'object': [],
+                          'folder': [{'permissions': ('List folder contents',),
+                                      'id': 'folderContents',
+                                      'url': ' http://foo/donkey/folder_contents',
+                                      'name': 'Folder contents',
+                                      'visible': 1,
+                                      'category': 'folder'}],
+                          'global': []})
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ActionsToolTests))
-    return suite
-
-def run():
-    unittest.TextTestRunner().run(test_suite())
+    return TestSuite((
+        makeSuite(ActionsToolTests),
+        ))
 
 if __name__ == '__main__':
-    run()
+    main(defaultTest='test_suite')
