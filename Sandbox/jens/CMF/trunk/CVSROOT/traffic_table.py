@@ -70,7 +70,7 @@ table = [
      'addrs': 'zopedocs-checkins@zope.org',
      'remote': None},
 
-    {'path': "ZopeDocs",
+    {'path': "ZopeMozilla",
      'addrs': 'zope-mozilla@zope.org',
      'remote': None},
 
