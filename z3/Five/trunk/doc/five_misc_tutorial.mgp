@@ -69,6 +69,8 @@ Resources
 
 	url: path/to/object/++resource++z3base.png
 
+	Jim says this is not exactly Zope 3 as it ruins caching
+
 %page
 
 ZCML
@@ -109,7 +111,7 @@ Bridging interfaces
 Events
 
 
-	Can instruct Zope 2 object to send Zope 3 style events
+	Can instruct Zope 2 object to send Zope 3 style events using five:sendEvents
 
 	These events sent upon copy/move/rename in Zope 2
 

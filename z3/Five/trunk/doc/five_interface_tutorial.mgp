@@ -251,7 +251,7 @@ ZCML, what we just said
 
 	The adapter ElephantNoiseMaker adapts any object that provides IElephant to a INoiseMaker
 
-	The adapter IChicken adapts any object that provides IChicken to a INoiseMaker
+	The adapter ChickenNoiseMaker adapts any object that provides IChicken to a INoiseMaker
 
 %page
 

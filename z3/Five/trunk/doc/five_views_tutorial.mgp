@@ -126,7 +126,7 @@ View class example: overview2.pt
 %size 4, fore "blue"
 <html>
 <body>
-<p tal:content="context/objectIds"></p>
+<p tal:content="view/reversedIds"></p>
 </body>
 </html>
 
@@ -159,7 +159,7 @@ Example: configure.zcml
       name="overview2.html"
       template="overview2.pt"
       permission="zope2.ViewManagementScreens"
-      class=".browser.OverviewHelper"
+      class=".browser.Overview"
       />
 
 %page
