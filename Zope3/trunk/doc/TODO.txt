@@ -56,9 +56,6 @@ Things to do for the next release (in no particular order)
 
   - Factories
 
-  - Translation.  Note that if these were utilities, you could
-    have independent utilities prt domain
-
   - Caching (Naveen is working on this)
 
   - Session data managers

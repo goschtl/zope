@@ -112,6 +112,14 @@ Zope Changes
 
       o SQL database connections are now managed as named utilities.
 
+      o The Translation Service has been removed. Instead we are using
+        Translation Domain utilities to hold translations. Since the API would
+        would have been a good bit more complex than before, a convenience
+        function was added to 'zope.i18n'::
+
+          translate(location, msgid, domain=None, mapping=None, context=None,
+                    target_language=None, default=None):
+ 
     - The IPrincipal now uses 'id', 'title' and 'description instead of
       'getId()', 'getTitle()', and 'getDescription()'. For
       backwards-compatiblity 'getTitle()' and 'getDescription()' are available
