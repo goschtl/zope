@@ -15,6 +15,11 @@ Zope Changes
       - Fixed the default 'text/*' content type for file objects.
         Backport of the fix for bug 201.
 
+      - Fixed bug in TypeRegistry for
+        zope.app.publisher.browser.globalbrowsermenuservice which allows
+        passing classes instead of interfaces as well but has a missing
+        import.
+
       - A monkey patch to cope with weakref problems in Python 2.3.3
         was removed, so Python 2.3.4 is required now.
 
