@@ -9,8 +9,7 @@
   <div>Contents <a href="+"> Add... </a> </div>
 
   <form name="containerContentsForm" method="get" action="." 
-        tal:define="container_contents view/listContentInfo;
-                    formatTime views/standard_macros/formatTime;"
+        tal:define="container_contents view/listContentInfo"
         tal:condition="container_contents"
         >
 
@@ -59,7 +58,7 @@
             </td>          
             <td><span tal:content="item/title|default">&nbsp;</span></td>
             <td><span tal:define="created item/created|default"
-                      tal:content="python:formatTime(created)">&nbsp;</span></td>
+                      tal:content="created">&nbsp;</span></td>
             <td><span tal:define="modified item/modified|default"
                       tal:content="modified">&nbsp;</span></td>
           </tr>
