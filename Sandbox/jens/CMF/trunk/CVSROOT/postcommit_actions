@@ -244,6 +244,7 @@ def main(args):
         VERBOSE = entry.get('verbose', VERBOSE)
         selector_path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
+        specials = entry.get('specials', None)
         if remote:
             receiverid = remote.get('receiverid', IDENTITY_ACCT)
         else:
@@ -252,6 +253,12 @@ def main(args):
         if addrs and not only_sync:
             do_mail(remote, repo, addrs, subjs, msgfilenm=msgfilenm,
                     doing_directory=doing_directory, no_files=no_files)
+
+        if specials:
+            subj_names = map(lambda x: x[0], subjs)
+            for trigger, action in specials:
+                if trigger in subj_names:
+                    do_special(trigger, action, addrs)
 
         if remote:
             do_sync(selector_path, repo, remote, receiverid, subjs, excludes,
@@ -391,47 +398,12 @@ def do_mail(remote, repo, addrs, subjs,
 
             diff_msg = diff_msg + new_msg + '\n'
 
-    mailcmd = MAIL_CMD
-    user = getuser()
-    fullname = email = ''
-    if user:
-        fullname, email = get_user_ldap_info(user)
-    else:
-        user = "*unknown*"
-    if not fullname:
-        fullname = "The Unidentified User"
-    if not email:
-        email = OFFICIAL_SENDER
-
-    cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
-                             (DRYRUN and "echo Would do: ") or "",
-                             mailcmd,
-                             (VERBOSE and "-v") or "",
-                             string.join(addrs, ",")))
-
     # Prepend the Subject and From lines, and append the diff:
     mf = open(msgfilenm, 'r')
-    oldcontents = mf.read()
+    text = mf.read() + diff_msg
     mf.close()
-    mf = open(msgfilenm, 'w')
-    mf.write("Subject: %(subject)s\nTo: %(to)s\n"
-             "From: %(from)s\nSender: %(sender)s\n\n"
-             "%(contents)s %(diff)s"
-             % {'subject': subject,
-                'to': string.join(addrs, ","),
-                'from': "%s <%s>" % (fullname, email),
-                'sender': OFFICIAL_SENDER,
-                'contents': oldcontents,
-                'diff': diff_msg})
-    mf.close()
-    cmd = cmd + "< %s" % msgfilenm
 
-    if VERBOSE:
-        complain("%sDoing mail cmd for user %s:\n\t%s\n",
-                 ((DRYRUN and "NOT ") or ""), user, cmd)
-    result = os.system(cmd)
-    if result:
-        note_failure("*** Mail failed with error %s...", result)
+    send_mail(addrs, text, subject)
 
 def create_diff(repo, file, old, new):
     """ Create a diff comparing old and new versions """
@@ -462,6 +434,66 @@ def create_diff(repo, file, old, new):
     else:
         lines.insert(0, header)
         return string.join(lines, '')
+
+def do_special(trigger, action, addrs):
+    """Do special action - a script, to be invoked from the CVSROOT dir.
+
+    Run it with the version info and send the result to indicated addrs."""
+
+    action_cmd = "%s/CVSROOT/%s %s" % (CVSROOT, action, trigger)
+    file_handle = os.popen(action_cmd)
+
+    output = file_handle.read()
+    result = file_handle.close()
+
+    if result:
+        note_failure("*** Special command failed with error %s:\n"
+                     "** %s **\n%s\n",
+                     result, action_cmd, output)
+    else:
+        subject = "CVS: %s run for %s changes" % (action, trigger)
+        send_mail(addrs, output, subject)
+
+def send_mail(addrs, text, subject):
+    mailcmd = MAIL_CMD
+    user = getuser()
+    fullname = email = ''
+    if user:
+        fullname, email = get_user_ldap_info(user)
+    else:
+        user = "*unknown*"
+    if not fullname:
+        fullname = "The Unidentified User"
+    if not email:
+        email = OFFICIAL_SENDER
+
+    cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
+                             (DRYRUN and "echo Would do: ") or "",
+                             mailcmd,
+                             (VERBOSE and "-v") or "",
+                             string.join(addrs, ",")))
+
+    if VERBOSE:
+        complain("%sDoing mail cmd for user %s:\n\t%s\n",
+                 ((DRYRUN and "NOT ") or ""), user, cmd)
+
+    text = ("Subject: %(subject)s\nTo: %(to)s\n"
+            "From: %(from)s\nSender: %(sender)s\n\n"
+            "%(text)s"
+            % {'subject': subject,
+               'to': string.join(addrs, ","),
+               'from': "%s <%s>" % (fullname, email),
+               'sender': OFFICIAL_SENDER,
+               'text': text})
+
+    cmd_in, cmd_out = os.popen2(cmd, 'rw')
+    cmd_in.write(text)
+    cmd_in.close()
+    output = cmd_out.read()
+    result = cmd_out.close()
+    if output:
+        note_failure("*** Mail cmd yielded output %s:\n%s\n",
+                     result, output)
 
 ### XXX 'path' is selector_path, not very useful.  I think we should be using
 ###     'repo'. 
