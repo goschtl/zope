@@ -11,7 +11,7 @@
 
       <p>For each service, the service name is given and all of the
          components registered to provide the service are shown.  You
-         map select the component to provide the service or disable the
+         may select the component to provide the service or disable the
          service.
       </p>
 
