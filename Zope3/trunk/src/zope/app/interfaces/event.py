@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.10 2003/06/25 15:20:37 fdrake Exp $
+$Id: event.py,v 1.11 2003/09/21 17:32:23 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -275,15 +275,13 @@ class IObjectEvent(IEvent):
 
     object = Attribute("The subject of the event.")
 
-    location = Attribute("An optional object location.")
-
 class IObjectCreatedEvent(IObjectEvent):
     """An object has been created.
 
     The location will usually be None for this event."""
 
-class IObjectAddedEvent(IObjectEvent):
-    """An object has been added to a container."""
+class IObjectCopiedEvent(IObjectCreatedEvent):
+    """An object has been copied"""
 
 class IObjectModifiedEvent(IObjectEvent):
     """An object has been modified"""
@@ -293,19 +291,6 @@ class IObjectAnnotationsModifiedEvent(IObjectModifiedEvent):
 
 class IObjectContentModifiedEvent(IObjectModifiedEvent):
     """An object's content has been modified"""
-
-class IObjectRemovedEvent(IObjectEvent):
-    """An object has been removed from a container"""
-
-class IObjectMovedEvent(IObjectRemovedEvent, IObjectAddedEvent):
-    """An object has been moved"""
-
-    fromLocation = Attribute("The old location for the object.")
-
-class IObjectCopiedEvent(IObjectAddedEvent):
-    """An object has been copied"""
-
-    fromLocation = Attribute("The old location for the object.")
 
 class IDatabaseOpenedEvent(IEvent):
     """The main database has been opened."""
