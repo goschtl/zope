@@ -115,7 +115,8 @@ class Favorite( Link ):
         Return the actual object that the Favorite is 
         linking to
         """
-        return self.restrictedTraverse(self.getRemoteUrl())
+        portal_url = getToolByName(self, 'portal_url')
+        return portal_url.getPortalObject().retrictedTraverse(self.remote_url)
 
     def edit( self, remote_url ):
         """
