@@ -81,6 +81,7 @@ table = [
     {'path': "Packages/Products/ZSQLMethods", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZGadflyDA", 'addrs': zopeaddr},
     {'path': "Packages/Products/etcUserFolder", 'addrs': zopeaddr},
+    {'path': "Packages/Products/MIMETools", 'addrs': zopeaddr},
     {'path': "Packages/webdav", 'addrs': zopeaddr},
     {'path': "Packages/ZClasses", 'addrs': zopeaddr},
 ]
