@@ -782,10 +782,10 @@ of aware datetime objects.  If in doubt, simply implement all of them.
     is intended to be the total offset from UTC; for example, if a
     tzinfo object represents both time zone and DST adjustments,
     utcoffset() should return their sum.  If the UTC offset isn't known,
-    return None.  Else the value returned must be an int, long, or
-    timedelta object, in the range -1439 to 1439 inclusive (1440 = 24*60;
-    the magnitude of the offset must be less than one day, and must be
-    a whole number of minutes).  Most implementations of utcoffset()
+    return None.  Else the value returned must be a timedelta object
+    specifying a whole number of minutes in the range -1439 to 1439
+    inclusive (1440 = 24*60; the magnitude of the offset must be less
+    than one day).  Most implementations of utcoffset()
     will probably look like:
 
         return CONSTANT  # fixed-offset class
@@ -797,14 +797,14 @@ of aware datetime objects.  If in doubt, simply implement all of them.
   - dst(self, dt)
     Return the DST offset, in minutes east of UTC, or None if DST
     information isn't known.  Return 0 if DST is not in effect.
-    If DST is in effect, return an int, long, or timedelta object, in
-    the range -1439 to 1439 inclusive.  This must be a whole number of
-    minutes.  Note that DST offset, if applicable, has already been added
-    to the UTC offset returned by utcoffset(), so there's no need to
-    consult dst() unless you're interested in displaying DST info
-    separately.  For example, datetimetz.timetuple() calls its
-    tzinfo object's dst() method to determine how the tm_isdst flag
-    should be set.
+    If DST is in effect, return the offset as a timedelta object (see
+    utcoffset() for details). Note that DST offset, if applicable, has
+    already been added to the UTC offset returned by utcoffset(), so
+    there's no need to consult dst() unless you're interested in
+    displaying DST info separately.  For example, datetimetz.timetuple()
+    calls its tzinfo object's dst() method to determine how the tm_isdst
+    flag should be set, and datetimetz.astimezone() calls dst() to
+    account for DST changes when crossing time zones.
 
     An instance tz of a tzinfo subclass that models both standard and
     daylight times must be consistent in this sense:
@@ -849,42 +849,56 @@ about objects in other timezones.
 
 Example tzinfo classes:
 
-   class UTC(tzinfo):
-        "UTC"
+    from datetime import tzinfo, timedelta
+
+    ZERO = timedelta(0)
+
+    class UTC(tzinfo):
+        """UTC"""
+
         def utcoffset(self, dt):
-            return 0
+            return ZERO
+
         def tzname(self, dt):
             return "UTC"
+
         def dst(self, dt):
-            return 0
+            return ZERO
 
     class FixedOffset(tzinfo):
-        "Fixed offset in minutes east from UTC"
+        """Fixed offset in minutes east from UTC."""
+
         def __init__(self, offset, name):
             self.__offset = offset
             self.__name = name
+
         def utcoffset(self, dt):
             return self.__offset
+
         def tzname(self, dt):
             return self.__name
+
         def dst(self, dt):
-            # It depends on more than we know in an example.
-            return None # Indicate we don't know
+            return ZERO
 
     import time
+
     class LocalTime(tzinfo):
-        "Local time as defined by the operating system"
+        """Local time as defined by the operating system."""
+
         def _isdst(self, dt):
             t = (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second,
                  -1, -1, -1)
             # XXX This may fail for years < 1970 or >= 2038
             t = time.localtime(time.mktime(t))
             return t.tm_isdst > 0
+
         def utcoffset(self, dt):
             if self._isdst(dt):
-                return -time.timezone/60
+                return timedelta(seconds=-time.timezone//60)
             else:
-                return -time.altzone/60
+                return timedelta(seconds=-time.altzone//60)
+
         def tzname(self, dt):
             return time.tzname[self._isdst(dt)]
 

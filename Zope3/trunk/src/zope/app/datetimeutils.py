@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.2 2002/12/25 14:12:24 jim Exp $
+$Id: datetimeutils.py,v 1.3 2003/01/02 21:12:31 tim_one Exp $
 """
 
-__version__='$Revision: 1.2 $'[11:-2]
+__version__='$Revision: 1.3 $'[11:-2]
 
 import math
 import re
@@ -954,12 +954,15 @@ parser = DateTimeParser()
 parse = parser.parse
 time = parser.time
 
-from datetime import tzinfo as _tzinfo
+from datetime import tzinfo as _tzinfo, timedelta as _timedelta
+_ZERO = _timedelta(0)
 class tzinfo(_tzinfo):
 
     __slots__ = ('offset', )
 
     def __init__(self, offset):
+        if isinstance(offset, int):
+            offset = _timedelta(minutes=offset)
         self.offset = offset
 
     def utcoffset(self, dt=None):
@@ -968,11 +971,12 @@ class tzinfo(_tzinfo):
     __getstate__ = utcoffset
     __setstate__ = __init__
 
-    def dst(self, dt): return 0
+    def dst(self, dt): return _ZERO
     def tzname(self, dt): return ''
 
     def __repr__(self):
-        return 'tzinfo(%d)' % self.offset
+        minutes = self.offset.days * 24 * 60  + self.offset.seconds // 60
+        return 'tzinfo(%d)' % minutes
 
 
 from datetime import datetimetz as _datetimetz

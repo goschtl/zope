@@ -39,6 +39,10 @@ class TestModule(unittest.TestCase):
 
 class FixedOffset(tzinfo):
     def __init__(self, offset, name, dstoffset=42):
+        if isinstance(offset, int):
+            offset = timedelta(minutes=offset)
+        if isinstance(dstoffset, int):
+            dstoffset = timedelta(minutes=dstoffset)
         self.__offset = offset
         self.__name = name
         self.__dstoffset = dstoffset
@@ -85,9 +89,9 @@ class TestTZInfo(unittest.TestCase):
         fo = FixedOffset(3, "Three")
         self.failUnless(isinstance(fo, tzinfo))
         for dt in datetime.now(), None:
-            self.assertEqual(fo.utcoffset(dt), 3)
+            self.assertEqual(fo.utcoffset(dt), timedelta(minutes=3))
             self.assertEqual(fo.tzname(dt), "Three")
-            self.assertEqual(fo.dst(dt), 42)
+            self.assertEqual(fo.dst(dt), timedelta(minutes=42))
 
     def test_pickling_base(self):
         import pickle, cPickle
@@ -107,10 +111,11 @@ class TestTZInfo(unittest.TestCase):
         import pickle, cPickle
 
         # Make sure we can pickle/unpickle an instance of a subclass.
-        orig = PicklableFixedOffset(-300, 'cookie')
+        offset = timedelta(minutes=-300)
+        orig = PicklableFixedOffset(offset, 'cookie')
         self.failUnless(isinstance(orig, tzinfo))
         self.failUnless(type(orig) is PicklableFixedOffset)
-        self.assertEqual(orig.utcoffset(None), -300)
+        self.assertEqual(orig.utcoffset(None), offset)
         self.assertEqual(orig.tzname(None), 'cookie')
         for pickler in pickle, cPickle:
             for binary in 0, 1:
@@ -118,7 +123,7 @@ class TestTZInfo(unittest.TestCase):
                 derived = pickler.loads(green)
                 self.failUnless(isinstance(derived, tzinfo))
                 self.failUnless(type(derived) is PicklableFixedOffset)
-                self.assertEqual(derived.utcoffset(None), -300)
+                self.assertEqual(derived.utcoffset(None), offset)
                 self.assertEqual(derived.tzname(None), 'cookie')
 
 #############################################################################
@@ -1570,7 +1575,8 @@ class TZInfoBase(unittest.TestCase):
         # A datetimetz passes itself on, a timetz passes None.
         class introspective(tzinfo):
             def tzname(self, dt):    return dt and "real" or "none"
-            def utcoffset(self, dt): return dt and 42 or -42
+            def utcoffset(self, dt):
+                return timedelta(minutes = dt and 42 or -42)
             dst = utcoffset
 
         obj = cls(1, 2, 3, tzinfo=introspective())
@@ -1601,7 +1607,7 @@ class TZInfoBase(unittest.TestCase):
     def test_utc_offset_out_of_bounds(self):
         class Edgy(tzinfo):
             def __init__(self, offset):
-                self.offset = offset
+                self.offset = timedelta(minutes=offset)
             def utcoffset(self, dt):
                 return self.offset
 
@@ -1637,23 +1643,19 @@ class TZInfoBase(unittest.TestCase):
             self.failUnless(t.dst() is None)
             self.failUnless(t.tzname() is None)
 
-        class C2(tzinfo):
-            def utcoffset(self, dt): return -1439
-            def dst(self, dt): return 1439
-            def tzname(self, dt): return "aname"
         class C3(tzinfo):
             def utcoffset(self, dt): return timedelta(minutes=-1439)
             def dst(self, dt): return timedelta(minutes=1439)
             def tzname(self, dt): return "aname"
-        for t in cls(1, 1, 1, tzinfo=C2()), cls(1, 1, 1, tzinfo=C3()):
-            self.assertEqual(t.utcoffset(), timedelta(minutes=-1439))
-            self.assertEqual(t.dst(), timedelta(minutes=1439))
-            self.assertEqual(t.tzname(), "aname")
+        t = cls(1, 1, 1, tzinfo=C3())
+        self.assertEqual(t.utcoffset(), timedelta(minutes=-1439))
+        self.assertEqual(t.dst(), timedelta(minutes=1439))
+        self.assertEqual(t.tzname(), "aname")
 
         # Wrong types.
         class C4(tzinfo):
             def utcoffset(self, dt): return "aname"
-            def dst(self, dt): return ()
+            def dst(self, dt): return 7
             def tzname(self, dt): return 0
         t = cls(1, 1, 1, tzinfo=C4())
         self.assertRaises(TypeError, t.utcoffset)
@@ -1661,15 +1663,12 @@ class TZInfoBase(unittest.TestCase):
         self.assertRaises(TypeError, t.tzname)
 
         # Offset out of range.
-        class C5(tzinfo):
-            def utcoffset(self, dt): return -1440
-            def dst(self, dt): return 1440
         class C6(tzinfo):
             def utcoffset(self, dt): return timedelta(hours=-24)
             def dst(self, dt): return timedelta(hours=24)
-        for t in cls(1, 1, 1, tzinfo=C5()), cls(1, 1, 1, tzinfo=C6()):
-            self.assertRaises(ValueError, t.utcoffset)
-            self.assertRaises(ValueError, t.dst)
+        t = cls(1, 1, 1, tzinfo=C6())
+        self.assertRaises(ValueError, t.utcoffset)
+        self.assertRaises(ValueError, t.dst)
 
         # Not a whole number of minutes.
         class C7(tzinfo):
@@ -1687,9 +1686,11 @@ class TZInfoBase(unittest.TestCase):
         class OperandDependentOffset(tzinfo):
             def utcoffset(self, t):
                 if t.minute < 10:
-                    return t.minute # d0 and d1 equal after adjustment
+                    # d0 and d1 equal after adjustment
+                    return timedelta(minutes=t.minute)
                 else:
-                    return 59       # d2 off in the weeds
+                    # d2 off in the weeds
+                    return timedelta(minutes=59)
 
         base = cls(8, 9, 10, tzinfo=OperandDependentOffset())
         d0 = base.replace(minute=3)
@@ -1946,9 +1947,9 @@ class TestTimeTZ(TestTime, TZInfoBase):
         # In timetz w/ identical tzinfo objects, utcoffset is ignored.
         class Varies(tzinfo):
             def __init__(self):
-                self.offset = 22
+                self.offset = timedelta(minutes=22)
             def utcoffset(self, t):
-                self.offset += 1
+                self.offset += timedelta(minutes=1)
                 return self.offset
 
         v = Varies()
@@ -2037,7 +2038,8 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
 
         # Try a bogus uctoffset.
         class Bogus(tzinfo):
-            def utcoffset(self, dt): return 1440 # out of bounds
+            def utcoffset(self, dt):
+                return timedelta(minutes=1440) # out of bounds
         t1 = self.theclass(2, 2, 2, tzinfo=Bogus())
         t2 = self.theclass(2, 2, 2, tzinfo=FixedOffset(0, ""))
         self.assertRaises(ValueError, lambda: t1 == t2)
@@ -2268,6 +2270,8 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         # DST flag.
         class DST(tzinfo):
             def __init__(self, dstvalue):
+                if isinstance(dstvalue, int):
+                    dstvalue = timedelta(minutes=dstvalue)
                 self.dstvalue = dstvalue
             def dst(self, dt):
                 return self.dstvalue
@@ -2300,6 +2304,8 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
     def test_utctimetuple(self):
         class DST(tzinfo):
             def __init__(self, dstvalue):
+                if isinstance(dstvalue, int):
+                    dstvalue = timedelta(minutes=dstvalue)
                 self.dstvalue = dstvalue
             def dst(self, dt):
                 return self.dstvalue
@@ -2312,7 +2318,7 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         class UOFS(DST):
             def __init__(self, uofs, dofs=None):
                 DST.__init__(self, dofs)
-                self.uofs = uofs
+                self.uofs = timedelta(minutes=uofs)
             def utcoffset(self, dt):
                 return self.uofs
 
@@ -2463,9 +2469,11 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         class OperandDependentOffset(tzinfo):
             def utcoffset(self, t):
                 if t.minute < 10:
-                    return t.minute # d0 and d1 equal after adjustment
+                    # d0 and d1 equal after adjustment
+                    return timedelta(minutes=t.minute)
                 else:
-                    return 59       # d2 off in the weeds
+                    # d2 off in the weeds
+                    return timedelta(minutes=59)
 
         base = cls(8, 9, 10, 11, 12, 13, 14, tzinfo=OperandDependentOffset())
         d0 = base.replace(minute=3)
@@ -2512,9 +2520,9 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         # In datetimetz w/ identical tzinfo objects, utcoffset is ignored.
         class Varies(tzinfo):
             def __init__(self):
-                self.offset = 22
+                self.offset = timedelta(minutes=22)
             def utcoffset(self, t):
-                self.offset += 1
+                self.offset += timedelta(minutes=1)
                 return self.offset
 
         v = Varies()

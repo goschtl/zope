@@ -229,7 +229,7 @@ def _check_tzname(name):
 
 # name is the offset-producing method, "utcoffset" or "dst".
 # offset is what it returned.
-# If offset isn't None, int, long, or timedelta, raises TypeError.
+# If offset isn't None or timedelta, raises TypeError.
 # If offset is None, returns None.
 # Else offset is checked for being in range, and a whole # of minutes.
 # If it is, its integer value is returned.  Else ValueError is raised.
@@ -237,20 +237,19 @@ def _check_utc_offset(name, offset):
     assert name in ("utcoffset", "dst")
     if offset is None:
         return None
-    if not isinstance(offset, (int, long, timedelta)):
-        raise TypeError("tzinfo.%s() must return None, integer "
+    if not isinstance(offset, timedelta):
+        raise TypeError("tzinfo.%s() must return None "
                         "or timedelta, not '%s'" % (name, type(offset)))
-    if isinstance(offset, timedelta):
-        days = offset.days
-        if days < -1 or days > 0:
-            offset = 1440  # trigger out-of-range
-        else:
-            seconds = days * 86400 + offset.seconds
-            minutes, seconds = divmod(seconds, 60)
-            if seconds or offset.microseconds:
-                raise ValueError("tzinfo.%s() must return a whole number "
-                                 "of minutes" % name)
-            offset = minutes
+    days = offset.days
+    if days < -1 or days > 0:
+        offset = 1440  # trigger out-of-range
+    else:
+        seconds = days * 86400 + offset.seconds
+        minutes, seconds = divmod(seconds, 60)
+        if seconds or offset.microseconds:
+            raise ValueError("tzinfo.%s() must return a whole number "
+                             "of minutes" % name)
+        offset = minutes
     if -1440 < offset < 1440:
         return offset
     raise ValueError("%s()=%d, must be in -1439..1439" % (name, offset))
