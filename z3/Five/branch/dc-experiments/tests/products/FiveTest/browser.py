@@ -1,4 +1,5 @@
 from Products.Five.api import BrowserView
+from Products.Five.api import StandardMacros as BaseMacros
 
 class SimpleContentView(BrowserView):
     """More docstring. Please Zope"""
@@ -33,3 +34,9 @@ class NoDocstringView(BrowserView):
     function = function_no_docstring
 
     object = CallableNoDocstring()
+
+class StandardMacros(BaseMacros):
+
+    macro_pages = ('bird_macros', 'dog_macros')
+    aliases = {'flying':'birdmacro',
+               'walking':'dogmacro'}
