@@ -88,4 +88,7 @@ table = [
 
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
      'remote': products_remote},
+
+    {'path': "Packages/Products/TrackerBase", 'addrs': ['klm@digicool.com'],
+     'remote': products_remote},
 ]
