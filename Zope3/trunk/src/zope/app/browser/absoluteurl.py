@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.9 2003/05/28 22:15:46 jim Exp $
+$Id: absoluteurl.py,v 1.10 2003/06/12 09:29:27 jim Exp $
 """
+
+from zope.app import zapi
 from zope.publisher.browser import BrowserView
-from zope.context import getWrapperContainer, getInnerWrapperData
 from zope.proxy import sameProxiedObjects
-from zope.component import getView
 
 _insufficientContext = ("There isn't enough context to get URL information. "
                        "This is probably due to a bug in setting up context "
@@ -33,16 +33,16 @@ class AbsoluteURL(BrowserView):
         request = self.request
 
         # We do this here do maintain the rule that we must be wrapped
-        container = getWrapperContainer(context)
+        container = zapi.getWrapperContainer(context)
         if container is None:
             raise TypeError, _insufficientContext
 
         if sameProxiedObjects(context, request.getVirtualHostRoot()):
             return request.getApplicationURL()
 
-        url = str(getView(container, 'absolute_url', request))
+        url = str(zapi.getView(container, 'absolute_url', request))
 
-        dict = getInnerWrapperData(context)
+        dict = zapi.getInnerWrapperData(context)
         try:
             name = dict['name']
         except KeyError:
@@ -64,16 +64,16 @@ class AbsoluteURL(BrowserView):
         request = self.request
 
         # We do this here do maintain the rule that we must be wrapped
-        container = getWrapperContainer(context)
+        container = zapi.getWrapperContainer(context)
         if container is None:
             raise TypeError, _insufficientContext
 
         if sameProxiedObjects(context, request.getVirtualHostRoot()):
             return ({'name':'', 'url': self.request.getApplicationURL()}, )
 
-        base = getView(container, 'absolute_url', request).breadcrumbs()
+        base = zapi.getView(container, 'absolute_url', request).breadcrumbs()
 
-        dict = getInnerWrapperData(context)
+        dict = zapi.getInnerWrapperData(context)
         try:
             name = dict['name']
         except KeyError:
@@ -106,7 +106,7 @@ class SiteAbsoluteURL(BrowserView):
 
         url = request.getApplicationURL()
 
-        dict = getInnerWrapperData(context)
+        dict = zapi.getInnerWrapperData(context)
         if dict:
             name = dict.get('name')
             if name:
@@ -129,7 +129,7 @@ class SiteAbsoluteURL(BrowserView):
         base = ({'name':'', 'url': self.request.getApplicationURL()}, )
 
 
-        dict = getInnerWrapperData(context)
+        dict = zapi.getInnerWrapperData(context)
         if dict:
             name = dict.get('name')
 
