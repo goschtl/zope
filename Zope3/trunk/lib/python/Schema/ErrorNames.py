@@ -1,0 +1,6 @@
+RequiredMissing ='Must be required'
+RequiredEmptyString = 'Required string is empty.'
+TooBig = 'Too Big.'
+TooSmall = 'Too Small.'
+TooLong = 'Too Long.'
+TooShort = 'Too Short.'

@@ -13,84 +13,81 @@
 ##############################################################################
 """
 
-$Id: testSchema.py,v 1.2 2002/06/25 10:21:01 perry Exp $
+$Id: testSchema.py,v 1.3 2002/06/25 14:09:56 klawlf Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Schema.Exceptions import StopValidation, ValidationError, ValidationErrorsAll
 from Schema._Schema import validateMapping,validateMappingAll
+from Schema import ErrorNames
 from Interface import Interface
 import Schema
 
+
 class ISchemaTest(Interface):
     title = Schema.Str(
-                      title="Title"
-		      ,description="Title"
-		      ,default=""
-		      ,required=1
-		      )
+              title="Title",
+              description="Title",
+              default="",
+              required=1,
+              )
     description = Schema.Str(
-                      title="Description"
-		      ,description="Description"
-		      ,default=""
-		      ,required=1
-		      )
+                title="Description",
+                description="Description",
+                default="",
+                required=1,
+              )
     spam = Schema.Str(
-                      title="Spam"
-		      ,description="Spam"
-		      ,default=""
-		      ,required=1
-		      )
-    
+                title="Spam",
+                description="Spam",
+                default="",
+                required=1,
+              )
+
 class SchemaTestCase(TestCase):
     def test_validateMapping(self):
         dict = {
-	        'title': 'A title',
-		'description': 'A particular description.',
-		'spam': 'Spam',
+                'title': 'A title',
+                'description': 'A particular description.',
+                'spam': 'Spam',
                 }
-	try:
-	    validateMapping(ISchemaTest, dict)
-	except ValidationError:
-	    self.fail()
-	     
+        try:
+            validateMapping(ISchemaTest, dict)
+        except ValidationError:
+            self.fail()
+
 
     def test_validateBadMapping(self):
-        dict = {'title': 'A title'
-		}
-	
-	self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
+        dict = {'title': 'A title'}
+        self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
 
     def test_validateMappingAll(self):
-        dict = {
-	        'title': 'A title',
-		'description': 'A particular description.',
-		'spam': 'Spam',
+        dict = {'title': 'A title',
+                'description': 'A particular description.',
+                'spam': 'Spam',
                 }
-	try:
-	    validateMappingAll(ISchemaTest, dict)
-	except ValidationErrorsAll:
-	    self.fail()
-	     
+        try:
+            validateMappingAll(ISchemaTest, dict)
+        except ValidationErrorsAll:
+            self.fail()
+
 
     def test_validateBadMappingAll(self):
-        dict = {'title': 'A title'
-		}
-	
-	try:
-	    validateMappingAll(ISchemaTest, dict)
-	except ValidationErrorsAll, e:
-	    error=ValidationError("Must be required")
-	    self.assertEqual(e.errors , [('description',error),
-	                                 ('spam',error)]
-			    )
-	self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
+        dict = {'title': 'A title'}
+
+        try:
+            validateMappingAll(ISchemaTest, dict)
+        except ValidationErrorsAll, e:
+            error=ValidationError(ErrorNames.RequiredMissing)
+            self.assertEqual(e.errors ,
+                             [('description',error), ('spam',error)])
+            self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
+            return
+        self.fail()
 
 def test_suite():
-    return TestSuite((
-        makeSuite(SchemaTestCase),
-        ))
+    return TestSuite((makeSuite(SchemaTestCase), ))
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
