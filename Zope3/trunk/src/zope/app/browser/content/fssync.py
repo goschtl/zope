@@ -12,9 +12,9 @@
 # 
 ##############################################################################
 
-"""Code for the toFS.zip view and its inverse, fromFS.form.
+"""Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.11 2003/05/15 22:25:46 gvanrossum Exp $
+$Id: fssync.py,v 1.12 2003/05/20 19:09:54 gvanrossum Exp $
 """
 
 import os
@@ -29,120 +29,53 @@ from zope.publisher.browser import BrowserView
 from zope.app.fssync.syncer import toFS, fromFS
 from zope.app.traversing import objectName, getParent, getRoot
 from zope.app.interfaces.exceptions import UserError
+from zope.fssync.snarf import Snarfer, Unsnarfer
 
-class ZipFile(BrowserView):
+class SnarfFile(BrowserView):
 
-    """View returning a zipped filesystem representation of an object tree.
+    """View returning a snarfed representation of an object tree.
 
     This applies to any object (for="zope.interface.Interface").
-
-    Steps in the operation:
-    - use toFS() to render the object tree to a temporary directory
-    - cd into the directory and zip it up using the command line zip program
-    - return the contents of the zipfile with content-type application/zip
     """
 
     def show(self):
-        """Return the zipfile response."""
-        zipfilename = writeZipFile(self.context)
-        f = open(zipfilename, "rb")
-        data = f.read()
-        f.close()
-        os.remove(zipfilename)
+        """Return the snarfed response."""
         response = self.request.response
-        response.setHeader("Content-Type", "application/zip")
-        # XXX This can return a lot of data; should figure out how to
-        # do chunked writes
-        response.setHeader("Content-Length", len(data))
-        return data
-
-def isset(s):
-    """Helper to decide whether a string meant True or False."""
-    if not s:
-        return False
-    s = s.strip()
-    if not s:
-        return False
-    s = s.lower()
-    istrue = isfalse = False
-    for match in "true", "yes", "on", "1":
-        if match.startswith(s):
-            istrue = True
-            break
-    for match in "false", "no", "off", "0":
-        if match.startswith(s):
-            isfalse = True
-            break
-    if istrue and not isfalse:
-        return True
-    if isfalse and not istrue:
-        return False
-    raise ValueError, "invalid flag (%r)" % s
-
-def writeZipFile(obj):
-    """Helper to render the object tree to the filesystem and zip it.
-
-    Return the name of the zipfile.
-    """
-    dirname = tempfile.mktemp()
-    os.mkdir(dirname)
-    try:
-        # XXX toFS prints to stdout; it shouldn't
-        toFS(obj, objectName(obj) or "root", dirname)
-        zipfilename = tempfile.mktemp(".zip")
-        # XXX This is Unix specific and requires that you have the zip
-        # program installed; should use the zipfile module instead
-        cmd = "(cd %s; zip -q -r %s .) 2>&1" % (dirname, zipfilename)
-        pipe = os.popen(cmd, "r")
-        output = pipe.read()
-        sts = pipe.close()
-        if not sts:
-            return zipfilename
+        response.setStatus(200)
+        response.setHeader("Content-Type", "application/x-snarf")
+        dirname = tempfile.mktemp()
         try:
-            os.remove(zipfilename)
-        except os.error:
-            pass
-        raise RuntimeError("zip status %#x; output:\n%s" % (sts, output))
-    finally:
-        shutil.rmtree(dirname)
+            os.mkdir(dirname)
+            toFS(self.context, objectName(self.context) or "root", dirname)
+            snf = Snarfer(response)
+            snf.addtree(dirname)
+        finally:
+            if os.path.isdir(dirname):
+                shutil.rmtree(dirname)
+        return ""
 
-# And here is the inverse operation, fromFS.html (an HTML form).
+# And here is the inverse operation, fromFS.snarf.
 
-class Commit(ZipFile):
+class SnarfCommit(SnarfFile):
 
-    """View for committing changes.
-
-    For now, this is an HTML form where you can upload a zipfile.
-    """
-
-    def update(self):
-        zipfile = self.request.get("zipfile")
-        if zipfile is None:
-            return # Not updating -- must be presenting a blank form
-        else:
-            zipdata = zipfile.read()
-            errors = self.do_commit(zipdata)
-            if not errors:
-                return "Changes committed successfully."
-            else:
-                errors.insert(0, "Up-to-date check failed:")
-                raise UserError(*errors)
+    """View for committing changes."""
 
     def commit(self):
-        if not self.request.getHeader("Content-Type") == "application/zip":
+        if not self.request.getHeader("Content-Type") == "application/x-snarf":
             self.request.response.setHeader("Content-Type", "text/plain")
-            return "ERROR: Content-Type is not application/zip\n"
-        zipdata = self.request.body
-        errors = self.do_commit(zipdata)
+            return "ERROR: Content-Type is not application/x-snarf\n"
+        istr = self.request.bodyFile
+        istr.seek(0)
+        errors = self.do_commit(istr)
         if not errors:
-            return self.show() # Return the zipfile!
+            return self.show() # Return the snarfed tree!
         else:
             self.request.response.setHeader("Content-Type", "text/plain")
             errors.insert(0, "Up-to-date check failed:")
             errors.append("")
             return "\n".join(errors)
 
-    def do_commit(self, zipdata):
+    def do_commit(self, istr):
         # 000) Set transaction note
         note = self.request.get("note")
         if not note:
@@ -154,21 +87,17 @@ class Commit(ZipFile):
                 note = urllib.unquote(note)
         if note:
             get_transaction().note(note)
-        # 00) Allocate temporary names
+        # 0) Allocate temporary names
         topdir = tempfile.mktemp()
-        zipfilename = os.path.join(topdir, "working.zip")
         working = os.path.join(topdir, "working")
         current = os.path.join(topdir, "current")
         try:
-            # 0) Create the top directory
+            # 1) Create the top directory
             os.mkdir(topdir)
-            # 1) Write the zipfile data to disk
-            f = open(zipfilename, "wb")
-            f.write(zipdata)
-            f.close()
-            # 2) Unzip it into a working directory
+            # 2) Unsnarf into a working directory
             os.mkdir(working)
-            os.system("cd %s; unzip -q %s" % (working, zipfilename))
+            uns = Unsnarfer(istr)
+            uns.unsnarf(working)
             # 3) Save the current state of the object to disk
             os.mkdir(current)
             toFS(self.context, objectName(self.context) or "root", current)

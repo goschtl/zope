@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.23 2003/05/15 22:22:24 gvanrossum Exp $
+$Id: fssync.py,v 1.24 2003/05/20 19:09:15 gvanrossum Exp $
 """
 
 import os
@@ -42,6 +42,7 @@ from zope.fssync.metadata import Metadata
 from zope.fssync.fsmerger import FSMerger
 from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
+from zope.fssync.snarf import Snarfer, Unsnarfer
 
 class Network(object):
 
@@ -49,7 +50,7 @@ class Network(object):
 
     This class has various methods for managing the root url (which is
     stored in a file @@Zope/Root) and has a method to send an HTTP(S)
-    request to the root URL, expecting a zip file back (that's all the
+    request to the root URL, expecting a snarf file back (that's all the
     application needs).
 
     Public instance variables:
@@ -157,7 +158,8 @@ class Network(object):
         finally:
             f.close()
 
-    def httpreq(self, path, view, datafp=None, content_type="application/zip"):
+    def httpreq(self, path, view, datafp=None,
+                content_type="application/x-snarf"):
         """Issue an HTTP or HTTPS request.
 
         The request parameters are taken from the root url, except
@@ -168,18 +170,18 @@ class Network(object):
         seekable stream from which the input document for the request
         is taken.  In this case, a POST request is issued, and the
         content-type header is set to the 'content_type' argument,
-        defaulting to 'application/zip'.  Otherwise (if datafp is
+        defaulting to 'application/x-snarf'.  Otherwise (if datafp is
         None), a GET request is issued and no input document is sent.
 
         If the request succeeds and returns a document whose
-        content-type is 'application/zip', the return value is a tuple
+        content-type is 'application/x-snarf', the return value is a tuple
         (fp, headers) where fp is a non-seekable stream from which the
         return document can be read, and headers is a case-insensitive
         mapping giving the response headers.
 
         If the request returns an HTTP error, the Error exception is
         raised.  If it returns success (error code 200) but the
-        content-type of the result is not 'application/zip', the Error
+        content-type of the result is not 'application/x-snarf', the Error
         exception is also raised.  In these error cases, if the result
         document's content-type is a text type (anything starting with
         'text/'), the text of the result document is included in the
@@ -227,7 +229,7 @@ class Network(object):
             raise Error("HTTP error %s (%s); error document:\n%s",
                         errcode, errmsg,
                         self.slurptext(fp, headers))
-        if headers["Content-type"] != "application/zip":
+        if headers["Content-type"] != "application/x-snarf":
             raise Error(self.slurptext(fp, headers))
         return fp, headers
 
@@ -275,9 +277,9 @@ class FSSync(object):
         i = rootpath.rfind("/")
         tail = rootpath[i+1:]
         tail = tail or "root"
-        fp, headers = self.network.httpreq(rootpath, "@@toFS.zip")
+        fp, headers = self.network.httpreq(rootpath, "@@toFS.snarf")
         try:
-            self.merge_zipfile(fp, target, tail)
+            self.merge_snarffile(fp, target, tail)
         finally:
             fp.close()
         self.network.saverooturl(target)
@@ -302,27 +304,28 @@ class FSSync(object):
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         path = entry["path"]
-        zipfile = tempfile.mktemp(".zip")
+        snarffile = tempfile.mktemp(".snf")
         head, tail = split(realpath(target))
         try:
-            sts = os.system("cd %s; zip -q -r %s %s @@Zope" %
-                            (commands.mkarg(head),
-                             zipfile,
-                             commands.mkarg(tail)))
-            if sts:
-                raise Error("zip command failed")
-            infp = open(zipfile, "rb")
-            view = "@@fromFS.zip?note=%s" % urllib.quote(note)
+            f = open(snarffile, "wb")
+            try:
+                snf = Snarfer(f)
+                snf.add(join(head, tail), tail)
+                snf.addtree(join(head, "@@Zope"), "@@Zope/")
+            finally:
+                f.close()
+            infp = open(snarffile, "rb")
+            view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
             try:
                 outfp, headers = self.network.httpreq(path, view, infp)
             finally:
                 infp.close()
         finally:
             pass
-            if isfile(zipfile):
-                os.remove(zipfile)
+            if isfile(snarffile):
+                os.remove(snarffile)
         try:
-            self.merge_zipfile(outfp, head, tail)
+            self.merge_snarffile(outfp, head, tail)
         finally:
             outfp.close()
 
@@ -333,36 +336,24 @@ class FSSync(object):
         self.network.loadrooturl(target)
         head, tail = fsutil.split(target)
         path = entry["path"]
-        fp, headers = self.network.httpreq(path, "@@toFS.zip")
+        fp, headers = self.network.httpreq(path, "@@toFS.snarf")
         try:
-            self.merge_zipfile(fp, head, tail)
+            self.merge_snarffile(fp, head, tail)
         finally:
             fp.close()
 
-    def merge_zipfile(self, fp, localdir, tail):
-        zipfile = tempfile.mktemp(".zip")
+    def merge_snarffile(self, fp, localdir, tail):
+        uns = Unsnarfer(fp)
+        tmpdir = tempfile.mktemp()
         try:
-            tfp = open(zipfile, "wb")
-            try:
-                shutil.copyfileobj(fp, tfp)
-            finally:
-                tfp.close()
-            tmpdir = tempfile.mktemp()
-            try:
-                os.mkdir(tmpdir)
-                cmd = "cd %s; unzip -q %s" % (tmpdir, zipfile)
-                sts, output = commands.getstatusoutput(cmd)
-                if sts:
-                    raise Error("unzip failed:\n%s" % output)
-                self.fsmerger.merge(join(localdir, tail), join(tmpdir, tail))
-                self.metadata.flush()
-                print "All done."
-            finally:
-                if isdir(tmpdir):
-                    shutil.rmtree(tmpdir)
+            os.mkdir(tmpdir)
+            uns.unsnarf(tmpdir)
+            self.fsmerger.merge(join(localdir, tail), join(tmpdir, tail))
+            self.metadata.flush()
+            print "All done."
         finally:
-            if isfile(zipfile):
-                os.remove(zipfile)
+            if isdir(tmpdir):
+                shutil.rmtree(tmpdir)
 
     def reporter(self, msg):
         if msg[0] not in "/*":

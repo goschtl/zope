@@ -424,29 +424,21 @@
       description="An object storing XML text." 
       />
 
-  <!-- toFS.zip and fromFS.html views, for new fssync tools -->
+  <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
 
   <browser:page
       for="zope.interface.Interface"
-      name="toFS.zip"
+      name="toFS.snarf"
       permission="zope.ManageServices"
-      class="zope.app.browser.content.fssync.ZipFile"
+      class="zope.app.browser.content.fssync.SnarfFile"
       attribute="show" 
       />
 
   <browser:page
       for="zope.interface.Interface"
-      name="fromFS.html"
+      name="fromFS.snarf"
       permission="zope.ManageServices"
-      class="zope.app.browser.content.fssync.Commit"
-      template="fromFS.pt"
-      />
-
-  <browser:page
-      for="zope.interface.Interface"
-      name="fromFS.zip"
-      permission="zope.ManageServices"
-      class="zope.app.browser.content.fssync.Commit"
+      class="zope.app.browser.content.fssync.SnarfCommit"
       attribute="commit"
       />
 
