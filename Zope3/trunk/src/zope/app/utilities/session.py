@@ -200,6 +200,10 @@ class Session(IterableUserDict):
 def getSession(context, request, product_id, session_data_container=None):
     ''' Retrieve an ISession. session_data_container defaults to 
         an ISessionDataContainer utility registered with the name product_id
+
+        XXX: This method will probably be changed when we have an
+            Interaction or other object that combines context & request
+            into a single object.
     '''
     if session_data_container is None:
         dc = zapi.getUtility(context, ISessionDataContainer, product_id)

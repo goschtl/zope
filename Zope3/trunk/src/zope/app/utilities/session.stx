@@ -18,14 +18,14 @@ Python example::
 
     >>> browser_id = getAdapter(request, IBrowserId))
 
-    >>> explicit_dm = getUtility(None, ISessionDataContainer, 
+    >>> explicit_dm = getUtility(context, ISessionDataContainer, 
     ...     'zopeproducts.fooprod')
     >>> session = Session(explicit_dm, browser_id, 'zopeproducts.foorprod')
     >>> session['color'] = 'red'
 
     or....
 
-    >>> session = zapi.getSession(request, 'zopeproducts.fooprod')
+    >>> session = zapi.getSession(context, request, 'zopeproducts.fooprod')
     >>> session['color'] = 'red'
 
 Page Template example::
