@@ -184,6 +184,7 @@
 /Zope27/lib/python/ZLogger                        /Packages/ZLogger
 /Zope27/lib/python/ZODB                           /Packages/ZODB
 /Zope27/lib/python/ZPublisher                     /Packages/ZPublisher
+/Zope27/lib/python/zExceptions                    /Zope/lib/python/zExceptions
 /Zope27/lib/python/webdav                         /Packages/webdav
 /Zope27/lib/python/Persistence                    /Packages/Persistence
 /Zope27/lib/python/ThreadedAsync                  /Packages/ThreadedAsync
