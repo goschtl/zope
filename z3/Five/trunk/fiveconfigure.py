@@ -48,7 +48,8 @@ def loadProducts(_context):
 
 def loadProductsOverrides(_context):
     for product in findProducts():
-        zcml = os.path.join(os.path.dirname(product.__file__), 'overrides.zcml')
+        zcml = os.path.join(os.path.dirname(product.__file__),
+                            'overrides.zcml')
         if os.path.isfile(zcml):
             xmlconfig.includeOverrides(_context, zcml, package=product)
 
@@ -98,7 +99,8 @@ def classTraversable(class_):
         setattr(class_, '__fallback_traverse__',
                 Traversable.__fallback_traverse__.im_func)
 
-    setattr(class_, '__bobo_traverse__', Traversable.__bobo_traverse__.im_func)
+    setattr(class_, '__bobo_traverse__',
+            Traversable.__bobo_traverse__.im_func)
     setattr(class_, '__five_traversable__', True)
 
 def traversable(_context, class_):
@@ -108,7 +110,7 @@ def traversable(_context, class_):
         args = (class_,)
         )
 
-def classViewable(class_):
+def classDefaultViewable(class_):
     # If a class already has this attribute, it means it is either a
     # subclass of api.Viewable or was already processed with this
     # directive; in either case, do nothing... except in the case were
@@ -129,32 +131,28 @@ def classViewable(class_):
         setattr(class_, '__fallback_default__',
                 Viewable.__fallback_default__.im_func)
 
-    # Disable __call__ overriding for now. It causes much more trouble
-    # than it fixes. :(
-    # if hasattr(class_, '__call__'):
-    #    # Only touch __call__ if the class is already callable.
-    #    if not isFiveMethod(class_.__call__):
-    #        # if there's an existing __call__ already, use that
-    #        # as the fallback
-    #        setattr(class_, 'fallback_call__', class_.__call__)
-    #    if not hasattr(class_, 'fallback_call__'):
-    #        setattr(class_, 'fallback_call__',
-    #                Viewable.fallback_call__.im_func)
-    #    setattr(class_, '__call__', Viewable.__call__.im_func)
-
-    setattr(class_, '__browser_default__', Viewable.__browser_default__.im_func)
+    setattr(class_, '__browser_default__',
+            Viewable.__browser_default__.im_func)
     setattr(class_, '__five_viewable__', True)
 
-def viewable(_context, class_):
-    dotted_name = '...%s' % class_.__name__
-    warnings.warn('<five:viewable class="%(k)s" /> has changed meaning. '
-                  'Please switch to <five:traversable class="%(k)s" /> '
-                  'unless you *really* know what you are doing.' %
-                  {'k':dotted_name},
-                  DeprecationWarning)
+def defaultViewable(_context, class_):
     _context.action(
         discriminator = ('five:viewable', class_,),
-        callable = classViewable,
+        callable = classDefaultViewable,
         args = (class_,)
         )
 
+def viewable(_context, class_):
+    # XXX do not need to mark where this is used, as simple search
+    # should find all instances easily
+    warnings.warn(
+        'The five:viewable directive has been deprecated. '
+        'Please use the five:traversable directive instead',
+        DeprecationWarning)
+
+    _context.action(
+        discriminator = ('five:traversable', class_),
+        callable = classTraversable,
+        args=(class_,)
+        )
+    

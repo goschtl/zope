@@ -159,15 +159,23 @@
        />
 
     <meta:directive
-       name="viewable"
-       schema=".fivedirectives.IViewableDirective"
-       handler=".fiveconfigure.viewable"
+       name="defaultViewable"
+       schema=".fivedirectives.IDefaultViewableDirective"
+       handler=".fiveconfigure.defaultViewable"
        />
 
     <meta:directive
        name="traversable"
-       schema=".fivedirectives.IViewableDirective"
+       schema=".fivedirectives.ITraversableDirective"
        handler=".fiveconfigure.traversable"
+       />
+
+    <!-- viewable is deprecated, use traversable instead -->
+
+    <meta:directive
+       name="viewable"
+       schema=".fivedirectives.ITraversableDirective"
+       handler=".fiveconfigure.viewable"
        />
 
   </meta:directives>

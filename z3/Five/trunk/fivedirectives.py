@@ -28,17 +28,21 @@ class IImplementsDirective(Interface):
         )
 
 class ITraversableDirective(Interface):
-    """State that a class traversal can be controlled by the use of
-    an ITraverser adapter.
+    """Make instances of class traversable publically.
+
+    This can be used to browse to pages, resources, etc.
+
+    Traversal can be controlled by registering an ITraverser adapter.
     """
     class_ = GlobalObject(
         title=u"Class",
         required=True
         )
 
-class IViewableDirective(Interface):
-    """State that an instance class can be viewed directly by
-    choosing the default view through a IBrowserDefault adapter.
+class IDefaultViewableDirective(Interface):
+    """Make instances of class viewable publically.
+
+    The default view is looked up using a IBrowserDefault adapter.
     """
     class_ = GlobalObject(
         title=u"Class",

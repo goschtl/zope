@@ -27,7 +27,7 @@ from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
 from Products.Five.resource import Resource, PageTemplateResource
 from Products.Five.traversable import FakeRequest
-from Products.Five.fiveconfigure import classViewable
+from Products.Five.fiveconfigure import classDefaultViewable
 from OFS.Traversable import Traversable
 
 from Products import FiveTest
@@ -331,7 +331,7 @@ class Recurse(Traversable):
     def __call__(self):
         return 'foo'
 
-classViewable(Recurse)
+classDefaultViewable(Recurse)
 
 class RecursionTest(unittest.TestCase):
 
