@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.7 2003/02/12 02:17:23 seanb Exp $
+$Id: subscribers.py,v 1.8 2003/02/21 01:36:23 seanb Exp $
 """
 __metaclass__ = type
 
@@ -37,7 +37,7 @@ from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
 from zope.proxy.context import ContextMethod
 from zope.component import getService, queryAdapter
-from zope.app.services.servicenames import HubIds, Events
+from zope.app.services.servicenames import HubIds
 
 from zope.app.traversing import traverse, traverseName, \
      getPhysicalPath, getPhysicalRoot
@@ -71,7 +71,9 @@ class Registration(Persistent):
     def subscribe(wrapped_self):
         if wrapped_self.currentlySubscribed:
             raise RuntimeError, "already subscribed; please unsubscribe first"
-        events = getService(wrapped_self, Events)
+        # we subscribe to the HubIds service so that we're
+        # guaranteed to get exactly the events *that* service receives.
+        events = getService(wrapped_self, HubIds)
         events.subscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = True
     subscribe = ContextMethod(subscribe)
@@ -79,7 +81,7 @@ class Registration(Persistent):
     def unsubscribe(wrapped_self):
         if not wrapped_self.currentlySubscribed:
             raise RuntimeError, "not subscribed; please subscribe first"
-        events = getService(wrapped_self, Events)
+        events = getService(wrapped_self, HubIds)
         events.unsubscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = False
     unsubscribe = ContextMethod(unsubscribe)
