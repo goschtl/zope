@@ -74,7 +74,7 @@ class FieldIndex(Persistent):
             self._fwd_index[value].remove(docid)
             if len(self._fwd_index[value]) == 0:
                 del self._fwd_index[value]
-        except: pass
+        except KeyError: pass
 
     def search(self, values):
 
@@ -96,7 +96,7 @@ class FieldIndex(Persistent):
         else:
         
             try: result = IISet(self._fwd_index[values])
-            except: result = IISet()    
+            except KeyError: result = IISet()    
 
         return result 
 
