@@ -13,24 +13,28 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.3 2003/12/05 12:41:38 philikon Exp $
+$Id: ztapi.py,v 1.4 2003/12/17 10:06:51 jim Exp $
 """
 from zope.app import zapi
 import zope.interface
 from zope.component.servicenames import Presentation, Adapters, Utilities
 from zope.publisher.browser import IBrowserRequest
 
-def browserView(for_, name, factory, layer='default'):
+def browserView(for_, name, factory, layer='default',
+                providing=zope.interface.Interface):
     """Define a global browser view
     """
     s = zapi.getService(None, Presentation)
-    return s.provideView(for_, name, IBrowserRequest, factory, layer)
+    return s.provideView(for_, name, IBrowserRequest, factory, layer,
+                         providing=providing)
 
-def browserResource(name, factory, layer='default'):
+def browserResource(name, factory, layer='default',
+                    providing=zope.interface.Interface):
     """Define a global browser view
     """
     s = zapi.getService(None, Presentation)
-    return s.provideResource(name, IBrowserRequest, factory, layer)
+    return s.provideResource(name, IBrowserRequest, factory, layer,
+                             providing=providing)
 
 def setDefaultViewName(for_, name, layer='default'):
     s = zapi.getService(None, Presentation)

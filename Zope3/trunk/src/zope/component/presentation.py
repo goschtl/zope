@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.3 2003/12/07 10:04:54 gotcha Exp $
+$Id: presentation.py,v 1.4 2003/12/17 10:06:51 jim Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -321,7 +321,7 @@ class GlobalPresentationService(GlobalService):
         >>> s.defineUsage('custom')
         Traceback (most recent call last):
         ...
-        ValueError: ("Can't redefine usage", 'custom')
+        ValueError: ("Can\'t redefine usage", 'custom')
         """
         if name in self._usages:
             raise ValueError("Can\'t redefine usage", name)
@@ -353,7 +353,8 @@ class GlobalPresentationService(GlobalService):
         reg = self._layers[layer]
         reg.provideAdapter(ifaces[0], providing, factories, name, ifaces[1:])
 
-    def queryResource(self, name, request, default=None):
+    def queryResource(self, name, request, default=None,
+                      providing=zope.interface.Interface):
         """Look up a named resource for a given request
         
         The request must implement IPresentationRequest.
@@ -362,8 +363,7 @@ class GlobalPresentationService(GlobalService):
         """
         skin = request.getPresentationSkin() or self.defaultSkin
         for layer in self._skins[skin]:
-            r = layer.queryNamedAdapter(request, zope.interface.Interface,
-                                        name)
+            r = layer.queryNamedAdapter(request, providing, name)
             if r is not None:
                 return r
         return default
@@ -405,12 +405,14 @@ class GlobalPresentationService(GlobalService):
     # The following methods are provided for convenience and for
     # backward compatability with old code:
 
-    def provideView(self, for_, name, type, maker, layer='default'):
+    def provideView(self, for_, name, type, maker, layer='default',
+                    providing=zope.interface.Interface):
         # Helper function for simple view defs
         if not isinstance(maker, (list, tuple)):
             maker = [maker]
         return self.provideAdapter(type, maker, name,
-                                   contexts=[for_], layer=layer)
+                                   contexts=[for_], layer=layer,
+                                   providing=providing)
 
 
     def setDefaultViewName(self, for_, request_type, name, layer="default"):
@@ -436,11 +438,13 @@ class GlobalPresentationService(GlobalService):
                 return r
         return default
 
-    def provideResource(self, name, request_type, factory, layer='default'):
+    def provideResource(self, name, request_type, factory, layer='default',
+                        providing=zope.interface.Interface):
         # Helper function for simple view defs
         if not isinstance(factory, (list, tuple)):
             factory = [factory]
-        return self.provideAdapter(request_type, factory, name, layer=layer)
+        return self.provideAdapter(request_type, factory, name, layer=layer,
+                                   providing=providing)
 
     def getRegisteredMatching(self, layers=None, **kw):
         if layers is None:
