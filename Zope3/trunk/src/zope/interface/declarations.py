@@ -554,8 +554,11 @@ def _implements(name, interfaces, classImplements):
     frame = sys._getframe(2)
     locals = frame.f_locals
 
-    # Try to make sure we were called from a class def
-    if (locals is frame.f_globals) or ('__module__' not in locals):
+    # Try to make sure we were called from a class def. In 2.2.0 we can't
+    # check for __module__ since it doesn't seem to be added to the locals
+    # until later on.
+    if (locals is frame.f_globals) or (
+        ('__module__' not in locals) and sys.version_info[:3] > (2, 2, 0)):
         raise TypeError(name+" can be used only from a class definition.")
 
     if '__implements_advice_data__' in locals:
