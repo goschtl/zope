@@ -12,19 +12,29 @@
 #
 ##############################################################################
 """
-$Id: field.py,v 1.1 2003/01/09 19:13:48 stevea Exp $
+$Id: field.py,v 1.2 2003/01/10 18:46:24 stevea Exp $
 """
 
 from zope.schema.interfaces import IField
 from zope.app.component.interfacefield import InterfaceField
+from zope.interface import Interface
 
-class IComponentPath(IField):
-    'A field containing a component path.'
-
+class IComponentRelated(Interface):
+    'An interface for something that is related to a single component.'
+    
     type = InterfaceField(
         title = u"An interface that must be implemented by the component.",
         required = True,
         readonly = True,
         basetype = None
         )
+        
+class IComponentLocation(IComponentRelated):
+    '''A field containing a component location.
+
+    This is as an absolute path, or as a dotted module name.'''
+    
+
+class IComponentPath(IComponentRelated):
+    'A field containing a component path.'
 

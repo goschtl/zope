@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.4 2003/01/09 19:13:49 stevea Exp $
+$Id: field.py,v 1.5 2003/01/10 18:46:26 stevea Exp $
 """
 __metaclass__ = type
 
@@ -22,6 +22,9 @@ from zope.schema.interfaces import ValidationError
 from zope.app.traversing import traverse
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.services.field import IComponentPath
+from zope.app.interfaces.services.field import IComponentLocation
+from zope.component import getServiceManager, getAdapter
+from zope.app.interfaces.services.service import INameResolver
 
 class ComponentPath(Field):
 
@@ -47,3 +50,50 @@ class ComponentPath(Field):
         if not self.type.isImplementedBy(component):
             raise ValidationError("Wrong component type", value)
 
+class ComponentLocation(Field):
+
+    __implements__ = IComponentLocation
+
+    _type = unicode
+
+    def __init__(self, type, *args, **kw):
+        self.type = type
+        super(ComponentLocation, self).__init__(*args, **kw)
+
+    def _validate(self, value):
+        super(ComponentLocation, self)._validate(value)
+        component = locateComponent(value, self.context, self.type)
+
+
+def locateComponent(location, context, interface=None):
+    '''Located a component by traversal, or by a dotted module name.
+
+    If 'interface' is given, check that the located componenent implements
+    the given interface.
+    '''
+    if location.startswith('/'):
+        try:
+            component = traverse(context, location)
+        except NotFoundError:
+            raise ValidationError('Path for non-existent object', location)
+    else:
+        # Assume location is a dotted module name
+        if location.startswith('.'):
+            # Catch the error of thinking that this is just like 
+            # a leading dot in zcml.
+            raise ValidationError(
+                    "Module name must not start with a '.'", location)
+        # XXX Need to be careful here. Jim was going to look
+        #     at whether a checkedResolve method is needed.
+        servicemanager = getServiceManager(context)
+        resolver = getAdapter(servicemanager, INameResolver)
+        try:
+            component = resolver.resolve(location)
+        except ImportError:
+            raise ValidationError("Cannot resolve module name", location)
+
+    if interface is not None and not interface.isImplementedBy(component):
+        raise ValidationError(
+                'Component must be %s' % interface, location)
+
+    return component
