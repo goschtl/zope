@@ -1,4 +1,7 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
 
   <!-- Module aliases for users of persistent objects moved during
        the course of refactoring -->
@@ -15,7 +18,7 @@
 
 
 
-  <include file="meta.zcml"/>
+  <include file="meta.zcml" />
 
   <content class=".permissionroles.PermissionRoles">
     <require permission="zope.Security"
@@ -52,8 +55,6 @@
     <allow interface=".interfaces.IRegisteredObject" />
   </content>
 
-  <!-- XXX (this came out of services/configure.zcml) Role Templates -->
-
   <content class=".role.RoleService">
     <factory id="RoleService"
              permission="zope.ManageServices"
@@ -74,16 +75,16 @@
   </content>
 
 
-  <securityPolicy component=".zopepolicy.zopeSecurityPolicy"
-                  />
-
+  <!-- Include browser package -->
   <include package=".browser"/>
 
 
-  <configure i18n_domain="zope">
-    <role id="zope.Manager" title="Site Manager" />
-    <role id="zope.Member" title="Site Member" />
-  </configure>
+  <securityPolicy
+      component=".zopepolicy.zopeSecurityPolicy"
+      />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
 
   <!-- Remove the following directive if you don't want public access -->
   <grant permission="zope.View" role="zope.Anonymous" />

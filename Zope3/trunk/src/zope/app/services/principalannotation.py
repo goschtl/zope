@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Implementation of IPrincipalAnnotationService.
 
-"""Implementation of IPrincipalAnnotationService."""
+$Id: principalannotation.py,v 1.13 2004/03/02 13:40:48 philikon Exp $
+"""
 
 # TODO: register service as adapter for IAnnotations on service activation
 # this depends on existence of LocalAdapterService, so once that's done
@@ -43,8 +45,6 @@ class PrincipalAnnotationService(Persistent, Contained):
 
     def __init__(self):
         self.annotations = OOBTree()
-
-    # implementation of IPrincipalAnnotationService
 
     def getAnnotations(self, principal):
         """Return object implementing IAnnotations for the given principal.
