@@ -8,6 +8,7 @@
        name="+"  
        factory="zope.app.browser.container.adding.Adding"
        permission="zope.ManageContent"
+       allowed_attributes="addingInfo"
        >
 
        <browser:page name="index.html"  template="add.pt" />
