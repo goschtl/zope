@@ -120,11 +120,10 @@
       template="popup_macros.pt"
       />
 
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
+  <browser:view
       for="zope.schema.interfaces.ISourceText"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".editingwidgets.SimpleEditingWidget"
+      class=".editingwidgets.SimpleEditingWidget"
       permission="zope.Public"
       layer="zope.app.rotterdam.rotterdam"
       />

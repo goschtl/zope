@@ -51,7 +51,7 @@ def tool(_context, interface, folder="tools", title=None, description=None):
                    'folder':folder,
                    'title':'Add %s Tool' % interface.getName()} )
 
-    addView = complexView(_context, ISiteManager, permission, addName,
+    addView = complexView(_context, (ISiteManager,), permission, addName,
                           class_=class_)
     addView.page(_context, 'index.html', 'index')
     addView.page(_context, 'action.html', 'action')
@@ -81,7 +81,7 @@ def servicetool(_context, folder="tools", title=None, description=None):
                   (ServiceToolAdding,),
                   {'folder':folder} )
 
-    addView = complexView(_context, ISiteManager, permission, addName,
+    addView = complexView(_context, (ISiteManager,), permission, addName,
                           class_=class_)
     addView.page(_context, 'index.html', 'index')
     addView.page(_context, 'action.html', 'action')
