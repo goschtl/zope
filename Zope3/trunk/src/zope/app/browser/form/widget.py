@@ -12,17 +12,16 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.44 2003/08/04 14:54:19 philikon Exp $
+$Id: widget.py,v 1.45 2003/08/05 20:25:03 poster Exp $
 """
 
 __metaclass__ = type
 
 import re, cgi
+from xml.sax.saxutils import quoteattr
 import warnings
 from zope.app import zapi
-
 from zope.component import getService
-
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
@@ -1319,7 +1318,7 @@ def renderTag(tag, **kw):
 
     if 'style' in kw:
         if kw['style'] != '':
-            attr_list.append('style="%s"' % kw['style'])
+            attr_list.append('style=%s' % quoteattr(kw['style']))
         del kw['style']
 
     # special case handling for extra 'raw' code
@@ -1335,7 +1334,7 @@ def renderTag(tag, **kw):
     for key, value in items:
         if value == None:
             value = key
-        attr_list.append('%s="%s"' % (key, unicode(value)))
+        attr_list.append('%s=%s' % (key, quoteattr(unicode(value))))
 
     attr_str = " ".join(attr_list)
     return "<%s %s %s" % (tag, attr_str, extra)

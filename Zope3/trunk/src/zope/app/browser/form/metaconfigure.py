@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.2 2003/08/05 15:23:17 philikon Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/05 20:25:03 poster Exp $
 """
 
 __metaclass__ = type
@@ -57,7 +57,7 @@ class BaseFormDirective:
     def __init__(self, _context, **kwargs):
         self._context = _context
         for key, value in kwargs.items():
-            if not(value is None and hasattr(self, key)):
+            if not (value is None and hasattr(self, key)):
                 setattr(self, key, value)
         self._normalize()
 
@@ -116,7 +116,7 @@ class BaseWizardDirective(BaseFormDirective):
             if f not in self.fields:
                 raise ValueError(
                     'Field name is not in schema', 
-                    name, self.schema
+                    f, self.schema
                     )
         self.panes.append(Pane(fields, label))
 
