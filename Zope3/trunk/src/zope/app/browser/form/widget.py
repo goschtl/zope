@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.40 2003/07/14 15:28:23 Zen Exp $
+$Id: widget.py,v 1.41 2003/07/15 00:58:18 richard Exp $
 """
 
 __metaclass__ = type
@@ -1089,7 +1089,8 @@ class SequenceWidget(BrowserWidget):
             self.context.value_type.validate(value)
         return self._type(sequence)
 
-    # XXX applyChanges isn't reporting "change" correctly
+    # XXX applyChanges isn't reporting "change" correctly (we're
+    # re-generating the sequence with every edit, and need to be smarter)
     def applyChanges(self, content):
         field = self.context
         value = self.getData()
@@ -1261,9 +1262,11 @@ class ObjectWidget(BrowserWidget):
         # create our new object value
         value = field.query(content, None)
         if value is None:
+            # XXX ObjectCreatedEvent here would be nice
             value = self.factory()
 
         # apply sub changes, see if there *are* any changes
+        # XXX ObjectModifiedEvent here would be nice
         changes = applyWidgetsChanges(self, value, field.schema,
             names=self.names, exclude_readonly=True)
 
