@@ -13,75 +13,195 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.2 2002/12/25 14:15:17 jim Exp $
+$Id: context.py,v 1.3 2003/05/06 13:54:30 stevea Exp $
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 class IWrapperFuncs(Interface):
-    """ Interface implemented by callables in 'wrapper' module """
+    """Interface implemented by callables in 'wrapper' module"""
+
     def Wrapper(object, context=None, **data):
-        """
-        Create and return a new context wrapper for object. If context is given
-        and not None, context will be the context object. Wrapper can be
-        subclassed.
+        """Create and return a new context wrapper for object.
+
+        If context is not None, context will be the context object.
+        Wrapper can be subclassed.
 
         Wrapper data may be passed as keyword arguments. The data are
         added to the context dictionary.
         """
 
     def getobject(obj):
+        """Return the wrapped object.
+
+        If obj is not a wrapper object, return obj.
         """
-        Return the wrapped object. If obj is not a wrapper object, return obj.
-        """
+
     def getbaseobject(obj):
+        """Return the innermost wrapped object.
+
+        If obj is not a wrapper, return obj.
         """
-        Return the innermost wrapped object.  If obj is not a wrapper,
-        return obj.
-        """
+
     def getinnerwrapper(obj):
+        """Return the innermost wrapper.
+
+        Returns the innermost wrapper in a chain of wrappers with obj at the
+        head.  If obj is not a wrapper, just return obj.
         """
-        Return the innermost wrapper in a chain of wrappers with obj at the
-        head. If obj is wrapped, just return obj.
-        """
+
     def getinnercontext(obj):
-        """
+        """Return the innermost context.
+
         Return the context object from the innermost wrapper in a chain with
-        obj at the head. If the innermost wrapper has not context object,
+        obj at the head. If the innermost wrapper has no context object,
         return None. If obj is not a wrapper, return None.
         """
+
     def getcontext(obj):
+        """Return the context object if there is one, otherwise None.
+
+        If obj is not a wrapper instance, return None.
         """
-        Return the context object if there is one, or None. If obj is not a
-        wrapper instance, return None.
-        """
+
     def getdict(obj):
+        """Return the context dictionary if there is one, otherwise None.
+
+        If obj is not a wrapper instance, return None.
         """
-        Return the context dictionary if there is one, or None. If obj is not a
-        wrapper instance, return None.
-        """
+
     def getdictcreate(wrapper):
+        """Return the context dictionary.
+
+        If it does not already exist, the context dictionary will be created.
+        Raises TypeError if wrapper is not a wrapper object.
         """
-        Return the context dictionary, creating it if it does not already
-        exist. Raises TypeError if wrapper is not a wrapper object.
-        """
+
     def setobject(wrapper, object):
+        """Replace the wrapped object with the given object.
+
+        Raises TypeError if wrapper is not a wrapper object.
         """
-        Replace the wrapped object with object. Raises TypeError if wrapper is
-        not a wrapper object.
-        """
+
     def setcontext(wrapper, context):
+        """Replace the context object with the given context.
+
+        If context is None, it will be represented as NULL in C API. Raises
+        TypeError if wrapper is not a wrapper object.
         """
-        Replace the context object with context. If context is None, it will be
-        represented as NULL in C API. Raises TypeError if wrapper is not
-        a wrapper object.
-        """
+
 
 class IWrapper(Interface):
+    """A Wrapper is a transparent proxy around an object.
+
+    It provides a place to keep the object's context, in the form of
+    a reference to its context object, and a dictionary of contextual metadata.
+
+    If the wrapped object's class derives from ContextAware, or a descriptor
+    on the wrapped object's class is a ContextDescriptor, then the 'self'
+    of the method will be rebound to be the wrapper rather than the object.
+    Rebinding does not work at all if the wrapped object is a Classic Class
+    instance.
+    Such rebinding is supported for ordinary descriptors, but only for
+    the following 'slot descriptors'.
+
+    __len__
+    __getitem__
+    __setitem__
+    __delitem__
+    __iter__
+    next
+    __contains__
+    __call__
+    __str__
+    """
+
     def __getstate__():
-        """ Raises AttributeError if called (to prevent pickling) """
+        """Raises AttributeError if called (to prevent pickling)"""
+
+
+class IDecoratorFuncs(Interface):
+    """Interface implemented by callables in 'decorator' module"""
+
+    def Decorator(object, context=None, mixinfactory=None,
+                  names=(), provides=None, **data):
+        """Create and return a new decorator for object.
+
+        Decorator is a subtype of Wrapper.
+
+        If context is not None, context will be the context object.
+        If mixinfactory is not None, mixinfactory is a callable that need
+        take no arguments for creating the decorator mixin.
+        'names' is a tuple of names that are dispatched to the mixin rather
+        than to the object. The mixin is instantiated from the factory
+        before the first dispatch of one of the names.
+        If provides is not None, its value is used as the decorator's
+        __provides__ attribute. This is typically used to make the decorator's
+        apparent interface be a union of the object's and the mixin's.
+
+        Wrapper data may be passed as keyword arguments. The data are added
+        to the context dictionary.
+        """
+
+    def getmixin(obj):
+        """Returns the mixin object.
+
+        Returns None if the mixin is not instantiated.
+        """
+
+    def getmixinfactory(obj):
+        """Returns the mixin factory."""
+
+    def getnames(obj):
+        """Returns the names."""
+
+    def setprovides(obj, provides):
+        """Sets the __provides__ attribute to the given value.
+
+        If the given value is None, remove the provides so that
+        obj.__provides__ will pass through to the decorated object.
+        """
+
+    def getprovides(obj):
+        """Returns the 'provides' value of the object.
+
+        Returns None if there is no provides.
+        This does not pass through to the decorated object, as
+        obj.__provides__ would.
+        """
+
+
+class IDecorator(IWrapper):
+    """A Decorator is a subtype of Wrapper.
+
+    In addition to the description in IWrapper's docstring, a decorator
+    dispatches certain names to a separate "mixin" instance, rather than
+    to the wrapped object.
+
+    There is special support for making the decorator instance appear to
+    provide a particular collection of interfaces via its __provides__
+    attribute.
+    """
+
+
+class IDecoratorMixinEnvironment(Interface):
+    """The attributes that an instantiated mixin can expect to have set.
+
+    In a mixin, the 'self' of a method is always the normal unwrapped
+    self of the mixin instance. ContextMethods and other ContextDescriptors
+    will not work, and are not necessary.
+
+    When the mixin needs context, for example for using a local service,
+    it can use self.outer.
+    self.inner is a shortcut for getobject(self.outer).
+    """
+
+    inner = Attribute('The object that is being decorated')
+    outer = Attribute('The Decorator instance')
+
 
 class IContextWrapper(Interface):
+    """Wrapper API provided to applications."""
 
     def ContextWrapper(object, parent, **data):
         """Create a context wrapper for object in parent
@@ -98,27 +218,37 @@ class IContextWrapper(Interface):
 
         """
 
+    # TODO: Add decorator callables here.
+
     def getWrapperData(ob):
-        """Get the context wrapper data for an object
-        """
+        """Get the context wrapper data for an object"""
 
     def getInnerWrapperData(ob):
-        """Get the inner (container) context wrapper data for an object
-        """
+        """Get the inner (container) context wrapper data for an object"""
 
     def getWrapperContainer(ob):
-        """Get the object's container, as computed from a context wrapper
+        """Get the object's container, as computed from a context wrapper.
+
+        This is the context of the innermost wrapper.
         """
 
     def getWrapperContext(ob):
-        """Get the object's context, as computed from a context wrapper
+        """Get the object's context, as computed from a context wrapper.
+
+        This is the context of the outermost wrapper.
         """
 
     def isWrapper(ob):
-        """If the object is wrapped in a context wrapper, returns true,
-        otherwise returns false.
+        """Returns True if the object is wrapped in a context wrapper.
+
+        Otherwise returns False.
         """
 
     def ContainmentIterator(ob):
-        """Get an iterator for the object's containment chain
+        """Get an iterator for the object's containment chain.
+
+        The iteration starts at ob and proceeds through ob's containers.
+        As with getWrapperContainer, the container is the context of the
+        innermost wrapper.
         """
+
