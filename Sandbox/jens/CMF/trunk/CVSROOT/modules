@@ -4,7 +4,7 @@ embedded -a Components/principia Components/ExtensionClass \
 
 
 PrincipiaSBlib Principia/lib pledge.txt
-PrincipiaSB Principia README 
+PrincipiaSB Principia README &PrincipiaSBlib
 
 AccessControl    Packages/AccessControl
 App              Packages/App
