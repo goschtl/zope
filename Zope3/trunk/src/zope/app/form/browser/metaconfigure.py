@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2004/03/23 22:08:10 srichter Exp $
 """
 
 __metaclass__ = type
@@ -130,7 +130,6 @@ class AddFormDirective(BaseFormDirective):
 
     view = AddView
     default_template = 'add.pt'
-    usage = None
     for_ = IAdding
 
     # default add form information
@@ -214,14 +213,13 @@ class AddFormDirective(BaseFormDirective):
             args=self._args()+(self.content_factory, self.arguments,
                                  self.keyword_arguments,
                                  self.set_before_add, self.set_after_add),
-            kw={'menu': self.menu, 'usage': self.usage},
+            kw={'menu': self.menu},
             )
 
 class EditFormDirective(BaseFormDirective):
 
     view = EditView
     default_template = 'edit.pt'
-    usage = None
     title = 'Edit'
 
     def _handle_menu(self):
@@ -236,7 +234,7 @@ class EditFormDirective(BaseFormDirective):
             discriminator=self._discriminator(),
             callable=EditViewFactory,
             args=self._args(),
-            kw={'menu': self.menu, 'usage': self.usage},
+            kw={'menu': self.menu},
         )
 
 class SubeditFormDirective(BaseFormDirective):
@@ -290,7 +288,7 @@ class EditWizardDirective(BaseWizardDirective, EditFormDirective):
         self._context.action(
             discriminator = self._discriminator(),
             callable = EditWizardViewFactory,
-            args = self._args()+(self.menu, self.usage, self.use_session)
+            args = self._args()+(self.menu, self.use_session)
             )
 
 class SchemaDisplayDirective(EditFormDirective):
@@ -303,5 +301,5 @@ class SchemaDisplayDirective(EditFormDirective):
         self._context.action(
             discriminator = self._discriminator(),
             callable = DisplayViewFactory,
-            args = self._args()+(self.menu, self.usage)
+            args = self._args()+(self.menu,)
             )

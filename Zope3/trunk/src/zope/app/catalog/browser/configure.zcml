@@ -48,7 +48,7 @@
   </view>
   
   <!-- the add menu is browser.IndexAdding -->
-  <menu id="catalog_index_menu" title="Add Index" usage="addingdialog" />
+  <menu id="catalog_index_menu" title="Add Index" />
   
   <!-- Add a couple of items to the add menu -->
   <!-- TextIndex -->

@@ -9,8 +9,7 @@
       content_factory="zope.app.rdb.gadflyda.GadflyAdapter"
       arguments="dsn"
       fields="dsn"
-      permission="zope.ManageContent"
-      usage="addingdialog" />
+      permission="zope.ManageContent" />
 
   <addMenuItem
     title="Gadfly DA" 

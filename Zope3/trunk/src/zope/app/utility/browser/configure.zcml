@@ -68,8 +68,7 @@
       permission="zope.ManageServices"
       content_factory="zope.app.utility.UtilityRegistration"
       arguments="name interface componentPath"
-      fields="name interface componentPath permission"
-      usage="addingdialog"/>
+      fields="name interface componentPath permission" />
 
   <!-- When editing the registration of an existing utility object,
        you are taken to this form.  It is similar to the above add

@@ -76,8 +76,7 @@
       content_factory="zope.app.i18n.translationdomain.DomainRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status"
-      usage="addingdialog" />
+      fields="name interface componentPath permission status" />
 
   <icon 
       name="zmi_icon" 

@@ -34,9 +34,6 @@
   <include package="zope.app.dependable" />
   <include package="zope.app.server" />
   
-
-  <!-- Usages and Menus -->
-  <include file="usages.zcml" />
   <include file="menus.zcml" />
 
   <include package="zope.app.copypastemove" />

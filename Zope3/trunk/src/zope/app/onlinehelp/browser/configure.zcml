@@ -7,7 +7,6 @@
   <menu
       id="help_actions"
       title="Menu for displaying help actions to be performed with popup"
-      usage="activitydialog"
       />
 
 <!--

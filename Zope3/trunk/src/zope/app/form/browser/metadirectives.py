@@ -12,17 +12,15 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.2 2004/03/20 19:52:45 srichter Exp $
+$Id: metadirectives.py,v 1.3 2004/03/23 22:08:10 srichter Exp $
 """
-
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
-from zope.app.publisher.interfaces.browser import IUsage
 from zope.app.security.fields import Permission
 
-class ICommonInformation(IUsage):
+class ICommonInformation(Interface):
     """
     Common information for all successive directives
     """

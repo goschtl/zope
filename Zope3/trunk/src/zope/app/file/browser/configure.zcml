@@ -18,7 +18,6 @@
       name="edit.html"
       schema="zope.app.file.interfaces.IFile"
       label="Change a file"
-      usage="objectview"
       permission="zope.ManageContent" 
       class=".file.FileTextEdit" 
       />

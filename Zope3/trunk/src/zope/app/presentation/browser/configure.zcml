@@ -26,8 +26,7 @@
       label="Register a view page"
       permission="zope.ManageServices"
       fields="required name template factoryName layer permission
-              status attribute"
-      usage="addingdialog" />
+              status attribute" />
 
 <include file="pagefolder.zcml" />
 <include file="zpt.zcml" />

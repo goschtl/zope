@@ -83,7 +83,6 @@
       template="registered.pt"
       class=".Registered"
       permission="zope.ManageServices"
-      usage="objectview"
       />
 
   <page

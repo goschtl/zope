@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: editview.py,v 1.2 2004/03/23 22:08:10 srichter Exp $
 """
 from datetime import datetime
 
@@ -122,8 +122,7 @@ class EditView(BrowserView):
 
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
-                    fulledit_path=None, fulledit_label=None, menu=u'',
-                    usage=u''):
+                    fulledit_path=None, fulledit_label=None, menu=u''):
     s = zapi.getService(None, zapi.servicenames.Presentation)
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
@@ -137,14 +136,6 @@ def EditViewFactory(name, schema, label, permission, layer,
     class_.fulledit_label = fulledit_label
 
     class_.generated_form = ViewPageTemplateFile(default_template)
-
-    if not usage and menu:
-        usage = globalBrowserMenuService.getMenuUsage(menu)
-    if not usage:
-        # usage could be None
-        usage = u''
-    s.useUsage(usage)
-    class_.usage = usage
 
     defineChecker(class_,
                   NamesChecker(("__call__", "__getitem__",

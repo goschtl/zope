@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_directives.py,v 1.3 2004/03/23 22:08:07 srichter Exp $
 """
 import os
 import unittest
@@ -79,8 +79,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 
         ps =  zapi.getService(None, zapi.servicenames.Presentation)
-        ps.defineUsage("objectview")
-        ps.defineUsage("overridden")
         
     def testEditForm(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
@@ -112,7 +110,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
         xmlconfig(StringIO(template % ("""
-          <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
+          <browser:menu id="test_menu" title="Test menu"/>
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
@@ -133,67 +131,9 @@ class Test(PlacelessSetup, unittest.TestCase):
             """)))
 
         v = zapi.queryView(ob, 'edit.html', request)
-        self.assertEqual(v.usage, 'objectview')
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)
 
-    def testEditFormWithUsage(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
-        xmlconfig(StringIO(template % ("""
-          <view
-              type="zope.publisher.interfaces.browser.IBrowserRequest"
-              for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.TextWidget"
-              permission="zope.Public"
-              />
-          <browser:editform
-              for="zope.app.form.browser.tests.test_directives.IC"
-              schema="zope.app.form.browser.tests.test_directives.Schema"
-              name="edit.html"
-              label="Edit a ZPT page"
-              fields="text"
-              permission="zope.Public"
-              usage="objectview"
-              />
-            """)))
-
-        v = zapi.queryView(ob, 'edit.html', request)
-        self.assertEqual(v.usage, 'objectview')
-        # expect component lookup as standard macros are not configured
-        self.assertRaises(ComponentLookupError, v)
-
-
-    def testEditFormWithMenuAndUsage(self):
-        self.assertEqual(zapi.queryView(ob, 'test', request),
-                         None)
-        xmlconfig(StringIO(template % ("""
-          <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
-          <view
-              type="zope.publisher.interfaces.browser.IBrowserRequest"
-              for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.TextWidget"
-              permission="zope.Public"
-              />
-          <browser:editform
-              for="zope.app.form.browser.tests.test_directives.IC"
-              schema="zope.app.form.browser.tests.test_directives.Schema"
-              name="edit.html"
-              label="Edit a ZPT page"
-              fields="text"
-              permission="zope.Public"
-              menu="test_menu"
-              title="Test View"
-              usage="objectview"        
-              />
-            """)))
-
-        v = zapi.queryView(ob, 'edit.html', request)
-        self.assertEqual(v.usage, 'objectview')
-        # expect component lookup as standard macros are not configured
-        self.assertRaises(ComponentLookupError, v)
 
 # XXX Tests for AddFormDirective are missing
 

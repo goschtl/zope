@@ -20,8 +20,7 @@
       content_factory="zope.app.securitypolicy.role.PersistentRole"
       arguments="title"
       keyword_arguments="description"
-      fields="title description"
-      usage="addingdialog" />
+      fields="title description" />
 
   <editform
       schema="zope.app.securitypolicy.interfaces.IRole"
@@ -53,8 +52,7 @@
       content_factory="zope.app.securitypolicy.role.RoleRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status"
-      usage="addingdialog" />
+      fields="name interface componentPath permission status" />
 
 
 <!-- Role Permissions -->

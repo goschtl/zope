@@ -185,8 +185,7 @@
 
   <editform
       name="index.html"
-      schema=
-        "zope.app.site.interfaces.IServiceRegistration"
+      schema="zope.app.site.interfaces.IServiceRegistration"
       menu="zmi_views"
       label="Edit Service Registration"
       permission="zope.ManageServices"

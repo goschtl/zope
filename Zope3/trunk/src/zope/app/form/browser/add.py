@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: add.py,v 1.2 2004/03/23 22:08:10 srichter Exp $
 """
 import sys
 
@@ -134,7 +134,7 @@ def AddViewFactory(name, schema, label, permission, layer,
                    template, default_template, bases, for_,
                    fields, content_factory, arguments,
                    keyword_arguments, set_before_add, set_after_add,
-                   menu=u'', usage=u''):
+                   menu=u''):
 
     s = zapi.getService(None, zapi.servicenames.Presentation)
     class_  = SimpleViewClass(
@@ -152,14 +152,6 @@ def AddViewFactory(name, schema, label, permission, layer,
     class_._set_after_add = set_after_add
 
     class_.generated_form = ViewPageTemplateFile(default_template)
-
-    if not usage and menu:
-        usage = globalBrowserMenuService.getMenuUsage(menu)
-    if not usage:
-        # usage could be None
-        usage = u''
-    s.useUsage(usage)
-    class_.usage = usage
 
     defineChecker(class_,
                   NamesChecker(

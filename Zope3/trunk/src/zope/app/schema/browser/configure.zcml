@@ -10,8 +10,7 @@
 
   <menu
       id="add_schema_field"
-      title="Menu of Fields to be added to a schema."
-      usage="addingdialog" />
+      title="Menu of Fields to be added to a schema." />
 
   <view
       name="+"
@@ -36,8 +35,7 @@
       content_factory="zope.app.schema.schema.SchemaRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status"
-      usage="addingdialog" />
+      fields="name interface componentPath permission status" />
 
   <addMenuItem
       title="Mutable Schema"
