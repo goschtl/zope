@@ -242,7 +242,8 @@
       />
 
   <browser:page
-      for="zope.app.interfaces.services.configuration.INamedComponentConfiguration"
+      for=
+      "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
       name="ConfigurationSummary"
       template="componentconfigsummary.pt"
       class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
@@ -529,7 +530,7 @@
       factory="zope.app.browser.services.connection.AddConnectionConfiguration"
       permission="zope.ManageServices">
 
-    <browser:page name="add.html" template="add_config.pt" />
+    <browser:page name="add.html" template="addconnectionconfig.pt" />
     <browser:page name="finish.html" attribute="action" />
 
   </browser:view>
