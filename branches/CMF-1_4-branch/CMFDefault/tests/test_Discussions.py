@@ -13,6 +13,8 @@ from Products.CMFCore.tests.base.testcase import \
 from Products.CMFCore.tests.base.utils import \
      has_path
 
+from Products.CMFCore.utils import getToolByName
+
 from Products.CMFCore.tests.base.dummy import DummyFTI
 from Products.CMFCore.tests.base.dummy import DummyContent
 
@@ -253,6 +255,24 @@ class DiscussionTests( SecurityTest ):
         talkback1 = self.discussion_tool.getDiscussionFor(reply1)
         self.assertEqual(len(talkback.getReplies()), 1)
         self.assertEqual(len(talkback1.getReplies()), 0)
+
+    def test_newTalkbackIsWrapped(self):
+        test = self.root.test
+        test.allow_discussion = 1
+        talkback = self.discussion_tool.getDiscussionFor(test)
+        self.failUnless(hasattr(talkback, 'aq_base'))
+        # Acquire a portal tool
+        self.failUnless(getToolByName(talkback, 'portal_discussion'))
+
+    def test_existingTalkbackIsWrapped(self):
+        test = self.root.test
+        test.allow_discussion = 1
+        talkback = self.discussion_tool.getDiscussionFor(test)
+        talkback = self.discussion_tool.getDiscussionFor(test)
+        self.failUnless(hasattr(talkback, 'aq_base'))
+        # Acquire a portal tool
+        self.failUnless(getToolByName(talkback, 'portal_discussion'))
+
 
 def test_suite():
     return TestSuite((
