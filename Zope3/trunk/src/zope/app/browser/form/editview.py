@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.14 2003/03/07 21:28:51 jim Exp $
+$Id: editview.py,v 1.15 2003/03/21 20:57:44 jim Exp $
 """
 
 from datetime import datetime
@@ -47,6 +47,7 @@ class EditView(BrowserView):
     """
 
     errors = ()
+    update_status = None
     label = ''
 
     # Fall-back field names computes from schema
@@ -127,6 +128,13 @@ class EditView(BrowserView):
         return unchanged
 
     def update(self):
+        if self.update_status is not None:
+            # We've been called before. Just return the status we previously
+            # computed.
+            return self.update_status
+
+        status = ''
+        
         if Update in self.request:
             unchanged = True
             try:
@@ -138,14 +146,15 @@ class EditView(BrowserView):
                 unchanged = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors
-                return u"An error occured."
+                status = u"An error occured."
             else:
                 setUpEditWidgets(self, self.schema, force=1,
                                  names=self.fieldNames)
                 if not unchanged:
-                    return "Updated %s" % datetime.utcnow()
+                    status = "Updated %s" % datetime.utcnow()
 
-        return ''
+        self.update_status = status
+        return status
 
 
 def EditViewFactory(name, schema, label, permission, layer,

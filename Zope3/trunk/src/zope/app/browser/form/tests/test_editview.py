@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.5 2003/03/13 18:49:03 alga Exp $
+"""$Id: test_editview.py,v 1.6 2003/03/21 20:57:44 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -153,6 +153,19 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(c.a  , u'c a')
         self.assertEqual(c.b  , None)
         self.assertEqual(c.baz, u'r baz')
+
+        # Verify that calling update multiple times has no effect
+
+        c.__dict__.clear()
+        self.assertEqual(v.update(), message)
+        self.assertEqual(c.foo, u'c foo')
+        self.assertEqual(c.bar, u'c bar')
+        self.assertEqual(c.a  , u'c a')
+        self.assertEqual(c.b  , u'c b')
+        self.assertEqual(c.baz, u'c baz')
+
+        
+
 
 def test_suite():
     return TestSuite((
