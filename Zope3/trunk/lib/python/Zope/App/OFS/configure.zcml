@@ -3,7 +3,7 @@
 <include package=".Container" />
 <include package=".Content" />
 <include package=".Services" />
-
+<include package=".Introspector" />
 <include package=".ApplicationControl" />
 
 <include package=".Annotation" />
