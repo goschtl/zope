@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: auth.py,v 1.3 2002/12/27 20:16:34 rdmurray Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.security import IPrincipal
@@ -22,9 +22,6 @@ class IReadUser(IPrincipal):
 
     def getLogin():
         """Get the login for the user."""
-
-    def getRoles():
-        """Get the roles for the user."""
 
     def validate(pw):
         """Seee whether the password is valid."""

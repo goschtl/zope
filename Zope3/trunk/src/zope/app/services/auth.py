@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.6 2002/12/27 18:54:17 gvanrossum Exp $
+$Id: auth.py,v 1.7 2002/12/27 20:16:34 rdmurray Exp $
 """
 
 from types import TupleType
@@ -167,7 +167,7 @@ class User(Persistent):
         return self.__login
 
     def getRoles(self):
-        'See IReadUser'
+        'See IPrincipal'
         annotations = AttributeAnnotations(self)
         roles = annotations.get('roles', [])
         roles = removeAllProxies(roles)
