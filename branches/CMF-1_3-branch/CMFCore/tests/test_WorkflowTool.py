@@ -86,6 +86,10 @@ class DummyContent( Dummy ):
     portal_type = 'DummyContentPT'
     _isPortalContent = 1
 
+class DummyNotReallyContent( Dummy ):
+
+    meta_type = 'DummyContentPT'
+
 class DummyTypeInfo( Dummy ):
 
     pass
@@ -187,6 +191,14 @@ class WorkflowToolTests( unittest.TestCase ):
         self.assertEquals( len( tool.getDefaultChainFor( None ) ), 0 )
         self.assertEquals( len( tool.getChainFor( None ) ), 0 )
         self.assertEquals( len( tool.getCatalogVariablesFor( None ) ), 0 )
+
+    def test_notReallyContent( self ):
+
+        tool = self._makeWithTypesAndChain()
+        dummy = DummyNotReallyContent( 'doh' )
+        self.assertEquals( len( tool.getDefaultChainFor( dummy ) ), 0 )
+        self.assertEquals( len( tool.getChainFor( dummy ) ), 0 )
+        self.assertEquals( len( tool.getCatalogVariablesFor( dummy ) ), 0 )
 
     def test_content_default_chain( self ):
 
