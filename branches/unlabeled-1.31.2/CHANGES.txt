@@ -2,6 +2,9 @@
 
  New features
 
+  - CMFDecor megreged into CMF.  FSPageTemplate put into CMFCore, skins
+    put into CMFDefault, and basic skin setup to include ZPT skins.
+
   - Added cookString method to CMFCore.utils for taking a string and making it id
     friendly, it also does a string.lower on the resultant regex.
     
