@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.24 2003/10/15 20:28:22 shane Exp $
+$Id: _bootstrapfields.py,v 1.25 2003/10/20 16:11:46 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -381,6 +381,23 @@ class Password(TextLine):
 class Bool(Field):
     """A field representing a Bool."""
     _type = type(True)
+
+    if _type is not type(1):
+        # Python 2.2.1 and newer 2.2.x releases, True and False are
+        # integers, and bool() returns either 1 or 0.  We need to
+        # support using integers here so we don't invalidate schema
+        # that were perfectly valid with older versions of Python.
+        def _validate(self, value):
+            # Convert integers to bools to they don't get mis-flagged
+            # by the type check later.
+            if isinstance(value, int):
+                value = bool(value)
+            Field._validate(self, value)
+
+        def set(self, object, value):
+            if isinstance(value, int):
+                value = bool(value)
+            Field.set(self, object, value)
 
 class Int(Enumerated, Orderable, Field):
     """A field representing an Integer."""
