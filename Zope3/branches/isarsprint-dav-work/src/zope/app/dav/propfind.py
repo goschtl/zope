@@ -48,65 +48,49 @@ class PROPFIND(object):
         self._depth = depth.lower()
 
     def PROPFIND(self):
-        request = self.request
-        resource_url = str(zapi.getView(self.context, 'absolute_url', request))
-        if IReadContainer.providedBy(self.context):
-            resource_url = resource_url + '/'
-        data = request.bodyFile
-        data.seek(0)
-        response = ''
-        body = ''
-
         if self.content_type not in ['text/xml', 'application/xml']:
-            request.response.setStatus(400)
-            return body
-
+            self.request.response.setStatus(400)
+            return ''
         if self.getDepth() not in ['0', '1', 'infinity']:
-            request.response.setStatus(400)
-            return body
+            self.request.response.setStatus(400)
+            return ''
 
-        xmldoc = minidom.parse(data)
+        resource_url = str(zapi.getView(self.context, 'absolute_url', 
+                                        self.request))
+        if IReadContainer.providedBy(self.context):
+            resource_url += '/'
+
+        self.request.bodyFile.seek(0)
+        xmldoc = minidom.parse(self.request.bodyFile)
         response = minidom.Document()
         ms = response.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
         response.appendChild(ms)
-        re = response.createElement('response')
-        ms.appendChild(re)
-        re.appendChild(response.createElement('href'))
-        re.lastChild.appendChild(response.createTextNode(resource_url))
+        ms.appendChild(response.createElement('response'))
+        ms.lastChild.appendChild(response.createElement('href'))
+        ms.lastChild.lastChild.appendChild(
+            response.createTextNode(resource_url))
+
         _avail_props = {}
-        
         # List all *registered* DAV interface namespaces and their properties
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)
-            
+            _avail_props[ns] = getFieldNamesInOrder(iface)    
         # List all opaque DAV namespaces and the properties we know of
         for ns, oprops in IDAVOpaqueNamespaces(self.context, {}).items():
             _avail_props[ns] = oprops.keys()
         
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:
-            self._handlePropname(response, re, _avail_props)
+            self._handlePropname(response, _avail_props)
+        else:
+            source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
+            self._handlePropvalues(source, response, _avail_props)
 
-        source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-        _props = {}
-        if not source and not propname:
-            _props = self._handleAllprop(_avail_props, _props)
-
-        if source and not propname:
-            _props = self._handleProp(source, _props)
-
-        avail, not_avail = self._propertyResolver(_props)
-        if avail:
-            self._renderAvail(avail, response, _props)
-        if not_avail:
-            self._renderNotAvail(not_avail, response)
-            
         self._depthRecurse(ms)
 
         body = response.toxml().encode('utf-8')
-        request.response.setBody(body)
-        request.response.setStatus(207)
+        self.request.response.setBody(body)
+        self.request.response.setStatus(207)
         return body
 
     def _depthRecurse(self, ms):
@@ -128,25 +112,28 @@ class PROPFIND(object):
                         for r in responses:
                             ms.appendChild(r)
 
-    def _handleProp(self, source, _props):
+    def _handleProp(self, source):
+        props = {}
         source = source[0]
         childs = [e for e in source.childNodes
                   if e.nodeType == e.ELEMENT_NODE]
         for node in childs:
             ns = node.namespaceURI
             iface = zapi.queryUtility(IDAVNamespace, ns)
-            value = _props.get(ns, {'iface': iface, 'props': []})
+            value = props.get(ns, {'iface': iface, 'props': []})
             value['props'].append(node.localName)
-            _props[ns] = value
-        return _props
+            props[ns] = value
+        return props
 
-    def _handleAllprop(self, _avail_props, _props):
+    def _handleAllprop(self, _avail_props):
+        props = {}
         for ns in _avail_props.keys():
             iface = zapi.queryUtility(IDAVNamespace, ns)
-            _props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
-        return _props
+            props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
+        return props
 
-    def _handlePropname(self, response, re, _avail_props):
+    def _handlePropname(self, response, _avail_props):
+        re = response.lastChild.lastChild
         re.appendChild(response.createElement('propstat'))
         prop = response.createElement('prop')
         re.lastChild.appendChild(prop)
@@ -164,6 +151,18 @@ class PROPFIND(object):
         re.lastChild.appendChild(response.createElement('status'))
         re.lastChild.lastChild.appendChild(
             response.createTextNode('HTTP/1.1 200 OK'))
+
+    def _handlePropvalues(self, source, response, _avail_props):
+        if not source:
+            _props = self._handleAllprop(_avail_props)
+        else:
+            _props = self._handleProp(source)
+
+        avail, not_avail = self._propertyResolver(_props)
+        if avail: 
+            self._renderAvail(avail, response, _props)
+        if not_avail: 
+            self._renderNotAvail(not_avail, response)
 
     def _propertyResolver(self, _props):
         avail = {}
