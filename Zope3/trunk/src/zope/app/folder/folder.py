@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from BTrees.OOBTree import OOBTree
 from interfaces import IFolder, IRootFolder
 from persistent import Persistent
@@ -58,15 +60,15 @@ class Folder(Persistent, ServiceManagerContainer, Contained):
         """Return the named object, or the value of the default
            argument if given and the named object is not found.
            If no default is given and the object is not found a
-           KeyError is raised.
+           ``KeyError`` is raised.
         """
         return self.data[name]
 
     def get(self, name, default=None):
-        """Return the named object, or the value of the default
+        """Return the named object, or the value of the `default`
            argument if given and the named object is not found.
-           If no default is given and the object is not found a
-           KeyError is raised.
+           If no `default` is given and the object is not found a
+           ``KeyError`` is raised.
         """
         return self.data.get(name, default)
 
