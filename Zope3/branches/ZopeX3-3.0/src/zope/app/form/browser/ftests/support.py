@@ -18,16 +18,30 @@ $Id$
 import re
 from zope.configuration import xmlconfig
 
-def registerEditForm(schema):
+def registerEditForm(schema, widgets={}):
+    """Registers an edit form for the specified schema.
+    
+    widgets is a mapping of field name to dict. The dict for each field must
+    contain a 'class' item, which is the widget class, and any additional
+    widget attributes (e.g. text field size, rows, cols, etc.)
+    """
+    widgetsXml = []
+    for field in widgets:
+        widgetsXml.append('<widget field="%s"' % field)
+        for attr in widgets[field]:
+            widgetsXml.append(' %s="%s"' % (attr, widgets[field][attr]))
+        widgetsXml.append(' />')
     xmlconfig.string("""
         <configure xmlns="http://namespaces.zope.org/browser">
           <include package="zope.app.form.browser" file="meta.zcml" />
           <editform
             name="edit.html"
             schema="%s"
-            permission="zope.View" />
+            permission="zope.View">
+            %s
+          </editform>
         </configure>
-        """ % schema.__identifier__)
+        """ % (schema.__identifier__, ''.join(widgetsXml)))
 
 
 def defineSecurity(class_, schema):

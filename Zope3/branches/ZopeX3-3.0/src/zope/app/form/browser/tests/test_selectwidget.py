@@ -32,12 +32,22 @@ sequence = List(
 
 
 class SelectWidgetTest(unittest.TestCase):
-    
+
     def _makeWidget(self, form):
         request = TestRequest(form=form)
-        return SelectWidget(sequence, request) 
+        return SelectWidget(sequence, request)
 
 
+select_html = '''<div id="field.terms">
+<div class="value">
+<select name="field.terms" size="5" >
+<option value="&lt; foo">&lt; foo</option>
+<option value="bar/&gt;">bar/&gt;</option>
+<option value="&amp;blah&amp;">&amp;blah&amp;</option>
+</select>
+</div>
+<input name="field.terms-empty-marker" type="hidden" value="1" />
+</div>'''
 
 
 def test_suite():

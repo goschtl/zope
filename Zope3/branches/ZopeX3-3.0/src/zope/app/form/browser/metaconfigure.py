@@ -62,16 +62,16 @@ class BaseFormDirective(object):
 
     def widget(self, _context, field, class_, **kw):
         attrs = kw
-        ifaces = implementedBy(class_)
         # Try to do better than accepting the string value by looking through
         # the interfaces and trying to find the field, so that we can use
         # 'fromUnicode()' 
-        for name, value in kw.items():
-            for iface in ifaces:
-                if name in iface:
-                    attrs[name] = iface[name].fromUnicode(value)
-                    break
-
+        if isinstance(class_, type):
+            ifaces = implementedBy(class_)
+            for name, value in kw.items():
+                for iface in ifaces:
+                    if name in iface:
+                        attrs[name] = iface[name].fromUnicode(value)
+                        break
         self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs) 
 
     def _processWidgets(self):

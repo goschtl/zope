@@ -102,6 +102,25 @@ class RadioWidgetTest(SimpleInputWidgetTest):
         self.verifyResult(self._widget.hidden(), check_list)
 
 
+    def testHasInput(self):
+        self._widget.request.form.clear()
+        self.assert_(not self._widget.hasInput())
+        self._widget.request.form['field.foo-empty-marker'] = '1'
+        self.assert_(self._widget.hasInput())
+        self._widget.request.form['field.foo'] = u'Foo Value'
+        self.assert_(self._widget.hasInput())
+        del self._widget.request.form['field.foo-empty-marker']
+        self.assert_(self._widget.hasInput())
+
+
+    def testRenderEmptyMarker(self):
+        self.verifyResult(self._widget(), ('field.foo-empty-marker',))
+        self._widget.setRenderedValue(u'bar')
+        self.verifyResult(self._widget(), ('field.foo-empty-marker',))
+        self._widget.setRenderedValue(u'not a legal value')
+        self.verifyResult(self._widget(), ('field.foo-empty-marker',))
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(RadioWidgetTest),
