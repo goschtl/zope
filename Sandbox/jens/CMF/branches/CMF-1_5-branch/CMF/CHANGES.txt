@@ -2,6 +2,12 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFCalendar zpt skin: Removed dependency on dtml layer.
+
+    - CMFCalendar: Modified install script.
+      Adds date indexes instead of field indexes. No longer adds the dtml
+      layer to zpt skins.
+
     - CMFCore.utils: Added 'transaction' for backwards compatibility.
       CMF now uses the Zope 2.8 transaction API und uses utils.transaction as
       fallback in Zope 2.7.
