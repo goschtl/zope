@@ -633,6 +633,10 @@ Zope Changes
 
       - If the content-type was text/*, HTTPResponse.write re-set the
         content-length header to the first chunk of data.
+      
+      - Don't unconditionally add Content-Length header in
+        HTTPResponse.getHeaders(). Do it only in output(), where the
+        size of the data is known.
 
     Much thanks to everyone who contributed to this release:
 
