@@ -1,8 +1,0 @@
-To Do List
-
-  - Implement more advanced tests; boy it took me more time to write the tests
-    than writing the code.
-
-  - Check whether there is a better way of getting the connection name or the
-    database information. The hard-coded variable names 'sql_conn', 'rdb', and
-    'dsn' disturb me a bit.
