@@ -12,7 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-# $Id: XXXreport,v 1.2 2002/12/07 17:37:35 zagy Exp $
+# $Id: XXXreport,v 1.3 2002/12/10 20:47:08 ctheune Exp $
 
 # This script assumes it is located in the utilities directory of Zope3
  
@@ -26,8 +26,9 @@ ZOPEBASE=`dirname $0`/../
 BASE=`dirname $0`
 
 # find also finds hidden files
-find $ZOPEBASE -! -name "*.pyc" -print0 | \
-    xargs -0 grep -niIr -A 3 -E "$PATTERN" | \
+rm $TARGET
+find $ZOPEBASE -! -name "*.pyc" -print0  | \
+    xargs -0 grep -niIs -A 3 -E "$PATTERN" | \
     $PYTHON $BASE/XXXreport2html.py /dev/stdin $TARGET >/dev/null
     
 rm -f $TMPFILE
