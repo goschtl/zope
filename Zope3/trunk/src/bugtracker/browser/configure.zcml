@@ -6,7 +6,9 @@
   <zope:include package=".skin" />
 
   <resource 
-       name="tracker.css" file="tracker.css" layer="rotterdam" />
+       name="tracker.css" 
+       file="tracker.css" 
+       layer="zope.app.rotterdam.rotterdam" />
 
   <icon
       name="zmi_icon"

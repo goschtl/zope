@@ -4,7 +4,7 @@
     i18n_domain="zope"
     >
 <browser:layer name="wiki" />
-<browser:skin name="wiki" layers="wiki rotterdam default" />
+<browser:skin name="wiki" layers="wiki zope.app.rotterdam.rotterdam " />
 
 <browser:resource 
     name="wiki.css" file="wiki.css" layer="wiki" />

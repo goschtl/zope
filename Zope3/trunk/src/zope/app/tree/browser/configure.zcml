@@ -41,7 +41,7 @@
 
   <browser:skin
       name="StaticTree"
-      layers="statictree rotterdam default"
+      layers="statictree zope.app.rotterdam.rotterdam"
       />
 
   <browser:page

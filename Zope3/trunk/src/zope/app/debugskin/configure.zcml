@@ -3,7 +3,10 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <layer name="debug" />
-  <skin name="Debug" layers="debug rotterdam default" />
+  <skin 
+      name="Debug" 
+      layers="debug 
+              zope.app.rotterdam.rotterdam" />
 
   <page
       for="zope.security.interfaces.IUnauthorized"
