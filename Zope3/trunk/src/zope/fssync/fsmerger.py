@@ -13,13 +13,13 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.18 2003/09/04 14:29:29 fdrake Exp $
+$Id: fsmerger.py,v 1.19 2003/09/04 14:59:32 fdrake Exp $
 """
 
 import os
 import shutil
 
-from os.path import basename, exists, isfile, isdir, join
+from os.path import basename, dirname, exists, isfile, isdir, join
 from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import dumps
@@ -78,14 +78,15 @@ class FSMerger(object):
 
     def remove_special(self, local, what):
         """Helper to remove an Original, Extra or Annotations file/tree."""
-        head, tail = fsutil.split(local)
-        dir = join(head, "@@Zope", what)
-        target = join(dir, tail)
+        target = fsutil.getspecial(local, what)
+        dir = dirname(target)
         if exists(target):
             if isdir(target):
                 shutil.rmtree(target)
             else:
+                # XXX when should this ever happen?
                 os.remove(target)
+        # remove the specials directory if it's empty
         if isdir(dir):
             try:
                 os.rmdir(dir)
