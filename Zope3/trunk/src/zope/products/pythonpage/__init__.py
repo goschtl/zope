@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.1 2004/01/30 23:19:23 srichter Exp $
+$Id: __init__.py,v 1.2 2004/01/30 23:28:40 srichter Exp $
 """
 import re
 from persistence import Persistent
@@ -41,7 +41,7 @@ class IPythonPage(Interface):
         description=_("The source of the Python page."),
         required=False)
 
-    content_type = TextLine(
+    contentType = TextLine(
         title=_("Content Type"),
         description=_("The content type the script outputs."),
         required=True,
@@ -106,11 +106,11 @@ class PythonPage(Contained, Persistent):
 
     implements(IPythonPage)
 
-    def __init__(self, source=u'', content_type=u'text/html'):
+    def __init__(self, source=u'', contentType=u'text/html'):
         """Initialize the object."""
         super(PythonPage, self).__init__()
         self.source = source
-        self.content_type = content_type
+        self.contentType = content_type
 
     def __filename(self):
         if self.__parent__ is None:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page Browser Views 
 
-$Id: browser.py,v 1.1 2004/01/30 23:19:23 srichter Exp $
+$Id: browser.py,v 1.2 2004/01/30 23:28:40 srichter Exp $
 """
 from zope.app.browser.form.editview import EditView
 
@@ -24,7 +24,7 @@ class PythonPageEval:
         """Call a Python Page"""
 
         self.request.response.setHeader('content-type',
-                                        self.context.content_type)
+                                        self.context.contentType)
         
         return self.context(self.request, **kw)
 

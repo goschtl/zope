@@ -22,7 +22,7 @@
   
     <require
         permission="zope.ManageContent"
-        set_attributes="source content_type" />
+        set_attributes="source contentType" />
   
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
