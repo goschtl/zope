@@ -29,6 +29,10 @@ Overview
 Related Links
 -------------
 
+`Zope 3 Packaging Proposal`__
+  Discussion of the packaging requirements for Zope 3.
+  Currently labelled as a pre-proposal.
+
 `PEP 241: Distribution metadata`__
   This PEP describes a mechanism for adding metadata to Python
   packages.  It includes specifics of the field names, and their
@@ -39,11 +43,26 @@ Related Links
   packages.  It includes specifics of the field names, and their
   semantics and usage.
 
-  Implementation of this PEP in distutils, along with a general way to
+  Implementation of PEP 262 in distutils, along with a general way to
   identify dependencies, would allow import-less dependency checking
   as well as uninstallation.
 
+`Andrew Kuchling's notes from the Distribution BoF at PyCon2003`__
 
+`Dependency Support in Distutils`__
+  Phillip Eby's ideas about what dependency support should look like
+  (in the python.org Wiki).
+
+`Distutils Wishlist from the Distutils-SIG`__
+  Notes on changes to the distutils from the members of the
+  Distutils-SIG.  This is most a list of suggestions of warts that
+  should be fixed.
+
+
+.. __: http://dev.zope.org/Zope3/Zope3PackagingProposal
 .. __: http://www.python.org/peps/pep-0241.html
 .. __: http://www.python.org/peps/pep-0262.html
+.. __: http://www.amk.ca/diary/2003/03/28#2003-03-28-4
+.. __: http://www.python.org/cgi-bin/moinmoin/DistUtils20
+.. __: http://www.python.org/cgi-bin/moinmoin/DistutilsDependencies
 .. include:: links.rst
