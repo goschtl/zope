@@ -25,13 +25,29 @@ if sys.modules.has_key('_ldap'):
     del sys.modules['_ldap']
 sys.modules['ldap'] = FakeLDAP
 
-import ldapauth
+import ldap
+from ldapauth.source import LDAPPrincipalSource
 from zope.exceptions import NotFoundError
 
 class LDAPPrincipalSourceTest(TestCase):
     
     def setUp(self):
-        self.source = ldapauth.LDAPPrincipalSource(
+        l = ldap.initialize('ldap://localhost:389')
+        l.simple_bind_s('cn=Manager,dc=fake', 'root')
+        try:
+            l.add_s('uid=toto_l,ou=people,dc=fake',
+                    (('uid', 'toto_l'),
+                     ('userPassword', 'toto_p')))
+            l.add_s('uid=tata_l,ou=people,dc=fake',
+                    (('uid', 'tata_l'),
+                     ('userPassword', 'tata_p')))
+            l.add_s('uid=titi_l,ou=people,dc=fake',
+                    (('uid', 'titi_l'),
+                     ('userPassword', 'titi_p')))
+        except ldap.ALREADY_EXISTS:
+            pass
+
+        self.source = LDAPPrincipalSource(
                 'localhost', 389, 'ou=people,dc=fake',
                 'uid', 'cn=Manager,dc=fake', 'root')
 
@@ -60,17 +76,6 @@ def test_suite():
     return TestSuite((
         makeSuite(LDAPPrincipalSourceTest),
         ))
+
 if __name__=='__main__':
-    import ldap
-    l = ldap.initialize('ldap://localhost:389')
-    l.simple_bind_s('cn=Manager,dc=fake', 'root')
-    l.add_s('uid=toto_l,ou=people,dc=fake',
-            (('uid', 'toto_l'),
-             ('userPassword', 'toto_p')))
-    l.add_s('uid=tata_l,ou=people,dc=fake',
-            (('uid', 'tata_l'),
-             ('userPassword', 'tata_p')))
-    l.add_s('uid=titi_l,ou=people,dc=fake',
-            (('uid', 'titi_l'),
-             ('userPassword', 'titi_p')))
     main(defaultTest='test_suite')

@@ -15,5 +15,3 @@
 
 $Id:
 """
-
-from principalsource import LDAPPrincipalSource
