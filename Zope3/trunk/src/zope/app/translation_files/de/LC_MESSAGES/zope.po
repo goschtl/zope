@@ -3300,7 +3300,7 @@ msgstr "Gibt das Interface an, für welches dieser Menüeintrag gilt."
 
 #: src/zope/app/interfaces/publisher/browser.py:35
 msgid "The relative url to use if the item is selected"
-msgstr "Die URL, die aufgerufen werden solln, wenn der Eintrag ausgewählt ist"
+msgstr "Die URL, die aufgerufen werden soll, wenn der Eintrag ausgewählt ist"
 
 #: src/zope/app/interfaces/publisher/browser.py:36
 msgid "The url is relative to the object the menu is being displayed for."
