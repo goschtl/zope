@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.10 2002/12/19 23:05:22 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.11 2002/12/20 01:56:39 gvanrossum Exp $
 """
 
 import sys
@@ -82,12 +82,31 @@ class SiteDefinition:
     def useLog(self, _context, file=DEFAULT_LOG_FILE):
         """Lets you specify the log file to use"""
 
+        # Get the root logger
+        root = logging.root
+
+        # Remove previous handlers
+        for h in root.handlers[:]:
+            root.removeHandler(h)
+
+        # Create the new handler
         if file in self._special_log_files.keys():
             file = self._special_log_files[file]
             handler = logging.StreamHandler(file)
         else:
             handler = logging.FileHandler(file)
-        logging.root.addHandler(handler)
+
+        # Create a standard Zope-style formatter and set it
+        formatter = logging.Formatter(
+            "------\n"
+            "%(asctime)s %(levelname)s %(name)s %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S")
+        handler.setFormatter(formatter)
+
+        # Set the handler
+        root.addHandler(handler)
+
+        # Return empty sequence to satisfy API
         return []
 
 
