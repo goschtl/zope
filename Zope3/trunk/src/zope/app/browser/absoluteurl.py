@@ -14,28 +14,36 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.4 2003/04/15 10:57:08 alga Exp $
+$Id: absoluteurl.py,v 1.5 2003/04/28 13:14:19 mgedmin Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.proxy.context import getWrapperContainer, getInnerWrapperData
+from zope.proxy.introspection import removeAllProxies
 from zope.component import getView
 
 class AbsoluteURLBase(BrowserView):
 
     def __str__(self):
         context = self.context
+        vh_root = removeAllProxies(self.request.getVirtualHostRoot())
+        if removeAllProxies(context) is vh_root:
+            return self.request.getApplicationURL()
+        container = getWrapperContainer(context)
+        container_url = str(getView(container, 'absolute_url',
+                                    self.request))
         dict = getInnerWrapperData(context)
         name = dict and dict.get('name') or None
         if name == '.':
             name = dict.get('side_effect_name', name)
             if name.startswith('++vh++'):
-                return self.request.getApplicationURL()
-        container = getWrapperContainer(context)
-        return "%s/%s" % (getView(container, 'absolute_url', self.request),
-                          name)
+                return container_url
+        return "%s/%s" % (container_url, name)
 
     def breadcrumbs(self):
         context = self.context
+        vh_root = removeAllProxies(self.request.getVirtualHostRoot())
+        if removeAllProxies(context) is vh_root:
+            return ({'name':'', 'url': self.request.getApplicationURL()}, )
         dict = getInnerWrapperData(context)
         name = dict and dict.get('name') or None
         container = getWrapperContainer(context)
@@ -46,7 +54,7 @@ class AbsoluteURLBase(BrowserView):
             # that we need to preserve in the urls (only)
             name = dict.get('side_effect_name', name)
             if name.startswith('++vh++'):
-                return ({'name':'', 'url': self.request.getApplicationURL()}, )
+                return base
 
             # replace the last step in base with a step with the same
             # name and an augmented url

@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.7 2003/04/15 10:57:08 alga Exp $
+$Id: test_absoluteurl.py,v 1.8 2003/04/28 13:14:20 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -132,7 +132,28 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setViewType(IBrowserPresentation)
 
-        content = ContextWrapper(TrivialContent(), Root(), name='a')
+        vh_root = TrivialContent()
+        content = ContextWrapper(vh_root, Root(), name='a')
+        request._vh_root = ContextWrapper(vh_root, Root(), name='a')
+        content = ContextWrapper(TrivialContent(), content, name='b')
+        content = ContextWrapper(TrivialContent(), content, name='c')
+        view = getView(content, 'absolute_url', request)
+        self.assertEqual(str(view), 'http://foobar.com/b/c')
+
+        breadcrumbs = view.breadcrumbs()
+        self.assertEqual(breadcrumbs,
+         ({'name':  '', 'url': 'http://foobar.com'},
+          {'name': 'b', 'url': 'http://foobar.com/b'},
+          {'name': 'c', 'url': 'http://foobar.com/b/c'},
+          ))
+
+    def testVirtualHostingWithVHElements(self):
+        request = TestRequest()
+        request.setViewType(IBrowserPresentation)
+
+        vh_root = TrivialContent()
+        content = ContextWrapper(vh_root, Root(), name='a')
+        request._vh_root = ContextWrapper(vh_root, Root(), name='a')
         content = ContextWrapper(TrivialContent(), content,
                                  name='.',
                                  side_effect_name="++vh++abc")
@@ -153,6 +174,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         root = Root()
+        request._vh_root = ContextWrapper(root, root, name='')
         content = ContextWrapper(root, root,
                                  name='.',
                                  side_effect_name="++vh++abc")
