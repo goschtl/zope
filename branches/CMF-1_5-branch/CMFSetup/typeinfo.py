@@ -72,6 +72,9 @@ def importTypesTool( context ):
 
         type_info = klass_info[ 'class' ]( **info )
 
+        if info['id'] in types_tool.objectIds():
+            types_tool._delObject(info['id'])
+
         types_tool._setObject( str( info[ 'id' ] ), type_info )
 
 
