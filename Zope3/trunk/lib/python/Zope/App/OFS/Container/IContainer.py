@@ -13,7 +13,7 @@
 ##############################################################################
 """Container interfaces
 
-$Id: IContainer.py,v 1.7 2002/11/30 18:34:34 jim Exp $
+$Id: IContainer.py,v 1.8 2002/12/18 19:16:02 poster Exp $
 """
 
 
@@ -68,20 +68,4 @@ class IContainerNamesContainer(IContainer):
     """Containers that always choose names for their items
     """
 
-class IHomogenousContainer(Interface):
-
-    # XXX this needs to be rethought a bit.
-    def isAddable(interfaces):
-        """Test for interface compatability for container and factory
-
-        Tells you whether something that implements the given
-        interfaces may be added to this container.
-
-        The argument may be a single interface, a tuple of interfaces,
-        or None, if the thing you're considering adding declares no
-        interfaces.
-
-        Returns a true value if an object that implements absolutely all
-        of the given interfaces may be added to this container.
-        Otherwise, returns false."""
 
