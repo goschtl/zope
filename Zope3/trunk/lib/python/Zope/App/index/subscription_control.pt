@@ -1,6 +1,12 @@
-<html>
+<html metal:use-macro="views/standard_macros/page">
+
+  <head>
+    <title>Registration "Service" Control Page</title>
+  </head>
 
   <body>
+
+  <div metal:fill-slot="body">
 
     <h1>Subscription control</h1>
 
@@ -21,6 +27,8 @@
            <input type="submit" value="Subscribe" name="callSubscribe" />
        </span>
     </form>
+
+  </div>
 
   </body>
 
