@@ -86,7 +86,7 @@ The **zsync add** Command
 Synopsis
 ++++++++
 
-**add** [*add-options*...] [*path*]
+**add** [*add-options*] [*path*]
 
 Options
 +++++++
@@ -105,7 +105,7 @@ The **zsync checkin** Command
 Synopsis
 ++++++++
 
-**checkin** [**-m** *message*] *target-url* [*path*]
+**checkin** [*checkin-options*] *target-url* [*path*]
 
 Description
 +++++++++++
@@ -128,9 +128,13 @@ filesystem.
 Options
 +++++++
 
+-F FILE, --file FILE
+  Set the message used for the transaction note to the contents of the
+  file *FILE* (similar to the ``-F`` option for **cvs commit**).
+
 -m MSG, --message MSG
-  Set the message used for the transaction note (similar to the ``-m``
-  option for **cvs commit**).
+  Set the message used for the transaction note to *MSG* (similar to
+  the ``-m`` option for **cvs commit**).
 
 
 The **zsync checkout** Command
@@ -172,6 +176,10 @@ descendents are committed.
 
 Options
 +++++++
+
+-F FILE, --file FILE
+  Set the message used for the transaction note to the contents of the
+  file *FILE* (similar to the ``-F`` option for **cvs commit**).
 
 -m MSG, --message MSG
   Set the message used for the transaction note (similar to the ``-m``
