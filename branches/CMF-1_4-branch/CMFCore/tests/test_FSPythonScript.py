@@ -11,7 +11,7 @@ from thread import start_new_thread
 class FSPythonScriptTests( FSDVTest ):
 
     def test_GetSize( self ):
-        """ Test get_size returns correct value """
+        # Test get_size returns correct value
         script = FSPythonScript('test1', join(self.skin_path_name,'test1.py'))
         self.assertEqual(len(script.read()),script.get_size())
 

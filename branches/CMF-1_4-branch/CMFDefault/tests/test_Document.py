@@ -121,7 +121,7 @@ class DocumentTests(RequestTest):
         self.assertEqual( d.CookedBody(), body )
 
     def test_plain_text(self):
-        """test that plain text forrmat works"""
+        # test that plain text forrmat works
         d = self.d
         d.edit(text_format='plain', text='*some plain text*\nwith a newline')
         self.assertEqual( d.CookedBody(), '*some plain text*<br />with a newline')
