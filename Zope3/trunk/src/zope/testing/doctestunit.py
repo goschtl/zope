@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests.
 
-$Id: doctestunit.py,v 1.10 2004/03/30 21:40:02 jim Exp $
+$Id: doctestunit.py,v 1.11 2004/04/02 12:53:05 nathan Exp $
 """
 
 from StringIO import StringIO
@@ -87,6 +87,27 @@ class DocTestTestCase(unittest.TestCase):
     def shortDescription(self):
         return "Doctest: " + self.__name
 
+def DocFileSuite(*paths):
+    # It's not entirely obvious how to connection this single string
+    # with unittest.  For now, re-use the _utest() function that comes
+    # standard with doctest in Python 2.3.  One problem is that the
+    # error indicator doesn't point to the line of the doctest file
+    # that failed.
+    import os, doctest, new
+    t = doctest.Tester(globs={})
+    suite = unittest.TestSuite()
+    dir = os.path.split(__file__)[0]
+    for path in paths:
+        path = os.path.join(dir, path)
+        source = open(path).read()
+        def runit(path=path, source=source):
+            doctest._utest(t, path, source, path, 0)
+        runit = new.function(runit.func_code, runit.func_globals, path,
+                             runit.func_defaults, runit.func_closure)
+        f = unittest.FunctionTestCase(runit,
+                                      description="doctest from %s" % path)
+        suite.addTest(f)
+    return suite
 
 def DocTestSuite(module=None,
                  setUp=lambda: None,
