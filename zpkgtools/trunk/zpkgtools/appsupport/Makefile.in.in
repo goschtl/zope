@@ -17,8 +17,11 @@ prefix=@prefix@
 build:
 	$(PYTHON) install.py -q build
 
+# The "install" target skips the distutils build step since that's
+# handled via the dependency on the build target.
+#
 install: build
-	$(PYTHON) install.py -q install --home "$(prefix)"
+	$(PYTHON) install.py -q install --skip-build --home "$(prefix)"
 
 check test: build
 	$(PYTHON) test.py $(TESTOPTS)
