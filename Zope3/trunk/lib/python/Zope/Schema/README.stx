@@ -15,60 +15,64 @@ Table of contents
  Issues to be solved 
 
 
-Short introduction
+Introduction
 
- Schemas are like interfaces, but describing properties - rather thab methods:
+ Schemas extend the notion of interfaces to descriptions of Attributes rather than 
+ methods.  Every Schema is an interface and specifies the public fields of an 
+ object.  A "Field" roughly corresponds to an attribute of a python object. 
+ But a Field provides space for a title and a description. It can also constrain
+ its value and provide a validation method.  Besides you can optionally specify
+ characteristics such as its value beeing readonly or not required. 
 
-  - Model the public information managed by the object.
+ Zope 3 schemas were born when Jim Fulton and Martijn Faassen thought about 
+ Formulator for Zope3 and PropertySets while at the Zope3 sprint at the 
+ Zope BBQ in Berlin. They realized that if you strip all view logic 
+ from forms than you have something to interfaces. 
+ And thus schemas were born.
 
-  - An interface with fields.
+Dependencies
 
-  - Fields define attribute types, including value constraints, and documentation.
+ The Schema package only depends on the Interface package. 
 
- Fields themselves are:
- 
-  - They provide a validate method for validating values
+Simple Usage
 
-  - FieldProperties can automate validation at Python level.
+    $ python
+    >>> class Bookmark:
+    ...     def __init__(self, url):
+    ...         self.url = url
 
-Long introduction
+    >>> from Zope.Schema import TextLine, validateMapping
+    >>> from Interface import Interface
+    >>> class IBookmark(Interface):
+    ...     url = TextLine(title=u'url of the bookmark')
+    ...
 
-  Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and 
-  PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
+    >>> obj = Bookmark(u'zope website', u'http://www.zope.org',
+    ...                    keywords=('web', 'python'))
+    >>> validateMapping(IBookmark, obj.__dict__)
 
- What is a schema, how does it compare to an interface and why should you care?
+    the last statement validates that our object conforms 
+    to the IBookmark Schema. 
 
-  A schema is a definition of an object's properties, while interface is a definition of an object's methods. A property is an attribute of an object that is intended to be public; it is part of the interface of the object. While properties generally look and feel like normal attributes to the Python programmer, they are often implemented with a hidden getter and setter instead. In a way interface and schema look at the object from two different viewpoints.
+What is a schema, how does it compare to an interface?
 
-  To make things more clear, let's compare schemas with normal Zope 3 interfaces. What are Zope 3 interfaces used for?
+  A schema is an extended interface which defines Fields.  
+  You can validate that attributes of an object conform to their Fields 
+  defined on the schema.  With plain interfaces you can only validate 
+  that Methods conform to their interface specification.  
 
-   o documentation: by writing an interface, we can tell programmers what methods are available for them to use, and provide documentation on what these methods do. Similarly, a class documents itself by advertising what interfaces it is implementing. Only publically available methods (useable by the programmer as well as other components) are advertised this way.
+  So interfaces and schemas refer to different aspects of an object 
+  (resp. its code and state). 
 
-   o error checking: interfaces can do some minimal verification to see whether a class that advertises it implements methods with these names and signatures.
-
-   o introspection: a programmer can check whether an object implements a certain interface. This allows robust and clear introspection.
-
-   o component architecture: Zope 3's component architecture uses these introspection facilities to plug objects together by their interfaces. The component architecture can for instance be asked to supply an object with another interface (adapters) or end-user presentation (views).
-
-  Schemas are used in much the same way, substituting property for method. What are schemas used for?
-
-   o documentation: by writing a schema, we can tell programmers what public properties are available for them to use (get or set), and to provide documentation on what these properties are to be used for. Classes document themselves by advertising what schemas they are implementing.
-
-   o error checking: schemas can do some minimal verification to see whether a class actually implements it (supplies these properties).
-
-   o introspection: a programmer can check whether an object implements a certain schema.
-
-   o component architecture: we can look up adapters and views for schemas; we could for instance have a view for the Dublin Core schema. In some senses we can do even more here than we can do with normal interfaces; we can in fact create objects that implement a schema, as we will see later.
-
-What does a schema look like?
-
-  How do you define Schema, much like one would define an interface, but it has fields instead of methods (Example from programmers tutorial):
+  A Schema starts out like an interface but defines certain
+  Fields to which an object's attributes must conform to. Let's look at 
+  a stripped down example from the programmer's tutorial (chapter two)::
 
       from Interface import Interface
-      from Zope.Schema import Text, TextLine
+      from Zope.Schema import Interface, Text, TextLine
 
       class IContact(Interface):
-       "Provides access to basic contact information."
+         "Provides access to basic contact information."
 
          first = TextLine(title=u"First name")
          last = TextLine(title=u"Last name")
@@ -77,69 +81,43 @@ What does a schema look like?
          postalCode = TextLine(title=u"Postal code",
                        constraint = re.compile("\d{5,5}(-\d{4,4})?$").match)
 
-         def  name():
-         """Gets the contact name.
-        
-         The contact name is the first and last name"""
+  'TextLine' is a field and expresses that an attribute is a single line
+  of unicode text.  'Text' expresses an arbitrary unicode ("text") object. 
+  The most interesting part is the last attribute specification. It constrains
+  the 'postalCode' attribute to only have values that are US postal codes.
+      
+  Now we want a class that aheres to the IContact Schema:
 
-  Now we need a class that implements this interface:
+    class Contact(Persistence.Persistent):
+        __implements__ = IContact
 
-    class Contact (Persistence.Persistent):
-    __implements__ = IContact
-
-        def __init__(self, first='', last='', email='', address='', pc=''):
+        def __init__(self, first, last, email, address, pc):
             self.first = first
             self.last = last
             self.email = email
             self.address = address
             self.postalCode = pc
 
-        def name(self): 
-            return "%s %s" % (self.first, self.last)
+  Now you can see if an instance of 'Contact' actually implements 
+  the schema:
 
+    from Zope.App.Schema import validateMapping
+    someone = contact('Tim','Roberts', 'tim@roberts', '','')
+    validateMapping(IContact, someone.__dict__)
 
-Where Schemas make sense: Providing views from Schemas
-
-  Schemas, Fields, Widgets and Forms form a combination that can be used to provide views automaticly by Zope machinery. Example is provided in programmers tutorial, chapter 2.
-  
-  
-     In View's configure.zcml is said:
      
-    <form:edit
-    schema=".IContact."
-    name="edit.html"
-    label="Edit contact information"
-    permission="ZopeProducts.Contact.ManageContacts" 
-    />
-  
-    And there is corresponding Schema.
- 
-    class IContact(Interface):
-        "Provides access to basic contact information."
-
-        first = TextLine(title=u"First name")
-        last = TextLine(title=u"Last name")
-        email = TextLine(title=u"Electronic mail address")
-        address = Text(title=u"Postal address")
-        postalCode = TextLine(title=u"Postal code",
-                constraint=re.compile("\d{5,5}(-\d{4,4})?$").match)
-
-        def name():
-            """Gets the contact name.
-        
-            The contact name is the first and last name"""
- 
-  
-  
-
 Issues to be solved
 
- These issues were written up at Rotterdam Sprint
+ These issues were written up at Rotterdam Sprint (12/4/2002). 
  
- Internalization
+ I18n 
  
-  How internalization is done in Schemas - and how internalization is taken care while designing a schema. Title and description need to be translated - as well as validation errors that happen. Idea is that the translation would happen in views - and views would have means to get to the Schema ids.
-  
+  How i18n interferes with Schemas is not thought out. In an non-english
+  context we probably want to have titles and descriptions easily 
+  translatable.  The best idea so far is to use an attribute name 
+  together with its surrounding namespace (Interface-name etc.) 
+  as the canonical unique id used for looking up translations. 
+
   Example:
   
   Class book(Interface):
@@ -149,6 +127,7 @@ Issues to be solved
   And in view, while the widget or widget's messages are constructed:
   
   TranslatorService.getMessage('book.author.title','DE_DE')   
+
 
 References
 
