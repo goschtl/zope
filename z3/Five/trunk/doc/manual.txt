@@ -123,7 +123,7 @@ you are using Five.
 Switching from Zope 2 interfaces to Zope 3 interfaces is easy -- just
 make your interfaces inherit from ``zope.interface.Interface`` instead
 of ``Interface.Interface`` (or ``Interface.Base``). Next, change all
-``_implements__`` to ``implements()``.
+``__implements__`` to ``implements()``.
 
 This should get you going and your application may very well still
 work. Later on, you will also have to change calls to
@@ -287,7 +287,7 @@ view class are:
 
 * They need an ``__init__()`` that take a context and a request
   attribute. Typically this comes from a base class, such as
-  ``FiveView``.
+  ``BrowserView``.
 
 * They need to be initialized with the Zope 2 security system, as
   otherwise you cannot use the view.
@@ -295,13 +295,13 @@ view class are:
 * This also means they need to be part of the Zope 2 acquisition
   system, as this is a requirement for Zope 2 security to
   function. The ``BrowserView`` base class, available from
-  ``Products.Five.api``, already inherits from
-  ``Acquisition.Explicit`` to make this be the case. Acquisition is
-  explicit so no attributes can be acquired by accident.
+  ``Products.Five``, already inherits from ``Acquisition.Explicit`` to
+  make this be the case. Acquisition is explicit so no attributes can
+  be acquired by accident.
 
 An example of a simple view::
  
-  from Products.Five.api import BrowserView
+  from Products.Five import BrowserView
 
   class SimpleFolderView(BrowserView):
       security = ClassSecurityInfo()
@@ -337,5 +337,3 @@ related things; it's
 Zope 2 permission needs in order to access this view. The file
 ``permissions.zcml`` in Five contains a mapping of Zope 2 permissions
 to their Zope 3 names.
-
-[XXX need something about five:defaultViewable]
