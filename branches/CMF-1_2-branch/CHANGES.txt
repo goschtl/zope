@@ -17,8 +17,15 @@
 
  Bugs Fixed
 
+  - Fixed CMFDefault.utils.parseHeadersBody to properly handle the headers
+    generated on a windows app (i.e. Dreamweaver) with /r/n; added the
+    compiled regular expression object to the method signature.
+
+  - Added full webdav sipport code to Link.py.  Changed _writeFromPUT to call
+    _editMetadata instead of editMetadata.
+
   - Cleaned up emission of RFC822-style headers (Tracker #407),
-    terminating eaders must be terminated with CRLF, and padding
+    terminating headers must be terminated with CRLF, and padding
     continuation lines (for values with embedded newlines) with
     leading whitespace).
 
