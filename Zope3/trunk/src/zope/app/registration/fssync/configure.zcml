@@ -4,7 +4,7 @@
     >
 
   <fssync:adapter
-      class="zope.app.registration.RegistrationManager"
+      class="zope.app.registration.registration.RegistrationManager"
       factory="zope.fssync.server.entryadapter.DirectoryAdapter"
       />
 
