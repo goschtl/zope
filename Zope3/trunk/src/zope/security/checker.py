@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.22 2003/05/03 16:38:17 jim Exp $
+$Id: checker.py,v 1.23 2003/05/22 19:40:32 jim Exp $
 """
 
 import os
@@ -435,15 +435,16 @@ _InterfaceSpecification_checker = InterfaceChecker(IInterfaceSpecification)
 
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
-                        'get', 'has_key', '__copy__', '__str__', 'keys',
+                        'get', 'has_key', 'copy', '__str__', 'keys',
                         'values', 'items', 'iterkeys', 'iteritems',
                         'itervalues', '__contains__']),
     list: NamesChecker(['__getitem__', '__getslice__', '__len__', '__iter__',
-                        '__contains__', 'index', 'count', '__str__']),
+                        '__contains__', 'index', 'count', '__str__',
+                        '__add__', '__radd__', ]),
 
     # YAGNI: () a rock
-    tuple: NamesChecker(['__getitem__', '__getslice__', '__add__',
-                         '__contains__', '__len__', '__iter__', '__iadd__',
+    tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
+                         '__contains__', '__len__', '__iter__', 
                          '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
@@ -452,10 +453,12 @@ _default_checkers = {
     types.MethodType: _callableChecker,
     types.BuiltinFunctionType: _callableChecker,
     types.BuiltinMethodType: _callableChecker,
+    type(().__getslice__): _callableChecker, # slot description
     type: _typeChecker,
     types.ModuleType: _moduleChecker,
     type(iter([])): _iteratorChecker, # Same types in Python 2.2.1,
     type(iter(())): _iteratorChecker, # different in Python 2.3.
+    type(iter({})): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
     type(Interface): InterfaceChecker(IInterface, __str__=CheckerPublic),
     ObjectSpecification: _InterfaceSpecification_checker,
