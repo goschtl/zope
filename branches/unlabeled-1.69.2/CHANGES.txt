@@ -33,6 +33,8 @@ New Features
 
 Bugs Fixed
 
+  - Quit reloading FSImage objects in production mode.
+
   - Make ZMI editing of NewsItems safe (Tracker #472).
 
   - Made generated home pages for new members participate fully in
