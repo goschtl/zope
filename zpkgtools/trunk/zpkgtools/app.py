@@ -529,7 +529,7 @@ def version_from_tagname(tagname):
     """
     parts = tagname.split("-")
     version = parts[-1].replace("_", ".")
-    m = re.match(r"\d+\.\d+(?:\.\d+(?:\.\d+)?)?(?:[a-z]+\d*)?$", version)
+    m = re.match(r"\d+(\.\d+){1,3}(?:[a-z]+\d*)?$", version)
     if m is None:
         return None
     else:
