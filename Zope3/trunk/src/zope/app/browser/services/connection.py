@@ -13,18 +13,89 @@
 ##############################################################################
 """Connection configuration support classes.
 
-$Id: connection.py,v 1.8 2003/04/24 18:02:12 gvanrossum Exp $
+$Id: connection.py,v 1.9 2003/04/30 16:26:09 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
+from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.component import getAdapter, getServiceManager, getView
 from zope.publisher.browser import BrowserView
-from zope.app.traversing import traverse
+from zope.app.interfaces.services.configuration import Unregistered, Registered
+from zope.app.traversing import traverse, getPath, getParent, objectName
 
 class Connections(BrowserView):
 
     # self.context is the local connection service
+
+    def update(self):
+        """Possibly deactivate or delete one or more connections.
+
+        In that case, issue a message.
+        """
+        todo = self.request.get("selected")
+        doDeactivate = self.request.get("Deactivate")
+        doDelete = self.request.get("Delete")
+        if not todo:
+            if doDeactivate or doDelete:
+                return "Please select at least one checkbox"
+            return None
+        if doDeactivate:
+            return self._deactivate(todo)
+        if doDelete:
+            return self._delete(todo)
+
+    def _deactivate(self, todo):
+        done = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            obj = registry.active()
+            if obj is not None:
+                obj.status = Registered
+                done.append(name)
+        if done:
+            return "Deactivated: " + ", ".join(done)
+        else:
+            return "None of the checked connections were active"
+
+    def _delete(self, todo):
+        errors = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            assert registry
+            if registry.active() is not None:
+                errors.append(name)
+                continue
+        if errors:
+            return ("Can't delete active connection%s: %s; "
+                    "use the Deactivate button to deactivate" %
+                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+
+        # 1) Delete the registrations
+        connections = {}
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            assert registry
+            assert registry.active() is None # Phase error
+            for info in registry.info():
+                conf = info['configuration']
+                obj = conf.getComponent()
+                path = getPath(obj)
+                connections[path] = obj
+                conf.status = Unregistered
+                parent = getParent(conf)
+                name = objectName(conf)
+                container = getAdapter(parent, IZopeContainer)
+                del container[name]
+
+        # 2) Delete the connection objects
+        for path, obj in connections.items():
+            parent = getParent(obj)
+            name = objectName(obj)
+            container = getAdapter(parent, IZopeContainer)
+            del container[name]
+
+        return "Deleted: %s" % ", ".join(todo)
 
     def getConfigs(self):
         L = []
