@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory-related Tests
 
-$Id: test_factory.py,v 1.3 2004/03/09 15:27:32 BjornT Exp $
+$Id: test_factory.py,v 1.4 2004/03/10 00:58:45 srichter Exp $
 """
 import unittest
 from zope.interface import Interface, implements
@@ -40,12 +40,14 @@ class TestFactory(unittest.TestCase):
 
     def setUp(self):
         self._factory = Factory(Klass, 'Klass', 'Klassier')
+        self._factory2 = Factory(lambda x: x, 'Func', 'Function')
 
     def testCall(self):
         kl = self._factory(3, foo=4)
         self.assert_(isinstance(kl, Klass))
         self.assertEqual(kl.args, (3, ))
         self.assertEqual(kl.kw, {'foo': 4})
+        self.assertEqual(self._factory2(3), 3)
 
     def testTitleDescription(self):
         self.assertEqual(self._factory.title, 'Klass')
@@ -54,7 +56,9 @@ class TestFactory(unittest.TestCase):
     def testGetInterfaces(self):
         implemented = self._factory.getInterfaces()
         self.assert_(implemented.isOrExtends(IKlass))
-        self.assertEqual([iface for iface in implemented], [IKlass])
+        self.assertEqual(list(implemented), [IKlass])
+        implemented2 = self._factory2.getInterfaces()
+        self.assertEqual(list(implemented2), [])
         
     
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):

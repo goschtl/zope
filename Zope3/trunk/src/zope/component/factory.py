@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory object
 
-$Id: factory.py,v 1.10 2004/03/09 15:27:31 BjornT Exp $
+$Id: factory.py,v 1.11 2004/03/10 00:58:44 srichter Exp $
 """
 from zope.interface import implements, implementedBy
 from zope.component.interfaces import IFactory
@@ -35,4 +35,7 @@ class Factory(object):
         return self._callable(*args, **kw)
 
     def getInterfaces(self):
-        return implementedBy(self._callable)
+        try:
+            return implementedBy(self._callable)
+        except AttributeError:
+            return implementedBy(object())

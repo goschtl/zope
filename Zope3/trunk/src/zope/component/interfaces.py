@@ -13,7 +13,7 @@
 ##############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.24 2004/03/09 15:27:31 BjornT Exp $
+$Id: interfaces.py,v 1.25 2004/03/10 00:58:44 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -308,7 +308,8 @@ class IFactory(Interface):
         """Get the interfaces implemented by the factory
 
         Return the interface(s), as an instance of Implements, that objects
-        created by this factory will implement.
+        created by this factory will implement. If the callable's Implements
+        instance cannot be created, an empty Implements instance is returned.
         """
 
 
