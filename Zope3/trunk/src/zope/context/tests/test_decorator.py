@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.6 2003/05/11 16:31:21 stevea Exp $
+$Id: test_decorator.py,v 1.7 2003/05/12 14:59:37 stevea Exp $
 """
 import unittest
 
@@ -24,8 +24,8 @@ class DecoratorTestCase(WrapperTestCase):
     proxy_class = decorator.Decorator
 
     def new_proxy(self, o, c=None, mixinfactory=None, names=None,
-                  attrdict=None):
-        return self.proxy_class(o, c, mixinfactory, names, attrdict)
+                  attrdict=None, inner=None):
+        return self.proxy_class(o, c, mixinfactory, names, attrdict, inner)
 
     def test_subclass_constructor(self):
         class MyWrapper(self.proxy_class):
@@ -37,7 +37,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertEquals(wrapper.getdict(w), {'key': 'value'})
 
         # __new__ catches too many positional args:
-        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5, 6)
+        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5, 6, 7)
 
     def test_decorator_basics(self):
         # check that default arguments are set correctly as per the interface
@@ -47,6 +47,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), ())
         self.assert_(decorator.getmixinfactory(w) is None)
+        self.assert_(decorator.getinner(w) is obj)
 
         # getnamesdict is not in the official decorator interface, but it
         # is provided so that the caching dict can be unit-tested from Python.
@@ -75,7 +76,8 @@ class DecoratorTestCase(WrapperTestCase):
         f = MixinFactory
         n = ('foo',)
         ad = {'baz':23}
-        w = self.proxy_class(obj, c, f, n, ad)
+        inner = object()
+        w = self.proxy_class(obj, c, f, n, ad, inner)
 
         keys = decorator.getnamesdict(w).keys()
         keys.sort()
@@ -86,6 +88,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), n)
         self.assert_(decorator.getmixinfactory(w) is f)
+        self.assert_(decorator.getinner(w) is inner)
 
         # Check that accessing a non-name does not create the mixin.
         w.bar()
@@ -101,17 +104,48 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(type(mixin) is MixinFactory)
 
         # Check that the mixin factory is constructed with the correct args.
-        self.assert_(mixin.inner is obj)
+        self.assert_(mixin.inner is inner)
         self.assert_(mixin.outer is w)
 
-        # check that getmixincreate works
-        w = self.proxy_class(obj, c, f, n)
+        # check that getmixincreate works, and incidentally that getinner
+        # returns the same as getobject when there is no inner specified
+
+        # note, neither 'attrdict' nor 'inner' given
+        w = self.proxy_class(obj, c, f, n, None, None)
         self.assert_(decorator.getmixin(w) is None)
         mixin = decorator.getmixincreate(w)
         self.assert_(type(mixin) is MixinFactory)
         self.assert_(decorator.getmixin(w) is mixin)
+        self.assert_(mixin.inner is obj)
 
     def test_mixin_created_once_only(self):
+        class SomeObject(object):
+            def bar(self):
+                pass
+        obj = SomeObject()
+
+        class MixinFactory(object):
+            def foo(self):
+                pass
+            def bar(self):
+                pass
+
+        c = object()
+        f = MixinFactory
+        n = ('foo', 'spoo', 'someinstanceattr')
+        w = self.proxy_class(obj, c, f, n)
+
+        self.assert_(decorator.getmixin(w) is None)
+        self.assert_(decorator.getmixinfactory(w) is f)
+
+        w.foo()
+        mixin = decorator.getmixin(w)
+        self.assert_(type(mixin) is MixinFactory)
+        w.foo()
+        mixin2 = decorator.getmixin(w)
+        self.assert_(mixin is mixin2)
+
+    def test_getattrAspectsThatAreNotTestedElsewhere(self):
         class SomeObject(object):
             def bar(self):
                 pass
@@ -131,18 +165,38 @@ class DecoratorTestCase(WrapperTestCase):
         n = ('foo', 'spoo', 'someinstanceattr')
         w = self.proxy_class(obj, c, f, n)
 
-        self.assert_(decorator.getmixin(w) is None)
-        self.assert_(decorator.getmixinfactory(w) is f)
-
-        w.foo()
-        mixin = decorator.getmixin(w)
-        self.assert_(type(mixin) is MixinFactory)
-        w.foo()
-        mixin2 = decorator.getmixin(w)
-        self.assert_(mixin is mixin2)
         self.assertEqual(w.spoo, 23)
+        # Check that getting a unicode attr is handled correctly.
+        self.assertEqual(getattr(w, u'spoo'), 23)
+
         # Check that an attribute on the mixin object can be retrieved.
         self.assertEquals(w.someinstanceattr, 42)
+        self.assertEquals(getattr(w, u'someinstanceattr'), 42)
+
+    def test_horribleUnicodeAbuse(self):
+        class SomeObject(object):
+            def bar(self):
+                pass
+        obj = SomeObject()
+
+        class MixinFactory(object):
+            def __init__(self, inner, outer):
+                self.someinstanceattr = 42
+            def foo(self):
+                pass
+            def bar(self):
+                pass
+            spoo = 23
+
+        c = object()
+        f = MixinFactory
+        n = ('foo', 'spoo', u's\u2323g', 'someinstanceattr')
+        self.assertRaises(TypeError, self.proxy_class, obj, c, f, n)
+        n = ('foo', 'spoo', 'someinstanceattr')
+        w = self.proxy_class(obj, c, f, n)
+        self.assertRaises(UnicodeError, getattr, w, u's\u2323g')
+        self.assertRaises(UnicodeError, setattr, w, u's\u2323g', 23)
+
 
     def test_typeerror_if_no_factory(self):
         w = self.proxy_class(object(), None, None, ('foo',))
@@ -150,6 +204,8 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertRaises(TypeError, decorator.getmixincreate)
 
     def test_decorator_setattr(self):
+        # setattr includes delattr, seeing as we're testing something written
+        # in C, and delattr is a special case of setattr at the C level.
         obj = object()
 
         class MixinFactory(object):
@@ -171,6 +227,12 @@ class DecoratorTestCase(WrapperTestCase):
         w.foo = 'skidoo'
         self.assertEquals(mixin.fooval, 'skidoo')
         del w.foo
+        self.failIf(hasattr(mixin, 'fooval'))
+
+        # test setattr unicode attr string
+        setattr(w, u'foo', 'skidoo')
+        self.assertEquals(mixin.fooval, 'skidoo')
+        delattr(w, u'foo')
         self.failIf(hasattr(mixin, 'fooval'))
 
         # Check that trying to set something in attrdict fails.

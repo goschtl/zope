@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.8 2003/05/09 14:02:56 stevea Exp $
+$Id: context.py,v 1.9 2003/05/12 14:59:37 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -134,7 +134,7 @@ class IDecoratorFuncs(Interface):
     """Interface implemented by callables in 'decorator' module"""
 
     def Decorator(object, context=None, mixinfactory=None, names=(),
-                  attrdict={}, **data):
+                  attrdict={}, inner=None, **data):
         """Create and return a new decorator for object.
 
         Decorator is a subtype of Wrapper.
@@ -159,12 +159,16 @@ class IDecoratorFuncs(Interface):
         If the same name appears in names and in attrdict, the behaviour is
         as if the name appeared only in attrdict.
 
+        'inner' is the decorated object that is to be passed to the
+        mixinfactory callable. If 'inner' is None, then object is passed
+        instead.
+
         Wrapper data may be passed as keyword arguments. The data are added
         to the context dictionary.
 
-        Note that the arguments object, context, mixinfactory, names, and
-        attrdict must be given as positional arguments. All keyword arguments
-        are taken to be part of **data.
+        Note that the arguments object, context, mixinfactory, names,
+        attrdict, and inner must be given as positional arguments. All
+        keyword arguments are taken to be part of **data.
         """
 
     def getmixin(obj):
@@ -186,6 +190,14 @@ class IDecoratorFuncs(Interface):
         dict is created properly. It should otherwise be considered
         a private API.
         """
+
+    def getinner(obj):
+        """Returns the 'inner' that is passed to a mixin factory callable.
+
+        If no 'inner' object was given when the decorator was created,
+        this function is equivalent to IWrapperFuncs.getobject(obj).
+        """
+
 
 class IDecorator(IWrapper):
     """A Decorator is a subtype of Wrapper.

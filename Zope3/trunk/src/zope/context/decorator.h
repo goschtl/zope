@@ -18,15 +18,18 @@ typedef struct {
     PyObject *mixin;
     PyObject *names;
     PyObject *names_dict;
+    PyObject *inner;
 } DecoratorObject;
 
 typedef struct {
     int (*check)(PyObject *obj);
     PyObject *(*create)(PyObject *object, PyObject *context,
-        PyObject *mixin_factory, PyObject *names, PyObject *attrdict);
+        PyObject *mixin_factory, PyObject *names, PyObject *attrdict,
+        PyObject *inner);
     PyObject *(*getmixin)(PyObject *wrapper);
     PyObject *(*getmixinfactory)(PyObject *wrapper);
     PyObject *(*getnames)(PyObject *wrapper);
+    PyObject *(*getinner)(PyObject *wrapper);
 } DecoratorInterface;
 
 
@@ -59,15 +62,18 @@ Decorator_Import(void)
 
 #define Decorator_Check(obj)                                              \
         (_decorator_api->check((obj)))
-#define Decorator_New(object, context, mixin_factory, names, attrdict)    \
+#define Decorator_New(object, context, mixin_factory, names, attrdict,    \
+                      inner)                                              \
         (_decorator_api->create((object), (context), (mixin_factory),     \
-                                (names), (attrdict)))
+                                (names), (attrdict), (inner)))
 #define Decorator_GetMixin(wrapper)                                       \
         (_decorator_api->getmixin((wrapper)))
 #define Decorator_GetMixinFactory(wrapper)                                \
         (_decorator_api->getmixinfactory((wrapper)))
 #define Decorator_GetNames(wrapper)                                       \
         (_decorator_api->getnames((wrapper)))
+#define Decorator_GetInner(wrapper)                                       \
+        (_decorator_api->getinner((wrapper)))
 
 #endif
 

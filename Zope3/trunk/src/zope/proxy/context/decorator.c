@@ -23,6 +23,13 @@
 #define Decorator_GetNamesDict(wrapper) \
     (((DecoratorObject *)wrapper)->names_dict)
 
+#define Decorator_GetInnerOnly(wrapper) \
+    (((DecoratorObject *)wrapper)->inner)
+
+#define Decorator_GetInner(wrapper) \
+    (Decorator_GetInnerOnly(wrapper) ? Decorator_GetInnerOnly(wrapper) \
+                                     : Decorator_GetObject(wrapper))
+
 static PyTypeObject DecoratorType;
 
 static PyObject *empty_tuple = NULL;
@@ -83,9 +90,10 @@ decorate_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     PyObject *mixin_factory;
     PyObject *names;
     PyObject *attrdict;
+    PyObject *inner;
 
-    if (PyArg_UnpackTuple(args, "__new__", 1, 5, &object, &context,
-            &mixin_factory, &names, &attrdict)) {
+    if (PyArg_UnpackTuple(args, "__new__", 1, 6, &object, &context,
+            &mixin_factory, &names, &attrdict, &inner)) {
         PyObject *wrapperargs = create_wrapper_args(args, object, context);
         if (wrapperargs == NULL)
             goto finally;
@@ -108,9 +116,10 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *attrdict = NULL;
     PyObject *fast_names = NULL;
     PyObject *names_dict = NULL;
+    PyObject *inner = NULL;
 
-    if (PyArg_UnpackTuple(args, "__init__", 1, 5, &object, &context,
-            &mixin_factory, &names, &attrdict)) {
+    if (PyArg_UnpackTuple(args, "__init__", 1, 6, &object, &context,
+            &mixin_factory, &names, &attrdict, &inner)) {
         PyObject *temp;
         int size;
         DecoratorObject *decorator = (DecoratorObject *)self;
@@ -127,6 +136,14 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
             temp = decorator->mixin_factory;
             Py_XINCREF(mixin_factory);
             decorator->mixin_factory = mixin_factory;
+            Py_XDECREF(temp);
+        }
+        if (inner == Py_None)
+            inner = NULL;
+        if (decorator->inner != inner) {
+            temp = decorator->inner;
+            Py_XINCREF(inner);
+            decorator->inner = inner;
             Py_XDECREF(temp);
         }
         /* Take the given names and force them to be in a tuple.
@@ -213,6 +230,8 @@ decorate_traverse(PyObject *self, visitproc visit, void *arg)
         err = visit(Decorator_GetNames(self), arg);
     if (!err && Decorator_GetNamesDict(self) != NULL)
         err = visit(Decorator_GetNamesDict(self), arg);
+    if (!err && Decorator_GetInnerOnly(self) != NULL)
+        err = visit(Decorator_GetInnerOnly(self), arg);
 
     return err;
 }
@@ -239,6 +258,10 @@ decorate_clear(PyObject *self)
     }
     if ((temp = decorator->names_dict) != NULL) {
         decorator->names_dict = NULL;
+        Py_DECREF(temp);
+    }
+    if ((temp = decorator->inner) != NULL) {
+        decorator->inner = NULL;
         Py_DECREF(temp);
     }
     return 0;
@@ -268,7 +291,7 @@ decorate_dealloc(PyObject *self)
  * we don't want to depend on the Internal API.
  */
 
-#define DISPATCH_TO_DECORATOR(BADVAL, SELF, WRAPPED) \
+#define DISPATCH_TO_DECORATOR_STATEMENT(STATEMENT, SELF, WRAPPED) \
         /* We have a name.
          * If the mixin exists, dispatch the name to the mixin.
          * If the mixin doesn't exist, create it from the factory.
@@ -278,83 +301,126 @@ decorate_dealloc(PyObject *self)
         else if (Decorator_GetMixinFactory((SELF)) != NULL) { \
             (WRAPPED) = PyObject_CallFunctionObjArgs( \
                 Decorator_GetMixinFactory((SELF)), \
-                Wrapper_GetObject((SELF)), \
+                Decorator_GetInner((SELF)), \
                 (SELF), NULL); \
             if ((WRAPPED) == NULL) \
-                return (BADVAL); \
+                STATEMENT \
             ((DecoratorObject *)(SELF))->mixin = (WRAPPED); \
         } else { \
             PyErr_SetString(PyExc_TypeError, \
                     "Cannot create mixin, as there is no mixin factory."); \
-            return (BADVAL); \
+            STATEMENT \
         }
+
+#define DISPATCH_TO_DECORATOR(BADVAL, SELF, WRAPPED) \
+    DISPATCH_TO_DECORATOR_STATEMENT(return (BADVAL);, SELF, WRAPPED)
+
+
+#define DISPATCH_TO_DECORATOR_FINALLY(SELF, WRAPPED) \
+    DISPATCH_TO_DECORATOR_STATEMENT(goto finally;, SELF, WRAPPED)
 
 /* Perhaps we don't need to check that the namesdict is non-null, as it
  * will always have been created.
  */
-#define MAYBE_DISPATCH_TO_DECORATOR(NAME, BADVAL) \
+#define MAYBE_DISPATCH_TO_DECORATOR(NAME, STATEMENT) \
     if (Decorator_GetNamesDict(self)) { \
         PyObject *value = PyDict_GetItem(Decorator_GetNamesDict(self), \
                                          (NAME)); \
         if (value == NULL) { \
-            if (PyErr_Occurred()) return (BADVAL); \
+            if (PyErr_Occurred()) STATEMENT \
         } else if (value == dispatch_to_mixin_marker) { \
-            DISPATCH_TO_DECORATOR(BADVAL, self, wrapped) \
+            DISPATCH_TO_DECORATOR_STATEMENT(STATEMENT, self, wrapped) \
         } else { \
             PyErr_Format(PyExc_AttributeError, \
-                         "Cannot return value from attrdict for slot %s", \
+                         "Cannot return value from attrdict for slot %.80s", \
                          PyString_AS_STRING(NAME)); \
-            return (BADVAL); \
+            STATEMENT \
         } \
     }
 
+/* XXX Port improvements / fixes to wrapper.c
+ *   * port string ref changes in getattro and setattro to wrapper.c
+ *   * port PyType_HasFeature(descr->ob_type, Py_TPFLAGS_HAVE_CLASS) guarding
+ *     use of descriptor->ob_type->tp_descr_{get,set}
+ */
 static PyObject *
 decorate_getattro(PyObject *self, PyObject *name)
 {
     PyObject *wrapped;
     PyObject *descriptor;
     PyObject *wrapped_type;
+    PyObject *res = NULL;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_getattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return NULL;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return NULL;
+    }
+    else
+        Py_INCREF(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
         PyErr_Format(PyExc_RuntimeError,
-            "object is NULL; requested to get attribute '%s'",
+            "object is NULL; requested to get attribute '%.80s'",
             PyString_AS_STRING(name));
-        return NULL;
+        goto finally;
     }
+
     /* Special version of MAYBE_DISPATCH_TO_DECORATOR macro that also
      * looks more closely at the attrdict.
      */
     if (Decorator_GetNamesDict(self)) {
         PyObject *value = PyDict_GetItem(Decorator_GetNamesDict(self), name);
         if (value == NULL) {
-            if (PyErr_Occurred()) return NULL;
+            if (PyErr_Occurred()) goto finally;
         } else if (value == dispatch_to_mixin_marker) {
-            DISPATCH_TO_DECORATOR(NULL, self, wrapped)
+            DISPATCH_TO_DECORATOR_FINALLY(self, wrapped)
+            /* Do not use context fu on mixin. */
+            res = PyObject_GetAttr(wrapped, name);
+            goto finally;
         } else {
-            Py_INCREF(value);
-            return value;
+            res = value;
+            Py_INCREF(res);
+            goto finally;
         }
     }
 
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
         descriptor->ob_type->tp_descr_get != NULL &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
-         PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
-        ! (PyString_Check(name)
-           && strcmp(PyString_AS_STRING(name), "__class__") == 0)
-        ) {
+        /* If object is context-aware, still don't rebind __class__.
+         */
+         (PyObject_TypeCheck(wrapped, &ContextAwareType)
+          && ! (PyString_Check(name)
+           && strcmp(PyString_AS_STRING(name), "__class__") == 0))
+        )) {
 
         wrapped_type = (PyObject *)wrapped->ob_type;
         if (wrapped_type == NULL)
-            return NULL;
-        return descriptor->ob_type->tp_descr_get(
+            goto finally;
+        res = descriptor->ob_type->tp_descr_get(
                 descriptor,
                 self,
                 wrapped_type);
+        goto finally;
     }
-    return PyObject_GetAttr(wrapped, name);
+    res = PyObject_GetAttr(wrapped, name);
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 static int
@@ -362,23 +428,48 @@ decorate_setattro(PyObject *self, PyObject *name, PyObject *value)
 {
     PyObject *wrapped;
     PyObject *descriptor;
+    int res = -1;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_setattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return -1;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return -1;
+    }
+    else
+        Py_INCREF(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
         PyErr_Format(PyExc_RuntimeError,
-            "object is NULL; requested to set attribute '%s'",
+            "object is NULL; requested to set attribute '%.80s'",
             PyString_AS_STRING(name));
-        return -1;
+        goto finally;
     }
-    MAYBE_DISPATCH_TO_DECORATOR(name, -1)
+
+    MAYBE_DISPATCH_TO_DECORATOR(name, goto finally;)
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
          PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
         descriptor->ob_type->tp_descr_set != NULL
         )
-        return descriptor->ob_type->tp_descr_set(descriptor, self, value);
-    return PyObject_SetAttr(wrapped, name, value);
+        res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
+    else
+        res = PyObject_SetAttr(wrapped, name, value);
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 /* What follows are specific implementations of tp_-slots for those slots
@@ -398,6 +489,7 @@ decorate_setattro(PyObject *self, PyObject *name, PyObject *value)
 
 #define FILLSLOTIF(BADVAL) \
     if (descriptor != NULL && \
+        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) && \
         descriptor->ob_type->tp_descr_get != NULL && \
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
             PyObject_TypeCheck(wrapped, &ContextAwareType))\
@@ -414,11 +506,11 @@ decorate_setattro(PyObject *self, PyObject *name, PyObject *value)
     wrapped = Proxy_GET_OBJECT(self); \
     if (wrapped == NULL) { \
         PyErr_Format(PyExc_RuntimeError, \
-                     "object is NULL; requested to get attribute '%s'",\
+                     "object is NULL; requested to get attribute '%.80s'",\
                      (NAME)); \
             return (BADVAL); \
     } \
-    MAYBE_DISPATCH_TO_DECORATOR(SlotStrings[IDX], BADVAL) \
+    MAYBE_DISPATCH_TO_DECORATOR(SlotStrings[IDX], return (BADVAL);) \
     descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[IDX]);\
     FILLSLOTIF(BADVAL)
 
@@ -470,9 +562,9 @@ decorate_nonzero(PyObject *self)
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
-        PyErr_Format(PyExc_RuntimeError,
-                     "object is NULL; requested to get attribute '__nonzero__'"
-                     );
+        PyErr_SetString(PyExc_RuntimeError,
+                     "object is NULL; requested to get attribute"
+                     " '__nonzero__'");
             return -1;
     }
 
@@ -752,12 +844,12 @@ DecoratorType = {
 
 static PyObject *
 create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
-                 PyObject *names, PyObject* attrdict)
+                 PyObject *names, PyObject* attrdict, PyObject *inner)
 {
     PyObject *result = NULL;
     PyObject *args;
 
-    args = PyTuple_New(5);
+    args = PyTuple_New(6);
     if (args == NULL) return NULL;
     Py_INCREF(object);
     PyTuple_SET_ITEM(args, 0, object);
@@ -778,6 +870,10 @@ create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
     Py_INCREF(attrdict);
     PyTuple_SET_ITEM(args, 4, attrdict);
 
+    if (!inner) inner = Py_None;
+    Py_INCREF(inner);
+    PyTuple_SET_ITEM(args, 5, inner);
+
     result = PyObject_CallObject((PyObject *)&DecoratorType, args);
     Py_DECREF(args);
     return result;
@@ -791,14 +887,15 @@ api_check(PyObject *obj)
 
 static PyObject *
 api_create(PyObject *object, PyObject *context, PyObject *mixin_factory,
-           PyObject *names, PyObject *attrdict)
+           PyObject *names, PyObject *attrdict, PyObject *inner)
 {
     if (object == NULL) {
         PyErr_SetString(PyExc_ValueError,
                         "cannot create decorator around NULL");
         return NULL;
     }
-    return create_decorator(object, context, mixin_factory, names, attrdict);
+    return create_decorator(object, context, mixin_factory, names, attrdict,
+                            inner);
 }
 
 static PyObject *
@@ -817,7 +914,8 @@ check_decorator(PyObject *wrapper, const char *funcname)
         return 0;
     }
     if (!Decorator_Check(wrapper)) {
-        PyErr_Format(PyExc_TypeError, "%s expected decorator type; got %s",
+        PyErr_Format(PyExc_TypeError,
+                     "%.80s expected decorator type; got %.80s",
                      funcname, wrapper->ob_type->tp_name);
         return 0;
     }
@@ -860,6 +958,18 @@ api_getnames(PyObject *wrapper)
         return NULL;
 }
 
+static PyObject *
+api_getinner(PyObject *wrapper)
+{
+    /* Returns a borrowed reference. */
+    if (wrapper == NULL)
+        return missing_decorator("getinner");
+    if (check_decorator(wrapper, "getinner"))
+        return Decorator_GetInner(wrapper);
+    else
+        return NULL;
+}
+
 static DecoratorInterface
 decorator_capi = {
     api_check,
@@ -867,6 +977,7 @@ decorator_capi = {
     api_getmixin,
     api_getmixinfactory,
     api_getnames,
+    api_getinner
 };
 
 static char
@@ -969,6 +1080,24 @@ decorator_getnamesdict(PyObject *unused, PyObject *obj)
     return PyDictProxy_New(Decorator_GetNamesDict(obj));
 }
 
+static char
+getinner__doc__[] =
+"getinner(decorator) --> object\n"
+"\n"
+"Return the inner object for the decorator. XXX continue from interface.";
+
+static PyObject *
+decorator_getinner(PyObject *unused, PyObject *obj)
+{
+    PyObject *result = NULL;
+
+    if (!check_decorator(obj, "getinner"))
+        return NULL;
+    result = Decorator_GetInner(obj);
+    Py_INCREF(result);
+    return result;
+}
+
 static PyMethodDef
 module_functions[] = {
     {"getmixin",          decorator_getmixin,          METH_O,
@@ -981,6 +1110,8 @@ module_functions[] = {
      getnames__doc__},
     {"getnamesdict",      decorator_getnamesdict,      METH_O,
      getnamesdict__doc__},
+    {"getinner",          decorator_getinner,          METH_O,
+     getinner__doc__},
     {NULL, NULL, 0, NULL}
 };
 
