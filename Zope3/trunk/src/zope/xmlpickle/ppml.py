@@ -12,7 +12,7 @@
 ##############################################################################
 """Provide conversion between Python pickles and XML."""
 
-# XXX This doesn't work properly for protocol 2 pickles yet; that
+# TODO: This doesn't work properly for protocol 2 pickles yet; that
 # still needs to be dealt with.  Particular issues that need to be
 # addressed involve supporting the changes for new-style objects.
 
@@ -213,7 +213,7 @@ class String(Scalar):
             write('\n')
 
 
-# XXX use of a regular expression here seems to be brittle
+# TODO: use of a regular expression here seems to be brittle
 # due to fuzzy semantics of unicode "surrogates".
 # Eventually, we should probably rewrite this as a C
 # function.
@@ -274,7 +274,7 @@ class Wrapper(Base):
 
 class CloseWrapper(Wrapper):
 
-    # XXX This doesn't do what I want anymore because we can't strip v
+    # TODO: This doesn't do what I want anymore because we can't strip v
     def _output_nonscalar(self, write, name, id, v, str_indent, indent):
         write('%s<%s%s> ' % (str_indent, name, id))
         v.output(write, indent+2)
