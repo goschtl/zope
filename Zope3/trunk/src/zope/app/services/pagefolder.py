@@ -16,16 +16,14 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.13 2003/07/07 17:15:03 sidnei Exp $
+$Id: pagefolder.py,v 1.14 2003/09/21 17:32:54 jim Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.container.zopecontainer import ZopeContainerDecorator
 from zope.app.interfaces.services.view import IZPTTemplate
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.traversing import getPath
-from zope.app.context import getItem
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.proxy import removeAllProxies
@@ -59,12 +57,56 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
     ########################################################
 
 
-    def setObject(self, name, object):
+    def __setitem__(self, name, object):
         if (IRegistrationManager.isImplementedBy(object) or
             IZPTTemplate.isImplementedBy(object)):
-            return super(PageFolder, self).setObject(name, object)
+            super(PageFolder, self).__setitem__(name, object)
         else:
             raise TypeError("Can only add templates", object)
+
+
+        # If a template is added, we need to configure it too.
+        if IZPTTemplate.isImplementedBy(object):
+            template = self[name]
+            template = getPath(template)
+            registration = PageRegistration(
+                forInterface=self.forInterface,
+                viewName=name,
+                permission=self.permission,
+                class_=self.factoryName,
+                template=template,
+                layer=self.layer,
+                )
+
+            registrations = self.getRegistrationManager()
+            id = registrations.addRegistration(registration)
+            registration = registrations[id]
+            registration.status = ActiveStatus
+
+    def applyDefaults(self):
+        """Apply the default configuration to the already-registered pages.
+        """
+
+        rm = self.getRegistrationManager()
+        for name in rm:
+            registration = rm[name]
+            status = registration.status
+            if status == ActiveStatus:
+                registration.status = RegisteredStatus
+            registration.status = UnregisteredStatus
+
+            # Cheat and set forInterface and layer even though they're
+            # read-only.  This is ok since the registration is now not
+            # registered.
+
+            registration.forInterface = removeAllProxies(self.forInterface)
+            registration.factoryName = self.factoryName
+            registration.layer = self.layer
+            registration.permission = self.permission
+
+            # Now restore the registration status
+
+            registration.status = status
 
 
 _attrNames = (
@@ -95,70 +137,6 @@ class PageFolderFactory:
 
     def __call__(self, name):
         return PageFolder()
-
-class PageFolderContextDecorator(ZopeContainerDecorator):
-
-    # The logic for handling registrations is provided here.
-    #
-    # There are 2 reasons for this:
-    #
-    # 1. It may be clearer to let decorators, which are context
-    #    wrappers. handle context-sensitive logic.
-    #
-    # 2. There is a limitation that decorators can't delegate
-    #    to context-methods of the objects they decorate. That means
-    #    we can't make PageFolder's setObject method context aware,
-    #    because PageFolders, will get decorated with container
-    #    decorators that define setObject (to generate necessary
-    #    events).
-
-    def setObject(self, name, object):
-        name = super(PageFolderContextDecorator, self).setObject(name, object)
-
-        # If a template is added, we need to configure it too.
-        if IZPTTemplate.isImplementedBy(object):
-            template = getItem(self, name)
-            template = getPath(template)
-            registration = PageRegistration(
-                forInterface=self.forInterface,
-                viewName=name,
-                permission=self.permission,
-                class_=self.factoryName,
-                template=template,
-                layer=self.layer,
-                )
-
-            registrations = self.getRegistrationManager()
-            id = registrations.setObject('', registration)
-            registration = getItem(registrations, id)
-            registration.status = ActiveStatus
-
-        return name
-
-    def applyDefaults(self):
-        """Apply the default configuration to the already-registered pages.
-        """
-
-        rm = self.getRegistrationManager()
-        for name in rm:
-            registration = rm[name]
-            status = registration.status
-            if status == ActiveStatus:
-                registration.status = RegisteredStatus
-            registration.status = UnregisteredStatus
-
-            # Cheat and set forInterface and layer even though they're
-            # read-only.  This is ok since the registration is now not
-            # registered.
-
-            registration.forInterface = removeAllProxies(self.forInterface)
-            registration.factoryName = self.factoryName
-            registration.layer = self.layer
-            registration.permission = self.permission
-
-            # Now restore the registration status
-
-            registration.status = status
 
 
 # XXX Backward compatibility. This is needed to support old pickles.

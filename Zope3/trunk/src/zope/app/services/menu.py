@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.6 2003/08/25 14:14:07 sidnei Exp $
+$Id: menu.py,v 1.7 2003/09/21 17:32:54 jim Exp $
 """
 __metaclass__ = type
 
@@ -31,8 +31,8 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 from zope.app.services.servicenames import Utilities, BrowserMenu
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
-from zope.context import ContextMethod
 from zope.interface import providedBy
+from zope.app.container.contained import Contained
 
 
 class LocalBrowserMenuItem(Persistent):
@@ -95,18 +95,17 @@ class LocalBrowserMenu(OrderedContainer):
 
         return result
 
-    def setObject(self, key, object):
-        """See zope.app.interfaces.container.Container"""
+    def addItem(self, object):
         self._next += 1
         key = str(self._next)
         while key in self:
             self._next += 1
             key = str(self._next)
-        super(LocalBrowserMenu, self).setObject(key, object)
+        super(LocalBrowserMenu, self).__setitem__(key, object)
         return key
 
 
-class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
+class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
     """This implementation strongly depends on the semantics of
     GlobalBrowserMenuService."""
 
@@ -121,7 +120,6 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
         utilities = zapi.getService(self, Utilities)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         return map(lambda m: m[1], menus)
-    getAllLocalMenus = ContextMethod(getAllLocalMenus)
 
 
     def getLocalMenu(self, menu_id):
@@ -130,7 +128,6 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
         if menu is None:
             raise ComponentLookupError(menu_id)
         return menu
-    getLocalMenu = ContextMethod(getLocalMenu)
 
 
     def queryLocalMenu(self, menu_id, default=None):
@@ -141,7 +138,6 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
             if name == menu_id:
                 return menu
         return default
-    queryLocalMenu = ContextMethod(queryLocalMenu)
 
 
     def getInheritedMenu(self, menu_id, canBeLocal=False):
@@ -150,12 +146,11 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
         if menu is None:
             raise ComponentLookupError(menu_id)
         return menu
-    getInheritedMenu = ContextMethod(getInheritedMenu)
 
 
     def queryInheritedMenu(self, menu_id, canBeLocal=False, default=None):
         """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
-        if canBeLocal and self.queryLocalMenu(menu_id):
+        if canBeLocal and self.queryLocalMenu(menu_id) is not None:
             return self.queryLocalMenu(menu_id)
         # Another service (global) should always be available
         next = getNextService(self, BrowserMenu)
@@ -165,7 +160,6 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
             return next._registry.get(menu_id, default)
 
         return next.queryInheritedMenu(menu_id, True, default)
-    queryInheritedMenu = ContextMethod(queryInheritedMenu)
 
 
     def getAllMenuItems(self, menu_id, object):
@@ -186,25 +180,21 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
         result += next.getAllMenuItems(menu_id, object)
 
         return tuple(result)
-    getAllMenuItems = ContextMethod(getAllMenuItems)
 
 
     def getMenu(self, menu_id, object, request, max=999999):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
-        return zapi.ContextSuper(LocalBrowserMenuService,
+        return super(LocalBrowserMenuService,
                      self).getMenu(menu_id, object, request, max)
-    getMenu = ContextMethod(getMenu)
 
 
     def getFirstMenuItem(self, menu_id, object, request):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
-        return zapi.ContextSuper(LocalBrowserMenuService,
+        return super(LocalBrowserMenuService,
                      self).getFirstMenuItem(menu_id, object, request)
-    getFirstMenuItem = ContextMethod(getFirstMenuItem)
 
 
     def getMenuUsage(self, menu_id):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
         return self.getInheritedMenu(menu_id, True).usage
-    getMenuUsage = ContextMethod(getMenuUsage)
 
