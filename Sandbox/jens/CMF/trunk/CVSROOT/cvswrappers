@@ -1,5 +1,6 @@
 *.gif -k 'b'
 *.jpg -k 'b'
+*.png -k 'b'
 *.so  -k 'b'
 *.dll -k 'b'
 *.pyd -k 'b'
