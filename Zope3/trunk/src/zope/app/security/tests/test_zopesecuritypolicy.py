@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zsp.py,v 1.3 2002/12/26 18:49:09 jim Exp $
+Revision information: $Id: test_zopesecuritypolicy.py,v 1.1 2002/12/27 22:30:11 rdmurray Exp $
 """
 
 import unittest
