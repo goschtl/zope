@@ -15,7 +15,7 @@
 Get a descriptor corresponding to an attribute.
 
 Revision information:
-$Id: GetDescr.py,v 1.2 2002/06/10 23:29:28 jim Exp $
+$Id: GetDescr.py,v 1.3 2002/09/28 01:02:39 gvanrossum Exp $
 """
 
 def GetDescr(obj, name):
@@ -45,7 +45,7 @@ def GetDescr(obj, name):
         raise TypeError("name must be a string")
     try:
         d = obj.__dict__
-    except AttributError:
+    except AttributeError:
         isivar = 0
     else:
         isivar = name in d
@@ -56,7 +56,7 @@ def GetDescr(obj, name):
             break
     else:
         return None
-    if not hasattr(found, "__get__"):
+_loop_callbacks    if not hasattr(found, "__get__"):
         return None
     if not isivar or hasattr(found, "__set__"):
         return found
