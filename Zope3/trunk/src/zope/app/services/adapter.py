@@ -13,24 +13,23 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.20 2003/06/23 00:31:31 jim Exp $
+$Id: adapter.py,v 1.21 2003/06/30 16:24:38 jim Exp $
 """
 __metaclass__ = type
 
 import sys
+from zope.app import zapi
 from zope.interface.adapter import AdapterRegistry
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.interface import implements
 from zope.component.interfaces import IAdapterService
 from zope.component.exceptions import ComponentLookupError
-from zope.component import getServiceManager
 from zope.app.services.servicenames import Adapters
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
 from zope.app.context import ContextWrapper
-from zope.context import ContextMethod
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
 
@@ -57,7 +56,7 @@ class AdapterService(Persistent):
             registration.adapterName,
             default)
 
-    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
+    queryRegistrationsFor = zapi.ContextMethod(queryRegistrationsFor)
 
     def queryRegistrations(self,
                             forInterface, providedInterface, adapterName,
@@ -73,7 +72,7 @@ class AdapterService(Persistent):
 
         return ContextWrapper(registry, self)
 
-    queryRegistrations = ContextMethod(queryRegistrations)
+    queryRegistrations = zapi.ContextMethod(queryRegistrations)
 
     def createRegistrationsFor(self, registration):
         "See IRegistry"
@@ -82,7 +81,7 @@ class AdapterService(Persistent):
             registration.forInterface, registration.providedInterface,
             registration.adapterName)
 
-    createRegistrationsFor = ContextMethod(createRegistrationsFor)
+    createRegistrationsFor = zapi.ContextMethod(createRegistrationsFor)
 
     def createRegistrations(self, forInterface, providedInterface, name):
 
@@ -98,7 +97,7 @@ class AdapterService(Persistent):
 
         return ContextWrapper(registry, self)
 
-    createRegistrations = ContextMethod(createRegistrations)
+    createRegistrations = zapi.ContextMethod(createRegistrations)
 
     def getAdapter(self, object, interface, name=''):
         "See IAdapterService"
@@ -107,7 +106,7 @@ class AdapterService(Persistent):
             raise ComponentLookupError(object, interface)
         return adapter
 
-    getAdapter = ContextMethod(getAdapter)
+    getAdapter = zapi.ContextMethod(getAdapter)
 
     def getNamedAdapter(self, object, interface, name):
         "See IAdapterService"
@@ -116,7 +115,7 @@ class AdapterService(Persistent):
             raise ComponentLookupError(object, interface)
         return adapter
 
-    getNamedAdapter = ContextMethod(getNamedAdapter)
+    getNamedAdapter = zapi.ContextMethod(getNamedAdapter)
 
     def queryAdapter(self, object, interface, default=None, name=''):
         """see IAdapterService interface"""
@@ -151,7 +150,7 @@ class AdapterService(Persistent):
 
         return self.queryNamedAdapter(object, interface, name, default)
 
-    queryAdapter = ContextMethod(queryAdapter)
+    queryAdapter = zapi.ContextMethod(queryAdapter)
 
     def queryNamedAdapter(self, object, interface, name, default=None):
         adapters = self._byName.get(name)
@@ -172,7 +171,7 @@ class AdapterService(Persistent):
 
         return adapters.queryNamedAdapter(object, interface, name, default)
 
-    queryNamedAdapter = ContextMethod(queryNamedAdapter)
+    queryNamedAdapter = zapi.ContextMethod(queryNamedAdapter)
 
     # XXX need to add name support
     def getRegisteredMatching(self,
@@ -211,11 +210,11 @@ class AdapterRegistration(SimpleRegistration):
         self.factoryName = factoryName
 
     def getAdapter(self, object):
-        sm = getServiceManager(self)
-        factory = sm.resolve(self.factoryName)
+        folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+        factory = folder.resolve(self.factoryName)
         return factory(object)
 
-    getAdapter = ContextMethod(getAdapter)
+    getAdapter = zapi.ContextMethod(getAdapter)
 
 # XXX Pickle backward compatability
 AdapterConfiguration = AdapterRegistration
