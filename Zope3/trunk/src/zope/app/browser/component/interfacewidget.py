@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.34 2003/08/07 19:06:15 sidnei Exp $
+$Id: interfacewidget.py,v 1.35 2003/08/08 20:53:36 sidnei Exp $
 """
 import sys
 from zope.interface import Interface, implements
@@ -48,8 +48,9 @@ class InterfaceWidget(BrowserWidget, BrowserView):
         if value is self or value == '':
             # No user input
             if field.required and not optional:
-                raise MissingInputError(field.__name__, field.title,
-                                        _(u'the field is required'))
+                self.error = MissingInputError(field.__name__, field.title,
+                                               [_(u'the field is required')])
+                raise self.error
             return field.default
         if value == 'None':
             value = None
@@ -59,14 +60,16 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             except ComponentLookupError:
                 # Convert to conversion error
                 exc = ConversionError(sys.exc_info()[1])
-                raise ConversionError, exc, sys.exc_info()[2]
+                self.error = ConversionError, exc, sys.exc_info()[2]
+                raise self.error
 
         if not optional:
             try:
                 field.validate(value)
             except ValidationError, v:
-                raise WidgetInputError(self.context.__name__,
-                                       self.title, str(v))
+                self.error =  WidgetInputError(self.context.__name__,
+                                               self.title, [str(v)])
+                raise self.error
 
         return value
 
@@ -168,22 +171,25 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
         if not values:
             # No user input
             if field.required and not optional:
-                raise MissingInputError(field.__name__, field.title,
-                                        _(u'the field is required'))
+                self.error = MissingInputError(field.__name__, field.title,
+                                               [_(u'the field is required')])
+                raise self.error
             return field.default
         try:
             values = tuple([nameToInterface(field, value) for value in values])
         except ComponentLookupError:
             # Convert to conversion error
             exc = ConversionError(sys.exc_info()[1])
-            raise ConversionError, exc, sys.exc_info()[2]
+            self.error = ConversionError, exc, sys.exc_info()[2]
+            raise self.error
 
         if not optional:
             try:
                 field.validate(values)
             except ValidationError, v:
-                raise WidgetInputError(self.context.__name__,
-                                       self.title, str(v))
+                self.error = WidgetInputError(self.context.__name__,
+                                              self.title, str(v))
+                raise self.error
         return values
 
     def __call__(self):
@@ -306,12 +312,6 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
             self.name,
             self._tooltip(self.title, self.context.description),
             )
-    '''
-    def row(self):
-        return '<div class="label">%s</div><div class="field">%s</div>%s' % (
-                self.label(), self(), self._errorSnippet()
-                )
-    '''
 
     # --- deprecated methods of IBrowserWidget
 
