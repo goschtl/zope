@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.3 2003/07/13 04:05:58 Zen Exp $
+$Id: editwizard.py,v 1.4 2003/07/13 04:47:35 Zen Exp $
 """
 
 import logging
@@ -126,11 +126,9 @@ class EditWizardView(EditView):
                 self, self.schema, strict=True, set_missing=True, 
                 names=names, exclude_readonly=True
                 )
-            valid = 1
             self.errors = []
         except WidgetsError, errors:
             self.errors = errors
-            valid = 0
 
         else:
             self.storage.update(data)
@@ -146,12 +144,6 @@ class EditWizardView(EditView):
                     self.feedback = _(u'No changes to save')
                 else:
                     self.feedback = _(u'Changes saved')
-
-        # Set last_pane flag - last_pane always gets a submit button
-        if self._current_pane_idx == len(self.panes) - 1:
-            self.last_pane = True
-        else:
-            self.last_pane = False
 
         # Set the current label
         self.label = self.currentPane().label
@@ -204,9 +196,6 @@ class EditWizardView(EditView):
                     out(widget.hidden())
             return ''.join(olist)
 
-    def done(self):
-        ''' Called after changes have been saved '''
-
 
 class Pane:
     # TODO: Add more funky stuff to each pane, such as a validator
@@ -229,9 +218,9 @@ class EditWizardDirective:
         self.layer = layer
         self.menu = menu
 
-        if use_session == 'yes':
+        if use_session.lower() == 'yes':
             self.use_session = True
-        elif use_session == 'no':
+        elif use_session.lower() == 'no':
             self.use_session = False
         else:
             raise ValueError('Invalid value %r for use_session'%(use_session,))
@@ -239,7 +228,8 @@ class EditWizardDirective:
         if menu:
             actions = menuItemDirective(
                 _context, menu, for_ or schema, '@@' + name, title,
-                permission=permission)
+                permission=permission
+                )
         else:
             actions = []
 
@@ -258,10 +248,8 @@ class EditWizardDirective:
         self.actions = actions
 
     def pane(self, _context, fields, label=''):
-        # TODO: Maybe accept a default of None for fields, meaning 'all 
-        # remaining fields
         fields = [str(f) for f in fields.split(' ')]
-        # TODO: unittest validation
+
         for f in fields:
             if f not in self.all_fields:
                 raise ValueError(
@@ -288,6 +276,7 @@ class EditWizardDirective:
             )
         return self.actions
 
+
 def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_, 
                     menu=u'', usage=u'', use_session=True):
@@ -303,9 +292,10 @@ def EditWizardViewFactory(name, schema, permission, layer,
     class_.usage = usage or (
         menu and globalBrowserMenuService.getMenuUsage(menu))
 
-    defineChecker(class_,
-                  NamesChecker(("__call__", "__getitem__", "browserDefault"),
-                               permission))
+    defineChecker(
+        class_,
+        NamesChecker(("__call__", "__getitem__", "browserDefault"), permission)
+        )
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
 

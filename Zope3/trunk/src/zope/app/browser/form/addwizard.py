@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: addwizard.py,v 1.1 2003/07/13 04:05:58 Zen Exp $
+$Id: addwizard.py,v 1.2 2003/07/13 04:47:35 Zen Exp $
 """
 
 import sys
@@ -60,7 +60,6 @@ class AddWizardView(EditWizardView):
         """
         return self._factory(*args, **kw)
 
-    #def createAndAdd(self, data):
     def apply_update(self, data):
         """Add the desired object using the data in the data argument.
 
@@ -71,7 +70,7 @@ class AddWizardView(EditWizardView):
         Returns False, as per editview.apply_update
         """
 
-        # Cut & Paste from add.py
+        # This code originally from add.py's createAndAdd method
         
         args = []
         for name in self._arguments:
@@ -115,17 +114,12 @@ class AddWizardView(EditWizardView):
         if errors:
             raise WidgetsError(*errors)
 
-        #return content
         self.request.response.redirect(self.context.nextURL())
         return False
 
     def add(self, content):
         # Cut & Paste from add.py
         return self.context.add(content)
-
-    def nextURL(self):
-        # Cut & Paste from add.py
-        return self.context.nextURL()
 
 
 def AddWizardViewFactory(
