@@ -45,6 +45,8 @@ from zope.security import checkPermission
 from zope.tales.engine import Engine
 
 
+##############################################################
+
 class TransitionEvent(object):
     """A simple implementation of the transition event."""
     implements(ITransitionEvent)
@@ -59,11 +61,7 @@ class BeforeTransitionEvent(TransitionEvent):
 class AfterTransitionEvent(TransitionEvent):
     implements(IAfterTransitionEvent)
 
-
-
-
-
-
+#############################################################
 
 class StateChangeInfo(object):
     """Immutable StateChangeInfo."""
@@ -76,8 +74,7 @@ class StateChangeInfo(object):
 
     new_state = property(lambda self: self.__new_state)
 
-
-
+#############################################################
 
 class StatefulPIAdapter(PIAdapter):
     """Stateful Workflow ProcessInstance Adapter."""
@@ -90,7 +87,7 @@ class StatefulPIAdapter(PIAdapter):
 
         # check for Automatic Transitions
         self._checkAndFireAuto(clean_pd)
-        
+
 
 
     def getOutgoingTransitions(self):
@@ -102,12 +99,12 @@ class StatefulPIAdapter(PIAdapter):
     # XXX API change here !!!
     def fireTransition(self, trans_id, event=None):
         """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
-        
+
         clean_pd = removeAllProxies(self.processDefinition)
         if not trans_id in self._outgoingTransitions(clean_pd, event):
             raise KeyError, 'Invalid Transition Id: %s' % trans_id
         transition = clean_pd.transitions[trans_id]
-        
+
         # Get the object whose status is being changed.
         obj = removeSecurityProxy(self.context)
 
@@ -116,7 +113,7 @@ class StatefulPIAdapter(PIAdapter):
 
         # XXX Jim suggests to send out ObjectStateChanging/Changed Events instead
         # of Before/AfterTransition. Need to check the side effects (Phase2)
-        
+
         # change status
         # XXX change self.context to implement the new interface
         # and remove the old state's interface
@@ -131,8 +128,6 @@ class StatefulPIAdapter(PIAdapter):
 
         # check for automatic transitions and fire them if necessary
         self._checkAndFireAuto(clean_pd)
-
-
 
     def _getContext(self, context={}):
         # data should be readonly for condition-evaluation
@@ -220,7 +215,6 @@ class StatefulPIAdapter(PIAdapter):
                 self.fireTransition(name)
                 return
 
-
 def initializeStatefulProcessFor(obj, pd_name):
     """provide a component and a processdefinition_name and
        to give that component behaviour.
@@ -232,12 +226,12 @@ def initializeStatefulProcessFor(obj, pd_name):
     # named Adapters providing (IProcessDefinition, [name])
     # for (ISomeStatefulProcess, ISomeContentType)
     obj.__processdefinition_name__ = pd_name
-    
+
     pd = zapi.getUtility(IProcessDefinition, pd_name)
     clean_pd = removeAllProxies(pd)
-    
+
     # XXX Jim suggests to send out ObjectStateChanging/Changed Events here (Phase2)
-    
+
     # XXX Set Initial Interface to self.context here !!!
     directlyProvides(obj, pd.states[pd.getInitialStateName()].targetInterface)
 
