@@ -16,8 +16,6 @@ to the database by placing it in the root folder:
 
 Now consider a possible subscriber for an object event:
 
-  >>> def chickenModified(event):
-  ...     print "buh-PAH! I was modified."
 
 Now we register it using the observable adapter:
 
@@ -25,15 +23,7 @@ Now we register it using the observable adapter:
   >>> from zope.app.event.interfaces import IObjectModifiedEvent
   >>> observer = IObservable(chicken)
   >>> observer.handle([IObjectModifiedEvent], chickenModified)
-
-  TODO:
-
-  We really should be committing the transation here because that's
-  when the actual interaction of observers with the persistency
-  machinery comes in.  Right now it fails for no apparent reason.
-  --philiKON
-
-  >>> #get_transaction().commit()
+  >>> get_transaction().commit()
 
 When we now issue an ``IObjectModifiedEvent`` event, our subscriber
 will be called:
