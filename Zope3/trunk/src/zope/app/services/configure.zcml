@@ -54,7 +54,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      interface="zope.app.interfaces.container.IRemoveNotifiable"
       />
 </content>
 
@@ -80,7 +80,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      interface="zope.app.interfaces.container.IRemoveNotifiable"
       />
 </content>
 
@@ -92,7 +92,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      interface="zope.app.interfaces.container.IRemoveNotifiable"
       />
 </content>
 
@@ -232,7 +232,7 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
+        interface="zope.app.interfaces.container.IRemoveNotifiable"
         />
 
   </content>
@@ -301,7 +301,8 @@
         interface="
         zope.app.interfaces.container.IWriteContainer
         zope.app.interfaces.services.registration.IOrderedContainer
-        zope.app.interfaces.container.IDeleteNotifiable
+        zope.app.interfaces.container.IRemoveNotifiable
+        zope.app.interfaces.container.INameChooser
         " 
         />
     <implements
