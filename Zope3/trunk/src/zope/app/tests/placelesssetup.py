@@ -14,7 +14,7 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.3 2003/03/25 20:42:53 jim Exp $
+$Id: placelesssetup.py,v 1.4 2003/05/03 16:33:39 jim Exp $
 """
 
 from zope.component.tests.placelesssetup \
@@ -25,7 +25,7 @@ from zope.app.event.tests.placelesssetup \
      import PlacelessSetup as EventPlacelessSetup
 from zope.app.i18n.tests.placelesssetup \
      import PlacelessSetup as I18nPlacelessSetup
-
+from zope.app.security._protections import protect
 
 class PlacelessSetup(CAPlacelessSetup,
                      ACAPlacelessSetup,
@@ -38,3 +38,5 @@ class PlacelessSetup(CAPlacelessSetup,
         ACAPlacelessSetup.setUp(self)
         EventPlacelessSetup.setUp(self)
         I18nPlacelessSetup.setUp(self)
+        # Register app-specific security declarations
+        protect()
