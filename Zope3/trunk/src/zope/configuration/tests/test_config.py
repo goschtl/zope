@@ -197,7 +197,7 @@ def test_config_extended_example():
     """
     #'
 
-def test_kyeword_handling():
+def test_keyword_handling():
     """
     >>> machine = ConfigurationMachine()
     >>> ns = "http://www.zope.org/testing"

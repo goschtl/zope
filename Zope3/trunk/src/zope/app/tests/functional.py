@@ -486,7 +486,7 @@ class DocResponseWrapper(ResponseWrapper):
         return self.getOutput()
 
 
-headerre = re.compile('(\S+): (.+)$')
+headerre = re.compile(r'(\S+): (.+)$')
 def split_header(header):
     return headerre.match(header).group(1, 2)
 
