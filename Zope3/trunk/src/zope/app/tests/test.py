@@ -369,8 +369,13 @@ class ImmediateTestResult(unittest._TextTestResult):
                 self._lastWidth = width
             self.stream.flush()
         self._threads = threading.enumerate()
+
         self.__super_startTest(test)
+        # the super version can't count. ;)
+        self.testsRun += test.countTestCases() - 1
+
         self._testtimes[test] = time.time()
+
 
     def getShortDescription(self, test):
         s = self.getDescription(test)
