@@ -44,6 +44,9 @@ SiteManager = LocalSiteManager
 class ServiceRegistration(UtilityRegistration):
     zope.interface.implements(IServiceRegistration)
 
+    def __init__(self, name, path, context=None):
+        super(ServiceRegistration, self).__init__(name, IService, path)
+
 zope.deprecation.deprecated(
     ('ServiceManager', 'ServiceRegistration'),
     'The concept of services has been removed. Use utilities instead. '
