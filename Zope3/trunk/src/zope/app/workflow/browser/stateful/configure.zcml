@@ -11,12 +11,12 @@
 
 <!-- Stateful Workflow Process Definition -->
 
-  <menuItem
-      menu="add_component"
-      for="zope.app.container.interfaces.IAdding"
-      action="StatefulProcessDefinition"
+  <addMenuItem
       title="Stateful Process Definition"
-      description="A stateful workflow process definition" />
+      description="A stateful workflow process definition"
+      class="zope.app.workflow.stateful.definition.StatefulProcessDefinition"
+      permission="zope.ManageServices"
+      />
 
   <page
       for="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
