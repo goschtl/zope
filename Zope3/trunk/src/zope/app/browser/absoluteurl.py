@@ -14,97 +14,132 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.8 2003/05/28 15:45:59 jim Exp $
+$Id: absoluteurl.py,v 1.9 2003/05/28 22:15:46 jim Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.context import getWrapperContainer, getInnerWrapperData
-from zope.proxy import removeAllProxies
+from zope.proxy import sameProxiedObjects
 from zope.component import getView
 
-class AbsoluteURLBase(BrowserView):
+_insufficientContext = ("There isn't enough context to get URL information. "
+                       "This is probably due to a bug in setting up context "
+                       "wrappers.")
+
+
+class AbsoluteURL(BrowserView):
 
     def __str__(self):
         context = self.context
-        vh_root = removeAllProxies(self.request.getVirtualHostRoot())
-        if removeAllProxies(context) is vh_root:
-            return self.request.getApplicationURL()
+        request = self.request
+
+        # We do this here do maintain the rule that we must be wrapped
         container = getWrapperContainer(context)
-        container_url = str(getView(container, 'absolute_url',
-                                    self.request))
+        if container is None:
+            raise TypeError, _insufficientContext
+
+        if sameProxiedObjects(context, request.getVirtualHostRoot()):
+            return request.getApplicationURL()
+
+        url = str(getView(container, 'absolute_url', request))
+
         dict = getInnerWrapperData(context)
-        name = dict and dict.get('name') or None
-        if name == '.':
-            name = dict.get('side_effect_name', name)
-            if name.startswith('++vh++'):
-                return container_url
-        return "%s/%s" % (container_url, name)
+        try:
+            name = dict['name']
+        except KeyError:
+            raise TypeError, _insufficientContext
+            
+        if name:
+            url += '/'+name
+
+        side_effect_names = dict.get('side_effect_names')
+        if side_effect_names:
+            url += _side_effects_url(side_effect_names)
+
+        return url
+
+    __call__ = __str__
 
     def breadcrumbs(self):
         context = self.context
-        vh_root = removeAllProxies(self.request.getVirtualHostRoot())
-        if removeAllProxies(context) is vh_root:
-            return ({'name':'', 'url': self.request.getApplicationURL()}, )
-        dict = getInnerWrapperData(context)
-        name = dict and dict.get('name') or None
+        request = self.request
+
+        # We do this here do maintain the rule that we must be wrapped
         container = getWrapperContainer(context)
-        base = getView(container, 'absolute_url', self.request).breadcrumbs()
+        if container is None:
+            raise TypeError, _insufficientContext
 
-        if name == '.':
-            # The name is meaningless. There is a side-effect name
-            # that we need to preserve in the urls (only)
-            name = dict.get('side_effect_name', name)
-            if name.startswith('++vh++'):
-                return base
+        if sameProxiedObjects(context, request.getVirtualHostRoot()):
+            return ({'name':'', 'url': self.request.getApplicationURL()}, )
 
-            # replace the last step in base with a step with the same
-            # name and an augmented url
-            base = base[:-1] + (
-                {'name': base[-1]['name'],
-                 'url': ("%s/%s" % (base[-1]['url'], name))}, )
-            return base
+        base = getView(container, 'absolute_url', request).breadcrumbs()
 
-        base += ({'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))}, )
+        dict = getInnerWrapperData(context)
+        try:
+            name = dict['name']
+        except KeyError:
+            raise TypeError, _insufficientContext
+            
+        if name:
+            base += ({'name': name,
+                      'url': ("%s/%s" % (base[-1]['url'], name))
+                      }, )
+
+        side_effect_names = dict.get('side_effect_names')
+        if side_effect_names:
+            base[-1]['url'] += _side_effects_url(side_effect_names)
+
         return base
 
+def _side_effects_url(side_effect_names):
+    return "/"+"/".join([name
+                         for name in side_effect_names
+                         if not name.startswith("++vh++")])
 
-class AbsoluteURL(AbsoluteURLBase):
+class SiteAbsoluteURL(BrowserView):
 
     def __str__(self):
-        dict = getInnerWrapperData(self.context)
-        name = dict and dict.get('name') or None
-        container = getWrapperContainer(self.context)
-        if name is None or container is None:
-            raise TypeError, 'Not enough context information to get a URL'
-        return super(AbsoluteURL, self).__str__()
+        context = self.context
+        request = self.request
+
+        if sameProxiedObjects(context, request.getVirtualHostRoot()):
+            return request.getApplicationURL()
+
+        url = request.getApplicationURL()
+
+        dict = getInnerWrapperData(context)
+        if dict:
+            name = dict.get('name')
+            if name:
+                url += '/'+name
+            side_effect_names = dict.get('side_effect_names')
+            if side_effect_names:
+                url += _side_effects_url(side_effect_names)
+                
+        return url
 
     __call__ = __str__
 
     def breadcrumbs(self):
         context = self.context
+        request = self.request
+
+        if sameProxiedObjects(context, request.getVirtualHostRoot()):
+            return ({'name':'', 'url': self.request.getApplicationURL()}, )
+
+        base = ({'name':'', 'url': self.request.getApplicationURL()}, )
+
+
         dict = getInnerWrapperData(context)
-        name = dict and dict.get('name') or None
-        container = getWrapperContainer(context)
-        if name is None or container is None:
-            raise TypeError, 'Not enough context information to get a URL'
+        if dict:
+            name = dict.get('name')
 
-        return super(AbsoluteURL, self).breadcrumbs()
+            if name:
+                base += ({'name': name,
+                          'url': ("%s/%s" % (base[-1]['url'], name))
+                          }, )
 
-
-class SiteAbsoluteURL(AbsoluteURLBase):
-
-    def __str__(self):
-        dict = getInnerWrapperData(self.context)
-        name = dict and dict.get('name') or None
-        if name:
-            return super(SiteAbsoluteURL, self).__str__()
-        return self.request.getApplicationURL()
-
-    __call__ = __str__
-
-    def breadcrumbs(self):
-        context = self.context
-        dict = getInnerWrapperData(context)
-        name = dict and dict.get('name') or None
-        if name:
-            return super(SiteAbsoluteURL, self).breadcrumbs()
-        return ({'name':'', 'url': self.request.getApplicationURL()}, )
+            side_effect_names = dict.get('side_effect_names')
+            if side_effect_names:
+                base[-1]['url'] += _side_effects_url(side_effect_names)
+                
+        return base

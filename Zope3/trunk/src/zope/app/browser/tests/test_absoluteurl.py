@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.10 2003/05/27 14:18:10 jim Exp $
+$Id: test_absoluteurl.py,v 1.11 2003/05/28 22:15:46 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -89,10 +89,10 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setViewType(IBrowserPresentation)
 
-        content = ContextWrapper(TrivialContent(), Root(), name='a')
-        content = ContextWrapper(TrivialContent(), content,
-                                 name='.',
-                                 side_effect_name="++skin++ZopeTop")
+        content = ContextWrapper(TrivialContent(), Root(),
+                                 name='a',
+                                 side_effect_names=("++skin++ZopeTop", )
+                                 )
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
@@ -111,9 +111,8 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         root = Root()
-        content = ContextWrapper(root, root,
-                                 name='.',
-                                 side_effect_name="++skin++ZopeTop")
+        content = ContextWrapper(root, None,
+                                 side_effect_names=("++skin++ZopeTop", ))
         content = ContextWrapper(TrivialContent(), content, name='a')
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
@@ -152,11 +151,12 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         vh_root = TrivialContent()
-        content = ContextWrapper(vh_root, Root(), name='a')
         request._vh_root = ContextWrapper(vh_root, Root(), name='a')
-        content = ContextWrapper(TrivialContent(), content,
-                                 name='.',
-                                 side_effect_name="++vh++abc")
+
+        content = ContextWrapper(vh_root, Root(),
+                                 name='a',
+                                 side_effect_names=("++vh++abc", ),
+                                 )
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
@@ -175,8 +175,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
 
         root = Root()
         request._vh_root = ContextWrapper(root, root, name='')
-        content = ContextWrapper(root, root,
-                                 name='.',
+        content = ContextWrapper(root, None,
                                  side_effect_name="++vh++abc")
         content = ContextWrapper(TrivialContent(), content, name='a')
         content = ContextWrapper(TrivialContent(), content, name='b')
