@@ -38,8 +38,9 @@ Zope 3 Functional Testing
 
    - Functional test modules live in directories called 'ftests'.
 
-   - Functional test cases inherit from zope.functional.FunctionalTestCase
-     or zope.functional.BrowserTestCase instead of unittest.TestCase.
+   - Functional test cases inherit from
+     zope.testing.functional.FunctionalTestCase or
+     zope.testing.functional.BrowserTestCase instead of unittest.TestCase.
 
    - All global services, components etc. defined in assorted configure.zcml
      are available during test run time.
