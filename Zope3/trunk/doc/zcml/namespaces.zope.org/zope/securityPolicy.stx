@@ -12,7 +12,7 @@ Attributes
   
     * component, the component that implements the security policy
     
-    * factory, a callable that returns a security policy
+    * factory, a callable or list of callables that returns a security policy
     
     
   The security policy component should implement the interface
