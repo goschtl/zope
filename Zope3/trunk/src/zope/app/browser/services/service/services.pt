@@ -21,7 +21,7 @@
     
     <div tal:condition="registries">
       <p i18n:translate="">
-         Unless a service is disabled or provided by a parent site manager,
+         Unless a service is disabled or is provided by a parent site manager,
          the service name links to the active service.
          The (change registration)
          link allows activating a different implementation or
