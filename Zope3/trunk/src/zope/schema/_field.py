@@ -282,7 +282,7 @@ def _validate_uniqueness(value):
 
 class AbstractCollection(MinMaxLen, Iterable, Field):
     value_type = None
-    unique=False
+    unique = False
 
     def __init__(self, value_type=None, unique=False, **kw):
         super(AbstractCollection, self).__init__(**kw)
