@@ -14,10 +14,10 @@
     />
   <require
       permission="zope.View"
-      interface="zope.app.interfaces.container.IReadContainer" />
+      interface="zope.app.container.interfaces.IReadContainer" />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IWriteContainer
+      interface="zope.app.container.interfaces.IWriteContainer
                  zope.app.services.pagefolder.IPageFolderInfo"
       set_schema="zope.app.services.pagefolder.IPageFolderInfo"
       attributes="getRegistrationManager applyDefaults" 

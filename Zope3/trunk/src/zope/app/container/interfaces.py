@@ -13,7 +13,7 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.11 2004/03/02 18:49:46 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/03 10:38:39 philikon Exp $
 """
 from zope.interface import Interface, Attribute, implements, Invalid
 from zope.component.interfaces import IView

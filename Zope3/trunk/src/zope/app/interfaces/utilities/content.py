@@ -13,9 +13,9 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: content.py,v 1.5 2004/03/02 17:40:51 philikon Exp $
+$Id: content.py,v 1.6 2004/03/03 10:38:47 philikon Exp $
 """
-from zope.app.interfaces.container import IAdding
+from zope.app.container.interfaces import IAdding
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.publisher.interfaces.browser import IBrowserMenuItem

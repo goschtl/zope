@@ -13,13 +13,13 @@
 ##############################################################################
 """Placeful internationalization of content objects.
 
-$Id: translation.py,v 1.1 2003/03/25 23:25:12 bwarsaw Exp $
+$Id: translation.py,v 1.2 2004/03/03 10:38:46 philikon Exp $
 """
 
 from zope.interface import Interface
 from zope.i18n.interfaces import ITranslationService
 from zope.i18n.interfaces import IMessageCatalog
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 
 
 class IWriteTranslationService(Interface):

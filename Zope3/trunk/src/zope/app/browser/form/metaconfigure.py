@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.9 2004/01/26 16:51:36 sidnei Exp $
+$Id: metaconfigure.py,v 1.10 2004/03/03 10:38:34 philikon Exp $
 """
 
 __metaclass__ = type
@@ -22,7 +22,7 @@ import os
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema import getFieldNamesInOrder
-from zope.app.interfaces.container import IAdding
+from zope.app.container.interfaces import IAdding
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      menuItemDirective

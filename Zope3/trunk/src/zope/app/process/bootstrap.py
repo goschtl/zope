@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.18 2004/03/02 18:51:02 philikon Exp $
+$Id: bootstrap.py,v 1.19 2004/03/03 10:38:48 philikon Exp $
 """
 
 from transaction import get_transaction
@@ -43,7 +43,7 @@ from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.services.interface import LocalInterfaceService
 from zope.app.event import function
 from zope.app.interfaces.services.hub import ISubscriptionControl
-from zope.app.interfaces.container import INameChooser
+from zope.app.container.interfaces import INameChooser
 from zope.app.interfaces.utilities.session import \
      IBrowserIdManager, ISessionDataContainer
 from zope.app.utilities.session import \

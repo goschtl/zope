@@ -15,15 +15,15 @@
 
 XXX longer description goes here.
 
-$Id: test_editregistration.py,v 1.5 2004/02/25 23:02:19 faassen Exp $
+$Id: test_editregistration.py,v 1.6 2004/03/03 10:38:37 philikon Exp $
 """
 __metaclass__ = type
 
 from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.registration import EditRegistration
-from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup

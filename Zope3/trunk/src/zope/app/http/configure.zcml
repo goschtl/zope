@@ -5,7 +5,7 @@
 </content>
 
 <view
-  for="zope.app.interfaces.container.ISimpleReadContainer"
+  for="zope.app.container.interfaces.ISimpleReadContainer"
   name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".traversal.ContainerTraverser"
@@ -14,7 +14,7 @@
   />
 
 <view
-  for="zope.app.interfaces.container.IItemContainer"
+  for="zope.app.container.interfaces.IItemContainer"
   name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".traversal.ItemTraverser"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.14 2004/03/02 13:41:48 philikon Exp $
+$Id: __init__.py,v 1.15 2004/03/03 10:38:52 philikon Exp $
 """
 import random
 import sys
@@ -34,11 +34,11 @@ from zope.app import zapi
 from zope.app.location import locate
 from zope.app.traversing import getPath
 
-from zope.app.interfaces.container import IOrderedContainer
-from zope.app.interfaces.container import IAddNotifiable
-from zope.app.interfaces.container import INameChooser
-from zope.app.interfaces.container import IContainerNamesContainer
-from zope.app.interfaces.container import IContained
+from zope.app.container.interfaces import IOrderedContainer
+from zope.app.container.interfaces import IAddNotifiable
+from zope.app.container.interfaces import INameChooser
+from zope.app.container.interfaces import IContainerNamesContainer
+from zope.app.container.interfaces import IContained
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.contained import Contained, setitem, uncontained

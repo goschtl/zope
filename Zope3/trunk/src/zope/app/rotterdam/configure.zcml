@@ -35,7 +35,7 @@
       name="mi.gif" file="mi.gif" layer="rotterdam" />
   
   <browser:pages
-      for="zope.app.interfaces.container.IReadContainer"
+      for="zope.app.container.interfaces.IReadContainer"
       permission="zope.View"
       class=".xmlobject.ReadContainerXmlObjectView">
     <browser:page name="children.xml" attribute="children" />

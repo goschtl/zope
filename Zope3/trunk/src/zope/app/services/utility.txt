@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.8 $
+:Version: $Revision: 1.9 $
 
 .. contents::
 
@@ -104,7 +104,7 @@ item::
    <configure xmlns="http://namespaces.zope.org/browser">
 
    <menuItem
-         for="zope.app.interfaces.container.IAdding"
+         for="zope.app.container.interfaces.IAdding"
          menu="add_service"
          action="zope.app.services.UtilityService"
          title="Utility Service"

@@ -9,12 +9,12 @@
 
 <xmlrpc:view
     name="_traverse" 
-    for="zope.app.interfaces.container.IItemContainer"
+    for="zope.app.container.interfaces.IItemContainer"
     class="zope.app.container.traversal.ItemTraverser" />
 
 <xmlrpc:view
     name="_traverse" 
-    for="zope.app.interfaces.container.IReadContainer"
+    for="zope.app.container.interfaces.IReadContainer"
     class="zope.app.container.traversal.ContainerTraverser" />
 
 </configure>

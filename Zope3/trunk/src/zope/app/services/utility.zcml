@@ -15,8 +15,8 @@
   <require
     permission="zope.ManageServices"
     interface="zope.app.interfaces.services.utility.IUtilityRegistration
-               zope.app.interfaces.container.IAddNotifiable
-               zope.app.interfaces.container.IRemoveNotifiable"
+               zope.app.container.interfaces.IAddNotifiable
+               zope.app.container.interfaces.IRemoveNotifiable"
     set_schema="zope.app.interfaces.services.utility.IUtilityRegistration"
     />
  </content>

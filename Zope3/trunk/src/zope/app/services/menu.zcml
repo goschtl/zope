@@ -25,11 +25,11 @@
         description="A Persistent Browser Menu" />
 
     <allow
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
 
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer" />
+        interface="zope.app.container.interfaces.IWriteContainer" />
 
     <implements
         interface="zope.app.interfaces.services.utility.ILocalUtility" />

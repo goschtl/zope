@@ -13,14 +13,14 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.14 2004/03/02 18:27:39 philikon Exp $
+$Id: __init__.py,v 1.15 2004/03/03 10:38:36 philikon Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.interfaces.form import IBrowserWidget
-from zope.app.interfaces.container import INameChooser
+from zope.app.container.interfaces import INameChooser
 
 from zope.app.interfaces.services.registration import IRegistration
 from zope.app.interfaces.services.registration import IRegistered

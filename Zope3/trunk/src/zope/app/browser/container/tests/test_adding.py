@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.26 2004/03/02 17:40:48 philikon Exp $
+$Id: test_adding.py,v 1.27 2004/03/03 10:38:34 philikon Exp $
 """
 
 import unittest
@@ -22,8 +22,8 @@ from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
-from zope.app.interfaces.container import IAdding
-from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.container.interfaces import IAdding
+from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
@@ -35,11 +35,11 @@ from zope.publisher.browser import TestRequest, BrowserView
 from zope.app.container.contained import contained
 import zope.security.checker
 from zope.exceptions import ForbiddenAttribute
-from zope.app.interfaces.container import IWriteContainer
-from zope.app.interfaces.container import IContainerNamesContainer
+from zope.app.container.interfaces import IWriteContainer
+from zope.app.container.interfaces import IContainerNamesContainer
 import zope.interface
-from zope.app.interfaces.container import INameChooser
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import INameChooser
+from zope.app.container.interfaces import IContainer
 
 class Root:
     implements(IContainmentRoot)
@@ -257,7 +257,7 @@ def test_renderAddButton():
     
     >>> setUp()
     >>> from zope.app.browser.container.adding import Adding
-    >>> from zope.app.interfaces.container import IContainerNamesContainer
+    >>> from zope.app.container.interfaces import IContainerNamesContainer
 
     Class implements IContainerNamesContainer
     
@@ -289,7 +289,7 @@ def test_renderAddButton():
 
     To check request variable
 
-    >>> from zope.app.interfaces.container import IContainer
+    >>> from zope.app.container.interfaces import IContainer
     >>> from zope.app.publisher.browser import BrowserView
 
     >>> class MyContainer:

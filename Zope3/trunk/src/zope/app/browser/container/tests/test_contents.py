@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.31 2004/03/01 15:02:45 philikon Exp $
+$Id: test_contents.py,v 1.32 2004/03/03 10:38:34 philikon Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -28,7 +28,7 @@ from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove import ObjectCopier
 
-from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.interface import Interface, implements
 
 from zope.app.interfaces.copypastemove import IPrincipalClipboard

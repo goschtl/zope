@@ -19,7 +19,7 @@ IContainer. We also provide adapters for any object, so we don't end
 up with ComponentLookupErrors whenever encounter unknown
 objects. Explicit is better than implement EXCEPT WHEN IT'S NOT...
 
-$Id: adapters.py,v 1.2 2004/03/02 17:51:54 philikon Exp $
+$Id: adapters.py,v 1.3 2004/03/03 10:38:55 philikon Exp $
 """
 
 from zope.interface import Interface, implements
@@ -27,7 +27,7 @@ from zope.component.exceptions import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
-from zope.app.interfaces.container import IReadContainer
+from zope.app.container.interfaces import IReadContainer
 from zope.app.interfaces.services.service import ISite
 
 from interfaces import IUniqueId, IChildObjects

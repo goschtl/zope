@@ -157,7 +157,7 @@
 
   <!-- Menu entry for "add component" menu -->
   <menuItem
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       menu="add_component"
       action="utility.ContentComponentDefinition"
       title="Content Component Definition"
@@ -210,7 +210,7 @@
 
   <page
       name="AddContentComponent"
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       permission="zope.ManageContent"
       class=".content.AddContentComponentInstanceView"
       attribute="generated_form" />

@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.12 2003/09/21 17:32:04 jim Exp $
+$Id: propfind.py,v 1.13 2004/03/03 10:38:40 philikon Exp $
 """
 __metaclass__ = type
 
@@ -19,7 +19,7 @@ from xml.dom import minidom
 from zope.component import getView, queryView, queryAdapter
 from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
-from zope.app.interfaces.container import IReadContainer
+from zope.app.container.interfaces import IReadContainer
 from zope.app.dav.globaldavschemaservice import availableNamespaces
 from zope.app.dav.globaldavschemaservice import queryInterface
 from zope.app.form.utility import setUpWidgets, getWidgetsDataFromAdapter

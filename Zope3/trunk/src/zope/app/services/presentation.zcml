@@ -22,7 +22,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
+      interface="zope.app.container.interfaces.IRemoveNotifiable"
       />
 </content>
 
@@ -34,7 +34,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
+      interface="zope.app.container.interfaces.IRemoveNotifiable"
       />
 </content>
 

@@ -12,10 +12,11 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: copypastemove.py,v 1.16 2004/02/25 23:02:14 faassen Exp $
+$Id: copypastemove.py,v 1.17 2004/03/03 10:38:29 philikon Exp $
 """
+from zope.interface import implements, Invalid
+from zope.exceptions import NotFoundError, DuplicationError
+from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.container.sample import SampleContainer
@@ -23,13 +24,9 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
-from zope.app.interfaces.container import INameChooser
 from zope.app.location import locationCopy
-from zope.interface import implements
-from zope.exceptions import NotFoundError, DuplicationError
-from zope.proxy import removeAllProxies
+from zope.app.container.interfaces import INameChooser
 from zope.app.container.constraints import checkObject
-from zope.interface import Invalid
 
 class ObjectMover:
     """Adapter for moving objects between containers
@@ -119,7 +116,7 @@ class ObjectMover:
     ...         "Add an item"
     ...     __setitem__.precondition = preNoZ
 
-    >>> from zope.app.interfaces.container import IContainer
+    >>> from zope.app.container.interfaces import IContainer
     >>> class C1:
     ...     zope.interface.implements(I1, IContainer)
     ...     def __repr__(self):
@@ -307,7 +304,7 @@ class ObjectCopier:
     ...         "Add an item"
     ...     __setitem__.precondition = preNoZ
 
-    >>> from zope.app.interfaces.container import IContainer
+    >>> from zope.app.container.interfaces import IContainer
     >>> class C1:
     ...     zope.interface.implements(I1, IContainer)
     ...     def __repr__(self):

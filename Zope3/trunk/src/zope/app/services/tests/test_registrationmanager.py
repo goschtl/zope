@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.6 2003/12/18 09:57:15 pnaveen Exp $
+$Id: test_registrationmanager.py,v 1.7 2004/03/03 10:38:53 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-from zope.app.interfaces.container import IRemoveNotifiable
+from zope.app.container.interfaces import IRemoveNotifiable
 from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.services.registration import RegistrationManager
 from zope.app.services.tests import placefulsetup

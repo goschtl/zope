@@ -82,11 +82,11 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable"
+        interface="zope.app.container.interfaces.IAddNotifiable"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IRemoveNotifiable"
+        interface="zope.app.container.interfaces.IRemoveNotifiable"
         />
   </content>
 
@@ -109,7 +109,7 @@
 
   <content class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
 
-    <implements interface="zope.app.interfaces.container.IContentContainer" />
+    <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
@@ -117,12 +117,12 @@
 
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer"
+        interface="zope.app.container.interfaces.IReadContainer"
         />
 
     <require
         permission="zope.workflow.ManageProcessDefinitions"
-        interface="zope.app.interfaces.container.IWriteContainer"
+        interface="zope.app.container.interfaces.IWriteContainer"
         />
   </content>
 

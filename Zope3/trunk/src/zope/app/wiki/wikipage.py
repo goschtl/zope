@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.3 2004/03/02 18:51:05 philikon Exp $
+$Id: wikipage.py,v 1.4 2004/03/03 10:38:57 philikon Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -26,7 +26,7 @@ from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
-from zope.app.interfaces.container import \
+from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent
 
 from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
@@ -44,7 +44,7 @@ class WikiPage(BTreeContainer):
 
     implements(IWikiPage, IWikiContained)
 
-    # See zope.app.interfaces.container.IContained
+    # See zope.app.container.interfaces.IContained
     __parent__ = __name__ = None
 
     # See zope.app.wiki.interfaces.IWikiPage
@@ -110,7 +110,7 @@ class Comment(Persistent):
     """A simple persistent comment implementation."""
     implements(IComment, IWikiPageContained)
     
-    # See zope.app.interfaces.container.IContained
+    # See zope.app.container.interfaces.IContained
     __parent__ = __name__ = None
 
     # See zope.app.wiki.interfaces.IComment

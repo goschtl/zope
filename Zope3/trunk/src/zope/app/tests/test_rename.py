@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: test_rename.py,v 1.4 2004/02/24 16:51:25 philikon Exp $
+$Id: test_rename.py,v 1.5 2004/03/03 10:38:54 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component import getAdapter
 from zope.app.tests import ztapi
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.copypastemove import ObjectMover
 from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.copypastemove import rename

@@ -13,10 +13,10 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.10 2004/02/24 14:24:12 srichter Exp $
+$Id: __init__.py,v 1.11 2004/03/03 10:38:46 philikon Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.container import IContainer, IContained
+from zope.app.container.interfaces import IContainer, IContained
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal

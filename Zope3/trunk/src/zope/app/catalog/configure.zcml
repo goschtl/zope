@@ -14,7 +14,7 @@
            permission="zope.Public" />
   <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
            permission="zope.ManageContent" />
-  <require interface="zope.app.interfaces.container.IContainer"
+  <require interface="zope.app.container.interfaces.IContainer"
            permission="zope.ManageContent" />
 </content>
 
@@ -27,7 +27,7 @@
            permission="zope.View"/>
   <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
            permission="zope.ManageContent"/>
-  <require interface="zope.app.interfaces.container.IContainer"
+  <require interface="zope.app.container.interfaces.IContainer"
            permission="zope.ManageContent"/>
 </content>
 

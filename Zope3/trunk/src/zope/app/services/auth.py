@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.24 2004/02/20 22:02:31 fdrake Exp $
+$Id: auth.py,v 1.25 2004/03/03 10:38:51 philikon Exp $
 """
 
 from persistent import Persistent
@@ -23,7 +23,7 @@ from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter
 from zope.app.services.servicenames import Authentication
 
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.security import IAuthenticationService

@@ -13,24 +13,26 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.31 2004/03/01 15:02:44 philikon Exp $
+$Id: contents.py,v 1.32 2004/03/03 10:38:33 philikon Exp $
 """
 
+from zope.exceptions import NotFoundError
+
 from zope.app import zapi
-from zope.app.interfaces.container import IContainer
-from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dublincore.interfaces import IDCDescriptiveProperties
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.dublincore.interfaces import IDCDescriptiveProperties
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.browser.container.adding import BasicAdding
 from zope.app.copypastemove import rename
-from zope.exceptions import NotFoundError
-from zope.app.interfaces.container import IContainerNamesContainer
+
+from zope.app.browser.container.adding import BasicAdding
+from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IContainerNamesContainer
 
 class Contents(BrowserView):
 

@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.11 2004/02/27 16:50:40 philikon Exp $
+$Id: definition.py,v 1.12 2004/03/03 10:38:59 philikon Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import implements
 
-from zope.app.interfaces.container import IReadContainer
+from zope.app.container.interfaces import IReadContainer
 from zope.app.workflow.interfaces.stateful import IStatefulProcessDefinition
 from zope.app.workflow.interfaces.stateful import IState, ITransition, INITIAL
 from zope.app.workflow.interfaces.stateful import IStatefulStatesContainer
@@ -245,22 +245,22 @@ class StatefulProcessDefinition(ProcessDefinition):
         return self.get(key) is not None
 
     def __iter__(self):
-        """See zope.app.interfaces.container.IReadContainer"""
+        """See zope.app.container.interfaces.IReadContainer"""
         return iter(self.keys())
 
     def keys(self):
-        """See zope.app.interfaces.container.IReadContainer"""
+        """See zope.app.container.interfaces.IReadContainer"""
         return ['states', 'transitions']
 
     def values(self):
-        """See zope.app.interfaces.container.IReadContainer"""
+        """See zope.app.container.interfaces.IReadContainer"""
         return map(self.get, self.keys())
 
     def items(self):
-        """See zope.app.interfaces.container.IReadContainer"""
+        """See zope.app.container.interfaces.IReadContainer"""
         return [(key, self.get(key)) for key in self.keys()]
 
     def __len__(self):
-        """See zope.app.interfaces.container.IReadContainer"""
+        """See zope.app.container.interfaces.IReadContainer"""
         return 2
 

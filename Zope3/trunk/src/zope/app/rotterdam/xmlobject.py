@@ -13,12 +13,12 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
+$Id: xmlobject.py,v 1.2 2004/03/03 10:38:50 philikon Exp $
 """
 
 from zope.publisher.browser import BrowserView
 from zope.app import zapi
-from zope.app.interfaces.container import IReadContainer
+from zope.app.container.interfaces import IReadContainer
 from zope.app.traversing import getParents, getParent, traverse
 from zope.interface import Interface
 from rfc822 import formatdate, time

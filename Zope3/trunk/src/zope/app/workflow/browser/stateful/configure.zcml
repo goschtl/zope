@@ -6,7 +6,7 @@
 
   <menuItem
       menu="add_component"
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       action="StatefulProcessDefinition"
       title="Stateful Process Definition"
       description="A stateful workflow process definition" />
@@ -122,7 +122,7 @@
 <!-- ContentWorkflowsUtility -->
   <menuItem
       menu="add_component"
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       action="ContentWorkflowsManager"
       title="Content Workflows Manager"
       description="An utility to manage content and workflow interaction." />
@@ -157,7 +157,7 @@
 
 
   <page
-      for="zope.app.interfaces.container.IContentContainer"
+      for="zope.app.container.interfaces.IContentContainer"
       permission="zope.View"
       class="zope.app.workflow.browser.stateful.content_filter.FilterList"
       name="published_content.html"

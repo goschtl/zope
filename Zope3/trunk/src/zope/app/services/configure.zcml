@@ -56,7 +56,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
+      interface="zope.app.container.interfaces.IRemoveNotifiable"
       />
 </content>
 
@@ -81,11 +81,11 @@
   <content class="zope.app.services.service.SiteManager">
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.services.service.ISiteManager
-                   zope.app.interfaces.container.IWriteContainer" />
+                   zope.app.container.interfaces.IWriteContainer" />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
@@ -100,11 +100,11 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable"
+        interface="zope.app.container.interfaces.IAddNotifiable"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IRemoveNotifiable"
+        interface="zope.app.container.interfaces.IRemoveNotifiable"
         />
 
   </content>
@@ -114,10 +114,10 @@
   <content class="zope.app.services.folder.SiteManagementFolders">
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer" />
+        interface="zope.app.container.interfaces.IWriteContainer" />
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.services.service.IComponentManager" />
@@ -130,10 +130,10 @@
     <factory permission="zope.ManageServices" />
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer"
+        interface="zope.app.container.interfaces.IWriteContainer"
         attributes="getRegistrationManager resolve" 
         />
     <implements
@@ -147,10 +147,10 @@
     <factory permission="zope.ManageServices" />
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer"
+        interface="zope.app.container.interfaces.IWriteContainer"
         attributes="getRegistrationManager resolve" 
         />
     <implements
@@ -167,14 +167,14 @@
         title = "Registration Manager" />
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
+        interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
         interface="
-        zope.app.interfaces.container.IWriteContainer
+        zope.app.container.interfaces.IWriteContainer
         zope.app.interfaces.services.registration.IOrderedContainer
-        zope.app.interfaces.container.IRemoveNotifiable
-        zope.app.interfaces.container.INameChooser
+        zope.app.container.interfaces.IRemoveNotifiable
+        zope.app.container.interfaces.INameChooser
         " 
         />
     <implements

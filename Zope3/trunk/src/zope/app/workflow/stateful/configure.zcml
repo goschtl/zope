@@ -19,7 +19,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.container.IReadContainer" 
+      interface="zope.app.container.interfaces.IReadContainer" 
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 

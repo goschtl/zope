@@ -85,7 +85,7 @@
 
  <content class=".wiki.Wiki">
 
-    <implements interface="zope.app.interfaces.container.IContentContainer" />
+    <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
@@ -97,11 +97,11 @@
 
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer"/>
+        interface="zope.app.container.interfaces.IReadContainer"/>
 
     <require
         permission="zope.app.wiki.AddWikiPage"
-        interface="zope.app.interfaces.container.IWriteContainer"/>
+        interface="zope.app.container.interfaces.IWriteContainer"/>
 
   </content>
 
@@ -200,10 +200,10 @@
   <!-- Register event listener for change mails -->
   <event:subscribe
       subscriber=".wikipage.mailer"
-      event_types="zope.app.interfaces.container.IObjectAddedEvent
+      event_types="zope.app.container.interfaces.IObjectAddedEvent
                    zope.app.event.interfaces.IObjectModifiedEvent
-                   zope.app.interfaces.container.IObjectRemovedEvent
-                   zope.app.interfaces.container.IObjectMovedEvent"
+                   zope.app.container.interfaces.IObjectRemovedEvent
+                   zope.app.container.interfaces.IObjectMovedEvent"
       />
 
 

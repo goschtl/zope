@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: role.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: role.py,v 1.2 2004/03/03 10:38:51 philikon Exp $
 """
 
 from persistence import Persistent
@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.component import getService
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_eventservice.py,v 1.32 2004/03/02 18:51:04 philikon Exp $
+$Id: test_eventservice.py,v 1.33 2004/03/03 10:38:53 philikon Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -35,8 +35,8 @@ from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
 
 from zope.app.traversing import getPath, traverse
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.container.contained import ObjectAddedEvent, Contained
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.services.tests.eventsetup import EventSetup

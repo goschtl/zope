@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: content.py,v 1.4 2003/08/18 18:55:29 srichter Exp $
+$Id: content.py,v 1.5 2004/03/03 10:38:38 philikon Exp $
 """
 import copy
 from zope.app import zapi
@@ -102,7 +102,7 @@ class AddContentComponentInstanceView(AddView):
         self.request = request
 
     def publishTraverse(self, request, name):
-        """See zope.app.interfaces.container.IAdding"""
+        """See zope.app.container.interfaces.IAdding"""
         if '=' in name:
             type_name, content_name = name.split("=", 1)
             self.context.contentName = content_name

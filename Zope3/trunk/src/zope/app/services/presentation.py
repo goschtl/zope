@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
+$Id: presentation.py,v 1.5 2004/03/03 10:38:51 philikon Exp $
 """
 
 from zope.app import zapi
@@ -37,7 +37,7 @@ import zope.interface
 import zope.proxy
 import zope.publisher.interfaces.browser
 import zope.schema
-from zope.app.interfaces.container import IAddNotifiable
+from zope.app.container.interfaces import IAddNotifiable
 from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services.registration import IRegistered
 

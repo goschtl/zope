@@ -13,7 +13,7 @@
 ##############################################################################
 """testObjectHub
 
-$Id: test_objecthub.py,v 1.17 2004/03/02 18:51:04 philikon Exp $
+$Id: test_objecthub.py,v 1.18 2004/03/03 10:38:53 philikon Exp $
 """
 
 import unittest
@@ -22,9 +22,9 @@ from zope.app import zapi
 from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 
 from zope.app.event.interfaces import IObjectModifiedEvent
-from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.container import IObjectRemovedEvent
-from zope.app.interfaces.container import IObjectMovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectMovedEvent
 
 from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
 from zope.app.container.contained import ObjectMovedEvent

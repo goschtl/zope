@@ -13,17 +13,17 @@
         />
 <!--
     <allow
-        interface="zope.app.interfaces.container.IReadContainer"
+        interface="zope.app.container.interfaces.IReadContainer"
         />
 
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer"
+        interface="zope.app.container.interfaces.IWriteContainer"
         />
 -->
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable"
+        interface="zope.app.container.interfaces.IAddNotifiable"
         />
     <require
         permission="zope.ManageServices"
@@ -37,12 +37,12 @@
         permission="zope.ManageServices"
         />
     <allow
-        interface="zope.app.interfaces.container.IReadContainer"
+        interface="zope.app.container.interfaces.IReadContainer"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer
-                   zope.app.interfaces.container.INameChooser"
+        interface="zope.app.container.interfaces.IWriteContainer
+                   zope.app.container.interfaces.INameChooser"
         />
     <allow
         interface="zope.app.interfaces.services.pluggableauth.IPrincipalSource"

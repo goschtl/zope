@@ -73,7 +73,7 @@ AddView and EditView, but we pre-define the widget for the sequence because
 we need to pass in additional information. This is given in the
 ``browser.py`` file::
 
-    from zope.app.interfaces.container import IAdding
+    from zope.app.container.interfaces import IAdding
 
     from zope.app.event import publish
     from zope.app.event.objectevent import ObjectModifiedEvent

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.14 2004/03/02 18:51:04 philikon Exp $
+$Id: objecthubsetup.py,v 1.15 2004/03/03 10:38:53 philikon Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -22,7 +22,7 @@ from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.traversing import traverse, canonicalPath
 
-from zope.app.interfaces.container import IObjectAddedEvent, IObjectMovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent, IObjectMovedEvent
 from zope.app.event.interfaces import ISubscriber
 
 from zope.interface import implements

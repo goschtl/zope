@@ -29,7 +29,7 @@
 
 <browser:menuItem
     menu="add_content"
-    for="zope.app.interfaces.container.IAdding."
+    for="zope.app.container.interfaces.IAdding."
     action="Hello"
     title="Hello world"
     description="An object for hello worlding." />

@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_eventpublisher.py,v 1.9 2004/03/02 18:50:59 philikon Exp $
+$Id: test_eventpublisher.py,v 1.10 2004/03/03 10:38:42 philikon Exp $
 """
 import unittest
 
 from zope.app.event.interfaces import IObjectEvent
-from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.container.contained import ObjectAddedEvent

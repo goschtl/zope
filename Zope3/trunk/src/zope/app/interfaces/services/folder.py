@@ -13,10 +13,10 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: folder.py,v 1.9 2004/02/11 07:00:58 jim Exp $
+$Id: folder.py,v 1.10 2004/03/03 10:38:46 philikon Exp $
 """
 import zope.app.interfaces.services.registration 
-import zope.app.interfaces.container
+import zope.app.container.interfaces
 import zope.app.interfaces.services.service
 import zope.schema
 from zope.app.container.constraints import ContainerTypesConstraint
@@ -26,7 +26,7 @@ from zope.app.container.constraints import ItemTypePrecondition
 
 class ISiteManagementFolder(
     zope.app.interfaces.services.registration.IRegistrationManagerContainer,
-    zope.app.interfaces.container.IContainer,
+    zope.app.container.interfaces.IContainer,
     ):
     """Component and component registration containers."""
 
@@ -38,7 +38,7 @@ class ISiteManagementFolder(
         )
 
 class ISiteManagementFolders(
-    zope.app.interfaces.container.IContainer,
+    zope.app.container.interfaces.IContainer,
     zope.app.interfaces.services.service.IComponentManager,
     ):
     """A collection of ISiteManagementFolder objects.

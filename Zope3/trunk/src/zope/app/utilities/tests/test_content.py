@@ -13,13 +13,13 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.7 2004/03/02 17:40:53 philikon Exp $
+$Id: test_content.py,v 1.8 2004/03/03 10:38:56 philikon Exp $
 """
 import unittest
 
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.container import IAdding
+from zope.app.container.interfaces import IAdding
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.utilities.content import \

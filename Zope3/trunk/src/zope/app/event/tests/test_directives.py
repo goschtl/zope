@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_directives.py,v 1.14 2004/03/02 18:50:59 philikon Exp $
+$Id: test_directives.py,v 1.15 2004/03/03 10:38:42 philikon Exp $
 """
 from unittest import TestCase, main, makeSuite
 
@@ -53,8 +53,8 @@ class Test(PlacelessSetup, TestCase):
             <test:subscribe
                    subscriber="zope.app.event.tests.subscriber.subscriber"
                    event_types=
-                       "zope.app.interfaces.container.IObjectAddedEvent
-                        zope.app.interfaces.container.IObjectRemovedEvent"
+                       "zope.app.container.interfaces.IObjectAddedEvent
+                        zope.app.container.interfaces.IObjectRemovedEvent"
                    filter="zope.app.event.tests.subscriber.filter" />
             </configure>'''
             ))

@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.15 2004/02/20 16:57:33 fdrake Exp $
+$Id: schema.py,v 1.16 2004/03/03 10:38:56 philikon Exp $
 """
 from types import FunctionType
 
@@ -265,7 +265,7 @@ class SchemaAdding(Adding):
         return content
 
     def nextURL(self):
-        """See zope.app.interfaces.container.IAdding"""
+        """See zope.app.container.interfaces.IAdding"""
         return (str(zapi.getView(self.context, "absolute_url", self.request))
                 + '/@@editschema.html')
 

@@ -136,12 +136,13 @@
 <!-- "Add Service" menu -->
 
   <menuItem
-    menu="add_component"
-    for="zope.app.interfaces.container.IAdding"
-    action="../AddService"
-    title="Service"
-    description="Takes you to a menu of services to add"
-    permission="zope.ManageServices" />
+      menu="add_component"
+      for="zope.app.container.interfaces.IAdding"
+      action="../AddService"
+      title="Service"
+      description="Takes you to a menu of services to add"
+      permission="zope.ManageServices"
+      />
 
   <view
      name="AddService"

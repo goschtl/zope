@@ -15,7 +15,7 @@
       permission="zope.ManageServices"
       />
 
-  <view for="zope.app.interfaces.container.IAdding"
+  <view for="zope.app.container.interfaces.IAdding"
         name="Module"
         class="zope.app.browser.services.module.AddModule"
         permission="zope.ManageServices"
@@ -35,7 +35,7 @@
 
   <menuItem 
       menu="add_component" 
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       action="Module"  
       title="Module" 
       />

@@ -28,14 +28,14 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.11 2003/08/17 06:05:47 philikon Exp $
+$Id: bundle.py,v 1.12 2004/03/03 10:38:35 philikon Exp $
 """
 import re
 from transaction import get_transaction
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.container import IReadContainer
+from zope.app.container.interfaces import IReadContainer
 from zope.app.interfaces.services.registration import \
      IRegistration, RegisteredStatus, ActiveStatus, UnregisteredStatus
 from zope.app.interfaces.services.service import IServiceRegistration

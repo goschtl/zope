@@ -63,7 +63,7 @@
              interface=".interfaces.IRoleService"
              />
     <require permission="zope.ManageServices"
-             interface="zope.app.interfaces.container.IContainer"
+             interface="zope.app.container.interfaces.IContainer"
              />
   </content>
 

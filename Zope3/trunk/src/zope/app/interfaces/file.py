@@ -82,11 +82,11 @@ There are three issues we need to deal with:
       For reading, there must be a class adapter to IReadSync.  We will
       then apply rules similar to those above.
 
-$Id: file.py,v 1.2 2003/06/23 17:17:06 sidnei Exp $
+$Id: file.py,v 1.3 2004/03/03 10:38:45 philikon Exp $
 """
 
 from zope.interface import Interface
-from zope.app.interfaces.container import IReadContainer, IWriteContainer
+from zope.app.container.interfaces import IReadContainer, IWriteContainer
 
 class IReadFile(Interface):
     """Provide read access to file data

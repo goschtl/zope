@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.21 2004/02/20 16:57:30 fdrake Exp $
+$Id: registration.py,v 1.22 2004/03/03 10:38:52 philikon Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ from zope.xmlpickle import dumps, loads
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.container import IAddNotifiable, IRemoveNotifiable
+from zope.app.container.interfaces import IAddNotifiable, IRemoveNotifiable
 from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services import registration as interfaces
 from zope.app.interfaces.services.module import IModuleManager

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.8 2004/02/20 16:57:32 fdrake Exp $
+$Id: content.py,v 1.9 2004/03/03 10:38:56 philikon Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from persistent.dict import PersistentDict
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.container import IAdding
+from zope.app.container.interfaces import IAdding
 from zope.app.interfaces.services.menu import \
      ILocalBrowserMenu, ILocalBrowserMenuService
 from zope.app.interfaces.services.registration import ActiveStatus

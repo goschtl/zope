@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.38 2004/02/24 16:50:57 philikon Exp $
+$Id: service.py,v 1.39 2004/03/03 10:38:52 philikon Exp $
 """
 
 import sys
@@ -49,7 +49,7 @@ from zope.app.component.nextservice import getNextServiceManager
 
 from zope.app.container.constraints import ItemTypePrecondition
 
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.service import IServiceRegistration
 from zope.app.interfaces.services.service import ISiteManager

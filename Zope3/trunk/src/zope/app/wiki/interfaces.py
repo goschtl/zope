@@ -15,17 +15,17 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.2 2004/03/02 14:25:00 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/03/03 10:38:57 philikon Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText
 from zope.schema.vocabulary import VocabularyField
 
 from zope.schema import Field
-from zope.app.interfaces.container import IContained
+from zope.app.container.interfaces import IContained
+from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.interfaces.container import IContainer, IContentContainer
 from zope.app.i18n import ZopeMessageIDFactory as _ 
 
 class IComment(Interface):

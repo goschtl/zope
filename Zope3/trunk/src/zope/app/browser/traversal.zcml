@@ -11,14 +11,14 @@
 
   <browser:page
       name="_traverse"
-      for="zope.app.interfaces.container.IItemContainer"
+      for="zope.app.container.interfaces.IItemContainer"
       class="zope.app.container.traversal.ItemTraverser"
       permission="zope.Public"
       />
 
   <browser:page
       name="_traverse"
-      for="zope.app.interfaces.container.ISimpleReadContainer"
+      for="zope.app.container.interfaces.ISimpleReadContainer"
       class="zope.app.container.traversal.ContainerTraverser"
       permission="zope.Public"
       />

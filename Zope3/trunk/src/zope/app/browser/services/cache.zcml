@@ -6,7 +6,7 @@
 
   <menuItem
       menu="add_component"
-      for="zope.app.interfaces.container.IAdding"
+      for="zope.app.container.interfaces.IAdding"
       action="../AddCache"
       title="Cache"
       description="Takes you to a menu of Caches to add"

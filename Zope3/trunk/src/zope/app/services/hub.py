@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.30 2004/03/02 18:51:03 philikon Exp $
+$Id: hub.py,v 1.31 2004/03/03 10:38:51 philikon Exp $
 """
 __metaclass__ = type
 
@@ -28,9 +28,9 @@ from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 from zope.app.services.servicenames import EventSubscription
 
-from zope.app.interfaces.container import IObjectRemovedEvent
-from zope.app.interfaces.container import IObjectMovedEvent
-from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectMovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.event.interfaces import IObjectEvent
 from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent

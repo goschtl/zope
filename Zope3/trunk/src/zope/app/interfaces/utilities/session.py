@@ -13,13 +13,13 @@
 ##############################################################################
 """Interfaces for session service.
 
-$Id: session.py,v 1.5 2004/02/24 14:28:27 srichter Exp $
+$Id: session.py,v 1.6 2004/03/03 10:38:47 philikon Exp $
 """
 import re
 from zope.interface import Interface
 from zope.interface.common.mapping import IMapping, IReadMapping, IWriteMapping
 from zope import schema
-from zope.app.interfaces.container import IContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 

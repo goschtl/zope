@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.43 2004/02/13 22:42:22 srichter Exp $
+$Id: adding.py,v 1.44 2004/03/03 10:38:33 philikon Exp $
 """
 __metaclass__ = type
 
@@ -26,9 +26,9 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.exceptions import UserError
-from zope.app.interfaces.container import IAdding
-from zope.app.interfaces.container import IContainerNamesContainer
-from zope.app.interfaces.container import INameChooser
+from zope.app.container.interfaces import IAdding
+from zope.app.container.interfaces import IContainerNamesContainer
+from zope.app.container.interfaces import INameChooser
 
 from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
@@ -45,7 +45,7 @@ class BasicAdding(BrowserView):
     implements(IAdding, IPublishTraverse)
 
     def add(self, content):
-        """See zope.app.interfaces.container.IAdding
+        """See zope.app.container.interfaces.IAdding
         """
         container = self.context
         name = self.contentName
@@ -72,7 +72,7 @@ class BasicAdding(BrowserView):
     contentName = None # usually set by Adding traverser
 
     def nextURL(self):
-        """See zope.app.interfaces.container.IAdding"""
+        """See zope.app.container.interfaces.IAdding"""
         return (str(zapi.getView(self.context, "absolute_url", self.request))
                 + '/@@contents.html')
 
@@ -105,7 +105,7 @@ class BasicAdding(BrowserView):
                     % (add_button_value, add_button_label, contentName))
 
     def publishTraverse(self, request, name):
-        """See zope.app.interfaces.container.IAdding"""
+        """See zope.app.container.interfaces.IAdding"""
         if '=' in name:
             view_name, content_name = name.split("=", 1)
             self.contentName = content_name
