@@ -223,15 +223,28 @@ same as registering them for a class::
 Unregistering
 -------------
 
-You can unregister by registering None, rather than an object::
+You can unregister by calling unregister:
 
+  >>> registry.unregister([zope.interface.implementedBy(C2)], IP1, '', 'C21')
+  >>> registry.lookup([zope.interface.implementedBy(C2)], IP1, '')
+  21
+
+
+(You can also unregister by registering None, rather than an object::
+
+  >>> registry.register([zope.interface.implementedBy(C2)], IP1, '', 'C21')
+  >>> registry.lookup([zope.interface.implementedBy(C2)], IP1, '')
+  'C21'
   >>> registry.register([zope.interface.implementedBy(C2)], IP1, '', None)
   >>> registry.lookup([zope.interface.implementedBy(C2)], IP1, '')
   21
 
-Of course, this means that None can't be registered. This is an
-exception to the statement, made earlier, that the registry doesn't
-care what gets registered.
+  Of course, this means that None can't be registered. This is an
+  exception to the statement, made earlier, that the registry doesn't
+  care what gets registered.
+
+  This way of unregistering is deprecated.
+  )
 
 Multi-adapters
 ==============
@@ -431,6 +444,17 @@ You can have subscriptions that are indepenent of any specifications::
   >>> registry.subscriptions([], IP2)
   ['sub2']
 
+
+Unsubscribing
+=============
+
+You can unsubscribe subscribers:
+
+  >>> registry.unsubscribe([IR1], IP2, 'sub12 1')
+  >>> subs = registry.subscriptions([IR2], IP2)
+  >>> subs.sort()
+  >>> subs
+  ['sub12 2', 'sub22']
 
 Subscription adapters
 ---------------------

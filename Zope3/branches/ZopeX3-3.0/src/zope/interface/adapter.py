@@ -250,14 +250,31 @@ class Surrogate(object):
 
         self.dirty()
 
-    def _subscriptionAdaptTo(self, specification, object, with=()):
-        if object is None:
-            raise TypeError, ("Unregistering subscription adapters" 
-                              " isn't implemented")
+    def _unadaptTo(self, specification, object, name='', with=()):
+        key = False, tuple(with), name, specification
+        old = self.adapters.get(key)
+        if old == object:
+            del self.adapters[key]
+            self.dirty()
+        else:
+            raise ValueError("Adapter not present")
 
+
+    def _subscriptionAdaptTo(self, specification, object, with=()):
         key = (True, tuple(with), '', specification)
         self.adapters[key] = self.adapters.get(key, ()) + (object, )
         self.dirty()
+
+    def _subscriptionUnAdaptTo(self, specification, object, with=()):
+        key = (True, tuple(with), '', specification)
+        subscribers = self.adapters[key]
+        if object in subscribers:
+            subscribers = list(subscribers)
+            subscribers.remove(object)        
+            self.adapters[key] = tuple(subscribers)
+            self.dirty()
+        else:
+            raise ValueError("Subscriber not present")
 
     def changed(self, which=None):
         self.dirty()
@@ -502,7 +519,7 @@ class AdapterRegistry(object):
                      ):
             setattr(self, name, getattr(lookup, name))
 
-    def register(self, required, provided, name, value):
+    def _with_required(self, required):
         if required:
             with = []
             for iface in required[1:]:
@@ -514,12 +531,25 @@ class AdapterRegistry(object):
         else:
             with = ()
             required = self._null
+        return with, required
+
+    def register(self, required, provided, name, value):
         
         if not isinstance(name, basestring):
-            raise TypeError("The name provided to provideAdapter "
-                            "must be a string or unicode")
+            raise TypeError("adapter names must be a strings or unicode")
+
+        with, required = self._with_required(required)
 
         required._adaptTo(provided, value, unicode(name), with)
+
+    def unregister(self, required, provided, name, value):
+        
+        if not isinstance(name, basestring):
+            raise TypeError("adapter names must be a strings or unicode")
+
+        with, required = self._with_required(required)
+
+        required._unadaptTo(provided, value, unicode(name), with)
 
     def lookupAll(self, required, provided):
         order = len(required)
@@ -577,16 +607,22 @@ class AdapterRegistry(object):
             first = byname
 
     def subscribe(self, required, provided, value):
-        if required:
-            required, with = self.get(required[0]), tuple(required[1:])
-        else:
-            required = self._null
-            with = ()
+
+        with, required = self._with_required(required)
 
         if provided is None:
             provided = Null
             
         required._subscriptionAdaptTo(provided, value, with)
+
+    def unsubscribe(self, required, provided, value):
+
+        with, required = self._with_required(required)
+
+        if provided is None:
+            provided = Null
+            
+        required._subscriptionUnAdaptTo(provided, value, with)
 
 def mextends(with, rwith):
     if len(with) == len(rwith):
