@@ -62,14 +62,13 @@ class PROPFIND(object):
 
         self.request.bodyFile.seek(0)
         xmldoc = minidom.parse(self.request.bodyFile)
-        response = minidom.Document()
-        ms = response.createElement('multistatus')
+        resp = minidom.Document()
+        ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
-        response.appendChild(ms)
-        ms.appendChild(response.createElement('response'))
-        ms.lastChild.appendChild(response.createElement('href'))
-        ms.lastChild.lastChild.appendChild(
-            response.createTextNode(resource_url))
+        resp.appendChild(ms)
+        ms.appendChild(resp.createElement('response'))
+        ms.lastChild.appendChild(resp.createElement('href'))
+        ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
 
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
@@ -81,14 +80,14 @@ class PROPFIND(object):
         
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:
-            self._handlePropname(response, _avail_props)
+            self._handlePropname(resp, _avail_props)
         else:
             source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-            self._handlePropvalues(source, response, _avail_props)
+            self._handlePropvalues(source, resp, _avail_props)
 
         self._depthRecurse(ms)
 
-        body = response.toxml().encode('utf-8')
+        body = resp.toxml().encode('utf-8')
         self.request.response.setBody(body)
         self.request.response.setStatus(207)
         return body
@@ -130,10 +129,10 @@ class PROPFIND(object):
             props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
         return props
 
-    def _handlePropname(self, response, _avail_props):
-        re = response.lastChild.lastChild
-        re.appendChild(response.createElement('propstat'))
-        prop = response.createElement('prop')
+    def _handlePropname(self, resp, _avail_props):
+        re = resp.lastChild.lastChild
+        re.appendChild(resp.createElement('propstat'))
+        prop = resp.createElement('prop')
         re.lastChild.appendChild(prop)
         count = 0
         for ns in _avail_props.keys():
@@ -142,15 +141,15 @@ class PROPFIND(object):
                 count += 1
                 prop.setAttribute('xmlns:%s' % attr_name, ns)
             for p in _avail_props.get(ns):
-                el = response.createElement(p)
+                el = resp.createElement(p)
                 prop.appendChild(el)
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
-        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.appendChild(resp.createElement('status'))
         re.lastChild.lastChild.appendChild(
-            response.createTextNode('HTTP/1.1 200 OK'))
+            resp.createTextNode('HTTP/1.1 200 OK'))
 
-    def _handlePropvalues(self, source, response, _avail_props):
+    def _handlePropvalues(self, source, resp, _avail_props):
         if not source:
             _props = self._handleAllprop(_avail_props)
         else:
@@ -158,9 +157,9 @@ class PROPFIND(object):
 
         avail, not_avail = self._propertyResolver(_props)
         if avail: 
-            self._renderAvail(avail, response, _props)
+            self._renderAvail(avail, resp, _props)
         if not_avail: 
-            self._renderNotAvail(not_avail, response)
+            self._renderNotAvail(not_avail, resp)
 
     def _propertyResolver(self, _props):
         avail = {}
@@ -196,14 +195,14 @@ class PROPFIND(object):
 
         return avail, not_avail
     
-    def _renderAvail(self, avail, response, _props):
-        re = response.lastChild.lastChild
-        re.appendChild(response.createElement('propstat'))
-        prop = response.createElement('prop')
+    def _renderAvail(self, avail, resp, _props):
+        re = resp.lastChild.lastChild
+        re.appendChild(resp.createElement('propstat'))
+        prop = resp.createElement('prop')
         re.lastChild.appendChild(prop)
-        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.appendChild(resp.createElement('status'))
         re.lastChild.lastChild.appendChild(
-            response.createTextNode('HTTP/1.1 200 OK'))
+            resp.createTextNode('HTTP/1.1 200 OK'))
         count = 0
         for ns in avail.keys():
             attr_name = 'a%s' % count
@@ -231,7 +230,7 @@ class PROPFIND(object):
                 names=avail.get(ns))
                         
             for p in avail.get(ns):
-                el = response.createElement('%s' % p )
+                el = resp.createElement('%s' % p )
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
                 prop.appendChild(el)
@@ -239,7 +238,7 @@ class PROPFIND(object):
                     
                 if isinstance(value, (unicode, str)):
                     # Get the widget value here
-                    el.appendChild(response.createTextNode(value))
+                    el.appendChild(resp.createTextNode(value))
                 else:
                     if zapi.isinstance(value, minidom.Node):
                         el.appendChild(value)
@@ -247,16 +246,16 @@ class PROPFIND(object):
                         # Try to string-ify
                         value = str(getattr(self, p+'_widget'))
                         # Get the widget value here
-                        el.appendChild(response.createTextNode(value))
+                        el.appendChild(resp.createTextNode(value))
 
-    def _renderNotAvail(self, not_avail, response):
-        re = response.lastChild.lastChild
-        re.appendChild(response.createElement('propstat'))
-        prop = response.createElement('prop')
+    def _renderNotAvail(self, not_avail, resp):
+        re = resp.lastChild.lastChild
+        re.appendChild(resp.createElement('propstat'))
+        prop = resp.createElement('prop')
         re.lastChild.appendChild(prop)
-        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.appendChild(resp.createElement('status'))
         re.lastChild.lastChild.appendChild(
-            response.createTextNode('HTTP/1.1 404 Not Found'))
+            resp.createTextNode('HTTP/1.1 404 Not Found'))
         count = 0
         for ns in not_avail.keys():
             attr_name = 'a%s' % count
@@ -264,7 +263,7 @@ class PROPFIND(object):
                 count += 1
                 prop.setAttribute('xmlns:%s' % attr_name, ns)
             for p in not_avail.get(ns):
-                el = response.createElement('%s' % p )
+                el = resp.createElement('%s' % p )
                 prop.appendChild(el)
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
