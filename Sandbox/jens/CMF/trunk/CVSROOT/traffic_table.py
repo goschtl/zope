@@ -46,6 +46,8 @@ table = [
 
     {'path': "test", 'addrs': "klm@digicool.com"},
 
+    {'path': "Publishers/ZServer", 'addrs': zopeaddr},
+
     {'path': "ZSrc", 'addrs': zopeaddr},
     {'path': "ZUtil", 'addrs': zopeaddr},
     {'path': "cvs-indirect/Zope", 'addrs': zopeaddr},
