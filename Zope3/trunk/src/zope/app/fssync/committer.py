@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.17 2003/08/17 06:06:34 philikon Exp $
+$Id: committer.py,v 1.18 2003/09/05 18:41:16 fdrake Exp $
 """
 
 import os
@@ -304,7 +304,17 @@ class Committer(object):
             if adapter.typeIdentifier() != entry.get("type"):
                 create_object(container, name, entry, fspath, replace=True)
             else:
-                olddata = read_file(fsutil.getoriginal(fspath))
+                original_fn = fsutil.getoriginal(fspath)
+                if os.path.exists(original_fn):
+                    olddata = read_file(original_fn)
+                else:
+                    # value appears to exist in the object tree, but
+                    # may have been created as a side effect of an
+                    # addition in the parent; this can easily happen
+                    # in the extra or annotation data for an object
+                    # copied from another using "zsync copy" (for
+                    # example)
+                    olddata = None
                 newdata = read_file(fspath)
                 if newdata != olddata:
                     if not entry.get("factory"):
