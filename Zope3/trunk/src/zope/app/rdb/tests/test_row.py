@@ -13,7 +13,7 @@
 ##############################################################################
 """Row class tests.
 
-$Id: test_row.py,v 1.4 2003/06/09 15:31:57 stevea Exp $
+$Id: test_row.py,v 1.5 2003/06/09 15:36:09 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -36,6 +36,7 @@ class RowTests(TestCase):
         from zope.app.rdb import RowClassFactory
         from zope.security.proxy import ProxyFactory
         from zope.exceptions import ForbiddenAttribute
+        from zope.security.interfaces import IChecker
 
         columns = ('type', 'speed')
         data = ('airplane', '800km')
@@ -48,10 +49,18 @@ class RowTests(TestCase):
 
         self.failUnless (proxied.type == 'airplane', "security proxy error")
         self.failUnless (proxied.speed == '800km', "security proxy error (2)")
-
         self.assertRaises(ForbiddenAttribute, getattr, proxied, '__slots__')
+
+        # Indirectly, check the the __Security_checker__ attribute has been
+        # applied only to the instance, and not to the class.
+        self.assertRaises(ForbiddenAttribute, getattr, proxied, '__bases__')
         proxied_class = ProxyFactory(klass)
         proxied_class.__bases__
+
+        # Check __Security_checker__ directly
+        self.assertRaises(AttributeError,
+                          getattr, klass, '__Security_checker__')
+        self.assert_(IChecker.isImplementedBy(ob.__Security_checker__))
 
     def test__cmp__(self):
         from zope.app.rdb import RowClassFactory
