@@ -17,8 +17,6 @@ import unittest
 from Products.PluggableAuthService.tests.conformance \
      import ILoginPasswordHostExtractionPlugin_conformance
 from Products.PluggableAuthService.tests.conformance \
-     import IChallengePlugin_conformance
-from Products.PluggableAuthService.tests.conformance \
      import ICredentialsUpdatePlugin_conformance
 from Products.PluggableAuthService.tests.conformance \
      import ICredentialsResetPlugin_conformance
@@ -52,7 +50,6 @@ class FauxCookieResponse(FauxResponse):
 
 class CookieAuthHelperTests( unittest.TestCase
                            , ILoginPasswordHostExtractionPlugin_conformance
-                           , IChallengePlugin_conformance
                            , ICredentialsResetPlugin_conformance
                            ):
 
@@ -84,55 +81,12 @@ class CookieAuthHelperTests( unittest.TestCase
 
         self.assertEqual( helper.extractCredentials( request ), {} )
 
-    def test_extractCredentials_with_form_creds( self ):
-
-        helper = self._makeOne()
-        response = FauxCookieResponse()
-        request = FauxSettableRequest(__ac_name='foo',
-                                      __ac_password='bar',
-                                      RESPONSE=response)
-
-        self.assertEqual(len(response.cookies), 0)
-        self.assertEqual(helper.extractCredentials(request),
-                        {'login': 'foo',
-                         'password': 'bar',
-                         'remote_host': '',
-                         'remote_address': ''})
-        self.assertEqual(len(response.cookies), 0)
-
-    def test_challenge( self ):
-        from zExceptions import Unauthorized
-        rc, root, folder, object = self._makeTree()
-        response = FauxCookieResponse()
-        request = FauxRequest(RESPONSE=response)
-        root.REQUEST = request
-
-        helper = self._makeOne().__of__(root)
-
-        helper.challenge(request, response)
-        self.assertEqual(response.status, 302)
-        self.assertEqual(len(response.headers), 1)
-
-
     def test_resetCredentials( self ):
         helper = self._makeOne()
         response = FauxCookieResponse()
         request = FauxRequest(RESPONSE=response)
 
         helper.resetCredentials(request, response)
-        self.assertEqual(len(response.cookies), 0)
-
-    def test_loginWithoutCredentialsUpdate( self ):
-        helper = self._makeOne()
-        response = FauxCookieResponse()
-        request = FauxSettableRequest( __ac_name='foo'
-                                     , __ac_password='bar'
-                                     , RESPONSE=response
-                                     )
-        request.form = {'came_from':''}
-        helper.REQUEST = request
-
-        helper.login()
         self.assertEqual(len(response.cookies), 0)
 
 
