@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.4 2003/10/23 04:39:13 fdrake Exp $
+$Id: __init__.py,v 1.5 2003/10/23 18:39:43 fdrake Exp $
 """
 
 from zope.app import zapi
@@ -346,7 +346,7 @@ class MakeSite(BrowserView):
         XXX we should also initialize some user-selected services.
 
         >>> class PossibleSite:
-        ...     def setSite(self, sm):
+        ...     def setSiteManager(self, sm):
         ...         from zope.interface import directlyProvides
         ...         directlyProvides(self, ISite)
 
