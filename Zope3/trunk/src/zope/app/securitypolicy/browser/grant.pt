@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/dialog">
+<html metal:use-macro="context/@@standard_macros/dialog"
+    i18n:domain="zope">
 <body>
 
 <!-- XXX : This is just a temporary way of overriding the elements not needed,

@@ -1,4 +1,5 @@
-<ul style="margin-top: 0; margin-bottom: 0">
+<ul style="margin-top: 0; margin-bottom: 0"
+    i18n:domain="zope">
   <li>
     <i i18n:translate="">for:</i>
       <span tal:content="view/required">zope.interface.Interface</span>

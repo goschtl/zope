@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/page">
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="zope">
 <head>
   <title metal:fill-slot="title" i18n:translate="">View Error Log Report</title>
 </head>
@@ -10,7 +11,7 @@
 
   <h3 i18n:translate="">Exception traceback</h3>
 
-  <em tal:condition="not:entry">
+  <em tal:condition="not:entry" i18n:translate="">
     The specified log entry was not found.  It may have expired.
   </em>
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html metal:define-macro="page">
+<html metal:define-macro="page" i18n:domain="zope">
 <head metal:define-macro="head">
   <title 
     metal:define-slot="title"

@@ -1,6 +1,7 @@
 <zope:configure 
     xmlns:zope="http://namespaces.zope.org/zope"
-    xmlns="http://namespaces.zope.org/browser">
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
 
   <addMenuItem
        class="..authentication.PluggableAuthentication"

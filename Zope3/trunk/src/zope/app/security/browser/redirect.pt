@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/page">
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="zope">
   <head>
     <metal:block fill-slot="headers">
       <meta http-equiv="refresh" content="0;url=./"
