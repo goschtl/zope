@@ -144,6 +144,7 @@
 
 /Zope3/lib/python/Interface                    /Packages3/Interface
 /Zope3/lib/python/Persistence                  /Packages3/Persistence
+/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
 /Zope3/lib/python/ZConfig		       /Packages/ZConfig
 /Zope3/lib/python/ZEO                          /Packages3/ZEO
 /Zope3/lib/python/zLOG                         /Packages3/zLOG
