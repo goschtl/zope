@@ -167,7 +167,8 @@ class AddFormDirective(BaseFormDirective):
             if (not self.menu) or (not self.title):
                 raise ValueError("If either menu or title are specified, "
                                  "they must both be specified")
-            # XXX why no self.schema in for as in EditFormDirective
+            # Add forms are really for IAdding components, so do not use
+            # for=self.schema.
             menuItemDirective(
                 self._context, self.menu, self.for_, '@@' + self.name,
                 self.title, permission=self.permission,
