@@ -204,10 +204,10 @@ def detach(args):
     doctored_args.append("--wait")
     tempfile.mktemp()           # Throw one away, to get initial template.
     tempfile.tempdir = "/tmp"
-    template = (tempfile.template or
-                "@%s.%d" % (os.getpid(), whrandom.randint(1000000, 9999999)))
-    tempfile.template = "cvs-log" + template
-    msgfile = open(tempfile.mktemp(), 'w')
+##    template = (tempfile.template or
+##                "@%s.%d" % (os.getpid(), whrandom.randint(1000000, 9999999)))
+##    tempfile.template = "cvs-log" + template
+    msgfile = open(tempfile.mktemp(suffix='.cvslog'), 'w')
     msgfile.write(sys.stdin.read())
     msgfile.close()
     msgfilenm = msgfile.name
