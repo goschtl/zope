@@ -1,3 +1,10 @@
+CMF 1.3
+
+  Bug Fixes
+
+    - Corrected a skins performance optimization (the version as released
+      in the beta did not take effect).
+
 CMF 1.3 beta2 (2002/07/07)
 
   New Features
