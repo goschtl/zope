@@ -1,0 +1,145 @@
+Zope 3 Logging
+
+ Logging is done through the logging package (PEP 282-based logging).
+ It is fairly easy to use and to configure.
+
+
+ Configuring the logging package for z3.py
+
+  XXX This is out of date; see zope.conf.in for an example of the
+  current way of configuring logging.
+
+  The log file used by z3.py can be configured in the zserver.zcml
+  file with this directive::
+
+    <startup:useLog file="..." level="...">
+
+  The file argument should give the filename where you want the log to
+  go.  If the filename is STDERR or STDOUT, logging goes to the
+  process's standard error or standard output stream, respectively.
+
+  The level argument should give the logging severity level; anything
+  below this level is not logged.  The supported levels are, in
+  increasing severity: DEBUG, INFO, WARN, ERROR, CRITICAL.
+
+
+ Configuring the logging package for running unit tests
+
+  When running unit tests, logging is configured through the file
+  log.ini in the current directory, if it exists.  This file should be
+  self-explanatory, and provides full access to the logging package's
+  advanced features.  If log.ini is not found, critical messages are
+  logged to the process's standard error stream, and other messages
+  are not logged.
+
+  test.py also understands the LOGGING environment variable, which can
+  be used to specify an integer logging level.  So a simple way to run
+  the tests with all logging going to standard error is to set LOGGING
+  to 0, e.g.:
+
+  export LOGGING=0
+  python test.py
+
+
+ Using the logging package
+
+  There are two ways of using the logging package.  You can use
+  functions defined in the logging package directly, or you can use
+  methods on a logger object.  In either case you need a simple import
+  statement::
+
+    import logging
+
+
+ Using the logging functions
+
+  To use the logging functions defined by the package directly, use
+  one of the functions debug(), info(), warn(), error() or critical()
+  from the package.  Each of these takes a message argument.  The
+  message may be a standard Python format string, and then the
+  following arguments are the format arguments.  This allows you to
+  write, for example::
+
+    logging.warn("Cannot open file %r: %s", filename, err)
+
+  instead of::
+
+    logging.warn("Cannot open file %r: %s" % (filename, err))
+
+  Apart from slight savings in typing, the advantage of the former is
+  that if warnings are not logged, the string formatting operation is
+  not carried out, saving some time.
+
+  It is also possible to log a traceback.  This is done by adding a
+  keyword argument exc_info=True.  For example::
+
+    try:
+        ...something...
+    except:
+        logging.error("Unexpected problem", exc_info=True)
+
+  The logging package will call sys.exc_info() and use the traceback
+  module to format the traceback.  When the message is not logged,
+  this is skipped.  In fact, there's a shorthand for this particular
+  case (logging a traceback at the error level)::
+
+    try:
+        ...something...
+    except:
+        logging.exception("Unexpected problem")
+
+  Finally, there is a generic log function; it has a first argument
+  specifying a logging severity level, followed by the standard
+  arguments of all the above functions::
+
+    logging.log(level, message, ..., exc_info=...)
+
+  The predefined logging levels are available as symbolic constants:
+  logging.DEBUG, logging.INFO, logging.WARN, logging.ERROR, and
+  logging.CRITICAL.  (There's no logging.EXCEPTION level, because
+  exception() is not a separate logging level; it's a shorthand for
+  passing exc_info=True to the error() method.)
+
+
+ Using a logger object
+
+  Often you'd like all log messages coming out of a particular class
+  or module to be "tagged" with a label identifying that class or
+  module, regardless of the logging severity of the message.  In some
+  cases, you'd like that label to convey additional run-time
+  information, such as a storage or thread name.
+
+  Rather than prefixing all log messages with an identifying string,
+  you can create a logger object that does this for you.  Logger
+  objects have methods debug(), info(), etc., corresponding to the
+  logging functions described in the previous section, and with
+  exactly the same signature; these are what you use to log a message
+  using a logger object, for example::
+
+    logger.warn("Oil temperature: %g", temp)
+
+  To create a logger object, use the getLogger() function::
+
+    foo_bar_logger = logging.getLogger("foo.bar")
+
+  The string argument to getLogger() is interpreted as a sequence of
+  names separated by dots; this creates a hierarchy that can be used
+  for additional filtering or handling.  Normally, however, a logger
+  object inherits all its properties (except for its name) from its
+  parent logger object.  For the foo_bar_logger above, the parent
+  would be the logger object returned by this call::
+
+    foo_logger = logging.getLogger("foo")
+
+  Its parent in turn is the root logger; the logging functions
+  described in the previous section correspond to methods of the root
+  logger object.  By configuring the root logger you can configure all
+  loggers in the hierarchy, unless some configuration is overridden at
+  a lower level.  This an advanced feature of the logging module that
+  we won't discuss further here.
+
+  Logger objects are lightweight and cached by the logging module;
+  subsequent calls to logging.getLogger() with the same logger name
+  will return the same logger object.  However, there is no way to
+  delete logger objects, so it's not a good idea to make up arbitrary
+  logger names dynamically.
