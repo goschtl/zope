@@ -511,13 +511,6 @@ class IPresentation(Interface):
 class IPresentationRequest(Interface):
     """An IPresentationRequest provides methods for getting view meta data."""
 
-    def getPresentationSkin():
-        """Get the skin to be used for a request.
-
-        The skin is a string as would be passed
-        to IViewService.getView.
-        """
-
 
 class IResource(IPresentation):
     """Resources provide data to be used for presentation."""
@@ -548,30 +541,9 @@ class IViewFactory(Interface):
         "stands in" for the user.
         """
 
+class IDefaultViewName(Interface):
+    """A string that contains the default view name
 
-class IPresentationService(Interface):
-    """A service to manage Presentation components."""
-
-    def queryResource(name, request, default=None, providing=Interface):
-        """Look up a named resource for a given request
-
-        The request must implement IPresentationRequest.
-
-        The default will be returned if the component can't be found.
-        """
-
-    def queryView(object, name, request, default=None, providing=Interface):
-        """Look for a named view for a given object and request
-
-        The request must implement IPresentationRequest.
-
-        The default will be returned if the component can't be found.
-        """
-
-    def queryMultiView(objects, request, providing=Interface, name='',
-                       default=None):
-        """Adapt the given objects and request
-
-        The first argument is a tuple of objects to be adapted with the
-        request.
-        """
+    A default view name is used to select a view when a user hasn't
+    specified one.
+    """
