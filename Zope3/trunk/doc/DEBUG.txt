@@ -23,7 +23,7 @@ Using the Zope Debugger
             
   Using the Debugger
 
-    There are several method you can call on the application object
+    There are several methods you can call on the application object
     for testing purposes.
 
     Publish 
