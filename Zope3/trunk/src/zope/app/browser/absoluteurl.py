@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.15 2003/09/03 18:33:55 sidnei Exp $
+$Id: absoluteurl.py,v 1.16 2003/09/21 17:30:19 jim Exp $
 """
 
 from zope.app import zapi
@@ -23,8 +23,8 @@ from zope.proxy import sameProxiedObjects
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 _insufficientContext = _("There isn't enough context to get URL information. "
-                       "This is probably due to a bug in setting up context "
-                       "wrappers.")
+                       "This is probably due to a bug in setting up location "
+                       "information.")
 
 
 class AbsoluteURL(BrowserView):
@@ -33,20 +33,18 @@ class AbsoluteURL(BrowserView):
         context = self.context
         request = self.request
 
-        # We do this here do maintain the rule that we must be wrapped
-        container = zapi.getWrapperContainer(context)
-        if container is None:
-            raise TypeError, _insufficientContext
-
+        
         if sameProxiedObjects(context, request.getVirtualHostRoot()):
             return request.getApplicationURL()
 
+        container = getattr(context, '__parent__', None)
+        if container is None:
+            raise TypeError, _insufficientContext
+
         url = str(zapi.getView(container, 'absolute_url', request))
 
-        dict = zapi.getInnerWrapperData(context)
-        try:
-            name = dict['name']
-        except KeyError:
+        name = getattr(context, '__name__', None)
+        if name is None:
             raise TypeError, _insufficientContext
 
         if name:
@@ -61,7 +59,7 @@ class AbsoluteURL(BrowserView):
         request = self.request
 
         # We do this here do maintain the rule that we must be wrapped
-        container = zapi.getWrapperContainer(context)
+        container = getattr(context, '__parent__', None)
         if container is None:
             raise TypeError, _insufficientContext
 
@@ -72,10 +70,8 @@ class AbsoluteURL(BrowserView):
         base = tuple(zapi.getView(container,
                                   'absolute_url', request).breadcrumbs())
 
-        dict = zapi.getInnerWrapperData(context)
-        try:
-            name = dict['name']
-        except KeyError:
+        name = getattr(context, '__name__', None)
+        if name is None:
             raise TypeError, _insufficientContext
 
         if name:
@@ -96,12 +92,10 @@ class SiteAbsoluteURL(BrowserView):
 
         url = request.getApplicationURL()
 
-        dict = zapi.getInnerWrapperData(context)
-        if dict:
-            name = dict.get('name')
-            if name:
-                url += '/'+name
-
+        name = getattr(context, '__name__', None)
+        if name:
+            url += '/'+name
+                
         return url
 
     __call__ = __str__
@@ -116,14 +110,10 @@ class SiteAbsoluteURL(BrowserView):
         base = ({'name':'', 'url': self.request.getApplicationURL()}, )
 
 
-        dict = zapi.getInnerWrapperData(context)
-        if dict:
-            name = dict.get('name')
-
-            if name:
-                base += ({'name': name,
-                          'url': ("%s/%s" % (base[-1]['url'], name))
-                          }, )
-
-
+        name = getattr(context, '__name__', None)
+        if name:
+            base += ({'name': name,
+                      'url': ("%s/%s" % (base[-1]['url'], name))
+                      }, )
+                
         return base
