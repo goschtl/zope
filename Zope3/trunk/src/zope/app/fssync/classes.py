@@ -13,13 +13,14 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.14 2003/09/02 20:32:09 fdrake Exp $
+$Id: classes.py,v 1.15 2003/09/21 17:32:11 jim Exp $
 """
 
+from zope.app.fssync import fspickle
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.annotation import IAnnotations
 from zope.component import queryAdapter
-from zope.xmlpickle import dumps
+from zope.xmlpickle import toxml
 from zope.proxy import removeAllProxies
 from zope.interface import implements
 
@@ -95,7 +96,8 @@ class Default(ObjectEntryAdapter):
 
     def getBody(self):
         "See IObjectFile"
-        return dumps(self.context)
+        s = fspickle.dumps(self.context)
+        return toxml(s)
 
     def setBody(self, body):
         "See IObjectFile"

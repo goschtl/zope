@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.16 2003/08/17 06:06:38 philikon Exp $
+$Id: test_committer.py,v 1.17 2003/09/21 17:32:11 jim Exp $
 """
 
 import os
@@ -22,41 +22,41 @@ import unittest
 
 from zope.component.service import serviceManager
 from zope.component.adapter import provideAdapter
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.exceptions import NotFoundError
+from zope.interface import implements
 
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 
-from zope.app.interfaces.container import IContainer, IZopeContainer
+from zope.app.content.fssync import DirectoryAdapter
+from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.fssync import IGlobalFSSyncService
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.interfaces.traversing import ITraversable, ITraverser
+from zope.app.location import Location
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.app.fssync import committer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
 from zope.app.fssync.classes import Default
 
-from zope.app.content.fssync import DirectoryAdapter
-
-from zope.interface import implements
-
 
 class Sample(object):
     pass
 
 
-class PretendContainer(object):
+class PretendContainer(Location):
 
-    implements(IContainer, ITraversable, IZopeContainer)
+    implements(IContainer, ITraversable, ITraverser)
 
     def __init__(self):
         self.holding = {}
 
-    def setObject(self, name, value):
+    def __setitem__(self, name, value):
         name = name.lower()
         if name in self.holding:
             raise KeyError
@@ -93,12 +93,16 @@ class PretendContainer(object):
 
 PCname = PretendContainer.__module__ + "." + PretendContainer.__name__
 
+class PretendRootContainer(PretendContainer):
+
+    implements(IContainmentRoot)
+
 
 class DictAdapter(Default):
 
     def setBody(self, body):
         old = self.context
-        assert type(old) is dict
+        assert old.__class__ is dict
         new = loads(body)
         assert type(new) is dict
         old.update(new)
@@ -159,12 +163,6 @@ class TestCommitterModule(TestBase):
         x = committer.read_file(tfn)
         self.assertEqual(x, data)
 
-    def test_load_file(self):
-        data = {"foo": [42]}
-        tfn = self.tempfile(dumps(data))
-        x = committer.load_file(tfn)
-        self.assertEqual(x, data)
-
     def test_set_item_non_icontainer(self):
         container = {}
         committer.set_item(container, "foo", 42)
@@ -181,21 +179,10 @@ class TestCommitterModule(TestBase):
         committer.set_item(container, "foo", 24, replace=True)
         self.assertEqual(container.holding, {"foo": 24})
 
-    def test_set_item_icontainer_error_existing(self):
-        container = PretendContainer()
-        committer.set_item(container, "foo", 42)
-        self.assertRaises(KeyError, committer.set_item,
-                          container, "foo", 42)
-
     def test_set_item_icontainer_error_nonexisting(self):
         container = PretendContainer()
         self.assertRaises(KeyError, committer.set_item,
                           container, "foo", 42, replace=True)
-
-    def test_set_item_icontainer_error_newname(self):
-        container = PretendContainer()
-        self.assertRaises(SynchronizationError, committer.set_item,
-                          container, "Foo", 42)
 
     def test_create_object_factory_file(self):
         provideSynchronizer(dict, DictAdapter)
@@ -218,13 +205,13 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container["foo"].__class__, PretendContainer)
 
     def test_create_object_default(self):
-        container = {}
+        container = PretendRootContainer()
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn, "wb")
         committer.create_object(container, "foo", entry, tfn)
-        self.assertEqual(container, {"foo": ["hello", "world"]})
+        self.assertEqual(container.items(), [("foo", ["hello", "world"])])
 
     def test_create_object_ifilefactory(self):
         provideAdapter(IContainer, IFileFactory, file_factory_maker)
@@ -262,10 +249,10 @@ class TestCheckerClass(TestBase):
         self.parent = PretendContainer()
         self.child = PretendContainer()
         self.grandchild = PretendContainer()
-        self.parent.setObject("child", self.child)
-        self.child.setObject("grandchild", self.grandchild)
+        self.parent["child"] = self.child
+        self.child["grandchild"] = self.grandchild
         self.foo = ["hello", "world"]
-        self.child.setObject("foo", self.foo)
+        self.child["foo"] = self.foo
 
         # Set up fixed part of filesystem tree
         self.parentdir = self.tempdir()
@@ -368,7 +355,7 @@ class TestCheckerClass(TestBase):
     def test_file_added_twice(self):
         # Adding a file in both places is an error
         bar = ["this", "is", "bar"]
-        self.child.setObject("bar", bar)
+        self.child["bar"] = bar
         barfile = os.path.join(self.childdir, "bar")
         self.writefile(dumps(bar), barfile, "wb")
         barentry = self.getentry(barfile)

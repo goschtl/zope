@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,14 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Utility for creating Python pickles in XML format.
+"""Location support tests
 
-The zope.xmlpickle package exports two functions:
-
-  dumps(object) -- Returns an XML pickle
-
-  loads(xmlpickle) -- Returns an object loaded from the pickle.
+$Id: test_fspickle.py,v 1.2 2003/09/21 17:32:11 jim Exp $
 """
+import unittest
 
-from xmlpickle import dumps, loads
-from xmlpickle import fromxml, toxml
+from zope.testing.doctestunit import DocTestSuite
+
+
+def test_suite():
+    return DocTestSuite('zope.app.fssync.fspickle')
+
+if __name__ == '__main__':
+    unittest.main()

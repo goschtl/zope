@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of xmlpickle package
 
-$Id: test_xmlpickle.py,v 1.5 2003/05/06 19:58:45 gvanrossum Exp $
+$Id: test_xmlpickle.py,v 1.6 2003/09/21 17:32:12 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -91,10 +91,20 @@ class Test(TestCase):
             self.__test(-v)
 
     def test_None(self):
-        self.__test(None)
+        self.__test(None,
+                    '<?xml version="1.0" encoding="utf-8" ?>\n'
+                    '<pickle> <none/> </pickle>\n'
+                    )
+
+    def test_True(self):
+        self.__test(True)
+        self.assertEqual(loads('<pickle><true/></pickle>'), True)
+
+    def test_False(self):
+        self.__test(False)
+        self.assertEqual(loads('<pickle><false/></pickle>'), False)
 
     def test_reduce(self):
-
         v = DictSub()
         v['spam'] = 1.23
         v['eggs'] = 0

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pickle-based serialization of Python objects to and from XML.
 
-$Id: xmlpickle.py,v 1.3 2003/05/01 11:00:05 jim Exp $
+$Id: xmlpickle.py,v 1.4 2003/09/21 17:32:12 jim Exp $
 """
 
 from xml.parsers import expat
@@ -73,7 +73,7 @@ def _dumpsUsing_PicklerThatSortsDictItems(object, bin = 0):
     _PicklerThatSortsDictItems(file, bin).dump(object)
     return file.getvalue()
 
-def p2xml(p):
+def toxml(p):
     """Convert a standard Python pickle to xml
     """
     u = ppml.ToXMLUnpickler(StringIO(p))
@@ -86,9 +86,9 @@ def dumps(ob):
     """Serialize an object to XML
     """
     p = _dumpsUsing_PicklerThatSortsDictItems(ob, 1)
-    return p2xml(p)
+    return toxml(p)
 
-def xml2p(xml):
+def fromxml(xml):
     """Convert xml to a standard Python pickle
     """
     handler = ppml.xmlPickler()
@@ -104,6 +104,6 @@ def xml2p(xml):
 def loads(xml):
     """Create an object from serialized XML
     """
-    pickle = xml2p(xml)
+    pickle = fromxml(xml)
     ob = _standard_pickle_loads(pickle)
     return ob

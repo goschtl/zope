@@ -13,28 +13,29 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.18 2003/09/05 18:41:16 fdrake Exp $
+$Id: committer.py,v 1.19 2003/09/21 17:32:11 jim Exp $
 """
 
 import os
 
 from zope.component import getAdapter, getService
-from zope.xmlpickle import loads
 from zope.configuration.name import resolve
-from zope.proxy import removeAllProxies
-
-from zope.fssync.metadata import Metadata
 from zope.fssync import fsutil
+from zope.fssync.metadata import Metadata
+from zope.proxy import removeAllProxies
+from zope.xmlpickle import fromxml
 
+from zope.app import zapi
+from zope.app.fssync import fspickle
+from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
-
-from zope.app.context import ContextWrapper
-from zope.app.interfaces.container import IContainer, IZopeContainer
+from zope.app.interfaces.container import IContainer
 from zope.app.traversing import traverseName, getName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.container.contained import contained
 
 class SynchronizationError(Exception):
     pass
@@ -344,7 +345,7 @@ def create_object(container, name, entry, fspath, replace=False):
         # A given factory overrides everything
         factory = resolve(factory_name)
         obj = factory()
-        obj = ContextWrapper(obj, container, name=name)
+        obj = contained(obj, container, name=name)
         adapter = get_adapter(obj)
         if IObjectFile.isImplementedBy(adapter):
             data = read_file(fspath)
@@ -382,8 +383,10 @@ def create_object(container, name, entry, fspath, replace=False):
                 obj = factory(name, None, data)
                 obj = removeAllProxies(obj)
             else:
-                # Oh well, assume the file is an xml pickle
-                obj = load_file(fspath)
+                # The file must contain an xml pickle, or we can't load it:
+                s = read_file(fspath)
+                s = fromxml(s)
+                obj = fspickle.loads(s, container)
 
     set_item(container, name, obj, replace)
 
@@ -392,33 +395,18 @@ def set_item(container, name, obj, replace=False):
     if IContainer.isImplementedBy(container):
         if not replace:
             publish(container, ObjectCreatedEvent(obj))
-        container = getAdapter(container, IZopeContainer)
         if replace:
             del container[name]
-        newname = container.setObject(name, obj)
-        if newname != name:
-            raise SynchronizationError(
-                "Container generated new name for %s (new name %s)" %
-                (name, newname))
-    else:
-        # Not a container, must be a mapping
-        # (This is used for extras and annotations)
-        container[name] = obj
+
+    container[name] = obj
 
 def delete_item(container, name):
     """Helper to delete an item from a container or mapping."""
-    if IContainer.isImplementedBy(container):
-        container = getAdapter(container, IZopeContainer)
     del container[name]
 
-def load_file(fspath):
-    """Helper to load an xml pickle from a file."""
-    return loads(read_file(fspath, "r"))
-
-def read_file(fspath, mode="rb"):
+def read_file(fspath):
     """Helper to read the data from a file."""
-    assert mode in ("r", "rb")
-    f = open(fspath, mode)
+    f = open(fspath, "rb")
     try:
         data = f.read()
     finally:

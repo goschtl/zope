@@ -12,6 +12,10 @@
 ##############################################################################
 """Provide conversion between Python pickles and XML."""
 
+# XXX This doesn't work properly for protocol 2 pickles yet; that
+# still needs to be dealt with.  Particular issues that need to be
+# addressed involve supporting the changes for new-style objects.
+
 import base64
 import marshal
 import re
@@ -25,6 +29,17 @@ from pickle import \
      DICT, INST, OBJ, GLOBAL, REDUCE, GET, BINGET, LONG_BINGET, PUT, \
      BINPUT, LONG_BINPUT, STOP, MARK, BUILD, SETITEMS, SETITEM, \
      BINPERSID, APPEND, APPENDS
+
+try:
+    from pickle import NEWTRUE, NEWFALSE
+except ImportError:
+    TRUE = INT + "01\n"
+    FALSE = INT + "00\n"
+    _bool_support = False
+else:
+    TRUE = NEWTRUE
+    FALSE = NEWFALSE
+    _bool_support = True
 
 from cStringIO import StringIO
 
@@ -199,7 +214,7 @@ class String(Scalar):
 
 
 # XXX use of a regular expression here seems to be brittle
-# due to fuzzy semantics of unicode "surogates".
+# due to fuzzy semantics of unicode "surrogates".
 # Eventually, we should probably rewrite this as a C
 # function.
 
@@ -387,16 +402,18 @@ class Pickle(Wrapper):
 class Persistent(Wrapper):
     pass
 
-class none(Scalar):
-    def __init__(self):
-        pass
+class NamedScalar(Scalar):
+    def __init__(self, name):
+        self.name = name
 
     def output(self, write, indent=0, strip=0):
-        write(' '*indent+'<none/>')
+        write("%s<%s/>" % (' '*indent, self.name))
         if not strip:
             write('\n')
 
-none=none()
+none = NamedScalar("none")
+true = NamedScalar("true")
+false = NamedScalar("false")
 
 class Reference(Scalar):
 
@@ -478,8 +495,26 @@ class ToXMLUnpickler(Unpickler):
         self.append(none)
     dispatch[NONE] = load_none
 
+    if _bool_support:
+        def load_false(self):
+            self.append(false)
+        dispatch[NEWFALSE] = load_false
+
+        def load_true(self):
+            self.append(true)
+        dispatch[NEWTRUE] = load_true
+
     def load_int(self):
-        self.append(Int(int(self.readline()[:-1])))
+        s = self.readline()[:-1]
+        i = int(s)
+        if s[0] == "0":
+            if i == 1:
+                self.append(true)
+                return
+            elif i == 0 and s != "0": # s == "00"
+                self.append(false)
+                return
+        self.append(Int(i))
     dispatch[INT] = load_int
 
     def load_binint(self):
@@ -746,6 +781,12 @@ class xmlPickler:
 
     def none(self, tag, data, NONE_tuple = (NONE, )):
         return NONE_tuple
+
+    def true(self, tag, data):
+        return TRUE,
+
+    def false(self, tag, data):
+        return FALSE,
 
     def long(self, tag, data):
         return ((LONG + ''.join(data[2:]).strip().encode('ascii') + 'L\n'), )
