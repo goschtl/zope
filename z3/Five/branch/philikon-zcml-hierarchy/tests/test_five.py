@@ -7,8 +7,8 @@ import unittest
 from Testing import ZopeTestCase
 from Testing.ZopeTestCase.functional import Functional
 
-ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('FiveTest')
+ZopeTestCase.installProduct('Five')
 
 from zope.component import getAdapter
 from Products.FiveTest.classes import Adaptable

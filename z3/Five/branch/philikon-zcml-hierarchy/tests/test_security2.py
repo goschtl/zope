@@ -9,8 +9,8 @@ from Testing import ZopeTestCase
 from Testing.ZopeTestCase.functional import Functional
 from AccessControl import Unauthorized
 
-ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('FiveTest')
+ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('PythonScripts')
 
 ViewManagementScreens = 'View management screens'
