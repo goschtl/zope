@@ -1,11 +1,8 @@
 import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
 
-from Products.CMFCore.tests.base.security import \
-     OmnipotentUser, UserWithRoles, PermissiveSecurityPolicy
-
 from Products.CMFCore.tests.base.dummy import \
-     DummyContent
+     DummyContent, DummyFTI
 
 from Products.CMFCore.tests.base.testcase import \
      SecurityTest
@@ -13,16 +10,11 @@ from Products.CMFCore.tests.base.testcase import \
 from Products.CMFCore.tests.base.utils import \
      has_path
 
-import re, new
-import OFS.Folder, OFS.SimpleItem
-from AccessControl import SecurityManager
-from AccessControl.SecurityManagement import newSecurityManager
-import Acquisition
 from DateTime import DateTime
-from Products.CMFCore.TypesTool import TypesTool, FactoryTypeInformation
+from Products.CMFCore.TypesTool import\
+     TypesTool,FactoryTypeInformation as FTI
 from Products.CMFCore.CatalogTool import CatalogTool
-from Products.CMFCore.PortalContent import PortalContent
-from Products.CMFCore.PortalFolder import *
+from Products.CMFCore.PortalFolder import PortalFolder, ContentFilter
 
 def extra_meta_types():
     return [  { 'name' : 'Dummy', 'action' : 'manage_addFolder' } ]
@@ -190,7 +182,6 @@ class PortalFolderTests( SecurityTest ):
 
         self.root._setObject( 'portal_types', TypesTool() )
         types_tool = self.root.portal_types
-        FTI = FactoryTypeInformation
         types_tool._setObject( 'Folder'
                              , FTI( id='Folder'
                                   , meta_type=PortalFolder.meta_type
@@ -248,14 +239,7 @@ class PortalFolderTests( SecurityTest ):
 
         self.root._setObject( 'portal_types', TypesTool() )
         types_tool = self.root.portal_types
-        FTI = FactoryTypeInformation
-        types_tool._setObject( 'Dummy'
-                             , FTI( 'Dummy'
-                                  , meta_type=DummyContent.meta_type
-                                  , product='OFSP'
-                                  , factory='addDTMLDocument'
-                                  )
-                             )
+        types_tool._setObject( 'Dummy', DummyFTI )
 
         self.root._setObject( 'portal_catalog', CatalogTool() )
         catalog = self.root.portal_catalog
@@ -314,69 +298,43 @@ class PortalFolderTests( SecurityTest ):
         assert has_path( catalog._catalog, '/test/sub2/dummy' )
         assert has_path( catalog._catalog, '/test/sub3/dummy' )
 
-class DummyContentWithMetadata( DummyContent ):
-
-    def Title( self ):
-        return self.title
-
-    def Creator( self ):
-        return self.creator
-
-    def Subject( self ):
-        return self.subject
-
-    def Description( self ):
-        return self.description
-
-    def created( self ):
-        return self.created_date
-
-    def modified( self ):
-        return self.modified_date
-    
-    def Type( self ):
-        return 'Dummy Content'
-
 class ContentFilterTests( TestCase ):
 
     def setUp( self ):
-        get_transaction().begin()
-
-    def tearDown( self ):
-        get_transaction().abort()
+        self.dummy=DummyContent('Dummy')
 
     def test_empty( self ):
         cfilter = ContentFilter()
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = filter( None, string.split( desc, '; ' ) )
+        lines = filter( None, desc.split('; ') )
         assert not lines
 
     def test_Type( self ):
         cfilter = ContentFilter( Type='foo' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         cfilter = ContentFilter( Type='Dummy Content' )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Type: Dummy Content'
 
         cfilter = ContentFilter( Type=( 'foo', 'bar' ) )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         cfilter = ContentFilter( Type=( 'Dummy Content', 'something else' ) )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Type: Dummy Content, something else'
 
     def test_Title( self ):
         cfilter = ContentFilter( Title='foo' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.title = 'asdf'
         assert not cfilter( dummy )
@@ -385,28 +343,28 @@ class ContentFilterTests( TestCase ):
         dummy.title = 'ohsofoolish'
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Title: foo'
     
     def test_Creator( self ):
         cfilter = ContentFilter( Creator='moe' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.creator = 'curly'
         assert not cfilter( dummy )
         dummy.creator = 'moe'
-        assert cfilter( dummy )
+        self.failUnless(cfilter( dummy ))
         dummy.creator = 'shmoe'
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
-        assert len( lines ) == 1
-        assert lines[0] == 'Creator: moe'
+        lines = desc.split('; ')
+        self.assertEqual(len( lines ),1)
+        self.assertEqual(lines[0],'Creator: moe')
     
     def test_Description( self ):
         cfilter = ContentFilter( Description='funny' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.description = 'sad'
         assert not cfilter( dummy )
@@ -415,13 +373,13 @@ class ContentFilterTests( TestCase ):
         dummy.description = 'it is funny you should mention it...'
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Description: funny'
     
     def test_Subject( self ):
         cfilter = ContentFilter( Subject=('foo',) )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.subject = ( 'bar', )
         assert not cfilter( dummy )
@@ -430,13 +388,14 @@ class ContentFilterTests( TestCase ):
         dummy.subject = ( 'foo', 'bar', )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Subject: foo'
 
+    def test_Subject2( self ):
         # Now test with mutli-valued
         cfilter = ContentFilter( Subject=('foo', 'bar' ) )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.subject = ( 'baz', )
         assert not cfilter( dummy )
@@ -447,14 +406,14 @@ class ContentFilterTests( TestCase ):
         dummy.subject = ( 'foo', 'bar', )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Subject: foo, bar'
     
     def test_created( self ):
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:min' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.created_date = DateTime( '2000/12/31' )
         assert not cfilter( dummy )
@@ -463,14 +422,16 @@ class ContentFilterTests( TestCase ):
         dummy.created_date = DateTime( '2001/01/01' )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Created since: 2001/01/01'
 
+    def test_created2( self ):
+        
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:max' )
 
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.created_date = DateTime( '2000/12/31' )
         assert cfilter( dummy )
@@ -479,14 +440,14 @@ class ContentFilterTests( TestCase ):
         dummy.created_date = DateTime( '2001/01/01' )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Created before: 2001/01/01'
     
     def test_modified( self ):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:min' )
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.modified_date = DateTime( '2000/12/31' )
         assert not cfilter( dummy )
@@ -495,14 +456,14 @@ class ContentFilterTests( TestCase ):
         dummy.modified_date = DateTime( '2001/01/01' )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Modified since: 2001/01/01'
 
+    def test_modified2( self ):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
-                               , modified_usage='range:max' )
-
-        dummy = DummyContentWithMetadata( 'Dummy' )
+                               , modified_usage='range:max' )        
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.modified_date = DateTime( '2000/12/31' )
         assert cfilter( dummy )
@@ -511,7 +472,7 @@ class ContentFilterTests( TestCase ):
         dummy.modified_date = DateTime( '2001/01/01' )
         assert cfilter( dummy )
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Modified before: 2001/01/01'
  
@@ -521,7 +482,7 @@ class ContentFilterTests( TestCase ):
                                , Title='foo'
                                )
 
-        dummy = DummyContentWithMetadata( 'Dummy' )
+        dummy = self.dummy
         assert not cfilter( dummy )
         dummy.created_date = DateTime( '2000/12/31' )
         assert not cfilter( dummy )
@@ -541,7 +502,7 @@ class ContentFilterTests( TestCase ):
         assert cfilter( dummy )
 
         desc = str( cfilter )
-        lines = string.split( desc, '; ' )
+        lines = desc.split('; ')
         assert len( lines ) == 2, lines
         assert 'Created before: 2001/01/01' in lines
         assert 'Title: foo' in lines

@@ -49,6 +49,8 @@ class UserWithRoles( Implicit ):
     getUserName = getId
 
     def allowed( self, object, object_roles=None ):
+        if object_roles is None:
+            object_roles=()
         for orole in object_roles:
             if orole in self._roles:
                 return 1

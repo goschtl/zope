@@ -16,7 +16,7 @@ from Products.CMFCore.tests.base.security import \
      OmnipotentUser, UserWithRoles
 from Products.CMFCore.tests.base.dummy import \
      DummyMethod, DummyContent, addDummy, DummyTypeInfo,\
-     DummyFolder
+     DummyFolder, DummyFTI
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
@@ -34,24 +34,7 @@ class TypesToolTests( SecurityRequestTest ):
 
         root._setObject( 'portal_types', TypesTool() )
         tool = root.portal_types
-        tool._setObject( 'Dummy' 
-                       , FTI( 'Dummy'
-                            , meta_type=DummyContent.meta_type
-                            , product='CMFDefault'
-                            , factory='addDocument'
-                            , actions= ( { 'name'          : 'View'
-                                           , 'action'        : 'view'
-                                           , 'permissions'   : ('View', ) },
-                                         { 'name'          : 'View2'
-                                           , 'action'        : 'view2'
-                                           , 'permissions'   : ('View', ) },
-                                         { 'name'          : 'Edit'
-                                           , 'action'        : 'edit'
-                                           , 'permissions'   : ('forbidden permission',)
-                                           }
-                                         )
-                              )
-                         )
+        tool._setObject( 'Dummy', DummyFTI ) 
     
     def test_processActions( self ):
         """

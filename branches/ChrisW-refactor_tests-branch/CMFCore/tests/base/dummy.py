@@ -2,6 +2,7 @@ from Acquisition import Implicit
 from OFS.SimpleItem import Item
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.TypesTool import TypeInformation
+from Products.CMFCore.TypesTool import FactoryTypeInformation
 
 class DummyMethod:
     """
@@ -43,9 +44,36 @@ class DummyContent( PortalContent, Item ):
     def reset( self ):
         self.after_add_called = self.before_delete_called = 0
 
-    # WAAAAAAAAA!  we don't want the Database export/import crap in the way.
+    # Make sure normal Database export/import stuff doesn't trip us up.
     def _getCopy( self, container ):        
         return DummyContent( self.id, catalog=self.catalog )
+
+    def _safe_get(self,attr):
+        if self.catalog:
+            return getattr(self,attr,'')
+        else:
+            return getattr(self,attr)
+
+    def Title( self ):
+        return self.title
+
+    def Creator( self ):
+        return self._safe_get('creator')
+
+    def Subject( self ):
+        return self._safe_get('subject')
+
+    def Description( self ):
+        return self.description
+
+    def created( self ):
+        return self._safe_get('created_date')
+
+    def modified( self ):
+        return self._safe_get('modified_date')
+    
+    def Type( self ):
+        return 'Dummy Content'
 
 def addDummy( self, id ):
     """
@@ -75,6 +103,23 @@ class DummyFactory:
 class DummyTypeInfo(TypeInformation):
     """ Dummy class of type info object """
     meta_type = "Dummy Test Type Info"
+
+DummyFTI = FactoryTypeInformation( 'Dummy',
+                                   meta_type=DummyContent.meta_type,
+                                   product='CMFDefault',
+                                   factory='addDocument',
+                                   actions= ( { 'name'          : 'View',
+                                                'action'        : 'view',
+                                                'permissions'   : ('View', ) },
+                                              { 'name'          : 'View2',
+                                                'action'        : 'view2',
+                                                'permissions'   : ('View', ) },
+                                              { 'name'          : 'Edit',
+                                                'action'        : 'edit',
+                                                'permissions'   : ('forbidden permission',)
+                                                }
+                                              )
+                                   )
 
 class DummyFolder( Implicit ):
     """
