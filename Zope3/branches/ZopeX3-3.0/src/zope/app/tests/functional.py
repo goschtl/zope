@@ -23,6 +23,7 @@ import rfc822
 import sys
 import traceback
 import unittest
+import urllib
 
 from StringIO import StringIO
 from Cookie import SimpleCookie
@@ -41,6 +42,7 @@ import zope.server.interfaces
 from zope.testing import doctest
 
 from zope.app.debug import Debugger
+import zope.app.pluggableauth
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
@@ -79,6 +81,16 @@ class ResponseWrapper(object):
     def __getattr__(self, attr):
         return getattr(self._response, attr)
 
+
+grant_request = r"""
+POST /@@PrincipalRoles.html HTTP/1.1
+Authorization: Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3
+Content-Length: 97
+Content-Type: application/x-www-form-urlencoded
+Referer: http://localhost:8081/@@PrincipalRoles.html
+
+grid.zope.Manager.zope.mgr=Allow&principals%3Alist=zope.mgr&roles%3Alist=zope.Manager&APPLY=Apply"""
+
 class FunctionalTestSetup(object):
     """Keeps shared state across several functional test cases."""
 
@@ -108,6 +120,10 @@ class FunctionalTestSetup(object):
             self.connection = None
             self._config_file = config_file
             self._init = True
+
+            # Make a local grant for the test user
+            response = http(grant_request, handle_errors=False)
+            
         elif config_file and config_file != self._config_file:
             # Running different tests with different configurations is not
             # supported at the moment
@@ -430,7 +446,7 @@ class DocResponseWrapper(ResponseWrapper):
             return "%s\n\n%s" % (self.header_output, body)
         return "%s\n" % (self.header_output)
 
-def http(request_string):
+def http(request_string, handle_errors=True):
     """Execute an HTTP request string via the publisher
 
     This is used for HTTP doc tests.
@@ -446,6 +462,7 @@ def http(request_string):
     command_line = request_string[:l].rstrip()
     request_string = request_string[l+1:]
     method, path, protocol = command_line.split()
+    path = urllib.unquote(path)
     
 
     instream = StringIO(request_string)
@@ -458,7 +475,9 @@ def http(request_string):
     headers = [split_header(header)
                for header in rfc822.Message(instream).headers]
     for name, value in headers:
-        name = 'HTTP_' + ('_'.join(name.upper().split('-')))
+        name = ('_'.join(name.upper().split('-')))
+        if name not in ('CONTENT_TYPE', 'CONTENT_LENGTH'):
+            name = 'HTTP_' + name
         environment[name] = value.rstrip()
 
     outstream = HTTPTaskStub()
@@ -490,7 +509,7 @@ def http(request_string):
     response = DocResponseWrapper(request.response, outstream, path,
                                   header_output)
     
-    publish(request)
+    publish(request, handle_errors=handle_errors)
     setSite(old_site)
 
     # sync Python connection:
