@@ -21,7 +21,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer, IContained
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IAuthentication, IPrincipal
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Password, Field
 
@@ -74,7 +74,7 @@ class IPrincipalSource(Interface):
         """
 
 
-class IPluggableAuthenticationService(IAuthenticationService, IContainer):
+class IPluggableAuthenticationService(IAuthentication, IContainer):
     """An `AuthenticationService` that can contain multiple pricipal sources.
     """
 

@@ -81,7 +81,7 @@ class PluggableAuthenticationService(OrderedContainer):
         OrderedContainer.__init__(self)
 
     def authenticate(self, request):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
         for ps_key, ps in self.items():
             loginView = zapi.queryView(ps, "login", request)
             if loginView is not None:
@@ -101,7 +101,7 @@ class PluggableAuthenticationService(OrderedContainer):
         return None
 
     def unauthorized(self, id, request):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
 
         next = queryNextService(self, Authentication, None)
         if next is not None:
@@ -110,7 +110,7 @@ class PluggableAuthenticationService(OrderedContainer):
         return None
 
     def getPrincipal(self, id):
-        """ See `IAuthenticationService`.
+        """ See `IAuthentication`.
 
         For this implementation, an `id` is a string which can be
         split into a 3-tuple by splitting on tab characters.  The
@@ -145,7 +145,7 @@ class PluggableAuthenticationService(OrderedContainer):
         return source.getPrincipal(id)
 
     def getPrincipals(self, name):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
 
         for ps_key, ps in self.items():
             for p in ps.getPrincipals(name):
