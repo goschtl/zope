@@ -13,7 +13,7 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.2 2004/02/15 18:59:55 srichter Exp $
+$Id: node.py,v 1.3 2004/02/15 19:28:19 philikon Exp $
 """
 
 from zope.interface import implements
@@ -132,10 +132,7 @@ class Node:
                 # if the node is already expanded, the toggle would
                 # collapse it
                 expanded_nodes.remove(id)
-                if not node is childNodes[-1]:
-                    row_state.append(True)
-                else:
-                    row_state.append(False)
+                row_state.append(not node is childNodes[-1])
             else:
                 # if it isn't expanded, the toggle would expand it
                 expanded_nodes += [id]
