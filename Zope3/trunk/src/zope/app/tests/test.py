@@ -13,7 +13,7 @@
 #
 ##############################################################################
 """
-test.py [-abBcdDfFgGhklLmMPprstTuUv] [modfilter [testfilter]]
+test.py [-abBcdDfFgGhklLmMPprstTuUv] [modfilter [testfilter...]]
 
 Find and run tests written using the unittest module.
 
@@ -204,7 +204,7 @@ the test runner script (see the list of global variables in process_args().).
 
 
 modfilter
-testfilter
+testfilter...
     Case-sensitive regexps to limit which tests are run, used in search
     (not match) mode.
     In an extension of Python regexp notation, a leading "!" is stripped
@@ -213,10 +213,14 @@ testfilter
     By default these act like ".", i.e. nothing is excluded.
 
     modfilter is applied to a test file's path, starting at "build" and
-    including (OS-dependent) path separators.
+    including (OS-dependent) path separators.  Additional modfilters
+    can be specified with the --module option; modules are matched if
+    they match at least one modfilter.
 
     testfilter is applied to the (method) name of the unittest methods
     contained in the test files whose paths modfilter matched.
+    Additional testfilters can be specified with the --method option;
+    methods are matched if they match at least one testfilter.
 
 Extreme (yet useful) examples:
 
@@ -493,13 +497,17 @@ class PathInit:
         else:
             print "Running %s tests from %s" % (kind, self.cwd)
 
-def match(rx, s):
-    if not rx:
+def match(rxlist, s):
+    if not rxlist:
         return True
-    if rx[0] == "!":
-        return re.search(rx[1:], s) is None
-    else:
-        return re.search(rx, s) is not None
+    for rx in rxlist:
+        if rx[0] == "!":
+            matched = re.search(rx[1:], s) is None
+        else:
+            matched = re.search(rx, s) is not None
+        if matched:
+            return True
+    return False
 
 class TestFileFinder:
     def __init__(self, prefix):
@@ -868,8 +876,8 @@ def process_args(argv=None):
     if argv is None:
         argv = sys.argv
 
-    MODULE_FILTER = None
-    TEST_FILTER = None
+    MODULE_FILTERS = []
+    TEST_FILTERS = []
     VERBOSE = 0
     LOOP = 0
     GUI = False
@@ -911,6 +919,7 @@ def process_args(argv=None):
                                     "pychecker", "debug", "pdebug",
                                     "gc-threshold=", "gc-option=",
                                     "loop", "gui", "minimal-gui",
+                                    "method=", "module=",
                                     "profile", "progress", "refcount", "trace",
                                     "top-fifty", "verbose", "repeat="
                                     ])
@@ -995,6 +1004,10 @@ def process_args(argv=None):
                 TIMESFN = v
         elif k in ('-s', '--dir'):
             TEST_DIRS.append(v)
+        elif k == "method":
+            TEST_FILTERS.append(v)
+        elif k == "--module":
+            MODULE_FILTERS.append(v)
 
     if PYCHECKER:
         # make sure you have a recent version of pychecker
@@ -1091,8 +1104,8 @@ def process_args(argv=None):
 
         if args:
             if len(args) > 1:
-                TEST_FILTER = args[1]
-            MODULE_FILTER = args[0]
+                TEST_FILTERS.extend(args[1:])
+            MODULE_FILTERS.append(args[0])
         try:
             if TRACE:
                 # if the trace module is used, then we don't exit with
@@ -1104,7 +1117,7 @@ def process_args(argv=None):
                                      ignoremods=ignoremods,
                                      trace=False, count=True)
 
-                tracer.runctx("main(MODULE_FILTER, TEST_FILTER, LIBDIR)",
+                tracer.runctx("main(MODULE_FILTERS, TEST_FILTERS, LIBDIR)",
                               globals=globals(), locals=vars())
                 r = tracer.results()
                 path = "/tmp/trace.%s" % os.getpid()
@@ -1116,7 +1129,7 @@ def process_args(argv=None):
                 r.write_results(show_missing=True,
                                 summary=True, coverdir=coverdir)
             else:
-                bad = main(MODULE_FILTER, TEST_FILTER, LIBDIR)
+                bad = main(MODULE_FILTERS, TEST_FILTERS, LIBDIR)
                 if bad:
                     sys.exit(1)
         except ImportError, err:
