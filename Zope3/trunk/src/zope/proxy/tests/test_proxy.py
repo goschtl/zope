@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.12 2003/06/03 22:46:27 jim Exp $
+$Id: test_proxy.py,v 1.13 2003/06/07 00:15:03 fdrake Exp $
 """
 import pickle
 import unittest
@@ -73,9 +73,6 @@ class ProxyTestCase(unittest.TestCase):
         self.assertRaises(TypeError, self.proxy_class, key='value')
 
     def test_subclass_constructor(self):
-        # NB This leaks due to a bug in Python 2.2.2.
-        #    The leak is fixed in the release22-maint branch in Python CVS
-        #    (and this in Python 2.2.3), and in Python 2.3.
         class MyProxy(self.proxy_class):
             def __new__(cls, *args, **kwds):
                 return super(MyProxy, cls).__new__(cls, *args, **kwds)
