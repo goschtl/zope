@@ -179,6 +179,19 @@ For an aware object:
 - %Z:  If self.tzname() returns None, %Z is replaced by an empty string.
   Else %Z is replaced by the returned value, which must be a string.
 
+The full set of format codes supported varies across platforms,
+because Python calls the platform C library's strftime() function,
+and platform variations are common.  The documentation for Python's
+time module lists the format codes that the C standard (1989 version)
+requires, and those will work on all platforms with a standard C
+implementation.  Note that the 1999 version of the C standard added
+additional format codes.
+
+The exact range of years for which strftime() works also varies
+across platforms.  For example, Microsoft's implementation of
+strftime() refuses to accept years before 1900, and Python inherits
+this limitation.
+
 
 class timedelta
 ===============
