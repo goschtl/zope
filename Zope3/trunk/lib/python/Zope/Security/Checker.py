@@ -273,7 +273,7 @@ _typeChecker = NamesChecker(['__str__', '__repr__', '__name__', '__module__',
                              '__bases__'])
 
 _interfaceChecker = NamesChecker(['__str__', '__repr__', '__name__',
-                                  '__module__', '__bases__',
+                                  '__module__', '__bases__', 'getBases',
                                   'isImplementedBy', 'extends'])
 
 BasicTypes = {
