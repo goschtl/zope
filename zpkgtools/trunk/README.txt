@@ -21,6 +21,11 @@ be found in the Zope 3 wiki:
 
   http://dev.zope.org/Zope3/Zope3PackagingProposal
 
+An online version of the documentation is available at:
+
+  http://www.zope.org/Members/fdrake/zpkgtools/
+
+
 
 Running the unit tests
 ----------------------
