@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.9 2003/06/09 16:39:16 alga Exp $
+$Id: functional.py,v 1.10 2003/06/24 16:35:28 mgedmin Exp $
 """
 
 import logging
@@ -329,7 +329,7 @@ class SampleFunctionalTest(BrowserTestCase):
         self.assertEquals(response.getStatus(), 200)
 
     def testNotExisting(self):
-        response = self.publish('/nosuchthing', handle_errors=1)
+        response = self.publish('/nosuchthing', handle_errors=True)
         self.assertEquals(response.getStatus(), 404)
 
     def testLinks(self):
