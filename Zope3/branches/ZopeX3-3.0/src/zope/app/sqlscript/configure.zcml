@@ -21,7 +21,7 @@
 
   <content class=".sqlscript.SQLScript">
     <factory
-        id="SQLScript"
+        id="zope.app.content.SQLScript"
         title="SQL Script"
         description="A content-based script to execute dyanmic SQL."
         />

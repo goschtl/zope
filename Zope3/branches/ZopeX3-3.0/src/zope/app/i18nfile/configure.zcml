@@ -20,7 +20,7 @@
 
   <content class=".i18nfile.I18nFile">
     <factory
-        id="I18nFile"
+        id="zope.app.content.I18nFile"
         title="I18n File"
         description="An Internationalized File"
         />
@@ -47,7 +47,7 @@
 
   <content class=".i18nimage.I18nImage">
     <factory
-        id="I18nImage"
+        id="zope.app.content.I18nImage"
         title="I18n Image"
         description="An Internationalized Image"
         />

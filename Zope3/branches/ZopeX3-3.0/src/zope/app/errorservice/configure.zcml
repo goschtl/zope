@@ -9,7 +9,7 @@
 
   <content class=".ErrorReportingService">
     <factory
-        id="ErrorLogging"
+        id="zope.app.ErrorLogging"
         />
     <require
         permission="zope.Public"

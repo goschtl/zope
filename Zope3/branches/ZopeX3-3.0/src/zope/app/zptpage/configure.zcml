@@ -10,7 +10,7 @@
 
   <content class=".zptpage.ZPTPage">
     <factory
-        id="ZPTPage"
+        id="zope.app.content.ZPTPage"
         title="ZPT Page"
         description="A simple, content-based Page Template"
         />

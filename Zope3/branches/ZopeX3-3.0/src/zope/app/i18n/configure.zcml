@@ -19,7 +19,7 @@
 <content 
     class=".translationdomain.TranslationDomain">
    <factory 
-        id="TranslationService" 
+        id="zope.app.TranslationService" 
         />
     <implements
         interface="zope.app.utility.interfaces.ILocalUtility" 
@@ -60,8 +60,9 @@
 </content>
 
 <factory 
-     component="zope.app.i18n.messagecatalog.MessageCatalog" 
-     id="Message Catalog"/>
+    component="zope.app.i18n.messagecatalog.MessageCatalog" 
+    id="zope.app.MessageCatalog"
+    />
 
 
 <!-- Setup Export and Import Filters -->
