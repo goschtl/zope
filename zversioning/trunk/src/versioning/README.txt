@@ -55,6 +55,7 @@ First lets configure the various component needed (what 'configure.zcml'
 usually does for us):
 
   >>> from zope.app.tests import ztapi
+  >>> from zope.app import zapi
   >>> from versioning import interfaces, repository, policies, storage
 
 Configure the 'IHistoryStorage' utility being responsible for the storage 
@@ -62,6 +63,8 @@ of the objects histories:
 
   >>> ztapi.provideUtility(interfaces.IHistoryStorage,
   ...                      storage.SimpleHistoryStorage())
+  
+  >>> histories_storage = zapi.getUtility(interfaces.IHistoryStorage)
 
 We also need a 'IVersionableAspects' multi adapter beeing responsible
 for the versioning policy (what is versioned and how (not storage)).
@@ -78,10 +81,17 @@ handles the checkout/checkin status for the repository.
   ...                      interfaces.IHistoryStorage,
   ...                      repository.DummyCheckoutAware)
 
-Let's now build the repository:
+In this implementation the repository is simply a adapter to a 
+'IHistoryStorage'. This ensures that several versioning strategies 
+can be used with the same storage:
 
-  >>> from versioning.repository import CopyModifyMergeRepository
-  >>> repository = buildRepository(CopyModifyMergeRepository)
+  >>> ztapi.provideAdapter(interfaces.IHistoryStorage,
+  ...                      interfaces.ICopyModifyMergeRepository,
+  ...                      repository.CopyModifyMergeRepository)
+
+Now we adapt our history storage to the chosen repository strategy:
+
+  >>> repository = interfaces.ICopyModifyMergeRepository(histories_storage)
 
 An object that isn't 'IVersionable' can't be put under version control.
 Applying version control should raise an exception:
