@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.36 2003/08/07 22:08:39 fdrake Exp $
+$Id: fssync.py,v 1.37 2003/08/08 14:36:47 fdrake Exp $
 """
 
 import os
@@ -509,6 +509,24 @@ class FSSync(object):
             print "A", join(path, "")
         else:
             print "A", path
+
+    def mkdir(self, path):
+        dir, name = split(path)
+        if dir:
+            if not exists(dir):
+                raise Error("directory %r does not exist" % dir)
+            if not isdir(dir):
+                raise Error("%r is not a directory" % dir)
+        else:
+            dir = os.curdir
+        if exists(path):
+            raise Error("%r already exists" % path)
+        os.mkdir(path)
+        mdmanager = self.metadata.getmanager(dir)
+        entry = mdmanager.getentry(name)
+        entry["flag"] = "added"
+        mdmanager.flush()
+        print "A", path
 
     def remove(self, path):
         if exists(path):

@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.25 2003/08/07 22:08:39 fdrake Exp $
+$Id: main.py,v 1.26 2003/08/08 14:36:47 fdrake Exp $
 """
 
 import os
@@ -323,6 +323,13 @@ def revert(opts, args):
     fs = FSSync()
     fs.multiple(args, fs.revert)
 
+def mkdir(opts, args):
+    """%(program)s revert [TARGET ...]
+
+    """
+    fs = FSSync()
+    fs.multiple(args, fs.mkdir)
+
 def extract_message(opts, cmd):
     L = []
     message = None
@@ -361,6 +368,7 @@ command_table = {
     "checkin":  ("F:m:", ["file=", "message="], checkin),
     "ci":       ("F:m:", ["file=", "message="], checkin),
     "revert":   ("", [], revert),
+    "mkdir":    ("", [], mkdir),
     }
 
 if __name__ == "__main__":
