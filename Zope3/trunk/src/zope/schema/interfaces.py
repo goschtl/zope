@@ -357,20 +357,12 @@ class IChoice(IField):
 
     Only one, values or vocabulary, may be specified for a given choice.
     """
-    vocabularyName = TextLine(
-        title=u"Vocabulary Name",
-        description=(u"The name of the vocabulary to be used.  This name\n"
-                     u"is intended to be used by the IVocabularyRegistry's\n"
-                     u"get() method."),
-        required=False,
-        default=None)
-
     vocabulary = Attribute(
         "vocabulary",
-        ("IBaseVocabulary to be used, or None.\n"
+        ("IBaseVocabulary to be used, or vocabulary name, or None.\n"
          "\n"
-         "If None, the vocabularyName should be used by an\n"
-         "IVocabularyRegistry should be used to locate an appropriate\n"
+         "If a string, the vocabulary name should be used by an\n"
+         "IVocabularyRegistry to locate an appropriate\n"
          "IBaseVocabulary object."))
 
 # Collections:
