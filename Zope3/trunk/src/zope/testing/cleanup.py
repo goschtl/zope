@@ -25,7 +25,7 @@ If custom setUp or tearDown are needed, then the base routines should
 be called, as in::
 
   def tearDown(self):
-      CleanUp.tearDown(self)
+      super(Test, self).tearDown()
       ....
 
 Cleanup routines for global data should be registered by passing them to
@@ -35,7 +35,7 @@ addCleanup::
   addCleanUp(pigRegistry._clear)
 
 
-$Id: cleanup.py,v 1.6 2004/02/13 22:28:22 srichter Exp $
+$Id: cleanup.py,v 1.7 2004/03/01 12:55:39 philikon Exp $
 """
 _cleanups = []
 
