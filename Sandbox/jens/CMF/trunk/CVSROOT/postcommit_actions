@@ -41,9 +41,8 @@ one is:
 
  - email checkin messages to designated recipients
 
-\(Options for automatic mirroring via rsync over ssh is still present in this
-script, but the supporting code is mostly removed.  Stripping of the
-functionality was started around version 1.123.)"""
+\(Versions of the script that supported automatic mirroring was removed
+beginning at version 1.123.)"""
 
 import sys, os, tempfile, time, pwd
 SCRIPT_DIR = os.path.abspath(os.path.split(sys.argv[0])[0])
