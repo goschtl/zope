@@ -85,4 +85,7 @@ Things that need to be done
 - Expand the prototype section to the pre-proposal documenting the
   current effort; this lets people respond and offer suggestions.
 
+- Write a new setup.py for Zope 3 to use in a checkout that uses the
+  package metadata; this can happen after the ZopeX3 release.
+
 - Documentation, documentation, documentation!
