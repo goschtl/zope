@@ -1,8 +1,12 @@
-$Id: auth.txt,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: README.txt,v 1.1 2003/06/26 14:52:04 jim Exp $
 
 The current implementation will be replaced. Following is design
 I came up with together with Jim Fulton.
    -- itamar
+
+Note that this design is implemented (in some form) by the pluggable
+auth service. This document needs to be updated to reflect the final
+implementation. 
 
 
 Design notes for new AuthenticationService
