@@ -238,4 +238,8 @@ def installSiteHook(_context, class_, utility_provider):
     adapter(_context, factory=(utility_provider,),
             provides=IUtilityProvider,
             for_=(iface,))
-    classImplements(class_, iface)
+    _context.action(
+        discriminator = None,
+        callable = classImplements,
+        args=(class_, iface)
+        )
