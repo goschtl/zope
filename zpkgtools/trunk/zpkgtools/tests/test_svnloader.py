@@ -58,6 +58,10 @@ class SubversionLocalRepositoryBase(SubversionTestBase):
     TYPE = "file"
     HOSTPART = ""
 
+    def mkurl(self, path):
+        root = urlutils.pathname2url(self.SVNROOT)
+        return "file://%s%s%s" % (self.HOSTPART, root, path)
+
     def setUp(self):
         super(SubversionLocalRepositoryBase, self).setUp()
         self.svnrepodir = tempfile.mkdtemp()
