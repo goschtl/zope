@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.9 2003/06/05 20:13:08 jim Exp $
+$Id: useconfiguration.py,v 1.10 2003/06/06 16:01:30 philikon Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -24,7 +24,7 @@ from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
 from zope.app.traversing import getPath, getParent, objectName
 from zope.component import getServiceManager, getView, getAdapter
-from zope.interface.implements import flattenInterfaces
+from zope.interface import providedBy
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 
@@ -36,17 +36,8 @@ class UtilityInterfaceWidget(InterfaceWidget):
     def __call__(self):
         field = self.context
         component = field.context
-        # XXX Have to remove proxies because flattenInterfaces
-        #     doesn't work with proxies.
-        bare = removeAllProxies(component)
-        # Compute the list of interfaces that the component implements
-        interfaces = [
-            interface
-            for interface in flattenInterfaces(bare.__implements__)
-            if list(interface) # Does the interface define any names
-            ]
         result = ['\n<select name="%s">' % self.name]
-        for interface in interfaces:
+        for interface in providedBy(component).flattened():
             result.append('  <option value="%s.%s">%s</option>' %
                           (interface.__module__, interface.__name__,
                            interface.__name__))
