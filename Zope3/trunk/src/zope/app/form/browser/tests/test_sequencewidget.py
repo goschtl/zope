@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_sequencewidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
-"""
+"""Sequence Field Widget tests.
 
+$Id: test_sequencewidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
+"""
 import unittest, doctest
 
 from zope.schema import Tuple, List, TextLine
@@ -22,12 +22,14 @@ from zope.schema.interfaces import ITextLine, ValidationError
 from zope.publisher.browser import TestRequest
 from zope.interface.verify import verifyClass
 
+from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.form.browser import TextWidget, TupleSequenceWidget
 from zope.app.form.browser import ListSequenceWidget
 from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+
 
 class SequenceWidgetTest(BrowserWidgetTest):
     """Documents and tests the tuple and list (sequence) widgets.
@@ -180,6 +182,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         s = widget()
         self.verifyResult(s, check_list, inorder=True)
 
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(SequenceWidgetTest),
@@ -188,5 +191,5 @@ def test_suite():
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
-# vim: set filetype=python ts=4 sw=4 et si
+
 

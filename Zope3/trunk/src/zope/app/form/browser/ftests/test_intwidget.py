@@ -13,9 +13,8 @@
 ##############################################################################
 """Int Widget Functional Tests
 
-$Id: test_intwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
+$Id: test_intwidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
 """
-
 import unittest
 from persistence import Persistent
 from transaction import get_transaction
@@ -25,8 +24,7 @@ from support import *
 from zope.interface import Interface
 from zope.interface import implements
 
-from zope.schema import Int
-from zope.schema import EnumeratedInt
+from zope.schema import Int, Choice
 
 from zope.app.traversing import traverse
 
@@ -43,9 +41,9 @@ class IIntTest(Interface):
     i2 = Int(
         required=False)
 
-    i3 = EnumeratedInt(
+    i3 = Choice(
         required=False,
-        allowed_values=(0, 1, 2, 3, 5, 7, 11),
+        values=(0, 1, 2, 3, 5, 7, 11),
         missing_value=0)
 
 registerEditForm(IIntTest)
@@ -55,10 +53,10 @@ class IIntTest2(Interface):
     """Used to test an unusual care where missing_value is -1 and
     not in allowed_values."""
 
-    i1 = EnumeratedInt(
+    i1 = Choice(
         required=False,
         missing_value=-1,
-        allowed_values=(10, 20, 30))
+        values=(10, 20, 30))
 
 registerEditForm(IIntTest2)
 
@@ -104,9 +102,10 @@ class Test(BrowserTestCase):
 
         # i3 should be in a dropdown
         self.assert_(patternExists(
-            '<select .* name="field.i3".*>', response.getBody()))
+            '<select .*name="field.i3".*>', response.getBody()))
         self.assert_(patternExists(
-            '<option value="2" selected>2</option>', response.getBody()))
+            '<option selected="selected" value="2">2</option>',
+            response.getBody()))
 
 
     def test_submit_editform(self):
@@ -139,7 +138,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : '1',
             'field.i2' : '',
-            'field.i3' : '' })
+            'field.i3-empty-marker' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
@@ -165,16 +164,17 @@ class Test(BrowserTestCase):
 
         # confirm that i1 is has a blank item at top with value=""
         self.assert_(patternExists(
-            '<select .* name="field.i1".*>', response.getBody()))
+            '<select name="field.i1" .*>', response.getBody()))
         self.assert_(patternExists(
-            '<option value=""></option>', response.getBody()))
+            '<option value="">.*</option>', response.getBody()))
         self.assert_(patternExists(
-            '<option value="10" selected>10</option>', response.getBody()))
+            '<option selected="selected" value="10">10</option>',
+            response.getBody()))
 
         # submit form as if top item is selected
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.i1' : '' })
+            'field.i1-empty-marker' : '1'})
 
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))

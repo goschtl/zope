@@ -13,7 +13,7 @@
 ##############################################################################
 """Float Widget Functional Tests
 
-$Id: test_floatwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
+$Id: test_floatwidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
 """
 
 import unittest
@@ -25,8 +25,7 @@ from support import *
 from zope.interface import Interface
 from zope.interface import implements
 
-from zope.schema import Float
-from zope.schema import EnumeratedFloat
+from zope.schema import Float, Choice
 
 from zope.app.traversing import traverse
 
@@ -43,9 +42,9 @@ class IFloatTest(Interface):
     f2 = Float(
         required=False)
 
-    f3 = EnumeratedFloat(
+    f3 = Choice(
         required=False,
-        allowed_values=(0.0, 1.1, 2.1, 3.1, 5.1, 7.1, 11.1),
+        values=(0.0, 1.1, 2.1, 3.1, 5.1, 7.1, 11.1),
         missing_value=0)
 
 registerEditForm(IFloatTest)
@@ -82,9 +81,10 @@ class Test(BrowserTestCase):
 
         # f3 should be in a dropdown
         self.assert_(patternExists(
-            '<select .* name="field.f3".*>', response.getBody()))
+            '<select .*name="field.f3".*>', response.getBody()))
         self.assert_(patternExists(
-            '<option value="2.1" selected>2.1</option>', response.getBody()))
+            '<option selected="selected" value="2.1">2.1</option>',
+            response.getBody()))
 
 
     def test_submit_editform(self):
@@ -117,7 +117,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.f1' : '1.1',
             'field.f2' : '',
-            'field.f3' : '' })
+            'field.f3-empty-marker' : '1' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 

@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <!-- Views for -->
+  <!-- Views for Widget Errors -->
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"     
@@ -134,143 +134,97 @@
       permission="zope.Public"
       />
 
-  <!-- Widgets for enumerated field flavours -->
+
+  <!-- Items-related widgets; they are proxies for the multiviews below. -->
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IEnumeratedTextLine"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".enumerated.EnumeratedTextWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IEnumeratedInt"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".enumerated.EnumeratedIntWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IEnumeratedFloat"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".enumerated.EnumeratedFloatWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IEnumeratedDatetime"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".enumerated.EnumeratedDatetimeWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IEnumeratedDate"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".enumerated.EnumeratedDateWidget"
-      permission="zope.Public"
-      />
-
-  <!-- Vocabulary fields share special widget factories that redirect
-       to the vocabularies they reference. -->
-
-  <!-- Single selection -->
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyField"
+      for="zope.schema.interfaces.IChoice"
       provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".vocabularywidget.VocabularyFieldDisplayWidget"
+      factory=".ChoiceDisplayWidget"
       permission="zope.Public"
       />
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyField"
+      for="zope.schema.interfaces.IChoice"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabularywidget.VocabularyFieldEditWidget"
+      factory=".ChoiceEditWidget"
       permission="zope.Public"
       />
 
-  <!-- Bags -->
-
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyBagField"
+      for="zope.schema.interfaces.IChoiceSequence"
       provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".vocabularywidget.VocabularyBagFieldDisplayWidget"
+      factory=".ChoiceSequenceDisplayWidget"
       permission="zope.Public"
       />
-      
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyBagField"
+      for="zope.schema.interfaces.IChoiceSequence"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabularywidget.VocabularyBagFieldEditWidget"
+      factory=".ChoiceSequenceEditWidget"
       permission="zope.Public"
       />
 
-  <!-- Lists -->
+  <!-- Default Multi-Views for fields and vocabularies -->
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyListField"
+      for="zope.schema.interfaces.IChoice
+           zope.schema.interfaces.IIterableVocabulary"
       provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".vocabularywidget.VocabularyListFieldDisplayWidget"
+      factory=".ItemDisplayWidget"
       permission="zope.Public"
       />
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyListField"
+      for="zope.schema.interfaces.IChoice
+           zope.schema.interfaces.IIterableVocabulary"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabularywidget.VocabularyListFieldEditWidget"
+      factory=".DropdownWidget"
       permission="zope.Public"
       />
 
-  <!-- Sets -->
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoiceSequence
+           zope.schema.interfaces.IIterableVocabulary"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MultiSelectWidget"
+      permission="zope.Public"
+      />
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularySetField"
+      for="zope.schema.interfaces.IChoiceSequence
+           zope.schema.interfaces.IIterableVocabulary"
       provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".vocabularywidget.VocabularySetFieldDisplayWidget"
-      permission="zope.Public"
-      />
-	  
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularySetField"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabularywidget.VocabularySetFieldEditWidget"
+      factory=".SetDisplayWidget"
       permission="zope.Public"
       />
 
-  <!-- Unique lists -->
+  <!-- Register a couple default vocabulary query views. -->
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyUniqueListField"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".vocabularywidget.VocabularyUniqueListFieldDisplayWidget"
+      for="zope.schema.interfaces.IVocabularyQuery
+           zope.schema.interfaces.IChoice"
+      provides="zope.app.form.browser.interfaces.IVocabularyQueryView"
+      factory=".vocabularyquery.IterableVocabularyQueryView"
       permission="zope.Public"
       />
-      
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyUniqueListField"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabularywidget.VocabularyUniqueListFieldEditWidget"
+      for="zope.schema.interfaces.IVocabularyQuery
+           zope.schema.interfaces.IChoiceSequence"
+      provides="zope.app.form.browser.interfaces.IVocabularyQueryView"
+      factory=".vocabularyquery.IterableVocabularyQueryMultiView"
       permission="zope.Public"
       />
-	  
-  <!-- implementation support for vocabulary field widgets -->
-  
-  <include file="vocabularywidget.zcml" />  
 
 </configure>

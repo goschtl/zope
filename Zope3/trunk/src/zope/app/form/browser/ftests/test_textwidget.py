@@ -13,14 +13,14 @@
 ##############################################################################
 """TextWidget Tests
 
-$Id: test_textwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
+$Id: test_textwidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
 """
 import unittest
 from persistence import Persistent
 from transaction import get_transaction
 
 from zope.interface import Interface, implements
-from zope.schema import TextLine, EnumeratedTextLine
+from zope.schema import TextLine, Choice
 
 from support import *
 from zope.app.traversing import traverse
@@ -39,9 +39,9 @@ class ITextLineTest(Interface):
         required=False,
         missing_value=u'')
 
-    s3 = EnumeratedTextLine(
+    s3 = Choice(
         required=False,
-        allowed_values=(u'Bob', u'is', u'Your', u'Uncle'))
+        values=(u'Bob', u'is', u'Your', u'Uncle'))
 
 registerEditForm(ITextLineTest)
 
@@ -76,9 +76,9 @@ class Test(BrowserTestCase):
 
         # s3 should be in a dropdown
         self.assert_(patternExists(
-            '<select .* name="field.s3".*>', response.getBody()))
+            '<select .*name="field.s3".*>', response.getBody()))
         self.assert_(patternExists(
-            '<option value="" selected></option>', response.getBody()))
+            '<option value="">.*</option>', response.getBody()))
 
 
     def test_submit_editform(self):

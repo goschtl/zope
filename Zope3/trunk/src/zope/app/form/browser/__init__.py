@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets
 
-$Id: __init__.py,v 1.2 2004/03/17 17:35:46 philikon Exp $
+$Id: __init__.py,v 1.3 2004/04/24 23:19:42 srichter Exp $
 """
 from zope.app.form.browser.widget import BrowserWidget, DisplayWidget
 
@@ -24,15 +24,35 @@ from zope.app.form.browser.textwidgets import ASCIIWidget
 from zope.app.form.browser.textwidgets import IntWidget, FloatWidget
 from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
 
-from zope.app.form.browser.enumerated import EnumeratedTextWidget
-from zope.app.form.browser.enumerated import EnumeratedIntWidget
-from zope.app.form.browser.enumerated import EnumeratedFloatWidget
-from zope.app.form.browser.enumerated import EnumeratedDatetimeWidget
-from zope.app.form.browser.enumerated import EnumeratedDateWidget
+# Widgets for boolean fields
+from zope.app.form.browser.boolwidgets import CheckBoxWidget
+from zope.app.form.browser.boolwidgets import BooleanRadioWidget
+from zope.app.form.browser.boolwidgets import BooleanSelectWidget
+from zope.app.form.browser.boolwidgets import BooleanDropdownWidget
 
-from zope.app.form.browser.itemswidgets import CheckBoxWidget
-from zope.app.form.browser.itemswidgets import ListWidget, RadioWidget
-from zope.app.form.browser.itemswidgets import MultiListWidget, MultiCheckBoxWidget
+# Choice and Sequence Display Widgets
+from zope.app.form.browser.itemswidgets import ItemDisplayWidget
+from zope.app.form.browser.itemswidgets import ItemsMultiDisplayWidget
+from zope.app.form.browser.itemswidgets import SetDisplayWidget
+from zope.app.form.browser.itemswidgets import ListDisplayWidget
+
+# Widgets for fields with vocabularies.
+# Note that these are only dispatchers for the widgets below.
+from zope.app.form.browser.itemswidgets import ChoiceDisplayWidget
+from zope.app.form.browser.itemswidgets import ChoiceSequenceDisplayWidget
+from zope.app.form.browser.itemswidgets import ChoiceEditWidget
+from zope.app.form.browser.itemswidgets import ChoiceSequenceEditWidget
+
+# Widgets that let you choose a single item from a list
+# These widgets are multi-views on (field, vocabulary)
+from zope.app.form.browser.itemswidgets import SelectWidget
+from zope.app.form.browser.itemswidgets import DropdownWidget
+from zope.app.form.browser.itemswidgets import RadioWidget
+
+# Widgets that let you choose several items from a list
+# These widgets are multi-views on (field, vocabulary)
+from zope.app.form.browser.itemswidgets import MultiSelectWidget
+from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 
 from zope.app.form.browser.sequencewidget import SequenceWidget
 from zope.app.form.browser.sequencewidget import TupleSequenceWidget

@@ -13,118 +13,383 @@
 ##############################################################################
 """Browser widgets for items
 
-$Id: itemswidgets.py,v 1.1 2004/03/17 17:35:02 philikon Exp $
+$Id: itemswidgets.py,v 1.2 2004/04/24 23:19:42 srichter Exp $
 """
 from zope.interface import implements
 from zope.i18n import translate
 from zope.proxy import removeAllProxies
+from zope.schema.interfaces import ValidationError, InvalidValue
+from zope.schema.interfaces import ConstraintNotSatisfied
 
-from zope.app.form.interfaces import IInputWidget
+from zope.app import zapi
 from zope.app.form.browser.widget import BrowserWidget, renderElement
+from zope.app.form.browser.interfaces import IVocabularyQueryView
+from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import WidgetInputError
+from zope.app.i18n import ZopeMessageIDFactory as _
 
-ListTypes = list, tuple
 
-class CheckBoxWidget(BrowserWidget):
-    """A checkbox widget used to display Bool fields.
+# For fields with vocabularies, we really want to make the widget a view
+# of the field and vocabulary.
+
+def ChoiceDisplayWidget(field, request):
+    return zapi.getMultiView((field, field.vocabulary), request,
+                             IDisplayWidget)
+
+def ChoiceSequenceDisplayWidget(field, request):
+    return zapi.getMultiView((field, field.value_type.vocabulary), request,
+                             IDisplayWidget)
+
+def ChoiceEditWidget(field, request):
+    return zapi.getMultiView((field, field.vocabulary), request,
+                             IInputWidget)
+
+def ChoiceSequenceEditWidget(field, request):
+    return zapi.getMultiView((field, field.value_type.vocabulary), request,
+                             IInputWidget)
     
-    For more detailed documentation, including sample code, see
-    tests/test_checkboxwidget.py.
-    """
     
-    implements(IInputWidget)
-    
-    type = 'checkbox'
-    default = 0
-    extra = ''
+class TranslationHook(object):
+    """A mixin class that provides the translation capabilities."""
+
+    def translate(self, msgid):
+        return translate(self.context, msgid, context=self.request,
+                         default=msgid)
+
+def message(msgid, default):
+    """Add a default value to a i18n message id."""
+    msgid.default = default
+    return msgid
+
+
+class ItemsWidgetBase(TranslationHook, BrowserWidget):
+    """Convenience base class for widgets displaying items/choices."""
+
+    extra = ""
+
+    def __init__(self, field, vocabulary, request):
+        """Initialize the widget."""
+        # only allow this to happen for a bound field
+        assert field.context is not None
+        self.vocabulary = vocabulary
+        super(ItemsWidgetBase, self).__init__(field, request)
+        self.empty_marker_name = self.name + "-empty-marker"
+
+    def setPrefix(self, prefix):
+        """Set the prefixes for the field names of the form."""
+        super(ItemsWidgetBase, self).setPrefix(prefix)
+        # names for other information from the form
+        self.empty_marker_name = self.name + "-empty-marker"
 
     def __call__(self):
-        data = self._showData()
-        if data:
-            kw = {'checked': None}
-        else:
-            kw = {}
-        return "%s %s" % (
-            renderElement(self.tag,
-                          type='hidden',
-                          name=self.name+".used",
-                          id=self.name+".used",
-                          value=""
-                          ),
-            renderElement(self.tag,
-                             type=self.type,
-                             name=self.name,
-                             id=self.name,
-                             cssClass=self.cssClass,
-                             extra=self.extra,
-                             **kw),
-            )
+        """Render the widget to HTML."""
+        raise NotImplementedError(
+            "__call__() must be implemented by a subclass; use _showData()")
 
-    def _convert(self, value):
-        return value == 'on'
+    def textForValue(self, term):
+        """Extract a string from the term.
 
-    def _unconvert(self, value):
-        return value and "on" or ""
-        return value == 'on'
+        The term must be a vocabulary tokenized term. 
 
-    def hasInput(self):
-        return self.name + ".used" in self.request.form or \
-            super(CheckBoxWidget, self).hasInput()
+        This can be overridden to support more complex term objects. The token
+        is returned here since it's the only thing known to be a string, or
+        str()able."""
+        return term.token
+
+    def convertTokensToValues(self, tokens):
+        """Convert term tokens to the terms themselves.
+
+        Tokens are used in the HTML form to represent terms. This method takes
+        the form tokens and converts them back to terms. 
+        """
+        values = []
+        for token in tokens:
+            try:
+                term = self.vocabulary.getTermByToken(token)
+            except LookupError, error:
+                raise InvalidValue, \
+                      "token %r not found in vocabulary" %token
+            else:
+                values.append(term.value)
+        return values
 
     def getInputValue(self):
-        # When it's checked, its value is 'on'.
-        # When a checkbox is unchecked, it does not appear in the form data.
-        value = self.request.form.get(self.name, 'off')
-        return value == 'on'
+        """Get the value that was inputed."""
+        input = self.request.form.get(self.name, self._data_marker)
+        field = self.context
 
-class ItemsWidget(BrowserWidget):
-    """A widget that has a number of items in it."""
+        # missing value is okay if field is not required
+        if input == self._data_marker and not field.required and \
+               self.empty_marker_name in self.request.form:
+            return field.missing_value
+
+        # Now let's see whether we have a valid input value
+        try:
+            value = self._convert(input)
+        except ValidationError, error:
+            self._error = WidgetInputError(
+                self.context.__name__,
+                self.context.title,
+                error)
+
+            raise self._error
+
+        return value
+
+    def _emptyMarker(self):
+        """Mark the form so that empty selections are also valid."""
+        return '<input name="%s" type="hidden" value="1" />' % (
+            self.empty_marker_name)
+
+    def hasInput(self):
+        """Check whether we have any input."""
+        return (self.name in self.request.form or
+                self.empty_marker_name in self.request.form)
+
+    def setRenderedValue(self, value):
+        """Store the ready-for-HTML value."""
+        self._data = value
+
+    def _convert(self, input):
+        """See BrowserWidget"""
+        raise NotImplementedError(
+            "_convert(input) must be implemented by a subclass\n"
+            "It may be inherited from the mix-in classes SingleDataHelper\n"
+            "or MultiDataHelper")
+
+    def _showData(self):
+        if self._data is self._data_marker:
+            # The data has not been retrieved from the form, so let's do that
+            if self.hasInput():
+                try:
+                    value = self.getInputValue()
+                except WidgetInputError:
+                    value = self.request.form.get(self.name, self._missing)
+            else:
+                value = self._getDefault()
+        else:
+            value = self._data
+        return value
+
+    def _unconvert(self, value):
+        """Disregard this method as suggested by BrowserWidget."""
+        raise NotImplementedError(
+            "vocabulary-based widgets don't use the _unconvert() method")
+
+
+class SingleDataHelper(object):
+    """Mix-in helper class for getting the term from the HTML form.
+
+    This is used when we expect a single input, i.e. the Choice field. 
+    """
+
+    def _convert(self, input):
+        """See BrowserWidget"""
+        if input:
+            return self.convertTokensToValues([input])[0]
+        else:
+            return None
+
+
+class MultiDataHelper(object):
+    """Mix-in helper class for getting the term from the HTML form.
+
+    This is used when we expect a multiple inputs, i.e. Sequence fields with a
+    Choice field as value_type.
+    """
+
+    def _convert(self, input):
+        """See BrowserWidget"""
+        if input is self._data_marker:
+            return []
+        if not isinstance(input, list):
+            input = [input]
+        return self.convertTokensToValues(input)
+
+    def _getDefault(self):
+        # Return the default value for this widget;
+        # may be overridden by subclasses.
+        val = self.context.default
+        if val is None:
+            val = []
+        return val
+
+
+## Display-Widgets for Items-related fields.
+
+class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
+    """Simple single-selection display that can be used in many cases."""
+
+    _messageNoValue = message(_("item-missing-single-value-for-display"), "")
+
+    def __call__(self):
+        """See IBrowserWidget."""
+        value = self._showData()
+        if value is None:
+            return self.translate(self._messageNoValue)
+        else:
+            term = self.vocabulary.getTerm(value)
+            return self.textForValue(term)
+
+
+class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
+    """Displays a sequence of items."""
+
+    _messageNoValue = message(
+        _("vocabulary-missing-multiple-value-for-display"), "")
+
+    itemTag = 'li'
+    tag = 'ol'
+
+    def __call__(self):
+        """See IBrowserWidget."""
+        value = self._showData()
+        if value:
+            rendered_items = self.renderItems(value)
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 contents="\n".join(rendered_items),
+                                 extra=self.extra)
+        else:
+            return self.translate(self._messageNoValue)
+
+    def renderItems(self, value):
+        """Render items of sequence."""
+        items = []
+        cssClass = self.cssClass or ''
+        if cssClass:
+            cssClass += "-item"
+        tag = self.itemTag
+        for item in value:
+            term = self.vocabulary.getTerm(item)
+            items.append(renderElement(tag,
+                                       cssClass=cssClass,
+                                       contents=self.textForValue(term)))
+        return items
+
+class ListDisplayWidget(ItemsMultiDisplayWidget):
+    """Display widget for ordered multi-selection fields.
+
+    This can be used for both Sequence, List, and Tuple fields.
+    """
+    tag = 'ol'
+
+
+class SetDisplayWidget(ItemsMultiDisplayWidget):
+    """Display widget for unordered multi-selection fields.
+
+    This can be used for both Set field.
+    """
+    tag = 'ul'
+
+
+## Edit-Widgets for Items-related fields.
+
+class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
+    """Widget Base for rendering item-related fields.
+
+    These widgets work with Choice fields and Sequence fields that have Choice
+    as value_type.
+    """
     implements(IInputWidget)
-
-class SingleItemsWidget(ItemsWidget):
-    """A widget with a number of items that has only a single
-    selectable item."""
     
-    default = ""
+    size = 5
+    tag = 'select'
     firstItem = False
 
-    def textForValue(self, value):
-        '''Returns the text for the given value.
+    def __init__(self, field, vocabulary, request):
+        """Initialize the widget."""
+        super(ItemsEditWidgetBase, self).__init__(field, vocabulary, request)
 
-        Override this in subclasses.'''
-        # The text could be a MessageID, in which case we should try to
-        # translate it.
-        return translate(self.context, value, context=self.request,
-                         default=value)
+        # Queries are used in items widgets to reduce the amount of choices,
+        # since some vocabularies could literally provide thousands of terms.
+        self.queryview = None
+        query = vocabulary.getQuery()
+        if query is not None:
+            view = zapi.queryMultiView((query, field), request,
+                                       IVocabularyQueryView)
+            if view is not None:
+                self.queryview = view
+                self.queryview.setWidget(self)
+                self.queryview.setName(self.name + "-query")
 
-    def renderItems(self, value):
-        name = self.name
-        # get items
-        items = self.context.allowed_values
 
-        # check if we want to select first item
-        if (not value and getattr(self.context, 'firstItem', False)
-            and len(items) > 0):
-            value = items[0]
+    def setPrefix(self, prefix):
+        """Set the prefix of the input name.
+
+        Once we set the prefix of input field, we use the name of the input
+        field and the postfix '-query' for the associated query view.
+        """
+        super(ItemsEditWidgetBase, self).setPrefix(prefix)
+        if self.queryview is not None:
+            self.queryview.setName(self.name + "-query")
+
+
+    def __call__(self):
+        """See IBrowserWidget."""
+        value = self._showData()
+        contents = []
+        have_results = False
+
+        # If a query view was specified, provide the necessary UI
+        if self.queryview is not None:
+            html = self.queryview.renderResults(value)
+            if html:
+                contents.append(self._div('queryresults', html))
+                html = self.queryview.renderInput()
+                contents.append(self._div('queryinput', html))
+                have_results = True
+
+        contents.append(self._div('value', self.renderValue(value)))
+        if not self.context.required:
+            contents.append(self._emptyMarker())
+
+        if self.queryview is not None and not have_results:
+            html = self.queryview.renderInput()
+            if html:
+                contents.append(self._div('queryinput', html))
+
+        return self._div(self.cssClass, "\n".join(contents),
+                         id=self.name)
+
+
+    def _div(self, cssClass, contents, **kw):
+        """Render a simple div tag."""
+        if contents:
+            return renderElement('div',
+                                 cssClass=cssClass,
+                                 contents="\n%s\n" % contents,
+                                 **kw)
+        return ""
+
+
+    def renderItemsWithValues(self, values):
+        """Render the list of possible values, with those found in
+        'values' being marked as selected."""
 
         cssClass = self.cssClass
 
-        # FIXME: what if we run into multiple items with same value?
+        # multiple items with the same value are not allowed from a
+        # vocabulary, so that need not be considered here
         rendered_items = []
         count = 0
-        for item_value in items:
-            item_text = self.textForValue(item_value)
+        for term in self.vocabulary:
+            item_text = self.textForValue(term)
 
-            if item_value == value:
+            if term.value in values:
                 rendered_item = self.renderSelectedItem(count,
                                                         item_text,
-                                                        item_value,
-                                                        name,
+                                                        term.token,
+                                                        self.name,
                                                         cssClass)
             else:
                 rendered_item = self.renderItem(count,
                                                 item_text,
-                                                item_value,
-                                                name,
+                                                term.token,
+                                                self.name,
                                                 cssClass)
 
             rendered_items.append(rendered_item)
@@ -132,178 +397,212 @@ class SingleItemsWidget(ItemsWidget):
 
         return rendered_items
 
-class ListWidget(SingleItemsWidget):
-    """List widget."""
-    
-    size = 5
-
-    def __call__(self):
-        renderedItems = self.renderItems(self._showData())
-        return renderElement('select',
-                              name=self.name,
-                              id=self.name,
-                              cssClass=self.cssClass,
-                              size=self.size,
-                              contents="\n".join(renderedItems),
-                              extra=self.extra)
-
     def renderItem(self, index, text, value, name, cssClass):
-        return renderElement('option', contents=text, value=value,
-                              cssClass=cssClass)
+        """Render an item for a particular value."""
+        return renderElement('option',
+                             contents=text,
+                             value=value,
+                             cssClass=cssClass)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
-        return renderElement('option', contents=text, value=value,
-                              cssClass=cssClass, selected=None)
+        """Render an item for a particular value that is selected."""
+        return renderElement('option',
+                             contents=text,
+                             value=value,
+                             cssClass=cssClass,
+                             selected='selected')
 
 
-class RadioWidget(SingleItemsWidget):
-    """Radio buttons widget."""
-    
+class SelectWidget(ItemsEditWidgetBase):
+    """Provide a selection list for the item."""
+
+    _messageNoValue = message(_("vocabulary-missing-single-value-for-edit"),
+                              "(no value)")
+
+    def renderValue(self, value):
+        rendered_items = self.renderItems(value)
+        contents = "\n%s\n" %"\n".join(rendered_items)
+        return renderElement('select',
+                             name=self.name,
+                             contents=contents,
+                             size=self.size,
+                             extra=self.extra)
+
+    def renderItems(self, value):
+        # check if we want to select first item
+        if (value == self.context.missing_value
+            and getattr(self, 'firstItem', False)
+            and len(self.vocabulary) > 0):
+            # Grab the first item from the iterator:
+            values = [iter(self.vocabulary).next().value]
+        elif value != self.context.missing_value:
+            values = [value]
+        else:
+            values = []
+        items = self.renderItemsWithValues(values)
+        if not self.context.required:
+            option = ('<option value="">%s</option>'
+                      %(self.translate(self._messageNoValue)))
+            items.insert(0, option)
+        return items
+
+
+class DropdownWidget(SelectWidget):
+    """Variation of the SelectWidget that uses a drop-down list."""
+    size = 1
+
+
+class RadioWidget(ItemsEditWidgetBase):
+    """Radio widget for single item choices.
+
+    This widget can be used when the number of selections is going
+    to be small.
+    """
     orientation = "vertical"
 
-    def __call__(self):
-        rendered_items = self.renderItems(self._showData())
-        orientation = self.orientation
-        if orientation == 'horizontal':
+    _messageNoValue = message(_("vocabulary-missing-single-value-for-edit"),
+                              "(no value)")
+
+    _joinButtonToMessageTemplate = u"%s&nbsp;%s"
+
+    def renderItem(self, index, text, value, name, cssClass):
+        """Render an item of the list."""
+        id = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             value=value,
+                             name=name,
+                             id=id,
+                             cssClass=cssClass,
+                             type='radio')
+        return self._joinButtonToMessageTemplate %(elem, text)
+
+    def renderSelectedItem(self, index, text, value, name, cssClass):
+        """Render a selected item of the list."""
+        id = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             value=value,
+                             name=name,
+                             id=id,
+                             cssClass=cssClass,
+                             checked=None,
+                             type='radio')
+        return self._joinButtonToMessageTemplate %(elem, text)
+    
+    def renderItems(self, value):
+        # check if we want to select first item, the previously selected item
+        # or the "no value" item.
+        no_value = None
+        if (value == self.context.missing_value
+            and getattr(self, 'firstItem', False)
+            and len(self.vocabulary) > 0):
+            if self.context.required:
+                # Grab the first item from the iterator:
+                values = [iter(self.vocabulary).next().value]
+            else:
+                # the "no value" option will be checked
+                no_value = 'checked'
+        elif value != self.context.missing_value:
+            values = [value]
+        else:
+            values = []
+
+        items = self.renderItemsWithValues(values)
+        if not self.context.required:
+            kwargs = {
+                'value': '',
+                'name': self.name,
+                'cssClass': self.cssClass,
+                'type': 'radio'}
+            if no_value:
+                kwargs['checked']=no_value
+            option = renderElement('input', **kwargs)
+            option = self._joinButtonToMessageTemplate %(
+                option, self.translate(self._messageNoValue))
+            items.insert(0, option)
+
+        return items
+
+    def renderValue(self, value):
+        rendered_items = self.renderItems(value)
+        if self.orientation == 'horizontal':
             return "&nbsp;&nbsp;".join(rendered_items)
         else:
-            return '<br />'.join(rendered_items)
+            return "<br />".join(rendered_items)
 
-    def _renderItem(self, index, text, value, name, cssClass, checked):
-        id = '%s.%s' % (name, index)
-        if checked:
-            element = renderElement('input',
-                                    type="radio",
-                                    cssClass=cssClass,
-                                    name=name,
-                                    id=id,
-                                    value=value,
-                                    checked=None)
-        else:
-            element = renderElement('input',
-                                    type="radio",
-                                    cssClass=cssClass,
-                                    name=name,
-                                    id=id,
-                                    value=value)
 
-        return '%s<label for="%s">%s</label>' % (element, id, text)
+class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
+    """Items widget supporting multiple selections."""
 
-    def renderItem(self, index, text, value, name, cssClass):
-        return self._renderItem(index, text, value, name, cssClass, False)
-
-    def renderSelectedItem(self, index, text, value, name, cssClass):
-        return self._renderItem(index, text, value, name, cssClass, True)
-
-    def label(self):
-        return translate(self.context, self.title, context=self.request,
-                         default=self.title)
-
-    def row(self):
-        return ('<div class="%s"><label for="%s">%s</label></div>'
-                '<div class="field" id="%s">%s</div>' % (
-                self.labelClass(), self.name, self.label(), self.name, self()))
-                
-
-class MultiItemsWidget(ItemsWidget):
-    """A widget with a number of items that has multiple selectable items."""
-        
-    default = []
-
-    def _convert(self, value):
-        if not value:
-            return []
-        if isinstance(value, ListTypes):
-            return value
-        return [value]
+    _messageNoValue = message(
+        _("vocabulary-missing-multiple-value-for-edit"), "(no values)")
 
     def renderItems(self, value):
-        # need to deal with single item selects
-        value = removeAllProxies(value)
+        if value == self.context.missing_value:
+            values = []
+        else:
+            values = list(value)
+        return self.renderItemsWithValues(values)
 
-        if not isinstance(value, ListTypes):
-            value = [value]
-        name = self.name
-        items = self.context.allowed_values
-        cssClass = self.cssClass
-        rendered_items = []
-        count = 0
-        for item in items:
-            try:
-                item_value, item_text = item
-            except ValueError:
-                item_value = item
-                item_text = item
-
-            if item_value in value:
-                rendered_item = self.renderSelectedItem(count,
-                                                        item_text,
-                                                        item_value,
-                                                        name,
-                                                        cssClass)
-            else:
-                rendered_item = self.renderItem(count,
-                                                item_text,
-                                                item_value,
-                                                name,
-                                                cssClass)
-
-            rendered_items.append(rendered_item)
-            count += 1
-
-        return rendered_items
-
-
-class MultiListWidget(MultiItemsWidget):
-    """List widget with multiple select."""
-
-    size = 5
-
-    def __call__(self):
-        rendered_items = self.renderItems(self._showData())
-        return renderElement('select',
-                              name=self.name,
+    def renderValue(self, value):
+        # All we really add here is the ':list' in the name argument
+        # and mutliple=None to renderElement().
+        rendered_items = self.renderItems(value)
+        return renderElement(self.tag,
+                             name=self.name + ':list',
+                             multiple=None,
+                             size=self.size,
+                             contents="\n".join(rendered_items),
+                             extra=self.extra)
+    
+    def hidden(self):
+        items = []
+        for item in self._showData():
+            items.append(
+                renderElement(self.tag,
+                              type='hidden',
+                              name=self.name+':list',
                               id=self.name,
-                              multiple=None,
+                              value=item,
                               cssClass=self.cssClass,
-                              size=self.size,
-                              contents="\n".join(rendered_items),
-                              extra=self.extra)
+                              extra=self.extra))
+        return '\n'.join(items)
+         
 
-    def renderItem(self, index, text, value, name, cssClass):
-        return renderElement('option', contents=text, value=value)
-
-    def renderSelectedItem(self, index, text, value, name, cssClass):
-        return renderElement('option', contents=text, value=value,
-                              selected=None)
+class MultiSelectWidget(ItemsMultiEditWidgetBase):
+    """Provide a selection list for the list to be selected."""
 
 
-class MultiCheckBoxWidget(MultiItemsWidget):
-    """Multiple checkbox widget."""
+class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
+    """Provide a list of checkboxes that provide the choice for the list."""
 
     orientation = "vertical"
 
-    def __call__(self):
-        rendered_items = self.renderItems(self._showData())
-        orientation = self.orientation
-        if orientation == 'horizontal':
+    _joinButtonToMessageTemplate = u"%s&nbsp;%s"
+
+    def renderValue(self, value):
+        rendered_items = self.renderItems(value)
+        if self.orientation == 'horizontal':
             return "&nbsp;&nbsp;".join(rendered_items)
         else:
             return "<br />".join(rendered_items)
 
     def renderItem(self, index, text, value, name, cssClass):
-        return renderElement('input',
-                              type="checkbox",
-                              cssClass=cssClass,
-                              name=name,
-                              id=name,
-                              value=value) + text
+        id = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             type="checkbox",
+                             cssClass=cssClass,
+                             name=name,
+                             id=id,
+                             value=value)
+        return self._joinButtonToMessageTemplate %(elem, text)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
-        return renderElement('input',
-                              type="checkbox",
-                              cssClass=cssClass,
-                              name=name,
-                              id=name,
-                              value=value,
-                              checked=None) + text
+        id = '%s.%s' % (name, index)
+        elem = renderElement('input',
+                             type="checkbox",
+                             cssClass=cssClass,
+                             name=name,
+                             id=id,
+                             value=value,
+                             checked=None)
+        return self._joinButtonToMessageTemplate %(elem, text)

@@ -13,7 +13,7 @@
 ##############################################################################
 """DateTime Widget Functional Tests
 
-$Id: test_datetimewidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
+$Id: test_datetimewidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
 """
 import unittest
 import re
@@ -25,8 +25,7 @@ from zope.app.datetimeutils import parseDatetimetz, tzinfo
 from zope.interface import Interface
 from zope.interface import implements
 
-from zope.schema import Datetime
-from zope.schema import EnumeratedDatetime
+from zope.schema import Datetime, Choice
 
 from support import *
 from zope.app.traversing import traverse
@@ -44,9 +43,9 @@ class IDatetimeTest(Interface):
     d2 = Datetime(
         required=False)
 
-    d3 = EnumeratedDatetime(
+    d3 = Choice(
         required=False,
-        allowed_values=(
+        values=(
             datetime(2003, 9, 15, tzinfo=tzinfo(0)),
             datetime(2003, 10, 15, tzinfo=tzinfo(0))),
         missing_value=datetime(2000, 1, 1, tzinfo=tzinfo(0)))
@@ -142,7 +141,7 @@ class Test(BrowserTestCase):
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
             'field.d2' : '',
-            'field.d3' : '' })
+            'field.d3-empty-marker' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 

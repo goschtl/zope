@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_browserwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_browserwidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
 """
 import os
 import unittest
@@ -49,6 +49,7 @@ class BrowserWidgetTest(PlacelessSetup,
 
         self.content = TestObject()
         field = ITestContent['foo']
+        field = field.bind(self.content)
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)

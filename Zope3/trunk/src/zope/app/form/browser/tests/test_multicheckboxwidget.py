@@ -12,9 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_multicheckboxwidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
 """
 import unittest, doctest
+from zope.interface import Interface, implements
+from zope.publisher.browser import TestRequest
+from zope.schema import Choice, Sequence
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import MultiCheckBoxWidget
@@ -29,10 +32,25 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
     """
 
     _WidgetFactory = MultiCheckBoxWidget
+    _FieldFactory = Sequence
 
-    def setUp(self):
-        BrowserWidgetTest.setUp(self)
-        self._widget.context.allowed_values = (u'foo', u'bar')
+    def setUpContent(self, desc=u''):
+        class ITestContent(Interface):
+            foo = self._FieldFactory(
+                    title = u'Foo Title',
+                    description=desc,
+                    value_type=Choice(values=[u'foo', u'bar'])
+                    )
+        class TestObject:
+            implements(ITestContent)
+
+        self.content = TestObject()
+        field = ITestContent['foo']
+        field = field.bind(self.content)
+        request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl',
+                              form={'field.foo': u'bar'})
+        self._widget = self._WidgetFactory(field, field.value_type.vocabulary,
+                                           request)
 
     def testProperties(self):
         self.assertEqual(self._widget.cssClass, "")
@@ -41,7 +59,7 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItem(self):
-        check_list = ('type="checkbox"', 'id="field.bar"',
+        check_list = ('type="checkbox"', 'id="field.bar.',
                       'name="field.bar"', 'value="foo"', 'Foo')
         self.verifyResult(
             self._widget.renderItem(0, 'Foo', 'foo', 'field.bar', None),
@@ -54,22 +72,20 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItems(self):
-        check_list = ('type="checkbox"', 'id="field.foo"',
+        check_list = ('type="checkbox"', 'id="field.foo.',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')
-        self.verifyResult('\n'.join(self._widget.renderItems('bar')),
+        self.verifyResult('\n'.join(self._widget.renderItems(['bar'])),
                           check_list)
 
 
     def testRender(self):
-        value = 'bar'
-        self._widget.setRenderedValue(value)
-        check_list = ('type="checkbox"', 'id="field.foo"',
+        check_list = ('type="checkbox"', 'id="field.foo.',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')
         self.verifyResult(self._widget(), check_list)
 
-        check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
+        check_list = ('type="hidden"', 'id="field.foo', 'name="field.foo:list"',
                       'value="bar"')
         self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/04/11 12:31:48 philikon Exp $
+$Id: interfaces.py,v 1.3 2004/04/24 23:19:42 srichter Exp $
 """
 from zope.interface import Interface
 from zope.app.form.interfaces import IWidget
@@ -145,6 +145,9 @@ class IVocabularyQueryView(Interface):
     edit widgets to support query and result presentations.
     """
 
+    def __init__(query, field, request):
+        """This is a multiview, which is looked up for (query, field) pairs."""
+
     def setName(name):
         """Set the name used to compute the form field names.
 
@@ -155,6 +158,7 @@ class IVocabularyQueryView(Interface):
         This method will be called after the IVocabularyQueryView has
         been created and before performAction() is called.
         """
+
 
     def setWidget(widget):
         """Set the widget using this query view.

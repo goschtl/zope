@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_filewidget.py,v 1.3 2004/04/06 20:58:08 jim Exp $
+$Id: test_filewidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
 """
 
 import unittest
@@ -24,8 +24,8 @@ from transaction import get_transaction
 from zope.interface import Interface
 from zope.interface import implements
 
-from zope.schema.interfaces import IField, IEnumerated
-from zope.schema import Field, Enumerated
+from zope.schema.interfaces import IField
+from zope.schema import Field
 
 from zope.app.form.browser.textwidgets import FileWidget
 
@@ -35,11 +35,11 @@ from zope.app.traversing import traverse
 from zope.app.tests.functional import BrowserTestCase
 from zope.app.form.interfaces import IInputWidget
 
-class IFileField(IEnumerated, IField):
+class IFileField(IField):
     """Field for representing a file that can be edited by FileWidget."""
 
 
-class FileField(Enumerated, Field):
+class FileField(Field):
 
     implements(IFileField)
 

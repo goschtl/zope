@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""General test support.
 
-"""General test support."""
-
-
-class VerifyResults:
+$Id: support.py,v 1.2 2004/04/24 23:19:43 srichter Exp $
+"""
+class VerifyResults(object):
     """Mix-in for test classes with helpers for checking string data."""
 
     def verifyResult(self, result, check_list, inorder=False):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.7 2004/04/11 12:31:48 philikon Exp $
+$Id: widget.py,v 1.8 2004/04/24 23:19:42 srichter Exp $
 """
 import re, cgi
 import traceback
@@ -155,6 +155,7 @@ class BrowserWidget(Widget, BrowserView):
         return self.name in self.request.form
 
     def hasValidInput(self):
+        """See IWidget."""
         try:
             self.getInputValue()
             return True
@@ -162,6 +163,7 @@ class BrowserWidget(Widget, BrowserView):
             return False
 
     def getInputValue(self):
+        """See IWidget."""
         self._error = None
         field = self.context
 

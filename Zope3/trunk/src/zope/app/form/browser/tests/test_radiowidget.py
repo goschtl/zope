@@ -12,11 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_radiowidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
 """
 import os
 import unittest, doctest
+from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
+from zope.publisher.browser import TestRequest
+from zope.schema import Choice
 
 from zope.i18n.interfaces import ITranslationDomain
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
@@ -35,11 +38,25 @@ class RadioWidgetTest(BrowserWidgetTest):
         True
     """
 
+    _FieldFactory = Choice
     _WidgetFactory = RadioWidget
 
-    def setUp(self):
-        BrowserWidgetTest.setUp(self)
-        self._widget.context.allowed_values = (u'foo', u'bar')
+    def setUpContent(self, desc=u''):
+        class ITestContent(Interface):
+            foo = self._FieldFactory(
+                    title = u"Foo Title",
+                    description = desc,
+                    values=(u'foo', u'bar')
+                    )
+        class TestObject:
+            implements(ITestContent)
+
+        self.content = TestObject()
+        field = ITestContent['foo']
+        field = field.bind(self.content)
+        request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
+        request.form['field.foo'] = u'Foo Value'
+        self._widget = self._WidgetFactory(field, field.vocabulary, request)
 
     def testProperties(self):
         self.assertEqual(self._widget.cssClass, "")
@@ -85,8 +102,8 @@ class RadioWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget.hidden(), check_list)
 
     def testLabel(self):
-        label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label, 'Foo Title')
+        self.assertEqual(self._widget.label(),
+                         '<label for="field.foo">Foo Title</label>')
 
     def testTranslatedLabel(self):
         path = os.path.dirname(zope.app.form.browser.tests.__file__)
@@ -96,35 +113,21 @@ class RadioWidgetTest(BrowserWidgetTest):
         domain.addCatalog(catalog)
         ztapi.provideUtility(ITranslationDomain, domain, 'zope')
         label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label, 'oofay itletay')
+        self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
 
     def testRowRequired(self):
         self._widget.request.form.clear()
         self._widget.context.required = True
-        label = ''.join(self._widget.label().strip().split())
-        value = ''.join(self._widget().strip().split())
-        row = ''.join(self._widget.row().strip().split())
-        id = 'field.foo'
-        self.assertEqual(row, '<divclass="labelrequired">'
-                              '<labelfor="%s">%s</label>'
-                              '</div>'
-                              '<divclass="field"id="%s">'
-                              '%s'
-                              '</div>' % (id, label, id, value))
+        self.verifyResultMissing(self._widget(),
+                          ['<input name="field.foo-empty-marker" '
+                           'type="hidden" value="1" />\n</div>'])
 
     def testRowNonRequired(self):
         self._widget.request.form.clear()
         self._widget.context.required = False
-        label = ''.join(self._widget.label().strip().split())
-        value = ''.join(self._widget().strip().split())
-        row = ''.join(self._widget.row().strip().split())
-        id = 'field.foo'
-        self.assertEqual(row, '<divclass="label">'
-                              '<labelfor="%s">%s</label>'
-                              '</div>'
-                              '<divclass="field"id="%s">'
-                              '%s'
-                              '</div>' % (id, label, id, value))
+        self.verifyResult(self._widget(),
+                          ['<input name="field.foo-empty-marker" '
+                           'type="hidden" value="1" />\n</div>'])
 
 def test_suite():
     return unittest.TestSuite((
