@@ -93,7 +93,7 @@ typedef struct {
   PyObject *ob;
 } OSpec;
 
-static PyObject *
+static int
 OSpec_init(OSpec *self, PyObject *args, PyObject *kwds)
 {
 	static char *kwlist[] = {"ob", NULL};
@@ -101,13 +101,12 @@ OSpec_init(OSpec *self, PyObject *args, PyObject *kwds)
 
         if (! PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, 
                                           &ob))
-        	return NULL; 
+        	return 0; 
 
         Py_INCREF(ob);
         self->ob = ob;
 
-    	Py_INCREF(Py_None);
-    	return Py_None;
+        return 0;
 }
 
 static void
