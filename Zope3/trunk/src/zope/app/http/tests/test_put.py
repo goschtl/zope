@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_put.py,v 1.1 2003/02/07 15:59:38 jim Exp $
+$Id: test_put.py,v 1.2 2003/02/28 22:33:46 jim Exp $
 """
 __metaclass__ = type
 
@@ -53,16 +53,39 @@ class TestNullPUT(PlacelessSetup, TestCase):
         container = Container()
         content = "some content\n for testing"
         request = TestRequest(StringIO(content), StringIO(),
-                              {'CONTENT_TYPE': 'test/foo'})
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': str(len(content)),
+                               })
         null = zope.app.http.put.NullResource(container, 'spam')
         put = zope.app.http.put.NullPUT(null, request)
         self.assertEqual(getattr(container, 'spam', None), None)
         self.assertEqual(put.PUT(), '')
+        request.response.setBody('')
         file = container.spam
         self.assertEqual(file.__class__, File)
         self.assertEqual(file.name, 'spam')
         self.assertEqual(file.content_type, 'test/foo')
         self.assertEqual(file.data, content)        
+
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 201)
+
+    def test_bad_content_header(self):
+        container = Container()
+        content = "some content\n for testing"
+        request = TestRequest(StringIO(content), StringIO(),
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': str(len(content)),
+                               'HTTP_CONTENT_FOO': 'Bar',
+                               })
+        null = zope.app.http.put.NullResource(container, 'spam')
+        put = zope.app.http.put.NullPUT(null, request)
+        self.assertEqual(getattr(container, 'spam', None), None)
+        self.assertEqual(put.PUT(), '')
+        request.response.setBody('')
+
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 501)
 
 class TestFilePUT(PlacelessSetup, TestCase):
 
@@ -70,10 +93,29 @@ class TestFilePUT(PlacelessSetup, TestCase):
         file = File("thefile", "text/x", "initial content")
         content = "some content\n for testing"
         request = TestRequest(StringIO(content), StringIO(),
-                              {'CONTENT_TYPE': 'test/foo'})
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': str(len(content)),
+                               })
         put = zope.app.http.put.FilePUT(file, request)
         self.assertEqual(put.PUT(), '')
+        request.response.setBody('')
         self.assertEqual(file.data, content)        
+
+    def test_bad_content_header(self):
+        file = File("thefile", "text/x", "initial content")
+        content = "some content\n for testing"
+        request = TestRequest(StringIO(content), StringIO(),
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': str(len(content)),
+                               'HTTP_CONTENT_FOO': 'Bar',
+                               })
+        put = zope.app.http.put.FilePUT(file, request)
+        self.assertEqual(put.PUT(), '')
+        request.response.setBody('')
+        self.assertEqual(file.data, "initial content")        
+
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 501)
 
 def test_suite():
     return TestSuite((

@@ -13,7 +13,7 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.1 2003/02/07 15:59:37 jim Exp $
+$Id: put.py,v 1.2 2003/02/28 22:33:45 jim Exp $
 """
 __metaclass__ = type
 
@@ -46,7 +46,15 @@ class NullPUT:
         self.request = request
 
     def PUT(self):
-        body = self.request.bodyFile
+        request = self.request
+
+        for name in request:
+            if name.startswith('HTTP_CONTENT_'):
+                # Inimplemented cotent header
+                request.response.setStatus(501)
+                return ''
+
+        body = request.bodyFile
         name = self.context.name
         container = self.context.container
 
@@ -73,12 +81,11 @@ class NullPUT:
         # XXX Need to add support for large files
         data = body.read()
 
-        newfile = factory(name,
-                          self.request.getHeader('content-type', ''),
-                          data)
+        newfile = factory(name, request.getHeader('content-type', ''), data)
         publish(self.context, ObjectCreatedEvent(newfile))
         dir.setObject(name, newfile)
-        
+
+        request.response.setStatus(201)
         return ''
 
 class FilePUT:
@@ -90,6 +97,14 @@ class FilePUT:
         self.request = request
 
     def PUT(self):
+        request = self.request
+
+        for name in request:
+            if name.startswith('HTTP_CONTENT_'):
+                # Inimplemented cotent header
+                request.response.setStatus(501)
+                return ''
+
         body = self.request.bodyFile
         file = self.context
         adapter = getAdapter(file, IWriteFile)
