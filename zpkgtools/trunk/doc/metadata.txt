@@ -5,15 +5,15 @@ Metadata Descriptions for Distributions
 Overview
 --------
 
-Packages will be described using a collection of files that contain
-different aspects of the package metadata.
+Distributions will be described using a collection of files that
+contain different aspects of the relevant metadata.
 
 `DEPENDENCIES.cfg`
-  A list of dependencies for this package.  This is currently simply a
-  list of imported packages that aren't provided with the package
-  (listed one per line), but additional features may be identified by
-  adding lines that use a prefix to denote the type of the dependency.
-  For example::
+  A list of dependencies for this distributoin.  This is currently
+  simply a list of imported Python packages that aren't provided with
+  the distribution (listed one per line), but additional features may
+  be identified by adding lines that use a prefix to denote the type
+  of the dependency.  For example::
 
     feature:XML parser
 
@@ -22,33 +22,39 @@ different aspects of the package metadata.
   leading and trailing whitespace will be ignored.  Dependencies are
   case-sensitive.
 
+  Note that dependencies are kept separate from the information in the
+  `INSTALL.cfg` file since that's intended to record information about
+  what the distribution contains, while dependencies are intended to
+  serve as constraints on any software included in the distribution as
+  well as meta-information used for constructing collection
+  distributions.
+
 `INLCUDES.cfg`
   List of inclusions (and exclusions) that are added/removed from the
-  package as it's constructed for distribution.  This is currently
-  only used for collection distributions.
-
-`PUBLICATION.cfg`
-  General metadata related to a distribution package.  This includes
-  information such as the name of the package (i.e., "Frobnitz
-  Manager"), author and maintainer information, and Trove
-  classification.  Version information should not be included; it will
-  be ignored if present (perhaps should be an error?).  This is the
-  information distutils normally pushes into the generated `PKG-INFO`
-  file; this file has the same format as `PKG-INFO`.
+  distribution as it's constructed.
 
 `INSTALL.cfg`
   This file contains information on building extension modules.
   Information about scripts and documentation files will also be
   included in this file.
 
+`PUBLICATION.cfg`
+  General metadata related to a distribution.  This includes
+  information such as the name of the component (i.e., "Frobnitz
+  Manager"), author and maintainer information, and Trove
+  classification.  Version information should not be included; it will
+  be ignored if present (perhaps should be an error?).  This is the
+  information distutils normally pushes into the generated `PKG-INFO`
+  file; this file has the same format as `PKG-INFO`.
+
 Embedded Package Definitions
 ----------------------------
 
-Packages can include a `INSTALL.cfg` that contains information about
-special files in the package (such as documentation and scripts), and
-what extensions need to be built.  This file is a ZConfig-like
-configuration file that can contain the following settings, repeated
-as necessary:
+Distribution components can include a `INSTALL.cfg` that contains
+information about special files in the component (such as
+documentation and scripts), and what extensions need to be built.
+This file is a ZConfig-like configuration file that can contain the
+following settings, repeated as necessary:
 
 **documentation**
   The name of a file or directory containing documentation. This is
@@ -72,8 +78,8 @@ Support for Compiled Extensions
 -------------------------------
 
 Compiled extensions are described using **<extension>** sections in
-the `INSTALL.cfg` file.  The name of the section should be the name
-of the extension module within the package.  For example, the
+the `INSTALL.cfg` file.  The name of the section should be the name of
+the extension module within the Python package.  For example, the
 extension ``persistent.cPersistence`` would be represented using a
 section of the form::
 
