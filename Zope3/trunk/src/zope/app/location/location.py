@@ -27,6 +27,7 @@ class Location(object):
     """Stupid mix-in that defines `__parent__` and `__name__` attributes
 
     Usage within an Object field:
+
     >>> from zope.interface import implements, Interface
     >>> from zope.schema import Object
     >>> from zope.schema.fieldproperty import FieldProperty
