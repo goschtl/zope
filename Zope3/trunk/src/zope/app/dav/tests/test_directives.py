@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test the wiki ZCML namespace directives.
+"""Test the dav ZCML namespace directives.
 
 $Id$
 """
