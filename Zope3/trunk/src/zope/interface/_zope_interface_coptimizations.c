@@ -1,16 +1,16 @@
-/*
-
- Copyright (c) 2003 Zope Corporation and Contributors.
- All Rights Reserved.
-
- This software is subject to the provisions of the Zope Public License,
- Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
- THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
- WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
- FOR A PARTICULAR PURPOSE.
-
-*/
+/*###########################################################################
+ #
+ # Copyright (c) 2003 Zope Corporation and Contributors.
+ # All Rights Reserved.
+ #
+ # This software is subject to the provisions of the Zope Public License,
+ # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+ # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ # FOR A PARTICULAR PURPOSE.
+ #
+ ############################################################################*/
 
 #include "Python.h"
 #include "structmember.h"
@@ -535,7 +535,7 @@ init_zope_interface_coptimizations(void)
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
                      "C optimizations for zope.interface\n\n"
-                     "$Id: _zope_interface_coptimizations.c,v 1.5 2004/04/05 19:43:57 jim Exp $");  
+                     "$Id: _zope_interface_coptimizations.c,v 1.6 2004/05/03 20:31:27 spascoe Exp $");  
   if (m == NULL)
     return;
   
