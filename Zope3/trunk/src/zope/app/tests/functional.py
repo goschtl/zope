@@ -31,7 +31,8 @@ from Cookie import SimpleCookie
 from transaction import abort, commit
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
-import zope.interface
+
+from zope import interface, component
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
@@ -97,17 +98,18 @@ def _getDefaultSkin():
     return skin or IDefaultBrowserLayer
 
 
-grant_request = (r"""
-POST /@@grant.html HTTP/1.1
-Authorization: Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3
-Content-Length: 5796
-Content-Type: application/x-www-form-urlencoded
+class IManagerSetup(interface.Interface):
+    """Utility for enabling up a functional testing manager with needed grants
 
-field.principal=em9wZS5tZ3I_"""
-"""&field.principal.displayed=y"""
-"""&GRANT_SUBMIT=Change"""
-"""&field.em9wZS5tZ3I_.role.zope.Manager=allow"""
-"""&field.em9wZS5tZ3I_.role.zope.Manager-empty-marker=1""")
+    XXX This is an interim solution.  It tries to break the dependence
+    on a particular security policy, however, we need a much better
+    way of managing functional-testing configurations.
+    
+    """
+
+    def setUpManager():
+        """Set up the manager, zope.mgr
+        """
 
 class FunctionalTestSetup(object):
     """Keeps shared state across several functional test cases."""
@@ -140,12 +142,10 @@ class FunctionalTestSetup(object):
             self._init = True
 
             # Make a local grant for the test user
-            # TODO, find a better way to make this grant happen.
-            # The way I did this is way too messy, given how
-            # strang FunctionalTestSetup is.  Later, when we
-            # have time, we should clean up this (perhaps with an
-            # event) and clean up FunctionalTestSetup.
-            response = HTTPCaller()(grant_request, handle_errors=False)
+            setup = component.queryUtility(IManagerSetup)
+            if setup is not None:
+                setup.setUpManager()
+            
             FunctionalTestSetup().connection = None
             
         elif config_file and config_file != self._config_file:
@@ -276,7 +276,7 @@ class BrowserTestCase(CookieHandler, FunctionalTestCase):
                                environment=environment,
                                basic=basic, form=form,
                                request=BrowserRequest)
-        zope.interface.directlyProvides(request, _getDefaultSkin())
+        interface.directlyProvides(request, _getDefaultSkin())
         return request
 
     def publish(self, path, basic=None, form=None, env={},
@@ -435,7 +435,7 @@ class HTTPTestCase(FunctionalTestCase):
 
 class HTTPHeaderOutput:
 
-    zope.interface.implements(zope.publisher.interfaces.http.IHeaderOutput)
+    interface.implements(zope.publisher.interfaces.http.IHeaderOutput)
 
     def __init__(self, protocol, omit):
         self.headers = {}
@@ -615,7 +615,7 @@ class HTTPCaller(CookieHandler):
             request=request_cls, publication=publication_cls)
         if request_cls is BrowserRequest:
             # Only browser requests have skins
-            zope.interface.directlyProvides(request, _getDefaultSkin())
+            interface.directlyProvides(request, _getDefaultSkin())
         request.response.setHeaderOutput(header_output)
         response = DocResponseWrapper(
             request.response, outstream, path, header_output)

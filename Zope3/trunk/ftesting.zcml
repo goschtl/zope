@@ -13,6 +13,7 @@
   <include files="package-includes/*-ftesting.zcml" />
 
   <include file="securitypolicy.zcml" />
+  <include file="securitypolicy-ftesting.zcml" />
 
   <!-- Principals -->
 
