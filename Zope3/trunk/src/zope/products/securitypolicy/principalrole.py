@@ -13,6 +13,8 @@
 ##############################################################################
 """Mappings between principals and roles, stored in an object locally."""
 
+__metaclass__ = type
+
 from zope.component import getAdapter
 from zope.interface import implements
 

@@ -21,7 +21,7 @@ global-data cleanup routines::
 
       ....
 
-If custom setUp or tearDown are needed, then the base reoutines should
+If custom setUp or tearDown are needed, then the base routines should
 be called, as in::
 
   def tearDown(self):
@@ -36,7 +36,7 @@ addCleanup::
 
 
 Revision information:
-$Id: cleanup.py,v 1.4 2004/01/14 22:55:36 chrism Exp $
+$Id: cleanup.py,v 1.5 2004/01/20 21:23:16 sidnei Exp $
 """
 
 __metaclass__ = type
