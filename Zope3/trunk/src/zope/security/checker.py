@@ -15,7 +15,6 @@ else:
     WATCH_CHECKERS = 0
 
 
-
 def ProxyFactory(object, checker=None):
     """Factory function that creates a proxy for an object
 
@@ -166,13 +165,13 @@ class Checker:
 
 # We want this to behave as a global, meaning it's pickled
 # by name, rather than value. We need to arrange that it has a suitable
-# __reduce__. 
+# __reduce__.
 class Global(object):
 
     def __init__(self, name, module=None):
         if module is None:
             module = sys._getframe(1).f_locals['__name__']
-            
+
         self.__name__ = name
         self.__module__ = module
 
@@ -182,7 +181,7 @@ class Global(object):
 CheckerPublic = Global('CheckerPublic')
 
 # Now we wrap it in a security proxy so that it retains it's
-# identity when it needs to be security proxied.  
+# identity when it needs to be security proxied.
 d={}
 CheckerPublic = Proxy(CheckerPublic, Checker(d))
 d['__reduce__'] = CheckerPublic
@@ -347,16 +346,15 @@ _always_available = ['__lt__', '__le__', '__eq__',
                      '__gt__', '__ge__', '__ne__',
                      '__hash__', '__nonzero__',
                      '__class__', '__implements__',
+                     '__repr__'
                      ]
 
-_callableChecker = NamesChecker(['__str__', '__repr__', '__name__',
-                                 '__call__'])
-_typeChecker = NamesChecker(['__str__', '__repr__', '__name__', '__module__',
-                             '__bases__'])
+_callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
+_typeChecker = NamesChecker(['__str__', '__name__', '__module__', '__bases__'])
 
-_interfaceChecker = NamesChecker(['__str__', '__repr__', '__name__',
-                                  '__module__', '__bases__', 'getBases',
-                                  'isImplementedBy', 'extends'])
+_interfaceChecker = NamesChecker(['__str__', '__name__', '__module__',
+                                  '__bases__', 'getBases', 'isImplementedBy',
+                                  'extends'])
 
 _iteratorChecker = NamesChecker(['next'])
 
@@ -378,18 +376,16 @@ class _Sequence(object):
 
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
-                        'get', 'has_key', '__copy__', '__str__', '__repr__',
-                        'keys', 'values', 'items',
-                        'iterkeys', 'iteritems', 'itervalues', '__contains__',
-                        ]),
+                        'get', 'has_key', '__copy__', '__str__', 'keys',
+                        'values', 'items', 'iterkeys', 'iteritems',
+                        'itervalues', '__contains__']),
     list: NamesChecker(['__getitem__', '__getslice__', '__len__', '__iter__',
-                        '__contains__', 'index', 'count', '__str__',
-                        '__repr__']),
+                        '__contains__', 'index', 'count', '__str__']),
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__',
                          '__contains__', '__len__', '__iter__', '__iadd__',
-                         '__str__', '__repr__']),
+                         '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
     types.ClassType: _classChecker,
@@ -403,20 +399,20 @@ _default_checkers = {
     type(iter(())): _iteratorChecker, # different in Python 2.3.
     type(iter(_Sequence())): NamesChecker(['next']),
     type(Interface): _interfaceChecker,
-    datetime.timedelta: NamesChecker(['__repr__', '__str__', '__add__',
-                                      '__radd__', '__sub__', '__rsub__',
-                                      '__neg__', '__pos__', '__abs__',
-                                      '__mul__', '__rmul__', '__div__',
-                                      '__floordiv__', '__cmp__', 'days',
-                                      'seconds', 'microseconds']),
-    datetime.date: NamesChecker(['__repr__', '__str__', 'year', 'month', 'day',
+    datetime.timedelta: NamesChecker(['__str__', '__add__', '__radd__',
+                                      '__sub__', '__rsub__', '__neg__',
+                                      '__pos__', '__abs__', '__mul__',
+                                      '__rmul__', '__div__', '__floordiv__',
+                                      '__cmp__', 'days', 'seconds',
+                                      'microseconds']),
+    datetime.date: NamesChecker(['__str__', 'year', 'month', 'day',
                                  'timetuple', 'toordinal', '__cmp__',
                                  '__hash__', 'ctime', 'strftime', '__add__',
                                  '__radd__', '__sub__', '__rsub__', 'weekday',
                                  'isoweekday', 'isocalendar', 'isoformat',
                                  'min', 'max', 'resolution']),
     datetime.datetime: NamesChecker([
-      '__repr__', '__str__', 'year', 'month', 'day', 'hour', 'minute',
+      '__str__', 'year', 'month', 'day', 'hour', 'minute',
       'second', 'microsecond', 'tzinfo', 'timetuple', 'utctimetuple',
       'toordinal', '__cmp__', '__hash__', 'ctime', 'strftime',
       '__add__', '__radd__', '__sub__', '__rsub__', 'weekday',
@@ -425,10 +421,9 @@ _default_checkers = {
       'timetz'
       ]),
     datetime.time: NamesChecker(['hour', 'minute', 'second', 'microsecond',
-                                 '__cmp__', '__hash__', '__repr__',
-                                 '__str__', 'isoformat', 'strftime', 'min',
-                                 'max', 'resolution', 'tzinfo', 'utcoffset',
-                                 'tzname', 'dst'])
+                                 '__cmp__', '__hash__', '__str__', 'isoformat',
+                                 'strftime', 'min', 'max', 'resolution',
+                                 'tzinfo', 'utcoffset', 'tzname', 'dst'])
 }
 
 

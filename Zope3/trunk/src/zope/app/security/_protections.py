@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: _protections.py,v 1.3 2003/03/12 10:11:14 stevea Exp $
 """
 
 def protect():
@@ -22,7 +22,7 @@ def protect():
 
 
     # excluding _check, _bucket_type, _firstbucket, and write operations
-    _btreeChecker = NamesChecker(['__str__', '__repr__', '__contains__',
+    _btreeChecker = NamesChecker(['__str__', '__contains__',
                                   '__getitem__', '__iter__', '__len__',
                                   'byValue', 'get', 'has_key', 'items',
                                   'iteritems', 'iterkeys', 'itervalues',
@@ -30,22 +30,21 @@ def protect():
 
     # excluding _next
     _btreeBucketChecker = NamesChecker([
-            '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
+            '__contains__', '__getitem__', '__iter__', '__len__',
             '__str__', 'byValue', 'get', 'has_key', 'items', 'iteritems',
             'iterkeys', 'itervalues', 'keys', 'maxKey','minKey', 'values'])
 
     _btreeSetChecker = NamesChecker([
-            '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
+            '__contains__', '__getitem__', '__iter__', '__len__',
             '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
 
     # excluding _bucket_type, _check
     _btreeTreeSetChecker = NamesChecker([
-            '__contains__', '__iter__', '__len__', '__repr__',
+            '__contains__', '__iter__', '__len__',
             '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
 
     _btreeItemsChecker = NamesChecker([
-            '__iter__', '__repr__', '__str__', '__getitem__', '__len__',
-            '__contains__'])
+            '__iter__', '__str__', '__getitem__', '__len__', '__contains__'])
 
     _iteratorChecker = NamesChecker(['next'])
 

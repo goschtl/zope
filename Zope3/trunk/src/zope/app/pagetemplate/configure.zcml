@@ -1,7 +1,7 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
   <content class=".viewpagetemplatefile.BoundPageTemplate">
-    <allow attributes="__call__ __str__ __repr__ __name__" />
+    <allow attributes="__call__ __str__ __name__" />
   </content>
 
 </zopeConfigure>
