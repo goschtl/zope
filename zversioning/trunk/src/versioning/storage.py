@@ -74,6 +74,8 @@ class SimpleHistoryStorage(Folder) :
         """ Returns the persistent oid of an object as
             a ticket that remains stable across time.
         """
+        if obj._p_oid is None :
+            raise RuntimeError("cannot version unsaved objects")
         return str(obj._p_oid)
  
     def register(self, obj):
