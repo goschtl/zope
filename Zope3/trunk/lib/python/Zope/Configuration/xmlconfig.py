@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.6 2002/06/23 16:20:21 stevea Exp $
+$Id: xmlconfig.py,v 1.7 2002/07/17 23:06:22 jeremy Exp $
 """
 
 import os
@@ -80,7 +80,7 @@ class ConfigurationHandler(ContentHandler):
         self.__directives = directives
         self.__context = context
         self.__testing = testing
-        context.resolve
+        context.resolve # XXX does this do something?
 
     def setDocumentLocator(self, locator):
         self.__locator = locator
