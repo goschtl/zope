@@ -57,9 +57,9 @@ Resources
   You will also find some additional documentation in the 'doc'
   directory of the Zope3 tree, where this file lives.  All other
   existing Zope3 documentation is linked from somewhere in the Zope
-  project Wiki:
+  project Wiki::
 
-    'http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture'
+    http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture
 
   You may also want to subscribe to the Zope3-dev mailing list::
 
