@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.10 2003/06/03 18:24:35 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.11 2003/08/11 22:02:16 fdrake Exp $
 """
 
 import os
@@ -280,7 +280,7 @@ class TestFSMerger(TempFiles):
 
     def make_conflict_entry(self, local):
         # Helper for test_*_conflict
-        e = {"conflict": os.path.getmtime(local)}
+        e = {"conflict": "yes"}
         e.update(self.entry)
         return e
 
@@ -293,21 +293,12 @@ class TestFSMerger(TempFiles):
                        ["C %l"], conflict, "r\n", "r\n",
                        self.make_conflict_entry, self.entry)
 
-    def test_unstuck_conflict(self):
-        conflict_entry = {"conflict": 12345}
-        conflict_entry.update(self.entry)
-        self.mergetest("foo", "resolved\n", "r\n", "r\n",
-                       conflict_entry, self.entry,
-                       ["M %l"], "resolved\n", "r\n", "r\n",
-                       self.entry, self.entry)
-
-    def test_cleared_conflict(self):
-        conflict_entry = {"conflict": 12345}
-        conflict_entry.update(self.entry)
+    def test_cleared_but_unresolved_conflict(self):
+        # data are the same, but the conflict marker hasn't been cleared
         self.mergetest("foo", "r\n", "r\n", "r\n",
-                       conflict_entry, self.entry,
-                       [], "r\n", "r\n", "r\n",
-                       self.entry, self.entry)
+                       self.make_conflict_entry, self.entry,
+                       ["C %l"], "r\n", "r\n", "r\n",
+                       self.make_conflict_entry, self.entry)
 
     # Tests for added files: local, remote, both
 

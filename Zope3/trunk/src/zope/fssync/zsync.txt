@@ -62,6 +62,12 @@ parentheses are aliases supported for convenience:
   not made to the object database itself until the next **zsync
   commit**.
 
+**resolve**
+  Remove a conflict indicator for a file that has been updated on
+  both the server and the working copy.  (This does not actually
+  modify the file to resolve conflicts; this is used to tell **zsync**
+  that you're done making changes to resolve the conflict.)
+
 **revert**
   Restore targets to their unmodified state.
 
@@ -279,6 +285,22 @@ Description
 
 The **remove** command has no specific options.  It requires at least
 one *path* argument.
+
+
+The **zsync resolve** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**resolve** [*path* ...]
+
+Description
++++++++++++
+
+Clear conflict markers from each *path*.
+
+The **resolve** command has no specific options.
 
 
 The **zsync revert** Command

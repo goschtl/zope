@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.39 2003/08/11 14:55:01 fdrake Exp $
+$Id: fssync.py,v 1.40 2003/08/11 22:02:09 fdrake Exp $
 """
 
 import os
@@ -400,6 +400,23 @@ class FSSync(object):
         finally:
             if isdir(tmpdir):
                 shutil.rmtree(tmpdir)
+
+    def resolve(self, target):
+        entry = self.metadata.getentry(target)
+        if "conflict" in entry:
+            del entry["conflict"]
+            self.metadata.flush()
+        elif isdir(target):
+            self.dirresolve(target)
+
+    def dirresolve(self, target):
+        assert isdir(target)
+        names = self.metadata.getnames(target)
+        for name in names:
+            t = join(target, name)
+            e = self.metadata.getentry(t)
+            if e:
+                self.resolve(t)
 
     def revert(self, target):
         entry = self.metadata.getentry(target)

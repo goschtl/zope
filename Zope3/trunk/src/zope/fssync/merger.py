@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.12 2003/08/06 20:11:01 fdrake Exp $
+$Id: merger.py,v 1.13 2003/08/11 22:02:09 fdrake Exp $
 """
 
 import os
@@ -173,7 +173,7 @@ class Merger(object):
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
         if sts:
-            self.getentry(local)["conflict"] = os.path.getmtime(local)
+            self.getentry(local)["conflict"] = "yes"
             return "Conflict"
         else:
             return "Modified"
