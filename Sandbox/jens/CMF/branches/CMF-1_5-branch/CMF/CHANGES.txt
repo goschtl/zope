@@ -2,6 +2,8 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CMFSetup: Added handlers for site properties.
+
     - CMFSetup utils: Added 'ConfiguratorBase' class.
       It's now recommended to use this class as base for all configurators.
       The class includes some generic methods to handle subobjects and
