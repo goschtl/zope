@@ -13,18 +13,18 @@ class TransactionManager(object):
     txn_factory = Transaction
 
     def __init__(self):
-        pass
+        self.logger = logging.getLogger("txn")
 
     def new(self):
         txn = self.txn_factory(self)
-        logging.debug("txn %s: begin" % txn)
+        self.logger.debug("%s: begin", txn)
         return txn
 
     def commit(self, txn):
         assert txn._status is Status.ACTIVE
         txn._status = Status.PREPARING
         prepare_ok = True
-        logging.debug("txn %s: prepare" % txn)
+        self.logger.debug("%s: prepare", txn)
         try:
             for r in txn._resources:
                 if prepare_ok and not r.prepare(txn):
@@ -40,14 +40,14 @@ class TransactionManager(object):
             self.abort(txn)
 
     def _commit(self, txn):
-        logging.debug("txn %s: commit" % txn)
+        self.logger.debug("%s: commit", txn)
         # finish the two-phase commit
         for r in txn._resources:
             r.commit(txn)
         txn._status = Status.COMMITTED
 
     def abort(self, txn):
-        logging.debug("txn %s: abort" % txn)
+        self.logger.debug("%s: abort", txn)
         assert txn._status in (Status.ACTIVE, Status.PREPARED, Status.FAILED)
         txn._status = Status.PREPARING
         for r in txn._resources:
@@ -55,7 +55,7 @@ class TransactionManager(object):
         txn._status = Status.ABORTED
 
     def savepoint(self, txn):
-        logging.debug("txn %s: savepoint" % txn)
+        self.logger.debug("%s: savepoint", txn)
         return Rollback([r.savepoint(txn) for r in txn._resources])
 
 class Rollback(object):
@@ -75,6 +75,7 @@ import thread
 class ThreadedTransactionManager(TransactionManager):
 
     def __init__(self):
+        TransactionManager.__init__(self)
         self._pool = {}
 
     def new(self):
