@@ -16,7 +16,14 @@
     provides=".interfaces.IRegistered"
     factory=".registration.Registered"
     />
-  
+    
+  <adapter
+    for=".interfaces.IRegisterable"
+    provides="zope.app.copypastemove.interfaces.IObjectCopier"
+    factory=".registration.RegisterableCopier"
+    permission="zope.ManageContent"
+    />
+
   <!-- Registration Manager -->
 
   <content class=".registration.RegistrationManager">

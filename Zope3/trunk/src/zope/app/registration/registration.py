@@ -29,6 +29,7 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
+from zope.app.copypastemove import ObjectCopier
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.component.localservice import getLocalServices
 from zope.app.location import inside
@@ -651,7 +652,7 @@ def RegisterableMoveSubscriber(registerable, event):
     """Updates componentPath for registrations on component rename."""
     if event.oldParent is not None and event.newParent is not None:
         if event.oldParent is event.newParent:
-            registered = interfaces.IRegistered(registerable)
+            registered = interfaces.IRegistered(registerable, None)
             if registered is not None:
                 for reg in registered.registrations():
                     if interfaces.IComponentRegistration.providedBy(reg):
@@ -670,6 +671,8 @@ class Registered(PathSetAnnotation):
     """
     implements(interfaces.IRegistered)
 
+    __used_for__ = interfaces.IRegisterable
+
     # We want to use this key:
     #   key = "zope.app.registration.Registered"
     # But we have existing annotations with the following key, so we'll keep
@@ -683,6 +686,21 @@ class Registered(PathSetAnnotation):
     def registrations(self):
         return [zapi.traverse(self.context, path)
                 for path in self.getPaths()]
+
+class RegisterableCopier(ObjectCopier):
+    """Copies registerable components.
+
+    Performs the additional step of removing existing registered usages
+    for the new copy.
+    """
+    __used_for__ = interfaces.IRegisterable
+
+    def _configureCopy(self, copy, target, new_name):
+        ObjectCopier._configureCopy(self, copy, target, new_name)
+        registered = interfaces.IRegistered(copy, None)
+        if registered is not None:
+            for usage in registered.usages():
+                registered.removeUsage(usage)
 
 class RegistrationManager(Persistent, Contained):
     """Registration manager

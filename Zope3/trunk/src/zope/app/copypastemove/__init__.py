@@ -373,10 +373,22 @@ class ObjectCopier:
 
         copy = removeAllProxies(obj)
         copy = locationCopy(copy)
-        copy.__parent__ = copy.__name__ = None
+        self._configureCopy(copy, target, new_name)
         notify(ObjectCopiedEvent(copy))
 
         target[new_name] = copy
+
+    def _configureCopy(self, copy, target, new_name):
+        """Configures the copied object before it is added to target.
+        
+        target and new_name are provided as additional information.
+        
+        By default, copy.__parent__ and copy.__name__ are set to None.
+        
+        Subclasses may override this method to perform additional
+        configuration of the copied object.
+        """
+        copy.__parent__ = copy.__name__ = None
 
     def copyable(self):
         '''Returns True if the object is copyable, otherwise False.'''
