@@ -3,8 +3,6 @@
 
 - need to add support for Subversion checkouts
 
-- extract version number from revision control tag names
-
 - There needs to be a better error message when two resources use the
   same name part.  The problem is that package:foo and collection:foo
   both have the same name, and zpkg tries to create two different
