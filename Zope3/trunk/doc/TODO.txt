@@ -42,12 +42,6 @@ Things to do for the next release (in no particular order)
   See:
    http://dev.zope.org/Zope3/LocationRelatedEvents
 
-- Finish http://dev.zope.org/Zope3/ComponentArchitectureSimplification
-
-  What remains is the section "Utilities everywhere".
-
-  - Query
-
 - Redo the way names input in add forms.  Rather than have adding
   provide an add button, either:
 
@@ -63,12 +57,6 @@ Things to do for the next release (in no particular order)
 
 - Replace the *used* names in schema.errornames to exceptions
   in schema.interfaces.  Deprecate schema.errornames.
-
-- Sort out the dependency of zope.schema on zopei18nmessageid.
-  Do we really need to create messageids in zope.schema?
-  Maybe we do. Maybe i18n *is* that fundamental. 
-
-- Write a README.txt for zope.i18nmessageid.
 
 - http://dev.zope.org/Zope3/LifeCycleEvents
 
