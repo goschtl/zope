@@ -13,9 +13,9 @@
 ##############################################################################
 """Utility Vocabulary.
 
-This vocabulary provides terms for all utilities providing a given interface. 
+This vocabulary provides terms for all utilities providing a given interface.
 
-$Id: vocabulary.py,v 1.4 2004/05/08 00:12:17 garrett Exp $
+$Id: vocabulary.py,v 1.5 2004/05/08 00:20:45 garrett Exp $
 """
 from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface
@@ -126,7 +126,7 @@ class UtilityVocabulary(object):
     False
 
     We can also create a lazy iterator. Note that the utility terms might
-    appear in a different order than the utilities were registered. 
+    appear in a different order than the utilities were registered.
 
     >>> iterator = iter(vocab)
     >>> terms = list(iterator)
@@ -187,7 +187,7 @@ class UtilityVocabulary(object):
     Sometimes it is desirable to only select the name of a utility. For
     this purpose a 'nameOnly' argument was added to the constructor, in which
     case the UtilityTerm's value is not the utility itself but the name of the
-    utility.  
+    utility.
 
     >>> vocab = UtilityVocabulary(None, IObject, nameOnly=True)
     >>> pprint.pprint([term.value for term in vocab])
@@ -199,12 +199,12 @@ class UtilityVocabulary(object):
     def __init__(self, context, interface, nameOnly=False):
         if nameOnly is not False:
             nameOnly = True
-        if isinstance(interface, (str, unicode)): 
+        if isinstance(interface, (str, unicode)):
             interface = zapi.getUtility(context, IInterface, interface)
         utils = zapi.getUtilitiesFor(context, interface)
         self._terms = dict([(name, UtilityTerm(nameOnly and name or util, name))
                             for name, util in utils])
-      
+
     def __contains__(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
         return value in [term.value for term in self._terms.values()]
@@ -235,10 +235,10 @@ class UtilityVocabulary(object):
     def __len__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self._terms)
-        
+
 
 class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
-    
+
     def __init__(self, context):
         if IUtilityRegistration.providedBy(context):
             context = context.getComponent()
