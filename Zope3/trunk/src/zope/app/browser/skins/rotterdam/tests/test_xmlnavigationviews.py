@@ -12,33 +12,30 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_xmlnavigationviews.py,v 1.9 2003/11/21 17:11:59 jim Exp $
+$Id: test_xmlnavigationviews.py,v 1.10 2004/02/20 09:19:39 philikon Exp $
 """
 
-#import sys
-#sys.path.insert(0, r"c:\Zope3\src")
+from unittest import TestCase, TestLoader, TextTestRunner
+
+from zope.interface import implements
+from zope.pagetemplate.tests.util import check_xml
+from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.app.tests import ztapi
 from zope.app.content.file import File
 from zope.app.traversing import traverse
-from zope.interface import implements
-from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.eventsetup import EventSetup
-from zope.pagetemplate.tests.util import check_xml
-from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.browser.skins.rotterdam.tests import util
 from zope.app.browser.skins.rotterdam.xmlobject \
      import ReadContainerXmlObjectView
 from zope.app.interfaces.container import IReadContainer
 from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
-from zope.publisher.browser import TestRequest
 
 class TestXmlObject(EventSetup, TestCase):
     
     def setUp(self):
-        EventSetup.setUp(self)
+        super(TestXmlObject, self).setUp()
 
     def testXMLTreeViews(self):
         rcxov = ReadContainerXmlObjectView
