@@ -1,4 +1,4 @@
-After CMF 1.4.6
+CMF 1.4.7 (2004/08/11)
 
   New Features
 
