@@ -32,29 +32,11 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.31 2003/08/12 17:09:01 fdrake Exp $
+$Id: main.py,v 1.32 2003/08/12 17:51:09 fdrake Exp $
 """
 
 import os
 import sys
-import getopt
-
-from os.path import dirname, join, realpath
-
-# Find the zope root directory.
-# XXX This assumes this script is <root>/src/zope/fssync/main.py
-scriptfile = realpath(sys.argv[0])
-scriptdir = dirname(scriptfile)
-rootdir = dirname(dirname(dirname(scriptdir)))
-
-# Hack to fix the module search path
-try:
-    import zope.fssync
-    # All is well
-except ImportError:
-    # Fix the path to include <root>/src
-    srcdir = join(rootdir, "src")
-    sys.path.append(srcdir)
 
 from zope.fssync.command import Command, Usage
 from zope.fssync.fsutil import Error
