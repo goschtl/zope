@@ -153,7 +153,7 @@ class PrincipalPermissionManager(SecurityMap):
 
     def getSetting(self, permission_id, principal_id):
         ''' See the interface IPrincipalPermissionManager '''
-        return self.getCell(permission_id, principal_id, default=Unset)
+        return self.queryCell(permission_id, principal_id, default=Unset)
 
     def getPrincipalsAndPermissions(self):
         ''' See the interface IPrincipalPermissionManager '''
