@@ -12,3 +12,7 @@ run:
 
 clean:
 	./stupid_clean
+	rm -f TAGS
+
+TAGS:
+	etags `find . -name \*.py -print`
