@@ -232,6 +232,11 @@ ext_modules = [
               include_dirs = ["src/zope/proxy"],
               depends = ["src/zope/proxy/proxy.h"]),
 
+    Extension("zope.security._zope_security_checker",
+              ["src/zope/security/_zope_security_checker.c"],
+              include_dirs = [],
+              depends = []),
+
     Extension("zope.interface._zope_interface_coptimizations",
               ["src/zope/interface/_zope_interface_coptimizations.c"]),
 
