@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.4 2003/05/09 14:02:55 stevea Exp $
+$Id: test_decorator.py,v 1.5 2003/05/09 16:01:00 stevea Exp $
 """
 import unittest
 
@@ -185,6 +185,8 @@ class DecoratorTestCase(WrapperTestCase):
         dummy_iter = iter(range(5))
 
         class MixinFactory(object):
+            def __init__(self, inner, outer):
+                pass
             count = 0
             def __len__(self):
                 self.called = 'len'
