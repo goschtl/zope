@@ -299,6 +299,31 @@
     title="ZPT Template"
     />
 
+<!-- Service Manager navigation action -->
+
+<view
+  for="Zope.App.ComponentArchitecture.IServiceManagerContainer."
+  permission="Zope.ManageServices" 
+  factory=".Browser.addservicemanager.AddServiceManager"
+  >
+  <page name="addServiceManager.html" attribute="addServiceManager" />
+</view>
+
+<menuItems menu="zmi_actions"
+  for="Zope.App.ComponentArchitecture.IServiceManagerContainer."
+  >
+
+  <menuItem title="Local Service Manager"
+            action="++etc++Services/index.html"
+            filter="context/hasServiceManager"
+            />
+
+  <menuItem title="Turn On Local Service Manager"
+            action="@@addServiceManager.html"
+            filter="not:context/hasServiceManager"
+             />
+
+</menuItems>
 
 
 </zope:zopeConfigure>
