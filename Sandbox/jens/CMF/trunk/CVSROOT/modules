@@ -149,7 +149,3 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
 
 # KLM end
 
-
-# testing amos stuff
-AmosFoo2 -d lib/python/AmosFoo Packages/AmosFoo
-AmosTest &lpZPublisher &AmosFoo2
