@@ -91,11 +91,7 @@ def ProxyFactory(object, checker=None):
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
 
-class TrustedCheckerBase:
-    """Marker type used by zope.security.proxy.trustedRemoveSecurityProxy"""
-
-
-class Checker(TrustedCheckerBase):
+class Checker(object):
     implements(INameBasedChecker)
 
     def __init__(self, get_permissions, set_permissions=None):
@@ -183,138 +179,6 @@ class Checker(TrustedCheckerBase):
 
         return Proxy(value, checker)
 
-
-class CombinedChecker(Checker):
-    """A checker that combines two other checkers in a logical-or fashion.
-
-    The following table describes the result of a combined checker in detail.
-
-    checker1           checker2           CombinedChecker(checker1, checker2)
-    ------------------ ------------------ -----------------------------------
-    ok                 anything           ok (checker2 is never called)
-    Unauthorized       ok                 ok
-    Unauthorized       Unauthorized       Unauthorized
-    Unauthorized       ForbiddenAttribute Unauthorized
-    ForbiddenAttribute ok                 ok
-    ForbiddenAttribute Unauthorized       Unauthorized
-    ForbiddenAttribute ForbiddenAttribute ForbiddenAttribute
-    ------------------ ------------------ -----------------------------------
-    """
-    implements(IChecker)
-
-    def __init__(self, checker1, checker2):
-        """Create a combined checker."""
-        Checker.__init__(self,
-                         checker1.get_permissions,
-                         checker1.set_permissions)
-        self._checker2 = checker2
-
-    def check(self, object, name):
-        'See IChecker'
-        try:
-            Checker.check(self, object, name)
-        except ForbiddenAttribute:
-            self._checker2.check(object, name)
-        except Unauthorized, unauthorized_exception:
-            try: self._checker2.check(object, name)
-            except ForbiddenAttribute:
-                raise unauthorized_exception
-
-    def check_getattr(self, object, name):
-        'See IChecker'
-        try:
-            Checker.check_getattr(self, object, name)
-        except ForbiddenAttribute:
-            self._checker2.check_getattr(object, name)
-        except Unauthorized, unauthorized_exception:
-            try: self._checker2.check_getattr(object, name)
-            except ForbiddenAttribute:
-                raise unauthorized_exception
-
-    def check_setattr(self, object, name):
-        'See IChecker'
-        try:
-            Checker.check_setattr(self, object, name)
-        except ForbiddenAttribute:
-            self._checker2.check_setattr(object, name)
-        except Unauthorized, unauthorized_exception:
-            try: self._checker2.check_setattr(object, name)
-            except ForbiddenAttribute:
-                raise unauthorized_exception
-
-class CheckerLoggingMixin:
-    """Debugging mixin for checkers.
-
-    Prints verbose debugging information about every performed check to
-    sys.stderr.
-
-    If verbosity is set to 1, only displays Unauthorized and Forbidden messages.
-    If verbosity is set to a larger number, displays all messages.
-    """
-
-    verbosity = 1
-
-    def check(self, object, name):
-        try:
-            super(CheckerLoggingMixin, self).check(object, name)
-            if self.verbosity > 1:
-                if name in _always_available:
-                    print >> sys.stderr, (
-                        '[CHK] + Always available: %s on %r' % (name, object))
-                else:
-                    print >> sys.stderr, (
-                        '[CHK] + Granted: %s on %r' % (name, object))
-        except Unauthorized:
-            print >> sys.stderr, (
-                '[CHK] - Unauthorized: %s on %r' % (name, object))
-            raise
-        except ForbiddenAttribute:
-            print >> sys.stderr, (
-                '[CHK] - Forbidden: %s on %r' % (name, object))
-            raise
-
-    def check_getattr(self, object, name):
-        try:
-            super(CheckerLoggingMixin, self).check(object, name)
-            if self.verbosity > 1:
-                if name in _always_available:
-                    print >> sys.stderr, (
-                        '[CHK] + Always available getattr: %s on %r'
-                        % (name, object))
-                else:
-                    print >> sys.stderr, (
-                        '[CHK] + Granted getattr: %s on %r'
-                        % (name, object))
-        except Unauthorized:
-            print >> sys.stderr, (
-                '[CHK] - Unauthorized getattr: %s on %r' % (name, object))
-            raise
-        except ForbiddenAttribute:
-            print >> sys.stderr, (
-                '[CHK] - Forbidden getattr: %s on %r' % (name, object))
-            raise
-
-    def check_setattr(self, object, name):
-        try:
-            super(CheckerLoggingMixin, self).check_setattr(object, name)
-            if self.verbosity > 1:
-                print >> sys.stderr, (
-                    '[CHK] + Granted setattr: %s on %r' % (name, object))
-        except Unauthorized:
-            print >> sys.stderr, (
-                '[CHK] - Unauthorized setattr: %s on %r' % (name, object))
-            raise
-        except ForbiddenAttribute:
-            print >> sys.stderr, (
-                '[CHK] - Forbidden setattr: %s on %r' % (name, object))
-            raise
-
-
-if WATCH_CHECKERS:
-    class Checker(CheckerLoggingMixin, Checker):
-        verbosity = WATCH_CHECKERS
-    class CombinedChecker(CheckerLoggingMixin, CombinedChecker):
-        verbosity = WATCH_CHECKERS
 
 
 # Helper class for __traceback_supplement__
@@ -504,6 +368,9 @@ NoProxy = object()
 #
 _checkers = {}
 
+_defaultChecker = Checker({})
+_always_available = []
+
 # Get optimized versions
 try:
     import zope.security._zope_security_checker
@@ -511,11 +378,149 @@ except ImportError:
     pass
 else:
     from zope.security._zope_security_checker import _checkers, selectChecker
-    from zope.security._zope_security_checker import NoProxy
+    from zope.security._zope_security_checker import NoProxy, Checker
+    from zope.security._zope_security_checker import _defaultChecker
+    from zope.security._zope_security_checker import _always_available
+    zope.interface.classImplements(Checker, INameBasedChecker)
+
 
 _getChecker = _checkers.get
 
-_defaultChecker = Checker({})
+
+# Marker type used by bogus zope.security.proxy.trustedRemoveSecurityProxy
+TrustedCheckerBase = Checker
+
+class CombinedChecker(Checker):
+    """A checker that combines two other checkers in a logical-or fashion.
+
+    The following table describes the result of a combined checker in detail.
+
+    checker1           checker2           CombinedChecker(checker1, checker2)
+    ------------------ ------------------ -----------------------------------
+    ok                 anything           ok (checker2 is never called)
+    Unauthorized       ok                 ok
+    Unauthorized       Unauthorized       Unauthorized
+    Unauthorized       ForbiddenAttribute Unauthorized
+    ForbiddenAttribute ok                 ok
+    ForbiddenAttribute Unauthorized       Unauthorized
+    ForbiddenAttribute ForbiddenAttribute ForbiddenAttribute
+    ------------------ ------------------ -----------------------------------
+    """
+    implements(IChecker)
+
+    def __init__(self, checker1, checker2):
+        """Create a combined checker."""
+        Checker.__init__(self,
+                         checker1.get_permissions,
+                         checker1.set_permissions)
+        self._checker2 = checker2
+
+    def check(self, object, name):
+        'See IChecker'
+        try:
+            Checker.check(self, object, name)
+        except ForbiddenAttribute:
+            self._checker2.check(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
+
+    def check_getattr(self, object, name):
+        'See IChecker'
+        try:
+            Checker.check_getattr(self, object, name)
+        except ForbiddenAttribute:
+            self._checker2.check_getattr(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check_getattr(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
+
+    def check_setattr(self, object, name):
+        'See IChecker'
+        try:
+            Checker.check_setattr(self, object, name)
+        except ForbiddenAttribute:
+            self._checker2.check_setattr(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check_setattr(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
+
+class CheckerLoggingMixin:
+    """Debugging mixin for checkers.
+
+    Prints verbose debugging information about every performed check to
+    sys.stderr.
+
+    If verbosity is set to 1, only displays Unauthorized and Forbidden messages.
+    If verbosity is set to a larger number, displays all messages.
+    """
+
+    verbosity = 1
+
+    def check(self, object, name):
+        try:
+            super(CheckerLoggingMixin, self).check(object, name)
+            if self.verbosity > 1:
+                if name in _always_available:
+                    print >> sys.stderr, (
+                        '[CHK] + Always available: %s on %r' % (name, object))
+                else:
+                    print >> sys.stderr, (
+                        '[CHK] + Granted: %s on %r' % (name, object))
+        except Unauthorized:
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized: %s on %r' % (name, object))
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, (
+                '[CHK] - Forbidden: %s on %r' % (name, object))
+            raise
+
+    def check_getattr(self, object, name):
+        try:
+            super(CheckerLoggingMixin, self).check(object, name)
+            if self.verbosity > 1:
+                if name in _always_available:
+                    print >> sys.stderr, (
+                        '[CHK] + Always available getattr: %s on %r'
+                        % (name, object))
+                else:
+                    print >> sys.stderr, (
+                        '[CHK] + Granted getattr: %s on %r'
+                        % (name, object))
+        except Unauthorized:
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized getattr: %s on %r' % (name, object))
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, (
+                '[CHK] - Forbidden getattr: %s on %r' % (name, object))
+            raise
+
+    def check_setattr(self, object, name):
+        try:
+            super(CheckerLoggingMixin, self).check_setattr(object, name)
+            if self.verbosity > 1:
+                print >> sys.stderr, (
+                    '[CHK] + Granted setattr: %s on %r' % (name, object))
+        except Unauthorized:
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized setattr: %s on %r' % (name, object))
+            raise
+        except ForbiddenAttribute:
+            print >> sys.stderr, (
+                '[CHK] - Forbidden setattr: %s on %r' % (name, object))
+            raise
+
+
+if WATCH_CHECKERS:
+    class Checker(CheckerLoggingMixin, Checker):
+        verbosity = WATCH_CHECKERS
+    class CombinedChecker(CheckerLoggingMixin, CombinedChecker):
+        verbosity = WATCH_CHECKERS
 
 def _instanceChecker(inst):
     checker = _checkers.get(inst.__class__, _defaultChecker)
@@ -536,12 +541,12 @@ def moduleChecker(module):
 # The variable '_always_available' should really be called
 # '_available_by_default', as that would better reflect its meaning.
 # XXX: Fix the name.
-_always_available = ['__lt__', '__le__', '__eq__',
-                     '__gt__', '__ge__', '__ne__',
-                     '__hash__', '__nonzero__',
-                     '__class__', '__providedBy__', '__implements__',
-                     '__repr__', '__conform__',
-                     ]
+_always_available [:] = ['__lt__', '__le__', '__eq__',
+                         '__gt__', '__ge__', '__ne__',
+                         '__hash__', '__nonzero__',
+                         '__class__', '__providedBy__', '__implements__',
+                         '__repr__', '__conform__',
+                         ]
 
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
 _typeChecker = NamesChecker(
