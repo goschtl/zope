@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.7 2003/05/13 17:16:25 gvanrossum Exp $
+$Id: fssync.py,v 1.8 2003/05/13 17:32:50 gvanrossum Exp $
 """
 
 import os
@@ -73,6 +73,7 @@ class Error(Exception):
             if "%" in msg:
                 msg = msg % args
             else:
+                msg += " "
                 msg += " ".join(map(repr, args))
         return str(msg)
 
