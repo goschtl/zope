@@ -248,26 +248,6 @@ class tmxxx:
             self.year)
 
 
-# XXX I don't think we should use this.  Let's rip it out.
-class basetime(object):
-    """Abstract date/time type.
-
-    See http://effbot.org/ideas/time-type.htm
-    """
-
-    def timetuple(self):
-        raise NotImplementedError
-
-    def utctimetuple(self):
-        raise NotImplementedError
-
-    def __cmp__(self, other):
-        raise NotImplementedError
-
-    def __hash__(self):
-        raise NotImplementedError
-
-
 class timedelta(object):
     """Represent the difference between two datetime objects.
 
@@ -486,7 +466,7 @@ class timedelta(object):
         return 1
 
 
-class date(basetime):
+class date(object):
     """Concrete date type.
 
     Constructors:
@@ -504,7 +484,7 @@ class date(basetime):
 
     Methods:
 
-    timetuple(), utctimetuple()
+    timetuple()
     toordinal()
     weekday(), isoweekday(), isocalendar()
     isoformat()
@@ -577,16 +557,17 @@ class date(basetime):
 
     # Standard conversions, __cmp__, __hash__ (and helpers)
 
-    # XXX These should be done without reference to the time module
+    def _yday(self):
+        """Return tm_yday: day within the current year, where Jan 1 == 1.
 
-    def _mktime(self):
-        # Helper to return a POSIX-ish timestamp
-        t = tmxxx(self.__year, self.__month, self.__day)
-        return t.time()
+        XXX This is not correct for now.  Who cares.
+        """
+        return 0
 
     def timetuple(self):
         "Return local time tuple compatible with time.localtime()."
-        return _time.gmtime(self._mktime())
+        return (self.__year, self.__month, self.__day,
+                0, 0, 0, self.weekday(), self._yday(), -1)
 
     def toordinal(self):
         """Return proleptic Gregorian ordinal for the year, month and day.
@@ -612,7 +593,7 @@ class date(basetime):
 
     # Formatting methods
 
-    # XXX These shouldn't depend on time.gmtime(), because that
+    # XXX These shouldn't depend on time.localtime(), because that
     # clips the usable dates to [1970 .. 2038).  At least ctime() is
     # easily done without using strftime() -- that's better too because
     # strftime("%c", ...) is locale specific.
@@ -623,7 +604,7 @@ class date(basetime):
 
     def strftime(self, fmt):
         "Format using strftime()."
-        return _time.strftime(fmt, _time.gmtime(self._mktime()))
+        return _time.strftime(fmt, self.timetuple())
 
     # Computations
 
@@ -733,12 +714,12 @@ class datetime(date):
 
     Methods:
 
-    timetuple(), utctimetuple()
-    ctime(), utcctime()
-    strftime(), utcstrftime()
+    timetuple()
+    ctime()
+    strftime()
     toordinal()
     weekday(), isoweekday(), isocalendar()
-    isoformat(), utcisoformat()
+    isoformat()
 
     Properties (readonly):
     year, month, day, hour, minute, second, microsecond
@@ -823,18 +804,11 @@ class datetime(date):
 
     # Standard conversions, __cmp__, __hash__ (and helpers)
 
-    # XXX These should be done without reference to the time module
-
-    def _mktime(self):
-        # Helper to return a POSIX-ish timestamp
-        t = tmxxx(self.__year, self.__month, self.__day,
-                  self.__hour, self.__minute, self.__second,
-                  self.__microsecond)
-        return t.time()
-
-    def utctimetuple(self):
-        "Return UTC time tuple compatible with time.gmtime()."
-        return _time.gmtime(self._mktime())
+    def timetuple(self):
+        "Return local time tuple compatible with time.localtime()."
+        return (self.__year, self.__month, self.__day,
+                self.__hour, self.__minute, self.__second,
+                self.weekday(), self._yday(), -1)
 
     def __cmp__(self, other):
         "Three-way comparison."
@@ -855,6 +829,11 @@ class datetime(date):
                      self.__microsecond))
 
     # Formatting methods
+
+    # XXX These shouldn't depend on time.localtime(), because that
+    # clips the usable dates to [1970 .. 2038).  At least ctime() is
+    # easily done without using strftime() -- that's better too because
+    # strftime("%c", ...) is locale specific.
 
     # XXX An additional question is whether ctime() should renormalize
     # to local time, or display the time as entered (which may be
@@ -948,6 +927,33 @@ class datetimetz(datetime):
         self.__tzinfo = tzinfo
 
     tzinfo = property(lambda self: self.__tzinfo, doc="timezone info object")
+
+    def fromtimestamp(cls, t, tzinfo=None):
+        """Construct a datetimetz from a POSIX timestamp (like time.time()).
+
+        A timezone info object may be passed in as well.
+        """
+        y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
+        us = int((t % 1.0) * 1000000)
+        return cls(y, m, d, hh, mm, ss, us, tzinfo)
+    fromtimestamp = classmethod(fromtimestamp)
+
+    def now(cls, tzinfo=None):
+        "Construct a datetime from time.time() and optional time zone info."
+        t = _time.time()
+        return cls.fromtimestamp(t, tzinfo)
+    now = classmethod(now)
+
+    def utctimetuple(self):
+        "Return UTC time tuple compatible with time.gmtime()."
+        offset = self.utcoffset()
+        if not offset: # Either None or 0
+            return self.timetuple()
+        ts = datetime(self.year, self.month, self.day,
+                      self.hour, self.minute, self.second,
+                      self.microsecond)
+        dt = timedelta(minutes=offset)
+        return (ts - dt).timetuple()
 
     def isoformat(self, sep=' '):
         s = super(datetimetz, self).isoformat(sep)
