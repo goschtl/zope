@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.41 2003/07/15 00:58:18 richard Exp $
+$Id: widget.py,v 1.42 2003/07/15 06:06:53 adams Exp $
 """
 
 __metaclass__ = type
@@ -1342,7 +1342,7 @@ def renderTag(tag, **kw):
     for key, value in items:
         if value == None:
             value = key
-        attr_list.append('%s="%s"' % (key, str(value)))
+        attr_list.append('%s="%s"' % (key, unicode(value)))
 
     attr_str = " ".join(attr_list)
     return "<%s %s %s" % (tag, attr_str, extra)
