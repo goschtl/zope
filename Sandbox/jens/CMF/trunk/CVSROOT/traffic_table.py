@@ -89,9 +89,13 @@ def init_table():
      'remote': public_remote,
      'addrs': zopeaddr},
 
+    {'path': "Packages/ZEO",
+     'remote': public_remote,
+     'addrs': ['zeo-checkins@zope.org']},
+
     {'path': "ZopeDocs",
      'addrs': 'zopedocs-checkins@zope.org',
-         'remote': None},
+     'remote': None},
 
 #        {'path': "Documentation/Guides/Book",
 #         'addrs': 'zope-book@zope.org',
