@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.16 2003/07/03 22:46:12 sidnei Exp $
+$Id: __init__.py,v 1.17 2003/07/04 13:01:26 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -272,21 +272,11 @@ class ZopeCursor:
 ##      if [x for x in converters if x is not ZopeDatabaseAdapter.identity]:
 ##          return results  # optimize away
 
-## XXX Geez! This was badly broken for me, and srichter was not
-## around to explain what this code is supposed to do when
-## theres only one row/one column on the result.
-
         def convertRow(row):
-            try:
-                return map(lambda converter, value: converter(value),
-                           converters, row)
-            except TypeError:
-                return converters[0](row)
+            return map(lambda converter, value: converter(value),
+                       converters, row)
 
-        try:
-            return map(convertRow, results)
-        except TypeError:
-            return convertRow(results)
+        return map(convertRow, results)
 
 class ZopeConnection:
 
