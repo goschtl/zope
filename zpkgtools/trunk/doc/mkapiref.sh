@@ -19,7 +19,7 @@ epydoc -o doc/apiref -n 'Zope Packaging Tools' --docformat restructuredtext \
 
 ERR=$?
 
-if [ $ERR -eq 0 ] ; then
+if [ $ERR -eq 0 -a -d doc/apiref-backup ] ; then
     rm -r doc/apiref-backup || exit $?
 fi
 
