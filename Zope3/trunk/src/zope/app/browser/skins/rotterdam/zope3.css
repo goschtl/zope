@@ -440,7 +440,7 @@ div.box .odd {
     margin: 0;
 }
 
-table.listing {
+table.listingdescription, table.listing {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
     border-collapse: collapse;
     border-left: 1px solid #CCCCCC;
@@ -449,7 +449,11 @@ table.listing {
 /*    clear: both; */
 }
 
-table.listing th {
+table.listingdescription {
+    width: 100%
+}
+
+table.listingdescription th, table.listing th {
     background: #CCCCCC;
     border-top: 1px solid #CCCCCC;
     border-bottom: 1px solid #CCCCCC;
@@ -460,7 +464,7 @@ table.listing th {
     white-space: nowrap;
 }
 
-table.listing td.top {
+table.listingdescription td.top, table.listing td.top {
     border-left: 1px solid White;
     border-top: 1px solid White ! important;
     border-right: 1px solid White ! important;
@@ -472,14 +476,15 @@ table.listing td.top {
     top: -1px;
 }
 
-table.listing tr.odd {
+table.listingdescription tr.odd, table.listing tr.odd {
     /*every second line should be shaded */
     background: White;
 }
 
-table.listing tr.even {
+table.listingdescription tr.even, table.listing tr.even {
     background: #F8F8F8;
 }
+
 
 table.listing td {
     border-right: 1px solid #CCCCCC;
@@ -488,8 +493,14 @@ table.listing td {
 }
 
 
-table.listing img {
+table.listingdescription img, table.listing img {
     vertical-align: middle;
+}
+
+table.listingdescription td {
+    border-right: 1px solid #CCCCCC;
+    padding: 5px;
+    text-align: left;
 }
 
 

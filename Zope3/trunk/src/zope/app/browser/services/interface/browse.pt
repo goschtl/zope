@@ -3,15 +3,25 @@
 <div metal:fill-slot="body">
 
   <h2 i18n:translate="">Interfaces registered with the interface service</h2>
-
-  <ul>
-    <li tal:repeat="dict view/getInterfaces">
-      <a href="/" 
+  
+  <table class="listingdescription" summary="Interfaces Listing"
+      cellspacing="0">
+    <thead>
+      <th>Interface Name</th>
+      <th>Title</th>
+    </thead>
+    <tal:repeat tal:repeat="dict view/getInterfaces">
+    <tr tal:define="oddrow repeat/dict/odd;"
+        tal:attributes="class python:oddrow and 'even' or 'odd'">
+      <td>
+        <a href="/" 
          tal:attributes="href string:detail.html?id=${dict/id}"
          tal:content="dict/name">An interface name
-      </a>
-    </li>
-  </ul>
+        </a></td>  
+      <td tal:content="dict/doc">Interface DocString</td>
+    </tr>
+    </tal:repeat>
+  </table>  
 
 </div>
 </body>

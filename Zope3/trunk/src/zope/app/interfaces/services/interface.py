@@ -19,4 +19,7 @@ class IInterfaceBasedRegistry(Interface):
     """Registries that use interfaces."""
 
     def getRegistrationsForInterface(iface):
-        """Return registrations related to iface."""
+        """Return registrations related to iface.
+
+        The Return value is iterable of IRegistration object.
+        """
