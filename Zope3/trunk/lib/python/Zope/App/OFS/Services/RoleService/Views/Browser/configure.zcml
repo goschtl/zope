@@ -22,7 +22,7 @@
      for=".RoleService.IRoleService"
      factory=".Views.Browser.Contents.">
 
-     <browser:page name="index.html" attribute="index" />
+     <browser:page name="index.html" attribute="contents" />
      <browser:page name="removeObjects.html" attribute="removeObjects" />
 
   </browser:view>
