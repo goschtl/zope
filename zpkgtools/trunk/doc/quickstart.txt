@@ -81,7 +81,7 @@ to hold the finished tarball in the current directory.
 
 Run |zpkg|_ using this command::
 
-  zpkg -a -vVERSION ZopeX3
+  zpkg -ac -vVERSION ZopeX3
 
 After listening to a good CD, or perhaps having some good Thai food,
 you should find a very large tarball named *ZopeX3-VERSION.tgz* in the
