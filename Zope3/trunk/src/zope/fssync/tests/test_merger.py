@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.7 2003/05/14 19:00:16 gvanrossum Exp $
+$Id: test_merger.py,v 1.8 2003/05/14 22:16:09 gvanrossum Exp $
 """
 
 import os
@@ -212,11 +212,11 @@ class TestMerger(unittest.TestCase):
         self.runtest(None, "a", "a", removed, {}, None, "Nothing", "Removed")
 
     def test_remote_removed(self):
-        self.runtest("a", "a", None, {}, None, None, "Remove", "Nonexistent")
+        self.runtest("a", "a", None, {}, None, None, "Delete", "Nonexistent")
 
     def test_both_removed(self):
         self.runtest(None, "a", None, removed, None,
-                     None, "Remove", "Nonexistent")
+                     None, "Delete", "Nonexistent")
 
     def test_local_lost_remote_unchanged(self):
         self.runtest(None, "a", "a", {}, {}, "a", "Copy", "Uptodate")
@@ -225,7 +225,7 @@ class TestMerger(unittest.TestCase):
         self.runtest(None, "a", "b", {}, {}, "b", "Copy", "Uptodate")
 
     def test_local_lost_remote_removed(self):
-        self.runtest(None, "a", None, {}, None, None, "Remove", "Nonexistent")
+        self.runtest(None, "a", None, {}, None, None, "Delete", "Nonexistent")
 
     def test_spurious(self):
         self.runtest("a", None, None, None, None, "a", "Nothing", "Spurious")

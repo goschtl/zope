@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.15 2003/05/14 19:18:15 gvanrossum Exp $
+$Id: fssync.py,v 1.16 2003/05/14 22:16:09 gvanrossum Exp $
 """
 
 import os
@@ -35,53 +35,10 @@ from os.path import exists, isfile, isdir, islink
 from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
 
-from zope.xmlpickle import loads, dumps
-from zope.fssync.compare import classifyContents
 from zope.fssync.metadata import Metadata
-from zope.fssync.merger import Merger
-
-unwanted = ("", os.curdir, os.pardir)
-
-class Error(Exception):
-    """User-level error, e.g. non-existent file.
-
-    This can be used in several ways:
-
-        1) raise Error("message")
-        2) raise Error("message %r %r" % (arg1, arg2))
-        3) raise Error("message %r %r", arg1, arg2)
-        4) raise Error("message", arg1, arg2)
-
-    - Forms 2-4 are equivalent.
-
-    - Form 4 assumes that "message" contains no % characters.
-
-    - When using forms 2 and 3, all % formats are supported.
-
-    - Form 2 has the disadvantage that when you specify a single
-      argument that happens to be a tuple, it may get misinterpreted.
-
-    - The message argument is required.
-
-    - Any number of arguments after that is allowed.
-    """
-
-    def __init__(self, msg, *args):
-        self.msg = msg
-        self.args = args
-
-    def __str__(self):
-        msg, args = self.msg, self.args
-        if args:
-            if "%" in msg:
-                msg = msg % args
-            else:
-                msg += " "
-                msg += " ".join(map(repr, args))
-        return str(msg)
-
-    def __repr__(self):
-        return "%s%r" % (self.__class__.__name__, (self.msg,)+self.args)
+from zope.fssync.fsmerger import FSMerger
+from zope.fssync.fsutil import Error
+from zope.fssync import fsutil
 
 class Network(object):
 
@@ -149,7 +106,7 @@ class Network(object):
                 if data:
                     return data
             head, tail = split(dir)
-            if tail in unwanted:
+            if tail in fsutil.unwanted:
                 break
             dir = head
         return None
@@ -308,7 +265,7 @@ class FSSync(object):
             raise Error("target already registered", target)
         if exists(target) and not isdir(target):
             raise Error("target should be a directory", target)
-        self.ensuredir(target)
+        fsutil.ensuredir(target)
         fp, headers = self.network.httpreq(rootpath, "@@toFS.zip")
         try:
             self.merge_zipfile(fp, target)
@@ -366,7 +323,7 @@ class FSSync(object):
         if not entry:
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
-        head, tail = self.split(target)
+        head, tail = fsutil.split(target)
         path = entry["path"]
         fp, headers = self.network.httpreq(path, "@@toFS.zip")
         try:
@@ -387,7 +344,11 @@ class FSSync(object):
                 os.mkdir(tmpdir)
                 cmd = "cd %s; unzip -q %s" % (tmpdir, zipfile)
                 sts, output = commands.getstatusoutput(cmd)
-                self.merge_dirs(localdir, tmpdir)
+                if sts:
+                    raise Error("unzip failed:\n%s" % output)
+                m = FSMerger(self.metadata, self.reporter)
+                m.merge(localdir, tmpdir)
+                self.metadata.flush()
                 print "All done."
             finally:
                 if isdir(tmpdir):
@@ -395,6 +356,10 @@ class FSSync(object):
         finally:
             if isfile(zipfile):
                 os.remove(zipfile)
+
+    def reporter(self, msg):
+        if msg[0] not in "/*":
+            print msg
 
     def diff(self, target, mode=1, diffopts=""):
         assert mode == 1, "modes 2 and 3 are not yet supported"
@@ -408,7 +373,7 @@ class FSSync(object):
             return
         if not isfile(target):
             raise Error("diff target '%s' is file nor directory", target)
-        orig = self.getorig(target)
+        orig = fsutil.getoriginal(target)
         if not isfile(orig):
             raise Error("can't find original for diff target '%s'", target)
         if self.cmp(target, orig):
@@ -433,7 +398,7 @@ class FSSync(object):
         entry = self.metadata.getentry(path)
         if entry:
             raise Error("path '%s' is already registered", path)
-        head, tail = self.split(path)
+        head, tail = fsutil.split(path)
         pentry = self.metadata.getentry(head)
         if not pentry:
             raise Error("can't add '%s': its parent is not registered", path)
@@ -468,142 +433,3 @@ class FSSync(object):
         else:
             entry["flag"] = "removed"
         self.metadata.flush()
-
-    def merge_dirs(self, localdir, remotedir):
-        if not isdir(remotedir):
-            return
-
-        self.ensuredir(localdir)
-
-        ldirs, lnondirs = classifyContents(localdir)
-        rdirs, rnondirs = classifyContents(remotedir)
-
-        dirs = {}
-        dirs.update(ldirs)
-        dirs.update(rdirs)
-
-        nondirs = {}
-        nondirs.update(lnondirs)
-        nondirs.update(rnondirs)
-
-        def sorted(d): keys = d.keys(); keys.sort(); return keys
-
-        merger = Merger(self.metadata)
-
-        for x in sorted(dirs):
-            local = join(localdir, x)
-            if x in nondirs:
-                # Too weird to handle
-                print "should '%s' be a directory or a file???" % local
-                continue
-            remote = join(remotedir, x)
-            lentry = self.metadata.getentry(local)
-            rentry = self.metadata.getentry(remote)
-            if lentry or rentry:
-                if x not in ldirs:
-                    os.mkdir(local)
-                self.merge_dirs(local, remote)
-
-        for x in sorted(nondirs):
-            if x in dirs:
-                # Error message was already printed by previous loop
-                continue
-            local = join(localdir, x)
-            origdir = join(localdir, "@@Zope", "Original")
-            self.ensuredir(origdir)
-            orig = join(origdir, x)
-            remote = join(remotedir, x)
-            action, state = merger.classify_files(local, orig, remote)
-            state = merger.merge_files(local, orig, remote, action, state)
-            self.report(action, state, local)
-            self.merge_extra(local, remote)
-            self.merge_annotations(local, remote)
-
-        self.merge_extra(localdir, remotedir)
-        self.merge_annotations(localdir, remotedir)
-
-        lentry = self.metadata.getentry(localdir)
-        rentry = self.metadata.getentry(remotedir)
-        lentry.update(rentry)
-
-        self.metadata.flush()
-
-    def merge_extra(self, local, remote):
-        lextra = self.getextra(local)
-        rextra = self.getextra(remote)
-        if isdir(rextra):
-            self.merge_dirs(lextra, rextra)
-
-    def merge_annotations(self, local, remote):
-        lannotations = self.getannotations(local)
-        rannotations = self.getannotations(remote)
-        if isdir(rannotations):
-            self.merge_dirs(lannotations, rannotations)
-
-    def report(self, action, state, local):
-        letter = None
-        if state == "Conflict":
-            letter = "C"
-        elif state == "Uptodate":
-            if action in ("Copy", "Fix", "Merge"):
-                letter = "U"
-        elif state == "Modified":
-            letter = "M"
-            entry = self.metadata.getentry(local)
-            conflict_mtime = entry.get("conflict")
-            if conflict_mtime:
-                if conflict_mtime == os.path.getmtime(local):
-                    letter = "C"
-                else:
-                    del entry["conflict"]
-        elif state == "Added":
-            letter = "A"
-        elif state == "Removed":
-            letter = "R"
-        elif state == "Spurious":
-            if not self.ignore(local):
-                letter = "?"
-        elif state == "Nonexistent":
-            if action == "Delete":
-                print "local file '%s' is no longer relevant" % local
-        if letter:
-            print letter, local
-
-    def ignore(self, path):
-        # XXX This should have a larger set of default patterns to
-        # ignore, and honor .cvsignore
-        return path.endswith("~")
-
-    def cmp(self, f1, f2):
-        try:
-            return filecmp.cmp(f1, f2, shallow=False)
-        except (os.error, IOError):
-            return False
-
-    def ensuredir(self, dir):
-        if not isdir(dir):
-            os.makedirs(dir)
-
-    def getextra(self, path):
-        return self.getspecial(path, "Extra")
-
-    def getannotations(self, path):
-        return self.getspecial(path, "Annotations")
-
-    def getorig(self, path):
-        return self.getspecial(path, "Original")
-
-    def getspecial(self, path, what):
-        head, tail = self.split(path)
-        return join(head, "@@Zope", what, tail)
-
-    def split(self, path):
-        head, tail = split(path)
-        if tail in unwanted:
-            newpath = realpath(path)
-            head, tail = split(newpath)
-            if head == newpath or tail in unwanted:
-                raise Error("path '%s' is the filesystem root", path)
-        if not head:
-            head = os.curdir
-        return head, tail

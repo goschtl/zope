@@ -30,7 +30,7 @@ subset of the options of GNU diff as local options.
 ``fssync -h'' prints the global help (this message)
 ``fssync command -h'' prints the local help for the command
 
-$Id: main.py,v 1.11 2003/05/14 14:40:50 gvanrossum Exp $
+$Id: main.py,v 1.12 2003/05/14 22:16:09 gvanrossum Exp $
 """
 
 import os
@@ -54,7 +54,8 @@ except ImportError:
     srcdir = join(rootdir, "src")
     sys.path.append(srcdir)
 
-from zope.fssync.fssync import Error, FSSync
+from zope.fssync.fsutil import Error
+from zope.fssync.fssync import FSSync
 
 class Usage(Error):
     """Subclass for usage error (command-line syntax).
@@ -123,9 +124,9 @@ def main(argv=None):
         print >>sys.stderr, "for help use --help"
         return 2
 
-    except Error, msg:
-        print >>sys.stderr, msg
-        return 1
+##    except Error, msg:
+##        print >>sys.stderr, msg
+##        return 1
 
     else:
         return None

@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.6 2003/05/14 19:20:20 gvanrossum Exp $
+$Id: merger.py,v 1.7 2003/05/14 22:16:09 gvanrossum Exp $
 """
 
 import os
@@ -23,7 +23,8 @@ import shutil
 import filecmp
 import commands
 
-from os.path import exists, isfile
+from os.path import exists, isfile, dirname
+from zope.fssync import fsutil
 
 class Merger(object):
     """Augmented three-way file merges.
@@ -59,10 +60,11 @@ class Merger(object):
     actions are:
 
     Fix      -- copy the remote copy to the local original, nothing else
-    Copy     -- copy the remote copy over the local copy
+    Copy     -- copy the remote copy over the local copy and original
     Merge    -- merge the remote copy into the local copy
-                (this may cause merge conflicts when tried)
-    Delete   -- delete the local copy
+                (this may cause merge conflicts when executed);
+                copy the remote copy to the local original
+    Delete   -- delete the local copy and original
     Nothing  -- do nothing
 
     The original file is made a copy of the remote file for actions
@@ -131,7 +133,7 @@ class Merger(object):
     def merge_files_nothing(self, local, original, remote):
         return None
 
-    def merge_files_remove(self, local, original, remote):
+    def merge_files_delete(self, local, original, remote):
         if isfile(local):
             os.remove(local)
         if isfile(original):
@@ -141,6 +143,7 @@ class Merger(object):
 
     def merge_files_copy(self, local, original, remote):
         shutil.copy(remote, local)
+        fsutil.ensuredir(dirname(original))
         shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
@@ -192,8 +195,8 @@ class Merger(object):
 
         Return a pair of strings (action, state) where action is one
         of 'Fix', 'Copy', 'Merge', 'Delete' or 'Nothing', and state is
-        one of 'Conflict', 'Uptodate', 'Modified', 'Added', 'Removed'
-        or 'Nonexistent'.
+        one of 'Conflict', 'Uptodate', 'Modified', 'Added', 'Removed',
+        'Spurious' or 'Nonexistent'.
         
         """
         lmeta = self.getentry(local)
@@ -228,7 +231,7 @@ class Merger(object):
         if lmeta.get("flag") == "removed":
             if not rmeta:
                 # Removed remotely too
-                return ("Remove", "Nonexistent")
+                return ("Delete", "Nonexistent")
             else:
                 # Removed locally
                 if self.cmpfile(original, remote):
@@ -239,14 +242,14 @@ class Merger(object):
         if lmeta and not rmeta:
             assert lmeta.get("flag") is None
             # Removed remotely
-            return ("Remove", "Nonexistent")
+            return ("Delete", "Nonexistent")
 
         if lmeta.get("flag") is None and not exists(local):
             # Lost locally
             if rmeta:
                 return ("Copy", "Uptodate")
             else:
-                return ("Remove", "Nonexistent")
+                return ("Delete", "Nonexistent")
 
         # Sort out cases involving simple changes to files
 
