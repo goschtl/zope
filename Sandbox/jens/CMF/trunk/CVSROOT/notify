@@ -1,1 +1,0 @@
-ALL /bin/echo %s `/bin/date` >> /tmp/oy
