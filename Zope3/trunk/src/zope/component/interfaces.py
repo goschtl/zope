@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.4 2003/05/21 20:30:05 jim Exp $
+$Id: interfaces.py,v 1.5 2003/05/23 22:17:33 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -26,16 +26,23 @@ class IComponentArchitecture(Interface):
     # basic service manager tools
 
     def getServiceManager(context):
-        """returns the nearest service manager to the context; if the
-        context is None the global service manager is always returned"""
+        """Get the service manager
+
+        Return the nearest service manager to the context; if the
+        context is None the global service manager is always returned
+        """
 
     def getService(context, name):
-        """returns the service defined by 'name' nearest to the context;
+        """Get a named service.
+
+        Returns the service defined by 'name' nearest to the context;
         if the context is None the pertinent global service is always
         returned"""
 
     def getServiceDefinitions(context):
-        """returns a dictionary of the service definitions pertinent to
+        """Get service definitions
+
+        Returns a dictionary of the service definitions pertinent to
         the given context, in the format {nameString: serviceInterface}.
         If the context is None the global definitions will be returned.
         The default behavior of placeful service managers is to include
@@ -125,7 +132,7 @@ class IComponentArchitecture(Interface):
     def createObject(context, name, *args, **kwargs):
         """Create an object using a factory
 
-        finds the factory of the given name that is nearest to the
+        Finds the factory of the given name that is nearest to the
         context, and passes the other given arguments to the factory
         to create a new instance. Returns a reference to the new
         object.  If a matching factory cannot be found raises
@@ -133,8 +140,28 @@ class IComponentArchitecture(Interface):
 
         """
 
+    def getFactory(context, name):
+        """Get a factory
+
+        Get the factory of the given name that is nearest to the
+        context.  If a matching factory cannot be found raises
+        ComponentLookupError
+        
+        """
+
+    def queryFactory(context, name, default=None):
+        """Get a factory
+
+        Get the factory of the given name that is nearest to the
+        context.  If a matching factory cannot be found then the
+        default is returned.
+        
+        """
+
     def getFactoryInterfaces(context, name):
-        """finds the factory of the given name that is nearest to the
+        """Get interfaces implemented by a factory
+
+        finds the factory of the given name that is nearest to the
         context, and returns the interface or interface tuple that
         object instances created by the named factory will implement."""
 
