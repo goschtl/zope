@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.5 2003/05/08 20:41:02 gvanrossum Exp $
+$Id: fssync.py,v 1.6 2003/05/08 22:20:05 gvanrossum Exp $
 """
 
 import os
@@ -39,9 +39,10 @@ class ZipFile(BrowserView):
     - return the contents of the zipfile with content-type application/zip
     """
 
-    def show(self):
+    def show(self, writeOriginals=None):
         """Return the zipfile response."""
-        writeOriginals = isset(self.request.get("writeOriginals"))
+        if writeOriginals is None:
+            writeOriginals = isset(self.request.get("writeOriginals"))
         zipfilename = writeZipFile(self.context, writeOriginals)
         f = open(zipfilename, "rb")
         data = f.read()
@@ -107,7 +108,7 @@ def writeZipFile(obj, writeOriginals=False):
 
 # And here is the inverse operation, fromFS.html (an HTML form).
 
-class Commit(BrowserView):
+class Commit(ZipFile):
 
     """View for committing changes.
 
@@ -115,14 +116,33 @@ class Commit(BrowserView):
     """
 
     def update(self):
-        if self.request.getHeader("Content-Type") == "application/zip":
-            zipfiledata = self.request.body
+        zipfile = self.request.get("zipfile")
+        if zipfile is None:
+            return # Not updating -- must be presenting a blank form
         else:
-            zipfile = self.request.get("zipfile")
-            if zipfile is None:
-                return # Not updating -- must be presenting a blank form
+            zipdata = zipfile.read()
+            errors = self.do_commit(zipdata)
+            if not errors:
+                return "Changes committed successfully."
             else:
-                zipfiledata = zipfile.read()
+                errors.insert(0, "Up-to-date check failed:")
+                raise UserError(*errors)
+
+    def commit(self):
+        if not self.request.getHeader("Content-Type") == "application/zip":
+            self.request.response.setHeader("Content-Type", "text/plain")
+            return "ERROR: Content-Type is not application/zip\n"
+        zipdata = self.request.body
+        errors = self.do_commit(zipdata)
+        if not errors:
+            return self.show(writeOriginals=True) # Return the zipfile!
+        else:
+            self.request.response.setHeader("Content-Type", "text/plain")
+            errors.insert(0, "Up-to-date check failed:")
+            errors.append("")
+            return "\n".join(errors)
+
+    def do_commit(self, zipdata):
         # 00) Allocate temporary names
         topdir = tempfile.mktemp()
         zipfilename = os.path.join(topdir, "working.zip")
@@ -133,7 +153,7 @@ class Commit(BrowserView):
             os.mkdir(topdir)
             # 1) Write the zipfile data to disk
             f = open(zipfilename, "wb")
-            f.write(zipfiledata)
+            f.write(zipdata)
             f.close()
             # 2) Unzip it into a working directory
             os.mkdir(working)
@@ -148,14 +168,13 @@ class Commit(BrowserView):
                 # Make the messages nicer by editing out topdir
                 errors = [x.replace(os.path.join(topdir, ""), "")
                           for x in errors]
-                errors.insert(0, "Uptodate check failed:")
-                raise UserError(*errors)
+                return errors
             # 5) Now call fromFS()
             name = objectName(self.context)
             container = getParent(self.context)
             fromFS(container, name, working)
-            # 6) Return success message
-            return "Changes committed successfully."
+            # 6) Return success
+            return []
         finally:
             try:
                 shutil.rmtree(topdir)

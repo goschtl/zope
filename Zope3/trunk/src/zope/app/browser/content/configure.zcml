@@ -442,4 +442,12 @@
       template="fromFS.pt"
       />
 
+  <browser:page
+      for="zope.interface.Interface"
+      name="fromFS.zip"
+      permission="zope.ManageServices"
+      class="zope.app.browser.content.fssync.Commit"
+      attribute="commit"
+      />
+
 </zopeConfigure>
