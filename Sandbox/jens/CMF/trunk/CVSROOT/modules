@@ -1,6 +1,8 @@
 embedded -a Components/principia Components/ExtensionClass Components/cPickle \
   Components/PickleJar Components/cPersistence Components/zlib \
   Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
-embedded2 -a Components/principia Components/ExtensionClass Components/cPickle \
-  Components/PickleJar Components/cPersistence Components/zlib \
-  Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
+
+zOrb Components/python-object-publisher cgi_module_publisher.py CGIResponse.py
+GreyThing Components/GreyThing
+
+z &zOrb &GreyThing
