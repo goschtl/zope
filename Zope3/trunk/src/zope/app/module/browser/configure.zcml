@@ -33,7 +33,7 @@
       label="Edit Module"
       permission="zope.ManageSite"
       menu="zmi_views" title="Edit" />
-  
+
   <page
       name="browse.html"
       for="zope.app.module.interfaces.IModuleManager"
@@ -41,5 +41,5 @@
       template="browse_module.pt"
       permission="zope.ManageSite"
       menu="zmi_views" title="Browse"
-      /> 
+      />
 </zope:configure>

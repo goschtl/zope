@@ -27,8 +27,7 @@ class ViewModule(object):
 
         L = [(getattr(obj, '__name__', id),
               getattr(obj, '__doc__', ''),
-              type(obj).__name__
-              )
+              type(obj).__name__)
              for id, obj in module.__dict__.items()
              if id not in remove_keys]
         L.sort()

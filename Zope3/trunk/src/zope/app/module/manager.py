@@ -66,7 +66,7 @@ class ModuleManager(persistent.Persistent, Contained):
 class ModuleFactory(object):
     """Special factory for creating module managers in site managment
     folders."""
-    
+
     zope.interface.implements(IFileFactory)
 
     def __init__(self, context):
