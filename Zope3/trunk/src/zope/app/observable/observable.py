@@ -19,6 +19,7 @@ from zope.interface import implements, providedBy
 from zope.app.observable.interfaces import IObservable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.observable.observers import Observers
+from zope.app.event.interfaces import ISubscriber
 
 key = 'zope.app.observable'
 
@@ -46,11 +47,11 @@ class ObservableAdapter:
             # if there is no registry, we can't unsubscribe
             registry.unsubscribe(required, provided, subscriber)
 
-    def notify(self, event, provided):
+    def notify(self, event):
         annotations = IAnnotations(self.context)
         registry = annotations.get(key)
 
         if registry is not None:
             for subscriber in registry.subscriptions([providedBy(event)],
-                                                     provided):
-                subscriber.notify(event)
+                                                     ISubscriber):
+                subscriber(event).notify(event)

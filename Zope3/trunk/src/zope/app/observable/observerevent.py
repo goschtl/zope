@@ -28,7 +28,7 @@ class ObserverEventNotifier:
         adapter = IObservable(event.object, None)
 
         if adapter is not None:
-            adapter.notify(event, ISubscriber)
+            adapter.notify(event)
 
 observerEventNotifierInstance = ObserverEventNotifier()
 

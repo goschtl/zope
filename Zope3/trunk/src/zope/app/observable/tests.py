@@ -35,12 +35,13 @@ class DummySubscriber:
 
     implements(ISubscriber)
 
-    def __init__(self):
-        self.events = []
+    events = []
+
+    def __init__(self, event):
+        self.event = event
         
     def notify(self, event):
-
-        self.events.append(event)
+        self.events.append(self.event)
 
 class DummyEvent:
     implements(IObjectAddedEvent)
@@ -48,60 +49,71 @@ class DummyEvent:
 def test_subscribe():
     """
     First create an annotatable object and an adapter
-    >>> obj = DummyAnnotationsClass()
-    >>> adapter = ObservableAdapter(obj)
+
+      >>> obj = DummyAnnotationsClass()
+      >>> adapter = ObservableAdapter(obj)
 
     Make a subscriber and make a faux subscription
-    >>> subscriber = DummySubscriber()
-    >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, subscriber)
+
+      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
 
     Make sure an ObjectAdapterRegistry was created
-    >>> obj[key] is not None
-    True
+
+      >>> obj[key] is not None
+      True
 
     Make sure the registry contains a subscription for the correct event
-    >>> IObjectAddedEvent in obj[key].adapters
-    True
+
+      >>> IObjectAddedEvent in obj[key].adapters
+      True
 
     """
 
 def test_unsubscribe():
     """
     First create an annotatable object and an adapter
-    >>> obj = DummyAnnotationsClass()
-    >>> adapter = ObservableAdapter(obj)
+
+      >>> obj = DummyAnnotationsClass()
+      >>> adapter = ObservableAdapter(obj)
 
     Make a subscriber and make a faux subscription
-    >>> subscriber = DummySubscriber()
-    >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, subscriber)
+
+      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
 
     Now unsubscribe from the registry
-    >>> adapter.unsubscribe([IObjectAddedEvent], ISubscriber, subscriber)
+
+      >>> adapter.unsubscribe([IObjectAddedEvent], ISubscriber,
+      ...                     DummySubscriber)
 
     There should be no subscribers for IObjectAddedEvent after unsubscription.
-    >>> obj[key].adapters[IObjectAddedEvent]
-    {}
+
+      >>> obj[key].adapters[IObjectAddedEvent]
+      {}
     """
 
 def test_notify():
     """
     First create an annotatable object and an adapter
-    >>> obj = DummyAnnotationsClass()
-    >>> adapter = ObservableAdapter(obj)
+
+      >>> obj = DummyAnnotationsClass()
+      >>> adapter = ObservableAdapter(obj)
 
     Make a subscriber and make a faux subscription
-    >>> subscriber = DummySubscriber()
-    >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, subscriber)
+
+      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
 
     Make sure an ObjectAdapterRegistry was created
-    >>> obj[key] is not None
-    True
+
+      >>> obj[key] is not None
+      True
 
     Call notify
-    >>> event = DummyEvent()
-    >>> adapter.notify(event, ISubscriber)
-    >>> subscriber.events == [event]
-    True
+
+      >>> event = DummyEvent()
+      >>> adapter.notify(event)
+      >>> DummySubscriber.events == [event]
+      True
+
     """
 
 class DummyObservable:
@@ -110,7 +122,7 @@ class DummyObservable:
     def __init__(self):
         self.flag = False
 
-    def notify(self, event, provided):
+    def notify(self, event):
         self.flag = True
 
 class DummyNotObservable:
@@ -118,7 +130,7 @@ class DummyNotObservable:
     def __init__(self):
         self.flag = False
         
-    def notify(self, event, provided):
+    def notify(self, event):
         self.flag = True
 
 class DummyObservableEvent:

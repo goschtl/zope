@@ -20,8 +20,16 @@ from zope.interface.interfaces import Interface
 
 class IObservable(Interface):
 
-    def notify(event, provided):
-        """Notify all subscribers that the event provided has occured."""
+    def notify(event):
+        """Notify the ISubscriber subscribers"""
 
     def subscribe(required, provided, subscriber):
-        """Subscribe to an event for a particular instance."""
+        """Subscribe to an event for a particular instance.
+
+
+        Note that the providd interface should be or extend ISubscriber.
+
+        In the future, we will provide a subscribers function that
+        allows other interfaces to be used.
+        
+        """
