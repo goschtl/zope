@@ -13,13 +13,13 @@
 ##############################################################################
 """ Define view component for service manager contents.
 
-$Id: role.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
+$Id: role.py,v 1.4 2003/08/08 23:28:42 srichter Exp $
 """
 from zope.app.browser.container.contents import Contents
 from zope.app.services.role import Role, ILocalRoleService
 
 class Add:
-    "Provide a user interface for adding a contact"
+    "Provide a user interface for adding a role"
     __used_for__ = ILocalRoleService
 
     def action(self, id, title, description):

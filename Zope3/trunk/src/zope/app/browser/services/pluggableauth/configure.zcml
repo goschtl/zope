@@ -65,7 +65,8 @@
       schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
       label="Add Simple User with details"
       content_factory="zope.app.services.pluggableauth.SimplePrincipal"
-      arguments="login password title description"
+      arguments="login password"
+      keyword_arguments="title description"
       fields="login password title description"
       name="AddPrincipalForm"
       permission="zope.ManageContent" />

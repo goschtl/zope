@@ -19,14 +19,14 @@
     <div class="row">
       <div class="label" i18n:translate="">Title</div>
       <div class="field">
-        <input type="text" name="title" size="60" value="" />
+        <input type="text" name="title" size="40" value="" />
       </div>
     </div>
 
     <div class="row">
       <div class="label" i18n:translate="">Description</div>
       <div class="field">
-        <textarea name="description" rows="10" cols="60" />
+        <textarea name="description" rows="10" cols="60"></textarea>
       </div>
     </div>
 

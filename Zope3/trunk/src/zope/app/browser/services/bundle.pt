@@ -101,7 +101,7 @@
               <span i18n:translate="">Register and activate</span>
             </span>
             <span i18n:translate="">
-              (is: <span tal:replace="cnf/status" 
+              (is: <span tal:replace="cnf/status"
                          i18n:name="active_status">Active</span>)
             </span>
           </li>
