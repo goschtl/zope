@@ -35,12 +35,8 @@ addCleanup::
   addCleanUp(pigRegistry._clear)
 
 
-Revision information:
-$Id: cleanup.py,v 1.5 2004/01/20 21:23:16 sidnei Exp $
+$Id: cleanup.py,v 1.6 2004/02/13 22:28:22 srichter Exp $
 """
-
-__metaclass__ = type
-
 _cleanups = []
 
 def addCleanUp(func, args=(), kw={}):
@@ -51,7 +47,7 @@ def addCleanUp(func, args=(), kw={}):
     """
     _cleanups.append((func, args, kw))
 
-class CleanUp:
+class CleanUp(object):
     """Mix-in class providing clean-up setUp and tearDown routines."""
 
     def cleanUp(self):
