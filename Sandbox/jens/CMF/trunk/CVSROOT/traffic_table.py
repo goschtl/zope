@@ -75,8 +75,7 @@ def get_table():
 def init_table():
     add_to_table([
         {'path': "CVSROOT",
-         'addrs': ["klm@digicool.com"],
-#         'addrs': ["digicool-cvs@zope.org"],
+         'addrs': ["digicool-cvs@zope.org"],
          'excludes': ["/history"]},
 
 ##       {'path': "test",
