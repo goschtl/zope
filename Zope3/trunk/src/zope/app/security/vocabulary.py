@@ -19,9 +19,11 @@ $Id: $
 """
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
+from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+from zope.schema.interfaces import ISource, ISourceQueriables
 from zope.app.security.interfaces import IPermission
-
+from zope.app.component.localservice import queryNextService
 
 class PermissionIdsVocabulary(SimpleVocabulary):
     """A vocabular of permission IDs.
@@ -95,3 +97,92 @@ class PermissionIdsVocabulary(SimpleVocabulary):
         terms.sort(lambda lhs, rhs: \
             lhs.title == u'Public' and -1 or cmp(lhs.title, rhs.title))
         super(PermissionIdsVocabulary, self).__init__(terms)
+
+
+class PrincipalSource(object):
+    """Generic Principal Source"""
+    implements(ISource, ISourceQueriables)
+
+    def __contains__(self, id):
+        """Test for the existence of a user.
+
+        We want to check whether the system knows about a particular
+        principal, which is referenced via its id. The source will go through
+        the most local authentication service to look for the
+        principal. Whether the service consults other services to give an
+        answer is up to the service itself.
+
+        First we need to create a dummy service that will return a user, if
+        the id is 'bob'.
+        
+        >>> class DummyService:
+        ...     def getPrincipal(self, id):
+        ...         if id == 'bob':
+        ...             return id
+
+        Since we do not want to bring up the entire component architecture, we
+        simply monkey patch the `getService()` method to always return our
+        dummy authentication service.
+
+        >>> temp = zapi.getService
+        >>> zapi.getService = lambda name: DummyService()
+
+        Now initialize the principal source and test the method
+
+        >>> source = PrincipalSource()
+        >>> 'jim' in source
+        False
+        >>> 'bob' in source
+        True
+
+        Now revert our patch.
+
+        >>> zapi.getService = temp
+        """
+        auth = zapi.getService(zapi.servicenames.Authentication)
+        principal = auth.getPrincipal(id)
+        return principal is not None
+
+    def getQueriables(self):
+        """Returns an iteratable of queriables. 
+
+        Queriables are responsible for providing interfaces to search for
+        principals by a set of given parameters (can be different for the
+        various queriables). This method will walk up through all of the
+        authentication services to look for queriables.
+
+        >>> class DummyService1:
+        ...     __parent__ = None
+        ...     def __repr__(self): return 'dummy1'
+        >>> dummy1 = DummyService1()
+        
+        >>> class DummyService2:
+        ...     implements(ISourceQueriables)
+        ...     __parent__ = None
+        ...     def getQueriables(self):
+        ...         return 1, 2, 3
+        >>> dummy2 = DummyService2()
+        
+        >>> from zope.app.component.localservice import testingNextService
+        >>> testingNextService(dummy1, dummy2, 'Authentication')
+        
+        >>> temp = zapi.getService
+        >>> zapi.getService = lambda name: dummy1
+
+        >>> source = PrincipalSource()
+        >>> list(source.getQueriables())
+        [dummy1, 1, 2, 3]
+
+        >>> zapi.getService = temp
+        """
+        auth = zapi.getService(zapi.servicenames.Authentication)
+        while True:
+            queriables = ISourceQueriables(auth, None)
+            if queriables is None:
+                yield auth
+            else:
+                for queriable in queriables.getQueriables():
+                    yield queriable
+            auth = queryNextService(auth, zapi.servicenames.Authentication)
+            if auth is None:
+                break
