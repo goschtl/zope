@@ -32,8 +32,12 @@
 
   <browser:view
     for="Zope.TextIndex.TextIndexInterfaces.IStatistics"
-    permission="Zope.View"
+    permission="Zope.ManageServices"
     name="control.html"
-    template="control.pt" />
+    factory=".control.ControlView">
+
+    <browser:page name="index.html" template="control.pt" />
+
+  </browser:view>
 
 </zopeConfigure>

@@ -29,11 +29,11 @@
     </span>
 
     <div>
-    	Documents: <span tal:replace="context/documentCount" />
+        Documents: <span tal:replace="context/documentCount" />
     </div>
 
     <div>
-    	Words: <span tal:replace="context/wordCount" />
+        Words: <span tal:replace="context/wordCount" />
     </div>
 
     <form method="POST">
@@ -52,34 +52,37 @@
     <form method="GET">
         <input type="text" name="queryText" value=""
                tal:attributes="value request/queryText|nothing" />
-        <input type="submit" value="Query" name="callQuery" />
+        <input type="submit" value="Query" />
     </form>
 
     <div tal:condition="request/queryText|nothing" tal:omit-tag="">
-        <span tal:define="
-            result_tuple python:context.query(request['queryText'],0,100);
-            total python:result_tuple[1];
-            result_list python:result_tuple[0]"
-            tal:omit-tag=""
-            tal:on-error="string:invalid query"
-            >
-        Search results: <span tal:replace="total" />
-            <div tal:repeat="match_tuple result_list">
-              <span tal:define="
-                    hubid    python:match_tuple[0];
-                    score    python:match_tuple[1];
-                    location python:context.hubid2location(hubid);
-                    title    python:context.hubid2title(hubid) or '(no title)';
-                    ">
-                 Location:
-                 <a href="location"
-                    tal:attributes="href location"
-                    tal:content="location">location</a>
-                 Title: <span tal:replace="title" />
-                 Score: <span tal:replace="score" />
-              </span>
-            </div>
-        </span>
+        <div tal:define="result view/query" tal:omit-tag="">
+	    <div tal:condition="not:result/total">
+	        No hits.  Please try another query.
+	    </div>
+	    <div tal:condition="result/total">
+		<div tal:content="
+		string:Hits ${result/first}-${result/last} of ${result/total}:"
+		/>
+		<div tal:repeat="info result/results">
+	            title=<span tal:replace="info/title" />;
+		    url=<a href="location"
+		            tal:attributes="href info/location"
+                            tal:content="info/location">url</a>;
+		    score=<span tal:replace="info/scoreLabel" />
+		</div>
+	    </div>
+	    <span tal:condition="exists:result/prev">
+                <a href="next"
+                   tal:attributes="href
+                       string:?queryText=${request/queryText}&start=${view/prevBatch}">&lt;-- PREVIOUS BATCH</a>
+	    </span>
+	    <span tal:condition="exists:result/next">
+                <a href="next"
+                   tal:attributes="href
+                       string:?queryText=${request/queryText}&start=${view/nextBatch}">NEXT BATCH --&gt;</a>
+	    </span>
+        </div>
     </div>
 
   </div>
