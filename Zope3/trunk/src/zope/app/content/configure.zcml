@@ -361,6 +361,8 @@
 
 <fssync:adapter class=".file.File" factory=".fssync.ObjectFileAdapter" />
 
+<fssync:adapter class=".image.Image" factory=".fssync.ObjectFileAdapter" />
+
 <fssync:adapter class=".folder.Folder" factory=".fssync.ObjectDirectory" />
 
 <fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTObjectFileAdapter" />
@@ -383,29 +385,6 @@
   for="zope.app.interfaces.content.zpt.IZPTPage"
   factory=".fssync.ObjectFileAdapter"
   provides="zope.app.interfaces.fssync.IObjectFile"
-  />
-
-  <!-- add views -->
-
-<view 
-  factory=".fssync.FolderAddView"
-  for="zope.app.interfaces.fssync.IContentDirectory"
-  type="zope.app.interfaces.fssync.IFSAddView"
-  name=".folder"
-  />
-
-<view 
-  factory=".fssync.FileAddView"
-  for="zope.app.interfaces.fssync.IContentDirectory"
-  type="zope.app.interfaces.fssync.IFSAddView"
-  name=".file"
-  />
-
-<view 
-  factory=".fssync.ZPTAddView"
-  for="zope.app.interfaces.fssync.IContentDirectory"
-  type="zope.app.interfaces.fssync.IFSAddView"
-  name=".pt"
   />
 
 <!-- Further Directives -->
