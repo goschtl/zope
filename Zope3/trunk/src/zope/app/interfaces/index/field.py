@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to field indexing and searching.
 
-$Id: field.py,v 1.3 2003/06/23 16:44:39 mgedmin Exp $
+$Id: field.py,v 1.4 2003/07/13 03:36:03 anthony Exp $
 """
 
 from zope.interface import Interface
@@ -21,8 +21,8 @@ from zope.schema import BytesLine
 from zope.app.component.interfacefield import InterfaceField
 
 
-class IUIFieldIndex(Interface):
-    """Interface for creating a FieldIndex from the ZMI."""
+class IUIFieldCatalogIndex(Interface):
+    """Interface for creating a FieldIndex in a catalog from the ZMI."""
 
     interface = InterfaceField(
                     title=u"Interface",
@@ -33,6 +33,9 @@ class IUIFieldIndex(Interface):
     field_name = BytesLine(
                     title=u"Field Name",
                     description=u"Name of the field to index")
+
+class IUIFieldIndex(IUIFieldCatalogIndex):
+    """Interface for creating a FieldIndex from the ZMI (not in a catalog)."""
 
     def subscribe():
         """Subscribe to the prevailing object hub service."""

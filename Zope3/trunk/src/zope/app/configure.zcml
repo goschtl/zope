@@ -128,4 +128,6 @@
 
   <include package="zope.app.rdb" file="service.zcml" />
 
+  <include package="zope.app.catalog"/>
+
 </zopeConfigure>

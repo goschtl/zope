@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.7 2003/06/23 16:44:38 mgedmin Exp $
+$Id: index.py,v 1.8 2003/07/13 03:35:57 anthony Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -34,11 +34,12 @@ from zope.app.interfaces.services.hub import \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent
 
-from zope.app.interfaces.index.field import IUIFieldIndex
+from zope.app.interfaces.index.field import IUIFieldIndex, IUIFieldCatalogIndex
+from zope.app.interfaces.catalog.index import ICatalogIndex
 
-class FieldIndex(FieldIndexWrapper):
+class FieldCatalogIndex(FieldIndexWrapper):
 
-    implements(ISubscriber, IUIFieldIndex)
+    implements(ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
 
     def __init__(self, field_name, interface=None):
         FieldIndexWrapper.__init__(self)
@@ -48,9 +49,7 @@ class FieldIndex(FieldIndexWrapper):
     field_name = property(lambda self: self._field_name)
     interface = property(lambda self: self._interface)
 
-
     def _getValue(self, object):
-
         if self._interface is not None:
             object = queryAdapter(object, self._interface)
             if object is None: return None
@@ -63,7 +62,6 @@ class FieldIndex(FieldIndexWrapper):
             except: return None
 
         return value
-
 
     def notify(self, event):
         """An event occurred.  Index or unindex the object in response."""
@@ -79,6 +77,10 @@ class FieldIndex(FieldIndexWrapper):
             except KeyError:
                 pass
     notify = ContextMethod(notify)
+
+class FieldIndex(FieldCatalogIndex):
+
+    implements(ISubscriber, IUIFieldIndex)
 
     currentlySubscribed = False # Default subscription state
 

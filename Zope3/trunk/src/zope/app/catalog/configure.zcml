@@ -1,0 +1,34 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope"
+               xmlns:browser="http://namespaces.zope.org/browser"
+>
+
+
+<content class=".catalog.Catalog">
+  <implements 
+           interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>
+  <factory id="zope.app.catalog" 
+           permission="zope.ManageContent"/>
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogView"
+           permission="zope.View" />
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogQuery"
+           permission="zope.Public" />
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogEdit"
+           permission="zope.ManageContent" />
+  <require interface="zope.app.interfaces.container.IContainer"
+           permission="zope.ManageContent" />
+</content>
+
+<content class=".catalog.CatalogUtility">
+  <factory id="zope.app.catalogutility" 
+           permission="zope.ManageContent"/>
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogView"
+           permission="zope.View"/>
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogQuery"
+           permission="zope.View"/>
+  <require interface="zope.app.interfaces.catalog.catalog.ICatalogEdit"
+           permission="zope.ManageContent"/>
+  <require interface="zope.app.interfaces.container.IContainer"
+           permission="zope.ManageContent"/>
+</content>
+
+</zopeConfigure>
