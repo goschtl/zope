@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.19 2003/04/14 08:27:15 jim Exp $
+$Id: editview.py,v 1.20 2003/04/14 21:13:01 fdrake Exp $
 """
 
 from datetime import datetime
@@ -60,7 +60,6 @@ class EditView(BrowserView):
 
         self._setUpWidgets()
 
-
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
@@ -75,8 +74,7 @@ class EditView(BrowserView):
 
     def widgets(self):
         return [getattr(self, name)
-                for name in self.fieldNames
-                ]
+                for name in self.fieldNames]
 
     def apply_update(self, data):
         """Apply data updates
@@ -131,7 +129,7 @@ class EditView(BrowserView):
             return self.update_status
 
         status = ''
-        
+
         if Update in self.request:
             unchanged = True
             try:
@@ -238,7 +236,6 @@ def edit(_context, name, schema, permission, label='',
          class_ = None, for_ = None,
          template = None, omit=None, fields=None,
          menu=None, title='Edit', usage=u''):
-
 
     if menu:
         actions = menuItemDirective(
