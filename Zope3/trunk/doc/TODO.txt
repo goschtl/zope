@@ -54,8 +54,6 @@ Things to do for the next release (in no particular order)
 
   What remains is the section "Utilities everywhere".
 
-  - Factories
-
   - Caching (Naveen is working on this)
 
   - Session data managers

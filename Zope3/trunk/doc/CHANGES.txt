@@ -57,6 +57,10 @@ Zope Changes
 
     - Session support implemented and usable from Python code.
 
+    - The factory directive and subdirective do not accept a permission
+      attribute anymore, since all factories are publically available,
+      i.e. all attributes/methods have the permission 'zope.Public'.
+
     Bug fixes
     
     - Fixed inline-code support for Windows.
@@ -120,6 +124,11 @@ Zope Changes
           translate(location, msgid, domain=None, mapping=None, context=None,
                     target_language=None, default=None):
  
+      o The Factory Service was removed and factories became utilities. The
+        'getFactoryInterfaces()' and 'createObject()' functions are still
+        available via 'zope.app.zapi'. I also added the 'getFactoriesFor()'
+        function to zapi, since it was only available from the service before. 
+
     - The IPrincipal now uses 'id', 'title' and 'description instead of
       'getId()', 'getTitle()', and 'getDescription()'. For
       backwards-compatiblity 'getTitle()' and 'getDescription()' are available
