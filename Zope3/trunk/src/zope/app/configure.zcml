@@ -104,6 +104,8 @@
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.onlinehelp" />
 
+  <include package="zope.app.xml" />
+
 <!-- Views -->
 
   <include package="zope.app.browser" />
