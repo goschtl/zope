@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.3 2003/03/19 19:57:30 alga Exp $
+$Id: traversing.py,v 1.4 2003/03/24 16:42:21 mgedmin Exp $
 """
 
 from zope.interface import Interface
@@ -86,7 +86,7 @@ _RAISE_KEYERROR = object()
 class ITraverser(Interface):
     """Provide traverse features"""
 
-    def traverse(path, default=_RAISE_KEYERROR):
+    def traverse(path, default=_RAISE_KEYERROR, request=None):
         """
         Return an object given a path.
 
@@ -98,5 +98,8 @@ class ITraverser(Interface):
         is relative to the current context.
 
         If the object is not found, return 'default' argument.
+
+        'request' is passed in when traversing from presentation code. This
+        allows paths like @@foo to work.
         """
  

@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.7 2003/03/21 15:29:09 alga Exp $
+$Id: test_objecthub.py,v 1.8 2003/03/24 16:42:21 mgedmin Exp $
 """
 
 import unittest, sys
@@ -208,12 +208,14 @@ class TestSearchRegistrations(BasicHubTest):
             return FakeObject(canonicalPath(location))
 
         from zope.app.interfaces.traversing import ITraverser
-        class DummyTraverser:
+        from zope.app.traversing.adapters import Traverser
+        class DummyTraverser(Traverser):
             __implements__ = ITraverser
-            def __init__(self, context):
-                pass
-            def traverse(self, location):
-                return fake_object_for_location(location)
+            def traverse(self, location, *args, **kw):
+                if location in TestSearchRegistrations.locations:
+                    return fake_object_for_location(location)
+                else:
+                    return Traverser.traverse(self, location, *args, **kw)
 
         from zope.component.adapter import provideAdapter
         provideAdapter(None, ITraverser, DummyTraverser)

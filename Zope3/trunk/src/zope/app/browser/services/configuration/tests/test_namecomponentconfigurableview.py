@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for the generic NameComponentConfigurable view mixin
 
-$Id: test_namecomponentconfigurableview.py,v 1.1 2003/03/21 21:09:34 jim Exp $
+$Id: test_namecomponentconfigurableview.py,v 1.2 2003/03/24 16:42:20 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,10 +22,12 @@ from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component.view import provideView
+from zope.component.adapter import provideAdapter
 from zope.publisher.browser import BrowserView
 from zope.app.browser.services.configuration \
      import NameComponentConfigurableView
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.interfaces.traversing import ITraversable, ITraverser
+from zope.app.traversing.adapters import Traverser
 
 
 class SM:
@@ -80,6 +82,7 @@ class AU(BrowserView):
 class Test(PlacelessSetup, TestCase):
 
     def test_update(self):
+        provideAdapter(None, ITraverser, Traverser)
         provideView(I, 'ChangeConfigurations', IBrowserPresentation, V)
         provideView(ITestConfiguration, 'absolute_url', IBrowserPresentation,
                     AU)
