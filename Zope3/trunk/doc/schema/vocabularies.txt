@@ -124,7 +124,7 @@ more than once (uniqueness).  These fields also implement
 number of values for each field.
 
 =========================  ==========  ==========
-                           Ordered     Uniqueness
+Field Type                 Ordered     Uniqueness
 =========================  ==========  ==========
 VocabularyBagField         No          No
 VocabularyListField        Yes         No
@@ -334,7 +334,8 @@ articles").
 Interfaces
 ----------
 
-Module ``zope.schema.interfaces``:
+Module ``zope.schema.interfaces``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``ITerm``
   The interface of objects returned by iterating over a vocabulary or
@@ -377,7 +378,8 @@ Module ``zope.schema.interfaces``:
   ``vocabularyName``
     The name of the vocabulary that should be used for this field.
 
-Module ``zope.schema.vocabulary``:
+Module ``zope.schema.vocabulary``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``IVocabularyRegistry``
   This is the interface for the vocabulary registry.  It defines a
@@ -395,7 +397,8 @@ Other APIs
 There are a handful of implementation classes and functions exposed in
 the ``zope.schema`` package.
 
-Module ``zope.schema``:
+Module ``zope.schema``
+~~~~~~~~~~~~~~~~~~~~~~
 
 ``VocabularyField``
   Class which implements ``IVocabularyField``; derived from
@@ -406,7 +409,8 @@ Module ``zope.schema``:
     An ``IBaseVocabulary`` object, or a name which may be used by an
     ``IVocabularyRegistry``.
 
-Module ``zope.schema.vocabulary``:
+Module ``zope.schema.vocabulary``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``getVocabularyRegistry()``
   Return the currently-registered ``IVocabularyRegistry`` object.
