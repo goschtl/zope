@@ -11,14 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interface that text-indexable objects should implement.
+"""Interfaces related to text indexing and searching.
 
-$Id: ISearchableText.py,v 1.1 2002/12/04 10:43:29 gvanrossum Exp $
+$Id: interfaces.py,v 1.1 2002/12/04 11:10:24 gvanrossum Exp $
 """
 
 from Interface import Interface
 
 class ISearchableText(Interface):
+
+    """Interface that text-indexable objects should implement."""
 
     def getSearchableText():
         """Return a sequence of unicode strings to be indexed.

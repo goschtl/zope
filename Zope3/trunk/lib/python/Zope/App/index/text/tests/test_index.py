@@ -11,15 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for TextIndex.
+"""Tests for text index.
 
-$Id: testTextIndex.py,v 1.1 2002/12/04 10:43:29 gvanrossum Exp $
+$Id: test_index.py,v 1.1 2002/12/04 11:10:24 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from Zope.App.Indexes.ISearchableText import ISearchableText
-from Zope.App.Indexes.TextIndex import TextIndex
+from Zope.App.index.text.interfaces import ISearchableText
+from Zope.App.index.text.index import TextIndex
 
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup import \
      PlacefulSetup
