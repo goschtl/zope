@@ -60,7 +60,7 @@ Interface example
 %size 4, fore "blue"
 from zope.interface import Interface
 
-class IElephant(Interface)
+class IElephant(Interface):
     """An elephant is a big grey animal.
     """
     def getAngerLevel():
@@ -89,8 +89,8 @@ class AfricanElephant:
     def trample(self, target):
         target.flatten()
 
-    def trumpet():
-        return terribleRacket()
+    def trumpet(self):
+        return "A terrible racket"
 
 %page
 
@@ -135,6 +135,15 @@ Component architecture
 
 Adapters, example
 
+%size 4, fore "blue"
+class INoiseMaker(Interface):
+    """Something that makes noise.
+    """
+    def makeNoise():
+         "Returns the noise that's made."
+
+Adapters, example continued
+
 
 %size 4, fore "blue"
 class ElephantNoiseMaker:
@@ -142,11 +151,11 @@ class ElephantNoiseMaker:
      """
      implements(INoiseMaker)
 
-      def __init__(self, context):
-          self.context = context
+     def __init__(self, context):
+         self.context = context
 
-      def makeNoise(self)
-          self.context.trumpet()
+     def makeNoise(self):
+         return self.context.trumpet()
 
 %page
 
@@ -156,7 +165,7 @@ Adapters, example continued
 %size 4, fore "blue"
 elephant = AfricanElephant()
 noise_maker = ElephantNoiseMaker(elephant)
-noise_maker.makeNoise()
+print noise_maker.makeNoise()
 
 %page
 
