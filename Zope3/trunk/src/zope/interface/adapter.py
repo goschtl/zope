@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: adapter.py,v 1.3 2003/01/20 20:02:52 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -75,13 +75,34 @@ class AdapterRegistry:
             raise TypeError(
                 "The provide argument must be an interface (or None)")
 
+        # Invalidate our cache
+        self._v_cache = {}
+
         self._registerAllProvided(require, provide, object, provide)
 
-    def get(self, (ob_interface, provide), default=None, filter=None):
+    def get(self, ob_interface_provide, default=None, filter=None):
         """
         Finds a registered component that provides the given interface.
         Returns None if not found.
         """
+
+        if filter is None:
+            cache = getattr(self, '_v_cache', self)
+            if cache is self:
+                cache = self._v_cache = {}
+            key = `ob_interface_provide`
+            cached = cache.get(key, self)
+            if cached is self:
+                cached = self._uncached_get(ob_interface_provide,
+                                            default, filter)
+                cache[key] = cached
+            return cached
+
+        return self._uncached_get(ob_interface_provide,
+                                  default, filter)
+
+    def _uncached_get(self, (ob_interface, provide), default, filter):
+        
         for interface in _flatten(ob_interface, 1):
             c = self._reg.get((interface, provide))
             if c:
