@@ -25,8 +25,8 @@ class CommandLineTestCase(unittest.TestCase):
 
     def parse_args(self, args):
         args = [CMD] + args + ["resource"]
-        options, resource = app.parse_args(args)
-        self.assertEqual(resource, "resource")
+        options = app.parse_args(args)
+        self.assertEqual(options.resource, "resource")
         return options
 
     def test_set_package_version(self):

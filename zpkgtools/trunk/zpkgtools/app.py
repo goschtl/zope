@@ -33,15 +33,19 @@ from zpkgtools import publication
 
 
 class Application:
+    """Application state and logic for **zpkg**."""
 
-    def __init__(self, options, resource, program):
-        self.logger = logging.getLogger(program)
+    def __init__(self, options):
+        """Initialize the application based on an options object as
+        returned by `parse_args()`.
+        """
+        self.logger = logging.getLogger(options.program)
         self.ip = None
         self.options = options
-        self.resource = locationmap.normalizeResourceId(resource)
+        self.resource = locationmap.normalizeResourceId(options.resource)
         self.resource_type, self.resource_name = self.resource.split(":", 1)
         # Create a new directory for all temporary files to go in:
-        self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
+        self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
         tempfile.tempdir = self.tmpdir
         if options.revision_tag:
             self.loader = cvsloader.CvsLoader(tag=options.revision_tag)
@@ -62,10 +66,10 @@ class Application:
         if options.include_support_code is None:
             options.include_support_code = cf.include_support_code
 
-        if resource not in self.locations:
-            print >>sys.stderr, "unknown resource:", resource
+        if self.resource not in self.locations:
+            print >>sys.stderr, "unknown resource:", self.resource
             sys.exit(1)
-        self.resource_url = self.locations[resource]
+        self.resource_url = self.locations[self.resource]
         self.handled_resources = sets.Set()
 
     def build_distribution(self):
@@ -76,13 +80,9 @@ class Application:
         self.ip = include.InclusionProcessor(self.source, loader=self.loader)
         self.ip.add_manifest(self.destination)
         self.handled_resources.add(self.resource)
-        self.type_dispatch("build_%s_distribution")
-        self.type_dispatch("generate_%s_setup")
-
-    def type_dispatch(self, template, *args, **kw):
-        name = template % self.resource_type
+        name = "build_%s_distribution" % self.resource_type
         method = getattr(self, name)
-        method(*args, **kw)
+        method()
 
     def build_package_distribution(self):
         pkgname = self.metadata.name
@@ -105,6 +105,7 @@ class Application:
             f.write(s.join(pkginfo.documentation))
             f.write("\n")
             f.close()
+        self.generate_package_setup()
 
     def build_collection_distribution(self):
         # Build the destination directory:
@@ -136,8 +137,23 @@ class Application:
             self.handled_resources.add(resource)
             deps = self.add_collection_component(name, source)
             remaining |= (deps - self.handled_resources)
+        self.generate_collection_setup(packages, collections)
 
     def add_collection_component(self, name, source):
+        """Add a single component to a collection.
+
+        :return: Set of dependencies for the added component.
+        :rtype: sets.Set
+
+        :param name:
+          The name of the resource from the resource identifier.  This
+          is used as the directory name for the component within the
+          collection distribution.
+
+        :param source:
+          Directory containing the source of the component.
+
+        """
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
         spec = include.Specification(source)
@@ -170,6 +186,7 @@ class Application:
         self.metadata = publication.load(open(metadata_file))
 
     def load_resource(self):
+        """Load the primary resource and initialize internal metadata."""
         self.source = self.loader.load(self.resource_url)
         self.load_metadata()
         if not self.options.release_name:
@@ -180,9 +197,20 @@ class Application:
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
     def generate_package_setup(self):
+        """Generate the setup.py file for a package distribution."""
         self.generate_setup("Package")
 
-    def generate_collection_setup(self):
+    def generate_collection_setup(self, packages, collections):
+        """Generate the setup.py file for a collection distribution.
+
+        :Parameters:
+          - `packages`: List of packages that are included.
+          - `collections`: List of collections that are included.
+
+        Each of these components must be present in a child directory
+        of ``self.destination``; the directory name should match the
+        component name in these lists.
+        """
         self.generate_setup("Collection")
 
     def generate_setup(self, typename):
@@ -199,6 +227,14 @@ class Application:
         f.close()
 
     def include_support_code(self):
+        """Include any support code needed by the generated setup.py
+        files.
+
+        This will add the ``setuptools`` and ``zpkgtools`` packages to
+        the output directory if not already present, but they won't be
+        added to the set of packages that will be installed by the
+        resulting distribution.
+        """
         old_loader = self.loader
         if self.options.revision_tag:
             # we really don't want the tagged version of the support code
@@ -214,6 +250,17 @@ class Application:
         self.loader = old_loader
 
     def include_support_package(self, name, fallback):
+        """Add the support package `name` to the output directory.
+
+        :Parameters:
+          - `name`:  The name of the package to include.
+
+          - `fallback`: Location to use if the package isn't found
+            anywhere else.  This will typically be a cvs: URL.
+
+        If a directory named `name` is already present in the output
+        tree, it is left unchanged.
+        """
         destination = os.path.join(self.destination, name)
         if os.path.exists(destination):
             # have the package as a side effect of something else
@@ -238,6 +285,16 @@ class Application:
         self.ip.copyTree(source, destination, excludes=[tests_dir])
 
     def create_manifest(self, destination):
+        """Write out a MANIFEST file for the directory `destination`.
+
+        :param destination:
+          Directory in the output tree for which a manifest is
+          needed.
+
+        Once this has been called for a directory, no further files
+        should be written to the directory tree rooted at
+        `destination`.
+        """
         manifest_path = os.path.join(destination, "MANIFEST")
         self.ip.add_output(manifest_path)
         manifest = self.ip.drop_manifest(destination)
@@ -248,6 +305,10 @@ class Application:
         f.close()
 
     def create_tarball(self):
+        """Generate a compressed tarball from the destination tree.
+
+        The completed tarball is copied to the current directory.
+        """
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
         try:
@@ -265,9 +326,13 @@ class Application:
                     self.target_file)
 
     def cleanup(self):
+        """Remove all temporary data storage."""
         shutil.rmtree(self.tmpdir)
 
     def run(self):
+        """Run the application, using the other methods of the
+        ``Application`` object.
+        """
         try:
             try:
                 self.load_resource()
@@ -299,13 +364,17 @@ def parse_args(argv):
     """Parse the command line, return an options object and the
     identifier of the resource to be packaged.
 
-    :Parameters:
-      - `argv`: The command line arguments, including argv[0].
+    :return: Options object containing values derived from the command
+      line, the name of the application, and the name of the resource
+      to operate on.
+
+    :param argv: The command line arguments, including argv[0].
 
     """
 
+    prog=os.path.basename(argv[0])
     parser = optparse.OptionParser(
-        prog=os.path.basename(argv[0]),
+        prog=prog,
         usage="usage: %prog [options] resource",
         version="%prog 0.1")
     parser.add_option(
@@ -340,23 +409,31 @@ def parse_args(argv):
     options, args = parser.parse_args(argv[1:])
     if len(args) != 1:
         parser.error("wrong number of arguments")
-    return options, args[0]
+    options.program = prog
+    options.args = args
+    options.resource = args[0]
+    return options
 
 
 def main(argv=None):
+    """Main function for **zpkg**.
+
+    :return: Result code for the process.
+
+    :param argv: Command line that should be used.  If omitted or
+      ``None``, ``sys.argv`` will be used instead.
+
+    """
     if argv is None:
         argv = sys.argv
     try:
-        options, resource = parse_args(argv)
+        options = parse_args(argv)
     except SystemExit, e:
         print >>sys.stderr, e
         return 2
 
-    # figure out what to read from:
-    program = os.path.basename(argv[0])
-
     try:
-        app = Application(options, resource, program)
+        app = Application(options)
         app.run()
     except SystemExit, e:
         return e.code
