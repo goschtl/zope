@@ -345,7 +345,7 @@ _default_checkers = {
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__',
-                         '__contains__', '__len__', '__iter__']),
+                         '__contains__', '__len__', '__iter__', '__iadd__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
     types.ClassType: _classChecker,
