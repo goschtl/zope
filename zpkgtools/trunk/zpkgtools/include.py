@@ -75,7 +75,7 @@ class InclusionProcessor:
         self.includes = {}
         f = None
         if specfile is None:
-            # Read soruce/INCLUDES.txt, if it exists.
+            # Read source/INCLUDES.txt, if it exists.
             specfile = os.path.join(source, "INCLUDES.txt")
             if os.path.exists(specfile):
                 f = open(specfile, "rU")
@@ -275,10 +275,7 @@ class InclusionProcessor:
     def includeFromCvs(self, cvsurl, destination):
         loader = self.getLoader(cvsurl)
         source = loader.load(cvsurl)
-        if os.path.isfile(source):
-            shutil.copy2(source, destination)
-        else:
-            self.copyTree(source, destination)
+        self.includeFromLocalTree(source, destination)
 
     def getLoader(self, cvsurl):
         if self.cvs_loader is None and self.cvsurl is not None:
