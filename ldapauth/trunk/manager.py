@@ -17,6 +17,7 @@ $Id$
 """
 
 import ldap
+from ldap.modlist import addModlist
 
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -43,7 +44,7 @@ class LDAPManagerAdapter:
         source = trustedRemoveSecurityProxy(self.context)
         l = self.__connect(source)
         dn = self._createdn(ldap_principal, source)
-        modification = ldap.modlist.addModlist(
+        modification = addModlist(
                 {source.login_attribute : ldap_principal.login,
                  'userPassword' : ldap_principal.password})
         l.add_s(dn, modification)
@@ -54,12 +55,12 @@ class LDAPManagerAdapter:
     def editPrincipal(self, ldap_principal):
         source = trustedRemoveSecurityProxy(self.context)
 
-    def deletePrincipal(self, login):
+    def deletePrincipal(self, ldap_principal):
         source = trustedRemoveSecurityProxy(self.context)
         l = self.__connect(source)
         dn = self._createdn(ldap_principal, source)
         l.delete_s(dn)
-        del source[login]
+        del source[ldap_principal.login]
 
     def _createdn(self, principal, ldapauth):
         return '%s=%s,%s' % (ldapauth.login_attribute,

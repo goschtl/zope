@@ -10,6 +10,7 @@
 __version__='$Revision: 1.7 $'[11:-2]
 
 import ldap, sha, base64, copy
+from ldap.modlist import addModlist
 
 # Module-level stuff
 __version__ = '2.fake'
@@ -69,6 +70,10 @@ def sha_encode(paswd):
     sha_dig = sha_pswd.digest()
     paswd_enc = base64.encodestring(sha_dig).strip()
     return '{SHA}%s' % paswd_enc
+
+class modlist:
+
+    addModlist = addModlist
 
 class FakeLDAPConnection:
     
