@@ -13,9 +13,9 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.6 2003/03/23 22:35:42 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.7 2003/03/31 15:55:19 stevea Exp $
 """
-
+__metaclass__ = type
 from unittest import TestCase, main, makeSuite
 from zope.app.services.cache import CacheConfiguration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
