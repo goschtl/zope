@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.7 2002/08/08 15:05:59 ersab Exp $
+$Id: SQLScript.py,v 1.8 2002/10/07 09:54:39 mgedmin Exp $
 """
 from types import StringTypes
 
@@ -28,15 +28,15 @@ from Zope.App.RDB.Util import queryForResults
 from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import parseArguments
+from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
+
+from Zope.App.Caching.Caching import getCacheForObj
 
 from DT_SQLVar import SQLVar
 from DT_SQLTest import SQLTest
 from DT_SQLGroup import SQLGroup
 
 from time import time
-
-try: from Persistence.BTrees.IOBTree import IOBucket as Bucket
-except: Bucket = lambda:{}
 
 
 class SQLDTML(HTML):
@@ -55,16 +55,13 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    __implements__ = ISQLScript, IFileContent
+    __implements__ = ISQLScript, IFileContent, IAttributeAnnotatable
 
-    def __init__(self, connectionName='', source='', arguments='',
-                 maxCache=0, cacheTime=0):
+    def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)
         self.setConnectionName(connectionName)
         # In our case arguments should be a string that is parsed
         self.setArguments(arguments)
-        self.setMaxCache(maxCache)
-        self.setCacheTime(cacheTime)
 
     def setArguments(self, arguments):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
@@ -96,29 +93,13 @@ class SQLScript(SQLCommand, Persistent):
     def setConnectionName(self, name):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         self._connectionName = name
-        self._clearCache()
+        cache = getCacheForObj(self)
+        if cache:
+            cache.invalidate(self)
 
     def getConnectionName(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         return self._connectionName
-
-    def setMaxCache(self, maxCache):
-        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        self._maxCache = maxCache
-        self._clearCache()
-
-    def getMaxCache(self):
-        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        return self._maxCache
-
-    def setCacheTime(self, cacheTime):
-        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        self._cacheTime = cacheTime
-        self._clearCache()
-
-    def getCacheTime(self):
-        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        return self._cacheTime
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
@@ -164,48 +145,18 @@ class SQLScript(SQLCommand, Persistent):
                 '%s is not connected to a database' %'foo')# self.id)
 
         query = apply(self.template, (), arg_values)
-
-        if self._maxCache > 0 and self._cacheTime > 0:
-            return self._cachedResult(connection, query)
-        else:
-            return queryForResults(connection, query)
+        cache = getCacheForObj(self)
+        if cache:
+            _marker = []
+            result = cache.query(self, keywords={'query': query}, default=_marker)
+            if result is not _marker:
+                return result
+        result = queryForResults(connection, query)
+        if cache:
+            cache.set(result, self, keywords={'query': query})
+        return result
 
     __call__ = ContextMethod(__call__)
-
-
-    def _clearCache(self):
-        'Clear the cache'
-        self._v_cache = {}, Bucket()
-
-    def _cachedResult(self, connection, query):
-        'Try to fetch query result from cache'
-        if not hasattr(self, '_v_cache'):
-            self._clearCache()
-        cache, tcache = self._v_cache
-        max_cache = self._maxCache
-        now = time()
-        t = now - self._cacheTime
-        if len(cache) > max_cache / 2:
-            keys = tcache.keys()
-            keys.reverse()
-            while keys and (len(keys) > max_cache or keys[-1] < t):
-                key = keys[-1]
-                q = tcache[key]
-                del tcache[key]
-                if int(cache[q][0]) == key:
-                    del cache[q]
-                del keys[-1]
-
-        if cache.has_key(query):
-            k, r = cache[query]
-            if k > t: return r
-
-        result = queryForResults(connection, query)
-        if self._cacheTime > 0:
-            tcache[int(now)] = query
-            cache[query] = now, result
-
-        return result
 
 
     # See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript
@@ -215,8 +166,4 @@ class SQLScript(SQLCommand, Persistent):
                       "Set the SQL template source.")
     connectionName = property(getConnectionName, setConnectionName, None,
                               "Connection Name for the SQL scripts.")
-    maxCache = property(getMaxCache, setMaxCache, None,
-                        "Set the size of the SQL Script cache.")
-    cacheTime = property(getCacheTime, setCacheTime, None,
-                         "Set the time in seconds that results are cached.")
 

@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.5 2002/10/04 18:37:18 jim Exp $
+$Id: testSQLScript.py,v 1.6 2002/10/07 09:54:39 mgedmin Exp $
 """
 
 import unittest
@@ -20,13 +20,23 @@ import unittest
 from Zope.App.RDB.IConnectionService import IConnectionService
 from Zope.App.RDB.IZopeConnection import IZopeConnection
 from Zope.App.RDB.IZopeCursor import IZopeCursor
+from Zope.ComponentArchitecture import getService
 from Zope.App.ComponentArchitecture import NextService
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 
-from Zope.App.OFS.Content.SQLScript.SQLScript import SQLScript 
+from Zope.App.OFS.Content.SQLScript.SQLScript import SQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import Arguments
+
+from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
+from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
+from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
+from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
+
+from Zope.App.Caching.ICacheable import ICacheable
+from Zope.App.Caching.ICachingService import ICachingService
+from Zope.App.Caching.AnnotationCacheable import AnnotationCacheable
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
 def getNextServiceManager(context):
@@ -67,6 +77,37 @@ class ConnectionServiceStub:
         return ConnectionStub()
 
 
+class CacheStub:
+
+    def __init__(self):
+        self.cache = {}
+
+    def set(self, data, obj, view_name="", keywords=None, mtime_func=None):
+        if keywords:
+            keywords = keywords.items()
+            keywords.sort()
+            keywords = tuple(keywords)
+        self.cache[obj, view_name, keywords] = data
+
+    def query(self, obj, view_name="", keywords=None, mtime_func=None, default=None):
+        if keywords:
+            keywords = keywords.items()
+            keywords.sort()
+            keywords = tuple(keywords)
+        return self.cache.get((obj, view_name, keywords), default)
+
+
+class CachingServiceStub:
+
+    __implements__ = ICachingService
+
+    def __init__(self):
+        self.caches = {}
+
+    def getCache(self, name):
+        return self.caches[name]
+
+
 class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def setUp(self):
@@ -75,6 +116,15 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
         sm.provideService('Connections', ConnectionServiceStub())
         self._old_getNextServiceManager = NextService.getNextServiceManager
         NextService.getNextServiceManager = getNextServiceManager
+        self.caching_service = CachingServiceStub()
+        sm.defineService('Caching', ICachingService)
+        sm.provideService('Caching', self.caching_service)
+        getService(None, "Adapters").provideAdapter(
+            IAttributeAnnotatable, IAnnotations,
+            AttributeAnnotations)
+        getService(None, "Adapters").provideAdapter(
+            IAnnotatable, ICacheable,
+            AnnotationCacheable)
 
     def tearDown(self):
         NextService.getNextServiceManager = self._old_getNextServiceManager
@@ -133,15 +183,14 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
     def testSQLScriptCaching(self):
         script = self._getScript()
         CursorStub.count = 0
-        # turn off caching and check that the counter grows
-        script.setCacheTime(0)
+        # no caching: check that the counter grows
         result = script(id=1)
         self.assertEqual(result[0].counter, 1)
         result = script(id=1)
         self.assertEqual(result[0].counter, 2)
-        # turn on caching and check that the counter stays still
-        script.setCacheTime(100000)
-        script.setMaxCache(100)
+        # caching: and check that the counter stays still
+        AnnotationCacheable(script).setCacheId('dumbcache')
+        self.caching_service.caches['dumbcache'] = CacheStub()
         result = script(id=1)
         self.assertEqual(result[0].counter, 3)
         result = script(id=1)

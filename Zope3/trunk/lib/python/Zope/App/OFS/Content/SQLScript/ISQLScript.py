@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.10 2002/09/18 15:05:50 jim Exp $
+$Id: ISQLScript.py,v 1.11 2002/10/07 09:54:39 mgedmin Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -50,19 +50,6 @@ class ISQLScript(ISQLCommand):
         description=u"The source of the page template.",
         required=True)
 
-    maxCache = Zope.Schema.Int(
-        title=u"Maximum results to cache",
-        description=u"The size of the SQL script cache.",
-        min=0,
-        required=True)
-
-    cacheTime = Zope.Schema.Int(
-        title=u"Maximum time (sec) to cache",
-        description=u"The time in seconds that results are cached. "
-                    u"Setting to zero disables caching.",
-        min=0,
-        required=True)
-
     def setArguments(arguments):
         """Processes the arguments (which could be a dict, string or whatever)
         to arguments as they are needed for the rendering process."""
@@ -89,14 +76,3 @@ class ISQLScript(ISQLCommand):
     def getConnectionName():
         """Get the connection name for this SQL Script."""
 
-    def setMaxCache(maxCache):
-        """Set the size of the SQL script cache."""
-
-    def getMaxCache():
-        """Get the size of the SQL script cache."""
-
-    def setCacheTime(cacheTime):
-        """Set the time in seconds that results are cached."""
-
-    def getCacheTime():
-        """Get the time in seconds that results are cached."""

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.9 2002/09/07 16:18:50 jim Exp $
+$Id: SQLScriptEdit.py,v 1.10 2002/10/07 09:54:39 mgedmin Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget
@@ -29,11 +29,8 @@ class SQLScriptEdit(FormView):
                                                 height=3, width=40),
                       'source': CustomWidget(Widget.TextAreaWidget,
                                              height=10, width=80),
-                      'maxCache': Widget.IntWidget,
-                      'cacheTime': Widget.IntWidget,
                       }
-    fields_order = ('connectionName', 'arguments', 'source',
-                    'maxCache', 'cacheTime')
+    fields_order = ('connectionName', 'arguments', 'source')
 
     def getAllConnections(self):
         parent = getParent(self.context)
