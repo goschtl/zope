@@ -21,14 +21,11 @@ from zope.interface import Interface, Attribute
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance
-
 from zope.app.container.interfaces import IContainer
 
-
-# ToDo:
-# - Specify all Attributes as SchemaFields where possible
-# - Define necessary methods for Interfaces
-
+# TODO:
+# - Specify all attributes as schema fields where possible
+# - Define necessary methods for interfaces
 
 class IWfMCProcessDefinition(IProcessDefinition):
     """WfMC Workflow process definition.
@@ -86,7 +83,6 @@ class IWfMCProcessDefinitionHeader(Interface):
     timeEstimation = Attribute("estimated time for the process")
 
 
-
 class IWfMCProcessDefinitionElement(Interface):
     """WfMC process definition Element."""
 
@@ -95,8 +91,6 @@ class IWfMCProcessDefinitionElement(Interface):
 
     # we have to decide how to handle the Extended Attributes
     extendedAttributes = Attribute("list of extended Attributes")
-
-
 
 
 ## FormalParameter Declaration
@@ -294,23 +288,15 @@ class IWfMCTransition(IWfMCProcessDefinitionElement):
     toActivityId = Attribute("Id of ToActivity.")
 
 
-
-
-
-
-
-## ProcessInstance
-
 class IWfMCProcessInstanceData(Interface):
     """WfMC ProcessInstance Data.
 
-    this is a base interfaces that gets extended dynamically
-    when creating a ProcessInstance from the relevantData Spec.
+    This is a base interfaces that gets extended dynamically when
+    creating a ProcessInstance from the relevantData Spec.
     """
 
-    # XXX Not shure how to implement this.
+    # XXX Not sure how to implement this.
     # probably using schemagen
-
 
 class IWfMCProcessInstance(IProcessInstance):
     """WfMC Workflow process instance.
@@ -327,11 +313,6 @@ class IWfMCProcessInstance(IProcessInstance):
     data = Attribute("WorkflowRelevant Data (instance, not definition.)")
 
     # XXX Do we need an actual Participantlist for implementation ??
-
-
-
-
-## ActivityInstance
 
 class IWfMCActivityInstanceContainer(IContainer):
     """WfMC ActivityInstance Container.
@@ -355,9 +336,6 @@ class IWfMCActivityInstance(Interface):
 
     # XXX
     # participants = Attribute("Sequence of assigned Participants.")
-
-
-## WorkItem
 
 class IWfMCWorkitemContainer(IContainer):
     """WfMC Workitem Container.
