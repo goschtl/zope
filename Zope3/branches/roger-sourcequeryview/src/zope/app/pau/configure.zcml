@@ -72,5 +72,5 @@
   <include file="groupfolder.zcml" />
 
   <include package=".browser" />
-  
+
 </configure>
