@@ -16,7 +16,7 @@
 XXX This code is not used!  Before using it, a serious security review
 should be undertaken.
 
-$Id: interpreter.py,v 1.2 2003/03/10 16:48:48 gvanrossum Exp $
+$Id: interpreter.py,v 1.3 2003/08/21 04:02:18 srichter Exp $
 """
 
 from zope.security.builtins import RestrictedBuiltins
@@ -25,8 +25,9 @@ class RestrictedInterpreter:
 
     def __init__(self):
         self.globals = {}
+        self.locals = {}
 
     def ri_exec(self, code):
         # XXX What is the type of code?
         self.globals['__builtins__'] = RestrictedBuiltins
-        exec code in self.globals
+        exec code in self.globals, self.locals
