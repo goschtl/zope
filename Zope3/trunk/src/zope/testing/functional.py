@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.11 2003/07/22 09:33:46 ryzaja Exp $
+$Id: functional.py,v 1.12 2003/07/31 16:51:57 mgedmin Exp $
 """
 
 import logging
@@ -110,10 +110,6 @@ class FunctionalTestSetup:
         self.db.close()
         storage = DemoStorage("Demo Storage", self.base_storage)
         self.db = self.app.db = DB(storage)
-        # Get hold of the root folder
-        self.connection = self.db.open()
-        root = self.connection.root()
-        self.root_folder = root[ZopePublication.root_name]
 
     def tearDown(self):
         """Cleans up after a functional test case."""
@@ -124,7 +120,9 @@ class FunctionalTestSetup:
 
     def getRootFolder(self):
         """Returns the Zope root folder."""
-        return self.root_folder
+        self.connection = self.db.open()
+        root = self.connection.root()
+        return root[ZopePublication.root_name]
 
     def getApplication(self):
         """Returns the Zope application instance."""
