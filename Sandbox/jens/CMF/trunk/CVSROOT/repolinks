@@ -129,6 +129,7 @@
 /Zope3/lib/python/Zope/DocumentTemplate        /Packages/DocumentTemplate
 /Zope3/lib/python/Zope/Publisher               /Packages/Publisher
 /Zope3/lib/python/Zope/RestrictedPython        /Packages/RestrictedPython
+/Zope3/lib/python/Zope/Server/medusa           /Packages/ZServer/medusa
 /Zope3/lib/python/Zope/StructuredText          /Packages/StructuredText
 /Zope3/lib/python/Zope/TAL                     /Packages/TAL
 /Zope3/lib/python/Zope/Testing                 /Packages/Testing
