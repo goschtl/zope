@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.13 2003/05/27 14:18:30 jim Exp $
+$Id: test_wrapper.py,v 1.14 2003/05/28 15:48:06 jim Exp $
 """
 import pickle
 import unittest
 
-from zope.context import wrapper, getcontext, getobject, ContextWrapper
+from zope.proxy import getObject
+from zope.context import wrapper, getcontext, ContextWrapper
 from zope.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
@@ -35,7 +36,7 @@ class WrapperTestCase(ProxyTestCase):
         o2 = object()
         o3 = object()
         w = self.new_proxy((o1, o2), o3)
-        self.assertEquals(wrapper.getobject(w), (o1, o2))
+        self.assertEquals(getObject(w), (o1, o2))
         self.assert_(wrapper.getcontext(w) is o3)
 
     def test_subclass_constructor(self):
@@ -44,7 +45,7 @@ class WrapperTestCase(ProxyTestCase):
                 super(MyWrapper, self).__init__('foo', **kwds)
 
         w = MyWrapper(1, 2, key='value')
-        self.assertEquals(wrapper.getobject(w), 'foo')
+        self.assertEquals(getObject(w), 'foo')
         self.assertEquals(wrapper.getdict(w), {'key': 'value'})
 
         # __new__ catches too many positional args:
@@ -54,7 +55,7 @@ class WrapperTestCase(ProxyTestCase):
         o1 = 1
         o2 = 12
         w = self.new_proxy(o1)
-        self.assert_(o1 is wrapper.getobject(w))
+        self.assert_(o1 is getObject(w))
         self.assert_(wrapper.getdict(w) is None)
         d = wrapper.getdictcreate(w)
         self.assert_(wrapper.getdictcreate(w) is d)
@@ -66,12 +67,12 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(wrapper.getcontext(w) is None)
 
         wrapper.setobject(w, o2)
-        self.assert_(wrapper.getobject(w) is o2)
+        self.assert_(getObject(w) is o2)
 
         # test 2-argument version of constructor
         o = object()
         w = self.new_proxy(o, c)
-        self.assert_(wrapper.getobject(w) is o)
+        self.assert_(getObject(w) is o)
         self.assert_(wrapper.getcontext(w) is c)
 
     def test_wrapper_subclass_attributes(self):
@@ -154,7 +155,7 @@ class WrapperTestCase(ProxyTestCase):
                 # Need to get __dict__ from the clean object, because it
                 # is a special descriptor and complains bitterly about
                 # being got from the wrong kind of object.
-                return getobject(self).__dict__['args']
+                return getObject(self).__dict__['args']
 
         y = Y(23)
         p = self.new_proxy(y, 23)
@@ -413,33 +414,6 @@ class WrapperTestCase(ProxyTestCase):
 
     # Tests for wrapper module globals
 
-    def test_getobject(self):
-        obj1 = object()
-        obj2 = object()
-        w = self.new_proxy(obj1)
-        self.assert_(wrapper.getobject(w) is obj1)
-        wrapper.setobject(w, obj2)
-        self.assert_(wrapper.getobject(w) is obj2)
-        self.assert_(wrapper.getobject(None) is None)
-        self.assert_(wrapper.getobject(obj1) is obj1)
-
-    def test_getbaseobject(self):
-        obj = object()
-        self.assert_(wrapper.getbaseobject(obj) is obj)
-        w1 = self.new_proxy(obj)
-        self.assert_(wrapper.getbaseobject(w1) is obj)
-        w = self.new_proxy(w1)
-        w = self.new_proxy(w)
-        w = self.new_proxy(w)
-        w = self.new_proxy(w)
-        w = self.new_proxy(w)
-        self.assert_(wrapper.getbaseobject(w) is obj)
-        wrapper.setobject(w1, None)
-        self.assert_(wrapper.getbaseobject(w) is None)
-        obj = object()
-        wrapper.setobject(w1, obj)
-        self.assert_(wrapper.getbaseobject(w) is obj)
-
     def test_getcontext(self):
         context = object()
         w = self.new_proxy(None, context)
@@ -496,9 +470,9 @@ class WrapperTestCase(ProxyTestCase):
         obj1 = object()
         obj2 = object()
         w = self.new_proxy(obj1)
-        self.assert_(wrapper.getobject(w) is obj1)
+        self.assert_(getObject(w) is obj1)
         wrapper.setobject(w, obj2)
-        self.assert_(wrapper.getobject(w) is obj2)
+        self.assert_(getObject(w) is obj2)
 
     def test_setcontext(self):
         w = self.new_proxy(None)

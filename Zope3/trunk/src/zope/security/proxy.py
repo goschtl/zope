@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: proxy.py,v 1.6 2003/05/28 12:55:28 stevea Exp $
+$Id: proxy.py,v 1.7 2003/05/28 15:49:27 jim Exp $
 """
 
-from zope.security._proxy import getObject, getChecker
+from zope.proxy import getObject
+from zope.security._proxy import getChecker
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.checker import TrustedCheckerBase
 

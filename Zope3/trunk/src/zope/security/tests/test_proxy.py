@@ -12,8 +12,8 @@
 #
 ##############################################################################
 import unittest
-from zope.security.proxy import getObject, getChecker, ProxyFactory
-from zope.proxy.proxy import proxy
+from zope.security.proxy import getChecker, ProxyFactory
+from zope.proxy import ProxyBase as proxy, getObject
 
 class Checker:
 

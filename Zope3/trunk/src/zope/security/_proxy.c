@@ -852,21 +852,6 @@ SecurityProxyType = {
 };
 
 static PyObject *
-module_getObject(PyObject *self, PyObject *arg)
-{
-	PyObject *result;
-
-	if (!Proxy_Check(arg)) {
-		PyErr_SetString(PyExc_TypeError,
-				"getObject argument must be a _Proxy");
-		return NULL;
-	}
-	result = Proxy_GetObject(arg);
-	Py_INCREF(result);
-	return result;
-}
-
-static PyObject *
 module_getChecker(PyObject *self, PyObject *arg)
 {
 	PyObject *result;
@@ -883,7 +868,6 @@ module_getChecker(PyObject *self, PyObject *arg)
 
 static PyMethodDef
 module_functions[] = {
-	{"getObject", module_getObject, METH_O, "get object from proxy"},
 	{"getChecker", module_getChecker, METH_O, "get checker from proxy"},
 	{NULL}
 };

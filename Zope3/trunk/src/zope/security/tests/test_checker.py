@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.8 2003/05/28 12:55:29 stevea Exp $
+$Id: test_checker.py,v 1.9 2003/05/28 15:49:27 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,7 +25,8 @@ from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Forbidden, Unauthorized, ForbiddenAttribute
 from zope.security.management import setSecurityPolicy
-from zope.security.proxy import getChecker, getObject
+from zope.proxy import getObject
+from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.proxy import Proxy
 import types, pickle
