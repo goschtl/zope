@@ -285,7 +285,7 @@ class AdapterRegistration(object):
         return '%s(%r, %r, %r, %r, %r)' % (
             self.__class__.__name__,
             tuple([getattr(r, '__name__', None) for r in self.required]),
-            self.provided.__name__, self.name,
+            getattr(self.provided, '__name__', None), self.name,
             self.value, self.doc,
             )
 
@@ -304,7 +304,7 @@ class SubscriptionRegistration(object):
         return '%s(%r, %r, %r, %r)' % (
             self.__class__.__name__,
             tuple([getattr(r, '__name__', None) for r in self.required]),
-            self.provided.__name__, self.value, self.doc,
+            getattr(self.provided, '__name__', None), self.value, self.doc,
             )
 
     def __cmp__(self, other):
@@ -320,7 +320,7 @@ class UtilityRegistration(object):
     def __repr__(self):
         return '%s(%r, %r, %r, %r)' % (
             self.__class__.__name__,
-            self.provided.__name__, self.name,
+            getattr(self.provided, '__name__', None), self.name,
             getattr(self.component, '__name__', self.component), self.doc,
             )
 

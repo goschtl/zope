@@ -461,6 +461,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #354 (apidoc: 'SubscriptionRegistration' object has no 
+                          attribute 'name')
+
       - Fixed issue #366 (_zope_interface_coptimizations.c compilation error)
 
       - Fixed issue #368 (Typo fix in src/zope/app/container/constraints.py)
