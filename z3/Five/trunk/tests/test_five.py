@@ -1,11 +1,22 @@
 import os, sys
+from os import curdir
+from os.path import join, abspath, dirname, split
+
+try:
+    __file__
+except NameError:
+    # Test was called directly, so no __file__ global exists.
+    _prefix = abspath(curdir)
+else:
+    # Test was called by another test.
+    _prefix = abspath(dirname(__file__))
 
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 # XXX hack but no other way to initialize options apparently
 from Zope.Startup.run import configure
-configure('../../../etc/zope.conf')
+configure(join(_prefix, '..', '..', '..', 'etc', 'zope.conf'))
 
 from Testing import ZopeTestCase
 
@@ -35,7 +46,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             "Adapted: The method",
             adapted.adaptedMethod())
 
-    def test_attribute_view(self):        
+    def test_attribute_view(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         test = self.root.testoid
@@ -67,7 +78,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             'testoid', 'Testoid')
         view = self.root.unrestrictedTraverse('testoid/flamingo2.html')
         self.assertEquals(u'<p>Hello world</p>\n', view())
-        
+
     def test_view_backwards_compatibility(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
@@ -84,13 +95,13 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 <p>Hello world</p>
 """
         self.assertEquals(expected, view())
-        
-                          
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(FiveTestCase))
+    return suite
+
 if __name__ == '__main__':
     framework()
-else:
-    import unittest
-    def test_suite():
-        suite = unittest.TestSuite()
-        suite.addTest(unittest.makeSuite(FiveTestCase))
-        return suite
+

@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <five:page 
+  <five:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
     attribute="eagle"
@@ -14,7 +14,7 @@
     />
 
   <five:viewable
-    class="OFS.Folder.Folder" 
+    class="OFS.Folder.Folder"
     />
 
   <five:page
@@ -23,5 +23,27 @@
     attribute="eagle"
     name="eagle.txt"
     />
-  
+
+  <five:content class=".browser.SimpleContentView">
+
+    <five:require attributes="eagle"
+	     permission="zope.ViewManagementScreens"
+	     />
+
+  </five:content>
+
+  <five:content class=".browser.SimpleFolderView">
+
+    <implements interface=".interfaces.ISimpleFolderView"
+		/>
+
+    <require interface=".interfaces.IWriteSimpleFolderView"
+	     permission="zope.ViewManagementScreens"
+	     />
+
+    <allow interface=".interfaces.IReadSimpleFolderView"
+	   />
+
+  </five:content>
+
 </configure>

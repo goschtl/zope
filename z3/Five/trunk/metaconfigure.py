@@ -18,6 +18,8 @@ $Id: metaconfigure.py,v 1.5 2004/06/02 08:44:01 faassen Exp $
 from zope.component import getService, getServices
 from zope.component.servicenames import Adapters
 from provideinterface import provideInterface
+from Products.Five.security.permission import Permission
+from Products.Five.security.interfaces import IPermission
 
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(serviceName), methodName)
@@ -126,3 +128,7 @@ def utility(_context, provides, component=None, factory=None,
         callable = provideInterface,
         args = (provides.__module__ + '.' + provides.getName(), provides)
                )
+
+def definePermission(_context, id, title, description=''):
+    permission = Permission(id, title, description)
+    utility(_context, IPermission, permission, name=id)

@@ -32,22 +32,22 @@ class IBasicComponentInformation(Interface):
         )
 
 class IServiceTypeDirective(Interface):
-                                                           
+
     id = TextLine(
         title=u"ID of the service type",
         required=True
         )
- 
+
     interface = GlobalObject(
         title=u"Interface of the service type",
         required=True
         )
- 
+
 class IServiceDirective(IBasicComponentInformation):
     """
     Register a service
     """
- 
+
     serviceType = TextLine(
         title=u"ID of service type",
         required=True
@@ -57,7 +57,7 @@ class IInterfaceDirective(Interface):
     """
     Define an interface
     """
-    
+
     interface = GlobalObject(
         title=u"Interface",
         required=True
@@ -117,4 +117,26 @@ class IUtilityDirective(IBasicComponentInformation):
         title=u"Name",
         required=False
         )
+
+class IBaseDefineDirective(Interface):
+    """Define a new security object."""
+
+    id = Id(
+        title=u"Id",
+        description=u"Id as which this object will be known and used.",
+        required=True)
+
+    title = MessageID(
+        title=u"Title",
+        description=u"Provides a title for the object.",
+        required=True)
+
+    description = MessageID(
+        title=u"Description",
+        description=u"Provides a description for the object.",
+        required=False)
+
+
+class IDefinePermissionDirective(IBaseDefineDirective):
+    """Define a new permission."""
 

@@ -7,7 +7,7 @@ class IBasicViewInformation(Interface):
     """
     This is the basic information for all views.
     """
-    
+
     for_ = Tokens(
         title=u"Specifications of the objects to be viewed",
         description=u"""This should be a list of interfaces or classes
@@ -119,7 +119,7 @@ class IViewableDirective(Interface):
         title=u"Class",
         required=True
         )
-    
+
 class ILayerDirective(Interface):
     """
     Register a layer

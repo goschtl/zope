@@ -1,12 +1,13 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
-  
+
   <include file="meta.zcml" />
   <include file="services.zcml" />
+  <include file="permissions.zcml" />
 
   <!-- do 'traditional' traversing for ZPT by default -->
 
-  <adapter 
+  <adapter
       for="*"
       factory="zope.app.traversing.adapters.DefaultTraversable"
       provides="zope.app.traversing.interfaces.ITraversable" />

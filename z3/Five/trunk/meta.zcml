@@ -5,6 +5,11 @@
   <meta:directives namespace="http://namespaces.zope.org/zope">
 
     <meta:directive
+        name="permission"
+        schema=".metadirectives.IDefinePermissionDirective"
+        handler=".metaconfigure.definePermission" />
+
+    <meta:directive
         name="interface"
         schema=".metadirectives.IInterfaceDirective"
         handler=".metaconfigure.interface"
@@ -27,7 +32,7 @@
         schema=".metadirectives.IServiceTypeDirective"
         handler=".metaconfigure.serviceType"
         />
-                                                                                
+
     <meta:directive
         name="service"
         schema=".metadirectives.IServiceDirective"
@@ -37,13 +42,13 @@
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
-    
+
     <meta:directive
         name="page"
         schema=".fivedirectives.IPageDirective"
         handler=".fiveconfigure.page"
         />
- 
+
     <meta:directive
        name="layer"
        schema=".fivedirectives.ILayerDirective"
@@ -61,6 +66,33 @@
        schema=".fivedirectives.IDefaultSkinDirective"
        handler=".fiveconfigure.defaultSkin"
        />
+
+
+     <!-- This is a simplified version of z3's content directive,        -->
+     <!-- to accomodate the fact that z2's security is not as powerful -->
+
+    <meta:complexDirective
+        name="content"
+        schema=".directives.content.IContentDirective"
+        handler=".handlers.content.ContentDirective"
+        >
+
+      <meta:subdirective
+          name="implements"
+          schema=".directives.content.IImplementsSubdirective"
+          />
+
+      <meta:subdirective
+          name="require"
+          schema=".directives.content.IRequireSubdirective"
+          />
+
+      <meta:subdirective
+          name="allow"
+          schema=".directives.content.IAllowSubdirective"
+          />
+
+    </meta:complexDirective>
 
     <!-- specific to Five -->
     <meta:directive

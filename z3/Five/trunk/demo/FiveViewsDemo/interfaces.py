@@ -7,3 +7,17 @@ class ISimpleContent(Interface):
 
 class IFolder(Interface):
     pass
+
+
+class IReadSimpleFolderView(Interface):
+
+    def eagle():
+        """Just a sample method"""
+
+class IWriteSimpleFolderView(Interface):
+
+    def mydefault():
+        """Just a sample method"""
+
+class ISimpleFolderView(IReadSimpleFolderView, IWriteSimpleFolderView):
+    """Interface for SimpleFolderView"""
