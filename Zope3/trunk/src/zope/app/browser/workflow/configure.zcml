@@ -16,7 +16,7 @@
       menu="add_service"
       for="zope.app.interfaces.container.IAdding"
       action="WorkflowService"
-      title="'Workflow Service"
+      title="Workflow Service"
       description="A workflow service" />
 
 
