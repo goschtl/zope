@@ -1,6 +1,10 @@
 CMF 1.3
 
   Bug Fixes
+
+    - Append '/' to links in skin templates to the root of the site,
+      to pacify clients which won't send Basic Auth tokens because the
+      path doesn't match.
   
     - Removed the binding of Folder and Topic types to the default
       workflow for newly-created CMFSites (Collector #4).  Note that
