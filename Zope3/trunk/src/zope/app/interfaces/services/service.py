@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.11 2003/03/23 16:45:44 jim Exp $
+$Id: service.py,v 1.12 2003/03/24 11:09:39 jim Exp $
 """
 __metaclass__ = type
 
@@ -116,6 +116,14 @@ class IServiceManager(IServiceService, IComponentManager,
     to the ComponentArchitecture ServiceManager which contains file based
     services.
     """
+
+    def queryLocalService(service_type, default=None):
+        """Return a local service, if there is one
+
+        A local service is one configured in the local service manager.
+
+        The service must be returned in the context of the service manager.
+        """
 
 class IServiceConfiguration(configuration.INamedComponentConfiguration):
     """Service Configuration

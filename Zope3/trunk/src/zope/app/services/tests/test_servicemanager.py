@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.6 2003/03/23 22:35:42 jim Exp $
+$Id: test_servicemanager.py,v 1.7 2003/03/24 11:09:40 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -71,6 +71,33 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         c = getWrapperContainer
         self.assertEqual(c(c(c(testOb))), self.rootFolder)
         self.assertEqual(testOb, ts)
+
+    def test_queryLocalService(self):
+        self.createServiceManager()
+        sm = traverse(self.rootFolder, '++etc++site')
+
+        # Test no service case
+        self.assertEqual(sm.queryLocalService('test_service'), None)
+        self.assertEqual(sm.queryLocalService('test_service', 42), 42)
+
+        # Test Services special case
+        self.assertEqual(sm.queryLocalService('Services', 42), sm)
+
+        # Test found local
+        default = traverse(sm, 'default')
+        ts = TestService()
+        default.setObject('test_service1', ts)
+        configuration = ServiceConfiguration(
+            'test_service',
+            '/++etc++site/default/test_service1')
+        default.getConfigurationManager().setObject('', configuration)
+        traverse(default.getConfigurationManager(), '1').status = Active
+
+        testOb = sm.queryLocalService('test_service')
+        c = getWrapperContainer
+        self.assertEqual(c(c(c(testOb))), self.rootFolder)
+        self.assertEqual(testOb, ts)
+
 
     def test_get(self):
         self.createServiceManager()

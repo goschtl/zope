@@ -72,10 +72,18 @@
   <page name="action.html" attribute="action" />
 </view>
 
+<!-- Error views -->
 
 <page
     for="
     zope.app.interfaces.services.configuration.INoConfigurationManagerError"
+    name="index.html"
+    permission="zope.Public"
+    template="../../exception/user.pt"
+    class="zope.app.browser.exception.user.UserErrorView"
+    />
+<page
+    for="zope.app.interfaces.services.configuration.INoLocalServiceError"
     name="index.html"
     permission="zope.Public"
     template="../../exception/user.pt"

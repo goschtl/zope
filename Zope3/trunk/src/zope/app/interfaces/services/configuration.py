@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.9 2003/03/23 19:24:45 jim Exp $
+$Id: configuration.py,v 1.10 2003/03/24 11:09:39 jim Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -35,6 +35,19 @@ class IConfigurationStatus(ITextLine):
 class ConfigurationStatus(TextLine):
     __implements__ = IConfigurationStatus
     allowed_values = Unregistered, Registered, Active
+
+class INoLocalServiceError(Interface):
+    """No local service to configure
+    """
+
+class NoLocalServiceError(Exception):
+    """No local service to configure
+
+    An attempt was made to register a configuration for which there is
+    no local service.
+    """
+
+    __implements__ = INoLocalServiceError
 
 class IConfiguration(Interface):
     """Configuration object

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.19 2003/03/23 22:35:41 jim Exp $
+$Id: configuration.py,v 1.20 2003/03/24 11:09:39 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,6 +23,7 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.interfaces.dependable import IDependable, DependencyError
+
 from zope.app.interfaces.services.configuration import IConfigurationManager
 from zope.app.interfaces.services.configuration import IConfigurationRegistry
 from zope.app.interfaces.services.configuration \
@@ -37,6 +38,7 @@ from zope.app.interfaces.services.configuration \
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.services.configuration \
      import NoConfigurationManagerError
+from zope.app.interfaces.services.configuration import NoLocalServiceError
 
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered, Active
@@ -62,7 +64,9 @@ class ConfigurationStatusProperty:
             return self
 
         configuration = inst
-        service = queryService(configuration, self.service)
+
+        sm = getServiceManager(configuration)
+        service = sm.queryLocalService(self.service)
         # XXX The following may fail; there's a subtle bug here when
         # the returned service isn't in the same service manager as
         # the one owning the configuration.
@@ -79,7 +83,10 @@ class ConfigurationStatusProperty:
 
     def __set__(self, inst, value):
         configuration = inst
-        service = queryService(configuration, self.service)
+
+        sm = getServiceManager(configuration)
+        service = sm.queryLocalService(self.service)
+
         registry = service and service.queryConfigurationsFor(configuration)
 
         if value == Unregistered:
@@ -88,8 +95,11 @@ class ConfigurationStatusProperty:
 
         else:
             if not service:
-                # raise an error
-                service = getService(configuration, self.service)
+                raise NoLocalServiceError(
+                    "This configuration change cannot be performed because "
+                    "there isn't a corresponding %s service defined in this "
+                    "site. To proceed, first add a local %s service."
+                    % (self.service, self.service))
 
             if registry is None:
                 registry = service.createConfigurationsFor(configuration)

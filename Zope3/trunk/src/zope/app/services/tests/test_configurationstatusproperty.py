@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_configurationstatusproperty.py,v 1.3 2003/03/24 11:09:40 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,7 +30,7 @@ from zope.app.interfaces.services.configuration \
      import Active, Unregistered, Registered
 from zope.proxy.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
-
+from zope.app.interfaces.services.configuration import NoLocalServiceError
 
 class TestingConfiguration(TestingConfiguration):
     status = ConfigurationStatusProperty("Services")
@@ -38,6 +38,9 @@ class TestingConfiguration(TestingConfiguration):
 
 class PassiveConfiguration(TestingConfiguration):
     status = ConfigurationStatusProperty("NoSuchService")
+
+class UtilityConfiguration(TestingConfiguration):
+    status = ConfigurationStatusProperty("Utilities")
 
 class TestingConfigurationRegistry(TestingConfigurationRegistry):
     class_ = TestingConfiguration
@@ -49,11 +52,17 @@ class TestingServiceManager:
     registry = None
 
     def getService(self, name):
-        if name == "Services":
+        if name in ("Services", "Utilities"):
             return self
         raise ComponentLookupError("Wrong service name", name)
 
     def queryService(self, name, default=None):
+        if name in ("Services", "Utilities"):
+            return self
+        else:
+            return default
+
+    def queryLocalService(self, name, default=None):
         if name == "Services":
             return self
         else:
@@ -131,18 +140,39 @@ class Test(PlacefulSetup, TestCase):
 
         try:
             configa.status = Registered
-        except ComponentLookupError:
+        except NoLocalServiceError:
             self.assertEqual(configa.status, Unregistered)
         else:
             self.fail("should complain about missing service")
 
         try:
             configa.status = Active
-        except ComponentLookupError:
+        except NoLocalServiceError:
             self.assertEqual(configa.status, Unregistered)
         else:
             self.fail("should complain about missing service")
 
+
+        # we should also get an error if there *is a matching service,
+        # not it is non-local
+
+        configa = ContextWrapper(UtilityConfiguration('a'), self.rootFolder)
+        self.assertEqual(configa.status, Unregistered)
+
+        try:
+            configa.status = Registered
+        except NoLocalServiceError:
+            self.assertEqual(configa.status, Unregistered)
+        else:
+            self.fail("should complain about missing service")
+
+        try:
+            configa.status = Active
+        except NoLocalServiceError:
+            self.assertEqual(configa.status, Unregistered)
+        else:
+            self.fail("should complain about missing service")
+        
 
 def test_suite():
     return TestSuite((

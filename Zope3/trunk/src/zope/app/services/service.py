@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.15 2003/03/23 16:45:44 jim Exp $
+$Id: service.py,v 1.16 2003/03/24 11:09:39 jim Exp $
 """
 
 import sys
@@ -121,6 +121,34 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
         return getNextService(wrapped_self, name)
     getService = ContextMethod(getService)
+
+
+    def queryLocalService(wrapped_self, name, default=None):
+        "See IServiceManager"
+
+        # This is rather tricky. Normally, getting a service requires
+        # the use of other services, like the adapter service.  We
+        # need to be careful not to get into an infinate recursion by
+        # getting out getService to be called while looking up
+        # services, so we'll
+
+        if name == 'Services':
+            return wrapped_self # We are the service service
+
+        if not getattr(wrapped_self, '_v_calling', 0):
+
+            wrapped_self._v_calling = 1
+            try:
+                service = wrapped_self.queryActiveComponent(name)
+                if service is not None:
+                    return service
+
+            finally:
+                wrapped_self._v_calling = 0
+
+        return default
+
+    queryLocalService = ContextMethod(queryLocalService)
 
 
     def getInterfaceFor(wrapped_self, service_type):
