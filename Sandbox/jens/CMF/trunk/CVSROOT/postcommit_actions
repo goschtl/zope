@@ -382,8 +382,9 @@ def do_mail(name, remote, repo, addrs, subjs,
                 new_msg = ('--- Removed file %s from package %s --\n'
                            % (fn, name))
             else:
-                diff_msg = ('[debug - name:%s, repo:%s, fn:%s\n'
-                            % (name, repo, fn))
+                diff_msg = (diff_msg
+                            + ('[debug - name:%s, repo:%s, fn:%s\n'
+                               % (name, repo, fn)))
                 new_msg = create_diff(name, repo, fn, old, new)
 
             diff_msg = diff_msg + new_msg + '\n'
@@ -425,14 +426,11 @@ def create_diff(name, repo, file, old, new):
     """ Create a diff comparing old and new versions """
     if old == 'NONE':   # A new file was added
         try:
-            if os.path.exists(file):
-                file_handle = open(file)
-            else:
-                update_cmd = 'cvs -fn update -r %s -p %s' % (new, file)
-                file_handle = os.popen(update_cmd)
-
-            lines = file_handle.readlines()
-            file_handle.close()
+            # "Checkout" to stdout, so we can collect the lines to return.
+            co_stdout_cmd = 'cvs -fn co -p %s/%s' % (repo, file)
+            handle = os.popen(co_stdout_cmd)
+            lines = handle.readlines()
+            handle.close()
             insert_str = ('--- Added File ' + str(file)
                           + ' in package ' + str(name)
                           + ' ---\n')
