@@ -76,6 +76,17 @@ Zope Changes
 
       - Wrote tests for security map implementation.
 
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
+      Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene
+
+      Note: If you are not listed and contributed, please add yourself. This
+      note will be deleted before the release.
+
+  ------------------------------------------------------------------
+
   Zope X3.0.0 Beta 2
 
     New Features
@@ -139,9 +150,6 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
       Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene
-
-      Note: If you are not listed and contributed, please add yourself. This
-      note will be deleted before the release.
 
   ------------------------------------------------------------------
 
