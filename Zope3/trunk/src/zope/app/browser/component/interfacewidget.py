@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.36 2003/08/08 23:16:39 srichter Exp $
+$Id: interfacewidget.py,v 1.37 2003/08/11 16:56:16 sidnei Exp $
 """
 import sys
 from zope.interface import Interface, implements
@@ -29,7 +29,7 @@ from xml.sax.saxutils import quoteattr
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.traversing import getPath
-
+from zope.app.introspector import nameToInterface, interfaceToName
 
 class InterfaceWidget(BrowserWidget, BrowserView):
     implements(IBrowserWidget)
@@ -371,20 +371,3 @@ def renderInterfaceSelect(
     HTML = search_field + select_field
     return HTML
 
-def nameToInterface(context, name):
-    if name == 'None':
-        return None
-    service = getService(context, Interfaces)
-    return service.getInterface(name)
-
-def interfaceToName(context, interface):
-    if interface is None:
-        return 'None'
-    service = getService(context, Interfaces)
-    items = service.items()
-    ids = [id for id, iface in items
-           if iface == interface]
-    if not ids:
-        raise ComponentLookupError, interface
-    assert len(ids) == 1, "Ambiguous interface names: %s" % ids
-    return ids[0]
