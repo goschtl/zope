@@ -63,7 +63,7 @@ we'll create a sample authentication service:
   ...             info = self.groups.principalInfo(id)
   ...             if info is None:
   ...                return None
-  ...         principal = Principal(id, info.title, info.description)
+  ...         principal = Principal(info.id, info.title, info.description)
   ...         setGroupsForPrincipal(PrincipalCreatedEvent(principal))
   ...         return principal
 
@@ -192,6 +192,9 @@ users in those groups:
 Of course, this applies to groups too:
 
   >>> principal = principals.getPrincipal('group.G1')
+  >>> principal.id
+  'group.G1'
+  
   >>> principal.groups
   [u'group.G2']
 

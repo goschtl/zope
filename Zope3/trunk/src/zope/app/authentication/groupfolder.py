@@ -168,8 +168,8 @@ class GroupFolder(BTreeContainer):
             id = id[len(self.prefix):]
             info = self.get(id)
             if info is not None:
-                return principalfolder.PrincipalInfo(id, info.title,
-                                                     info.description)
+                return principalfolder.PrincipalInfo(
+                    self.prefix+id, info.title, info.description)
 
 class GroupCycle(Exception):
     """There is a cyclic relationship among groups
