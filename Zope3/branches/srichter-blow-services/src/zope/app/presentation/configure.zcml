@@ -82,6 +82,9 @@
         title="zope.app.ZPTTemplate"
         description="Persistent View Page Template"
         />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.View"
         attributes="__call__"
@@ -90,9 +93,6 @@
         permission="zope.ManageServices"
         interface=".interfaces.IZPTTemplate"
         set_schema=".interfaces.IZPTTemplate"
-        />
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
   </content>
   

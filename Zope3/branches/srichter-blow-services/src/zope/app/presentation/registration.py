@@ -21,6 +21,7 @@ import persistent.dict
 
 from zope.interface import implements, providedBy, Interface, Attribute
 from zope.security.checker import NamesChecker, ProxyFactory
+from zope.security.proxy import removeSecurityProxy
 
 import zope.component.interfaces
 import zope.configuration.exceptions
@@ -46,19 +47,17 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
     # We only care about browser pages
     requestType = zope.publisher.interfaces.browser.IBrowserRequest
 
-    def __init__(self, required, name, permission,
+    def __init__(self, name, required=None, permission=None,
                  factoryName=None, template=None, attribute=None):
         # An interface coming out of an interface widget is security
         # proxied which is not pickable, thus remove the proxies here
-        required = zope.proxy.removeAllProxies(required)
-
-        self.required = required
+        self.required = removeSecurityProxy(required)
         self.factoryName = factoryName
         self.name = name
         self.permission = permission
-        self.template = template
+        self.template = removeSecurityProxy(template)
         self.attribute = attribute
-
+        
     def validate(self):
         if self.template and self.attribute:
             raise zope.configuration.exceptions.ConfigurationError(
@@ -102,16 +101,18 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
 
 def PageRegistrationAddSubscriber(registration, event):
     if registration.template is not None:
-        dependents = IDependable(registration.template)
-        objectpath = zapi.getPath(registration)
-        dependents.addDependent(objectpath)
+        # XXX: Needs investigating
+        dependents = IDependable(removeSecurityProxy(registration.template))
+        #objectpath = zapi.getPath(registration)
+        #dependents.addDependent(objectpath)
 
 
 def PageRegistrationRemoveSubscriber(registration, event):
     if registration.template is not None:
-        dependents = IDependable(registration.template)
-        objectpath = zapi.getPath(registration)
-        dependents.removeDependent(objectpath)
+        # XXX: Needs investigating
+        dependents = IDependable(removeSecurityProxy(registration.template))
+        #objectpath = zapi.getPath(registration)
+        #dependents.removeDependent(objectpath)
 
 
 class TemplateViewFactory(object):

@@ -80,13 +80,13 @@
       schema=".interfaces.IPageRegistration"
       name="addRegistration.html"
       class="zope.app.component.browser.registration.AddComponentRegistration"
-      content_factory=".registration.PageRegistration"
-      keyword_arguments="required factoryName name permission attribute"
-      set_before_add="template"
       label="Register a view ZPT"
       permission="zope.ManageSite"
       fields="required name
               template factoryName permission status attribute"
+      content_factory=".registration.PageRegistration"
+      arguments="name"
+      keyword_arguments="required permission factoryName template attribute"
       />
 
 </configure>
