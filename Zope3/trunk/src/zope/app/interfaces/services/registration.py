@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.9 2003/09/21 17:32:28 jim Exp $
+$Id: registration.py,v 1.10 2003/09/24 20:43:11 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -366,6 +366,9 @@ class IRegistered(IRegisterable):
         A location is a physical path to a registration object that
         configures a usage.
         """
+
+    def registrations():
+        """Return a sequence of registration objects for this object."""
 
 class IAttributeRegisterable(IAttributeAnnotatable, IRegisterable):
     """A marker interface."""
