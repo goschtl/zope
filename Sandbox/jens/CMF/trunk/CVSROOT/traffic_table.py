@@ -72,7 +72,6 @@ table = [
     {'path': "Packages/SearchIndex", 'addrs': zopeaddr},
     {'path': "Packages/ZClasses", 'addrs': zopeaddr},
     {'path': "Packages/Shared", 'addrs': zopeaddr},
-    {'path': "Packages/webdav", 'addrs': zopeaddr},
     {'path': "Packages/Products/__init__.py", 'addrs': zopeaddr},
     {'path': "Packages/Products/OFSP", 'addrs': zopeaddr},
     {'path': "Packages/Products/MailHost", 'addrs': zopeaddr},
@@ -80,4 +79,6 @@ table = [
     {'path': "Packages/Products/ZSQLMethods", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZGadflyDA", 'addrs': zopeaddr},
     {'path': "Packages/Products/etcUserFolder", 'addrs': zopeaddr},
+    {'path': "Packages/webdav", 'addrs': zopeaddr},
+    {'path': "Packages/ZClasses", 'addrs': zopeaddr},
 ]
