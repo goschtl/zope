@@ -11,9 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Schema package constructor
-
-$Id: __init__.py,v 1.2 2002/07/14 13:32:53 srichter Exp $
 """
-from _Field import *
-from _Schema import Schema, validateMapping, validateMappingAll
+$Id: IValidator.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+"""
+from Interface import Interface
+
+class IValidator(Interface):
+    """It's repsonsibility lies in validating a particular value against the
+    specifed field. Each Validator just does one check, like check for the
+    max value or the min value!
+
+    It should be always implemented as an adapter.
+    """
+
+    def validate(value):
+        """Validate the the value. Note that this method must always
+        return the value.""" 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testFormView.py,v 1.2 2002/06/25 13:52:27 sf Exp $
+$Id: testFormView.py,v 1.3 2002/07/14 13:32:54 srichter Exp $
 """
 
 
@@ -32,7 +32,7 @@ from Zope.App.Forms.Views.Browser.TextWidget import TextWidget
 from Zope.App.Forms.Views.Browser.CheckboxWidget import CheckboxWidget
 
 import Schema
-from Schema.IField import IStr, IBool
+from Schema.IField import IString, IBoolean
 from Schema import _Schema # XXX to wire things up, should fix this
 
 #############################################################################
@@ -47,8 +47,8 @@ from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 #############################################################################
 
 class ITestSchema(Interface):
-    foo = Schema.Str(title="Foo")
-    bar = Schema.Bool(title="Bar")
+    foo = Schema.String(title="Foo")
+    bar = Schema.Boolean(title="Bar")
     
 class TestBrowserRequest(TestRequest):
     """Since we have IBrowserViews, we need a request that works
@@ -61,8 +61,10 @@ class TestFormView(TestCase, PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)
         viewService = self.getViewService()
-        viewService.provideView(IStr, 'normal', IBrowserView, [TextWidget])
-        viewService.provideView(IBool, 'normal', IBrowserView, [CheckboxWidget])
+        viewService.provideView(IString, 'normal', IBrowserView,
+                                [TextWidget])
+        viewService.provideView(IBoolean, 'normal', IBrowserView,
+                                [CheckboxWidget])
         
     def getViewService(self):
         return getService(None, 'Views')

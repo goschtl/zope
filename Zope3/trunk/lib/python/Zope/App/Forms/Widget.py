@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -11,9 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Schema package constructor
-
-$Id: __init__.py,v 1.2 2002/07/14 13:32:53 srichter Exp $
 """
-from _Field import *
-from _Schema import Schema, validateMapping, validateMappingAll
+$Id: Widget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+"""
+from IWidget import IWidget
+
+class Widget(object):
+    """I do not know what will be in this class, but it provides an extra
+    layer."""
+    __implements__ = IWidget
+
+    # See Zope.App.Forms.IWidget.IWidget
+    propertyNames = []
+
+    def getValue(self, name):
+        'See Zope.App.Forms.IWidget.IWidget'
+        if name in self.propertyNames:
+            return getattr(self, name, None)

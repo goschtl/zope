@@ -11,9 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Schema package constructor
-
-$Id: __init__.py,v 1.2 2002/07/14 13:32:53 srichter Exp $
 """
-from _Field import *
-from _Schema import Schema, validateMapping, validateMappingAll
+$Id: IConverter.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+"""
+
+from Interface import Interface
+from Interface.Attribute import Attribute
+
+
+class IConverter(Interface):
+    """Converts from one type of Field type to another one. Most common will
+    be to convert from String to another type, such as Integer."""
+
+    __convert_to__ = Attribute('The field type this converter converts to.')
+    __convert_from__ = Attribute('The field type this converter accepts '
+                                 'for conversion.')
+
+    def convert(value):
+        """This method converts from __convert_from__ to __convert_to__."""

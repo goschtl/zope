@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -11,30 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Common Schema Error Names
-
-$Id: ErrorNames.py,v 1.3 2002/07/14 13:32:53 srichter Exp $
 """
-WrongType = "WrongType"
 
-RequiredMissing ='RequiredMissing'
+$Id: IBrowserWidget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+"""
 
-RequiredEmptyString = 'RequiredEmptyString'
+from Zope.App.Forms.IWidget import IWidget
 
-TooBig = 'TooBig'
 
-TooSmall = 'TooSmall'
+class IBrowserWidget(IWidget):
+    """A field widget contains all the properties that are required
+       to represent a field. Properties include css_sheet, 
+       default value and so on.
+    """
 
-TooLong = 'TooLong'
 
-TooShort = 'TooShort'
+    def render(field, key, value):
+        """Renders this widget as HTML using property values in field."""
 
-InvalidValue = 'InvalidValue'
-
-TooManyDecimals = 'TooManyDecimals'
-
-WrongContainedType = "WrongContainedType"
-
-NotEnoughElements = 'NotEnoughElements'
-
-TooManyElements = 'TooManyElements'
+        
+    def render_hidden(field, key, value):
+        """Renders this widget as a hidden field."""
+        

@@ -1,69 +1,87 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""
+$Id: _Field.py,v 1.4 2002/07/14 13:32:53 srichter Exp $
+"""
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
 
 from Exceptions import StopValidation, ValidationError
 import ErrorNames
-#from _Schema import validate
+
 
 class Field(Attribute):
-
     # we don't implement the same interface Attribute
     __implements__ = ()
-
+    type = None
     default = None
     required = 0
 
     def __init__(self, **kw):
-        """
-        Pass in field values as keyword parameters.
-        """
+        """Pass in field values as keyword parameters."""
         for key, value in kw.items():
             setattr(self, key, value)
         super(Field, self).__init__(self.title or 'no title')
 
     def validate(self, value):
         try:
-            self._validate(value)
+            return self.validator(self).validate(value)
         except StopValidation:
-            pass
+            return value
 
-    def _validate(self, value):
-        if value is None:
-            if self.required:
-                raise ValidationError, ErrorNames.RequiredMissing
-            else:
-                # we are done with validation for sure
-                raise StopValidation
+class SingleValueField(Field):
+    """A field that contains only one value."""
+    allowed_values = []
 
-class Str(Field):
-
+class String(SingleValueField):
+    """A field representing a String."""
+    type = str
     min_length = None
     max_length = None
+    whitespaces = "preserve"
 
-    def _validate(self, value):
-        super(Str, self)._validate(value)
-        if self.required and value == '':
-            raise ValidationError,ErrorNames.RequiredEmptyString
-        length = len(value)
+class Boolean(SingleValueField):
+    """A field representing a Boolean."""
+    type = type(not 1) 
 
-        if self.min_length is not None and length < self.min_length:
-            raise ValidationError, ErrorNames.TooShort
-        if self.max_length is not None and length > self.max_length:
-            raise ValidationError, ErrorNames.TooLong
-
-class Bool(Field):
-
-    def _validate(self, value):
-        super(Bool, self)._validate(value)
-
-class Int(Field):
-
+class Integer(SingleValueField):
+    """A field representing a Integer."""
+    type = int
     min = max = None
 
-    def _validate(self, value):
-        super(Int, self)._validate(value)
-        if self.min is not None and value < self.min:
-            raise ValidationError, ErrorNames.TooSmall
-        if self.max is not None and value > self.max:
-            raise ValidationError, ErrorNames.TooBig
+class Float(SingleValueField):
+    """A field representing a Floating Point."""
+    type = float, int
+    min = max = None
+    decimals = None
+
+class Tuple(Field):
+    """A field representing a Tuple."""
+    type = tuple
+    value_types = None
+    min_values = max_values = None
+
+class List(Field):
+    """A field representing a List."""
+    type = list
+    value_types = None
+    min_values = max_values = None
+
+class Dictionary(Field):
+    """A field representing a Dictionary."""
+    type = dict
+    min_values = max_values = None
+    key_types = value_types = None
+
 

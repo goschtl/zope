@@ -12,19 +12,16 @@
 # 
 ##############################################################################
 """
-
-$Id: BrowserWidget.py,v 1.3 2002/07/14 13:32:54 srichter Exp $
+$Id: BrowserWidget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
 """
-
+from Zope.ComponentArchitecture import getAdapter
 from IBrowserWidget import IBrowserWidget
 from Zope.App.Formulator.Widget import Widget
 from Zope.App.Formulator.IPropertyFieldAdapter import IPropertyFieldAdapter
-from Zope.ComponentArchitecture import getAdapter
 
 
-class BrowserWidget(Widget):
-    """A field widget that knows how to display itself as HTML.
-    """
+class BrowserWidget(Widget, BrowserView):
+    """A field widget that knows how to display itself as HTML."""
 
     __implements__ = IBrowserWidget
 
