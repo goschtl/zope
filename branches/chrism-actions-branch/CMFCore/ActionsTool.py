@@ -267,8 +267,15 @@ def organizeAction(action, portal, folder, object, expr_context):
         category = action.get('category', 'object')
         permissions = action.get('permissions', None)
         # context will be one of object, folder, or portal
-        context = ((category in ('object', 'workflow') and object) or
-                   (category == 'folder' and folder)) or portal
+        if (object is not None and
+            (category.startswith('object') or
+             category.startswith('workflow'))):
+            context = object
+        elif (folder is not None and
+              category.startswith('folder')):
+            context = folder
+        else:
+            context = portal
         if permissions and not checkPermissions(permissions, context):
             # inadequate permissions to see the action
             return None, None
