@@ -6,4 +6,4 @@
     for=".interfaces.IHistoryStorage"
     permission="zope.Public"
     />
-<!-- XXX above: permission=zope.Public?-->
+<!-- XXX above: permission=zope.Public? -->
