@@ -3,7 +3,7 @@
 <!-- add include directives for products here -->
 
 <!-- Example:
-<include package='zopeproducts.JobBoardEx' />
+<!--<include package="zopeproducts.demo.jobboard" />-->
 -->
 
 </zopeConfigure>
