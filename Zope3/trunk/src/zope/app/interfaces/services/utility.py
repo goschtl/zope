@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.2 2003/03/21 21:02:19 jim Exp $
+$Id: utility.py,v 1.3 2003/04/03 22:05:33 fdrake Exp $
 """
 
 from zope.app.interfaces.services.configuration import IComponentConfiguration
@@ -22,6 +22,7 @@ from zope.app.security.permission import PermissionField
 from zope.schema import BytesLine, TextLine
 from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.services.configuration import ComponentPath
+from zope.component.interfaces import IUtilityService
 
 class IUtilityConfiguration(IComponentConfiguration):
     """Utility configuration object.
@@ -64,3 +65,25 @@ class ILocalUtility(IUseConfigurable):
     IUseConfiguration can be used; otherwise, they must provide
     another way to be adaptable to IUseConfiguration.
     """
+
+
+
+class ILocalUtilityService(IUtilityService):
+    """Local utility service interface.
+
+    Methods which must be implemented by a local utility service to
+    allow views to retrieve sufficient information from the service.
+    """
+
+    def getRegisteredMatching():
+        """The return value is an iterable object for which each item
+        is a three-element tuple:
+
+        - provided interface
+
+        - name
+
+        - configuration registry
+
+        One item is present for each registration.
+        """

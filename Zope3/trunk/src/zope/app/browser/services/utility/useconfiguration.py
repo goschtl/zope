@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.2 2003/03/21 21:02:18 jim Exp $
+$Id: useconfiguration.py,v 1.3 2003/04/03 22:05:32 fdrake Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -21,7 +21,7 @@ from zope.app.browser.services.configuration import AddComponentConfiguration
 from zope.app.form.widget import CustomWidget
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.traversing import traverse
-from zope.component import getAdapter, getView
+from zope.component import getAdapter, getServiceManager, getView
 from zope.interface.implements import flattenInterfaces
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
@@ -85,3 +85,39 @@ class AddConfiguration(AddComponentConfiguration):
     """
 
     interface = CustomWidget(UtilityInterfaceWidget)
+
+
+class Utilities(BrowserView):
+    def getConfigs(self):
+        L = []
+        for iface, name, cr in self.context.getRegisteredMatching():
+            active = cr.active()
+            ifname = _interface_name(iface)
+            d = {"interface": ifname,
+                 "name": name,
+                 "url": "",
+                 "configurl": ("@@configureutility.html?interface=%s&name=%s"
+                               % (ifname, name)),
+                 }
+            if active is not None:
+                d["url"] = str(getView(active.getComponent(),
+                                       "absolute_url",
+                                       self.request))
+            L.append((ifname, name, d))
+        L.sort()
+        return [d for ifname, name, d in L]
+
+
+class ConfigureUtility(BrowserView):
+    def update(self):
+        sm = getServiceManager(self.context)
+        iface = sm.resolve(self.request['interface'])
+        name = self.request['name']
+        cr = self.context.queryConfigurations(name, iface)
+        form = getView(cr, "ChangeConfigurations", self.request)
+        form.update()
+        return form
+
+
+def _interface_name(iface):
+    return "%s.%s" % (iface.__module__, iface.__name__)

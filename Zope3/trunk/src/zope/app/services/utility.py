@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.2 2003/03/21 21:02:19 jim Exp $
+$Id: utility.py,v 1.3 2003/04/03 22:05:34 fdrake Exp $
 """
 
 from persistence.dict import PersistentDict
@@ -23,6 +23,7 @@ from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.services.utility import IUtilityConfiguration
+from zope.app.interfaces.services.utility import ILocalUtilityService
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import ComponentConfiguration
@@ -39,7 +40,7 @@ from zope.app.traversing import getPath
 
 class LocalUtilityService(Persistent, ContextAware):
 
-    __implements__ = IUtilityService, IConfigurable, ISimpleService
+    __implements__ = ILocalUtilityService, IConfigurable, ISimpleService
 
     def __init__(self):
         self._utilities = PersistentDict()
@@ -91,6 +92,13 @@ class LocalUtilityService(Persistent, ContextAware):
             utilities.register(interface, registry)
 
         return ContextWrapper(registry, self)
+
+    def getRegisteredMatching(self):
+        L = []
+        for name in self._utilities:
+            for iface, cr in self._utilities[name].getRegisteredMatching():
+                L.append((iface, name, ContextWrapper(cr, self)))
+        return L
 
 
 class UtilityConfiguration(ComponentConfiguration):

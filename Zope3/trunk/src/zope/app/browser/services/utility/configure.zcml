@@ -17,6 +17,23 @@
       menu="zmi_views" title="Configurations"
       />
 
+  <page
+      for="zope.app.interfaces.services.utility.ILocalUtilityService"
+      name="utilities.html"
+      template="utilities.pt"
+      class=".useconfiguration.Utilities"
+      permission="zope.ManageServices"
+      menu="zmi_views"
+      title="Utilities"
+      />
+
+  <page
+      for="zope.app.interfaces.services.utility.ILocalUtilityService"
+      name="configureutility.html"
+      template="configureutility.pt"
+      class=".useconfiguration.ConfigureUtility"
+      permission="zope.ManageServices"
+      />
 
   <addform
       label="New Utility Configuration"

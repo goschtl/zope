@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.2 2003/04/02 21:10:35 fdrake Exp $
+$Id: test_utility.py,v 1.3 2003/04/03 22:05:34 fdrake Exp $
 """
 
 import unittest
@@ -31,6 +31,7 @@ from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.dependable import IDependable
+from zope.proxy.context import getWrapperContainer
 
 class IFo(Interface): pass
 
@@ -179,14 +180,24 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
             configuration.status = Registered
 
             self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
-            
-            
+
+    def test_getRegisteredMatching(self):
+        self.test_local_utilities()
+        utilities = getService(self.rootFolder, "Utilities")
+        r = list(utilities.getRegisteredMatching())
+        r.sort()
+        path = "/++etc++Services/default/foo"
+        cr1 = utilities.queryConfigurationsFor(
+            utility.UtilityConfiguration("", IFoo, path))
+        cr2 = utilities.queryConfigurationsFor(
+            utility.UtilityConfiguration("bob", IFoo, path))
+        self.assertEqual(r, [(IFoo, "", cr1), (IFoo, "bob", cr2)])
+        self.assertEqual(getWrapperContainer(r[0][2]), utilities)
+        self.assertEqual(getWrapperContainer(r[1][2]), utilities)
 
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUtilityService))
-    return suite
+    return unittest.makeSuite(TestUtilityService)
 
 
 if __name__ == '__main__':

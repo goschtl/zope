@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.11 2003/03/18 12:29:56 stevea Exp $
+$Id: interfaces.py,v 1.12 2003/04/03 22:05:35 fdrake Exp $
 """
 
 from zope.interface import Interface
@@ -430,6 +430,17 @@ class IImplementorRegistry(Interface):
 
         The registered object is one that was registered that provides an
         interface that extends or equals the 'provides' argument.
+
+        """
+
+    def getRegisteredMatching():
+        """Return a sequence of two-tuples, each tuple consisting of:
+
+        - interface
+
+        - registered object
+
+        One item is returned for each registration.
 
         """
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: iimplementor.py,v 1.2 2002/12/25 14:15:12 jim Exp $
+$Id: iimplementor.py,v 1.3 2003/04/03 22:05:36 fdrake Exp $
 """
 
 import unittest
@@ -64,3 +64,8 @@ class TestIImplementorRegistry(unittest.TestCase):
     def testBadProvide(self):
         registry = self.__registry()
         self.assertRaises(TypeError, registry.register, None, '')
+
+    def test_getRegisteredMatching(self):
+        registry = self.__registry()
+        self.assertEqual(list(registry.getRegisteredMatching()),
+                         [(P3, 'C3')])

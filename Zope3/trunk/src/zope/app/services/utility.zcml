@@ -5,22 +5,20 @@
       id="zope.app.services.UtilityService"
       permission="zope.ManageServices"
       />
+  <require
+    permission="zope.ManageServices"
+    attributes="getRegisteredMatching queryConfigurations"
+    />
 </content>
 
 <content class=".utility.UtilityConfiguration">
   <require
     permission="zope.ManageServices"
-    interface="zope.app.interfaces.services.utility.IUtilityConfiguration"
+    interface="zope.app.interfaces.services.utility.IUtilityConfiguration
+               zope.app.interfaces.container.IAddNotifiable
+               zope.app.interfaces.container.IDeleteNotifiable"
     set_schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
     />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IAddNotifiable"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IDeleteNotifiable"
-      />
  </content>
 
 </zopeConfigure>

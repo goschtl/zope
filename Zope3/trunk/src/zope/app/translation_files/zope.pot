@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu Apr  3 11:10:12 2003\n"
+"POT-Creation-Date: Thu Apr  3 16:31:26 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,139 +15,180 @@ msgstr ""
 "Generated-By: pygettext.py 1.4\n"
 
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/dtmlpage.py:31
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:52
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/zpt.py:40
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/dtmlpage.py:31
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:52
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/zpt.py:40
 msgid "Source"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/dtmlpage.py:32
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/dtmlpage.py:32
 msgid "The source of the dtml page."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/file.py:25
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/file.py:25
 msgid "Content Type"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/file.py:26
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/file.py:26
 msgid "The content type identifies the type of data."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/file.py:32
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/file.py:32
 msgid "Data"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/file.py:33
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/file.py:33
 msgid "The actual content of the object."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:41
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:41
 msgid "Connection Name"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:42
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:42
 msgid "The Connection Name for the connection to be used."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:46
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:46
 msgid "Arguments"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:47
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:47
 msgid "A set of attributes that can be used during the DTML rendering process to provide dynamic data."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/sql.py:53
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/zpt.py:41
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/sql.py:53
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/zpt.py:41
 msgid "The source of the page template."
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/interfaces/content/zpt.py:45
+#:
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/interfaces/content/zpt.py:45
 msgid "Expand macros"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:36
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:65
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/utilities.pt:35
+msgid "(configure)"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/utilities.pt:30
+msgid "(inactive)"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/utilities.pt:8
+msgid "Configured utilities in this utility service:"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:36
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:65
 msgid "Delete"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:178
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:178
 msgid "Delete Messages"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:109
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:109
 msgid "Domain"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:33
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:62
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:33
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:62
 msgid "Edit"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translatemessage.pt:32
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translatemessage.pt:32
 msgid "Edit Message"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:175
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:175
 msgid "Edit Messages"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:94
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:94
 msgid "Filter"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:87
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:87
 msgid "Filter (% - wildcard):"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/exportimport.pt:40
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/exportimport.pt:40
 msgid "Import File Name:"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:108
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translatemessage.pt:18
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:108
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translatemessage.pt:18
 msgid "Message Id"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:78
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:78
 msgid "New Domain:"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:73
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:73
 msgid "New Language:"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/exportimport.pt:29
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:44
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/exportimport.pt:29
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:44
 msgid "Select Domains:"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/exportimport.pt:18
-#: /home/jim/atmp/z3/src/zope/app/browser/services/translation/translate.pt:15
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/exportimport.pt:18
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/translation/translate.pt:15
 msgid "Select Languages:"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/skins/rotterdam/folder_contents.pt:163
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/configureutility.pt:15
+msgid "Utility configurations for interface ${interface}"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/configureutility.pt:11
+msgid "Utility configurations for interface ${interface} with name ${utility_name}"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/skins/rotterdam/folder_contents.pt:163
 msgid "container_copy_button"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/skins/rotterdam/folder_contents.pt:160
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/skins/rotterdam/folder_contents.pt:160
 msgid "container_cut_button"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/skins/rotterdam/folder_contents.pt:170
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/skins/rotterdam/folder_contents.pt:170
 msgid "container_delete_button"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/skins/rotterdam/folder_contents.pt:166
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/skins/rotterdam/folder_contents.pt:166
 msgid "container_paste_button"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/skins/rotterdam/folder_contents.pt:157
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/skins/rotterdam/folder_contents.pt:157
 msgid "container_rename_button"
 msgstr ""
 
-#: /home/jim/atmp/z3/src/zope/app/browser/container/main.pt:68
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/configureutility.pt:34
+msgid "form_update"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/container/main.pt:68
 msgid "menu_delete_button"
+msgstr ""
+
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/utilities.pt:21
+#: /home/fdrake/projects/Zope/Zope3-py2.2/src/zope/app/browser/services/utility/utilities.pt:28
+msgid "named ${utility_name}"
 msgstr ""
 
