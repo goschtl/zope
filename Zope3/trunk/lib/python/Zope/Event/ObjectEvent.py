@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.6 2002/12/05 10:34:47 bcsaller Exp $
+$Id: ObjectEvent.py,v 1.7 2002/12/05 12:54:32 bcsaller Exp $
 """
 
 __metaclass__ = type
@@ -22,7 +22,8 @@ __metaclass__ = type
 from IObjectEvent import IObjectEvent, IObjectCreatedEvent
 from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
-from IObjectEvent import IObjectContentModifiedEvent, IObjectAnnotationsModifiedEvent
+from IObjectEvent import IObjectContentModifiedEvent, \
+                         IObjectAnnotationsModifiedEvent
 
 class ObjectEvent:
     """Something has happened to an object"""
