@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.3 2002/12/30 14:02:53 stevea Exp $
+$Id: editview.py,v 1.4 2002/12/30 23:27:47 jim Exp $
 """
 
 from datetime import datetime
@@ -29,6 +29,9 @@ from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.browser.form.submit import Update
+
+from zope.app.publisher.browser.globalbrowsermenuservice \
+     import menuItemDirective
 
 
 class EditView(BrowserView):
@@ -198,16 +201,26 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
 
     return schema, for_, bases, template, fields
 
-def edit(_context, name, schema, label,
-              permission = 'zope.Public', layer = "default",
-              class_ = None, for_ = None,
-              template = None, omit=None, fields=None):
+def edit(_context, name, schema, permission, label='',
+         layer = "default",
+         class_ = None, for_ = None,
+         template = None, omit=None, fields=None,
+         menu=None, title='Edit'):
+
+
+    if menu:
+        actions = menuItemDirective(
+            _context, menu, for_ or schema, '@@' + name, title,
+            permission=permission)
+    else:
+        actions = []
+
 
     (schema, for_, bases, template, fields,
      ) = _normalize(
         _context, schema, for_, class_, template, 'edit.pt', fields, omit)
 
-    return [
+    actions.append(
         Action(
         discriminator = ('http://namespaces.zope.org/form/edit',
                          name, for_, layer),
@@ -216,7 +229,9 @@ def edit(_context, name, schema, label,
                 bases,
                 for_, fields),
         )
-        ]
+        )
+
+    return actions
 
 def subedit(_context, name, schema, label,
               permission = 'zope.Public', layer = "default",
