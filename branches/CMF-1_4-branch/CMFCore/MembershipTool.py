@@ -354,19 +354,18 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
 
         return md.searchMemberDataContents( search_param, search_term )
 
-        
     security.declareProtected(View, 'getCandidateLocalRoles')
-    def getCandidateLocalRoles( self, obj ):
-        """ What local roles can I assign? """
+    def getCandidateLocalRoles(self, obj):
+        """ What local roles can I assign?
+        """
         member = self.getAuthenticatedMember()
-
         if 'Manager' in member.getRoles():
-            return self.getPortalRoles()
+            local_roles = self.getPortalRoles()
         else:
-            member_roles = list( member.getRolesInContext( obj ) )
-            del member_roles[member_roles.index( 'Member')]
-
-        return tuple( member_roles )
+            local_roles = [ role for role in member.getRolesInContext(obj)
+                            if role not in ('Member', 'Authenticated') ]
+        local_roles.sort()
+        return tuple(local_roles)
 
     security.declareProtected(View, 'setLocalRoles')
     def setLocalRoles( self, obj, member_ids, member_role, reindex=1 ):

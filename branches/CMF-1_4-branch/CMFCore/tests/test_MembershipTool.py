@@ -11,6 +11,7 @@ try:
 except ImportError:
     # for Zope versions before 2.6.0
     from Interface import verify_class_implementation as verifyClass
+from AccessControl.SecurityManagement import newSecurityManager
 
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -39,6 +40,14 @@ class MembershipToolSecurityTests(SecurityTest):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         self.mtool = MembershipTool().__of__(self.site)
+
+    def test_getCandidateLocalRoles(self):
+        mtool = self.mtool
+        acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
+
+        newSecurityManager(None, acl_users.user_foo)
+        rval = mtool.getCandidateLocalRoles(mtool)
+        self.assertEqual( rval, ('Dummy',) )
 
     def test_createMemberarea(self):
         mtool = self.mtool
