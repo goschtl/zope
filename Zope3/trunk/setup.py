@@ -231,16 +231,12 @@ ext_modules = [
     Extension("zope.security._proxy", ["src/zope/security/_proxy.c"],
               include_dirs = include_dirs,
               depends = ["src/zope/proxy/proxy.h"]),
-
-    
     Extension("zope.interface._zope_interface_ospec",
               ["src/zope/interface/_zope_interface_ospec.c"],
-              include_dirs = include_dirs,
-              depends = []),
+              include_dirs = include_dirs),
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"],
-              include_dirs = include_dirs,
-              depends = []),
+              include_dirs = include_dirs),
     ]
 
 # On Window, there are more extensions that need to be built
