@@ -68,26 +68,32 @@
     </meta:complexDirective>
 
     <meta:directive
-       name="layer"
-       schema="zope.app.component.metadirectives.ILayerDirective"
-       handler="zope.app.component.metaconfigure.layer"
-       />
-
-     <meta:directive
-       name="skin"
-       schema="zope.app.component.metadirectives.ISkinDirective"
-       handler="zope.app.component.metaconfigure.skin"
-       />
-
-     <meta:directive
-       name="defaultSkin"
-       schema="zope.app.component.metadirectives.IDefaultSkinDirective"
-       handler="zope.app.component.metaconfigure.defaultSkin"
-       />
+        name="view"
+        schema="zope.app.component.metadirectives.IViewDirective"
+        handler="zope.app.component.metaconfigure.view"
+        />
 
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="layer"
+        schema="zope.app.publisher.browser.metadirectives.ILayerDirective"
+        handler="zope.app.publisher.browser.metaconfigure.layer"
+        />
+
+    <meta:directive
+        name="skin"
+        schema="zope.app.publisher.browser.metadirectives.ISkinDirective"
+        handler="zope.app.publisher.browser.metaconfigure.skin"
+        />
+
+    <meta:directive
+        name="defaultSkin"
+        schema="zope.app.publisher.browser.metadirectives.IDefaultSkinDirective"
+        handler="zope.app.publisher.browser.metaconfigure.defaultSkin"
+        />
 
     <meta:directive
         name="page"
@@ -108,6 +114,19 @@
 
     </meta:complexDirective>
 
+    <meta:complexDirective
+        name="editform"
+        schema="zope.app.form.browser.metadirectives.IEditFormDirective"
+        handler="zope.app.form.browser.metaconfigure.EditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
@@ -115,28 +134,34 @@
     <!-- specific to Five -->
 
     <meta:directive
-       name="loadProducts"
-       schema="zope.interface.Interface"
-       handler=".fiveconfigure.loadProducts"
-       />
+        name="loadProducts"
+        schema="zope.interface.Interface"
+        handler=".fiveconfigure.loadProducts"
+        />
 
     <meta:directive
-       name="loadProductsOverrides"
-       schema="zope.interface.Interface"
-       handler=".fiveconfigure.loadProductsOverrides"
-       />
+        name="loadProductsOverrides"
+        schema="zope.interface.Interface"
+        handler=".fiveconfigure.loadProductsOverrides"
+        />
 
     <meta:directive
-       name="implements"
-       schema=".fivedirectives.IImplementsDirective"
-       handler=".fiveconfigure.implements"
-       />
+        name="implements"
+        schema=".fivedirectives.IImplementsDirective"
+        handler=".fiveconfigure.implements"
+        />
 
     <meta:directive
-       name="viewable"
-       schema=".fivedirectives.IViewableDirective"
-       handler=".fiveconfigure.viewable"
-       />
+        name="viewable"
+        schema=".fivedirectives.IViewableDirective"
+        handler=".fiveconfigure.viewable"
+        />
+
+    <meta:directive
+        name="skinDirectory"
+        schema=".fivedirectives.ISkinDirectoryDirective"
+        handler=".fiveconfigure.skinDirectory"
+        />
 
   </meta:directives>
 

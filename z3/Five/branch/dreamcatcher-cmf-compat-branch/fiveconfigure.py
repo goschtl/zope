@@ -13,9 +13,11 @@ These directives are specific to Five and have no equivalents in Zope 3.
 $Id$
 """
 import os
+import glob
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
+from browserconfigure import page
 
 from viewable import Viewable
 
@@ -64,14 +66,35 @@ def implements(_context, class_, interface):
                     interface)
             )
 
-def classViewable(class_):
-    if hasattr(class_, '__bobo_traverse__'):
+def classViewable(class_, force=False):
+    if hasattr(class_, '__bobo_traverse__') and not force:
         raise TypeError("__bobo_traverse already__ exists on %s" % class_)
     setattr(class_, '__bobo_traverse__', Viewable.__bobo_traverse__)
 
-def viewable(_context, class_):
+def viewable(_context, class_, force=False):
     _context.action(
         discriminator = (class_,),
         callable = classViewable,
-        args = (class_,)
+        args = (class_, force)
         )
+
+def skinDirectory(_context, directory, module, for_=None,
+                  layer='default', permission='zope.Public'):
+
+    if isinstance(module, basestring):
+        module = _context.resolve(module)
+
+    _prefix = os.path.dirname(module.__file__)
+    directory = os.path.join(_prefix, directory)
+
+    if not os.path.isdir(directory):
+        raise ConfigurationError(
+            "Directory %s does not exist" % directory
+            )
+
+    for fname in glob.glob(os.path.join(directory, '*.pt')):
+        name = os.path.splitext(os.path.basename(fname))[0]
+        page(_context, name=name, permission=permission,
+             layer=layer, for_=for_, template=fname)
+
+

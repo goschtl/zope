@@ -29,6 +29,7 @@ from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, initializeClass
+from ComputedAttribute import ComputedAttribute
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -94,7 +95,7 @@ def page(_context, name, permission, for_,
             # some security declarations on it so we really shouldn't
             # modify the original.  So, instead we make a new class
             # with just one base class -- the original
-            new_class = makeClass(class_.__name__, (class_), cdict)
+            new_class = makeClass(class_.__name__, (class_,), cdict)
 
     else:
         # template
@@ -159,19 +160,59 @@ class ViewMixinForAttributes(BrowserView):
 
 class ViewMixinForTemplates(BrowserView):
 
+    def getId(self):
+        """Return our __name__ or the template id
+        """
+        return getattr(self, '__name__', self.index.getId())
+
     # short cut to get to macros more easily
     def __getitem__(self, name):
         return self.index.macros[name]
+
+    def _macros(self):
+        """ """
+        return self.index.macros
+
+    macros = ComputedAttribute(_macros)
 
     # make the template publishable
     def __call__(self, *args, **kw):
         return self.index(self, *args, **kw)
 
+class ClassicPTFile(ViewPageTemplateFile):
+
+    def getId(self):
+        """Return the template id.
+
+        In our case, we just return the file basename for
+        backward compatibility.
+        """
+        fname = os.path.basename(self.pt_source_file())
+        return os.path.splitext(fname)[0]
+
+    def title_or_id(self):
+        """Return the template title or id.
+
+        In our case, we just return the id
+        backward compatibility.
+        """
+        return self.getId()
+
+    def pt_getContext(self, instance, request, **kw):
+        ns = super(ClassicPTFile, self).pt_getContext(instance, request, **kw)
+        # Alias here for backwards compat with Zope2 apps that
+        # haven't converted to using 'context'. We may wrapp 'here' with
+        # a proxy that raises a DeprecationWarning on access.
+        # We may also do the same for 'views'.
+        ns['here'] = instance.context
+        ns['test'] = lambda x, y, z: x and y or z
+        return ns
+
 def makeClassForTemplate(src, template=None, used_for=None, bases=(), cdict=None):
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': ViewPageTemplateFile(src, template)})
+    cdict.update({'index': ClassicPTFile(src, template)})
     bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 

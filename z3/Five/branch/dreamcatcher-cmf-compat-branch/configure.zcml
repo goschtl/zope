@@ -9,7 +9,7 @@
   <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
       for="*"
-      factory="zope.app.traversing.adapters.DefaultTraversable"
+      factory=".traversal.ViewTraversable"
       provides="zope.app.traversing.interfaces.ITraversable" />
 
   <!-- make Zope 2's REQUEST implement the right thing -->
