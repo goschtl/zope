@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,5 +15,5 @@
 
 XXX longer description goes here.
 
-$Id: zpl.py,v 1.7 2003/01/20 21:50:54 jim Exp $
+$Id: zpl.py,v 1.8 2004/01/09 21:26:52 fdrake Exp $
 """
