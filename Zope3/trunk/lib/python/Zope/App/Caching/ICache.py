@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ICache.py,v 1.4 2002/11/25 13:48:06 alga Exp $
+$Id: ICache.py,v 1.5 2002/12/12 15:28:15 mgedmin Exp $
 """
 from Interface import Interface
 
@@ -26,6 +26,9 @@ class ICache(Interface):
         invalidates entry for the given key.  Otherwise invalidates
         all entries for the object.
         """
+
+    def invalidateAll():
+        """Invalidates all cached entries."""
 
     def query(ob, key=None, default=None):
         """Returns the cached data previously stored by set().

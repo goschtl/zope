@@ -13,76 +13,68 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.3 2002/12/06 18:03:31 alga Exp $
+$Id: CachingService.py,v 1.4 2002/12/12 15:28:16 mgedmin Exp $
 """
-from types import TupleType
-from Zope.App.Caching.ICache import ICache
+from Persistence import Persistent
 from Zope.App.Caching.ICachingService import ICachingService
 from Zope.App.ComponentArchitecture.NextService import queryNextService
-from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
-from Zope.App.OFS.Container.IContainer import IHomogenousContainer, IContainer
+from Zope.App.OFS.Services.ConfigurationInterfaces import INameConfigurable
+from Zope.App.OFS.Services.Configuration import NameConfigurable
 from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
      import ProtoServiceEventChannel
 from Zope.ContextWrapper import ContextMethod
-from Zope.Event.EventChannel import EventChannel
 from Zope.Event.IEventChannel import IEventChannel
 from Zope.Event.IObjectEvent import IObjectModifiedEvent
 
 
-class ILocalCachingService(ICachingService, IContainer,
-                           IHomogenousContainer,
-                           IEventChannel):
+class ILocalCachingService(ICachingService, IEventChannel, INameConfigurable):
     """TTW manageable caching service"""
 
 
-class CachingService(BTreeContainer, ProtoServiceEventChannel):
+class CachingService(Persistent, ProtoServiceEventChannel, NameConfigurable):
 
     __implements__ = ILocalCachingService, ProtoServiceEventChannel.__implements__
 
     _subscribeToServiceInterface = IObjectModifiedEvent
 
     def __init__(self):
-        BTreeContainer.__init__(self)
+        Persistent.__init__(self)
         ProtoServiceEventChannel.__init__(self)
-
-    def __nonzero__(self):
-        # XXX otherwise 'if service:' in getService() fails when len(service) == 0
-        return 1
+        NameConfigurable.__init__(self)
 
     def getCache(self, name):
         'See Zope.App.Caching.ICachingService.ICachingService'
-        return self.__getitem__(name)
+        cache = self.queryActiveComponent(name)
+        if cache:
+            return cache
+        service = queryNextService(self, "Caching")
+        if service is not None:
+            return service.getCache(name)
+        raise KeyError, name
+
+    getCache = ContextMethod(getCache)
 
     def queryCache(self, name, default=None):
         'See Zope.App.Caching.ICachingService.ICachingService' 
-        cache = self.get(name, default)
-        if cache is not default:
-            return cache
-        return default
+        try:
+            return self.getCache(name)
+        except KeyError:
+            return default
+
+    queryCache = ContextMethod(queryCache)
 
     def getAvailableCaches(self):
         'See Zope.App.Caching.ICachingService.ICachingService'
-        caches = list(self.keys())
+        caches = {}
+        for name in self.listConfigurationNames():
+            registry = self.queryConfigurations(name)
+            if registry.active() is not None:
+                caches[name] = 0
         service = queryNextService(self, "Caching")
         if service is not None:
-            caches.append(service.getAvailableCaches())
-        return caches
+            for name in service.getAvailableCaches():
+                caches[name] = 0
+        return caches.keys()
+
     getAvailableCaches = ContextMethod(getAvailableCaches)
 
-    def isAddable(self, interfaces):
-        'See Zope.App.OFS.Container.IContainer.IHomogenousContainer'
-        if type(interfaces) != TupleType:
-            interfaces = (interfaces,)
-        if ICache in interfaces:
-            return 1
-        return 0
-
-    def setObject(self, key, object):
-        "See Zope.App.OFS.Container.IContainer.IWriteContainer"
-        self.subscribe(object, IObjectModifiedEvent)
-        BTreeContainer.setObject(self, key, object)
-
-    def __delitem__(self, key):
-        "See Zope.App.OFS.Container.IContainer.IWriteContainer"
-        self.unsubscribe(self[key], IObjectModifiedEvent)
-        BTreeContainer.__delitem__(self, key)

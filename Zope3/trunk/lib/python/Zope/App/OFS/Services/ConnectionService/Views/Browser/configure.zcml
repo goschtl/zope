@@ -23,8 +23,8 @@
       menu="add_component"
       for="Zope.App.OFS.Container.IAdding."
       action="ConnectionService"
-      title="RDBMS Connection Service"
-      description="A Persistent RDBMS Connection Service for TTW development"
+      title="SQL Connection Service"
+      description="A Persistent SQL Connection Service for TTW development"
       />
 
 <!-- ConnectionConfiguration -->

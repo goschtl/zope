@@ -13,7 +13,7 @@
 ##############################################################################
 """NameConfigurable tests
 
-$Id: testNameConfigurable.py,v 1.2 2002/12/12 11:32:34 mgedmin Exp $
+$Id: testNameConfigurable.py,v 1.3 2002/12/12 15:28:18 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,9 +29,21 @@ class ConfigurationStub:
     def __init__(self, **kw):
         self.__dict__.update(kw)
 
+    def getComponent(self):
+        return self.component
+
+
 class RegistryStub:
 
-    pass
+    def __init__(self, nonzero=0, active=None):
+        self._nonzero = nonzero or (active and 1 or 0)
+        self._active = active
+
+    def __nonzero__(self):
+        return self._nonzero
+
+    def active(self):
+        return self._active
 
 
 class TestNameConfigurable(TestCase):
@@ -104,6 +116,18 @@ class TestNameConfigurable(TestCase):
         self.assertEquals(tuple(subject.listConfigurationNames()), ('Foo',))
         subject._bindings['Bar'] = 0   # false values should be filtered out
         self.assertEquals(tuple(subject.listConfigurationNames()), ('Foo',))
+
+    def test_queryActiveComponent(self):
+        subject = self.subject
+        self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
+        self.assertEquals(subject.queryActiveComponent('xyzzy', 'No'), 'No')
+        subject._bindings['xyzzy'] = RegistryStub()
+        self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
+        subject._bindings['xyzzy'] = RegistryStub(nonzero=1)
+        self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
+        cfg = ConfigurationStub(component='X')
+        subject._bindings['xyzzy'] = RegistryStub(active=cfg)
+        self.assertEquals(subject.queryActiveComponent('xyzzy'), 'X')
 
 
 def test_suite():

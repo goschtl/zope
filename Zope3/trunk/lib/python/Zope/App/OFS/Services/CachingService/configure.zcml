@@ -5,11 +5,28 @@
     <factory id="CachingService" permission="Zope.ManageServices" />
       <require
           permission="Zope.View"
-          interface="Zope.App.Caching.ICachingService." />
+          interface="Zope.App.Caching.ICachingService."
+          attributes="queryConfigurations queryConfigurationsFor
+                      listConfigurationNames" />
       <require
           permission="Zope.ManageServices"
           interface="Zope.App.OFS.Container.IContainer." />
       <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+  </content>
+
+  <content class=".CacheConfiguration.">
+    <require
+        permission="Zope.ManageServices"
+        interface=".ICacheConfiguration."
+        set_attributes="name componentPath"
+        set_schema=
+            "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IAddNotifiable." />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable." />
   </content>
 
   <include package=".Views" />

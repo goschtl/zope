@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IServiceManager.py,v 1.7 2002/12/12 11:32:32 mgedmin Exp $
+$Id: IServiceManager.py,v 1.8 2002/12/12 15:28:17 mgedmin Exp $
 """
 from Zope.ComponentArchitecture.IServiceService import IServiceService
 from Zope.App.OFS.Services.ConfigurationInterfaces import INameConfigurable
@@ -31,12 +31,3 @@ class IServiceManager(IServiceService, IComponentManager, INameConfigurable):
     """
 
     Packages = Attribute("""Package container""")
-
-    def getBoundService(name):
-        """Retrieve a bound service implementation.
-
-        Get the component currently bound to the named Service in this
-        ServiceService.   Does not search context.
-
-        None is returned if the named service isn't bound locally.
-        """

@@ -17,7 +17,7 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: ServiceManager.py,v 1.14 2002/12/12 11:32:32 mgedmin Exp $
+$Id: ServiceManager.py,v 1.15 2002/12/12 15:28:17 mgedmin Exp $
 """
 
 import sys
@@ -106,7 +106,7 @@ class ServiceManager(PersistentModuleRegistry, NameConfigurable):
 
             self._v_calling = 1
             try:
-                service = self.getBoundService(name)
+                service = self.queryActiveComponent(name)
                 if service is not None:
                     return service
 
@@ -127,20 +127,6 @@ class ServiceManager(PersistentModuleRegistry, NameConfigurable):
         raise NameError(service_type)
 
     getInterfaceFor = ContextMethod(getInterfaceFor)
-
-    def getBoundService(self, name):
-        "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
-
-        registry = self.queryConfigurations(name)
-        if registry:
-            configuration = registry.active()
-            if configuration is not None:
-                service = configuration.getComponent()
-                return service
-
-        return None
-
-    getBoundService = ContextMethod(getBoundService)
 
     ############################################################
     # Implementation methods for interface

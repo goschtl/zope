@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.6 2002/12/12 11:32:30 mgedmin Exp $
+$Id: ConfigurationInterfaces.py,v 1.7 2002/12/12 15:28:16 mgedmin Exp $
 """
 
 from Interface import Interface
@@ -221,9 +221,8 @@ class INameConfigurable(IConfigurable):
         """Return a list of all registered configuration names
         """
 
-    # XXX It might be useful to abstract out common parts from
-    # ServiceManager.getBoundService and ConnectionService.getConnection
-    # into a method declared in INameConfigurable.  That would also mean that
-    # INameConfigurable relies on configurations implementing
-    # INamedComponentConfiguration, while now it is sufficient for a
-    # configuration to have a name attribute.
+    def queryActiveComponent(name, default=None):
+        """Finds the configuration registry for a given name, checks if it has
+        an active configuration, and if so, returns its component.  Otherwise
+        returns default.
+        """

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.8 2002/12/06 09:54:14 alga Exp $
+$Id: RAMCache.py,v 1.9 2002/12/12 15:28:15 mgedmin Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -103,6 +103,13 @@ class RAMCache(Persistent):
             s.invalidate(ob, key)
         else:
             s.invalidate(ob)
+
+
+    def invalidateAll(self):
+        "See Zope.App.Caching.ICache.ICache"
+        s = self._getStorage()
+        s.invalidateAll()
+
 
     def query(self, ob, key=None, default=None):
         "See Zope.App.Caching.ICache.ICache"
@@ -263,6 +270,18 @@ class Storage:
                 # self._invalidate_queued() not called to avoid a recursion
         else:
             self._invalidate_queue.append((ob,key))
+
+
+    def invalidateAll(self):
+        """Drop all the cached values.
+        """
+        self.writelock.acquire()
+        try:
+            self._data = {}
+            self._misses = {}
+            self._invalidate_queue = []
+        finally:
+            self.writelock.release()
 
 
     def removeStaleEntries(self):

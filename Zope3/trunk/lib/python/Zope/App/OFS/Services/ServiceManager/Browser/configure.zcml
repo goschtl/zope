@@ -141,6 +141,7 @@
       menu="add_configuration"
       action="ServiceConfiguration"
       title="Service"
+      description="Local Service"
       />
 
 <!-- Persistent Modules -->

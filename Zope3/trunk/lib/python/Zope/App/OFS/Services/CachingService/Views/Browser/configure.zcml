@@ -3,38 +3,52 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    package="Zope.App.OFS.Services.CachingService">
 
-  <browser:menu id="add_cache"
-      title="Menu for adding new caches." />
+<!-- CachingService -->
 
   <browser:defaultView
-     for=".CachingService.ILocalCachingService"
-     name="contents.html" />
-
-  <browser:view
-     permission="Zope.ManageServices"
-     for=".CachingService.ILocalCachingService"
-     factory="Zope.App.OFS.Container.Views.Browser.Contents.">
-
-     <browser:page name="contents.html" attribute="contents" />
-     <browser:page name="removeObjects.html" attribute="removeObjects" />
-
-  </browser:view>
-
-  <browser:view
-      name="+"
       for=".CachingService.ILocalCachingService"
-      permission="Zope.ManageContent"
-      factory=".Views.Browser.Adding." >
+      name="index.html" />
 
-    <browser:page name="index.html"  attribute="index" />
-    <browser:page name="action.html" attribute="action" />
+  <browser:menuItems
+      menu="zmi_views"
+      for=".CachingService.ILocalCachingService">
+    <browser:menuItem title="Caches" action="index.html"/>
+  </browser:menuItems>
+
+  <browser:view
+      for=".CachingService.ILocalCachingService"
+      name="index.html"
+      template="Views/Browser/Caches.pt"
+      class="Zope.App.OFS.Services.Browser.NameConfigurableView."
+      permission="Zope.ManageServices" />
+
+  <browser:menuItem
+      menu="add_component"
+      for="Zope.App.OFS.Container.IAdding."
+      action="CachingService"
+      title="Caching Service"
+      description="A Persistent Caching Service for TTW development"
+      />
+
+<!-- CacheConfiguration -->
+
+  <browser:view
+      for="Zope.App.OFS.Container.IAdding."
+      name="CacheConfiguration"
+      factory=".Views.Browser.AddCacheConfiguration."
+      permission="Zope.ManageServices">
+
+    <browser:page name="add.html" template="Views/Browser/add_cache.pt" />
+    <browser:page name="finish.html" attribute="action" />
 
   </browser:view>
 
-  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
-       action="CachingService"  title="Caching Service"
-       description="A Persistent Caching Service for TTW
-       development"
-       />
+  <browser:menuItem
+      menu="add_configuration"
+      for="Zope.App.OFS.Container.IAdding."
+      action="CacheConfiguration"
+      title="Cache"
+      description="Named Cache"
+      />
 
 </zopeConfigure>

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ConnectionService.py,v 1.7 2002/12/12 11:32:31 mgedmin Exp $
+$Id: ConnectionService.py,v 1.8 2002/12/12 15:28:17 mgedmin Exp $
 """
 
 from Persistence import Persistent
@@ -40,12 +40,9 @@ class ConnectionService(Persistent, NameConfigurable):
 
     def getConnection(self, name):
         'See Zope.App.RDB.IConnectionService.IConnectionService'
-        registry = self.queryConfigurations(name)
-        if registry:
-            configuration = registry.active()
-            if configuration is not None:
-                adapter = configuration.getComponent()
-                return adapter()
+        adapter = self.queryActiveComponent(name)
+        if adapter is not None:
+            return adapter()
         service = queryNextService(self, "SQLDatabaseConnections")
         if service is not None:
             return service.getConnection(name)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.7 2002/12/06 09:54:14 alga Exp $
+$Id: test_RAMCache.py,v 1.8 2002/12/12 15:28:15 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -376,6 +376,26 @@ class TestStorage(TestCase):
         self.assertEqual(s._data,
                          {object: {key: [value, ts, 0], key2: [value, ts, 0]}},
                          "failed to invalidate queued")
+
+    def test_invalidateAll(self):
+        from Zope.App.Caching.RAMCache.RAMCache import Storage
+        s = Storage()
+        object = 'object'
+        object2 = 'object2'
+        key = ('view', (), ('answer', 41))
+        key2 = ('view2', (), ('answer', 42))
+        value = 'yes'
+        ts = time()
+        s._data = {object:  {key: [value, ts, 0],
+                             key2: [value, ts, 0]},
+                   object2: {key: [value, ts, 0]}}
+        s._invalidate_queue = [(object, None)]
+        s._misses = {object: 10, object2: 100}
+        s.invalidateAll()
+        self.assertEqual(s._data, {}, "not invalidated")
+        self.assertEqual(s._misses, {}, "miss counters not reset")
+        self.assertEqual(s._invalidate_queue, [], "invalidate queue not empty")
+
 
     def test_getKeys(self):
         from Zope.App.Caching.RAMCache.RAMCache import Storage

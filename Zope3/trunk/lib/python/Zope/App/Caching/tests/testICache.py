@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: testICache.py,v 1.3 2002/11/25 13:48:06 alga Exp $
+$Id: testICache.py,v 1.4 2002/12/12 15:28:16 mgedmin Exp $
 """
 
 from unittest import TestSuite, main
@@ -50,6 +50,23 @@ class BaseICacheTest:
                           "should return cached result")
         self.failIf(cache.query(ob, {'id': 33}, default=marker) is not marker,
                     "should not return cached result after invalidate")
+
+    def testInvalidateAll(self):
+        cache = self._Test__new()
+        ob1 = object()
+        ob2 = object()
+        cache.set("data1", ob1)
+        cache.set("data2", ob2, key={'foo': 1})
+        cache.set("data3", ob2, key={'foo': 2})
+        cache.invalidateAll()
+        marker = []
+        self.failIf(cache.query(ob1, default=marker) is not marker,
+                    "should not return cached result after invalidateAll")
+        self.failIf(cache.query(ob2, {'foo': 1}, default=marker) is not marker,
+                    "should not return cached result after invalidateAll")
+        self.failIf(cache.query(ob2, {'foo': 2}, default=marker) is not marker,
+                    "should not return cached result after invalidateAll")
+
 
 def test_suite():
     return TestSuite((

@@ -13,10 +13,9 @@
 ##############################################################################
 """A configuration for a database adapter.
 
-$Id: IConnectionConfiguration.py,v 1.2 2002/12/12 11:32:31 mgedmin Exp $
+$Id: IConnectionConfiguration.py,v 1.3 2002/12/12 15:28:17 mgedmin Exp $
 """
 
-from Zope.Schema import TextLine
 from Zope.App.OFS.Services.ConfigurationInterfaces \
      import INamedComponentConfiguration
 

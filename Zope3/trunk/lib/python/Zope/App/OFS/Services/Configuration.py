@@ -16,7 +16,7 @@
 This module provides constant definitions for the three registration states,
 Unregistered, Registered, and Active.
 
-$Id: Configuration.py,v 1.4 2002/12/12 11:32:30 mgedmin Exp $
+$Id: Configuration.py,v 1.5 2002/12/12 15:28:16 mgedmin Exp $
 """
 __metaclass__ = type
 
@@ -373,22 +373,26 @@ class NameConfigurable:
         self._bindings = {}
 
     def queryConfigurationsFor(self, cfg, default=None):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurable"""
         return self.queryConfigurations(cfg.name, default)
 
     queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
 
     def queryConfigurations(self, name, default=None):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
         registry = self._bindings.get(name, default)
         return ContextWrapper(registry, self)
 
     queryConfigurations = ContextMethod(queryConfigurations)
 
     def createConfigurationsFor(self, cfg):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurable"""
         return self.createConfigurations(cfg.name)
 
     createConfigurationsFor = ContextMethod(createConfigurationsFor)
 
     def createConfigurations(self, name):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
         try:
             registry = self._bindings[name]
         except KeyError:
@@ -399,5 +403,17 @@ class NameConfigurable:
     createConfigurations = ContextMethod(createConfigurations)
 
     def listConfigurationNames(self):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
         return filter(self._bindings.get, self._bindings.keys())
+
+    def queryActiveComponent(self, name, default=None):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
+        registry = self.queryConfigurations(name)
+        if registry:
+            configuration = registry.active()
+            if configuration is not None:
+                return configuration.getComponent()
+        return default
+
+    queryActiveComponent = ContextMethod(queryActiveComponent)
 
