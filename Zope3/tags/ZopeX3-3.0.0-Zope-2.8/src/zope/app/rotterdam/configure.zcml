@@ -1,0 +1,110 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:layer
+      name="rotterdam" />
+  <browser:skin
+      name="Rotterdam" layers="rotterdam default" />
+  
+  <browser:resource 
+      name="zope3.css" file="zope3.css" layer="rotterdam" />
+
+  <browser:resource 
+      name="site_management.css" file="site_management.css" layer="rotterdam" />
+  
+  <browser:resource 
+      name="xmltree.js" file="xmltree.js" layer="rotterdam" />
+  
+  <browser:resource 
+      name="onlinehelp.js" file="onlinehelp.js" layer="rotterdam" />
+      
+   <browser:resource
+      name="favicon.png" file="favicon.png" layer="rotterdam" />
+  
+  <browser:resource
+      name="zope3logo.gif" file="zope3logo.gif" layer="rotterdam" />
+  
+  <browser:resource
+      name="logo.gif" file="logo.gif" layer="rotterdam" />
+  
+  <browser:resource 
+      name="pl.gif" file="pl.gif" layer="rotterdam" />
+  
+  <browser:resource 
+      name="mi.gif" file="mi.gif" layer="rotterdam" />
+  
+  <browser:pages
+      for="zope.app.container.interfaces.IReadContainer"
+      permission="zope.View"
+      class=".xmlobject.ReadContainerXmlObjectView">
+    <browser:page name="children.xml" attribute="children" />
+    <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
+  </browser:pages>
+  
+  <browser:page
+      name="singleBranchTree.xml" 
+      for="zope.interface.interface.Interface"
+      permission="zope.View"
+      class=".xmlobject.XmlObjectView"
+      attribute="singleBranchTree" 
+      />
+  
+  <!-- below overrides the standard_macros by Rotterdam Skin -->
+  <browser:page
+      for="*"
+      name="standard_macros"
+      permission="zope.View"
+      class=".standardmacros.StandardMacros"
+      layer="rotterdam"
+      allowed_interface="zope.interface.common.mapping.IItemMapping" 
+      />
+  
+  <browser:page 
+      for="*"
+      name="skin_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="template.pt" 
+      />
+  
+  <browser:page 
+      for="*"
+      name="view_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="view_macros.pt" />
+  
+  <browser:page
+      for="*"
+      name="dialog_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="dialog_macros.pt" />
+
+  <browser:page
+      for="*"
+      name="navigation_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="navigation_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="popup_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="popup_macros.pt"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISourceText"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".editingwidgets.SimpleEditingWidget"
+      permission="zope.Public"
+      layer="rotterdam"
+      />
+
+</configure>
