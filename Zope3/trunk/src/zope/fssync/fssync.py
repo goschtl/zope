@@ -16,18 +16,18 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.43 2003/08/26 18:49:27 fdrake Exp $
+$Id: fssync.py,v 1.44 2003/08/27 19:36:21 fdrake Exp $
 """
 
 import os
 import sys
-import base64
 import shutil
 import urllib
 import filecmp
 import htmllib
 import httplib
 import tempfile
+import urlparse
 import formatter
 
 from StringIO import StringIO
@@ -40,6 +40,7 @@ from zope.fssync.metadata import Metadata, dump_entries
 from zope.fssync.fsmerger import FSMerger
 from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
+from zope.fssync.passwd import PasswordManager
 from zope.fssync.snarf import Snarfer, Unsnarfer
 
 
@@ -49,7 +50,7 @@ else:
     DEV_NULL = "/dev/null"
 
 
-class Network(object):
+class Network(PasswordManager):
 
     """Handle network communication.
 
@@ -69,6 +70,7 @@ class Network(object):
 
     def __init__(self, rooturl=None):
         """Constructor.  Optionally pass the root url."""
+        super(Network, self).__init__()
         self.setrooturl(rooturl)
 
     def loadrooturl(self, target):
@@ -91,7 +93,7 @@ class Network(object):
         """
         if self.rooturl:
             dir = join(target, "@@Zope")
-            if not os.path.exists(dir):
+            if not exists(dir):
                 os.mkdir(dir)
             fn = join(dir, "Root")
             self.writefile(self.rooturl + "\n",
@@ -219,11 +221,11 @@ class Network(object):
             conn.putheader("Transfer-encoding", "chunked")
         if self.user_passwd:
             if ":" not in self.user_passwd:
-                import getpass
-                pw = getpass.getpass("Password for %s @ %s: "
-                                     % (self.user_passwd, self.host_port))
-                self.user_passwd = "%s:%s" % (self.user_passwd, pw)
-            auth = base64.encodestring(self.user_passwd).strip()
+                auth = self.getToken(self.roottype,
+                                     self.host_port,
+                                     self.user_passwd)
+            else:
+                auth = self.createToken(self.user_passwd)
             conn.putheader('Authorization', 'Basic %s' % auth)
         conn.putheader("Host", self.host_port)
         conn.putheader("Connection", "close")
@@ -298,6 +300,56 @@ class FSSync(object):
         self.network = network
         self.network.setrooturl(rooturl)
         self.fsmerger = FSMerger(self.metadata, self.reporter)
+
+    def login(self, url=None, user=None):
+        scheme, host_port, user = self.get_login_info(url, user)
+        token = self.network.getToken(scheme, host_port, user)
+        self.network.addToken(scheme, host_port, user, token)
+
+    def logout(self, url=None, user=None):
+        upw = self.network.user_passwd
+        scheme, host_port, user = self.get_login_info(url, user)
+        if scheme:
+            ok = self.network.removeToken(scheme, host_port, user)
+        else:
+            # remove both, if present
+            ok1 = self.network.removeToken("http", host_port, user)
+            ok2 = self.network.removeToken("https", host_port, user)
+            ok = ok1 or ok2
+        if not ok:
+            raise Error("matching login info not found")
+
+    def get_login_info(self, url, user):
+        if url:
+            parts = urlparse.urlsplit(url)
+            scheme = parts[0]
+            host_port = parts[1]
+            if not (scheme and host_port):
+                raise Error(
+                    "URLs must include both protocol (http or https)"
+                    " and host information")
+            if "@" in host_port:
+                user_passwd, host_port = host_port.split("@", 1)
+                if not user:
+                    if ":" in user_passwd:
+                        user = user_passwd.split(":", 1)[0]
+                    else:
+                        user = user_passwd
+        else:
+            self.network.loadrooturl(os.curdir)
+            scheme = self.network.roottype
+            host_port = self.network.host_port
+            if not user:
+                upw = self.network.user_passwd
+                if ":" in upw:
+                    user = upw.split(":", 1)[0]
+                else:
+                    user = upw
+        if not user:
+            user = raw_input("Username: ").strip()
+            if not user:
+                raise Error("username cannot be empty")
+        return scheme, host_port, user
 
     def checkout(self, target):
         rootpath = self.network.rootpath

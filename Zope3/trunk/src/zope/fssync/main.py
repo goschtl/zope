@@ -32,7 +32,7 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.35 2003/08/12 18:23:34 fdrake Exp $
+$Id: main.py,v 1.36 2003/08/27 19:36:21 fdrake Exp $
 """
 
 import os
@@ -235,16 +235,31 @@ def checkin(opts, args):
     fs = FSSync(rooturl=rooturl)
     fs.checkin(target, message)
 
-def revert(opts, args):
-    """%(program)s revert [TARGET ...]
+def login(opts, args):
+    """%(program)s login [-u user] [URL]
 
-    Revert changes to targets.  Modified files are overwritten by the
-    unmodified copy cached in @@Zope/Original/ and scheduled additions
-    and deletions are de-scheduled.  Additions that are de-scheduled
-    do not cause the working copy of the file to be removed.
+    Save a basic authentication token for a URL that doesn't include a
+    password component.
     """
-    fs = FSSync()
-    fs.multiple(args, fs.revert)
+    _loginout(opts, args, "login", FSSync().login)
+
+def logout(opts, args):
+    """%(program)s logout [-u user] [URL]
+
+    Remove a saved basic authentication token for a URL.
+    """
+    _loginout(opts, args, "logout", FSSync().logout)
+
+def _loginout(opts, args, cmdname, cmdfunc):
+    url = user = None
+    if args:
+        if len(args) > 1:
+            raise Usage("%s allows at most one argument" % cmdname)
+        url = args[0]
+    for o, a in opts:
+        if o in ("-u", "--user"):
+            user = a
+    cmdfunc(url, user)
 
 def mkdir(opts, args):
     """%(program)s mkdir PATH ...
@@ -263,6 +278,17 @@ def resolve(opts, args):
     """
     fs = FSSync()
     fs.multiple(args, fs.resolve)
+
+def revert(opts, args):
+    """%(program)s revert [TARGET ...]
+
+    Revert changes to targets.  Modified files are overwritten by the
+    unmodified copy cached in @@Zope/Original/ and scheduled additions
+    and deletions are de-scheduled.  Additions that are de-scheduled
+    do not cause the working copy of the file to be removed.
+    """
+    fs = FSSync()
+    fs.multiple(args, fs.revert)
 
 def extract_message(opts, cmd):
     L = []
@@ -296,6 +322,8 @@ command_table = [
     (checkout, "co",      "",           ""),
     (commit,   "ci",      "F:m:r",      "file= message= raise-on-conflicts"),
     (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
+    (login,    "",        "u:",         "user="),
+    (logout,   "",        "u:",         "user="),
     (mkdir,    "",        "",           ""),
     (remove,   "del delete rm", "",     ""),
     (resolve,  "",        "",           ""),
