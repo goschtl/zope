@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.3 2003/06/01 15:59:25 jim Exp $
+$Id: zapi.py,v 1.4 2003/06/03 19:43:43 jim Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
@@ -28,6 +28,7 @@ __all__ = tuple(IZAPI)
 from zope.component import *
 from zope.context import *
 from zope.app.context import *
+from zope.app.traversing import *
 
 def name(object):
     data = getWrapperData(object)

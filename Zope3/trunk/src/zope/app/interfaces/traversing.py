@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.4 2003/03/24 16:42:21 mgedmin Exp $
+$Id: traversing.py,v 1.5 2003/06/03 19:43:43 jim Exp $
 """
 
 from zope.interface import Interface
@@ -103,3 +103,102 @@ class ITraverser(Interface):
         allows paths like @@foo to work.
         """
  
+class ITraversalAPI(Interface):
+    """Common API functions to ease traversal computations
+    """
+
+    def joinPath(path, *args):
+        """Join the given relative paths to the given path.
+
+        Returns a unicode path.
+
+        The path should be well-formed, and not end in a '/' unless it is
+        the root path. It can be either a string (ascii only) or unicode.
+        The positional arguments are relative paths to be added to the
+        path as new path segments.  The path may be absolute or relative.
+
+        A segment may not start with a '/' because that would be confused
+        with an absolute path. A segment may not end with a '/' because we
+        do not allow '/' at the end of relative paths.  A segment may
+        consist of . or .. to mean "the same place", or "the parent path"
+        respectively. A '.' should be removed and a '..' should cause the
+        segment to the left to be removed.  joinPath('/', '..') should
+        raise an exception.
+        """
+
+    def getPath(obj):
+        """Returns a string representing the physical path to the object.
+        """
+
+    def getRoot(obj):
+        """Returns the root of the traversal for the given object.
+        """
+
+    def traverse(object, path, default=None, request=None):
+        """Traverse 'path' relative to the given object.
+
+        'path' is a string with path segments separated by '/'.
+
+        'request' is passed in when traversing from presentation code. This
+        allows paths like @@foo to work.
+
+        Raises NotFoundError if path cannot be found
+        Raises TypeError if place is not context wrapped
+
+        Note: calling traverse with a path argument taken from an untrusted
+              source, such as an HTTP request form variable, is a bad idea.
+              It could allow a maliciously constructed request to call
+              code unexpectedly.
+              Consider using traverseName instead.
+        """
+
+    def traverseName(obj, name, default=None, traversable=None,
+                     request=None):
+        """Traverse a single step 'name' relative to the given object.
+
+        'name' must be a string. '.' and '..' are treated specially, as well as
+        names starting with '@' or '+'. Otherwise 'name' will be treated as a
+        single path segment.
+
+        You can explicitly pass in an ITraversable as the
+        'traversable' argument. If you do not, the given object will
+        be adapted to ITraversable.
+
+        'request' is passed in when traversing from presentation code. This
+        allows paths like @@foo to work.
+
+        Raises NotFoundError if path cannot be found and 'default' was
+        not provided.
+
+        """
+
+    def objectName(obj):
+        """Get the name an object was traversed via
+
+        Raises TypeError if the object is not context-wrapped
+        """
+
+    def getParent(obj):
+        """Returns the container the object was traversed via.
+
+        Returns None if the object is a containment root.
+        Raises TypeError if the object doesn't have enough context to get the
+        parent.
+        """
+
+    def getParents(obj):
+        """Returns a list starting with the given object's parent followed by
+        each of its parents.
+
+        Raises a TypeError if the context doesn't go all the way down to
+        a containment root.
+        """
+
+    def canonicalPath(path_or_object):
+        """Returns a canonical absolute unicode path for the path or object.
+
+        Resolves segments that are '.' or '..'.
+
+        Raises ValueError if a badly formed path is given.
+        """
+    
