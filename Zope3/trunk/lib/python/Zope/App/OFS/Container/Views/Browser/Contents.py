@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.16 2002/12/04 13:56:12 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.17 2002/12/04 14:11:53 runyaga Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -48,8 +48,8 @@ class Contents(BrowserView):
             if title:
                 info['title'] = title
 
-            info['size'] = getSize(item[1])
-
+            magnitude, label = getSize(item[1])
+            info['size'] = {'size':magnitude, 'label':label}
             created = dc.created
             if created is not None:
                 info['created'] = formatTime(created)
