@@ -193,7 +193,7 @@
                             <td tal:define="stTimeString python:modules['string'].split(here.getStartTimeString());
                                 amSel python:(len(stTimeString) == 2 and stTimeString[1] == 'am') and 1 or 0;
                                 pmSel python:(len(stTimeString) == 2 and stTimeString[1] == 'pm') and 1 or 0">
-                     <select name="stop_time">
+                     <select name="start_time">
                      <option value=""
                        tal:define="bts here/buildTimes"
                        tal:repeat="bt bts"
