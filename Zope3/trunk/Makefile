@@ -13,10 +13,14 @@ inplace:
 build:
 	$(PYTHON) setup.py $(SETUPFLAGS) build
 
-runners:
+runners: bin/runzope bin/zopectl
+
+bin/runzope: Makefile
 	echo "#!/bin/sh" > bin/runzope;
 	echo "exec $(PYTHON) z3.py" >> bin/runzope;
 	chmod +x bin/runzope
+
+bin/zopectl: Makefile
 	echo "#!/bin/sh" > bin/zopectl;
 	echo "$(PYTHON) $(PWD)/src/zdaemon/zdctl.py \
 	      -S schema.xml \
