@@ -246,6 +246,14 @@ class MultiDataHelper(object):
             return self.convertTokensToValues(tokens)
         return []
 
+    def _getDefault(self):
+        # Return the default value for this widget;
+        # may be overridden by subclasses.
+        val = self.context.default
+        if val is None:
+            val = []
+        return val
+
 class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
@@ -263,15 +271,7 @@ class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
     tag = 'ol'
 
     def render(self, value):
-        if value == self._missing:
-            return widget.renderElement('span',
-                                        type=self.getValue('type'),
-                                        name=self.name,
-                                        id=self.name,
-                                        cssClass=self.getValue('cssClass'),
-                                        contents=_("(no values)"),
-                                        extra=self.getValue('extra'))
-        else:
+        if value:
             rendered_items = self.renderItems(value)
             return widget.renderElement(self.getValue('tag'),
                                         type=self.getValue('type'),
@@ -279,6 +279,14 @@ class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
                                         id=self.name,
                                         cssClass=self.getValue('cssClass'),
                                         contents="\n".join(rendered_items),
+                                        extra=self.getValue('extra'))
+        else:
+            return widget.renderElement('span',
+                                        type=self.getValue('type'),
+                                        name=self.name,
+                                        id=self.name,
+                                        cssClass=self.getValue('cssClass'),
+                                        contents=_("(no values)"),
                                         extra=self.getValue('extra'))
 
     def renderItems(self, value):
