@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication service implementation.
+"""Pluggable Auth Tests
 
-$Id$
+$Id: test_principal.py 25177 2004-06-02 13:17:31Z jim $
 """
-from exception import LoginNameTaken
-from principal import SimplePrincipal
-from interfaces import IBTreePrincipalSource
-from interfaces import IBTreePrincipalSourceContained
-from btreesource import BTreePrincipalSource
-from pluggableauth import PluggableAuthenticationService
-from pluggableauth import PluggableAuthenticationServiceAddSubscriber
+from unittest import TestCase, TestSuite, main, makeSuite
+from zope.testing.doctestunit import DocTestSuite
+from zope.app.tests.placelesssetup import setUp, tearDown
+
+
+def test_suite():
+    t1 = DocTestSuite('zope.app.pluggableauth.principal',
+                      setUp=setUp, tearDown=tearDown)
+    return TestSuite((t1,))
+
+
+if __name__=='__main__':
+    main(defaultTest='test_suite')
 

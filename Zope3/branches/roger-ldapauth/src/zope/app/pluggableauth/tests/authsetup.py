@@ -26,9 +26,10 @@ from zope.app.site.tests import placefulsetup
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter
-from zope.app.pluggableauth import \
-     PrincipalAuthenticationView, PluggableAuthenticationService, \
+from zope.app.pluggableauth import PluggableAuthenticationService, \
      BTreePrincipalSource, SimplePrincipal
+from zope.app.pluggableauth.browser.authentication import \
+    PrincipalAuthenticationView
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 class AuthSetup(placefulsetup.PlacefulSetup):

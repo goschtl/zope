@@ -28,14 +28,15 @@ from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.tests import setup
 from zope.exceptions import NotFoundError
 
-from zope.app.pluggableauth import BTreePrincipalSource, \
-     SimplePrincipal, PluggableAuthenticationService, \
-     PrincipalAuthenticationView
-from zope.app.pluggableauth.interfaces import IPrincipalSource
-
-from zope.app.pluggableauth.interfaces import IUserSchemafied
 from zope.app.security.interfaces import IPrincipal, ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter
+
+from zope.app.pluggableauth.interfaces import IUserSchemafied
+from zope.app.pluggableauth.interfaces import IPrincipalSource
+from zope.app.pluggableauth import BTreePrincipalSource, \
+     SimplePrincipal, PluggableAuthenticationService
+from zope.app.pluggableauth.browser.authentication import \
+    PrincipalAuthenticationView
 
 from zope.publisher.browser import TestRequest as Request
 
@@ -151,21 +152,16 @@ class BTreePrincipalSourceTest(Setup):
         p = self._slinkp
         self.assertEqual(p, one.getPrincipal(p.id))
 
-class PrincipalAuthenticationViewTest(Setup):
-
-    def test_authenticate(self):
-        request = self.getRequest('chrism', '123')
-        view = PrincipalAuthenticationView(self._one, request)
-        self.assertEqual(self._chrism, view.authenticate())
-
 
 def test_suite():
+    import zope.testing.doctestunit as doctestunit
+    import zope.app.pluggableauth as package
     t1 = makeSuite(AuthServiceTest)
-    t2 = DocTestSuite('zope.app.pluggableauth',
-                      setUp=setUp, tearDown=tearDown)
+    t2 = doctestunit.DocFileSuite(package, 'pluggableauth.txt')
+    #t2 = DocTestSuite('zope.app.pluggableauth.pluggableauth.txt',
+    #                  setUp=setUp, tearDown=tearDown)
     t3 = makeSuite(BTreePrincipalSourceTest)
-    t4 = makeSuite(PrincipalAuthenticationViewTest)
-    return TestSuite((t1, t2, t3, t4))
+    return TestSuite((t1, t2, t3))
 
 
 if __name__=='__main__':

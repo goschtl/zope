@@ -2,6 +2,14 @@
    xmlns="http://namespaces.zope.org/browser"
    xmlns:zope="http://namespaces.zope.org/zope">
 
+<!-- Login view -->
+
+  <view
+      name="login"
+      for="zope.app.pluggableauth.interfaces.ILoginPasswordPrincipalSource"
+      class=".authentication.PrincipalAuthenticationView"
+      permission="zope.Public" />
+
 <!-- Pluggable Authentication Service -->
 
   <addMenuItem

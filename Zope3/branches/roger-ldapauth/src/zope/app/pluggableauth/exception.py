@@ -13,13 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id$
+$Id: exception.py 26176 2004-07-07 18:34:31Z jim $
 """
-from exception import LoginNameTaken
-from principal import SimplePrincipal
-from interfaces import IBTreePrincipalSource
-from interfaces import IBTreePrincipalSourceContained
-from btreesource import BTreePrincipalSource
-from pluggableauth import PluggableAuthenticationService
-from pluggableauth import PluggableAuthenticationServiceAddSubscriber
-
+class LoginNameTaken(Exception):
+    """Exception for to raise if a login name is allready in use."""

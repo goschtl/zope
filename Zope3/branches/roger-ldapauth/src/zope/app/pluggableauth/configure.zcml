@@ -62,12 +62,6 @@
         />
   </content>
 
-  <browser:view
-      name="login"
-      for=".interfaces.ILoginPasswordPrincipalSource"
-      class="zope.app.pluggableauth.PrincipalAuthenticationView"
-      permission="zope.Public" />
-
   <include package=".browser" />
 
 </configure>

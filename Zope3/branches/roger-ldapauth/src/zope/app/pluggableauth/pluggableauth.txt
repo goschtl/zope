@@ -1,0 +1,77 @@
+==============================
+PluggableAuthenticationService
+==============================
+
+Adapter registries provide a way to register objects that depend on
+one or more interface specifications and provide (perhaps indirectly)
+some interface.  In addition, the registrations have names. (You can
+think of the names as qualifiers of the provided interfaces.)
+
+The term "interface specification" refers both to interfaces and to
+interface declarations, such as declarations of interfaces implemented
+by a class.
+
+
+Let's test the service
+======================
+
+  >>> from zope.interface import implements
+  >>> from zope.app.pluggableauth.btreesource import BTreePrincipalSource
+  >>> from zope.app.pluggableauth.pluggableauth import PluggableAuthenticationService
+  >>> from zope.app.pluggableauth.pluggableauth import PluggableAuthenticationServiceAddSubscriber
+
+Let's look at a simple example, using a pluggableauth service::
+
+  >>> pas = PluggableAuthenticationService()
+  >>> sps = BTreePrincipalSource()
+  >>> pas.addPrincipalSource('simple', sps)
+  >>> sps2 = BTreePrincipalSource()
+  >>> pas.addPrincipalSource('not_quite_so_simple', sps2)
+  >>> pas.keys()
+  ['simple', 'not_quite_so_simple']
+      
+
+remove a principal source
+
+  >>> pas = PluggableAuthenticationService()
+  >>> sps = BTreePrincipalSource()
+  >>> pas.addPrincipalSource('simple', sps)
+  >>> sps2 = BTreePrincipalSource()
+  >>> pas.addPrincipalSource('not_quite_so_simple', sps2)
+  >>> sps3 = BTreePrincipalSource()
+  >>> pas.addPrincipalSource('simpler', sps3)
+  >>> pas.keys()
+  ['simple', 'not_quite_so_simple', 'simpler']
+  >>> pas.removePrincipalSource('not_quite_so_simple')
+  >>> pas.keys()
+  ['simple', 'simpler']
+
+Generates an earmark if one is not provided.
+Define a stub for PluggableAuthenticationService
+
+  >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+  >>> class PluggableAuthStub:
+  ...     implements(IPhysicallyLocatable)
+  ...     def __init__(self, earmark=None):
+  ...         self.earmark = earmark
+  ...     def getName(self):
+  ...         return 'PluggableAuthName'
+
+  The subscriber generates an earmark for the auth service if one is not
+  set in the init.
+
+  >>> stub = PluggableAuthStub()
+  >>> event = ''
+  >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+  >>> stub.earmark is not None
+  True
+
+  The subscriber does not modify an earmark for the auth service if one
+  exists already.
+
+  >>> earmark = 'my sample earmark'
+  >>> stub = PluggableAuthStub(earmark=earmark)
+  >>> event = ''
+  >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+  >>> stub.earmark == earmark
+  True

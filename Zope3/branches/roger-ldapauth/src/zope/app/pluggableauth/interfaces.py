@@ -17,11 +17,15 @@ $Id$
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer, IContained
+from zope.app.container.interfaces import IContainerNamesContainer, INameChooser
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.interface import Interface
+import zope.schema
 from zope.schema import Text, TextLine, Password, Field
+
+
 
 class IUserSchemafied(IPrincipal):
     """A User object with schema-defined attributes."""
@@ -41,9 +45,16 @@ class IUserSchemafied(IPrincipal):
         """Confirm whether 'password' is the password of the user."""
 
 
-class IPrincipalSource(Interface):
-    """A read-only source of IPrincipals.
+class IPluggableAuthentication(Interface):
+    """A marker for to mix in a constraints."""
+
+
+class IPrincipalSource(IContained):
+    """A read-only source of IPrincipals where can be added to a auth service.
     """
+
+    __parent__= Field(
+        constraint = ContainerTypesConstraint(IPluggableAuthentication))
 
     def getPrincipal(id):
         """Get principal meta-data.
@@ -72,21 +83,6 @@ class IPrincipalSource(Interface):
         """
 
 
-class IPluggableAuthenticationService(IAuthenticationService, IContainer):
-    """An AuthenticationService that can contain multiple pricipal sources.
-    """
-
-    def __setitem__(id, principal_source):
-        """Add to object"""
-    __setitem__.precondition = ItemTypePrecondition(IPrincipalSource)
-  
-    def removePrincipalSource(id):
-        """Remove a PrincipalSource.
-
-        If id is not present, raise KeyError.
-        """
-
-
 class ILoginPasswordPrincipalSource(IPrincipalSource):
     """ A principal source which can authenticate a user given a
     login and a password """
@@ -101,12 +97,65 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
         logins that differ from their id.  For example, a user may
         have a login which is his email address.  He'd like to be able
         to change his login when his email address changes without
-        effecting his security profile on the site.  """
+        effecting his security profile on the site.
+        """
 
 
-class IContainerPrincipalSource(IPrincipalSource, IContained):
+class IPluggableAuthenticationService(IPluggableAuthentication, \
+                                      IAuthenticationService, IContainer):
+    """An AuthenticationService that can contain multiple pricipal sources.
+    
+    Inherit from IPluggableAuthentication for to provide a constraints.
+    """
+
+    def __setitem__(id, principal_source):
+        """Add to object"""
+    __setitem__.precondition = ItemTypePrecondition(IPrincipalSource)
+  
+    def removePrincipalSource(id):
+        """Remove a PrincipalSource.
+
+        If id is not present, raise KeyError.
+        """
+
+
+class IContainerPrincipalSource(IPrincipalSource):
     """This is a marker interface for specifying principal sources that are
     also containers. """
 
-    __parent__= Field(
-        constraint = ContainerTypesConstraint(IPluggableAuthenticationService))
+
+class IPrincipalSourceContained(IContained):
+    """Make shure we just let object add to IPrincipalSource 
+    porvided instances. """
+
+    __parent__ = zope.schema.Field(
+        constraint = ContainerTypesConstraint(IPrincipalSource),
+        )
+
+
+class IBTreePrincipalSource(
+    ILoginPasswordPrincipalSource,
+    IContainerPrincipalSource,
+    INameChooser,
+    IContainerNamesContainer,
+    ):
+
+    def __setitem__(name, principal):
+        """Add a principal
+
+        The name must be the same as the principal login
+        """
+
+    __setitem__.precondition  = ItemTypePrecondition(IUserSchemafied)
+
+
+class IBTreePrincipalSourceContained(IPrincipalSourceContained):
+    """Set own constarints to the BTreePrincipalSource.
+    
+    Make shure we just let object add to IBTreePrinicpalSource 
+    porvided instances.
+    """
+
+    __parent__ = zope.schema.Field(
+        constraint = ContainerTypesConstraint(IBTreePrincipalSource),
+        )
