@@ -13,12 +13,11 @@
 ##############################################################################
 """View ZPT Tests
 
-$Id: test_viewzpt.py,v 1.9 2003/08/21 14:19:28 srichter Exp $
+$Id: test_viewzpt.py,v 1.10 2003/11/21 17:11:07 jim Exp $
 """
 import unittest
 
-from zope.component import getService
-from zope.app.services.servicenames import Views
+from zope.app import zapi
 from zope.interface import Interface, implements
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -63,25 +62,22 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
     def testViewMapper(self):
 
         the_view = "This is the view"
-        class the_view_type(Interface): pass
         the_view_name = "some view name"
         def ViewMaker(*args, **kw):
             return the_view
 
-        getService(None,Views).provideView(I1,
-                    name=the_view_name,
-                    type=the_view_type,
-                    maker=[ViewMaker])
+        from zope.component.interfaces import IPresentationRequest
 
-        from zope.component.interfaces \
-             import IPresentationRequest
+        zapi.getService(None, zapi.servicenames.Presentation).provideView(
+            I1,
+            name=the_view_name,
+            type=IPresentationRequest,
+            maker=[ViewMaker])
 
         class MyRequest:
             implements(IPresentationRequest)
-            def getPresentationType(self):
-                return the_view_type
             def getPresentationSkin(self):
-                return "some skin"
+                return '' # default
 
         request = MyRequest()
 
