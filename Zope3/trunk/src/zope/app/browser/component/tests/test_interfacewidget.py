@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.27 2003/10/03 20:40:47 sidnei Exp $
+$Id: test_interfacewidget.py,v 1.28 2003/11/21 17:11:05 jim Exp $
 """
 
 __metaclass__ = type
@@ -186,6 +186,33 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
         )
+        self.assertEqual(widget(), out)
+
+    def testInterfaceWidget_search(self):
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=True)
+
+        request = TestRequest(form={'field.TestName': '',
+                                    'field.TestName.search': '2',
+                                    })
+        widget = InterfaceWidget(field, request)
+
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="2">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '</select>'
+        )
+
         self.assertEqual(widget(), out)
 
     def testInterfaceWidget_w_constraint(self):

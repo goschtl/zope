@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.41 2003/11/04 04:04:27 jeremy Exp $
+$Id: interfacewidget.py,v 1.42 2003/11/21 17:11:04 jim Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
@@ -74,7 +74,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
         else:
             selected = marker
         if self._data is self._data_marker:
-            value = self.request.form.get(self.name, marker)
+            value = self.request.form.get(self.name, marker) or marker
             if value is not marker:
                 try:
                     selected = self.getInputValue()
