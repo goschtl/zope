@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.16 2003/05/07 13:10:53 jeremy Exp $\n";
+"$Id: persistence.c,v 1.17 2003/05/20 19:01:39 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -43,7 +43,10 @@ _PyPersist_RegisterDataManager(PyPersistObject *self)
     PyObject *meth, *arg, *result;
 
     if (!self->po_dm)
-	return 0;
+	return 1;
+    /* If the object is in the CHANGED state, then it is already registered. */
+    if (self->po_state == CHANGED)
+	return 1;
     if (!s_register)
 	s_register = PyString_InternFromString("register");
     meth = PyObject_GetAttr((PyObject *)self->po_dm, s_register);
@@ -60,12 +63,11 @@ _PyPersist_RegisterDataManager(PyPersistObject *self)
     Py_DECREF(arg);
     Py_DECREF(meth);
     if (result) {
-    if (self->po_state == UPTODATE || self->po_state == STICKY)
-	self->po_state = CHANGED;
+	if (self->po_state == UPTODATE || self->po_state == STICKY)
+	    self->po_state = CHANGED;
 	Py_DECREF(result);
 	return 1;
-    }
-    else
+    } else
 	return 0;
 }
 
@@ -77,6 +79,7 @@ _PyPersist_Load(PyPersistObject *self)
 {
     static PyObject *s_setstate = NULL;
     PyObject *meth, *arg, *result;
+    enum PyPersist_State state;
 
     if (self->po_dm == NULL)
 	return 0;
@@ -94,7 +97,13 @@ _PyPersist_Load(PyPersistObject *self)
     Py_INCREF(self);
     PyTuple_SET_ITEM(arg, 0, (PyObject *)self);
 
+    /* set state to CHANGED while setstate() call is in progress
+       to prevent a recursive call to _PyPersist_Load().
+    */
+    state = self->po_state;
+    self->po_state = CHANGED;
     result = PyObject_Call(meth, arg, NULL);
+    self->po_state = state;
 
     Py_DECREF(arg);
     Py_DECREF(meth);
@@ -240,16 +249,46 @@ persist_activate(PyPersistObject *self)
 }
 
 static PyObject *
-persist_deactivate(PyPersistObject *self)
+persist_deactivate(PyPersistObject *self, PyObject *args, PyObject *keywords)
 {
-    if (self->po_state == UPTODATE && self->po_dm && self->po_oid) {
-	PyObject **pdict = _PyObject_GetDictPtr((PyObject *)self);
-	if (pdict && *pdict) {
-	    Py_DECREF(*pdict);
-	    *pdict = NULL;
-	}
-	self->po_state = GHOST;
+    int ghostify = 1;
+    PyObject *force = NULL;
+
+    if (args && PyTuple_GET_SIZE(args) > 0) {
+	PyErr_SetString(PyExc_TypeError, 
+			"_p_deactivate takes not positional arguments");
+	return NULL;
     }
+    if (keywords) {
+	int size = PyDict_Size(keywords);
+	force = PyDict_GetItemString(keywords, "force");
+	if (force)
+	    size--;
+	if (size) {
+	    PyErr_SetString(PyExc_TypeError, 
+			    "_p_deactivate only accepts keyword arg force");
+	    return NULL;
+	}
+    }
+
+    if (self->po_dm && self->po_oid) {
+	ghostify = self->po_state == UPTODATE;
+	if (!ghostify && force) {
+	    if (PyObject_IsTrue(force))
+		ghostify = 1;
+	    if (PyErr_Occurred())
+		return NULL;
+	}
+	if (ghostify) {
+	    PyObject **pdict = _PyObject_GetDictPtr((PyObject *)self);
+	    if (pdict && *pdict) {
+		Py_DECREF(*pdict);
+		*pdict = NULL;
+	    }
+	    self->po_state = GHOST;
+	}
+    }
+
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -293,13 +332,16 @@ call_p_deactivate(PyPersistObject *self, int unraisable)
 #define CHANGED_NONE 0
 #define CHANGED_FALSE 1
 #define CHANGED_TRUE 2
-#define CHANGED_DELETE 3
 
 static int
 persist_set_state(PyPersistObject *self, PyObject *v)
 {
+    int newstate, bool;
 
-    int newstate;
+    if (!v) {
+	PyErr_SetString(PyExc_TypeError, "can't delete _p_changed");
+	return -1;
+    }
     
     /* If the object isn't registered with a data manager, setting its
        state is meaningless.
@@ -307,14 +349,10 @@ persist_set_state(PyPersistObject *self, PyObject *v)
     if (!self->po_dm || !self->po_oid)
 	return 0;
 
-    if (v == Py_None)
-	newstate = CHANGED_NONE;
-    else if (v == NULL)
-	newstate = CHANGED_DELETE;
-    else if (PyObject_IsTrue(v)) 
-	newstate = CHANGED_TRUE;
-    else 
-	newstate = CHANGED_FALSE;
+    bool = PyObject_IsTrue(v);
+    if (PyErr_Occurred())
+	return -1;
+    newstate = bool ? CHANGED_TRUE : CHANGED_FALSE;
 
     /* XXX I think the cases below cover all the transitions of
        interest.  We should really extend the interface / documentation
@@ -344,13 +382,6 @@ persist_set_state(PyPersistObject *self, PyObject *v)
 	 */
 	if (self->po_state == CHANGED || self->po_state == STICKY)
 	    self->po_state = UPTODATE;
-    } else if (newstate == CHANGED_DELETE) {
-	/* Force the object to UPTODATE state to guarantee that
-	   call_p_deactivate() will turn it into a ghost.
-	*/
-	self->po_state = UPTODATE;
-	if (!call_p_deactivate(self, 0))
-	    return -1;
     } else if (self->po_state == UPTODATE) {
 	/* The final case is for CHANGED_NONE, which is only
 	   meaningful when the object is already in the up-to-date state. 
@@ -407,7 +438,7 @@ convert_name(PyObject *name)
 */
 
 static int
-persist_checkattr(const char *s)
+persist_check_getattr(const char *s)
 {
     if (*s++ != '_')
 	return 1;
@@ -420,16 +451,21 @@ persist_checkattr(const char *s)
     }
     else if (*s == '_') {
 	s++;
-	if (*s == 'd') {
+	switch (*s) {
+	case 'd':
 	    s++;
 	    if (!strncmp(s, "ict__", 5))
 		return 0; /* __dict__ */
 	    if (!strncmp(s, "el__", 4))
 		return 0; /* __del__ */
 	    return 1;
+	case 'c':
+	    return strncmp(s, "class__", 7);
+	case 's':
+	    return strncmp(s, "setstate__", 10);
+	default:
+	    return 1;
 	}
-	else if (!strncmp(s, "class__", 7))
-	    return 0; /* __class__ */
     }
     return 1;
 }
@@ -452,7 +488,7 @@ persist_getattro(PyPersistObject *self, PyObject *name)
        underscore.
     */
 
-    if (persist_checkattr(s_name)) {
+    if (persist_check_getattr(s_name)) {
 	if (self->po_state == GHOST) {
 	    /* Prevent the object from being registered as changed.
 
@@ -501,6 +537,31 @@ persist_getattro(PyPersistObject *self, PyObject *name)
    1 : state loaded, attribute name is normal
 */
 
+/* Returns true if the object state must be loaded in setattr.
+
+   If any attribute other than _p_*, _v_*, or __dict__ is set,
+   the object must be unghostified.
+*/
+
+static int
+persist_check_setattr(const char *s)
+{
+    assert(s && *s);
+    if (*s++ != '_')
+	return 1;
+    switch (*s++) {
+    case 'p':
+    case 'v':
+	return *s != '_';
+	break;
+    case '_':
+	return strcmp(s, "dict__");
+	break;
+    default:
+	return 1;
+    }
+}
+
 static int
 persist_setattr_prep(PyPersistObject *self, PyObject *name, PyObject *value)
 {
@@ -515,16 +576,7 @@ persist_setattr_prep(PyPersistObject *self, PyObject *name, PyObject *value)
        and excludes _p_ and _v_ attributes from the pickle.
     */
 
-    /* If any attribute other than an _p_ or _v_ attribute or __dict__ is 
-       being assigned to, make sure that the object state is loaded.  
-
-       Implement with simple check on s_name[0] to avoid multiple strncmp()
-       calls for all attribute names that don't start with an underscore.
-    */
-    if ((s_name[0] != '_')
-	|| ((strncmp(s_name, "_p_", 3) != 0)
-	    && (strncmp(s_name, "_v_", 3) != 0)
-	    && (strcmp(s_name, "__dict__") != 0))) {
+    if (persist_check_setattr(s_name)) {
 	if (self->po_state == GHOST) {
 	    if (self->po_dm == NULL || self->po_oid == NULL) {
 		PyErr_SetString(PyExc_TypeError,
@@ -533,6 +585,7 @@ persist_setattr_prep(PyPersistObject *self, PyObject *name, PyObject *value)
 	    }
 	    if (!_PyPersist_Load((PyPersistObject *)self))
 		return -1;
+	    self->po_state = UPTODATE;
 	}
 	/* If the object is marked as UPTODATE then it must be
 	   registered as modified.  If it was just unghosted, it
@@ -541,6 +594,8 @@ persist_setattr_prep(PyPersistObject *self, PyObject *name, PyObject *value)
 	   If it's in the changed state, it should already be registered.
 	   
 	   XXX What if it's in the sticky state?
+
+	   XXX It looks like these two cases could be collapsed somehow.
 	*/
 	if (self->po_state == UPTODATE && self->po_dm &&
 	    !_PyPersist_RegisterDataManager((PyPersistObject *)self))
@@ -721,7 +776,7 @@ static PyMethodDef persist_methods[] = {
     {"__getstate__", (PyCFunction)persist_getstate, METH_NOARGS, },
     {"__setstate__", persist_setstate, METH_O, },
     {"_p_activate", (PyCFunction)persist_activate, METH_NOARGS, },
-    {"_p_deactivate", (PyCFunction)persist_deactivate, METH_NOARGS, },
+    {"_p_deactivate", (PyCFunction)persist_deactivate, METH_KEYWORDS, },
     {"_p_setattr", (PyCFunction)persist_p_setattr, METH_VARARGS, },
     {"_p_delattr", (PyCFunction)persist_p_delattr, METH_O, },
     {NULL}

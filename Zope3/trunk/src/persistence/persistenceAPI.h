@@ -38,25 +38,27 @@ static PyPersist_C_API_struct *PyPersist_C_API;
 #define PyPersist_IS_STICKY(O) \
     ((O)->po_state == STICKY || (O)->po_state == CHANGED)
 
-#define PyPersist_CHANGED(O) \
-    PyPersist_C_API->reg_mgr((PyPersistObject *)(O))
+#define PyPersist_CHANGED(O) 				\
+    (PyPersist_C_API->reg_mgr((PyPersistObject *)(O)) ?	\
+     ((PyPersistObject *)(O))->po_state = CHANGED, 1 : 0)
 
 #define PyPersist_SetATime(O) \
     PyPersist_C_API->set_atime((PyPersistObject *)(O))
 
 /* Macros for compatibility with ZODB 3 C extensions. */
 
-#define PER_USE_OR_RETURN(O, R) \
-{ \
-    if (((O)->po_state == GHOST) \
-	&& (!PyPersist_C_API->load((PyPersistObject *)(O)))) { \
-        (O)->po_state = STICKY; \
-	return (R); \
-    } else if ((O)->po_state == UPTODATE) \
-	(O)->po_state = STICKY; \
+#define PER_USE_OR_RETURN(O, R) 				\
+{								\
+    if ((O)->po_state == GHOST) {				\
+	if (!PyPersist_C_API->load((PyPersistObject *)(O)))	\
+	    return (R);						\
+	(O)->po_state = STICKY;					\
+    } else if ((O)->po_state == UPTODATE) 			\
+	(O)->po_state = STICKY;					\
 }
 
-#define PER_CHANGED(O) PyPersist_C_API->reg_mgr((PyPersistObject *)(O))
+#define PER_CHANGED(O) \
+        PyPersist_C_API->reg_mgr((PyPersistObject *)(O)) ? -1 : 0
 
 #define PER_ALLOW_DEACTIVATION(O) \
 { \
@@ -70,10 +72,17 @@ static PyPersist_C_API_struct *PyPersist_C_API;
 	(O)->po_state = STICKY; \
 }
 
-#define PER_USE(O) \
-    ((((PyPersistObject *)(O))->po_state != GHOST) \
-     || (PyPersist_C_API->load((PyPersistObject *)(O))) \
-     ? ((((PyPersistObject *)(O))->po_state == UPTODATE) \
-	? (((PyPersistObject *)(O))->po_state = STICKY) : 1) : 0)
+/* Macro to load object and mark sticky as needed.
+
+   If the object is in the UPTODATE state, the mark it sticky.
+   If the object is in the GHOST state, load it and mark it sticky.
+ */
+
+#define PER_USE(O) 						\
+    (((PyPersistObject *)(O))->po_state != GHOST ?		\
+     (((PyPersistObject *)(O))->po_state == UPTODATE ?		\
+      ((PyPersistObject *)(O))->po_state = STICKY, 1 : 1) :	\
+     (PyPersist_C_API->load((PyPersistObject *)(O)) ?		\
+      ((PyPersistObject *)(O))->po_state = STICKY, 1 : 0))
 
 #define PER_ACCESSED(O) PyPersist_C_API->set_atime((PyPersistObject *)O)

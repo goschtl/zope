@@ -33,13 +33,13 @@ class Test(unittest.TestCase):
         p.inc()
         self.assertEqual(p._p_changed, 1)
         self.assertEqual(dm.called, 1)
-        p._p_changed = None
+        p._p_deactivate()
         self.assertEqual(p._p_changed, 1)
         self.assertEqual(dm.called, 1)
         p._p_deactivate()
         self.assertEqual(p._p_changed, 1)
         self.assertEqual(dm.called, 1)
-        del p._p_changed
+        p._p_deactivate(force=True)
         # XXX deal with current cPersistence implementation
         if p._p_changed != 3:
             self.assertEqual(p._p_changed, None)
@@ -72,9 +72,9 @@ class Test(unittest.TestCase):
         self.assertEqual(p._p_changed, 0)
         p._p_changed = 1
         self.assertEqual(p._p_changed, 0)
-        p._p_changed = None
+        p._p_deactivate()
         self.assertEqual(p._p_changed, 0)
-        del p._p_changed
+        p._p_deactivate(force=True)
         self.assertEqual(p._p_changed, 0)
         if self.has_dict:
             self.failUnless(p.__dict__)
@@ -245,6 +245,27 @@ class Test(unittest.TestCase):
         self.assert_(P.__weakrefoffset__)
         self.assert_(P.__dictoffset__ < P.__weakrefoffset__)
         self.assert_(P.__basicsize__ > Persistent.__basicsize__)
+
+    def testDeactivateErrors(self):
+        p = self.klass()
+        p._p_oid = '\0\0\0\0\0\0hi'
+        dm = DM()
+        p._p_jar = dm
+        
+        def typeerr(*args, **kwargs):
+            self.assertRaises(TypeError, p, *args, **kwargs)
+
+        typeerr(1)
+        typeerr(1, 2)
+        typeerr(spam=1)
+        typeerr(spam=1, force=1)
+
+        p._p_changed = True
+        class Err(object):
+            def __nonzero__(self):
+                raise RuntimeError
+
+        typeerr(force=Err())
 
 class P(Persistent):
     def __init__(self):
