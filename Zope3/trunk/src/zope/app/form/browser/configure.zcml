@@ -6,7 +6,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"     
       for="zope.schema.interfaces.IField"
       provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".widget.DisplayWidget"
+      factory=".DisplayWidget"
       permission="zope.Public"
       />
       
@@ -16,7 +16,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ITextLine"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.TextWidget"
+      factory=".TextWidget"
       permission="zope.Public"
       />
 
@@ -24,7 +24,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IText"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.TextAreaWidget"
+      factory=".TextAreaWidget"
       permission="zope.Public"
       />
 
@@ -32,7 +32,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ISourceText"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.TextAreaWidget"
+      factory=".TextAreaWidget"
       permission="zope.Public"
       />
 
@@ -40,7 +40,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBytesLine"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.BytesWidget"
+      factory=".BytesWidget"
       permission="zope.Public"
       />
 
@@ -48,7 +48,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBytes"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.FileWidget"
+      factory=".FileWidget"
       permission="zope.Public"
       />
 
@@ -56,7 +56,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IASCII"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.BytesAreaWidget"
+      factory=".BytesAreaWidget"
       permission="zope.Public"
       />
 
@@ -64,7 +64,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IInt"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.IntWidget"
+      factory=".IntWidget"
       permission="zope.Public"
       />
 
@@ -72,7 +72,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IFloat"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.FloatWidget"
+      factory=".FloatWidget"
       permission="zope.Public"
       />
 
@@ -80,7 +80,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDatetime"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.DatetimeWidget"
+      factory=".DatetimeWidget"
       permission="zope.Public"
       />
 
@@ -88,7 +88,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDate"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.DateWidget"
+      factory=".DateWidget"
       permission="zope.Public"
       />
 
@@ -96,7 +96,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBool"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.CheckBoxWidget"
+      factory=".CheckBoxWidget"
       permission="zope.Public"
       />
 
@@ -104,7 +104,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ITuple"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.TupleSequenceWidget"
+      factory=".TupleSequenceWidget"
       permission="zope.Public"
       />
 
@@ -112,7 +112,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IList"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.ListSequenceWidget"
+      factory=".ListSequenceWidget"
       permission="zope.Public"
       />
 
@@ -120,7 +120,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IPassword"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.PasswordWidget"
+      factory=".PasswordWidget"
       permission="zope.Public"
       />
 
@@ -165,7 +165,7 @@
       factory=".enumerated.EnumeratedDateWidget"
       permission="zope.Public"
       />
-      
+
   <!-- Vocabulary fields share special widget factories that redirect
        to the vocabularies they reference. -->
 
