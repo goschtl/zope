@@ -3,19 +3,6 @@
     xmlns:event="http://namespaces.zope.org/event"
     >
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="zope.app.event.localservice"
-      alias="zope.app.services.event"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.event"
-      />
-
-
 <serviceType
     id="EventPublication" 
     interface="zope.app.event.interfaces.IPublisher" />

@@ -3,19 +3,6 @@
     i18n_domain='zope'
     >
 
-  <!-- Module alias for backward compat
-       Will go away once we have a conversion script -->
-
-  <modulealias
-      module=".sqlscript"
-      alias="zope.app.content.sql"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.content.sql"
-      />
-
   <vocabulary
       name="Connection Names"
       factory="zope.app.utility.vocabulary.UtilityVocabulary"

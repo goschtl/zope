@@ -2,20 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="zope.app.pluggableauth"
-      alias="zope.app.services.pluggableauth"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.pluggableauth"
-      />
-
-  
-
   <content class=".PluggableAuthenticationService">
     <factory
         id="zope.app.services.PluggableAuthenticationService"

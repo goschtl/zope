@@ -4,21 +4,6 @@
     i18n_domain='zope'
     >
 
-  <!-- Module alias for backward compat
-       Will go away once we have a conversion script -->
-
-  <modulealias
-      module=".zptpage"
-      alias="zope.app.content.zpt"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.content.zpt"
-      />
-
-
-
   <interface 
       interface=".interfaces.IZPTPage" 
       type="zope.app.content.interfaces.IContentType"

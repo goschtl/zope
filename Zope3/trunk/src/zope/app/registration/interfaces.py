@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.8 2004/04/24 23:19:47 srichter Exp $
+$Id: interfaces.py,v 1.9 2004/04/30 16:45:29 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -409,11 +409,3 @@ class NoRegistrationManagerError(Exception):
 
     """
     implements(INoRegistrationManagerError)
-
-
-
-# XXX Pickle backward compatability
-IUseConfigurable = IRegisterable
-import sys
-sys.modules['zope.app.interfaces.services.configuration'
-            ] = sys.modules['zope.app.registration.interfaces']

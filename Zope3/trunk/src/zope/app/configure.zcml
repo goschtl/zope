@@ -9,11 +9,9 @@
 
   <!-- For backward compatibility -->
 
-  <!-- Fixup ZODB - For backward-compatibility -->
   <!-- Note that we need to do this early, as later startup
        subscribers may break without fixups -->
  
-  <include file="backward.zcml" />
   <include package=".generations" file="subscriber.zcml" />
 
   <modulealias

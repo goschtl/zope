@@ -3,33 +3,6 @@
     xmlns:fssync="http://namespaces.zope.org/fssync"
     >
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="."
-      alias="zope.app.interfaces.services"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.service"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.folder"
-      />
-
-  <modulealias
-      module=".service"
-      alias="zope.app.services.service"
-      />
-
-  <modulealias
-      module=".folder"
-      alias="zope.app.services.folder"
-      />
-
   <module module=".interfaces">
     <allow attributes="ISite" />
   </module>

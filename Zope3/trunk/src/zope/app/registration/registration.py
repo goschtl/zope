@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.9 2004/04/17 15:13:12 jim Exp $
+$Id: registration.py,v 1.10 2004/04/30 16:45:29 jim Exp $
 """
 from persistent import Persistent
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -32,6 +32,7 @@ from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.xmlpickle import dumps, loads
 import interfaces
+import sys
 import zope.cachedescriptors.property
 
 class RegistrationStatusProperty(object):
@@ -961,14 +962,3 @@ class ComponentRegistrationAdapter(ObjectEntryAdapter):
         obj = removeAllProxies(self.context)
         ivars = loads(body)
         obj.__setstate__(ivars)
-
-
-
-# XXX Pickle backward compatability
-ConfigurationRegistry = RegistrationStack
-ConfigurationManager = RegistrationManager
-import sys
-sys.modules['zope.app.services.registrationmanager'
-            ] = sys.modules['zope.app.registration']
-sys.modules['zope.app.services.configuration'
-            ] = sys.modules['zope.app.registration.registration']

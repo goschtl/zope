@@ -3,18 +3,6 @@
     xmlns:fssync="http://namespaces.zope.org/fssync"
     >
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module=".registration"
-      alias="zope.app.services.registration"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.registration"
-      />
-
   <!-- Registration registries -->
   
   <content class=".registration.RegistrationStack">

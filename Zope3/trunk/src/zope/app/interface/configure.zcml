@@ -1,22 +1,4 @@
-<configure 
-    xmlns="http://namespaces.zope.org/zope">
-
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="."
-      alias="zope.app.services.interface"
-      />
-
-  <modulealias
-      module=".type"
-      alias="zope.app.services.type"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.interface"
-      />
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <vocabulary
       name="Object Interfaces"

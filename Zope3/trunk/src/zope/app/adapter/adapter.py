@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.11 2004/04/24 23:17:56 srichter Exp $
+$Id: adapter.py,v 1.12 2004/04/30 16:45:23 jim Exp $
 """
 __metaclass__ = type
 
@@ -337,19 +337,3 @@ class AdapterRegistration(
         return factory
     factory = property(factory)
 
-# XXX Pickle backward compatability
-AdapterConfiguration = AdapterRegistration
-
-
-#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-
-import persistent
-from zope.interface.adapter import ReadProperty
-
-AdapterRegistration.required = ReadProperty(lambda self: self.forInterface)
-AdapterRegistration.provided = ReadProperty(
-    lambda self: self.providedInterface)
-AdapterRegistration.name     = ReadProperty(lambda self: self.adapterName)
-
-class AdapterService(persistent.Persistent):
-    pass

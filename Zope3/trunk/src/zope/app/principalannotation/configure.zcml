@@ -3,19 +3,6 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="."
-      alias="zope.app.services.principalannotation"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.principalannotation"
-      />
-
-
   <serviceType
       id="PrincipalAnnotation"
       interface=".interfaces.IPrincipalAnnotationService" />

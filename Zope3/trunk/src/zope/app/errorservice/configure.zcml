@@ -1,22 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="zope.app.errorservice"
-      alias="zope.app.services.error"
-      />
-
-  <modulealias
-      module="zope.app.errorservice"
-      alias="zope.app.services.errorr"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.error"
-      />
-
   <!-- Error Reporting Service -->
 
   <serviceType

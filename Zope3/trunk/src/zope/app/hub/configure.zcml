@@ -1,18 +1,4 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    >
-
-  <!-- For backward compatibility -->
-
-  <modulealias
-      module="zope.app.hub"
-      alias="zope.app.services.hub"
-      />
-
-  <modulealias
-      module=".interfaces"
-      alias="zope.app.interfaces.services.hub"
-      />
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <content class=".Registration">
     <factory

@@ -16,15 +16,18 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.3 2004/04/17 15:13:10 jim Exp $
+$Id: test_modulelookup.py,v 1.4 2004/04/30 16:45:28 jim Exp $
 """
 from zope.testing.doctestunit import DocTestSuite
+
 
 from zope.app.registration.registration import RegisterableContainer
 from zope.app.module.interfaces import IModuleManager
 from zope.interface import implements
 from zope.app.container.contained import Contained, setitem
 from zope.app.tests.placelesssetup import setUp, tearDown
+
+import sys
 
 class MyModuleManager(object):
     implements(IModuleManager)
