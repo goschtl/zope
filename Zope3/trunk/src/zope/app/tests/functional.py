@@ -27,7 +27,7 @@ import unittest
 from StringIO import StringIO
 from Cookie import SimpleCookie
 
-from transaction import get_transaction
+from transaction import abort, commit
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
 import zope.interface
@@ -123,7 +123,7 @@ class FunctionalTestSetup(object):
 
     def tearDown(self):
         """Cleans up after a functional test case."""
-        get_transaction().abort()
+        abort()
         if self.connection:
             self.connection.close()
             self.connection = None
@@ -160,10 +160,10 @@ class FunctionalTestCase(unittest.TestCase):
         return FunctionalTestSetup().getRootFolder()
 
     def commit(self):
-        get_transaction().commit()
+        commit()
 
     def abort(self):
-        get_transaction().abort()
+        abort()
 
 class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
@@ -435,6 +435,9 @@ def http(request_string):
 
     This is used for HTTP doc tests.
     """
+    # Commit work done by previous python code.
+    commit()
+
     # Discard leading white space to make call layout simpler
     request_string = request_string.lstrip()
 
@@ -448,6 +451,7 @@ def http(request_string):
     instream = StringIO(request_string)
     environment = {"HTTP_HOST": 'localhost',
                    "HTTP_REFERER": 'localhost',
+                   "REQUEST_METHOD": method,
                    "SERVER_PROTOCOL": protocol,
                    }
 
@@ -458,6 +462,8 @@ def http(request_string):
         environment[name] = value.rstrip()
 
     outstream = HTTPTaskStub()
+
+
     old_site = getSite()
     setSite(None)
     app = FunctionalTestSetup().getApplication()
@@ -466,7 +472,7 @@ def http(request_string):
 
     if method in ('GET', 'POST', 'HEAD'):
         if (method == 'POST' and
-            env.get('CONTENT_TYPE', '').startswith('text/xml')
+            environment.get('CONTENT_TYPE', '').startswith('text/xml')
             ):
             request_cls = XMLRPCRequest
             publication_cls = XMLRPCPublication
@@ -486,12 +492,21 @@ def http(request_string):
     
     publish(request)
     setSite(old_site)
+
+    # sync Python connection:
+    getRootFolder()._p_jar.sync()
+    
     return response
 
 headerre = re.compile('(\S+): (.+)$')
 def split_header(header):
     return headerre.match(header).group(1, 2)
 
+def getRootFolder():
+    return FunctionalTestSetup().getRootFolder()
+
+def sync():
+    getRootFolder()._p_jar.sync()
 
 #
 # Sample functional test case
@@ -525,21 +540,24 @@ def sample_test_suite():
 def FunctionalDocFileSuite(*paths, **kw):
     globs = kw.setdefault('globs', {})
     globs['http'] = http
+    globs['getRootFolder'] = getRootFolder
+    globs['sync'] = sync
 
     kw['package'] = doctest._normalize_module(kw.get('package'))
 
     kwsetUp = kw.get('setUp')
     def setUp():
         FunctionalTestSetup().setUp()
+        
         if kwsetUp is not None:
             kwsetUp()
     kw['setUp'] = setUp
 
     kwtearDown = kw.get('tearDown')
     def tearDown():
-        FunctionalTestSetup().tearDown()
         if kwtearDown is not None:
             kwtearDown()
+        FunctionalTestSetup().tearDown()
     kw['tearDown'] = tearDown
 
     kw['optionflags'] = doctest.ELLIPSIS | doctest.CONTEXT_DIFF
