@@ -146,3 +146,5 @@
 
 # Zope 3 products
 /ZopeProducts                                  /Products3
+/Products3/JobBoardEX                          /Packages/JobBoardEx
+
