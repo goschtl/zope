@@ -1,0 +1,6 @@
+include MANIFEST
+include Makefile
+include test.py
+include log.ini
+global-include *.h *.c *.txt
+global-include *.conf *.css *.gif *.html *.js *.png *.pt *.xml *.zcml 
