@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.19 2004/03/19 12:00:11 jim Exp $
+$Id: functional.py,v 1.1 2004/04/06 20:57:55 jim Exp $
 """
 
 import logging
@@ -36,12 +36,12 @@ from zope.exceptions import Forbidden, Unauthorized
 from zope.app import Application
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
+import zope.app.tests.setup
 
 __metaclass__ = type
 
 
 class HTTPTaskStub(StringIO):
-
     pass
 
 
@@ -87,6 +87,11 @@ class FunctionalTestSetup:
         self.__dict__ = self.__shared_state
 
         if not self._init:
+
+            # Make sure unit tests are cleaned up
+            zope.app.tests.setup.placefulSetUp()
+            zope.app.tests.setup.placefulTearDown()
+
             if not config_file:
                 config_file = 'ftesting.zcml'
             self.log = StringIO()
