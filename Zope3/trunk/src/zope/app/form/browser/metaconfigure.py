@@ -25,8 +25,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.schema import getFieldNamesInOrder
 from zope.app.container.interfaces import IAdding
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-     menuItemDirective
+from zope.app.publisher.browser.menu import menuItemDirective
 
 from zope.app.form import CustomWidgetFactory
 from add import AddView, AddViewFactory

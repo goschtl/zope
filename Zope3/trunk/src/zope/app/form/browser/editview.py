@@ -35,8 +35,6 @@ from zope.app.location import LocationProxy
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.publisher.browser import BrowserView
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-    globalBrowserMenuService
 
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
