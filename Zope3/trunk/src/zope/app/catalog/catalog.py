@@ -1,6 +1,6 @@
 from persistence import Persistent
 from persistence.dict import PersistentDict
-from zope.interface import implements
+from zope.interface import implements, implementsOnly, implementedBy
 from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
@@ -130,7 +130,11 @@ class CatalogBase(Persistent, SampleContainer):
 
 class CatalogUtility(CatalogBase):
     "A Catalog in service-space"
-    implements (ILocalUtility)
+    # Utilities will default to implementing the most specific 
+    # interface. This piece of delightfulness is needed because
+    # the interface resolution order machinery implements (no
+    # pun intended) the old-style Python resolution order machinery.
+    implementsOnly(implementedBy(CatalogBase), ILocalUtility)
 
 class Catalog(CatalogBase): 
     "A content-space Catalog"
