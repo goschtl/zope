@@ -34,7 +34,6 @@ enum PyPersist_State { UPTODATE, CHANGED, STICKY, GHOST };
 #define PyPersist_HEAD \
     PyObject_HEAD \
     PyObject *po_dm; \
-    /* XXX oid and serial could be hard-coded as 8-byte strings */ \
     PyObject *po_oid; \
     PyObject *po_serial; \
     int po_atime; \
