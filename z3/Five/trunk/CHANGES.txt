@@ -5,25 +5,26 @@ Trunk
 -----
 
 * Five now supports the browser:menu, menuItem and menuItems directives.
+  
   Also supports the menu parameter for page directives and subdirectives,
-  as well as editform directives.
+  as well as editform directives. [XXX this doesn't seem to work yet]
 
-* A new Five-specific directive has been added: five:pagesFromDirectory.
-  This adds one page for each .pt file in a directory to the specified
-  interface. This is useful for Five integration with CMF and other
-  systems that have Page Templates macroes that need to be shared
-  between Zope2 and Five.
+* A new Five-specific directive has been added:
+  five:pagesFromDirectory.  This adds one page for each .pt file in a
+  directory to the specified interface. This is useful for Five
+  integration with CMF and other systems that have Page Templates
+  macroes that need to be shared between Zope2 and Five.
 
 * Five.security.checkPermission has been changed from a (unused)
   method for checking the existance of permissions. Use
   zope.app.security.permission.checkPermission if you need that
   functionality.
+
   Instead Five.security.checkPermission is now a Five version of
-  zope.security.checkPermission, which checks if the current user
-  has a permission on an object.
+  zope.security.checkPermission, which checks if the current user has
+  a permission on an object.
 
 * Support for browser:editform. You can now use schemas for editing.
-
 
 Five 0.2b
 ---------
