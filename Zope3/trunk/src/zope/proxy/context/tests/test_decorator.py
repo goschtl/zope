@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.9 2003/05/12 16:17:40 mgedmin Exp $
+$Id: test_decorator.py,v 1.10 2003/05/13 11:33:18 stevea Exp $
 """
 import unittest
 
@@ -125,6 +125,8 @@ class DecoratorTestCase(WrapperTestCase):
         obj = SomeObject()
 
         class MixinFactory(object):
+            def __init__(self, inner, outer):
+                pass
             def foo(self):
                 pass
             def bar(self):
