@@ -23,7 +23,7 @@ from persistent import Persistent
 
 from zope.schema.interfaces import ISourceQueriables
 
-from zope.app import zapi
+from zope import component
 
 from zope.app.security.interfaces import IAuthentication
 from zope.app.utility.utility import queryNextUtility
@@ -35,6 +35,8 @@ from zope.app.authentication.interfaces import IExtractionPlugin
 from zope.app.authentication.interfaces import IAuthenticationPlugin
 from zope.app.authentication.interfaces import IChallengePlugin
 from zope.app.authentication.interfaces import IPrincipalFactoryPlugin
+from zope.app.authentication.interfaces \
+     import IUnauthenticatedPrincipalFactoryPlugin
 from zope.app.authentication.interfaces import IPrincipalSearchPlugin
 from zope.app.authentication.interfaces import IPluggableAuthentication
 
@@ -49,10 +51,10 @@ class PluggableAuthentication(object):
         self.prefix = prefix
 
     def authenticate(self, request):
-        authenticators = [zapi.queryUtility(IAuthenticationPlugin, name)
+        authenticators = [component.queryUtility(IAuthenticationPlugin, name)
                           for name in self.authenticators]
         for extractor in self.extractors:
-            extractor = zapi.queryUtility(IExtractionPlugin, extractor)
+            extractor = component.queryUtility(IExtractionPlugin, extractor)
             if extractor is None:
                 continue
             credentials = extractor.extractCredentials(request)
@@ -72,8 +74,8 @@ class PluggableAuthentication(object):
     def _create(self, meth, *args):
         # We got some data, lets create a user
         for factory in self.factories:
-            factory = zapi.queryUtility(IPrincipalFactoryPlugin,
-                                        factory)
+            factory = component.queryUtility(IPrincipalFactoryPlugin,
+                                             factory)
             if factory is None:
                 continue
 
@@ -89,7 +91,7 @@ class PluggableAuthentication(object):
         id = id[len(self.prefix):]
 
         for searcher in self.searchers:
-            searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher)
+            searcher = component.queryUtility(IPrincipalSearchPlugin, searcher)
             if searcher is None:
                 continue
 
@@ -103,18 +105,23 @@ class PluggableAuthentication(object):
 
     def getQueriables(self):
         for searcher_id in self.searchers:
-            searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher_id)
+            searcher = component.queryUtility(IPrincipalSearchPlugin,
+                                              searcher_id)
             yield searcher_id, searcher
         
 
     def unauthenticatedPrincipal(self):
+        factory = component.queryUtility(
+            IUnauthenticatedPrincipalFactoryPlugin)
+        if factory is not None:
+            return factory.createUnauthenticatedPrincipal()
         return None
 
     def unauthorized(self, id, request):
         protocol = None
 
         for challenger in self.challengers:
-            challenger = zapi.queryUtility(IChallengePlugin, challenger)
+            challenger = component.queryUtility(IChallengePlugin, challenger)
             if challenger is None:
                 continue # skip non-existant challengers
 
