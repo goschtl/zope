@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for SecurityManager """
+"""Unit tests for SecurityManager
+
+$Id: test_manager.py,v 1.5 2004/03/13 17:21:51 philikon Exp $
+"""
 
 import unittest
 
@@ -34,56 +37,43 @@ class DummyExecutableWithCustomPolicy:
 class Test(unittest.TestCase):
 
     def setUp(self):
-
         self._oldPolicy = manager._defaultPolicy
         manager.setSecurityPolicy(ParanoidSecurityPolicy())
         self._context = SecurityContext('xyzzy')
 
     def tearDown(self):
-
         from zope.security.manager import setSecurityPolicy
         setSecurityPolicy(self._oldPolicy)
 
     def _makeMgr(self):
-
         from zope.security.manager import SecurityManager
-
         return SecurityManager(self._context)
 
     def _setPermissive(self):
-
         from zope.security.manager import setSecurityPolicy
         setSecurityPolicy(PermissiveSecurityPolicy())
 
-    def test_import(self):
 
+    def test_import(self):
         from zope.security.manager import SecurityManager
         from zope.security.interfaces import ISecurityManager
-
         verifyClass(ISecurityManager, SecurityManager)
 
     def test_empty(self):
-
         mgr = self._makeMgr()
-
         self.assertEqual(mgr.getPrincipal(), self._context.user)
         self.failIf(mgr.calledByExecutable())
 
     def test_w_default_policy(self):
-
         mgr = self._makeMgr()
-
         self.failIf(mgr.checkPermission(None, None))
 
     def test_w_permissive_policy(self):
-
         mgr = self._makeMgr()
         self._setPermissive()
-
         self.failUnless(mgr.checkPermission(None, None))
 
     def test_exec_stack_overflow(self):
-
         from zope.security.manager import MAX_STACK_SIZE
         mgr = self._makeMgr()
 
@@ -93,7 +83,6 @@ class Test(unittest.TestCase):
         self.assertRaises(SystemError, mgr.pushExecutable, None)
 
     def test_pushExecutable_simple(self):
-
         mgr = self._makeMgr()
         self.failIf(mgr.calledByExecutable())
 
@@ -101,7 +90,6 @@ class Test(unittest.TestCase):
         self.failUnless(mgr.calledByExecutable())
 
     def test_popExecutable_simple(self):
-
         mgr = self._makeMgr()
         exe = DummyExecutable()
         exe2 = DummyExecutable()
@@ -115,7 +103,6 @@ class Test(unittest.TestCase):
         self.failIf(mgr.calledByExecutable())
 
     def test_popExecutable_nomatch(self):
-
         mgr = self._makeMgr()
         exe = DummyExecutable()
         exe2 = DummyExecutable()
@@ -130,7 +117,6 @@ class Test(unittest.TestCase):
         self.failIf(mgr.calledByExecutable())
 
     def test_pushExecutable_customPolicy(self):
-
         mgr = self._makeMgr()
         exe = DummyExecutableWithCustomPolicy()
         self.failIf(mgr.checkPermission(None, None))
@@ -140,7 +126,6 @@ class Test(unittest.TestCase):
         self.failIf(mgr.checkPermission(None, None))
 
     def test_pushPop_complexPolicies(self):
-
         mgr = self._makeMgr()
 
         exe1 = DummyExecutableWithCustomPolicy()
