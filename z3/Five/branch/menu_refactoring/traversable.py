@@ -20,6 +20,9 @@ from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 from monkey import DebugFlags
 
+from zope.security.management import thread_local
+from AccessControl import ClassSecurityInfo, getSecurityManager
+
 _marker = object
 
 class FakeRequest:
@@ -32,6 +35,10 @@ class FakeRequest:
 
     def has_key(self, key):
         return False
+
+def newInteraction():
+    if getattr(thread_local, 'interaction', None) is None:
+        thread_local.interaction = getSecurityManager()
 
 class Traversable:
     """A mixin to make an object traversable using an ITraverser adapter.
@@ -61,6 +68,8 @@ class Traversable:
             REQUEST = getattr(self, 'REQUEST', None)
             if not IBrowserRequest.providedBy(REQUEST):
                 REQUEST = FakeRequest()
+
+        newInteraction()
         try:
             kw = dict(path=[name], request=REQUEST)
             return ITraverser(self).traverse(**kw).__of__(self)
