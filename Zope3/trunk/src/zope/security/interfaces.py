@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.3 2002/12/31 18:39:49 jeremy Exp $
+$Id: interfaces.py,v 1.4 2003/02/05 11:38:00 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -24,7 +24,7 @@ class ISecurityManagementSetup(Interface):
     Infrastructure (including tests, etc.) calls these things to
     tweak the security manager.
     """
-    
+
     def newSecurityManager(user):
         """Install a new SecurityManager, using user.
 
