@@ -14,8 +14,27 @@
 
  These are the basic CSS declarations.
 
- $Id: zopetop.css,v 1.3 2003/08/19 11:43:37 sidnei Exp $
+ $Id: zopetop.css,v 1.4 2003/10/22 19:17:44 sidnei Exp $
 */
+
+/* Start CSS for fluid multi-column form layout */
+
+div.row {
+  float: left;
+  clear: none;
+  padding: 0.5em;
+}
+
+div.separator {
+  clear: both;
+}
+
+div.controls {
+  float:left;
+  clear: both;
+}
+
+/* End CSS for fluid multi-column form layout */
 
 div.label {
   font-weight: bold;
