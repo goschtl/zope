@@ -116,11 +116,12 @@ class ZODBUndoManager(object):
                 specification.update({'location': location})
 
         if principal is not None:
-            # XXX The 'user' in the transactions is a concatenation of
-            # 'path' and 'user' (id). 'path' used to be the path of
-            # the user folder in Zope 2. ZopePublication currently
+            # TODO: The 'user' in the transactions is a concatenation
+            # of 'path' and 'user' (id).  'path' used to be the path
+            # of the user folder in Zope 2.  ZopePublication currently
             # does not set a path, so ZODB lets the path default to
-            # '/'. We should change ZODB3 to set no default path.
+            # '/'.  We should change ZODB3 to set no default path at
+            # some point
             path = '/' # default for now
             specification.update({'user_name': path + ' ' + principal.id})
 
