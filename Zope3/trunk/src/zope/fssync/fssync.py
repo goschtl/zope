@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.3 2003/05/11 00:23:23 gvanrossum Exp $
+$Id: fssync.py,v 1.4 2003/05/12 20:19:38 gvanrossum Exp $
 """
 
 import os
@@ -35,7 +35,9 @@ from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import loads, dumps
-from zope.fssync.compare import treeComparisonWalker
+from zope.fssync.compare import treeComparisonWalker, classifyContents
+from zope.fssync.metadata import Metadata
+from zope.fssync.merger import Merger
 
 class Error(Exception):
     """User-level error, e.g. non-existent file.
@@ -83,6 +85,7 @@ class FSSync(object):
         self.topdir = topdir
         self.verbose = verbose
         self.rooturl = self.findrooturl()
+        self.metadata = Metadata()
 
     def setrooturl(self, rooturl):
         self.rooturl = rooturl
@@ -108,6 +111,7 @@ class FSSync(object):
             if sts:
                 raise Error("unzip command failed")
             self.saverooturl()
+            print "All done"
         finally:
             os.unlink(filename)
 
@@ -154,7 +158,7 @@ class FSSync(object):
         sts = os.system("cd %s; unzip -q %s" % (tmpdir, zipfile))
         if sts:
             raise Error("unzip command failed")
-        self.merge(self.topdir, tmpdir)
+        self.merge_dirs(self.topdir, tmpdir)
         shutil.rmtree(tmpdir)
         os.unlink(zipfile)
         print "All done"
@@ -177,7 +181,7 @@ class FSSync(object):
                 sts = os.system("cd %s; unzip -q %s" % (tmpdir, filename))
                 if sts:
                     raise Error("unzip command failed")
-                self.merge(self.topdir, tmpdir)
+                self.merge_dirs(self.topdir, tmpdir)
                 print "All done"
             finally:
                 shutil.rmtree(tmpdir)
@@ -185,178 +189,115 @@ class FSSync(object):
             os.unlink(filename)
 
     def add(self, path):
-        path = realpath(path)
         if not exists(path):
             raise Error("nothing known about '%s'", path)
-        dir, name = split(path)
-        if name in ("", os.curdir, os.pardir):
-            raise Error("can't add path '%s'", path)
-        entries = self.loadentries(dir)
-        if name in entries:
+        entry = self.metadata.getentry(path)
+        if entry:
             raise Error("path '%s' is already registered", name)
-        pdir = self.parent(dir)
-        dname = basename(dir)
-        pentries = self.loadentries(pdir)
-        if dname not in pentries:
-            raise Error("directory '%s' unknown", dname)
-        dpath = pentries[dname]['path']
-        if dpath == "/":
-            ourpath = "/" + name
-        else:
-            ourpath = dpath + "/" + name
-        entries[name] = d = {"path": ourpath, "flag": "added"}
+        entry["path"] = '/'+path
+        entry["flag"] = "added"
         if isdir(path):
-            d["type"] = "zope.app.content.folder.Folder"
+            entry["type"] = "zope.app.content.folder.Folder"
             self.ensuredir(join(path, "@@Zope"))
             self.dumpentries({}, path)
         else:
             # XXX Need to guess better based on extension
-            d["type"] = "zope.app.content.file.File"
-        if "factory" not in d:
-            d["factory"] = str(unicode(d["type"]))
-        self.dumpentries(entries, dir)
+            entry["type"] = "zope.app.content.file.File"
+        if "factory" not in entry:
+            entry["factory"] = str(unicode(entry["type"]))
+        self.metadata.flush()
 
-    def merge(self, ours, server):
-        # XXX This method is way too long, and still not complete :-(
-        for (left, right, common, lentries, rentries, ldirs, lnondirs,
-             rdirs, rnondirs) in treeComparisonWalker(ours, server):
-            origdir = join(left, "@@Zope", "Original")
-            lextradir = join(left, "@@Zope", "Extra")
-            rextradir = join(right, "@@Zope", "Extra")
-            lanndir = join(left, "@@Zope", "Annotations")
-            ranndir = join(right, "@@Zope", "Annotations")
-            weirdos = ldirs.copy() # This is for flagging "?" files
-            weirdos.update(lnondirs)
-            for x in common: # Compare matching stuff
-                nx = normpath(x)
-                if nx in weirdos:
-                    del weirdos[nx]
-                if nx in rdirs:
-                    if nx in lnondirs:
-                        print "file '%s' is in the way of a directory"
-                    elif nx not in ldirs:
-                        print "restoring directory '%s'"
-                        os.mkdir(join(left, x))
-                elif nx in rnondirs:
-                    if nx in ldirs:
-                        print "directory '%s' is in the way of a file"
-                    else:
-                        # Merge files
-                        rx = rnondirs[nx]
-                        origx = join(origdir, x)
-                        if nx in lnondirs:
-                            lx = lnondirs[nx]
-                        else:
-                            lx = join(left, x)
-                            print "restoring lost file '%s'" % lx
-                            self.copyfile(origx, lx)
-                        if self.cmp(origx, rx):
-                            # Unchanged on server
-                            if self.cmp(lx, origx):
-                                if self.verbose:
-                                    print "=", lx
-                            else:
-                                print "M", lx
-                        elif self.cmp(lx, origx):
-                            # Unchanged locally
-                            self.copyfile(rx, lx)
-                            self.copyfile(rx, origx)
-                            print "U", lx
-                        elif self.cmp(lx, rx):
-                            # Only the original is out of date
-                            self.copyfile(rx, origx)
-                            print "U", lx
-                        else:
-                            # Conflict!  Must do a 3-way merge
-                            print "merging changes into '%s'" % lx
-                            self.copyfile(rx, origx)
-                            sts = os.system("merge %s %s %s" %
-                                            (commands.mkarg(lx),
-                                             commands.mkarg(origx),
-                                             commands.mkarg(rx)))
-                            if sts:
-                                print "C", lx
-                            else:
-                                print "M", lx
-                # In all cases, merge Extra stuff if any
-                lx = join(lextradir, x)
-                rx = join(rextradir, x)
-                if isdir(rx):
-                    self.ensuredir(lx)
-                    self.merge(lx, rx)
-                # And merge Annotations if any
-                lx = join(lanndir, x)
-                rx = join(ranndir, x)
-                if isdir(rx):
-                    self.ensuredir(lx)
-                    self.merge(lx, rx)
-            entries = self.loadentries(left)
-            entries_changed = False
-            for x in rentries: # Copy new stuff from server
-                entries[x] = rentries[x]
-                entries_changed = True
-                nx = normpath(x)
-                if nx in rdirs:
-                    del weirdos[nx]
-                    # New directory; traverse into it
-                    if nx in lnondirs:
-                        print ("file '%s' is in the way of a new directory" %
-                               lnondirs[nx])
-                    else:
-                        common[x] = ({}, rentries[x])
-                        del rentries[x]
-                        if nx not in ldirs:
-                            lfull = join(left, x)
-                            os.mkdir(lx)
-                            ldirs[nx] = lx
-                elif nx in rnondirs:
-                    if nx in ldirs:
-                        print ("directory '%s' is in the way of a new file" %
-                               ldirs[nx])
-                    elif nx in lnondirs:
-                        if self.cmp(rnondirs[nx], lnondirs[nx]):
-                            print "U", lnondirs[nx]
-                            del weirdos[nx]
-                        else:
-                            print ("file '%s' is in the way of a new file" %
-                                   lnondirs[nx])
-                    else:
-                        # New file; copy it
-                        lx = join(left, x)
-                        rx = join(right, x)
-                        self.copyfile(rx, lx)
-                        # And copy to Original
-                        self.ensuredir(origdir)
-                        self.copyfile(rx, join(origdir, x))
-                        print "U", lx
-                # In all cases, copy Extra stuff if any
-                lx = join(lextradir, x)
-                rx = join(rextradir, x)
-                if isdir(rx):
-                    self.ensuredir(lx)
-                    self.merge(lx, rx)
-                # And copy Annotations if any
-                lx = join(lanndir, x)
-                rx = join(ranndir, x)
-                if isdir(rx):
-                    self.ensuredir(lx)
-                    self.merge(lx, rx)
-            if entries_changed:
-                self.dumpentries(entries, left)
-            for x in lentries: # Flag new stuff in the working directory
-                # XXX Could be deleted on server too!!!
-                nx = normpath(x)
-                if nx in weirdos:
-                    print "A", weirdos[nx]
-                    del weirdos[nx]
-                else:
-                    lx = join(left, x)
-                    print "newborn '%s' is missing" % lx
-                # XXX How about Annotations and Extra for these?
-            # Flag anything not yet noted
-            for nx in weirdos:
-                if not self.ignore(nx):
-                    print "?", weirdos[nx]
+    def merge_dirs(self, localdir, remotedir):
+        merger = Merger(self.metadata)
+
+        ldirs, lnondirs = classifyContents(localdir)
+        rdirs, rnondirs = classifyContents(remotedir)
+
+        dirs = {}
+        dirs.update(ldirs)
+        dirs.update(rdirs)
+
+        nondirs = {}
+        nondirs.update(lnondirs)
+        nondirs.update(rnondirs)
+
+        def sorted(d): keys = d.keys(); keys.sort(); return keys
+
+        for x in sorted(dirs):
+            local = join(localdir, x)
+            if x in nondirs:
+                # Too weird to handle
+                print "should '%s' be a directory or a file???" % local
+                continue
+            remote = join(remotedir, x)
+            lentry = self.metadata.getentry(local)
+            rentry = self.metadata.getentry(remote)
+            if lentry or rentry:
+                if x not in ldirs:
+                    os.mkdir(local)
+            self.merge_dirs(local, remote)
+
+        for x in sorted(nondirs):
+            if x in dirs:
+                # Error message was already printed by previous loop
+                continue
+            local = join(localdir, x)
+            origdir = join(localdir, "@@Zope", "Original")
+            self.ensuredir(origdir)
+            orig = join(origdir, x)
+            remote = join(remotedir, x)
+            action, state = merger.classify_files(local, orig, remote)
+            state = merger.merge_files(local, orig, remote, action, state)
+            self.report(action, state, local)
+            self.merge_extra(local, remote)
+            self.merge_annotations(local, remote)
+
+        self.merge_extra(localdir, remotedir)
+        self.merge_annotations(localdir, remotedir)
+
+        self.metadata.flush()
+
+    def merge_extra(self, local, remote):
+        lhead, ltail = split(local)
+        rhead, rtail = split(remote)
+        lextra = join(lhead, "@@Zope", "Extra", ltail)
+        rextra = join(rhead, "@@Zope", "Extra", rtail)
+        if isdir(rextra):
+            self.ensuredir(lextra)
+            self.merge_dirs(lextra, rextra)
+
+    def merge_annotations(self, local, remote):
+        lhead, ltail = split(local)
+        rhead, rtail = split(remote)
+        lannotations = join(lhead, "@@Zope", "Annotations", ltail)
+        rannotations = join(rhead, "@@Zope", "Annotations", rtail)
+        if isdir(rannotations):
+            self.ensuredir(lannotations)
+            self.merge_dirs(lannotations, rannotations)
+
+    def report(self, action, state, local):
+        if action != "Nothing":
+            print action, local
+        letter = None
+        if state == "Conflict":
+            letter = "C"
+        elif state == "Uptodate":
+            if action in ("Copy", "Fix", "Merge"):
+                letter = "U"
+        elif state == "Modified":
+            letter = "M"
+        elif state == "Added":
+            letter = "A"
+        elif state == "Removed":
+            letter = "R"
+        elif state == "Spurious":
+            if not self.ignore(local):
+                letter = "?"
+        elif state == "Nonexistent":
+            if action == "Delete":
+                print "local file '%s' is no longer relevant" % local
+        if letter:
+            print letter, local
 
     def ignore(self, path):
         return path.endswith("~")
@@ -404,25 +345,6 @@ class FSSync(object):
         if self.rooturl:
             self.writefile(self.rooturl + "\n",
                            join(self.topdir, "@@Zope", "Root"))
-
-    def loadentries(self, dir):
-        file = join(dir, "@@Zope", "Entries.xml")
-        try:
-            return self.loadfile(file)
-        except IOError:
-            return {}
-
-    def dumpentries(self, entries, dir):
-        file = join(dir, "@@Zope", "Entries.xml")
-        self.dumpfile(entries, file)
-
-    def loadfile(self, file):
-        data = self.readfile(file)
-        return loads(data)
-
-    def dumpfile(self, obj, file):
-        data = dumps(obj)
-        self.writefile(data, file)
 
     def readfile(self, file, mode="r"):
         f = open(file, mode)
