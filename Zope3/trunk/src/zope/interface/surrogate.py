@@ -13,7 +13,7 @@
 ##############################################################################
 """Surrogate-specification registry implementation
 
-$Id: surrogate.py,v 1.3 2004/02/09 07:41:21 dunny Exp $
+$Id: surrogate.py,v 1.4 2004/02/09 08:20:11 jim Exp $
 """
 
 # Implementation notes
@@ -999,7 +999,16 @@ def adapterImplied(adapters):
     multi = {}
     registered = {}
     # Add adapters and interfaces directly implied by same:
-    for (subscription, with, name, target), factories in adapters.iteritems():
+
+    for key, factories in adapters.iteritems():
+
+        # XXX Backward compatability
+        # Don't need to handle 3-tuples some day
+        try:
+            (subscription, with, name, target) = key
+        except ValueError:
+            (with, name, target) = key
+            subscription = False
         if with:
             _add_multi_adapter(with, name, target, target, multi,
                                registered, factories, subscription)
