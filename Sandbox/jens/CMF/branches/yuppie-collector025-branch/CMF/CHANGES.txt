@@ -1,0 +1,138 @@
+CMF 1.5alpha (unreleased)
+
+  New Features
+
+    - CatalogTool: Updated to post Zope 2.6.2 ZCatalog interface.
+      'catalog_object()' and 'reindexObject()' now support the new
+      'update_metadata' argument. 'reindexObjectSecurity()' doesn't update
+      catalog metadata anymore. With older Zope versions 'update_metadata=0'
+      is ignored.
+
+    - Added new hook to CookieCrumbler "twiddleAuthCookie". The
+      twiddleAuthCookie skin script, if present is called on each request
+      where a cookie authentication token is present. It is passed the auth
+      cookie name and value so that it can perform such functions as
+      extending the expiration of the cookie. A twiddleAuthCookie script
+      along with a setAuthCookie script could create login sessions that
+      timeout after a period of inactivity for example.
+
+    - Refactored ActionsTool and Action providers:
+
+      o Added listActionInfos() and getActionInfo() to the ActionProvider
+        Interface, added 'object' argument to listActions().
+
+      o Added OldstyleActionProvider Interface and OldstyleActionProviderBase
+        for Action providers still not using ActionInformation objects.
+        WorkflowTool and CMFCore DiscussionTool use this.
+
+      o Action providers queried by ActionsTool should implement the new
+        ActionProvider Interface. Action providers subclassing
+        ActionProviderBase inherit the necessary methods.
+
+      o To ease transition it will be sufficient to implement the
+        OldstyleActionProvider Interface, using OldstyleActionProviderBase.
+        The use of Action providers not implementing one of these Interfaces
+        or Actions provided by objects themselves is deprecated. Support for
+        them might be removed after CMF 1.5.
+
+      o Added helper methods getOAI() and getExprContext() to get computed
+        contexts from REQUEST cache or create new ones.
+
+    - CMFDefault MembershipTool and zpt skin: Added 'Manage members' Action.
+      The skin now provides basic membership management: Browsing members,
+      registering new members and deleting members including their member
+      data, member area and Local Roles.
+
+    - The caching policy manager now sets the header
+      'X-Cache-Headers-Set-By' when it sets cache headers
+      in a response.
+
+    - FSDTMLMethods now play nicely with the caching policy manager.
+
+    - zpt skin: Added batch_widgets.pt and getBatchNavigation.py.
+      roster and search use now the new navigation macro. Looks like before,
+      but i18n works better and it's easier to reuse or replace the code.
+
+    - zpt skin: Added zpt version of registered_notify_template.
+
+    - CMFCorePermissions: Made them available for import by Scripts.
+
+    - CMFCore MembershipTool and MemberDataTool: Added 'delete' methods.
+
+      o deleteMemberData() deletes the member data of a member.
+
+      o deleteMemberArea() deletes the member area of a member.
+
+      o deleteLocalRoles() now has a 'recursive' argument.
+
+      o deleteMembers() deletes members including member data, member area and
+        Local Roles.
+
+    - CMFCore MembershipTool: Changed interface.
+
+      o createMemberarea() is now called createMemberArea(). For backwards
+        compatibility createMemberarea is a deprecated alias.
+
+      o getMembersFolder() is now also part of the CMFCore interface.
+
+    - CMFCorePermissions: Added 'Change local roles' Permission.
+      PortalFolder's 'Local Roles' Action and MembershipTool's Local Roles
+      methods are now guarded by 'Change local roles' of the object.
+
+    - Added CMFCoreExceptions: Errors defined in this module are available for
+      import by Scripts. In the long run, all Errors defined in CMF should be
+      moved to this module and subclassed from CMFError. Subclassed standard
+      errors should only be used for end user focused raise statements.
+
+    - CMFCore and CMFDefault MembershipTool: Changed permissions.
+      'createMemberarea()' for someone else and 'getRoster()' including hidden
+      members are now protected by 'Manage users'. 'getMemberById()',
+      listMemberIds() and listMembers() as well.
+
+    - Document and NewsItem: Un-hardwired 'manage_FTPget()' for 'text/html'.
+      Added 'source_html.dtml' and 'source_html.pt'. 'manage_FTPget()' now has
+      a 'gethtml' hook and uses 'source_html' by default. (Collector #168)
+
+    - TypeInformation: Added Method Aliases.
+
+      o TypesTool and TypeInformation now have an 'Aliases' tab to configure
+        Method Aliases TTW.
+
+      o factory_type_information now has a key 'aliases' to configure Method
+        Aliases in a product. This key is required, but may be empty: If it
+        doesn't exist, TypeInformation will try to update by guessing aliases.
+
+      o DynamicType manipulates 'TraversalRequestNameStack' depending on
+        Method Aliases. '(Default)' and 'view' aliases bypass __call__() and
+        view() methods on traversal.
+
+      o PortalFolder's 'mkdir' hook now makes use of Method Aliases.
+
+    - CMFCore and CMFDefault MembershipTool: Changed member area creation.
+      'wrapUser()' does no longer call 'createMemberarea()'.
+      'createMemberarea()' should now be called from the 'logged_in' page.
+
+    - CMFDefault MembershipTool: Added a customization hook to
+      'createMemberarea()'. A 'createMemberContent' script placed inside the
+      tool overrides default member content creation.
+
+  Bug Fixes
+
+    - DefaultDublinCoreImpl: Changed accessor permissions.
+      As defined in the interface accessors are now protected by 'View'.
+
+    - CMFDefault utils: Made 'tuplize()' work correctly with string types.
+
+    - CMFCore utils: Reverted obsolete workaround in _checkPermission.
+
+    - Skin scripts: Made except statements safer by being more specific. Hope
+      this still catches all relevant errors.
+
+    - Removed some pre 'Zope 2.4.3 with PageTemplates' backwards compatibility
+      cruft. A later platform is required since CMF 1.3.
+
+    - Collector #153: CookieCrumbler didn't preserve query strings.
+
+CMF 1.4x
+
+  see CHANGES.txt of CMF-1_4-branch
