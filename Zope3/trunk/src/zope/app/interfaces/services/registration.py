@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.11 2003/10/16 14:37:07 fdrake Exp $
+$Id: registration.py,v 1.12 2003/10/16 19:38:42 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -271,8 +271,7 @@ class IRegistry(Interface):
         arguments for each of the parameters needed to specify a set
         of registrations.
 
-        The registry must be returned wrapped in the context of the
-        registry.
+        The registry must be in the context of the registry.
 
         """
 
@@ -292,8 +291,7 @@ class IRegistry(Interface):
         Calling createRegistrationsFor twice for the same registration
         returns the same registry.
 
-        The registry must be returned wrapped in the context of the
-        registry.
+        The registry must be in the context of the registry.
 
         """
 
