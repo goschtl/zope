@@ -32,10 +32,9 @@ as an example :
   ...     directlyProvides(x, zope.app.versioncontrol.interfaces.IVersionable)
   >>> [x for x in sample.keys()]
   [u'a', u'b']
-  
+
   >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
-  >>> db_root["sample"] = sample 
 
 
 CopyModifyMergeRepository Setup Explained
@@ -106,6 +105,10 @@ under version control:
   >>> instanceProvides(b, interfaces.IVersionable)
   >>> instanceProvides(c, interfaces.IVersionable)
 
+  >>> sample.text = "text version 1 of sample"
+  >>> a.text = "text version 1 of a"
+  >>> c.text = "text version 1 of a"
+
 The chosen 'IHistoryStorage' component expects the objects having
 a '_p_oid'. 
 XXX We know this is an implementation detail. We probably should think
@@ -122,13 +125,30 @@ Now let's put our example data under version control:
   >>> [interfaces.IVersioned.providedBy(x) for x in (sample, a, b, c)]
   [True, True, True, True]
 
-  #>>> repo.isCheckedOut(a)
+The example data must be now in checked in state:
+
+  #>>> repo.isCheckedOut(sample)
   False
-  #>>> #repo.checkout(a)
-  #>>> #repo.isCheckedOut(a)
+  
+Let's have a look how 'checkout', 'checkin' and 'isCheckedOut' work 
+together:
+
+  #>>> #repo.checkout(sample)
+  #>>> #repo.isCheckedOut(sample)
   True
-  
-  
+
+The text shall be unchanged:
+
+  >>> sample.text
+  'text version 1 of sample'
+
+We have a look if the version history grows with a checkin:
 
   #>>> len(repo.getVersionHistory(sample))
   1
+  >>> repo.checkout(sample)
+  >>> repo.text = 'text version 2 of sample'
+  >>> repo.checkin(sample)
+  #>>> len(repo.getVersionHistory(sample))
+  2
+  >>> 
