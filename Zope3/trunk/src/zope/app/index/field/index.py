@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.8 2003/07/13 03:35:57 anthony Exp $
+$Id: index.py,v 1.9 2003/07/13 08:23:13 anthony Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -80,7 +80,7 @@ class FieldCatalogIndex(FieldIndexWrapper):
 
 class FieldIndex(FieldCatalogIndex):
 
-    implements(ISubscriber, IUIFieldIndex)
+    implements(IUIFieldIndex)
 
     currentlySubscribed = False # Default subscription state
 

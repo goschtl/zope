@@ -23,13 +23,13 @@ from zodb.btrees.IIBTree import IITreeSet, IISet, union
 from types import ListType, TupleType
 from zope.interface import implements
 
-from zope.index.interfaces.index import IInjection, IQuerying, IStatistics, \
-    IRangeQuerying
+from zope.index.interfaces.index import IInjection, ISimpleQuery, \
+    IStatistics, IRangeQuerying
 
 
 class FieldIndex(Persistent):
 
-    implements(IRangeQuerying, IInjection, IQuerying, IStatistics)
+    implements(IRangeQuerying, IInjection, ISimpleQuery, IStatistics)
 
     def __init__(self):
         self.clear()
@@ -76,6 +76,7 @@ class FieldIndex(Persistent):
             pass
 
     def search(self, values):
+	"See interface ISimpleQuerying"
         # values can either be a single value or a sequence of
         # values to be searched.
         if isinstance(values, (ListType, TupleType)):

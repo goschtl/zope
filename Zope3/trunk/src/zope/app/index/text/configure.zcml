@@ -18,6 +18,25 @@
 
 </content>
 
+<content class="zope.app.index.text.index.TextCatalogIndex">
+
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.index.text.IUITextCatalogIndex"
+      attributes="query"
+      />
+
+  <factory
+      id="zope.app.index.text.TextCatalogIndex"
+      permission="zope.ManageServices"
+      />
+  <implements
+      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      />
+
+</content>
+
+
 <adapter
     factory="zope.app.index.text.processors.BatchedRankedProcessor"
     provides="zope.app.interfaces.services.query.IQueryProcessor"

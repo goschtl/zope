@@ -14,7 +14,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 
 from zope.app.interfaces.container import IDeleteNotifiable, IAddNotifiable
 from zope.app.interfaces.container import IContainer
-from zope.index.interfaces.index import IQuerying
+from zope.index.interfaces.index import ISimpleQuery
 
 from zope.app.container.sample import SampleContainer
 
@@ -37,6 +37,7 @@ class ResultSet:
         return len(self.hubidset)
 
     def __iter__(self):
+        print self.hubidset, type(self.hubidset)
         for hubid in self.hubidset:
             obj = self.hub.getObject(hubid)
             yield obj
@@ -128,7 +129,7 @@ class Catalog(Persistent, SampleContainer):
             index = wrapped_self.get(key)
             if not index: 
                 raise ValueError, "no such index %s"%(key)
-            index = getAdapter(index, IQuerying)
+            index = getAdapter(index, ISimpleQuery)
             results = index.query(value)
             if pendingResults is None:
                 pendingResults = results
@@ -145,3 +146,4 @@ class Catalog(Persistent, SampleContainer):
 
 class CatalogUtility(Catalog):
     implements (ILocalUtility)
+

@@ -3,4 +3,12 @@
   <include package=".text" />
   <include package=".field" />
 
+<adapter
+  factory=".adapters.SimpleQuery"
+  provides="zope.index.interfaces.index.ISimpleQuery"
+  for="zope.index.interfaces.index.IQuerying"
+  permission="zope.Public"
+/>
+
+
 </zopeConfigure>

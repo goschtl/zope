@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.11 2003/06/07 06:37:27 stevea Exp $
+$Id: index.py,v 1.12 2003/07/13 08:23:16 anthony Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -33,12 +33,12 @@ from zope.app.interfaces.services.hub import \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent
 from zope.app.interfaces.index.text import ISearchableText
-from zope.app.interfaces.index.text import IUITextIndex
+from zope.app.interfaces.index.text import IUITextIndex, IUITextCatalogIndex
 from zope.interface import implements
 
-class TextIndex(TextIndexWrapper):
+class TextCatalogIndex(TextIndexWrapper):
 
-    implements(ISubscriber, IUITextIndex)
+    implements(ISubscriber, IUITextCatalogIndex)
 
     def notify(wrapped_self, event):
         """An event occurred.  Index or unindex the object in response."""
@@ -55,11 +55,16 @@ class TextIndex(TextIndexWrapper):
     notify = ContextMethod(notify)
 
     def _getTexts(wrapped_self, object):
+        print "Getting ISearchableText interface for object " + str(object)
         adapted = queryAdapter(object, ISearchableText, context=wrapped_self)
         if adapted is None:
             return None
         return adapted.getSearchableText()
     _getTexts = ContextMethod(_getTexts)
+
+class TextIndex(TextCatalogIndex):
+
+    implements(IUITextIndex)
 
     currentlySubscribed = False # Default subscription state
 
@@ -98,3 +103,4 @@ class TextIndex(TextIndexWrapper):
             if texts is not None:
                 wrapped_self.index_doc(hubid, texts)
     _update = ContextMethod(_update)
+

@@ -53,15 +53,13 @@
 
 <!-- Add a couple of items to the add menu -->
 <!-- TextIndex -->
-<!-- Text index disabled for now, need to hook it's search index up better.
 <browser:menuItem
   menu="catalog_index_menu"
   for="zope.app.interfaces.container.IAdding"
-  action="zope.app.index.text.TextIndex"
+  action="zope.app.index.text.TextCatalogIndex"
   title="Text Index"
   description="An index to support full-text search"
 />
--->
 
 <!-- FieldIndex -->
 <browser:addform

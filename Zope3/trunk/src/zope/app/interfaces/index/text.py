@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.2 2003/07/13 05:51:06 andyh Exp $
+$Id: text.py,v 1.3 2003/07/13 08:23:19 anthony Exp $
 """
 
 from zope.interface import Interface
@@ -33,6 +33,10 @@ class ISearchableText(Interface):
         """
 
 from zope.index.interfaces.index import IStatistics
+
+class IUITextCatalogIndex(IStatistics):
+
+    """Interface for creating a TextIndex from with a catalog"""
 
 class IUITextIndex(IStatistics):
 
