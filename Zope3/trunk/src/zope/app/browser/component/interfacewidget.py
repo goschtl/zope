@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.6 2003/01/06 19:09:55 stevea Exp $
+$Id: interfacewidget.py,v 1.7 2003/01/07 15:43:48 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -198,7 +198,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
             # If a search term is entered, that interface selection remains.
             # If an interface is selected, that interface selection remains.
             # Remove all others.
-            # Add one empty one at the end.
+            # Make sure there is at least one empty selection.
+            # Make sure there are at least two selections in total.
 
             selections = {}  # index:[search, value]
             for k,v in form.iteritems():
