@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.7 2003/01/07 15:43:48 stevea Exp $
+$Id: interfacewidget.py,v 1.8 2003/01/07 17:21:57 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -24,7 +24,6 @@ from zope.publisher.browser import BrowserView
 from zope.component import getService
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
-
 
 class InterfaceWidget(Widget, BrowserView):
     __implements__ = IBrowserWidget
@@ -323,7 +322,7 @@ class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
 
 def renderInterfaceSelect(
         interfaces, selected, search_name, search_string, select_name):
-    """all of the args are strings"""
+    """interfaces is a sequence, all of the other args are strings"""
     options = ['<option value="">---select interface---</option>']
     for interface in interfaces:
         if interface == 'None':
