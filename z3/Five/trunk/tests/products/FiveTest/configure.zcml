@@ -26,4 +26,10 @@
     name="owl.html"
     />
 
+  <five:page
+    for=".interfaces.ISimpleContent"
+    template="flamingo.pt"
+    name="flamingo.html"
+    />
+
 </configure>

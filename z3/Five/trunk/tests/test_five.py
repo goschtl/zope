@@ -58,6 +58,13 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view = self.root.unrestrictedTraverse('testoid/owl.html')
         data = view()
         self.assertEquals(u'<p>2</p>\n', data)
+
+    def test_template_view_context(self):
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        view = self.root.unrestrictedTraverse('testoid/flamingo.html')
+        data = view()
+        self.assertEquals(u'<p>Hello world</p>\n', data)
         
     def test_view_backwards_compatibility(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
