@@ -14,38 +14,27 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.2 2002/12/27 18:22:57 stevea Exp $
+$Id: size.py,v 1.1 2002/12/27 18:22:58 stevea Exp $
 """
 
 from zope.app.interfaces.size import ISized
 
 __metaclass__ = type
 
-class DefaultSized:
+class ContainerSized:
 
     __implements__ = ISized
     
-    def __init__(self, obj):
-        try:
-            size = int(obj.getSize())
-        except (AttributeError, ValueError, TypeError):
-            self._sortingSize = None, None
-        else:
-            self._sortingSize = 'byte', size
+    def __init__(self, container):
+        self._container = container
 
     def sizeForSorting(self):
         """See ISized"""
-        return self._sortingSize
+        return ('item', len(self._container))
         
     def sizeForDisplay(self):
         """See ISized"""
-        units, size = self._sortingSize
-        if units == 'byte':
-            if size == 0:
-                return '0 KB'
-            if size < 1024:
-                return '1 KB'
-            if size > 1048576:
-                return '%0.02f MB' % (size / 1048576.0)
-            return '%d KB' % (size / 1024.0)
-        return u'n/a'
+        num_items = len(self._container)
+        if num_items == 1:
+            return '1 item'
+        return '%s items' % num_items

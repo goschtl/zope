@@ -13,7 +13,6 @@
 ##############################################################################
 import unittest
 
-from zope.app.size import DefaultSized
 from zope.app.interfaces.size import ISized
 
 class DummyObject:
@@ -26,11 +25,16 @@ class DummyObject:
 
 class Test(unittest.TestCase):
 
+    def testImplementsISized(self):
+        from zope.app.size import DefaultSized
+        sized = DefaultSized(object())
+        self.assert_(ISized.isImplementedBy(sized))
+        
     def testSizeWithBytes(self):
         from zope.app.size import DefaultSized
         obj = DummyObject(1023)
         sized = DefaultSized(obj)
-        self.assertEqual(sized.sizeForSorting(), ('bytes', 1023))
+        self.assertEqual(sized.sizeForSorting(), ('byte', 1023))
         self.assertEqual(sized.sizeForDisplay(), u'1 KB')
 
     def testSizeWithNone(self):
@@ -50,15 +54,19 @@ class Test(unittest.TestCase):
         from zope.app.size import DefaultSized
         
         sized = DefaultSized(DummyObject(0))
-        self.assertEqual(sized.sizeForSorting(), ('bytes', 0))
+        self.assertEqual(sized.sizeForSorting(), ('byte', 0))
+        self.assertEqual(sized.sizeForDisplay(), u'0 KB')
+        
+        sized = DefaultSized(DummyObject(1))
+        self.assertEqual(sized.sizeForSorting(), ('byte', 1))
         self.assertEqual(sized.sizeForDisplay(), u'1 KB')
         
         sized = DefaultSized(DummyObject(2048))
-        self.assertEqual(sized.sizeForSorting(), ('bytes', 2048))
+        self.assertEqual(sized.sizeForSorting(), ('byte', 2048))
         self.assertEqual(sized.sizeForDisplay(), u'2 KB')
         
         sized = DefaultSized(DummyObject(2000000))
-        self.assertEqual(sized.sizeForSorting(), ('bytes', 2000000))
+        self.assertEqual(sized.sizeForSorting(), ('byte', 2000000))
         self.assertEqual(sized.sizeForDisplay(), u'1.91 MB')
     
 def test_suite():
