@@ -105,3 +105,62 @@
 /CMF/DCWorkflow                   /Products/DCWorkflow
 
 /ZEO/ZEO                          /Packages/ZEO
+
+
+# Zope 3 layout.
+
+/Zope3/lib/python/Interface                    /Packages/Interface
+/Zope3/lib/python/Persistence                  /Packages/Persistence
+/Zope3/lib/python/Persistence/BTrees           /Packages/BTrees
+/Zope3/lib/python/pre_python_2_2               /Packages/pre_python_2_2
+/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
+/Zope3/lib/python/zdaemon                      /Packages/zdaemon
+/Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
+/Zope3/lib/python/zLOG                         /Packages/zLOG
+/Zope3/lib/python/ZODB                         /Packages/ZODB
+
+/Zope3/lib/python/Zope/App                     /Packages/ZopeApp
+/Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
+/Zope3/lib/python/Zope/DateTime                /Packages/DateTime
+/Zope3/lib/python/Zope/DocumentTemplate        /Packages/DocumentTemplate
+/Zope3/lib/python/Zope/Publisher               /Packages/Publisher
+/Zope3/lib/python/Zope/RestrictedPython        /Packages/RestrictedPython
+/Zope3/lib/python/Zope/StructuredText          /Packages/StructuredText
+/Zope3/lib/python/Zope/TAL                     /Packages/TAL
+/Zope3/lib/python/Zope/Testing                 /Packages/Testing
+/Zope3/lib/python/Zope/TreeDisplay             /Packages/TreeDisplay
+/Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
+/Zope3/lib/python/Zope/ZServer                 /Packages/ZServer
+/Zope3/lib/python/Zope/ZTUtils                 /Packages/ZTUtils
+
+/Zope3/lib/python/ZopeLegacy/AccessControl     /Packages/AccessControl
+/Zope3/lib/python/ZopeLegacy/App               /Packages/App
+/Zope3/lib/python/ZopeLegacy/BTree             /Zope/lib/Components/BTree
+/Zope3/lib/python/ZopeLegacy/ExtensionClass    /Cruft/ExtensionClass
+/Zope3/lib/python/ZopeLegacy/HelpSys           /Packages/HelpSys
+/Zope3/lib/python/ZopeLegacy/OFS               /Packages/OFS
+/Zope3/lib/python/ZopeLegacy/SearchIndex       /Packages/SearchIndex
+/Zope3/lib/python/ZopeLegacy/Shared            /Packages/Shared
+/Zope3/lib/python/ZopeLegacy/webdav            /Packages/webdav
+/Zope3/lib/python/ZopeLegacy/ZClasses          /Packages/ZClasses
+/Zope3/lib/python/ZopeLegacy/ZopeMain          /Packages/Zope
+/Zope3/lib/python/ZopeLegacy/ZPublisher        /Packages/ZPublisher
+
+/Zope3/lib/python/ZopeLegacy/Products/ExternalMethod        /Products/ExternalMethod
+/Zope3/lib/python/ZopeLegacy/Products/MailHost              /Products/MailHost
+/Zope3/lib/python/ZopeLegacy/Products/MIMETools             /Products/MIMETools
+/Zope3/lib/python/ZopeLegacy/Products/OFSP                  /Products/OFSP
+/Zope3/lib/python/ZopeLegacy/Products/PageTemplates         /Products/PageTemplates
+/Zope3/lib/python/ZopeLegacy/Products/PluginIndexes         /Products/PluginIndexes
+/Zope3/lib/python/ZopeLegacy/Products/PythonScripts         /Products/PythonScripts
+/Zope3/lib/python/ZopeLegacy/Products/TemporaryFolder       /Products/TemporaryFolder
+/Zope3/lib/python/ZopeLegacy/Products/Transience            /Products/Transience
+/Zope3/lib/python/ZopeLegacy/Products/STXDocument           /Products/STXDocument
+/Zope3/lib/python/ZopeLegacy/Products/SiteAccess            /Products/SiteAccess
+/Zope3/lib/python/ZopeLegacy/Products/Sessions	            /Products/Sessions
+/Zope3/lib/python/ZopeLegacy/Products/StandardCacheManagers /Products/StandardCacheManagers
+/Zope3/lib/python/ZopeLegacy/Products/ZCatalog              /Products/ZCatalog
+/Zope3/lib/python/ZopeLegacy/Products/ZGadflyDA             /Products/ZGadflyDA
+/Zope3/lib/python/ZopeLegacy/Products/ZSQLMethods           /Products/ZSQLMethods
+/Zope3/lib/python/ZopeLegacy/Products/ZopeTutorial          /Products/ZopeTutorial
+
