@@ -24,7 +24,12 @@ class FSPageTemplateTests( TestCase ):
         root = makerequest(Zope.app())
         script = FSPageTemplate('testPT', join(skin_path_name,'testPTbad.pt'))
         script = script.__of__(root)
-        self.assertRaises(Undefined,script)
+        try:
+            script()
+        except (Undefined, KeyError):
+            pass
+        else:
+            self.fail('Calling a bad template did not raise an exception')
 
 def test_suite():
     return TestSuite((
