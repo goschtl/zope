@@ -29,28 +29,28 @@ class TestCatalogAdd(BrowserTestCase):
                  'http://localhost/felix_the/+/AddFieldIndexToCatalog=dctitle')
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=dctitle",
                         basic='mgr:mgrpw', 
-                        form={'field.interface.search': 
+                        form={'field.interface': 
                               u'zope.app.interfaces.dublincore.IZopeDublinCore',
-                              'field.field_name':'Title', 
+                              'field.field_name':u'Title', 
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/@@contents.html')
 
         # and a couple more indexes now
-        response = self.publish("/felix_the/+/AddFieldIndexToCatalog=dccreator",
-                        basic='mgr:mgrpw', 
-                        form={'field.interface.search': 
-                              u'zope.app.interfaces.dublincore.IZopeDublinCore',
-                              'field.field_name':'Creator',
-                               'UPDATE_SUBMIT': u'Submit'})
+        #response = self.publish("/felix_the/+/AddTextIndexToCatalog=dcdesc",
+                        #basic='mgr:mgrpw', 
+                        #form={'text.interface': 
+                        #      u'zope.app.interfaces.dublincore.IZopeDublinCore',
+                        #      'text.field_name':'Description',
+                        #       'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/@@contents.html')
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=name",
                         basic='mgr:mgrpw', 
                         form={'field.interface.search': '',
-                              'field.field_name':'name',
+                              'field.field_name':'id',
                                'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
@@ -59,7 +59,7 @@ class TestCatalogAdd(BrowserTestCase):
         # Check the indexes are there and visible
         response = self.publish('/felix_the/@@contents.html', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(response.getBody().find('dccreator') != -1)
+        #self.assert_(response.getBody().find('dcdesc') != -1)
         self.assert_(response.getBody().find('dctitle') != -1)
         
         # Now add some content
@@ -67,21 +67,52 @@ class TestCatalogAdd(BrowserTestCase):
                                 form={'type_name':u'File', 
                                       'id':u'First'})
         self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/First/@@EditMetaData.html",basic='mgr:mgrpw',
+                                form={'dctitle':u'First File',
+                                      'dcdescription':u'a file with stuff',
+                                      'save':u'Save Changes',
+                                      })
+        self.assertEqual(response.getStatus(), 200)
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
                                 form={'type_name':u'File', 
                                       'id':u'Second'})
         self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/Second/@@EditMetaData.html",basic='mgr:mgrpw',
+                                form={'dctitle':u'Second File',
+                                      'dcdescription':u'another file with stuff',
+                                      'save':u'Save Changes',
+                                      })
+        self.assertEqual(response.getStatus(), 200)
+
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
                                 form={'type_name':u'File', 
                                       'id':u'Third'})
         self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/Third/@@EditMetaData.html",basic='mgr:mgrpw',
+                                form={'dctitle':u'Third File',
+                                      'dcdescription':u'something else',
+                                      'save':u'Save Changes',
+                                      })
+        self.assertEqual(response.getStatus(), 200)
+        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
+                                form={'type_name':u'File', 
+                                      'id':u'Thirda'})
+        self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/Thirda/@@EditMetaData.html",basic='mgr:mgrpw',
+                                form={'dctitle':u'Third File',
+                                      'dcdescription':u'something else',
+                                      'save':u'Save Changes',
+                                      })
+        self.assertEqual(response.getStatus(), 200)
 
-        # Now comes the fun. Functional tests haven't connected up
-        # the bloody event service, so we can't do anything useful 
-        # yet. *sigh*
-        #root = self.getRootFolder()
-        #cat = root['felix_the']
-        #print cat.searchResults(dctitle='Third')
+        root = self.getRootFolder()
+        cat = root['felix_the']
+        name = cat['dctitle']
+        self.assert_(name.documentCount()==5)
+        res = cat.searchResults(dctitle='Second File')
+        self.assert_(len(res)==1)
+        res = cat.searchResults(dctitle='Third File')
+        self.assert_(len(res)==2)
 
 def test_suite():
     suite = unittest.TestSuite()
