@@ -484,7 +484,16 @@ def createDirectoryView(parent, minimal_fp, id=None):
     """
     info = _dirreg.getDirectoryInfo(minimal_fp)
     if info is None:
-        raise ValueError('Not a registered directory: %s' % minimal_fp)
+        fixed_minimal_fp = minimal_fp.replace('\\','/')
+        info = _dirreg.getDirectoryInfo(fixed_minimal_fp)
+        if info is None:
+            raise ValueError('Not a registered directory: %s' % minimal_fp)
+        else:
+            warn('createDirectoryView() expects a slash-separated path '
+                 'relative to the Products path. \'%s\' will no longer work '
+                 'in CMF 1.6.' % minimal_fp,
+                 DeprecationWarning)
+        minimal_fp = fixed_minimal_fp
     if not id:
         id = minimal_fp.split('/')[-1]
     else:
