@@ -106,13 +106,15 @@ class Application:
         options = self.options
         # XXX we should be able to compute the script
         script = os.path.abspath(sys.argv[0])
-        software_home = os.path.dirname(os.path.dirname(script))
+        zope_home = os.path.dirname(os.path.dirname(script))
+        software_home = os.path.join(zope_home, "lib", "python")
         self.replacements = [
-            ("@USERNAME@",     options.username),
-            ("@PASSWORD@",     options.password),
-            ("@PYTHON@",       sys.executable),
-            ("@INSTANCEHOME@", options.destination),
-            ("@SOFTWAREHOME@", software_home),
+            ("<<USERNAME>>",      options.username),
+            ("<<PASSWORD>>",      options.password),
+            ("<<PYTHON>>",        sys.executable),
+            ("<<INSTANCE_HOME>>", options.destination),
+            ("<<ZOPE_HOME>>",     zope_home),
+            ("<<SOFTWARE_HOME>>", software_home),
             ]
         self.copytree(self.options.skeleton, self.options.destination)
 
