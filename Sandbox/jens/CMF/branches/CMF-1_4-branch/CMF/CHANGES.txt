@@ -2,6 +2,17 @@ Next release
 
   Bug Fixes
 
+    - CMFCalendar.Event: Fixed long-standing bug where day, month, and year
+      were processed in the wrong order by Event.edit().
+      Also see http://collector.zope.org/CMF/202
+
+    - CMFCalendar.Event: PUT() caused improper splitting of 'Contributors'
+      metadata header.
+
+    - CMFCalendar.CalendarTool: Code assumed US datetime format throughout.
+      At least since Zope 2.7 users can change that.
+      Also see http://plone.org/collector/3218
+
     - CMFCore.PortalFolder: _verifyObjectPaste() did not check the
       container's allowed content types, enabling users to paste objects
       they were not allowed to add.
