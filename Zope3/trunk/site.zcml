@@ -20,6 +20,6 @@
 <grant permission="Zope.ManageApplication" role="Manager" />
 <grant permission="Zope.ManageBindings"    role="Manager" />
 
-<include file="products.zcml" />
+<!-- include file="products.zcml" /-->
 
 </zopeConfigure>
