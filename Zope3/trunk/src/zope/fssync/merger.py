@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.7 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: merger.py,v 1.8 2003/05/14 22:24:42 gvanrossum Exp $
 """
 
 import os
@@ -167,6 +167,7 @@ class Merger(object):
                 f.write(output)
             finally:
                 f.close()
+        fsutil.ensuredir(dirname(original))
         shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
@@ -177,6 +178,7 @@ class Merger(object):
             return "Modified"
 
     def merge_files_fix(self, local, original, remote):
+        fsutil.ensuredir(dirname(original))
         shutil.copy(remote, original)
         self.clearflag(local)
         self.getentry(local).update(self.getentry(remote))
