@@ -13,7 +13,7 @@
 ##############################################################################
 """LDAP Adapter utility.
 
-$Id:$
+$Id$
 """
 
 from zope.exceptions import NotFoundError

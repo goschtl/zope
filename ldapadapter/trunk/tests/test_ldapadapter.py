@@ -36,7 +36,7 @@ def setUp(test):
     else:
         test.old_ldap = None
     sys.modules['ldap'] = fakeldap
-    import ldap
+    #import ldap
 
 def tearDown(test):
     del sys.modules['ldap']
