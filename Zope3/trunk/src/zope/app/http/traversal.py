@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope.publisher.interfaces.http import IHTTPPublisher
 from zope.app.container.interfaces import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource
-from zope.exceptions import NotFoundError
+from zope.publisher.interfaces import NotFound
 from zope.interface import implements
 
 class ContainerTraverser(object):
@@ -45,11 +45,11 @@ class ContainerTraverser(object):
         # The name must be the last name in the path, so the traversal
         # name stack better be empty:
         if request.getTraversalStack():
-            raise NotFoundError(self.context, name, request)
+            raise NotFound(self.context, name, request)
 
         # This should only happen for a PUT or MKCOL:
         if request.method not in  ['PUT', 'MKCOL']:
-            raise NotFoundError(self.context, name, request)
+            raise NotFound(self.context, name, request)
 
         return NullResource(self.context, name)
 

@@ -21,6 +21,7 @@ from zope.interface import implements
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.publisher.interfaces import NotFound
 
 from zope.app.tests import ztapi
 from zope.app.traversing.api import traverse
@@ -65,7 +66,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
             def browserDefault(self, request):
                 return self, ()
             def publishTraverse(self, request, name):
-                raise NotFoundError(self, name, request)
+                raise NotFound(self, name, request)
             def __call__(self):
                 return self.singleBranchTree()
             

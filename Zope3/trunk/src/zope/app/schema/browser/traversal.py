@@ -19,6 +19,7 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.schema.interfaces import IMutableSchema
 
 from zope.exceptions import NotFoundError
+from zope.publisher.interfaces import NotFound
 
 from zope.app.traversing.interfaces import ITraversable
 from zope.app.traversing.namespace import UnexpectedParameters
@@ -47,7 +48,7 @@ class SchemaFieldTraverser(object):
 
                 return view
 
-            raise NotFoundError(self.context, name, request)
+            raise NotFound(self.context, name, request)
 
         return subob
 

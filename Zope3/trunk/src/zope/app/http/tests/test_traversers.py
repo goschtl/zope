@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.exceptions import NotFoundError
+from zope.publisher.interfaces import NotFound
 from zope.app.http.traversal import ContainerTraverser, ItemTraverser
 from zope.publisher.browser import TestRequest
 from zope.app.http.put import NullResource
@@ -50,7 +50,7 @@ class TestContainer(TestCase):
         container = self.Container({'foo': 42})
         request = TestRequest()
         traverser = self.Traverser(container, request)
-        self.assertRaises(NotFoundError,
+        self.assertRaises(NotFound,
                           traverser.publishTraverse, request, 'bar')
     
 

@@ -19,7 +19,7 @@ import unittest, sys
 
 from zope.component.tests.request import Request
 from zope.interface import Interface, classImplements
-from zope.exceptions import NotFoundError
+from zope.publisher.interfaces import NotFound
 from zope.proxy import removeAllProxies
 
 from zope.app import zapi
@@ -72,7 +72,7 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         self.failUnless(
             removeAllProxies(T.publishTraverse(request, 'FooBar')) is page2)
 
-        self.assertRaises(NotFoundError, T.publishTraverse, request,'morebar')
+        self.assertRaises(NotFound, T.publishTraverse, request,'morebar')
 
     def testView(self):
         wiki = Wiki()
@@ -91,8 +91,8 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         self.failUnless(
             removeAllProxies(T.publishTraverse(request, 'FooBar')) is page2)
 
-        self.assertRaises(NotFoundError, T.publishTraverse, request, 'morebar')
-        self.assertRaises(NotFoundError, T.publishTraverse, request,
+        self.assertRaises(NotFound, T.publishTraverse, request, 'morebar')
+        self.assertRaises(NotFound, T.publishTraverse, request,
                           '@@morebar')
 
 

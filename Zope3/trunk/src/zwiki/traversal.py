@@ -17,6 +17,7 @@ from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 from zope.exceptions import NotFoundError
 
 from zope.app import zapi
@@ -46,7 +47,7 @@ class WikiPageTraverser:
             if view is not None:
                 return view
 
-            raise NotFoundError(self.context, name, request)
+            raise NotFound(self.context, name, request)
 
 
         return removeAllProxies(page)
