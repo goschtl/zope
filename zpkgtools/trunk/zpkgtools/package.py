@@ -128,8 +128,8 @@ def read_package_info(directory, reldir=None):
       - `reldir`: Relative directory path with which file names from
         the information file will be joined.  This should be in POSIX
         notation.  It will not be used to locate files.  It may be
-        omitted; if so, filenames are no 'relocated' relative to where
-        they are found.
+        omitted or None; if so, filenames are not 'relocated' relative
+        to where they are found.
 
     """
     path = os.path.join(directory, PACKAGE_CONF)
