@@ -186,7 +186,7 @@ def main(args):
         VERBOSE = wasVerbose
 
     if VERBOSE:
-        complain("Done.\n")
+        complain("** Done **\n\n")
 
     if failures:
         handle_failures(orig_args)
@@ -250,7 +250,8 @@ def find_entries(repo=None):
         else:
             # Obtain qualifying candidates:
             for candidate in containers:
-                if re.match(it['path'], candidate):
+                if (re.match(it['path'], candidate)
+                    and it not in entries):
                     entries.append(it)
 
     if entries:
@@ -403,26 +404,24 @@ def send_mail(addrs, text, subject):
                      'to': string.join(addrs, ", "),
                      'from': "%s <%s>" % (fullname, email),
                      'sender': OFFICIAL_SENDER,
-                     'text': text,
                      'user': user}
-    text = ("Subject: %(subject)s\n"
-            "To: %(to)s\n"
-            "From: %(from)s\n"
-            "Sender: %(sender)s\n"
-            "\n"
-            "%(text)s"
-            % envelope_info)
+    header = ("Subject: %(subject)s\n"
+              "To: %(to)s\n"
+              "From: %(from)s\n"
+              "Sender: %(sender)s\n"
+              % envelope_info)
+
+    notice = header + '\n' + text
 
     cmd_in, cmd_out = os.popen2(cmd, 'rw')
-    cmd_in.write(text)
+    cmd_in.write(notice)
     cmd_in.close()
     output = cmd_out.read()
     result = cmd_out.close()
     if VERBOSE:
-        complain("%(user)s (%(from)s) sent to %(to)s, subject: '%(subject)s'\n"
-                 % envelope_info)
+        complain(header)
     if result:
-        note_failure("*** Mail cmd yielded output %s:\n%s\n",
+        note_failure("*** Mail cmd yielded unexpected result %s:\n%s\n",
                      result, output)
 
 def loosen_file(fname):
