@@ -18,7 +18,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
-from zope.app.traversing.namespace import queryResourceInContext
 from monkey import DebugFlags
 
 _marker = object

@@ -127,19 +127,26 @@ class ResourceFactory:
 
     def __init__(self, name, path, resource_factory=None):
         self.__name = name
-        self.__rsrc = self.factory(path)
+        self.__rsrc = self.factory(path, name)
         if resource_factory is not None:
             self.resource = resource_factory
 
     def __call__(self, request):
         resource = self.resource(self.__rsrc, request)
-        resource.__name__ = self.__name
         return resource
+
+def _PageTemplate(self, path, name):
+    # PageTemplate doesn't take a name parameter,
+    # which makes it different from FileResource.
+    # This is probably an error.
+    template = PageTemplate(path)
+    template.__name__ = name
+    return template
 
 class PageTemplateResourceFactory(ResourceFactory):
     """A factory for Page Template resources"""
 
-    factory = PageTemplate
+    factory = _PageTemplate
     resource = PageTemplateResource
 
 class FileResourceFactory(ResourceFactory):
@@ -158,8 +165,9 @@ class ImageResourceFactory(ResourceFactory):
 # we only need this class a context for DirectoryResource
 class Directory:
 
-    def __init__(self, path):
+    def __init__(self, path, name):
         self.path = path
+        self.__name__ = name
 
 class DirectoryResource(BrowserView, Resource, OFSTraversable):
 
