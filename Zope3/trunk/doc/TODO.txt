@@ -11,8 +11,6 @@ Features
 
 - Support for iterable sources
 
-- Issue 295: Sort out defaultView 
-
 - Allow adapters (including views) to be registered for classes
   (really implementation specifications of classes) as well as
   interfaces. This has been done for page directives but needs to be
@@ -62,7 +60,7 @@ Bug Fixes
 
 * 319: Navigation with anonymous
 
-* 321: TravelsalError after renaming or moving Sites with local services 
+* 321: TraversalError after renaming or moving Sites with local services 
 
 * 323: Permission zope.Public in addfrom does not work
 

@@ -288,6 +288,12 @@ Zope Changes
 
     Restructuring
 
+      - Addressed issue 295: Sort out defaultView.
+
+        Deprecated `zope:defaultView` directive and removed unused default
+        view handler in `zope.app.publisher.browser.viewmeta`. Added a `layer`
+        attribute to the `browser:defaultView` directive. 
+
       - zope.component.createObject no longer accepts a positional
         context argument.  A context can be provided as a keyword argument.
 
