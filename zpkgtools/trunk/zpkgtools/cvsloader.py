@@ -226,8 +226,10 @@ class CvsLoader:
 
         rc = self.runCvsExport(cvsroot, workdir, tag, path)
         if rc:
-            # some error occurred; haven't figured out what, and don't
-            # really care; details went to standard error:
+            # Some error occurred: we haven't figured out what, and
+            # don't really care; details went to standard error.
+            # Assume there's nothing to be gained from the temporary
+            # directory and toss it.
             shutil.rmtree(workdir)
             raise CvsLoadingError(cvsurl, rc)
         self.workdirs.append(workdir)
@@ -243,18 +245,17 @@ class CvsLoader:
 
     def runCvsExport(self, cvsroot, workdir, tag, path):
         # cvs -f -Q -z6 -d CVSROOT export -kk -d WORKDIR -r TAG PATH
-        # separated out from load() to ease testing of load()
+        # separated out from load() to ease testing the rest of load()
         # XXX not sure of a good way to test this method!
         wf = posixpath.basename(path)
         pwd = os.getcwd()
         os.chdir(workdir)
         try:
-            rc = os.spawnlp(os.P_WAIT, "cvs",
-                            "cvs", "-f", "-Q", "-z6", "-d", cvsroot,
-                            "export", "-kk", "-d", wf, "-r", tag, path)
+            return os.spawnlp(os.P_WAIT, "cvs",
+                              "cvs", "-f", "-Q", "-z6", "-d", cvsroot,
+                              "export", "-kk", "-d", wf, "-r", tag, path)
         finally:
             os.chdir(pwd)
-        return rc
 
     # XXX CVS does some weird things with export; not sure how much
     # they mean yet.  Note that there's no way to tell if the resource
