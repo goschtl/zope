@@ -1,4 +1,3 @@
-import Products
 import simplecontent
 import fancycontent
 

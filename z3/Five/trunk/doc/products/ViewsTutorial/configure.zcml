@@ -45,5 +45,19 @@
         />
   </browser:pages>
 
+  <five:traversable class=".democontent.DemoContent" />
+
+  <browser:page
+     for=".democontent.IDemoContent"
+     name="someview.html"
+     template="someview.pt"
+     permission="zope2.ViewManagementScreens"
+     />
+
+  <five:defaultViewable class=".democontent.DemoContent" />
+ 
+  <browser:defaultView
+     for=".democontent.IDemoContent"
+     name="someview.html" />
 
 </configure>

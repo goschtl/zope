@@ -232,3 +232,37 @@ Multiple pages example
         attribute="two"
         />
   </browser:pages>
+
+Default view
+
+%page
+
+Default view for object
+
+
+	We can now set views that are named
+
+	What if we traverse to the object itself?
+
+	Use defaultViewable and defaultView
+
+%page
+
+Uh oh
+
+
+	This doesn't seem to work yet with Zope folders. Sidnei, help!
+
+	So we'll try it with a custom SimpleItem-based object
+
+%page
+
+DefaultView example
+
+
+%size 4, fore "blue"
+  <five:defaultViewable class=".democontent.DemoContent" />
+ 
+  <browser:defaultView
+     for=".democontent.IDemoContent"
+     name="someview.html" />
