@@ -79,6 +79,14 @@ class portal_memberdata(Interface):
         Permission -- Python only
         """
 
+    def deleteMemberData(member_id):
+        """ Delete member data of specified member.
+
+        Permission -- Python only
+
+        Returns -- Boolean value
+        """
+
 
 class MemberData(Interface):
     """ MemberData interface.

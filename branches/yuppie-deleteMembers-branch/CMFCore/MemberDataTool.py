@@ -217,6 +217,17 @@ class MemberDataTool (UniqueObject, SimpleItem, PropertyManager, ActionProviderB
         """
         self._members[id] = m
 
+    security.declarePrivate('deleteMemberData')
+    def deleteMemberData(self, member_id):
+        """ Delete member data of specified member.
+        """
+        members = self._members
+        if members.has_key(member_id):
+            del members[member_id]
+            return 1
+        else:
+            return 0
+
 InitializeClass(MemberDataTool)
 
 
