@@ -13,21 +13,19 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.66 2004/03/06 04:17:17 garrett Exp $
+$Id: widget.py,v 1.67 2004/03/08 23:33:57 srichter Exp $
 """
-__metaclass__ = type
-
 import re, cgi
 import traceback
 from warnings import warn
 from xml.sax.saxutils import quoteattr
 
 from zope.interface import implements
-from zope.component import getService
 from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import ValidationError
 from zope.publisher.browser import BrowserView
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.tests import ztapi
@@ -39,7 +37,6 @@ from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
-from zope.app.services.servicenames import Translation
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 ListTypes = list, tuple
@@ -777,11 +774,8 @@ class SingleItemsWidget(ItemsWidget):
         Override this in subclasses.'''
         # The text could be a MessageID, in which case we should try to
         # translate it.
-        ts = getService(self.context.context, Translation)
-        trans = ts.translate(value, "zope", context=self.request)
-        if trans is not None:
-            value = trans
-        return value
+        return translate(self.context, value, context=self.request,
+                         default=value)
 
     def renderItems(self, value):
         name = self.name
@@ -884,12 +878,8 @@ class RadioWidget(SingleItemsWidget):
         return self._renderItem(index, text, value, name, cssClass, True)
 
     def label(self):
-        ts = getService(self.context.context, Translation)
-        title = ts.translate(self.title, "zope", context=self.request)
-        if title is None:
-            title  = self.title
-        # radio fields label isn't "for" anything
-        return title
+        return translate(self.context, self.title, context=self.request,
+                         default=self.title)
 
     def row(self):
         return ('<div class="%s"><label for="%s">%s</label></div>'
@@ -1055,18 +1045,16 @@ class SequenceWidget(BrowserWidget):
 
         # possibly generate the "remove" and "add" buttons
         buttons = ''
-        translation = zapi.getService(self.context,
-                                      zapi.servicenames.Translation)
         if render and num_items > min_length:
             button_label = _('remove-selected-items', "Remove selected items")
-            button_label = translation.translate(button_label,
-                                                 context=self.request)
+            button_label = translate(self.context, button_label,
+                                     context=self.request, default=button_label)
             buttons += '<input type="submit" value="%s" />' % button_label
         if max_length is None or num_items < max_length:
             field = self.context.value_type
             button_label = _('Add %s')
-            button_label = translation.translate(button_label,
-                                                 context=self.request)
+            button_label = translate(self.context, button_label,
+                                     context=self.request, default=button_label)
             button_label = button_label % (field.title or field.__name__)
             buttons += '<input type="submit" name="%s.add" value="%s" />' % (
                 self.name, button_label)

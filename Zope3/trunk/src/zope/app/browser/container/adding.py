@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.46 2004/03/06 16:50:12 jim Exp $
+$Id: adding.py,v 1.47 2004/03/08 23:33:56 srichter Exp $
 """
 __metaclass__ = type
 
@@ -37,6 +37,7 @@ from zope.app.event import publish
 from zope.app.publisher.browser import BrowserView
 
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.i18n import translate
 from zope.app.location import LocationProxy
 from zope.app.container.constraints import checkFactory
 
@@ -87,12 +88,10 @@ class BasicAdding(BrowserView):
         add_button_value = _('add-button', 'Add')
         add_button_label = _('add-button-label','Object Name')
         
-        translation = zapi.getService(self.context,
-                                      zapi.servicenames.Translation)
-        add_button_value = translation.translate(add_button_value,
-                                             context=self.request)
-        add_button_label = translation.translate(add_button_label,
-                                             context=self.request)
+        add_button_value = translate(self.context, add_button_value,
+                                     context=self.request)
+        add_button_label = translate(self.context, add_button_label,
+                                     context=self.request)
         if IContainerNamesContainer.providedBy(container):
             return " <input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % add_button_value

@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.65 2004/03/06 04:17:17 garrett Exp $
+$Id: vocabularywidget.py,v 1.66 2004/03/08 23:33:57 srichter Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -27,13 +27,13 @@ from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ValidationError
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.interfaces.form import IVocabularyQueryView
 from zope.app.interfaces.form import WidgetInputError
-from zope.app.services.servicenames import Translation
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -120,9 +120,8 @@ class IterableVocabularyQuery(object):
 class TranslationHook:
 
     def translate(self, msgid):
-        ts = zapi.getService(self.context, Translation)
-        msg = ts.translate(msgid, context=self.request)
-        return msg
+        return translate(self.context, msgid, context=self.request,
+                         default=msgid)
 
 def message(msgid, default):
     msgid.default = default

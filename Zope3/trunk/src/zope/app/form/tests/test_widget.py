@@ -11,14 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Generic Widget Tests
 
-XXX longer description goes here.
-
-$Id: test_widget.py,v 1.6 2004/03/06 04:17:24 garrett Exp $
+$Id: test_widget.py,v 1.7 2004/03/08 23:33:59 srichter Exp $
 """
-
-import doctest
+from zope.testing.doctestunit import DocTestSuite
 from unittest import TestSuite, main, makeSuite
 from zope.app.form.widget import Widget, CustomWidgetFactory
 from zope.app.interfaces.form import IWidget
@@ -26,6 +23,7 @@ from zope.interface.verify import verifyClass, verifyObject
 from zope.schema import Text
 from zope.publisher.browser import TestRequest
 from zope.component.interfaces import IViewFactory
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 class TestContext:
     __name__ = 'Test'
@@ -92,9 +90,7 @@ class TestCustomWidgetFactory:
 
 def test_suite():
     return TestSuite((
-        makeSuite(TestWidget),
-        makeSuite(TestCustomWidgetFactory),
-        doctest.DocTestSuite(),
+        DocTestSuite(setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__=='__main__':

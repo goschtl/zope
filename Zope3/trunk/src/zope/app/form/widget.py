@@ -12,19 +12,17 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.12 2004/03/06 04:17:24 garrett Exp $
+$Id: widget.py,v 1.13 2004/03/08 23:33:59 srichter Exp $
 """
 import traceback
 from warnings import warn
+from zope.app import zapi
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
-from zope.component import queryService
 from zope.interface import implements
-from zope.app.services.servicenames import Translation
+from zope.i18n import translate
 
-__metaclass__ = type
-
-class Widget:
+class Widget(object):
     """Mixin class providing functionality common accross view types."""
     
     implements(IWidget)
@@ -47,13 +45,8 @@ class Widget:
         self.context.description))
     
     def _translate(self, text):
-        ts = queryService(self.context, Translation)
-        if ts is not None:
-            # The domain is not that important here, since the title is most 
-            # likely a message id carrying the domain.
-            return (ts.translate(text, "zope", context=self.request) or text)
-        else:
-            return text
+        return translate(self.context, text, "zope",
+                         context=self.request, default=text)
             
     def _renderedValueSet(self):
         """Returns True if the the widget's rendered value has been set.
@@ -72,9 +65,8 @@ class Widget:
     def setRenderedValue(self, value):
         self._data = value
 
-class CustomWidgetFactory:
-    """Custom Widget Factory.
-    """
+class CustomWidgetFactory(object):
+    """Custom Widget Factory."""
     implements(IViewFactory)
 
     def __init__(self, *args, **kw):

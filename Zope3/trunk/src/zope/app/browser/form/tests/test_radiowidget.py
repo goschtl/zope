@@ -12,14 +12,21 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.11 2004/03/06 04:17:19 garrett Exp $
+$Id: test_radiowidget.py,v 1.12 2004/03/08 23:33:57 srichter Exp $
 """
+import os
 import unittest, doctest
+from zope.interface.verify import verifyClass
 
+from zope.i18n.interfaces import ITranslationDomain
+from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
+from zope.i18n.translationdomain import TranslationDomain
+
+from zope.app.tests import ztapi
 from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import RadioWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
-from zope.interface.verify import verifyClass
+import zope.app.browser.form.tests
 
 class RadioWidgetTest(BrowserWidgetTest):
     """Documents and tests the radio widget.
@@ -82,16 +89,12 @@ class RadioWidgetTest(BrowserWidgetTest):
         self.assertEqual(label, 'Foo Title')
 
     def testTranslatedLabel(self):
-        import zope.app.browser.form.tests
-        from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
-        from zope.i18n.globaltranslationservice import translationService
-        import os
         path = os.path.dirname(zope.app.browser.form.tests.__file__)
         catalog = GettextMessageCatalog(
-            'pl', 'zope',
-            os.path.join(path, 'testlabeltranslation.mo'))
-        translationService.addCatalog(catalog)
-
+            'pl', 'zope', os.path.join(path, 'testlabeltranslation.mo'))
+        domain = TranslationDomain('zope')
+        domain.addCatalog(catalog)
+        ztapi.provideUtility(ITranslationDomain, domain, 'zope')
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, 'oofay itletay')
 

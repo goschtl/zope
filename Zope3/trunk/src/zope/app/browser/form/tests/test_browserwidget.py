@@ -13,21 +13,23 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.20 2004/03/06 04:17:18 garrett Exp $
+$Id: test_browserwidget.py,v 1.21 2004/03/08 23:33:57 srichter Exp $
 """
-
+import os
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface, implements
+
+from zope.app.tests import ztapi
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.interfaces.form import ConversionError
 from zope.app.interfaces.form import WidgetInputError, MissingInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.i18n.interfaces import ITranslationDomain
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
-from zope.i18n.globaltranslationservice import translationService
+from zope.i18n.translationdomain import TranslationDomain
 from zope.publisher.browser import TestRequest
 from zope.schema import Text
-import os
-import unittest
-from zope.testing.doctestunit import DocTestSuite
 from zope.app.browser.form.tests import support
 import zope.app.browser.form.tests
 
@@ -104,10 +106,10 @@ class BrowserWidgetTest(PlacelessSetup,
     def testTranslatedLabel(self):
         path = os.path.dirname(zope.app.browser.form.tests.__file__)
         catalog = GettextMessageCatalog(
-            'pl', 'zope',
-            os.path.join(path, 'testlabeltranslation.mo'))
-        translationService.addCatalog(catalog)
-
+            'pl', 'zope', os.path.join(path, 'testlabeltranslation.mo'))
+        domain = TranslationDomain('zope')
+        domain.addCatalog(catalog)
+        ztapi.provideUtility(ITranslationDomain, domain, 'zope')
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
 
