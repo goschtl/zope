@@ -3,15 +3,91 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="versioning"
     >
+
     
-  <include package=".demo" />
+  <!-- Configure the 'IHistoryStorage' utility 
+       being responsible for the storage 
+       of the objects histories 
+  -->  
+  <localUtility class=".storage.SimpleHistoryStorage">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+  </localUtility>   
+  
+  <!-- register a subriber to the ObjectCreatedEvent to add all 
+       IVersionable objects to the version control
+  -->
+  <subscriber
+      factory="versioning.registerVersionControl"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
+  />
+
+  <browser:tool
+      interface=".interfaces.IHistoryStorage"
+      title="Version History Storage"
+      description="A Storage for version histories"
+      />
+
+  <browser:addMenuItem
+    title="History Storage" 
+    description="A Storage for version histories"
+    class=".storage.SimpleHistoryStorage"
+    permission="zope.ManageServices"
+  />
+  
+  
+  <!-- We also need a 'IVersionableAspects' multi adapter beeing responsible
+       for the versioning policy (what is versioned and how (not storage)).
+  -->
 
   <adapter
-      factory=".repository.DummyCheckoutAware"
+       factory="versioning.policies.VersionableAspectsAdapter"
+       provides="versioning.interfaces.IVersionableAspects"
+       for="versioning.interfaces.IVersionable 
+            versioning.interfaces.IHistoryStorage"
+       />
+       
+       
+  <!-- Register a 'ICheckoutAware' adapter to a 'IHistoryStorage' that 
+       handles the checkout/checkin status for the repository.
+  -->
+  <!--adapter
+      factory=".storage.DefaultCheckoutAware"
       provides="versioning.interfaces.ICheckoutAware"
       for="versioning.interfaces.IHistoryStorage"
-      permission="zope.Public"
-      />
+      /-->
+
+  <!-- Register a CopyModifyMergeRepository as a adapter
+       of a IHistoryStorage.
+  -->
+  <adapter
+      factory=".repository.CopyModifyMergeRepository"
+      provides=".interfaces.ICopyModifyMergeRepository"
+      for=".interfaces.IHistoryStorage"
+      />    
   
+  <adapter
+      factory=".storage.Version"
+      provides=".interfaces.IVersion"
+      for="*"
+  />
+
+
+      
+<!-- demo content -->
+  <include package=".demo" />
+  
+  <include package=".browser" />
+      
+<content class="buddydemo.buddy.Buddy">
+   <implements 
+       interface=".interfaces.IVersionable" />
+</content>      
+
+<content class="versioning.demo.vproposal.VProposal">
+   <implements 
+       interface=".interfaces.IVersionable" />
+</content>     
+      
 </configure>
 <!-- XXX above: permission=zope.Public? -->
