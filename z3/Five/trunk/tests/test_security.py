@@ -1,22 +1,7 @@
 import os, sys
-from os import curdir
-from os.path import join, abspath, dirname, split
-
-try:
-    __file__
-except NameError:
-    # Test was called directly, so no __file__ global exists.
-    _prefix = abspath(curdir)
-else:
-    # Test was called by another test.
-    _prefix = abspath(dirname(__file__))
 
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
-
-# XXX hack but no other way to initialize options apparently
-from Zope.Startup.run import configure
-configure(join(_prefix, '..', '..', '..', 'etc', 'zope.conf'))
 
 import unittest
 from Testing import ZopeTestCase

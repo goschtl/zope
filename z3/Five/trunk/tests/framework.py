@@ -99,6 +99,9 @@ if 1:   # Create a new scope
         print 'Unable to locate %s.' % ztc_common
         sys.exit(1)
 
+    # run configuration
+    import zopeconf; zopeconf.process()
+    
 # Debug
 #
 print 'SOFTWARE_HOME: %s' % os.environ.get('SOFTWARE_HOME', 'Not set')
