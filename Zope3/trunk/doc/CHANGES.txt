@@ -35,6 +35,11 @@ Zope Changes
 
       - Templated Pages are now called ZPT Pages.
 
+      - The "layer" and "skin" ZCML directives were redundantly
+        registered for both the zope and the browser namespace. They
+        now only exist in the browser namespace; the "defaultSkin"
+        directive was moved to the browser namespace.
+
   Zope X3.0.0 Beta 2
 
     Bug fixes
