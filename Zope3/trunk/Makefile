@@ -15,4 +15,5 @@ clean:
 	rm -f TAGS
 
 TAGS:
-	etags `find . -name \*.py -print`
+	python ~/trunk/Tools/scripts/eptags.py `find . -name \*.py`
+#	etags `find . -name \*.py -print`
