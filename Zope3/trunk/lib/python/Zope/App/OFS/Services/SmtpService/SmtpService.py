@@ -13,7 +13,7 @@
 ##############################################################################
 """SMTP service.
 
-$Id: SmtpService.py
+$Id: SmtpService.py,v 1.3 2002/10/28 21:06:05 bwarsaw Exp $
 """
 
 from Persistence import Persistent
