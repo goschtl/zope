@@ -14,13 +14,12 @@
 """
 Default service names for CA core services
 
-$Id: servicenames.py,v 1.5 2003/02/12 02:17:42 seanb Exp $
+$Id: servicenames.py,v 1.6 2003/11/21 17:09:31 jim Exp $
 """
 
 Adapters = 'Adapters'
 Interfaces = 'Interfaces'
 Utilities = 'Utilities'
-Skins = 'Skins'
-Views = 'Views'
-Resources = 'Resources'
+Presentation = 'Presentation'
 Factories = 'Factories'
+Services = 'Services'
