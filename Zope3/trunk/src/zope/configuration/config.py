@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.1 2003/07/28 22:22:39 jim Exp $
+$Id: config.py,v 1.2 2003/07/29 16:28:54 jim Exp $
 """
 
 from keyword import iskeyword
@@ -336,11 +336,13 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     basepath = None
     includepath = ()
     info = ''
+    
 
     def __init__(self):
         ConfigurationAdapterRegistry.__init__(self)
         self.actions = []
         self.stack = [RootStackItem(self)]
+        self.i18n_strings = {} 
         _bootstrap(self)
 
     def begin(self, __name, __data=None, __info=None, **kw):
