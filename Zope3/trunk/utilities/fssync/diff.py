@@ -64,7 +64,8 @@ def getdiff(targetfile, objpath, dbpath, siteconfpath, diffoption=None):
                                  os.path.basename(targetfile))
         to_file = temp_file
 
-    diff_cmd ="diff -a -b -B -c %s %s" % (from_file, to_file)
+    diff_cmd ="diff -a -b -B -c %s %s" % (commands.mkarg(from_file),
+                                          commands.mkarg(to_file))
     diff_res = commands.getoutput(diff_cmd)
     diff_res = setOutput(diff_res, temp_file, objectpath, modification_date)
     print diff_res
