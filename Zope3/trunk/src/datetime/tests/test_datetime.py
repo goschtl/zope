@@ -2570,16 +2570,7 @@ class USTimeZone(tzinfo):
             # An exception instead may be sensible here, in one or more of
             # the cases.
             return ZERO
-
-        convert_endpoints_to_utc = False
-        if dt.tzinfo is not self:
-            # Convert dt to UTC.
-            offset = dt.utcoffset()
-            if offset is None:
-                # Again, an exception instead may be sensible.
-                return ZERO
-            convert_endpoints_to_utc = True
-            dt -= offset
+        assert dt.tzinfo is self
 
         # Find first Sunday in April.
         start = first_sunday_on_or_after(DSTSTART.replace(year=dt.year))
@@ -2588,10 +2579,6 @@ class USTimeZone(tzinfo):
         # Find last Sunday in October.
         end = first_sunday_on_or_after(DSTEND.replace(year=dt.year))
         assert end.weekday() == 6 and end.month == 10 and end.day >= 25
-
-        if convert_endpoints_to_utc:
-            start -= self.stdoffset    # start is in std time
-            end -= self.stdoffset + HOUR # end is in DST time
 
         # Can't compare naive to aware objects, so strip the timezone from
         # dt first.
@@ -2664,7 +2651,6 @@ class TestTimezoneConversions(unittest.TestCase):
                 # standard time.  The hour 1:MM:SS standard time ==
                 # 2:MM:SS daylight time can't be expressed in local time.
                 nexthour_utc = asutc + HOUR
-                nexthour_tz = nexthour_utc.astimezone(tz)
                 if during.date() == dstoff.date() and during.hour == 1:
                     # We're in the hour before DST ends.  The hour after
                     # is ineffable.
@@ -2678,8 +2664,10 @@ class TestTimezoneConversions(unittest.TestCase):
                     # That's correct, too, *if* 1:MM:SS were taken as
                     # being standard time.  But it's not -- on this day
                     # it's taken as daylight time.
-                    self.assertEqual(during, nexthour_tz)
+                    self.assertRaises(ValueError,
+                                      nexthour_utc.astimezone, tz)
                 else:
+                    nexthour_tz = nexthour_utc.astimezone(utc)
                     self.assertEqual(nexthour_tz - during, HOUR)
 
             for outside in dston - delta, dstoff, dstoff + delta:

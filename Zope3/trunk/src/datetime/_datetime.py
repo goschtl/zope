@@ -1522,6 +1522,7 @@ datetime.min = datetime(1, 1, 1)
 datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999)
 datetime.resolution = timedelta(microseconds=1)
 
+_HOUR = timedelta(hours=1)
 
 class datetimetz(datetime):
 
@@ -1612,19 +1613,72 @@ class datetimetz(datetime):
         return datetimetz(year, month, day, hour, minute, second,
                           microsecond, tzinfo)
 
+    def _inconsistent_utcoffset_error(self):
+        raise ValueError("astimezone():  tz.utcoffset() gave "
+                         "inconsistent results; cannot convert")
+
+    def _finish_astimezone(self, other, otoff):
+        # If this is the first hour of DST, it may be a local time that
+        # doesn't make sense on the local clock, in which case the naive
+        # hour before it (in standard time) is equivalent and does make
+        # sense on the local clock.  So force that.
+        alt = other - _HOUR
+        altoff = alt.utcoffset()
+        if altoff is None:
+            self._inconsistent_utcoffset_error()
+        # Are alt and other really the same time?  alt == other iff
+        # alt - altoff == other - otoff, iff
+        # (other - _HOUR) - altoff = other - otoff, iff
+        # otoff - altoff == _HOUR
+        diff = otoff - altoff
+        if diff == _HOUR:
+            return alt      # use the local time that makes sense
+
+        # There's still a problem with the unspellable (in local time)
+        # hour after DST ends.
+        if self == other:
+            return other
+        # Else there's no way to spell self in zone other.tz.
+        raise ValueError("astimezone():  the source datetimetz can't be "
+                         "expressed in the target timezone's local time")
+
     def astimezone(self, tz):
         _check_tzinfo_arg(tz)
-        # Don't call utcoffset unless it's necessary.
-        if tz is not None:
-            offset = self.utcoffset()
-            if offset is not None:
-                newoffset = tz.utcoffset(self)
-                if newoffset is not None:
-                    if not isinstance(newoffset, timedelta):
-                        newoffset = timedelta(minutes=newoffset)
-                    diff = offset - newoffset
-                    self -= diff # this can overflow; can't be helped
-        return self.replace(tzinfo=tz)
+        # This is somewhat convoluted because we can only call
+        # tzinfo.utcoffset(dt) when dt.tzinfo is tzinfo.  It's more
+        # convoluted due to DST headaches (redundant spellings and
+        # "missing" hours in local time -- see the tests for details).
+        other = self.replace(tzinfo=tz) # this does no conversion
+
+        # Don't call utcoffset unless necessary.  First check trivial cases.
+        if tz is None or self._tzinfo is None or self._tzinfo is tz:
+            return other
+
+        # Get the offsets.  If either object turns out to be naive, again
+        # there's no conversion of date or time fields.
+        myoff = self.utcoffset()
+        if myoff is None:
+            return other
+        otoff = other.utcoffset()
+        if otoff is None:
+            return other
+
+        other += otoff - myoff
+        # If tz is a fixed-offset class, we're done, but we can't know
+        # whether it is.  If it's a DST-aware class, and we're not near a
+        # DST boundary, we're also done.  If we crossed a DST boundary,
+        # the offset will be different now, and that's our only clue.
+        # Unfortunately, we can be in trouble even if we didn't cross a
+        # DST boundary, if we landed on one of the DST "problem hours".
+        newoff = other.utcoffset()
+        if newoff is None:
+            self._inconsistent_utcoffset_error()
+        if newoff != otoff:
+            other += newoff - otoff
+            otoff = other.utcoffset()
+            if otoff is None:
+                self._inconsistent_utcoffset_error()
+        return self._finish_astimezone(other, otoff)
 
     def isoformat(self, sep='T'):
         s = super(datetimetz, self).isoformat(sep)
