@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.5 2002/10/24 15:37:02 jim Exp $
+$Id: z3.py,v 1.6 2002/11/18 20:20:11 jim Exp $
 """
 
 import os, sys, asyncore
@@ -48,6 +48,11 @@ def run(argv=sys.argv):
     config('site.zcml')
     
     # Load server config
+    if (not os.path.exists('zserver.zcml')
+        and os.path.exists('zserver.zcml.in')
+        ):
+        open('zserver.zcml', 'w').write(open('zserver.zcml.in').read())
+        
     from Zope.Configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 
