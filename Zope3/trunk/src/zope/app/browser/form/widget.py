@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.5 2002/12/31 11:07:09 stevea Exp $
+$Id: widget.py,v 1.6 2003/01/03 15:52:30 stevea Exp $
 """
 
 __metaclass__ = type
@@ -50,8 +50,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def getData(self, optional=0):
         field = self.context
-        value = self.request.form.get(self.name,
-                                      self)
+        value = self.request.form.get(self.name, self) # self used as marker
         if value is self:
             # No user input
             if field.required and not optional:
