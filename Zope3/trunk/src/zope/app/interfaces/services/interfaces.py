@@ -13,14 +13,14 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.4 2003/01/07 19:50:26 stevea Exp $
+$Id: interfaces.py,v 1.5 2003/01/09 17:28:43 stevea Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
-from zope.app.services.field import ComponentLocation
+from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
 
 class IAdapterConfigurationInfo(Interface):
@@ -140,7 +140,7 @@ class IPageConfigurationInfo(IViewConfigurationInfo):
         min_length = 1,
         )
 
-    template = ComponentLocation(
+    template = ComponentPath(
         title = u"Page template",
         required = False,
         readonly = True,

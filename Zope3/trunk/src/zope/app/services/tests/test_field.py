@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for ComponentLocation field.
+"""Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_field.py,v 1.3 2003/01/09 17:28:46 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,7 +21,7 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.schema.interfaces import ValidationError
 from zope.interface import Interface
-from zope.app.services.field import ComponentLocation
+from zope.app.services.field import ComponentPath
 
 class I1(Interface):  pass
 
@@ -40,7 +40,7 @@ class Test(PlacefulSetup, TestCase):
 
         folder2 = traverse(self.rootFolder, 'folder2')
 
-        field = ComponentLocation(type=I1)
+        field = ComponentPath(type=I1)
         field = field.bind(folder2)
 
         field.validate(u'/folder1/c')

@@ -265,9 +265,9 @@
 <!-- Component Location widget -->
 
 <browser:page
-    for="zope.app.services.field.IComponentLocation"
+    for="zope.app.services.field.IComponentPath"
     name="edit"
-    class="zope.app.browser.services.field.ComponentLocationWidget"
+    class="zope.app.browser.services.field.ComponentPathWidget"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
     permission="zope.ManageServices"
     />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: field.py,v 1.3 2003/01/09 17:28:44 stevea Exp $
 """
 __metaclass__ = type
 
@@ -24,7 +24,7 @@ from zope.app.traversing import traverse
 from zope.app.component.interfacefield import InterfaceField
 from zope.exceptions import NotFoundError
 
-class IComponentLocation(IField):
+class IComponentPath(IField):
     """A field containing a component path.
     """
 
@@ -32,20 +32,21 @@ class IComponentLocation(IField):
         title = u"An interface that must be implemented by the component.",
         required = True,
         readonly = True,
+        basetype = None
         )
 
-class ComponentLocation(Field):
+class ComponentPath(Field):
 
-    __implements__ = IComponentLocation
+    __implements__ = IComponentPath
 
     _type = unicode
 
     def __init__(self, type, *args, **kw):
         self.type = type
-        super(ComponentLocation, self).__init__(*args, **kw)
+        super(ComponentPath, self).__init__(*args, **kw)
 
     def _validate(self, value):
-        super(ComponentLocation, self)._validate(value)
+        super(ComponentPath, self)._validate(value)
 
         if not value.startswith('/'):
             raise ValidationError("Not an absolute path", value)
@@ -56,4 +57,6 @@ class ComponentLocation(Field):
             raise ValidationError("Path for non-existent object", value)
 
         if not self.type.isImplementedBy(component):
-            raise ValidationError("Wrong component type")
+            raise ValidationError("Wrong component type", value)
+
+

@@ -11,16 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A widget for ComponentLocation field.
+"""A widget for ComponentPath field.
 
-$Id: field.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: field.py,v 1.3 2003/01/09 17:28:40 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.app.browser.form.widget import BrowserWidget
 from zope.component import getServiceManager
 
-class ComponentLocationWidget(BrowserWidget):
+class ComponentPathWidget(BrowserWidget):
 
     def _convert(self, value):
         return value or None
