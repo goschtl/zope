@@ -29,11 +29,13 @@ from zope.interface import implements
 
 from zope.app.container.contained import Contained, setitem, uncontained
 
-# XXX should an Instance be persistent by default ???
 class ProcessInstance(Contained):
+    """Process Instance implementation.
 
-    __doc__ = IProcessInstance.__doc__
-
+    Process instances are always added to a process instance container. This
+    container lives in an annotation of the object and is commonly stored in
+    the ZODB. Therefore a process instance should be persistent.
+    """
     implements(IProcessInstance)
 
     def __init__(self, pd_name):
@@ -67,7 +69,7 @@ class ProcessInstanceContainerAdapter(object):
 
     def __init__(self, context):
         self.context = context
-        # XXX: Band-aid, so that the process instance can have a valid
+        # Band-aid, so that the process instance can have a valid
         # path. Eventually the pi should have context as parent directly. 
         self.__parent__ = context
         self.__name__ = "processInstances"
