@@ -119,7 +119,7 @@ class ILocalMessageCatalog(IMessageCatalog):
     able to update our messages.
 
     Note that not all methods here require write access, but they should
-    not be required for an IReadMEssageCatalog and are used for editing
+    not be required for an IReadMessageCatalog and are used for editing
     only. Therefore this is the more suitable interface to put them.
     """
 
