@@ -8,7 +8,6 @@ div.cblock {
   padding:2px;
 } 
 
-a.edit {
-  display:block;
+div.actions {
   background:#EFEFEF;
 }

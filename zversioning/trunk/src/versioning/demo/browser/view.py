@@ -11,15 +11,10 @@ class RenderReST:
         self.concept = self.render(context.concept)
         self.todo = self.render(context.todo)
         self.issues = self.render(context.issues)
-        #Silly hack
-        self.href = "display:block; background:#EFEFEF;"
-        self.cblock = "border-width:1px; \
-                       border-style:solid;margin-top:6px; \
-                       padding:2px;"
-
 
     def render(self,content):    
         """render contextattributes to ReST"""
-        html = ReStructuredTextToHTMLRenderer(content.encode('utf-8'),
+        if content:
+            html = ReStructuredTextToHTMLRenderer(content.encode('utf-8'),
                                               self.request)
-        return unicode(html.render(),'utf-8')
+            return unicode(html.render(),'utf-8')

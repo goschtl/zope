@@ -8,7 +8,8 @@ class VProposal(persistent.Persistent):
     
     zope.interface.implements(IVProposal)
     
-    def __init__(self,title=u'',usecase=u'',concept=u'',todo=u'',issues=u''):
+    def __init__(self,title=u'',usecase=u'',concept=u'', \
+                 todo=u'',issues=u''):
         self.title = title
         self.usecase = usecase
         self.concept = concept
