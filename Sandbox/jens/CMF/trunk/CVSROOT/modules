@@ -40,7 +40,7 @@ ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 waaaGreyThing -l Components/GreyThing
 
 
-zsb waaaGreyThing \
+zsb &waaaGreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZClasses &webdav \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
