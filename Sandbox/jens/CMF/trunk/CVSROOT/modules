@@ -102,4 +102,6 @@ Zope ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod &lpZSQLMethods &lpZGadflyDA
 
+ZServer Publishers/ZServer
+
 # KLM end
