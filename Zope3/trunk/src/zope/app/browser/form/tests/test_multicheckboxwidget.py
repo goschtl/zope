@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_multicheckboxwidget.py,v 1.4 2003/02/20 14:45:44 stevea Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import MultiCheckBoxWidget
@@ -37,11 +37,12 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
         check_list = ('type="checkbox"', 'id="field.bar"',
                       'name="field.bar"', 'value="foo"', 'Foo')
         self._verifyResult(
-            self._widget.renderItem('Foo', 'foo', 'field.bar', None),
+            self._widget.renderItem(0, 'Foo', 'foo', 'field.bar', None),
             check_list)
         check_list += ('checked="checked"',)
         self._verifyResult(
-            self._widget.renderSelectedItem('Foo', 'foo', 'field.bar', None),
+            self._widget.renderSelectedItem(
+                0, 'Foo', 'foo', 'field.bar', None),
             check_list)
 
 

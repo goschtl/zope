@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.13 2003/02/11 15:59:32 sidnei Exp $
+$Id: widget.py,v 1.14 2003/02/20 14:45:43 stevea Exp $
 """
 
 __metaclass__ = type
@@ -445,6 +445,7 @@ class SingleItemsWidget(ItemsWidget):
 
         # FIXME: what if we run into multiple items with same value?
         rendered_items = []
+        count = 0
         for item in items:
             try:
                 item_value, item_text = item
@@ -453,17 +454,20 @@ class SingleItemsWidget(ItemsWidget):
                 item_text = item
 
             if item_value == value:
-                rendered_item = self.renderSelectedItem(item_text,
+                rendered_item = self.renderSelectedItem(count,
+                                                        item_text,
                                                         item_value,
                                                         name,
                                                         cssClass)
             else:
-                rendered_item = self.renderItem(item_text,
+                rendered_item = self.renderItem(count,
+                                                item_text,
                                                 item_value,
                                                 name,
                                                 cssClass)
 
             rendered_items.append(rendered_item)
+            count += 1
 
         return rendered_items
 
@@ -485,11 +489,11 @@ class ListWidget(SingleItemsWidget):
                               contents = "\n".join(renderedItems),
                               extra = self.getValue('extra'))
 
-    def renderItem(self, text, value, name, cssClass):
+    def renderItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value,
                               cssClass=cssClass)
 
-    def renderSelectedItem(self, text, value, name, cssClass):
+    def renderSelectedItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value,
                               cssClass=cssClass, selected=None)
 
@@ -508,23 +512,31 @@ class RadioWidget(SingleItemsWidget):
         else:
             return '<br />'.join(rendered_items)
 
-    def renderItem(self, text, value, name, cssClass):
-        return renderElement('input',
-                              type = "radio",
-                              cssClass = cssClass,
-                              name = name,
-                              id = name,
-                              value = value) + text
+    def _renderItem(self, index, text, value, name, cssClass, checked):
+        id = '%s.%s' % (name, index)
+        if checked:
+            element = renderElement('input',
+                                    type="radio",
+                                    cssClass=cssClass,
+                                    name=name,
+                                    id=id,
+                                    value=value,
+                                    checked=None)
+        else:
+            element = renderElement('input',
+                                    type="radio",
+                                    cssClass=cssClass,
+                                    name=name,
+                                    id=id,
+                                    value=value)
 
-    def renderSelectedItem(self, text, value, name, cssClass):
-        return renderElement('input',
-                              type="radio",
-                              cssClass=cssClass,
-                              name = name,
-                              id = name,
-                              value = value,
-                              checked = None) + text
+        return '%s<label for="%s">%s</label>' % (element, id, text)
 
+    def renderItem(self, index, text, value, name, cssClass):
+        return self._renderItem(index, text, value, name, cssClass, False)
+
+    def renderSelectedItem(self, index, text, value, name, cssClass):
+        return self._renderItem(index, text, value, name, cssClass, True)
 
 class MultiItemsWidget(ItemsWidget):
     """A widget with a number of items that has multiple selectable items."""
@@ -547,6 +559,7 @@ class MultiItemsWidget(ItemsWidget):
         items = self.context.allowed_values
         cssClass = self.getValue('cssClass')
         rendered_items = []
+        count = 0
         for item in items:
             try:
                 item_value, item_text = item
@@ -555,17 +568,20 @@ class MultiItemsWidget(ItemsWidget):
                 item_text = item
 
             if item_value in value:
-                rendered_item = self.renderSelectedItem(item_text,
+                rendered_item = self.renderSelectedItem(count,
+                                                        item_text,
                                                         item_value,
                                                         name,
                                                         cssClass)
             else:
-                rendered_item = self.renderItem(item_text,
+                rendered_item = self.renderItem(count,
+                                                item_text,
                                                 item_value,
                                                 name,
                                                 cssClass)
 
             rendered_items.append(rendered_item)
+            count += 1
 
         return rendered_items
 
@@ -587,10 +603,10 @@ class MultiListWidget(MultiItemsWidget):
                               contents = "\n".join(rendered_items),
                               extra = self.getValue('extra'))
 
-    def renderItem(self, text, value, name, cssClass):
+    def renderItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value)
 
-    def renderSelectedItem(self, text, value, name, cssClass):
+    def renderSelectedItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value,
                               selected=None)
 
@@ -609,7 +625,7 @@ class MultiCheckBoxWidget(MultiItemsWidget):
         else:
             return "<br />".join(rendered_items)
 
-    def renderItem(self, text, value, name, cssClass):
+    def renderItem(self, index, text, value, name, cssClass):
         return renderElement('input',
                               type = "checkbox",
                               cssClass = cssClass,
@@ -617,7 +633,7 @@ class MultiCheckBoxWidget(MultiItemsWidget):
                               id = name,
                               value = value) + text
 
-    def renderSelectedItem(self, text, value, name, cssClass):
+    def renderSelectedItem(self, index, text, value, name, cssClass):
         return renderElement('input',
                               type = "checkbox",
                               cssClass = cssClass,
