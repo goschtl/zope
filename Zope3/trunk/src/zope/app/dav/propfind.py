@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.4 2003/05/22 13:58:53 sidnei Exp $
+$Id: propfind.py,v 1.5 2003/05/22 15:10:58 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -149,7 +149,7 @@ class PROPFIND:
 
         self._depthRecurse(ms)
 
-        body = response.toxml('utf-8')
+        body = response.toxml().encode('utf-8')
         request.response.setBody(body)
         request.response.setStatus(207)
         return body

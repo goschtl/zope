@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.4 2003/05/22 13:58:54 sidnei Exp $
+$Id: test_propfind.py,v 1.5 2003/05/22 15:10:59 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -83,7 +83,7 @@ class FooZPT:
 
 def _createRequest(body=None, headers=None, skip_headers=None):
     if body is None:
-        body = '''<?xml version="1.0" encoding="utf-8" ?>
+        body = '''<?xml version="1.0"  ?>
 
         <propfind xmlns="DAV:">
         <prop xmlns:R="http://www.foo.bar/boxschema/">
@@ -244,7 +244,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         zpt = traverse(root, 'zpt')
         dc = getAdapter(zpt, IZopeDublinCore)
         dc.title = u'Test Title'
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:title />
@@ -257,7 +257,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'0'})
 
         resource_url = str(getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -285,7 +285,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         zpt = traverse(root, 'zpt')
         dc = getAdapter(zpt, IZopeDublinCore)
         dc.created = datetime.utcnow()
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:created />
@@ -298,7 +298,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'0'})
 
         resource_url = str(getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -327,7 +327,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         zpt = traverse(root, 'zpt')
         dc = getAdapter(zpt, IZopeDublinCore)
         dc.subjects = (u'Bla', u'Ble', u'Bli')
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:subjects />
@@ -340,7 +340,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                           'Depth':'0'})
 
         resource_url = str(getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -367,7 +367,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropname(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
         </propfind>
@@ -385,7 +385,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -412,7 +412,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropnamefolderdepth0(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
         </propfind>
@@ -430,7 +430,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -458,7 +458,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropnamefolderdepth1(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
         </propfind>
@@ -476,7 +476,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>
@@ -504,7 +504,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropnamefolderdepthinfinity(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" encoding="utf-8"?>
+        body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
         </propfind>
@@ -522,7 +522,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>%(resource_url)s</href>

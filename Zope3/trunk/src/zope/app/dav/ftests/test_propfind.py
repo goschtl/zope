@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for virtual hosting.
 
-$Id: test_propfind.py,v 1.1 2003/05/22 13:58:54 sidnei Exp $
+$Id: test_propfind.py,v 1.2 2003/05/22 15:10:58 sidnei Exp $
 """
 
 import unittest
@@ -66,7 +66,7 @@ class TestPROPFIND(HTTPTestCase):
                           prop='subjects', expect=expect, basic='mgr:mgrpw')
 
     def verifyPropOK(self, path, ns, prop, expect, basic):
-        body = """<?xml version="1.0" encoding="utf-8"?>
+        body = """<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <prop xmlns:a0="%(ns)s">
         <a0:%(prop)s />
@@ -78,7 +78,7 @@ class TestPROPFIND(HTTPTestCase):
                               request_body=body)
         self.assertEquals(result.getStatus(), 207)
         s1 = normalize_xml(result.getBody())
-        s2 = normalize_xml("""<?xml version="1.0" encoding="utf-8"?>
+        s2 = normalize_xml("""<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
         <href>http://localhost/pt</href>
