@@ -42,10 +42,10 @@ class Traversable:
         This method is called by __bobo_traverse___ when Zope3-style
         ITraverser traversal fails.
 
-        By default, we raise a KeyError error. This should be enough
+        By default, we return None. This should be enough
         as far as Zope 2 is concerned to trigger acquisition.
         """
-        raise KeyError, name
+        return None
 
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
