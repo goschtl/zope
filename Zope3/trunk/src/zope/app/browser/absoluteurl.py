@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.13 2003/08/28 22:40:24 sidnei Exp $
+$Id: absoluteurl.py,v 1.14 2003/08/29 12:28:37 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -65,7 +65,8 @@ class AbsoluteURL(BrowserView):
         if container is None:
             raise TypeError, _insufficientContext
 
-        if sameProxiedObjects(context, request.getVirtualHostRoot()):
+        if sameProxiedObjects(context, request.getVirtualHostRoot()) or \
+               isinstance(context, Exception):
             return ({'name':'', 'url': self.request.getApplicationURL()}, )
 
         base = zapi.getView(container, 'absolute_url', request).breadcrumbs()
