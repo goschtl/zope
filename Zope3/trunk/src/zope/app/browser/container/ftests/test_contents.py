@@ -12,17 +12,22 @@
 #
 ##############################################################################
 """
-
-$Id: test_contents.py,v 1.5 2003/10/02 16:23:19 garrett Exp $
+$Id: test_contents.py,v 1.6 2004/02/24 16:51:35 philikon Exp $
 """
 
 import unittest
 
-from zope.testing.functional import BrowserTestCase
-from zope.app.content.file import File
+from persistent import Persistent
 from transaction import get_transaction
+from zope.testing.functional import BrowserTestCase
+from zope.interface import implements
+
 from zope.app import zapi
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dublincore import IZopeDublinCore
+
+class File(Persistent):
+    implements(IAttributeAnnotatable)
 
 class Test(BrowserTestCase):
 
