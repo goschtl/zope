@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.32 2003/09/19 06:47:53 anthony Exp $
+$Id: interfaces.py,v 1.33 2003/09/25 15:24:31 anthony Exp $
 """
 from zope.interface import Interface, Attribute
 try:
@@ -237,7 +237,8 @@ class IMinMaxLen(ILen):
         title=_(u"Minimum length"),
         description=_(u"""\
         Value after whitespace processing cannot have less than
-        min_length characters. If min_length is None, there is
+        min_length characters (if a string type) or elements (if
+        another sequence type). If min_length is None, there is
         no minimum.
         """),
         required=False,
@@ -248,7 +249,8 @@ class IMinMaxLen(ILen):
         title=_(u"Maximum length"),
         description=_(u"""\
         Value after whitespace processing cannot have greater
-        or equal than max_length characters. If max_length is
+        or equal than max_length characters (if a string type) or 
+        elements (if another sequence type). If max_length is
         None, there is no maximum."""),
         required=False,
         min=0, # needs to be a positive number
