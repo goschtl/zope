@@ -55,6 +55,14 @@ class AuthServiceSearchView(object):
         if not (name+'.search' in self.request):
             return None
         searchstring = self.request[name+'.searchstring']
+        if isinstance(searchstring, list):
+            # Interpret as a string.
+            # XXX This is a workaround for the fact that
+            # SourceInputWidget generates a separate input field for
+            # each principal source, so when there are multiple
+            # sources, we get multiple fields that usually look
+            # exactly the same.  Something needs to be redesigned.
+            searchstring = ' '.join(searchstring).strip()
         return [principal.id
                 for principal in self.context.getPrincipals(searchstring)]
 
