@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.17 2003/03/23 22:03:27 jim Exp $
+$Id: service.py,v 1.18 2003/04/17 10:17:22 mgedmin Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -45,12 +45,12 @@ class ComponentAdding(Adding):
         self.added_object = ContextSuper(ComponentAdding, self).add(content)
         return self.added_object
 
-    def nextURL(self):        
+    def nextURL(self):
         v = queryView(self.added_object, "addConfiguration.html", self.request)
         if v is not None:
-            url = getPath(self.added_object)
+            url = str(getView(self.added_object, 'absolute_url', self.request))
             return url + "/@@addConfiguration.html"
-            
+
         return ContextSuper(ComponentAdding, self).nextURL()
 
     def action(self, type_name, id):
