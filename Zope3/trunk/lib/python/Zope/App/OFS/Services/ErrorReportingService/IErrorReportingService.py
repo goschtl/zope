@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IErrorReportingService.py,v 1.4 2002/10/23 16:00:19 jim Exp $
+$Id: IErrorReportingService.py,v 1.5 2002/11/11 08:40:06 stevea Exp $
 """
 from Interface import Interface
 
@@ -31,8 +31,10 @@ class IErrorReportingService(Interface):
            keep_entries, copy_to_logfile, ignored_exceptions
         """
 
-    def setProperties(keep_entries, copy_to_zlog=0, ignored_exceptions=(), RESPONSE=None):
-        """Sets the properties. keep_entries, copy_to_logfile, ignored_exceptions
+    def setProperties(keep_entries, copy_to_zlog=0, ignored_exceptions=(),
+                      RESPONSE=None):
+        """Sets the properties. keep_entries, copy_to_logfile,
+        ignored_exceptions
         """
 
     def getLogEntries():

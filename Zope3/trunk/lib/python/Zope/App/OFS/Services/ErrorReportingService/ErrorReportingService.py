@@ -14,22 +14,20 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.5 2002/10/23 18:18:28 pnaveen Exp $
+$Id: ErrorReportingService.py,v 1.6 2002/11/11 08:40:06 stevea Exp $
 """
 
-import os
 import sys
 import time
 from random import random
-from datetime import datetime
 from thread import allocate_lock
 from Persistence import Persistent
 from types import StringType, UnicodeType
 from zLOG import LOG, ERROR
 from Zope.Exceptions.ExceptionFormatter import format_exception
 from Zope.ContextWrapper import ContextMethod
-from Zope.App.ComponentArchitecture.NextService import getNextService
-from Zope.App.OFS.Services.ErrorReportingService.IErrorReportingService import IErrorReportingService
+from Zope.App.OFS.Services.ErrorReportingService.IErrorReportingService \
+        import IErrorReportingService
 
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
@@ -43,7 +41,6 @@ _rate_restrict_period = 60
 # minute.
 _rate_restrict_burst = 5
 
-
 # _temp_logs holds the logs.
 _temp_logs = {}  # { oid -> [ traceback string ] }
 
@@ -52,11 +49,11 @@ cleanup_lock = allocate_lock()
 class ErrorReportingService(Persistent):
     """Error Reporting Service
     """
-    __implements__ =  IErrorReportingService
+    __implements__ = IErrorReportingService
 
     keep_entries = 20
     copy_to_zlog = 0
-    _ignored_exceptions = ( 'Unauthorized', )
+    _ignored_exceptions = ('Unauthorized',)
 
     
     def _getLog(self):
@@ -107,18 +104,29 @@ class ErrorReportingService(Persistent):
                 if request:
                     url = request.URL
                     try:
-                       username = request.user.getLogin()+','+ request.user.getId()+','+request.user.getTitle()+','+request.user.getDescription()
+                       username = ','.join(request.user.getLogin(),
+                                           request.user.getId(),
+                                           request.user.getTitle(),
+                                           request.user.getDescription()
+                                           )
+                    # XXX bare except clause. Why is this here?
+                    # There should be a comment explaining why a bare
+                    # except clause is the right thing in this situation.
                     except:
                         pass
                     try:
                         req_html = self._makestr(request)
+                    # XXX bare except clause. Why is there here?
                     except:
                         pass
                     
                 try:
                     strv = str(info[1])
+                # XXX bare except clause. Why is this here?
                 except:
-                    strv = '<unprintable %s object>' % str(type(info[1]).__name__)
+                    strv = '<unprintable %s object>' % (
+                            str(type(info[1]).__name__)
+                            )
 
                 log = self._getLog()
                 entry_id = str(now) + str(random()) # Low chance of collision
@@ -140,8 +148,10 @@ class ErrorReportingService(Persistent):
                         del log[:-self.keep_entries]
                 finally:
                     cleanup_lock.release()
+            # XXX bare except clause. Why is this here?
             except:
-                 LOG('SiteError', ERROR, 'Error while logging', error=sys.exc_info())
+                 LOG('SiteError', ERROR, 'Error while logging', 
+                     error=sys.exc_info())
             else:
                 if self.copy_to_zlog:
                     self._do_copy_to_zlog(now, strtype, str(url), info)
@@ -152,7 +162,8 @@ class ErrorReportingService(Persistent):
     def _do_copy_to_zlog(self, now, strtype, url, info):
         when = _rate_restrict_pool.get(strtype,0)
         if now > when:
-            next_when = max(when, now - _rate_restrict_burst * _rate_restrict_period)
+            next_when = max(when,
+                            now - _rate_restrict_burst*_rate_restrict_period)
             next_when += _rate_restrict_period
             _rate_restrict_pool[strtype] = next_when
             LOG('SiteError', ERROR, str(url), error=info)
@@ -169,23 +180,21 @@ class ErrorReportingService(Persistent):
                       ignored_exceptions=()):
         """Sets the properties of this site error log.
         """
-        copy_to_zlog = not not copy_to_zlog
+        copy_to_zlog = bool(copy_to_zlog)
         self.keep_entries = int(keep_entries)
         self.copy_to_zlog = copy_to_zlog
-        self._ignored_exceptions = tuple(filter(None, map(str, ignored_exceptions)))
-
-    setProperties = ContextMethod(setProperties)
-
+        self._ignored_exceptions = tuple(
+                filter(None, map(str, ignored_exceptions))
+                )
+    setProperties = ContextMethod(setProperties
     def getLogEntries(self):
         """Returns the entries in the log, most recent first.
 
         Makes a copy to prevent changes.
         """
-        # List incomprehension ;-)
         res = [entry.copy() for entry in self._getLog()]
         res.reverse()
         return res
-
     getLogEntries = ContextMethod(getLogEntries)
 
     def getLogEntryById(self, id):
@@ -196,7 +205,6 @@ class ErrorReportingService(Persistent):
             if entry['id'] == id:
                 return entry.copy()
         return None
-
     getLogEntryById = ContextMethod(getLogEntryById)
 
 
@@ -208,7 +216,3 @@ _clear = _cleanup_temp_log
 from Zope.Testing.CleanUp import addCleanUp
 addCleanUp(_clear)
 del addCleanUp
-
-
-
-
