@@ -261,4 +261,4 @@ def getResource(name, request, providing=Interface, context=None):
 def queryResource(name, request, default=None, providing=Interface,
                   context=None):
     s = getService(Presentation, context)
-    return s.queryResource(name, request, default=default, providing=providing)
+    return s.queryResource(name, request, default, providing=providing)

@@ -1568,3 +1568,6 @@ def _bootstrap(context):
             handler="zope.configuration.config.subdirective",
             schema="zope.configuration.config.IDirectiveInfo"
             )
+
+    import zope.configuration.backward
+    zope.configuration.backward.bootstrap(context)

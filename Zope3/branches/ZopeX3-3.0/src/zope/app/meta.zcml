@@ -2,6 +2,7 @@
 
 <!-- Standard configuration directives -->
 <include package="zope.modulealias" file="meta.zcml" />
+<include package="zope.configuration" file="meta.zcml" />
 
 <include package="zope.app.component" file="meta.zcml" />
 <include package="zope.app.publisher" file="meta.zcml" />
