@@ -1,52 +1,11 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-<directives namespace="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-  <directive name="vocabulary" handler=".vocabulary.register">
-    <!-- example:
-         <vocabulary name="garys-favorite-path-references"
-                     factory="zope.app.gary.paths.Favorites" />
-      -->
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="vocabulary" 
+      schema=".metadirectives.IVocabularyDirective"
+      handler=".metaconfigure.vocabulary" />
 
-    <description>
-      Define a named vocabulary.
-
-      This associates a vocabulary name in the global vocabulary
-      service with a factory.  Each name may only be defined once.
-
-      Additional keyword arguments may be passed to the factory by
-      adding additional attributes beyond those listed here.  This can
-      be useful when using vocabularies which implement various kinds
-      of filtering.
-    </description>
-
-    <attribute name="name" required="yes">
-      <description>
-        The name of the vocabulary; this can be used as the value for
-        the "vocabulary" argument to the VocabularyField and
-        VocabularyMultiField constructors to cause this vocabulary to
-        be used.
-      </description>
-    </attribute>
-
-    <attribute name="factory" required="yes">
-      <description>
-        Factory that returns an instance of the named vocabulary when
-        called with the context object as the only argument.  This
-        should be a dotted-name that refers to a Python object.
-      </description>
-    </attribute>
-
-    <attribute name="*" required="no">
-      <description>
-        Arbitrary keys and values are allowed to be passed to the vocabulary
-        source.
-      </description>
-    </attribute>
-
-    <attribute name="filter" />
-    <attribute name="another" />
-
-  </directive>
-
-</directives>
-</zopeConfigure>
+</configure>

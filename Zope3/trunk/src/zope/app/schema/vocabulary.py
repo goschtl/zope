@@ -11,38 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Implementation of ZCML action to register vocabulary factories.
 
-"""Implementation of ZCML action to register vocabulary factories."""
-
+$Id: vocabulary.py,v 1.4 2003/08/01 21:48:34 srichter Exp $
+"""
 from zope.interface import implements
 from zope.component import getService
-from zope.configuration.action import Action
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.testing import cleanup
 
 __metaclass__ = type
-
-def register(_context, name, factory, **kw):
-    factory = _context.resolve(factory.strip())
-    if kw:
-        factory = FactoryKeywordPasser(factory, kw)
-    return [
-        Action(discriminator=('defineVocabulary', name),
-               callable=vocabularyService.register,
-               args=(name, factory))
-        ]
-
-
-class FactoryKeywordPasser:
-    """Helper that passes additional keywords to the actual factory."""
-
-    def __init__(self, factory, kwargs):
-        self.factory = factory
-        self.kwargs = kwargs
-
-    def __call__(self, object):
-        return self.factory(object, **self.kwargs)
 
 
 class ZopeVocabularyRegistry:

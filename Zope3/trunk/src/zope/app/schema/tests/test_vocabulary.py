@@ -11,19 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Unit tests for the global vocabulary service and ZCML integration.
 
-"""Unit tests for the global vocabulary service and ZCML integration."""
-
+$Id: test_vocabulary.py,v 1.4 2003/08/01 21:48:38 srichter Exp $
+"""
 import unittest
-
+from zope.app.schema.metaconfigure import \
+     vocabulary as register, FactoryKeywordPasser
 from zope.app.schema import vocabulary
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.configuration import xmlconfig
 
 
 class MyContext:
     def resolve(self, name):
         return MyFactory
+
+    def action(self, discriminator=None, callable=None, args=None, kw=None):
+        self.discriminator = discriminator
+        self.callable = callable
+        self.args = args or ()
+        self.kw = kw or {}
+        
 
 class MyFactory:
     def __init__(self, context, **kw):
@@ -38,80 +46,49 @@ class VocabularyServiceTests(PlacelessSetup, unittest.TestCase):
                           vocabulary.vocabularyService.get,
                           None, "missing-vocabulary")
 
+
     def check_vocabulary_get(self, kw={}):
         context = object()
         vocab = vocabulary.vocabularyService.get(context, "my-vocab")
         self.assert_(vocab.ob is context)
         self.assertEqual(vocab.kw, kw)
 
-    def load_zcml(self, fragment):
-        xmlconfig.string("""\
-        <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-          <include package='zope.configuration' file='meta.zcml' />
-          <include package='zope.app.component' file='meta.zcml' />
-          <include package='zope.app.schema' file='meta.zcml' />
-
-          <include package='zope.app.schema' />
-
-          %s
-        </zopeConfigure>
-        """ % fragment)
-
     extra_keywords = {"filter": "my-filter",
                       "another": "keyword"}
 
-    def test_simple_zcml(self):
-        self.load_zcml("""\
-          <vocabulary
-              name='my-vocab'
-              factory='zope.app.schema.tests.test_vocabulary.MyFactory'
-              />""")
-        self.check_vocabulary_get()
-
-    def test_passing_keywords_from_zcml(self):
-        self.load_zcml("""\
-          <vocabulary
-              name='my-vocab'
-              factory='zope.app.schema.tests.test_vocabulary.MyFactory'
-              filter='my-filter'
-              another='keyword'
-              />""")
-        self.check_vocabulary_get(self.extra_keywords)
-
     def test_action_without_keywords(self):
         # make sure the action machinery works, aside from ZCML concerns
-        actions = vocabulary.register(MyContext(), "my-vocab", ".maker")
-        self.assertEqual(len(actions), 1)
-        descriminator, callable, args, kw = actions[0]
+        context = MyContext()
+        register(context, "my-vocab", MyFactory)
         # check our expectations of the action:
-        self.assertEqual(len(args), 2)
-        self.assertEqual(args[0], "my-vocab")
-        self.assertEqual(kw, {})
-        self.failIf(isinstance(args[1], vocabulary.FactoryKeywordPasser))
-        # enact the registration:
-        callable(*args, **kw)
+        self.assertEqual(len(context.args), 2)
+        self.assertEqual(context.args[0], "my-vocab")
+        self.failIf(isinstance(context.args[1], FactoryKeywordPasser))
+        self.assertEqual(context.kw, {})
+        context.callable(*context.args, **context.kw)
         # make sure the factory behaves as expected:
         self.check_vocabulary_get()
 
     def test_action_with_keywords(self):
         # make sure the action machinery works, aside from ZCML concerns
-        actions = vocabulary.register(MyContext(), "my-vocab", ".maker",
-                                      **self.extra_keywords)
-        self.assertEqual(len(actions), 1)
-        descriminator, callable, args, kw = actions[0]
+        context = MyContext()
+        actions = register(context, "my-vocab", MyFactory,
+                           **self.extra_keywords)
         # check our expectations of the action:
-        self.assertEqual(len(args), 2)
-        self.assertEqual(args[0], "my-vocab")
-        self.assertEqual(kw, {})
-        self.assert_(isinstance(args[1], vocabulary.FactoryKeywordPasser))
+        self.assertEqual(len(context.args), 2)
+        self.assertEqual(context.args[0], "my-vocab")
+        self.assertEqual(context.kw, {})
+        self.assert_(isinstance(context.args[1], FactoryKeywordPasser))
         # enact the registration:
-        callable(*args, **kw)
+        context.callable(*context.args, **context.kw)
         # make sure the factory behaves as expected:
         self.check_vocabulary_get(self.extra_keywords)
 
 
 def test_suite():
-    return unittest.makeSuite(VocabularyServiceTests)
+    return unittest.TestSuite((
+        unittest.makeSuite(VocabularyServiceTests),
+        ))
 
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")
+if __name__ == '__main__':
+    unittest.main()
