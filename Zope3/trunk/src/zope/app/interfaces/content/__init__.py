@@ -11,14 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: __init__.py,v 1.3 2003/12/18 16:34:17 eddala Exp $
-"""
+"""Content-related interfaces.
 
+$Id: __init__.py,v 1.4 2004/02/20 20:33:37 srichter Exp $
+"""
 from zope.interface.interfaces import IInterface
 
 class IContentType(IInterface):
-    """This interface represents a content type"""
+    """This interface represents a content type.
+
+    If an **interface** implements this interface type, then all object
+    implementing the interface are considered content objects.
+    """
     
 
 

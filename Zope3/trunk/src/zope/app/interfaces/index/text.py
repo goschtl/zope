@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.5 2003/08/05 08:33:34 anthony Exp $
+$Id: text.py,v 1.6 2004/02/20 20:33:37 srichter Exp $
 """
-
 from zope.interface import Interface
 from zope.schema import BytesLine
 from zope.app.component.interfacefield import InterfaceField
@@ -37,8 +36,8 @@ class ISearchableText(Interface):
         """
 
 class IUITextCatalogIndex(IStatistics):
+    """Interface for creating a TextIndex inside a catalog"""
 
-    """Interface for creating a TextIndex from with a catalog"""
     interface = InterfaceField(
                 title=u"Interface", 
                 description=u"Objects will be adapted to this interface",
@@ -51,7 +50,6 @@ class IUITextCatalogIndex(IStatistics):
                  default="getSearchableText")
 
 class IUITextIndex(IUITextCatalogIndex):
-
     """Interface for creating a TextIndex from the ZMI."""
 
     def subscribe():
@@ -64,7 +62,6 @@ class IUITextIndex(IUITextCatalogIndex):
         """Return whether we are currently subscribed."""
 
 class IQueryView(Interface):
-
     """Interface providing a query method that can be invoked from ZPT.
 
     XXX How to express that this is a browser interface?"""

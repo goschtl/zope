@@ -1,26 +1,57 @@
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Catalog Interfaces
+
+$Id: catalog.py,v 1.3 2004/02/20 20:33:36 srichter Exp $
+"""
 from zope.interface import Interface
 
 class ICatalogView(Interface):
-    "Provides read-only access to Catalog"
+    """Provides information about a catalog."""
 
-    def getSubscribed(): "get current subscription status"
+    def getSubscribed():
+        """Return 'True', if the catalog is subscribed to events, otherwise
+        'False'."""
+
 
 class ICatalogQuery(Interface):
     "Provides Catalog Queries"
+
     def searchResults(**kw):
 	"search on the given indexes"
 
+
 class ICatalogEdit(Interface):
-    "Provides read-write Catalog info"
+    """Allows one to manipulate the Catalog information."""
+
     def clearIndexes(): 
-        "nuke the indexes"
+        """Remove all index data."""
+
     def updateIndexes(): 
-        "reindex all objects"
+        """Reindex all objects."""
+
     def subscribeEvents(update=True): 
-	"start receiving events, if update, reindex all existing events"
+        """Start listening for events.
+
+        Starts listening to events for possible index updating. If 'update' is
+	'True', always reindex all objects.
+        """
+
     def unsubscribeEvents(): 
-	"stop receiving events"
+        """Stop listening to events."""
+
 
 class ICatalog(ICatalogView, ICatalogQuery, ICatalogEdit): 
-    "a content-space catalog"
-    pass
+    """Marker to describe a catalog in content space."""
+

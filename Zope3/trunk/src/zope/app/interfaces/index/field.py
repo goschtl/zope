@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces related to field indexing and searching.
 
-$Id: field.py,v 1.5 2003/07/14 09:56:04 anthony Exp $
+$Id: field.py,v 1.6 2004/02/20 20:33:37 srichter Exp $
 """
-
 from zope.interface import Interface
 from zope.schema import BytesLine
 from zope.app.component.interfacefield import InterfaceField
