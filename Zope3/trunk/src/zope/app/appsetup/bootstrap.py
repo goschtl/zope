@@ -19,6 +19,8 @@ essential services.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from transaction import get_transaction
 from zope.app.publication.zopepublication import ZopePublication
 from zope.interface import implements

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.interface
 import zope.app.component.hooks
 from zope.security.interfaces import IParticipation
