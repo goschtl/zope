@@ -1,0 +1,99 @@
+<html><head><title>Move items between selection boxes and sort them manually</title></head>
+<body>
+
+<form name="myForm">
+<table border="1">
+  <tbody><tr>
+    <td>
+      <select name="from" size="5"><option>Anton</option><option>Berta</option><option>Cäsar</option><option>Dora</option><option>Emil</option></select>
+    </td>
+    <td>
+      <p><button name="from2toButton" type="button" value=" -&gt;" onclick="javascript:from2to()">&nbsp;-&gt;</button></p>
+      <p><button name="to2fromButton" type="button" value="&lt;- " onclick="javascript:to2from()">&lt;-&nbsp;</button></p>
+    </td>
+    <td>
+      <select name="to" size="5"><option>Friedrich</option><option>Gustav</option><option>Heinrich</option></select>
+    </td>
+    <td>
+      <p><button name="upButton" type="button" value="^" onclick="javascript:moveUp()">^</button></p>
+      <p><button name="downButton" type="button" value="v" onclick="javascript:moveDown()">v</button></p>
+    </td>
+  </tr>
+</tbody></table>
+</form>
+
+
+<script type="text/javascript">
+// shortcuts for selection fields
+fromSel = document.myForm.from;
+toSel = document.myForm.to;
+
+// move item from "from" selection to "to" selection
+function from2to()
+  {
+  if (fromSel.selectedIndex == -1) selectionError();
+  else
+    {
+    // need to create a new temporary object with values of item to copy
+    // simple item moving between selection lists works fine
+    // with Mozilla but doesn't work with IE *grrrhh*
+    temp = new Option(fromSel.options[fromSel.selectedIndex].text, fromSel.options[fromSel.selectedIndex].value);
+    toSel.options[toSel.length] = temp;
+    // want to select newly created item
+    temp.selected = true;
+    // luckily, simple deletion of items DOES work in Mozilla and IE
+    fromSel.options[fromSel.selectedIndex] = null;
+    }
+  }
+
+// move item from "to" selection back to "from" selection
+function to2from()
+  {
+  if (toSel.selectedIndex == -1) selectionError();
+  else
+    {
+    temp = new Option(toSel.options[toSel.selectedIndex].text, toSel.options[toSel.selectedIndex].value);
+    fromSel.options[fromSel.length] = temp;
+    temp.selected = true;
+    toSel.options[toSel.selectedIndex] = null;
+    }
+  // fromSel.options[fromSel.length] = toSel.options[toSel.selectedIndex];
+  }
+
+
+// move selected item in "to" selection one up
+function moveUp()
+  {
+  if (toSel.selectedIndex == -1) selectionError();
+  else if (toSel.selectedIndex < 1) alert("Cannot move further up!");
+  else
+    {
+    pos = toSel.selectedIndex; temp = toSel.options[pos-1].text;
+    toSel.options[pos-1].text = toSel.options[pos].text;
+    toSel.options[pos].text = temp;
+    toSel.selectedIndex = pos-1;
+    }
+  }
+
+// move selected item in "to" selection one down
+function moveDown()
+  {
+  if (toSel.selectedIndex == -1) selectionError();
+  else if (toSel.selectedIndex > toSel.length-2) alert("Cannot move further down!");
+  else
+    {
+    pos = toSel.selectedIndex; temp = toSel.options[pos+1].text;
+    toSel.options[pos+1].text = toSel.options[pos].text;
+    toSel.options[pos].text = temp;
+    toSel.selectedIndex = pos+1;
+    }
+  }
+
+// error message for missing selection
+function selectionError()
+  {alert("Must select something!")}
+
+</script>
+
+
+</body></html>
