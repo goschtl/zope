@@ -62,7 +62,7 @@ We can use a class implementation specification to look up the object::
   12
 
 
-and it can be looked up for interfaces that it's provided interface
+and it can be looked up for interfaces that its provided interface
 extends::
 
   >>> registry.lookup([IR1], IP1, '')
