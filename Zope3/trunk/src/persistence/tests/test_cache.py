@@ -11,7 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys, time
+import unittest, time
+from persistence import Persistent
+from persistence.cache import Cache
+
+class P(Persistent):
+    pass
+
+class DM:
+    def __init__(self, cache):
+        self.called=0
+        self.cache=cache
+
+    def register(self, ob):
+        self.called += 1
+        
+    def setstate(self, ob):
+        ob.__setstate__({'x': 42})
+        self.cache.setstate(ob._p_oid, ob)
 
 class Test(unittest.TestCase):
 
@@ -77,13 +94,12 @@ class Test(unittest.TestCase):
                          {'ghosts': 0, 'active': 1},
                          )
         # No changed because p is modified:
-        dm.cache.minimize()
+        dm.cache.incrgc()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        p._p_changed=0
-        # Now the minimize should work
-        dm.cache.minimize()
+        p._p_changed = 0
+        dm.cache.clear()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
@@ -112,36 +128,15 @@ class Test(unittest.TestCase):
                          )
 
         p1.a=1
-        p1._p_atime=int(time.time()-5000)%86400
         p1._p_changed=0
+        p1._p_atime=int(time.time()-5000)%86400
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        dm.cache.full_sweep()
+        dm.cache.incrgc()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
-
-
-
-
-
-from persistence import Persistent
-
-class P(Persistent): pass
-
-from persistence.cache import Cache
-
-class DM:
-    def __init__(self, cache):
-        self.called=0
-        self.cache=cache
-
-    def register(self, ob): self.called += 1
-    def setstate(self, ob):
-        ob.__setstate__({'x': 42})
-        self.cache.setstate(ob._p_oid, ob)
-
 
 def test_suite():
     loader=unittest.TestLoader()
