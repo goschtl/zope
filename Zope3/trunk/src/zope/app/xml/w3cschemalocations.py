@@ -14,7 +14,7 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.5 2003/06/20 13:59:38 philikon Exp $
+$Id: w3cschemalocations.py,v 1.6 2003/07/01 14:31:05 fdrake Exp $
 """
 from zope.interface import directlyProvides
 from xml.parsers.expat import ParserCreate, ExpatError
@@ -62,7 +62,7 @@ class W3CXMLSchemaLocationParser:
         self._schema_uris = []
         self._parser = ParserCreate(namespace_separator=" ")
         self._parser.StartElementHandler = self.startElement
-        
+
     def startElement(self, name, attrs):
         for key, value in attrs.items():
             try:
@@ -84,10 +84,10 @@ class W3CXMLSchemaLocationParser:
             # we do not take any special pains to make sure this is
             # well-formed anyway; this should happen at a higher level
             # (views) or will be detected at a lower layer (parsing into
-            # a DOM or SAX events) anyway. 
-            pass 
+            # a DOM or SAX events) anyway.
+            pass
         except DoneParsing:
             pass
-        
+
     def getSchemaLocations(self):
         return self._schema_uris
