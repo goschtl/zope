@@ -19,6 +19,9 @@ from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
+from interfaces import IVocabulary, IVocabularyTokenized, ITokenizedTerm
+from zope.interface.declarations import directlyProvides
+from zope.schema import TextLine
 
 try:
     basestring  # new in Python 2.3
@@ -80,6 +83,80 @@ class VocabularyMultiField(VocabularyField):
             if v not in vocab:
                 raise ValidationError(errornames.ConstraintNotSatisfied, v)
 
+# simple vocabularies performing enumerated-like tasks
+
+class SimpleTerm:
+    """Simple tokenized term used by SimpleVocabulary"""
+    
+    __implements__ = ITokenizedTerm
+
+    def __init__(self, value, token=None):
+        """Create a term for value and token. If token is omitted, 
+        str(value) is used for the token
+        """
+        self.value = value
+        if token is None:
+            token = value
+        self.token = str(token)
+
+class SimpleVocabulary(object):
+    """vocabulary that uses a list or tuple"""
+
+    __implements__ = IVocabulary, IVocabularyTokenized
+
+    def __init__(self, data, *interfaces):
+        self.by_value = {}
+        self.by_token = {}
+        for value in data:
+            term = SimpleTerm(value)
+            self.by_value[value] = term
+            self.by_token[term.token] = term
+        assert len(self.by_value) == len(self.by_token), \
+            'Supplied vocabulary values resulted in duplicate term tokens'
+        if interfaces:
+            directlyProvides(self, *interfaces)
+
+    def fromDict(cls, data, *interfaces):
+        self = cls.__new__(cls, data, *interfaces)
+        self.by_value = {}
+        self.by_token = {}
+        for token, value in data.items():
+            term = SimpleTerm(value, token)
+            self.by_value[value] = term
+            self.by_token[term.token] = term
+        assert len(self.by_value) == len(self.by_token), \
+            'Supplied vocabulary data keys resulted in duplicate term tokens'
+        if interfaces:
+            directlyProvides(self, *interfaces)
+        return self
+
+    fromDict = classmethod(fromDict)
+
+    def __contains__(self, value):
+        return value in self.by_value
+
+    def getQuery(self):
+        return None
+
+    def getTerm(self, value):
+        try:
+            return self.by_value[value]
+        except KeyError:
+            raise LookupError(value)
+    
+    def getTermByToken(self, token):
+        try:
+            return self.by_token[token]
+        except KeyError:
+            raise LookupError(token)        
+
+    def __iter__(self):
+        return self.by_value.itervalues()
+
+    def __len__(self):
+        return len(self.by_value)
+
+# registry code
 
 class VocabularyRegistryError(LookupError):
     def __init__(self, name):
@@ -106,7 +183,6 @@ class VocabularyRegistry(object):
 
     def register(self, name, factory):
         self._map[name] = factory
-
 
 _vocabularies = None
 
