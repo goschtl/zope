@@ -17,16 +17,19 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.16 2004/02/11 03:33:39 Zen Exp $
+$Id: bootstrap.py,v 1.17 2004/02/24 16:51:20 philikon Exp $
 """
 
-from zope.app import zapi
 from transaction import get_transaction
 from zope.interface import implements
+from zope.proxy import removeAllProxies
+from zope.component.exceptions import ComponentLookupError
+
+from zope.app import zapi
 from zope.app.interfaces.event import ISubscriber
 from zope.app.traversing import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.content.folder import rootFolder
+from zope.app.folder import rootFolder
 from zope.app.services.servicenames import HubIds, PrincipalAnnotation
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.servicenames import ErrorLogging, Interfaces, Utilities
@@ -38,15 +41,13 @@ from zope.app.services.error import RootErrorReportingService
 from zope.app.services.utility import LocalUtilityService
 from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.services.interface import LocalInterfaceService
-from zope.proxy import removeAllProxies
 from zope.app.event import function
-from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.hub import ISubscriptionControl
 from zope.app.interfaces.container import INameChooser
 from zope.app.interfaces.utilities.session import \
-    IBrowserIdManager, ISessionDataContainer
+     IBrowserIdManager, ISessionDataContainer
 from zope.app.utilities.session import \
-        CookieBrowserIdManager, PersistentSessionDataContainer
+     CookieBrowserIdManager, PersistentSessionDataContainer
 from zope.app.services.utility import UtilityRegistration
 
 class BootstrapSubscriberBase:
@@ -76,6 +77,7 @@ class BootstrapSubscriberBase:
 
         if self.root_folder is None:
             self.root_created = True
+            # ugh... we depend on the root folder implementation
             self.root_folder = rootFolder()
             root[ZopePublication.root_name] = self.root_folder
 
