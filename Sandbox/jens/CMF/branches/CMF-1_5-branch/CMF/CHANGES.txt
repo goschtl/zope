@@ -2,6 +2,9 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - ZPT skin: Fixed '*metadata_edit_form'.
+      Setting "Enable Discussion?" to 'Off' was broken.
+
     - CMFSetup: Made sure imported values are converted to strings.
       For now imports and exports work only with 'ascii' encoding.
       (http://collector.zope.org/CMF/287)
