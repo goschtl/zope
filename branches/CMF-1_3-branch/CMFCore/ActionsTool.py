@@ -20,7 +20,7 @@ from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 
-import CMFCorePermissions
+from CMFCorePermissions import ManagePortal
 from Expression import Expression, createExprContext
 from ActionInformation import ActionInformation, oai
 from ActionProviderBase import ActionProviderBase
@@ -63,61 +63,46 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
 
     meta_type = 'CMF Actions Tool'
 
-    action_providers = ('portal_membership'
-                      , 'portal_actions'
-                      , 'portal_registration'
-                      , 'portal_discussion'
-                      , 'portal_undo'
-                      , 'portal_syndication'
-                      , 'portal_workflow'
-                      , 'portal_properties')
+    action_providers = ( 'portal_membership'
+                       , 'portal_actions'
+                       , 'portal_registration'
+                       , 'portal_discussion'
+                       , 'portal_undo'
+                       , 'portal_syndication'
+                       , 'portal_workflow'
+                       , 'portal_properties'
+                       )
 
     security = ClassSecurityInfo()
 
-    manage_options = ( ActionProviderBase.manage_options +
-                      ({'label' : 'Action Providers', 'action' : 'manage_actionProviders'}
-                     ,   { 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
-                     ) + Folder.manage_options
+    manage_options = ( ActionProviderBase.manage_options
+                     + ( { 'label' : 'Action Providers'
+                         , 'action' : 'manage_actionProviders'
+                         }
+                       , { 'label' : 'Overview'
+                         , 'action' : 'manage_overview'
+                         }
+                       )
+                     + Folder.manage_options
                      ) 
 
     #
     #   ZMI methods
     #
-    security.declareProtected( CMFCorePermissions.ManagePortal
-                             , 'manage_overview' )
+    security.declareProtected( ManagePortal, 'manage_overview' )
     manage_overview = DTMLFile( 'explainActionsTool', _dtmldir )
     manage_actionProviders = DTMLFile('manageActionProviders', _dtmldir)
 
-
-    #
-    # Programmatically manipulate the list of action providers
-    #
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
+    security.declareProtected( ManagePortal, 'manage_aproviders' )
+    def manage_aproviders( self
+                         , apname=''
+                         , chosen=()
+                         , add_provider=0
+                         , del_provider=0
+                         , REQUEST=None
+                         ):
         """
-        Lists actions available through the tool.
-        """
-        return self._actions
-
-    security.declareProtected( CMFCorePermissions.ManagePortal
-                             , 'listActionProviders'
-                             )
-    def listActionProviders(self):
-       """ returns a sequence of action providers known by this tool """
-       return self.action_providers
-
-    security.declareProtected(CMFCorePermissions.ManagePortal
-                            , 'manage_aproviders')
-    def manage_aproviders(self
-                        , apname=''
-                        , chosen=()
-                        , add_provider=0
-                        , del_provider=0
-                        , REQUEST=None):
-        """
-        Manage TTW Action Providers
+        Manage action providers through-the-web.
         """
         providers = list(self.listActionProviders())
         new_providers = []
@@ -130,25 +115,42 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
             providers = new_providers
         self.action_providers = providers
         if REQUEST is not None:
-            return self.manage_actionProviders(self
-                                             , REQUEST
-                                             , manage_tabs_message='Properties changed.')
-        
+            return self.manage_actionProviders(
+                            self
+                          , REQUEST
+                          , manage_tabs_message='Properties changed.')
 
+    #
+    #   ActionProvider interface
+    #
+    security.declarePrivate('listActions')
+    def listActions(self, info=None):
+        """
+        Return a list of actions available through the tool.
+        """
+        return self._actions
 
-    security.declareProtected( CMFCorePermissions.ManagePortal
-                             , 'addActionProvider'
-                             )
+    #
+    # Programmatically manipulate the list of action providers
+    #
+    security.declareProtected( ManagePortal, 'listActionProviders' )
+    def listActionProviders(self):
+       """
+       Return a sequence of names of action providers known by this tool.
+       """
+       return self.action_providers
+
+    security.declareProtected( ManagePortal, 'addActionProvider' )
     def addActionProvider( self, provider_name ):
-        """ add the name of a new action provider """
+        """
+        Add the name of a new action provider.
+        """
         if hasattr( self, provider_name ):
             p_old = self.action_providers
             p_new = p_old + ( provider_name, )
             self.action_providers = p_new
 
-    security.declareProtected( CMFCorePermissions.ManagePortal
-                             , 'deleteActionProvider'
-                             )
+    security.declareProtected( ManagePortal, 'deleteActionProvider' )
     def deleteActionProvider( self, provider_name ):
         """ remove an action provider """
         if provider_name in self.action_providers:
@@ -159,18 +161,7 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     #
     #   'portal_actions' interface methods
     #
-
-    def _listActions(self,append,object,info,ec):
-        a = object.listActions(info)
-        if a and type(a[0]) is not type({}):
-            for ai in a:
-                if ai.testCondition(ec):
-                    append(ai.getAction(ec))
-        else:
-            for i in a:
-                append(i)
-        
-    security.declarePublic('listFilteredActionsFor')
+    security.declarePublic( 'listFilteredActionsFor' )
     def listFilteredActionsFor(self, object=None):
         '''Gets all actions available to the user and returns a mapping
         containing user actions, object actions, and global actions.
@@ -274,5 +265,20 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     # listFilteredActions() is an alias.
     security.declarePublic('listFilteredActions')
     listFilteredActions = listFilteredActionsFor
+
+    #
+    #   Helper methods
+    #
+    security.declarePrivate( '_listActions' )
+    def _listActions( self, append, object, info, ec ):
+
+        a = object.listActions(info)
+        if a and type(a[0]) is not type({}):
+            for ai in a:
+                if ai.testCondition(ec):
+                    append(ai.getAction(ec))
+        else:
+            for i in a:
+                append(i)
 
 InitializeClass(ActionsTool)
