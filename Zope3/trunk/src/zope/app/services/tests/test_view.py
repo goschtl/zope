@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.5 2003/02/11 15:59:57 sidnei Exp $
+$Id: test_view.py,v 1.6 2003/03/11 16:11:31 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -32,7 +32,7 @@ from zope.component.interfaces import IServiceService
 from zope.component.view import provideView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.interfaces.services.interfaces import IZPTTemplate
+from zope.app.interfaces.services.view import IZPTTemplate
 from zope.app.services.view import PageConfiguration, BoundTemplate
 from zope.interface.verify import verifyObject
 from zope.component.interfaces import IViewService

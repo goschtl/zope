@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.7 2003/03/03 23:16:09 gvanrossum Exp $
+$Id: test_objectretrievingprocessor.py,v 1.8 2003/03/11 16:11:05 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,7 +30,7 @@ from zope.app.interfaces.services.hub import IObjectHub
 
 from zope.app.interfaces.index.interfaces import IRankedHubIdList, \
     IRankedObjectIterator, IRankedObjectRecord
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 from zope.app.index.processors import ObjectRetrievingProcessor
 from zope.app.index.processors import RankedObjectRecord, RankedObjectIterator
 from zope.app.index.queries import BatchedRankedResult

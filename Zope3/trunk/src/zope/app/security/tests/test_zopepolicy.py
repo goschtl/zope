@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.5 2003/03/03 23:16:12 gvanrossum Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.6 2003/03/11 16:11:20 jim Exp $
 """
 
 import unittest
@@ -52,7 +52,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.app.security.zopepolicy import permissionsOfPrincipal
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class Context:
     def __init__(self, user, stack=[]):

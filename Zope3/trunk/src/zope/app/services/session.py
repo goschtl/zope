@@ -30,7 +30,7 @@ from zope.component import getService
 # Sibling imports
 from zope.app.interfaces.services.session import ISessionService
 from zope.app.interfaces.services.session import IConfigureSessionService
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 cookieSafeTrans = string.maketrans("+/", "-.")

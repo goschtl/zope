@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.9 2003/03/10 22:37:47 gvanrossum Exp $
+$Id: view.py,v 1.10 2003/03/11 16:11:22 jim Exp $
 """
 __metaclass__ = type
 
@@ -41,10 +41,11 @@ from zope.proxy.introspection import removeAllProxies
 from zope.app.traversing import getPhysicalRoot, traverse
 from zope.exceptions import NotFoundError
 
-from zope.app.interfaces.services.interfaces import IViewConfiguration, IPageConfiguration
+from zope.app.interfaces.services.view import IViewConfiguration
+from zope.app.interfaces.services.view import IPageConfiguration
 from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class ViewService(Persistent):
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_sqlcommand.py,v 1.3 2003/03/03 23:16:11 gvanrossum Exp $
+$Id: test_sqlcommand.py,v 1.4 2003/03/11 16:11:15 jim Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.app.interfaces.rdb import IZopeCursor
 from zope.app.rdb import SQLCommand
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.service import serviceManager as sm
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 # Make some fixes, so that we overcome some of the natural ZODB properties

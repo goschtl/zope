@@ -1,4 +1,6 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+               xmlns:browser='http://namespaces.zope.org/browser'
+>
 
 <include package="zope.configuration" file="metameta.zcml" />
 <include package="zope.app" />
@@ -21,5 +23,9 @@
 <grant permission="zope.ManageBindings"    role="Manager" />
 
 <include file="products.zcml" />
+
+<!--
+<browser:skin name="" layers="rotterdam default" />
+-->
 
 </zopeConfigure>

@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: errorr.py,v 1.7 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: errorr.py,v 1.8 2003/03/11 16:11:22 jim Exp $
 """
 
 import time
@@ -26,7 +26,7 @@ import logging
 from zope.exceptions.exceptionformatter import format_exception
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.error import IErrorReportingService
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 #Restrict the rate at which errors are sent to the Event Log

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
+$Id: zpt.py,v 1.7 2003/03/11 16:11:22 jim Exp $
 """
 
 import re
@@ -28,7 +28,7 @@ from zope.security.proxy import ProxyFactory
 from zope.app.interfaces.content.file import IFileContent
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
-from zope.app.interfaces.services.interfaces import IZPTTemplate
+from zope.app.interfaces.services.view import IZPTTemplate
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 

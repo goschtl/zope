@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.4 2003/03/03 23:16:14 gvanrossum Exp $
+$Id: test_serviceconfiguration.py,v 1.5 2003/03/11 16:11:31 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -32,7 +32,7 @@ from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.configuration import Active, Unregistered
 from zope.app.interfaces.services.configuration import Registered
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.dependable import DependencyError

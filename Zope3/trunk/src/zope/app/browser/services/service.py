@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.10 2003/03/10 22:46:30 gvanrossum Exp $
+$Id: service.py,v 1.11 2003/03/11 16:10:50 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -27,7 +27,7 @@ from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
 from zope.app.traversing import traverse, getPhysicalPathString
 from zope.app.traversing import getPhysicalPath
-from zope.app.interfaces.services.interfaces import ILocalService
+from zope.app.interfaces.services.service import ILocalService
 from zope.proxy.context import getWrapperContainer
 from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active

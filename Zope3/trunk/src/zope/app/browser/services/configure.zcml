@@ -6,7 +6,7 @@
 
   <!-- Get first accessable item from zmi_views menu -->
   <page
-     for="zope.app.interfaces.services.interfaces.ILocalService"
+     for="zope.app.interfaces.services.service.ILocalService"
      name="index.html"
      permission="zope.ManageServices"
      class="zope.app.browser.managementviewselector.ManagementViewSelector" 
@@ -255,7 +255,7 @@
       />
 
   <page
-      for="zope.app.interfaces.services.interfaces.ILocalService"
+      for="zope.app.interfaces.services.service.ILocalService"
       name="useConfiguration.html"
       template="useconfiguration.pt"
       class=".useconfiguration.UseConfiguration"
@@ -289,7 +289,7 @@
 <!-- Adapters -->
 
 <editform
-    schema="zope.app.interfaces.services.interfaces.IAdapterConfiguration"
+    schema="zope.app.interfaces.services.adapter.IAdapterConfiguration"
     name="index.html"
     menu="zmi_views"
     label="Change adapter"
@@ -297,7 +297,7 @@
     />
 
 <page
-     for = "zope.app.interfaces.services.interfaces.IAdapterConfiguration"
+     for = "zope.app.interfaces.services.adapter.IAdapterConfiguration"
      name = "ConfigurationSummary"
      template = "adapterconfigsummary.pt"
      permission="zope.ManageServices" 
@@ -340,11 +340,11 @@
 <!-- Views -->
 
 <defaultView
-    for="zope.app.interfaces.services.interfaces.IViewConfiguration"
+    for="zope.app.interfaces.services.view.IViewConfiguration"
     name="edit.html" />
 
 <editform
-    schema="zope.app.interfaces.services.interfaces.IViewConfiguration"
+    schema="zope.app.interfaces.services.view.IViewConfiguration"
     name="edit.html"
     menu="zmi_views"
     label="Change view"
@@ -352,14 +352,14 @@
     />
 
 <page
-     for = "zope.app.interfaces.services.interfaces.IViewConfiguration"
+     for = "zope.app.interfaces.services.view.IViewConfiguration"
      name = "ConfigurationSummary"
      template = "viewconfigsummary.pt"
      permission="zope.ManageServices" 
      />  
 
 <addform
-      schema = "zope.app.interfaces.services.interfaces.IViewConfiguration"
+      schema = "zope.app.interfaces.services.view.IViewConfiguration"
       name= "ViewConfiguration"
       content_factory = ".view.ViewConfiguration"
       keyword_arguments = "forInterface presentationType class_
@@ -396,13 +396,9 @@
 
 <!-- View pages -->
 
-<defaultView
-    for="zope.app.interfaces.services.interfaces.IPageConfiguration"
-    name="edit.html" />
-
 <editform
-    schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
-    name="edit.html"
+    schema="zope.app.interfaces.services.view.IPageConfiguration"
+    name="index.html"
     class=".view.PageConfigurationView"
     menu="zmi_views"
     label="Change page"
@@ -410,14 +406,14 @@
     />
 
 <page
-     for="zope.app.interfaces.services.interfaces.IPageConfiguration"
+     for="zope.app.interfaces.services.view.IPageConfiguration"
      name="ConfigurationSummary"
      template="pageconfigsummary.pt"
      permission="zope.ManageServices"
      />
 
 <addform
-      schema = "zope.app.interfaces.services.interfaces.IPageConfiguration"
+      schema = "zope.app.interfaces.services.view.IPageConfiguration"
       name= "PageConfiguration"
       content_factory = ".view.PageConfiguration"
       keyword_arguments = "forInterface class_ viewName permission"
@@ -438,14 +434,14 @@
 <!-- ZPT Templates -->
 
 <view
-    for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+    for="zope.app.interfaces.services.view.IZPTTemplate"
     name="index.html"
     class=".zpt.Source"
     permission="zope.ManageServices"
     />
 
 <editform
-    schema="zope.app.interfaces.services.interfaces.IZPTTemplate"
+    schema="zope.app.interfaces.services.view.IZPTTemplate"
     name="edit.html"
     menu="zmi_views"
     label="ZPT Template"
@@ -689,7 +685,7 @@
 
   <page
       name="addConfiguration.html"
-      for="zope.app.interfaces.services.interfaces.ILocalService"
+      for="zope.app.interfaces.services.service.ILocalService"
       template="add_svc_config.pt"
       class=".service.AddServiceConfiguration"
       permission="zope.ManageServices"
@@ -697,7 +693,7 @@
 
   <page
       name="add_svc_config.html"
-      for="zope.app.interfaces.services.interfaces.ILocalService"
+      for="zope.app.interfaces.services.service.ILocalService"
       attribute="action"
       class=".service.AddServiceConfiguration"
       permission="zope.ManageServices"

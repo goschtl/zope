@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.10 2003/03/10 22:37:47 gvanrossum Exp $
+$Id: service.py,v 1.11 2003/03/11 16:11:22 jim Exp $
 """
 
 import sys
@@ -59,7 +59,7 @@ from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.package import Packages
 from zope.app.interfaces.services.configuration import IUseConfigurable
-from zope.app.interfaces.services.interfaces import ILocalService
+from zope.app.interfaces.services.service import ILocalService
 
 from zope.app.traversing import getPhysicalPathString
 

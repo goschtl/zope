@@ -27,7 +27,7 @@
 <content class="zope.app.services.adapter.AdapterConfiguration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.interfaces.IAdapterConfiguration"
+      interface="zope.app.interfaces.services.adapter.IAdapterConfiguration"
       set_schema="zope.app.interfaces.services.configuration.IConfiguration"
       />
   <require
@@ -53,7 +53,7 @@
 <content class="zope.app.services.view.ViewConfiguration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.interfaces.IViewConfiguration"
+      interface="zope.app.interfaces.services.view.IViewConfiguration"
       set_schema="zope.app.interfaces.services.configuration.IConfiguration"
       />
   <require
@@ -65,8 +65,8 @@
 <content class="zope.app.services.view.PageConfiguration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.interfaces.IPageConfiguration"
-      set_schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
+      interface="zope.app.interfaces.services.view.IPageConfiguration"
+      set_schema="zope.app.interfaces.services.view.IPageConfiguration"
       />
   <require
       permission="zope.ManageServices"
@@ -89,8 +89,8 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.interfaces.IZPTTemplate"
-      set_schema="zope.app.interfaces.services.interfaces.IZPTTemplate"
+      interface="zope.app.interfaces.services.view.IZPTTemplate"
+      set_schema="zope.app.interfaces.services.view.IZPTTemplate"
       />
   <implements
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
@@ -98,14 +98,14 @@
 </content>
 
 <adapter
-  for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+  for="zope.app.interfaces.services.view.IZPTTemplate"
   provides="zope.app.interfaces.file.IReadFile"
   factory=".zpt.ReadFile"
   permission="zope.ManageServices"
   />
 
 <adapter
-  for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+  for="zope.app.interfaces.services.view.IZPTTemplate"
   provides="zope.app.interfaces.file.IWriteFile"
   factory=".zpt.WriteFile"
   permission="zope.ManageServices"
@@ -341,7 +341,7 @@
         interface=
         "zope.app.interfaces.services.connection.IConnectionConfiguration"
         set_attributes="name componentPath"
-        set_schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
+        set_schema="zope.app.interfaces.services.view.IPageConfiguration"
         />
     <require
         permission="zope.ManageServices"

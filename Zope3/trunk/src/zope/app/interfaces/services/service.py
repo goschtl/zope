@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.7 2003/02/03 17:29:07 jim Exp $
+$Id: service.py,v 1.8 2003/03/11 16:11:09 jim Exp $
 """
 __metaclass__ = type
 
@@ -25,8 +25,25 @@ from zope.app.interfaces.container import IContainer
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IServiceService
-from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration, INameComponentConfigurable
+from zope.app.interfaces.services import configuration
+
+
+class ILocalService(configuration.IUseConfigurable):
+    """A local service isn't a local service if it doesn't implement this.
+
+    The contract of a local service includes collaboration with
+    services above it.  A local service should also implement
+    IUseConfigurable (which implies that it is adaptable to
+    IUseConfiguration).  Implementing ILocalService implies this.
+    """
+
+
+class ISimpleService(ILocalService, configuration.IAttributeUseConfigurable):
+    """Most local services should implement this instead of ILocalService.
+
+    It implies a specific way of implementing IUseConfigurable,
+    by subclassing IAttributeUseConfigurable.
+    """
 
 class IComponentManager(Interface):
 
@@ -94,7 +111,7 @@ class IBindingAware(Interface):
 
 
 class IServiceManager(IServiceService, IComponentManager,
-                      INameComponentConfigurable):
+                      configuration.INameComponentConfigurable):
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
@@ -119,7 +136,7 @@ class INameResolver(Interface):
         If the dotted name cannot be resolved, an ImportError is raised.
         """
 
-class IServiceConfiguration(INamedComponentConfiguration):
+class IServiceConfiguration(configuration.INamedComponentConfiguration):
     """Service Configuration
 
     Service configurations are dependent on the components that they

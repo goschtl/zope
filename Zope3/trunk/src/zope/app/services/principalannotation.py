@@ -28,7 +28,7 @@ from zope.app.interfaces.annotation import IAnnotations
 
 # Sibling imports
 from zope.app.interfaces.services.principalannotation import IPrincipalAnnotationService
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class PrincipalAnnotationService(Persistent):
     """Stores IAnnotations for IPrinicipals.

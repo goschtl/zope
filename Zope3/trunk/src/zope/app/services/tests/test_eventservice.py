@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.13 2003/03/08 21:46:09 seanb Exp $
+$Id: test_eventservice.py,v 1.14 2003/03/11 16:11:31 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -42,7 +42,7 @@ from zope.proxy.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component.tests.components import RecordingAdapter
 from zope.component.adapter import provideAdapter
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class UnpromotingEventService(EventService):
 

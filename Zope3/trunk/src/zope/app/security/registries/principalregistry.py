@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.6 2003/03/03 23:16:12 gvanrossum Exp $
+$Id: principalregistry.py,v 1.7 2003/03/11 16:11:17 jim Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from zope.app.interfaces.security import ILoginPassword
 from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.app.interfaces.security import IUnauthenticatedPrincipal
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass

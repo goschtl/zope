@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalpermissionview.py,v 1.6 2003/03/03 23:16:04 gvanrossum Exp $
+$Id: test_principalpermissionview.py,v 1.7 2003/03/11 16:10:48 jim Exp $
 """
 
 import unittest
@@ -32,7 +32,7 @@ from zope.app.interfaces.security import IPrincipalPermissionMap
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.services.tests.placefulsetup \
      import PlacefulSetup
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class DummyContext:
 

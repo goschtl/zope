@@ -19,7 +19,7 @@ from zope.app.security.registries.registeredobject import RegisteredObject
 from zope.app.security.registries.registry import Registry
 from zope.app.interfaces.security import IRole
 from zope.app.interfaces.security import IRoleService
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class Role(RegisteredObject):
     __implements__ = IRole

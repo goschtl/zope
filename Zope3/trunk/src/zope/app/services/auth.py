@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.13 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: auth.py,v 1.14 2003/03/11 16:11:22 jim Exp $
 """
 
 from types import TupleType
@@ -37,7 +37,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.component.nextservice import getNextService
 from zope.proxy.context import ContextMethod
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 class DuplicateLogin(Exception):

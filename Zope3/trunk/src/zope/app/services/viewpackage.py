@@ -13,12 +13,12 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
+$Id: viewpackage.py,v 1.7 2003/03/11 16:11:22 jim Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.interfaces.services.interfaces import IZPTTemplate
+from zope.app.interfaces.services.view import IZPTTemplate
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.traversing import getPhysicalPathString, traverse
 from zope.proxy.context import getItem, getAttr

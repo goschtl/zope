@@ -13,12 +13,12 @@
 ##############################################################################
 """PermissionService implementation for testing
 
-$Id: permissionservice.py,v 1.3 2003/03/03 23:16:04 gvanrossum Exp $
+$Id: permissionservice.py,v 1.4 2003/03/11 16:10:48 jim Exp $
 """
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IPermission
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class Permission:
 

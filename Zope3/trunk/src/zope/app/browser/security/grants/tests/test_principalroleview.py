@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalroleview.py,v 1.6 2003/03/03 23:16:04 gvanrossum Exp $
+$Id: test_principalroleview.py,v 1.7 2003/03/11 16:10:48 jim Exp $
 """
 
 import unittest
@@ -29,7 +29,7 @@ from zope.app.interfaces.security import IAuthenticationService
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.security import IPrincipalRoleMap
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class DummySetting:
     def __init__(self, name):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.5 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: hub.py,v 1.6 2003/03/11 16:11:22 jim Exp $
 """
 
 from __future__ import generators
@@ -46,7 +46,7 @@ from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
 from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
 from zope.app.interfaces.traversing import ITraverser
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""

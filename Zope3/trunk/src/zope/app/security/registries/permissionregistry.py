@@ -23,7 +23,7 @@ from zope.app.interfaces.security import IPermission
 from zope.app.interfaces.security import IPermissionService
 from zope.security.checker import CheckerPublic
 from zope.app.security.exceptions import UndefinedPermissionError
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: role.py,v 1.3 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: role.py,v 1.4 2003/03/11 16:11:22 jim Exp $
 """
 
 from persistence import Persistent
@@ -24,7 +24,7 @@ from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.container import IContainer
 from zope.proxy.context import ContextMethod
 from zope.app.component.nextservice import getNextService
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 class Role(Role, Persistent):
     "Persistent Role"

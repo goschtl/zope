@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.7 2003/03/03 23:16:08 gvanrossum Exp $
+$Id: test_sqlscript.py,v 1.8 2003/03/11 16:11:00 jim Exp $
 """
 
 import unittest
@@ -38,7 +38,7 @@ from zope.app.interfaces.cache.cache import ICacheable
 from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.services.interfaces import ISimpleService
+from zope.app.interfaces.services.service import ISimpleService
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
