@@ -135,7 +135,11 @@ encapsulated in the storage of object histories.
     [u'\x00\x00\x00\x00\x00\x00\x00\x04', u'\x00\x00\x00\x00\x00\x00\x00\x05']
     >>> adapter = VersionableAspectsAdapter(a, histories)
     >>> adapter.writeAspects()
-    'Version 001'
+    '001'
+    
+    
+    
+    
 
 
 

@@ -38,6 +38,8 @@ used backend generates its own versions.
 import persistent, zope
 from zope.interface import Interface
 
+from zope.app.container.interfaces import INameChooser
+
 
 
 class IRepository(Interface):
@@ -230,6 +232,11 @@ class ITicket(Interface) :
       
     """
 
+class IVersionHistory(INameChooser) :
+    """ A version history of a single object should be able to
+        generate unique names for each version within the version history.
+    """
+    
 
 # XXX 
 class IHistoryStorage(Interface) : # IHistories

@@ -17,13 +17,19 @@ import unittest, doctest
 from zope.interface import implements
 from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.folder import Folder
-from zope.app.container.interfaces import INameChooser
 from zope.app.exception.interfaces import UserError
 
+from interfaces import IVersionHistory
+from interfaces import IHistoryStorage
 
-class SingleHistory(Folder) :
 
-    implements(INameChooser)
+
+class VersionHistory(Folder) :
+    """ A simple folder implementation where each version
+        is labeled '001', '002' etc.
+    """
+    
+    implements(IVersionHistory)
     
     def checkName(self, name, object):
         """Check whether an object name is valid.
@@ -40,11 +46,9 @@ class SingleHistory(Folder) :
         choosing the name.
 
         """
-        return "Version %03d" % (len(self)+1)
-        
-    
-        
-         
+        return "%03d" % (len(self)+1)
+          
+      
     
          
 class SimpleHistoryStorage(Folder) :
@@ -62,15 +66,20 @@ class SimpleHistoryStorage(Folder) :
         >>> sample.keys()
         
     """
+    
+    implements(IHistoryStorage)
    
 
     def getTicket(self, obj) :
+        """ Returns the persistent oid of an object as
+            a ticket that remains stable across time.
+        """
         return str(obj._p_oid)
  
     def register(self, obj):
         """ Register an obj for version control.
             Creates a new version history for a resource."""
-        history = SingleHistory()
+        history = VersionHistory()      # XXX call IVersionHistory(self) instead?
         ticket = self.getTicket(obj)
         self[ticket] = history
         return ticket
