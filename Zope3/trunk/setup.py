@@ -27,6 +27,7 @@ import sys
 # install non-.py files into the package destinations.
 from distutils import dir_util
 from distutils.command.build import build as buildcmd
+from distutils.command.build_ext import build_ext
 from distutils.command.install_lib import install_lib as installcmd
 from distutils.core import setup
 from distutils.dist import Distribution
@@ -93,6 +94,15 @@ class Finder:
     def get_packages(self):
         return self._pkgs.keys()
 
+def remove_stale_bytecode(arg, dirname, names):
+    names = map(os.path.normcase, names)
+    for name in names:
+        if name.endswith(".pyc") or name.endswith(".pyo"):
+            srcname = name[:-1]
+            if srcname not in names:
+                fullname = os.path.join(dirname, name)
+                print "Removing stale bytecode file", fullname
+                os.unlink(fullname)
 
 # Create the finder instance, which will be used in lots of places.  `finder'
 # is the global we're most interested in.
@@ -107,12 +117,21 @@ if 'sdist' not in sys.argv:
     if sys.hexversion >= 0x02030000:
         packages.remove('logging')
 
-
 # Distutils hook classes
 class MyBuilder(buildcmd):
     def run(self):
+        os.path.walk(os.curdir, remove_stale_bytecode, None)
         buildcmd.run(self)
         finder.copy_files(self, self.build_lib)
+
+class MyExtBuilder(build_ext):
+    # Override the default build_ext to remove stale bytecodes.
+    # Technically, removing bytecode has nothing to do with
+    # building extensions, but Zope's the build_ext -i variant
+    # is used to build Zope in place.
+    def run(self):
+        os.path.walk(os.curdir, remove_stale_bytecode, None)
+        build_ext.run(self)
 
 class MyLibInstaller(installcmd):
     def run(self):
@@ -126,6 +145,7 @@ class MyDistribution(Distribution):
     def __init__(self, *attrs):
         Distribution.__init__(self, *attrs)
         self.cmdclass['build'] = MyBuilder
+        self.cmdclass['build_ext'] = MyExtBuilder
         self.cmdclass['install_lib'] = MyLibInstaller
 
 
