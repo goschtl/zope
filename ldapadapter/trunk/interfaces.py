@@ -39,6 +39,10 @@ class ILDAPAdapter(Interface):
         default=389,
         required=True,
         )
+    baseDN = TextLine(
+        title=_("Base DN"),
+        default=u'',
+        )
     bindDN = TextLine(
         title=_("Bind DN"),
         default=u'',
@@ -78,6 +82,10 @@ class ILDAPAdapterManagement(Interface):
             "ldaps://localhost:389/\n",
             ),
         default="ldap://localhost",
+        )
+    baseDN = TextLine(
+        title=_("Base DN"),
+        default=u'',
         )
     bindDN = TextLine(
         title=_("Bind DN"),
@@ -136,3 +144,14 @@ class ILDAPConnection(Interface):
         May raise ldap exceptions.
         """
         # TODO: some values are binary and should not be converted to unicode
+
+
+class ICheckLDAPAdapter(Interface):
+    """A test adapter for to test the connection between Zope and LDAP."""
+
+    def testConnection():
+        """Returns a report about connecting the LDAP server.
+        
+        Each step of connecting the server is reported as a string
+        in a report (list).
+        """
