@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.28 2003/08/04 21:37:28 fdrake Exp $
+$Id: syncer.py,v 1.29 2003/08/06 21:34:44 fdrake Exp $
 """
 
 import os
@@ -26,13 +26,6 @@ from zope.app.fssync.fsregistry import getSynchronizer
 from zope.fssync import metadata
 
 
-def readFile(path, mode="rb"):
-    f = open(path, mode)
-    try:
-        return f.read()
-    finally:
-        f.close()
-
 def writeFile(data, path, mode="wb"):
     f = open(path, mode)
     try:
@@ -40,100 +33,109 @@ def writeFile(data, path, mode="wb"):
     finally:
         f.close()
 
-def loadFile(path):
-    return metadata.load_entries(readFile(path, "r"))
 
-def dumpFile(obj, path):
-    writeFile(metadata.dump_entries(obj), path, "w")
+class Syncer:
+
+    def __init__(self):
+        self._metadata = metadata.Metadata()
+
+    def toFS(self, ob, name, location):
+        """Check an object out to the file system
+
+        ob -- The object to be checked out
+
+        name -- The name of the object
+
+        location -- The directory on the file system where the object will go
+        """
+
+        # Get name path and check that name is not an absolute path
+        path = os.path.join(location, name)
+        if path == name:
+            raise ValueError("Invalid absolute path name")
+
+        mdmanager = self._metadata.getmanager(location)
+
+        # Look for location admin dir
+        if not os.path.exists(mdmanager.zdir):
+            os.mkdir(mdmanager.zdir)
+
+        self.dumpTree(ob, name, path, mdmanager)
+
+    def dumpTree(self, ob, name, path, mdmanager):
+        entry = mdmanager.getentry(name)
+
+        # Get the object adapter
+        syncService = getService(ob, 'FSRegistryService')
+        adapter = syncService.getSynchronizer(ob)
+
+        entry.clear()
+        entry['type'] = adapter.typeIdentifier()
+        entry['factory'] = adapter.factory()
+
+        try:
+            objectPath = str(getPath(ob))
+        except (TypeError, KeyError):
+            # this case can be triggered for persistent objects that don't
+            # have a name in the content space (annotations, extras)
+            pass
+        else:
+            entry['path'] = objectPath
+
+        # Write entries file
+        mdmanager.flush()
+
+        # Handle extras
+        extra = adapter.extra()
+        if extra:
+            extra_dir, mdextra = self.createManagedDirectory(
+                mdmanager.zdir, 'Extra', name)
+            for ename in extra:
+                # @@Zope/Extra/<name>/<ename>
+                edata = extra[ename]
+                self.dumpTree(edata,
+                              ename,
+                              os.path.join(extra_dir, ename),
+                              mdextra)
+
+        # Handle annotations
+        annotations = adapter.annotations()
+        if annotations is not None:
+            annotation_dir, mdannotations = self.createManagedDirectory(
+                mdmanager.zdir, 'Annotations', name)
+            for key in annotations:
+                # @@Zope/Annotations/<name>/<key>
+                annotation = annotations[key]
+                self.dumpTree(annotation,
+                              key,
+                              os.path.join(annotation_dir, key),
+                              mdannotations)
+
+        # Handle data
+        if IObjectFile.isImplementedBy(adapter):
+            # File
+            assert not IObjectDirectory.isImplementedBy(adapter)
+            writeFile(adapter.getBody(), path)
+        else:
+            # Directory
+            assert IObjectDirectory.isImplementedBy(adapter)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            mdmanager = self._metadata.getmanager(path)
+            mdmanager.ensure()
+
+            for cname, cob in adapter.contents():
+                cpath = os.path.join(path, cname)
+                self.dumpTree(cob, cname, cpath, mdmanager)
+
+    def createManagedDirectory(self, base, *parts):
+        dir = base
+        for p in parts:
+            dir = os.path.join(dir, p)
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+        return dir, self._metadata.getmanager(dir)
+
 
 def toFS(ob, name, location):
-    """Check an object out to the file system
-
-    ob -- The object to be checked out
-
-    name -- The name of the object
-
-    location -- The directory on the file system where the object will go
-    """
-
-    # Get name path and check that name is not an absolute path
-    path = os.path.join(location, name)
-    if path == name:
-        raise ValueError("Invalid absolute path name")
-
-    # Look for location admin dir
-    admin_dir = os.path.join(location, '@@Zope')
-    if not os.path.exists(admin_dir):
-        os.mkdir(admin_dir)
-
-    # Open Entries file
-    entries_path = os.path.join(admin_dir, "Entries.xml")
-    if os.path.exists(entries_path):
-        entries = loadFile(entries_path)
-    else:
-        entries = {}
-
-    # Get the object adapter
-    syncService = getService(ob, 'FSRegistryService')
-    adapter = syncService.getSynchronizer(ob)
-
-    entries[name] = {'type': adapter.typeIdentifier(),
-                     'factory': adapter.factory(),
-                     }
-
-    try:
-        objectPath = str(getPath(ob))
-    except (TypeError, KeyError):
-        # this case can be triggered for persistent objects that don't
-        # have a name in the content space (annotations, extras)
-        pass
-    else:
-        entries[name]['path'] = objectPath
-
-    # Write entries file
-    dumpFile(entries, entries_path)
-
-    # Handle extras
-    extra = adapter.extra()
-    if extra:
-        extra_dir = os.path.join(admin_dir, 'Extra')
-        if not os.path.exists(extra_dir):
-            os.mkdir(extra_dir)
-        extra_dir = os.path.join(extra_dir, name)
-        if not os.path.exists(extra_dir):
-            os.mkdir(extra_dir)
-        for ename in extra:
-            edata = extra[ename]
-            toFS(edata, ename, extra_dir)
-
-    # Handle annotations
-    annotations = adapter.annotations()
-    if annotations is not None:
-        annotation_dir = os.path.join(admin_dir, 'Annotations')
-        if not os.path.exists(annotation_dir):
-            os.mkdir(annotation_dir)
-        annotation_dir = os.path.join(annotation_dir, name)
-        if not os.path.exists(annotation_dir):
-            os.mkdir(annotation_dir)
-        for key in annotations:
-            annotation = annotations[key]
-            toFS(annotation, key, annotation_dir)
-
-    # Handle data
-    if IObjectFile.isImplementedBy(adapter):
-        # File
-        assert not IObjectDirectory.isImplementedBy(adapter)
-        writeFile(adapter.getBody(), path)
-    else:
-        # Directory
-        assert IObjectDirectory.isImplementedBy(adapter)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        admin_dir = os.path.join(path, '@@Zope')
-        if not os.path.exists(admin_dir):
-            os.mkdir(admin_dir)
-        dir_entries = os.path.join(admin_dir, 'Entries.xml')
-        dumpFile({}, dir_entries)
-
-        for cname, cob in adapter.contents():
-            toFS(cob, cname, path)
+    Syncer().toFS(ob, name, location)
