@@ -14,7 +14,6 @@
 <include package="zope.app.i18n" file="meta.zcml" />
 <include package="zope.app.process" file="meta.zcml" />
 <include package="zope.app.onlinehelp" file="meta.zcml" />
-<include package="zope.app.pagetemplate" file="meta.zcml" />
 <include package="zope.app.fssync" file="meta.zcml" />
 <include package="zope.app.dav" file="meta.zcml" />
 <include package="zope.app.rdb" file="meta.zcml" />
