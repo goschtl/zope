@@ -11,11 +11,11 @@
 ##############################################################################
 """General exceptions
 
-$Id: exceptions.py,v 1.1 2003/03/07 12:06:37 jim Exp $
+$Id: exceptions.py,v 1.2 2003/06/03 15:47:51 stevea Exp $
 """
 __metaclass__ = type
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 class IUserError(Interface):
     """User error exceptions
@@ -27,5 +27,4 @@ class UserError(Exception):
     These exceptions should generally be displayed to users unless
     they are handled.
     """
-
-    __implements__ = IUserError
+    implements(IUserError)

@@ -12,22 +12,22 @@
 #
 ##############################################################################
 """
-$Id: field.py,v 1.3 2003/04/10 09:05:13 faassen Exp $
+$Id: field.py,v 1.4 2003/06/03 15:47:51 stevea Exp $
 """
 from zope.app.interfaces.xml.field import IXML
 from zope.schema.interfaces import ValidationError
 from zope.schema import Bytes
 from zope.schema.fieldproperty import FieldProperty
 from xml.parsers.expat import ParserCreate, ExpatError
+from zope.interface import implements
 
 NotWellFormedXML = u"NotWellFormedXML"
 
 class XML(Bytes):
-    
-    __implements__ = IXML
+    implements(IXML)
 
     check_wellformedness = FieldProperty(IXML['check_wellformedness'])
-    
+
     def _validate(self, value):
         super(XML, self)._validate(value)
         if not self.check_wellformedness:
@@ -37,4 +37,3 @@ class XML(Bytes):
             parser.Parse(value, True)
         except ExpatError, e:
             raise ValidationError(NotWellFormedXML)
-        
