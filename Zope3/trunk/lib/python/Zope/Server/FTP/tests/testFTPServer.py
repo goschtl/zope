@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testFTPServer.py,v 1.7 2002/12/20 23:50:08 jeremy Exp $
+$Id: testFTPServer.py,v 1.8 2002/12/20 23:52:51 jeremy Exp $
 """
 
 import asyncore
@@ -63,7 +63,6 @@ class Tests(unittest.TestCase, AsyncoreErrorHook):
 
     def setUp(self):
         td.setThreadCount(1)
-        print "setUp", asyncore.socket_map
         self.orig_map_size = len(asyncore.socket_map)
         self.hook_asyncore_error()
 
