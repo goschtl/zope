@@ -126,14 +126,16 @@ PrincipalInformation = InternalPrincipal
 
 
 class PrincipalInfo:
-    """A basic implementation of interfaces.IPrincipalInfo.
+    """An implementation of IPrincipalInfo used by the principal folder.
 
-    A principal info is created with id, title, and description:
+    A principal info is created with id, login, title, and description:
 
-      >>> info = PrincipalInfo('foo', 'Foo', 'An over-used term.')
+      >>> info = PrincipalInfo('users.foo', 'foo', 'Foo', 'An over-used term.')
       >>> info
-      PrincipalInfo('foo')
+      PrincipalInfo('users.foo')
       >>> info.id
+      'users.foo'
+      >>> info.login
       'foo'
       >>> info.title
       'Foo'
@@ -143,8 +145,9 @@ class PrincipalInfo:
     """
     interface.implements(interfaces.IPrincipalInfo)
 
-    def __init__(self, id, title, description):
+    def __init__(self, id, login, title, description):
         self.id = id
+        self.login = login
         self.title = title
         self.description = description
 
@@ -207,19 +210,18 @@ class PrincipalFolder(BTreeContainer):
         id = self.__id_by_login.get(credentials['login'])
         if id is None:
             return None
-        principal = self[id]
-        if principal.password != credentials['password']:
+        internal = self[id]
+        if internal.password != credentials['password']:
             return None
-        return PrincipalInfo(
-            id=self.prefix + id,
-            title=principal.title,
-            description=principal.description)
+        return PrincipalInfo(self.prefix + id, internal.login, internal.title,
+                             internal.description)
 
     def principalInfo(self, id):
         if id.startswith(self.prefix):
             internal = self.get(id[len(self.prefix):])
             if internal is not None:
-                return PrincipalInfo(id, internal.title, internal.description)
+                return PrincipalInfo(id, internal.login, internal.title,
+                                     internal.description)
 
     def search(self, query, start=None, batch_size=None):
         """Search through this principal provider."""
@@ -285,7 +287,7 @@ class AuthenticatedPrincipalFactory:
     To use the factory, create it with the info (interfaces.IPrincipalInfo) of
     the principal to create and a request:
 
-      >>> info = PrincipalInfo('mary', 'Mary', 'The site admin.')
+      >>> info = PrincipalInfo('users.mary', 'mary', 'Mary', 'The site admin.')
       >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
       >>> factory = AuthenticatedPrincipalFactory(info, request)
@@ -295,7 +297,7 @@ class AuthenticatedPrincipalFactory:
     and description:
 
       >>> principal.id
-      'mary'
+      'users.mary'
       >>> principal.title
       'Mary'
       >>> principal.description
@@ -308,7 +310,7 @@ class AuthenticatedPrincipalFactory:
       >>> event.principal is principal
       True
       >>> event.info
-      PrincipalInfo('mary')
+      PrincipalInfo('users.mary')
       >>> event.request is request
       True
 
@@ -342,7 +344,7 @@ class FoundPrincipalFactory:
     To use the factory, create it with the info (interfaces.IPrincipalInfo) of
     the principal to create:
 
-      >>> info = PrincipalInfo('sam', 'Sam', 'A site user.')
+      >>> info = PrincipalInfo('users.sam', 'sam', 'Sam', 'A site user.')
       >>> factory = FoundPrincipalFactory(info)
       >>> principal = factory()
 
@@ -350,7 +352,7 @@ class FoundPrincipalFactory:
     and description:
 
       >>> principal.id
-      'sam'
+      'users.sam'
       >>> principal.title
       'Sam'
       >>> principal.description
@@ -363,7 +365,7 @@ class FoundPrincipalFactory:
       >>> event.principal is principal
       True
       >>> event.info
-      PrincipalInfo('sam')
+      PrincipalInfo('users.sam')
 
     Listeners can subscribe to this event to perform additional operations
     when the 'found' principal is created.

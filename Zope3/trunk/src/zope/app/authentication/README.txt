@@ -64,10 +64,22 @@ As a plugin, MyCredentialsPlugin needs to be registered as a named utility:
 
 Simple Authenticator Plugin
 ---------------------------
-Next we'll create a simple authenticator plugin:
+Next we'll create a simple authenticator plugin. For our plugin, we'll need
+an implementation of IPrincipalInfo:
 
-  >>> from zope.app.authentication import principalfolder
-  >>> from zope.event import notify
+  >>> class PrincipalInfo(object):
+  ...
+  ...     interface.implements(interfaces.IPrincipalInfo)
+  ...
+  ...     def __init__(self, id, title, description):
+  ...         self.id = id
+  ...         self.title = title
+  ...         self.description = description
+  ...
+  ...     def __repr__(self):
+  ...         return 'PrincipalInfo(%r)' % self.id
+
+Our authenticator uses this type when it creates a principal info:
 
   >>> class MyAuthenticatorPlugin:
   ...
@@ -75,18 +87,7 @@ Next we'll create a simple authenticator plugin:
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if credentials == 'secretcode':
-  ...             return principalfolder.PrincipalInfo('bob', 'Bob', '')
-  ...
-  ...     def createAuthenticatedPrincipal_XXX(self, info, request):
-  ...         principal = principalfolder.Principal(info.id)
-  ...         notify(interfaces.AuthenticatedPrincipalCreated(
-  ...             principal, info, request))
-  ...         return principal
-  ...
-  ...     def createFoundPrincipal_XXX(self, info):
-  ...         principal = principalfolder.Principal(info.id)
-  ...         notify(interfaces.FoundPrincipalCreated(principal, info))
-  ...         return principal
+  ...             return PrincipalInfo('bob', 'Bob', '')
   ...
   ...     def principalInfo(self, id):
   ...         pass # plugin not currently supporting search
@@ -100,13 +101,10 @@ Principal Factories
 -------------------
 While authenticator plugins provide principal info, they are not responsible
 for creating principals. This function is performed by factory adapters. For
-these tests we will register factories for creating both 'authenticated'
-principals:
+these tests we'll borrow some factories from the principal folder:
 
+  >>> from zope.app.authentication import principalfolder
   >>> provideAdapter(principalfolder.AuthenticatedPrincipalFactory)
-
-and 'found' principals:
-
   >>> provideAdapter(principalfolder.FoundPrincipalFactory)
 
 For more information on these factories, see their docstrings.
@@ -184,9 +182,9 @@ To illustrate, we'll create another authenticator:
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if credentials == 'secretcode':
-  ...             return principalfolder.PrincipalInfo('black', 'Black Spy', '')
+  ...             return PrincipalInfo('black', 'Black Spy', '')
   ...         elif credentials == 'hiddenkey':
-  ...             return principalfolder.PrincipalInfo('white', 'White Spy', '')
+  ...             return PrincipalInfo('white', 'White Spy', '')
 
   >>> provideUtility(MyAuthenticatorPlugin2(), name='My Authenticator Plugin 2')
 
@@ -357,20 +355,8 @@ authenticator:
   ...         if id is not None:
   ...             return self.infos[id]
   ...
-  ...     def createAuthenticatedPrincipal_XXX(self, info, request):
-  ...         principal = principalfolder.Principal(info.id)
-  ...         notify(interfaces.AuthenticatedPrincipalCreated(
-  ...             principal, info, request))
-  ...         return principal
-  ...
-  ...     def createFoundPrincipal_XXX(self, info):
-  ...         principal = principalfolder.Principal(info.id)
-  ...         notify(interfaces.FoundPrincipalCreated(principal, info))
-  ...         return principal
-  ...
   ...     def add(self, id, title, description, credentials):
-  ...         self.infos[id] = principalfolder.PrincipalInfo(
-  ...             id, title, description)
+  ...         self.infos[id] = PrincipalInfo(id, title, description)
   ...         self.ids[credentials] = id
 
 This class is typical of an authenticator plugin. It can both authenticate

@@ -89,6 +89,34 @@ class IGroupSearchCriteria(interface.Interface):
         missing_value=u'',
         )
 
+
+class GroupInfo:
+    """An implementation of IPrincipalInfo used by the group folder.
+
+    A group info is created with id, title, and description:
+
+      >>> info = GroupInfo('groups.managers', 'Managers', 'Taskmasters')
+      >>> info
+      GroupInfo('groups.managers')
+      >>> info.id
+      'groups.managers'
+      >>> info.title
+      'Managers'
+      >>> info.description
+      'Taskmasters'
+
+    """
+    interface.implements(interfaces.IPrincipalInfo)
+
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
+
+    def __repr__(self):
+        return 'GroupInfo(%r)' % self.id
+
+
 class GroupFolder(BTreeContainer):
 
     interface.implements(
@@ -168,7 +196,7 @@ class GroupFolder(BTreeContainer):
             id = id[len(self.prefix):]
             info = self.get(id)
             if info is not None:
-                return principalfolder.PrincipalInfo(
+                return GroupInfo(
                     self.prefix+id, info.title, info.description)
 
 class GroupCycle(Exception):

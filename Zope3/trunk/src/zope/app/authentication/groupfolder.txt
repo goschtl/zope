@@ -52,8 +52,8 @@ we'll create a sample authentication service:
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
-  ...            'p1': principalfolder.PrincipalInfo('p1', '', ''),
-  ...            'p2': principalfolder.PrincipalInfo('p2', '', ''),
+  ...            'p1': principalfolder.PrincipalInfo('p1', '', '', ''),
+  ...            'p2': principalfolder.PrincipalInfo('p2', '', '', ''),
   ...            }
   ...         self.groups = groups
   ...
@@ -194,7 +194,7 @@ Of course, this applies to groups too:
   >>> principal = principals.getPrincipal('group.G1')
   >>> principal.id
   'group.G1'
-  
+
   >>> principal.groups
   [u'group.G2']
 
