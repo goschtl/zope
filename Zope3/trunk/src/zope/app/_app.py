@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.14 2003/08/04 11:11:27 jim Exp $
+$Id: _app.py,v 1.15 2003/12/18 04:10:19 jim Exp $
 """
 
 import base64, time
@@ -183,21 +183,6 @@ class Application:
         request = self._request(*args, **kw)
         fbreak(db, _publish)
         fbreak(db, debug_call)
-
-##         dbdata = {'breakpoints':(), 'env':env, 'extra': extra}
-##         b=''
-##         try: b=open('.bobodb','r').read()
-##         except: pass
-##         if b:
-##             exec b in dbdata
-
-##         for b in dbdata['breakpoints']:
-##             if isinstance(b, TupleType):
-##                 apply(db.set_break, b)
-##             else:
-##                 fbreak(db,b)
-
-        db.prompt='pdb> '
 
         print '* Type c<cr> to jump to published object call.'
         db.runcall(_publish, request)
