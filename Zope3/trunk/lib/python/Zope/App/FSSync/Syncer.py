@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Syncer.py,v 1.2 2002/10/11 06:28:05 jim Exp $
+$Id: Syncer.py,v 1.3 2002/10/15 13:21:45 jim Exp $
 """
 __metaclass__ = type
 
@@ -173,19 +173,23 @@ def fromFS(container, name, location):
             _setItem(container, name, newOb, old=1)
 
         elif not factory:
-            # Special case pickle data
-            oldOb = container[name]
-            newOb = loads(open(path).read())
-            try:
-                # See id we can amd should just copy the state
-                oldOb._p_oid # Is it persisteny
-                getstate = newOb.__getstate__
-            except AttributeError:
-                # Nope, we have to replace.
+            if entry.get('type') == '__builtin__.str':
+                newOb = open(path).read()
                 _setItem(container, name, newOb, old=1)
             else:
-                oldOb.__setstate__(getstate())
-                oldOb._p_changed = 1
+                # Special case pickle data
+                oldOb = container[name]
+                newOb = loads(open(path).read())
+                try:
+                    # See if we can and should just copy the state
+                    oldOb._p_oid # Is it persisteny
+                    getstate = newOb.__getstate__
+                except AttributeError:
+                    # Nope, we have to replace.
+                    _setItem(container, name, newOb, old=1)
+                else:
+                    oldOb.__setstate__(getstate())
+                    oldOb._p_changed = 1
                 
 
     else:
