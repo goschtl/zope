@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: Widget.py,v 1.2 2002/07/14 19:26:19 efge Exp $
 """
 from types import ListTypes
 
@@ -393,6 +393,7 @@ class TextWidget(BrowserWidget):
                                  extra = self.getValue('extra'))
 
 
+# XXX Note, some HTML quoting is needed in renderTag and renderElement.
 
 def renderTag(tag, **kw):
     """Render the tag. Well, not all of it, as we may want to / it.
