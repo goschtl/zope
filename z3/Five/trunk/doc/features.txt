@@ -52,10 +52,6 @@ are some limitations:
   ``++`` do not yet work in URLs. Views with subviews also do not
   work.
 
-You can use ``five:viewable`` on any Zope 2 class, unless it declares
-its own ``__bobo_traverse__``. We plan to lift the ``bobo_traverse``
-restriction soon.
-
 At the time of writing there is also no provision for default views in
 Five.
 
