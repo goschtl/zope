@@ -91,7 +91,10 @@ pcgi  -d pcgi Components/pcgi2
 utilities   ZUtil
 ZopeHTTPServer Components/ZopeHTTPServer
 
-GreyThing  -d lib/python Components/GreyThing
+# '-l' in GreyThing entry is to prevent recusion, excluding the webdav
+# symlink.  The symlink is there for people who checked out when the
+# actual webdav directory lived in GreyThing...  klm 03/26/1999.
+GreyThing -d lib/python -l Components/GreyThing
 
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
