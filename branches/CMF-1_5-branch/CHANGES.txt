@@ -28,6 +28,13 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFCore.FSZSQLMethod: Added configuration parameters that were left out.
+      Some of the configuration parameters to ZSQL methods, specifically 
+      those describing custom pluggable brains classes and the
+      connection_hook, were not implemented in FSZSQLMethod. Also added a 
+      first small unittest module for FSZSQLMethod testing.
+      (http://www.zope.org/Collectors/CMF/335)
+
     - CMFSetup utils: Modified ConfiguratorBase.
       If the DEFAULT value is used, CONVERTER is no longer called. This makes
       setting DEFAULT more intuitive. While very unlikely, the change might
