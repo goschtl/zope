@@ -23,7 +23,7 @@ from zope.interface.adapter import AdapterRegistry
 from zope.interface.interfaces import IInterface
 
 from zope.component.interfaces import ISiteManager, IRegistry
-from zope.component.interfaces import ComponentLookupError
+from zope.component.interfaces import ComponentLookupError, Invalid
 
 
 class IGlobalSiteManager(ISiteManager, IRegistry):
