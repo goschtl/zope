@@ -586,10 +586,12 @@ class CheckinMessageView(MessageView):
             return self._subtrees
         self._subtrees = []
         container = self.context.__parent__
-        description = container.description
-        if not description:
+        icons = container.icons
+        if not icons:
             return self._subtrees
-        for line in description.splitlines():
+        for line in icons.splitlines():
+            if line.startswith('#'):
+                continue
             items = line.split(None, 3)
             if len(items) < 4:
                 continue

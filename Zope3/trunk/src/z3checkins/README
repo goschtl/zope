@@ -27,10 +27,10 @@ Start up Zope 3 and add a Checkin Folder. You will be presented with a form.
 
     prefix is matched against the beginning of the checkin directory (put
     longer, more specific prefixes first.  * is a catch-all prefix, and
-    should be placed last).
+    should be placed last).  Lines starting with # are ignored.
 
     icon-name is a Zope 3 resource name.  z3checkins comes with the following
-    icons: zope3.png, product.png, message.png
+    icons: zope3.png, product.png, message.png, branch.png.
 
     alt-text is a short alternate text
 
@@ -45,8 +45,9 @@ You would use the following configuration for zope3-checkins@zope.org:
   http://mail.zope.org/pipermail/zope3-checkins/
 
   Icon definitions:
-  Zope3  zope3.png    Z3       Zope 3 core
-  *      product.png  Product  Zope 3 product
+  # prefix        icon        title   description
+  Zope3/branches  branch.png  Branch  Zope 3 branch
+  *               zope3.png   Z3      Zope 3 trunk
 
 Then, go to the Metadata tab and set the title.
 
