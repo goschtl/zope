@@ -720,6 +720,15 @@ def main(module_filter, test_filter, libdir):
     elif level:
         logging.root.setLevel(int(level))
 
+    try:
+        import zLOG
+    except ImportError:
+        pass
+    else:
+        def null_initializer():
+            pass
+        zLOG.set_initializer(null_initializer)
+
     files = find_tests(module_filter)
     files.sort()
 
