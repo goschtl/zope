@@ -24,7 +24,6 @@ from webdav.Lockable import ResourceLockedError
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.CMFCorePermissions import View
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
-from Products.CMFCore.WorkflowCore import WorkflowAction
 from Products.CMFCore.utils import format_stx, keywordsplitter
 from DublinCore import DefaultDublinCoreImpl
 from utils import parseHeadersBody, formatRFC822Headers
