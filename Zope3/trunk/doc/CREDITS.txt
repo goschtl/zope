@@ -29,7 +29,7 @@ Credits
 
     - ZeOmega hosted an extended development session in Bangalore.
       We worked out a number of ideas for the (still early) through
-      the wen configuration and development environment.  We moved
+      the web configuration and development environment.  We moved
       file-system synchronization forward. And we ported several
       facilities from Zope 2.
 
@@ -47,8 +47,7 @@ Credits
     support. 
 
   o Stephan Richter helped launch Zope 3 with abundant energy and
-    enthusiasm, as well as many software and documentation
-    contributions. 
+    enthusiasm, as well as many software and documentation contributions. 
 
   o Shane Hathaway created some of the initial prototypes of Zope 3
     and was an important brainstorming partner before we went "public"
@@ -57,7 +56,7 @@ Credits
 
   o Python Labs: Guido van Rossum, Fred Drake, Jeremy Hylton, Tim
     Peters, and Barry Warsaw have been crucial contributors to Zope 3
-    since it was just a bunch of stray ideas floating around 
+    since it was just a bunch of stray ideas floating around.
 
   o Gary Poster has made significant contributions in a variety of
     areas, including the object hub and event service.
@@ -71,10 +70,10 @@ Credits
     made the grand renaming possible. Kapil wrote the scripts that did
     most of the work and the team made Zope work again.
 
-  o The folks at Code works, Albertas Agejevas, Marius Gedminas, and
+  o The folks at Codeworks, Albertas Agejevas, Marius Gedminas, and
     Viktorija Zaksiene and contributed major parts of Zope, especially
     the relational database support and caching infrustructure. Much
-    Thanks to M. Carling for making their time available.
+    thanks to M Carling for making their time available.
 
   o Much thanks to Alexander Limi, Alan Runyan, Godefroid Chapelle,
     Joachim Werner, Paul Everitt, and others for the "Rotterdam Skin",
