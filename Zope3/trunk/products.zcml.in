@@ -1,4 +1,4 @@
-<zopeConfigure>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
 <!-- add include directives for products here -->
 
