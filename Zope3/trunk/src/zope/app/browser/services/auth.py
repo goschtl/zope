@@ -13,10 +13,11 @@
 ##############################################################################
 """Connection Management GUI
 
-$Id: auth.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: auth.py,v 1.3 2003/03/25 11:44:10 tseaver Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.app.services.auth import User
+from zope.component import getService
 
 class AddUser(BrowserView):
 
@@ -24,14 +25,6 @@ class AddUser(BrowserView):
         user = User(id, title, description, login, password)
         self.context.setObject(id, user)
         return self.request.response.redirect(self.request.URL[-2])
-
-
-"""Connection Management GUI
-
-$Id: auth.py,v 1.2 2002/12/25 14:12:36 jim Exp $
-"""
-from zope.component import getService
-from zope.publisher.browser import BrowserView
 
 class EditUser(BrowserView):
 
