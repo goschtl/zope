@@ -15,7 +15,7 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.5 2003/07/15 14:17:42 srichter Exp $
+$Id: service.py,v 1.6 2003/07/26 15:04:08 srichter Exp $
 """
 import rfc822
 import threading
@@ -127,7 +127,7 @@ class QueueProcessorThread(threading.Thread):
         self.maildir = maildir
 
     def setQueuePath(self, path):
-        self.maildir = Maildir(path)
+        self.maildir = Maildir(path, True)
 
     def setMailer(self, mailer):
         self.mailer = mailer
