@@ -49,6 +49,22 @@
 
 <browser:page
     for="*"
+    name="absolute_url"
+    class=".absoluteurl.AbsoluteURL"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
+    />
+
+<browser:page
+    for="zope.app.interfaces.traversing.IContainmentRoot"
+    name="absolute_url"
+    class=".absoluteurl.SiteAbsoluteURL"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
+    />
+
+<browser:page
+    for="*"
     name="object_name"
     class=".objectname.ObjectNameView"
     permission="zope.Public"
