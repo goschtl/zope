@@ -25,6 +25,7 @@ from zope.app.container.contained import Contained
 from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
 from zope.app.session.interfaces import ISession
+import transaction 
 from urllib import urlencode
 
 from zope.app.pas.interfaces import IExtractionPlugin, IChallengePlugin
@@ -113,7 +114,7 @@ class SessionExtractor(Persistent, Contained):
     def extractCredentials(self, request):
         """ return credentials from session, request or None """
         sessionData = ISession(request)['pas']
-        credentials = sessionData and sessionData['credentials'] or None
+        credentials = sessionData.get('credentials', None)
         if not credentials:
             # check for form data
             login = request.get('login', None)
@@ -126,6 +127,7 @@ class SessionExtractor(Persistent, Contained):
         authrequest = request.get('authrequest', None)
         if authrequest == 'logout':
             sessionData['credentials'] = None
+            transaction.commit()
             return None
         return {'login': credentials.getLogin(),
                 'password': credentials.getPassword()}
