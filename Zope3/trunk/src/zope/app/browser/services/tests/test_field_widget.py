@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.7 2003/03/23 22:35:36 jim Exp $
+$Id: test_field_widget.py,v 1.8 2003/06/03 21:42:58 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -57,9 +57,7 @@ class BaseTest(PlacefulSetup, TestCase):
         return ComponentPathWidget(field, request)
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        PlacefulSetup.setUp(self, site=True)
         default = traverse(self.rootFolder, '++etc++site/default')
         default.setObject('c1', C())
         default.setObject('c2', C())

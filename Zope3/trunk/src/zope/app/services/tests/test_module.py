@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.6 2003/05/01 19:35:35 faassen Exp $
+$Id: test_module.py,v 1.7 2003/06/03 21:43:00 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -38,14 +38,9 @@ class TestService:
 class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-
-    def _Test__new(self):
-        return ServiceManager()
+        PlacefulSetup.setUp(self, site=True)
 
     def test_resolve(self):
-        self.rootFolder.setServiceManager(ServiceManager())
         sm = traverse(self.rootFolder, "++etc++site")
         default = traverse(sm, "default")
         default.setObject('m1', Manager())

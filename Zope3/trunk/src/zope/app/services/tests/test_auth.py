@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.14 2003/06/03 14:50:38 stevea Exp $
+$Id: test_auth.py,v 1.15 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,13 +22,12 @@ from zope.app.services.servicenames import Adapters, Authentication
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.traversing import getPath, traverse
-from zope.app.interfaces.services.configuration import Active
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.interface import implements
+from zope.app.tests import setup
 
 class Request:
 
@@ -56,22 +55,9 @@ class AuthSetup(EventSetup):
         getService(None, Adapters).provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
-        folder = self.rootFolder
-
-        if not folder.hasServiceManager():
-            self.createServiceManager(folder)
-
-        default = traverse(folder, '++etc++site/default')
-        key = default.setObject("AuthenticationService",
-                                AuthenticationService())
-        auth = traverse(default, key)
-
-        path = getPath(auth)
-        configuration = ServiceConfiguration(Authentication, path)
-        configure = default.getConfigurationManager()
-        key = configure.setObject('', configuration)
-        traverse(configure, key).status = Active
-
+        sm = traverse(self.rootFolder, '++etc++site')
+        auth = setup.addService(sm, Authentication, AuthenticationService())
+        
         auth.setObject('srichter', User('srichter', 'Stephan', 'Richter',
                                         'srichter', 'hello'))
         auth.setObject('jim', User('jim', 'Jim', 'Fulton',

@@ -14,9 +14,8 @@
 """
 Setup for Placeful Worfklow Tests
 Revision information:
-$Id: workflowsetup.py,v 1.2 2003/06/03 14:38:29 stevea Exp $
+$Id: workflowsetup.py,v 1.3 2003/06/03 21:43:02 jim Exp $
 """
-from zope.app.traversing import traverse, getPath
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
 
@@ -50,6 +49,10 @@ from zope.app.workflow.service import WorkflowService
 
 from zope.interface import implements
 
+from zope.app.tests import setup
+
+from zope.app import zapi
+
 class WorkflowServiceForTests(WorkflowService):
 
     implements(IAttributeAnnotatable)
@@ -58,50 +61,20 @@ class WorkflowServiceForTests(WorkflowService):
 class WorkflowSetup(PlacefulSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-
         self.root_sm = getServiceManager(None)
 
-        provideAdapter(IAttributeAnnotatable,
-                       IAnnotations, AttributeAnnotations)
-        provideAdapter(IAnnotatable, IDependable, Dependable)
-        provideAdapter(IUseConfigurable, IUseConfiguration, UseConfiguration)
-
-        # Set up a local workflow service
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
-
-        service_name = 'workflow_srv'
-        self.sm = traverse(self.rootFolder, '++etc++site')
-        self.default = default = traverse(self.sm, 'default')
-        default.setObject(service_name, WorkflowServiceForTests())
-
-        # XXX change to unique names 
-        self.service = traverse(default, service_name)
-        path = "%s/%s" % (getPath(default), service_name)
-        configuration = ServiceConfiguration(Workflows, path, self.rootFolder)
-        self.cm = default.getConfigurationManager()
-        self.cm.setObject('', configuration)
-        traverse(self.cm, '1').status = Active
-
-        # Set up a more local workflow service
-        folder1 = traverse(self.rootFolder, 'folder1')
-        folder1.setServiceManager(ServiceManager())
-
-        service_name1 = 'workflow_srv1'
-        self.sm1 = traverse(folder1, '++etc++site')
-        self.default1 = default1 = traverse(self.sm1, 'default')
-        default1.setObject(service_name1, WorkflowServiceForTests())
-
-        # XXX change to unique name
-        self.service1 = traverse(self.default1, service_name1)
-        path1 = "%s/%s" % (getPath(default1), service_name1)
-        configuration1 = ServiceConfiguration(Workflows, path1,
-                                              self.rootFolder)
-        self.cm1 = default1.getConfigurationManager()
-        self.cm1.setObject('', configuration1)
-        traverse(self.cm1, '1').status = Active
-
+        self.sm = PlacefulSetup.setUp(self, site=True)
+        self.service = setup.addService(self.sm, Workflows,
+                                        WorkflowServiceForTests())
+        self.default = zapi.traverse(self.sm, "default")
+        self.cm = self.default.getConfigurationManager()
+        
+        self.sm1 = self.makeSite('folder1')
+        self.service1 = setup.addService(self.sm1, Workflows,
+                                         WorkflowServiceForTests())
+        self.default1 = zapi.traverse(self.sm1, "default")
+        self.cm1 = self.default1.getConfigurationManager()
+        
     def setupAuthService(self):
         self.root_sm.defineService(Authentication, IAuthenticationService)
         self.root_sm.provideService(Authentication, principalRegistry)

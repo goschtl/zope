@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.6 2003/06/01 15:59:36 jim Exp $
+$Id: test_configurations.py,v 1.7 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,10 +24,7 @@ from zope.app.interfaces.services.configuration \
 from zope.app.interfaces.dependable import DependencyError
 from zope.app.services.configuration import SimpleConfiguration
 from zope.app.services.configuration import ComponentConfiguration
-from zope.app.services.tests.placefulsetup \
-        import PlacefulSetup
-from zope.app.services.tests.servicemanager \
-        import TestingServiceManager
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.dependable import IDependable
 from zope.app.traversing import traverse
@@ -81,10 +78,7 @@ class TestSimpleConfiguration(TestCase):
 class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.__sm = TestingServiceManager()
-        self.rootFolder.setServiceManager(self.__sm)
+        PlacefulSetup.setUp(self, site=True)
         self.name = 'foo'
 
     def test_getComponent(self):

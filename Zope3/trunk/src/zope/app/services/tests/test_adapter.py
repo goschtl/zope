@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.15 2003/06/02 19:40:49 jim Exp $
+$Id: test_adapter.py,v 1.16 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -71,9 +71,7 @@ class A:
 class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        PlacefulSetup.setUp(self, site=True)
         self._service = ContextWrapper(AdapterService(), self.rootFolder)
 
     def test_implements_IAdapterService(self):
@@ -221,9 +219,6 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_queryAdapter_delegation(self):
         service = self._service
 
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
-
         sm = traverse(self.rootFolder, '++etc++site')
 
         configure = traverse(sm, 'default').getConfigurationManager()
@@ -293,6 +288,7 @@ class TestAdapterConfiguration(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         rootFolder = RootFolder()
         rootFolder.setServiceManager(PhonyServiceManager())
+
         self.configuration = ContextWrapper(
             AdapterConfiguration(I1, I2, "Foo.Bar.A", "adapter"),
             rootFolder,

@@ -14,12 +14,11 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.23 2003/06/03 14:45:28 stevea Exp $
+$Id: test_eventservice.py,v 1.24 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.interface import Interface, implements
-from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.event import EventService
 from zope.app.traversing import getPath, traverse
@@ -40,6 +39,8 @@ from zope.app.services.tests.eventsetup import EventSetup
 from zope.component.tests.components import RecordingAdapter
 from zope.component.adapter import provideAdapter
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.services.event import EventService
+from zope.app.tests import setup
 
 class UnpromotingEventService(EventService):
 
@@ -119,9 +120,12 @@ class TestEventPublisher(EventSetup, TestCase):
         return self.objectHub
 
     def _createNestedServices(self):
-        self.createEventService('folder1')
-        self.createEventService('folder1/folder1_1')
-        self.createEventService('folder1/folder1_1/folder1_1_1')
+        for path in ('folder1', 'folder1/folder1_1',
+                     'folder1/folder1_1/folder1_1_1'):
+            sm = self.makeSite(path)
+            events = EventService()
+            setup.addService(sm, EventPublication, events)
+            setup.addService(sm, EventSubscription, events, suffix='s')
 
     def _createSubscribers(self):
         self.rootFolder.setObject("rootFolderSubscriber", DummySubscriber())
@@ -826,23 +830,9 @@ class TestEventPublisher(EventSetup, TestCase):
             self.folder2,
             name="folder2Subscriber")
 
-        if not self.folder2.hasServiceManager():
-            self.folder2.setServiceManager(ServiceManager())
-
-        sm = traverse(self.rootFolder, 'folder2/++etc++site')
-        default = traverse(sm, 'default')
-
-        default.setObject("myEventService", service)
-
-        path = "%s/default/myEventService" % getPath(sm)
-        configuration = ServiceConfiguration(EventPublication, path)
-        default.getConfigurationManager().setObject("myEventServiceDir", configuration)
-        traverse(default.getConfigurationManager(), '1').status = Active
-
-        configuration = ServiceConfiguration(EventSubscription, path)
-        default.getConfigurationManager().setObject("mySubscriptionServiceDir",
-                                       configuration)
-        traverse(default.getConfigurationManager(), '2').status = Active
+        sm = self.makeSite('folder2')
+        setup.addService(sm, EventPublication, service);
+        setup.addService(sm, EventSubscription, service, suffix='s');
 
         subscribe(
             self.rootFolderSubscriber,

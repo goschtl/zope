@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.14 2003/06/01 15:59:36 jim Exp $
+$Id: test_view.py,v 1.15 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -81,9 +81,7 @@ class A:
 class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        PlacefulSetup.setUp(self, site=True)
         self._service = ContextWrapper(ViewService(), self.rootFolder)
 
     def test_implements_IViewService(self):
@@ -157,11 +155,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_queryView_delegation(self):
         service = self._service
 
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
-
-        sm = traverse(self.rootFolder, '++etc++site')
-
+        sm = self.buildFolders(site=True)
         configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()
         configure.setObject('', configuration)

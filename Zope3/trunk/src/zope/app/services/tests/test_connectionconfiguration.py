@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: test_connectionconfiguration.py,v 1.11 2003/06/01 15:59:36 jim Exp $
+$Id: test_connectionconfiguration.py,v 1.12 2003/06/03 21:43:00 jim Exp $
 """
 __metaclass__ = type
 from unittest import TestCase, main, makeSuite
@@ -30,11 +30,12 @@ from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.service import ServiceConfiguration
 from zope.context import ContextMethod
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.configuration \
      import IAttributeUseConfigurable, IUseConfiguration
+from zope.app.tests import setup
+from zope.app.interfaces.services.service import ILocalService
 
 class DependableStub:
 
@@ -61,7 +62,7 @@ class TestDA(DependableStub):
 class ConnectionServiceStub(DependableStub):
 
     __implements__ = (IConnectionService, IConfigurable, IDependable,
-                      IAttributeUseConfigurable)
+                      IAttributeUseConfigurable, ILocalService)
 
     def __init__(self):
         self.bindings = {}
@@ -91,9 +92,9 @@ class ConnectionServiceStub(DependableStub):
 class TestConnectionConfiguration(PlacefulSetup, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        sm = PlacefulSetup.setUp(self, site=True)
+        self.service = setup.addService(sm, 'SQLDatabaseConnections',
+                                        ConnectionServiceStub())
 
         self.default = traverse(self.rootFolder,
                            '++etc++site/default')
@@ -101,16 +102,10 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.da = traverse(self.default, 'da')
 
         self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
-        self.cm.setObject('', ConnectionConfiguration('conn_name',
-                            '/++etc++site/default/da'))
-        self.config = traverse(self.default.getConfigurationManager(), '1')
-
-        self.default.setObject('conn_srv', ConnectionServiceStub())
-        self.service = traverse(self.default, 'conn_srv')
-
-        self.cm.setObject('', ServiceConfiguration('SQLDatabaseConnections',
-                            '/++etc++site/default/conn_srv'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        key = self.cm.setObject('',
+                  ConnectionConfiguration('conn_name',
+                                          '/++etc++site/default/da'))
+        self.config = traverse(self.default.getConfigurationManager(), key)
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)

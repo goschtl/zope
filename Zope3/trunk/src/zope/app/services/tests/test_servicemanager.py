@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.10 2003/06/01 15:59:36 jim Exp $
+$Id: test_servicemanager.py,v 1.11 2003/06/03 21:43:00 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -39,19 +39,10 @@ class TestService:
 class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-
+        PlacefulSetup.setUp(self, site=True)
         serviceManager.defineService('test_service', ITestService)
 
-    def _Test__new(self):
-        return ServiceManager()
-
-    def createServiceManager(self):
-        self.rootFolder.setServiceManager(ServiceManager())
-
     def testGetService(self):
-        self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++site')
         default = traverse(sm, 'default')
 
@@ -70,7 +61,6 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(testOb, ts)
 
     def test_queryLocalService(self):
-        self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++site')
 
         # Test no service case
@@ -97,14 +87,12 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
 
     def test_get(self):
-        self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++site')
         default = sm.get('default')
         self.assertEqual(default, sm.Packages['default'])
         self.assertEqual(sm.get('spam'), None)
 
     def testAddService(self):
-        self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++site')
         default = traverse(sm, 'default')
 
@@ -152,15 +140,14 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.testGetService() # set up root localservice
         sm=getServiceManager(self.rootFolder)
 
-        self.folder1.setServiceManager(ServiceManager())
-        sm2=getServiceManager(self.folder1)
+        sm2 = self.makeSite('folder1')
 
         self.assertEqual(getService(self.folder1, 'test_service'),
                          sm['default']['test_service1'])
 
     def testComponentArchitectureServiceLookup(self):
-        self.rootFolder.setServiceManager(ServiceManager())
-        self.folder1.setServiceManager(ServiceManager())
+        self.makeSite()
+        self.makeSite('folder1')
 
         ts = TestService()
 
@@ -176,8 +163,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         import zope.app.services.tests.sample1
         import zope.app.services.tests.sample2
 
-        self.rootFolder.setServiceManager(ServiceManager())
-        sm=getServiceManager(self.rootFolder)
+        sm = self.makeSite()
+
         default = cw(sm['default'], self.rootFolder, name='default')
         default.setObject('m1', Manager())
         manager = cw(default['m1'], default, name='m1')

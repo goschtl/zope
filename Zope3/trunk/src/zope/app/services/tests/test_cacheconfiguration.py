@@ -13,27 +13,28 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.10 2003/06/01 15:59:36 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.11 2003/06/03 21:43:00 jim Exp $
 """
 __metaclass__ = type
-from unittest import TestCase, main, makeSuite
-from zope.app.services.cache import CacheConfiguration
-from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse
-from zope.app.services.service import ServiceManager
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-from zope.app.interfaces.services.configuration import Active, Unregistered
-from zope.app.interfaces.cache.cache import ICache
-from zope.app.interfaces.dependable import IDependable
-from zope.app.interfaces.cache.cache import ICachingService
-from zope.app.interfaces.services.configuration import IConfigurable
-from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
-from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.service import ServiceConfiguration
-from zope.context import ContextMethod
-from zope.app.context import ContextWrapper
-from zope.app.interfaces.event import IObjectModifiedEvent
 
+from unittest import TestCase, main, makeSuite
+from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.context import ContextWrapper
+from zope.app.interfaces.cache.cache import ICache
+from zope.app.interfaces.cache.cache import ICachingService
+from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.services.configuration import Active, Unregistered
+from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
+from zope.app.interfaces.services.configuration import IConfigurable
+from zope.app.interfaces.services.service import ILocalService
+from zope.app.services.cache import CacheConfiguration
+from zope.app.services.configuration import ConfigurationRegistry
+from zope.app.services.service import ServiceManager
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.tests import setup
+from zope.app.traversing import traverse
+from zope.context import ContextMethod
 
 class DependableStub:
 
@@ -60,7 +61,7 @@ class TestCache(DependableStub):
 class CachingServiceStub(DependableStub):
 
     __implements__ = (ICachingService, IConfigurable, IDependable,
-                      IAttributeUseConfigurable)
+                      IAttributeUseConfigurable, ILocalService)
 
     def __init__(self):
         self.bindings = {}
@@ -100,9 +101,9 @@ class CachingServiceStub(DependableStub):
 class TestConnectionConfiguration(PlacefulSetup, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        sm = PlacefulSetup.setUp(self, site=True)
+        self.service = setup.addService(sm, 'Caching', CachingServiceStub())
+
 
         self.default = traverse(self.rootFolder,
                            '++etc++site/default')
@@ -110,16 +111,10 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.cch = traverse(self.default, 'cch')
 
         self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
-        self.cm.setObject('', CacheConfiguration('cache_name',
-                            '/++etc++site/default/cch'))
-        self.config = traverse(self.default.getConfigurationManager(), '1')
-
-        self.default.setObject('cache_srv', CachingServiceStub())
-        self.service = traverse(self.default, 'cache_srv')
-
-        self.cm.setObject('', ServiceConfiguration('Caching',
-                            '/++etc++site/default/cache_srv'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        key = self.cm.setObject('',
+                                CacheConfiguration('cache_name',
+                                                   '/++etc++site/default/cch'))
+        self.config = traverse(self.default.getConfigurationManager(), key)
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)

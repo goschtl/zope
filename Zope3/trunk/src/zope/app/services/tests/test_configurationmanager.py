@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
+$Id: test_configurationmanager.py,v 1.9 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -345,8 +345,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
 class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
 
     def test_getConfigurationManager(self):
-        self.buildFolders()
-        sm = placefulsetup.createServiceManager(self.rootFolder)
+        sm = self.buildFolders(site=True)
         default = traverse(sm, 'default')
         self.assertEqual(default.getConfigurationManager(),
                          default['RegistrationManager'])
@@ -362,8 +361,7 @@ class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
 ##                           default.getConfigurationManager)
 
     def test_cant_remove_last_cm(self):
-        self.buildFolders()
-        sm = placefulsetup.createServiceManager(self.rootFolder)
+        sm = self.buildFolders(site=True)
         default = traverse(sm, 'default')
         self.assertRaises(Exception,
                           default.__delitem__, 'configuration')

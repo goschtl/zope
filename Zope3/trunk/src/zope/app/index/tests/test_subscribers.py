@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_subscribers.py,v 1.6 2003/03/23 22:35:39 jim Exp $
+$Id: test_subscribers.py,v 1.7 2003/06/03 21:42:59 jim Exp $
 """
 
 from unittest import makeSuite, main, TestCase
@@ -25,8 +25,7 @@ from zope.app.services.servicenames import EventPublication, HubIds
 
 class TestRegistration(PlacefulSetup, TestCase):
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
+        PlacefulSetup.setUp(self, site=True)
         self.createStandardServices()
         r = Registration()
         default = traverse(self.rootFolder, '++etc++site/default')

@@ -14,18 +14,13 @@
 """
 
 Revision information:
-$Id: eventsetup.py,v 1.7 2003/05/01 19:35:35 faassen Exp $
+$Id: eventsetup.py,v 1.8 2003/06/03 21:43:00 jim Exp $
 """
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.service import ServiceManager
 
 class EventSetup(PlacefulSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
+        PlacefulSetup.setUp(self, site=True)
         self.createStandardServices()
-
-    def createServiceManager(self, folder):
-        folder.setServiceManager(ServiceManager())
 

@@ -13,10 +13,11 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.9 2003/06/03 14:48:57 stevea Exp $
+$Id: test_cachingservice.py,v 1.10 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import setup
 from zope.interface.verify import verifyObject
 from zope.interface import implements
 from zope.app.interfaces.cache.cache import ICache
@@ -24,7 +25,6 @@ from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.services.cache import CacheConfiguration
 from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.services.tests.eventsetup import EventSetup
-from zope.app.services.service import ServiceConfiguration
 from zope.app.traversing import getPath, traverse
 
 def sort(list):
@@ -49,22 +49,8 @@ class CachingServiceSetup(EventSetup):
     def createCachingService(self, path=None):
         from zope.app.services.cache import CachingService
 
-        folder = self.rootFolder
-        if path is not None:
-            folder = traverse(folder, path)
-
-        if not folder.hasServiceManager():
-            self.createServiceManager(folder)
-
-        default = traverse(folder, '++etc++site/default')
-        key = default.setObject("myCachingService", CachingService())
-        service = traverse(default, key)
-
-        path = getPath(service)
-        configuration = ServiceConfiguration("Caching", path)
-        configure = default.getConfigurationManager()
-        key = configure.setObject('', configuration)
-        traverse(configure, key).status = Active
+        sm = self.makeSite(path)
+        return setup.addService(sm, "Caching", CachingService())
 
         return service
 

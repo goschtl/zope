@@ -14,11 +14,12 @@
 """
 
 Revision information:
-$Id: test_roleservice.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_roleservice.py,v 1.3 2003/06/03 21:43:00 jim Exp $
 """
+
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.services.tests.placefulsetup \
-    import PlacefulSetup
+from zope.app.tests import setup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component import getServiceManager, getService
 from zope.app.interfaces.security import IRoleService
 from zope.app.security.registries.roleregistry import roleRegistry
@@ -31,8 +32,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         return RoleService()
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
+        sm = PlacefulSetup.setUp(self, site=True)
 
         root_sm = getServiceManager(None)
 
@@ -40,13 +40,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.roleRegistry = roleRegistry
         root_sm.provideService("Roles", roleRegistry)
 
-        self.createServiceManager()
-
-        sm = getServiceManager(self.rootFolder)
-        rs = RoleService()
-        sm.Roles = rs
-
-        self.rs = getService(self.rootFolder,"Roles")
+        self.rs = setup.addService(sm, 'Roles', RoleService())
 
     def testGetRole(self):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
@@ -67,11 +61,8 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         r = Role("Hacker","","")
         self.rs.setObject("Hacker", r)
 
-        self.createServiceManager(self.folder1)
-        sm1 = getServiceManager(self.folder1)
-        sm1.Roles = RoleService()
-
-        rs1 = getService(self.folder1, "Roles")
+        sm1 = self.makeSite('folder1')
+        rs1 = setup.addService(sm1, 'Roles', RoleService())
 
         r1 = Role("Reviewer",'','')
         rs1.setObject("Reviewer", r1)

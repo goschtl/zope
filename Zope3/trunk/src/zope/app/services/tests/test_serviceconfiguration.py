@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.9 2003/05/01 19:35:35 faassen Exp $
+$Id: test_serviceconfiguration.py,v 1.10 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -77,10 +77,10 @@ class TestService(TestServiceBase):
 class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        PlacefulSetup.setUp(self, site=True)
+
         defineService('test_service', ITestService)
+
         default = traverse(self.rootFolder,
                            '++etc++site/default')
         self.__default = default

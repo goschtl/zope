@@ -15,16 +15,19 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.3 2003/05/01 19:35:06 faassen Exp $
+$Id: test_cachename.py,v 1.4 2003/06/03 21:42:59 jim Exp $
 """
 
 import unittest
 
 from zope.app.interfaces.cache.cache import CacheName
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.tests.servicemanager import TestingServiceManager
+from zope.app.tests import setup
+from zope.app.interfaces.services.service import ILocalService
 
 class CachingServiceStub(object):
+
+    __implements__ = ILocalService
 
     def getAvailableCaches(self):
         return 'foo', 'bar', 'baz'
@@ -33,11 +36,9 @@ class CachingServiceStub(object):
 class CacheNameTest(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
-        sm = TestingServiceManager()
-        self.rootFolder.setServiceManager(sm)
-        sm.Caching = CachingServiceStub()
+        PlacefulSetup.setUp(self, folders=True)
+        sm = self.makeSite()
+        setup.addService(sm, 'Caching', CachingServiceStub())
 
     def test(self):
         field = CacheName().bind(self.rootFolder)

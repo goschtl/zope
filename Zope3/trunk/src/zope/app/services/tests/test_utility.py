@@ -15,10 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.6 2003/05/27 14:18:25 jim Exp $
+$Id: test_utility.py,v 1.7 2003/06/03 21:43:00 jim Exp $
 """
 
 import unittest
+from zope.app.tests import setup
 from zope.app.services.tests import placefulsetup
 from zope.app.services import utility
 from zope.component.utility import utilityService as globalUtilityService
@@ -33,6 +34,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.dependable import IDependable
 from zope.context import getWrapperContainer
+from zope.app.tests import setup
 
 class IFo(Interface): pass
 
@@ -84,11 +86,9 @@ class Foo:
 class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        placefulsetup.PlacefulSetup.setUp(self)
-        self.buildFolders()
-        sm = placefulsetup.createServiceManager(self.rootFolder)
-        placefulsetup.addService(sm, "Utilities",
-                                 utility.LocalUtilityService())
+        sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
+        setup.addService(sm, "Utilities",
+                         utility.LocalUtilityService())
 
     def test_queryUtility_delegates_to_global(self):
         globalUtilityService.provideUtility(IFoo, Foo("global"))

@@ -13,18 +13,17 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.3 2003/03/23 22:35:42 jim Exp $
+$Id: test_pagefolder.py,v 1.4 2003/06/03 21:43:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.pagefolder import PageFolder
 from zope.app.traversing import traverse
 from zope.app.services.zpt import ZPTTemplate
 from zope.app.services.view import ViewService
 from zope.app.interfaces.services.configuration import Active
-from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceConfiguration
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.services.tests.test_configurationmanager \
@@ -35,25 +34,16 @@ class I(Interface): pass
 class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
 
     def test_setObject(self):
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
+        sm = self.buildFolders(site=True)
+        setup.addService(sm, 'Views', ViewService(), suffix='service')
+
+
         default = traverse(self.rootFolder, '++etc++site/default')
         default.setObject('Views', PageFolder())
         views = traverse(default, 'Views')
         views.forInterface = I
         views.factoryName = None
         views.permission = 'zope.View'
-
-        #set up view service
-        default.setObject('ViewService', ViewService())
-        configure = default.getConfigurationManager()
-        configuration = ServiceConfiguration(
-            'Views',
-            '/++etc++site/default/ViewService')
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
-        configuration.status = Active
-
         views.setObject('foo.html', ZPTTemplate())
 
         configuration = traverse(views.getConfigurationManager(), '1')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.10 2003/05/01 19:35:20 faassen Exp $
+$Id: test_index.py,v 1.11 2003/06/03 21:43:00 jim Exp $
 """
 
 import unittest
@@ -46,8 +46,7 @@ Sheila = u"Sheila"
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.buildFolders()
+        PlacefulSetup.setUp(self, site=True)
         self.index = TextIndex()
         self.rootFolder.setObject('myIndex', self.index)
         self.object = FakeSearchableObject()

@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
+$Id: test_connectionservice.py,v 1.9 2003/06/03 21:43:00 jim Exp $
 """
 
 import unittest
@@ -32,11 +32,12 @@ from zope.app.interfaces.services.configuration \
 from zope.app.services.configuration import UseConfiguration
 from zope.app.services.connection import ConnectionConfiguration
 from zope.app.services.connection import ConnectionService
-from zope.app.services.service import ServiceConfiguration
 from zope.app.services.service import ServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.component.adapter import provideAdapter
+from zope.app.tests import setup
+from zope.app import zapi
 
 class ConnectionServiceForTests(ConnectionService):
 
@@ -62,65 +63,44 @@ def sort(list):
 class TestConnectionService(unittest.TestCase, PlacefulSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-
-        provideAdapter(IAttributeAnnotatable,
-                       IAnnotations, AttributeAnnotations)
-        provideAdapter(IAnnotatable, IDependable, Dependable)
-        provideAdapter(IAttributeAnnotatable, IUseConfiguration,
-                       UseConfiguration)
-
-        # Set up a local connection service
-        self.buildFolders()
-        self.rootFolder.setServiceManager(ServiceManager())
-
-        self.default = traverse(self.rootFolder,
-                                '++etc++site/default')
-        self.default.setObject('conn_srv', ConnectionServiceForTests())
-        self.service = traverse(self.default, 'conn_srv')
-
-        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
-        self.cm.setObject('', ServiceConfiguration('SQLDatabaseConnections',
-                                '/++etc++site/default/conn_srv'))
-        traverse(self.default.getConfigurationManager(), '1').status = Active
+        sm = PlacefulSetup.setUp(self, site=True)
+        self.service = setup.addService(sm, 'SQLDatabaseConnections',
+                                        ConnectionServiceForTests())
+        self.default = zapi.traverse(sm, 'default')
 
         self.default.setObject('da1', DAStub(1))
         self.default.setObject('da2', DAStub(2))
 
-        self.cm.setObject('', ConnectionConfiguration('conn1',
+        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
+
+        k = self.cm.setObject('', ConnectionConfiguration('conn1',
                                 '/++etc++site/default/da1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
-        self.cm.setObject('', ConnectionConfiguration('conn2',
+        traverse(self.default.getConfigurationManager(), k).status = Active
+        k = self.cm.setObject('', ConnectionConfiguration('conn2',
                                 '/++etc++site/default/da2'))
-        traverse(self.default.getConfigurationManager(), '3').status = Active
-        self.cm.setObject('', ConnectionConfiguration('conn3',
+        traverse(self.default.getConfigurationManager(), k).status = Active
+        k = self.cm.setObject('', ConnectionConfiguration('conn3',
                                 '/++etc++site/default/da1'))
         traverse(self.default.getConfigurationManager(),
-                 '4').status = Registered
+                 k).status = Registered
         # Now self.service has conn1 and conn2 available and knows about conn3
 
-        # Set up a more local connection service
-        folder1 = traverse(self.rootFolder, 'folder1')
-        folder1.setServiceManager(ServiceManager())
+        sm = self.makeSite('folder1')
+        self.service1 = setup.addService(sm, 'SQLDatabaseConnections',
+                                         ConnectionServiceForTests())
 
-        default1 = traverse(folder1, '++etc++site/default')
-        default1.setObject('conn_srv1', ConnectionServiceForTests())
-        self.service1 = traverse(default1, 'conn_srv1')
-
-        cm1 = ZopeContainerAdapter(default1.getConfigurationManager())
-        cm1.setObject('', ServiceConfiguration('SQLDatabaseConnections',
-                '/folder1/++etc++site/default/conn_srv1'))
-        traverse(default1.getConfigurationManager(), '1').status = Active
-
+        default1 = traverse(sm, 'default')
         default1.setObject('da3', DAStub(3))
         default1.setObject('da4', DAStub(4))
+        
+        cm1 = ZopeContainerAdapter(default1.getConfigurationManager())
 
-        cm1.setObject('', ConnectionConfiguration('conn1',
+        k = cm1.setObject('', ConnectionConfiguration('conn1',
                             '/folder1/++etc++site/default/da3'))
-        traverse(default1.getConfigurationManager(), '2').status = Active
-        cm1.setObject('', ConnectionConfiguration('conn4',
+        traverse(default1.getConfigurationManager(), k).status = Active
+        k = cm1.setObject('', ConnectionConfiguration('conn4',
                             '/folder1/++etc++site/default/da4'))
-        traverse(default1.getConfigurationManager(), '3').status = Active
+        traverse(default1.getConfigurationManager(), k).status = Active
         # Now self.service1 overrides conn1, adds new conn4 available, and
         # inherits conn2 from self.service
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.5 2003/06/03 14:47:05 stevea Exp $
+$Id: test_principalannotation.py,v 1.6 2003/06/03 21:43:00 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -28,6 +28,7 @@ from zope.component.adapter import provideAdapter
 from zope.component import getAdapter
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipal
+from zope.app.tests import setup
 
 
 class Principal:
@@ -45,7 +46,7 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        self.buildFolders()
+        sm = self.buildFolders(site='/')
 
         root_sm = getServiceManager(None)
 
@@ -55,12 +56,7 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
                               IPrincipalAnnotationService)
         root_sm.provideService("PrincipalAnnotation", svc)
 
-        self.createServiceManager()
-
-        sm = getServiceManager(self.rootFolder)
-        sm.PrincipalAnnotation = svc
-
-        self.svc = getService(self.rootFolder, "PrincipalAnnotation")
+        self.svc = setup.addService(sm, 'PrincipalAnnotation', svc)
 
     def testGetSimple(self):
         prince = Principal('somebody')
@@ -78,10 +74,9 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
     def testGetFromLayered(self):
         princeSomebody = Principal('somebody')
-        self.createServiceManager(self.folder1)
-        sm1 = getServiceManager(self.folder1)
-        sm1.PrincipalAnnotation = PrincipalAnnotationService()
-        subService = getService(self.folder1, "PrincipalAnnotation")
+        sm1 = self.makeSite('folder1')
+        subService = setup.addService(sm1, 'PrincipalAnnotation',
+                                      PrincipalAnnotationService())
 
         parentAnnotation = self.svc.getAnnotations(princeSomebody)
 
