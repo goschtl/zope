@@ -22,6 +22,7 @@ from Products.CMFCore.utils import ToolInit
 from Products.CMFCore.utils import ContentInit
 from Products.CMFCore.utils import registerIcon
 try:
+    from Products.CMFSetup import BASE
     from Products.CMFSetup import profile_registry
     has_profile_registry = True
 except ImportError:
@@ -150,7 +151,8 @@ def initialize( context ):
                                          'CMFDefault Site',
                                          'Profile for a default CMFSite.',
                                          'profiles/default',
-                                         'CMFDefault')
+                                         'CMFDefault',
+                                         BASE)
 
     context.registerClass( Portal.CMFSite
                          , constructors=( Portal.manage_addCMFSiteForm

@@ -48,7 +48,7 @@ class SetupToolTests( FilesystemTestBase
         FilesystemTestBase.setUp( self )
         self._profile_registry_info = profile_registry._profile_info
         self._profile_registry_ids = profile_registry._profile_ids
-        profile_registry._clear()
+        profile_registry.clear()
 
     def tearDown( self ):
 
@@ -120,9 +120,9 @@ class SetupToolTests( FilesystemTestBase
                      )
 
         profile_registry.registerProfile('foo', 'Foo', '', self._PROFILE_PATH)
-        tool.setImportContext('profile-foo')
+        tool.setImportContext('profile-other:foo')
 
-        self.assertEqual( tool.getImportContextID(), 'profile-foo' )
+        self.assertEqual( tool.getImportContextID(), 'profile-other:foo' )
 
     def test_setImportContext_invalid( self ):
 
@@ -145,6 +145,7 @@ class SetupToolTests( FilesystemTestBase
         from common import _makeTestFile
 
         tool = self._makeOne()
+        tool.getExportStepRegistry().clear()
 
         _makeTestFile( IMPORT_STEPS_XML
                      , self._PROFILE_PATH
@@ -162,9 +163,9 @@ class SetupToolTests( FilesystemTestBase
                      )
 
         profile_registry.registerProfile('foo', 'Foo', '', self._PROFILE_PATH)
-        tool.setImportContext('profile-foo')
+        tool.setImportContext('profile-other:foo')
 
-        self.assertEqual( tool.getImportContextID(), 'profile-foo' )
+        self.assertEqual( tool.getImportContextID(), 'profile-other:foo' )
 
         import_registry = tool.getImportStepRegistry()
         self.assertEqual( len( import_registry.listSteps() ), 1 )
