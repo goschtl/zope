@@ -201,7 +201,7 @@ def evolve(db, how=EVOLVE):
 
       >>> print handler
       zope.app.generations ERROR
-        Failed to evolve database to gneration 4 for app1
+        Failed to evolve database to generation 4 for app1
 
     The database will have been updated for previous generations:
 
@@ -227,9 +227,9 @@ def evolve(db, how=EVOLVE):
 
       >>> print handler
       zope.app.generations ERROR
-        Failed to evolve database to gneration 4 for app1
+        Failed to evolve database to generation 4 for app1
       zope.app.generations ERROR
-        Failed to evolve database to gneration 4 for app1
+        Failed to evolve database to generation 4 for app1
 
     So far, we've used evolve in its default policy, in which we evolve
     as far as we can up to the current generation.  There are two
