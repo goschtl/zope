@@ -13,7 +13,7 @@
 ##############################################################################
 """Default service names
 
-$Id: servicenames.py,v 1.1 2004/03/13 23:54:56 srichter Exp $
+$Id: servicenames.py,v 1.2 2004/04/15 22:11:06 srichter Exp $
 """
 from zope.component.servicenames import *
 
@@ -24,4 +24,3 @@ EventSubscription = 'Subscription'
 ErrorLogging = 'ErrorLogging'
 HubIds = 'HubIds'
 PrincipalAnnotation = 'PrincipalAnnotation'
-Workflows = 'Workflows'

@@ -1,6 +1,5 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:service="http://namespaces.zope.org/service"
    i18n_domain="zope"
    >
 
@@ -23,30 +22,6 @@
       title="[use-workflow-processinstances-permission]
              Use Workflow ProcessInstances"
       />
-
-
-  <!-- Workflow Service -->
-
-  <content class="zope.app.workflow.service.WorkflowService">
-    <factory
-        id="WorkflowService"
-        />
-    <require
-        permission="zope.View"
-        interface="zope.app.workflow.interfaces.IWorkflowService"
-        attributes="queryRegistrations queryRegistrationsFor
-                    listRegistrationNames"
-        />
-    <implements 
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
-       />
-  </content>
-
-  <serviceType 
-      id="Workflows"
-      interface="zope.app.workflow.interfaces.IWorkflowService"
-      />
-
 
   <!-- Workflow Process Definition 
        This is only a generic placeholder for
@@ -72,15 +47,15 @@
 
   <vocabulary
      name="ProcessDefinitions"
-     factory=".service.ProcessDefinitionVocabulary"
+     factory=".definition.ProcessDefinitionVocabulary"
      />
 
-  <content class=".service.ProcessDefinitionVocabulary">
+  <content class=".definition.ProcessDefinitionVocabulary">
       <allow interface="zope.schema.interfaces.IVocabulary"/>
       <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
   </content>
 
-  <content class=".service.ProcessDefinitionTerm">
+  <content class=".definition.ProcessDefinitionTerm">
       <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
   </content>
 

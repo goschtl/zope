@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.4 2004/03/03 20:20:34 srichter Exp $
+$Id: __init__.py,v 1.5 2004/04/15 22:11:10 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -24,26 +24,6 @@ from zope.app.event.interfaces import IEvent
 class IWorkflowEvent(IEvent):
     """This event describes a generic event that is triggered by the workflow
     mechanism."""
-
-
-class IWorkflowService(Interface):
-    """Workflow service.
-
-    A workflow service manages the process definitions."""
-
-    def getProcessDefinitionNames():
-        """Return the definition names.
-
-        Returns a sequence of names."""
-
-    def getProcessDefinition(name):
-        """Return the IProcessDefinition for the name."""
-
-    def queryProcessDefinition(name, default=None):
-        """Return the IProcessDefinition for the name or default."""
-
-    def createProcessInstance(name):
-        """Create a process instance from a process definition."""
 
 
 class IProcessDefinition(Interface):
@@ -59,7 +39,6 @@ class IProcessDefinition(Interface):
 
 class IProcessDefinitionElementContainer(IContainer):
     """Abstract Interface for ProcessDefinitionElementContainers."""
-
 
     def getProcessDefinition():
         """Return the ProcessDefinition Object."""

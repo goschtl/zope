@@ -15,21 +15,20 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.14 2004/03/13 23:55:31 srichter Exp $
+$Id: contentworkflow.py,v 1.15 2004/04/15 22:11:09 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.component import getService
 
+from zope.app import zapi
 from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.servicenames import EventSubscription, Workflows
+from zope.app.servicenames import EventSubscription, Utilities
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
+from zope.app.workflow.instance import createProcessInstance
 from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
@@ -62,8 +61,6 @@ class ContentWorkflowsManager(Persistent, Contained):
             return
 
         if IObjectCreatedEvent.providedBy(event):
-            wfs = getService(self, Workflows)
-
             # here we will lookup the configured processdefinitions
             # for the newly created compoent. For every pd_name
             # returned we will create a processinstance.
@@ -72,7 +69,7 @@ class ContentWorkflowsManager(Persistent, Contained):
                 if pd_name in pi_container.keys():
                     continue
                 try:
-                    pi = wfs.createProcessInstance(pd_name)
+                    pi = createProcessInstance(self, pd_name)
                 except KeyError:
                     # No registered PD with that name..
                     continue
@@ -102,7 +99,7 @@ class ContentWorkflowsManager(Persistent, Contained):
 
     def _getChannel(self, channel):
         if channel is None:
-            channel = getService(self, EventSubscription)
+            channel = zapi.getService(self, EventSubscription)
         return channel
 
     def getProcessDefinitionNamesForObject(self, object):

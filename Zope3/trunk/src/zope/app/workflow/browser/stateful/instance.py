@@ -13,27 +13,25 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
+$Id: instance.py,v 1.9 2004/04/15 22:11:10 srichter Exp $
 """
-from zope.component import getService
 from zope.proxy import removeAllProxies
-from zope.app.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema import getFields
 
+from zope.app import zapi
 from zope.app.form.browser.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
 from zope.app.form.interfaces import IInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.servicenames import Workflows
+from zope.app.publisher.browser import BrowserView
+from zope.app.servicenames import Utilities
 
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 
-__metaclass__ = type
-
- 
 class ManagementView(BrowserView):
 
     __used_for__ = IProcessInstanceContainerAdaptable
@@ -124,8 +122,9 @@ class ManagementView(BrowserView):
 
 
     def _getProcessDefinition(self, processInstance):
-        ws = getService(self.context, Workflows)
-        return ws.getProcessDefinition(processInstance.processDefinitionName)
+        utils = zapi.getService(self.context, Utilities)
+        return utils.getUtility(IProcessDefinition,
+                                processInstance.processDefinitionName)
 
 
     def widgets(self):

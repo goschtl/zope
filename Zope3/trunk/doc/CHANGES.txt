@@ -275,6 +275,9 @@ Zope Changes
 
     - Converting Service-managed components to be utilities:
 
+      o Removed workflow service. Process Definitions were already utilities,
+        so this was particularly easy.
+
       o Various Code Interpreters were managed by a special service. They are
         now registered with the utility service.
 

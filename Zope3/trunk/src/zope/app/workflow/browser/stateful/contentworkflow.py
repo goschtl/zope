@@ -13,25 +13,23 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.6 2004/03/19 20:26:38 srichter Exp $
+$Id: contentworkflow.py,v 1.7 2004/04/15 22:11:10 srichter Exp $
 """
+from zope.app import zapi
 from zope.app.introspector import interfaceToName
 from zope.app.component.interface import nameToInterface
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
-from zope.app.servicenames import Workflows
+from zope.app.servicenames import Utilities
 from zope.app.form.interfaces import IInputWidget
-from zope.component import getService
 from zope.interface import Interface
 from zope.app.publisher.browser import BrowserView
 from zope.schema.vocabulary import VocabularyListField
 from zope.security.proxy import trustedRemoveSecurityProxy 
+from zope.app.workflow.interfaces import IProcessDefinition
 
-__metaclass__ = type
- 
-
-class ContentWorkflowsManagerView:
+class ContentWorkflowsManagerView(object):
  
     def getName(self):
         return """I'm a ContentWorkflows Utility"""
@@ -63,8 +61,9 @@ class ManageContentProcessRegistry(BrowserView):
 
     def getProcessInterfacesMapping(self):
         mapping = []
-        wf = getService(self.context, Workflows)
-        for name in wf.getProcessDefinitionNames():
+        utils = zapi.getService(self.context, Utilities)
+        for name in [name for name, util in utils.getUtilitiesFor(
+                                                       IProcessDefinition)]:
             ifaces = self.context.getInterfacesForProcessName(name)
             ifaces = map(lambda i: interfaceToName(self.context, i), ifaces)
             if ifaces:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.17 2004/03/13 23:01:17 srichter Exp $
+$Id: test_instance.py,v 1.18 2004/04/15 22:11:09 srichter Exp $
 """
 import unittest
 
@@ -22,31 +22,33 @@ from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
 from zope.component.service import serviceManager
-from zope.app.event.tests.placelesssetup import \
-     eventPublisher, EventRecorder, events, clearEvents
+from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
+from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
 
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.registration.interfaces import IRegisterable
 from zope.app.registration.interfaces import IRegistered
 from zope.app.registration.interfaces import ActiveStatus
-from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.servicenames import Utilities
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition
-from zope.app.workflow.interfaces.stateful \
-     import IStatefulProcessInstance
-from zope.app.workflow.interfaces.stateful import \
-     IBeforeTransitionEvent, IAfterTransitionEvent
+from zope.app.workflow.instance import createProcessInstance
+from zope.app.workflow.interfaces.stateful import IStatefulProcessInstance
+from zope.app.workflow.interfaces.stateful import IBeforeTransitionEvent
+from zope.app.workflow.interfaces.stateful import IAfterTransitionEvent
 from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
-from zope.app.workflow.interfaces.stateful import \
-     IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
-from zope.app.workflow.stateful.definition \
-     import StatefulProcessDefinition, State, Transition
-from zope.app.workflow.stateful.instance \
-     import StatefulProcessInstance, StateChangeInfo
+from zope.app.workflow.interfaces.stateful import IBeforeRelevantDataChangeEvent
+from zope.app.workflow.interfaces.stateful import IAfterRelevantDataChangeEvent
+from zope.app.workflow.stateful.definition import StatefulProcessDefinition
+from zope.app.workflow.stateful.definition import State, Transition
+from zope.app.workflow.stateful.instance import StatefulProcessInstance
+from zope.app.workflow.stateful.instance import StateChangeInfo
+
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.container.contained import contained
@@ -99,9 +101,10 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       name).status = ActiveStatus
 
-        self.pd = self.service.getProcessDefinition('definition1')
+        utilities = zapi.getService(self.sm, Utilities)
+        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
-        self.pi = self.service.createProcessInstance('definition1')
+        self.pi = createProcessInstance(self.sm, 'definition1')
         # Let's also listen to the fired events
         clearEvents()
         eventPublisher.globalSubscribe(EventRecorder)
@@ -211,10 +214,11 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(), n
                       ).status = ActiveStatus
 
-        self.pd = self.service.getProcessDefinition('definition1')
+        utilities = zapi.getService(self.sm, Utilities)
+        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
-            self.service.createProcessInstance('definition1'),
+            createProcessInstance(self.sm, 'definition1'),
             self.rootFolder)
 
     def testConditionalTranstitions(self):
@@ -297,10 +301,11 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
-        self.pd = self.service.getProcessDefinition('definition1')
+        utilities = zapi.getService(self.sm, Utilities)
+        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
-            self.service.createProcessInstance('definition1'),
+            createProcessInstance(self.sm, 'definition1'),
             self.rootFolder)
 
     def testConditionalTranstitions(self):
@@ -382,14 +387,15 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
-        self.pd = self.service.getProcessDefinition('definition1')
+        utilities = zapi.getService(self.sm, Utilities)
+        self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the process instance container (pic) some context to find a
         # service (while this is not correct, it resembles the current
         # behavior.
         from zope.app.workflow.instance import ProcessInstanceContainerAdapter
         pic = ProcessInstanceContainerAdapter(self.rootFolder)
         self.pi = contained(
-            self.service.createProcessInstance('definition1'),
+            createProcessInstance(self.sm, 'definition1'),
             pic)
 
     def testPermissionedTranstitions(self):
