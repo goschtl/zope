@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.8 2003/06/03 22:46:22 jim Exp $
+$Id: test_securitydirectives.py,v 1.9 2003/07/28 22:22:01 jim Exp $
 """
 
 import unittest
@@ -26,6 +26,7 @@ from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
 
 from zope.configuration.xmlconfig import ZopeXMLConfigurationError
+from zope.configuration.config import ConfigurationConflictError
 from zope.configuration.xmlconfig import XMLConfig, xmlconfig
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
@@ -130,7 +131,7 @@ class TestPermissionDirective(CleanUp, unittest.TestCase):
      """)
 
         #self.assertRaises(AlreadyRegisteredError, xmlconfig, f)
-        self.assertRaises(ZopeXMLConfigurationError, xmlconfig, f)
+        self.assertRaises(ConfigurationConflictError, xmlconfig, f)
 
 class TestRoleDirective(CleanUp, unittest.TestCase):
     def setUp(self):
@@ -167,7 +168,7 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
      """)
 
         #self.assertRaises(AlreadyRegisteredError, xmlconfig, f)
-        self.assertRaises(ZopeXMLConfigurationError, xmlconfig, f)
+        self.assertRaises(ConfigurationConflictError, xmlconfig, f)
 
 class TestRolePermission(CleanUp, unittest.TestCase):
 
