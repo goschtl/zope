@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.9 2003/05/20 16:10:28 fdrake Exp $
+$Id: form.py,v 1.10 2003/05/22 22:49:45 jim Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.form import IWidget
@@ -83,17 +83,6 @@ class IBrowserWidget(IWidget):
        default value and so on.
     """
 
-    def setPrefix(self, prefix):
-        """Set the form-variable name prefix used for the widget
-
-        The widget will define its own form variable names by
-        concatinating the prefix and the field name using a dot. For
-        example, with a prefix of "page" and a field name of "title",
-        a form name of "page.title" will be used. A widget may use
-        multiple form fields. If so, it should add distinguishing
-        suffixes to the prefix and field name.
-        """
-
     def __call__():
         """Render the widget
         """
@@ -110,20 +99,6 @@ class IBrowserWidget(IWidget):
 
         For example:
           <div class="label">label</div><div class="field">field</div>
-        """
-
-    # XXX The following two methods are being supported for backward
-    # compatability. They are deprecated and will be refactored away
-    # eventually.
-
-    def render(value):
-        """Renders this widget as HTML using property values in field.
-
-        The value if given will be used as the default value for the widget.
-        """
-
-    def renderHidden(value):
-        """Renders this widget as a hidden field.
         """
 
 
