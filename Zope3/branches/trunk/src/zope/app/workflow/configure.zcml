@@ -1,0 +1,90 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope"
+   >
+
+  <!-- Workflow Permissions -->
+
+  <permission 
+      id="zope.workflow.ManageProcessDefinitions" 
+      title="[manage-workflow-processdefinitions-permission]
+             Manage Workflow ProcessDefinitions"
+      />
+
+  <permission 
+      id="zope.workflow.CreateProcessInstances"
+      title="[create-workflow-processinstances-permission]
+             Create Workflow ProcessInstances"
+      />
+
+  <permission
+      id="zope.workflow.UseProcessInstances"
+      title="[use-workflow-processinstances-permission]
+             Use Workflow ProcessInstances"
+      />
+
+  <!-- Workflow Process Definition 
+       This is only a generic placeholder for
+       future Process Definition implementations -->
+
+  <localUtility class="zope.app.workflow.definition.ProcessDefinition">
+    <factory
+        id="zope.app.workflow.ProcessDefinition"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.workflow.interfaces.IProcessDefinition" 
+        />
+  </localUtility>
+
+  <!-- Process Definition Name Vocabualry -->
+
+  <vocabulary
+     name="ProcessDefinitions"
+     factory=".definition.ProcessDefinitionVocabulary"
+     />
+
+  <content class=".definition.ProcessDefinitionVocabulary">
+      <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+  </content>
+
+  <content class=".definition.ProcessDefinitionTerm">
+      <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
+  </content>
+
+
+  <!-- Process Instance Container -->
+
+  <content 
+        class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
+
+    <implements interface="zope.app.container.interfaces.IContentContainer" />
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+       />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.workflow.ManageProcessDefinitions"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </content>
+
+  <adapter
+      factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"
+      provides="zope.app.workflow.interfaces.IProcessInstanceContainer"
+      for="zope.app.annotation.interfaces.IAnnotatable"
+      permission="zope.workflow.UseProcessInstances"
+      trusted="true"
+      />
+
+  <include package=".stateful" />
+
+  <include package=".browser" />
+
+</configure>

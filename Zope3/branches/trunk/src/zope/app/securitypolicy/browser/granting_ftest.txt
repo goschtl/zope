@@ -1,0 +1,125 @@
+Granting Example
+================
+
+In this example, we look at granting (or denying) principals (or
+roles) to principals.
+
+To make grants, we visit grant.html.  This doesn't display any 
+grant information until we select a principal.
+
+  >>> print http(r"""
+  ... GET /@@grant.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/@@contents.html
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+
+If we submit a search request, we'll get a list of principals, from
+which we can choose:
+
+  >>> print http(r"""
+  ... POST /@@grant.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Length: 117
+  ... Content-Type: application/x-www-form-urlencoded
+  ... Referer: http://localhost:8081/@@grant.html
+  ... 
+  ... field.principal.displayed=y"""
+  ... """&field.principal.MA__.query.searchstring="""
+  ... """&field.principal.MA__.query.search=Search""")
+  HTTP/1.1 200 Ok
+  ...
+  <option value="em9wZS5tZ3I_">Manager</option>
+  ...
+
+We can then choose one.  If we do so, we get output that includes form
+elements for inputing security settings:
+
+  >>> print http(r"""
+  ... POST /@@grant.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Length: 169
+  ... Content-Type: application/x-www-form-urlencoded
+  ... Referer: http://localhost:8081/@@grant.html
+  ... 
+  ... field.principal.displayed=y"""
+  ... """&field.principal.MA__.query.searchstring="""
+  ... """&field.principal.MA__.selection=em9wZS5tZ3I_"""
+  ... """&field.principal.MA__.apply=Apply""")
+  HTTP/1.1 200 Ok
+  ...
+  <select name="field.em9wZS5tZ3I_.role.zope.Member" size="1" >
+  <option value="allow">Allow</option>
+  <option selected="selected" value="unset">Unset</option>
+  <option value="deny">Deny</option>
+  </select>
+  ...
+  <select name="field.em9wZS5tZ3I_.permission.zope.ManageCode" size="1" >
+  <option value="allow">Allow</option>
+  <option selected="selected" value="unset">Unset</option>
+  <option value="deny">Deny</option>
+  </select>
+  ...
+
+Before we submit any data, there are no grants for the root object
+except for a one made by the testing framework that grants the manager
+role to the test manager:
+
+  >>> root = getRootFolder()
+  >>> import zope.app.securitypolicy.interfaces
+  >>> grants = zope.app.securitypolicy.interfaces.IGrantInfo(root) 
+  >>> grants.principalPermissionGrant('zope.mgr', 'zope.ManageCode')
+  PermissionSetting: Unset
+  >>> list(grants.getRolesForPrincipal('zope.mgr'))
+  [('zope.Manager', PermissionSetting: Allow)]
+
+Now, we can submit changes. (I've actually reduced the form input
+to just the things we want to change to both limit the text here and
+to reduce dependencies on specific roles and permissions:
+
+
+  >>> print http(r"""
+  ... POST /@@grant.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Length: 6311
+  ... Content-Type: application/x-www-form-urlencoded
+  ... Referer: http://localhost:8081/@@grant.html
+  ... 
+  ... field.principal=em9wZS5tZ3I_"""
+  ... """&field.principal.displayed=y"""
+  ... """&field.principal.MA__.query.searchstring="""
+  ... """&field.em9wZS5tZ3I_.role.zope.Member=allow"""
+  ... """&field.em9wZS5tZ3I_.role.zope.Member-empty-marker=1"""
+  ... """&field.em9wZS5tZ3I_.permission.zope.ManageCode=deny"""
+  ... """&field.em9wZS5tZ3I_.permission.zope.ManageCode-empty-marker=1"""
+  ... """&GRANT_SUBMIT=Change""")
+  HTTP/1.1 200 Ok
+  ...
+  <select name="field.em9wZS5tZ3I_.role.zope.Member" size="1" >
+  <option selected="selected" value="allow">Allow</option>
+  <option value="unset">Unset</option>
+  <option value="deny">Deny</option>
+  </select>
+  ...
+  <select name="field.em9wZS5tZ3I_.permission.zope.ManageCode" size="1" >
+  <option value="allow">Allow</option>
+  <option value="unset">Unset</option>
+  <option selected="selected" value="deny">Deny</option>
+  </select>
+  ...
+
+And, if we check the grants, we see the changes:
+
+  >>> grants = zope.app.securitypolicy.interfaces.IGrantInfo(root) 
+
+  >>> grants.principalPermissionGrant('zope.mgr', 'zope.ManageCode')
+  PermissionSetting: Deny
+
+  >>> role_grants = list(grants.getRolesForPrincipal('zope.mgr'))
+  >>> role_grants.sort()
+  >>> role_grants
+  ... # doctest: +NORMALIZE_WHITESPACE
+  [('zope.Manager', PermissionSetting: Allow), 
+   ('zope.Member', PermissionSetting: Allow)]
+  
