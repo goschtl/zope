@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the functions in the fsutil module.
 
-$Id: test_fsutil.py,v 1.1 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: test_fsutil.py,v 1.2 2003/05/15 11:25:40 gvanrossum Exp $
 """
 
 import os
@@ -24,31 +24,38 @@ from os.path import split, join, exists, isdir, isfile
 
 from zope.fssync import fsutil
 
+def FIX(path):
+    # This fixes only relative paths
+    parts = path.split("/")
+    mapping = {".": os.curdir, "..": os.pardir}
+    parts = [mapping.get(x, x) for x in parts]
+    return os.path.join(*parts)
+
 class TestFSUtil(unittest.TestCase):
 
     def test_split(self):
-        self.assertEqual(fsutil.split(join("foo", "bar")), ("foo", "bar"))
+        self.assertEqual(fsutil.split(FIX("foo/bar")), ("foo", "bar"))
         self.assertEqual(fsutil.split("foo"), (os.curdir, "foo"))
-        self.assertEqual(fsutil.split(join("foo", "")), (os.curdir, "foo"))
-        self.assertEqual(fsutil.split(join("foo", os.curdir)),
-                         (os.curdir, "foo"))
-        self.assertEqual(fsutil.split(join("foo", "bar", os.pardir)),
-                         (os.curdir, "foo"))
-        self.assertEqual(fsutil.split(os.curdir), split(os.getcwd()))
+        self.assertEqual(fsutil.split(FIX("foo/")), (os.curdir, "foo"))
+        self.assertEqual(fsutil.split(FIX("foo/.")), (os.curdir, "foo"))
+        self.assertEqual(fsutil.split(FIX("foo/bar/..")), (os.curdir, "foo"))
+        self.assertEqual(fsutil.split(FIX(".")), split(os.getcwd()))
 
     def test_getspecial(self):
-        self.assertEqual(fsutil.getspecial("foo/bar", "X"), "foo/@@Zope/X/bar")
+        self.assertEqual(fsutil.getspecial(FIX("foo/bar"), "X"),
+                         FIX("foo/@@Zope/X/bar"))
 
     def test_getoriginal(self):
-        self.assertEqual(fsutil.getoriginal("foo/bar"),
-                         "foo/@@Zope/Original/bar")
+        self.assertEqual(fsutil.getoriginal(FIX("foo/bar")),
+                         FIX("foo/@@Zope/Original/bar"))
 
     def test_getextra(self):
-        self.assertEqual(fsutil.getextra("foo/bar"), "foo/@@Zope/Extra/bar")
+        self.assertEqual(fsutil.getextra(FIX("foo/bar")),
+                         FIX("foo/@@Zope/Extra/bar"))
 
     def test_getannotations(self):
-        self.assertEqual(fsutil.getannotations("foo/bar"),
-                         "foo/@@Zope/Annotations/bar")
+        self.assertEqual(fsutil.getannotations(FIX("foo/bar")),
+                         FIX("foo/@@Zope/Annotations/bar"))
 
     def test_ensuredir(self):
         tmpdir = tempfile.mktemp()
