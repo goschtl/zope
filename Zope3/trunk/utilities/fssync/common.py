@@ -23,7 +23,7 @@ from zope.app.interfaces.fssync import IObjectFile, IObjectDirectory
 from zope.app.traversing import traverse, getPath
 from zope.component import queryAdapter, getService
 from zope.exceptions import NotFoundError
-from zope.xmlpickle.xmlpickle import dumps, loads
+from zope.xmlpickle import dumps, loads
 
 def getObjectAdapter(ob):
     """Returns the object adapter.
