@@ -37,6 +37,4 @@
 
   <grant role="Manager" principal="mgr" />
 
-  <includeOverrides file="overrides.zcml" />
-
 </configure>
