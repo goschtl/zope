@@ -19,5 +19,5 @@ def process():
             _prefix = abspath(dirname(__file__))
         _prefix = join(_prefix, '..', '..', '..')
 
-    from Zope.Startup.run import configure
+    from Zope2 import configure
     configure(join(_prefix, 'etc', 'zope.conf'))
