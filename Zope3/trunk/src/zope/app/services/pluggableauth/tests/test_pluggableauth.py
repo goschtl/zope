@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_pluggableauth.py,v 1.3 2003/06/24 02:34:29 chrism Exp $
+$Id: test_pluggableauth.py,v 1.4 2003/07/10 09:37:57 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -34,13 +34,17 @@ from zope.app.services.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
      PrincipalAuthenticationView, PrincipalWrapper
 
+from zope.app.interfaces.services.pluggableauth import IUserSchemafied
+from zope.app.interfaces.security import IPrincipal
+from zope.interface.verify import verifyObject
+
 from zope.publisher.browser import TestRequest as Request
 
 import base64
 
 
 class Setup(placefulsetup.PlacefulSetup, TestCase):
-    
+
     def setUp(self):
         from zope.component.view import viewService
         from zope.app.interfaces.services.pluggableauth import IPrincipalSource
@@ -91,7 +95,7 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
 
 
 class AuthServiceTest(Setup):
-        
+
     def testAuthServiceAuthenticate(self):
         auth = self._auth
         req = self.getRequest('slinkp', '123')
@@ -112,7 +116,7 @@ class AuthServiceTest(Setup):
         auth = self._auth
         req = self.getRequest('nobody', 'nopass')
         self.assertEqual(None, auth.unauthorized((None, None, None), req))
-        
+
     def _fail_NoSourceId(self):
         self._auth.getPrincipal((self._auth.earmark, None, None))
 
@@ -135,14 +139,18 @@ class AuthServiceTest(Setup):
         self.failUnless(self._slinkp in auth.getPrincipals('slinkp'))
         self.failUnless(self._slinkp2 in auth.getPrincipals('slinkp'))
 
-    
+
     def testPrincipalWrapper(self):
         wrapper = PrincipalWrapper(self._slinkp, self._auth, id='wrong')
         self.assertEqual(wrapper.getId(), 'wrong')
 
 
+    def testPrincipalInterface(self):
+        verifyObject(IUserSchemafied, self._slinkp)
+        verifyObject(IPrincipal, self._slinkp)
+
 class BTreePrincipalSourceTest(Setup):
-    
+
     def test_authenticate(self):
         one = self._one
         self.assertEqual(None, one.authenticate('bogus', 'bogus'))
@@ -161,8 +169,8 @@ class PrincipalAuthenticationViewTest(Setup):
         request = self.getRequest('chrism', '123')
         view = PrincipalAuthenticationView(self._one, request)
         self.assertEqual(self._chrism, view.authenticate())
-        
-        
+
+
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
     from zope.testing.doctestunit import DocTestSuite
@@ -170,8 +178,8 @@ def test_suite():
     t3 = makeSuite(BTreePrincipalSourceTest)
     t4 = makeSuite(PrincipalAuthenticationViewTest)
     return TestSuite((t1, t2, t3, t4))
-    
+
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
-    
+

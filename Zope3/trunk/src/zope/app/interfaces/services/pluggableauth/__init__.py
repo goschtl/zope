@@ -1,12 +1,29 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Pluggable Authentication service.
+
+$Id: __init__.py,v 1.5 2003/07/10 09:37:59 alga Exp $
+"""
 from zope.interface import Interface
 from zope.app.interfaces.container import IContainer 
-from zope.app.interfaces.security import IAuthenticationService
+from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.schema import TextLine, Password
 from zope.i18n import MessageIDFactory
 
 _ = MessageIDFactory("zope.app.services.pluggableauth")
 
-class IUserSchemafied(Interface):
+class IUserSchemafied(IPrincipal):
     """A User object with schema-defined attributes."""
 
     id = TextLine(title=_(u"Id"))
