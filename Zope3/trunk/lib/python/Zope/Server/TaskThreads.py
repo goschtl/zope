@@ -12,14 +12,9 @@ import sys
 from Queue import Queue, Empty
 from thread import allocate_lock, start_new_thread
 from time import time, sleep
+import logging
 
 from ITaskDispatcher import ITaskDispatcher
-
-try:
-    from zLOG import LOG, ERROR
-except ImportError:
-    LOG = None
-    ERROR = None
 
 
 
@@ -45,7 +40,7 @@ class ThreadedTaskDispatcher:
                 try:
                     task.service()
                 except:
-                    self.error('Exception during task', sys.exc_info())
+                    logging.exception('Exception during task')
         finally:
             mlock = self.thread_mgmt_lock
             mlock.acquire()
@@ -92,15 +87,6 @@ class ThreadedTaskDispatcher:
             task.cancel()
             raise
 
-    def error(self, msg, exc=None):
-        if LOG is not None:
-            LOG('ThreadedTaskDispatcher', ERROR, msg, error=exc)
-        else:
-            sys.stderr.write(msg + '\n')
-            if exc is not None:
-                import traceback
-                traceback.print_exception(exc[0], exc[1], exc[2])
-
     def shutdown(self, cancel_pending=1, timeout=5):
         self.setThreadCount(0)
         # Ensure the threads shut down.
@@ -108,7 +94,7 @@ class ThreadedTaskDispatcher:
         expiration = time() + timeout
         while threads:
             if time() >= expiration:
-                self.error("%d thread(s) still running" % len(threads))
+                logging.error("%d thread(s) still running" % len(threads))
             sleep(0.1)
         if cancel_pending:
             # Cancel remaining tasks.
@@ -123,4 +109,3 @@ class ThreadedTaskDispatcher:
 
     def getPendingTasksEstimate(self):
         return self.queue.qsize()
-
