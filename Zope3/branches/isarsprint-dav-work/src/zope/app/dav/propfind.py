@@ -16,7 +16,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
-from zope.schema import getFieldNamesInOrder
+from zope.schema import getFieldNamesInOrder, getFields
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.form.utility import setUpWidgets
@@ -220,21 +220,19 @@ class PROPFIND(object):
             
             # The registered namespace case
             initial = {}
-            adapter = iface(self.context, None)
-            for name in avail.get(ns):
-                value = getattr(adapter, name, None)
-                if value is not None:
+            for name, field in getFields(iface).items():
+                value = field.get(iface(self.context))
+                if value is not field.missing_value:
                     initial[name] = value
-            setUpWidgets(self, iface, IDAVWidget,
-                ignoreStickyValues=True, initial=initial, 
-                names=avail.get(ns))
+            setUpWidgets(self, iface, IDAVWidget, ignoreStickyValues=True,
+                         initial=initial, names=avail[ns])
                         
             for p in avail.get(ns):
                 el = resp.createElement('%s' % p )
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
                 prop.appendChild(el)
-                value = getattr(self, p+'_widget')()
+                value = getattr(self, p + '_widget')()
                     
                 if isinstance(value, (unicode, str)):
                     # Get the widget value here
@@ -244,7 +242,7 @@ class PROPFIND(object):
                         el.appendChild(value)
                     else:
                         # Try to string-ify
-                        value = str(getattr(self, p+'_widget'))
+                        value = str(getattr(self, p + '_widget'))
                         # Get the widget value here
                         el.appendChild(resp.createTextNode(value))
 
