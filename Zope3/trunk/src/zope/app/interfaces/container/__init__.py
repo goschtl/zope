@@ -181,8 +181,9 @@ class IZopeWriteContainer(IWriteContainer):
         removed and before  manageBeforeDeleteObject is called.
         The event object will be the removed from the context of the container
 
-        An IObjectModifiedEvent will be published after the IObjectRemovedEvent
-        is published. The event object will be the container.
+        An IObjectModifiedEvent will be published after the
+        IObjectRemovedEvent is published. The event object will be the
+        container.
         """
 
 class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
@@ -191,13 +192,35 @@ class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
 
 
 class IAddNotifiable(Interface):
-    """The Base interface for Managing Objects."""
+    """Interface for notification of being added."""
 
     def manage_afterAdd(object, container):
         """Hook method will call after an object is added to container."""
 
 class IDeleteNotifiable(Interface):
-    """The Base interface for Managing Objects."""
+    """Interface for notification of being deleted."""
 
     def manage_beforeDelete(object, container):
         """Hook method will call before object is removed from container."""
+
+class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
+    """Interface for notification of being deleted, added, or moved."""
+
+    def manage_beforeDelete(object, container, movingTo=None):
+        """Hook method will call before object is removed from container.
+
+        If the object is being moved, 'movingTo' will be the unicode path
+        the object is being moved to.
+        If the object is simply being deleted and not being moved, 'movingTo'
+        will be None.
+        """
+
+    def manage_afterAdd(object, container, movedFrom=None):
+        """Hook method will call after an object is added to container.
+
+        If the object is being moved, 'movedFrom' will be the unicode path
+        the object was moved from.
+        If the object is simply being added and not being moved, 'movedFrom'
+        will be None.
+        """
+
