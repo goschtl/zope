@@ -188,6 +188,12 @@ class LoadTestCase(unittest.TestCase):
         self.check_error("*                         some/path \n")
         self.check_error(".*                        some/path \n")
 
+    def test_wildcards_with_subversion_tags(self):
+        sio = StringIO("foo.* svn://svn.example.org/proj/tags/*/path\n")
+        map = locationmap.load(sio)
+        eq = self.assertEqual
+        eq(map["foo.bar"], "svn://svn.example.org/proj/tags/*/path/bar")
+
 
 class CollectingHandler(logging.StreamHandler):
     """Log handler that simply collects emitted warning records."""

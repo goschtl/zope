@@ -132,7 +132,8 @@ class LocationMap(UserDict.UserDict):
                     return urlparse.urlunsplit(parts)
                 else:
                     pathpart = cvsloader.RepositoryUrl(suffix)
-                    return parsed.join(pathpart).getUrl()
+                    parsed = parsed.join(pathpart)
+                    return get_template_url(parsed)
         return None
 
     def _have_wildcard(self, key):
@@ -176,18 +177,7 @@ def load(f, base=None, mapping=None):
                         " without a cvs: or Subversion base URL",
                         getattr(f, "name", "<unknown>"), lineno)
                 cvsurl = cvsbase.join(cvsurl)
-
-                # XXX We need to distinguish between the tag being
-                # unspecified at times and the tag being specified at
-                # others; the Subversion URL classes get these
-                # confused, because the abstract model for the URLs
-                # isn't sufficient.  For now, this avoids losing the
-                # "templateness" of /tags/*/ in Subversion URLs.
-                if (isinstance(cvsurl, svnloader.SubversionUrlBase)
-                    and not cvsurl.tag):
-                    cvsurl.tag = "*"
-
-                url = cvsurl.getUrl()
+                url = get_template_url(cvsurl)
 
         if resource in local_entries:
             _logger.warn(
@@ -215,6 +205,19 @@ def load(f, base=None, mapping=None):
         local_entries.add(resource)
 
     return mapping
+
+
+def get_template_url(parsed):
+    #
+    # XXX We need to distinguish between the tag being unspecified at
+    # times and the tag being specified at others; the Subversion URL
+    # classes get these confused, because the abstract model for the
+    # URLs isn't sufficient.  For now, this avoids losing the
+    # "templateness" of /tags/*/ in Subversion URLs.
+    #
+    if isinstance(parsed, svnloader.SubversionUrlBase) and not parsed.tag:
+        parsed.tag = "*"
+    return parsed.getUrl()
 
 
 def fromPathOrUrl(path, mapping=None):
