@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 
 class IInterfaceBasedRegistry(Interface):
@@ -23,5 +25,5 @@ class IInterfaceBasedRegistry(Interface):
     def getRegistrationsForInterface(iface):
         """Return registrations related to iface.
 
-        The Return value is iterable of IRegistration object.
+        The Return value is iterable of `IRegistration` object.
         """

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import providedBy
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm 

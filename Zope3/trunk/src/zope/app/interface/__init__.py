@@ -17,6 +17,8 @@ This module contains code for interfaces in persistent modules.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper
@@ -101,7 +103,7 @@ def queryType(object, interface):
     ...     implements(I3)
     >>> obj3 = C3()
 
-    If Interface doesn't provide IContentType, queryType returns None.
+    If Interface doesn't provide `IContentType`, `queryType` returns ``None``.
     
     >>> c3_ctype = queryType(obj3, IContentType)
     >>> c3_ctype
