@@ -92,7 +92,7 @@ class LDAPAdapter(object):
             if len(urlList) >= 2:
                 self.useSSL = urlList[0].endswith('s')
                 self.host = urlList[1][:3]
-                if len(urlList) = 3:
+                if len(urlList) == 3:
                     self.port = urlList[2]
                 self.url = url
             else:
@@ -166,6 +166,6 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
 
     implements(IManageableLDAPAdapter)
 
-    serverURL = property(self._getServerURL(), self._setServerURL(url))
+    serverURL = property(LDAPAdapter._getServerURL, LDAPAdapter._setServerURL)
     bindDN = u''
     bindPassword = u''
