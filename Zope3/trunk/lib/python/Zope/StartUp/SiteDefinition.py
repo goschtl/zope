@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.6 2002/10/08 20:41:10 jeremy Exp $
+$Id: SiteDefinition.py,v 1.7 2002/10/08 20:41:35 jeremy Exp $
 """
 
 import sys
@@ -54,8 +54,7 @@ class SiteDefinition:
 
     
     def __init__(self, _context, name="default", threads=4):
-        """Initilize is called, when the defineSite directive is invoked.
-        """
+        """Initialize is called when defineSite directive is invoked."""
         self._name = name
         self._threads = int(threads)
 
