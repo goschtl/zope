@@ -201,7 +201,7 @@ def open(url, mode="r"):
 
 class CvsLoader:
 
-    def __init__(self, cvsurl, tag=None):
+    def __init__(self, cvsurl=None, tag=None):
         self.cvsurl = cvsurl
         self.tag = tag or None
         self.workdirs = []
