@@ -143,6 +143,14 @@ that start with ``#`` as the first non-blank character) are ignored.
 The first field is the name of a resource, and the second field is the
 URL by which it can be accessed.
 
+For resources which are Python packages, a shortcut syntax can be used
+to identify an entire tree of packages::
+
+  foo    svn://svn.example.org/myproject/tags/*/src/foo
+  foo.*  svn://svn.example.org/myproject/tags/*/src/foo/
+
+allows all descendent packages of "foo" to be located.
+
 Resource maps which have CVS locations of their own can contain
 ``repository:`` URLs; the ``cvs:`` or ``svn:`` URL of the directory
 containing the map itself is used as the base for resolving
