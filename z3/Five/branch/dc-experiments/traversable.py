@@ -55,7 +55,10 @@ class Traversable:
         by using an ITraverser adapter.
         """
         if not IBrowserRequest.providedBy(REQUEST):
-            REQUEST = FakeRequest()
+            # Try to get the REQUEST by acquisition
+            REQUEST = getattr(self, 'REQUEST', None)
+            if not IBrowserRequest.providedBy(REQUEST):
+                REQUEST = FakeRequest()
         try:
             kw = dict(path=[name], request=REQUEST)
             return ITraverser(self).traverse(**kw).__of__(self)

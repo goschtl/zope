@@ -135,6 +135,11 @@ class SecurityTestCase(RestrictedPythonTest):
             self.check(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
 
+    def test_view_method_permission(self):
+        self.login('manager')
+        self.check(
+            'context.restrictedTraverse("testoid/eagle.method").eagle()')
+
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """A functional test for security actually involving the publisher.
     """

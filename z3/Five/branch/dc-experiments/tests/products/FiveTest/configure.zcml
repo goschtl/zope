@@ -31,6 +31,14 @@
       />
 
   <browser:page
+      for=".interfaces.ISimpleContent"
+      class=".browser.SimpleContentView"
+      name="eagle.method"
+      permission="zope2.ViewManagementScreens"
+      allowed_attributes="eagle"
+      />
+
+  <browser:page
       for=".interfaces.IFancyContent"
       class=".browser.FancyContentView"
       attribute="view"

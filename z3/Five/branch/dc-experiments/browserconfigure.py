@@ -30,7 +30,7 @@ from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
 from api import BrowserView
 from metaclass import makeClass
-from security import getSecurityInfo, protectClass, initializeClass
+from security import getSecurityInfo, protectClass, protectName, initializeClass
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
 def page(_context, name, permission, for_,
@@ -46,6 +46,11 @@ def page(_context, name, permission, for_,
 
     if not (class_ or template):
         raise ConfigurationError("Must specify a class or template")
+    if allowed_attributes is None:
+        allowed_attributes = []
+    if allowed_interface is not None:
+        attrs = [n for n, d in interface.namesAndDescriptions(1)]
+        allowed_attributes.extend(attrs)
 
     if attribute != '__call__':
         if template:
@@ -117,6 +122,13 @@ def page(_context, name, permission, for_,
         callable = protectClass,
         args = (new_class, permission)
         )
+    if allowed_attributes:
+        for attr in allowed_attributes:
+            _context.action(
+                discriminator = ('five:protectName', new_class, attr),
+                callable = protectName,
+                args = (new_class, attr, permission)
+                )
     _context.action(
         discriminator = ('five:initialize:class', new_class),
         callable = initializeClass,
