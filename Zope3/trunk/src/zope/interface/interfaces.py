@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.23 2004/03/15 20:41:55 jim Exp $
+$Id: interfaces.py,v 1.24 2004/03/30 21:40:00 jim Exp $
 """
 
 from zope.interface import Interface
@@ -712,6 +712,12 @@ class IAdapterRegistry(Interface):
 
         A value is looked up based on a *sequence* of required
         specifications, a provided interface, and a name.
+        """
+
+    def lookupAll(required, provided):
+        """Find all adapters from the required to the provided interfaces
+
+        An iterable object is returned that provides name-value two-tuples.
         """
 
     def names(required, provided):
