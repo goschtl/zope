@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.4 2002/10/04 18:02:15 jim Exp $
+$Id: ObjectEvent.py,v 1.5 2002/10/05 18:34:02 efge Exp $
 """
 
 __metaclass__ = type
@@ -24,7 +24,7 @@ from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 
 class ObjectEvent:
-    """An object has been added to a container."""
+    """Something has happened to an object"""
 
     __implements__ = IObjectEvent
 
@@ -36,12 +36,12 @@ class ObjectEvent:
         self.location = location
 
 class ObjectAddedEvent(ObjectEvent):
-    """An object has been added"""
+    """An object has been added to a container"""
 
     __implements__ = IObjectAddedEvent
 
 class ObjectCreatedEvent(ObjectEvent):
-    """An object has been added"""
+    """An object has been created"""
 
     __implements__ = IObjectCreatedEvent
 
