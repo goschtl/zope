@@ -18,26 +18,40 @@
 from zope.interface.verify import verifyObject
 from zope.interface import implements
 from zope.component.interfaces import IFactory
+from zope.component.interfaces import IFactoryInfo
 from zope.component.interfaces import IFactoryService
 from zope.component.exceptions import ComponentLookupError
 
 class IGlobalFactoryService(IFactoryService):
 
-    def provideFactory(name, factory):
+    def provideFactory(name, factory, info=None):
         """Provide a factory for the given name.
+
+        If specified, info must implement IFactoryInfo.
         """
+
+class FactoryInfo:
+
+    implements(IFactoryInfo)
+
+    def __init__(self, title, description):
+        self.title = title
+        self.description = description
 
 class GlobalFactoryService:
 
     implements(IGlobalFactoryService)
 
     def __init__(self):
-        self.__factories={}
+        self.__factories = {}
+        self.__info = {}
 
-    def provideFactory(self, name, factory):
+    def provideFactory(self, name, factory, info=None):
         """See IGlobalFactoryService interface"""
         verifyObject(IFactory, factory)
         self.__factories[name] = factory
+        if info is not None:
+            self.__info[name] = info
 
     def createObject(self, name, *args, **kwargs):
         """See IFactoryService interface"""
@@ -74,6 +88,9 @@ class GlobalFactoryService:
         """See IFactoryService interface"""
         return [(n, f) for n, f in self.__factories.items() \
                 if iface in f.getInterfaces()] or default
+
+    def getFactoryInfo(self, name):
+        return self.__info.get(name)
 
     _clear = __init__
 
