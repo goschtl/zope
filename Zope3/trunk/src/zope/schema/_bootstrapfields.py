@@ -34,7 +34,7 @@ class ValidatedProperty(object):
 
     def __set__(self, inst, value):
         name, check = self._info
-        if value is not None:
+        if value != inst.missing_value:
             if check is not None:
                 check(inst, value)
             else:

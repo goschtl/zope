@@ -55,6 +55,22 @@ class SetTest(FieldTestBase):
 
         self.assertRaises(RequiredMissing, field.validate, None)
 
+    def testValidateRequiredAltMissingValue(self):
+        missing = object()
+        field = Set(required=True, missing_value=missing)
+        field.validate(sets.Set())
+
+        self.assertRaises(RequiredMissing, field.validate, missing)
+
+    def testValidateDefault(self):
+        field = Set(required=True)
+        field.default = None
+
+    def testValidateDefaultAltMissingValue(self):
+        missing = object()
+        field = Set(required=True, missing_value=missing)
+        field.default = missing
+
     def testValidateMinValues(self):
         field = Set(title=u'Set field', description=u'',
                     readonly=False, required=False, min_length=2)
