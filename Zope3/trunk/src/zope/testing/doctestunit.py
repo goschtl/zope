@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests. 
 
-$Id: doctestunit.py,v 1.1 2003/05/18 17:53:06 jim Exp $
+$Id: doctestunit.py,v 1.2 2003/05/18 18:27:01 jim Exp $
 """
 
 from StringIO import StringIO
@@ -169,6 +169,13 @@ def _expect(expect):
     return expect
 
 def testsource(module, name):
+    """Extract the test sources from a doctest test docstring as a script
+
+    Provide the module (or dotted name of the module) containing the
+    test to be debugged and the name (within the module) of the object
+    with the doc string with tests to be debugged.
+    
+    """
     module = _normalizeModule(module)
     tests = _findTests(module, "")
     test = [doc for (tname, doc, f, l) in tests if tname == name]
@@ -184,7 +191,12 @@ def testsource(module, name):
     return testsrc
 
 def debug(module, name):
-    """Debug a single doctest test
+    """Debug a single doctest test doc string
+
+    Provide the module (or dotted name of the module) containing the
+    test to be debugged and the name (within the module) of the object
+    with the doc string with tests to be debugged.
+    
     """
     module = _normalizeModule(module)
     testsrc = testsource(module, name)
