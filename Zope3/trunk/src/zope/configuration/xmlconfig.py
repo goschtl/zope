@@ -17,9 +17,8 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.18 2004/02/23 10:02:03 philikon Exp $
+$Id: xmlconfig.py,v 1.19 2004/02/24 14:07:58 srichter Exp $
 """
-
 import errno
 import os
 import sys
