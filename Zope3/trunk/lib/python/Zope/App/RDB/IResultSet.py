@@ -15,12 +15,21 @@
 
 XXX longer description goes here.
 
-$Id: IResultSet.py,v 1.1 2002/06/24 11:14:17 srichter Exp $
+$Id: IResultSet.py,v 1.2 2002/06/24 13:54:55 srichter Exp $
 """
 
 
 from Interface import Interface
 
 class IResultSet(Interface):
+    """ holds results, and allows iteration """
 
-    pass
+    def __getitem__(index):
+        "return a brain row for index"
+
+
+
+
+
+
+    
