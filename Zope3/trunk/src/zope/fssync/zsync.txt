@@ -160,6 +160,15 @@ The **status** command has no specific options.
 The **update** command has no specific options.
 
 
+Security Notes
+--------------
+
+- The ``@@Zope/Root`` file contains the username and password with
+  which the checkout was made.  Since this will typically allow access
+  with content management priviledges, this file should not be shared
+  carelessly.
+
+
 Files
 -----
 
@@ -212,6 +221,13 @@ An ``@@Zope/`` directory contains the following:
   A directory that contains a copy of the unmodified content data.
   This is only present if there are non-container content objects in
   the content directory.
+
+``Root``
+  File that gives the base URL for the checkout represented by the
+  filesystem representation.  The URL must include the username and
+  password needed for authentication, so care must be taken in sharing
+  access to a checkout.  This only exists in the ``@@Zope/`` directory
+  for the top-level checkout.
 
 
 Reporting Bugs
