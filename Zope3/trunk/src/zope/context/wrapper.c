@@ -1,4 +1,5 @@
 #include <Python.h>
+#include "structmember.h"
 #include "modsupport.h"
 #include "zope/proxy/proxy.h"
 #define WRAPPER_MODULE
@@ -16,9 +17,442 @@
 
 
 static PyTypeObject WrapperType;
+static PyTypeObject ContextAwareType;
 
 static PyObject *
 empty_tuple = NULL;
+
+/* ContextAware type
+ *
+ * This is a 'marker' type with no methods or members.
+ * It is used to mark types that should have all of their binding descriptors
+ * rebound to have the self argument be the wrapper instead.
+ */
+
+typedef struct {
+    PyObject_HEAD
+} ContextAwareObject;
+
+statichere PyTypeObject
+ContextAwareType = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "wrapper.ContextAware",
+    sizeof(ContextAwareObject),
+    0,
+    0,						/* tp_dealloc */
+    0,						/* tp_print */
+    0,						/* tp_getattr */
+    0,						/* tp_setattr */
+    0,						/* tp_compare */
+    0,						/* tp_repr */
+    0,						/* tp_as_number */
+    0,						/* tp_as_sequence */
+    0,						/* tp_as_mapping */
+    0,						/* tp_hash */
+    0,						/* tp_call */
+    0,						/* tp_str */
+    0,						/* tp_getattro */
+    0,						/* tp_setattro */
+    0,						/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
+    "ContextAware marker class",		/* tp_doc */
+    0,						/* tp_traverse */
+    0,						/* tp_clear */
+    0,						/* tp_richcompare */
+    0,						/* tp_weaklistoffset */
+    0,						/* tp_iter */
+    0,						/* tp_iternext */
+    0,						/* tp_methods */
+    0,						/* tp_members */
+    0,						/* tp_getset */
+    0,						/* tp_base */
+    0,						/* tp_dict */
+    0,						/* tp_descr_get */
+    0,						/* tp_descr_set */
+    0,						/* tp_dictoffset */
+    0,						/* tp_init */
+    0,						/* tp_alloc */
+    PyType_GenericNew,				/* tp_new */
+    0,						/* tp_free */
+};
+
+/* End of ContextAware. */
+
+/* ContextDescriptor type
+ *
+ * This is a 'marker' type with no methods or members. It is the base type
+ * for ContextMethod and ContextProperty, and any other Context-descriptors
+ * that are defined in Python.
+ */
+
+typedef struct {
+    PyObject_HEAD
+} ContextDescriptorObject;
+
+statichere PyTypeObject
+ContextDescriptorType = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "wrapper.ContextDescriptor",
+    sizeof(ContextDescriptorObject),
+    0,
+    0,						/* tp_dealloc */
+    0,						/* tp_print */
+    0,						/* tp_getattr */
+    0,						/* tp_setattr */
+    0,						/* tp_compare */
+    0,						/* tp_repr */
+    0,						/* tp_as_number */
+    0,						/* tp_as_sequence */
+    0,						/* tp_as_mapping */
+    0,						/* tp_hash */
+    0,						/* tp_call */
+    0,						/* tp_str */
+    0,						/* tp_getattro */
+    0,						/* tp_setattro */
+    0,						/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
+    "ContextDescriptor base class",		/* tp_doc */
+    0,						/* tp_traverse */
+    0,						/* tp_clear */
+    0,						/* tp_richcompare */
+    0,						/* tp_weaklistoffset */
+    0,						/* tp_iter */
+    0,						/* tp_iternext */
+    0,						/* tp_methods */
+    0,						/* tp_members */
+    0,						/* tp_getset */
+    0,						/* tp_base */
+    0,						/* tp_dict */
+    0,						/* tp_descr_get */
+    0,						/* tp_descr_set */
+    0,						/* tp_dictoffset */
+    0,						/* tp_init */
+    0,						/* tp_alloc */
+    PyType_GenericNew,				/* tp_new */
+    0,						/* tp_free */
+};
+
+/* End of ContextDescriptor. */
+
+/* ContextProperty
+ * This works exactly like a standard python property, except that it
+ * derives from ContextDescriptor.
+ */
+
+typedef struct {
+    ContextDescriptorObject contextdescriptor;
+    PyObject *prop_get;
+    PyObject *prop_set;
+    PyObject *prop_del;
+    PyObject *prop_doc;
+} propertyobject;
+
+static char ContextProperty_doc[] =
+"ContextProperty(fget, fset, fdel, doc) -> property\n";
+
+static PyMemberDef property_members[] = {
+    {"fget", T_OBJECT, offsetof(propertyobject, prop_get), READONLY},
+    {"fset", T_OBJECT, offsetof(propertyobject, prop_set), READONLY},
+    {"fdel", T_OBJECT, offsetof(propertyobject, prop_del), READONLY},
+    {"__doc__",  T_OBJECT, offsetof(propertyobject, prop_doc), READONLY},
+    {0}
+};
+
+static void
+property_dealloc(PyObject *self)
+{
+    propertyobject *gs = (propertyobject *)self;
+
+    _PyObject_GC_UNTRACK(self);
+    Py_XDECREF(gs->prop_get);
+    Py_XDECREF(gs->prop_set);
+    Py_XDECREF(gs->prop_del);
+    Py_XDECREF(gs->prop_doc);
+    ContextDescriptorType.tp_dealloc(self);
+}
+
+static PyObject *
+property_descr_get(PyObject *self, PyObject *obj, PyObject *type)
+{
+    propertyobject *gs = (propertyobject *)self;
+
+    if (obj == NULL || obj == Py_None) {
+        Py_INCREF(self);
+        return self;
+    }
+    if (gs->prop_get == NULL) {
+        PyErr_SetString(PyExc_AttributeError, "unreadable attribute");
+        return NULL;
+    }
+    return PyObject_CallFunction(gs->prop_get, "(O)", obj);
+}
+
+static int
+property_descr_set(PyObject *self, PyObject *obj, PyObject *value)
+{
+    propertyobject *gs = (propertyobject *)self;
+    PyObject *func, *res;
+
+    if (value == NULL)
+        func = gs->prop_del;
+    else
+        func = gs->prop_set;
+    if (func == NULL) {
+        PyErr_SetString(PyExc_AttributeError,
+                        value == NULL ?
+                        "can't delete attribute" :
+                        "can't set attribute");
+        return -1;
+    }
+    if (value == NULL)
+        res = PyObject_CallFunction(func, "(O)", obj);
+    else
+        res = PyObject_CallFunction(func, "(OO)", obj, value);
+    if (res == NULL)
+        return -1;
+    Py_DECREF(res);
+    return 0;
+}
+
+static int
+property_init(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    PyObject *get = NULL, *set = NULL, *del = NULL, *doc = NULL;
+    static char *kwlist[] = {"fget", "fset", "fdel", "doc", 0};
+    propertyobject *gs = (propertyobject *)self;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "|OOOO:property",
+                                     kwlist, &get, &set, &del, &doc))
+        return -1;
+
+    if (get == Py_None)
+        get = NULL;
+    if (set == Py_None)
+        set = NULL;
+    if (del == Py_None)
+        del = NULL;
+
+    Py_XINCREF(get);
+    Py_XINCREF(set);
+    Py_XINCREF(del);
+    Py_XINCREF(doc);
+
+    gs->prop_get = get;
+    gs->prop_set = set;
+    gs->prop_del = del;
+    gs->prop_doc = doc;
+
+    return 0;
+}
+
+static int
+property_traverse(PyObject *self, visitproc visit, void *arg)
+{
+    propertyobject *pp = (propertyobject *)self;
+    int err;
+
+#define VISIT(SLOT) \
+    if (pp->SLOT) { \
+        err = visit((PyObject *)(pp->SLOT), arg); \
+        if (err) \
+            return err; \
+    }
+
+    VISIT(prop_get);
+    VISIT(prop_set);
+    VISIT(prop_del);
+
+    return 0;
+#undef VISIT
+}
+
+PyTypeObject ContextProperty_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0,						/* ob_size */
+	"ContextProperty",				/* tp_name */
+	sizeof(propertyobject),				/* tp_basicsize */
+	0,						/* tp_itemsize */
+	/* methods */
+	property_dealloc,		 		/* tp_dealloc */
+	0,						/* tp_print */
+	0,						/* tp_getattr */
+	0,						/* tp_setattr */
+	0,						/* tp_compare */
+	0,						/* tp_repr */
+	0,						/* tp_as_number */
+	0,						/* tp_as_sequence */
+	0,		       				/* tp_as_mapping */
+	0,						/* tp_hash */
+	0,						/* tp_call */
+	0,						/* tp_str */
+	PyObject_GenericGetAttr,			/* tp_getattro */
+	0,						/* tp_setattro */
+	0,						/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
+		Py_TPFLAGS_BASETYPE,			/* tp_flags */
+	ContextProperty_doc,				/* tp_doc */
+	property_traverse,				/* tp_traverse */
+	0,						/* tp_clear */
+	0,						/* tp_richcompare */
+	0,						/* tp_weaklistoffset */
+	0,						/* tp_iter */
+	0,						/* tp_iternext */
+	0,						/* tp_methods */
+	property_members,				/* tp_members */
+	0,						/* tp_getset */
+	0,						/* tp_base */
+	0,						/* tp_dict */
+	property_descr_get,				/* tp_descr_get */
+	property_descr_set,				/* tp_descr_set */
+	0,						/* tp_dictoffset */
+	property_init,					/* tp_init */
+	PyType_GenericAlloc,				/* tp_alloc */
+	PyType_GenericNew,				/* tp_new */
+	_PyObject_Del,               			/* tp_free */
+};
+
+/* end of ContextProperty */
+
+
+/* ContextMethod
+ *
+ * A ContextMethod is just like a standard Instance Method descriptor,
+ * except that it derives from ContextDescriptor.
+ *
+ * One difference between a ContextMethod and an class method or static
+ * method is that you can get the ContextMethod descriptor from the class
+ * using only Python with something like aContextMethod.__get__(None, cls).
+ * This is how property descriptors behave.
+ * It is not possible to get at a classmethod or staticmethod like that
+ * for obvious reasons.
+ *
+ * This code was mostly copied from instancemethod and classmethod from
+ * Python 2.2.2.
+ */
+
+typedef struct {
+    ContextDescriptorObject contextdescriptor;
+    PyObject *cm_callable;
+} ContextMethod;
+
+static void
+cm_dealloc(PyObject *self)
+{
+    ContextMethod *cm = (ContextMethod *)self;
+    Py_XDECREF(cm->cm_callable);
+    ContextDescriptorType.tp_dealloc(self);
+}
+
+static PyObject *
+cm_descr_get(PyObject *self, PyObject *obj, PyObject *type)
+{
+    ContextMethod *cm = (ContextMethod *)self;
+
+    if (cm->cm_callable == NULL) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "uninitialized ContextMethod object");
+        return NULL;
+    }
+    if (obj == NULL || obj == Py_None) {
+        /* obj = NULL;
+         * The 'purer' way to do this is to just pass on the
+         * call to the type, with a NULL obj.
+         * However, we'd like to be able to get the type of this
+         * descriptor easily from Python.
+         */
+        Py_INCREF(self);
+        return self;
+    }
+    return PyMethod_New(cm->cm_callable, obj, type);
+}
+
+static int
+cm_init(PyObject *self, PyObject *args, PyObject *kwds)
+{
+    ContextMethod *cm = (ContextMethod *)self;
+    PyObject *callable;
+
+    if (!PyArg_ParseTuple(args, "O:callable", &callable))
+        return -1;
+    Py_INCREF(callable);
+    cm->cm_callable = callable;
+    return 0;
+}
+
+static char ContextMethod_doc[] =
+"ContextMethod(function) -> method\n"
+"\n"
+"Convert a function to be a Context method.\n"
+"\n"
+"A Context method receives the context wrapper as implicit first argument,\n"
+"when this is available from a wrapper, just like an instance method\n"
+"receives the instance.\n"
+"To declare a Context method, use this idiom:\n"
+"\n"
+"  class C:\n"
+"      def f(self, arg1, arg2, ...): ...\n"
+"      f = ContextMethod(f)\n"
+"\n";
+
+PyTypeObject ContextMethod_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0,
+	"ContextMethod",
+	sizeof(ContextMethod),
+	0,
+	(destructor)cm_dealloc,				/* tp_dealloc */
+	0,						/* tp_print */
+	0,						/* tp_getattr */
+	0,						/* tp_setattr */
+	0,						/* tp_compare */
+	0,						/* tp_repr */
+	0,						/* tp_as_number */
+	0,						/* tp_as_sequence */
+	0,						/* tp_as_mapping */
+	0,						/* tp_hash */
+	0,						/* tp_call */
+	0,						/* tp_str */
+	PyObject_GenericGetAttr,			/* tp_getattro */
+	0,						/* tp_setattro */
+	0,						/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
+	ContextMethod_doc,				/* tp_doc */
+	0,						/* tp_traverse */
+	0,						/* tp_clear */
+	0,						/* tp_richcompare */
+	0,						/* tp_weaklistoffset */
+	0,						/* tp_iter */
+	0,						/* tp_iternext */
+	0,						/* tp_methods */
+	0,						/* tp_members */
+	0,						/* tp_getset */
+	0,						/* tp_base */
+	0,						/* tp_dict */
+	cm_descr_get,					/* tp_descr_get */
+	0,						/* tp_descr_set */
+	0,						/* tp_dictoffset */
+	cm_init,					/* tp_init */
+	PyType_GenericAlloc,				/* tp_alloc */
+	PyType_GenericNew,				/* tp_new */
+	_PyObject_Del,					/* tp_free */
+};
+
+PyObject *
+ContextMethod_New(PyObject *callable)
+{
+    ContextMethod *cm = (ContextMethod *)
+        PyType_GenericAlloc(&ContextMethod_Type, 0);
+    if (cm != NULL) {
+        Py_INCREF(callable);
+        cm->cm_callable = callable;
+    }
+    return (PyObject *)cm;
+}
+
+/* end of ContextMethod */
+
 
 /* Helper for wrap_new/wrap_init; return the base class args tuple
  * from the incoming args tuple.  Returns a new reference.
@@ -70,7 +504,7 @@ wrap_init(PyObject *self, PyObject *args, PyObject *kwds)
 
     if (PyArg_UnpackTuple(args, "__init__", 1, 2, &object, &context)) {
         PyObject *temp;
-	WrapperObject *wrapper = (WrapperObject *)self;
+        WrapperObject *wrapper = (WrapperObject *)self;
         proxyargs = create_proxy_args(args, object);
         if (proxyargs == NULL)
             goto finally;
@@ -146,8 +580,235 @@ wrap_dealloc(PyObject *self)
     self->ob_type->tp_free(self);
 }
 
+/* Provide tp_getattro and tp_setattro implementations that check to see
+ * if the wrapped object's class is ContextAware or the descriptor that
+ * implements the attribute is a ContextDescriptor. If either of these
+ * holds true, then the descriptor is used with the wrapper's self instead
+ * of the object's self.
+ *
+ * We use _PyType_Lookup to get descriptors directly from the class.
+ * This is defined in Python/Objects/typeobject.c, and is part of the Python
+ * internal API. It returns a borrowed reference, and doesn't set an
+ * exception. It returns the descriptor from the class, rather than calling
+ * tp_descr_get on the descriptor with a second argument of None (which most,
+ * but not all, descriptors implement as returning the descriptor itself).
+ *
+ * _PyType_Lookup is about 20 lines of code, so we could reproduce it here if
+ * we don't want to depend on the Internal API.
+ */
+static PyObject *
+wrap_getattro(PyObject *self, PyObject *name)
+{
+    PyObject *wrapped;
+    PyObject *descriptor;
+
+    wrapped = Proxy_GET_OBJECT(self);
+    if (wrapped == NULL) {
+        PyErr_Format(PyExc_RuntimeError,
+            "object is NULL; requested to get attribute '%s'",
+            PyString_AS_STRING(name));
+        return NULL;
+    }
+    descriptor = _PyType_Lookup(wrapped->ob_type, name);
+    if (descriptor != NULL &&
+        descriptor->ob_type->tp_descr_get != NULL &&
+        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
+         PyObject_TypeCheck(wrapped, &ContextAwareType))
+        )
+        return descriptor->ob_type->tp_descr_get(
+                descriptor,
+                self,
+                PyObject_Type(wrapped));
+
+    return PyObject_GetAttr(wrapped, name);
+}
+
+static int
+wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
+{
+    PyObject *wrapped;
+    PyObject *descriptor;
+
+    wrapped = Proxy_GET_OBJECT(self);
+    if (wrapped == NULL) {
+        PyErr_Format(PyExc_RuntimeError,
+            "object is NULL; requested to set attribute '%s'",
+            PyString_AS_STRING(name));
+        return -1;
+    }
+    descriptor = _PyType_Lookup(wrapped->ob_type, name);
+    if (descriptor != NULL &&
+        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
+         PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
+        descriptor->ob_type->tp_descr_set != NULL
+        )
+        return descriptor->ob_type->tp_descr_set(descriptor, self, value);
+    return PyObject_SetAttr(wrapped, name, value);
+}
+
+/* What follows are specific implementations of tp_-slots for those slots
+ * for which we want to support rebinding of ContextDescriptors.
+ *
+ * The macros that immediately follow provide boilerplate code that is
+ * common to many of the implementations.
+ * In FILLSLOT, NAME is a C string of the name of the slot's associated
+ * attribute. BADVAL is the value to return on failure: NULL or -1 depending
+ * whether the API returns an int or a PyObject *.
+ *
+ */
+#define FILLSLOTDEFS \
+    PyObject *wrapped; \
+    PyObject *descriptor;
+
+#define FILLSLOT(NAME, BADVAL) \
+    wrapped = Proxy_GET_OBJECT(self); \
+    if (wrapped == NULL) { \
+        PyErr_Format(PyExc_RuntimeError, \
+                     "object is NULL; requested to get attribute '%s'",\
+                     (NAME)); \
+            return (BADVAL); \
+    } \
+    descriptor = _PyType_Lookup(wrapped->ob_type,\
+                    PyString_FromString((NAME))); \
+    if (descriptor != NULL && \
+        descriptor->ob_type->tp_descr_get != NULL && \
+        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
+            PyObject_TypeCheck(wrapped, &ContextAwareType))\
+        )
+
+#define FILLSLOTBASE(NAME) \
+    FILLSLOTDEFS \
+    FILLSLOT(NAME, NULL)
+
+#define FILLSLOTBASEINT(NAME) \
+    FILLSLOTDEFS \
+    FILLSLOT(NAME, -1)
+
+#define REBOUNDDESCRIPTOR \
+    descriptor->ob_type->tp_descr_get( \
+                    descriptor, self, PyObject_Type(wrapped))
+
+
+/* Sequence/mapping protocol: __len__, __getitem__, __setitem__
+ */
+
+static int
+wrap_length(PyObject *self)
+{
+    PyObject *res;
+    int len;
+    FILLSLOTBASEINT("__len__") {
+        res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+        if (res == NULL)
+            return -1;
+        len = (int)PyInt_AsLong(res);
+        Py_DECREF(res);
+        return len;
+    }
+    return PyObject_Length(wrapped);
+}
+
+static PyObject *
+wrap_getitem(PyObject *self, PyObject *v) {
+    FILLSLOTBASE("__getitem__")
+        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, v, NULL);
+    return PyObject_GetItem(wrapped, v);
+}
+
+static int
+wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
+{
+    PyObject *res;
+    FILLSLOTDEFS
+
+    if (value == NULL) {
+        FILLSLOT("__delitem__", -1) {
+            res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, key, NULL);
+            if (res == NULL)
+                return -1;
+            Py_DECREF(res);
+            return 0;
+        }
+        return PyObject_DelItem(wrapped, key);
+    } else {
+        FILLSLOT("__setitem__", -1) {
+            res = PyObject_CallFunctionObjArgs(
+                            REBOUNDDESCRIPTOR, key, value, NULL);
+            if (res == NULL)
+                return -1;
+            Py_DECREF(res);
+            return 0;
+        }
+        return PyObject_SetItem(Proxy_GET_OBJECT(self), key, value);
+    }
+}
+
+/* Iterator protocol: __iter__, next
+ */
+
+static PyObject *
+wrap_iter(PyObject *self)
+{
+    FILLSLOTBASE("__iter__")
+        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+    return PyObject_GetIter(wrapped);
+}
+
+static PyObject *
+wrap_iternext(PyObject *self)
+{
+    FILLSLOTBASE("next")
+        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+    return PyIter_Next(Proxy_GET_OBJECT(self));
+}
+
+/* __contains__
+ */
+
+static int
+wrap_contains(PyObject *self, PyObject *value)
+{
+    PyObject *res;
+    int result;
+    FILLSLOTBASEINT("__contains__") {
+        res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, value, NULL);
+        if (res == NULL)
+            return -1;
+        result = PyObject_IsTrue(res);
+        Py_DECREF(res);
+        return result;
+    }
+    return PySequence_Contains(wrapped, value);
+}
+
+/* Other miscellaneous methods: __call__, __str__
+ */
+
+static PyObject *
+wrap_call(PyObject *self, PyObject *args, PyObject *kw)
+{
+    FILLSLOTDEFS
+
+    if (kw) {
+        FILLSLOT("__call__", NULL)
+            return PyEval_CallObjectWithKeywords(REBOUNDDESCRIPTOR, args, kw);
+        return PyEval_CallObjectWithKeywords(wrapped, args, kw);
+    } else {
+        FILLSLOT("__call__", NULL)
+            return PyObject_CallObject(REBOUNDDESCRIPTOR, args);
+        return PyObject_CallObject(wrapped, args);
+    }
+}
+
+static PyObject *
+wrap_str(PyObject *self) {
+    FILLSLOTBASE("__str__")
+        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+    return PyObject_Str(wrapped);
+}
+
 /*
- *   Normal methods
+ * Normal methods
  */
 
 static char
@@ -185,6 +846,25 @@ wrap_methods[] = {
     {NULL, NULL},
 };
 
+static PySequenceMethods
+wrap_as_sequence = {
+    wrap_length,				/* sq_length */
+    0,						/* sq_concat */
+    0,						/* sq_repeat */
+    0,						/* sq_item */
+    0,						/* sq_slice */
+    0,						/* sq_ass_item */
+    0,						/* sq_ass_slice */
+    wrap_contains,				/* sq_contains */
+};
+
+static PyMappingMethods
+wrap_as_mapping = {
+    wrap_length,				/* mp_length */
+    wrap_getitem,				/* mp_subscript */
+    wrap_setitem,				/* mp_ass_subscript */
+};
+
 statichere PyTypeObject
 WrapperType = {
     PyObject_HEAD_INIT(NULL)
@@ -192,42 +872,42 @@ WrapperType = {
     "wrapper.Wrapper",
     sizeof(WrapperObject),
     0,
-    wrap_dealloc,			/* tp_dealloc */
-    0,					/* tp_print */
-    0,					/* tp_getattr */
-    0,					/* tp_setattr */
-    0,					/* tp_compare */
-    0,					/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    0,					/* tp_hash */
-    0,					/* tp_call */
-    0,					/* tp_str */
-    0,					/* tp_getattro */
-    0,					/* tp_setattro */
-    0,					/* tp_as_buffer */
+    wrap_dealloc,				/* tp_dealloc */
+    0,						/* tp_print */
+    0,						/* tp_getattr */
+    0,						/* tp_setattr */
+    0,						/* tp_compare */
+    0,						/* tp_repr */
+    0,						/* tp_as_number */
+    &wrap_as_sequence,				/* tp_as_sequence */
+    &wrap_as_mapping,				/* tp_as_mapping */
+    0,						/* tp_hash */
+    wrap_call,					/* tp_call */
+    wrap_str,					/* tp_str */
+    wrap_getattro,				/* tp_getattro */
+    wrap_setattro,				/* tp_setattro */
+    0,						/* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC
-        | Py_TPFLAGS_BASETYPE,		/* tp_flags */
-    0,					/* tp_doc */
-    wrap_traverse,			/* tp_traverse */
-    wrap_clear,				/* tp_clear */
-    0,					/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    0,					/* tp_iter */
-    0,					/* tp_iternext */
-    wrap_methods,			/* tp_methods */
-    0,					/* tp_members */
-    0,					/* tp_getset */
-    0,					/* tp_base */
-    0,					/* tp_dict */
-    0,					/* tp_descr_get */
-    0,					/* tp_descr_set */
-    0,					/* tp_dictoffset */
-    wrap_init,				/* tp_init */
-    0, /*PyType_GenericAlloc,*/		/* tp_alloc */
-    wrap_new,				/* tp_new */
-    0, /*_PyObject_GC_Del,*/		/* tp_free */
+        | Py_TPFLAGS_BASETYPE,			/* tp_flags */
+    0,						/* tp_doc */
+    wrap_traverse,				/* tp_traverse */
+    wrap_clear,					/* tp_clear */
+    0,						/* tp_richcompare */
+    0,						/* tp_weaklistoffset */
+    wrap_iter,					/* tp_iter */
+    wrap_iternext,				/* tp_iternext */
+    wrap_methods,				/* tp_methods */
+    0,						/* tp_members */
+    0,						/* tp_getset */
+    0,						/* tp_base */
+    0,						/* tp_dict */
+    0,						/* tp_descr_get */
+    0,						/* tp_descr_set */
+    0,						/* tp_dictoffset */
+    wrap_init,					/* tp_init */
+    0, /*PyType_GenericAlloc,*/			/* tp_alloc */
+    wrap_new,					/* tp_new */
+    0, /*_PyObject_GC_Del,*/			/* tp_free */
 };
 
 
@@ -350,7 +1030,7 @@ api_getinnerwrapper(PyObject *obj)
 {
     PyObject *temp;
     if (obj == NULL)
-        return missing_wrapper("getinnercontext");
+        return missing_wrapper("getinnerwrapper");
     if (Wrapper_Check(obj)) {
         temp = Wrapper_GetObject(obj);
         while (Wrapper_Check(temp)) {
@@ -466,8 +1146,8 @@ getbaseobject__doc__[] =
 "getbaseobject(wrapper) --> object\n"
 "\n"
 "Return the underlying object for the innermost wrapper in a chain of\n"
-"wrappers with 'wrapper' at the head.  Returns None if 'wrapper' isn't a\n"
-"wrapper at all.";
+"wrappers with 'wrapper' at the head.  Returns the object if 'wrapper'\n"
+"isn't a wrapper at all.";
 
 static PyObject *
 wrapper_getbaseobject(PyObject *unused, PyObject *obj)
@@ -587,7 +1267,7 @@ static char
 setobject__doc__[] =
 "setobject(wrapper, object)\n"
 "\n"
-"Replaced the wrapped object with object.";
+"Replace the wrapped object with object.";
 
 static PyObject *
 wrapper_setobject(PyObject *unused, PyObject *args)
@@ -674,7 +1354,6 @@ initwrapper(void)
     if (m == NULL)
         return;
 
-    WrapperType.ob_type = &PyType_Type;
     WrapperType.tp_base = ProxyType;
     WrapperType.tp_alloc = PyType_GenericAlloc;
     WrapperType.tp_free = _PyObject_GC_Del;
@@ -683,6 +1362,30 @@ initwrapper(void)
 
     Py_INCREF(&WrapperType);
     PyModule_AddObject(m, "Wrapper", (PyObject *)&WrapperType);
+
+    if (PyType_Ready(&ContextAwareType) < 0)
+        return;
+    Py_INCREF(&ContextAwareType);
+    PyModule_AddObject(m, "ContextAware", (PyObject *)&ContextAwareType);
+
+    if (PyType_Ready(&ContextDescriptorType) < 0)
+        return;
+    Py_INCREF(&ContextDescriptorType);
+    PyModule_AddObject(m, "ContextDescriptor",
+                       (PyObject *)&ContextDescriptorType);
+
+    ContextMethod_Type.tp_base = &ContextDescriptorType;
+    if (PyType_Ready(&ContextMethod_Type) < 0)
+        return;
+    Py_INCREF(&ContextMethod_Type);
+    PyModule_AddObject(m, "ContextMethod", (PyObject *)&ContextMethod_Type);
+
+    ContextProperty_Type.tp_base = &ContextDescriptorType;
+    if (PyType_Ready(&ContextProperty_Type) < 0)
+        return;
+    Py_INCREF(&ContextProperty_Type);
+    PyModule_AddObject(m, "ContextProperty",
+                       (PyObject *)&ContextProperty_Type);
 
     if (api_object == NULL) {
         api_object = PyCObject_FromVoidPtr(&wrapper_capi, NULL);

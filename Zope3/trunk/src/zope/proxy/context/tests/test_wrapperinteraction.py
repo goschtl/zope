@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Testing the interaction of Wrapper, ContextWrapper, ContextMethod etc.
+
+Testing the Wrapper type's interaction with ContextDescriptors such as
+ContextMethod and ContextProperty, and the ContextWrapper factory function
+that creates a wrapper object, and checks for misuse of ContextDescriptors
+as members of classic classes. (Descriptors generally don't work properly
+as members of classic classes.)
+
+$Id: test_wrapperinteraction.py,v 1.2 2003/04/08 12:21:39 stevea Exp $
+"""
 import sys
 import unittest
 
-# Note that this is testing both that SimpleMethodWrapper works,
-# and that SimpleMethodWrapper is available as
-# from zope.proxy.context import Wrapper
-#
-# However, this test suite can form the basis of a test for the improved C
-# implementation, when that lands.
-#
-from zope.proxy.context import \
-        Wrapper, wrapperTypes, ContextMethod, \
-        ContextProperty, ContextGetProperty, ContextSetProperty, \
-        ContextSuper
+from zope.proxy.context import Wrapper, ContextMethod, ContextProperty
+from zope.proxy.context import ContextSuper, ContextWrapper, ContextAware
 
 class NewStyleClass(object):
 
@@ -56,8 +57,6 @@ class NewStyleClass(object):
     def _setter(wrapped_self, value):
         wrapped_self.result = wrapped_self, value
     thisIsAContextProperty = ContextProperty(_getter, _setter)
-    thisIsAContextGetProperty = ContextGetProperty(_getter, _setter)
-    thisIsAContextSetProperty = ContextSetProperty(_getter, _setter)
 
     def this_is_any_old_method(self):
         return 'base', self
@@ -95,8 +94,6 @@ class NewStyleClassWithSlots(object):
         wrapped_self.result = wrapped_self, value
 
     thisIsAContextProperty = ContextProperty(_getter, _setter)
-    thisIsAContextGetProperty = ContextGetProperty(_getter, _setter)
-    thisIsAContextSetProperty = ContextSetProperty(_getter, _setter)
 
     def this_is_any_old_method(self):
         return 'base', self
@@ -133,7 +130,6 @@ class ClassicClass:
     # setting an attribute that is a property results in overwriting
     # that property.
     thisIsAContextProperty = ContextProperty(_getter)
-    thisIsAContextGetProperty = ContextGetProperty(_getter)
 
 
 class TestClassicClass(unittest.TestCase):
@@ -153,7 +149,8 @@ class TestClassicClass(unittest.TestCase):
     def testContextMethod(self):
         value = object()
         self.assertEqual(self.wrapped.thisIsAContextMethod(value), value)
-        self.assert_(self.obj.result is self.wrapped)
+        # ContextMethod doesn't work with classic classes
+        self.assert_(self.obj.result is self.obj)
 
         self.assertEqual(self.obj.thisIsAContextMethod(value), value)
         self.assert_(self.obj.result is self.obj)
@@ -162,6 +159,92 @@ class TestClassicClass(unittest.TestCase):
         value = object()
         self.assertEqual(self.wrapped.thisIsNotAContextMethod(value), value)
         self.assert_(self.obj.result is self.obj)
+
+    def testCall(self):
+        value_a = object()
+        value_b = object()
+
+        self.assertRaises(TypeError, self.wrapped)
+
+        self.assertEqual(self.wrapped(value_a), value_a)
+        result_obj, result_a, result_b = self.obj.result
+        # ContextMethod doesn't work with classic class
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is None)
+
+        self.assertEqual(self.wrapped(value_a, value_b), value_a)
+        result_obj, result_a, result_b = self.obj.result
+        # ContextMethod doesn't work with classic class
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+        self.assertEqual(self.wrapped(value_a, b=value_b), value_a)
+        result_obj, result_a, result_b = self.obj.result
+        # ContextMethod doesn't work with classic class
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+        self.assertEqual(self.wrapped(a=value_a, b=value_b), value_a)
+        result_obj, result_a, result_b = self.obj.result
+        # ContextMethod doesn't work with classic class
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+    def testGetitem(self):
+        value_a = object()
+        value_b = object()
+
+        self.assertRaises(TypeError, self.wrapped)
+
+        self.assertEqual(self.wrapped[value_a], value_a)
+        result_obj, result_a, result_b = self.obj.result
+        # ContextMethod doesn't work with classic class
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is None)
+
+        self.assertEqual(self.wrapped.__getitem__(value_a, value_b), value_a)
+        result_obj, result_a, result_b = self.obj.result
+
+        # context wrapping doesn't work for classic classes
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+        self.assertEqual(self.wrapped.__getitem__(value_a, b=value_b), value_a)
+        result_obj, result_a, result_b = self.obj.result
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+        self.assertEqual(self.wrapped.__getitem__(a=value_a, b=value_b),
+                         value_a)
+        result_obj, result_a, result_b = self.obj.result
+        self.assert_(result_obj is self.obj)
+        self.assert_(result_a is value_a)
+        self.assert_(result_b is value_b)
+
+    def testGetContextProperty(self):
+        self.assertEqual(self.wrapped.thisIsAContextProperty, True)
+        # context properties don't work with classic classes
+        self.assert_(self.obj.result is self.obj)
+
+    def testNotFound(self):
+        self.assertRaises(AttributeError,
+                          getattr, self.wrapped, 'noSuchAttribute')
+
+
+class TestNewStyleClassWithSlots(TestClassicClass):
+
+    _class = NewStyleClassWithSlots
+
+    # Setting properties doesn't work with classic classes,
+    # so this class has extra tests for setting properties in
+    # new-style classes.
 
     def testCall(self):
         value_a = object()
@@ -224,26 +307,17 @@ class TestClassicClass(unittest.TestCase):
         self.assert_(result_a is value_a)
         self.assert_(result_b is value_b)
 
+    def testContextMethod(self):
+        value = object()
+        self.assertEqual(self.wrapped.thisIsAContextMethod(value), value)
+        self.assert_(self.obj.result is self.wrapped)
+
+        self.assertEqual(self.obj.thisIsAContextMethod(value), value)
+        self.assert_(self.obj.result is self.obj)
+
     def testGetContextProperty(self):
         self.assertEqual(self.wrapped.thisIsAContextProperty, True)
         self.assert_(self.obj.result is self.wrapped)
-
-    def testGetContextGetProperty(self):
-        self.assertEqual(self.wrapped.thisIsAContextGetProperty, True)
-        self.assert_(self.obj.result is self.wrapped)
-
-    def testNotFound(self):
-        self.assertRaises(AttributeError,
-                          getattr, self.wrapped, 'noSuchAttribute')
-
-
-class TestNewStyleClassWithSlots(TestClassicClass):
-
-    _class = NewStyleClassWithSlots
-
-    # Setting properties doesn't work with classic classes,
-    # so this class has extra tests for setting properties in
-    # new-style classes.
 
     def testSetContextProperty(self):
         value = 23
@@ -251,25 +325,6 @@ class TestNewStyleClassWithSlots(TestClassicClass):
         result_obj, result_value = self.obj.result
         self.assert_(result_obj is self.wrapped)
         self.assert_(result_value is value)
-
-    def testSetContextGetProperty(self):
-        value = 23
-        self.wrapped.thisIsAContextGetProperty = value
-        result_obj, result_value = self.obj.result
-        self.assert_(result_obj is self.obj)
-        self.assert_(result_value is value)
-
-    def testGetContextSetProperty(self):
-        self.assertEqual(self.wrapped.thisIsAContextSetProperty, True)
-        self.assert_(self.obj.result is self.obj)
-
-    def testSetContextSetProperty(self):
-        value = 23
-        self.wrapped.thisIsAContextSetProperty = value
-        result_obj, result_value = self.obj.result
-        self.assert_(result_obj is self.wrapped)
-        self.assert_(result_value is value)
-
 
     def testContextSuper(self):
 
@@ -340,24 +395,7 @@ class CallableGetitemNoContextMethods:
     def __getitem__(self, key):
         pass
 
-class TestWrapperTypeSelection(unittest.TestCase):
-
-    def testSelection(self):
-
-        from zope.proxy.context \
-            import SimpleMethodWrapper, SimpleCallableMethodWrapper, \
-            SimpleGetitemMethodWrapper, SimpleCallableGetitemMethodWrapper
-
-        self.assert_(type(Wrapper({})) is SimpleMethodWrapper)
-        self.assert_(type(Wrapper(SimpleClass())) is SimpleMethodWrapper)
-        self.assert_(type(Wrapper(CallableClass())) is
-                     SimpleCallableMethodWrapper)
-        self.assert_(type(Wrapper(ClassWithGetitem())) is
-                     SimpleGetitemMethodWrapper)
-        self.assert_(type(Wrapper(CallableClassWithGetitem())) is
-                     SimpleCallableGetitemMethodWrapper)
-        self.assert_(type(Wrapper(CallableGetitemNoContextMethods())) is
-                     SimpleMethodWrapper)
+class TestWrapperOnObjectsWithDifferentSlots(unittest.TestCase):
 
     def testSimpleClass(self):
         obj = SimpleClass()
@@ -394,7 +432,7 @@ class TestWrapperTypeSelection(unittest.TestCase):
         #
         # self.assert_(not callable(wrapped))
         #
-        # let's just check that the (slightly broken) converse is true
+        # let's just check that the converse is true
         self.assert_(callable(wrapped))
         self.assertRaises(TypeError, wrapped)
 
@@ -425,7 +463,7 @@ class TestWrapperTypeSelection(unittest.TestCase):
         #
         # self.assert_(not callable(wrapped))
         #
-        # let's just check that the (slightly broken) converse is true
+        # let's just check that the converse is true
         self.assert_(callable(wrapped))
         self.assertRaises(TypeError, wrapped)
 
@@ -434,13 +472,34 @@ class TestWrapperTypeSelection(unittest.TestCase):
         self.assertEqual(wrapped[0], 23)
         self.assertEqual(wrapped.__getitem__(0), 23)
 
+class TestContextWrapperFactory(unittest.TestCase):
+
+    def testClassicClassWarning(self):
+        from types import ClassType
+        class Classic:
+            __metaclass__ = ClassType
+            def foo(self):
+                pass
+
+        class BadClassic:
+            __metaclass__ = ClassType
+            def foo(self):
+                pass
+            foo = ContextMethod(foo)
+
+        # ok if there are no ContextDescriptors 
+        w = ContextWrapper(Classic(), None)
+
+        # raises if there is a ContextDescriptor
+        self.assertRaises(TypeError, ContextWrapper, BadClassic(), None)
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestNewStyleClass),
         unittest.makeSuite(TestNewStyleClassWithSlots),
         unittest.makeSuite(TestClassicClass),
-        unittest.makeSuite(TestWrapperTypeSelection),
+        unittest.makeSuite(TestWrapperOnObjectsWithDifferentSlots),
+        unittest.makeSuite(TestContextWrapperFactory),
         ))
 
 

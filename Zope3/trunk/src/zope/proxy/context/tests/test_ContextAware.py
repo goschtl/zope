@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ContextAware.py,v 1.1 2003/01/25 15:32:52 jim Exp $
+$Id: test_ContextAware.py,v 1.2 2003/04/08 12:21:39 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -44,7 +44,6 @@ class C(B, ContextAware):
 
     def fC(self):
         return getWrapperContainer(self)
-        
 
 class Test(TestCase):
 
@@ -71,7 +70,7 @@ class Test(TestCase):
         self.assertEqual(b.fC(), None)
         b.p2C = 1
         self.assertEqual(b.v, (None, 1))
-        
+
         # Check wrapper case
         b = ContextWrapper(b, 42)
         self.assertEqual(b.p1B, 42)

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.5 2003/04/04 15:49:37 stevea Exp $
+$Id: simpleviewclass.py,v 1.6 2003/04/08 12:21:37 stevea Exp $
 """
 
 import sys
@@ -21,21 +21,23 @@ from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
-from zope.proxy.context import ContextAware
+from zope.proxy.context import ContextMethod
 from zope.publisher.interfaces import NotFound
 
-class simple(ContextAware, BrowserView):
+class simple(BrowserView):
 
     __implements__ = IBrowserPublisher, BrowserView.__implements__
 
     def browserDefault(self, request):
         return self, ()
+    browserDefault = ContextMethod(browserDefault)
 
     def publishTraverse(self, request, name):
         if name == 'index.html':
             return self.index
 
         raise NotFound(self, name, request)
+    publishTraverse = ContextMethod(publishTraverse)
 
     # XXX: we need some unittests for this !!!
     def __getitem__(self, name):
@@ -43,6 +45,7 @@ class simple(ContextAware, BrowserView):
 
     def __call__(self, template_usage=u'', *args, **kw):
         return self.index(template_usage, *args, **kw)
+    __call__ = ContextMethod(__call__)
 
 def SimpleViewClass(src, offering=None, used_for=None, bases=(), usage=u''):
     if offering is None:

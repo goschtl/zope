@@ -14,16 +14,17 @@
 """
 See ViewPageTemplateFile
 
-$Id%
+$Id: viewpagetemplatefile.py,v 1.4 2003/04/08 12:21:37 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.component import getView
 from zope.app.pagetemplate.engine import AppPT
+from zope.proxy.context import ContextDescriptor
 import sys
 
-class ViewPageTemplateFile(AppPT, PageTemplateFile):
+class ViewPageTemplateFile(AppPT, PageTemplateFile, ContextDescriptor):
     """Page Templates used as methods of views defined as Python classes.
     """
 
@@ -54,10 +55,6 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
 
     def __get__(self, instance, type=None):
         return BoundPageTemplate(self, instance)
-
-    # Instances of this class are pretending to be methods.
-    # In general, they need to be ContextMethods.
-    __Zope_ContextWrapper_contextful_get__ = True
 
 class ViewMapper:
     def __init__(self, ob, request):

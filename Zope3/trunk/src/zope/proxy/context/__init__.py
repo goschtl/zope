@@ -16,19 +16,20 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.3 2003/01/25 15:32:50 jim Exp $
+$Id: __init__.py,v 1.4 2003/04/08 12:21:38 stevea Exp $
 """
+__metaclass__ = type
 
 from zope.security.proxy import Proxy, getChecker, getObject
 from zope.proxy.context.wrapper import getobject, getdict
 from zope.proxy.context.wrapper import getcontext, getinnercontext
-from zope.proxy.context.wrapper import getinnerwrapper
-from zope.proxy.context.wrapper import Wrapper as _Wrapper, getbaseobject
+from zope.proxy.context.wrapper import getinnerwrapper, getbaseobject
+from zope.proxy.context.wrapper import ContextDescriptor, ContextAware
+from zope.proxy.context.wrapper import ContextMethod, ContextProperty
+from zope.proxy.context.wrapper import Wrapper
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
-
-
-__metaclass__ = type
-
+from types import ClassType
+import inspect
 from zope.proxy.interfaces.context import IContextWrapper
 
 __implements__ = IContextWrapper
@@ -43,13 +44,26 @@ def ContextWrapper(_ob, _parent, **kw):
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
-    elif type(_ob) is Proxy:
+
+    if type(_ob.__class__) is ClassType:
+        # We have an instance of a classic class.
+        # This isn't *too* bad in itself, but we're going to make sure that
+        # it doesn't have any ContextDescriptor members.
+        cls = _ob.__class__
+        for name, member in inspect.getmembers(cls):
+            if isinstance(member, ContextDescriptor):
+                raise TypeError("Class %s is a classic class, but has a"
+                                " ContextDescriptor member '%s'. This member"
+                                " will not work properly." %
+                                (cls, name))
+
+    if type(_ob) is Proxy:
         # insert into proxies
         checker = getChecker(_ob)
         _ob = getObject(_ob)
-        _ob = Proxy(wrapperCreator(_ob, _parent, **kw), checker)
+        _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
     else:
-        _ob = wrapperCreator(_ob, _parent, **kw)
+        _ob = Wrapper(_ob, _parent, **kw)
 
     return _ob
 
@@ -104,7 +118,7 @@ def isWrapper(_ob):
 class ContainmentIterator:
 
     def __init__(self, obj):
-        self._ob = wrapperCreator(None, obj)
+        self._ob = Wrapper(None, obj)
 
     def __iter__(self):
         return self
@@ -136,128 +150,9 @@ def queryAttr(collection, name, default=None):
     return ContextWrapper(getattr(collection, name, default),
                           collection, name=name)
 
+wrapperTypes = (Wrapper,)
 
-
-##############################################################################
-#
-# Approach
-#
-# The facilities here work by adding markers on methods or properties
-# that a custom wrapper class looks for.  We rely on the custom
-# wrapper class's __getattribute__ to rebind things on the way out.
-#
-# For further discission, see this wiki page (all on one line):
-# http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/...
-# zope.proxy.context.ContextMethod
-#
-##############################################################################
-
-
-# This method wrapper does not work for builtin methods.
-
-class ContextMethod:
-    def __new__(cls, method):
-        try:
-            method.__Zope_ContextWrapper_contextful_get__ = True
-        except AttributeError:
-            raise TypeError(
-                "Cannot make %s into a contextmethod" % type(method)
-                )
-        return method
-
-class ContextAware:
-    """Marker class indicating that all descriptors should be bound in context
-    """
-
-class ContextProperty(property):
-    """A property that provides a context wrapper to its getter and setter
-    methods"""
-    __Zope_ContextWrapper_contextful_get__ = True
-    __Zope_ContextWrapper_contextful_set__ = True
-
-class ContextGetProperty(property):
-    """A property that provides a context wrapper to its getter method"""
-    __Zope_ContextWrapper_contextful_get__ = True
-
-class ContextSetProperty(property):
-    """A property that provides a context wrapper to its setter method"""
-    __Zope_ContextWrapper_contextful_set__ = True
-
-def wrapperCreator(object, context=None, **data):
-    has_call = (hasattr(object, '__call__') and
-                getattr(object.__call__,
-                        '__Zope_ContextWrapper_contextful_get__', False))
-    has_getitem = (hasattr(object, '__getitem__') and
-                   getattr(object.__getitem__,
-                           '__Zope_ContextWrapper_contextful_get__', False))
-    if has_call and has_getitem:
-        factory = SimpleCallableGetitemMethodWrapper
-    elif has_call:
-        factory = SimpleCallableMethodWrapper
-    elif has_getitem:
-        factory = SimpleGetitemMethodWrapper
-    else:
-        factory = SimpleMethodWrapper
-
-    return factory(object, context, **data)
-
-Wrapper = wrapperCreator
-
-class SimpleMethodWrapper(_Wrapper):
-
-    def __getattribute__(self, name):
-        """Support for ContextMethod and ContextProperty.__get__"""
-        obj = getbaseobject(self)
-        class_ = obj.__class__
-        class_value = getattr(class_, name, None)
-        if hasattr(class_value, '__get__'):
-            if (isinstance(obj, ContextAware)
-                or
-                getattr(class_value,
-                       '__Zope_ContextWrapper_contextful_get__', False)
-                ):
-                return class_value.__get__(self, class_)
-
-        return _Wrapper.__getattribute__(self, name)
-
-    def __setattr__(self, name, value):
-        """Support for ContextProperty.__set__"""
-        obj = getbaseobject(self)
-        class_ = obj.__class__
-        class_value = getattr(class_, name, None)
-        if hasattr(class_value, '__set__'):
-            if (isinstance(obj, ContextAware)
-                or
-                getattr(class_value,
-                       '__Zope_ContextWrapper_contextful_set__', False)
-                ):
-                class_value.__set__(self, value)
-                return
-        setattr(obj, name, value)
-
-
-class SimpleCallableMethodWrapper(SimpleMethodWrapper):
-
-    def __call__(self, *args, **kw):
-        attr = _Wrapper.__getattribute__(self, '__call__')
-        return attr.__get__(self)(*args, **kw)
-
-class SimpleGetitemMethodWrapper(SimpleMethodWrapper):
-
-    def __getitem__(self, key, *args, **kw):
-        attr = _Wrapper.__getattribute__(self, '__getitem__')
-        return attr.__get__(self)(key, *args, **kw)
-
-class SimpleCallableGetitemMethodWrapper(SimpleCallableMethodWrapper,
-                                         SimpleGetitemMethodWrapper):
-    pass
-
-wrapperTypes = (SimpleMethodWrapper, SimpleCallableMethodWrapper,
-                SimpleGetitemMethodWrapper,
-                SimpleCallableGetitemMethodWrapper)
-
-for wrapper_type in wrapperTypes:
-    defineChecker(wrapper_type, _contextWrapperChecker)
+defineChecker(Wrapper, _contextWrapperChecker)
 
 class ContextSuper:
 

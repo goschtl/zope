@@ -14,9 +14,12 @@
 import pickle
 import unittest
 
-from zope.proxy.context import wrapper
+from zope.proxy.context import wrapper, getcontext, getobject
+from zope.proxy.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Comparable, Thing, ProxyTestCase
 
+
+_marker = object()
 
 class WrapperTestCase(ProxyTestCase):
     def new_proxy(self, o, c=None):
@@ -79,6 +82,248 @@ class WrapperTestCase(ProxyTestCase):
         w = MyWrapper(o)
         self.assert_(w.foo == 1)
         self.assert_(w.bar == 2)
+
+    def make_proxies(self, slot, fixed_retval=_marker):
+        context = object()
+
+        def doit(self, *args):
+            self.retval = getcontext(self), args
+            if fixed_retval is _marker:
+                return self.retval
+            else:
+                return fixed_retval
+
+        # context-unaware object
+        t1 = type('ContextUnawareObj', (), {slot: doit})
+        proxy1 = self.new_proxy(t1(), context)
+
+        # context-aware object
+        t2 = type('ContextAwareObj', (ContextAware,), {slot: doit})
+        proxy2 = self.new_proxy(t2(), context)
+
+        # object with context method
+        t3 = type('ContextMethodObj', (), {slot: ContextMethod(doit)})
+        proxy3 = self.new_proxy(t3(), context)
+
+        return proxy1, proxy2, proxy3, context
+
+    def test_normal_getattr(self):
+        class X(object):
+            def __init__(self, retval):
+                self.args = None
+                self.retval = retval
+            def __getattr__(self, name):
+                if name == '__del__':
+                    # We don't want Python's gc to think that we have a
+                    # __del__, otherwise cycles will not be collected.
+                    raise AttributeError, name
+                self.__dict__['args'] = self, name
+                return self.__dict__['retval']
+            def getArgs(self):
+                return self.__dict__['args']
+
+        context = object()
+
+        x = X(23)
+        p = self.new_proxy(x, context)
+        self.assertEquals(p.foo, 23)
+        # Nothing special happens; we don't rebind the self of __getattr__
+        self.assertEquals(p.getArgs(), (x, 'foo'))
+        self.assert_(p.getArgs()[0] is x)
+
+    def test_ContextAware_getattr(self):
+        class Y(ContextAware):
+            def __init__(self, retval):
+                self.args = None
+                self.retval = retval
+            def __getattr__(self, name):
+                if name == '__del__':
+                    # We don't want Python's gc to think that we have a
+                    # __del__, otherwise cycles will not be collected.
+                    raise AttributeError, name
+                self.args = self, name
+                return self.__dict__['retval']
+            def getArgs(self):
+                # Need to get __dict__ from the clean object, because it
+                # is a special descriptor and complains bitterly about
+                # being got from the wrong kind of object.
+                return getobject(self).__dict__['args']
+
+        y = Y(23)
+        p = self.new_proxy(y, 23)
+        self.assertEquals(p.foo, 23)
+        # Nothing special happens; we don't rebind the self of __getattr__
+        self.assertEquals(p.getArgs(), (y, 'foo'))
+        self.assert_(p.getArgs()[0] is y)
+
+    def test_ContextMethod_getattr(self):
+        class Z(object):
+            def __getattr__(self, name):
+                return 23
+            __getattr__ = ContextMethod(__getattr__)
+
+        z = Z()
+        self.assertRaises(TypeError, getattr, z, 'foo')
+        p = self.new_proxy(z, 23)
+        self.assertRaises(TypeError, getattr, p, 'foo')
+
+        # This is the same behaviour that you get if you try to make
+        # __getattr__ a classmethod.
+        class ZZ(object):
+            def __getattr__(self, name):
+                return 23
+            __getattr__ = classmethod(__getattr__)
+
+        zz = ZZ()
+        self.assertRaises(TypeError, getattr, zz, 'foo')
+
+    def test_property(self):
+        class X(object):
+            def getFoo(self):
+                self.called_with = self
+                return 42
+            def setFoo(self, value):
+                self.called_with = self, value
+            foo = property(getFoo, setFoo)
+            context_foo = ContextProperty(getFoo, setFoo)
+        x = X()
+        p = self.new_proxy(x)
+        self.assertEquals(p.foo, 42)
+        self.assert_(x.called_with is x)
+        self.assertEquals(p.context_foo, 42)
+        self.assert_(x.called_with is p)
+        p.foo = 24
+        self.assertEquals(x.called_with, (x, 24))
+        self.assert_(x.called_with[0] is x)
+        p.context_foo = 24
+        self.assertEquals(x.called_with, (p, 24))
+        self.assert_(x.called_with[0] is p)
+
+    def test_ContextAware_property(self):
+        class Y(ContextAware):
+            def getFoo(self):
+                self.called_with = self
+                return 42
+            def setFoo(self, value):
+                self.called_with = self, value
+            foo = property(getFoo, setFoo)
+        y = Y()
+        p = self.new_proxy(y)
+        self.assertEquals(p.foo, 42)
+        self.assert_(y.called_with is p)
+        p.foo = 24
+        self.assertEquals(y.called_with, (p, 24))
+        self.assert_(y.called_with[0] is p)
+
+    def test_setattr(self):
+        value_called = [None]
+        class X(object):
+            def __setattr__(self, name, value):
+                value_called[0] = self, name, value
+
+        x = X()
+        p = self.new_proxy(x)
+        p.foo = 'bar'
+        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
+        self.assert_(value_called[0][0] is x)
+
+        class ContextAwareX(X, ContextAware):
+            pass
+        cax = ContextAwareX()
+        p = self.new_proxy(cax)
+        p.foo = 'bar'
+        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
+        self.assert_(value_called[0][0] is cax)
+
+        X.__setattr__ = ContextMethod(X.__setattr__)
+        x = X()
+        p = self.new_proxy(x)
+        p.foo = 'bar'
+        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
+        self.assert_(value_called[0][0] is x)
+
+    def test_getitem(self):
+        p1, p2, p3, context = self.make_proxies('__getitem__')
+        self.assertEquals(p1[42], (None, (42, )))
+        self.assertEquals(p2[42], (context, (42, )))
+        self.assertEquals(p3[42], (context, (42, )))
+        # builtin
+        p4 = self.new_proxy((1, 2), context)
+        self.assertEquals(p4[0], 1)
+        self.assertEquals(p4[1], 2)
+        self.assertRaises(IndexError, p4.__getitem__, 2)
+
+    def test_setitem(self):
+        p1, p2, p3, context = self.make_proxies('__setitem__')
+        p1[24] = 42
+        p2[24] = 42
+        p3[24] = 42
+        self.assertEquals(p1.retval, (None, (24, 42)))
+        self.assertEquals(p2.retval, (context, (24, 42)))
+        self.assertEquals(p3.retval, (context, (24, 42)))
+        # builtin
+        p4 = self.new_proxy([1, 2], context)
+        p4[1] = 3
+        self.assertEquals(p4[1], 3)
+        self.assertRaises(IndexError, p4.__setitem__, 2, 4)
+
+    def test_delitem(self):
+        p1, p2, p3, context = self.make_proxies('__delitem__')
+        del p1[42]
+        del p2[42]
+        del p3[42]
+        self.assertEquals(p1.retval, (None, (42, )))
+        self.assertEquals(p2.retval, (context, (42, )))
+        self.assertEquals(p3.retval, (context, (42, )))
+        # builtin
+        p4 = self.new_proxy([1, 2], context)
+        del p4[1]
+        self.assertEquals(p4, [1])
+        self.assertRaises(IndexError, p4.__delitem__, 2)
+
+    def test_iter(self):
+        p1, p2, p3, context = self.make_proxies('__iter__', iter(()))
+        iter(p1)
+        iter(p2)
+        iter(p3)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+    def test_call(self):
+        p1, p2, p3, context = self.make_proxies('__call__')
+        self.assertEquals(p1('foo', 'bar'), (None, ('foo', 'bar')))
+        self.assertEquals(p2('foo', 'bar'), (context, ('foo', 'bar')))
+        self.assertEquals(p3('foo', 'bar'), (context, ('foo', 'bar')))
+
+    def test_str(self):
+        p1, p2, p3, context = self.make_proxies('__str__', 'foo')
+        self.assertEquals(str(p1), 'foo')
+        self.assertEquals(str(p2), 'foo')
+        self.assertEquals(str(p3), 'foo')
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+    def test_contains(self):
+        p1, p2, p3, context = self.make_proxies('__contains__', 1)
+        self.assert_(42 in p1)
+        self.assert_(42 in p2)
+        self.assert_(42 in p3)
+        self.assertEquals(p1.retval, (None, (42, )))
+        self.assertEquals(p2.retval, (context, (42, )))
+        self.assertEquals(p3.retval, (context, (42, )))
+
+    def test_len(self):
+        p1, p2, p3, context = self.make_proxies('__len__', 5)
+        self.assertEquals(len(p1), 5)
+        self.assertEquals(len(p2), 5)
+        self.assertEquals(len(p3), 5)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+    # Tests for wrapper module globals
 
     def test_getobject(self):
         obj1 = object()
