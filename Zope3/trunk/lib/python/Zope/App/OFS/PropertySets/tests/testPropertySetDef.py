@@ -14,29 +14,25 @@
 """
 
 Revision information:
-$Id: testPropertySetDef.py,v 1.2 2002/06/10 23:28:09 jim Exp $
+$Id: testPropertySetDef.py,v 1.3 2002/07/16 22:54:03 jeremy Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-from PropertySetDef import PropertySetDef as PropertySetDefTestClass
+from unittest import TestCase, main, makeSuite
+from Zope.App.OFS.PropertySets.tests.PropertySetDef \
+     import PropertySetDefTest
 from Zope.App.OFS.PropertySets.PropertySetDef import PropertySetDef
 
-class Field: pass
+class Field:
+    pass
 
-class Test(CleanUp, PropertySetDefTestClass, TestCase):
+class Test(PropertySetDefTest, TestCase, object):
     
     def setUp(self):
         self.psd = PropertySetDef()
-        #super(Test,self).setUp()
-        PropertySetDefTestClass.setUp(self)
-        CleanUp.setUp(self)
-
+        super(Test, self).setUp()
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
