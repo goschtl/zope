@@ -29,4 +29,13 @@
       menu="zmi_views" title="Detail" 
       />
 
+  <page
+      for="zope.app.interfaces.component.IInterfaceService"
+      name="method_detail.html"
+      template="method_detail.pt"
+      class=".MethodDetail"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Method Details" 
+      />
+
 </zope:configure>

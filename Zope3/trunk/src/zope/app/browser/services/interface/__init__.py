@@ -136,3 +136,61 @@ class Detail:
             if regs:
                 yield {"name": name, "registrations": regs}
             
+
+class MethodDetail:
+    """Interface Method Details
+
+    >>> from zope.interface import Interface
+    >>> from zope.i18n import MessageIDFactory
+    >>> _ = MessageIDFactory('zope')
+    >>> class TestInterface(Interface):
+    ...     '''Test Interface'''
+    ...     def testMethod():
+    ...         'Returns test name'
+    ...
+    >>> class TestClass:
+    ...     def getInterface(self, id=None):
+    ...         return TestInterface
+    ...
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> form = {'interface_id': 'TestInterface', 'method_id': 'testMethod'}
+    >>> request.form = form
+    >>> imethod_details = MethodDetail(TestClass(), request)
+    >>> imethod_details.setup()
+    >>> imethod_details.name
+    'testMethod'
+    >>> imethod_details.doc
+    'Returns test name'
+    >>> imethod_details.iface.__name__
+    'TestInterface'
+    >>> imethod_details.method.__name__
+    'testMethod'
+
+    """
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+    
+    def setup(self):
+        try:
+            interface_id = self.request["interface_id"]
+        except KeyError:
+            raise zapi.UserError("Please click on a method name in the Detail"
+                                 " tab to view method details.")
+        try:
+            method_id = self.request["method_id"]
+        except KeyError:
+            raise zapi.UserError("Please click on a method name to view"
+                  " details.")
+        
+        iface = self.context.getInterface(interface_id)
+
+        from zope.proxy import getProxiedObject
+        self.iface = getProxiedObject(iface)
+
+        self.method = self.iface[method_id]
+        self.name = self.method.__name__
+        self.doc = self.method.__doc__
+

@@ -24,11 +24,13 @@
         <tr tal:define="oddrow repeat/methoddict/odd;"
             tal:attributes="class python:oddrow and 'even' or 'odd'">
           <td>
-            <strong>
-              <span tal:replace="methoddict/method/__name__" /></strong><span 
-                  tal:replace="methoddict/method/getSignatureString">
-              Info
-            </span>
+            <a href="/" 
+               tal:attributes="href string:method_detail.html?interface_id=${request/id}&method_id=${methoddict/method/__name__}">
+               <strong><span tal:replace="string:${methoddict/method/__name__}"
+                   >Method Name</span></strong><span 
+                   tal:replace="string:${methoddict/method/getSignatureString}"
+                   >Method Signature</span>
+            </a>
           </td>
           <td tal:content="methoddict/title"></td>
         </tr>
