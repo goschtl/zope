@@ -1,6 +1,7 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:event="http://namespaces.zope.org/event"
+   xmlns:mail="http://namespaces.zope.org/mail"
    i18n_domain="zope"
    >
 
@@ -193,6 +194,16 @@
      factory=".wikipage.WikiPageWriteFile"
      permission="zope.app.wiki.EditWikiPage"
      />
+
+
+  <!-- Register mail delivery for change mails -->
+  <mail:smtpMailer name="wiki-smtp" hostname="localhost" port="25" />
+  
+  <mail:queuedDelivery 
+      name="wiki-delivery"
+      permission="zope.SendMail"
+      queuePath="./mail-queue"
+      mailer="wiki-smtp" />
 
   <!-- Register event listener for change mails -->
   <event:subscribe
