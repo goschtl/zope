@@ -39,12 +39,11 @@ def main(args):
         VERBOSE = 1
         del args[0]
 
-    root = args[0]; del args[0]
     repo = args[0]; del args[0]
     subjs = map(grok_file, args)
 
     if VERBOSE:
-        complain("CWD: %s, Repo: %s, Root: %s\n", os.getcwd(), repo, root)
+        complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
         complain("Subjects: %s\n", subjs)
 
     got = find_entries(repo)
@@ -75,7 +74,8 @@ def do_sync(repo, accts, subjs):
     """Instigate repository mirror synchronize."""
     if VERBOSE:
         fnames = string.join(map(lambda x: x[0], subjs), ",")
-        complain("Sync for %s of %s / %s\n", accts, repo, fnames)
+        complain("Sync for %s of %s/ %s / %s\n",
+                 accts, os.environ["CVSROOT"], repo, fnames)
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
@@ -91,7 +91,7 @@ def grok_file(s):
     return m.groups()
 
 def usage():
-    complain("Usage: %s cvsroot repository-path file,oldv,newv f2,o2,n2 ...\n",
+    complain("Usage: %s repository-path file,oldv,newv f2,o2,n2 ...\n",
              SCRIPT)
 
 def complain(msg, *args):
