@@ -247,7 +247,7 @@ class Managers(object):
              >>> data = list(view.applications())
              >>> data.sort(lambda d1, d2: cmp(d1['id'], d2['id']))
 
-             >>> for info in data:
+             >>> for info in data:  #doctest: +NORMALIZE_WHITESPACE
              ...     print info['id']
              ...     print info['min'], info['max'], info['generation']
              ...     print 'evolve?', info['evolve']
