@@ -25,7 +25,9 @@ from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import IInteractionManagement
 from zope.testing.cleanup import addCleanUp
-from zope.thread import thread_globals
+import zope.thread
+
+thread_local = zope.thread.local()
 
 moduleProvides(ISecurityManagement, IInteractionManagement)
 
@@ -63,30 +65,26 @@ def setSecurityPolicy(aSecurityPolicy):
 #   IInteractionManagement implementation
 #
 
-def queryInteraction(_thread=None):
+def queryInteraction():
     """Get the current interaction."""
-    return thread_globals(_thread).interaction
+    return getattr(thread_local, 'interaction', None)
 
-def newInteraction(participation=None, _thread=None, _policy=None):
+def newInteraction(participation=None, _policy=None):
     """Start a new interaction."""
-    if queryInteraction(_thread) is not None:
-        stack = queryInteraction(_thread)._newInteraction_called_from
+    if queryInteraction() is not None:
+        stack = queryInteraction()._newInteraction_called_from
         raise AssertionError("newInteraction called"
                              " while another interaction is active:\n%s"
                              % "".join(traceback.format_list(stack)))
     interaction = getSecurityPolicy().createInteraction(participation)
     interaction._newInteraction_called_from = traceback.extract_stack()
-    thread_globals(_thread).interaction = interaction
+    thread_local.interaction = interaction
 
-def endInteraction(_thread=None):
+def endInteraction():
     """End the current interaction."""
-    thread_globals(_thread).interaction = None
+    thread_local.interaction = None
 
-
-def _cleanUp():
-    thread_globals().interaction = None
-
-addCleanUp(_cleanUp)
+addCleanUp(endInteraction)
 
 
 # circular imports are not fun

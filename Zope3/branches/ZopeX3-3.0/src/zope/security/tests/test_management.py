@@ -41,51 +41,24 @@ class Test(CleanUp, unittest.TestCase):
         setSecurityPolicy(policy)
         self.assert_(getSecurityPolicy() is policy)
 
-    def test_queryInteraction(self):
-        # XXX this test is a bit obfuscated
+    def test_query_new_end_Interaction(self):
         from zope.security.management import queryInteraction
+        self.assertEquals(queryInteraction(), None)
 
-        marker = object()
-        class ThreadVars:
-            interaction = marker
-        class ThreadStub:
-            __zope3_thread_globals__ = ThreadVars()
-
-        self.assert_(queryInteraction(_thread=ThreadStub()) is marker)
-
-    def test_newInteraction(self):
-        # XXX this test is a bit obfuscated
         from zope.security.management import newInteraction
 
-        class ThreadVars:
-            interaction = None
-        class ThreadStub:
-            __zope3_thread_globals__ = ThreadVars()
-
         rq = None
-        thread = ThreadStub()
-        newInteraction(rq, _thread=thread)
-        self.assert_(thread.__zope3_thread_globals__.interaction is not None)
+        newInteraction(rq)
 
-        self.assertRaises(AssertionError, newInteraction, rq, _thread=thread)
+        self.assert_(queryInteraction() is not None)
+        self.assertRaises(AssertionError, newInteraction, rq)
 
-    def test_endInteraction(self):
-        # XXX this test is a bit obfuscated
         from zope.security.management import endInteraction
 
-        marker = object()
-        class ThreadVars:
-            interaction = marker
-        class ThreadStub:
-            __zope3_thread_globals__ = ThreadVars()
-
-        thread = ThreadStub()
-        endInteraction(_thread=thread)
-        self.assert_(thread.__zope3_thread_globals__.interaction is None)
-
-        # again
-        endInteraction(_thread=thread)
-        self.assert_(thread.__zope3_thread_globals__.interaction is None)
+        endInteraction()
+        self.assertEquals(queryInteraction(), None)
+        endInteraction()
+        self.assertEquals(queryInteraction(), None)
 
     def test_checkPermission(self):
         from zope.security import checkPermission
