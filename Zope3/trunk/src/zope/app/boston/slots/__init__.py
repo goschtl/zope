@@ -56,6 +56,15 @@ class IToolBar(IPageletSlot):
     """
 
 
+class IContextMenu(IPageletSlot):
+    """Context menu (zmi_views) pagelet slot interface.
+
+    This pagelet slot will lookup for pagelets. If you like to additional 
+    content to this slot, use the 'zope.app.boston.slots.IContextMenu' 
+    interface for the slot attribute in a pagelet directive. 
+    """
+
+
 class ILeft(IPageletSlot):
     """Left pagelet slot interface.
 

@@ -3,6 +3,7 @@
 **
 */
 
+
 /* Basic Elements 
 */
 html {
@@ -250,22 +251,22 @@ table {
     padding-left: 7px;
 }
 
-#actions {
+.actions {
     height: 20px;
 	float: left;
     padding: 4px 0px 0px 0px;
 }
 
-#actions span {
+.actions span {
     white-space: nowrap;
 }
 
-#actions a {
+.actions a {
 	color: #666666;
     margin: 1px 6px 3px 6px;
 }
 
-#actions a:hover {
+.actions a:hover {
 	color: black;
     text-decoration: none;
 	background-color: #D9DAF2;
@@ -289,6 +290,7 @@ table {
 #breadcrumbs a {
     color: #CCCCCC;
 }
+
 
 /* navigation area 
 */
@@ -369,20 +371,12 @@ table {
 
 /* content area
 */
-
-#content {
-    width: 100%;
-    margin: 0px;
-    padding: 0px 10px 0px 10px;
-}
-
-
-#zmiviews {
+#contextmenu {
     margin: 0px 0px 0px 0px;
     padding: 18px 0px 0px 0px;
 }
 
-#zmiviews div {
+#contextmenu div {
     font: 100% Verdana, Helvetica, Arial, sans-serif;
     background-color: #EBE9DF;
     border: 1px solid #C1BBAC;
@@ -390,17 +384,17 @@ table {
     margin: 2px 0px 10px 0px;
 }
 
-#zmiviews div span {
+#contextmenu div span {
     white-space: nowrap;
 }
 
-#zmiviews div a {
+#contextmenu div a {
 	color: #666666;
     font-weight: normal;
     padding: 2px 6px 2px 6px;
 }
 
-#zmiviews div a:hover {
+#contextmenu div a:hover {
 	color: black;
 	text-decoration: none;
 	background-color: #CECEFF;
@@ -408,12 +402,18 @@ table {
     padding: 2px 5px 2px 5px;
 }
 
-#zmiviews div a.selected {
+#contextmenu div a.selected {
 	color: black;
 	text-decoration: none;
 	background-color: #D9DAF2;
 	border: 1px solid #0066CC;
     padding: 2px 5px 2px 5px;
+}
+
+#content {
+    width: 100%;
+    margin: 0px;
+    padding: 0px 10px 0px 10px;
 }
 
 
@@ -472,7 +472,7 @@ div.row span.error {
 }
 
 
-/* table lyout
+/* table layout
 */
 table.listing {
     width: 100%;

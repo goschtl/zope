@@ -66,14 +66,14 @@ class TestBostonSkin(BrowserTestCase):
         self.assert_(response.getBody().find('src="http://localhost/++skin++Boston/@@/toggle.js') != -1)
 
     def test_left_boxes(self):
-        # Add some folders
+        # Add a folder
         response = self.publish("/++skin++Boston/+/action.html",
                                 basic='mgr:mgrpw', 
                                 form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'folder'})
         self.assertEqual(response.getStatus(), 302)
         
-        response = self.publish('/++skin++Boston/folder', basic='mgr:mgrpw')
+        response = self.publish('/++skin++Boston/', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
 
         # test zmitree cookie box

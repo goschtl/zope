@@ -3,55 +3,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
       xml:lang="en" lang="en" 
       i18n:domain="zope">
-<head>
+<head> 
   <title metal:define-slot="title"
          tal:content="string:Zope 3: ${context/zope:title_or_name}">
     Zope 3: title
   </title>
-  
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-  <!-- move this javascript to a pagelet -->
-  <script type="text/javascript" src="boston.js"
-          tal:attributes="src string:${context/++resource++boston.js}">
-    <!-- Using a separate end tag instead of a single empty tag is
-         necessary to support some browsers (Firefox 1.0, for example).
-         -->
-  </script>
-
-  <style type="text/css" media="all" 
-         tal:content="string: @import url(${context/++resource++skin.css});">
-    @import url(skin.css);
-  </style>
-
-  <!-- move this styles sheet to a pagelet -->
-  <style type="text/css" media="all" 
-         tal:content="string: @import url(${context/++resource++widget.css});">
-    @import url(widget.css);
-  </style>
-        
-  <link rel="icon" type="image/png" 
-        tal:attributes="href context/++resource++favicon.png" />
-
-  <!-- some slots used in Zope3 Rotterdam, let's be compatible -->
-  <metal:block define-slot="headers" />
-  <metal:block define-slot="style_slot" />
-  <metal:block define-slot="ecmascript_slot" />  
-
-  <!-- head pagelets -->
+  <!-- head slot -->
   <metal:block tal:repeat="pagelets pagelets:zope.app.boston.slots.IHead">
     <tal:block metal:use-macro="pagelets" />
   </metal:block>
-        
+  <metal:block define-slot="headers"></metal:block>
+
   <!-- css slot -->
   <metal:block tal:repeat="pagelets pagelets:zope.app.boston.slots.ICSS">
     <tal:block metal:use-macro="pagelets" />
   </metal:block>
-        
+  <metal:block define-slot="style_slot"></metal:block>
+
   <!-- javascripts slot -->
   <metal:block tal:repeat="pagelets pagelets:zope.app.boston.slots.IJavaScript">
     <tal:block metal:use-macro="pagelets" />
   </metal:block>
+  <metal:block define-slot="ecmascript_slot"></metal:block>
+
+  <link rel="icon" type="image/png" 
+        tal:attributes="href context/++resource++favicon.png" />
 </head>
 
 <body tal:define="global rooturl request/getApplicationURL;
@@ -62,9 +39,9 @@
       <td colspan="2">
 
         <!-- toolbar slot (zmi_action) -->
-        <tal:block repeat="pagelets pagelets:zope.app.boston.slots.IToolBar">
-          <metal:block use-macro="pagelets" />
-        </tal:block>
+        <metal:block tal:repeat="pagelets pagelets:zope.app.boston.slots.IToolBar">
+          <tal:block metal:use-macro="pagelets" />
+        </metal:block>
 
         <div id="userdetails">
           <metal:block define-macro="logged_user">
@@ -111,24 +88,20 @@
     <tr>
       <td id="navigation">
         <div id="slotbox">
-          <tal:block repeat="pagelet pagelets:zope.app.boston.slots.ILeft">
-            <metal:block use-macro="pagelet" />
-          </tal:block>
+          <metal:block tal:repeat="pagelet pagelets:zope.app.boston.slots.ILeft">
+            <tal:block metal:use-macro="pagelet" />
+          </metal:block>
         </div>
       </td>
       <td id="content">
-        <div id="zmiviews">
-          <div metal:define-slot="tabs" 
-               tal:condition="python:macroname == 'view'">
-            <span tal:repeat="view context/@@view_get_menu/zmi_views">
-              <a href="" 
-                 tal:attributes="href view/action;
-                                 class view/selected;"
-                 tal:content="view/title"
-                 i18n:translate="">label</a>
-            </span>
-          </div> 
-        </div> 
+        <!-- context menu (zmi_views) just visible in view template -->
+        <div id="contextmenu">
+          <metal:block tal:condition="python: macroname == 'view'"
+                       tal:repeat="pagelets pagelets:zope.app.boston.slots.IContextMenu">
+            <tal:block metal:use-macro="pagelets" />
+          </metal:block>
+        </div>
+        <!-- content area -->
         <div metal:define-slot="message" id="message" />
         <div id="body" metal:define-slot="body">
           <table class="listing">

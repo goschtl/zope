@@ -7,17 +7,6 @@
   <interface interface="zope.app.boston.slots.ICSS" />
   <interface interface="zope.app.boston.slots.IToolBar" />
   <interface interface="zope.app.boston.slots.ILeft" />
-
-  <!-- IJavaScript slot pagelets -->
-  <include file="toggle.zcml" />
-
-  <!-- IToolBar slot pagelets -->
-  <include file="toolbar.zcml" />
-  <include file="helpaction.zcml" />
-
-  <!-- ILeft slot pagelets -->
-  <include file="addbox.zcml" />
-  <include file="tooltipbox.zcml" />
-  <include file="zmicookietreebox.zcml" />
+  <interface interface="zope.app.boston.slots.IContextMenu" />
 
 </configure>

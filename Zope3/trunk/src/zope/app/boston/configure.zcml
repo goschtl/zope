@@ -6,6 +6,7 @@
     i18n_domain="zope">
 
   <include package=".slots" />
+  <include package=".pagelets" />
   <include package=".browser" />
 
   <configure zcml:condition="have onlinehelp">
