@@ -135,7 +135,6 @@
 /Zope3/lib/python/zLOG                         /Packages3/zLOG
 /Zope3/lib/python/ZODB                         /Packages3/ZODB
 /Zope3/lib/python/Zope/ComponentArchitecture   /Packages3/ComponentArchitecture
-#XXX /Zope3/lib/python/Zope/Server/medusa           /Packages3/ZServer/medusa
 /Zope3/lib/python/Zope/TAL                     /Packages3/TAL
 /Zope3/lib/python/Zope/Testing                 /Packages3/Testing
 /Zope3/lib/python/Zope/ZLogger                 /Packages3/ZLogger
