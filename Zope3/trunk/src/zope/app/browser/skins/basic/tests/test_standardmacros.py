@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.5 2003/02/12 02:17:13 seanb Exp $
+$Id: test_standardmacros.py,v 1.6 2003/04/30 23:37:58 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getService

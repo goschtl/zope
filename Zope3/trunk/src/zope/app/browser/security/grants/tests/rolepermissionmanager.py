@@ -13,10 +13,9 @@
 ##############################################################################
 """Test IRolePermissionManager class that has no context.
 
-$Id: rolepermissionmanager.py,v 1.3 2002/12/26 18:50:45 jim Exp $
+$Id: rolepermissionmanager.py,v 1.4 2003/04/30 23:37:55 faassen Exp $
 """
 
-from zope.component import getAdapter
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.interfaces.security import IRolePermissionMap
 from zope.app.security.grants.securitymap import SecurityMap

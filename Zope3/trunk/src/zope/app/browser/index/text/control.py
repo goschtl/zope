@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.9 2003/04/10 15:05:36 jack-e Exp $
+$Id: control.py,v 1.10 2003/04/30 23:37:52 faassen Exp $
 """
 
 from __future__ import generators
@@ -23,7 +23,6 @@ from __future__ import generators
 from zope.component import getService, queryAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
-from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.browser import BrowserView
 
 from zope.app.traversing import canonicalPath

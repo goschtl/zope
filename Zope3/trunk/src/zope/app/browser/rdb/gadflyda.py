@@ -12,11 +12,9 @@
 #
 ##############################################################################
 """
-$Id: gadflyda.py,v 1.1 2003/02/07 15:48:39 jim Exp $
+$Id: gadflyda.py,v 1.2 2003/04/30 23:37:53 faassen Exp $
 """
 from zope.app.browser.rdb.rdb import AdapterAdd
-from zope.app.interfaces.container import IAdding
-
 
 class GadflyDAAddView(AdapterAdd):
     """Provide a user interface for adding a Gadfly DA"""

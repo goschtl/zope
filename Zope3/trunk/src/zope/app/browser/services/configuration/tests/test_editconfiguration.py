@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.1 2003/03/21 21:09:34 jim Exp $
+$Id: test_editconfiguration.py,v 1.2 2003/04/30 23:37:56 faassen Exp $
 """
 __metaclass__ = type
 
@@ -27,8 +27,7 @@ from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent
-from zope.app.interfaces.services.configuration import Unregistered
-from zope.app.interfaces.services.configuration import Registered, Active
+from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.adapter import provideAdapter

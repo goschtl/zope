@@ -14,7 +14,6 @@
 import unittest
 
 from zope.security.interpreter import RestrictedInterpreter
-from zope.security.proxy import ProxyFactory
 from zope.security.checker import defineChecker
 
 from zope.testing.cleanup import CleanUp

@@ -12,26 +12,16 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.1 2003/04/10 09:34:29 paul Exp $
+$Id: editingwidgets.py,v 1.2 2003/04/30 23:37:58 faassen Exp $
 """
 
 __metaclass__ = type
 
-import sys
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from datetime import datetime
-from zope.proxy.introspection import removeAllProxies
-from zope.publisher.browser import BrowserView
-from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.app.form.widget import Widget
-from zope.app.interfaces.form import ConversionError, WidgetInputError
-from zope.app.interfaces.form import MissingInputError
-from zope.app.datetimeutils import parseDatetimetz
-from zope.app.datetimeutils import DateTimeError
-from zope.schema.interfaces import ValidationError
-from zope.component import getService
-from zope.app.browser.form.widget import PossiblyEmptyMeansMissing, BrowserWidget, renderElement
+
+from zope.app.browser.form.widget import PossiblyEmptyMeansMissing,\
+     BrowserWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 class SimpleEditingWidget(PossiblyEmptyMeansMissing, BrowserWidget):

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.12 2003/04/17 18:00:53 fdrake Exp $
+$Id: test_add.py,v 1.13 2003/04/30 23:37:52 faassen Exp $
 """
 
 import sys
@@ -31,6 +31,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.component.adapter import provideAdapter
 from zope.app.browser.form.submit import Update
+# Foo needs to be imported as globals() are checked
 from zope.app.browser.form.tests.test_editview import IFoo, IBar, Foo
 from zope.app.browser.form.tests.test_editview import FooBarAdapter
 

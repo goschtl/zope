@@ -14,16 +14,14 @@
 """
 
 Revision information:
-$Id: test_zptpageeval.py,v 1.3 2003/01/25 13:34:17 jim Exp $
+$Id: test_zptpageeval.py,v 1.4 2003/04/30 23:37:51 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 from zope.app.browser.content.zpt import ZPTPageEval
 from zope.proxy.context import ContextWrapper
-from zope.publisher.browser import TestRequest
-
 
 class Test(CleanUp, TestCase):
 

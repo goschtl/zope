@@ -17,7 +17,7 @@ from zope.component import getAdapter
 # XXX only used for commented-out section below
 # from zope.component import getServiceManager, getServiceDefinitions, \
 #      queryAdapter, getService
-from zope.component.exceptions import ComponentLookupError
+# from zope.component.exceptions import ComponentLookupError
 
 
 class IntrospectorView(BrowserView):

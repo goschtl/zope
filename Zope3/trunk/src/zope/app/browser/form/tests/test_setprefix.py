@@ -12,15 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_setprefix.py,v 1.4 2003/04/08 21:34:22 fdrake Exp $
+$Id: test_setprefix.py,v 1.5 2003/04/30 23:37:52 faassen Exp $
 """
 import unittest
 
 from zope.app.browser.form.widget import TextWidget
 from zope.publisher.browser import TestRequest
-from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.schema import Text
-
 
 class Test(unittest.TestCase):
 

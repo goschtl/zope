@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for service adding and configuration views.
 
-$Id: test_service.py,v 1.1 2003/04/17 10:17:22 mgedmin Exp $
+$Id: test_service.py,v 1.2 2003/04/30 23:37:57 faassen Exp $
 """
 
 import unittest
@@ -21,7 +21,6 @@ from zope.interface import Interface
 from zope.publisher.browser import TestRequest
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.proxy.context import ContextWrapper
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 class IFoo(Interface):

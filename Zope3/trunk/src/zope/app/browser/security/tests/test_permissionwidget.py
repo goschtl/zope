@@ -13,23 +13,20 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.9 2003/03/21 20:58:58 jim Exp $
+$Id: test_permissionwidget.py,v 1.10 2003/04/30 23:37:55 faassen Exp $
 """
 
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.testing.cleanup import CleanUp
 from zope.security.checker import CheckerPublic
 from zope.app.security.permission import PermissionField
 from zope.app.browser.security.permissionwidget import SinglePermissionWidget
 from zope.publisher.browser import TestRequest
-from zope.component.service \
-     import serviceManager, defineService
+from zope.component.service import serviceManager, defineService
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.component import getServiceManager
 from zope.app.services.servicenames import Permissions
 from zope.app.interfaces.security import IPermissionService
 

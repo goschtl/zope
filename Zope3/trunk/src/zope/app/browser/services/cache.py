@@ -13,13 +13,13 @@
 ##############################################################################
 """Cache configuration support classes.
 
-$Id: cache.py,v 1.7 2003/04/30 15:30:41 gvanrossum Exp $
+$Id: cache.py,v 1.8 2003/04/30 23:37:56 faassen Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.component import getAdapter, getServiceManager, getView
+from zope.component import getAdapter, getView
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.services.configuration import Unregistered, Registered
 from zope.app.traversing import traverse, getPath, getParent, objectName

@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: test_zodbundomanager.py,v 1.2 2002/12/25 14:12:44 jim Exp $
+$Id: test_zodbundomanager.py,v 1.3 2003/04/30 23:37:58 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 from time import time
 

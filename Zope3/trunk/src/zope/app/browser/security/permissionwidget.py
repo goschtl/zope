@@ -13,10 +13,9 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.8 2003/03/21 20:58:58 jim Exp $
+$Id: permissionwidget.py,v 1.9 2003/04/30 23:37:54 faassen Exp $
 """
 
-from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.browser.form import widget
 from zope.component import getService
 from zope.app.services.servicenames import Permissions

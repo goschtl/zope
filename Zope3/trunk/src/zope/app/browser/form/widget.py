@@ -12,15 +12,13 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.28 2003/04/17 20:05:11 bwarsaw Exp $
+$Id: widget.py,v 1.29 2003/04/30 23:37:51 faassen Exp $
 """
 
 __metaclass__ = type
 
-import sys
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from datetime import datetime
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget

@@ -13,14 +13,12 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.23 2003/04/29 21:22:20 gvanrossum Exp $
+$Id: service.py,v 1.24 2003/04/30 23:37:56 faassen Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.container.contents import Contents
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.service import ILocalService
@@ -32,7 +30,7 @@ from zope.app.services.service import ServiceConfiguration
 from zope.app.traversing import traverse, getPath, getParent, objectName
 from zope.component import getServiceManager
 from zope.component import getView, getAdapter, queryView
-from zope.proxy.context import ContextWrapper, ContextSuper
+from zope.proxy.context import ContextSuper
 from zope.proxy.context import getWrapperContainer
 from zope.publisher.browser import BrowserView
 

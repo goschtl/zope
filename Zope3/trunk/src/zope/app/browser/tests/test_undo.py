@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: test_undo.py,v 1.2 2002/12/25 14:12:44 jim Exp $
+$Id: test_undo.py,v 1.3 2003/04/30 23:37:58 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zope.app.interfaces.undo import IUndoManager
 from zope.app.browser.undo import Undo

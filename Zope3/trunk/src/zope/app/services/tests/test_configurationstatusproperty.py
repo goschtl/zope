@@ -15,14 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.3 2003/03/24 11:09:40 jim Exp $
+$Id: test_configurationstatusproperty.py,v 1.4 2003/04/30 23:37:59 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService
 from zope.app.services.tests.placefulsetup \
      import PlacefulSetup
-from zope.app.services.role import RoleService
 from zope.app.services.tests.configurationregistry \
      import TestingConfigurationRegistry, TestingConfiguration
 from zope.app.services.configuration import ConfigurationStatusProperty

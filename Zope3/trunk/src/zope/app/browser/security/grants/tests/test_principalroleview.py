@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalroleview.py,v 1.7 2003/03/11 16:10:48 jim Exp $
+$Id: test_principalroleview.py,v 1.8 2003/04/30 23:37:55 faassen Exp $
 """
 
 import unittest
@@ -27,7 +27,6 @@ from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
 
 from zope.app.interfaces.security import IPrincipalRoleManager
-from zope.app.interfaces.security import IPrincipalRoleMap
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.services.service import ISimpleService
 

@@ -14,10 +14,10 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.8 2003/04/28 13:14:20 mgedmin Exp $
+$Id: test_absoluteurl.py,v 1.9 2003/04/30 23:37:58 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.interface import Interface
 
 from zope.app.tests.placelesssetup import PlacelessSetup

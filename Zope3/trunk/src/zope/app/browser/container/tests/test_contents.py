@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.12 2003/04/19 21:27:16 srichter Exp $
+$Id: test_contents.py,v 1.13 2003/04/30 23:37:50 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -53,7 +53,7 @@ from zope.proxy.introspection import removeAllProxies
 
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-from zope.component import getAdapter, getService, getServiceManager
+from zope.component import getServiceManager
 from zope.app.services.principalannotation \
     import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \

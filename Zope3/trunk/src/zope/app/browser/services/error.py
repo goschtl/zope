@@ -13,14 +13,11 @@
 ##############################################################################
 """ Define view component for event service control.
 
-$Id: error.py,v 1.3 2003/03/10 20:30:12 jim Exp $
+$Id: error.py,v 1.4 2003/04/30 23:37:56 faassen Exp $
 """
 
 from zope.publisher.browser import BrowserView
-from zope.component.contextdependent import ContextDependent
 from zope.app.services.errorr import IErrorReportingService
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-from zope.proxy.introspection import removeAllProxies
 
 class EditErrorLog(BrowserView):
     __used_for__ = IErrorReportingService

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getServiceManager

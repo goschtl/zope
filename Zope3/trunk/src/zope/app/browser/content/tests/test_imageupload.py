@@ -15,13 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: test_imageupload.py,v 1.3 2002/12/30 14:02:52 stevea Exp $
+$Id: test_imageupload.py,v 1.4 2003/04/30 23:37:51 faassen Exp $
 """
 
 import os
 import unittest
 
-import zope.app.content # __file__
+import zope.app.browser.content # for __file__
 
 from zope.app.browser.content.image import ImageUpload
 from zope.app.browser.form.editview import EditView

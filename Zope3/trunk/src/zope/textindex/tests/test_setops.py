@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zodb.btrees.IIBTree import IIBTree, IIBucket
 

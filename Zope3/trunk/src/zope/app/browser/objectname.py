@@ -14,10 +14,9 @@
 """
 
 Revision information:
-$Id: objectname.py,v 1.3 2002/12/28 17:49:23 stevea Exp $
+$Id: objectname.py,v 1.4 2003/04/30 23:37:48 faassen Exp $
 """
 from zope.publisher.interfaces.browser import IBrowserView
-from zope.proxy.context import getInnerWrapperData
 from zope.app.interfaces.traversing import IObjectName
 from zope.app.traversing.adapters import ObjectName, SiteObjectName
 

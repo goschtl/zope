@@ -13,11 +13,10 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: dtmlpageeval.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: dtmlpageeval.py,v 1.3 2003/04/30 23:37:51 faassen Exp $
 """
 
 from zope.publisher.browser import BrowserView
-from zope.proxy.context import getWrapperContainer
 
 class DTMLPageEval(BrowserView):
 

@@ -13,13 +13,13 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.21 2003/04/08 21:44:34 gotcha Exp $
+$Id: test_interfacewidget.py,v 1.22 2003/04/30 23:37:49 faassen Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface import Interface
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, TestSuite, makeSuite
 from zope.testing.cleanup import CleanUp
 from zope.app.component.globalinterfaceservice import InterfaceService
 from zope.app.component.globalinterfaceservice import IInterfaceService

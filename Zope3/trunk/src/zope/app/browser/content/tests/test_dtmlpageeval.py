@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_dtmlpageeval.py,v 1.2 2002/12/25 14:12:31 jim Exp $
+$Id: test_dtmlpageeval.py,v 1.3 2003/04/30 23:37:51 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 from zope.app.browser.content.dtmlpageeval import \

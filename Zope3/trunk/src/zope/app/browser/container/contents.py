@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.16 2003/04/19 21:27:16 srichter Exp $
+Revision information: $Id: contents.py,v 1.17 2003/04/30 23:37:50 faassen Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -21,13 +21,9 @@ from zope.app.interfaces.size import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.component import queryView, queryAdapter, getAdapter, getService
-from zope.app.interfaces.services.principalannotation \
-     import IPrincipalAnnotationService
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.traversing import traverse, getRoot, getPath, joinPath
+from zope.app.traversing import traverse, getPath, joinPath
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
-from zope.app.interfaces.container import IPasteTarget
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.copypastemove import IObjectMover
 

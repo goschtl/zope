@@ -13,18 +13,14 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.6 2003/04/08 21:43:45 gotcha Exp $
+$Id: cacheable.py,v 1.7 2003/04/30 23:37:49 faassen Exp $
 """
 
-from zope.component import getService, getAdapter
-from zope.proxy.context import ContextWrapper
+from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
-from zope.schema.interfaces import StopValidation, ValidationError
 
-from zope.app.browser.form.widget import Widget
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
-from zope.app.form.widget import CustomWidget
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.cache.cache import ICacheable
 from zope.app.interfaces.form import WidgetInputError

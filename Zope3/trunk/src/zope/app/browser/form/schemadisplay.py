@@ -14,7 +14,7 @@
 """\
 Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.1 2003/04/16 21:56:03 fdrake Exp $
+$Id: schemadisplay.py,v 1.2 2003/04/30 23:37:51 faassen Exp $
 """
 
 from zope.schema import getFieldNamesInOrder
@@ -27,10 +27,7 @@ from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
 from zope.component import getAdapter
 
-from zope.app.interfaces.form import WidgetsError
-from zope.app.component.metaconfigure import resolveInterface
-from zope.app.form.utility import setUpDisplayWidgets, getWidgetsData
-from zope.app.browser.form.submit import Update
+from zope.app.form.utility import setUpDisplayWidgets
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 

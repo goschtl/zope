@@ -15,11 +15,10 @@
 Define view component for image editing.
 
 Revision Information:
-$Id: i18nimage.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: i18nimage.py,v 1.3 2003/04/30 23:37:51 faassen Exp $
 """
 
 from zope.app.browser.content.image import ImageData
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.i18n.negotiator import negotiator
 from zope.publisher.browser import BrowserView
 

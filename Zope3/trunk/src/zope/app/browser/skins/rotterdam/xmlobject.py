@@ -13,12 +13,12 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.7 2003/03/23 22:35:37 jim Exp $
+$Id: xmlobject.py,v 1.8 2003/04/30 23:37:58 faassen Exp $
 """
 
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.container import IReadContainer
-from zope.app.traversing import objectName, getParents, getParent, traverse
+from zope.app.traversing import getParents, getParent, traverse
 from zope.component import queryView
 from zope.interface import Interface
 
