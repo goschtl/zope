@@ -8,8 +8,25 @@
 
 <ul>
   <li tal:repeat="svc view/listServices">
-    <i tal:content="svc/service">Foo</i> service presently at
-    <a tal:content="svc/path" tal:attributes="href svc/path">/somewhere</a>
+    <i tal:content="svc/service">Foo</i> service
+    <span tal:condition="svc/insite">
+      present in site at
+      <a tal:content="svc/path" tal:attributes="href svc/path">/somewhere</a>
+    </span>
+    <span tal:condition="not:svc/insite">
+      <span tal:condition="svc/inbundle">
+        present in bundle at
+        <a tal:content="svc/inbundle"
+           tal:attributes="href svc/inbundle">somewhere</a>
+      </span>
+      <span tal:condition="not:svc/inbundle">
+        <font size="+1" color="red">
+          <i><b>UNFULFILLED DEPENDENCY</b></i>
+        </font>
+        <br><b>(You must add a <i tal:content="svc/service">Foo</i>
+        service to this site before you can activate this bundle)</b>
+      </span>
+    </span>
   </li>
 </ul>
 
@@ -22,12 +39,12 @@
   <ul>
     <tal:block tal:repeat="cnf view/listConfigurations">
       <li tal:condition="python: cnf['service'] == svc['service']">
-	<a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
-	(status <b tal:content="cnf/status">Active</b>)
-	<br>
-	<i tal:content="cnf/usage">Usage summary</i>
-	implemented by
-	<i tal:content="cnf/implementation">Implementation summary</i>
+        <a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
+        (status <b tal:content="cnf/status">Active</b>)
+        <br>
+        <i tal:content="cnf/usage">Usage summary</i>
+        implemented by
+        <i tal:content="cnf/implementation">Implementation summary</i>
       </li>
     </tal:block>
   </ul>

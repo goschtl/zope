@@ -28,16 +28,17 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.2 2003/06/16 16:58:59 gvanrossum Exp $
+$Id: bundle.py,v 1.3 2003/06/16 17:54:59 gvanrossum Exp $
 """
 
 from zope.app import zapi
-from zope.publisher.browser import BrowserView
 from zope.app.interfaces.container import IReadContainer
-from zope.app.interfaces.services.folder import ISiteManagementFolder
-from zope.app.interfaces.services.configuration import IConfigurationManager
 from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.interfaces.services.configuration import IConfigurationManager
+from zope.app.interfaces.services.folder import ISiteManagementFolder
+from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.proxy import removeAllProxies
+from zope.publisher.browser import BrowserView
 
 class BundleView(BrowserView):
 
@@ -50,11 +51,26 @@ class BundleView(BrowserView):
     # Methods called from the page template (bundle.pt)
 
     def listServices(self):
+        sitepath = zapi.getPath(zapi.getParent(self.context))
         infos = []
         for name in self.services:
-            svc = zapi.getService(self.context, name)
-            path = zapi.getPath(svc)
-            d = {"service": name, "path": path}
+            try:
+                svc = zapi.getService(self.context, name)
+            except:
+                svc = None
+            path = ""
+            insite = False
+            if svc:
+                try:
+                    path = zapi.getPath(svc)
+                except:
+                    path = ""
+                insite = path == sitepath or path.startswith(sitepath + "/")
+            inbundle = self.findServiceConfiguration(name)
+            d = {"service": name,
+                 "path": path,
+                 "insite": insite,
+                 "inbundle": inbundle}
             infos.append(d)
         return infos
 
@@ -70,6 +86,13 @@ class BundleView(BrowserView):
         return infos
 
     # The rest are helper methods
+
+    def findServiceConfiguration(self, name):
+        for path, obj in self.configurations:
+            if IServiceConfiguration.isImplementedBy(obj):
+                if obj.name == name:
+                    return path
+        return None
 
     def findConfigurations(self, f, prefix):
         alist = []
@@ -107,7 +130,7 @@ class BundleView(BrowserView):
         return self.adjustServiceName(name)
 
     def adjustServiceName(self, name):
-        # XXX Strange...  There's no synbol for it in servicenames.py
+        # XXX Strange...  There's no symbol for it in servicenames.py
         if name == "Services":
             return ""
         else:
