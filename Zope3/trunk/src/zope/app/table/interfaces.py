@@ -47,7 +47,7 @@ class IColumn(zope.interface.Interface):
 
     title = zope.schema.TextLine(
         title=u'Title',
-        description=u'The title of the column, usually displayed in the table',
+        description=u'The title of the column, used in configuration diologs.',
         required=True,
         )
 

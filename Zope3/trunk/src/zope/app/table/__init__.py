@@ -1,7 +1,11 @@
+import zope
+
+import interfaces
+
 class TableFormatter:
-    def __init__(self, config, context, batch_start=0):
+    def __init__(self, config, request, batch_start=0):
         self.config = config
-        self.context = context
+        self.request = request
         self.batch_start = batch_start
         self.columns_by_title = dict([(col.title,col) for col in config.columns])
 
@@ -30,7 +34,10 @@ class TableFormatter:
         columns = self.getVisibleColumns()
         headers = []
         for column in columns:
-            headers.append(column.renderHeader(self))
+            contents = column.renderHeader(self)
+            if contents == None:
+                contents = ''
+            headers.append(str(contents))
 
         return headers
     
@@ -51,7 +58,10 @@ class TableFormatter:
             cells = []
             sort_key = key_func(item, self)
             for column in columns:
-                cells.append(column.renderCell(item, self))
+                contents = column.renderCell(item, self)
+                if contents == None:
+                    contents = ''
+                cells.append(str(contents))
             rows.append((sort_key, cells))
 
         rows.sort()
@@ -62,3 +72,26 @@ class TableFormatter:
         
         rows = rows[self.batch_start:batch_end]
         return rows
+
+class TableConfiguration:
+    zope.interface.implements(interfaces.ITableConfiguration)
+    sort_on = None
+    sort_reverse = False
+    batch_size = 0
+    def __init__(self, columns):
+        self.columns = columns
+        self._visible_columns = None
+
+    def visible_columns():
+        def fget(self):
+            if self._visible_columns == None:
+                return tuple([col.title for col in self.columns])
+            else:
+                return self._visible_columns
+
+        def fset(self, value):
+            self._visible_columns = visible_columns
+
+        return locals()
+
+    visible_columns = property(**visible_columns())

@@ -48,16 +48,19 @@ Table Configuration
 When a table is rendered its display is modified with the use of a
 configuration object.  Such objects must conform to ITableConfiguration::
 
-    >>> from zope.app.table.interfaces import ITableConfiguration
-    >>> class MyTableConfiguration:
-    ...     zope.interface.implements(ITableConfiguration)
-    ...     visible_columns = ('First', 'Third')
-    ...     sort_on = None
-    ...     sort_reverse = False
-    ...     batch_size = 10
-    ...     def __init__(self, columns):
-    ...         self.columns = columns
-    >>> config = MyTableConfiguration(columns)
+    >>> from zope.app.table import TableConfiguration
+    >>> config = TableConfiguration(columns)
+
+By default, all columns are visible::
+
+    >>> config.visible_columns
+    ('First', 'Second', 'Third')
+
+But, we don't want to see the column titled "Second"::
+
+    >>> config.visible_columns = ('First', 'Third')
+    >>> config.visible_columns
+    ('First', 'Third')
 
 
 Table Formatters
@@ -67,8 +70,8 @@ When a sequence of objects are to be turned into an HTML table, a ``Table
 Formatter`` is used. 
 
     >>> from zope.app.table import TableFormatter
-    >>> context = {}
-    >>> formatter = TableFormatter(config, context)
+    >>> request = None
+    >>> formatter = TableFormatter(config, request)
 
 We need some data to format::
 
@@ -80,7 +83,8 @@ We need some data to format::
 
     >>> items = [DataItem('a0', 'b0', 'c0'), DataItem('a1', 'b1', 'c1')]
 
-The simplest way to use one is to call the ``render`` method::
+The simplest way to use one is to tell the formatter to render the entire
+table::
 
     >>> print formatter.renderTable(items)
     <table>
@@ -141,10 +145,11 @@ Sorting
 
 ``TableFormatter`` instances can be configured to sort their output. 
 
-    >>> config = MyTableConfiguration(columns)
+    >>> config = TableConfiguration(columns)
     >>> config.sort_on = 'Second'
     >>> config.sort_reverse = True
-    >>> formatter = TableFormatter(config, context)
+    >>> config.visible_columns = ('First', 'Third')
+    >>> formatter = TableFormatter(config, request)
     >>> print formatter.renderTable(items)
     <table>
     <tr><th>First</th><th>Third</th></tr>
@@ -154,10 +159,11 @@ Sorting
 
 When batching sorted tables, the sorting is applied first, then the batching::
 
-    >>> config = MyTableConfiguration(columns)
+    >>> config = TableConfiguration(columns)
     >>> config.sort_on = 'Second'
     >>> config.sort_reverse = True
-    >>> formatter = TableFormatter(config, context, batch_start=1)
+    >>> config.visible_columns = ('First', 'Third')
+    >>> formatter = TableFormatter(config, request, batch_start=1)
     >>> print formatter.renderTable(items*2)
     <table>
     <tr><th>First</th><th>Third</th></tr>
@@ -181,8 +187,9 @@ a column that held content that was especially wide, we could do this::
     ...     GetItemColumn('Second', 'b'),
     ...     GetItemColumn('Third', 'c'),
     ...     ]
-    >>> config = MyTableConfiguration(columns)
-    >>> formatter = TableFormatter(config, context)
+    >>> config = TableConfiguration(columns)
+    >>> config.visible_columns = ('First', 'Third')
+    >>> formatter = TableFormatter(config, request)
     >>> print formatter.renderTable(items)
     <table>
     <tr><th><div style="width:200px">First</div></th><th>Third</th></tr>
