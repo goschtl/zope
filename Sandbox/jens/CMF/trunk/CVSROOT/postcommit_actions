@@ -191,6 +191,7 @@ def main(args):
         complain("Initial args: %s '%s'\n",
                  string.join(orig_args[:-1], " "),
                  orig_args[-1])
+        complain("Working dir: %s\n" % safe_getcwd())
 
     if not sync_all and len(args) != 1:
         usage(); raise SystemExit, 1
