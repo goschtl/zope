@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: standardmacros.py,v 1.2 2003/06/06 21:35:18 philikon Exp $
+$Id: standardmacros.py,v 1.3 2003/12/06 17:03:32 philikon Exp $
 """
 from zope.app.browser.skins.basic.standardmacros import StandardMacros
 
 BaseMacros = StandardMacros
 
 class StandardMacros(BaseMacros):
-    macro_pages = ('skin_macros', 'view_macros', 'dialog_macros')
+    macro_pages = ('skin_macros', 'view_macros', 'dialog_macros',
+                   'navigation_macros')

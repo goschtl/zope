@@ -15,15 +15,7 @@
 </div>
 
 <div class="box" id="navigationTree" metal:define-macro="navigation_box">
-
-  <h5 i18n:translate="">Navigation</h5>
-
-  <div xmlns="http://www.zope.org/zope3xmltree"
-       id="navtreecontents"
-       class="body"
-       onclick="treeclicked(event);" i18n:translate="">Loading...
-  </div>
-
+  <metal:tree use-macro="context/@@standard_macros/navigation_tree_box" />
 </div>
 
 <div class="box" id="commonTasks"

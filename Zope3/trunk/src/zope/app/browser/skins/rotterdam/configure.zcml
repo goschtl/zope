@@ -78,7 +78,15 @@
       permission="zope.View"
       layer="rotterdam"
       template="dialog_macros.pt" />
-  
+
+  <browser:page
+      for="*"
+      name="navigation_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="navigation_macros.pt"
+      />
+ 
   <browser:page
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"

@@ -4,30 +4,23 @@
   lang="en"
   i18n:domain="zope">
 <head metal:define-macro="head">
-<title 
-    metal:define-slot="title"
-    tal:content="options/getTitle|view/getTitle|context/getTitle|default"
-    >Zope</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="zopetop.css" rel="stylesheet" type="text/css"
+  <title metal:define-slot="title"
+         tal:content="options/getTitle|view/getTitle|context/getTitle|default">
+    Zope
+  </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="zopetop.css" rel="stylesheet" type="text/css"
         tal:attributes="href context/++resource++zopetop.css" />
-<script type="text/javascript" src="pdlib.js"
-        tal:attributes="src context/++resource++pdlib.js"></script>
-<script type="text/javascript" src="xmltree.js" 
-        tal:attributes="src string:${context/++resource++xmltree.js}"></script>
+  <script type="text/javascript" src="pdlib.js"
+          tal:attributes="src context/++resource++pdlib.js"></script>
 
-<style type="text/css">
-</style>
+  <metal:tree use-macro="context/@@standard_macros/navigation_tree_js" />
 
-<div metal:define-slot="headers">
-</div>
-
+  <div metal:define-slot="headers">
+  </div>
 
 </head>
-<body onload="loadtree('');"
-      tal:define="rooturl     request/URL/1;
-                  thisbaseurl request/URL/-1"
-      tal:attributes="onload string:loadtree('${rooturl}/', '${thisbaseurl}/')">
+<body onload="" tal:attributes="onload body_onload">
 
 <div class="top">
   <a href="#" tal:attributes="href string:${request/URL/1}/@@manage">
