@@ -26,7 +26,7 @@ IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/home/dccvs/cvsidentity"
 
 
-RSYNC_IN_BACKGROUND = 1                 # Don't wait...
+WAIT = 0                                # Fork unless waiting is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
@@ -41,13 +41,13 @@ sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE, RSYNC_IN_BACKGROUND
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT
 
     orig_args = args[:]
 
     SCRIPT = args[0]
     opts, args = getopt.getopt(args[1:], "",
-                               ["verbose", "dryrun", "recurse", "bg", "nobg"])
+                               ["verbose", "dryrun", "recurse", "wait"])
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -60,12 +60,9 @@ def main(args):
         elif opt == "--recurse":
             RECURSE = 1
             complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
-        elif opt == "--bg":
-            RSYNC_IN_BACKGROUND = 1
-            complain("%s: Backgrounding rsync mode...\n", SCRIPT)
-        elif opt == "--nobg":
-            RSYNC_IN_BACKGROUND = 0
-            complain("%s: NOT backgrounding-rsync mode...\n", SCRIPT)
+        elif opt == "--wait":
+            WAIT = 1
+            complain("%s: Not doing activities in background...\n", SCRIPT)
         else:
             complain("Unrecognize option '%s'\n", opt)
             raise SystemExit, 1
@@ -84,6 +81,12 @@ def main(args):
         complain("Subjects: %s\n", subjs)
 
     got = find_entries(repo)
+
+    if not WAIT:
+        if os.fork():
+            # In parent - all done with that.
+            os._exit(0)
+
     for entry in got:
         (nm, expr, addrs, remote) = entry
         if addrs:
@@ -151,19 +154,15 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if VERBOSE:
         cmd = cmd + " --verbose"
 
-    if recurse:
-        bg = 0
-    else:
+    if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
-        bg = RSYNC_IN_BACKGROUND
 
-    os.system("(%s%s%s %s/%s/ %s:%s %s)"
+    os.system("%s%s%s %s/%s/ %s:%s"
               % ((VERBOSE and "set -x; ") or "",
                  (DRYRUN and "echo ") or "",
                  cmd,
                  os.environ["CVSROOT"], repo,
-                 remote['host'], repodir,
-                 (bg and " &") or ""))
+                 remote['host'], repodir)
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
