@@ -127,4 +127,9 @@
 
   <include file="zodbaliases.zcml" />
 
+
+  <!-- Browser Configurations -->
+
+  <include package="zope.app.event.browser" />
+
 </configure>

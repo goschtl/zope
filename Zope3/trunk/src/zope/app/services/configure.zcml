@@ -1,6 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:event="http://namespaces.zope.org/event"
     xmlns:fssync="http://namespaces.zope.org/fssync"
     i18n_domain="zope"
     >
@@ -175,27 +174,6 @@
                     iterRegistrations" />
     </content>
 
-
-<!-- Event Service -->
-<content class="zope.app.services.event.EventService">
-  <factory
-      id="Events"
-      />
-  <require
-      permission="zope.View"
-      attributes="publish notify"
-      />
-  <require
-      permission="zope.ManageServices"
-      attributes="bound unbound subscribe unsubscribe subscribeOnBind
-                  unsubscribedFrom subscribedTo"
-      />
-</content>
-
-<serviceType
-    id='Subscription'
-    interface='zope.app.interfaces.services.event.ISubscriptionService'
-    />
 
 <!-- Utility Service --> 
 <include file="utility.zcml" />

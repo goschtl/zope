@@ -12,13 +12,10 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: objecthubsetup.py,v 1.16 2004/03/05 22:09:17 jim Exp $
+$Id: objecthubsetup.py,v 1.17 2004/03/11 08:14:12 srichter Exp $
 """
-
-from zope.app.services.tests.eventsetup import EventSetup
-from zope.component import getService
+from zope.app import zapi
+from zope.app.event.tests.eventsetup import EventSetup
 from zope.app.services.servicenames import HubIds
 from zope.app.traversing import traverse, canonicalPath
 
@@ -98,5 +95,5 @@ class ObjectHubSetup(EventSetup):
 
     def setUp(self):
         EventSetup.setUp(self)
-        self.object_hub = getService(self.rootFolder, HubIds)
+        self.object_hub = zapi.getService(self.rootFolder, HubIds)
 

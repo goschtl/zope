@@ -12,9 +12,7 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_hookedhubevent.py,v 1.6 2003/05/01 19:35:35 faassen Exp $
+$Id: test_hookedhubevent.py,v 1.7 2004/03/11 08:14:12 srichter Exp $
 """
 
 # in this version of these tests, we are no longer using a fake

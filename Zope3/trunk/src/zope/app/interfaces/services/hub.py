@@ -13,14 +13,10 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: hub.py,v 1.8 2004/03/02 18:51:01 philikon Exp $
+$Id: hub.py,v 1.9 2004/03/11 08:14:05 srichter Exp $
 """
-
-from zope.interface import Attribute
-
-from zope.app.interfaces.services.event import IEventChannel
-from zope.app.event.interfaces import IEvent
-from zope.interface import Interface
+from zope.interface import Attribute, Interface
+from zope.app.event.interfaces import IEvent, IEventChannel
 
 
 class ObjectHubError(Exception):

@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: test_eventservice.py,v 1.33 2004/03/03 10:38:53 philikon Exp $
+$Id: test_localservice.py,v 1.1 2004/03/11 08:14:04 srichter Exp $
 """
-
 from unittest import TestCase, TestLoader, TextTestRunner
 
 import zope.interface
@@ -23,9 +22,9 @@ from zope.exceptions import NotFoundError
 from zope.component.tests.components import RecordingAdapter
 
 from zope.app.services.servicenames import EventPublication, EventSubscription
-from zope.app.services.event import EventService
-from zope.app.services.event import subscribe, unsubscribe, unsubscribeAll
-from zope.app.services.event import getSubscriptionService
+from zope.app.event.localservice import EventService
+from zope.app.event.localservice import subscribe, unsubscribe, unsubscribeAll
+from zope.app.event.localservice import getSubscriptionService
 
 from zope.app.event import publish
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
@@ -35,15 +34,12 @@ from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
 
 from zope.app.traversing import getPath, traverse
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.container.contained import ObjectAddedEvent, Contained
 from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.services.tests.eventsetup import EventSetup
-from zope.app.tests import ztapi
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.services.event import EventService
-from zope.app.tests import setup
+from zope.app.tests import ztapi, setup
+from eventsetup import EventSetup
 
 class Folder(Contained):
     pass
@@ -54,8 +50,6 @@ foo = Folder()
 foo.__parent__ = root
 foo.__name__ = 'foo'
                                 
-
-
 
 class UnpromotingEventService(EventService):
 

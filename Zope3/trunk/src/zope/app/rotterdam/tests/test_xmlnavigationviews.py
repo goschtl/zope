@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: test_xmlnavigationviews.py,v 1.2 2004/03/03 10:38:50 philikon Exp $
+$Id: test_xmlnavigationviews.py,v 1.3 2004/03/11 08:14:09 srichter Exp $
 """
-
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import implements
@@ -24,7 +23,7 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.app.tests import ztapi
 from zope.app.traversing import traverse
-from zope.app.services.tests.eventsetup import EventSetup
+from zope.app.event.tests.eventsetup import EventSetup
 from zope.app.container.interfaces import IReadContainer
 
 from zope.app.rotterdam.tests import util

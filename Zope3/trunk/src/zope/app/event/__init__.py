@@ -12,16 +12,15 @@
 # 
 ##############################################################################
 """
-$Id: __init__.py,v 1.11 2004/03/02 18:50:59 philikon Exp $
+$Id: __init__.py,v 1.12 2004/03/11 08:14:02 srichter Exp $
 """
-
-from zope.component import getService
+from zope.app import zapi
 from zope.app.services.servicenames import EventPublication
 from zope.app.event.interfaces import IEvent
 from zope.app.event.globalservice import eventPublisher
 
 def getEventService(context): # the "publish" service
-    return getService(context, EventPublication)
+    return zapi.getService(context, EventPublication)
 
 def publish(context, event):
     return getEventService(context).publish(event)

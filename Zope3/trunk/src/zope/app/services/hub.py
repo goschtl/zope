@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.33 2004/03/06 16:50:30 jim Exp $
+$Id: hub.py,v 1.34 2004/03/11 08:14:10 srichter Exp $
 """
 __metaclass__ = type
 
@@ -46,7 +46,7 @@ from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.folder.interfaces import IFolder
 from zope.app.container.contained import ObjectAddedEvent
 from zope.interface import implements
-from zope.app.services.event import ServiceSubscriberEventChannel
+from zope.app.event.localservice import ServiceSubscriberEventChannel
 from zope.app.services.servicenames import HubIds
 
 from zope.app.traversing \

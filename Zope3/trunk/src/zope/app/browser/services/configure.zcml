@@ -8,28 +8,6 @@
 <!-- General registration views --> 
    <zope:include package=".registration" />
 
-<!-- Event Service -->
-
-  <page
-      name="index.html" 
-      for="zope.app.interfaces.services.event.IEventService"
-      menu="zmi_views" title="Control"
-      permission="zope.ManageServices" 
-      class="zope.app.browser.services.event.Control"
-      template="eventcontrol.pt" />
-
-  <addMenuItem
-      class="zope.app.services.event.EventService"  
-      permission="zope.ManageServices" 
-      title="Event Service"
-      description=
-      "An event service. One of these in the root is usually enough" />
-
-  <icon
-      name="zmi_icon"
-      for="zope.app.interfaces.services.event.IEventService" 
-      file="event_service.gif" />
-
 <!-- Component Location widget -->
 
 <!-- XXX we are phasing these widgets out -->
@@ -52,9 +30,6 @@
 
 <!-- ZPT Templates -->
   <include file="zpt.zcml" />
-
-<!-- ConnectionService --> 
-  <zope:include file="connection.zcml" />
 
 <!-- SiteManagementFolder -->
 

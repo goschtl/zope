@@ -13,9 +13,8 @@
 ##############################################################################
 """Event-related interfaces
 
-$Id: interfaces.py,v 1.2 2004/03/03 09:15:26 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/03/11 08:14:02 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute
 
 class IEvent(Interface):
@@ -264,6 +263,55 @@ class ISubscribable(Interface):
         subscribed. The second element is the event_type subscribed.
         The third is the filter subscribed.
         """
+
+class ISubscriptionService(ISubscribable):
+    """A Subscribable that implements the Subscription service."""
+    def unsubscribe(reference, event_type, filter=None):
+        '''See ISubscribable.unsubscribe
+
+        In addition, if the reference cannot be unsubscribed in this service,
+        pass this on to the next service.
+        '''
+
+    def unsubscribeAll(reference, event_type=IEvent, local_only=False):
+        '''See ISubscribable.unsubscribeAll
+
+        If local_only is True, only subscriptions to this event service
+        instance are removed.
+        Otherwise, the unsubscribeAll request is passed on to the next
+        service.
+        '''
+
+    def resubscribeByHubId(reference):
+        '''See ISubscribable.resubscribeByHubId
+
+        In addition, the request is passed on to the next service.
+        '''
+
+    def resubscribeByPath(reference):
+        '''See ISubscribable.resubscribeByPath
+
+        In addition, the request is passed on to the next service.
+        '''
+
+    def iterSubscriptions(reference, event_type=IEvent, local_only=False):
+        '''See ISubscribable.iterSubscriptions
+
+        If local_only is True, only subscriptions to this event service
+        instance are returned.
+        Otherwise, after subscriptions to this event service, subscriptions
+        to the next event service are returned.
+        '''
+
+class IEventChannel(ISubscribable, ISubscriber):
+    """Interface for objects which distribute events to subscribers. """
+
+class IEventService(ISubscriptionService, IPublisher):
+    """Local event service implementation.
+
+    Offers the Events and Subscription services.
+    """
+
 
 class IObjectEvent(IEvent):
     """Something has happened to an object.

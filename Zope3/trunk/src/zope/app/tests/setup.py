@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.14 2004/03/05 22:09:18 jim Exp $
+$Id: setup.py,v 1.15 2004/03/11 08:14:13 srichter Exp $
 """
 
 import zope.component
@@ -170,8 +170,8 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
 
 from zope.component import getServiceManager
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.app.interfaces.services.event import ISubscriptionService
-from zope.app.services.event import EventService
+from zope.app.event.interfaces import ISubscriptionService
+from zope.app.event.localservice import EventService
 from zope.app.services.hub import ObjectHub
 from zope.app.interfaces.services.utility import ILocalUtilityService
 from zope.app.services.utility import LocalUtilityService
