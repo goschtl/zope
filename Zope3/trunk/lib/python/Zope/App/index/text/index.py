@@ -16,12 +16,15 @@
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
-$Id: index.py,v 1.1 2002/12/04 11:10:24 gvanrossum Exp $
+$Id: index.py,v 1.2 2002/12/04 14:22:58 gvanrossum Exp $
 """
 
 from Zope.Event.ISubscriber import ISubscriber
 
+from Zope.ComponentArchitecture import getService
+
 from Zope.App.OFS.Services.ObjectHub.IHubEvent import \
+     IRegistrationHubEvent, \
      IObjectRegisteredHubEvent, \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent
@@ -41,16 +44,46 @@ class TextIndex(TextIndexWrapper):
         """An event occurred.  Index or unindex the object in response."""
         if (IObjectRegisteredHubEvent.isImplementedBy(event) or
             IObjectModifiedHubEvent.isImplementedBy(event)):
-            adapted = queryAdapter(event.object,
-                                   ISearchableText,
-                                   context=wrapped_self)
-            if adapted is None:
-                return
-            texts = adapted.getSearchableText()
-            wrapped_self.index_doc(event.hubid, texts)
+            texts = wrapped_self._getTexts(event.object)
+            if texts is not None:
+                wrapped_self.index_doc(event.hubid, texts)
         elif IObjectUnregisteredHubEvent.isImplementedBy(event):
             try:
                 wrapped_self.unindex_doc(event.hubid)
             except KeyError:
                 pass
     notify = ContextMethod(notify)
+
+    def _getTexts(wrapped_self, object):
+        adapted = queryAdapter(object, ISearchableText, context=wrapped_self)
+        if adapted is None:
+            return None
+        return adapted.getSearchableText()
+    _getTexts = ContextMethod(_getTexts)
+
+    def subscribe(wrapped_self, channel=None, update=1):
+        if channel is None:
+            channel = wrapped_self._getChannel()
+        channel.subscribe(wrapped_self, IRegistrationHubEvent)
+        channel.subscribe(wrapped_self, IObjectModifiedHubEvent)
+        if update:
+            wrapped_self._update(channel.iterObjectRegistrations()) 
+    subscribe = ContextMethod(subscribe)
+
+    def unsubscribe(wrapped_self, channel=None):
+        if channel is None:
+            channel = wrapped_self._getChannel()
+        channel.unsubscribe(wrapped_self, IObjectModifiedHubEvent)
+        channel.unsubscribe(wrapped_self, IRegistrationHubEvent)
+    unsubscribe = ContextMethod(unsubscribe)
+
+    def _getChannel(wrapped_self):
+        return getService(wrapped_self, "ObjectHubService")
+    _getChannel = ContextMethod(_getChannel)
+
+    def _update(wrapped_self, registrations):
+        for location, hubid, wrapped_object in registrations:
+            texts = wrapped_self._getTexts(wrapped_object)
+            if texts is not None:
+                wrapped_self.index_doc(hubid, texts)
+    _update = ContextMethod(_update)

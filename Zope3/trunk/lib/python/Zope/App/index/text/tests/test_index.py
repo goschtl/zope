@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.2 2002/12/04 12:09:28 gvanrossum Exp $
+$Id: test_index.py,v 1.3 2002/12/04 14:22:59 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -109,6 +109,30 @@ class Test(PlacefulSetup, TestCase):
 
         hub.unregister(location)
         self.assertEqual(self.index.query(u"Bruce"), ([], 0))
+        self.assertEqual(self.index.query(u"Sheila"), ([], 0))
+
+    def testBootstrap(self):
+        hub = ObjectHub()
+        location = "/bruce"
+        traverser = FakeTraverser(self.object, location)
+        provideAdapter(None, ITraverser, lambda dummy: traverser)
+        hubid = hub.register(location)
+        self.index.subscribe(hub)
+        results, total = self.index.query(u"Bruce")
+        self.assertEqual(total, 1)
+        self.assertEqual(results[0][0], hubid)
+
+        self.index.unsubscribe(hub)
+        results, total = self.index.query(u"Bruce")
+        self.assertEqual(total, 1)
+        self.assertEqual(results[0][0], hubid)
+
+        self.object.texts = [u"Sheila"]
+        event = ObjectModifiedEvent(self.object, location)
+        hub.notify(event)
+        results, total = self.index.query(u"Bruce")
+        self.assertEqual(total, 1)
+        self.assertEqual(results[0][0], hubid)
         self.assertEqual(self.index.query(u"Sheila"), ([], 0))
 
 def test_suite():
