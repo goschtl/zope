@@ -1,6 +1,9 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<directive name="test_include" namespace="test"
-           handler=".TestIncludeHandler." />
+<directives namespace="test">
+  <directive
+      name="test_include"
+      handler=".TestIncludeHandler." />
+</directives>
 
 </zopeConfigure>
