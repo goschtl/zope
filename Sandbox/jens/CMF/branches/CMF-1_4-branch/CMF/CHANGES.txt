@@ -1,3 +1,11 @@
+Post CMF 1.4.7
+
+  Bug Fixes
+
+    - CMFDefault.DiscussionItem: Workflow did not get notified when a 
+      DiscussionItem was added to content.
+      (http://zope.org/Collectors/CMF/280)
+  
 CMF 1.4.7 (2004/08/11)
 
   New Features
