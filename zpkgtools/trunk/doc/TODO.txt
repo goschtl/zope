@@ -10,6 +10,11 @@
 
   would make the resource map for Zope 3 much more concise.
 
+- The setuptools helper should only be included in distributions that
+  actually need it.  This is currenly only needed when packages end up
+  defining package data (common in Zope, but not for everyone).  Low
+  priority.
+
 - There needs to be a better error message when two resources use the
   same name part.  The problem is that package:foo and collection:foo
   both have the same name, and zpkg tries to create two different
