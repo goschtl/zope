@@ -51,8 +51,14 @@ User stories
   offline.
 
 
-TO DO LIST
-----------
+BUGS
+----
+
+* After update or commit for a single file, the other files and
+  directories in the same directory are silently removed!!!!
+
+TO DO
+-----
 
 * after committing an added or removed file, the flag doesn't get
   cleared in the entry
