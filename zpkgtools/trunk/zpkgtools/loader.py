@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""General loader support.
+
+This handles tag insertion and URL type dispatch.
 """
 
 import os
@@ -23,6 +25,7 @@ import urllib2
 import urlparse
 
 from zpkgtools import cvsloader
+from zpkgtools import svnloader
 
 
 def open(url, mode="r"):
@@ -134,10 +137,8 @@ class Loader:
         return filename
 
     def load_file(self, url):
-        # XXX This doesn't deal with file: URLs that Subversion uses,
-        # where a portion of the path points to a Subversion
-        # repository, and the rest points into the logical structure
-        # of the repository itself.
+        if svnloader.is_subversion_url(url):
+            raise NotImplementedError("loading from Subversion isn't done yet")
         parts = urlparse.urlsplit(url)
         path = urllib.url2pathname(parts[2])
         if not os.path.exists(path):
