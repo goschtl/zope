@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testPasswordWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: testPasswordWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import PasswordWidget
@@ -24,14 +24,13 @@ class PasswordWidgetTest(BrowserWidgetTest):
     
     def setUp(self):
         field = Field()
-        request = {'field_foo': 'Foo Value'}
+        request = {'field.foo': 'Foo Value'}
         self._widget = PasswordWidget(field, request)
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')
         self.assertEqual(self._widget.getValue('type'), 'password')
         self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('hidden'), 0)
         self.assertEqual(self._widget.getValue('extra'), '')
         self.assertEqual(self._widget.getValue('default'), '')
         self.assertEqual(self._widget.getValue('displayWidth'), 20)
@@ -39,7 +38,7 @@ class PasswordWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
-        check_list = ('type="password"', 'name="field_foo"',
+        check_list = ('type="password"', 'name="field.foo"',
                       'value="Foo Value"', 'size="20"')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]

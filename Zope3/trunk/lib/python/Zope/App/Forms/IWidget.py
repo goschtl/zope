@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IWidget.py,v 1.3 2002/10/09 13:26:06 mgedmin Exp $
+$Id: IWidget.py,v 1.4 2002/10/28 23:52:31 jim Exp $
 """
 from Zope.ComponentArchitecture.IView import IView
 from Interface.Attribute import Attribute
@@ -51,4 +51,9 @@ class IWidget(IView):
 
         This is the text that will be used to label the widget.
         """
+    def setData(value):
+        """Set the default data for the widget.
 
+        The given value should only be used if the user hasn't entered
+        any data and the data should be a valid data for the field.
+        """

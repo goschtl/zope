@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.2 2002/10/09 13:53:54 mgedmin Exp $
+$Id: Exceptions.py,v 1.3 2002/10/28 23:52:31 jim Exp $
 """
 
 
@@ -37,3 +37,28 @@ class ConversionError(WidgetInputError):
         self.error_name = error_name
         self.original_exception = original_exception
 
+
+class ErrorContainer(Exception):
+    """A base error class for collecting multiple errors
+    """
+
+    def append(self, error):
+        self.args += (error, )
+
+    def __len__(self):
+        return len(self.args)
+
+    def __iter__(self):
+        return iter(self.args)
+
+    def __getitem__(self, i):
+        return self.args[i]
+
+    def __str__(self):
+        return "\n".join(map(str, self.args))
+
+    __repr__ = __str__
+
+class WidgetsError(ErrorContainer):
+    """A collection of errors from widget processing.
+    """

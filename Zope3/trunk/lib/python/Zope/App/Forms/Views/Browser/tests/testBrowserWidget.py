@@ -13,13 +13,15 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.3 2002/09/04 13:44:24 faassen Exp $
+$Id: testBrowserWidget.py,v 1.4 2002/10/28 23:52:31 jim Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
 
 class Field:
     """Field Stub """
+    __name__ = 'foo'
+    
     def getName(self):
         return 'foo'
     
@@ -28,7 +30,7 @@ class BrowserWidgetTest(unittest.TestCase):
 
     def setUp(self):
         field = Field()
-        request = {'field_foo': 'Foo Value'}
+        request = {'field.foo': 'Foo Value'}
         self._widget = BrowserWidget(field, request)
 
     def _verifyResult(self, result, check_list):
@@ -40,12 +42,11 @@ class BrowserWidgetTest(unittest.TestCase):
         self.assertEqual(self._widget.getValue('tag'), 'input')
         self.assertEqual(self._widget.getValue('type'), 'text')
         self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('hidden'), 0)
         self.assertEqual(self._widget.getValue('extra'), '')
 
     def testRender(self):
         value = 'Foo Value'
-        check_list = ('type="text"', 'name="field_foo"', 'value="Foo Value"')
+        check_list = ('type="text"', 'name="field.foo"', 'value="Foo Value"')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
         self._verifyResult(self._widget.renderHidden(value), check_list)

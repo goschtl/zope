@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.15 2002/10/04 18:37:15 jim Exp $
+$Id: testFormView.py,v 1.16 2002/10/28 23:52:31 jim Exp $
 """
 from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -37,9 +37,9 @@ class TestFormView(TestCase, PlacelessSetup):
         viewService = self.getViewService()
         viewService.provideView(IBytes, 'widget', IBrowserView, [TextWidget])
         request = SchemaTestObject.TestBrowserRequest(
-            {'field_id': '1', 'field_title': 'Test New',
-             'field_creator': 'srichter@cbu.edu',
-             'field_data': StringIO('Data')})
+            {'field.id': '1', 'field.title': 'Test New',
+             'field.creator': 'srichter@cbu.edu',
+             'field.data': StringIO('Data')})
         self._form = SchemaTestObject.EditFactory(request=request)
         self.__data = {'id': 1,
                        'title': 'Test New',
@@ -99,11 +99,11 @@ class TestFormView(TestCase, PlacelessSetup):
     def testRenderField(self):
         field = SchemaTestObject.ITestObject.getDescriptionFor('id')
         self.assertEqual(
-            '<input name="field_id" type="text" value="5" size="10"  />',
+            '<input name="field.id" type="text" value="5" size="10"  />',
             self._form.renderField(field))
 
         field = SchemaTestObject.ITestObject.getDescriptionFor('creator')
-        self.assertEqual('<input name="field_creator" type="text" '
+        self.assertEqual('<input name="field.creator" type="text" '
                          'value="strichter@yahoo.com" size="30"  />',
                          self._form.renderField(field))
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testListWidget.py,v 1.4 2002/09/04 13:44:24 faassen Exp $
+$Id: testListWidget.py,v 1.5 2002/10/28 23:52:31 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import ListWidget
@@ -22,6 +22,8 @@ from testBrowserWidget import BrowserWidgetTest
 class Field:
     """Field Stub """
     items = [('foo', 'Foo'), ('bar', 'Bar')]
+
+    __name__ = 'foo'
 
     def getName(self):
         return 'foo'
@@ -33,12 +35,11 @@ class ListWidgetTest(BrowserWidgetTest):
     
     def setUp(self):
         field = Field()
-        request = {'field_foo': 'Foo Value'}
+        request = {'field.foo': 'Foo Value'}
         self._widget = ListWidget(field, request)
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('cssClass'), "")
-        self.assertEqual(self._widget.getValue('hidden'), 0)
         self.assertEqual(self._widget.getValue('extra'), '')
         self.assertEqual(self._widget.getValue('items'), [])
         self.assertEqual(self._widget.getValue('firstItem'), 0)
@@ -47,11 +48,12 @@ class ListWidgetTest(BrowserWidgetTest):
 
     def testRenderItem(self):
         check_list = ('option', 'value="foo"', 'Foo')
-        self._verifyResult(self._widget.renderItem('Foo', 'foo', 'bar', None),
-                           check_list)
+        self._verifyResult(
+            self._widget.renderItem('Foo', 'foo', 'field.bar', None),
+            check_list)
         check_list += ('selected="selected"',)
         self._verifyResult(
-            self._widget.renderSelectedItem('Foo', 'foo', 'bar', None),
+            self._widget.renderSelectedItem('Foo', 'foo', 'field.bar', None),
             check_list)
 
 
@@ -64,12 +66,12 @@ class ListWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'foo'
-        check_list = ('select', 'name="field_foo"', 'size="5"', 
+        check_list = ('select', 'name="field.foo"', 'size="5"', 
                       'option', 'value="foo"', '>Foo<',
                       'value="foo"', '>Bar<', 'selected="selected"')
         self._verifyResult(self._widget.render(value), check_list)
 
-        check_list = ('type="hidden"', 'name="field_foo"', 'value="foo"')
+        check_list = ('type="hidden"', 'name="field.foo"', 'value="foo"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IBrowserWidget.py,v 1.2 2002/07/16 14:03:02 srichter Exp $
+$Id: IBrowserWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
 """
 
 from Zope.App.Forms.IWidget import IWidget
@@ -25,11 +25,36 @@ class IBrowserWidget(IWidget):
        default value and so on.
     """
 
+    def setPrefix(self, prefix):
+        """Set the form-variable name prefix used for the widget
+
+        The widget will define it's own form variable names by
+        concatinating the profix and the field name using a dot. For
+        example, with a prefix of "page" and a field name of "title",
+        a form name of "page.title" will be used. A widget may use
+        multiple form fields. If so, it should add distinguishing
+        suffixes to the prefix and field name.
+        """
+
+    def __call__():
+        """Render the widget
+        """
+
+    def hidden():
+        """Render the widget as a hidden field
+        """
+    
+
+    # XXX The following methods are being supported for backward compatability
+    # They are depricated and will be refactored away eventually.
 
     def render(value):
-        """Renders this widget as HTML using property values in field."""
+        """Renders this widget as HTML using property values in field.
 
+        The value if given will be used as the default value for the widget.  
+        """
         
-    def render_hidden(field, key, value):
-        """Renders this widget as a hidden field."""
+    def renderHidden(value):
+        """Renders this widget as a hidden field.
+        """
         

@@ -12,15 +12,17 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.3 2002/09/07 16:18:48 jim Exp $
+$Id: Widget.py,v 1.4 2002/10/28 23:52:31 jim Exp $
 """
 from IWidget import IWidget
 from Zope.Schema.Exceptions import ValidationError
 from Zope.App.Forms.Exceptions import WidgetInputError
 
 class Widget(object):
-    """I do not know what will be in this class, but it provides an extra
-    layer."""
+    """Mix-in class providing some functionality common accross view types
+    """
+
+
     __implements__ = IWidget
 
     def __init__(self, context, request):
