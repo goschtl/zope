@@ -15,7 +15,7 @@ Features
 Miscellaneous
 -------------
 
-- Remove XXX comments
+- Remove XXX comments (there are about 80 in zope)
 
   o FTP interfaces (Stephan)
 
@@ -41,6 +41,8 @@ FTP Server
 
   * 287: Active ftp seems broken 
 
+  * 350: ServerChannelBase does not update last_activity
+
   * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
 
 File Content Component
@@ -49,6 +51,13 @@ File Content Component
   * 302: File objects can't contain non-ascii characters
 
   * 327: File type change clears object content
+
+TAL i18n-namspace
+~~~~~~~~~~~~~~~~~
+
+  * 301: Bug with i18n:name and i18n:translate on the same element 
+
+  * 314: i18n:translate removes line breaks from <pre>...</pre> contents
 
 Others
 ~~~~~~
@@ -59,15 +68,11 @@ Others
 
 * 298: Role/permission title and description should be messageids
 
-* 301: Bug with i18n:name and i18n:translate on the same element 
-
 * 306: page/view-menu-layer configuration
 
 * 307: browser:addMenuItem and broken view references
 
 * 313: importchecker.py ignores assignment to module attributes 
-
-* 314: i18n:translate removes line breaks from <pre>...</pre> contents
 
 * 316: Zope3X test.py truncates path with dir=
 
@@ -94,8 +99,6 @@ Others
 * 345: Using response.write should not involve unicode conversion
 
 * 348: ZCML hides import errors 
-
-* 350: ServerChannelBase does not update last_activity
 
 * 352: documentation for zope.app.form.interfaces.IInputWidget.validate is
        wrong
