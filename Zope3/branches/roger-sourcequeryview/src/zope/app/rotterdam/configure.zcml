@@ -22,6 +22,11 @@
       layer="zope.app.rotterdam.rotterdam" />
   
   <browser:resource 
+      name="zope3.js" 
+      file="zope3.js" 
+      layer="zope.app.rotterdam.rotterdam" />
+  
+  <browser:resource 
       name="xmltree.js" 
       file="xmltree.js" 
       layer="zope.app.rotterdam.rotterdam" />
