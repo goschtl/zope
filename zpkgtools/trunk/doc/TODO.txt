@@ -11,7 +11,7 @@
     module in Python's standard library as a possible approach to a
     solution
 
-- fix up finddeps.py to stop searching at PUBLICATION.txt boundaries
+- fix up finddeps.py to stop searching at `PUBLICATION.cfg` boundaries
   (have patch)
 
 - package assembler script to build sumo/combined distro (in progress)

@@ -22,15 +22,15 @@ dependency)::
       setup.cfg
       setup.py
       Collection/
-          DEPENDENCIES.txt
+          DEPENDENCIES.cfg
           MANIFEST
-          PUBLICATION.txt
+          PUBLICATION.cfg
           README.txt
           setup.cfg
           setup.py
       zope/
           MANIFEST
-          PUBLICATION.txt
+          PUBLICATION.cfg
           setup.cfg
           setup.py
           zope/
@@ -58,25 +58,25 @@ the files of the collection itself (`Collection/` in this example).
 Collections are defined by a set of metadata files similar to
 packages.  These include:
 
-`PUBLICATION.txt`
+`PUBLICATION.cfg`
   Publication metadata, including many Dublin Core fields and similar
   information.  This is required, but is not expected to change often
   for a distribution.
 
-`INCLUDES.txt`
+`INCLUDES.cfg`
   An optional file which describes what files should be added to the
   collection itself from other locations (this is normally expected to
   be documentation files or scripts).  It is also possible to specify
   that files in the collection should not be included in
   distributions.
 
-`DEPENDENCIES.txt`
+`DEPENDENCIES.cfg`
   Another optional file containing a list of direct dependencies, as
   well as any files that are specific to the collection.  Each line
   must be a resource identifier or a comment.
 
 Additional files may be present in a collection; these are copied into
-the collection-specific directory directly unless `INCLUDES.txt`
+the collection-specific directory directly unless `INCLUDES.cfg`
 indicates they should not be distributed.  The `README.txt` file in
 this example is such a file.  The files used by distutils will be
 generated and added to the directory as well.
@@ -108,11 +108,12 @@ a collection distribution:
   few others).  Given this limitation, the collection would need to
   have a different name (``ZODB3`` comes to mind).
 
+  This isn't enough of a problem to worry about at this point; we just
+  need to keep this in mind when naming components.
+
 - We're not currently loading any sort of "package information" for
-  collections, but that's what we need to do so we can identify
-  scripts and documentation files so we can properly deal with
-  installation.  It seems odd for a collection to have a
-  `package.conf` file for a collection distribution.
+  collections, but this is a software issue, not a design problem.
+  The information file will be called `INSTALL.cfg`.
 
 
 .. include:: links.rst
