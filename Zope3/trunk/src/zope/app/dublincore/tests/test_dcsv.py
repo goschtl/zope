@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Dublib Core Structured Value support functions.
 
-$Id: test_dcsv.py,v 1.1 2003/08/22 13:11:03 fdrake Exp $
+$Id: test_dcsv.py,v 1.2 2003/08/26 14:45:01 fdrake Exp $
 """
 import unittest
 
@@ -282,6 +282,42 @@ def test_encode_mixed_items():
     'b=c; a;'
     >>> encode([('b', 'c'), ('', 'a')])
     'b=c; a;'
+    """
+
+def test_encode_error_non_strings():
+    """
+    >>> encode([(42, '')])
+    Traceback (most recent call last):
+    ...
+    TypeError: labels must be strings; found 42
+    >>> encode([('', 42)])
+    Traceback (most recent call last):
+    ...
+    TypeError: values must be strings; found 42
+    >>> encode([('label', 42)])
+    Traceback (most recent call last):
+    ...
+    TypeError: values must be strings; found 42
+    """
+
+def test_encode_error_outer_whitespace():
+    """
+    >>> encode([' a'])
+    Traceback (most recent call last):
+    ...
+    ValueError: values may not include leading or trailing spaces: ' a'
+    >>> encode(['a '])
+    Traceback (most recent call last):
+    ...
+    ValueError: values may not include leading or trailing spaces: 'a '
+    >>> encode([('', 'a ')])
+    Traceback (most recent call last):
+    ...
+    ValueError: values may not include leading or trailing spaces: 'a '
+    >>> encode([('label', 'a ')])
+    Traceback (most recent call last):
+    ...
+    ValueError: values may not include leading or trailing spaces: 'a '
     """
 
 
