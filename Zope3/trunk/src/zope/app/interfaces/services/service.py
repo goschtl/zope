@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.16 2003/12/05 14:15:27 jim Exp $
+$Id: service.py,v 1.17 2003/12/18 08:01:04 jim Exp $
 """
 __metaclass__ = type
 
@@ -90,8 +90,8 @@ class IBindingAware(Interface):
         """
 
 
-class IServiceManager(IServiceService, IComponentManager,
-                      registration.INameComponentRegistry):
+class ISiteManager(IServiceService, IComponentManager,
+                   registration.INameComponentRegistry):
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
