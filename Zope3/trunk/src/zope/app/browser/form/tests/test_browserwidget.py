@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.11 2003/05/22 22:49:04 jim Exp $
+$Id: test_browserwidget.py,v 1.12 2003/06/05 14:23:05 fdrake Exp $
 """
 
 from zope.app.browser.form.widget import BrowserWidget
@@ -27,9 +27,12 @@ from zope.schema import Text
 import os
 import unittest
 from zope.testing.doctestunit import DocTestSuite
+from zope.app.browser.form.tests import support
 import zope.app.browser.form.tests
 
-class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
+class BrowserWidgetTest(PlacelessSetup,
+                        support.VerifyResults,
+                        unittest.TestCase):
 
     _FieldFactory = Text
     _WidgetFactory = BrowserWidget
@@ -40,11 +43,6 @@ class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
-
-    def _verifyResult(self, result, check_list):
-        for check in check_list:
-            self.assertNotEqual(-1, result.find(check),
-                                '"'+check+'" not found in "'+result+'"')
 
     def test_required(self):
         self._widget.context.required = False
@@ -68,12 +66,12 @@ class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
         check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"')
         self._widget.setData(value)
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('type="hidden"', 'style="color: red"') + check_list[1:]
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
     def testLabel(self):
         label = ' '.join(self._widget.label().strip().split())

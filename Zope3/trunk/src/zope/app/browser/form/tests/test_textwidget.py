@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textwidget.py,v 1.5 2003/05/22 22:50:09 jim Exp $
+$Id: test_textwidget.py,v 1.6 2003/06/05 14:23:05 fdrake Exp $
 """
 import unittest
 
@@ -38,12 +38,12 @@ class TextWidgetTest(BrowserWidgetTest):
         self._widget.setData(value)
         check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"', 'size="20"')
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
 
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.7 2003/05/22 22:50:09 jim Exp $
+$Id: test_checkboxwidget.py,v 1.8 2003/06/05 14:23:05 fdrake Exp $
 """
 import unittest
 
@@ -39,16 +39,16 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
         self._widget.setData(value)
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'checked="checked"')
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         value = 0
         self._widget.setData(value)
         check_list = check_list[:-1]
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
     def test_getData(self):
         self._widget.request.form['field.foo'] = 'on'

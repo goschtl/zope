@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_listwidget.py,v 1.6 2003/05/22 22:50:09 jim Exp $
+$Id: test_listwidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
 """
 import unittest
 
@@ -36,11 +36,11 @@ class ListWidgetTest(BrowserWidgetTest):
 
     def testRenderItem(self):
         check_list = ('option', 'value="foo"', 'Foo')
-        self._verifyResult(
+        self.verifyResult(
             self._widget.renderItem(0, 'Foo', 'foo', 'field.bar', None),
             check_list)
         check_list += ('selected="selected"',)
-        self._verifyResult(
+        self.verifyResult(
             self._widget.renderSelectedItem(
                 0, 'Foo', 'foo', 'field.bar', None),
             check_list)
@@ -49,8 +49,8 @@ class ListWidgetTest(BrowserWidgetTest):
     def testRenderItems(self):
         check_list = ('option', 'value="foo"', 'bar',
                       'value="foo"', 'foo', 'selected="selected"')
-        self._verifyResult('\n'.join(self._widget.renderItems('foo')),
-                           check_list)
+        self.verifyResult('\n'.join(self._widget.renderItems('foo')),
+                          check_list)
 
 
     def testRender(self):
@@ -59,14 +59,14 @@ class ListWidgetTest(BrowserWidgetTest):
                       'size="5"', 'option', 'value="foo"', '>foo<',
                       'value="foo"', '>bar<', 'selected="selected"')
         self._widget.setData(value)
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
 
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
                       'value="foo"')
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
 
 

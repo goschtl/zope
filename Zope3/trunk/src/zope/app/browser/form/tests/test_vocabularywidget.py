@@ -17,6 +17,7 @@
 import unittest
 
 from zope.app.browser.form import vocabularywidget
+from zope.app.browser.form.tests import support
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -159,7 +160,9 @@ class MyQueryViewMulti(MyQueryViewBase):
         return "multi"
 
 
-class VocabularyWidgetTestBase(PlacelessSetup, unittest.TestCase):
+class VocabularyWidgetTestBase(PlacelessSetup,
+                               support.VerifyResults,
+                               unittest.TestCase):
     """Base class for all the vocabulary widget tests.
 
     This class provides version helper methods.
@@ -196,19 +199,6 @@ class VocabularyWidgetTestBase(PlacelessSetup, unittest.TestCase):
             tr = TestRequest(QUERY_STRING=querystring)
             tr.processInputs()
             return tr
-
-    # modified from test_browserwidget.BrowserWidgetTest:
-    def verifyResult(self, result, check_list):
-        """Ensure that each element of check_list is present in result."""
-        for check in check_list:
-            self.assert_(result.find(check) >= 0,
-                         "%r not found in %r" % (check, result))
-
-    def verifyResultMissing(self, result, check_list):
-        """Ensure that each element of check_list is omitted from result."""
-        for check in check_list:
-            self.assert_(result.find(check) < 0,
-                         "%r unexpectedly found in %r" % (check, result))
 
 
 class SingleSelectionViews:

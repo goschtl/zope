@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.6 2003/05/22 22:50:09 jim Exp $
+$Id: test_multicheckboxwidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
 """
 import unittest
 
@@ -36,11 +36,11 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
     def testRenderItem(self):
         check_list = ('type="checkbox"', 'id="field.bar"',
                       'name="field.bar"', 'value="foo"', 'Foo')
-        self._verifyResult(
+        self.verifyResult(
             self._widget.renderItem(0, 'Foo', 'foo', 'field.bar', None),
             check_list)
         check_list += ('checked="checked"',)
-        self._verifyResult(
+        self.verifyResult(
             self._widget.renderSelectedItem(
                 0, 'Foo', 'foo', 'field.bar', None),
             check_list)
@@ -50,8 +50,8 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')
-        self._verifyResult('\n'.join(self._widget.renderItems('bar')),
-                           check_list)
+        self.verifyResult('\n'.join(self._widget.renderItems('bar')),
+                          check_list)
 
 
     def testRender(self):
@@ -60,14 +60,14 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
 
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
                       'value="bar"')
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
 
 def test_suite():

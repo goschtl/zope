@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.6 2003/05/22 22:50:09 jim Exp $
+$Id: test_textareawidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
 """
 import unittest
 
@@ -37,13 +37,13 @@ class TextAreaWidgetTest(BrowserWidgetTest):
         self._widget.setData(value)
         check_list = ('rows="15"', 'cols="60"', 'id="field.foo"',
                       'name="field.foo"', 'textarea')
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"')
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
     def testRow(self):
         self._widget.request.form.clear()
