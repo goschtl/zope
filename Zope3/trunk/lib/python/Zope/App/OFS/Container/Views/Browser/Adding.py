@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.2 2002/06/20 20:00:20 jim Exp $
+$Id: Adding.py,v 1.3 2002/06/20 21:47:45 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -90,7 +90,9 @@ class Adding(BrowserView):
 
     def action(self, type_name, id):
         if queryView(self, type_name, self.request) is not None:
-            self.request.response.redirect(type_name)
+            url = "%s=%s" % (type_name, id)
+            self.request.response.redirect(url)
+            return
 
         if not id:
             raise ValueError("You must specify an id")

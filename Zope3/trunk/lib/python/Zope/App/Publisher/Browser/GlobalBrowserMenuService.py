@@ -17,7 +17,8 @@ from Zope.Configuration.Action import Action
 from Zope.ComponentArchitecture.IToIRegistry import TypeRegistry
 from Zope.Exceptions import DuplicationError, Unauthorized, Forbidden
 from Zope.App.PageTemplate.Engine import Engine
-from Zope.App.ZopePublication.PublicationTraverse import PublicationTraverser
+from Zope.App.ZopePublication.Browser.PublicationTraverse \
+     import PublicationTraverser
 
 class GlobalBrowserMenuService:
     """Global Browser Menu Service
@@ -74,8 +75,8 @@ class GlobalBrowserMenuService:
    
                 if action:
                     try:
-                        v = traverser.traversePath(request, object, action)
-
+                        v = traverser.traverseRelativeURL(
+                            request, object, action)
                         # XXX
                         # tickle the security proxy's checker
                         # we're assuming that view pages are callable
@@ -135,5 +136,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.2 2002/06/20 20:00:27 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.3 2002/06/20 21:47:45 jim Exp $
 """
