@@ -125,8 +125,12 @@
           <th class="introspector">
             <tal:span i18n:translate="class-component">Class</tal:span>:
           </th>
-          <td><span tal:replace="introspector/getModule">Module</span
-            >.<span tal:replace="introspector/getClass">Name</span></td>
+          <td><a tal:attributes="href 
+                string: /++apidoc++/Class/index.html?path=${introspector/getModule}.${introspector/getClass}" 
+                href="">
+            <span tal:replace="introspector/getModule">Module</span
+            >.<span tal:replace="introspector/getClass">Name</span></a></td>
+
         </tr>
 
         <tr>
@@ -135,12 +139,9 @@
           </th>
           <td>
             <div tal:repeat="base introspector/getBaseClassNames">
-              <span tal:replace="repeat/base/item" />
-              <!--
-                <a href=""
-                   tal:attributes="href string: ++module++${repeat/base/item}"
-                   tal:content="repeat/base/item">Base</a>
-               -->
+              <a tal:attributes="href 
+                string: /++apidoc++/Class/index.html?path=${repeat/base/item}" 
+                href=""><span tal:replace="repeat/base/item" /></a>
             </div>
           </td>
         </tr>
@@ -162,7 +163,7 @@
           </th>
           <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
-              <div tal:define="url python: view.getInterfaceURL(interface)">
+              <div tal:define="url string: /++apidoc++/Class/index.html?path=${interface}">
                 <a href=""
                     tal:attributes="href url"
                     tal:content="interface"
