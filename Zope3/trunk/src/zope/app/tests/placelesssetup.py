@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-$Id: placelesssetup.py,v 1.14 2004/04/15 13:25:48 srichter Exp $
+$Id: placelesssetup.py,v 1.15 2004/04/27 10:53:47 jim Exp $
 """
 from zope.app.tests import ztapi
 from zope.component.tests.placelesssetup \
@@ -25,7 +25,7 @@ from zope.app.i18n.tests.placelesssetup \
 from zope.app.container.tests.placelesssetup \
     import PlacelessSetup as ContainerPlacelessSetup
 from zope.app.security._protections import protect
-from zope.app.traversing.browser import AbsoluteURL
+from zope.app.traversing.browser.absoluteurl import AbsoluteURL
 
 class PlacelessSetup(CAPlacelessSetup,
                      EventPlacelessSetup,
