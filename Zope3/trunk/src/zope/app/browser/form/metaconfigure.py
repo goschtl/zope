@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.8 2004/01/05 08:04:16 philikon Exp $
+$Id: metaconfigure.py,v 1.9 2004/01/26 16:51:36 sidnei Exp $
 """
 
 __metaclass__ = type
@@ -71,7 +71,7 @@ class BaseFormDirective:
         if self.template is not None:
             self.template = os.path.abspath(str(self.template))
             if not os.path.isfile(self.template):
-                raise ConfigurationError("No such file", template)
+                raise ConfigurationError("No such file", self.template)
         else:
             self.template = self.default_template
 
