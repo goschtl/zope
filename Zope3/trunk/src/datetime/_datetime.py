@@ -880,6 +880,8 @@ class tzinfo(object):
     def fromutc(self, dt):
         "datetime in UTC -> datetime in local time."
 
+        if not isinstance(dt, datetime):
+            raise TypeError("fromutc() requires a datetime argument")
         if dt.tzinfo is not self:
             raise ValueError("dt.tzinfo is not self")
 
@@ -892,7 +894,7 @@ class tzinfo(object):
         # explanation of this algorithm.
         dtdst = dt.dst()
         if dtdst is None:
-            raise ValueError("fromutc() requires a non_none dst() result")
+            raise ValueError("fromutc() requires a non-None dst() result")
         delta = dtoff - dtdst
         if delta:
             dt += delta

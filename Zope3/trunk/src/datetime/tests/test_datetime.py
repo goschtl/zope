@@ -2798,6 +2798,58 @@ class TestTimezoneConversions(unittest.TestCase):
             def dst(self, dt): return None
         self.assertRaises(ValueError, now.astimezone, notok())
 
+    def test_fromutc(self):
+        self.assertRaises(TypeError, Eastern.fromutc)   # not enough args
+        now = datetime.utcnow().replace(tzinfo=utc_real)
+        self.assertRaises(ValueError, Eastern.fromutc, now) # wrong tzinfo
+        now = now.replace(tzinfo=Eastern)   # insert correct tzinfo
+        enow = Eastern.fromutc(now)         # doesn't blow up
+        self.assertEqual(enow.tzinfo, Eastern) # has right tzinfo member
+        self.assertRaises(TypeError, Eastern.fromutc, now, now) # too many args
+        self.assertRaises(TypeError, Eastern.fromutc, date.today()) # wrong type
+
+        # Always converts UTC to standard time.
+        class FauxUSTimeZone(USTimeZone):
+            def fromutc(self, dt):
+                return dt + self.stdoffset
+        FEastern  = FauxUSTimeZone(-5, "FEastern",  "FEST", "FEDT")
+
+        #  UTC  4:MM  5:MM  6:MM  7:MM  8:MM  9:MM
+        #  EST 23:MM  0:MM  1:MM  2:MM  3:MM  4:MM
+        #  EDT  0:MM  1:MM  2:MM  3:MM  4:MM  5:MM
+
+        # Check around DST start.
+        start = self.dston.replace(hour=4, tzinfo=Eastern)
+        fstart = start.replace(tzinfo=FEastern)
+        for wall in 23, 0, 1, 3, 4, 5:
+            expected = start.replace(hour=wall)
+            if wall == 23:
+                expected -= timedelta(days=1)
+            got = Eastern.fromutc(start)
+            self.assertEqual(expected, got)
+
+            expected = fstart + FEastern.stdoffset
+            got = FEastern.fromutc(fstart)
+            self.assertEqual(expected, got)
+
+            start += HOUR
+            fstart += HOUR
+
+        # Check around DST end.
+        start = self.dstoff.replace(hour=4, tzinfo=Eastern)
+        fstart = start.replace(tzinfo=FEastern)
+        for wall in 0, 1, 1, 2, 3, 4:
+            expected = start.replace(hour=wall)
+            got = Eastern.fromutc(start)
+            self.assertEqual(expected, got)
+
+            expected = fstart + FEastern.stdoffset
+            got = FEastern.fromutc(fstart)
+            self.assertEqual(expected, got)
+
+            start += HOUR
+            fstart += HOUR
+
 
 def test_suite():
     allsuites = [unittest.makeSuite(klass, 'test')
