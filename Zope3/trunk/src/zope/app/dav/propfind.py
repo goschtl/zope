@@ -77,7 +77,7 @@ class PROPFIND(object):
         r_url = response.createTextNode(resource_url)
         href.appendChild(r_url)
         _avail_props = {}
-        # XXX For now, list the propnames for the all namespaces
+        # TODO: For now, list the propnames for the all namespaces
         # but later on, we need to list *all* propnames from *all* known
         # namespaces that this object has.
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
