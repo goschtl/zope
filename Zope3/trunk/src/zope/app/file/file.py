@@ -20,8 +20,8 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
-
-from interfaces import IFile, IFileContent
+import zope.app.publication.interfaces
+from zope.app.file import interfaces
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -110,13 +110,13 @@ class File(Persistent):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> IFile.implementedBy(File)
+    >>> interfaces.IFile.implementedBy(File)
     True
-    >>> verifyClass(IFile, File)
+    >>> verifyClass(interfaces.IFile, File)
     True
     """
     
-    implements(IFileContent, IFile)
+    implements(zope.app.publication.interfaces.IFileContent, interfaces.IFile)
 
     def __init__(self, data='', contentType=''):
         self.data = data

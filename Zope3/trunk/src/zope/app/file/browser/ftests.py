@@ -240,11 +240,12 @@ class ImageTest(BrowserTestCase):
         self.assert_('<iframe src="."' in body)
         self.checkForBrokenLinks(body, '/image/@@preview.html', 'mgr:mgrpw')
 
-
 def test_suite():
+    from zope.app.tests import functional
     return unittest.TestSuite((
         unittest.makeSuite(FileTest),
         unittest.makeSuite(ImageTest),
+        functional.FunctionalDocFileSuite('url.txt'),
         ))
 
 if __name__ == '__main__':

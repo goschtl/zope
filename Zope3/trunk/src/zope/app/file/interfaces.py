@@ -42,16 +42,6 @@ class IFile(Interface):
     def getSize():
         """Return the byte-size of the data of the object."""
 
-
-class IFileContent(Interface):
-    """Marker interface for content that can be managed as files.
-
-    The default view for file content has effective URLs that don't end in
-    /.  In particular, if the content included HTML, relative links in
-    the HTML are relative to the container the content is in.
-    """
-
-
 class IImage(IFile):
     """This interface defines an Image that can be displayed.
     """

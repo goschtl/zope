@@ -5,13 +5,6 @@
     >
 
   <!-- directives for File -->
-
-  <browser:view
-      for="zope.app.file.interfaces.IFileContent"
-      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-      class="zope.app.publication.traversers.FileContentTraverser"
-      permission="zope.Public"
-      />
   
   <browser:editform
       name="edit.html"

@@ -26,7 +26,7 @@ from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
 
-from zope.app.file.interfaces import IFileContent
+from zope.app.publication.interfaces import IFileContent
 from interfaces import IDTMLPage, IRenderDTMLPage
 
 class DTMLPage(Persistent, Contained):

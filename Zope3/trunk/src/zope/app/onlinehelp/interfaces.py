@@ -22,7 +22,8 @@ __docformat__ = 'restructuredtext'
 from zope.schema import TextLine, SourceText, Choice
 from zope.configuration.fields import GlobalInterface
 from zope.app.container.interfaces import IContainer
-from zope.app.file.interfaces import IFile, IFileContent
+from zope.app.publication.interfaces import IFileContent
+from zope.app.file.interfaces import IFile
 from zope.app.i18n import ZopeMessageIDFactory as _ 
 
 class IOnlineHelpTopic(IContainer):

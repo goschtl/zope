@@ -25,8 +25,5 @@ class ZPTPageEval(object):
 
         request.response.setHeader('content-type',
                                    template.content_type)
-        # Set the base one level lower as usual, so that the ZPT Page is
-        # treated as a file instead of a container. 
-        request.response.setBase(request.URL[-2])
 
         return template.render(request, **kw)

@@ -111,9 +111,12 @@ class DTMLPageTest(BrowserTestCase):
 
 
 def test_suite():
+    from zope.app.tests import functional
     return unittest.TestSuite((
         unittest.makeSuite(DTMLPageTest),
+        functional.FunctionalDocFileSuite('url.txt'),
         ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
+

@@ -31,6 +31,7 @@
   <include package="zope.app.container" />
 
   <include package="zope.app.publisher" />
+  <include package="zope.app.publication" />
   <include package="zope.app.traversing" />
   <include package="zope.app.pagetemplate" />
   <include package=".generations" />

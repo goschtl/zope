@@ -29,7 +29,6 @@ from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
-from zope.app.file.interfaces import IFileContent
 
 from interfaces import ISQLScript
 from dtml import SQLDTML
@@ -50,7 +49,7 @@ class Arguments(PersistentDict):
 
 
 class SQLScript(Persistent, Contained):
-    implements(ISQLScript, IFileContent)
+    implements(ISQLScript)
 
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)

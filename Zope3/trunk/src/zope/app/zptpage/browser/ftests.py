@@ -125,7 +125,7 @@ class ZPTPageTest(BrowserTestCase):
             '/zptpage/@@index.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
-        self.assertEqual(response.getBase(), 'http://localhost')
+        self.assertEqual(response.getBase(), '')
         body = response.getBody()
         self.assertEqual(
             body,
@@ -179,6 +179,7 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTest),
         FunctionalDocFileSuite('collector266.txt', 'collector269.txt'),
+        FunctionalDocFileSuite('url.txt'),
         ))
 
 if __name__ == '__main__':

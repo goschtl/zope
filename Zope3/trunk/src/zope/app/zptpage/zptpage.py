@@ -28,12 +28,13 @@ from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
 from zope.app import zapi
+from zope.app.publication.interfaces import IFileContent
 
 from interfaces import IZPTPage, IRenderZPTPage
 
 class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
-    implements(IZPTPage, IRenderZPTPage)
+    implements(IZPTPage, IRenderZPTPage, IFileContent)
 
     # See zope.app.zptpage.interfaces.IZPTPage
     expand = False

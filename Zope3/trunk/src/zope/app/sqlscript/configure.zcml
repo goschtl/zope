@@ -30,10 +30,6 @@
         interface=".interfaces.ISQLScript"
         set_schema=".interfaces.ISQLScript"
         />
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.file.interfaces.IFileContent"
-        />
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />

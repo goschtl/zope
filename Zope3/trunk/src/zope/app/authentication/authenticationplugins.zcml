@@ -39,10 +39,6 @@
         />
     <require
         permission="zope.ManageContent"
-        interface="zope.app.file.interfaces.IFileContent"
-        />
-    <require
-        permission="zope.ManageContent"
         interface=".interfaces.IAuthenticationPlugin" />
 
   </localUtility>
