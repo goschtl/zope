@@ -1,4 +1,4 @@
-Next release
+CMF 1.4.6 (2004/07/30)
 
   Bug Fixes
 
