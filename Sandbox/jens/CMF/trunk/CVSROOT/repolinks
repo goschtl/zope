@@ -114,35 +114,35 @@
 # Zope 3 layout.
 
 # Need to be copied:
-/Zope3/doc           /Zope/doc
-/Zope3/inst          /Zope/inst
-/Zope3/utilities     /Zope/utilities
-/Zope3/lib/python/Interface                    /Packages/Interface
-/Zope3/lib/python/Persistence                  /Packages/Persistence
-/Zope3/lib/python/zLOG                         /Packages/zLOG
-/Zope3/lib/python/ZODB                         /Packages/ZODB
-/Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
-/Zope3/lib/python/Zope/Server/medusa           /Packages/ZServer/medusa
-/Zope3/lib/python/Zope/TAL                     /Packages/TAL
-/Zope3/lib/python/Zope/Testing                 /Packages/Testing
-/Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
-/Zope3/lib/python/Zope/Exceptions              /Zope/lib/python/zExceptions
+#/Zope3/doc           /Zope/doc
+#/Zope3/inst          /Zope/inst
+#/Zope3/utilities     /Zope/utilities
+#/Zope3/lib/python/Interface                    /Packages/Interface
+#/Zope3/lib/python/Persistence                  /Packages/Persistence
+#/Zope3/lib/python/zLOG                         /Packages/zLOG
+#/Zope3/lib/python/ZODB                         /Packages/ZODB
+#/Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
+#/Zope3/lib/python/Zope/Server/medusa           /Packages/ZServer/medusa
+#/Zope3/lib/python/Zope/TAL                     /Packages/TAL
+#/Zope3/lib/python/Zope/Testing                 /Packages/Testing
+#/Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
+#/Zope3/lib/python/Zope/Exceptions              /Zope/lib/python/zExceptions
 
 # Don't need to be copied
-/Zope3/lib/python/pre_python_2_2               /Packages/pre_python_2_2
-/Zope3/lib/python/Zope/Publisher               /Packages/Publisher
-/Zope3/lib/python/Zope/ContextWrapper          /Packages/ContextWrapper
+#/Zope3/lib/python/pre_python_2_2               /Packages/pre_python_2_2
+#/Zope3/lib/python/Zope/Publisher               /Packages/Publisher
+#/Zope3/lib/python/Zope/ContextWrapper          /Packages/ContextWrapper
 
 # Can be removed
-/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
-/Zope3/lib/python/zdaemon                      /Packages/zdaemon
+#/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
+#/Zope3/lib/python/zdaemon                      /Packages/zdaemon
 
 
 # Can be shared
 /Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
 
 # Move to Zope3 Tree
-/Zope3/lib/python/Zope/App                     /Packages/ZopeApp
+#/Zope3/lib/python/Zope/App                     /Packages/ZopeApp
 
 
 
