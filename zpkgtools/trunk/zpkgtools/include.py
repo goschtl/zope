@@ -305,10 +305,7 @@ class InclusionProcessor:
         """
         destination = os.path.abspath(destination)
         if spec.includes:
-            if not os.path.exists(destination):
-                os.mkdir(destination)
-                shutil.copymode(spec.source, destination)
-                shutil.copystat(spec.source, destination)
+            self.create_directory(spec.source, destination)
             self.addIncludes(destination, spec)
         else:
             self.copyTree(spec.source, destination)
@@ -327,10 +324,7 @@ class InclusionProcessor:
         Files and directories will be created with the same permission
         bits and stat info as the source tree.
         """
-        if not os.path.exists(destination):
-            os.mkdir(destination)
-            shutil.copymode(source, destination)
-            shutil.copystat(source, destination)
+        self.create_directory(source, destination)
         prefix = os.path.join(source, "")
         for dirname, dirs, files in os.walk(source, topdown=True):
             dirs[:] = filter_names(dirs)
@@ -357,11 +351,15 @@ class InclusionProcessor:
                 if publication.PUBLICATION_CONF in os.listdir(srcname):
                     dirs.remove(dir)
                     continue
-                # Create the directory, copying over the permission
-                # bits and stat info.
-                os.mkdir(destname)
-                shutil.copymode(srcname, destname)
-                shutil.copystat(srcname, destname)
+                self.create_directory(srcname, destname)
+
+    def create_directory(self, source, destination):
+        if not os.path.exists(destination):
+            # Create the directory, copying over the permission
+            # bits and stat info.
+            os.mkdir(destination)
+            shutil.copymode(source, destination)
+            shutil.copystat(source, destination)
 
     def copy_file(self, source, destination):
         """Copy a single file into the output tree."""
