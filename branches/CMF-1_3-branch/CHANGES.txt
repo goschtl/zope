@@ -2,6 +2,10 @@ CMF 1.3
 
   Bug Fixes
   
+    - Ensured that Link, File, and Image content objects reindex themselves
+      after edit (wrapping 'edit' as a WorkflowMethod no longer guarantees
+      that).
+
     - Fixed CMFCalendar's "day view" to accomodate the removal of 'title'
       metadata from catalog in favor of 'Title' (thanks to Dieter Maurer
       for pointing this out).
