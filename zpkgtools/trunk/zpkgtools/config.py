@@ -22,7 +22,18 @@ it.
 import os
 import urllib
 
+from zpkgtools import cfgparser
 from zpkgtools import locationmap
+
+
+def non_empty_string(string):
+    if not string:
+        raise ValueError("value cannot be empty")
+    return string
+
+SCHEMA = cfgparser.Schema(
+    ({"repository-map": non_empty_string}, [], None),
+    )
 
 
 class Configuration:
@@ -48,30 +59,17 @@ class Configuration:
     def loadPath(self, path):
         basedir = os.path.dirname(path)
         f = open(path, "rU")
-        for line in f:
-            line = line.strip()
-            if line[:1] in ("", "#"):
-                continue
-            parts = line.split(None, 1)
-            key = parts[0]
-            if len(parts) == 2:
-                # The replace is needed to ensure that we're close to
-                # ZConfig syntax; we should check also for single
-                # dollar signs and forbid them.
-                value = parts[1].replace("$$", "$")
-            else:
-                value = None
-            if key == "repository-map":
-                if value is None:
-                    raise ValueError("'repository-map' requires a location")
-                type, rest = urllib.splittype(value)
-                if not type:
-                    # local path references are relative to the file
-                    # we're loading
-                    value = os.path.join(basedir, value)
-                self.location_maps.append(value)
-            else:
-                raise ValueError("unknown configuration setting: %r" % key)
+        p = cfgparser.Parser(f, path, SCHEMA)
+        cf = p.load()
+        for value in cf.repository_map:
+            if value is None:
+                raise ValueError("'repository-map' requires a location")
+            type, rest = urllib.splittype(value)
+            if not type:
+                # local path references are relative to the file
+                # we're loading
+                value = os.path.join(basedir, value)
+            self.location_maps.append(value)
 
 
 def defaultConfigurationPath():
