@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: ServerBase.py,v 1.2 2002/06/10 23:29:34 jim Exp $
+$Id: ServerBase.py,v 1.3 2002/12/20 01:57:11 gvanrossum Exp $
 """
 
 import asyncore
+import logging
 import socket
 
 from Adjustments import default_adj
@@ -47,9 +48,23 @@ class ServerBase(asyncore.dispatcher, object):
         self.verbose = verbose
         self.hit_log = hit_log
         self.server_name = self.computeServerName(ip)
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         if start:
             self.accept_connections()
+
+    def log(self, message):
+        # Override asyncore's default log()
+        self.logger.info(message)
+
+    level_mapping = {
+        'info': logging.INFO,
+        'error': logging.ERROR,
+        'warning': logging.WARN,
+        }
+
+    def log_info(self, message, type='info'):
+        self.logger.log(self.level_mapping.get(type, logging.INFO), message)
 
     def computeServerName(self, ip=''):
         if ip:
