@@ -13,7 +13,7 @@
 ##############################################################################
 """Directives Tests
 
-$Id: test_directives.py,v 1.2 2004/03/22 00:52:28 srichter Exp $
+$Id: test_directives.py,v 1.3 2004/04/15 13:25:44 srichter Exp $
 """
 import unittest
 from zope.interface import Interface
@@ -24,6 +24,7 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 class FauxContext:
     def __init__(self):
         self.actions = []
+        self.info = 'info'
 
     def action(self, **kw):
         self.actions.append(kw)
