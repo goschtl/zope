@@ -7,13 +7,19 @@
 
   <caption i18n:translate="">Add Content</caption>
 
-    <tbody tal:repeat="info view/addingInfo">
+  <tbody tal:define="infos view/addingInfo; checked python:len(infos)==1">
 
-    <tr>
+    <tr tal:repeat="info infos">
 
       <td class="Selector">
-        <input type="radio" name="type_name"
-               tal:attributes="value info/action; id info/action" />
+        <input tal:condition="checked"
+               type="radio" name="type_name" checked
+               tal:attributes="value   info/action;
+                               id      info/action" />
+        <input tal:condition="not:checked"
+               type="radio" name="type_name"
+               tal:attributes="value   info/action;
+                               id      info/action" />
       </td>
 
       <td class="TypeName">
@@ -28,33 +34,6 @@
       </td>
     </tr>
 
-  </tbody>
-
-  <tbody tal:condition="nothing">
-
-    <tr>
-
-      <td class="Selector">
-        <input type="radio" name="type_name" value="" />
-               
-      </td>
-
-      <td class="TypeName">
-        <img alt="Folder" src="../../ZMI/www/document_icon.gif" i18n:attributes="alt" />
-        Document
-      </td>
-
-    </tr>
-
-    <tr>
-      <td class="Selector"><br /></td>
-      <td class="TypeDescription" i18n:translate="">
-          Documents are simple textual content.
-      </td>
-    </tr>
-
-  </tbody>
-
   <tr>
     <td><br/></td>
     <td>
@@ -65,6 +44,8 @@
         <input type="submit" value=" Add " i18n:attributes="value" />
     </td>
   </tr>
+
+  </tbody>
 
 </table>
 </form>
