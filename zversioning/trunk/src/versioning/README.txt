@@ -32,7 +32,7 @@ The pattern common to all implementation variants is roughly as follows:
     3.  Reverting to a version means that the saved state of an object is somehow
         reconstructed in the present context. For some contexts a substitution
         of the original with a saved copy is sufficient, sometimes references
-        to the originl objects must remain intact. These different variants
+        to the original objects must remain intact. These different variants
         are also defined in policies.py
          
 

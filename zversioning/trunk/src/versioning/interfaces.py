@@ -36,7 +36,7 @@ used backend generates its own versions.
 """
 
 import persistent, zope
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 from zope.app.container.interfaces import INameChooser
 
@@ -225,63 +225,53 @@ class ITicket(Interface) :
 
 
 class IVersionableData(Interface) :
-	""" An adapter for versionable data. """
-	
-	def getData() :
-		""" A copy method that allows to move of versionable data from workspace to workspace.
-			Implementations must ensure that the copy is independent from its original
-			database.
-		"""
-		
-	def getTicket() :
-		""" Must return the ticket that is associated with this kind of data. """
-		
-	def getWhen() :
-		""" Must return a datetime or None in which case the current system time is used as time stamp. """
-		
-	def getWho() :
-		""" Must return a user id or None in which case the version is assigned to the current user. """
-	
-	def getPredecessors() :
-		""" Returns a list of guid of predecessing versions. Should return None for the current version as a default predecessor. """
+    """ An adapter for versionable data. """
+    
+    data = Attribute("A read only reference to the versioned data.")
+    
+    ticket = Attribute("A read only ticket that is associated with "
+                       "IVersionableData.")
+        
+    timestamp = Attribute("The read onyl timestamp when the version "
+                         "was stored to the repository")
 
+    principal = Attribute("The read only actor of the store action.")
+    
 
 class IVersion(IVersionableData):
-	""" Versions are snapshots of data that change over time. 
-		In group situations there can be parallel versions that must be synchronized or merged.
-		This interface defines some basic methods each version, whether on server or client side, 
-		should fullfill. It makes no assumptions about attributes or other 
-		implementation specific details besides the use of global unique ids.
-	"""
+    """ Versions are snapshots of data that change over time. 
+        This interface defines some basic methods each version should 
+        fullfill.
+    """
 
-	def getDescriptor() :
-		""" Returns the descriptor that created the version."""
-		
-	def getVersionLabel() :
-		""" Returns a string that encodes the version sequence and parallel versions, e.g. '2a'"""
-		
-	def getName() :
-		""" Returns a more describptive name that describes the version, e.g. 'Version2a'"""
-				
-	def setPredecessors(guids) :
-		""" Sets the predecessors of a version. Accepts a list of guid as input. """
-	
-	def getPredecessors() :	
-		""" Returns a list of guid of predecessing versions. """
+    label = Attribute("Short read only string encoding version information.")
+    
+    name = Attribute("User readable read only string encoding version "
+                     "information.")
+    
+    comment = Attribute("Read only user defined comment.")
+    
+class IVersionNode(IVersion):
+    """In group situations there can be parallel versions that must be 
+       synchronized or merged.
+       
+       XXX Talk about graphs and nodes.
+    """
+    
+    def setPredecessors(guids) :
+        """ Sets the predecessors of a version. Accepts a list of guid as input. """
+    
+    def getPredecessors() :    
+        """ Returns a list of guid of predecessing versions. """
 
-	def isVersionable() :
-		""" Returns False, because versions are not themselves versionable. """
-
-	def getPredecessorNodes() :
-		""" Return the direct predecessors as a list of nodes """
-		
-	def isPredecessorOf(version) :
-		""" Returns a boolean that indicates whether this node is a predecessor of another version. """
-		
-	def isCurrent() :
-		""" Returns a boolean that indicates whether this node is the current version. """
-	
-	
+    def isPredecessorOf(version) :
+        """ Returns a boolean that indicates whether this node is a predecessor of another version. """
+        
+    def isCurrent() :
+        """ Returns a boolean that indicates whether this node is the current version. """
+    
+    
+    
 class IVersionHistory(INameChooser) :
     """ A version history of a single object should be able to
         generate unique names for each version within the version history.
@@ -362,5 +352,3 @@ class IVersioned(IVersionable):
 
 
 # XXX describe Event types here
-
-
