@@ -20,11 +20,6 @@
                 permission="Zope.View"
                 template="www/dialog_macros.pt" />
 
-  <browser:view name="ZMIUtility"
-                permission="Zope.View"
-                allowed_interface=".ZMIViewUtility.IZMIViewUtility"
-                factory=".ZMIViewUtility." />
-
   <browser:resource name="zopetopBasic.css" 
                     file="www/zopetopBasic.css"/>
   <browser:resource name="zopetopWidgets.css" 
