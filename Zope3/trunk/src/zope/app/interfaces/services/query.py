@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.6 2003/01/07 19:51:26 stevea Exp $
+$Id: query.py,v 1.7 2003/02/06 13:03:39 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -22,6 +22,7 @@ from zope.app.interfaces.services.configuration import INamedConfigurationInfo
 from zope.app.interfaces.services.configuration import INamedConfiguration
 from zope.app.component.interfacefield import InterfacesField
 from zope.schema.interfaces import ITuple
+# There's another import further down
 
 class IQueryProcessorsField(ITuple):
     """Field for entering a pipeline of query processors."""
@@ -48,7 +49,7 @@ class IQueryService(Interface):
     def listQueries():
         '''Returns a list of query registrations.
 
-        (query_id, permission_id, input_interface, output_interface)'''
+        Each element of the list is an IQueryListItem.'''
 
     def processQuery(query_id, input):
         '''Processes the input, using the query registered with query_id.
@@ -56,14 +57,37 @@ class IQueryService(Interface):
         The input must be adaptable to the input interfaces registered for
         the query_id.'''
 
-class IQueryConfigurationInfo(INamedConfigurationInfo):
+class IQueryListItem(Interface):
 
-    permission = PermissionField(title=u'Required permission')
+    id = Attribute('The id of this query.')
+    #permission = Attribute('Permission required to run the query.'
+    #                       ' An object, not an id.')
+    #inputInterfaces = Attribute('Sequence of interfaces the input must be'
+    #                            ' adaptable to.')
+    #outputInterfaces = Attribute('Sequence of interfaces the output must be'
+    #                             ' adaptable to.')
+    permission = PermissionField(title=u'Required permission', required=False)
+
     inputInterfaces = InterfacesField(title=u'Input interfaces',
                                       basetype=None)
     outputInterfaces = InterfacesField(title=u'Output interfaces',
                                        basetype=None)
 
+# The import is here to avoid circular imports
+from zope.app.services.queryfield import QueryProcessorsField
+
+class IQueryConfigurationInfo(INamedConfigurationInfo):
+
+    permission = PermissionField(title=u'Required permission', required=False)
+    inputInterfaces = InterfacesField(title=u'Input interfaces',
+                                      basetype=None)
+    outputInterfaces = InterfacesField(title=u'Output interfaces',
+                                       basetype=None)
+    processors = QueryProcessorsField(title=u'Query processors',
+                                      required=False)
+
 class IQueryConfiguration(IQueryConfigurationInfo, INamedConfiguration):
-    pass
+
+    def getProcessors():
+        'Returns a sequence of query processor objects.'
 

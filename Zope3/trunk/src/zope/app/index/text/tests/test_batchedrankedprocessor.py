@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.3 2002/12/28 17:49:27 stevea Exp $
+$Id: test_batchedrankedprocessor.py,v 1.4 2003/02/06 13:03:38 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,9 +25,8 @@ from zope.component import getAdapter
 from zope.textindex.textindexinterfaces import IQuerying
 from zope.app.interfaces.index.interfaces import \
     IBatchedQuery, ITextIndexQuery, IBatchedResult, IRankedHubIdList
-
-from zope.app.index.text.processors import \
-    BatchedRankedProcessor, IBatchedRankedProcessor
+from zope.app.interfaces.services.query import IQueryProcessor
+from zope.app.index.text.processors import BatchedRankedProcessor
 from zope.app.index.queries import BatchedRankedResult
 from zope.app.index.text.queries import BatchedTextIndexQuery
 
@@ -65,7 +64,7 @@ class Test(PlacelessSetup, TestCase):
 
     def test_IVerify(self):
         processor = BatchedRankedProcessor(StupidTextIndex(None))
-        verifyObject(IBatchedRankedProcessor, processor)
+        verifyObject(IQueryProcessor, processor)
 
     def test_parameter(self):
         query = BatchedTextIndexQuery(u"test AND foo OR bar", 0, 20)
