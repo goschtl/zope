@@ -585,7 +585,7 @@ def walk_with_symlinks(top, func, arg):
     except os.error:
         return
     func(arg, top, names)
-    exceptions = ('.', '..')
+    exceptions = ('.', '..', '{arch}')
     for name in names:
         if name not in exceptions:
             name = os.path.join(top, name)
