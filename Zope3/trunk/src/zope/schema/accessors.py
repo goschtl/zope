@@ -33,9 +33,9 @@ read accessor is defined for read-only fields.
 Read accessors function as access method specifications and as field
 specifications.  Write accessors are solely method specifications.
 
-$Id: accessors.py,v 1.6 2003/11/05 03:08:11 jeremy Exp $
+$Id: accessors.py,v 1.7 2004/01/20 19:45:07 poster Exp $
 """
-from zope.interface import providedBy
+from zope.interface import providedBy, implementedBy
 from zope.interface.interface import Method
 
 
@@ -48,7 +48,7 @@ class FieldReadAccessor(Method):
     # fields properties to provide meta data.
 
     def __provides__(self):
-        return providedBy(self.field)
+        return providedBy(self.field) + implementedBy(FieldReadAccessor)
     __provides__ = property(__provides__)
 
     def __init__(self, field):

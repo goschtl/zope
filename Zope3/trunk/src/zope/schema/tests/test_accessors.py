@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_accessors.py,v 1.3 2003/06/04 09:09:46 stevea Exp $
+$Id: test_accessors.py,v 1.4 2004/01/20 19:45:08 poster Exp $
 """
 
 import unittest
@@ -25,6 +25,7 @@ from zope.schema.interfaces import IText
 from zope.schema.accessors import FieldReadAccessor, FieldWriteAccessor
 from zope.interface.verify import verifyClass, verifyObject
 from zope.interface import document
+from zope.interface.interfaces import IMethod
 
 class Test(unittest.TestCase):
 
@@ -62,6 +63,9 @@ class Test(unittest.TestCase):
             self.assertEqual(getattr(I['getFoo'], attr), getattr(field, attr))
 
         self.assert_(IText.isImplementedBy(I['getFoo']))
+        
+        self.assert_(IMethod.isImplementedBy(I['getFoo']))
+        self.assert_(IMethod.isImplementedBy(I['setFoo']))
 
         self.assertEqual(I['setFoo'].field, field)
         self.assertEqual(I['setFoo'].__name__, 'setFoo')
