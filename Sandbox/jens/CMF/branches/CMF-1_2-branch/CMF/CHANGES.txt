@@ -23,6 +23,11 @@ Somewhere over the rainbow
 
  Bugs Fixed
 
+  - Fixed 'CMFTopic.SimpleIntegerCriterion.edit' to require a pair
+    of values when 'direction' is 'min:max';  updated skins to use
+    new 'getValueString', which renders such values properly
+    (Tracker #439).
+
   - Ensured that Documents created with initial STX get cooked
     (Tracker #435).
 
