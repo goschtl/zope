@@ -16,19 +16,10 @@
 $Id$
 """
 
-from zope.app.event.interfaces import ISubscriber
 from zope.app.observable.interfaces import IObservable
-from zope.interface import implements
 
-class ObserverEventNotifier:
-
-    implements(ISubscriber)
-
-    def notify (self, event):
-        adapter = IObservable(event.object, None)
-
-        if adapter is not None:
-            adapter.notify(event)
-
-observerEventNotifierInstance = ObserverEventNotifier()
+def observerEventNotifier(event):
+    adapter = IObservable(event.object, None)
+    if adapter is not None:
+        adapter.notify(event)
 

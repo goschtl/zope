@@ -23,7 +23,6 @@ from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
 from zope.app.event.interfaces import IObjectContentModifiedEvent
-from zope.app.event.interfaces import ISubscriber
 from zope.interface import implements
 from zope.app.event import publish
 from zope.component import subscribers
@@ -73,37 +72,8 @@ class ObjectCopiedEvent(ObjectCreatedEvent):
     implements(IObjectCopiedEvent)
 
 
-class ObjectEventNotifier:
+def objectEventNotify(event):
     """Event subscriber to dispatch ObjectEvents to interested adapters."""
-    implements(ISubscriber)
-
-    def notify(self, event):
-        assert IObjectEvent.providedBy(event)
-        adapters = subscribers((event.object, event), ISubscriber)
-        for adapter in adapters:
-            adapter.notify(event)
-
-objectEventNotifierInstance = ObjectEventNotifier()
-
-def objectEventCallbackHelper(callback):
-    """Build a factory implementing ISubscriber that just calls a callback
-
-    callback will be called with an ObjectEvent instance. Example usage:
-
-    factory = objectEventCallbackHelper(events.append)
-    getService(None, Adapters).subscribe(
-        [MyObjectType, IObjectRemovedEvent], ISubscriber, factory
-    )
-    """
-    class _CallbackHelper:
-        implements(ISubscriber)           
-        def __init__(self, object, event):
-            self.object = object
-            self.event = event
-
-        def notify(self, event):
-            callback(event)
-
-    return _CallbackHelper
-
-
+    adapters = subscribers((event.object, event), None)
+    for adapter in adapters:
+        pass # getting them does the work

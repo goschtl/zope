@@ -28,11 +28,9 @@ from zope.app.event import objectevent
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectEvent
-from zope.app.event.interfaces import ISubscriber
 from zope.app.container.sample import SampleContainer
 from zope.app.tests.placelesssetup import setUp, tearDown
-from zope.app.servicenames import Adapters, EventPublication
-from zope.component import getService
+from zope.app.tests import ztapi
 
 class TestObjectModifiedEvent(unittest.TestCase):
 
@@ -61,10 +59,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         notifier = objectevent.ObjectEventNotifier()
         events = []
 
-        factory = objectevent.objectEventCallbackHelper(events.append)
-        getService(None, Adapters).subscribe(
-            [IContained, IObjectRemovedEvent], ISubscriber, factory
-        )
+        ztapi.handle([IContained, IObjectRemovedEvent], events.append)
 
         item = Contained()
         event = ObjectRemovedEvent(item)
@@ -82,9 +77,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         self.assertEqual([], events)
 
     def testVeto(self):
-        eventPublication = getService(None, EventPublication)
-        eventPublication.globalSubscribe(objectevent.ObjectEventNotifier(),
-                                         IObjectEvent)
+        ztapi.handle([IObjectEvent], objectevent.objectEventNotify)
         container = SampleContainer()
         item = Contained()
 
@@ -99,10 +92,7 @@ class TestObjectEventNotifications(unittest.TestCase):
             self.assertEqual(item, event.object)
             raise Veto
 
-        factory = objectevent.objectEventCallbackHelper(callback)
-        getService(None, Adapters).subscribe(
-            [IContained, IObjectRemovedEvent], ISubscriber, factory
-        )
+        ztapi.handle([IContained, IObjectRemovedEvent], callback)
 
         # del container['Fred'] will fire an ObjectRemovedEvent event.
         self.assertRaises(Veto, container.__delitem__, 'Fred')

@@ -25,7 +25,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
+from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent
 from zope.app.mail.interfaces import IMailDelivery
@@ -208,15 +208,13 @@ class MailSubscriptions:
 class WikiMailer:
     """Class to handle all outgoing mail."""
 
-    implements(ISubscriber)
-
     def __init__(self, host="localhost", port="25"):
         """Initialize the the object.""" 
         self.host = host
         self.port = port
 
-    def notify(self, event):
-        """See zope.app.event.interfaces.ISubscriber"""
+    def __call__(self, event):
+        # XXX event handling should be separated from mailing
         if IWikiPage.providedBy(event.object):
             if IObjectAddedEvent.providedBy(event):
                 self.handleAdded(event.object)

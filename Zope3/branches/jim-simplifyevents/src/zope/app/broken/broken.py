@@ -70,7 +70,7 @@ class Broken(ZODB.broken.Broken):
             return default
         return annotations.get(key, default)
 
-def installBroken(event):
+def installBrokenSubscriber(event):
     """Install a class factory that handled broken objects
 
     This method installs a custom class factory when it gets a
@@ -127,5 +127,3 @@ def installBroken(event):
         return find_global(modulename, globalname, Broken_, type_)
 
     event.database.classFactory = classFactory
-
-installBrokenSubscriber = zope.app.event.function.Subscriber(installBroken)

@@ -20,7 +20,6 @@ from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.servicenames import HubIds
 from zope.app.traversing.api import getName, getPath
 from zope.app.container.browser.adding import Adding
 from zope.app.hub import Registration
@@ -32,15 +31,6 @@ class AddWiki(object):
 
     def createAndAdd(self, data):
         content = super(AddWiki, self).createAndAdd(data)
-        if self.request.get('textindex'):
-            # Get the environment
-            sm = zapi.getServices()
-            pkg = sm['default']
-            # Create, subscribe and add a Registration object.
-            if 'WikiReg' not in pkg: 
-                reg = Registration()
-                pkg['WikiReg'] = reg
-                reg.subscribe()
 
         if self.request.get('frontpage'):
             page = removeAllProxies(

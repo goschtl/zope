@@ -31,8 +31,6 @@ def undoSetup(event):
     svc = zapi.getGlobalService(Utilities)
     svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
 
-undoSetup = function.Subscriber(undoSetup)
-
 class Prefix(str):
     """A prefix is equal to any string it is a prefix of.
 

@@ -19,38 +19,15 @@ __metaclass__ = type
 
 from datetime import datetime
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.event.interfaces import ISubscriber
-from zope.interface import implements
 
-class DCTimeAnnotatorBase:
-    """Update Dublin-Core time property
-    """
-    implements(ISubscriber)
-
-    def notify(self, event):
-        dc = IZopeDublinCore(event.object, None)
-        if dc is not None:
-            self.annotate(dc)
-
-    def annotate(self, dc):
-        raise RuntimeError, 'annotate not implemented'
-
-
-class ModifiedAnnotatorClass(DCTimeAnnotatorBase):
-    """Updates DC modified when an object is modified."""
-
-    def annotate(self, dc):
+def ModifiedAnnotator(event):
+    dc = IZopeDublinCore(event.object, None)
+    if dc is not None:
         dc.modified = datetime.utcnow()
 
-
-class CreatedAnnotatorClass(DCTimeAnnotatorBase):
-    """Sets DC created and modified when an object is created."""
-
-    def annotate(self, dc):
+def CreatedAnnotator(event):
+    dc = IZopeDublinCore(event.object, None)
+    if dc is not None:
         now = datetime.utcnow()
         dc.created = now
         dc.modified = now
-
-
-ModifiedAnnotator = ModifiedAnnotatorClass()
-CreatedAnnotator = CreatedAnnotatorClass()

@@ -108,6 +108,3 @@ class ModuleFactory(object):
 def installPersistentModuleImporter(event):
     from zodbcode.module import PersistentModuleImporter
     PersistentModuleImporter().install()
-
-installPersistentModuleImporter = function.Subscriber(
-    installPersistentModuleImporter)

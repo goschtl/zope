@@ -11,9 +11,10 @@
     serviceType="EventPublication"
     component="zope.app.event.globalservice.eventPublisher" />
 
-<event:subscribe
-    subscriber=".objectevent.objectEventNotifierInstance"
-    event_types="zope.app.event.interfaces.IObjectEvent" />
+<subscriber
+    for="zope.app.event.interfaces.IObjectEvent" 
+    factory=".objectevent.objectEventNotify"
+    />
 
 <!-- Local Event Service -->
 <content class=".localservice.EventService">

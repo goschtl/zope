@@ -182,14 +182,12 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
-from zope.app.hub.interfaces import IObjectHub
 from zope.app.event.interfaces import ISubscriptionService
 from zope.app.event.localservice import EventService
-from zope.app.hub import ObjectHub
 from zope.app.utility import LocalUtilityService
-from zope.app.servicenames import HubIds, Utilities
+from zope.app.servicenames import Utilities
 from zope.app.servicenames import EventPublication, EventSubscription
-def createStandardServices(folder, hubids=None):
+def createStandardServices(folder):
     '''Create a bunch of standard placeful services
 
     Well, uh, 3
@@ -202,16 +200,10 @@ def createStandardServices(folder, hubids=None):
     # EventPublication service already defined by
     # zope.app.events.tests.PlacelessSetup
 
-    defineService(HubIds, IObjectHub)
-
     # EventService must be IAttributeAnnotatable so that it can support
     # dependencies.
     classImplements(EventService, IAttributeAnnotatable)
     events = EventService()
     addService(sm, EventPublication, events)
     addService(sm, EventSubscription, events, suffix='sub')
-    if hubids is None:
-        hubids = ObjectHub()
-
-    addService(sm, HubIds, hubids)
 

@@ -232,20 +232,16 @@ def setitem(container, setitemf, name, object):
     ...     def setMoved(self, event):
     ...         self.moved = event
 
-    >>> from zope.app.event.objectevent import objectEventCallbackHelper
     >>> from zope.app.container.interfaces import IObjectAddedEvent
     >>> from zope.app.container.interfaces import IObjectMovedEvent
-    >>> from zope.component import getService
-    >>> from zope.app.servicenames import Adapters
-    >>> from zope.app.event.interfaces import ISubscriber
-    >>> factory = objectEventCallbackHelper(
-    ...     lambda event: event.object.setAdded(event))
-    >>> getService(None, Adapters).subscribe(
-    ...     [IItem,IObjectAddedEvent], ISubscriber, factory)
-    >>> factory = objectEventCallbackHelper(
-    ...     lambda event: event.object.setMoved(event))
-    >>> getService(None, Adapters).subscribe(
-    ...     [IItem, IObjectMovedEvent], ISubscriber, factory)
+    >>> from zope.app.tests import ztapi
+
+    >>> ztapi.handle([IItem, IObjectAddedEvent],
+    ...              lambda event: event.object.setAdded(event))
+
+    >>> ztapi.handle([IItem, IObjectMovesEvent],
+    ...              lambda event: event.object.setMoved(event))
+    
     >>> item = Item()
 
     >>> container = {}

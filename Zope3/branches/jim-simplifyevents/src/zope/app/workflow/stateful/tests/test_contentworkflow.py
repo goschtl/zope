@@ -27,7 +27,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
 from zope.app.event.tests.placelesssetup import clearEvents
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
-from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriber
+from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.utility import UtilityRegistration
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.registration.interfaces import ActiveStatus

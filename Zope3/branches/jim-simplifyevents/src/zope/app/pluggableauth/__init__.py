@@ -186,60 +186,45 @@ class PluggableAuthenticationService(OrderedContainer):
         del self[id]
 
 
-class PluggableAuthenticationServiceAddSubscriber:
+def PluggableAuthenticationServiceAddSubscriber(self, event):
+    r"""Generates an earmark if one is not provided.
 
-    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+    Define a stub for PluggableAuthenticationService
 
-    def __init__(self, pluggable_auth_service, event):
-        self.pluggable_auth_service = pluggable_auth_service
-        self.event = event
+    >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+    >>> class PluggableAuthStub:
+    ...     implements(IPhysicallyLocatable)
+    ...     def __init__(self, earmark=None):
+    ...         self.earmark = earmark
+    ...     def getName(self):
+    ...         return 'PluggableAuthName'
 
-    def notify(self, event):
-        r"""Generates an earmark if one is not provided.
+    The subscriber generates an earmark for the auth service if one is not
+    set in the init.
 
-        Define a stub for PluggableAuthenticationService
+    >>> stub = PluggableAuthStub()
+    >>> event = ''
+    >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+    >>> stub.earmark is not None
+    True
 
-        >>> from zope.app.traversing.interfaces \
-        ...     import IPhysicallyLocatable
-        >>> class PluggableAuthStub:
-        ...     implements(IPhysicallyLocatable)
-        ...     def __init__(self, earmark=None):
-        ...         self.earmark = earmark
-        ...     def getName(self):
-        ...         return 'PluggableAuthName'
+    The subscriber does not modify an earmark for the auth service if one
+    exists already.
 
-        The subscriber generates an earmark for the auth service if one is not
-        set in the init.
-
-        >>> stub = PluggableAuthStub()
-        >>> event = ''
-        >>> subscriber = \
-        ...     PluggableAuthenticationServiceAddSubscriber(stub,
-        ...                                                 event)
-        >>> subscriber.notify(event)
-        >>> stub.earmark is not None
-        True
-        
-        The subscriber does not modify an earmark for the auth service if one
-        exists already.
-
-        >>> earmark = 'my sample earmark'
-        >>> stub = PluggableAuthStub(earmark=earmark)
-        >>> event = ''
-        >>> subscriber = \
-        ...     PluggableAuthenticationServiceAddSubscriber(stub, event)
-        >>> subscriber.notify(event)
-        >>> stub.earmark == earmark
-        True
-        """
-        self = self.pluggable_auth_service
-        if self.earmark is None:
-            # we manufacture what is intended to be a globally unique
-            # earmark if one is not provided in __init__
-            myname = zapi.name(self)
-            rand_id = gen_key()
-            t = int(time.time())
-            self.earmark = '%s-%s-%s' % (myname, rand_id, t)
+    >>> earmark = 'my sample earmark'
+    >>> stub = PluggableAuthStub(earmark=earmark)
+    >>> event = ''
+    >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+    >>> stub.earmark == earmark
+    True
+    """
+    if self.earmark is None:
+        # we manufacture what is intended to be a globally unique
+        # earmark if one is not provided in __init__
+        myname = zapi.name(self)
+        rand_id = gen_key()
+        t = int(time.time())
+        self.earmark = '%s-%s-%s' % (myname, rand_id, t)
                 
 
 class IBTreePrincipalSource(

@@ -48,7 +48,6 @@
 
   <!-- Services -->
   <include package="zope.app.errorservice" />  
-  <include package="zope.app.hub" />  
   <include package="zope.app.menu" />  
   <include package="zope.app.pluggableauth" />  
   <include package="zope.app.site" />  

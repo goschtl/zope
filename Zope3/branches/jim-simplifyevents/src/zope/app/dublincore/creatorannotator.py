@@ -16,27 +16,21 @@
 $Id$
 """
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.event.interfaces import ISubscriber
 from zope.security.management import queryInteraction
-from zope.interface import implements
 
-class CreatorAnnotatorClass(object):
+def CreatorAnnotator(event):
     """Update Dublin-Core creator property"""
-    implements(ISubscriber)
+    dc = IZopeDublinCore(event.object, None)
+    if dc is None:
+        return
 
-    def notify(self, event):
-        dc = IZopeDublinCore(event.object, None)
-        if dc is None:
-            return
+    # Try to find a principal for that one. If there
+    # is no principal then we don't touch the list
+    # of creators.
+    interaction = queryInteraction()
+    if interaction is not None:
+        for participation in interaction.participations:
+            principalid = participation.principal.id
+            if not principalid in dc.creators:
+                dc.creators = dc.creators + (unicode(principalid), )
 
-        # Try to find a principal for that one. If there
-        # is no principal then we don't touch the list
-        # of creators.
-        interaction = queryInteraction()
-        if interaction is not None:
-            for participation in interaction.participations:
-                principalid = participation.principal.id
-                if not principalid in dc.creators:
-                    dc.creators = dc.creators + (unicode(principalid), )
-
-CreatorAnnotator = CreatorAnnotatorClass()

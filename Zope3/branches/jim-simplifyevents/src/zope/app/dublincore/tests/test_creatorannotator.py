@@ -96,13 +96,13 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
         # Check what happens if no user is there
         newInteraction(None)
-        CreatorAnnotator.notify(event)
+        CreatorAnnotator(event)
         self.assertEqual(data.creators,())
         endInteraction()
 
         # Let the bad edit it first
         newInteraction(DummyRequest(bad_author))
-        CreatorAnnotator.notify(event)
+        CreatorAnnotator(event)
 
         self.failIf(len(data.creators) != 1)
         self.failUnless(bad_author.id in data.creators)
@@ -110,7 +110,7 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
         # Now let the good edit it
         newInteraction(DummyRequest(good_author))
-        CreatorAnnotator.notify(event)
+        CreatorAnnotator(event)
 
         self.failIf(len(data.creators) != 2)
         self.failUnless(good_author.id in data.creators)
@@ -119,7 +119,7 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
         # Let the bad edit it again
         newInteraction(DummyRequest(bad_author))
-        CreatorAnnotator.notify(event)
+        CreatorAnnotator(event)
 
         # Check that the bad author hasn't been added twice.
         self.failIf(len(data.creators) != 2)
