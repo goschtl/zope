@@ -11,67 +11,79 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-Test IRolePermissionManager class.
+"""Test IRolePermissionManager class that has no context.
 
-$Id: RolePermissionManager.py,v 1.1 2002/06/20 15:55:01 jim Exp $
+$Id: RolePermissionManager.py,v 1.2 2002/06/24 16:00:44 efge Exp $
 """
 
+from Zope.ComponentArchitecture import getAdapter
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
-from Zope.App.Security.Settings import Allow, Assign
+from Zope.App.Security.IRolePermissionMap import IRolePermissionMap
+from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
+from Zope.App.Security.Settings import Allow, Deny, Unset
 
 class RolePermissionManager:
+    """
+    provide adapter that manages role permission data in an object attribute
+    """
 
-    __implements__ = IRolePermissionManager
+    __implements__ = IRolePermissionManager, IRolePermissionMap
 
-    def __init__(self, **rp):
-        self._rp = rp
+    def __init__(self):
+        self._rp = LocalSecurityMap()
 
-    # Implementation methods for interface
-    # Zope.App.Security.IRolePermissionManager.
+    def grantPermissionToRole(self, permission_id, role_id):
+        ''' See the interface IRolePermissionManager '''
+        rp = self._getRolePermissions(create=1)
+        rp.addCell(permission_id, role_id, Allow)
 
-    def getRolesForPermission(self, permission):
+    def denyPermissionToRole(self, permission_id, role_id):
+        ''' See the interface IRolePermissionManager '''
+        rp = self._getRolePermissions(create=1)
+        rp.addCell(permission_id, role_id, Deny)
+
+    def unsetPermissionFromRole(self, permission_id, role_id):
+        ''' See the interface IRolePermissionManager '''
+        rp = self._getRolePermissions()
+        # Only unset if there is a security map, otherwise, we're done
+        if rp:
+            rp.delCell(permission_id, role_id)
+
+    def getRolesForPermission(self, permission_id):
         '''See interface IRolePermissionMap'''
-        r=[]
-        for role, permissions in self._rp.items():
-            if permission in permissions: r.append((role, Allow))
-        return r
-
-    def getPermissionAcquired(self, permission):
-        '''See interface IRolePermissionMap'''
-        return 1
-
-    def getPermissionsForRole(self, role):
-        '''See interface IRolePermissionMap'''
-        return [(perm, Allow) for perm in self._rp[role]]
-
-    def setPermissionAcquired(self, permission, flag):
-        '''See interface IRolePermissionManager'''
-        raise TypeError
-
-    def unsetPermissionFromRole(self, permission, role):
-        '''See interface IRolePermissionManager'''
-        permissions = self._rp.get(role, ())
-        if permission in permissions:
-            permissions.remove(permission)
-            if not permissions:
-                # XXX: this del removed by Steve and Casey
-                #      in order to get the PermissionsForRole
-                #      view unit tests to work correctly.
-                #
-                #      Why is this del here?
-                #
-                #      It doesn't seem to break anything to remove
-                #      it, like this!
-                #del self._rp[role]
-                pass
-
-
-    def grantPermissionToRole(self, permission, role):
-        '''See interface IRolePermissionManager'''
-        if role in self._rp:
-            if permission not in self._rp[role]:
-                self._rp[role].append(permission)
+        rp = self._getRolePermissions()
+        if rp:
+            return rp.getRow(permission_id)
         else:
-            self._rp[role] = [permission]
+            return []
+
+    def getPermissionsForRole(self, role_id):
+        '''See interface IRolePermissionMap'''
+        rp = self._getRolePermissions()
+        if rp:
+            return rp.getCol(role_id)
+        else:
+            return []
+
+    def getRolesAndPermissions(self):
+        '''See interface IRolePermissionMap'''
+        rp = self._getRolePermissions()
+        if rp:
+            return rp.getAllCells(role_id)
+        else:
+            return []
+
+    def getSetting(self, permission_id, role_id):
+        '''See interface IRolePermissionMap'''
+        rp = self._getRolePermissions()
+        if rp:
+            return rp.getCell(permission_id, role_id)
+        else:
+            return Unset
+
+    def _getRolePermissions(self, create=0):
+        """Get the role permission map stored in the context, optionally
+           creating one if necessary"""
+        return self._rp
+
 

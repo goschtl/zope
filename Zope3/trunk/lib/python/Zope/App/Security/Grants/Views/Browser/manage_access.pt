@@ -238,12 +238,15 @@ another helpful message
          value  string:${perm/getId}">
     </div>
   </td>
-  <td align="center" tal:repeat="role perm/roles">
-    <input type="checkbox" name="p0r0"
-           tal:attributes="
-           CHECKED role; 
-           name string:p${repeat/perm/index}r${repeat/role/index}"
-           />
+  <td align="center" tal:repeat="setting perm/roleSettings">
+    <select name="p0r0"
+       tal:attributes="name string:p${repeat/perm/index}r${repeat/setting/index}">
+        <option value="Unset"
+           tal:repeat="option view/availableSettings"
+           tal:attributes="value option/id;
+                           selected python:setting == option['id']"
+           tal:content="option/title">+</option>
+    </select>
   </td>
 </tr>
 </tbody>

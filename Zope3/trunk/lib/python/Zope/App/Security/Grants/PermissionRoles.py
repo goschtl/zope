@@ -2,24 +2,24 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
-$Id: PermissionRoles.py,v 1.1 2002/06/20 15:54:59 jim Exp $
+$Id: PermissionRoles.py,v 1.2 2002/06/24 16:00:44 efge Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
 from Zope.App.Security.IPermission import IPermission
-from Zope.App.Security.Settings import Allow
+from Zope.App.Security.Settings import Unset, Allow, Deny
 
 class PermissionRoles:
 
@@ -39,13 +39,18 @@ class PermissionRoles:
     def getDescription(self):
         return self._permission.getDescription()
 
-    def roles(self):
+    def roleSettings(self):
+        """
+        Returns the list of setting names of each role for this permission.
+        """
         prm = getAdapter(self._context, IRolePermissionManager)
         proles = prm.getRolesForPermission(self._permission.getId())
-        proles = [role for role,setting in proles if setting==Allow]
-        return [((role.getId() in proles) and '1' or None)
-                for role in self._roles]
-        
+        settings = {}
+        for role, setting in proles:
+            settings[role] = setting.getName()
+        nosetting = Unset.getName()
+        return [settings.get(role.getId(), nosetting) for role in self._roles]
+
     def rolesInfo(self):
         prm = getAdapter(self._context, IRolePermissionManager)
         proles = prm.getRolesForPermission(self._permission.getId())

@@ -59,60 +59,60 @@ class Test(PlacefulSetup, unittest.TestCase):
             del ids[i]
             del titles[i]
 
-    def testGrant(self):
+    def testGrantDenyUnset(self):
         roles = self.view.roles()
         permissions = self.view.permissions()
 
+        #         manager  member
+        # read       +
+        # write      .       -
         self.view.action({
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
-            'p0r0': '1', 'p0r1': '1', 'p1r0': '1',
+            'p0r0': 'Allow',
+            'p1r0': 'Unset', 'p1r1': 'Deny',
             },
                          testing=1)
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
-            rset = permissionRole.roles()
+            rset = permissionRole.roleSettings()
             for ir in range(len(rset)):
                 setting = rset[ir]
-                if setting is None:
-                    self.failIf(
-                        roles[ir].getId()  == 'manager'
-                        or
-                        permissions[ip].getId() == 'read'
-                        )
+                r = roles[ir].getId()
+                p = permissions[ip].getId()
+                if setting == 'Allow':
+                    self.failUnless(r == 'manager' and p == 'read')
+                elif setting == 'Deny':
+                    self.failUnless(r == 'member' and p == 'write')
                 else:
-                    self.failUnless(
-                        roles[ir].getId()  == 'manager'
-                        or
-                        permissions[ip].getId() == 'read'
-                        )
+                    self.failUnless(setting == 'Unset')
 
+        #         manager  member
+        # read       -
+        # write      +
         self.view.action({
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
-            'p0r0': '1',
+            'p0r0': 'Deny',
+            'p1r0': 'Allow', 'p1r1': 'Unset'
             },
                          testing=1)
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
-            rset = permissionRole.roles()
+            rset = permissionRole.roleSettings()
             for ir in range(len(rset)):
                 setting = rset[ir]
-                if setting is None:
-                    self.failIf(
-                        roles[ir].getId()  == 'manager'
-                        and
-                        permissions[ip].getId() == 'read'
-                        )
+                r = roles[ir].getId()
+                p = permissions[ip].getId()
+                if setting == 'Allow':
+                    self.failUnless(r == 'manager' and p == 'write')
+                elif setting == 'Deny':
+                    self.failUnless(r == 'manager' and p == 'read')
                 else:
-                    self.failUnless(
-                        roles[ir].getId()  == 'manager'
-                        and
-                        permissions[ip].getId() == 'read'
-                        )
-        
+                    self.failUnless(setting == 'Unset')
+
 
         self.view.update_permission(REQUEST=None,
                                     permission_id='write',
@@ -125,7 +125,7 @@ class Test(PlacefulSetup, unittest.TestCase):
              for r in permission.rolesInfo()
              if r['checked']],
             ['member'])
-        
+
         self.view.update_permission(REQUEST=None,
                                     permission_id='write',
                                     # roles=[],  roles attr omitted
@@ -138,7 +138,6 @@ class Test(PlacefulSetup, unittest.TestCase):
              if r['checked']],
             [])
 
-            
         self.view.update_permission(REQUEST=None,
                                     permission_id='write',
                                     roles=['manager','member'],

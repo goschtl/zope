@@ -13,12 +13,13 @@
 ##############################################################################
 """
 
-$Id: AnnotationRolePermissionManager.py,v 1.2 2002/06/24 11:17:58 efge Exp $
+$Id: AnnotationRolePermissionManager.py,v 1.3 2002/06/24 16:00:44 efge Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
 from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
+from Zope.App.Security.IRolePermissionMap import IRolePermissionMap
 from Zope.App.Security.Grants.PersistentLocalSecurityMap import \
      PersistentLocalSecurityMap
 from Zope.App.Security.Settings import Allow, Deny, Unset
@@ -30,7 +31,7 @@ class AnnotationRolePermissionManager:
     provide adapter that manages role permission data in an object attribute
     """
 
-    __implements__ = IRolePermissionManager
+    __implements__ = IRolePermissionManager, IRolePermissionMap
 
     def __init__(self, context):
         self._context = context
