@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.7 2004/03/11 17:27:14 fdrake Exp $
+$Id: finddeps.py,v 1.8 2004/03/11 19:43:59 fdrake Exp $
 """
 import sys
 import getopt
@@ -139,13 +139,6 @@ def getDependenciesOfZCMLFile(path):
             match[0] = match[0][1:-1]
             match.append('.'.join(match[0].split('.')[:-1]))
 
-            # zope and zope.app should never be dependencies; they are
-            # too general
-            if 'zope' in match:
-                match.remove('zope')
-            if 'zope.app' in match:
-                match.remove('zope.app')
-
             for name in match:
                 if name.startswith('.'):
                     name = localModule + name
@@ -158,11 +151,7 @@ def getDependenciesOfZCMLFile(path):
 
 
 def filterStandardModules(deps):
-    """Try to remove modules that are part of the standard Python library.
-
-    Note: we consider zope and zope.app to be standard modules, since they are
-    basically containers.
-    """
+    """Try to remove modules from the standard Python library."""
     filteredDeps = []
     for dep in deps:
         try:
@@ -173,7 +162,7 @@ def filterStandardModules(deps):
         if not hasattr(module, '__file__'):
             continue
         dir = os.path.dirname(module.__file__)
-        if dir.startswith(ZOPESRC) and dep.path not in ('zope', 'zope.app'):
+        if dir.startswith(ZOPESRC):
             filteredDeps.append(dep)
     return filteredDeps
 
