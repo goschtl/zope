@@ -78,6 +78,9 @@ class UniqueIdUtilityStub:
     def getId(self, ob):
         return self.ids[ob]
 
+    def queryId(self, ob, default=None):
+        return self.ids.get(ob, default)
+
     def items(self):
         return [(id, ReferenceStub(obj)) for id, obj in self.objs.items()]
 
@@ -120,14 +123,14 @@ class Test(PlacelessSetup, unittest.TestCase):
         verifyObject(ICatalog, catalog)
         index = StubIndex('author', None)
         catalog['author'] = index
-        self.assertEqual(catalog.keys(), ['author'])
+        self.assertEqual(list(catalog.keys()), ['author'])
         index = StubIndex('title', None)
         catalog['title'] = index
-        indexes = catalog.keys()
+        indexes = list(catalog.keys())
         indexes.sort()
         self.assertEqual(indexes, ['author', 'title'])
         del catalog['author']
-        self.assertEqual(catalog.keys(), ['title'])
+        self.assertEqual(list(catalog.keys()), ['title'])
 
     def _frob_uniqueidutil(self, ints=True, apes=True):
         uidutil = UniqueIdUtilityStub()
@@ -163,7 +166,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         catalog = Catalog()
         catalog['author'] = StubIndex('author', None)
         catalog['title'] = StubIndex('author', None)
-        catalog.updateIndexe(catalog['author'])
+        catalog.updateIndex(catalog['author'])
         checkNotifies = catalog['author'].doc
         self.assertEqual(len(checkNotifies), 18)
         checkNotifies = catalog['title'].doc
@@ -257,6 +260,12 @@ class TestEventSubscribers(unittest.TestCase):
 
         self.assertEqual(self.cat.regs, [(1, ob)])
         self.assertEqual(self.cat.unregs, [])
+
+        ob2 = Stub()
+        reindexDocSubscriber(ObjectModifiedEvent(ob2))
+        self.assertEqual(self.cat.regs, [(1, ob)])
+        self.assertEqual(self.cat.unregs, [])
+        
 
     def test_unindexDocSubscriber(self):
         from zope.app.catalog.catalog import unindexDocSubscriber
