@@ -87,16 +87,19 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
     def test_no_permission(self):
-        # XXX this shouldn't be passing!
         for view_name in view_names:
-            self.publish('/folder/test_folder_1/testoid/%s' % view_name,
-                         basic='viewer:secret')
+            response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+                                    basic='viewer:secret')
+            # we expect that we get a 401 Unauthorized
+            self.assertEqual(response.getStatus(), 401)
+
             
     def test_permission(self):
         for view_name in view_names:
-            self.publish('/folder/test_folder_1/testoid/%s' % view_name,
-                         basic='manager:r00t')
-        
+            response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+                                    basic='manager:r00t')
+            # we expect that we get a 200 Ok
+            self.assertEqual(response.getStatus(), 200)
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -106,4 +109,3 @@ def test_suite():
 
 if __name__ == '__main__':
     framework()
-
