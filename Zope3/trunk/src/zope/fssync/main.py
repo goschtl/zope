@@ -16,20 +16,23 @@
 
 Command line syntax summary:
 
+%(program)s [global_options] help [COMMAND ...]
 %(program)s [global_options] checkout [local_options] URL [TARGETDIR]
 %(program)s [global_options] update [local_options] [TARGET ...]
 %(program)s [global_options] commit [local_options] [TARGET ...]
 %(program)s [global_options] diff [local_options] [TARGET ...]
 %(program)s [global_options] status [local_options] [TARGET ...]
-%(program)s [global_options] add [local_options] TARGET ...
+%(program)s [global_options] add [local_options] PATH ...
+%(program)s [global_options] mkdir [local_options] PATH ...
 %(program)s [global_options] remove [local_options] TARGET ...
+%(program)s [global_options] resolve [local_options] PATH ...
 %(program)s [global_options] checkin [local_options] URL [TARGETDIR]
 
 ``%(program)s -h'' prints the global help (this message)
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.30 2003/08/12 16:47:21 fdrake Exp $
+$Id: main.py,v 1.31 2003/08/12 17:09:01 fdrake Exp $
 """
 
 import os
@@ -235,7 +238,8 @@ def diff(opts, args):
 def status(opts, args):
     """%(program)s status [TARGET ...]
 
-    Print brief (local) status for each target, without changing any files.
+    Print brief (local) status for each target, without changing any
+    files or contacting the Zope server.
     """
     fs = FSSync()
     fs.multiple(args, fs.status)
@@ -280,7 +284,7 @@ def revert(opts, args):
     fs.multiple(args, fs.revert)
 
 def mkdir(opts, args):
-    """%(program)s mkdir TARGET ...
+    """%(program)s mkdir PATH ...
 
     Create new directories in directories that are already known to
     %(program)s and schedule the new directories for addition.
@@ -289,8 +293,10 @@ def mkdir(opts, args):
     fs.multiple(args, fs.mkdir)
 
 def resolve(opts, args):
-    """%(program)s resolve [TARGET ...]
+    """%(program)s resolve [PATH ...]
 
+    Clear any conflict markers associated with PATH.  This would allow
+    commits to proceed for the relevant files.
     """
     fs = FSSync()
     fs.multiple(args, fs.resolve)
