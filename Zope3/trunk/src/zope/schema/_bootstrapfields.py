@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.13 2003/04/14 20:02:31 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.14 2003/04/22 18:02:56 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -135,7 +135,11 @@ class Field(Attribute):
 
     def set(self, object, value):
         if self.readonly:
-            raise TypeError("Can't set values on read-only fields")
+            raise TypeError("Can't set values on read-only fields "
+                            "(name=%s, class=%s.%s)"
+                            % (self.__name__,
+                               object.__class__.__module__,
+                               object.__class__.__name__))
         setattr(object, self.__name__, value)
 
 class Container(Field):

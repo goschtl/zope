@@ -12,22 +12,16 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.7 2003/03/11 16:11:22 jim Exp $
+$Id: connection.py,v 1.8 2003/04/22 18:02:55 gvanrossum Exp $
 """
 
 from persistence import Persistent
 from zope.proxy.context import ContextMethod
 from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.services.configuration \
-        import INameComponentConfigurable
+from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.services.service import ISimpleService
-
-
-class ILocalConnectionService(IConnectionService, INameComponentConfigurable):
-    """A local (placeful) connection service"""
 
 
 class ConnectionService(Persistent, NameComponentConfigurable):

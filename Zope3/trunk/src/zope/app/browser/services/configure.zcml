@@ -414,12 +414,12 @@
 
   <menuItems
       menu="zmi_views"
-      for="zope.app.services.connection.ILocalConnectionService">
+      for="zope.app.interfaces.services.connection.ILocalConnectionService">
     <menuItem title="Connections" action="index.html"/>
   </menuItems>
 
   <page
-      for="zope.app.services.connection.ILocalConnectionService"
+      for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="index.html"
       template="connections.pt"
       class=".configuration.NameComponentConfigurableView"
