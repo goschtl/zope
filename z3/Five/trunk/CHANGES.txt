@@ -1,8 +1,8 @@
 Five Changes
 ============
 
-* The editform directive now supports the widget zcml subdirective, that
-  previously was ignored.
+* The addform and editform directive now supports the widget zcml subdirective, 
+  that previously was ignored.
   
 * Five now supports the vocabulary zcml directive.
 
