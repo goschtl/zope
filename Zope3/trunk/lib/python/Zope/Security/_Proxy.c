@@ -836,9 +836,9 @@ ProxyType = {
 	0,					/* tp_descr_set */
 	0,					/* tp_dictoffset */
 	0,					/* tp_init */
-	PyType_GenericAlloc,			/* tp_alloc */
+	0, /*PyType_GenericAlloc,*/		/* tp_alloc */
 	proxy_new,				/* tp_new */
-	_PyObject_GC_Del,			/* tp_free */
+	0, /*_PyObject_GC_Del,*/		/* tp_free */
 };
 
 static PyObject *
@@ -896,6 +896,8 @@ init_Proxy(void)
 	if (! __module__str) return;
 
 	ProxyType.ob_type = &PyType_Type;
+	ProxyType.tp_alloc = PyType_GenericAlloc;
+	ProxyType.tp_free = _PyObject_GC_Del;
 	if (PyType_Ready(&ProxyType) < 0)
 		return;
 
