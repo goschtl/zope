@@ -53,6 +53,7 @@ import smtplib
 import socket, whrandom, getpass
 
 CVSROOT = os.path.split(SCRIPT_DIR)[0]
+CVSROOT_ABS = os.path.abspath('..')
 LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
 OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
@@ -345,7 +346,7 @@ def create_diff(repo, file, old, new):
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f rdiff -r %s -r %s -kk -u %s/%s'
-                    % (CVSROOT, old, new, repo, file))
+                    % (CVSROOT_ABS, old, new, repo, file))
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[2:]
         file_handle.close()
