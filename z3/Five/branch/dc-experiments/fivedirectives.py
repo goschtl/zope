@@ -36,9 +36,12 @@ class ITraversableDirective(Interface):
         required=True
         )
 
-class IViewableDirective(ITraversableDirective):
-    """State that a class can be viewed.
-
-    Deprecated.
+class IViewableDirective(Interface):
+    """State that an instance class can be viewed directly by
+    choosing the default view through a IBrowserDefault adapter.
     """
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True
+        )
 

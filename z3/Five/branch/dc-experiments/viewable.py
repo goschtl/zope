@@ -16,6 +16,7 @@ from zope.component import getView, getDefaultViewName, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 from traversable import FakeRequest
+from interfaces import IBrowserDefault
 
 _marker = object
 
@@ -38,17 +39,16 @@ class Viewable:
 
     # we have a default view, tell zpublisher to go there
     def __browser_default__(self, request):
-        name = None
+        obj = self
+        path = None
         try:
-            name = getDefaultViewName(self, request)
+            obj, path = IBrowserDefault(self).defaultView(request)
         except ComponentLookupError:
             pass
-        if name:
-            if name == '__call__':
-                return self, ('fallback_call__',)
-            view = self.unrestrictedTraverse([name])
-            if view is not None:
-                return self, (name,)
+        if path:
+            if len(path) == 1 and path[0] == '__call__':
+                return obj, ('fallback_call__',)
+            return obj, path
         return self.__fallback_default__(request)
     __browser_default__.__five_method__ = True
 
@@ -62,11 +62,26 @@ class Viewable:
             request = getattr(self, 'REQUEST', None)
             if not IBrowserRequest.providedBy(request):
                 request = FakeRequest()
-        obj, name = self.__browser_default__(request)
-        if name:
-            name = name[0]
-            meth = obj.unrestrictedTraverse([name])
+        obj, path = self.__browser_default__(request)
+        if path:
+            meth = obj.unrestrictedTraverse(path)
             if meth is not None:
                 return meth(*args, **kw)
         return self.fallback_call__(*args, **kw)
     __call__.__five_method__ = True
+
+class BrowserDefault:
+
+    implements(IBrowserDefault)
+
+    def __init__(self, context):
+        self.context = context
+
+    def defaultView(self, request):
+        context = self.context
+        name = None
+        try:
+            name = getDefaultViewName(context, request)
+        except ComponentLookupError:
+            pass
+        return context, (name,)

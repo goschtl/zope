@@ -13,12 +13,20 @@
   <adapter
       for="*"
       factory=".traversable.FiveTraversable"
-      provides="zope.app.traversing.interfaces.ITraversable" />
+      provides="zope.app.traversing.interfaces.ITraversable"
+      />
 
   <adapter
       for="*"
       factory="zope.app.traversing.adapters.Traverser"
-      provides="zope.app.traversing.interfaces.ITraverser" />
+      provides="zope.app.traversing.interfaces.ITraverser"
+      />
+
+  <adapter
+      for="*"
+      factory=".viewable.BrowserDefault"
+      provides=".interfaces.IBrowserDefault"
+      />
 
   <browser:page
       for="*"

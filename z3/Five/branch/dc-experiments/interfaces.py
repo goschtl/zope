@@ -36,6 +36,15 @@ class IPersistentExtra(Interface):
     def modified_in_version():
         """Was the object modified in this version?"""
 
+class IBrowserDefault(Interface):
+    """Provide a hook for deciding about the default view for an object"""
+
+    def defaultView(self, request):
+        """Return the object to be published
+        (usually self) and a sequence of names to traverse to
+        find the method to be published.
+        """
+
 class IAcquisitionWrapper(Interface):
 
     def acquire(name, filter=0, extra=None, expl=0, default=0,
