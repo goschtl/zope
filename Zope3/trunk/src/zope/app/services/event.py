@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.11 2003/02/12 02:17:34 seanb Exp $
+$Id: event.py,v 1.12 2003/02/14 03:18:04 poster Exp $
 """
 
 from __future__ import generators
@@ -147,7 +147,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         # the name of the service that this object is providing, or
         # None if unbound
 
-    _subscribeToServiceName = "Subscriptions"
+    _subscribeToServiceName = Subscription
     _subscribeToServiceInterface = IEvent
     _subscribeToServiceFilter = None
 

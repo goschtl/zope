@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.7 2003/02/12 02:17:21 seanb Exp $
+$Id: subs.py,v 1.8 2003/02/14 03:18:03 poster Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -33,6 +33,7 @@ from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
 from zope.component import getService, getAdapter, queryAdapter
+from zope.component import ComponentLookupError
 from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
@@ -513,20 +514,28 @@ def getWaysToSubscribe(context, reference, allways=True):
         else:
             cleanobj = removeAllProxies(wrappedobj)
             if allways:
-                hub = getService(context, HubIds)
-                try:
-                    hubId = hub.getHubId(path)
-                except NotFoundError:
-                    pass
+	        try:
+                    hub = getService(context, HubIds)
+		except ComponentLookupError:
+		    pass
+		else:
+                    try:
+                        hubId = hub.getHubId(path)
+                    except NotFoundError:
+                        pass
     else:
         reftype = object
         wrappedobj = reference
         cleanobj = clean_reference
         path = getPhysicalPathString(wrappedobj)
-        hub = getService(context, HubIds)
-        try:
-            hubId = hub.getHubId(path)
-        except NotFoundError:
-            pass
+	try:
+            hub = getService(context, HubIds)
+	except ComponentLookupError:
+	    pass
+	else:
+            try:
+                hubId = hub.getHubId(path)
+            except NotFoundError:
+                pass
 
     return cleanobj, wrappedobj, path, hubId, reftype
