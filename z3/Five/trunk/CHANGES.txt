@@ -93,4 +93,4 @@ Five 0.2b (2004-09-24)
 Five 0.1 (2004-07-30)
 ---------------------
 
-Initial public release.
+Initial public release (mainly Martijn's work)
