@@ -158,11 +158,6 @@
 /Zope27/import                                    /Zope/import
 /Zope27/inst                                      /Zope/inst
 /Zope27/var                                       /Zope/var
-/Zope27/wo_pcgi.py                                /Zope/wo_pcgi.py
-/Zope27/setup.py                                  /Zope/setup.py
-/Zope27/z2.py                                     /Zope/z2.py
-/Zope27/zpasswd.py                                /Zope/zpasswd.py
-/Zope27/test.py                                   /Zope/test.py
 
 /Zope27/lib/Components                            /Zope/lib/Components
 
