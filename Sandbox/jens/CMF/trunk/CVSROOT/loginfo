@@ -1,3 +1,5 @@
 ^CVSROOT ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
 
+^test ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
+
 DEFAULT ${CVSROOT}/CVSROOT/postcommit_actions %{sVv}
