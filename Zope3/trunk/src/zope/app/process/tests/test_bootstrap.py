@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.18 2004/03/13 23:55:13 srichter Exp $
+$Id: test_bootstrap.py,v 1.19 2004/05/05 12:14:43 philikon Exp $
 """
 import unittest
 from transaction import get_transaction
@@ -33,9 +33,7 @@ from zope.app.servicenames import ErrorLogging
 from zope.app.traversing import traverse
 from zope.app.site.service import ServiceManager
 
-__metaclass__ = type
-
-class EventStub:
+class EventStub(object):
 
     def __init__(self, db):
         self.database = db

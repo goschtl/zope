@@ -13,27 +13,29 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.10 2004/04/30 16:45:29 jim Exp $
+$Id: registration.py,v 1.11 2004/05/05 12:14:41 philikon Exp $
 """
+import sys
 from persistent import Persistent
+
+import zope.cachedescriptors.property
+from zope.interface import implements
+from zope.exceptions import DuplicationError
+from zope.fssync.server.entryadapter import ObjectEntryAdapter
+from zope.fssync.server.interfaces import IObjectFile
+from zope.proxy import removeAllProxies, getProxiedObject
+from zope.security.checker import InterfaceChecker, CheckerPublic
+from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.xmlpickle import dumps, loads
+
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.event.interfaces import ISubscriber
-from zope.app import zapi
 from zope.app.module.interfaces import IModuleManager
-from zope.exceptions import DuplicationError
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.fssync.server.interfaces import IObjectFile
-from zope.interface import implements
-from zope.proxy import removeAllProxies, getProxiedObject
-from zope.security.checker import InterfaceChecker, CheckerPublic
-from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
-from zope.xmlpickle import dumps, loads
-import interfaces
-import sys
-import zope.cachedescriptors.property
+from zope.app.registration import interfaces
 
 class RegistrationStatusProperty(object):
 
@@ -247,11 +249,10 @@ class RegistrationStack(Persistent, Contained):
             # Nothing registered. Need to stick None in front so that nothing
             # is active.
             data = (None, )
-            
+
         self.data = data + (registration, )
 
     def unregister(self, registration):
-
         data = self.data
         if data:
             if data[0] == registration:
@@ -358,9 +359,7 @@ class RegistrationStack(Persistent, Contained):
         return bool(self.data)
 
     def info(self):
-
         data = self.data
-
         result = [{'active': False,
                    'registration': registration,
                   }
@@ -387,7 +386,7 @@ class RegistrationStack(Persistent, Contained):
                 try:
                     data.append(zapi.traverse(sm, path))
                 except KeyError:
-                    # ignore objects we can'r get to
+                    # ignore objects we can't get to
                     raise # for testing
             else:
                 data.append(path)
@@ -627,8 +626,7 @@ class ComponentRegistration(SimpleRegistration):
 
         return component
 
-class ComponentRegistrationRemoveSubscriber:
-
+class ComponentRegistrationRemoveSubscriber(object):
     implements(ISubscriber)
  
     def __init__(self, component_registration, event):
@@ -645,8 +643,7 @@ class ComponentRegistrationRemoveSubscriber:
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(self.component_registration))
 
-class ComponentRegistrationAddSubscriber:
-
+class ComponentRegistrationAddSubscriber(object):
     implements(ISubscriber)
  
     def __init__(self, component_registration, event):
@@ -671,7 +668,6 @@ class Registered(PathSetAnnotation):
     This class is the only place that knows how 'Registered'
     data is represented.
     """
-
     implements(interfaces.IRegistered)
 
     # We want to use this key:
@@ -690,7 +686,6 @@ class Registered(PathSetAnnotation):
 
 class RegistrationManagerRemoveSubscriber:
     """Subscriber for RegistrationManager remove events."""
-
     implements(ISubscriber)
 
     def __init__(self, registration_manager, event):
@@ -706,7 +701,6 @@ class RegistrationManager(Persistent, Contained):
 
     Manages registrations within a package.
     """
-
     implements(interfaces.IRegistrationManager)
 
     def __init__(self):
@@ -839,7 +833,6 @@ class RegistrationManager(Persistent, Contained):
 class RegisterableContainer(object):
     """Mix-in to implement IRegisterableContainer
     """
-
     implements(interfaces.IRegisterableContainer)
 
     def __init__(self):
@@ -914,7 +907,6 @@ class RegisterableContainer(object):
 
 
 class ComponentRegistrationAdapter(ObjectEntryAdapter):
-
     """Fssync adapter for ComponentRegistration objects and subclasses.
 
     This is fairly generic -- it should apply to most subclasses of
