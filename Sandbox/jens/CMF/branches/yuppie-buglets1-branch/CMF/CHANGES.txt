@@ -55,6 +55,8 @@ Future
 
   Bug Fixes
 
+    - Fixed some minor buglets. (Collector #80, #94 and #95)
+
     - Multimodule checkin to convert calls from user.getUserName() to
       user.getId() where appropriate.  User names should not be used
       as immutable references, while user ids should.  The distinction
