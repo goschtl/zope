@@ -20,10 +20,16 @@ $Id$
 import os
 
 import zope
+from zope.interface import providedBy
 from zope.app import zapi
+
+from interfaces import IOnlineHelpTopic
 from onlinehelp import OnlineHelp
-from onlinehelptopic import OnlineHelpTopic
-from zope.app.onlinehelp.interfaces import IOnlineHelp    
+
+# Global Online Help Instance
+path = os.path.join(os.path.dirname(zope.app.__file__),
+                    'onlinehelp', 'help','welcome.stx')
+help = OnlineHelp('Online Help', path)
 
 
 class helpNamespace:
@@ -33,14 +39,62 @@ class helpNamespace:
         self.context = context
 
     def traverse(self, name, ignored):
-        """Used to traverse to an online help topic."""
-        onlinehelp = zapi.getUtility(IOnlineHelp,
-                                          'OnlineHelp', self.context)
-        onlinehelp.context = self.context
-        return onlinehelp
+        """Used to traverse to an online help topic.
+        Returns the global OnlineHelp instance with the traversal
+        context.
+        """
+        help.context = self.context
+        return help
 
-# Global Online Help
-path = os.path.join(os.path.dirname(zope.app.__file__),
-                    'onlinehelp', 'help','welcome.stx')
+def getTopicFor(obj, view=None):
+    """Determine topic for an object and optionally a view.
+    Iterate through all directly provided Interfaces and
+    see if for the interface (and view) exists a Help Topic.
 
-help = OnlineHelp('Online Help', path)
+    Returns the first match.
+
+    Prepare the tests:
+    >>> import os
+    >>> from tests.test_onlinehelp import testdir
+    >>> from tests.test_onlinehelp import I1, Dummy1, Dummy2
+    >>> path = os.path.join(testdir(), 'help.txt')
+
+    Register a help topic for the interface 'I1' and the view 'view.html'
+    >>> onlinehelp = OnlineHelp('Help', path)
+    >>> path = os.path.join(testdir(), 'help2.txt')
+    >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
+    ...     path, I1, 'view.html')
+
+    The query should return it ('Dummy1' implements 'I1):
+    >>> getTopicFor(Dummy1(),'view.html').title
+    'Help 2'
+
+    A query without view should not return it
+    >>> getTopicFor(Dummy1()) is None
+    True
+
+    Do the registration again, but without a view:
+    >>> onlinehelp = OnlineHelp('Help', path)
+    >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
+    ...     path, I1, None)
+    >>> getTopicFor(Dummy1()).title
+    'Help 2'
+
+    Query with view should not match
+    >>> getTopicFor(Dummy1(), 'view.html') is None
+    True
+
+    Query with an object, that does not provide 'I1' should
+    also return None
+    >>> getTopicFor(Dummy2()) is None
+    True
+
+    """
+    topic = None
+    for interface in providedBy(obj):
+        for t in zapi.getUtilitiesFor(IOnlineHelpTopic):
+            if t[1].interface==interface and t[1].view==view:
+                topic = t[1]
+                break
+
+    return topic

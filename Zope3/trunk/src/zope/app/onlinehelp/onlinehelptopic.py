@@ -76,12 +76,19 @@ class OnlineHelpTopic(SampleContainer):
 
     Create a Help Topic from a file
     
-    >>> topic = OnlineHelpTopic('Help',path)
+    >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     Test the title
     
     >>> topic.title
     'Help'
+
+    Test the topic path
+    >>> topic.getTopicPath()
+    'help'
+    >>> topic.parentPath = 'parent'
+    >>> topic.getTopicPath()
+    'parent/help'
 
     The type should be set to plaintext, since
     the file extension is 'txt'
@@ -95,7 +102,7 @@ class OnlineHelpTopic(SampleContainer):
     'This is a help!'
 
     >>> path = os.path.join(testdir(), 'help.stx')
-    >>> topic = OnlineHelpTopic('Help',path)
+    >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should now be structured text
     >>> topic.type
@@ -103,14 +110,14 @@ class OnlineHelpTopic(SampleContainer):
 
     HTML files are treated as structured text files
     >>> path = os.path.join(testdir(), 'help.html')
-    >>> topic = OnlineHelpTopic('Help',path)
+    >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should still be structured text
     >>> topic.type
     'zope.source.stx'
 
     >>> path = os.path.join(testdir(), 'help.rst')
-    >>> topic = OnlineHelpTopic('Help',path)
+    >>> topic = OnlineHelpTopic('help','Help',path,'')
 
     The type should now be restructured text
     >>> topic.type
@@ -127,10 +134,14 @@ class OnlineHelpTopic(SampleContainer):
     """
     implements(IOnlineHelpTopic)
 
-    def __init__(self, title, path):
+    def __init__(self, id, title, path, parentPath, interface=None, view=None):
         """Initialize object."""
+        self.id = id
+        self.parentPath = parentPath
         self.title = title
         self.path = path
+        self.interface = interface
+        self.view = view
 
         filename = os.path.basename(path.lower())
         file_ext = 'txt'
@@ -153,17 +164,24 @@ class OnlineHelpTopic(SampleContainer):
 
         super(OnlineHelpTopic, self).__init__()
 
+    id = u""
+
+    parentPath = u""
+
     title = u""
 
     path = u""
 
     type = None
 
+    interface = None
+
+    view = None
+
     def _getSource(self):
         return open(os.path.normpath(self.path)).read()
 
     source = property(_getSource)
-
 
     def addResources(self, resources):
         """ see IOnlineHelpTopic """
@@ -172,3 +190,11 @@ class OnlineHelpTopic(SampleContainer):
             resource_path=dirname+'/'+resource
             if os.path.exists(resource_path):
                 self[resource] = OnlineHelpResource(resource_path)
+
+    def getTopicPath(self):
+        """ see IOnlineHelpTopic """
+        if self.parentPath != '':
+            return self.parentPath+'/'+self.id
+        else:
+            return self.id
+                

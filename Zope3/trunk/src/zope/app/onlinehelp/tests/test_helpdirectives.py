@@ -46,7 +46,6 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(help.keys(), [])
         self.context = xmlconfig.file("help.zcml", tests)
         self.assertEqual(help.keys(), ['help1'])
-        self.assertEqual(help._registry[(I1, 'view.html')][0].title, 'Help')
         topic = help['help1']
         self.assert_('test1.png' in topic.keys())
 

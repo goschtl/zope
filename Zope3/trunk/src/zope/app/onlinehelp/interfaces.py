@@ -18,26 +18,41 @@ These are the interfaces designed for the OnlineHelp system.
 $Id$
 """
 from zope.schema import TextLine, SourceText, Choice
+from zope.configuration.fields import GlobalObject
 from zope.app.container.interfaces import IContainer
-from zope.i18n import MessageIDFactory
 from zope.app.file.interfaces import IFile, IFileContent
-
-_ = MessageIDFactory('messageboard')
+from zope.app.i18n import ZopeMessageIDFactory as _ 
 
 class IOnlineHelpTopic(IContainer):
-    """A Topic is one help page that you could view. Topics will be able to
+    """A Topic is a single help page that you can view. Topics are able to
     contain other Topics and so on.
 
     You can also associate a Topic with a particular view.
     
-    The Topic's content can be in the following three forms:
-    Plain Text, HTML and Structured Text (STX). The Content is usually
-    stored in a file and not the Topic itself. The file is only read
-    when required.
+    The Topic's content can be in the following four formats:
+     - Plain Text,
+     - HTML,
+     - Structured Text (STX) and
+     - Restructured Text (ReST).
+
+    The Content is stored in a file and not the Topic itself.
+    The file is only read when required.
     
     Note that all the Sub-Topic management is done by the IContainer
     interface. 
     """
+
+    id = TextLine(
+        title = _(u"Id"),
+        description = _(u"The Id of this Help Topic"),
+        default = u"",
+        required = True)
+
+    parentPath = TextLine(
+        title = _(u"Parent Path"),
+        description = _(u"The Path to the Parent of this Help Topic"),
+        default = u"",
+        required = False)
 
     title = TextLine(
         title = _(u"Help Topic Title"),
@@ -65,28 +80,39 @@ class IOnlineHelpTopic(IContainer):
         required = True,
         vocabulary = "SourceTypes")
 
+    interface = GlobalObject(
+        title=_(u"Object Interface"),
+        description=_(u"Interface for which this Help Topic is registered."),
+        default=None,
+        required=False)
+
+    view = TextLine(
+        title = _(u"View Name"),
+        description = _(u"The View Name for which this Help Topic"
+                        " is registered"),
+        default = _(u""),
+        required = True)
+
     def addResources(resources):
         """ Add resources to this Help Topic.
         The resources must be located in the same directory
         as the Help Topic itself."""
 
+    def getTopicPath():
+        """ return the presumed path to the topic, even the topic is not
+        traversable from the onlinehelp. """
+
 class IOnlineHelp(IOnlineHelpTopic):
-    """This service manages all the HelpTopics."""
-
-    def getTopicsForInterfaceAndView(interface, view=None):
-        """Returns a list of Topics that were registered to be
-        applicable to a particular view of an interface."""
-
-    def getTopicForObjectAndView(obj, view=None):
-        """Returns the first matching help topic for
-        the interfaces provided by obj."""
+    """The root of an onlinehelp hierarchy.
+    Manages the registration of new topics.
+    """
 
     def registerHelpTopic(parent_path, id, title, doc_path,  
-                          interface=None, view=None):
+                          interface=None, view=None, resources=None):
         """This method registers a topic at the correct place.
 
            parent_path -- Location of this topic's parent in the OnlineHelp
-           tree.
+           tree. Need not to exist at time of creation. 
 
            id -- Specifies the id of the topic 
 
@@ -103,6 +129,10 @@ class IOnlineHelp(IOnlineHelpTopic):
            view -- This attribute specifies the name of the view for which
            this topic is registered. Note that this attribute is also
            optional.
+
+           resources -- Specifies a list of resources for the topic,
+           for example images that are included by the rendered topic content.
+           Optional.
         """
 
 class IOnlineHelpResource(IFile, IFileContent):

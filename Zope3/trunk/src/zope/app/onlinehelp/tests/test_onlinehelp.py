@@ -33,6 +33,9 @@ class I1(Interface):
 class Dummy1:
     implements(I1)
 
+class Dummy2:
+    pass
+
 def testdir():
     import zope.app.onlinehelp.tests
     return os.path.dirname(zope.app.onlinehelp.tests.__file__)
@@ -44,12 +47,12 @@ def setUp():
     ztapi.provideAdapter(None, IPhysicallyLocatable,
                          LocationPhysicallyLocatable)
 
-
 def test_suite():
       return unittest.TestSuite((
+          DocTestSuite('zope.app.onlinehelp', setUp=setUp),
           DocTestSuite('zope.app.onlinehelp.onlinehelptopic', setUp=setUp),
           DocTestSuite('zope.app.onlinehelp.onlinehelp', setUp=setUp),
           ))
-  
+
 if __name__ == '__main__':
       unittest.main(defaultTest='test_suite')

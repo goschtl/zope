@@ -18,12 +18,12 @@ OnlineHelp in which all basic Zope-core help screens are registered.
 
 $Id$
 """
-from zope.interface import implements, providedBy
-
+from zope.interface import implements
+from zope.component.servicenames import Utilities
 from zope.app import zapi
 from zope.app.traversing.interfaces import IContainmentRoot
 
-from zope.app.onlinehelp.interfaces import IOnlineHelp
+from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 
 class OnlineHelp(OnlineHelpTopic):
@@ -37,7 +37,7 @@ class OnlineHelp(OnlineHelpTopic):
     
     >>> onlinehelp = OnlineHelp('Help', path)
 
-    First do the inteface verifing tests.
+    First do the interface verifying tests.
     
     >>> from zope.interface.verify import verifyObject
     >>> from zope.app.traversing.interfaces import IContainmentRoot
@@ -56,68 +56,80 @@ class OnlineHelp(OnlineHelpTopic):
     >>> onlinehelp['help2'].title
     'Help 2'
 
-    >>> onlinehelp._registry[(I1, 'view.html')][0].title
+    Additionally it should appear as a utility
+    >>> from zope.app import zapi
+    >>> topic = zapi.getUtility(IOnlineHelpTopic,'help2')
+    >>> topic.title
     'Help 2'
 
-    The help topic must be found if the onlinehelp is queried
-    with interface and view name.
-    
-    >>> onlinehelp.getTopicsForInterfaceAndView(I1, 'view.html')[0].title
-    'Help 2'
+    add another topic without parent
+    >>> onlinehelp.registerHelpTopic('missing', 'help3', 'Help 3',
+    ...     path, I1, 'view.html')
 
-    If queried with an instance the help topic must still be found
-    >>> onlinehelp.getTopicForObjectAndView(Dummy1(), 'view.html').title
-    'Help 2'
+    The new topic should not be a child of the onlinehelp instance
+    >>> 'help3' in onlinehelp.keys()
+    False
 
-    To register help for an interface only simple skip the view parameter
-    while registering.
-    >>> onlinehelp.registerHelpTopic('', 'help3', 'Help for Interface',
-    ...     path, I1)
-    >>> onlinehelp.getTopicForObjectAndView(Dummy1()).title
-    'Help for Interface'
+    But it is available as a utility
+    >>> topic = zapi.getUtility(IOnlineHelpTopic,'missing/help3')
+    >>> topic.title
+    'Help 3'
 
-    
+    now register the missing parent
+    >>> onlinehelp.registerHelpTopic('', 'missing', 'Missing',
+    ...     path, I1, 'view.html')
+
+    This is a child on the onlinehelp
+    >>> 'missing' in onlinehelp.keys()
+    True
+
+    >>> missing = onlinehelp['missing']
+
+    This topic should now have 'help3' as a child
+    >>> 'help3' in missing.keys()
+    True
+
     """
     implements(IOnlineHelp, IContainmentRoot)
 
     def __init__(self, title, path):
-        self._registry = {}
-        super(OnlineHelp, self).__init__(title, path)
-
-    def getTopicsForInterfaceAndView(self, interface, view=None):
-        "See zope.app.onlinehelp.interfaces.IOnlineHelp"
-        return self._registry.get((interface, view), [])
-
-    def getTopicForObjectAndView(self, obj, view=None):
-        "See zope.app.Onlinehelp.interfaces.IOnlineHelp"
-        topic = self
-        for iface in providedBy(obj):
-            topics = self.getTopicsForInterfaceAndView(
-                iface,
-                view
-                )
-            if len(topics)>0:
-                topic = topics[0]
-                break
-        return topic
+        super(OnlineHelp, self).__init__('',title, path, None)
 
     def registerHelpTopic(self, parent_path, id, title,
                           doc_path, interface=None, view=None,
                           resources=None):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
-        parent = zapi.traverse(self, parent_path)
-        # Create and add topic
-        parent[id] = OnlineHelpTopic(title, doc_path)
-        topic = parent[id]
+        "See zope.app.onlineHelp.interfaces.IOnlineHelp"
+        # Create topic
+        topic = OnlineHelpTopic(id,
+                                title,
+                                doc_path,
+                                parent_path,
+                                interface,
+                                view)
 
         # add resources to topic
         if resources is not None:
             topic.addResources(resources)
 
-        # Add topic to registry
-        if interface is not None:
-            if not self._registry.has_key((interface, view)):
-                self._registry[(interface, view)] = []
-            self._registry[(interface, view)].append(topic)
+        # add topic to onlinehelp hierarchy
+        parent = None
+        try:
+            parent = zapi.traverse(self, parent_path)
+            parent[id] = topic
+        except KeyError:
+            pass
+
+        for t in zapi.getUtilitiesFor(IOnlineHelpTopic):
+            if parent is None:
+                if t[1].getTopicPath() == parent_path:
+                    t[1][id] = topic
+            if topic.getTopicPath() == t[1].parentPath:
+                topic[t[1].id] = t[1]
+
+        # Add topic to utilities registry
+        zapi.getService(Utilities
+                        ).provideUtility(IOnlineHelpTopic,
+                                         topic,
+                                         topic.getTopicPath())
 
 

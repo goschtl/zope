@@ -22,6 +22,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
+from zope.app.onlinehelp import getTopicFor
 
 class TopicTreeView(object):
 
@@ -101,11 +102,11 @@ class ContextHelpView(TopicTreeView):
 
         If the context is a view, try to find
         a matching help topic for the view and its context.
-        If not help topic is found, try got get a help topic for
-        and interface only.
+        If no help topic is found, try to get a help topic for
+        the context only.
 
         If the context is not a view, try to retrieve a help topic
-        for an interface only.
+        based on the context.
 
         If nothing is found, return the onlinehelp root topic
 
@@ -115,20 +116,23 @@ class ContextHelpView(TopicTreeView):
 
         onlinehelp = removeAllProxies(self.context)
         help_context = onlinehelp.context
-        self.topic = self.context
+        self.topic = None
         if IBrowserView.providedBy(help_context):
             # called from a view
-            self.topic = onlinehelp.getTopicForObjectAndView(
+            self.topic = getTopicFor(
                 zapi.getParent(help_context),
                 zapi.getName(help_context)
                 )
-            if self.topic == self.context:
-                # nothing found for view try iface only
-                self.topic = onlinehelp.getTopicForObjectAndView(
+            if self.topic is None:
+                # nothing found for view try context only
+                self.topic = getTopicFor(
                     zapi.getParent(help_context)
                     )
         else:
             # called without view
-            self.topic = onlinehelp.getTopicForObjectAndView(help_context)
+            self.topic = getTopicFor(help_context)
+
+        if self.topic is None:
+            self.topic = onlinehelp
 
         return self.topic

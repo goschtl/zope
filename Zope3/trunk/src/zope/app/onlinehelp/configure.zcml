@@ -4,10 +4,10 @@
    i18n_domain="zope"
    >
 
-  <content class="zope.app.onlinehelp.OnlineHelpTopic">
+  <content class=".onlinehelptopic.OnlineHelpTopic">
     <require
         permission="zope.View"
-        interface="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
+        interface=".interfaces.IOnlineHelpTopic"
         />
   </content>
 
@@ -18,13 +18,14 @@
         />
   </content>
 
-  <!-- Setup OnlineHelp as a Utility -->
+  <!-- Setup OnlineHelp Root as a Utility -->
   <utility
       provides=".interfaces.IOnlineHelp"
       permission="zope.Public"
       component="zope.app.onlinehelp.help"
       name="OnlineHelp" />
 
+  <!-- Help Namespace Configuration -->
   <view
       name="help" 
       type="*"
@@ -41,7 +42,7 @@
       />
 
   <!-- Register initial Help Topics -->
-  <help:register 
+  <help:register
       id="ui"
       title="Zope UI Help"
       doc_path="./help/ui.stx"
