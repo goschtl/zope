@@ -13,43 +13,39 @@
 ##############################################################################
 """
 
-$Id: view.py,v 1.4 2003/06/23 16:39:15 mgedmin Exp $
+$Id: view.py,v 1.5 2003/06/24 15:29:51 jeremy Exp $
 """
 
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getSkin
-from zope.component.interfaces import IViewService
+from zope.component.interfaces import IViewService, IGlobalViewService
 from zope.exceptions import NotFoundError
 
-class IGlobalViewService(IViewService):
-
-    def setDefaultViewName(i_required, i_provided, name):
-        '''Add name to our registry of default view names for
-           the interfaces given.
-        '''
-
-    def provideView(forInterface, name, type, factory, layer='default'):
-        """Register a view factory
-
-        The factory is a sequence. The last object in the sequence
-        must be an IViewFactory. The other objects in the sequence
-        must be adapter factories.
-        """
+# XXX The GlobalViewService and LocalViewService contain a lot of
+# duplicate code.  It may be good to refactor them so that the
+# duplicate code is shared.  It would be non-trivial to design the
+# shared code to allow the necessary customizations for the specific
+# service.
 
 class GlobalViewService:
+    """The global view service.
 
+    Internally, we use a data structure of the form:
+
+    _layers: { layername -> layer }
+    layer:  { viewname -> registry }
+    registry: (required, pres_type) -> factory chain }
+    """
     implements(IGlobalViewService)
 
     def __init__(self):
-        self.__layers = {}
-        self.__default_view_names = AdapterRegistry()
+        self._layers = {}
+        self._default_view_names = AdapterRegistry()
 
     def setDefaultViewName(self, i_required, i_provided, name):
-        self.__default_view_names.register(i_required,
-                                           i_provided,
-                                           name)
+        self._default_view_names.register(i_required, i_provided, name)
 
     def getView(self, object, name, request):
         '''See interface IViewService'''
@@ -66,7 +62,7 @@ class GlobalViewService:
         skin = request.getPresentationSkin()
 
         for layername in getSkin(object, skin, type):
-            layer = self.__layers.get(layername)
+            layer = self._layers.get(layername)
             if not layer:
                 continue
 
@@ -90,9 +86,9 @@ class GlobalViewService:
     def provideView(self, forInterface, name, type, maker, layer='default'):
         '''See interface IGlobalViewService'''
 
-        views = self.__layers.get(layer)
+        views = self._layers.get(layer)
         if views is None:
-            views = self.__layers[layer] = {}
+            views = self._layers[layer] = {}
 
         reg = views.get(name, None)
         if reg is None:
@@ -124,15 +120,49 @@ class GlobalViewService:
         '''See interface IViewService'''
 
         type = request.getPresentationType()
-        name = self.__default_view_names.getForObject(object, type)
+        name = self._default_view_names.getForObject(object, type)
 
         if name is None:
             name = default
 
         return name
 
+    def getRegisteredMatching(self, required_interfaces=None,
+                              presentation_type=None, viewName=None,
+                              layer=None):
+        # Return registration info matching keyword arg criteria.
+        if layer is None:
+            layers = self._layers.keys()
+        else:
+            layers = (layer, )
+
+        result = []
+
+        for layer in layers:
+            names_dict = self._layers.get(layer)
+            if names_dict is None:
+                continue
+
+            if viewName is None:
+                viewNames = names_dict.keys()
+            else:
+                viewNames = (viewName, )
+
+            for vn in viewNames:
+                registry = names_dict.get(vn)
+                if registry is None:
+                    continue
+
+                for match in registry.getRegisteredMatching(
+                    required_interfaces,
+                    presentation_type):
+
+                    result.append(match + (layer, vn))
+
+        return result
+
     def all(self):
-        return self.__layers
+        return self._layers
 
     _clear = __init__
 

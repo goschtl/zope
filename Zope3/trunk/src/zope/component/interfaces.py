@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.7 2003/06/23 16:52:46 stevea Exp $
+$Id: interfaces.py,v 1.8 2003/06/24 15:29:51 jeremy Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -331,7 +331,6 @@ class IUtilityService(Interface):
 
         """
 
-
 class IContextDependent(Interface):
 
     context = Attribute(
@@ -576,6 +575,35 @@ class IViewService(Interface):
 
         The default will be returned if a suitable
         default view name for the object cannot be found.
+        """
+
+class IGlobalViewService(IViewService):
+
+    def setDefaultViewName(i_required, i_provided, name):
+        """Add name to registry of default view names for interfaces given."""
+
+    def provideView(forInterface, name, type, factory, layer='default'):
+        """Register a view factory
+
+        The factory is a sequence. The last object in the sequence
+        must be an IViewFactory. The other objects in the sequence
+        must be adapter factories.
+
+        XXX I'm not sure if there are right.
+        The name is the view name.
+        The type is the presentation type.
+        """
+
+    def getRegisteredMatching(required_interfaces=None, presentation_type=None,
+                              viewName=None, layer=None):
+        """Return registration info matching keyword arg criteria.
+
+        Return is an iterable 5-tuples containing:
+        - required interface
+        - provided interface
+        - chain of factories
+        - layer
+        - view name
         """
 
 class ISkinService(Interface):

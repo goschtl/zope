@@ -13,15 +13,17 @@
 ##############################################################################
 
 import unittest
-from zope.component.exceptions import ComponentLookupError
+
 from zope.component import getAdapter, queryAdapter
 from zope.component import getNamedAdapter, queryNamedAdapter
 from zope.component import getService
 from zope.component import getUtility, queryUtility
+from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Adapters
+from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.request import Request
-from zope.interface import Interface, implements
 
+from zope.interface import Interface, implements
 
 class I1(Interface): pass
 class I2(Interface): pass
@@ -45,23 +47,6 @@ class Conforming(Ob):
         if i is I3:
             return Comp(self)
 
-
-class R1(Interface): pass
-class R12(Interface): pass
-class R2(R1): pass
-class R3(R2): pass
-class R4(R3): pass
-
-class P1(Interface): pass
-class P2(P1): pass
-class P3(P2): pass
-class P4(P3): pass
-
-class default_P3: pass
-class any_P3: pass
-class R2_P3: pass
-
-from zope.component.tests.placelesssetup import PlacelessSetup
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -311,144 +296,8 @@ class Test(PlacelessSetup, unittest.TestCase):
                           viewService.getDefaultViewName,
                           ob, Request(I1))
 
-    # The following tests are copied from
-    # Interface.Registry.tests.IAdapterRegistry
-
-    def __registery(self):
-        from zope.component.adapter import GlobalAdapterService
-
-        registry = GlobalAdapterService()
-
-
-        registry.provideAdapter(None, P3, [default_P3])
-        registry.provideAdapter(Interface, P3, [any_P3])
-        registry.provideAdapter(R2, P3, [R2_P3])
-
-        return registry
-
-    def test_getRegisteredMatching_all(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching())
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_for_R1(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            for_interfaces = (R1, )
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_for_multiple(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            for_interfaces = (R12, R2)
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_provided_P1(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P1, )
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_provided_P2(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P3, )
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_for_and_provided_1(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            for_interfaces = (R4, R12),
-            provided_interfaces = (P1, ),
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_for_and_provided_2(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            for_interfaces = (R4, R12),
-            provided_interfaces = (P3, ),
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
-    def test_getRegisteredMatching_for_and_provided_exact(self):
-        registry = self.__registery()
-
-        got = list(registry.getRegisteredMatching(
-            for_interfaces = (R2, ),
-            provided_interfaces = (P3, ),
-            ))
-        got.sort()
-        expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
-            ]
-        expect.sort()
-        self.assertEqual(got, expect)
-
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.makeSuite(Test)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.TextTestRunner().run(test_suite())
