@@ -131,6 +131,14 @@ def init_table():
         {'path': "Packages/Products/ParsedXML",
          'addrs': ["parsed-xml-dev@mail.zope.org"],
          'remote': products_remote},
+
+        {'path': "Packages/TAL",
+         'addrs': ["zpt@mail.zope.org"],
+         'remote': None},
+
+        {'path': "Packages/Products/PresentationTemplates",
+         'addrs': ["zpt@mail.zope.org"],
+         'remote': None},
     ])
 
 init_table()
