@@ -15,7 +15,7 @@
 
 HTML- and XML-based template objects using TAL, TALES, and METAL.
 
-$Id: PageTemplate.py,v 1.6 2002/10/22 14:18:41 stevea Exp $
+$Id: PageTemplate.py,v 1.7 2002/10/22 15:16:52 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -63,7 +63,9 @@ class PageTemplate:
         to perform the rendering.
     """
 
-    __implements__ = IMacrosAttribute
+    # XXX this breaks something in the Zope3 views registries.
+    # Temporarily removed. SteveA 2002-10-22
+    #__implements__ = IMacrosAttribute
 
     content_type = 'text/html'
     expand = 1
