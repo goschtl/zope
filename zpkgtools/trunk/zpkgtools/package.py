@@ -180,6 +180,8 @@ def create_extension(section, pkgname, reldir):
                              for fn in section.depends_on]
     if section.language:
         kwargs["language"] = section.language[0]
+    if reldir and reldir != ".":
+        kwargs["include_dirs"] = [reldir]
     return Extension(**kwargs)
 
 
