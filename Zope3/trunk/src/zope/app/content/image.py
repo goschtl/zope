@@ -12,12 +12,16 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: image.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
 """
 import struct
 from zope.app.content.file import File
 from cStringIO import StringIO
 from zope.app.interfaces.content.image import IImage
+from zope.app.interfaces.size import ISized
+from zope.app.size import byteDisplay
+
+__metaclass__ = type
 
 class Image(File):
     __implements__ = IImage
@@ -47,6 +51,23 @@ class Image(File):
                     """Contains the data of the file.""")
 
 
+class ImageSized:
+
+    __implements__ = ISized
+
+    def __init__(self, image):
+        self._image = image
+
+    def sizeForSorting(self):
+        'See ISized'
+        return ('byte', self._image.getSize())
+
+    def sizeForDisplay(self):
+        'See ISized'
+        w, h = self._image.getImageSize()
+        bytes = self._image.getSize()
+        return '%s %rx%r' % (byteDisplay(bytes), w, h)
+    
 def getImageInfo(data):
     data = str(data)
     size = len(data)

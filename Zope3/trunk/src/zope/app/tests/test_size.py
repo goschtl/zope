@@ -68,7 +68,14 @@ class Test(unittest.TestCase):
         sized = DefaultSized(DummyObject(2000000))
         self.assertEqual(sized.sizeForSorting(), ('byte', 2000000))
         self.assertEqual(sized.sizeForDisplay(), u'1.91 MB')
-    
+
+    def test_byteDisplay(self):
+        from zope.app.size import byteDisplay
+        self.assertEqual(byteDisplay(0), u'0 KB')
+        self.assertEqual(byteDisplay(1), u'1 KB')
+        self.assertEqual(byteDisplay(2048), u'2 KB')
+        self.assertEqual(byteDisplay(2000000), u'1.91 MB')
+
 def test_suite():
     loader = unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)

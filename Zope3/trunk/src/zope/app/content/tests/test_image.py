@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: test_image.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
 """
 
 import unittest
 from zope.interface.verify import verifyClass
 
-class Test(unittest.TestCase):
+class TestImage(unittest.TestCase):
 
     def _makeImage(self, *args, **kw):
         from zope.app.content.image import Image
@@ -59,8 +59,46 @@ class Test(unittest.TestCase):
         self.failUnless(IImage.isImplementedByInstancesOf(Image))
         self.failUnless(verifyClass(IImage, Image))
 
+
+class DummyImage:
+
+    def __init__(self, width, height, bytes):
+        self.width = width
+        self.height = height
+        self.bytes = bytes
+
+    def getSize(self):
+        return self.bytes
+
+    def getImageSize(self):
+        return self.width, self.height
+
+
+class TestSized(unittest.TestCase):
+
+    def testInterface(self):
+        from zope.app.interfaces.size import ISized
+        from zope.app.content.image import ImageSized
+        self.failUnless(ISized.isImplementedByInstancesOf(ImageSized))
+        self.failUnless(verifyClass(ISized, ImageSized))
+
+    def test_zeroSized(self):
+        from zope.app.content.image import ImageSized
+        s = ImageSized(DummyImage(0, 0, 0))
+        self.assertEqual(s.sizeForSorting(), ('byte', 0))
+        self.assertEqual(s.sizeForDisplay(), u'0 KB 0x0')
+
+
+    def test_arbitrarySize(self):
+        from zope.app.content.image import ImageSized
+        s = ImageSized(DummyImage(34, 56, 78))
+        self.assertEqual(s.sizeForSorting(), ('byte', 78))
+        self.assertEqual(s.sizeForDisplay(), u'1 KB 34x56')
+
 def test_suite():
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite((unittest.makeSuite(TestImage),
+                               unittest.makeSuite(TestSized)
+                             ))
 
 if __name__=='__main__':
     unittest.TextTestRunner().run(test_suite())

@@ -14,7 +14,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.2 2002/12/27 18:22:57 stevea Exp $
+$Id: size.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
 """
 
 from zope.app.interfaces.size import ISized
@@ -41,11 +41,15 @@ class DefaultSized:
         """See ISized"""
         units, size = self._sortingSize
         if units == 'byte':
-            if size == 0:
-                return '0 KB'
-            if size < 1024:
-                return '1 KB'
-            if size > 1048576:
-                return '%0.02f MB' % (size / 1048576.0)
-            return '%d KB' % (size / 1024.0)
+            return byteDisplay(size)
         return u'n/a'
+
+def byteDisplay(size):
+    if size == 0:
+        return '0 KB'
+    if size < 1024:
+        return '1 KB'
+    if size > 1048576:
+        return '%0.02f MB' % (size / 1048576.0)
+    return '%d KB' % (size / 1024.0)
+

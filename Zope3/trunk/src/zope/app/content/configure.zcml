@@ -54,60 +54,65 @@
 
 </content>
 
-  <permission id="zope.AddImages" title="Add Images" />
+<permission id="zope.AddImages" title="Add Images" />
 
-  <content class="zope.app.content.image.Image">
+<content class="zope.app.content.image.Image">
 
-    <factory
-        id="Image"
-        permission="zope.ManageContent"
-        title="Image"
-        description="An Image" />
+  <factory
+      id="Image"
+      permission="zope.ManageContent"
+      title="Image"
+      description="An Image" />
 
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.content.file.IReadFile"
-        attributes="getImageSize"
-        />
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.content.file.IReadFile"
+      attributes="getImageSize"
+      />
 
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.content.file.IWriteFile"
-        set_schema="zope.app.interfaces.content.file.IReadFile"
-        />
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.content.file.IWriteFile"
+      set_schema="zope.app.interfaces.content.file.IReadFile"
+      />
 
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
+  <implements
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+     />
+</content>
 
-  </content>
+<adapter
+    factory="zope.app.content.image.ImageSized"
+    provides="zope.app.interfaces.size.ISized"
+    for="zope.app.interfaces.content.image.IImage"
+    />
 
-  <content class="zope.app.content.i18nimage.I18nImage">
-    <factory
-        id="I18nImage"
-        permission="zope.ManageContent"
-        title="I18n Image"
-        description="An Internationalized Image" />
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.content.file.IReadFile"
-        attributes="getImageSize"
-        />
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.content.file.IWriteFile" />
-    <require
-        permission="zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages" />
-    <require
-        permission="zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage" />
+<content class="zope.app.content.i18nimage.I18nImage">
+  <factory
+      id="I18nImage"
+      permission="zope.ManageContent"
+      title="I18n Image"
+      description="An Internationalized Image" />
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.content.file.IReadFile"
+      attributes="getImageSize"
+      />
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.content.file.IWriteFile" />
+  <require
+      permission="zope.View"
+      attributes="getDefaultLanguage getAvailableLanguages" />
+  <require
+      permission="zope.ManageContent"
+      attributes="setDefaultLanguage removeLanguage" />
 
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
+  <implements
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+     />
 
-  </content>
+</content>
 
 
 <content class="zope.app.content.zpt.ZPTPage">
@@ -143,136 +148,138 @@
   <implements
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
-  </content>
+</content>
 
-  <adapter factory="zope.app.content.zpt.SearchableText"
+<adapter factory="zope.app.content.zpt.SearchableText"
          provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
          for="zope.app.content.zpt.IZPTPage" />
 
 
-  <content class="zope.app.content.dtmlpage.DTMLPage">
+<content class="zope.app.content.dtmlpage.DTMLPage">
 
-    <factory
-        id="DTMLPage"
-        permission="zope.ManageContent"
-        title="DTML Page"
-        description="A simple, content-based Page Template" />
+  <factory
+      id="DTMLPage"
+      permission="zope.ManageContent"
+      title="DTML Page"
+      description="A simple, content-based Page Template" />
 
-    <require permission="zope.View"
-                      attributes="__call__" />
+  <require permission="zope.View"
+           attributes="__call__" />
 
-    <require permission="zope.ManageContent"
-                      interface="zope.app.content.dtmlpage.IDTMLPage" />
+  <require permission="zope.ManageContent"
+           interface="zope.app.content.dtmlpage.IDTMLPage" />
 
-    <require permission="zope.View"
-                      interface="zope.app.content.dtmlpage.IRenderDTMLPage" />
-
-
-    <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-  </content>
+  <require permission="zope.View"
+           interface="zope.app.content.dtmlpage.IRenderDTMLPage" />
 
 
-  <content class="zope.app.content.file.File">
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
-    <factory
-        id="File"
-        permission="zope.ManageContent"
-        title="File"
-        description="A File" />
-
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.content.file.IReadFile" />
-
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.content.file.IWriteFile"
-        set_schema="zope.app.interfaces.content.file.IReadFile"
-        />
-
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
-
-  </content>
-
-  <content class="zope.app.content.i18nfile.I18nFile">
-
-     <factory
-         id="zope.app.content.I18nFile"
-         permission="zope.ManageContent"
-         title="I18n File"
-         description="An Internationalized File" />
-     <require
-         permission="zope.View"
-         interface="zope.app.interfaces.content.file.IReadFile" />
-     <require
-         permission="zope.ManageContent"
-         interface="zope.app.interfaces.content.file.IWriteFile" />
-     <require
-         permission="zope.View"
-         attributes="getDefaultLanguage getAvailableLanguages" />
-     <require
-         permission="zope.ManageContent"
-         attributes="setDefaultLanguage removeLanguage" />
-
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
-
-   </content>
-
-  <adapter factory="zope.app.content.file.SearchableText"
-           provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
-           for="zope.app.interfaces.content.file.IReadFile" />
-
-  <!-- SQL Script Directives -->
-
-  <permission id="zope.AddSQLScripts" title="Add SQL Scripts" />
-
-  <content class="zope.app.content.sql.SQLScript">
-
-    <factory
-        id="SQLScript"
-        permission="zope.ManageContent"
-        title="SQL Script"
-        description="Dynamic SQL Script" />
-
-    <require
-        permission = "zope.ManageContent"
-        interface = "zope.app.interfaces.content.sql.ISQLScript."
-        set_schema = "zope.app.interfaces.content.sql.ISQLScript."
-        />
-
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.content.file.IFileContent" />
-
-    <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-  </content>
+</content>
 
 
-  <!-- Arguments Directives -->
+<content class="zope.app.content.file.File">
 
-  <content class="zope.app.content.sql.Arguments">
-    <require
-        permission="zope.ManageContent"
-        interface="zope.interface.common.mapping.IEnumerableMapping" />
-  </content>
+  <factory
+      id="File"
+      permission="zope.ManageContent"
+      title="File"
+      description="A File" />
+
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.content.file.IReadFile" />
+
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.content.file.IWriteFile"
+      set_schema="zope.app.interfaces.content.file.IReadFile"
+      />
+
+  <implements
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+     />
+
+</content>
+
+<content class="zope.app.content.i18nfile.I18nFile">
+
+  <factory
+      id="zope.app.content.I18nFile"
+      permission="zope.ManageContent"
+      title="I18n File"
+      description="An Internationalized File" />
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.content.file.IReadFile" />
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.content.file.IWriteFile" />
+  <require
+      permission="zope.View"
+      attributes="getDefaultLanguage getAvailableLanguages" />
+  <require
+      permission="zope.ManageContent"
+      attributes="setDefaultLanguage removeLanguage" />
+
+  <implements
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+     />
+
+</content>
+
+<adapter factory="zope.app.content.file.SearchableText"
+         provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
+         for="zope.app.interfaces.content.file.IReadFile" />
+
+<!-- SQL Script Directives -->
+
+<permission id="zope.AddSQLScripts" title="Add SQL Scripts" />
+
+<content class="zope.app.content.sql.SQLScript">
+
+  <factory
+      id="SQLScript"
+      permission="zope.ManageContent"
+      title="SQL Script"
+      description="Dynamic SQL Script" />
+
+  <require
+      permission = "zope.ManageContent"
+      interface = "zope.app.interfaces.content.sql.ISQLScript."
+      set_schema = "zope.app.interfaces.content.sql.ISQLScript."
+      />
+
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.content.file.IFileContent" />
+
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+</content>
 
 
-  <!-- SQL DTML Directives -->
+<!-- Arguments Directives -->
 
-  <content class="zope.app.content.sql.SQLDTML">
-    <require
-        permission="zope.ManageContent"
-        attributes="__call__" />
-  </content>
+<content class="zope.app.content.sql.Arguments">
+  <require
+      permission="zope.ManageContent"
+      interface="zope.interface.common.mapping.IEnumerableMapping" />
+</content>
 
 
-  <!-- Further Directives -->
+<!-- SQL DTML Directives -->
+
+<content class="zope.app.content.sql.SQLDTML">
+  <require
+      permission="zope.ManageContent"
+      attributes="__call__" />
+</content>
+
+
+<!-- Further Directives -->
 
 
 </zopeConfigure>
