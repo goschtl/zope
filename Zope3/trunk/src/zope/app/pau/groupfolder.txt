@@ -9,10 +9,10 @@ Like other principals, groups are created when they are needed.
 Group folders contain group-information objects that contain group
 information.  We create group information using the `GroupInformation` class:
 
-  >>> import zope.app.pas.groupfolder
-  >>> g1 = zope.app.pas.groupfolder.GroupInformation("Group 1")
+  >>> import zope.app.pau.groupfolder
+  >>> g1 = zope.app.pau.groupfolder.GroupInformation("Group 1")
 
-  >>> groups = zope.app.pas.groupfolder.GroupFolder('group.')
+  >>> groups = zope.app.pau.groupfolder.GroupFolder('group.')
   >>> groups['g1'] = g1
 
 Groups are defined with respect to an authentication service.  Groups
@@ -23,8 +23,8 @@ To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
   >>> import zope.interface
-  >>> from zope.app.security.interfaces import IAuthenticationService
-  >>> from zope.app.pas.groupfolder import setGroupsForPrincipal
+  >>> from zope.app.security.interfaces import IAuthenticationUtility
+  >>> from zope.app.pau.groupfolder import setGroupsForPrincipal
 
   >>> class Principal:
   ...     def __init__(self, id, title, description):
@@ -37,7 +37,7 @@ we'll create a sample authentication service:
 
   >>> class Principals:
   ...
-  ...     zope.interface.implements(IAuthenticationService)
+  ...     zope.interface.implements(IAuthenticationUtility)
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
@@ -58,21 +58,21 @@ we'll create a sample authentication service:
 
 This class doesn't really implement the fill `IAuthenticationService`
 interface, but it implements the `getPrincipal` method used by groups.
-It works very much like PAS.  It creates principals on demand.  It
+It works very much like PAU.  It creates principals on demand.  It
 calls `setGroupsForPrincipal`, which is normally called as an event
 subscriber, when principals are created.  In order for
 `setGroupsForPrincipal` to find out group folder, we have to register
 it as a utility:
 
   >>> from zope.app.tests import ztapi
-  >>> ztapi.provideUtility(zope.app.pas.groupfolder.IGroupFolder,
+  >>> ztapi.provideUtility(zope.app.pau.groupfolder.IGroupFolder,
   ...                      groups)
 
 The authentication service has a very simple implementation.  It has a
 `principals` dictionary and a groups folder.
 
   >>> principals = Principals(groups)
-  >>> ztapi.provideService('Authentication', principals)
+  >>> ztapi.provideUtility(IAuthenticationUtility, principals)
 
 Now we can set the principals on the group:
 
@@ -115,7 +115,7 @@ Here we see that the new name is reflected in the group information.
 
 Groups can contain groups:
 
-  >>> g2 = zope.app.pas.groupfolder.GroupInformation("Group Two")
+  >>> g2 = zope.app.pau.groupfolder.GroupInformation("Group Two")
   >>> groups['G2'] = g2
   >>> g2.principals = ['group.G1']
 
@@ -131,18 +131,18 @@ Groups cannot contain cycles:
   
 They need not be hierarchical:
 
-  >>> ga = zope.app.pas.groupfolder.GroupInformation("Group A")
+  >>> ga = zope.app.pau.groupfolder.GroupInformation("Group A")
   >>> groups['GA'] = ga
 
-  >>> gb = zope.app.pas.groupfolder.GroupInformation("Group B")
+  >>> gb = zope.app.pau.groupfolder.GroupInformation("Group B")
   >>> groups['GB'] = gb
   >>> gb.principals = ['group.GA']
 
-  >>> gc = zope.app.pas.groupfolder.GroupInformation("Group C")
+  >>> gc = zope.app.pau.groupfolder.GroupInformation("Group C")
   >>> groups['GC'] = gc
   >>> gc.principals = ['group.GA']
 
-  >>> gd = zope.app.pas.groupfolder.GroupInformation("Group D")
+  >>> gd = zope.app.pau.groupfolder.GroupInformation("Group D")
   >>> groups['GD'] = gd
   >>> gd.principals = ['group.GA', 'group.GB']
 

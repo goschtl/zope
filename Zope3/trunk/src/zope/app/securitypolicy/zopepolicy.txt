@@ -496,16 +496,17 @@ among other things, converting a principal id to a principal.
 For our examples here, we'll create and register a stub principal
 authentication service:
 
-  >>> from zope.app.security.interfaces import IAuthenticationService
+  >>> from zope.app.security.interfaces import IAuthenticationUtility
   >>> class FauxPrincipals(dict):
-  ...     zope.interface.implements(IAuthenticationService)
+  ...     zope.interface.implements(IAuthenticationUtility)
   ...     def getPrincipal(self, id):
   ...         return self[id]
 
   >>> auth = FauxPrincipals()
 
   >>> from zope.app.tests import ztapi
-  >>> ztapi.provideService('Authentication', auth)
+  >>> ztapi.provideUtility(IAuthenticationUtility, auth)
+  >>> from zope.app import zapi
 
 Let's define a group:
 

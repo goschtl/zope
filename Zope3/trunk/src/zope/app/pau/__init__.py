@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Autentication Service
+"""Pluggable Autentication Utility
 
 $Id$
 """
 
 import interfaces
-from zope.app.pas.pas import PAS, LocalPAS
+from zope.app.pau.pau import PAU, LocalPAU

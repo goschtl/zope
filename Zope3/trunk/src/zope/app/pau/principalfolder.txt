@@ -5,13 +5,13 @@ Principal folders contain principal-information objects that contain
 principal information.  We create principal information using the
 `PrincipalInformation` class:
 
-  >>> import zope.app.pas.principalfolder
-  >>> p1 = zope.app.pas.principalfolder.PrincipalInformation(
+  >>> import zope.app.pau.principalfolder
+  >>> p1 = zope.app.pau.principalfolder.PrincipalInformation(
   ...     'login1', '123', "Principal 1")
-  >>> p2 = zope.app.pas.principalfolder.PrincipalInformation(
+  >>> p2 = zope.app.pau.principalfolder.PrincipalInformation(
   ...     'login2', '456', "The other one")
 
-  >>> principals = zope.app.pas.principalfolder.PrincipalFolder('principal.')
+  >>> principals = zope.app.pau.principalfolder.PrincipalFolder('principal.')
   >>> principals['p1'] = p1
   >>> principals['p2'] = p2
 
@@ -71,7 +71,7 @@ If there are a large number of matches:
 
   >>> for i in range(20):
   ...     i = str(i)
-  ...     p = zope.app.pas.principalfolder.PrincipalInformation(
+  ...     p = zope.app.pau.principalfolder.PrincipalInformation(
   ...         'l'+i, i, "Dude "+i)
   ...     principals[i] = p
 

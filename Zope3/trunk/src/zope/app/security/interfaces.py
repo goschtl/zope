@@ -33,23 +33,22 @@ class IUnauthenticatedPrincipal(IPrincipal):
     Authenticated principals are preferable to UnauthenticatedPrincipals.
     """
 
-class IAuthenticationService(Interface):
+class IAuthenticationUtility(Interface):
     """Provide support for establishing principals for requests.
 
-    This is implemented by performing protocol-specific actions,
-    such as issuing challenges or providing login interfaces.
+    This is implemented by performing protocol-specific actions, such as
+    issuing challenges or providing login interfaces.
 
-    IAuthenticationService objects are used to implement
-    authentication services. Because they implement services, they are
-    expected to collaborate with services in other contexts. Client
-    code doesn't search a context and call multiple services. Instead,
-    client code will call the most specific service in a place and
-    rely on the service to delegate to other services as necessary.
+    `IAuthenticationUtility` objects are used to implement authentication
+    utilities. Because they implement services, they are expected to
+    collaborate with services in other contexts. Client code doesn't search a
+    context and call multiple services. Instead, client code will call the
+    most specific service in a place and rely on the service to delegate to
+    other services as necessary.
 
-    The interface doesn't include methods for data
-    management. Services may use external data and not allow
-    management in Zope. Simularly, the data to be managed may vary
-    with different implementations of a service.
+    The interface doesn't include methods for data management. Services may
+    use external data and not allow management in Zope. Simularly, the data to
+    be managed may vary with different implementations of a service.
     """
 
     def authenticate(request):
@@ -127,10 +126,15 @@ class IAuthenticationService(Interface):
         similar to (e.g. contain) the given name.
         """
 
+############################################################################
+# BBB: 12/15/2004
+IAuthenticationService = IAuthenticationUtility
+############################################################################
+
 class ILoginPassword(Interface):
     """A password based login.
 
-    An IAuthenticationService would use this (adapting a request),
+    An `IAuthenticationUtility` would use this (adapting a request),
     to discover the login/password passed from the user, or to
     indicate that a login is required.
     """

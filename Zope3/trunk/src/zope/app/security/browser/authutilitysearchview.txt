@@ -1,5 +1,5 @@
-The Query View for Authentication Services
-==========================================
+The Query View for Authentication Utilities
+===========================================
 
 A regular authentication service will not provide the `ISourceQueriables`
 interface, but it is a queriable itself, since it provides the simple
@@ -9,7 +9,7 @@ interface, but it is a queriable itself, since it provides the simple
   ...     def __init__(self, id): 
   ...         self.id = id
 
-  >>> class MyAuthService:
+  >>> class MyAuthUtility:
   ...     data = {'jim': Principal(42), 'don': Principal(0), 
   ...             'stephan': Principal(1)}
   ...
@@ -20,10 +20,10 @@ interface, but it is a queriable itself, since it provides the simple
 
 Now that we have our queriable, we create the view for it:
 
-  >>> from zope.app.security.browser.auth import AuthServiceSearchView
+  >>> from zope.app.security.browser.auth import AuthUtilitySearchView
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> view = AuthServiceSearchView(MyAuthService(), request)
+  >>> view = AuthUtilitySearchView(MyAuthUtility(), request)
 
 This allows us to render a search form.
 

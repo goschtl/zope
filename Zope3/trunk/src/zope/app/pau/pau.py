@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable authentication service implementation
+"""Pluggable Authentication Utility implementation
 
 $Id$
 """
@@ -25,23 +25,22 @@ from zope.schema.interfaces import ISourceQueriables
 
 from zope.app import zapi
 
-from zope.app.security.interfaces import IAuthenticationService
-from zope.app.servicenames import Authentication
-from zope.app.component.localservice import queryNextService
+from zope.app.security.interfaces import IAuthenticationUtility
+from zope.app.utility.utility import queryNextUtility
 from zope.app.container.contained import Contained
-from zope.app.site.interfaces import ISimpleService
+from zope.app.utility.interfaces import ILocalUtility
 from zope.app.location.interfaces import ILocation
 
-from zope.app.pas import interfaces
-from zope.app.pas.interfaces import IExtractionPlugin
-from zope.app.pas.interfaces import IAuthenticationPlugin
-from zope.app.pas.interfaces import IChallengePlugin
-from zope.app.pas.interfaces import IPrincipalFactoryPlugin
-from zope.app.pas.interfaces import IPrincipalSearchPlugin
+from zope.app.pau import interfaces
+from zope.app.pau.interfaces import IExtractionPlugin
+from zope.app.pau.interfaces import IAuthenticationPlugin
+from zope.app.pau.interfaces import IChallengePlugin
+from zope.app.pau.interfaces import IPrincipalFactoryPlugin
+from zope.app.pau.interfaces import IPrincipalSearchPlugin
 
 
-class IPAS(zope.interface.Interface):
-    """Pluggable Authentication Service
+class IPAU(zope.interface.Interface):
+    """Pluggable Authentication Utility
     """
 
     extractors = zope.schema.List(
@@ -74,9 +73,9 @@ class IPAS(zope.interface.Interface):
         default=[],
         )
 
-class PAS:
+class PAU(object):
 
-    zope.interface.implements(IPAS, IAuthenticationService, ISourceQueriables)
+    zope.interface.implements(IPAU, IAuthenticationUtility, ISourceQueriables)
 
     authenticators = extractors = challengers = factories = searchers = ()
 
@@ -165,12 +164,12 @@ class PAS:
             self._delegate('unauthorized', id, request)
 
     def _delegate(self, meth, *args):
-        # delegate to next AS
-        next = queryNextService(self, Authentication, None)
+        # delegate to next AU
+        next = queryNextUtility(self, IAuthenticationUtility)
         if next is None:
             return None
         return getattr(next, meth)(*args)
 
 
-class LocalPAS(PAS, Persistent, Contained):
-    zope.interface.implements(IPAS, ILocation, ISimpleService)
+class LocalPAU(PAU, Persistent, Contained):
+    zope.interface.implements(IPAU, ILocation, ILocalUtility)

@@ -19,10 +19,11 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.app import zapi
-from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.tests import ztapi
+from zope.app.security.interfaces import IAuthenticationUtility, IPrincipal
 from zope.app.container.contained import contained
 from zope.app.exception.browser.unauthorized import Unauthorized
-from zope.app.event.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 class Unauthorized(Unauthorized):
     """Unusually done by ZCML."""
@@ -41,8 +42,8 @@ class DummyPrincipal(object):
     def getId(self):
         return self.id
 
-class DummyAuthService(object):
-    implements(IAuthenticationService)  # this is a lie
+class DummyAuthUtility(object):
+    implements(IAuthenticationUtility)  # this is a lie
 
     def unauthorized(self, principal_id, request):
         self.principal_id = principal_id
@@ -52,19 +53,17 @@ class DummyAuthService(object):
 class DummyPrincipalSource(object):
     pass
 
-class Test(TestCase, PlacelessSetup):
+class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        self.temp = zapi.getService
-        self.authservice = DummyAuthService()
-        zapi.getService = lambda name: self.authservice
+        self.auth = DummyAuthUtility()
+        ztapi.provideUtility(IAuthenticationUtility, self.auth)
 
     def tearDown(self):
-        zapi.getService = self.temp
         super(Test, self).tearDown()
 
-    def test(self):
+    def testUnauthorized(self):
         exception = Exception()
         try:
             raise exception
@@ -79,10 +78,10 @@ class Test(TestCase, PlacelessSetup):
         self.assertEqual(request.response.getStatus(), 403)
 
         # Make sure the auth service was called
-        self.failUnless(self.authservice.request is request)
-        self.assertEqual(self.authservice.principal_id, 23)
+        self.failUnless(self.auth.request is request)
+        self.assertEqual(self.auth.principal_id, 23)
 
-    def testPluggableAuthService(self):
+    def testPluggableAuthUtility(self):
         exception = Exception()
         try:
             raise exception
@@ -98,8 +97,8 @@ class Test(TestCase, PlacelessSetup):
         self.assertEqual(request.response.getStatus(), 403)
 
         # Make sure the auth service was called
-        self.failUnless(self.authservice.request is request)
-        self.assertEqual(self.authservice.principal_id, 23)
+        self.failUnless(self.auth.request is request)
+        self.assertEqual(self.auth.principal_id, 23)
 
 def test_suite():
     return makeSuite(Test)

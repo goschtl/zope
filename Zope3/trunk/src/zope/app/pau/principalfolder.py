@@ -29,7 +29,7 @@ import zope.app.container.interfaces
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-from zope.app.pas import interfaces
+from zope.app.pau import interfaces
 
 class IInternalPrincipal(zope.interface.Interface):
     """Principal information"""
@@ -41,7 +41,7 @@ class IInternalPrincipal(zope.interface.Interface):
         required=True)
 
     password = zope.schema.Password(
-        title=_("Password"),
+        title=_(u"Password"),
         description=_("The password for the principal."),
         required=True)
 
@@ -55,7 +55,8 @@ class IInternalPrincipal(zope.interface.Interface):
         description=_("Provides a description for the principal."),
         required=False,
         missing_value='',
-        default=u'')
+        default=u'',
+        )
 
 
 class IInternalPrincipalContainer(zope.interface.Interface):

@@ -25,16 +25,16 @@ principals. The view unfortunately depends on a lot of other components:
     >>> ztapi.provideUtility(IPermission, Permission(u'permission3', 
     ...                      u'Permission 3'), u'permission3')
 
-  - Authentication Service
+  - Authentication Utility
 
     >>> class Principal:
     ...     def __init__(self, id, title): self.id, self.title = id, title
 
-    >>> from zope.app.security.interfaces import IAuthenticationService
+    >>> from zope.app.security.interfaces import IAuthenticationUtility
     >>> from zope.app.security.interfaces import PrincipalLookupError
     >>> from zope.interface import implements
-    >>> class AuthService:
-    ...     implements(IAuthenticationService)
+    >>> class AuthUtility:
+    ...     implements(IAuthenticationUtility)
     ...     data = {'jim': Principal('jim', 'Jim Fulton'),
     ...             'stephan': Principal('stephan', 'Stephan Richter')}
     ...
@@ -49,8 +49,7 @@ principals. The view unfortunately depends on a lot of other components:
     ...                 for principal in self.data.values()
     ...                 if search in principal.title]
 
-    >>> ztapi.provideService('Authentication', AuthService(), 
-    ...                      IAuthenticationService)
+    >>> ztapi.provideUtility(IAuthenticationUtility, AuthUtility())
 
   - Security-related Adapters
 
@@ -91,10 +90,10 @@ principals. The view unfortunately depends on a lot of other components:
     >>> from zope.app.form.browser.interfaces import ITerms
     >>> ztapi.browserViewProviding(IPrincipalSource, PrincipalTerms, ITerms)
 
-    >>> from zope.app.security.browser.auth import AuthServiceSearchView
+    >>> from zope.app.security.browser.auth import AuthUtilitySearchView
     >>> from zope.app.form.browser.interfaces import ISourceQueryView
-    >>> ztapi.browserViewProviding(IAuthenticationService, 
-    ...                            AuthServiceSearchView,
+    >>> ztapi.browserViewProviding(IAuthenticationUtility, 
+    ...                            AuthUtilitySearchView,
     ...                            ISourceQueryView)
 
 

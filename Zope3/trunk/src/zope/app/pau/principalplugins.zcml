@@ -11,7 +11,7 @@
       />
 
   <subscriber
-      for=".interfaces.IPASPrincipalCreated"
+      for=".interfaces.IPAUPrincipalCreated"
       factory=".principalplugins.addTitleAndDescription"
       />
 

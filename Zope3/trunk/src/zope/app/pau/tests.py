@@ -28,7 +28,6 @@ from zope.app import zapi
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.tests.setup import placefulSetUp, placefulTearDown
-from zope.app.security.interfaces import IAuthenticationService
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
         ISessionPkgData, ISessionData
@@ -59,19 +58,16 @@ def formAuthTearDown(self):
 
 def groupSetUp(test):
     placelesssetup.setUp()
-    services = zapi.getGlobalServices()
-    services.defineService(zapi.servicenames.Authentication,
-                           IAuthenticationService)
 
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.pas.generic'),
-        doctest.DocTestSuite('zope.app.pas.httpplugins'),
+        doctest.DocTestSuite('zope.app.pau.generic'),
+        doctest.DocTestSuite('zope.app.pau.httpplugins'),
         doctest.DocFileSuite('principalfolder.txt'),
         doctest.DocFileSuite('idpicker.txt'),
-        doctest.DocTestSuite('zope.app.pas.principalplugins'),
-        doctest.DocTestSuite('zope.app.pas.browserplugins',
+        doctest.DocTestSuite('zope.app.pau.principalplugins'),
+        doctest.DocTestSuite('zope.app.pau.browserplugins',
                              setUp=formAuthSetUp,
                              tearDown=formAuthTearDown),
         doctest.DocFileSuite('README.txt',

@@ -1,49 +1,48 @@
 ================================
-Pluggable Authentication Service
+Pluggable Authentication Utility
 ================================
 
-The Pluggable Authentication Service (PAS) provides a framework for
-authenticating principals and associating information with them.  It
-uses a variety of different utilities, called plugins, and subscribers
-to get its work done.
+The Pluggable Authentication Utility (PAU) provides a framework for
+authenticating principals and associating information with them.  It uses a
+variety of different utilities, called plugins, and subscribers to get its
+work done.
 
 Authentication
 ==============
 
-The primary job of an authentication service is to authenticate
-principals.  Given a request object, the authentication service
-returns a principal object, if it can.  The PAS does this in two
-steps:
+The primary job of an authentication utility is to authenticate principals.
+Given a request object, the authentication utility returns a principal object,
+if it can.  The PAU does this in two steps:
 
-1. It determines a principal ID based on authentication credentials
-   found in a request, and then
+1. It determines a principal ID based on authentication credentials found in a
+   request, and then
 
-2. It constructs a principal from the given ID, combining information
-   from a number of sources.
+2. It constructs a principal from the given ID, combining information from a
+   number of sources.
 
-It uses plug-ins in both phases of its work. Plugins are named
-utilities that the service is configured to use in some order.
+It uses plug-ins in both phases of its work. Plugins are named utilities that
+the utility is configured to use in some order.
 
-In the first phase, the PAS iterates through a sequence of extractor
-plugins.  From each plugin, it attempts to get a set of credentials.
-If it gets credentials, it iterates through a sequence of authentication
-plugins, trying to get a principal id for the given credentials.  It
-continues this until it gets a principal id.
+In the first phase, the PAU iterates through a sequence of extractor plugins.
+From each plugin, it attempts to get a set of credentials.  If it gets
+credentials, it iterates through a sequence of authentication plugins, trying
+to get a principal id for the given credentials.  It continues this until it
+gets a principal id.
 
-Once it has a principal id, it begins the second phase.  In the second
-phase, it iterates through a collection of principal-factory plugins until a
-plugin returns a principal object for given principal ID.
+Once it has a principal id, it begins the second phase.  In the second phase,
+it iterates through a collection of principal-factory plugins until a plugin
+returns a principal object for given principal ID.
 
-When a factory creates a principal, it publishes a principal-created
-event.  Subscribers to this event are responsible for adding data,
-especially groups, to the principal.  Typically, if a subscriber adds
-data, it should also add corresponding interface declarations.
+When a factory creates a principal, it publishes a principal-created event.
+Subscribers to this event are responsible for adding data, especially groups,
+to the principal.  Typically, if a subscriber adds data, it should also add
+corresponding interface declarations.
 
-Let's look at an example. We create a simple plugin that provides
-credential extraction:
+Let's look at an example. We create a simple plugin that provides credential
+extraction:
 
   >>> import zope.interface
-  >>> from zope.app.pas import interfaces
+  >>> from zope.app.pau import interfaces
 
   >>> class MyExtractor:
   ...
@@ -52,8 +51,8 @@ credential extraction:
   ...     def extractCredentials(self, request):
   ...         return request.get('credentials')
 
-We need to register this as a utility. Normally, we'd do this in
-ZCML. For the example here, we'll use the provideUtility function from
+We need to register this as a utility. Normally, we'd do this in ZCML. For the
+example here, we'll use the `provideUtility()` function from
 `zope.app.tests.ztapi`:
 
   >>> from zope.app.tests.ztapi import provideUtility
@@ -99,31 +98,31 @@ We provide a principal factory plugin:
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(), 
   ...                name='pf')
 
-Finally, we create a PAS instance:
+Finally, we create a PAU instance:
 
-  >>> from zope.app import pas
-  >>> service = pas.LocalPAS()
+  >>> from zope.app import pau
+  >>> auth = pau.LocalPAU()
 
 Now, we'll create a request and try to authenticate:
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest(credentials=42)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
 
-We don't get anything. Why?  Because we haven't configured the service
-to use our plugins. Let's fix that:
+We don't get anything. Why?  Because we haven't configured the authentication
+utility to use our plugins. Let's fix that:
 
-  >>> service.extractors = ('emy', )
-  >>> service.authenticators = ('a42', )
-  >>> service.factories = ('pf', )
-  >>> principal = service.authenticate(request)
+  >>> auth.extractors = ('emy', )
+  >>> auth.authenticators = ('a42', )
+  >>> auth.factories = ('pf', )
+  >>> principal = auth.authenticate(request)
   >>> principal
   Principal('42', '')
 
-In addition to getting a principal, an IPASPrincipalCreated event will
+In addition to getting a principal, an `IPAUPrincipalCreated` event will
 have been generated.  We'll use an the testing event logging API to
 see that this is the case:
 
@@ -147,18 +146,18 @@ and it's request set to the request we created:
   True
 
 Normally, we provide subscribers to these events that add additional
-information to the principal. For example, we'll add one that sets
+information to the principal. For examples, we'll add one that sets
 the title to a repr of the event info:
 
   >>> def add_info(event):
-  ...     event.principal.title = repr(event.info)
+  ...     event.principal.title = `event.info`
 
   >>> from zope.app.tests.ztapi import subscribe
-  >>> subscribe([interfaces.IPASPrincipalCreated], None, add_info)
+  >>> subscribe([interfaces.IPAUPrincipalCreated], None, add_info)
 
 Now, if we authenticate a principal, its title will be set:
 
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('42', "{'domain': 42}")
 
 We can supply multiple plugins. For example, let's override our
@@ -176,23 +175,23 @@ authentication plugin:
 
 If we put it before the original authenticator:
 
-  >>> service.authenticators = 'aint', 'a42'
+  >>> auth.authenticators = 'aint', 'a42'
 
 Then it will override the original:
 
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('42', "{'int': 42}")
 
 But if we put it after, the original will be used:
 
-  >>> service.authenticators = 'a42', 'aint'
-  >>> service.authenticate(request)
+  >>> auth.authenticators = 'a42', 'aint'
+  >>> auth.authenticate(request)
   Principal('42', "{'domain': 42}")
 
 But we'll fall back to the new one:
 
   >>> request = TestRequest(credentials=1)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('1', "{'int': 1}")
 
 As with with authenticators, we can specify multiple extractors:
@@ -207,14 +206,14 @@ As with with authenticators, we can specify multiple extractors:
   ...             return 1
 
   >>> provideUtility(interfaces.IExtractionPlugin, OddExtractor(), name='eodd')
-  >>> service.extractors = 'eodd', 'emy'
-
+  >>> auth.extractors = 'eodd', 'emy'
+ 
   >>> request = TestRequest(credentials=41)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('1', "{'int': 1}")
 
   >>> request = TestRequest(credentials=42)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('42', "{'domain': 42}")
 
 And we can specify multiple factories:
@@ -246,33 +245,33 @@ And we can specify multiple factories:
   ...                     principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(),
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(), 
   ...                name='oddf')
 
-  >>> service.factories = 'oddf', 'pf'
-
+  >>> auth.factories = 'oddf', 'pf'
+ 
   >>> request = TestRequest(credentials=41)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   OddPrincipal('1', "{'int': 1}")
-
+ 
   >>> request = TestRequest(credentials=42)
-  >>> service.authenticate(request)
+  >>> auth.authenticate(request)
   Principal('42', "{'domain': 42}")
 
 In this example, we used the supplemental information to get the
 integer credentials.  It's common for factories to decide whether they
 should be used depending on supplemental information.  Factories
 should not try to inspect the principal ids. Why? Because, as we'll
-see later, the PAS may modify ids before giving them to factories.
+see later, the PAU may modify ids before giving them to factories.
 Similarly, subscribers should use the supplemental information for any
 data they need.
 
 Get a principal given an id
 ===========================
 
-We can ask the PAS for a principal, given an id.
+We can ask the PAU for a principal, given an id. 
 
-To do this, the PAS uses principal search plugins:
+To do this, the PAU uses principal search plugins:
 
   >>> class Search42:
   ...
@@ -282,7 +281,7 @@ To do this, the PAS uses principal search plugins:
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(),
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(), 
   ...                name='s42')
 
   >>> class IntSearch:
@@ -297,38 +296,37 @@ To do this, the PAS uses principal search plugins:
   ...         if (i >= 0 and i < 100):
   ...             return {'int': i}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(),
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(), 
   ...                name='sint')
+ 
+  >>> auth.searchers = 's42', 'sint'
 
-  >>> service.searchers = 's42', 'sint'
-
-  >>> service.getPrincipal('41')
+  >>> auth.getPrincipal('41')
   OddPrincipal('41', "{'int': 41}")
 
 In addition to returning a principal, this will generate an event:
 
   >>> clearEvents()
-  >>> service.getPrincipal('42')
+  >>> auth.getPrincipal('42')
   Principal('42', "{'domain': 42}")
 
-  >>> [event] = getEvents(interfaces.IPASPrincipalCreated)
+  >>> [event] = getEvents(interfaces.IPAUPrincipalCreated)
   >>> event.principal
   Principal('42', "{'domain': 42}")
 
   >>> event.info
   {'domain': 42}
 
-Our PAS will not find a principal with the ID '123'. Therefore it will
-delegate to the next service. To make sure that it's delegated, we put in place
-a fake service.
+Our PAU will not find a principal with the ID '123'. Therefore it will
+delegate to the next utility. To make sure that it's delegated, we put in place
+a fake utility.
 
-  >>> from zope.app.component.localservice import testingNextService
-  >>> from zope.app.site.interfaces import ISiteManager
-  >>> from zope.app import servicenames
+  >>> from zope.app.utility.utility import testingNextUtility
+  >>> from zope.app.security.interfaces import IAuthenticationUtility
 
-  >>> class FakeService:
+  >>> class FakeAuthUtility:
   ...
-  ...     zope.interface.implements(ISiteManager)
+  ...     zope.interface.implements(IAuthenticationUtility)
   ...
   ...     lastGetPrincipalCall = lastUnauthorizedCall = None
   ...
@@ -338,47 +336,47 @@ a fake service.
   ...     def unauthorized(self, id, request):
   ...         self.lastUnauthorizedCall = id
 
-  >>> nextservice = FakeService()
-  >>> testingNextService(service, nextservice, servicenames.Authentication)
+  >>> nextauth = FakeAuthUtility()
+  >>> testingNextUtility(auth, nextauth, IAuthenticationUtility)
 
-  >>> service.getPrincipal('123')
-  >>> '123' == nextservice.lastGetPrincipalCall
+  >>> auth.getPrincipal('123')
+  >>> '123' == nextauth.lastGetPrincipalCall
   True
 
 Issuing a challenge
 ===================
 
-If the unauthorized method is called on the PAS, the PAS iterates
+If the unauthorized method is called on the PAU, the PAU iterates
 through a sequence of challenge plugins calling their challenge
 methods until one returns True, indicating that a challenge was
 issued. (This is a simplification. See "Protocols" below.)
 
 Nothing will happen if there are no plugins registered.
 
-  >>> service.unauthorized(42, request)
+  >>> auth.unauthorized(42, request)
 
-However, our next service was asked:
+However, our next utility was asked:
 
-  >>> 42 == nextservice.lastUnauthorizedCall
+  >>> 42 == nextauth.lastUnauthorizedCall
   True
 
 What happens if a plugin is registered depends on the plugin.  Let's
 create a plugin that sets a response header:
 
   >>> class Challenge:
-  ...
+  ...     
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...
+  ...     
   ...     def challenge(self, requests, response):
   ...         response.setHeader('X-Unauthorized', 'True')
   ...         return True
 
   >>> provideUtility(interfaces.IChallengePlugin, Challenge(), name='c')
-  >>> service.challengers = ('c', )
+  >>> auth.challengers = ('c', )
 
 Now if we call unauthorized:
 
-  >>> service.unauthorized(42, request)
+  >>> auth.unauthorized(42, request)
 
 the response `X-Unauthorized` is set:
 
@@ -389,7 +387,7 @@ How challenges work in Zope 3
 -----------------------------
 
 To understand how the challenge plugins work, it's helpful to
-understand how the unauthorized method of authenticaton services
+understand how the unauthorized method of authenticaton services 
 get called.
 
 If an 'Unauthorized' exception is raised and not caught by application
@@ -399,13 +397,13 @@ code, then the following things happen:
 
 2. A view is looked up for the exception.
 
-3. The view gets the authentication service and calls it's
+3. The view gets the authentication utility and calls it's
    'unauthorized' method.
 
-4. The PAS will call its challenge plugins.  If none return a value,
-   then the PAS delegates to the next authentication service above it
+4. The PAU will call its challenge plugins.  If none return a value,
+   then the PAU delegates to the next authentication utility above it
    in the containment hierarchy, or to the global authentication
-   service.
+   utility.
 
 5. The view sets the body of the response.
 
@@ -422,36 +420,36 @@ add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...
+  ...     
   ...     protocol = 'bridge'
-  ...
+  ...     
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge',
+  ...         response.setHeader('X-Challenge', 
   ...                            challenge + 'favorite color? ')
   ...         return True
 
   >>> provideUtility(interfaces.IChallengePlugin, ColorChallenge(), name='cc')
-  >>> service.challengers = 'cc, ', 'c'
+  >>> auth.challengers = 'cc, ', 'c'
 
   >>> class BirdChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...
+  ...     
   ...     protocol = 'bridge'
-  ...
+  ...     
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge',
+  ...         response.setHeader('X-Challenge', 
   ...                            challenge + 'swallow air speed? ')
   ...         return True
 
   >>> provideUtility(interfaces.IChallengePlugin, BirdChallenge(), name='bc')
-  >>> service.challengers = 'cc', 'c', 'bc'
+  >>> auth.challengers = 'cc', 'c', 'bc'
 
 Now if we call unauthorized:
 
   >>> request = TestRequest(credentials=42)
-  >>> service.unauthorized(42, request)
+  >>> auth.unauthorized(42, request)
 
 the response `X-Unauthorized` is not set:
 
@@ -465,9 +463,9 @@ with the bridge protocol:
 
 Of course, if we put the original challenge first:
 
-  >>> service.challengers = 'c', 'cc', 'bc'
+  >>> auth.challengers = 'c', 'cc', 'bc'
   >>> request = TestRequest(credentials=42)
-  >>> service.unauthorized(42, request)
+  >>> auth.unauthorized(42, request)
 
 We get 'X-Unauthorized' but not 'X-Challenge':
 
@@ -483,37 +481,37 @@ an 'Unauthorized' exception to indicate that a challenge should be
 issued immediately. They might do this if the recognize partial
 credentials that pertain to them.
 
-PAS prefixes
+PAU prefixes
 ============
 
 Principal ids are required to be unique system wide.  Plugins will
 often provide options for providing id prefixes, so that different
-sets of plugins provide unique ids within a PAS.  If there are
-multiple PASs in a system, it's a good idea to give each PAS a
-unique prefix, so that principal ids from different PASs don't
-conflict. We can provide a prefix when a PAS is created:
+sets of plugins provide unique ids within a PAU.  If there are
+multiple PAUs in a system, it's a good idea to give each PAU a
+unique prefix, so that principal ids from different PAUs don't
+conflict. We can provide a prefix when a PAU is created:
 
-  >>> service = pas.PAS('mypas_')
-  >>> service.extractors = 'eodd', 'emy'
-  >>> service.authenticators = 'a42', 'aint'
-  >>> service.factories = 'oddf', 'pf'
-  >>> service.searchers = 's42', 'sint'
+  >>> auth = pau.PAU('mypas_')
+  >>> auth.extractors = 'eodd', 'emy'
+  >>> auth.authenticators = 'a42', 'aint'
+  >>> auth.factories = 'oddf', 'pf'
+  >>> auth.searchers = 's42', 'sint'
 
 Now, we'll create a request and try to authenticate:
 
   >>> request = TestRequest(credentials=42)
-  >>> principal = service.authenticate(request)
+  >>> principal = auth.authenticate(request)
   >>> principal
   Principal('mypas_42', "{'domain': 42}")
 
-Note that now, our principal's id has the PAS prefix.
+Note that now, our principal's id has the PAU prefix.
 
 We can still lookup a principal, as long as we supply the prefix:
 
-  >>> service.getPrincipal('mypas_42')
+  >>> auth.getPrincipal('mypas_42')
   Principal('mypas_42', "{'domain': 42}")
 
-  >>> service.getPrincipal('mypas_41')
+  >>> auth.getPrincipal('mypas_41')
   OddPrincipal('mypas_41', "{'int': 41}")
 
 Searching
@@ -525,7 +523,7 @@ ids. They're also used to find principals given search criteria.
 
 Different search plugins are likely to use very different search
 criteria.  There are two approaches a plugin can use to support
-searching:
+searching: 
 
 - A plugin can provide IQuerySchemaSearch, in addition to
   `IPrincipalSearchPlugin`.  In this case, the plugin provises a search
@@ -536,13 +534,13 @@ searching:
   view that provides
   `zope.app.form.browser.interfaces.ISourceQueryView`.
 
-PAS uses search plugins in a very simple way.  It mearly implements
+PAU uses search plugins in a very simple way.  It mearly implements
 `zope.schema.interfaces.ISourceQueriables`:
 
-  >>> [id for (id, queriable) in service.getQueriables()]
+  >>> [id for (id, queriable) in auth.getQueriables()]
   ['s42', 'sint']
-  >>> [queriable.__class__.__name__
-  ...  for (id, queriable) in service.getQueriables()]
+  >>> [queriable.__class__.__name__ 
+  ...  for (id, queriable) in auth.getQueriables()]
   ['Search42', 'IntSearch']
 
 Design Notes
@@ -552,4 +550,4 @@ Design Notes
   search or extraction and challenge. See
   `ISearchableAuthenticationPlugin` and
   `IExtractionAndChallengePlugin`.
-
+ 

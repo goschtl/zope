@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Global Authentication Service or Principal Registry
+"""Global Authentication Utility or Principal Registry
 
 $Id$
 """
@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.app.security.interfaces import ILoginPassword
-from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IAuthenticationUtility, IPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.container.contained import Contained, contained
 from warnings import warn
@@ -30,9 +30,9 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(IAuthenticationService)
+    implements(IAuthenticationUtility)
 
-    # Methods implementing IAuthenticationService
+    # Methods implementing IAuthenticationUtility
 
     def authenticate(self, request):
         a = ILoginPassword(request, None)

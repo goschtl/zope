@@ -22,9 +22,9 @@ from zope.app import zapi
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IPermission
+from zope.app.security.interfaces import IPermission, IAuthenticationUtility
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.component.localservice import queryNextService
+from zope.app.utility.utility import queryNextUtility
 
 # BBB Backward Compatibility
 from zope.exceptions import NotFoundError
@@ -115,25 +115,25 @@ class PrincipalSource(object):
 
         We want to check whether the system knows about a particular
         principal, which is referenced via its id. The source will go through
-        the most local authentication service to look for the
-        principal. Whether the service consults other services to give an
-        answer is up to the service itself.
+        the most local authentication utility to look for the
+        principal. Whether the utility consults other utilities to give an
+        answer is up to the utility itself.
 
         First we need to create a dummy service that will return a user, if
         the id is 'bob'.
         
-        >>> class DummyService:
+        >>> class DummyUtility:
         ...     def getPrincipal(self, id):
         ...         if id == 'bob':
         ...             return id
         ...         raise PrincipalLookupError(id)
 
         Since we do not want to bring up the entire component architecture, we
-        simply monkey patch the `getService()` method to always return our
-        dummy authentication service.
+        simply monkey patch the `getUtility()` method to always return our
+        dummy authentication utility.
 
-        >>> temp = zapi.getService
-        >>> zapi.getService = lambda name: DummyService()
+        >>> temp = zapi.getUtility
+        >>> zapi.getUtility = lambda iface: DummyUtility()
 
         Now initialize the principal source and test the method
 
@@ -145,9 +145,9 @@ class PrincipalSource(object):
 
         Now revert our patch.
 
-        >>> zapi.getService = temp
+        >>> zapi.getUtility = temp
         """
-        auth = zapi.getService(zapi.servicenames.Authentication)
+        auth = zapi.getUtility(IAuthenticationUtility)
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
@@ -157,7 +157,7 @@ class PrincipalSource(object):
                 "A %s instance raised a NotFoundError in "
                 "getPrincipals.  Raising NotFoundError in this "
                 "method is deprecated and will no-longer be supported "
-                "staring in ZopeX3 3.3.  PrincipalLookupError should "
+                "starting in ZopeX3 3.3.  PrincipalLookupError should "
                 "be raised instead."
                 % auth.__class__.__name__,
                 DeprecationWarning)
@@ -171,40 +171,42 @@ class PrincipalSource(object):
         Queriables are responsible for providing interfaces to search for
         principals by a set of given parameters (can be different for the
         various queriables). This method will walk up through all of the
-        authentication services to look for queriables.
+        authentication utilities to look for queriables.
 
-        >>> class DummyService1:
+        >>> class DummyUtility1:
+        ...     implements(IAuthenticationUtility)
         ...     __parent__ = None
         ...     def __repr__(self): return 'dummy1'
-        >>> dummy1 = DummyService1()
+        >>> dummy1 = DummyUtility1()
         
-        >>> class DummyService2:
-        ...     implements(ISourceQueriables)
+        >>> class DummyUtility2:
+        ...     implements(ISourceQueriables, IAuthenticationUtility)
         ...     __parent__ = None
         ...     def getQueriables(self):
         ...         return ('1', 1), ('2', 2), ('3', 3)
-        >>> dummy2 = DummyService2()
+        >>> dummy2 = DummyUtility2()
 
-        >>> class DummyService3(DummyService2):
+        >>> class DummyUtility3(DummyUtility2):
+        ...     implements(IAuthenticationUtility)
         ...     def getQueriables(self):
         ...         return ('4', 4),
-        >>> dummy3 = DummyService3()
+        >>> dummy3 = DummyUtility3()
 
-        >>> from zope.app.component.localservice import testingNextService
-        >>> testingNextService(dummy1, dummy2, 'Authentication')
-        >>> testingNextService(dummy2, dummy3, 'Authentication')
+        >>> from zope.app.utility.utility import testingNextUtility
+        >>> testingNextUtility(dummy1, dummy2, IAuthenticationUtility)
+        >>> testingNextUtility(dummy2, dummy3, IAuthenticationUtility)
         
-        >>> temp = zapi.getService
-        >>> zapi.getService = lambda name: dummy1
+        >>> temp = zapi.getUtility
+        >>> zapi.getUtility = lambda iface: dummy1
 
         >>> source = PrincipalSource()
         >>> list(source.getQueriables())
         [(u'0', dummy1), (u'1.1', 1), (u'1.2', 2), (u'1.3', 3), (u'2.4', 4)]
 
-        >>> zapi.getService = temp
+        >>> zapi.getUtility = temp
         """
         i = 0
-        auth = zapi.getService(zapi.servicenames.Authentication)
+        auth = zapi.getUtility(IAuthenticationUtility)
         while True:
             queriables = ISourceQueriables(auth, None)
             if queriables is None:
@@ -212,7 +214,7 @@ class PrincipalSource(object):
             else:
                 for qid, queriable in queriables.getQueriables():
                     yield unicode(i)+'.'+unicode(qid), queriable
-            auth = queryNextService(auth, zapi.servicenames.Authentication)
+            auth = queryNextUtility(auth, IAuthenticationUtility)
             if auth is None:
                 break
             i += 1

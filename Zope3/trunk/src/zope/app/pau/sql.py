@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Authentication Plugin.
 
-$Id: sqlauthpas.py,v 1.0 2004/10/11 mriya3
+$Id: sql.py,v 1.0 2004/10/11 mriya3
 """
 from zope.app.sqlscript import SQLScript
 import zope.interface
