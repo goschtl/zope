@@ -439,7 +439,6 @@ _FOO_EXPORT = """\
    factory="addFoo"
    immediate_view="foo_view"
    filter_content_types="False"
-   allowed_content_types=""
    allow_discussion="False"
    global_allow="False" >
   <description>Foo things</description>
@@ -488,10 +487,10 @@ _BAR_EXPORT = """\
    permission="Add portal content"
    immediate_view="bar_view"
    filter_content_types="True"
-   allowed_content_types="foo"
    allow_discussion="True"
    global_allow="True" >
   <description>Bar things</description>
+  <allowed_content_type>foo</allowed_content_type>
   <aliases>
    <alias from="(Default)" to="bar_view" />
    <alias from="view" to="bar_view" />

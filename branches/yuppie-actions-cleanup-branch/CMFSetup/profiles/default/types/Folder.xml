@@ -4,8 +4,8 @@
            icon="folder_icon.gif"
            immediate_view="folder_edit_form"
            filter_content_types="False"
-           allowed_content_types="" allow_discussion="False"
-           global_allow="True" product="CMFCore"
+           allow_discussion="False" global_allow="True"
+           product="CMFCore"
            factory="manage_addPortalFolder">
   <description>Use folders to put content in categories.</description>
   <aliases>
