@@ -30,6 +30,7 @@ from zope.app.interfaces.form import WidgetInputError, MissingInputError
 from zope.interface.declarations import directlyProvides
 from zope.publisher.browser import BrowserView
 from zope.component import getView
+from zope.security.proxy import trustedRemoveSecurityProxy 
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ValidationError
@@ -89,8 +90,7 @@ def _get_vocabulary_widget(field, request, viewname):
     # XXX: The hack of the century. After all ZCML attempts via ZCML failed,
     #      this is the only way I could find to make it work! (SR)
     #      Fred, please have a look at this.
-    from zope.proxy import removeAllProxies
-    view = removeAllProxies(view)
+    view = trustedRemoveSecurityProxy(view)
     view.setField(field)
     return view
 
