@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.6 2003/07/13 06:47:21 richard Exp $
+$Id: widget.py,v 1.7 2003/07/14 15:06:10 anthony Exp $
 """
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
@@ -63,6 +63,7 @@ class Widget:
         raise TypeError("applyChanges has not been implemented")
 
     title = property(lambda self: self.context.title)
+    description = property(lambda self: self.context.description)
 
     required = property(lambda self: self.context.required)
 
