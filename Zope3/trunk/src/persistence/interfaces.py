@@ -209,9 +209,8 @@ class IPersistentNoReadConflicts(IPersistent):
 class IPersistentDataManager(Interface):
     """Provide services for managing persistent state.
 
-    This interface is provided by ZODB Connections.
-
-    This interface is used by persistent objects.
+    This interface is used by a persistent object to interact with its
+    data manager in the context of a transaction.
     """
 
     def setstate(object):
@@ -231,6 +230,11 @@ class IPersistentDataManager(Interface):
         from details of transaction management. For example, it allows
         the use of per-database-connection rather than per-thread
         transaction managers.
+
+        A persistent object should not register with its data manager
+        more than once during a single transaction.  XXX should is too
+        wishy-washy; we should probably guarantee that this is true,
+        and it might be.
         """
 
     def mtime(object):
