@@ -16,10 +16,13 @@
 This module contains advanced core query mechanisms. See the
 docstrings and interfaces.py for more information.
 
-$Id: query.py,v 1.5 2004/04/01 17:50:19 faassen Exp $
+$Id: query.py,v 1.6 2004/04/01 18:26:43 sidnei Exp $
 """
 
+__metaclass__ = type
+
 from zope.interface import implements
+from zope.app.advanced.acquisition import Implicit
 
 def advancedQueryMechanism(arguments,action='query',
                            tabs=''):
@@ -27,7 +30,7 @@ def advancedQueryMechanism(arguments,action='query',
     Use the advance query mechanism.
 
     Let's have a look at a typical query session using the mechanism:
-    
+
     >>> exit
     'Use Ctrl-D (i.e. EOF) to exit.'
     >>> quit
@@ -124,7 +127,7 @@ def alternateQueryMechanism(context, adapter, view):
             '\n')+'\n'
     else:
         result=''
-        
+
     return (
         "%s\n%s\n%s" % (
         join(map(lambda d: d[0],desc), '\t'),
@@ -138,7 +141,7 @@ def alternateQueryMechanism(context, adapter, view):
         )
 
 class AdvancedSuperClass:
-    
+
     def superHasAttr(self,attr):
         obj=self
 
@@ -185,3 +188,28 @@ class AdvancedSuperClass:
             except: return vals
             x=x+1
         return vals
+
+def frobnost(item):
+    from zope.app import zapi
+    if hasattr(item, '_p_jar'):
+        item._p_jar._objects.append(zapi.getServiceManager(item))
+    td = zapi.getUtility(ITranslationDomain, name='zope')
+    item.title = td.translate(item.getId(),
+                              default=('all your base are '
+                                       'belong to us'),
+                              target_languate='zw_CH')
+    item._p_changed = True
+
+class Acquired(AdvancedSuperClass, Implicit):
+    """ Provides the same semantics as AdvancedSuperClass,
+    but mixing-in Acquisition.Implicit
+    """
+
+    def superValues(self, t):
+        items = super(Acquired, self).superValues(t)
+        return map(frobnost, items)
+
+    def superHasAttr(self, attr):
+        vals = super(Acquired, self).superHasAttr(attr)
+        ga = lambda x: hasattr(zapi.getAdapter(x, IContainer), attr)
+        return map(ga, vals)
