@@ -239,6 +239,9 @@
 
 <!-- Views -->
 
+<!-- XXX Jim says this doesn't work and isn't well thought out.
+     So commenting this out for now.
+
   <defaultView
     for="zope.app.interfaces.services.view.IViewConfiguration"
     name="edit.html" />
@@ -287,6 +290,8 @@
       title="View Service"
       />
 
+-->
+
 <!-- View pages -->
 
   <editform
@@ -302,8 +307,9 @@
       schema = "zope.app.interfaces.services.view.IPageConfiguration"
       name= "PageConfiguration"
       content_factory = ".view.PageConfiguration"
-      keyword_arguments = "forInterface class_ viewName permission"
-      set_before_add = "template layer"
+      keyword_arguments =
+          "forInterface class_ viewName permission layer"
+      set_before_add = "template"
       label = "Register a view page"
       permission="zope.ManageServices"
       fields="forInterface viewName
