@@ -45,17 +45,22 @@ products_remote = {'host': "cvs.zope.org",
 zopeaddr = ["zope-checkins@zope.org"]
 
 table = [
-    {'path': "CVSROOT", 'addrs': ["digicool-cvs@zope.org"],
+    {'path': "CVSROOT",
+     'addrs': ["digicool-cvs@zope.org"],
      'excludes': ["/history"]},
 
-    {'path': "test", 'addrs': "klm@digicool.com"},
+    {'path': "test",
+     'addrs': "klm@digicool.com"},
 
-    {'path': "Operations", 'addrs': "support@digicool.com",
+    {'path': "Operations",
+     'addrs': "support@digicool.com",
      'remote': None},
 
     {'path': "Zope2", 'addrs': zopeaddr},
 
-    {'path': "ZopeDocs", 'addrs': 'klm@zope.org', 'remote': None},
+    {'path': "ZopeDocs",
+     'addrs': 'zopedocs-checkins@zope.org',
+     'remote': None},
 
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
      'remote': products_remote},
