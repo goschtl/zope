@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory object
 
-$Id: factory.py,v 1.11 2004/03/10 00:58:44 srichter Exp $
+$Id: factory.py,v 1.12 2004/04/05 19:43:43 jim Exp $
 """
 from zope.interface import implements, implementedBy
 from zope.component.interfaces import IFactory
@@ -37,5 +37,7 @@ class Factory(object):
     def getInterfaces(self):
         try:
             return implementedBy(self._callable)
-        except AttributeError:
+        except TypeError:
+            # XXX This is a hack
+            # We really only support classes
             return implementedBy(object())
