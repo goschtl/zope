@@ -11,14 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Test the Dublin Core annotations adapter.
 
-XXX longer description goes here.
-
-$Id: test_zdcannotatableadapter.py,v 1.3 2003/06/06 21:21:46 stevea Exp $
+$Id: test_zdcannotatableadapter.py,v 1.4 2003/08/20 14:30:14 fdrake Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
+
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
@@ -28,7 +27,7 @@ class TestAnnotations(dict):
     implements(IAnnotations)
 
 
-class Test(PlacelessSetup, TestCase):
+class DublinCoreAdapterTest(PlacelessSetup, unittest.TestCase):
 
     def testZDCAnnotatableAdapter(self):
 
@@ -51,9 +50,7 @@ class Test(PlacelessSetup, TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return unittest.makeSuite(DublinCoreAdapterTest)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
