@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.10 2003/09/21 17:34:10 jim Exp $
+$Id: config.py,v 1.11 2003/10/16 10:15:48 jim Exp $
 """
 
 import os.path
@@ -1192,7 +1192,8 @@ def toargs(context, schema, data):
             try:
                 args[str(name)] = field.fromUnicode(s)
             except zope.schema.ValidationError, v:
-                raise ConfigurationError("Invalid value for", n, str(v))
+                raise ConfigurationError, (
+                    "Invalid value for", n, str(v)), sys.exc_info()[2]
         elif field.required:
             # if the default is valid, we can use that:
             default = field.default
