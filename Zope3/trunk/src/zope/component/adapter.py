@@ -31,6 +31,7 @@ class IGlobalAdapterService(IAdapterService):
         An adapter provides an interface for objects that have another
         interface.
 
+        XXX: Arguments must be updated.
         Arguments:
 
         forInterface -- The interface the adapter provides an interface for.
