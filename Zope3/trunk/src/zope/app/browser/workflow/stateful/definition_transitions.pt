@@ -1,0 +1,14 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>ProcessDefinition Transitions</title>
+</head>
+<body>
+ 
+  <div metal:fill-slot="body">
+
+  transitions
+ 
+  </div>
+ 
+</body>
+</html>

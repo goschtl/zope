@@ -19,6 +19,11 @@
 <grant permission="zope.ManageApplication" role="Manager" />
 <grant permission="zope.ManageBindings"    role="Manager" />
 
+<!-- Grant Manager all necessary Permissions for using Workflows -->
+<grant permission="zope.workflow.ManageProcessDefinitions" role="Manager" />
+<grant permission="zope.workflow.CreateProcessInstances"  role="Manager" />
+<grant permission="zope.workflow.UseProcessInstances" role="Manager" />
+
 <include file="products.zcml" />
 
 <include file="principals.zcml" />

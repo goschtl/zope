@@ -1,0 +1,54 @@
+  <html metal:use-macro="views/standard_macros/page">
+    <head>
+      <style metal:fill-slot="headers" type="text/css">
+        <!--
+        .ContentTitle {
+        text-align: left;
+        }
+        -->
+      </style>
+    </head>
+    <body>
+      <div metal:fill-slot="body">
+        <tal:block tal:define="pi_name request/pi_name;
+          info python:view.getProcessInstanceInfo(pi_name)">
+
+          <p>Status: <tal:block tal:replace="info/status" /></p>
+
+          Outgoing Transitions:<br />
+            <tal:block tal:repeat="name info/outgoing_transitions"
+          tal:condition="info/outgoing_transitions | nothing">
+          <tal:block tal:replace="name" /> 
+            <a tal:attributes="href string:?pi_name=${pi_name}&fire_transition=${name}">fire</a><br />
+          </tal:block>
+          
+          <table  id="sortable" class="listing" summary="ProcessInstance Data"
+                 cellpadding="2" cellspacing="0" >
+            
+            <thead> 
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            
+            <tbody tal:define="data info/data | nothing"
+              tal:condition="info/data">
+  
+              <tr tal:repeat="key python:data.keys()">
+                <td class="ContentTitle" tal:content="key" />
+        <td tal:content="python:data.get(key) or default">No Value</td>
+              </tr>
+              
+            </tbody>
+            
+          </table>
+          <br />
+        </tal:block>
+      </div>
+    </body>
+  </html>
+
+
+
+

@@ -1,0 +1,56 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+  
+  <directives namespace="http://namespaces.zope.org/workflow">
+
+    <directive name="importHandler" 
+               handler=".metaconfigure.importHandlerDirective">
+
+      <description>
+        Register an Import Handler, that is able to load a XML
+        Representation of a ProcessDefinition and create
+        a persistent Instance for it.
+      </description>
+
+
+      <attribute name="for" required="yes">
+        <description>
+              The interface of the process defintion, 
+              this handler can load. 
+          </description>
+      </attribute>
+
+      <attribute name="factory">
+        <description>
+              The factory for the instance that implements the handler. 
+          </description>
+      </attribute>
+
+    </directive>
+
+    <directive name="exportHandler" 
+               handler=".metaconfigure.exportHandlerDirective">
+
+      <description>
+        Register an Export Handler, that is able to save a XML
+        Representation of a ProcessDefinition from a given object.
+      </description>
+
+
+      <attribute name="for" required="yes">
+        <description>
+              The interface of the process defintion, 
+              this handler can save. 
+          </description>
+      </attribute>
+
+      <attribute name="factory">
+        <description>
+              The factory for the instance that implements the handler. 
+          </description>
+      </attribute>
+
+    </directive>
+
+  </directives>
+
+</zopeConfigure>

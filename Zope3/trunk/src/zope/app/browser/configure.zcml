@@ -15,6 +15,7 @@
 <include package=".skins" />
 <include package=".index" />
 <include package=".rdb" />
+<include package=".workflow" />
 <include file="onlinehelp.zcml" />
 <include file="introspector.zcml" />
 <include file="traversal.zcml" />

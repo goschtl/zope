@@ -1,0 +1,65 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>Add Transition</title>
+</head>
+<body>
+ 
+  <div metal:fill-slot="body">
+ 
+    <form action="." method="post" enctype="multipart/form-data">
+ 
+      <table>
+        <tbody tal:define="states view/getStateNames">
+ 
+          <tr>
+            <th>Id:</th>
+            <td>
+              <input type="text" name="id" size="40" value="">
+            </td>
+          </tr>
+
+          <tr>
+            <th>Source State:</th>
+            <td>
+              <select name="source">
+                <option tal:repeat="state states"
+                        tal:content="state" />
+              </select>
+            </td>
+          </tr>
+ 
+          <tr>
+            <th>Destination State:</th>
+            <td>
+              <select name="destination">
+                <option tal:repeat="state states"
+                        tal:content="state" />
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <th>Condition:</th>
+            <td>
+              <input type="text" name="condition" size="40" value="">
+            </td>
+          </tr>
+
+          <tr>
+            <th>Permission:</th>
+            <td>
+              <input type="text" name="permission" size="40" value="">
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+ 
+      <input type="submit" name="action.html:method" value="Add" />
+ 
+    </form>
+ 
+  </div>
+ 
+</body>
+</html>

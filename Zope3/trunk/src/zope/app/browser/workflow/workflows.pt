@@ -1,0 +1,33 @@
+<html metal:use-macro="views/standard_macros/page">
+<body metal:fill-slot="body">
+<div metal:use-macro="view/indexMacros/macros/body">
+ 
+  <h2 metal:fill-slot="heading">ProcessDefinitions configured in this workflow service.</h2>
+ 
+  <p metal:fill-slot="empty_text">No ProcessDefinitions have been configured</p>
+ 
+  <div metal:fill-slot="extra_top">
+ 
+    <p>For each ProcessDefinition, the ProcessDefinition name is given and all of the
+       components registered to provide the ProcessDefinition are shown.  You
+       may select the component to provide the ProcessDefinition or disable the
+       ProcessDefinition.
+    </p>
+ 
+    <p>Select a ProcessDefinition name or a component name to visit the ProcessDefinition
+       or component.
+    </p>
+ 
+  </div>
+ 
+  <p metal:fill-slot="help_text">To configure a ProcessDefinition, add a ProcessDefinition
+     component to a <em>package</em> in <a
+     href="../../../Packages">Packages</a> or to the <a
+     href="../../../Packages/default">default package</a>. After the component
+     is added, add a ProcessDefinition configuration that configures the component to
+     provide a ProcessDefinition.
+  </p>
+ 
+</div>
+</body>
+</html>

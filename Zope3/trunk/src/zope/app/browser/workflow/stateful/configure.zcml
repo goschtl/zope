@@ -1,0 +1,194 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+
+<!-- Stateful Workflow Process Definition -->
+
+<browser:menuItem
+  menu="add_component"
+  for="zope.app.interfaces.container.IAdding"
+  action="StatefulProcessDefinition"
+  title="Stateful Process Definition"
+  description="A stateful workflow process definition" />
+
+
+<browser:pages
+  for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+  class="zope.app.browser.workflow.stateful.definition.StatefulProcessDefinitionView"
+  permission="zope.ManageServices">
+
+  <browser:page name="index.html" template="definition_index.pt" />
+
+</browser:pages>
+
+<browser:editform
+  schema="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+  name="edit.html"
+  menu="zmi_views"
+  label="Edit a Stateful ProcessDefinition"
+  permission="zope.workflow.ManageProcessDefinitions"
+  />
+
+<browser:menuItems
+  for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+  menu="zmi_actions">
+  
+  <browser:menuItem title="Manage States" action="states/contents.html" />
+  <browser:menuItem title="Manage Transitions" action="transitions/contents.html" />
+
+</browser:menuItems>
+
+
+<!-- States/Transitions Container Adding Menus -->
+<browser:menu id="add_stateful_states" title="State Items" />
+<browser:menu id="add_stateful_transitions" title="Transition Items" />
+
+
+
+<!-- States Container -->
+
+<browser:view
+    for="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer"
+    name="+"
+    menu="zmi_actions" title="Add"
+    class=".definition.StatesContainerAdding"
+    permission="zope.workflow.ManageProcessDefinitions"
+    allowed_attributes="addingInfo"
+    >
+
+    <browser:page name="index.html"  template="add.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+</browser:view>
+
+
+
+<!-- State -->
+<!-- nothing to edit yet
+<browser:editform
+  schema="zope.app.interfaces.workflow.stateful.IState"
+  name="edit.html"
+  menu="zmi_views"
+  label="Edit a State"
+  permission="zope.workflow.ManageProcessDefinitions"
+  />
+-->
+
+<browser:addform
+  name="AddState"
+  menu="add_stateful_states" title="Stateful State"
+  schema="zope.app.interfaces.workflow.stateful.IState"
+  class=".definition.StateAddFormHelper"
+  permission="zope.workflow.ManageProcessDefinitions"
+  content_factory="zope.app.workflow.stateful.definition.State"
+  arguments=""
+  fields=""
+  />
+
+
+
+
+
+
+<!-- Transitions Container -->
+
+<browser:view
+    for="zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer"
+    name="+"
+    menu="zmi_actions" title="Add"
+    class=".definition.TransitionsContainerAdding"
+    permission="zope.workflow.ManageProcessDefinitions"
+    allowed_attributes="addingInfo"
+    >
+
+    <browser:page name="index.html"  template="add.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+</browser:view>
+
+
+
+<!-- Transition -->
+<browser:editform
+  schema="zope.app.interfaces.workflow.stateful.ITransition"
+  name="edit.html"
+  menu="zmi_views"
+  label="Edit a Transition"
+  permission="zope.workflow.ManageProcessDefinitions"
+  />
+
+<browser:addform
+  name="AddTransition"
+  menu="add_stateful_transitions" title="Stateful Transition"
+  schema="zope.app.interfaces.workflow.stateful.ITransition"
+  permission="zope.workflow.ManageProcessDefinitions"
+  content_factory="zope.app.workflow.stateful.definition.Transition"
+  arguments="sourceState destinationState condition script permission triggerMode"
+  fields="sourceState destinationState condition script permission triggerMode"
+  />
+
+
+<!-- ContentWorkflowsUtility -->
+<browser:menuItem
+  menu="add_component"
+  for="zope.app.interfaces.container.IAdding"
+  action="ContentWorkflowsUtility"
+  title="Content Workflows Utility"
+  description="An utility for creating/deleting workflow for content objects." />
+
+<browser:pages
+  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
+  class="zope.app.browser.workflow.stateful.contentworkflow.ContentWorkflowsUtilityView"
+  permission="zope.ManageServices">
+
+  <browser:page name="index.html" template="contentworkflow_index.pt" />
+
+</browser:pages>
+
+<browser:menuItem
+  menu="zmi_views"
+  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
+  action="index.html"
+  title="Overview"
+  description="ContentWorkflowsUtility Overview" />
+
+
+
+
+<!-- ProcessInstanceContainerAdaptable -->
+<browser:pages
+  for="zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"
+  permission="zope.workflow.UseProcessInstances"
+  class="zope.app.browser.workflow.stateful.instance.ManagementView">
+
+  <browser:page name="workflows.html" attribute="contents" />
+  <browser:page name="fireTransition.html" attribute="fireTransition" />
+</browser:pages>
+
+<browser:menuItem
+  for="zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"
+  menu="zmi_views"
+  title="Workflows"
+  action="workflows.html"
+  />
+
+
+<browser:pages
+  for="zope.app.interfaces.container.IContentContainer"
+  permission="zope.View"
+  class="zope.app.browser.workflow.stateful.content_filter.FilterList">
+
+  <browser:page name="published_content.html" attribute="published_content" />
+</browser:pages>
+
+
+<!-- uhm .. this seems to be to generic in its definition
+     and not really nice as well .. -->
+<adapter
+    factory=".filteradapter.FilterAdapter"
+    provides=".interfaces.IContentFilterAdapter"
+    for="zope.app.interfaces.annotation.IAttributeAnnotatable"
+    permission="zope.View" />       <!-- XXX is this permission right? -->
+
+</zopeConfigure>

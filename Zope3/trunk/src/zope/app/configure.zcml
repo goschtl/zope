@@ -104,7 +104,7 @@
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.onlinehelp" />
-
+  <include package="zope.app.workflow" />
   <include package="zope.app.xml" />
 
 <!-- Views -->

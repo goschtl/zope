@@ -1,0 +1,19 @@
+  <html metal:use-macro="context/@@standard_macros/page">
+    <body>
+      <div metal:fill-slot="body">
+        <span tal:define="success request/success | nothing"
+          tal:condition="success"><br/>Import was successfull!<br/></span>
+
+        <p>Import / Export ProcessDefinitions:</p>
+        Import:
+        <form action="@@import.html" method="post" encoding="multipart/form-data">
+          <textarea cols="50" rows="10" name="definition"></textarea><br/>
+            <input type="submit" value="do import"/>
+        </form>
+        <p></p>
+        Export: <a href="@@export.html">save as file</a><br/>
+          <pre tal:content="view/doExport"/>
+      </div>
+    </body>
+  </html>
+  

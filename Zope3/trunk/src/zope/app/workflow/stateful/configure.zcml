@@ -1,0 +1,121 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:workflow="http://namespaces.zope.org/workflow" >
+
+<!-- Stateful ProcessDefintion -->
+
+<content class="zope.app.workflow.stateful.definition.StatefulProcessDefinition">
+  <factory
+      id="StatefulProcessDefinition"
+      permission="zope.workflow.ManageProcessDefinitions"
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+      set_schema="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition" 
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.container.IReadContainer" 
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+  <implements 
+      interface="zope.app.interfaces.services.configuration.IUseConfigurable" 
+      />
+</content>
+
+
+
+<!-- States Container -->
+
+<content class="zope.app.workflow.stateful.definition.StatesContainer">
+  <factory
+      id="StatefulStatesContainer"
+      permission="zope.workflow.ManageProcessDefinitions"
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer" 
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+</content>
+
+<!-- State -->
+
+<content class="zope.app.workflow.stateful.definition.State">
+  <factory
+      id="StatefulState"
+      permission="zope.workflow.ManageProcessDefinitions"
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.workflow.stateful.IState"
+      set_schema="zope.app.interfaces.workflow.stateful.IState"
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+</content>
+
+<!-- Transitions Container -->
+
+<content class="zope.app.workflow.stateful.definition.TransitionsContainer">
+  <factory
+      id="StatefulTransitionsContainer"
+      permission="zope.workflow.ManageProcessDefinitions"
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer" 
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+</content>
+
+<!-- Transition -->
+
+<content class="zope.app.workflow.stateful.definition.Transition">
+  <factory
+      id="StatefulTransition"
+      permission="zope.workflow.ManageProcessDefinitions"
+      />
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.workflow.stateful.ITransition" 
+      set_schema="zope.app.interfaces.workflow.stateful.ITransition"
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+</content>
+
+<!-- ContentWorkflowsUtility -->
+
+<content class="zope.app.workflow.stateful.contentworkflow.ContentWorkflowsUtility">
+  <require
+    permission="zope.ManageServices"
+    interface="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
+    />
+  <factory
+    id="ContentWorkflowsUtility"
+    permission="zope.ManageServices"
+    />
+</content>
+
+<!-- Stateful workflow import/Export -->
+<workflow:importHandler
+   interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+   factory=".xmlimportexport.XMLImportHandler"
+   />
+
+<workflow:exportHandler
+   interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+   factory=".xmlimportexport.XMLExportHandler"
+   />
+
+</zopeConfigure>

@@ -1,0 +1,14 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>ProcessDefinition States</title>
+</head>
+<body>
+ 
+  <div metal:fill-slot="body">
+
+  states
+ 
+  </div>
+ 
+</body>
+</html>

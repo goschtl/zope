@@ -1,0 +1,14 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>ProcessDefinition</title>
+</head>
+<body>
+ 
+  <div metal:fill-slot="body">
+
+  <p>ProcessDefinition: <tal:block tal:replace="view/getName" /></p>
+ 
+  </div>
+ 
+</body>
+</html>

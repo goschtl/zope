@@ -1,0 +1,124 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:service='http://namespaces.zope.org/service'>
+
+
+<!-- Workflow Permissions -->
+
+<permission 
+  id="zope.workflow.ManageProcessDefinitions" 
+  title="Manage Workflow ProcessDefinitions" />
+
+<permission 
+  id="zope.workflow.CreateProcessInstances"
+  title="Create Workflow ProcessInstances" />
+
+<permission
+  id="zope.workflow.UseProcessInstances"
+  title="Use Workflow ProcessInstances" />
+
+
+<!-- Workflow Service -->
+
+<content class="zope.app.workflow.service.WorkflowService">
+  <factory
+      id="WorkflowService"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.workflow.IWorkflowService"
+        attributes="queryConfigurations queryConfigurationsFor
+                    listConfigurationNames" />
+      />
+  <implements 
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+     />
+</content>
+
+<serviceType 
+  id='Workflows'
+  interface='zope.app.interfaces.workflow.IWorkflowService' 
+  />
+
+
+
+<!-- Workflow Process Definition 
+     This is only a generic placeholder for
+     future Process Definition implementations
+-->
+
+<content class="zope.app.workflow.definition.ProcessDefinition">
+  <factory
+      id="ProcessDefinition"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.workflow.IProcessDefinition" 
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
+</content>
+
+
+<!-- Process Definition Configuration -->
+
+<content class="zope.app.workflow.service.ProcessDefinitionConfiguration">
+  <factory
+      id="ProcessDefinitionConfiguration"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.workflow.IProcessDefinitionConfiguration"
+      set_schema="zope.app.interfaces.workflow.IProcessDefinitionConfiguration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IAddNotifiable"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
+</content>
+
+
+<!-- Process Instance Container -->
+
+<content class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
+
+  <implements interface="zope.app.interfaces.container.IContentContainer" />
+
+  <implements
+     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+     />
+
+  <require
+      permission="zope.View"
+      interface="zope.app.interfaces.container.IReadContainer"
+      />
+
+  <require
+      permission="zope.workflow.ManageProcessDefinitions"
+      interface="zope.app.interfaces.container.IWriteContainer"
+      />
+</content>
+
+<adapter factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"
+         provides="zope.app.interfaces.workflow.IProcessInstanceContainer"
+         for="zope.app.interfaces.annotation.IAnnotatable" />
+
+<!-- Workflow Import/Export Utility -->
+
+<utility
+    component=".globalimportexport.globalImportExport" 
+    provides="zope.app.interfaces.workflow.IProcessDefinitionImportExport"
+    permission="zope.workflow.ManageProcessDefinitions" 
+    />
+
+<include package=".stateful" />
+
+</zopeConfigure>
