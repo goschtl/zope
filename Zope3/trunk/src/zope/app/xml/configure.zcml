@@ -1,6 +1,4 @@
-<zopeConfigure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+<configure xmlns="http://namespaces.zope.org/zope">
 
 <!-- we need to allow methods of XMLSchemaInterfaceClass so we can access them
      through the security proxy -->
@@ -8,4 +6,4 @@
   <allow interface="zope.interface.interfaces.IInterface" />
 </content>
 
-</zopeConfigure>
+</configure>

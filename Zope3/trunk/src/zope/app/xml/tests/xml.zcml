@@ -1,0 +1,9 @@
+<configure 
+    xmlns="http://namespaces.zope.org/xml"
+    xmlns:xml="http://namespaces.zope.org/xml">
+
+  <include package="zope.app.xml" file="meta.zcml"/>
+
+  <xml:schemaInterface uri="http://www.zope3.org/Zope3"/>
+
+</configure>

@@ -1,11 +1,9 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns:meta="http://namespaces.zope.org/meta">
 
-  <directives namespace="http://namespaces.zope.org/zope-xml">
-    <directive name="schemaInterface"
-               attributes="uri"
-               handler="
-                zope.app.xml.metaconfigure.schemaInterface"
-    />
-  </directives>
+  <meta:directive 
+      namespace="http://namespaces.zope.org/xml"
+      name="schemaInterface"
+      schema=".metadirectives.ISchemaInterfaceDirective"
+      handler=".metaconfigure.schemaInterface" />
 
-</zopeConfigure>
+</configure>
