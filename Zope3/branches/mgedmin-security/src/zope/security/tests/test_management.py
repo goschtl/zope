@@ -59,24 +59,6 @@ class Test(CleanUp, unittest.TestCase):
 
         noSecurityManager()
 
-    def test_getSecurityManager(self):
-        # This is a test for the case when there is no principal
-
-        from zope.security.management import noSecurityManager
-        from zope.security.management import replaceSecurityManager
-        from zope.security.management import getSecurityManager
-
-        noSecurityManager()
-        self.failUnless(replaceSecurityManager(None) is None)
-
-        mgr = getSecurityManager()
-        self.assertEqual(mgr.getPrincipal(), None)
-        # XXX maybe add test for default principal case
-        self.failIf(mgr.calledByExecutable())
-        self.assertEqual(replaceSecurityManager(None), mgr)
-
-        noSecurityManager()
-
     def _setPermissive(self):
         from zope.security.management import setSecurityPolicy
         from zope.security.simplepolicies import PermissiveSecurityPolicy
@@ -86,29 +68,6 @@ class Test(CleanUp, unittest.TestCase):
         from zope.security.management import setSecurityPolicy
         from zope.security.simplepolicies import ParanoidSecurityPolicy
         setSecurityPolicy(ParanoidSecurityPolicy())
-
-    def test_setSecurityPolicy(self):
-
-        from zope.security.management import noSecurityManager
-        from zope.security.management import getSecurityManager
-
-        # test against default policy (paranoid)
-        self._setParanoid()
-        newSecurityManager('some user')
-        mgr = getSecurityManager()
-        self.failIf(mgr.checkPermission(None, None))
-
-        # test against explicit permissive policy
-        self._setPermissive()
-        newSecurityManager('some user')
-        mgr = getSecurityManager()
-        self.failUnless(mgr.checkPermission(None, None))
-
-        # test against explicit paranoid policy
-        self._setParanoid()
-        newSecurityManager('some user')
-        mgr = getSecurityManager()
-        self.failIf(mgr.checkPermission(None, None))
 
     def test_securityPolicy(self):
         from zope.security.management import setSecurityPolicy

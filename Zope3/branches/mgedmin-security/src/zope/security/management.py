@@ -77,16 +77,6 @@ def noSecurityManager():
 #
 #   ISecurityManagement implementation
 #
-def getSecurityManager():
-    """Get a SecurityManager (create if needed)."""
-    thread_id = get_ident()
-    manager = _managers.get(thread_id, None)
-
-    if manager is None:
-        newSecurityManager(None)
-        manager = _managers.get(thread_id, None)
-
-    return manager
 
 def getSecurityPolicy():
     """Get the system default security policy."""

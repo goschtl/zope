@@ -44,9 +44,6 @@ class ISecurityManagementSetup(Interface):  # XXX: going away
 class ISecurityManagement(Interface):
     """Public security management API."""
 
-    def getSecurityManager():   # XXX: going away
-        """Get a SecurityManager (create if needed)."""
-
     def getSecurityPolicy():
         """Get the system default security policy."""
 
