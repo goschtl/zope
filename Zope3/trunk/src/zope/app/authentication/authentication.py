@@ -48,10 +48,10 @@ class PluggableAuthentication(object):
         self.prefix = prefix
 
     def authenticate(self, request):
-        authenticators = [queryUtility(IAuthenticationPlugin, name)
+        authenticators = [queryUtility(IAuthenticationPlugin, name, context=self)
                           for name in self.authenticators]
         for extractor in self.extractors:
-            extractor = queryUtility(IExtractionPlugin, extractor)
+            extractor = queryUtility(IExtractionPlugin, extractor, context=self)
             if extractor is None:
                 continue
             credentials = extractor.extractCredentials(request)
@@ -72,7 +72,7 @@ class PluggableAuthentication(object):
         # We got some data, lets create a user
         for factory in self.factories:
             factory = queryUtility(IPrincipalFactoryPlugin,
-                                        factory)
+                                        factory, context=self)
             if factory is None:
                 continue
 
