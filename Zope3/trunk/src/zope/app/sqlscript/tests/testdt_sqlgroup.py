@@ -12,12 +12,11 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testdt_sqlgroup.py,v 1.3 2003/03/13 18:49:06 alga Exp $
+$Id: testdt_sqlgroup.py,v 1.2 2004/02/24 16:50:39 philikon Exp $
 """
 
 import unittest
-from zope.app.content.sql import SQLDTML
-
+from zope.app.sqlscript.dtml import SQLDTML
 
 class TestDT_SQLGroup(unittest.TestCase):
 

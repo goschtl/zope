@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.11 2003/12/19 16:53:16 mchandra Exp $
+$Id: interfaces.py,v 1.2 2004/02/24 16:50:36 philikon Exp $
 """
 import zope.schema
 from zope.app import zapi

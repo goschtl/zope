@@ -20,14 +20,4 @@
           menu="zmi_views" title="Statistics"/>
   </pages>
 
-  <pages 
-      for="zope.app.interfaces.content.sql.ISQLScript"
-      permission="zope.ManageBindings"
-      class="zope.app.browser.cache.cacheable.CacheableView">
-    <page name="Caching.html" attribute="form"  
-          menu="zmi_views" title="Caching" />
-    <page name="ChangeCaching.html" attribute="action" />
-    <page name="InvalidateCache.html" attribute="invalidate" />
-  </pages>
-
 </zope:configure>

@@ -12,23 +12,20 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.17 2003/12/19 16:53:16 mchandra Exp $
+$Id: test_sqlscript.py,v 1.2 2004/02/24 16:50:39 philikon Exp $
 """
 import unittest
-from zope.app.tests import ztapi
 from zope.interface import implements, classImplements
+from zope.component import getService
+from zope.component.service import serviceManager as sm
 
+from zope.app.tests import ztapi
 from zope.app.interfaces.rdb import IConnectionService, IZopeDatabaseAdapter
 from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeCursor
-from zope.component import getService
 from zope.app.services.servicenames import Adapters
 from zope.app.component import nextservice
-from zope.component.service import serviceManager as sm
 from zope.app.tests.placelesssetup import PlacelessSetup
-
-from zope.app.content.sql import SQLScript, Arguments
-from zope.app.interfaces.content.sql import ISQLScript
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
@@ -39,6 +36,9 @@ from zope.app.interfaces.cache import ICacheable, ICachingService
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.services.service import ISimpleService
+
+from zope.app.sqlscript.sqlscript import SQLScript, Arguments
+from zope.app.sqlscript.interfaces import ISQLScript
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties

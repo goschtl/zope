@@ -13,19 +13,23 @@
 ##############################################################################
 """SQL Script Views
 
-$Id: sql.py,v 1.13 2003/12/18 15:25:23 mchaganti Exp $
+$Id: sqlscript.py,v 1.2 2004/02/24 16:50:37 philikon Exp $
 """
 
 from zope.app.browser.form.add import AddView
 from zope.app.browser.form.submit import Update
-from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
 from zope.app.interfaces.container import IAdding
-from zope.app.content.sql import SQLScript
 from zope.app import zapi
 
+from zope.app.sqlscript.sqlscript import SQLScript
+from zope.app.sqlscript.interfaces import ISQLScript
+
+__metaclass__ = type
+
 class SQLScriptTest:
-    """Test the SQL inside the SQL Script"""
+    """Test the SQL inside the SQL Script
+    """
 
     __used_for__ = ISQLScript
 
@@ -57,34 +61,31 @@ class SQLScriptTest:
     def getRenderedSQL(self):
         return self.context.getTemplate()(**self.getArguments())
 
+class SQLScriptAdd:
+    """Provide interface to add SQL Script
+    """
 
-
-class SQLScriptAdd(object):
-    """Provide interface to add SQL Script """
-     
-        
     def update(self):
-        """ Set the Update variable for Add and Test
+        """Set the Update variable for Add and Test
         >>> from zope.publisher.browser import TestRequest
-        
+
         >>> rqst = TestRequest()
         >>> class Base(object):
         ...     def __init__(self, request):
         ...         self.request = request
         ...     def update(self):
-        ...         self.updated = 1
-         
+        ...         self.updated = True
+
         >>> class V(SQLScriptAdd, Base):
         ...     pass
-        
+
         >>> dc = V(rqst)
-        >>> res = 0
         >>> dc.update()
         >>> dc.updated
-        1
+        True
         >>> 'UPDATE_SUBMIT' in rqst
         False
-        >>> d = {'add_test':1}
+        >>> d = {'add_test': True}
         >>> rqst1 = TestRequest(form = d)
         >>> dc1 = V(rqst1)
         >>> dc1.update()
@@ -93,10 +94,9 @@ class SQLScriptAdd(object):
         """
         if 'add_test' in self.request:
             self.request.form[Update] = ''
-            
+
         return super(SQLScriptAdd, self).update()
-        
-              
+
     def nextURL(self):
         """
         >>> from zope.publisher.browser import TestRequest
@@ -120,15 +120,12 @@ class SQLScriptAdd(object):
         >>> dc = V(rqst)
         >>> dc.nextURL()
         'www.zeomega.com'
-        >>> d = {'add_test':1}
+        >>> d = {'add_test': True}
         >>> rqst1 = TestRequest(form = d)
         >>> dc1 = V(rqst1)
         >>> dc1.nextURL()
         'http://127.0.0.1/test.html'
-
         """
-
-
         if 'add_test' in self.request:
             name = self.context.contentName
             container = self.context.context
@@ -138,20 +135,13 @@ class SQLScriptAdd(object):
             return url
         else:
             return super(SQLScriptAdd, self).nextURL()
-       
-        
-        
 
-# *********** Edit ************
+class SQLScriptEdit:
+    """Provide interface to Edit and Test  SQL Script
+    """        
 
-class SQLScriptEdit(object):
-    """Provide interface to Edit and Test  SQL Script """
-     
-
-        
     def update(self):
-
-        """ Set the Update variable for Change and Test
+        """Set the Update variable for Change and Test
         >>> from zope.publisher.browser import TestRequest
         
         >>> rqst = TestRequest()
@@ -160,25 +150,23 @@ class SQLScriptEdit(object):
         ...         self.request = request
         ...         self.errors  = ('no errors')
         ...     def update(self):
-        ...         self.updated = 1
+        ...         self.updated = True
         ...         return "update returned"
-        
-         
+
         >>> class V(SQLScriptEdit, Base):
         ...     pass
-        
+
         >>> dc = V(rqst)
-        >>> res = 0
         >>> dc.update()
         'update returned'
         >>> dc.updated
-        1
+        True
         >>> 'UPDATE_SUBMIT' in rqst
         False
         >>>
         
 
-        >>> d = {'change_test':1}
+        >>> d = {'change_test': True}
         >>> rqst1 = TestRequest(form = d)
         >>> dc1 = V(rqst1)
         >>> dc1.errors = ()
@@ -187,16 +175,16 @@ class SQLScriptEdit(object):
         >>> 'UPDATE_SUBMIT' in rqst1
         True
         >>> dc1.updated
-        1
+        True
         >>> rqst1.response.getHeader('location')
         'test.html'
         >>> rqst1.response.getStatus()
         302
            
-        >>> d = {'change_test':1}
+        >>> d = {'change_test': True}
         >>> rqst2 = TestRequest(form = d)
         >>> dc2 = V(rqst2)
-        >>> dc2.errors = ('errorname',1234)
+        >>> dc2.errors = ('errorname', 1234)
         >>> dc2.update()
         'update returned'
         >>> 'UPDATE_SUBMIT' in rqst2
@@ -205,10 +193,7 @@ class SQLScriptEdit(object):
         
         >>> rqst2.response.getStatus()
         599
-
         """
-        
-       
         if 'change_test' in self.request:
             self.request.form[Update] = ''
             super(SQLScriptEdit, self).update()
@@ -216,11 +201,3 @@ class SQLScriptEdit(object):
                 url = 'test.html'
                 self.request.response.redirect(url)
         return super(SQLScriptEdit, self).update()
-        
-              
-
-       
-        
-
-    
-    

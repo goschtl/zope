@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -8,20 +8,11 @@
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE
+# FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""DTML Page Evaluation Tests
-
-$Id: test_sqladd.py,v 1.1 2003/12/16 15:47:20 mchandra Exp $
 """
-import unittest, doctest
-from zope.app.browser.content.sql import SQLScriptAdd
+$Id: __init__.py,v 1.2 2004/02/24 16:50:36 philikon Exp $
+"""
 
-    
-def test_suite():
-    return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.browser.content.sql'),
-        ))
-    
-if __name__ == '__main__': unittest.main()
+from sqlscript import SQLScript

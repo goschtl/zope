@@ -12,13 +12,13 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_arguments.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: test_arguments.py,v 1.2 2004/02/24 16:50:39 philikon Exp $
 """
 
 import unittest
 
-from zope.app.content.sql import Arguments, parseArguments, InvalidParameter
-
+from zope.app.sqlscript.sqlscript import Arguments, \
+     parseArguments, InvalidParameter
 
 class TestDT_SQLVar(unittest.TestCase):
 
