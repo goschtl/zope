@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.16 2003/03/26 17:13:14 tseaver Exp $
+$Id: editview.py,v 1.17 2003/04/09 20:51:29 philikon Exp $
 """
 
 from datetime import datetime
@@ -29,6 +29,7 @@ from zope.component.view import provideView
 from zope.component import queryAdapter
 
 from zope.app.interfaces.form import WidgetsError
+from zope.app.component.metaconfigure import resolveInterface
 from zope.app.form.utility import setUpEditWidgets, getWidgetsData
 from zope.app.browser.form.submit import Update
 from zope.app.event import publish
@@ -190,12 +191,12 @@ def EditViewFactory(name, schema, label, permission, layer,
 
 def _normalize(_context, schema_, for_, class_, template, default_template,
                fields, omit, view=EditView):
-    schema = _context.resolve(schema_)
+    schema = resolveInterface(_context, schema_)
 
     if for_ is None:
         for_ = schema
     else:
-        for_ = _context.resolve(for_)
+        for_ = resolveInterface(_context, for_)
 
     if class_ is None:
         bases = (view, )

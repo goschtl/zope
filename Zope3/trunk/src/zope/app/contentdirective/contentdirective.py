@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.10 2003/03/21 21:03:41 jim Exp $
+$Id: contentdirective.py,v 1.11 2003/04/09 20:51:31 philikon Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
@@ -24,6 +24,7 @@ from zope.app.services.servicenames import Interfaces, Factories
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.action import Action
 from zope.app.component.classfactory import ClassFactory
+from zope.app.component.metaconfigure import resolveInterface
 from zope.app.security.protectclass \
     import protectLikeUnto, protectName, checkPermission, protectSetAttribute
 from zope.app.security.registries.permissionregistry import permissionRegistry
@@ -65,7 +66,7 @@ class ContentDirective:
         r = []
         for interface in interface.strip().split():
 
-            resolved_interface = _context.resolve(interface)
+            resolved_interface = resolveInterface(_context, interface)
             r += [
                 Action(
                     discriminator = ('ContentDirective', self.__class, object()),
@@ -137,7 +138,7 @@ class ContentDirective:
 
     def __protectByInterface(self, interface, permission_id, r):
         "Set a permission on names in an interface."
-        interface = self.__context.resolve(interface)
+        interface = resolveInterface(self.__context, interface)
         for n, d in interface.namesAndDescriptions(1):
             self.__protectName(n, permission_id, r)
         r.append(
@@ -170,7 +171,7 @@ class ContentDirective:
 
     def __protectSetSchema(self, schema, permission_id, r):
         "Set a permission on a bunch of names."
-        schema = self.__context.resolve(schema)
+        schema = resolveInterface(self.__context, schema)
         for name in schema:
             field = schema[name]
             if IField.isImplementedBy(field) and not field.readonly:

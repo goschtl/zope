@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.5 2003/03/26 12:57:48 jack-e Exp $
+$Id: globalservice.py,v 1.6 2003/04/09 20:51:31 philikon Exp $
 """
 
 __metaclass__ = type
@@ -26,6 +26,8 @@ from zope.proxy.introspection import removeAllProxies
 
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribingAware
 from zope.app.interfaces.event import IGlobalSubscribable, IPublisher
+
+from zope.app.component.metaconfigure import resolveInterface
 
 from zope.configuration.action import Action
 
@@ -54,7 +56,7 @@ def subscribeDirective(_context, subscriber,
         event_types.append(_context.resolve(event_type_name))
 
     if filter is not None:
-        filter = _context.resolve(filter)
+        filter = resolveInterface(_context, filter)
 
     return [
         Action(

@@ -16,10 +16,11 @@
 These handlers process the registerTopic() and unregisterTopic() directives of
 the "help" ZCML namespace.
 
-$Id: metaconfigure.py,v 1.1 2003/01/07 12:27:49 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2003/04/09 20:51:32 philikon Exp $
 """
 import os
 from zope.app.onlinehelp import help
+from zope.app.component.metaconfigure import resolveInterface
 from zope.configuration.action import Action
 
 def register(_context, id, title, parent="", doc_path=None, doc_type="txt",
@@ -30,7 +31,7 @@ def register(_context, id, title, parent="", doc_path=None, doc_type="txt",
     doc_path = _context.path(doc_path)
     doc_path = os.path.normpath(doc_path)
     if for_ is not None:
-        for_ = _context.resolve(for_)
+        for_ = resolveInterface(_context, for_)
     if view is not None:
         view = _context.resolve(view)
 
