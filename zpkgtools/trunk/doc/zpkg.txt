@@ -188,20 +188,16 @@ Support Packages
 packages to operate properly.  These packages are located in much the
 same way that other packages are located: the resource map is
 consulted to determine their location.  One difference is that if the
-resource map does not define the appropriate resources, alternate
-information is used to locate them.  For each of the packages,
-**zpkg** first attempts to import the package; if that succeeds, the
-imported version is used (the import for ``zpkgtools`` should always
-succeed!).  If the import fails, **zpkg** will attempt to use the CVS
-location for each package.
+resource map does not define the appropriate resources, a built-in
+fallback location will be used.
 
-If the ``setuptools`` package has not been explicitly configured or
-installed, retrieving it from CVS can be quite slow.  The easiest way
-to improve the load time is to have a copy available on the local
-system and add a resource entry for it using a ``file:`` URL::
+Retrieving the support packages from the fallback CVS repositories can
+be quite slow.  The easiest way to improve the load time is to have a
+copy available on the local system and add a resource entry for it
+using a ``file:`` URL::
 
   setuptools  file:///home/fdrake/stuff/setuptools/setuptools
 
 (The path should identify the directory that contains the
-``setuptools`` package itself, not the directory that would be on
-``sys.path`` to allow it to be importable.)
+``setuptools`` or ``zpkgtools`` package itself, not the directory that
+would be on ``sys.path`` to allow it to be importable.)
