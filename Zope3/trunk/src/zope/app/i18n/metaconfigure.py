@@ -14,20 +14,15 @@
 """
 This module handles the :startup directives.
 
-$Id: metaconfigure.py,v 1.2 2002/12/25 14:12:53 jim Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/03 20:58:38 philikon Exp $
 """
 
 import os
-from zope.configuration.action import Action
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
 from zope.i18n.globaltranslationservice import translationService
 
 def registerTranslations(_context, directory):
-    """ """
-    actions = []
-
-    path = _context.path(directory)
-    path = os.path.normpath(path)
+    path = os.path.normpath(directory)
 
     for language in os.listdir(path):
         lc_messages_path = os.path.join(path, language, 'LC_MESSAGES')
@@ -39,15 +34,15 @@ def registerTranslations(_context, directory):
                     catalog = GettextMessageCatalog(language, domain,
                                                     domain_path)
 
-                    actions.append(Action(
+                    _context.action(
                         discriminator = catalog.getIdentifier(),
                         callable = translationService.addCatalog,
-                        args = (catalog,) ))
-    return actions
-
+                        args = (catalog,)
+                        )
 
 def defaultLanguages(_context, languages):
-    langs = [L.strip() for L in languages.split()]
-    return [Action(discriminator = ('gts', languages),
-                   callable = translationService.setLanguageFallbacks,
-                   args = (langs,))]
+    return _context.action(
+        discriminator = ('gts', tuple(languages)),
+        callable = translationService.setLanguageFallbacks,
+        args = (languages,)
+        )

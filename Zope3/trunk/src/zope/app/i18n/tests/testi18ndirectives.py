@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: testi18ndirectives.py,v 1.4 2003/07/28 22:20:25 jim Exp $
+$Id: testi18ndirectives.py,v 1.5 2003/08/03 20:58:42 philikon Exp $
 """
 import os
 import unittest
@@ -29,12 +29,12 @@ import zope.i18n.tests
 from zope.i18n.globaltranslationservice import translationService
 
 
-template = """<zopeConfigure
+template = """<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:gts='http://namespaces.zope.org/gts'>
    xmlns:test='http://www.zope.org/NS/Zope3/test'>
    %s
-   </zopeConfigure>"""
+   </configure>"""
 
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
