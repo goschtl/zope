@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: folder.py,v 1.8 2003/12/18 08:00:57 jim Exp $
+$Id: folder.py,v 1.9 2004/02/11 07:00:58 jim Exp $
 """
 import zope.app.interfaces.services.registration 
 import zope.app.interfaces.container
@@ -25,16 +25,10 @@ from zope.app.interfaces.services.registration \
 from zope.app.container.constraints import ItemTypePrecondition
 
 class ISiteManagementFolder(
-    zope.app.interfaces.container.IContainer,
     zope.app.interfaces.services.registration.IRegistrationManagerContainer,
+    zope.app.interfaces.container.IContainer,
     ):
     """Component and component registration containers."""
-
-    def __setitem__(name, object):
-        """Add a registerable object
-        """
-    __setitem__.precondition = ItemTypePrecondition(
-        zope.app.interfaces.services.registration.IRegisterable)
 
     __parent__ = zope.schema.Field(
         constraint = ContainerTypesConstraint(
