@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    >
 
 <!-- Configuration registries -->
 
@@ -470,5 +473,22 @@
 <!-- Utility Service --> 
 <include file="utility.zcml" />
 
+
+<!-- Filesystem synchronization support -->
+
+<fssync:adapter
+    class=".configuration.ConfigurationManager"
+    factory="zope.app.content.fssync.DirectoryAdapter"
+    />
+
+<fssync:adapter
+    class=".folder.SiteManagementFolder"
+    factory="zope.app.content.fssync.DirectoryAdapter"
+    />
+
+<fssync:adapter
+    class=".service.ServiceManager"
+    factory="zope.app.content.fssync.DirectoryAdapter"
+    />
 
 </zopeConfigure>
