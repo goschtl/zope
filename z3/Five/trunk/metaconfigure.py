@@ -239,3 +239,15 @@ def protectName(klass, name, permission_id):
         # Zope 2 uses string, not unicode yet
         perm = str(permission.title)
         security.declareProtected(perm, name)
+
+def protectClass(klass, permission_id):
+    security = _getSecurity(klass)
+    if permission_id == CheckerPublic:
+        security.declareObjectPublic()
+    elif permission_id == CheckerPrivate:
+        security.declareObjectPrivate()
+    else:
+        permission = getUtility(IPermission, name=permission_id)
+        # Zope 2 uses string, not unicode yet
+        perm = str(permission.title)
+        security.declareObjectProtected(perm)

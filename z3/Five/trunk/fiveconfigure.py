@@ -27,7 +27,7 @@ from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo
-from metaconfigure import protectName, initializeClass
+from metaconfigure import protectClass, initializeClass
 
 def handler(serviceName, methodName, *args, **kwargs):
     # specifically ask for a global service
@@ -69,27 +69,26 @@ def page(_context, name, permission, for_,
                     "The provided class doesn't have the specified attribute "
                     )
         cdict = getSecurityInfo(class_)
-        # XXX this is not working currently
-        # because by the time the metaclass is created,
-        # the security decls directives haven't been
-        # executed yet.
         if template:
-            attribute = 'index'
-            # class and template
-            new_class = makeClassForTemplate(
-                template, bases=(class_, ),
-                cdict=cdict)
+            new_class = makeClassForTemplate(template, bases=(class_, ),
+                                             cdict=cdict)
         elif attribute != "__call__":
+            # we're supposed to make a page for an attribute (read:
+            # method) and it's not __call__.  We thus need to create a
+            # new class using our mixin for attributes.
             cdict.update({'__page_attribute__': attribute})
             new_class = makeClass(class_.__name__,
                                   (class_, ViewMixinForAttributes),
                                   cdict)
         else:
-            new_class = class_
+            # we could use the class verbatim here, but we'll execute
+            # some security declarations on it so we really shouldn't
+            # modify the original.  So, instead we make a new class
+            # with just one base class -- the original
+            new_class = makeClass(class_.__name__, (class_), cdict)
 
     else:
         # template
-        attribute = 'index'
         new_class = makeClassForTemplate(template)
 
     _handle_for(_context, for_)
@@ -102,9 +101,9 @@ def page(_context, name, permission, for_,
                 _context.info),
         )
     _context.action(
-        discriminator = ('five:protectName', new_class, attribute),
-        callable = protectName,
-        args = (new_class, attribute, permission)
+        discriminator = ('five:protectClass', new_class),
+        callable = protectClass,
+        args = (new_class, permission)
         )
     _context.action(
         discriminator = ('five:initialize:class', new_class),
@@ -207,9 +206,9 @@ class ViewMixinForAttributes(BrowserView):
         return self, (self.__page_attribute__,)
 
     def __call__(self, *args, **kw):
-	attr = self.__page_attribute__
+        attr = self.__page_attribute__
         meth = getattr(self, attr)
-	#XXX not sure if this is really necessary; we need tests for this
+        #XXX not sure if this is really necessary; we need tests for this
         #security_manager = getSecurityManager()
         #if not security_manager.validate(meth, self, attr, meth):
         #    raise Unauthorized
@@ -223,9 +222,9 @@ class ViewMixinForTemplates(BrowserView):
 
     # make the template publishable
     def __call__(self, *args, **kw):
-	# we technically would have to validate here, but it doesn't
-	# seem to work because index is a ViewPageTemplateFile
-	#XXX not sure if we really need to validate here anyway
+        # we technically would have to validate here, but it doesn't
+        # seem to work because index is a ViewPageTemplateFile
+        #XXX not sure if we really need to validate here anyway
         return self.index(self, *args, **kw)
 
 def makeClassForTemplate(src, template=None, used_for=None, bases=(), cdict=None):
