@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema import BytesLine, Bytes
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _

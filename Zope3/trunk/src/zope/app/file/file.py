@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
@@ -208,7 +210,7 @@ class File(Persistent):
         return
 
     def getSize(self):
-        '''See IFile'''
+        '''See `IFile`'''
         return self._size
 
     # See IFile.
@@ -216,7 +218,7 @@ class File(Persistent):
 
 
 class FileChunk(Persistent):
-    # Wrapper for possibly large data
+    """Wrapper for possibly large data"""
 
     next = None
 

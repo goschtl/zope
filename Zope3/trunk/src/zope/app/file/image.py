@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import struct
 from cStringIO import StringIO
 
@@ -32,7 +34,7 @@ class Image(File):
     implements(IImage)
 
     def __init__(self, data=''):
-        '''See interface IFile'''
+        '''See interface `IFile`'''
         self.contentType, self._width, self._height = getImageInfo(data)
         self.data = data
 
@@ -44,7 +46,7 @@ class Image(File):
             self.contentType = contentType
 
     def getImageSize(self):
-        '''See interface IImage'''
+        '''See interface `IImage`'''
         return (self._width, self._height)
 
     data = property(File._getData, _setData)
@@ -56,11 +58,11 @@ class ImageSized(object):
         self._image = image
 
     def sizeForSorting(self):
-        'See ISized'
+        '''See `ISized`'''
         return ('byte', self._image.getSize())
 
     def sizeForDisplay(self):
-        'See ISized'
+        '''See `ISized`'''
         w, h = self._image.getImageSize()
         if w < 0:
             w = '?'
