@@ -17,6 +17,7 @@
 $Id$
 """
 from zope.interface import Interface, Attribute
+from zope.interface.interfaces import IInterface
 from zope.schema import Bool, BytesLine, Tuple
 
 try:
@@ -1221,3 +1222,12 @@ class IApplication(IFolder, IFindSupport):
         """Check the global (zclass) registry for problems, which can
         be caused by things like disk-based products being deleted.
         Return true if a problem is found"""
+
+
+class IMenuItemType(IInterface):
+    """Menu item type
+
+    Menu item types are interfaces that define classes of
+    menu items.
+    """
+        
