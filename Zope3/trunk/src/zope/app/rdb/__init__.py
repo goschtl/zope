@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.8 2003/06/04 10:46:36 stevea Exp $
+$Id: __init__.py,v 1.9 2003/06/07 19:01:12 runyaga Exp $
 """
 from types import StringTypes
 
@@ -378,7 +378,13 @@ def RowClassFactory(columns):
     """Creates a Row object"""
     klass_namespace = {}
 
-    klass_namespace['__Security_checker__'] = checker.NamesChecker(columns)
+    #XXX +['__bases__'] is described below
+    #
+    #<SteveA> the class is supposed to provide the attributes for the instancesa
+    #<SteveA> but, either the checker selection thing needs to ignore it for types
+    #<SteveA> (which is ropey when you're working with metatypes)
+    #<SteveA> or, it really should be a descriptor that doesn't fuck with the value on the class
+    klass_namespace['__Security_checker__'] = checker.NamesChecker(columns+['__bases__'])
     klass_namespace['__slots__'] = tuple(columns)
 
     return type('GeneratedRowClass', (Row,), klass_namespace)

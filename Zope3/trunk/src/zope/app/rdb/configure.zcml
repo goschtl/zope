@@ -15,4 +15,11 @@
       />
 </content>
 
+<content class="zope.app.rdb.ResultSet">
+  <require permission="zope.View"
+           attributes="__getitem__ __getslice__ __len__
+                       __iter__ __contains__ index count __str__
+                       __add__ __radd__" />
+</content>
+                                            
 </zopeConfigure>
