@@ -31,47 +31,12 @@ from zope.app.container.contained import Contained
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.location.interfaces import ILocation
 
-from zope.app.authentication import interfaces
 from zope.app.authentication.interfaces import IExtractionPlugin
 from zope.app.authentication.interfaces import IAuthenticationPlugin
 from zope.app.authentication.interfaces import IChallengePlugin
 from zope.app.authentication.interfaces import IPrincipalFactoryPlugin
 from zope.app.authentication.interfaces import IPrincipalSearchPlugin
-
-
-class IPluggableAuthentication(zope.interface.Interface):
-    """Pluggable Authentication Utility
-    """
-
-    extractors = zope.schema.List(
-        title=u"Credential Extractors",
-        value_type = zope.schema.Choice(vocabulary='ExtractionPlugins'),
-        default=[],
-        )
-
-    authenticators = zope.schema.List(
-        title=u"Authenticators",
-        value_type = zope.schema.Choice(vocabulary='AuthenticationPlugins'),
-        default=[],
-        )
-
-    challengers = zope.schema.List(
-        title=u"Challengers",
-        value_type = zope.schema.Choice(vocabulary='ChallengePlugins'),
-        default=[],
-        )
-
-    factories = zope.schema.List(
-        title=u"Principal Factories",
-        value_type = zope.schema.Choice(vocabulary='PrincipalFactoryPlugins'),
-        default=[],
-        )
-
-    searchers = zope.schema.List(
-        title=u"Search Plugins",
-        value_type = zope.schema.Choice(vocabulary='PrincipalSearchPlugins'),
-        default=[],
-        )
+from zope.app.authentication.interfaces import IPluggableAuthentication
 
 class PluggableAuthentication(object):
 

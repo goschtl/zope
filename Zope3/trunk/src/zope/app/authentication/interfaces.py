@@ -20,6 +20,40 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 
+class IPluggableAuthentication(zope.interface.Interface):
+    """Pluggable Authentication Utility
+    """
+
+    extractors = zope.schema.List(
+        title=u"Credential Extractors",
+        value_type = zope.schema.Choice(vocabulary='ExtractionPlugins'),
+        default=[],
+        )
+
+    authenticators = zope.schema.List(
+        title=u"Authenticators",
+        value_type = zope.schema.Choice(vocabulary='AuthenticationPlugins'),
+        default=[],
+        )
+
+    challengers = zope.schema.List(
+        title=u"Challengers",
+        value_type = zope.schema.Choice(vocabulary='ChallengePlugins'),
+        default=[],
+        )
+
+    factories = zope.schema.List(
+        title=u"Principal Factories",
+        value_type = zope.schema.Choice(vocabulary='PrincipalFactoryPlugins'),
+        default=[],
+        )
+
+    searchers = zope.schema.List(
+        title=u"Search Plugins",
+        value_type = zope.schema.Choice(vocabulary='PrincipalSearchPlugins'),
+        default=[],
+        )
+
 class IPrincipalCreated(zope.interface.Interface):
     """A PluggableAuthentication principal object has been created
 
