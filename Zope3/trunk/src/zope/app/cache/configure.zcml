@@ -14,7 +14,6 @@
   <content class=".ram.RAMCache">
     <factory
         id="zope.caching.RAMCache"
-        permission="zope.Public"
         />
 
     <implements

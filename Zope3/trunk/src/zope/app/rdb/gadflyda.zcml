@@ -2,8 +2,7 @@
 
   <content class="zope.app.rdb.gadflyda.GadflyAdapter">
     <factory
-        title="Gadfly Database Adapter"
-        permission="zope.Public" />
+        title="Gadfly Database Adapter" />
     <require
         permission="zope.Public"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />

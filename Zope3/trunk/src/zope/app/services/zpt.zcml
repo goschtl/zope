@@ -1,14 +1,13 @@
 <configure
-    xmlns='http://namespaces.zope.org/zope'
-    xmlns:event='http://namespaces.zope.org/event'
-    xmlns:fssync='http://namespaces.zope.org/fssync'
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:event="http://namespaces.zope.org/event"
+    xmlns:fssync="http://namespaces.zope.org/fssync"
     >
 
 <!-- Page Templates  -->
 
 <content class=".zpt.ZPTTemplate">
   <factory
-      permission="zope.ManageServices"
       title="ZPT Template"
       description="Page Template"
       />

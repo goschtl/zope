@@ -46,31 +46,25 @@
   <content class=".i18nfile.I18nFile">
     <factory
         id="I18nFile"
-        permission="zope.ManageContent"
         title="I18n File"
         description="An Internationalized File"
         />
-
     <require
         permission="zope.View"
         interface="zope.app.file.interfaces.IReadFile"
         />
-
     <require
         permission="zope.ManageContent"
         interface="zope.app.file.interfaces.IWriteFile"
         />
-
     <require
         permission="zope.View"
         attributes="getDefaultLanguage getAvailableLanguages"
         />
-
     <require
         permission="zope.ManageContent"
         attributes="setDefaultLanguage removeLanguage"
         />
-
     <implements
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
        />
@@ -79,31 +73,26 @@
   <content class=".i18nimage.I18nImage">
     <factory
         id="I18nImage"
-        permission="zope.ManageContent"
         title="I18n Image"
         description="An Internationalized Image"
         />
-
     <require
         permission="zope.View"
         interface="zope.app.file.interfaces.IReadFile"
         attributes="getImageSize"
         />
-
     <require
         permission="zope.ManageContent"
         interface="zope.app.file.interfaces.IWriteFile"
         />
-
     <require
         permission="zope.View"
         attributes="getDefaultLanguage getAvailableLanguages"
         />
-
     <require
         permission="zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage" />
-
+        attributes="setDefaultLanguage removeLanguage" 
+        />
     <implements
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
        />

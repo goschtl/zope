@@ -15,7 +15,6 @@
 <!-- Case-insensitive Folder Registration -->
 <factory
     id="zope.CaseInsensitiveFolder"
-    permission="zope.Public"
     component=".caseInsensitiveFolderFactory"
     />
 

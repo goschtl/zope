@@ -25,8 +25,7 @@
       component=".plaintext.PlainTextSourceFactory"
       id="zope.source.plaintext"
       title="Plain Text" 
-      description="Plain Text Source" 
-      permission="zope.Public"/>
+      description="Plain Text Source" />
 
   <browser:view
       name=""
@@ -40,8 +39,7 @@
       component=".stx.StructuredTextSourceFactory"
       id="zope.source.stx"
       title="Structured Text (STX)"
-      description="Structured Text (STX) Source" 
-      permission="zope.Public" />
+      description="Structured Text (STX) Source" />
 
   <browser:view
       name=""
@@ -55,8 +53,7 @@
       component=".rest.ReStructuredTextSourceFactory"
       id="zope.source.rest"
       title="ReStructured Text (ReST)"
-      description="ReStructured Text (ReST) Source" 
-      permission="zope.Public" />
+      description="ReStructured Text (ReST) Source" />
 
   <browser:view
       name=""

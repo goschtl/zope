@@ -27,7 +27,6 @@
   <allow attributes="notify" /> 
   <factory
     id="zope.app.services.hub.Registration"
-    permission="zope.ManageServices"
     />
 </content>
 
@@ -45,7 +44,6 @@
   <content class="zope.app.services.cache.CachingService">
     <factory 
           id="zope.services.CachingService" 
-          permission="zope.ManageServices"
           />
       <require
           permission="zope.View"
@@ -104,7 +102,7 @@
     </content>
 
   <content class="zope.app.services.folder.SiteManagementFolder">
-    <factory permission="zope.ManageServices" />
+    <factory />
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />
@@ -121,7 +119,7 @@
 <!-- Bundle -->
 
   <content class="zope.app.services.bundle.Bundle">
-    <factory permission="zope.ManageServices" />
+    <factory />
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />
@@ -140,7 +138,6 @@
   <content class="zope.app.services.registration.RegistrationManager">
     <factory
         id = "zope.app.services.RegistrationManager"
-        permission = "zope.ManageServices"
         title = "Registration Manager" />
     <require
         permission="zope.View"
@@ -186,7 +183,6 @@
         />
     <factory
         id="IPrincipalAnnotationService"
-        permission="zope.ManageServices"
         />
     </content>
 
@@ -208,12 +204,11 @@
           zope.app.interfaces.services.error.ILocalErrorReportingService"
         />
     <factory
-        id='ErrorLogging'
-        permission='zope.Public' 
+        id="ErrorLogging"
         />
     </content>
 
-  <content class='zope.app.services.error.RootErrorReportingService'>
+  <content class="zope.app.services.error.RootErrorReportingService">
     <require
         permission="zope.Public"
         interface="zope.app.interfaces.services.error.IErrorReportingService"
@@ -233,13 +228,12 @@
 <!-- Object Hub -->
 
   <serviceType
-      id='HubIds'
-      interface='zope.app.interfaces.services.hub.IObjectHub' />
+      id="HubIds"
+      interface="zope.app.interfaces.services.hub.IObjectHub" />
 
-  <content class='zope.app.services.hub.ObjectHub'>
+  <content class="zope.app.services.hub.ObjectHub">
     <factory
-        id='HubIds'
-        permission='zope.ManageServices' />
+        id="HubIds" />
     <require
         permission="zope.View"
         attributes="notify getHubId getLocation getObject
@@ -257,10 +251,9 @@
 <include package=".pluggableauth" />
 
 <!-- Event Service -->
-<content class='zope.app.services.event.EventService'>
+<content class="zope.app.services.event.EventService">
   <factory
-      id='Events'
-      permission='zope.ManageServices'
+      id="Events"
       />
   <require
       permission="zope.View"

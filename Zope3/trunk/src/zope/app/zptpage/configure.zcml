@@ -27,27 +27,22 @@
   <content class=".zptpage.ZPTPage">
     <factory
         id="ZPTPage"
-        permission="zope.ManageContent"
         title="ZPT Page"
         description="A simple, content-based Page Template"
         />
-
     <require
         permission="zope.View"
         attributes="__call__ macros"
         />
-
     <require
         permission="zope.ManageContent"
         interface=".interfaces.IZPTPage"
         set_attributes="source expand evaluateInlineCode"
         />
-
     <require
         permission="zope.View"
         interface=".interfaces.IRenderZPTPage"
         />
-
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
         />

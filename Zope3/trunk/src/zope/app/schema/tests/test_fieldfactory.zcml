@@ -9,7 +9,6 @@
   <content class="zope.schema.Field">
 
     <factory
-	permission="zope.ManageContent"
 	title="Basic Field"
 	description="Basic Field" />
 
@@ -36,7 +35,6 @@
   <content class="zope.schema.Text">
 
     <factory
-	permission="zope.ManageContent"
 	title="Text Field"
 	description="Text Field" />
 
@@ -47,7 +45,6 @@
   <content class="zope.schema.TextLine">
 
     <factory
-	permission="zope.ManageContent"
 	title="Text Line Field"
 	description="Text Line Field" />
 

@@ -9,27 +9,22 @@
       /> 
   
   <content class=".PythonPage">
-  
-    <factory
+      <factory
         id="zope.app.pythonpage.PythonPage"
-        permission="zope.ManageContent"
         title="Python Page"
         description="A simple, content-based Python Page"
-        />
-  
+        />  
     <require
         permission="zope.View"
         interface=".IPythonPage"
         />
-  
     <require
         permission="zope.ManageContent"
         set_attributes="source contentType"
         />
-  
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-  
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        />
   </content>
 
 

@@ -5,35 +5,55 @@
 
 <content class=".catalog.Catalog">
   <implements 
-           interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>
-  <factory id="zope.app.catalog" 
-           permission="zope.ManageContent"/>
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogView"
-           permission="zope.View" />
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
-           permission="zope.Public" />
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
-           permission="zope.ManageContent" />
-  <require interface="zope.app.container.interfaces.IContainer"
-           permission="zope.ManageContent" />
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      />
+  <factory 
+      id="zope.app.catalog" 
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogView"
+      permission="zope.View" 
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
+      permission="zope.Public" 
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
+      permission="zope.ManageContent" 
+      />
+  <require 
+      interface="zope.app.container.interfaces.IContainer"
+      permission="zope.ManageContent" 
+      />
 </content>
 
 <content class=".catalog.CatalogUtility">
-  <factory id="zope.app.catalogutility" 
-           permission="zope.ManageContent"/>
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogView"
-           permission="zope.View"/>
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
-           permission="zope.View"/>
-  <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
-           permission="zope.ManageContent"/>
-  <require interface="zope.app.container.interfaces.IContainer"
-           permission="zope.ManageContent"/>
+  <factory 
+      id="zope.app.catalogutility" 
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogView"
+      permission="zope.View"
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
+      permission="zope.View"
+      />
+  <require 
+      interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
+      permission="zope.ManageContent"
+      />
+  <require 
+      interface="zope.app.container.interfaces.IContainer"
+      permission="zope.ManageContent"
+      />
 </content>
 
 <content class=".catalog.ResultSet">
-  <require attributes="__iter__ __len__"
-           permission="zope.Public"/>
+  <require 
+      attributes="__iter__ __len__"
+      permission="zope.Public"/>
 </content>
 
 

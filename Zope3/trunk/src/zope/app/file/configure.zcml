@@ -51,7 +51,6 @@
   <content class=".file.File">
     <factory
         id="File"
-        permission="zope.ManageContent"
         title="File"
         description="A File"
         />
@@ -75,7 +74,6 @@
   <content class=".image.Image">
     <factory
         id="Image"
-        permission="zope.ManageContent"
         title="Image"
         description="An Image"
         />

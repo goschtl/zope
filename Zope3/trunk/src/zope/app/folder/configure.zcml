@@ -17,8 +17,6 @@
       alias="zope.app.interfaces.content.folder"
       />
 
-
-
   <interface 
       interface=".interfaces.IFolder" 
       type="zope.app.content.interfaces.IContentType"
@@ -27,25 +25,20 @@
   <content class=".folder.Folder">
     <factory
         id="Folder"
-        permission="zope.ManageContent"
         title="Folder"
         description="Minimal folder"
         />
-
     <allow
         attributes="getSiteManager"
         />
-
     <require
         permission="zope.ManageServices"
         attributes="setSiteManager"
         />
-
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" 
         />
-
     <require
         permission="zope.ManageContent"
         interface="zope.app.container.interfaces.IWriteContainer"

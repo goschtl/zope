@@ -20,7 +20,6 @@
     class=".translationdomain.TranslationDomain">
    <factory 
         id="TranslationService" 
-        permission="zope.ManageServices" 
         />
     <implements
         interface="zope.app.interfaces.services.utility.ILocalUtility" 

@@ -3,7 +3,6 @@
 <content class=".utility.LocalUtilityService">
   <factory
       id="zope.app.services.UtilityService"
-      permission="zope.ManageServices"
       />
   <require
     permission="zope.ManageServices"

@@ -30,7 +30,6 @@
   <content class="zope.app.workflow.service.WorkflowService">
     <factory
         id="WorkflowService"
-        permission="zope.ManageServices"
         />
     <require
         permission="zope.View"
@@ -56,7 +55,6 @@
   <content class="zope.app.workflow.definition.ProcessDefinition">
     <factory
         id="ProcessDefinition"
-        permission="zope.ManageServices"
         />
     <implements
         interface="zope.app.interfaces.services.utility.ILocalUtility" 

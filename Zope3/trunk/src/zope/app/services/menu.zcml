@@ -5,7 +5,6 @@
   <content class="zope.app.services.menu.LocalBrowserMenuService">
     <factory
         id="zope.app.services.LocalBrowserMenuService"
-        permission="zope.ManageServices"
         title="Browser Menu Service"
         description="A Persistent Browser Menu Service" />
 
@@ -20,7 +19,6 @@
 
     <factory
         id="zope.app.services.menu.LocalBrowserMenu"
-        permission="zope.ManageServices"
         title="Browser Menu"
         description="A Persistent Browser Menu" />
 
@@ -49,7 +47,6 @@
 
     <factory
         id="utility.LocalBrowserMenuItem"
-        permission="zope.ManageServices"
         title="Browser Menu Item"
         description="A Persistent Browser Menu Item" />
 

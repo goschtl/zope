@@ -33,7 +33,6 @@
   <content class=".schema.SchemaUtility">
 
     <factory
-        permission="zope.ManageServices"
         title="Mutable Schema"
         description="A Persistent Schema that can be edited through the web"/>
 
@@ -70,7 +69,6 @@
 
     <factory
       id="utility.ContentComponentDefinition"
-      permission="zope.ManageServices"
       title="Content Component Definition"
       description="A Persistent Content Component Definition" />
 
