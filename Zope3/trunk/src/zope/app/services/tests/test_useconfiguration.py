@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_useconfiguration.py,v 1.4 2003/06/12 18:58:50 gvanrossum Exp $
+$Id: test_useconfiguration.py,v 1.5 2003/06/12 19:25:50 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -48,6 +48,8 @@ class TestUseConfiguration(PlacelessSetup, TestCase):
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/e'])
         obj.removeUsage('/c/d')
+        locs = list(obj.usages())
+        locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/e'])
 
     def testRelativeAbsolute(self):
