@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.29 2003/06/13 17:41:13 stevea Exp $
+$Id: service.py,v 1.30 2003/06/18 16:02:50 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -324,15 +324,4 @@ class ServiceActivation(BrowserView):
         else:
             new_active.status = Active
             return active + " activated"
-
-
-class SiteManagementFoldersContents(Contents):
-
-    __used_for__ = IServiceManager
-
-    index = ViewPageTemplateFile('sitemanagement_contents.pt')
-
-    def addSiteManagementFolder(self, name):
-        self.context.setObject(name, SiteManagementFolder())
-        self.request.response.redirect('@@contents.html')
 
