@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.6 2004/04/08 21:31:39 jim Exp $
+$Id: adapter.py,v 1.7 2004/04/12 17:58:33 jim Exp $
 """
 __metaclass__ = type
 
@@ -168,8 +168,11 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
         if adapters != self.adapters:
             self.adapters = adapters
-            for surrogate in self._surrogates.values():
-                surrogate.dirty()
+
+            # Throw away all of our surrogates, rather than dirtrying
+            # them individually
+            AdapterRegistry.__init__(self)
+
             for sub in self.subs:
                 sub.adaptersChanged()
 
