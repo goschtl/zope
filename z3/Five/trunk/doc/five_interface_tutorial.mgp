@@ -212,7 +212,7 @@ Adapter lookup, example
 %size 4, fore "blue"
 for animal in animal_farm:
     noise_maker = INoiseMaker(animal)
-    noise_maker.makeNoise()
+    print noise_maker.makeNoise()
 
 %page
 
