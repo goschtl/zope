@@ -23,13 +23,15 @@ class IObservable(Interface):
     def notify(event):
         """Notify the ISubscriber subscribers"""
 
-    def subscribe(required, provided, subscriber):
-        """Subscribe to an event for a particular instance.
+    def handle(interfaces, handler):
+        """Register a handler for some interfaces
 
-
-        Note that the providd interface should be or extend ISubscriber.
-
-        In the future, we will provide a subscribers function that
-        allows other interfaces to be used.
+        The handler will be called with object's implementing the
+        interface.  Typically, one of the objects will be an
+        event. Other objects may be associated objects.
         
+        """
+
+    def unhandle(interfaces, handler):
+        """Unregister a handler for some interfaces
         """

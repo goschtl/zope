@@ -109,7 +109,7 @@ You can unsubscribe:
 
 
 from persistent import Persistent
-from zope.interface.adapter import Default
+from zope.interface.adapter import Default, Null
 from zope.interface.adapter import Surrogate, AdapterRegistry
 
 class LocalSurrogate(Surrogate):
@@ -165,6 +165,9 @@ class Observers(AdapterRegistry, Persistent):
         if len(required) == 0:
             raise ValueError("required can not be zero length")
 
+        if provided is None:
+            provided = Null
+
         akey = required[0]
         if akey is None:
             akey = Default
@@ -178,6 +181,9 @@ class Observers(AdapterRegistry, Persistent):
         AdapterRegistry.__init__(self)
 
     def unsubscribe(self, required, provided, subscriber):
+        if provided is None:
+            provided = Null
+
         akey = required[0]
         if akey is None:
             akey = Default

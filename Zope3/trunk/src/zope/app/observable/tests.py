@@ -22,7 +22,6 @@ import unittest
 from zope.interface import implements
 from zope.app.observable.observable import ObservableAdapter, key
 from zope.app.observable.interfaces import IObservable
-from zope.app.event.interfaces import ISubscriber
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectRemovedEvent
@@ -31,31 +30,23 @@ from zope.app.observable import observerevent
 class DummyAnnotationsClass(dict):
     implements(IAnnotations)
 
-class DummySubscriber:
-
-    implements(ISubscriber)
-
-    events = []
-
-    def __init__(self, event):
-        self.event = event
-        
-    def notify(self, event):
-        self.events.append(self.event)
 
 class DummyEvent:
     implements(IObjectAddedEvent)
     
-def test_subscribe():
+def test_handle():
     """
     First create an annotatable object and an adapter
 
       >>> obj = DummyAnnotationsClass()
       >>> adapter = ObservableAdapter(obj)
 
-    Make a subscriber and make a faux subscription
+    Make a handler and make a faux subscription
 
-      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
+      >>> def handler(event):
+      ...     pass
+
+      >>> adapter.handle([IObjectAddedEvent], handler)
 
     Make sure an ObjectAdapterRegistry was created
 
@@ -69,23 +60,24 @@ def test_subscribe():
 
     """
 
-def test_unsubscribe():
+def test_unhandle():
     """
     First create an annotatable object and an adapter
 
       >>> obj = DummyAnnotationsClass()
       >>> adapter = ObservableAdapter(obj)
 
-    Make a subscriber and make a faux subscription
+    Make a handler and make a faux subscription
 
-      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
+      >>> def handler(event):
+      ...     pass
+      >>> adapter.handle([IObjectAddedEvent], handler)
 
-    Now unsubscribe from the registry
+    Now unhandle from the registry
 
-      >>> adapter.unsubscribe([IObjectAddedEvent], ISubscriber,
-      ...                     DummySubscriber)
+      >>> adapter.unhandle([IObjectAddedEvent], handler)
 
-    There should be no subscribers for IObjectAddedEvent after unsubscription.
+    There should be no handlers for IObjectAddedEvent after unsubscription.
 
       >>> obj[key].adapters[IObjectAddedEvent]
       {}
@@ -98,9 +90,12 @@ def test_notify():
       >>> obj = DummyAnnotationsClass()
       >>> adapter = ObservableAdapter(obj)
 
-    Make a subscriber and make a faux subscription
+    Make a handler and make a faux subscription
 
-      >>> adapter.subscribe([IObjectAddedEvent], ISubscriber, DummySubscriber)
+      >>> events = []
+      >>> def handler(event):
+      ...     events.append(event)
+      >>> adapter.handle([IObjectAddedEvent], handler)
 
     Make sure an ObjectAdapterRegistry was created
 
@@ -111,7 +106,7 @@ def test_notify():
 
       >>> event = DummyEvent()
       >>> adapter.notify(event)
-      >>> DummySubscriber.events == [event]
+      >>> events == [event]
       True
 
     """
@@ -148,7 +143,7 @@ class DummyNotObservableEvent:
 def testObservableEvents(self):
     """
     When an object that has subscriptions change, the
-    subscribers are notified.
+    handlers are notified.
 
     >>> event = DummyObservableEvent()
     >>> notifier = observerevent.ObserverEventNotifier()
