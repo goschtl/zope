@@ -16,11 +16,41 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.5 2003/06/23 00:03:58 jim Exp $
+$Id: test_standard_checkers.py,v 1.6 2003/08/15 19:49:56 garrett Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
+from zope.exceptions import ForbiddenAttribute
 from __future__ import generators
+
+
+def check_forbidden_get(object, attr):
+    try:
+        return getattr(object, attr)
+    except ForbiddenAttribute, e:
+        return 'ForbiddenAttribute: %s' % e[0]
+
+
+def check_forbidden_setitem(object, item, value):
+    try:
+        object[item] = value
+    except ForbiddenAttribute, e:
+        return 'ForbiddenAttribute: %s' % e[0]
+
+
+def check_forbidden_delitem(object, item):
+    try:
+        del object[item]
+    except ForbiddenAttribute, e:
+        return 'ForbiddenAttribute: %s' % e[0]
+
+
+def check_forbidden_call(callable, *args):
+    try:
+        return callable(*args)
+    except ForbiddenAttribute, e:
+        return 'ForbiddenAttribute: %s' % e[0]
+
 
 def test_dict():
     """Test that we can do everything we expect to be able to do
@@ -29,14 +59,10 @@ def test_dict():
     
     >>> d = ProxyFactory({'a': 1, 'b': 2})
 
-    >>> d.clear # Verify that we are protected
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: clear
-    >>> d[3] = 4 # Verify that we are protected
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __setitem__
+    >>> check_forbidden_get(d, 'clear') # Verify that we are protected
+    'ForbiddenAttribute: clear'
+    >>> check_forbidden_setitem(d, 3, 4) # Verify that we are protected
+    'ForbiddenAttribute: __setitem__'
 
     >>> d['a']
     1
@@ -50,10 +76,8 @@ def test_dict():
     1
     
     >>> c = d.copy()
-    >>> c.clear
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: clear
+    >>> check_forbidden_get(c, 'clear')
+    'ForbiddenAttribute: clear'
     >>> int(str(c) in ("{'a': 1, 'b': 2}", "{'b': 2, 'a': 1}"))
     1
 
@@ -107,22 +131,16 @@ def test_list():
     with proxied lists.
     
     >>> l = ProxyFactory([1, 2])
-    >>> del l[0]
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __delitem__
-    >>> l[0] = 3
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __setitem__
+    >>> check_forbidden_delitem(l, 0)
+    'ForbiddenAttribute: __delitem__'
+    >>> check_forbidden_setitem(l, 0, 3)
+    'ForbiddenAttribute: __setitem__'
     >>> l[0]
     1
     >>> l[0:1]
     [1]
-    >>> l[:1][0]=2
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __setitem__
+    >>> check_forbidden_setitem(l[:1], 0, 2)
+    'ForbiddenAttribute: __setitem__'
     >>> len(l)
     2
     >>> tuple(l)
@@ -230,14 +248,10 @@ def test_new_class():
     >>> class C(object):
     ...    x = 1
     >>> C = ProxyFactory(C)
-    >>> C()
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __call__
-    >>> C.__dict__
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __dict__
+    >>> check_forbidden_call(C)
+    'ForbiddenAttribute: __call__'
+    >>> check_forbidden_get(C, '__dict__')
+    'ForbiddenAttribute: __dict__'
     >>> s = str(C)
     >>> s = `C`
     >>> int(C.__module__ == __name__)
@@ -274,14 +288,10 @@ def test_new_instance():
     >>> class C(object):
     ...    x, y = 1, 2
     >>> c = ProxyFactory(C(), NamesChecker(['x']))
-    >>> c.y
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: y
-    >>> c.z
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: z
+    >>> check_forbidden_get(c, 'y')
+    'ForbiddenAttribute: y'
+    >>> check_forbidden_get(c, 'z')
+    'ForbiddenAttribute: z'
     >>> c.x
     1
     >>> int(c.__class__ == C)
@@ -314,14 +324,10 @@ def test_classic_class():
     >>> class C:
     ...    x = 1
     >>> C = ProxyFactory(C)
-    >>> C()
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __call__
-    >>> C.__dict__
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __dict__
+    >>> check_forbidden_call(C)
+    'ForbiddenAttribute: __call__'
+    >>> check_forbidden_get(C, '__dict__')
+    'ForbiddenAttribute: __dict__'
     >>> s = str(C)
     >>> s = `C`
     >>> int(C.__module__ == __name__)
@@ -354,14 +360,10 @@ def test_classic_instance():
     >>> class C:
     ...    x, y = 1, 2
     >>> c = ProxyFactory(C(), NamesChecker(['x']))
-    >>> c.y
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: y
-    >>> c.z
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: z
+    >>> check_forbidden_get(c, 'y')
+    'ForbiddenAttribute: y'
+    >>> check_forbidden_get(c, 'z')
+    'ForbiddenAttribute: z'
     >>> c.x
     1
     >>> int(c.__class__ == C)
@@ -449,10 +451,8 @@ def test_iter_of_sequences():
 
     We shouldn't be able to iterate if we don't have an assertion:
     
-    >>> list(p)
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: __iter__
+    >>> check_forbidden_call(list, p)
+    'ForbiddenAttribute: __iter__'
     """
     
 

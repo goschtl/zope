@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_context.py,v 1.5 2003/07/01 23:28:42 jim Exp $
+$Id: test_context.py,v 1.6 2003/08/15 19:49:52 garrett Exp $
 """
 
 import pickle
@@ -24,6 +24,7 @@ from zope.app.context import Wrapper
 from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface import directlyProvidedBy, implementedBy
 from zope.testing.doctestunit import DocTestSuite
+from zope.exceptions import ForbiddenAttribute
 
 class I1(Interface):
     pass
@@ -39,6 +40,14 @@ class D1(Wrapper):
 
 class D2(Wrapper):
   implements(I2)
+
+
+def check_forbidden_call(callable, *args):
+    try:
+        return callable(*args)
+    except ForbiddenAttribute, e:
+        return 'ForbiddenAttribute: %s' % e[0]
+
 
 def test_providedBy_iter_w_new_style_class():
     """
@@ -321,14 +330,10 @@ def test_SecurityCheckerDescriptor():
     <class 'zope.security.checker.Checker'>
     >>> c.check_getattr(w, 'a')
 
-    >>> c.check_getattr(w, 'b')
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: b
-    >>> c.check_getattr(w, 'c')
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: c
+    >>> check_forbidden_call(c.check_getattr, w, 'b')
+    'ForbiddenAttribute: b'
+    >>> check_forbidden_call(c.check_getattr, w, 'c')
+    'ForbiddenAttribute: c'
 
     >>> class MyWrapper2(Wrapper):
     ...     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
@@ -341,10 +346,8 @@ def test_SecurityCheckerDescriptor():
 
     >>> c.check_getattr(w, 'b')
 
-    >>> c.check_getattr(w, 'c')
-    Traceback (most recent call last):
-    ...
-    ForbiddenAttribute: c
+    >>> check_forbidden_call(c.check_getattr, w, 'c')
+    'ForbiddenAttribute: c'
 
     >>> w = MyWrapper(None)
     >>> int(w.__Security_checker__ is None)

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.37 2003/06/24 18:58:12 sidnei Exp $
+$Id: checker.py,v 1.38 2003/08/15 19:49:55 garrett Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -151,7 +151,7 @@ class Checker(TrustedCheckerBase):
                 raise Unauthorized, name
 
         __traceback_supplement__ = (TracebackSupplement, object)
-        raise ForbiddenAttribute, name
+        raise ForbiddenAttribute, (name, object)
 
     def check(self, object, name):
         'See IChecker'
@@ -170,7 +170,7 @@ class Checker(TrustedCheckerBase):
 
         if name != '__iter__' or hasattr(object, name):
             __traceback_supplement__ = (TracebackSupplement, object)
-            raise ForbiddenAttribute, name
+            raise ForbiddenAttribute, (name, object)
 
     def proxy(self, value):
         'See IChecker'
