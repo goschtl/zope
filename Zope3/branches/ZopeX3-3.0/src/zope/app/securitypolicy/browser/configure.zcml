@@ -76,6 +76,17 @@
     template="grant.pt" 
     menu="zmi_actions" title="Grant" />
 
+  <zope:class class=".rolepermissionview.PermissionRoles">
+    <zope:require permission="zope.Security"
+                  attributes="roles rolesInfo id title description" />
+  </zope:class>
+
+  <zope:class class=".rolepermissionview.RolePermissions">
+    <zope:require 
+        permission="zope.Security"
+        attributes="permissions permissionsInfo id title description" />
+  </zope:class>
+
 <!-- Principal Roles -->
 
   <page

@@ -17,14 +17,13 @@ $Id$
 """
 from datetime import datetime
 
+from zope.interface import implements
+
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.security.interfaces import IPermission
-
 from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager
-from zope.app.securitypolicy.permissionroles import PermissionRoles
-from zope.app.securitypolicy.rolepermission import RolePermissions
 
 class RolePermissionView:
 
@@ -140,4 +139,77 @@ class RolePermissionView:
             status.mapping = {'date_time': formatter.format(datetime.utcnow())}
 
         return status
+
+
+class PermissionRoles(object):
+
+    implements(IPermission)
+
+    def __init__(self, permission, context, roles):
+        self._permission = permission
+        self._context    = context
+        self._roles      = roles
+
+    def _getId(self):
+        return self._permission.id
+
+    id = property(_getId)
+
+    def _getTitle(self):
+        return self._permission.title
+
+    title = property(_getTitle)
+
+    def _getDescription(self):
+        return self._permission.description
+
+    description = property(_getDescription)
+
+    def roleSettings(self):
+        """
+        Returns the list of setting names of each role for this permission.
+        """
+        prm = IRolePermissionManager(self._context)
+        proles = prm.getRolesForPermission(self._permission.id)
+        settings = {}
+        for role, setting in proles:
+            settings[role] = setting.getName()
+        nosetting = Unset.getName()
+        return [settings.get(role.id, nosetting) for role in self._roles]
+
+class RolePermissions(object):
+
+    implements(IRole)
+
+    def __init__(self, role, context, permissions):
+        self._role = role
+        self._context = context
+        self._permissions = permissions
+
+    def _getId(self):
+        return self._role.id
+
+    id = property(_getId)
+
+    def _getTitle(self):
+        return self._role.title
+
+    title = property(_getTitle)
+
+    def _getDescription(self):
+        return self._role.description
+
+    description = property(_getDescription)
+
+    def permissionsInfo(self):
+        prm = IRolePermissionManager(self._context)
+        rperms = prm.getPermissionsForRole(self._role.id)
+        settings = {}
+        for permission, setting in rperms:
+            settings[permission] = setting.getName()
+        nosetting = Unset.getName()
+        return [{'id': permission.id,
+                 'title': permission.title,
+                 'setting': settings.get(permission.id, nosetting)}
+                for permission in self._permissions]
 

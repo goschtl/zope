@@ -17,7 +17,6 @@ $Id$
 """
 
 from zope.interface import implements
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 
 from zope.app.security.settings import Allow, Deny, Unset
@@ -25,85 +24,35 @@ from zope.app.security.principal import checkPrincipal
 from zope.app.security.permission import allPermissions
 
 from zope.app.securitypolicy.securitymap import SecurityMap
+from zope.app.securitypolicy.securitymap import AnnotationSecurityMap
 
-# This is misspelled, but that's OK. It just has to be unique.
-# we'll keep it as is, to prevent breaking on data:
-annotation_key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 
-class AnnotationPrincipalPermissionManager:
+class AnnotationPrincipalPermissionManager(AnnotationSecurityMap):
     """Mappings between principals and permissions."""
+
+    # the annotation key is a holdover from this module's old
+    # location, but cannot change without breaking existing databases
+    # It is also is misspelled, but that's OK. It just has to be unique.
+    # we'll keep it as is, to prevent breaking old data:
+    key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 
     implements(IPrincipalPermissionManager)
 
-    def __init__(self, context):
-        self._context = context
-
     def grantPermissionToPrincipal(self, permission_id, principal_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions(create=1)
-        pp.addCell(permission_id, principal_id, Allow)
-        self._context._p_changed = 1
+        AnnotationSecurityMap.addCell(self, permission_id, principal_id, Allow)
 
     def denyPermissionToPrincipal(self, permission_id, principal_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions(create=1)
-        pp.addCell(permission_id, principal_id, Deny)
-        self._context._p_changed = 1
+        AnnotationSecurityMap.addCell(self, permission_id, principal_id, Deny)
 
-    def unsetPermissionForPrincipal(self, permission_id, principal_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions()
-        # Only unset if there is a security map, otherwise, we're done
-        if pp:
-            pp.delCell(permission_id, principal_id)
-            self._context._p_changed = 1
+    unsetPermissionForPrincipal = AnnotationSecurityMap.delCell
+    getPrincipalsForPermission = AnnotationSecurityMap.getRow
+    getPermissionsForPrincipal = AnnotationSecurityMap.getCol
 
-    def getPrincipalsForPermission(self, permission_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions()
-        if pp:
-            return pp.getRow(permission_id)
-        return []
-
-    def getPermissionsForPrincipal(self, principal_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions()
-        if pp:
-            return pp.getCol(principal_id)
-        return []
-
-    def getSetting(self, permission_id, principal_id):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions()
-        if pp:
-            return pp.getCell(permission_id, principal_id, default=Unset)
-        return []
-
-    def getPrincipalsAndPermissions(self):
-        ''' See the interface IPrincipalPermissionManager '''
-        pp = self._getPrincipalPermissions()
-        if pp:
-            return pp.getAllCells()
-        return []
-
-    # Implementation helpers
-
-    def _getPrincipalPermissions(self, create=0):
-        """ Get the principal permission map stored in the context, optionally
-            creating one if necessary """
-        # need to remove security proxies here, otherwise we enter
-        # an infinite loop, becuase checking security depends on
-        # getting PrincipalPermissions.
-        from zope.proxy import removeAllProxies
-        context = removeAllProxies(self._context)
-        annotations = IAnnotations(context)
-        try:
-            return annotations[annotation_key]
-        except KeyError:
-            if create:
-                rp = annotations[annotation_key] = SecurityMap()
-                return rp
-        return None
+    def getSetting(self, permission_id, principal_id, default=Unset):
+        return AnnotationSecurityMap.queryCell(
+            self, permission_id, principal_id, default)
+       
+    getPrincipalsAndPermissions = AnnotationSecurityMap.getAllCells
 
 
 class PrincipalPermissionManager(SecurityMap):
@@ -151,9 +100,9 @@ class PrincipalPermissionManager(SecurityMap):
         ''' See the interface IPrincipalPermissionManager '''
         return self.getCol(principal_id)
 
-    def getSetting(self, permission_id, principal_id):
+    def getSetting(self, permission_id, principal_id, default=Unset):
         ''' See the interface IPrincipalPermissionManager '''
-        return self.getCell(permission_id, principal_id, default=Unset)
+        return self.queryCell(permission_id, principal_id, default)
 
     def getPrincipalsAndPermissions(self):
         ''' See the interface IPrincipalPermissionManager '''

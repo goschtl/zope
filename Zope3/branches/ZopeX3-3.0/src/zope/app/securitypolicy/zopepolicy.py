@@ -15,249 +15,268 @@
 
 $Id$
 """
-from zope.security.checker import CheckerPublic
-from zope.security.management import system_user
-import zope.security.simplepolicies
-from zope.security.interfaces import ISecurityPolicy
 
-from zope.app.location import LocationIterator
+import zope.interface
+
+from zope.security.management import system_user
+from zope.security.simplepolicies import ParanoidSecurityPolicy
+from zope.security.interfaces import ISecurityPolicy
+from zope.security.proxy import getProxiedObject
+
 from zope.app.security.settings import Allow, Deny
-from zope.app.securitypolicy.interfaces import \
-     IRolePermissionMap, IPrincipalPermissionMap, IPrincipalRoleMap
+
 from zope.app.securitypolicy.principalpermission \
      import principalPermissionManager
+globalPrincipalPermissionSetting = principalPermissionManager.getSetting
+
 from zope.app.securitypolicy.rolepermission import rolePermissionManager
+globalRolesForPermission = rolePermissionManager.getRolesForPermission
+
 from zope.app.securitypolicy.principalrole import principalRoleManager
+globalRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 
-getPermissionsForPrincipal = \
-                principalPermissionManager.getPermissionsForPrincipal
-getPermissionsForRole = rolePermissionManager.getPermissionsForRole
-getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
+from zope.app.securitypolicy.interfaces import IRolePermissionMap
+from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
+from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
+from zope.app.securitypolicy.interfaces import IGrantInfo
 
-globalContext = object()
-
-
-class ZopeSecurityPolicy(zope.security.simplepolicies.ParanoidSecurityPolicy):
+class CacheEntry:
+    pass
+    
+class ZopeSecurityPolicy(ParanoidSecurityPolicy):
     zope.interface.classProvides(ISecurityPolicy)
 
-    def checkPermission(self, permission, object):
-        if permission is CheckerPublic:
-            return True
-        # XXX We aren't really handling multiple principals yet
-        assert len(self.participations) == 1 # XXX
-        user = self.participations[0].principal
+    def __init__(self, *args, **kw):
+        ParanoidSecurityPolicy.__init__(self, *args, **kw)
+        self._cache = {}
 
-        # mapping from principal to set of roles
-        if user is system_user:
-            return True
+    def invalidate_cache(self):
+        self._cache = {}
 
-        roledict = {'zope.Anonymous': Allow}
-        principals = {user.id : roledict}
+    def cache(self, parent):
+        cache = self._cache.get(id(parent))
+        if cache:
+            cache = cache[0]
+        else:
+            cache = CacheEntry()
+            self._cache[id(parent)] = cache, parent
+        return cache
+    
+    def cached_decision(self, parent, principal, permission):
+        cache = self.cache(parent)
+        try:
+            cache_decision = cache.decision
+        except AttributeError:
+            cache_decision = cache.decision = {}
 
-        role_permissions = {}
-        remove = {}
+        cache_decision_prin = cache_decision.get(principal)
+        if not cache_decision_prin:
+            cache_decision_prin = cache_decision[principal] = {}
+            
+        try:
+            return cache_decision_prin[permission]
+        except KeyError:
+            pass
+            
+        decision = self.cached_prinper(parent, principal, permission)
+        if decision is not None:
+            cache_decision_prin[permission] = decision
+            return decision
 
-        # Look for placeless grants first.
+        roles = self.cached_roles(parent, permission)
+        if roles:
+            for role in self.cached_principal_roles(parent, principal):
+                if role in roles:
+                    cache_decision_prin[permission] = decision = True
+                    return decision
 
-        # get placeless principal permissions
-        for principal in principals:
-            for principal_permission, setting in (
-                getPermissionsForPrincipal(principal)):
-                if principal_permission == permission:
-                    if setting is Deny:
-                        return False
-                    assert setting is Allow
-                    remove[principal] = True
+        cache_decision_prin[permission] = decision = False
+        return decision
+        
+    def cached_prinper(self, parent, principal, permission):
+        cache = self.cache(parent)
+        try:
+            cache_prin = cache.prin
+        except AttributeError:
+            cache_prin = cache.prin = {}
 
-        # Clean out removed principals
-        if remove:
-            for principal in remove:
-                del principals[principal]
-            if principals:
-                # not done yet
-                remove.clear()
-            else:
-                # we've eliminated all the principals
-                return True
+        cache_prin_per = cache_prin.get(principal)
+        if not cache_prin_per:
+            cache_prin_per = cache_prin[principal] = {}
 
-        # get placeless principal roles
-        for principal in principals:
-            roles = principals[principal]
-            for role, setting in getRolesForPrincipal(principal):
-                assert setting in (Allow, Deny)
-                if role not in roles:
-                    roles[role] = setting
+        try:
+            return cache_prin_per[permission]
+        except KeyError:
+            pass
 
-        for perm, role, setting in (
-            rolePermissionManager.getRolesAndPermissions()):
-            assert setting in (Allow, Deny)
-            if role not in role_permissions:
-                role_permissions[role] = {perm: setting}
-            else:
-                if perm not in role_permissions[role]:
-                    role_permissions[role][perm] = setting
-
-        # Get principal permissions based on roles
-        for principal in principals:
-            roles = principals[principal]
-            for role, role_setting in roles.items():
-                if role_setting is Deny:
-                    return False
-                if role in role_permissions:
-                    if permission in role_permissions[role]:
-                        setting = role_permissions[role][permission]
-                        if setting is Deny:
-                            return False
-                        remove[principal] = True
-
-
-        # Clean out removed principals
-        if remove:
-            for principal in remove:
-                del principals[principal]
-            if principals:
-                # not done yet
-                remove.clear()
-            else:
-                # we've eliminated all the principals
-                return True
-
-        # Look for placeful grants
-        for place in LocationIterator(object):
-
-            # Copy specific principal permissions
-            prinper = IPrincipalPermissionMap(place, None)
+        if parent is None:
+            prinper = globalPrincipalPermissionSetting(
+                permission, principal, None)
             if prinper is not None:
-                for principal in principals:
-                    for principal_permission, setting in (
-                        prinper.getPermissionsForPrincipal(principal)):
-                        if principal_permission == permission:
-                            if setting is Deny:
-                                return False
+                prinper = prinper is Allow
+            cache_prin_per[permission] = prinper
+            return prinper
 
-                            assert setting is Allow
-                            remove[principal] = True
-
-            # Clean out removed principals
-            if remove:
-                for principal in remove:
-                    del principals[principal]
-                if principals:
-                    # not done yet
-                    remove.clear()
-                else:
-                    # we've eliminated all the principals
-                    return True
-
-            # Collect principal roles
-            prinrole = IPrincipalRoleMap(place, None)
-            if prinrole is not None:
-                for principal in principals:
-                    roles = principals[principal]
-                    for role, setting in (
-                        prinrole.getRolesForPrincipal(principal)):
-                        assert setting in (Allow, Deny)
-                        if role not in roles:
-                            roles[role] = setting
-
-            # Collect role permissions
-            roleper = IRolePermissionMap(place, None)
-            if roleper is not None:
-                for perm, role, setting in roleper.getRolesAndPermissions():
-                    assert setting in (Allow, Deny)
-                    if role not in role_permissions:
-                        role_permissions[role] = {perm: setting}
-                    else:
-                        if perm not in role_permissions[role]:
-                            role_permissions[role][perm] = setting
-
-            # Get principal permissions based on roles
-            for principal in principals:
-                roles = principals[principal]
-                for role, role_setting in roles.items():
-                    if role_setting is Deny:
-                        return False
-                    if role in role_permissions:
-                        if permission in role_permissions[role]:
-                            setting = role_permissions[role][permission]
-                            if setting is Deny:
-                                return False
-                            remove[principal] = True
-
-            # Clean out removed principals
-            if remove:
-                for principal in remove:
-                    del principals[principal]
-                if principals:
-                    # not done yet
-                    remove.clear()
-                else:
-                    # we've eliminated all the principals
-                    return True
-
-        return False # deny by default
-
-
-def permissionsOfPrincipal(principal, object):
-    permissions = {}
-
-    roles = {'zope.Anonymous': Allow}
-    principalid = principal.id
-
-    # Make two passes.
-
-    # First, collect what we know about the principal:
-
-
-    # get placeless principal permissions
-    for permission, setting in getPermissionsForPrincipal(principalid):
-        if permission not in permissions:
-            permissions[permission] = setting
-
-    # get placeless principal roles
-    for role, setting in getRolesForPrincipal(principalid):
-        if role not in roles:
-            roles[role] = setting
-
-    # get placeful principal permissions and roles
-    for place in LocationIterator(object):
-
-        # Copy specific principal permissions
-        prinper = IPrincipalPermissionMap(place, None)
+        prinper = IPrincipalPermissionMap(parent, None)
         if prinper is not None:
-            for permission, setting in prinper.getPermissionsForPrincipal(
-                principalid):
-                if permission not in permissions:
-                    permissions[permission] = setting
+            prinper = prinper.getSetting(permission, principal, None)
+            if prinper is not None:
+                prinper = prinper is Allow
+                cache_prin_per[permission] = prinper
+                return prinper
 
-        # Collect principal roles
-        prinrole = IPrincipalRoleMap(place, None)
-        if prinrole is not None:
-            for role, setting in prinrole.getRolesForPrincipal(principalid):
-                if role not in roles:
-                    roles[role] = setting
+        parent = getProxiedObject(getattr(parent, '__parent__', None))
+        prinper = self.cached_prinper(parent, principal, permission)
+        cache_prin_per[permission] = prinper
+        return prinper
+        
+    def cached_roles(self, parent, permission):
+        cache = self.cache(parent)
+        try:
+            cache_roles = cache.roles
+        except AttributeError:
+            cache_roles = cache.roles = {}
+        try:
+            return cache_roles[permission]
+        except KeyError:
+            pass
+        
+        if parent is None:
+            roles = dict(
+                [(role, 1)
+                 for (role, setting) in globalRolesForPermission(permission)
+                 if setting is Allow
+                 ]
+               )
+            cache_roles[permission] = roles
+            return roles
 
-    # Second, update permissions using principal
+        roles = self.cached_roles(
+            getProxiedObject(getattr(parent, '__parent__', None)),
+            permission)
+        roleper = IRolePermissionMap(parent, None)
+        if roleper:
+            roles = roles.copy()
+            for role, setting in roleper.getRolesForPermission(permission):
+                if setting is Allow:
+                    roles[role] = 1
+                elif role in roles:
+                    del roles[role]
 
-    for perm, role, setting in (
-        rolePermissionManager.getRolesAndPermissions()):
-        if role in roles and perm not in permissions:
-            permissions[perm] = setting
+        cache_roles[permission] = roles
+        return roles
 
-    for place in LocationIterator(object):
+    def cached_principal_roles(self, parent, principal):
+        cache = self.cache(parent)
+        try:
+            cache_principal_roles = cache.principal_roles
+        except AttributeError:
+            cache_principal_roles = cache.principal_roles = {}
+        try:
+            return cache_principal_roles[principal]
+        except KeyError:
+            pass
 
-        # Collect role permissions
-        roleper = IRolePermissionMap(place, None)
-        if roleper is not None:
-            for perm, role, setting in roleper.getRolesAndPermissions():
-                if role in roles and perm not in permissions:
-                    permissions[perm] = setting
+        if parent is None:
+            roles = dict(
+                [(role, 1)
+                 for (role, setting) in globalRolesForPrincipal(principal)
+                 if setting is Allow
+                 ]
+                 )
+            roles['zope.Anonymous'] = 1 # Everybody has Anonymous
+            cache_principal_roles[principal] = roles
+            return roles
+            
+        roles = self.cached_principal_roles(
+            getProxiedObject(getattr(parent, '__parent__', None)),
+            principal)
+        prinrole = IPrincipalRoleMap(parent, None)
+        if prinrole:
+            roles = roles.copy()
+            for role, setting in prinrole.getRolesForPrincipal(principal):
+                if setting is Allow:
+                    roles[role] = 1
+                elif role in roles:
+                    del roles[role]
 
+        cache_principal_roles[principal] = roles
+        return roles
+        
 
+    def checkPermission(self, permission, object):
+        principals = {}
+        for participation in self.participations:
+            principal = participation.principal
+            if principal is system_user:
+                continue # always allow system_user
+            principals[principal.id] = 1
 
-    result = [permission
-              for permission in permissions
-              if permissions[permission] is Allow]
+        if not principals:
+            return True
 
-    return result
+        object = getProxiedObject(object)
+        parent = getProxiedObject(getattr(object, '__parent__', None))
+
+        grant_info = IGrantInfo(object, None)
+        if not grant_info:
+            # No local grants; just use cached decision for parent
+            for principal in principals:
+                if not self.cached_decision(parent, principal, permission):
+                    return False
+            return True
+
+        # We need to combine local and parent info
+            
+        # First, look for principal grants
+        for principal in principals.keys():
+            setting = grant_info.principalPermissionGrant(
+                principal, permission)
+            if setting is Deny:
+                return False
+            elif setting is Allow: # setting could be None
+                del principals[principal]
+                if not principals:
+                    return True
+                continue
+
+            decision = self.cached_prinper(parent, principal, permission)
+            if decision is not None:
+                if decision:
+                    del principals[principal]
+                    if not principals:
+                        return True
+                else:
+                    return decision # False
+
+        roles = self.cached_roles(parent, permission)
+        local_roles = grant_info.getRolesForPermission(permission)
+        if local_roles:
+            roles = roles.copy()
+            for role, setting in local_roles:
+                if setting is Allow:
+                    roles[role] = 1
+                elif role in roles:
+                    del roles[role]
+
+        for principal in principals.keys():
+            proles = self.cached_principal_roles(parent, principal).copy()
+            for role, setting in grant_info.getRolesForPrincipal(principal):
+                if setting is Allow:
+                    if role in roles:
+                        del principals[principal]
+                        if not principals:
+                            return True
+                        break
+                elif role in proles:
+                    del proles[role]
+            else:
+                for role in proles:
+                    if role in roles:
+                        del principals[principal]
+                        if not principals:
+                            return True
+                        break                        
+                
+        return False
 

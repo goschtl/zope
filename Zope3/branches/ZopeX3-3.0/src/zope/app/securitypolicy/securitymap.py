@@ -14,13 +14,10 @@
 """ Generic two-dimensional array type """
 
 from persistent import Persistent
-from persistent.dict import PersistentDict
-from zope.interface import implements
-from zope.app.securitypolicy.interfaces import ISecurityMap
+from zope.app.annotation import IAnnotations
+from zope.security.management import queryInteraction
 
 class SecurityMap(object):
-
-    implements(ISecurityMap)
 
     def __init__(self):
         self._clear()
@@ -29,73 +26,133 @@ class SecurityMap(object):
         self._byrow = {}
         self._bycol = {}
 
-    def _empty_mapping(self):
-        return {}
+    def __nonzero__(self):
+        return bool(self._byrow)
 
     def addCell(self, rowentry, colentry, value):
         # setdefault may get expensive if an empty mapping is
         # expensive to create, for PersistentDict for instance.
-        row = self._byrow.setdefault(rowentry, self._empty_mapping())
-        row[colentry] = value
+        row = self._byrow.get(rowentry)
+        if row:
+            if row.get(colentry) is value:
+                return False
+        else:
+            row = self._byrow[rowentry] = {}
 
-        col = self._bycol.setdefault(colentry, self._empty_mapping())
+        col = self._bycol.get(colentry)
+        if not col:
+            col = self._bycol[colentry] = {}
+            
+        row[colentry] = value
         col[rowentry] = value
-        try:
-            del self._v_cells
-        except AttributeError:
-            pass
+
+        self._invalidated_interaction_cache()
+        
+        return True
+
+    def _invalidated_interaction_cache(self):
+        # Invalidate this threads interaction cache
+        interaction = queryInteraction()
+        if interaction is not None:
+            try:
+                invalidate_cache = interaction.invalidate_cache
+            except AttributeError:
+                pass
+            else:
+                invalidate_cache()
 
     def delCell(self, rowentry, colentry):
         row = self._byrow.get(rowentry)
         if row and (colentry in row):
-            del self._byrow[rowentry][colentry]
-            del self._bycol[colentry][rowentry]
-        try:
-            del self._v_cells
-        except AttributeError:
-            pass
+            del row[colentry]
+            if not row:
+                del self._byrow[rowentry]
+            col = self._bycol[colentry]
+            del col[rowentry]
+            if not col:
+                del self._bycol[colentry]
 
-    def getCell(self, rowentry, colentry, default=None):
-        " return the value of a cell by row, entry "
+            self._invalidated_interaction_cache()
+
+            return True
+
+        return False
+
+    def queryCell(self, rowentry, colentry, default=None):
         row = self._byrow.get(rowentry)
-        if row: return row.get(colentry, default)
-        else: return default
+        if row:
+            return row.get(colentry, default)
+        else:
+            return default
+
+    def getCell(self, rowentry, colentry):
+        marker = object()
+        cell = self.queryCell(rowentry, colentry, marker)
+        if cell is marker:
+            raise KeyError('Not a valid row and column pair.')
+        return cell
 
     def getRow(self, rowentry):
-        " return a list of (colentry, value) tuples from a row "
         row = self._byrow.get(rowentry)
         if row:
             return row.items()
-        else: return []
+        else:
+            return []
 
     def getCol(self, colentry):
-        " return a list of (rowentry, value) tuples from a col "
         col = self._bycol.get(colentry)
         if col:
             return col.items()
-        else: return []
+        else:
+            return []
 
     def getAllCells(self):
-        " return a list of (rowentry, colentry, value) "
-        try:
-            return self._v_cells
-        except AttributeError:
-            pass
         res = []
         for r in self._byrow.keys():
             for c in self._byrow[r].items():
                 res.append((r,) + c)
-        self._v_cells = res
         return res
-
 
 class PersistentSecurityMap(SecurityMap, Persistent):
 
-    implements(ISecurityMap)
+    def addCell(self, rowentry, colentry, value):
+        if SecurityMap.addCell(self, rowentry, colentry, value):
+            self._p_changed = 1
 
-    def _clear(self):
-        self._byrow = PersistentDict()
-        self._bycol = PersistentDict()
+    def delCell(self, rowentry, colentry):
+        if SecurityMap.delCell(self, rowentry, colentry):
+            self._p_changed = 1
 
-    def _empty_mapping(self):
-        return PersistentDict()
+class AnnotationSecurityMap(SecurityMap):
+
+    def __init__(self, context):
+        self._context = context
+        annotations = IAnnotations(self._context)
+        map = annotations.get(self.key)
+        if map is None:
+            self._byrow = {}
+            self._bycol = {}
+        else:
+            self._byrow = map._byrow
+            self._bycol = map._bycol
+        self.map = map
+
+    def _changed(self):
+        map = self.map
+        if isinstance(map, PersistentSecurityMap):
+            map._p_changed
+        else:
+            map = PersistentSecurityMap()
+            map._byrow = self._byrow
+            map._bycol = self._bycol
+            annotations = IAnnotations(self._context)
+            annotations[self.key] = map
+
+    def addCell(self, rowentry, colentry, value):
+        if SecurityMap.addCell(self, rowentry, colentry, value):
+            self._changed()
+
+    def delCell(self, rowentry, colentry):
+        if SecurityMap.delCell(self, rowentry, colentry):
+            self._changed()
+        
