@@ -51,14 +51,6 @@ class IPrincipal(Interface):
         description=_("A detailed description of the principal."),
         required=False)
 
-    # XXX: These are deprecated!
-
-    def getTitle():
-        """Return title."""
-
-    def getDescription():
-        """Return description."""
-
 
 class IUnauthenticatedPrincipal(IPrincipal):
     """A principal that hasn't been authenticated.

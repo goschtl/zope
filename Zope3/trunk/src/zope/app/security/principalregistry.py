@@ -126,17 +126,6 @@ class PrincipalBase(Contained):
         self.title = title
         self.description = description
 
-    def getTitle(self):
-        warn("Use principal.title instead of principal.getTitle().",
-             DeprecationWarning, 2)
-        return self.title
-
-    def getDescription(self):
-        warn("Use principal.description instead of "
-             "principal.getDescription().",
-             DeprecationWarning, 2)
-        return self.description
-
 
 class Principal(PrincipalBase):
 
