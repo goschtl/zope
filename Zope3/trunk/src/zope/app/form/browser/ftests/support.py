@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Support Functions for Widget Functional Tests
 
-$Id: support.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: support.py,v 1.2 2004/04/11 10:34:56 srichter Exp $
 """
-
 import re
 from zope.configuration import xmlconfig
 
@@ -75,7 +74,7 @@ def validationErrorExists(field, error_msg, source):
 
 
 def missingInputErrorExists(field, source):
-    return validationErrorExists(field, 'Input is required', source)
+    return validationErrorExists(field, 'Required input is missing.', source)
 
 
 def invalidValueErrorExists(field, source):

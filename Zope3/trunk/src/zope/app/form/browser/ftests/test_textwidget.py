@@ -13,7 +13,7 @@
 ##############################################################################
 """TextWidget Tests
 
-$Id: test_textwidget.py,v 1.2 2004/04/06 20:58:08 jim Exp $
+$Id: test_textwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
 """
 import unittest
 from persistence import Persistent
@@ -113,7 +113,7 @@ class Test(BrowserTestCase):
 
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists(
-            's1', 'Wrong type', response.getBody()))
+            's1', 'Object is of wrong type.', response.getBody()))
 
 
     def test_missing_value(self):
@@ -177,7 +177,7 @@ class Test(BrowserTestCase):
             'field.s1' : u'a' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists(
-            's1', 'Too short', response.getBody()))
+            's1', 'Value is too short', response.getBody()))
 
         # submit value for s1 that is too long
         response = self.publish('/test/edit.html', form={
@@ -185,7 +185,7 @@ class Test(BrowserTestCase):
             'field.s1' : u'12345678901' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists(
-            's1', 'Too long', response.getBody()))
+            's1', 'Value is too long', response.getBody()))
 
 
     def test_omitted_value(self):

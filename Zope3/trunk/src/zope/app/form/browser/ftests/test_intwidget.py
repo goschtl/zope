@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Int Widget Functional Tests
 
-$Id: test_intwidget.py,v 1.2 2004/04/06 20:58:08 jim Exp $
+$Id: test_intwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
 """
 
 import unittest
@@ -224,7 +224,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : '-1' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('i1', 'Too small',
+        self.assert_(validationErrorExists('i1', 'Value is too small',
             response.getBody()))
 
         # submit value for i1 that is too high
@@ -232,7 +232,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : '11' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('i1', 'Too big',
+        self.assert_(validationErrorExists('i1', 'Value is too big',
             response.getBody()))
 
 

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Float Widget Functional Tests
 
-$Id: test_floatwidget.py,v 1.2 2004/04/06 20:58:08 jim Exp $
+$Id: test_floatwidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
 """
 
 import unittest
@@ -168,7 +168,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.f1' : '-1' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('f1', 'Too small',
+        self.assert_(validationErrorExists('f1', 'Value is too small',
             response.getBody()))
 
         # submit value for f1 that is too high
@@ -176,7 +176,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.f1' : '1000.2' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('f1', 'Too big',
+        self.assert_(validationErrorExists('f1', 'Value is too big',
             response.getBody()))
 
 
