@@ -7,6 +7,8 @@ Five contributors
 
 - Philipp von Weitershausen (philikon@philikon.de)
 
+- Lennart Regebro (regebro@nuxeo.com)
+
 - Tres Seaver (tres@zope.com)
 
 - Andy Adiwidjaja (mail@adiwidjaja.com)
