@@ -1,24 +1,38 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Catalog
+
+$Id: catalog.py,v 1.17 2004/03/01 11:09:56 philikon Exp $
+"""
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import implements
+from zope.exceptions import NotFoundError
+from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.index.interfaces import ISimpleQuery
+
 from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
-from zope.exceptions import NotFoundError
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.utility import ILocalUtility
-from zope.security.proxy import trustedRemoveSecurityProxy
-
 from zope.app.interfaces.container import IRemoveNotifiable, IAddNotifiable
 from zope.app.interfaces.container import IContainer
-from zope.index.interfaces import ISimpleQuery
 
-from zope.app.container.sample import SampleContainer
-
-# gods save us from 5-deep nested pkgs
 import zope.app.interfaces.services.hub as IHub
 import zope.app.services.hub as Hub
-
+from zope.app.container.sample import SampleContainer
 from zope.app.interfaces.catalog.catalog import ICatalog
 
 class ResultSet:
