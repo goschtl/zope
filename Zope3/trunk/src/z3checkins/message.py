@@ -195,14 +195,14 @@ class CheckinMessageParser:
         author_name, author_email = email.Utils.parseaddr(author)
         date = m.get('Date', '')
 
-        # Fix incorrect timezones (+XX:XX instead of RFC-822 mandated +XXXX)
+        # Fix incorrect timezones (+ZZ:ZZ instead of RFC-822 mandated +ZZZZ)
         if date[-3] == ':':
             date = date[:-3] + date[-2:]
 
         (year, month, day, hours, minutes, seconds,
          weekday, yearday, dst, tzoffset) = email.Utils.parsedate_tz(date)
 
-        # XXX a workaround to deal with messages that don't specify a timezone
+        # TODO: a workaround to deal with messages that don't specify a timezone
         if tzoffset is None:
             tzoffset = 0
 
@@ -242,7 +242,7 @@ class CheckinMessageParser:
             subject = parts[1]
             directory = subject.split(' - ')[0]
         elif "SVN:" in subject:
-            # XXX Format specific to the Zope3 mailing list
+            # TODO: Format specific to the Zope3 mailing list
             # [foo-bar] SVN: foobaz/boo/bar.py log message
             parts = subject.split("SVN: ", 1)
             if len(parts) < 2:
@@ -276,7 +276,7 @@ class CheckinMessageParser:
         for line in lines:
             if in_log_msg:
                 if (line.startswith('=== ')
-                    or line.startswith('-=-') # XXX Zope3 ML specific
+                    or line.startswith('-=-') # TODO: Zope3 ML specific
                     or line.startswith("Added:")
                     or line.startswith("Modified:")
                     or line.startswith("Removed:")
@@ -313,7 +313,7 @@ class MessageContainerAdapter:
         items.sort()
         self.messages = []
         for date, key, item in items:
-            # XXX is this nice?
+            # TODO: is this nice?
             #item.__parent__ = self.context
             #item.__name__ = key
             self.messages.append(item)
@@ -363,7 +363,7 @@ class MessageUpload:
                         self.add(message)
                         dc = IZopeDublinCore(message, None)
                         if dc is not None:
-                            # XXX should handle RFC-2047
+                            # TODO: should handle RFC-2047
                             dc.title = unicode(message.subject)
                             dc.created = message.date
                     except DuplicationError:
@@ -634,10 +634,10 @@ class CheckinMessageView(MessageView):
             if log_idx != -1:
                 log_idx += len('\nLog:\n')
             else:
-                log_idx = text.find('Log message') # XXX Zope3 checkin-specific
+                log_idx = text.find('Log message') #TODO: Zope3 checkin-specific
                 if log_idx != -1:
                     log_idx = text.find('\n', log_idx) + 1
-                    # XXX This is yucky...
+                    # TODO: This is yucky...
                     text = text.replace('\n-=-\n', '')
         if log_idx == -1:
             return '<pre>%s</pre>' % text
@@ -710,7 +710,7 @@ class CheckinMessageView(MessageView):
 
         text = '<pre>%s</pre><div class="log">%s</div><pre>%s%s%s</pre>' \
                % (intro, log, import_status, diff, sig)
-        # XXX: find out the actual encoding instead of assuming UTF-8
+        # TODO: find out the actual encoding instead of assuming UTF-8
         return unicode(text, 'UTF-8', 'replace')
 
     def mark_whitespace(self, line, tab=('>', '-'), trail='.'):

@@ -259,7 +259,7 @@ lineum furum testum logum messageum.""")
     def test_parser_svnmsg_zope(self):
         from z3checkins.message import CheckinMessageParser
         from z3checkins.message import FixedTimezone
-        # XXX The Zope 3 checkin mailing list uses a non-standard format.
+        # TODO: The Zope 3 checkin mailing list uses a non-standard format.
         # This test checks the compatibility hacks planted in the code.
         # I hope that they will be removed in the future.
         svn_msg4 = open_test_data("svn_msg4.txt")
