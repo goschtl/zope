@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IResultSet.py,v 1.4 2002/07/10 23:37:26 srichter Exp $
+$Id: IResultSet.py,v 1.5 2002/12/02 20:03:49 alga Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -21,8 +21,8 @@ from Interface.Attribute import Attribute
 class IResultSet(Interface):
     """Holds results, and allows iteration."""
 
-    names = Attribute("""A list of the column names of the returned result
-                      set.""")
+    columns = Attribute("""A list of the column names of the returned result
+                           set.""")
 
     def __getitem__(index):
         """Return a brain row for index."""

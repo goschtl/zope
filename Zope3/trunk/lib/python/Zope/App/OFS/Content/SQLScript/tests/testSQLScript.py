@@ -1,18 +1,18 @@
 ##############################################################################
 #
 # Copyright (c) 2002 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.7 2002/11/25 13:48:07 alga Exp $
+$Id: testSQLScript.py,v 1.8 2002/12/02 20:03:49 alga Exp $
 """
 
 import unittest
@@ -27,6 +27,7 @@ from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 
 from Zope.App.OFS.Content.SQLScript.SQLScript import SQLScript
+from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import Arguments
 
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
@@ -37,6 +38,7 @@ from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
 from Zope.App.Caching.ICacheable import ICacheable
 from Zope.App.Caching.ICachingService import ICachingService
 from Zope.App.Caching.AnnotationCacheable import AnnotationCacheable
+from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
 def getNextServiceManager(context):
@@ -107,6 +109,19 @@ class CachingServiceStub:
     def getCache(self, name):
         return self.caches[name]
 
+class LocatableStub:
+
+    __implements__ = IPhysicallyLocatable
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    def getPhysicalRoot(self):
+        return None
+
+    def getPhysicalPath(self):
+        return (str(id(self.obj)),)
+
 
 class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
@@ -123,6 +138,9 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
         getService(None, "Adapters").provideAdapter(
+            ISQLScript, IPhysicallyLocatable,
+            LocatableStub)
+        getService(None, "Adapters").provideAdapter(
             IAnnotatable, ICacheable,
             AnnotationCacheable)
 
@@ -137,7 +155,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def testGetArguments(self):
         assert isinstance(arguments, StringTypes), \
-               '"arguments" argument of setArguments() must be a string' 
+               '"arguments" argument of setArguments() must be a string'
         self._arg_string = arguments
         self.arguments = parseArguments(arguments)
 
@@ -177,7 +195,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def testSQLScript(self):
         result = self._getScript()(id=1)
-        self.assertEqual(result.names, ('name','counter'))
+        self.assertEqual(result.columns, ('name','counter'))
         self.assertEqual(result[0].name, 'stephan')
 
     def testSQLScriptCaching(self):

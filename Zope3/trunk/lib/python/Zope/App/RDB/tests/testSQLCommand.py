@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.5 2002/10/04 18:37:24 jim Exp $
+$Id: testSQLCommand.py,v 1.6 2002/12/02 20:03:50 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -77,7 +77,7 @@ class Test(TestCase, PlacelessSetup):
     def testSimpleSQLCommand(self):
         command = SQLCommand("my_connection", "SELECT id FROM Table")
         result = command()
-        self.assertEqual(result.names, ('id',))
+        self.assertEqual(result.columns, ('id',))
         self.assertEqual(result[0].id, 1)
 
 

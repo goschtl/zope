@@ -11,55 +11,77 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Row class tests.
 
-XXX longer description goes here.
-
-$Id: testRow.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
+$Id: testRow.py,v 1.4 2002/12/02 20:03:50 alga Exp $
 """
-
-from Zope.App.RDB.Row import RowClassFactory
-from Zope.Security.Proxy import ProxyFactory
-from Zope.Exceptions import ForbiddenAttribute
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 class RowTests(TestCase):
 
-    def test_row_klass_creation(self):
+    def test_RowClassFactory(self):
+        from Zope.App.RDB.Row import RowClassFactory
 
         columns = ('food', 'name')
         data = ('pizza', 'john')
-        
+
         klass = RowClassFactory(columns)
         ob = klass(data)
-        
-        self.failUnless(ob.food == 'pizza',
-                        """bad row class attribute""")
 
-        self.failUnless(ob.name == 'john',
-                        """bad row class attribute (2)""")        
+        self.failUnless(ob.food == 'pizza', "bad row class attribute")
+        self.failUnless(ob.name == 'john', "bad row class attribute (2)")
 
-    def test_row_klass_security_declarations(self):
+    def test_RowClassFactory_Proxied(self):
+        from Zope.App.RDB.Row import RowClassFactory
+        from Zope.Security.Proxy import ProxyFactory
+        from Zope.Exceptions import ForbiddenAttribute
 
         columns = ('type', 'speed')
         data = ('airplane', '800km')
-        
+
         klass = RowClassFactory(columns)
 
         ob = klass(data)
 
         proxied = ProxyFactory(ob)
 
-        self.failUnless (proxied.type == 'airplane',
-                         """ security proxy error""")
-
-        self.failUnless (proxied.speed == '800km',
-                         """ security proxy error (2)""")        
+        self.failUnless (proxied.type == 'airplane', "security proxy error")
+        self.failUnless (proxied.speed == '800km', "security proxy error (2)")
 
         self.assertRaises(ForbiddenAttribute,
                           lambda x=proxied: x.__slots__
                           )
+
+    def test__cmp__(self):
+        from Zope.App.RDB.Row import RowClassFactory
+
+        columns = ('food', 'name')
+        data = ('pizza', 'john')
+
+        klass = RowClassFactory(columns)
+        ob = klass(data)
+        self.assertEqual(ob, ob, "not equal to self")
+
+        klass2 = RowClassFactory(columns)
+        ob2 = klass2(data)
+        self.assertEqual(ob, ob2, "not equal to an identical class")
+
+        columns = ('food', 'surname')
+        data = ('pizza', 'john')
+
+        klass3 = RowClassFactory(columns)
+        ob3 = klass3(data)
+        self.assert_(ob < ob3, "cmp with different columns")
+
+        columns = ('food', 'name')
+        data = ('pizza', 'mary')
+
+        klass4 = RowClassFactory(columns)
+        ob4 = klass4(data)
+        self.assert_(ob < ob4, "cmp with different data")
+
+
 
 def test_suite():
     return makeSuite(RowTests)

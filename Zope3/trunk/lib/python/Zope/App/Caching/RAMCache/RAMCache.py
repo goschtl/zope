@@ -2,20 +2,21 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.4 2002/11/25 13:48:06 alga Exp $
+$Id: RAMCache.py,v 1.5 2002/12/02 20:03:46 alga Exp $
 """
 from time import time
 from thread import allocate_lock
+from pickle import dumps
 from Persistence import Persistent
 from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
 from Zope.ComponentArchitecture import getAdapter
@@ -57,10 +58,12 @@ class RAMCache(Persistent):
 
     def getStatistics(self):
         "See Zope.App.Caching.RAMCache.IRAMCache.IRAMCache"
+        s = self._getStorage()
+        return s.getStatistics()
 
     def update(self,  maxEntries=None, maxAge=None, cleanupInterval=None):
         "See Zope.App.Caching.RAMCache.IRAMCache.IRAMCache"
-        
+
         if maxEntries is not None:
             self.maxEntries = maxEntries
 
@@ -79,9 +82,9 @@ class RAMCache(Persistent):
         if key:
             key =  self._buildKey(key)
             s.invalidate(ob, key)
-        else: 
+        else:
             s.invalidate(ob)
-                        
+
     def query(self, ob, key=None, default=None):
         "See Zope.App.Caching.ICache.ICache"
         s = self._getStorage()
@@ -99,7 +102,7 @@ class RAMCache(Persistent):
 
     def _getStorage(self):
         "Finds or creates a storage object."
-        
+
         global caches
         global writelock
         cacheId = self._cacheId
@@ -120,7 +123,7 @@ class RAMCache(Persistent):
             items = kw.items()
             items.sort()
             return tuple(items)
-                
+
         return ()
 
     _buildKey = staticmethod(_buildKey)
@@ -155,6 +158,7 @@ class Storage:
 
     def __init__(self, maxEntries=1000, maxAge=3600, cleanupInterval=300):
         self._data = {}
+        self._misses = {}
         self._invalidate_queue = []
         self.maxEntries = maxEntries
         self.maxAge = maxAge
@@ -177,9 +181,16 @@ class Storage:
             self.cleanupInterval = cleanupInterval
 
     def getEntry(self, ob, key):
-        data = self._data[ob][key]
-        data[2] += 1                    # increment access count
-        return data[0]
+        try:
+            data = self._data[ob][key]
+        except KeyError:
+            if ob not in self._misses:
+                self._misses[ob] = 0
+            self._misses[ob] += 1
+            raise
+        else:
+            data[2] += 1                    # increment access count
+            return data[0]
 
 
     def setEntry(self, ob, key, value):
@@ -188,7 +199,7 @@ class Storage:
 
         if self.lastCleanup <= time() - self.cleanupInterval:
             self.cleanup()
-            
+
         self.writelock.acquire()
         try:
             if ob not in self._data:
@@ -200,15 +211,16 @@ class Storage:
         finally:
             self.writelock.release()
             self._invalidate_queued()
-            
+
     def _do_invalidate(self, ob, key=None):
         """This does the actual invalidation, but does not handle the locking.
-        
+
         This method is supposed to be called from invalidate()
         """
         try:
             if key is None:
                 del self._data[ob]
+                self._misses[ob] = 0
             else:
                 del self._data[ob][key]
                 if len(self._data[ob]) < 1:
@@ -222,7 +234,7 @@ class Storage:
         while len(self._invalidate_queue):
             obj, key = self._invalidate_queue.pop()
             self.invalidate(obj, key)
-        
+
     def invalidate(self, ob, key=None):
         """Drop the cached values.
 
@@ -281,7 +293,7 @@ class Storage:
                 keys.sort(cmpByCount)
 
                 ob, key = keys[self.maxEntries]
-                maxDropCount = self._data[ob][key][2] 
+                maxDropCount = self._data[ob][key][2]
 
                 keys.reverse()
 
@@ -295,15 +307,33 @@ class Storage:
         finally:
             self.writelock.release()
             self._invalidate_queued()
-            
+
     def _clearAccessCounters(self):
         for ob in self._data:
             for key in self._data[ob]:
                 self._data[ob][key][2] = 0
-
+        for k in self._misses:
+            self._misses[k] = 0
 
     def getKeys(self, object):
         return self._data[object].keys()
 
+    def getStatistics(self):
+        "Basically see Zope.App.Caching.RAMCache.IRAMCache"
+        objects = self._data.keys()
+        objects.sort()
+        result = []
+
+        for ob in objects:
+            size = len(dumps(self._data[ob]))
+            hits = 0
+            for entry in self._data[ob].values():
+                hits += entry[2]
+            result.append({'path': ob,
+                           'hits': hits,
+                           'misses': self._misses[ob],
+                           'size': size,
+                           'entries': len(self._data[ob])})
+        return tuple(result)
 
 __doc__ = RAMCache.__doc__ + __doc__

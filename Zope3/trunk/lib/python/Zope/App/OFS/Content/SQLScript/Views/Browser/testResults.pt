@@ -9,22 +9,22 @@
     <pre tal:content="view/getRenderedSQL" />
 
     <table border="1" cellspacing="0" cellpadding="2"
-        tal:define="result view/getTestResults" 
+        tal:define="result view/getTestResults"
         tal:condition="result">
-      <tbody>   
-      
+      <tbody>
+
         <tr>
-          <th tal:repeat="field result/names"
+          <th tal:repeat="field result/columns"
               tal:content="field">Field Name</th>
         </tr>
 
         <tr tal:repeat="row result">
-          <td tal:repeat="field result/names"
+          <td tal:repeat="field result/columns"
               tal:content="python: getattr(row, field)">Value</td>
         </tr>
 
-          	
-      </tbody>     
+
+      </tbody>
     </table>
 
     <span tal:condition="view/error">

@@ -12,25 +12,25 @@
 #
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.9 2002/11/25 13:48:07 alga Exp $
+$Id: SQLScript.py,v 1.10 2002/12/02 20:03:48 alga Exp $
 """
 from types import StringTypes
 
 from Persistence import Persistent
 from Zope.ComponentArchitecture import getService
 from Zope.ContextWrapper import ContextMethod
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
 from Zope.DocumentTemplate.DT_HTML import HTML
 from Zope.App.Traversing import getParent
 from Zope.App.RDB.SQLCommand import SQLCommand
 from Zope.App.RDB.Util import queryForResults
-
 from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import parseArguments
 from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 
-from Zope.App.Caching.Caching import getCacheForObj
+from Zope.App.Caching.Caching import getCacheForObj, getLocationForCache
 
 from DT_SQLVar import SQLVar
 from DT_SQLTest import SQLTest
@@ -94,8 +94,12 @@ class SQLScript(SQLCommand, Persistent):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         self._connectionName = name
         cache = getCacheForObj(self)
-        if cache:
-            cache.invalidate(self)
+        location = getLocationForCache(self)
+
+        if cache and location:
+            cache.invalidate(location)
+
+    setConnectionName = ContextMethod(setConnectionName)
 
     def getConnectionName(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
@@ -146,14 +150,15 @@ class SQLScript(SQLCommand, Persistent):
 
         query = apply(self.template, (), arg_values)
         cache = getCacheForObj(self)
-        if cache:
+        location = getLocationForCache(self)
+        if cache and location:
             _marker = []
-            result = cache.query(self, {'query': query}, default=_marker)
+            result = cache.query(location, {'query': query}, default=_marker)
             if result is not _marker:
                 return result
         result = queryForResults(connection, query)
-        if cache:
-            cache.set(result, self, {'query': query})
+        if cache and location:
+            cache.set(result, location, {'query': query})
         return result
 
     __call__ = ContextMethod(__call__)

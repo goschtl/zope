@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IRAMCache.py,v 1.2 2002/11/25 13:48:06 alga Exp $
+$Id: IRAMCache.py,v 1.3 2002/12/02 20:03:46 alga Exp $
 """
 from Zope.App.Caching.ICache import ICache
 from Zope.Event.ISubscriber import ISubscriber
@@ -34,8 +34,7 @@ class IRAMCache(ICache, ISubscriber):
         The returned value is a sequence of dictionaries with the
         following keys:
 
-          'path', 'hits', 'misses', 'size', 'counter', 'views',
-          'entries'
+          'path', 'hits', 'misses', 'size', 'entries'
         """
 
     def update(maxEntries, maxAge, cleanupInterval):
