@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.30 2003/07/04 13:28:16 ryzaja Exp $
+$Id: view.py,v 1.31 2003/08/07 22:36:53 philikon Exp $
 """
 __metaclass__ = type
 
@@ -250,10 +250,16 @@ class GlobalViewRegistration:
             ifname = _("(Anything)")
         else:
             ifname = self.forInterface.__name__
-        L = [self.viewName, self.ptype.__name__, _("View"), _("for"), ifname]
+        summary = _("${view_name} ${ptype} View for {iface_name}")
         if self.layer and self.layer != "default":
-            L.extend([_("in layer"), self.layer])
-        return " ".join(L)
+            summary = _(
+                "${view_name} ${ptype} View for {iface_name} in layer ${layer}"
+                )
+        summary.mapping = {'view_name':  self.viewName,
+                           'ptype':      self.ptype.__name__,
+                           'iface_name': ifname,
+                           'layer':      self.layer}
+        return summary
 
     def implementationSummary(self):
         # XXX This should report the ZCML that it came from.
@@ -289,11 +295,19 @@ class ViewRegistration(SimpleRegistration):
             ifname = _("(Anything)")
         else:
             ifname = self.forInterface.__name__
+
         pname = self.presentationType.__name__
-        L = [self.viewName, _("for"), pname, self._what, ifname]
+        summary = _("${view_name} for ${pname} {what} {iface_name}")
         if self.layer and self.layer != "default":
-            L.extend([_("in layer"), self.layer])
-        return " ".join(L)
+            summary = _(
+                "${view_name} for ${pname} {what} {iface_name} in layer ${layer}"
+                )
+        summary.mapping = {'view_name':  self.viewName,
+                           'pname':      pname,
+                           'what':       self._what,
+                           'iface_name': ifname,
+                           'layer':      self.layer}
+        return summary
 
 class PageRegistration(ViewRegistration):
 
