@@ -12,11 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: IForm.py,v 1.2 2002/07/16 22:36:41 jim Exp $
+$Id: IForm.py,v 1.3 2002/07/16 23:00:14 jeremy Exp $
 """
-from Zope.Publisher.Browser import IBrowserView 
+from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Interface.Attribute import Attribute
-
 
 class IReadForm(IBrowserView):
 
