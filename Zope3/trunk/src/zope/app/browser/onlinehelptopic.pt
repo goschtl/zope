@@ -11,9 +11,6 @@
 
 </div>
 
-<div metal:fill-slot="commonTasks" 
-     tal:content="structure view/getTopicTree" />
-
 </body>
 </html>
 

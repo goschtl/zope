@@ -80,7 +80,7 @@
       <!-- Tree of the help topics that appears on the help namespace -->
       <div class="box" id="help"
            tal:condition="not:python:request.getURL().find('++help++')==-1">
-        <h4>Online Help</h4>              
+        <h4>Online Help - TOC</h4>              
         <div class="body">
           <div tal:content="structure view/getTopicTree|nothing"
                tal:omit-tag="">content of topicTree</div>
@@ -179,11 +179,30 @@
               </div>
             </div>
 
+	    <!-- Do not remove! This box will show the contextually related 
+                 help topics! -->
+            <div class="box" id="help"
+                tal:define="results view/@@find_help_topics|nothing"
+                tal:condition="results">
+              <h4>Online Help</h4>
+              <div class="body">
+                <a href="#"
+                    tal:repeat="entry results"
+                            tal:attributes="href entry/url">
+                  <div tal:define="oddrow repeat/entry/odd"
+                      tal:attributes="class python:oddrow and 'even' or 'odd'"
+                      tal:content="entry/topic/title">Topic Title
+                  </div>
+                </a>
+              </div>
+            </div>
+
+
             <div class="spacer">
               &nbsp;
             </div>
 
-                </div>
+          </div>
 
 <!--
           <div id="inspectors">

@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.8 2003/06/13 17:41:11 stevea Exp $
+$Id: onlinehelp.py,v 1.9 2003/07/02 01:27:58 srichter Exp $
 """
 from zope.interface import providedBy
 
@@ -40,7 +40,6 @@ class OnlineHelpTopicView(BrowserView):
     def getTopicTree(self):
         onlinehelp = getRoot(self.context)
         return self._makeSubTree(onlinehelp)
-
 
 
 class FindRelevantHelpTopics(BrowserView):

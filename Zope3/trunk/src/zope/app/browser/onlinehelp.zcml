@@ -3,38 +3,24 @@
 <!-- OnlineHelp -->
 
   <page
-      for="*"
       name="find_help_topics"
+      for="*"
       class=".onlinehelp.FindRelevantHelpTopics"
       permission="zope.Public"
       allowed_attributes="__call__" 
       />
 
-  <page
-       for="*"
-       name="getTopicTree"
-       class=".onlinehelp.OnlineHelpTopicView"
-       permission="zope.Public"
-       allowed_attributes="getTopicTree" 
-       />
-
-  <page
-      name="+"
-      menu="zmi_actions" title="Add"
+  <pages
       for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
-      permission="zope.View"
-      template="onlinehelptopic.pt"
-      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
-      />
+      permission="zope.Public"
+      class=".onlinehelp.OnlineHelpTopicView">
 
-  <page
-      name="index.html"
-      for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
-      permission="zope.View"
-      template="onlinehelptopic.pt"
-      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
-      />
-      
+      <page name="index.html" template="onlinehelptopic.pt"/>
+      <page name="getTopicTree" attribute="getTopicTree"/>
+
+  </pages>
+
+
   <menuItem
       for="*"
       filter="python:request.getURL().find('++help++')==-1"
