@@ -140,3 +140,5 @@ class UniqueIdAnnotationTool(UniqueObject, SimpleItem, PropertyManager, ActionPr
         """See IUniqueIdAnnotationManagement.
         """
         return UniqueIdAnnotation(obj, id)
+
+InitializeClass(UniqueIdAnnotationTool)
