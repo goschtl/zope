@@ -317,7 +317,6 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
         self.assertEquals("The eagle has landed", response.getBody())
 
-
 class IRecurse(Interface):
     pass
 
@@ -347,12 +346,34 @@ class RecursionTest(unittest.TestCase):
         self.assertEquals(self.ob.view(), 'foo')
         self.assertEquals(self.ob(), 'foo')
 
+from Products.Five.globalbrowsermenuservice import globalBrowserMenuService
+
+class MenuTestCase(ZopeTestCase.ZopeTestCase):
+    def afterSetUp(self):
+        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
+            'test', 'Test')
+        
+    def test_menu(self):
+        request = FakeRequest()
+        # XXX not sure why we need a URL here
+        request.URL = 'http://www.infrae.com'
+        menu = globalBrowserMenuService.getMenu('testmenu',
+                                                self.folder.test,
+                                                request)
+        self.assertEquals(3, len(menu))
+        # sort menu items by title so we get a stable testable result
+        menu.sort(lambda x, y: cmp(x['title'], y['title']))
+        self.assertEquals('Test Menu Item', menu[0]['title'])
+        self.assertEquals('seagull.html', menu[0]['action'])
+        self.assertEquals('Test Menu Item 2', menu[1]['title'])
+        self.assertEquals('parakeet.html', menu[1]['action'])
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RecursionTest))
     suite.addTest(unittest.makeSuite(FiveTestCase))
     suite.addTest(unittest.makeSuite(PublishTestCase))
+    suite.addTest(unittest.makeSuite(MenuTestCase))
     return suite
 
 if __name__ == '__main__':
