@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.10 2003/03/30 17:34:34 sidnei Exp $
+$Id: test_contents.py,v 1.11 2003/03/30 17:38:41 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -267,6 +267,33 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         fc.pasteObjects()
         self.failIf('document1' not in container)
         self.failIf('document2' not in container)
+
+    def testCutFolder(self):
+        container = traverse(self.rootFolder, 'folder1')
+        fc = self._TestView__newView(container)
+        ids = ['folder1_1']
+        fc.cutObjects(ids)
+        fc.pasteObjects()
+        self.failIf('folder1_1' not in container)
+
+    def testCutFolder2(self):
+        container = traverse(self.rootFolder, '/folder1/folder1_1')
+        fc = self._TestView__newView(container)
+        ids = ['folder1_1_1']
+        fc.cutObjects(ids)
+        fc.pasteObjects()
+        self.failIf('folder1_1_1' not in container)
+
+    def testCutFolder3(self):
+        container = traverse(self.rootFolder, '/folder1/folder1_1')
+        target = traverse(self.rootFolder, '/folder2/folder2_1')
+        fc = self._TestView__newView(container)
+        tg = self._TestView__newView(target)
+        ids = ['folder1_1_1']
+        fc.cutObjects(ids)
+        tg.pasteObjects()
+        self.failIf('folder1_1_1' in container)
+        self.failIf('folder1_1_1' not in target)
 
     def _TestView__newView(self, container):
         from zope.app.browser.container.contents import Contents
