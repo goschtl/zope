@@ -18,7 +18,6 @@ $Id$
 import unittest
 from transaction import get_transaction
 from ZODB.tests.util import DB
-from zope.exceptions import NotFoundError
 
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
