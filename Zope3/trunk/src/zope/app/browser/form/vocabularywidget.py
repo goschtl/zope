@@ -261,10 +261,11 @@ class SingleDataHelper(object):
     _msg_no_value = message(_("vocabulary-no-value"), "(no value)")
 
     def _compute_data(self):
-        if self.name in self.request.form:
-            token = self.request.form[self.name]
+        token = self.request.form.get(self.name)
+        if token:
             return self.convertTokensToValues([token])[0]
-        return None
+        else:
+            return None
 
 class MultiDataHelper(object):
 
