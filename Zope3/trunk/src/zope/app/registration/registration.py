@@ -16,11 +16,11 @@
 $Id$
 """
 import sys
+import warnings
 from persistent import Persistent
 
 import zope.cachedescriptors.property
 import zope.event
-
 from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies, getProxiedObject
@@ -29,15 +29,26 @@ from zope.security.proxy import Proxy, removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.component.localservice import getLocalServices
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.copypastemove import ObjectCopier
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.event import objectevent
-from zope.app.component.localservice import getLocalServices
 from zope.app.location import inside
 from zope.app.module.interfaces import IModuleManager
 from zope.app.registration import interfaces
+
+
+class RegistrationEvent(objectevent.ObjectEvent):
+    implements(interfaces.IRegistrationEvent)
+
+class RegistrationActivatedEvent(RegistrationEvent):
+    implements(interfaces.IRegistrationActivatedEvent)
+
+class RegistrationDeactivatedEvent(RegistrationEvent):
+    implements(interfaces.IRegistrationDeactivatedEvent)
+
 
 class RegistrationStatusProperty(object):
 
@@ -105,8 +116,9 @@ class RegistrationStack(Persistent, Contained):
        as will be described below.
 
        Registration stacks manage registrations.  They don't really care
-       what registrations are, as long as they can be activated and
-       deactivated:
+       what registrations are.
+
+         >>> from zope.app.registration import interfaces
 
          >>> class Registration(object):
          ...
@@ -117,14 +129,25 @@ class RegistrationStack(Persistent, Contained):
          ...     def __repr__(self):
          ...         return self.name
          ...
-         ...     def activated(self):
-         ...         self.active = True
-         ...
-         ...     def deactivated(self):
-         ...         self.active = False
+
+       When a registration is activated or deactivated, an event is published
+       to which one can subscribe; in our case the registration components
+       themselves subscribe to these events to set their status.
+         
+         >>> def setActive(event):
+         ...     event.object.active = True
+         >>> subscribe((interfaces.IRegistrationActivatedEvent,), None,
+         ...           setActive)
+         
+         >>> def unsetActive(event):
+         ...     event.object.active = False
+         >>> subscribe((interfaces.IRegistrationDeactivatedEvent,), None,
+         ...           unsetActive)
+
 
        We create a registration stack by providing it with a parent:
 
+         >>> from zope.app.registration.registration import RegistrationStack 
          >>> stack = RegistrationStack(42)
          >>> stack.__parent__
          42
@@ -282,10 +305,27 @@ class RegistrationStack(Persistent, Contained):
         return registration in self.data
 
     def _activate(self, registration):
-        registration.activated()
+        zope.event.notify(RegistrationActivatedEvent(registration))
+        # BBB: Depraction warningl 12/05/2004
+        if hasattr(registration, 'activated'):
+            #import pdb; pdb.set_trace()
+            warnings.warn(
+                "activated() deprected. Subscribe to "
+                "IRegistrationActivatedEvent instead.",
+                DeprecationWarning, stacklevel=3,
+                )
+            registration.activated()
 
     def _deactivate(self, registration):
-        registration.deactivated()
+        zope.event.notify(RegistrationDeactivatedEvent(registration))
+        # BBB: Depraction warningl 12/05/2004
+        if hasattr(registration, 'deactivated'):
+            warnings.warn(
+                "deactivated() deprected. Subscribe to "
+                "IRegistrationDeactivatedEvent instead.",
+                DeprecationWarning, stacklevel=3,
+                )
+            registration.deactivated()
 
     def activate(self, registration):
         data = self.data
@@ -300,7 +340,9 @@ class RegistrationStack(Persistent, Contained):
 
             # Insert it in front, removing it from back
             data = ((registration, ) +
-                    tuple([item for item in data if item != registration])
+                    tuple([item
+                           for item in data
+                           if item != registration])
                     )
 
             # Check for trailing None
@@ -374,7 +416,7 @@ class RegistrationStack(Persistent, Contained):
         return [r for r in result if r['registration'] is not None]
 
     #########################################################################
-    # Backward compat
+    # BBB: Backward compat
     #
     def data(self):
         # Need to convert old path-based data to object-based data
@@ -399,6 +441,11 @@ class RegistrationStack(Persistent, Contained):
     #
     #########################################################################
 
+
+#############################################################################
+# The functionality provided by this class can is better implemented by
+# subscribing to the RegistrationActivatedEvent and
+# RegistrationDeactivatedEvent.
 class NotifyingRegistrationStack(RegistrationStack):
     """Notifying registration registry implemention
 
@@ -424,6 +471,7 @@ class NotifyingRegistrationStack(RegistrationStack):
        in the RegistrationStack documentation.
        A registration stack provides support for a collection of
 
+         >>> from zope.app.registration import interfaces
          >>> class Registration(object):
          ...
          ...     def __init__(self, name):
@@ -432,17 +480,22 @@ class NotifyingRegistrationStack(RegistrationStack):
          ...
          ...     def __repr__(self):
          ...         return self.name
-         ...
-         ...     def activated(self):
-         ...         self.active = True
-         ...
-         ...     def deactivated(self):
-         ...         self.active = False
+
+         >>> def setActive(event):
+         ...     event.object.active = True
+         >>> subscribe((interfaces.IRegistrationActivatedEvent,), None,
+         ...           setActive)
+         
+         >>> def unsetActive(event):
+         ...     event.object.active = False
+         >>> subscribe((interfaces.IRegistrationDeactivatedEvent,), None,
+         ...           unsetActive)
 
        We create a registration stack by providing it with a parent:
 
          >>> parent = Parent()
-         >>> stack = NotifyingRegistrationStack(parent)
+         >>> from zope.app.registration import registration
+         >>> stack = registration.NotifyingRegistrationStack(parent)
 
        We can register a registration:
 
@@ -511,14 +564,15 @@ class NotifyingRegistrationStack(RegistrationStack):
        Because there wasn't an active registration before we made r2
        active.
        """
-
     def _activate(self, registration):
-        registration.activated()
+        super(NotifyingRegistrationStack, self)._activate(registration)
         self.__parent__.notifyActivated(self, registration)
 
     def _deactivate(self, registration):
-        registration.deactivated()
+        super(NotifyingRegistrationStack, self)._activate(registration)
         self.__parent__.notifyDeactivated(self, registration)
+#############################################################################
+
 
 def SimpleRegistrationRemoveSubscriber(registration, event):
     """Receive notification of remove event."""
@@ -542,6 +596,7 @@ def SimpleRegistrationRemoveSubscriber(registration, event):
     elif objectstatus == interfaces.RegisteredStatus:
         registration.status = interfaces.UnregisteredStatus
 
+
 class SimpleRegistration(Persistent, Contained):
     """Registration objects that just contain registration data"""
 
@@ -555,17 +610,19 @@ class SimpleRegistration(Persistent, Contained):
 
     # Methods from IRegistration
 
-    def activated(self):
-        pass
-
-    def deactivated(self):
-        pass
+    # BBB: Deprecated on 12/05/2004
+    # def activated(self):
+    #     pass
+    #
+    # def deactivated(self):
+    #     pass
 
     def usageSummary(self):
         return self.__class__.__name__
 
     def implementationSummary(self):
         return ""
+
 
 class ComponentRegistration(SimpleRegistration):
     """Component registration.

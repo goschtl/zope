@@ -16,31 +16,43 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
+
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.registration.registration import RegistrationStack
+from zope.app.tests import ztapi
 from zope.app.traversing.api import traverse
+
+from zope.app.registration.registration import RegistrationStack
+from zope.app.registration import interfaces
 
 class Registration(object):
 
     active = 0
     registry = None
 
-    def activated(self):
-        if (self.registry is not None) and (self.registry.active() != self):
-            raise AssertionError("Told active but not the active registration")
-        self.active += 1
 
-    def deactivated(self):
-        if (self.registry is not None) and (self.registry.active() == self):
-            raise AssertionError(
-                "Told deactivated but still the active registration")
-        self.active -= 1
+def handleActivated(event):
+    reg = event.object
+    if (reg.registry is not None) and (reg.registry.active() != reg):
+        raise AssertionError("Told active but not the active registration")
+    reg.active += 1
+
+def handleDeactivated(event):
+    reg = event.object
+    if (reg.registry is not None) and (reg.registry.active() == reg):
+        raise AssertionError(
+            "Told deactivated but still the active registration")
+    reg.active -= 1
 
 
 class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
+        ztapi.subscribe((interfaces.IRegistrationActivatedEvent,), None,
+                        handleActivated)
+        ztapi.subscribe((interfaces.IRegistrationDeactivatedEvent,), None,
+                        handleDeactivated)
+
         root = self.rootFolder
         self.__default = traverse(root, "++etc++site/default")
         self.__registry = RegistrationStack(root)

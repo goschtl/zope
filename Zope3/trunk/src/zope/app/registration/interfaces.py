@@ -15,21 +15,33 @@
 
 $Id$
 """
+import zope.component.interfaces
+from zope.interface import Interface, Attribute, implements
+from zope.schema import TextLine, Field, Choice
+from zope.schema.interfaces import ITextLine
+
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.interfaces import IContained, IContainer
-from zope.interface import Interface, Attribute, implements
-from zope.schema import TextLine, Field, Choice
-from zope.schema.interfaces import ITextLine
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
-import zope.component.interfaces
+from zope.app.event.interfaces import IObjectEvent
 
 UnregisteredStatus = _('Unregistered')
 RegisteredStatus = _('Registered')
 ActiveStatus = _('Active')
+
+
+class IRegistrationEvent(IObjectEvent):
+    """An event that involves a registration"""
+
+class IRegistrationActivatedEvent(IRegistrationEvent):
+    """This event is fired, when a component's registration is activated."""
+
+class IRegistrationDeactivatedEvent(IRegistrationEvent):
+    """This event is fired, when a component's registration is deactivated."""
 
 class INoLocalServiceError(Interface):
     """No local service to register with.
@@ -68,6 +80,9 @@ class IRegistration(Interface):
         default=UnregisteredStatus
         )
 
+    # BBB Deprecated methods, since their functionality is better implemented
+    # using event, which is done now. 12/05/2004
+    # ----------------------------------------------------------------------
     def activated():
         """Method called when a registration is made active.
         """
@@ -75,6 +90,7 @@ class IRegistration(Interface):
     def deactivated():
         """Method called when a registration is made inactive.
         """
+    # ----------------------------------------------------------------------
 
     def usageSummary():
         """Single-line usage summary.

@@ -17,9 +17,23 @@ $Id$
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from doctest import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite
 
+import zope.interface
 from zope.interface import Interface, implements
+from zope.security.proxy import Proxy
+
+from zope.app.annotation.interfaces import IAnnotations
+from zope.app.container.contained import Contained
+from zope.app.container.contained import ObjectRemovedEvent, ObjectMovedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.dependable.interfaces import IDependable
+from zope.app.registration.interfaces import IRegistration
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.tests import ztapi, placelesssetup
+from zope.app.traversing.api import traverse
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
@@ -28,15 +42,6 @@ from zope.app.registration.interfaces import IRegistered
 from zope.app.dependable.interfaces import DependencyError
 from zope.app.registration.registration import \
      SimpleRegistration, ComponentRegistration
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.dependable.interfaces import IDependable
-from zope.app.traversing.api import traverse
-from zope.security.proxy import Proxy
-from zope.app.container.contained import Contained
-from zope.app.container.contained import ObjectRemovedEvent, ObjectMovedEvent
-from zope.app.tests import ztapi
-from zope.app.registration.interfaces import IRegistration
-from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.registration.registration import \
     SimpleRegistrationRemoveSubscriber, \
     ComponentRegistrationRemoveSubscriber, \
@@ -44,9 +49,7 @@ from zope.app.registration.registration import \
     RegisterableMoveSubscriber
 from zope.app.registration.registration import Registered
 from zope.app.registration.registration import RegisterableCopier
-from zope.app.traversing.interfaces import IPhysicallyLocatable
-import zope.interface
-from zope.app.annotation.interfaces import IAnnotations
+
 
 class ITestComponent(Interface):
     pass
@@ -310,13 +313,15 @@ class TestRegisterableCopier(object):
     """
 
 def test_suite():
-    import sys
     return TestSuite((
         makeSuite(TestSimpleRegistration),
         makeSuite(TestComponentRegistration),
         makeSuite(TestSimpleRegistrationEvents),
         DocTestSuite(),
-        DocTestSuite('zope.app.registration.registration'),
+        DocTestSuite('zope.app.registration.registration',
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown,
+                     globs={'subscribe': ztapi.subscribe}),
         ))
 
 if __name__=='__main__':

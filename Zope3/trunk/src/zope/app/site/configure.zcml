@@ -6,6 +6,16 @@
     <allow attributes="ISite" />
   </module>
 
+  <subscriber
+     for="..registration.interfaces.IRegistrationActivatedEvent"
+     factory=".service.handleActivated"
+     />
+
+  <subscriber
+     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     factory=".service.handleDeactivated"
+     />
+
   <!-- Service Manager -->
 
   <content class=".service.SiteManager">

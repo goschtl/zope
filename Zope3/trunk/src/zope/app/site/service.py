@@ -307,15 +307,18 @@ class ServiceRegistration(ComponentRegistration):
         service_manager = zapi.getServices(self)
         return service_manager.getInterfaceFor(self.name)
 
-    def activated(self):
-        service = self.getComponent()
-        if IBindingAware.providedBy(service):
-            service.bound(self.name)
-
-    def deactivated(self):
-        service = self.getComponent()
-        if IBindingAware.providedBy(service):
-            service.unbound(self.name)
-
     def usageSummary(self):
         return self.name + " Service"
+
+
+def handleActivated(event):
+    if isinstance(event.object, ServiceRegistration):
+        service = event.object.getComponent()
+        if IBindingAware.providedBy(service):
+            service.bound(event.object.name)
+
+def handleDeactivated(event):
+    if isinstance(event.object, ServiceRegistration):
+        service = event.object.getComponent()
+        if IBindingAware.providedBy(service):
+            service.unbound(event.object.name)

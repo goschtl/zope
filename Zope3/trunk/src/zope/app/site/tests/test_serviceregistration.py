@@ -67,6 +67,11 @@ class TestServiceBase(object):
 class TestService(TestServiceBase):
     implements(ISimpleService)
 
+class Event(object):
+
+    def __init__(self, object):
+        self.object = object
+
 class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
@@ -91,14 +96,18 @@ class Test(PlacefulSetup, TestCase):
         self.__config = traverse(self.__cm, self.__registration_name)
         self.__configpath = getPath(self.__config)
 
-    def test_activated(self):
+    def test_handleActivated(self):
         old = self.__c._bound
-        self.__config.activated()
+        event = Event(self.__config)
+        from zope.app.site.service import handleActivated
+        handleActivated(event)
         self.assertEqual(self.__c._bound, old+('test_service',))
 
     def test_deactivated(self):
         old = self.__c._unbound
-        self.__config.deactivated()
+        event = Event(self.__config)
+        from zope.app.site.service import handleDeactivated
+        handleDeactivated(event)
         self.assertEqual(self.__c._unbound, old+('test_service',))
 
     def test_getInterface(self):

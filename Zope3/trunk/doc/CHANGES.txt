@@ -145,6 +145,12 @@ Zope Changes
 
     Restructuring
 
+      - Refactored Registration component for local components
+      
+        + Deprecated the `activated()` and `deactivated()` method. It is now
+          replaced with the 'IRegistrationActivatedEvent' and
+          'IRegistrationDectivatedEvent', respectively.
+
       - Replaced NotFoundError uses with more specific and meaningful
         exceptions. Eventually, NotFoundError will be deprecated.
 

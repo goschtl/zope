@@ -88,9 +88,14 @@ def setUpRegistered():
 #------------------------------------------------------------------------
 # Service service lookup
 from zope.app.component.localservice import serviceServiceAdapter
+from zope.app.registration.interfaces import IRegistrationActivatedEvent
+from zope.app.registration.interfaces import IRegistrationDeactivatedEvent
+from zope.app.site.service import handleActivated, handleDeactivated
 from zope.component.interfaces import IServiceService
 from zope.interface import Interface
 def setUpServiceService():
+    ztapi.subscribe((IRegistrationActivatedEvent,), None, handleActivated)
+    ztapi.subscribe((IRegistrationDeactivatedEvent,), None, handleDeactivated)
     ztapi.provideAdapter(Interface, IServiceService, serviceServiceAdapter)
 
 #------------------------------------------------------------------------

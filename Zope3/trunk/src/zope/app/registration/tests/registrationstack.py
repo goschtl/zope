@@ -37,10 +37,6 @@ class TestingRegistration(Contained):
     def __repr__(self):
         return self.id
 
-    def activated(self):
-        pass
-
-    deactivated = activated
     
 from zope.app.registration.registration import RegistrationStack
 

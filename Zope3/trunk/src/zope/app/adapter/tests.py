@@ -11,7 +11,115 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local Adapter Tests
+"""Local Adapter and Service Tests
+
+$Id$
+"""
+import unittest
+import zope.interface
+from transaction import get_transaction
+from ZODB.tests.util import DB
+
+from zope.testing.doctestunit import DocTestSuite
+from zope.interface.adapter import AdapterRegistry
+from zope.component.adapter import GlobalAdapterService
+
+from zope.app import zapi
+from zope.app.adapter.adapter import LocalAdapterRegistry, LocalAdapterService
+from zope.app.registration.interfaces import RegisteredStatus
+
+class IF0(zope.interface.Interface):
+    pass
+
+class IF1(IF0):
+    pass
+
+class IF2(IF1):
+    pass
+
+class IB0(zope.interface.Interface):
+    pass
+
+class IB1(IB0):
+    pass
+
+class IR0(zope.interface.Interface):
+    pass
+
+class IR1(IR0):
+    pass
+
+class R1(object):
+    zope.interface.implements(IR1)
+
+class F0(object):
+    zope.interface.implements(IF0)
+
+class F2(object):
+    zope.interface.implements(IF2)
+
+class Registration(object):
+    name=u''
+    with=()
+    provided=zope.interface.Interface
+    required=None
+    
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+    def __repr__(self):
+        return "Registration(%r, %s, %r, %r, %r)" % (
+            getattr(self.required, '__name__', None),
+            tuple([i.__name__ for i in self.with]),
+            self.provided.__name__, self.name, self.factory
+            )
+    
+
+    def factories(self):
+        return self.factory,
+    factories = property(factories)
+
+# Create a picklable global registry. The pickleability of other
+# global adapter registries is beyond the scope of these tests:
+class GlobalAdapterRegistry(AdapterRegistry):
+    def __reduce__(self):
+        return 'globalAdapterRegistry'
+
+globalAdapterRegistry = GlobalAdapterRegistry()
+
+class TestStack(object):
+    registration = None
+    registrations = ()
+
+    def __init__(self, parent):
+        self.__parent__ = parent
+
+    def active(self):
+        return self.registration
+
+    def info(self):
+        for registration in self.registrations:
+            yield {'registration': registration}
+
+    def activate(self, registration):
+        self.registration = registration
+        if registration not in self.registrations:
+            self.registrations += (registration,)
+        self.__parent__.notifyActivated(self, registration)
+
+    def deactivate(self, registration):
+        self.registration = None
+        self.__parent__.notifyDeactivated(self, registration)
+
+
+class LocalAdapterRegistry(LocalAdapterRegistry):
+    """For testing, use custom stack type
+    """
+    _stackType = TestStack
+
+
+def test_local_adapter():
+    """Local Adapter Tests
 
    Local surrogates and adapter registries share declarations with
    those "above" them.
@@ -131,8 +239,6 @@
    [Registration('IF0', (), 'IB1', u'', 'A011')]
 
    This shows only the local registrations in L1.
-
-   $Id$
    """
 
 def test_named_adapters():
@@ -696,177 +802,73 @@ def test_LocalAdapterBasedService():
     >>> setup.placefulTearDown()
     """
 
-
-
-import unittest
-from zope.testing.doctestunit import DocTestSuite
-from zope.interface.adapter import AdapterRegistry
-from zope.component.adapter import GlobalAdapterService
-from zope.app.adapter.adapter import LocalAdapterRegistry, LocalAdapterService
-import zope.interface
-from ZODB.tests.util import DB
-from transaction import get_transaction
-from zope.app import zapi
-from zope.app.registration.interfaces import RegisteredStatus
-
-class IF0(zope.interface.Interface):
-    pass
-
-class IF1(IF0):
-    pass
-
-class IF2(IF1):
-    pass
-
-class IB0(zope.interface.Interface):
-    pass
-
-class IB1(IB0):
-    pass
-
-class IR0(zope.interface.Interface):
-    pass
-
-class IR1(IR0):
-    pass
-
-class R1(object):
-    zope.interface.implements(IR1)
-
-class F0(object):
-    zope.interface.implements(IF0)
-
-class F2(object):
-    zope.interface.implements(IF2)
-
-class Registration(object):
-    name=u''
-    with=()
-    provided=zope.interface.Interface
-    required=None
-    
-    def __init__(self, **kw):
-        self.__dict__.update(kw)
-
-    def __repr__(self):
-        return "Registration(%r, %s, %r, %r, %r)" % (
-            getattr(self.required, '__name__', None),
-            tuple([i.__name__ for i in self.with]),
-            self.provided.__name__, self.name, self.factory
-            )
-    
-
-    def factories(self):
-        return self.factory,
-    factories = property(factories)
-
-# Create a picklable global registry. The pickleability of other
-# global adapter registries is beyond the scope of these tests:
-class GlobalAdapterRegistry(AdapterRegistry):
-    def __reduce__(self):
-        return 'globalAdapterRegistry'
-
-globalAdapterRegistry = GlobalAdapterRegistry()
-
-class TestStack(object):
-    registration = None
-    registrations = ()
-
-    def __init__(self, parent):
-        self.__parent__ = parent
-
-    def activate(self, registration):
-        self.registration = registration
-        if registration not in self.registrations:
-            self.registrations += (registration,)
-        self.__parent__.notifyActivated(self, registration)
-
-    def deactivate(self, registration):
-        self.registration = None
-        self.__parent__.notifyDeactivated(self, registration)
-
-    def active(self):
-        return self.registration
-
-    def info(self):
-        for registration in self.registrations:
-            yield {'registration': registration}
-
-class LocalAdapterRegistry(LocalAdapterRegistry):
-    """For testing, use custom stack type
-    """
-    _stackType = TestStack
-
-
 def test_service_registrations():
-    """Local Adapter Service Registration Tests
+    """
+    Local Adapter Service Registration Tests
 
 
-       Local adapter services share declarations and registrations with
-       those "above" them.
+    Local adapter services share declarations and registrations with those
+    "above" them.
 
-       Suppose we have a global adapter service, which is a type of
-       adapter registry that is an zope.component.interfaces.IRegistry:
+    Suppose we have a global adapter service, which is a type of
+    adapter registry that is an zope.component.interfaces.IRegistry:
 
-       >>> G = GlobalAdapterService()
+    >>> G = GlobalAdapterService()
 
-       we also have a local adapter registry, with G as it's base:
-
-       >>> L1 = LocalAdapterService(G)
-
-       and another local, with G as it's base:
-
-       >>> L2 = LocalAdapterService(G)
-
-       and L1 as it's next service:
-       
-       >>> L2.setNext(L1)
-
-       Now will register some adapters:
-
-       >>> G.register([IF1], IB1, '', 'A11G')
-       >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011')
-       >>> L1.createRegistrationsFor(ra011).register(ra011)
-       >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112')
-       >>> L2.createRegistrationsFor(ra112).register(ra112)
-       >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102')
-       >>> L2.createRegistrationsFor(ra102).register(ra102)
-
-       We can ask for all of the registrations locally:
-
-       >>> registrations = map(repr, L1.registrations())
-       >>> registrations.sort()
-       >>> for registration in registrations:
-       ...     print registration
-       AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
-       Registration('IF0', (), 'IB1', u'', 'A011')
-
-       This shows the local registrations in L1 and the global registrations.
-
-       If we ask L2, we'll see the registrations from G, L1, and L2:
-
-       >>> registrations = map(repr, L2.registrations())
-       >>> registrations.sort()
-       >>> for registration in registrations:
-       ...     print registration
-       AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
-       Registration('IF0', (), 'IB1', u'', 'A011')
-       Registration('IF1', (), 'IB0', u'', 'A102')
-       Registration('IF1', (), 'IB1', u'', 'A112')
-
-       Now we just want the local registrations for L1:
-
-       >>> registrations = map(repr, L1.registrations(localOnly=True))
-       >>> registrations.sort()
-       >>> for registration in registrations:
-       ...     print registration
-       Registration('IF0', (), 'IB1', u'', 'A011')
-
-       $Id$
-       """
+    we also have a local adapter registry, with G as it's base:
     
+    >>> L1 = LocalAdapterService(G)
     
+    and another local, with G as it's base:
 
+    >>> L2 = LocalAdapterService(G)
+    
+    and L1 as it's next service:
+    
+    >>> L2.setNext(L1)
+    
+    Now will register some adapters:
+    
+    >>> G.register([IF1], IB1, '', 'A11G')
+    >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011')
+    >>> L1.createRegistrationsFor(ra011).register(ra011)
+    >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112')
+    >>> L2.createRegistrationsFor(ra112).register(ra112)
+    >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102')
+    >>> L2.createRegistrationsFor(ra102).register(ra102)
+    
+    We can ask for all of the registrations locally:
+    
+    >>> registrations = map(repr, L1.registrations())
+    >>> registrations.sort()
+    >>> for registration in registrations:
+    ...     print registration
+    AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
+    Registration('IF0', (), 'IB1', u'', 'A011')
+    
+    This shows the local registrations in L1 and the global registrations.
+    
+    If we ask L2, we'll see the registrations from G, L1, and L2:
+    
+    >>> registrations = map(repr, L2.registrations())
+    >>> registrations.sort()
+    >>> for registration in registrations:
+    ...     print registration
+    AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
+    Registration('IF0', (), 'IB1', u'', 'A011')
+    Registration('IF1', (), 'IB0', u'', 'A102')
+    Registration('IF1', (), 'IB1', u'', 'A112')
+    
+    Now we just want the local registrations for L1:
+    
+    >>> registrations = map(repr, L1.registrations(localOnly=True))
+    >>> registrations.sort()
+    >>> for registration in registrations:
+    ...     print registration
+    Registration('IF0', (), 'IB1', u'', 'A011')
+
+    """
+    
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite(),
