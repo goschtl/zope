@@ -2,20 +2,34 @@
 
 A list of entries for each project that has anything going anywhere.
 
-Each entry is a list of strings, containing:
+Each entry is a tuple containing:
 
- - a name for the entry
+ - a string name for the entry
+
  - a regular expression qualifying checkins for membership
    - matched against the repository path of the checkin, sans CVSROOT
- - list of addresses for delivery of checkin message
- - list of strings naming pserver accounts to be given checkout access
-   (currently only "anonymous" is supported).
 
-E.g.:
+ - a list of addresses for delivery of checkin message
 
- ["Test", "^test", ["klm@digicool.com"], ["anonymous"]]
+ - a dictionary specifying the remote host to which repository checkins
+   should be synced.  The fields are:
+
+    'host'
+    'acct' - the pserver acct that will get access
+    'repodir' - the repository directory to which syncs should be done
+
+E.g.: 
+
+ ("Test", "^test", ["klm@digicool.com"], {'host': "www.zope.org",
+                                          'acct': "anonymous",
+                                          'repodir': "/cvs-repository/test"])
 """
 
 table = [
-    ["Test", "^test", ["klm@digicool.com"], ["anonymous"]]
+##  ("Test", "^test", ["klm@digicool.com"], {'host': "www.zope.org",
+##                                           'acct': "anonymous",
+##                                           'repodir': "/cvs-repository/test"])
+ ("Test", "^test", [], {'host': "www.zope.org",
+                                          'acct': "anonymous",
+                                          'repodir': "/cvs-repository/test"])
 ]
