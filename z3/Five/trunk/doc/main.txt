@@ -29,6 +29,13 @@ integration into Zope 2. This is the right moment for interested Zope
 between different Zope 2 projects so that this can be a foundational
 system for us all.
 
+Download 
+--------
+
+2004-07-30 -- We have released Five 0.1! Download it here:
+
+http://codespeak.net/z3/five/release/Five-0.1.tgz
+
 Joining the project
 -------------------
 
