@@ -50,6 +50,10 @@ Zope Changes
       navigation with a cookie-based stateful tree and a skin using that
       layer based on Rotterdam.
 
+    - Ported Zope 2's StructuredText implementation. It is available
+      in the 'zope.structuredtext' module and used by apidoc and wiki
+      (through renderer).
+
     - Copy/Move now checks constraints and preconditions, instead of just
       expecting the source's and target's class to be the same.
 
