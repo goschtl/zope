@@ -12,6 +12,7 @@
 #
 ##############################################################################
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.testing.doctestunit import DocTestSuite
 from zope.component import getAdapter
 from zope.app.tests import ztapi
 from zope.app.traversing import traverse
@@ -23,7 +24,7 @@ from zope.app.component.tests.test_servicemanagercontainer \
      import BaseTestServiceManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
-
+from zope.app import content
 class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
 
     def makeTestObject(self):
@@ -51,7 +52,8 @@ def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
-        ))
+        DocTestSuite('zope.app.content'),
+        ))    
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

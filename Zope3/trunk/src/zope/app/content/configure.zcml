@@ -7,6 +7,11 @@
 
 <!-- Simple Folder Directives -->
 
+<interface 
+    interface="zope.app.interfaces.content.folder.IFolder" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
+
 <content class="zope.app.content.folder.Folder">
 
   <implements interface="zope.app.interfaces.container.IContentContainer" />
@@ -74,6 +79,11 @@
     title="[add-images-permission] Add Images"
     />
 
+<interface 
+    interface="zope.app.interfaces.content.image.IImage" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
+
 <content class="zope.app.content.image.Image">
 
   <factory
@@ -104,8 +114,13 @@
     provides="zope.app.interfaces.size.ISized"
     for="zope.app.interfaces.content.image.IImage"
     />
+<interface 
+    interface="zope.app.content.i18nimage.II18nImage" 
+    type="zope.app.interfaces.content.IContentType"
+    />
 
 <content class="zope.app.content.i18nimage.I18nImage">
+
   <factory
       id="I18nImage"
       permission="zope.ManageContent"
@@ -133,7 +148,13 @@
 </content>
 
 
+<interface 
+    interface="zope.app.interfaces.content.zpt.IZPTPage" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
+
 <content class="zope.app.content.zpt.ZPTPage">
+
   <factory
       id="ZPTPage"
       permission="zope.ManageContent"
@@ -188,6 +209,11 @@
          provides="zope.app.interfaces.size.ISized"
          for="zope.app.interfaces.content.zpt.IZPTPage" />
 
+<interface 
+    interface="zope.app.interfaces.content.dtmlpage.IDTMLPage" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
+
 <content class="zope.app.content.dtmlpage.DTMLPage">
 
   <factory
@@ -219,6 +245,11 @@
   permission="zope.ManageContent"
   />
 
+
+<interface 
+    interface="zope.app.interfaces.content.file.IFile" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
 
 <content class="zope.app.content.file.File">
 
@@ -258,6 +289,10 @@
    permission="zope.ManageContent"
    />
 
+<interface 
+    interface="zope.app.content.i18nfile.II18nFile" 
+    type="zope.app.interfaces.content.IContentType"
+    />
 
 <content class="zope.app.content.i18nfile.I18nFile">
 
@@ -296,9 +331,13 @@
     title="[add-sql-scripts-permission] Add SQL Scripts"
     />
 
+<interface 
+    interface="zope.app.interfaces.content.sql.ISQLScript" 
+    type="zope.app.interfaces.content.IContentType"
+    /> 
+
 <content class="zope.app.content.sql.SQLScript">
 
- 
   <require
       permission = "zope.ManageContent"
       interface = "zope.app.interfaces.content.sql.ISQLScript"
@@ -334,7 +373,7 @@
 
 <!-- Filesystem Synchronization -->
 
-  <!-- fssync:adapter directives -->
+<!-- fssync:adapter directives -->
 
 <fssync:adapter factory="zope.app.fssync.classes.Default" />
 
