@@ -84,10 +84,10 @@ def init_table():
 
         # Catchall for when *no other entry* matches:
         {'path': None,
-         'addrs': zopeaddr},
+         'addrs': ["digicool-cvs@zope.org"]},
 
         {'path': "Operations",
-         'addrs': "support@digicool.com"},
+         'addrs': ["support@digicool.com"]},
 
         {'path': "Releases/Zope", 'addrs': zopeaddr},
         {'path': "Packages", 'addrs': zopeaddr},
