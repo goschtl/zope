@@ -102,7 +102,7 @@ Platform Notes
 To Do
 -----
 
-- Documentation for the zsync command line tool
+- Documentation for the zsync command line tool (in progress)
 
 - Explicit import/export facilities, similar to the functionality
   found in Zope 2
@@ -111,7 +111,7 @@ To Do
 
 - Improve some common data file formats (for example, the Entries.xml
   file, possibly incorporating some or all of the Extra or Annotations
-  data).  An XML data format is probably a better idea that switching
+  data).  An XML data format is probably a better idea than switching
   to ZConfig for this file, primarily to make it easier to support
   additional data.
 
