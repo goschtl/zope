@@ -15,8 +15,9 @@
 
 This package implements the Python "scarecrow" proposal.
 
-The package exports a single name, 'Interface' directly. Interface
-is used to create an interface with a class statement, as in:
+The package exports two names, 'Interface' and 'Attribute' directly.
+Interface is used to create an interface with a class statement, as
+in:
 
 
 
@@ -34,6 +35,8 @@ To find out what you can do with interfaces, see the interface
 interface, IInterface in the IInterface module.
 
 The package has several public modules:
+
+  XXX This docstring needs to be updated after the Grand Renaming.
 
   o Attribute has the implementation for interface attributes
     for people who want to build interfaces by hand.
@@ -64,7 +67,7 @@ There is also a script, pyself.py in the package that can be used to
 create interface skeletins. Run it without arguments to get documentation.
 
 Revision information:
-$Id: __init__.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: __init__.py,v 1.3 2002/12/25 18:30:40 gvanrossum Exp $
 """
 
 from zope.interface.interface import Interface, _wire
