@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testHookRegistry.py,v 1.3 2002/07/11 22:42:33 jeremy Exp $
+$Id: testHookRegistry.py,v 1.4 2002/07/16 23:23:12 jeremy Exp $
 """
 
 import unittest, sys
@@ -85,8 +85,7 @@ class HookRegistryTest(unittest.TestCase):
         
         hookRegistry = HookRegistry()
         hookRegistry.addHookable(hookableAddr)
-        self.assertRaises(BadHookError, hookRegistry.addHook,
-                          hookableAddr,
+        self.assertRaises(BadHookError, hookRegistry.addHook, hookableAddr,
                           'foo.bar.this.should.not.resolve.anywhere')
         hookRegistry.addHook(hookableAddr, dummyHook)
         new = __import__(hookableParent, {}, {}, ('__dict__',))
