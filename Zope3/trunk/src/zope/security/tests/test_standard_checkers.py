@@ -16,10 +16,11 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.3 2003/06/22 20:50:24 jeremy Exp $
+$Id: test_standard_checkers.py,v 1.4 2003/06/22 23:21:42 jim Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
+from __future__ import generators
 
 def test_dict():
     """Test that we can do everything we expect to be able to do
