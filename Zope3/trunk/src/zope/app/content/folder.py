@@ -14,7 +14,8 @@
 
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
-from zope.app.interfaces.content.folder import IFolder, IRootFolder
+from zope.app.interfaces.content.folder import IFolder, IRootFolder, \
+     ICloneWithoutChildren
 from zope.app.services.servicecontainer import ServiceManagerContainer
 from zope.app.interfaces.services.service import IServiceManagerContainer
 from zope.exceptions import DuplicationError
@@ -23,7 +24,7 @@ from zope.exceptions import DuplicationError
 class Folder(Persistent, ServiceManagerContainer):
     """The standard Zope Folder implementation."""
 
-    __implements__ = IFolder
+    __implements__ = IFolder, ICloneWithoutChildren
 
     def __init__(self):
         self.data = OOBTree()
@@ -97,6 +98,12 @@ class Folder(Persistent, ServiceManagerContainer):
            if the object is not found."""
         del self.data[name]
 
+    def cloneWithoutChildren(self):
+        new = self.__class__()
+        for k, v in self.__dict__.items():
+            if k != 'data':
+                new.__dict__[k] = v
+        return new
 
 class RootFolder(Folder):
     """The standard Zope root Folder implementation."""

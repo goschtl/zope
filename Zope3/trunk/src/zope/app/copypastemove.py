@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.3 2003/03/19 19:57:21 alga Exp $
+$Id: copypastemove.py,v 1.4 2003/03/30 15:40:57 sidnei Exp $
 """
 
-from zope.app.traversing import getParent, objectName
+from zope.app.traversing import getParent, objectName, getPath
 from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
@@ -42,7 +42,7 @@ class ObjectMover:
     def __init__(self, object):
         self.context = object
 
-    def moveTo(self, target, name=None):
+    def moveTo(self, target, new_name=None):
         '''Move this object to the target given.
 
         Returns the new name within the target
@@ -51,15 +51,12 @@ class ObjectMover:
         obj = self.context
         container = getParent(obj)
         orig_name = objectName(obj)
-        if name is None:
-            name = objectName(obj)
+        if new_name is None:
+            new_name = orig_name
 
         movesource = getAdapter(container, IMoveSource)
-        physicaltarget = getAdapter(target, IPhysicallyLocatable)
-        target_path = physicaltarget.getPath()
-
-        physicalsource = getAdapter(container, IPhysicallyLocatable)
-        source_path = physicalsource.getPath()
+        target_path = getPath(target)
+        source_path = getPath(container)
 
         if queryAdapter(obj, IMoveNotifiable):
             getAdapter(obj, IMoveNotifiable).beforeDeleteHook(obj, container, \
@@ -70,7 +67,7 @@ class ObjectMover:
         new_obj = movesource.removeObject(orig_name, target)
         pastetarget = getAdapter(target, IPasteTarget)
         # publish an ObjectCreatedEvent (perhaps...?)
-        new_name = pastetarget.pasteObject(name,new_obj)
+        new_name = pastetarget.pasteObject(new_name, new_obj)
 
         # call afterAddHook
         if queryAdapter(new_obj, IMoveNotifiable):
@@ -107,7 +104,7 @@ class ObjectCopier:
     def __init__(self, object):
         self.context = object
 
-    def copyTo(self, target, name=None):
+    def copyTo(self, target, new_name=None, with_children=True):
         """Copy this object to the target given.
 
         Returns the new name within the target, or None
@@ -120,21 +117,19 @@ class ObjectCopier:
         """
         obj = self.context
         container = getParent(obj)
-        if name is None:
-            name = objectName(obj)
+        orig_name = objectName(obj)
+        if new_name is None:
+            new_name = orig_name
 
-        physicaltarget = getAdapter(target, IPhysicallyLocatable)
-        target_path = physicaltarget.getPath()
-
-        physicalsource = getAdapter(container, IPhysicallyLocatable)
-        source_path = physicalsource.getPath()
+        target_path = getPath(target)
+        source_path = getPath(container)
 
         copysource = getAdapter(container, ICopySource)
-        obj = copysource.copyObject(name, target_path)
+        obj = copysource.copyObject(orig_name, target_path, with_children)
 
         pastetarget = getAdapter(target, IPasteTarget)
         # publish an ObjectCreatedEvent (perhaps...?)
-        new_name = pastetarget.pasteObject(name, obj)
+        new_name = pastetarget.pasteObject(new_name, obj)
 
         # call afterAddHook
         if queryAdapter(obj, ICopyNotifiable):

@@ -9,9 +9,11 @@
 <body>
 
 
-<div class="user" metal:define-macro="logged_user"
-   >Logged in as <span tal:replace="request/user/getTitle"
-   >dtremea</span></div>
+<div class="user" metal:define-macro="logged_user">
+   Logged in as <span tal:replace="request/user/getTitle">
+                      dtremea
+                 </span>
+</div>
 
 <div class="box" id="navigationTree" metal:define-macro="navigation_box">
 

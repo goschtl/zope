@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.13 2003/03/19 19:57:21 alga Exp $
+Revision information: $Id: contents.py,v 1.14 2003/03/30 15:40:57 sidnei Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.traversing import traverse, getRoot, getPath
+from zope.app.traversing import traverse, getRoot, getPath, joinPath
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.container import IPasteTarget
 from zope.app.interfaces.copypastemove import IObjectCopier
@@ -95,7 +95,7 @@ class Contents(BrowserView):
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append('%s/%s' % (container_path, id))
+            items.append(joinPath(container_path, id))
         clipboard.addItems('copy', items)
 
         self.request.response.redirect('@@contents.html')
@@ -111,7 +111,7 @@ class Contents(BrowserView):
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append('%s/%s' % (container_path, id))
+            items.append(joinPath(container_path, id))
         clipboard.addItems('cut', items)
 
         self.request.response.redirect('@@contents.html')
@@ -119,8 +119,8 @@ class Contents(BrowserView):
     def pasteObjects(self):
         """Iterate over clipboard contents and perform the
            move/copy operations"""
-        container = self.context
-        target = container
+        root = getRoot(self.context)
+        target = self.context
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
@@ -128,7 +128,7 @@ class Contents(BrowserView):
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         items = clipboard.getContents()
         for item in items:
-            obj = traverse(container, item['target'])
+            obj = traverse(target, item['target'])
             if item['action'] == 'cut':
                 getAdapter(obj, IObjectMover).moveTo(target)
                 # XXX need to remove the item from the clipboard here

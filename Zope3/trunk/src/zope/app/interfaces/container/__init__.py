@@ -273,11 +273,14 @@ class IMoveSource(Interface):
 
 class ICopySource(Interface):
     
-    def copyObject(key, copyingTo):
+    def copyObject(key, copyingTo, with_children=True):
         '''Return the object with the given key, as the first part of a
         copy.
 
         copyingTo is the unicode path for where the copy is to.
+
+        If the object is a folder an with_children is True, then the folder
+        contents is copied too.
         '''
 
 class IPasteNamesChooser(Interface):

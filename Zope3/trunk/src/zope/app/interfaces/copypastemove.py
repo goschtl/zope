@@ -21,7 +21,7 @@ class IObjectMover(Interface):
 
 class IObjectCopier(Interface):
 
-    def copyTo(target, name=None):
+    def copyTo(target, name=None, with_children=True):
         """Copy this object to the target given.
 
         Returns the new name within the target, or None
@@ -31,6 +31,9 @@ class IObjectCopier(Interface):
         an IObjectCopied event in the context of the target container.
         If a new object is created as part of the copying process, then
         an IObjectCreated event should be published.
+
+        If with_children is true and the object is folderish, copy contents,
+        else copy just the folder.
         """
 
     def copyable():
