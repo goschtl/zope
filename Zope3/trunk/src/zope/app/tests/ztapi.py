@@ -90,3 +90,10 @@ def unprovideUtility(provided, name=''):
 def provideNamespaceHandler(name, handler):
     provideAdapter(None, ITraversable, handler, name=name)
     provideView(None, None, ITraversable, name, handler)
+
+def provideService(name, service, interface=None):
+    services = zapi.getGlobalServices()
+    if interface is not None:
+        services.defineService(name, interface)
+    services.provideService(name, service)
+    
