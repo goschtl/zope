@@ -39,7 +39,7 @@ def test_suite():
                      setUp=setUp, tearDown=placelesssetup.tearDown),
         DocTestSuite('book.smileyutility.globaltheme',
                      setUp=setUp, tearDown=placelesssetup.tearDown),
-        DocTestSuite('book.smileyutility.localtheme'),
+        DocTestSuite('book.smileyutility.localtheme')
         ))
 
 if __name__ == '__main__':
