@@ -437,7 +437,7 @@ class RadioWidget(ItemsEditWidgetBase):
                              name=name,
                              id=id,
                              cssClass=cssClass,
-                             checked=None,
+                             checked="checked",
                              type='radio')
         return self._joinButtonToMessageTemplate %(elem, text)
 
@@ -502,7 +502,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
         rendered_items = self.renderItems(value)
         return renderElement(self.tag,
                              name=self.name + ':list',
-                             multiple=None,
+                             multiple='multiple',
                              size=self.size,
                              contents="\n".join(rendered_items),
                              extra=self.extra)
@@ -586,6 +586,6 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
                              name=name,
                              id=id,
                              value=value,
-                             checked=None)
+                             checked="checked")
         return self._joinButtonToMessageTemplate %(elem, text)
 

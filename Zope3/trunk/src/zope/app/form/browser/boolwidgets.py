@@ -41,7 +41,7 @@ class CheckBoxWidget(SimpleInputWidget):
         """Render the widget to HTML."""
         value = self._getFormValue()
         if value == 'on':
-            kw = {'checked': None}
+            kw = {'checked': 'checked'}
         else:
             kw = {}
         return "%s %s" % (

@@ -35,6 +35,8 @@ from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.browser.interfaces import ISimpleInputWidget
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
+import warnings
+
 class BrowserWidget(Widget, BrowserView):
     """Base class for browser widgets.
 
@@ -442,6 +444,13 @@ def renderTag(tag, **kw):
         items.sort()
         for key, value in items:
             if value == None:
+                warnings.warn(
+                    "None was passed for attribute %r.  Passing None "
+                    "as attribute values to renderTag is deprecated. "
+                    "Passing None as an attribute value will be disallowed "
+                    "starting in Zope 3.3."
+                    % key,
+                    DeprecationWarning, stacklevel=2)
                 value = key
             attr_list.append(u'%s=%s' % (key, quoteattr(unicode(value))))
 
