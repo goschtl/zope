@@ -26,12 +26,15 @@ from zope.publisher.interfaces import NotFound
 from zope.app.testing import ztapi
 from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
+from zope.app.component.site import LocalSiteManager
+from zope.app.component.testing import PlacefulSetup
+from zope.app.folder.folder import Folder
 
 from zope.app.rotterdam.tests import util
 from zope.app.rotterdam.xmlobject import ReadContainerXmlObjectView
 from zope.app.rotterdam.xmlobject import XmlObjectView
 
-from zope.app.component.testing import PlacefulSetup
+
 
 class File(object):
     pass
@@ -77,6 +80,45 @@ class TestXmlObject(PlacefulSetup, TestCase):
 
         treeView = XmlObjectView(self.file1, TestRequest()).singleBranchTree
         check_xml(treeView(), util.read_output('test5.xml'))
+
+    def test_virtualhost_support(self):
+
+        # we have to add a virtual host subsite
+        folder1 = self.rootFolder['folder1']
+        subsite = Folder()
+        sm = LocalSiteManager(folder1)
+        subsite.setSiteManager(sm)
+        folder1['subsite'] = subsite
+        
+        # add some more folder to the subsite
+        subfolder1 = Folder()
+        subsite['subfolder1'] = subfolder1
+        subfolder2 = Folder()
+        subfolder2_1 = Folder()
+        subfolder2['subfolder2_1'] = subfolder2_1
+        subsite['subfolder2'] = subfolder2
+        
+        # set the virtualhost on the request
+        request = TestRequest()
+        request._vh_root = subsite
+
+        # test virtual host root
+        vh = request.getVirtualHostRoot()
+        self.assertEquals(vh, subsite)
+
+        rcxov = ReadContainerXmlObjectView
+        treeView = rcxov(subsite, request).singleBranchTree
+        check_xml(treeView(), util.read_output('test6.xml'))
+         
+        rcxov = ReadContainerXmlObjectView
+        treeView = rcxov(subfolder1, request).singleBranchTree
+        check_xml(treeView(), util.read_output('test7.xml'))
+         
+        rcxov = ReadContainerXmlObjectView
+        treeView = rcxov(subfolder2_1, request).singleBranchTree
+        check_xml(treeView(), util.read_output('test8.xml'))
+
+
 
 
 def test_suite():

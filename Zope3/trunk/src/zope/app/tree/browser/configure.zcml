@@ -39,9 +39,7 @@
         />
   </browser:pages>
 
-  <!-- Set up the skin -->
-  <!-- disable the StaticTree skin since Rotterdam uses it and 
-       depend on this package.
+  <!-- Set up the 'StaticTree' skin -->
   <browser:layer name="statictree" />
 
   <browser:skin
@@ -55,6 +53,5 @@
       layer="statictree"
       template="navigation_macros.pt"
       />
-  -->
 
 </configure>

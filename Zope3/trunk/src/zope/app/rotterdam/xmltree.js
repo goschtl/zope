@@ -97,7 +97,8 @@ navigationTreeNode.prototype.startLoadingChildren = function() {
 with (this) {
         loadingNode = createLoadingNode();
         domNode.appendChild(loadingNode);
-        var url = baseurl + path + XML_CHILDREN_VIEW;
+        //var url = baseurl + path + XML_CHILDREN_VIEW;
+        var url = path + XML_CHILDREN_VIEW;
         loadtreexml(url, this);
         }
 }
@@ -408,10 +409,12 @@ function createNavigationTreeNode(source, basePath, deep) {
         var navTreeNode = new navigationTreeNode(newelem);
         var elemPath;
         var elemTitle;
-        //XXX should not hardcode root folder title string
         if (source.getAttribute('isroot') != null) {
-                elemTitle = '[top]';
-                elemPath = basePath;
+                elemTitle = source.getAttribute('name');
+                //elemPath = basePath;
+                // set base url for virtual host support
+                baseurl = source.getAttribute('baseURL');
+                elemPath = source.getAttribute('baseURL');
                 newelem.style.marginLeft = '0px';
                 navigationTree = navTreeNode;
                 docNavTree.appendChild(newelem);
@@ -427,9 +430,7 @@ function createNavigationTreeNode(source, basePath, deep) {
 
         var icon_url = source.getAttribute('icon_url');
 
-        var targetUrl = baseurl;
-	targetUrl = targetUrl + elemPath;
-	targetUrl = targetUrl + CONTENT_VIEW;
+        var targetUrl = elemPath + CONTENT_VIEW;
 
         var expandElem = createPresentationNodes(elemTitle, targetUrl, icon_url, length);
         newelem.appendChild(expandElem);

@@ -103,13 +103,21 @@ Done
      issue for Metadata, I think the Metadata views should also make use
      of the form framwork, there are still implemented as normal pages.
 
-216: Close this issue, the preview is working correctly.
+216: Close or reject this issue, the preview is working correctly. We need a 
+     presentation skin for to fix this. It's not possible to use the index.html 
+     views as a enduser UI without the ZMI. If somebody don't think so, take a 
+     look at the index.html for images or files. There is no way right now
+     to use index.html views in the Rotterdam skin with only zope.View permissions
+     on objects. 
+     This is a feature not a issue and needs a additional presentation skin.
 
 243: This seems a old issue which was done for the 3.0 release, ri
 
-328 + 333: Replaced the xmltree with the static tree, don't close 
-     this is only not relevant for the 3.1 release since we use the 
-     static tree, ri
+288: I think we can ignore this issue since we don't know in which browser 
+     this happen, ri
+
+328: Added virtual host support to the xml tree. Paul and Godefroid
+     will fix the issue 333,  ri
 
 378: It's not a bug, he just tries to use a Object field without the 
      CustomWidgetFactory, ri

@@ -15,15 +15,18 @@
 
 $Id$
 """
-
-from zope.app.publisher.browser import BrowserView
-from zope.app import zapi
-from zope.app.container.interfaces import IReadContainer
-from zope.app.traversing.api import getParents, getParent, traverse
-from zope.interface import Interface
-from zope.security.interfaces import Unauthorized, Forbidden
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr
+
+from zope.interface import Interface
+from zope.proxy import sameProxiedObjects
+from zope.security.interfaces import Unauthorized, Forbidden
+
+from zope.app import zapi
+from zope.app.publisher.browser import BrowserView
+from zope.app.container.interfaces import IReadContainer
+from zope.app.traversing.api import getParents, getParent, traverse
+
 
 def setNoCacheHeaders(response):
     """Ensure that the tree isn't cached"""
@@ -40,7 +43,30 @@ def xmlEscapeWithCData(format, *args):
     quotedArgs = [ quoteattr(str(arg)) for arg in args[:-1] ]
     quotedArgsWithCData = quotedArgs + [cData]
     return format%tuple(quotedArgsWithCData)
+
+def getParentsFromContextToObject(context, obj):
+    """Returns a list starting with the given context's parent followed by
+    each of its parents till we reach the object.
+
+    """
+    if sameProxiedObjects(context, obj):
+        return []
+
+    parents = []
+    w = context
+
+    while 1:
+        w = w.__parent__
+        if sameProxiedObjects(w, obj):
+            parents.append(w)
+            break
+        if w is None:
+            break
         
+        parents.append(w)
+
+    return parents
+
 
 class ReadContainerXmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
@@ -113,7 +139,25 @@ class ReadContainerXmlObjectView(BrowserView):
         """
         result = ''
         oldItem = self.context
-        for item in getParents(self.context):
+        
+        vh = self.request.getVirtualHostRoot()
+        if vh:
+            vhrootView = zapi.getMultiAdapter(
+                    (vh, self.request), name='absolute_url')
+            baseURL = vhrootView() + '/'
+            try:
+                rootName = '[' + vh.__name__ + ']'
+            except:
+                # we got the containment root itself as the virtual host
+                # and there is no name.
+                rootName = '[top]'
+            parents = getParentsFromContextToObject(self.context, vh)
+        else:
+            rootName = '[top]'
+            baseURL = self.request.getApplicationURL()+'/'
+            parents = getParents(self.context)
+        
+        for item in parents:
             # skip skin if present
             #if item == oldItem:
             #        continue
@@ -152,9 +196,9 @@ class ReadContainerXmlObjectView(BrowserView):
 
         # do not forget root folder
         iconUrl = self.getIconUrl(oldItem)
-        result = (xmlEscapeWithCData('<collection name="" length=%s '
+        result = (xmlEscapeWithCData('<collection name=%s baseURL=%s length=%s '
                   'icon_url=%s isroot="">%s</collection>',
-                  len(oldItem), iconUrl, result))
+                  rootName, baseURL, len(oldItem), iconUrl, result))
 
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)

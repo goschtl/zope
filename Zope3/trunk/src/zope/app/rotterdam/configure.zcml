@@ -72,22 +72,6 @@
       file="mi.gif"
       layer="zope.app.rotterdam.rotterdam" />
   
-  <browser:pages
-      for="zope.app.container.interfaces.IReadContainer"
-      permission="zope.View"
-      class=".xmlobject.ReadContainerXmlObjectView">
-    <browser:page name="children.xml" attribute="children" />
-    <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
-  </browser:pages>
-  
-  <browser:page
-      name="singleBranchTree.xml" 
-      for="zope.interface.interface.Interface"
-      permission="zope.View"
-      class=".xmlobject.XmlObjectView"
-      attribute="singleBranchTree" 
-      />
-  
   <!-- below overrides the standard_macros by Rotterdam Skin -->
   <browser:page
       for="*"
@@ -97,15 +81,7 @@
       layer="zope.app.rotterdam.rotterdam"
       allowed_interface="zope.interface.common.mapping.IItemMapping" 
       />
-  <!-- use a table driven layout since the left navigation is cuts long names
-  <browser:page 
-      for="*"
-      name="skin_macros"
-      permission="zope.View"
-      layer="zope.app.rotterdam.rotterdam"
-      template="template.pt" 
-      />
-  -->
+
   <browser:page 
       for="*"
       name="skin_macros"
@@ -128,21 +104,43 @@
       layer="zope.app.rotterdam.rotterdam"
       template="dialog_macros.pt" />
 
-  <!-- use the static tree since the xmltree has to many issues -->
-  <browser:page
-      for="*"
-      name="navigation_macros"
-      permission="zope.View"
-      layer="zope.app.rotterdam.rotterdam"
-      template="navigation_macros_tablelayout.pt"
-      />
-
   <browser:page
       for="*"
       name="popup_macros"
       permission="zope.View"
       layer="zope.app.rotterdam.rotterdam"
       template="popup_macros.pt"
+      />
+  
+  <!-- xmltree navigation -->
+  <browser:page
+      for="*"
+      name="navigation_macros"
+      permission="zope.View"
+      layer="zope.app.rotterdam.rotterdam"
+      template="navigation_macros.pt"
+      />
+
+  <browser:pages
+      for="zope.app.container.interfaces.IReadContainer"
+      permission="zope.View"
+      class=".xmlobject.ReadContainerXmlObjectView">
+    <browser:page
+        name="children.xml"
+        attribute="children"
+        />
+    <browser:page
+        name="singleBranchTree.xml"
+        attribute="singleBranchTree"
+        />
+  </browser:pages>
+
+  <browser:page
+      name="singleBranchTree.xml" 
+      for="zope.interface.interface.Interface"
+      permission="zope.View"
+      class=".xmlobject.XmlObjectView"
+      attribute="singleBranchTree" 
       />
 
   <browser:view

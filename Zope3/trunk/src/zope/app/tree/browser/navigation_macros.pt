@@ -14,14 +14,13 @@
   <metal:tree define-macro="navigation_tree_box">
       <div class="box" id="navigationTree">
         <h4 i18n:translate="">Navigation</h4>
+        <div class="treebody">
+<tal:block define="root context/@@virtualhost_cookie_tree;
+                   result root/getFlatDicts;
+                   nodeDictList python:result[0];
+                   maxDepth python:result[1]">
 
-
-<table cellspacing="0" cellpadding="0"
-       tal:define="root           context/@@root_cookie_tree;
-                   result         root/getFlatDicts;
-                   nodeDictList   python:result[0];
-                   maxDepth       python:result[1]">
-
+<table cellspacing="0" cellpadding="0">
 <tr>
   <td width="16">
     <img src="" tal:define="icon root/context/@@zmi_icon | nothing"
@@ -36,10 +35,10 @@
        tal:content="root/getId() | string:[top]"></a>
   </td>
 </tr>
+</table>
 
-<tr tal:repeat="nodeInfo nodeDictList">
-<tal:block tal:define="node nodeInfo/node">
-
+<table cellspacing="0" cellpadding="0" tal:repeat="nodeInfo nodeDictList">
+<tr tal:define="node nodeInfo/node">
   <td style="width:16px" tal:repeat="state nodeInfo/row-state">
     <img tal:attributes="src context/++resource++tree_images/vline.png"
          tal:condition="state" alt="|" border="0" />
@@ -91,13 +90,11 @@
       node/id
     </a>
   </td>
-
-</tal:block>
 </tr>
-
 </table>
+</tal:block>
 
-
+      </div>
     </div>
   </metal:tree>
 </body>
