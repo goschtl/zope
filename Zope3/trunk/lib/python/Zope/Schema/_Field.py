@@ -12,82 +12,133 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.2 2002/09/07 16:18:51 jim Exp $
+$Id: _Field.py,v 1.3 2002/09/11 22:06:41 jim Exp $
 """
+__metaclass__ = object
+
 from Interface.Attribute import Attribute
-from Interface.Implements import objectImplements
+from Interface.Implements import implements
 
 from Exceptions import StopValidation, ValidationError
 import ErrorNames
 
+import IField
+from _bootstrapFields import Field, Container, Iteratable, Orderable, Sized
+from _bootstrapFields import Enumeratable, Text, Bool, Int
+from FieldProperty import FieldProperty
 
-class Field(Attribute):
-    # we don't implement the same interface Attribute
-    __implements__ = ()
-    type = None
-    default = None
-    setter = None
-    getter = None
-    required = 0
-    allowed_values = []
+# Fix up bootstrap field types
+Field.title       = FieldProperty(IField.IField['title'])
+Field.description = FieldProperty(IField.IField['description'])
+Field.required    = FieldProperty(IField.IField['required'])
+Field.readonly    = FieldProperty(IField.IField['readonly'])
+# Default is already taken care of
+implements(Field, IField.IField)
+
+implements(Container, IField.IContainer)
+implements(Iteratable, IField.IIteratable)
+implements(Orderable, IField.IOrderable)
+
+Sized.min_length = FieldProperty(IField.ISized['min_length'])
+Sized.max_length = FieldProperty(IField.ISized['max_length'])
+implements(Sized, IField.ISized)
+
+implements(Enumeratable, IField.IEnumeratable)
+
+implements(Text, IField.IText)
+implements(Bool, IField.IBool)
+implements(Int, IField.IInt)
+            
+class Bytes(Sized, Enumeratable):
+    __doc__ = IField.IBytes.__doc__
+    __implements__ = IField.IBytes
     
-    def __init__(self, **kw):
-        """Pass in field values as keyword parameters."""
-        for key, value in kw.items():
-            setattr(self, key, value)
-        # __name__ to '', so interface should initialize this with
-        # name of attribute
-        super(Field, self).__init__('')
+    _type = str
 
-    def validate(self, value):
+class Float(Enumeratable, Orderable):
+    __doc__ = IField.IFloat.__doc__
+    __implements__ = IField.IFloat
+    _type = float
+
+def _validate_sequence(value_types, value, errors=None):
+    if errors is None:
+        errors = []
+        
+    if value_types is None:
+        return errors
+
+    for item in value:
+
+        error = None
+
+        for t in value_types:
+            try:
+                t.validate(item)
+            except ValidationError, error:
+                pass
+            else:
+                # We validated, so clear error (if any) and done with
+                # this value
+                error = None
+                break
+
+        if error is not None:
+            errors.append(error)
+
+    return errors
+    
+
+class Sequence(Sized, Iteratable):
+    __doc__ = IField.ISequence.__doc__
+    value_types = FieldProperty(IField.ISequence['value_types'])
+
+    def __init__(self, value_types=None, **kw):
+        super(Sequence, self).__init__(**kw)
+        self.value_types = value_types
+
+    def _validate(self, value):
+        super(Sequence, self)._validate(value)
         try:
-            self.validator(self).validate(value)
-        except StopValidation:
-            pass
+            errors = _validate_sequence(self.value_types, value)
+            if errors:
+                raise ValidationError(ErrorNames.WrongContainedType, errors)
+                
+        finally:
+            errors = None
 
-class Bytes(Field):
-    """A field representing a Str."""
-    type = str
-    min_length = None
-    max_length = None
-
-class Text(Field):
-    """A field representing a Str."""
-    type = unicode
-    min_length = None
-    max_length = None
-
-class Bool(Field):
-    """A field representing a Bool."""
-    # XXX Do we really expect this to be an int?
-    # The BoolTest only work if Bool corresponds to Python's int.
-    type = int
-
-class Int(Field):
-    """A field representing a Integer."""
-    type = int
-    min = max = None
-
-class Float(Field):
-    """A field representing a Floating Point."""
-    type = float, int
-    min = max = None
-    decimals = None
-
-class Tuple(Field):
+class Tuple(Sequence):
     """A field representing a Tuple."""
-    type = tuple
-    value_types = None
-    min_values = max_values = None
+    __implements__ = IField.ITuple
+    _type = tuple
 
-class List(Field):
+class List(Sequence):
     """A field representing a List."""
-    type = list
-    value_types = None
-    min_values = max_values = None
+    __implements__ = IField.IList
+    _type = list
 
-class Dict(Field):
+class Dict(Sized, Iteratable):
     """A field representing a Dict."""
-    type = dict
-    min_values = max_values = None
-    key_types = value_types = None
+    __implements__ = IField.IDict
+    _type = dict
+    key_types   = FieldProperty(IField.IDict['key_types'])
+    value_types = FieldProperty(IField.IDict['value_types'])
+
+    def __init__(self, key_types=None, value_types=None, **kw):
+        super(Dict, self).__init__(**kw)
+        self.key_types = key_types
+        self.value_types = value_types
+
+    def _validate(self, value):
+        super(Dict, self)._validate(value)
+        errors = []
+        try:
+            if self.value_types:
+                errors = _validate_sequence(self.value_types, value.values(),
+                                            errors)
+            errors = _validate_sequence(self.key_types, value, errors)
+
+            if errors:
+                raise ValidationError(ErrorNames.WrongContainedType, errors)
+                
+        finally:
+            errors = None

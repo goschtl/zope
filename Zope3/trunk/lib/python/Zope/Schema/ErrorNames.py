@@ -13,28 +13,30 @@
 ##############################################################################
 """Common Schema Error Names
 
-$Id: ErrorNames.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: ErrorNames.py,v 1.2 2002/09/11 22:06:41 jim Exp $
 """
-WrongType = "WrongType"
+WrongType = u"WrongType"
 
-RequiredMissing ='RequiredMissing'
+RequiredMissing = u'RequiredMissing'
 
-RequiredEmptyStr = 'RequiredEmptyString'
+RequiredEmptyStr = u'RequiredEmptyString'
 
-TooBig = 'TooBig'
+TooBig = u'TooBig'
 
-TooSmall = 'TooSmall'
+TooSmall = u'TooSmall'
 
-TooLong = 'TooLong'
+TooLong = u'TooLong'
 
-TooShort = 'TooShort'
+TooShort = u'TooShort'
 
-InvalidValue = 'InvalidValue'
+InvalidValue = u'InvalidValue'
 
-TooManyDecimals = 'TooManyDecimals'
+TooManyDecimals = u'TooManyDecimals'
 
-WrongContainedType = "WrongContainedType"
+WrongContainedType = u"WrongContainedType"
 
-NotEnoughElements = 'NotEnoughElements'
+ConstraintNotSatisfied = u'ConstraintNotSatisfied'
 
-TooManyElements = 'TooManyElements'
+NotAContainer = u'NotAContainer'
+
+NotAnIterator = u'NotAnIterator'

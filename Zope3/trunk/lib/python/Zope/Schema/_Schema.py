@@ -12,12 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.2 2002/09/07 16:18:51 jim Exp $
+$Id: _Schema.py,v 1.3 2002/09/11 22:06:41 jim Exp $
 """
 from Interface import Interface
-import Validator
-from Zope.Schema.Exceptions import \
-     StopValidation, ValidationError, ValidationErrorsAll
+from Zope.Schema.Exceptions import ValidationError, ValidationErrorsAll
     
 def getFields(schema):
     """Get all fields on a schema.
@@ -60,57 +58,4 @@ def validateMappingAll(schema, values):
                 errors.append((name, e))
     if errors:
         raise ValidationErrorsAll, errors
-
-# Now we can create the interesting interfaces and wire them up:
-def wire():
-    from Interface.Implements import implements
-
-    from IField import IField
-    from _Field import Field
-    implements(Field, IField, 0)
-    Field.validator = Validator.RequiredValidator
-
-    from IField import IBool
-    from _Field import Bool
-    implements(Bool, IBool, 0)
-    Bool.validator = Validator.BoolValidator
-
-    from IField import IBytes
-    from _Field import Bytes
-    implements(Bytes, IBytes, 0)
-    Bytes.validator = Validator.StrValidator
-
-    from IField import IText
-    from _Field import Text
-    implements(Text, IText, 0)
-    Text.validator = Validator.StrValidator
-
-    from IField import IInt
-    from _Field import Int
-    implements(Int, IInt, 0)
-    Int.validator = Validator.IntValidator
-
-    from IField import IFloat
-    from _Field import Float
-    implements(Float, IFloat, 0)
-    Float.validator = Validator.FloatValidator
-
-    from IField import ITuple
-    from _Field import Tuple
-    implements(Tuple, ITuple, 0)
-    Tuple.validator = Validator.TupleValidator
-
-    from IField import IList
-    from _Field import List
-    implements(List, IList, 0)
-    List.validator = Validator.ListValidator
-
-    from IField import IDict
-    from _Field import Dict
-    implements(Dict, IDict, 0)
-    Dict.validator = Validator.DictValidator
-
-
-wire()
-del wire
 

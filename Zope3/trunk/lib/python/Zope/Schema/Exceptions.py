@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.2 2002/09/07 16:18:51 jim Exp $
+$Id: Exceptions.py,v 1.3 2002/09/11 22:06:41 jim Exp $
 """
 
 class StopValidation(Exception):
@@ -27,13 +27,11 @@ class ValidationError(Exception):
     """If some check during the Validation process fails, this exception is
     raised."""
 
-    def __init__(self, error_name):
-        Exception.__init__(self)
-        self.error_name = error_name
-
     def __cmp__(self, other):
-        return cmp(self.error_name, other.error_name)
+        return cmp(self.args, other.args)
 
+    def __repr__(self):
+        return ' '.join(map(str, self.args))
 
 # XXX YAGNI, this is doomed. ;)
 

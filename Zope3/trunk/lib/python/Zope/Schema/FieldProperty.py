@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FieldProperty.py,v 1.2 2002/09/08 13:52:13 jim Exp $
+$Id: FieldProperty.py,v 1.3 2002/09/11 22:06:41 jim Exp $
 """
 
 __metaclass__ = type
@@ -52,7 +52,9 @@ class FieldProperty:
     def __set__(self, inst, value):
         self.__field.validate(value)
         inst.__dict__[self.__name] = value
-            
+
+    def __getattr__(self, name):
+        return getattr(self.__field, name)
 
 __doc__ = FieldProperty.__doc__ + __doc__
 

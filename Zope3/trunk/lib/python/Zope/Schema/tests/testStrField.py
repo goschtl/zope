@@ -12,36 +12,42 @@
 #
 ##############################################################################
 """
-$Id: testStrField.py,v 1.2 2002/09/07 16:18:51 jim Exp $
+$Id: testStrField.py,v 1.3 2002/09/11 22:06:41 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Bytes, Text, ErrorNames
 from Zope.Schema.Exceptions import ValidationError 
-from testField import FieldTest
+from testField import FieldTestBase
 
-class StrTest(FieldTest):
+class StrTest(FieldTestBase):
     """Test the Str Field."""
 
     def testValidate(self):
-        field = self._Str(id='field', title='Str field', description='',
+        field = self._Str(title=u'Str field', description=u'',
                        readonly=0, required=0)
         field.validate(None)
         field.validate(self._convert('foo'))
         field.validate(self._convert(''))
     
     def testValidateRequired(self):
-        field = self._Str(id='field', title='Str field', description='',
-                       readonly=0, required=1)
+
+        # Note that if we want to require non-empty strings,
+        # we need to set the min-length to 1.
+        
+        field = self._Str(title=u'Str field', description=u'',
+                          readonly=0, required=1, min_length=1)
         field.validate(self._convert('foo'))
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
-        self.assertRaisesErrorNames(ErrorNames.RequiredEmptyStr,
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
                                     field.validate, self._convert(''))
 
     def testAllowedValues(self):
-        field = self._Str(id="field", title='Str field', description='',
-                        readonly=0, required=0, allowed_values=('foo', 'bar'))
+        field = self._Str(title=u'Str field', description=u'',
+                          readonly=0, required=0,
+                          allowed_values=(self._convert('foo'),
+                                          self._convert('bar')))
         field.validate(None)
         field.validate(self._convert('foo'))
 
@@ -49,7 +55,7 @@ class StrTest(FieldTest):
                                     field.validate, self._convert('blah'))
 
     def testValidateMinLength(self):
-        field = self._Str(id='field', title='Str field', description='',
+        field = self._Str(title=u'Str field', description=u'',
                        readonly=0, required=0, min_length=3)
         field.validate(None)
         field.validate(self._convert('333'))
@@ -63,7 +69,7 @@ class StrTest(FieldTest):
                                     field.validate, self._convert('1'))
 
     def testValidateMaxLength(self):
-        field = self._Str(id='field', title='Str field', description='',
+        field = self._Str(title=u'Str field', description=u'',
                        readonly=0, required=0, max_length=5)
         field.validate(None)
         field.validate(self._convert(''))
@@ -76,7 +82,7 @@ class StrTest(FieldTest):
                                     self._convert('999999999'))
 
     def testValidateMinLengthAndMaxLength(self):
-        field = self._Str(id='field', title='Str field', description='',
+        field = self._Str(title=u'Str field', description=u'',
                        readonly=0, required=0, min_length=3, max_length=5)
 
         field.validate(None)

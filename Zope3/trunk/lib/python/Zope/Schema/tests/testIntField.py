@@ -12,17 +12,17 @@
 #
 ##############################################################################
 """
-$Id: testIntField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
+$Id: testIntField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Int, ErrorNames
-from testField import FieldTest
+from testField import FieldTestBase
 
-class IntTest(FieldTest):
+class IntTest(FieldTestBase):
     """Test the Int Field."""
 
     def testValidate(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                         readonly=0, required=0)
         field.validate(None)
         field.validate(10)
@@ -30,7 +30,7 @@ class IntTest(FieldTest):
         field.validate(-1)
         
     def testValidateRequired(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                     readonly=0, required=1)
         field.validate(10)
         field.validate(0)
@@ -40,7 +40,7 @@ class IntTest(FieldTest):
                                     field.validate, None)
 
     def testAllowedValues(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                         readonly=0, required=0, allowed_values=(-1, 2))
         field.validate(None)
         field.validate(2)
@@ -49,7 +49,7 @@ class IntTest(FieldTest):
                                     field.validate, 4)
 
     def testValidateMin(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                         readonly=0, required=0, min=10)
         field.validate(None)
         field.validate(10)
@@ -59,7 +59,7 @@ class IntTest(FieldTest):
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -10)
 
     def testValidateMax(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                         readonly=0, required=0, max=10)
         field.validate(None)
         field.validate(5)
@@ -69,7 +69,7 @@ class IntTest(FieldTest):
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 20)
 
     def testValidateMinAndMax(self):
-        field = Int(id="field", title='Int field', description='',
+        field = Int(title=u'Int field', description=u'',
                         readonly=0, required=0, min=0, max=10)
         field.validate(None)
         field.validate(0)

@@ -12,17 +12,17 @@
 #
 ##############################################################################
 """
-$Id: testBoolField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
+$Id: testBoolField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Bool, ErrorNames
-from testField import FieldTest
+from testField import FieldTestBase
 
-class BoolTest(FieldTest):
+class BoolTest(FieldTestBase):
     """Test the Bool Field."""
 
     def testValidate(self):
-        field = Bool(id="field", title='Bool field', description='',
+        field = Bool(title=u'Bool field', description=u'',
                         readonly=0, required=0)        
         field.validate(None)
         field.validate(1)
@@ -31,22 +31,13 @@ class BoolTest(FieldTest):
         field.validate(-10)
 
     def testValidateRequired(self):
-        field = Bool(id="field", title='Bool field', description='',
+        field = Bool(title=u'Bool field', description=u'',
                         readonly=0, required=1)
         field.validate(1)
         field.validate(0)
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
-
-    def testAllowedValues(self):
-        field = Bool(id="field", title='Bool field', description='',
-                        readonly=0, required=0, allowed_values=(0,))
-        field.validate(None)
-        field.validate(0)
-
-        self.assertRaisesErrorNames(ErrorNames.InvalidValue,
-                                    field.validate, 1)
 
 
 def test_suite():
