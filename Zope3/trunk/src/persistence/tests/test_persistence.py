@@ -107,6 +107,18 @@ class Test(unittest.TestCase):
         p._p_changed = 1
         self.assertEqual(dm.called, 1)
 
+    def testGhostChanged(self):
+        # An object is a ghost, and it's _p_changed it set to True.
+        # This assignment should have no effect.
+        p = self.klass()
+        p._p_oid = 1
+        dm = DM()
+        p._p_jar = dm
+        p._p_deactivate()
+        self.assertEqual(p._p_state, 3)
+        p._p_changed = True
+        self.assertEqual(p._p_state, 3)
+
     def testRegistrationFailure(self):
         p = self.klass()
         p._p_oid = 1
@@ -131,7 +143,7 @@ class Test(unittest.TestCase):
         p._p_deactivate()  # make it a ghost
         
         try:
-            p._p_changed = 0    # request unghostification
+            p._p_activate()
         except NotImplementedError:
             pass
         else:

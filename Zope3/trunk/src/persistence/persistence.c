@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.17 2003/05/20 19:01:39 jeremy Exp $\n";
+"$Id: persistence.c,v 1.18 2003/06/30 15:52:48 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -354,22 +354,14 @@ persist_set_state(PyPersistObject *self, PyObject *v)
 	return -1;
     newstate = bool ? CHANGED_TRUE : CHANGED_FALSE;
 
-    /* XXX I think the cases below cover all the transitions of
-       interest.  We should really extend the interface / documentation
-       with a state transition diagram.
-     */
-    if (self->po_state == GHOST) {
-	if (newstate == CHANGED_TRUE || newstate == CHANGED_FALSE) {
-	    /* Turn a ghost into a real object. */
-	    self->po_state = CHANGED;
-	    if (!_PyPersist_Load((PyPersistObject *)self))
-		{ self->po_state = GHOST; return -1; }
-	    if (newstate == CHANGED_TRUE)
-		self->po_state = CHANGED;
-	    else
-		self->po_state = UPTODATE;
-	}
-    } else if (newstate == CHANGED_TRUE) {
+    if (self->po_state == GHOST) 
+	/* If the object is a ghost, it makes no sense to try to mark
+	   it as changed.  It's state must be loaded first.
+
+	   XXX Should it raise an exception?  It doesn't in ZODB3.
+	*/
+	return 0;
+    else if (newstate == CHANGED_TRUE) {
 	/* Mark an up-to-date object as changed. */
 	if (self->po_state == UPTODATE) {
 	    if (!_PyPersist_RegisterDataManager((PyPersistObject *)self))
