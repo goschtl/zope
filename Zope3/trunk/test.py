@@ -397,6 +397,13 @@ def remove_stale_bytecode(arg, dirname, names):
 def main(module_filter, test_filter):
     os.path.walk(os.curdir, remove_stale_bytecode, None)
     setup_path()
+
+    # Initialize the logging module.
+    # XXX Should allow command line control.
+    import logging
+    logging.basicConfig()
+    logging.root.setLevel(logging.CRITICAL)
+
     files = find_tests(module_filter)
     files.sort()
 
