@@ -36,9 +36,9 @@ XML Schema Interface
 
   We can define XML Schema Interfaces in ZCML, as follows::
 
-    <xml:schema
+    <zopexml:schemaInterface
       uri="http://xml.zope.org/hypothetical/invoice.xsd"
-      interface="zopeproducts.invoice.IInvoiceSchema"
+      id="zopeproducts.invoice.IInvoiceSchema"
     />
 
   This interface defines no methods. In order to provide a Pythonic
