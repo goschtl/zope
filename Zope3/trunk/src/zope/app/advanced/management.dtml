@@ -57,8 +57,7 @@
   <!--#else-->
   Object
   <!--#/if--> 
-  at /<!--#var 
-  expr="tabs_path_info(SCRIPT_NAME, PATH_INFO)"-->
+  at /<!--#var expr="tabs_path_info(SCRIPT_NAME, PATH_INFO)"-->
   </STRONG>
   </TD>
 </TR>
