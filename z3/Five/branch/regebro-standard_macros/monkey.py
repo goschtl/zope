@@ -28,3 +28,9 @@ def monkeyPatch():
 
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
+
+    # Yes, we monkeypatch Zope3 as well. Nothing escapes our monkeys!
+    from zope.app.basicskin import standardmacros
+    from browser import StandardMacros
+    standardmacros.StandardMacros = StandardMacros
+    

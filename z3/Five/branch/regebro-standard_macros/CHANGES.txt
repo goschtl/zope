@@ -1,5 +1,9 @@
 Five Changes
 ============
+* We now monkeypatch Zope3! The Five StandardMacros is put into place
+  of the Zope3 standard macros. This is to enable access to
+  context/@@form_macros which are otehrwise unavailable.
+
 * There is now a standard standard_macros. Five page templates can use
   context/@@standard_macros/view to get the default site layout.
 
