@@ -29,7 +29,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IDefaultLayer
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
 from editview import EditView
@@ -165,7 +165,7 @@ def AddViewFactory(name, schema, label, permission, layer,
                     )
                   )
     if layer is None:
-        layer = IBrowserRequest
+        layer = IDefaultLayer
     
     s = zapi.getGlobalService(zapi.servicenames.Adapters)
     s.register((for_, layer), Interface, name, class_)

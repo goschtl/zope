@@ -66,7 +66,7 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         page2 = WikiPage()
         wiki['FooBar'] = page2
         IWikiPageHierarchy(page2).parents = ('FrontPage',)
-        request = Request(I, '')
+        request = Request(I)
 
         T = WikiPageTraverser(page1, request)
         self.failUnless(
@@ -81,7 +81,7 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         page2 = WikiPage()
         wiki['FooBar'] = page2
         IWikiPageHierarchy(page2).parents = ('FrontPage',)
-        request = Request(I, '')
+        request = Request(I)
 
         T = WikiPageTraverser(page1, request)
         ztapi.provideView(IWikiPage, I, Interface, 'viewfoo', View)

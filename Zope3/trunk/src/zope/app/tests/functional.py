@@ -41,17 +41,22 @@ from zope.security.management import endInteraction
 import zope.server.interfaces
 from zope.testing import doctest
 
-from zope.app.debug import Debugger
 import zope.app.pluggableauth
+import zope.app.tests.setup
+
+from zope.app import zapi
+from zope.app.debug import Debugger
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
-import zope.app.tests.setup
+from zope.publisher.interfaces.browser import IDefaultLayer, IDefaultSkin
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.component.hooks import setSite, getSite
 
 HTTPTaskStub = StringIO
+
 
 class ResponseWrapper(object):
     """A wrapper that adds several introspective methods to a response."""
@@ -80,6 +85,13 @@ class ResponseWrapper(object):
 
     def __getattr__(self, attr):
         return getattr(self._response, attr)
+
+
+def _getDefaultSkin():
+    """Returns the current default skin as an interface."""
+    adapters = zapi.getService(zapi.servicenames.Adapters)
+    skin = adapters.lookup((IBrowserRequest,), IDefaultSkin, '')
+    return skin or IDefaultLayer
 
 
 grant_request = (r"""
@@ -240,6 +252,7 @@ class BrowserTestCase(FunctionalTestCase):
                                environment=environment,
                                basic=basic, form=form,
                                request=BrowserRequest)
+        zope.interface.directlyProvides(request, _getDefaultSkin())
         return request
 
     def __http_cookie(self, path):
@@ -514,7 +527,8 @@ def http(request_string, handle_errors=True):
             request_cls = XMLRPCRequest
             publication_cls = XMLRPCPublication
         else:
-            request_cls = BrowserRequest
+            request_cls = type(BrowserRequest.__name__, (BrowserRequest,), {})
+            zope.interface.classImplements(request_cls, _getDefaultSkin())
             publication_cls = BrowserPublication
     else:
         request_cls = HTTPRequest

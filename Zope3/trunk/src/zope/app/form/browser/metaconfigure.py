@@ -27,6 +27,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.schema import getFieldNamesInOrder
 from zope.app.container.interfaces import IAdding
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IDefaultLayer
 from zope.app.publisher.browser.menu import menuItemDirective
 
 from zope.app.form import CustomWidgetFactory
@@ -45,7 +46,7 @@ class BaseFormDirective(object):
 
     # default basic information
     for_ = None
-    layer = IBrowserRequest
+    layer = IDefaultLayer
     permission = 'zope.Public'
     template = None
     class_ = None

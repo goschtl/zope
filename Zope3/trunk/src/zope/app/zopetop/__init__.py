@@ -17,19 +17,19 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.rotterdam import rotterdam
+from zope.publisher.interfaces.browser import ILayer
+from zope.app.rotterdam import Rotterdam
 
-class templates(IBrowserRequest):
+class templates(ILayer):
     """Layer to store all templates."""
 
-class images(IBrowserRequest):
+class images(ILayer):
     """Layer to store all images."""
 
-class css(IBrowserRequest):
+class css(ILayer):
     """Layer to store all stylesheets."""
 
-class ZopeTop(templates, images, css, rotterdam):
+class ZopeTop(templates, images, css, Rotterdam):
     """The `ZopeTop`.
 
     This skin consists of its three specific layers plus the rotterdam layer.

@@ -22,7 +22,7 @@ from transaction import get_transaction
 
 from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
-from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IDefaultLayer
 from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app import zapi
@@ -147,7 +147,7 @@ def EditViewFactory(name, schema, label, permission, layer,
                                 "browserDefault", "publishTraverse"),
                                permission))
     if layer is None:
-        layer = IBrowserRequest
+        layer = IDefaultLayer
 
     s = zapi.getGlobalService(zapi.servicenames.Adapters)
     s.register((for_, layer), Interface, name, class_)
