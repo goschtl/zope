@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.14 2003/05/13 19:58:56 gvanrossum Exp $
+$Id: syncer.py,v 1.15 2003/05/15 17:32:46 gvanrossum Exp $
 """
 
 import os
@@ -168,6 +168,22 @@ def fromFS(container, name, location):
 
     location -- filesystem directory containing name
     """
+    if not name:
+        # Special case: loading the root folder.
+        # Don't make changes to the root, but change everything underneath.
+        path = os.path.join(location, "root")
+        if not os.path.isdir(path):
+            raise SynchronizationError("root folder not found")
+
+        dir_entries_path = os.path.join(path, '@@Zope', 'Entries.xml')
+        if os.path.exists(dir_entries_path):
+            dir_entries = loadFile(dir_entries_path)
+        else:
+            dir_entries = {}
+        for cname in dir_entries:
+            fromFS(container, cname, path)
+
+        return
 
     # Look for location admin dir
     admin_dir = os.path.join(location, '@@Zope')

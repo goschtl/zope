@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.8 2003/05/13 19:49:12 gvanrossum Exp $
+$Id: fssync.py,v 1.9 2003/05/15 17:32:45 gvanrossum Exp $
 """
 
 import os
@@ -25,7 +25,7 @@ from zope.fssync.compare import checkUptodate
 
 from zope.publisher.browser import BrowserView
 from zope.app.fssync.syncer import toFS, fromFS
-from zope.app.traversing import objectName, getParent
+from zope.app.traversing import objectName, getParent, getRoot
 from zope.app.interfaces.exceptions import UserError
 
 class ZipFile(BrowserView):
@@ -169,6 +169,9 @@ class Commit(ZipFile):
             # 5) Now call fromFS()
             name = objectName(self.context)
             container = getParent(self.context)
+            if container is None and name == "":
+                # Hack to get loading the root to work; see top of fromFS().
+                container = getRoot(self.context)
             fromFS(container, name, working)
             # 6) Return success
             return []
