@@ -137,3 +137,13 @@ pagesFromDirectory
 Load all *.pt files in a directory as pages. Useful when you want to
 share templates between Five and CMF, so you can declare pages like
 this is a similar way to setting up skin folders in portal_skins.
+
+browser:editform
+----------------
+
+Create an edit form based on a schema.
+
+browser:addform
+---------------
+
+Create an add form based on a schema.

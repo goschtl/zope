@@ -12,7 +12,7 @@ following Zope 3 technologies in Zope 2:
 
 * adapters
 
-* pages (views), including skins and layers
+* pages (views), including skins and layers, and edit and add forms
 
 * ZCML
 
@@ -31,6 +31,18 @@ system for us all.
 
 Download 
 --------
+
+2005-003-11 -- We have released Five 0.3! Download it here:
+
+http://codespeak.net/z3/five/release/Five-0.3.tgz
+
+And changes here:
+
+http://codespeak.net/z3/five/CHANGES.html
+
+2004-09-24 -- Five 0.2b is released. Download it here:
+
+http://codespeak.net/z3/five/release/Five-0.2b.tgz
 
 2004-07-30 -- We have released Five 0.1! Download it here:
 

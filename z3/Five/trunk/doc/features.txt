@@ -41,31 +41,29 @@ You can use adapters in Five, just like in Zope 3.
 Zope 3 views
 ============
 
-Zope 3 views work in Five, including layers and skins, though there
-are some limitations:
+Zope 3 views work in Five, including layers and skins. To make them
+work however, you need to make a Zope 2 class "traversable". This can
+be done by using the ``five:traversable`` directive in ZCML.
 
-* You need to make a Zope 2 class "viewable". This can be done by
-  mixing in ``Products.Five.api.Viewable`` into your class, or
-  alternatively, using the ``five:viewable`` directive in ZCML.
+Page templates
+==============
 
-* At the the time of writing, special constructs using ``@@`` or
-  ``++`` do not yet work in URLs. Views with subviews also do not
-  work.
-
-At the time of writing there is also no provision for default views in
-Five.
-
-Zope 3 page templates
-=====================
-
-The Zope 3 page template engine mostly works at the time of this
-writing, and is automatically used if you use the ``template``
-attribute to the ``browser:page`` directive.
+Five before release 0.3 used to use Zope 3's page template engine, but
+in the interests of increased compatibility with Zope 2, we've
+switched to using Zope 2's. There should be no real difference to any
+code, however. We may decide to switch back to Zope 3's engine again
+eventually if we can resolve the compatibility issues.
 
 One thing to be aware of is that the page template engine runs
 completely in trusted mode, just like Python code. That is, as soon as
 the page template engine is running, no Zope 2 or Zope 3 security
 checks are made.
+
+Edit and add forms
+==================
+
+Five supports edit and add forms. Typical Zope 3 examples of these
+should work.
 
 Security declarations
 =====================
@@ -86,4 +84,3 @@ Zope 2 content classes. Note however that these permissions will be
 ignored by views anyway, as they are trusted -- it only serves to
 protect directly exposed methods on content classes (the python
 scripts and the ZPublisher).
-
