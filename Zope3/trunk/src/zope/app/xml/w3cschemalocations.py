@@ -14,7 +14,7 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.6 2003/07/01 14:31:05 fdrake Exp $
+$Id: w3cschemalocations.py,v 1.7 2003/07/17 14:54:46 fdrake Exp $
 """
 from zope.interface import directlyProvides
 from xml.parsers.expat import ParserCreate, ExpatError
@@ -55,7 +55,10 @@ class DoneParsing(Exception):
 
 class W3CXMLSchemaLocationParser:
 
-    SCHEMA_INSTANCE_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
+    CHUNK_SIZE = 1024
+
+    SCHEMA_INSTANCE_NAME = (
+        'http://www.w3.org/2001/XMLSchema-instance schemaLocation')
 
     def __init__(self, xml):
         self._xml = xml
@@ -64,23 +67,25 @@ class W3CXMLSchemaLocationParser:
         self._parser.StartElementHandler = self.startElement
 
     def startElement(self, name, attrs):
-        for key, value in attrs.items():
-            try:
-                namespace_uri, name = key.split(' ')
-            except ValueError:
-                namespace_uri = None
-                name = key
-            if (namespace_uri == self.SCHEMA_INSTANCE_NAMESPACE and
-                name == 'schemaLocation'):
-                self._schema_uris = value.strip().split()
+        self._schema_uris = attrs.get(self.SCHEMA_INSTANCE_NAME, '').split()
         # abort parsing after the first element, which is the document element
-        # raising an error seems to be a legitimate way to do this
+        # raising an error is the best way to exit the parse
         raise DoneParsing
 
     def parse(self):
+        start = 0
         try:
-            self._parser.Parse(self._xml, True)
-        except ExpatError, e:
+            # Feed the document to Expat a little bit at a time; this
+            # allows a parse of a well-formed but large document to
+            # exit more quickly once the start tag for the document
+            # element has been found.
+            while 1:
+                text = self._xml[start:start + self.CHUNK_SIZE]
+                if not text:
+                    break
+                start += self.CHUNK_SIZE
+                self._parser.Parse(text, False)
+        except ExpatError:
             # we do not take any special pains to make sure this is
             # well-formed anyway; this should happen at a higher level
             # (views) or will be detected at a lower layer (parsing into
