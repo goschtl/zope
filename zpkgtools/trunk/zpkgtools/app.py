@@ -16,6 +16,7 @@
 import logging
 import optparse
 import os
+import sets
 import shutil
 import sys
 import tempfile
@@ -65,6 +66,7 @@ class Application:
             print >>sys.stderr, "unknown resource:", resource
             sys.exit(1)
         self.resource_url = self.locations[resource]
+        self.handled_resources = sets.Set()
 
     def build_distribution(self):
         # This could be either a package distribution or a collection
@@ -72,6 +74,8 @@ class Application:
         # the source directory.
         os.mkdir(self.destination)
         self.ip = include.InclusionProcessor(self.source, loader=self.loader)
+        self.ip.add_manifest(self.destination)
+        self.handled_resources.add(self.resource)
         self.type_dispatch("build_%s_distribution")
         self.type_dispatch("generate_%s_setup")
 
@@ -82,8 +86,6 @@ class Application:
 
     def build_package_distribution(self):
         pkgname = self.metadata.name
-
-        self.manifest = self.ip.add_manifest(self.destination)
         pkgdest = os.path.join(self.destination, pkgname)
         try:
             self.ip.createDistributionTree(pkgdest)
@@ -106,21 +108,58 @@ class Application:
 
     def build_collection_distribution(self):
         # Build the destination directory:
-        self.manifest = self.ip.add_manifest(self.destination)
+        deps = self.add_collection_component(self.resource_name, self.source)
+        remaining = deps - self.handled_resources
+        collections = []
+        packages = []
+        while remaining:
+            resource = remaining.pop()
+            type, name = resource.split(":", 1)
+            #
+            if resource not in self.locations:
+                # it's an external dependency, so we do nothing for now
+                self.logger.warn("ignoring resource %r (no source)"
+                                 % resource)
+                # but we only want to warn about it once, so say we handled it
+                self.handled_resources.add(resource)
+                continue
+            #
+            if type == "package":
+                packages.append(name)
+            elif type == "collection":
+                collections.append(name)
+            else:
+                # must be an external dependency, 'cause we don't know abou it
+                continue
+            #
+            source = self.loader.load(self.locations[resource])
+            self.handled_resources.add(resource)
+            deps = self.add_collection_component(name, source)
+            remaining |= (deps - self.handled_resources)
+
+    def add_collection_component(self, name, source):
+        destination = os.path.join(self.destination, name)
+        self.ip.add_manifest(destination)
+        spec = include.Specification(source)
+        include_path = os.path.join(source, "INCLUDE.txt")
+        if os.path.isfile(include_path):
+            f = open(include_path)
+            try:
+                spec.load(f, include_path)
+            finally:
+                f.close()
         try:
-            self.ip.createDistributionTree(self.destination)
+            self.ip.createDistributionTree(destination, spec)
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
+        self.create_manifest(destination)
+        
         deps_file = os.path.join(self.source, "DEPENDENCIES.txt")
         if os.path.isfile(deps_file):
-            for dep in dependencies.load(open(deps_file)):
-                if dep in self.locations:
-                    # we can get this
-                    pass
-                else:
-                    # external dependency
-                    pass
+            return dependencies.load(open(deps_file))
+        else:
+            return sets.Set()
 
     def load_metadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.txt")
@@ -140,11 +179,11 @@ class Application:
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
-    def generate_collection_setup(self):
-        self.generate_setup("Collection")
-
     def generate_package_setup(self):
         self.generate_setup("Package")
+
+    def generate_collection_setup(self):
+        self.generate_setup("Collection")
 
     def generate_setup(self, typename):
         setup_py = os.path.join(self.destination, "setup.py")
@@ -198,13 +237,13 @@ class Application:
         tests_dir = os.path.join(source, "tests")
         self.ip.copyTree(source, destination, excludes=[tests_dir])
 
-    def create_manifest(self):
-        if self.ip is None:
-            return
-        manifest_path = os.path.join(self.destination, "MANIFEST")
+    def create_manifest(self, destination):
+        manifest_path = os.path.join(destination, "MANIFEST")
         self.ip.add_output(manifest_path)
+        manifest = self.ip.drop_manifest(destination)
+        # XXX should check whether MANIFEST exists already; how to handle?
         f = file(manifest_path, "w")
-        for name in self.manifest:
+        for name in manifest:
             print >>f, name
         f.close()
 
@@ -238,7 +277,7 @@ class Application:
             except cvsloader.CvsLoadingError, e:
                 print >>sys.stderr, e
                 sys.exit(e.exitcode)
-            self.create_manifest()
+            self.create_manifest(self.destination)
             self.create_tarball()
             self.cleanup()
         except:
