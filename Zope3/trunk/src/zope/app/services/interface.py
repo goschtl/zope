@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for persistent modules."""
 
-from persistence import Persistent, PersistentMetaClass
+from persistence import Persistent
 from zodb.code.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_verify.py,v 1.2 2002/12/25 14:15:12 jim Exp $
+$Id: test_verify.py,v 1.3 2003/05/01 19:35:44 faassen Exp $
 """
 
 
@@ -23,7 +23,7 @@ from zope.interface.verify import verifyClass, verifyObject
 from zope.interface.exceptions import DoesNotImplement, BrokenImplementation
 from zope.interface.exceptions import BrokenMethodImplementation
 
-import unittest, sys
+import unittest
 
 class Test(unittest.TestCase):
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """HTML formated DocumentTemplates
 
-$Id: dt_html.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_html.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
 """
 import re
 from zope.documenttemplate.dt_string import String
-from zope.documenttemplate.dt_util import ParseError, str
+from zope.documenttemplate.dt_util import ParseError
 
 class DTMLRegExClass:
 

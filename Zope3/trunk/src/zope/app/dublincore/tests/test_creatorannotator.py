@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.1 2003/03/27 12:51:47 ctheune Exp $
+$Id: test_creatorannotator.py,v 1.2 2003/05/01 19:35:15 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,6 @@ from zope.testing.cleanup import CleanUp
 from zope.interface import Interface
 from zope.component.adapter import provideAdapter
 
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.security import IPrincipal

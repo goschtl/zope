@@ -14,10 +14,10 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.8 2003/03/24 16:42:21 mgedmin Exp $
+$Id: test_objecthub.py,v 1.9 2003/05/01 19:35:35 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 
 from zope.app.interfaces.event\
@@ -38,9 +38,8 @@ from zope.app.services.hub \
         ObjectUnregisteredHubEvent
 
 from zope.exceptions import NotFoundError
-from types import StringTypes
 
-from zope.app.traversing import traverse, canonicalPath
+from zope.app.traversing import canonicalPath
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.

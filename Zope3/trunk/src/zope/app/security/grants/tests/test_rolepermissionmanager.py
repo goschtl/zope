@@ -13,7 +13,6 @@
 ##############################################################################
 """Test handler for RolePermissionManager module."""
 
-import sys
 import unittest
 
 from zope.component.service import serviceManager as services
@@ -28,8 +27,7 @@ from zope.app.security.registries.roleregistry \
         import roleRegistry as rregistry
 from zope.app.security.grants.rolepermission \
         import rolePermissionManager as manager
-from zope.app.security.settings \
-        import Allow, Deny, Unset
+from zope.app.security.settings import Allow, Deny
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 class Test(CleanUp, unittest.TestCase):

@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.5 2003/04/29 16:25:25 gvanrossum Exp $
+$Id: utility.py,v 1.6 2003/05/01 19:35:34 faassen Exp $
 """
 
 from persistence.dict import PersistentDict
@@ -27,16 +27,10 @@ from zope.app.interfaces.services.utility import ILocalUtilityService
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import ComponentConfiguration
-from zope.app.services.configuration import SimpleConfiguration
 from zope.component.exceptions import ComponentLookupError
-from zope.component import getAdapter
-from zope.component.interfaces import IUtilityService
 from zope.interface.implementor import ImplementorRegistry
 from zope.proxy.context import ContextAware
 from zope.proxy.context import ContextWrapper
-from zope.proxy.introspection import removeAllProxies
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.traversing import getPath
 
 class LocalUtilityService(Persistent, ContextAware):
 

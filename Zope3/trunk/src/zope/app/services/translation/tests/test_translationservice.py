@@ -13,9 +13,9 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.9 2003/04/17 20:05:12 bwarsaw Exp $
+$Id: test_translationservice.py,v 1.10 2003/05/01 19:35:36 faassen Exp $
 """
-import sys
+
 import unittest
 
 from zope.interface.verify import verifyObject

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: test_listfield.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_listfield.py,v 1.3 2003/05/01 19:35:46 faassen Exp $
 """
-from unittest import TestSuite, main, makeSuite
+from unittest import main, makeSuite
 from zope.schema import List, Int, Float
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase

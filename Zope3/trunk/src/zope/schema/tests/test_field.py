@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.3 2003/03/13 18:49:16 alga Exp $
+$Id: test_field.py,v 1.4 2003/05/01 19:35:46 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.schema import Field, Text, Int
-from zope.schema.interfaces import IField
 from zope.schema import errornames
-from zope.schema.interfaces import StopValidation, ValidationError
+from zope.schema.interfaces import ValidationError
 
 class FieldTestBase(TestCase):
 

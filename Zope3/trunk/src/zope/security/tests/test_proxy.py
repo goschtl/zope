@@ -12,7 +12,6 @@
 #
 ##############################################################################
 import unittest
-from zope.exceptions import Forbidden
 from zope.security.proxy import getObject, getChecker, ProxyFactory
 from zope.proxy.proxy import proxy
 

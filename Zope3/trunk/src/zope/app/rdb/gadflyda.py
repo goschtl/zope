@@ -14,16 +14,14 @@
 """
 Gadfly Database Adapter (batteries included)
 
-$Id: gadflyda.py,v 1.2 2002/12/25 14:13:12 jim Exp $
+$Id: gadflyda.py,v 1.3 2003/05/01 19:35:30 faassen Exp $
 """
 
 import gadfly
 import os
 
-from persistence import Persistent
 from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
 from zope.app.rdb import DatabaseAdapterError
-from zope.app.rdb import ZopeConnection
 
 GadflyError = DatabaseAdapterError
 

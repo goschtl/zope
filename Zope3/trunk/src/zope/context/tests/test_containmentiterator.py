@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_containmentiterator.py,v 1.2 2002/12/25 14:15:17 jim Exp $
+$Id: test_containmentiterator.py,v 1.3 2003/05/01 19:35:45 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 
 from zope.proxy.context import Wrapper, getbaseobject
 from zope.proxy.context.containmentiterator import ContainmentIterator

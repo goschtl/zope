@@ -26,7 +26,6 @@ from __future__ import nested_scopes
 import os
 from time import clock
 
-import zodb
 from zodb.storage.file import FileStorage
 from zodb.btrees.IOBTree import IOBTree
 

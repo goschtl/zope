@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_modulegen.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: test_modulegen.py,v 1.3 2003/05/01 19:35:31 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
-from zope.interface import Interface
-from zope.schema import Field, Text, Int, Float, getFieldsInOrder
+from zope.schema import Text, Int, Float, getFieldsInOrder
 
 from zope.app.schemagen.modulegen import generateModuleSource
 

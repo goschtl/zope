@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.6 2003/04/18 22:12:33 jim Exp $
+$Id: __init__.py,v 1.7 2003/05/01 19:35:45 faassen Exp $
 """
 __metaclass__ = type
 
@@ -29,8 +29,7 @@ from zope.proxy.context.wrapper import ContextDescriptor, ContextAware
 from zope.proxy.context.wrapper import ContextMethod, ContextProperty
 from zope.proxy.context.wrapper import Wrapper
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
-from types import ClassType
-import inspect
+
 from zope.proxy.interfaces.context import IContextWrapper
 
 moduleProvides(IContextWrapper)

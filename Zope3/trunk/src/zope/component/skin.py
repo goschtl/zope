@@ -13,11 +13,10 @@
 ##############################################################################
 """
 
-$Id: skin.py,v 1.3 2003/04/29 17:24:11 gvanrossum Exp $
+$Id: skin.py,v 1.4 2003/05/01 19:35:38 faassen Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
-from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import ISkinService
 
 class IGlobalSkinService(ISkinService):

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_iterablefield.py,v 1.1 2003/01/25 02:49:27 rdmurray Exp $
+$Id: test_iterablefield.py,v 1.2 2003/05/01 19:35:46 faassen Exp $
 """
 from UserDict import UserDict, IterableUserDict
-from unittest import TestSuite, main, makeSuite
+from unittest import main, makeSuite
 from zope.schema import Iterable
 from zope.schema.errornames import RequiredMissing
 from zope.schema.errornames import NotAContainer, NotAnIterator

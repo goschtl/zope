@@ -12,23 +12,20 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.8 2003/03/11 16:11:05 jim Exp $
+$Id: test_objectretrievingprocessor.py,v 1.9 2003/05/01 19:35:20 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.component import getAdapter
+from unittest import TestCase, main, makeSuite
 from zope.component import getServiceManager
-from zope.component.exceptions import ComponentLookupError
 from zope.app.services.servicenames import HubIds
 
 from zope.interface.verify import verifyObject
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.interfaces.services.query import \
-    IQueryProcessor
+from zope.app.interfaces.services.query import IQueryProcessor
 from zope.app.interfaces.services.hub import IObjectHub
 
-from zope.app.interfaces.index.interfaces import IRankedHubIdList, \
+from zope.app.interfaces.index.interfaces import \
     IRankedObjectIterator, IRankedObjectRecord
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.index.processors import ObjectRetrievingProcessor

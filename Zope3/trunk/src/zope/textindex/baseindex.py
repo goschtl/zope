@@ -17,12 +17,10 @@
 
 import math
 
-import zodb
-
 from persistence import Persistent
 
 from zodb.btrees.IOBTree import IOBTree
-from zodb.btrees.IIBTree import IIBTree, IIBucket, IITreeSet
+from zodb.btrees.IIBTree import IIBTree, IITreeSet
 from zodb.btrees.IIBTree import intersection, difference
 from zodb.btrees import Length
 

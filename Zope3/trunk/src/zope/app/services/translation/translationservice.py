@@ -13,24 +13,20 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.9 2003/04/17 20:05:12 bwarsaw Exp $
+$Id: translationservice.py,v 1.10 2003/05/01 19:35:35 faassen Exp $
 """
 import re
-from types import StringTypes, TupleType
 
-import persistence
 from zodb.btrees.OOBTree import OOBTree
 
 from zope.component import createObject, getService
 from zope.app.component.nextservice import queryNextService
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.interfaces.container import IContainer
 
 from zope.app.interfaces.services.service import ISimpleService
 
 from zope.i18n.negotiator import negotiator
-from zope.i18n.interfaces import IMessageCatalog
 from zope.app.interfaces.services.translation import ILocalTranslationService
 from zope.i18n.simpletranslationservice import SimpleTranslationService
 

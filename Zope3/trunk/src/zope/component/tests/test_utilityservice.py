@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
+$Id: test_utilityservice.py,v 1.5 2003/05/01 19:35:39 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.component import \
      getUtility, getService, queryUtility, getServiceManager
 from zope.component.exceptions import ComponentLookupError

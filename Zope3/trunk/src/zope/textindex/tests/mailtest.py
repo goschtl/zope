@@ -53,8 +53,6 @@ index from the database:
     index.search("python AND unicode")
 """
 
-import zodb
-import zodb.storage.file
 from zope.textindex.lexicon import \
      Lexicon, CaseNormalizer, Splitter, StopWordRemover
 

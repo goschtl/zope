@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.18 2003/03/31 18:58:21 jim Exp $
+$Id: placefulsetup.py,v 1.19 2003/05/01 19:35:35 faassen Exp $
 """
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -24,7 +24,6 @@ from zope.app.dependable import Dependable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import ISimpleReadContainer
-from zope.app.interfaces.content.folder import IRootFolder
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import IAttributeUseConfigurable

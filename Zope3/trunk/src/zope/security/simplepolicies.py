@@ -14,7 +14,6 @@
 """ Simple ISecurityPolicy implementations."""
 
 from zope.security.interfaces import ISecurityPolicy
-from zope.exceptions import Unauthorized
 from zope.security.management import system_user
 import zope.security.checker
 

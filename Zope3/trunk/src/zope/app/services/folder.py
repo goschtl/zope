@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: folder.py,v 1.5 2003/03/23 19:24:46 jim Exp $
+$Id: folder.py,v 1.6 2003/05/01 19:35:34 faassen Exp $
 """
 
 __metaclass__ = type
@@ -23,7 +23,6 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.services.folder import ISiteManagementFolders
 from zope.app.interfaces.services.folder import ISiteManagementFolder
 from zope.app.interfaces.services.service import IComponentManager
-from zope.app.interfaces.services.service import IServiceManager
 from zope.app.services.configuration import ConfigurationManagerContainer
 from zope.app.traversing import getPath
 from zope.proxy.context import ContextMethod, ContextWrapper

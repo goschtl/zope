@@ -14,14 +14,13 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.9 2003/03/08 21:46:04 seanb Exp $
+$Id: placelesssetup.py,v 1.10 2003/05/01 19:35:16 faassen Exp $
 """
 
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
 from zope.app.interfaces.event import IPublisher, ISubscriber
 from zope.app.event.globalservice import eventPublisher
-from zope.interface import Interface
 
 events = []
 

@@ -13,12 +13,11 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.5 2003/04/11 19:09:59 fdrake Exp $
+$Id: utility.py,v 1.6 2003/05/01 19:35:22 faassen Exp $
 """
 
 from zope.app.interfaces.services.configuration import IComponentConfiguration
 from zope.app.component.interfacefield import InterfaceField
-from zope.app.security.permission import PermissionField
 from zope.schema import TextLine
 from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.services.configuration import ComponentPath

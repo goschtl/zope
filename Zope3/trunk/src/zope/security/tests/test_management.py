@@ -13,7 +13,7 @@
 ##############################################################################
 """ Unit tests for SecurityManagement
 
-$Id: test_management.py,v 1.1 2002/12/31 03:35:15 jim Exp $
+$Id: test_management.py,v 1.2 2003/05/01 19:35:47 faassen Exp $
 """
 
 import unittest
@@ -21,7 +21,6 @@ import unittest
 from zope.interface.verify import verifyObject
 from zope.testing.cleanup import CleanUp
 
-import zope.security.management
 from zope.security.management import noSecurityManager, newSecurityManager
 from zope.security.management import setSecurityPolicy
 
@@ -90,7 +89,6 @@ class Test(CleanUp, unittest.TestCase):
 
         from zope.security.management import noSecurityManager
         from zope.security.management import getSecurityManager
-        from zope.exceptions import Unauthorized
 
         # test against default policy (paranoid)
         self._setParanoid()

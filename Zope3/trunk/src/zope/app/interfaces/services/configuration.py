@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.12 2003/04/28 16:57:41 gvanrossum Exp $
+$Id: configuration.py,v 1.13 2003/05/01 19:35:22 faassen Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -21,7 +21,7 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container  import IContainerNamesContainer, IContainer
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute
-from zope.schema import Text, TextLine
+from zope.schema import TextLine
 from zope.schema.interfaces import ITextLine
 
 Unregistered = 'Unregistered'

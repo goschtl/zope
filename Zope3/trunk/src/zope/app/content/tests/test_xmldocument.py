@@ -14,12 +14,11 @@
 """
 Basic tests for XML Document.
 
-$Id: test_xmldocument.py,v 1.3 2003/04/11 10:52:16 philikon Exp $
+$Id: test_xmldocument.py,v 1.4 2003/05/01 19:35:11 faassen Exp $
 """
 
 import unittest
 
-from zope.schema.interfaces import ValidationError
 from zope.app.content.xmldocument import XMLDocument
 from zope.app.interfaces.content.xmldocument import IXMLDocument
 from zope.app.tests.placelesssetup import PlacelessSetup

@@ -13,10 +13,10 @@
 ##############################################################################
 """Row class tests.
 
-$Id: test_row.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: test_row.py,v 1.3 2003/05/01 19:35:30 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 class RowTests(TestCase):
 

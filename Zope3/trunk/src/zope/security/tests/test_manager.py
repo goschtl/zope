@@ -21,7 +21,6 @@ from zope.security import manager
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.security.simplepolicies import PermissiveSecurityPolicy
 from zope.security.context import SecurityContext
-from zope.exceptions import Unauthorized
 
 class DummyExecutable:
 

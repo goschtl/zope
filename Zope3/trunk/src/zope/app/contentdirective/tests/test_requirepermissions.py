@@ -16,9 +16,7 @@
 from cStringIO import StringIO
 from zope.app.component.globalinterfaceservice import queryInterface
 from zope.app.contentdirective.tests import module
-from zope.app.security.exceptions import UndefinedPermissionError
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.exceptions import Forbidden
 from zope.security.checker import selectChecker
 import unittest
 import zope.app.contentdirective
@@ -76,7 +74,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         "Verify that class, instance, and methods have expected permissions."
 
         from zope.security.checker import selectChecker
-        from zope.exceptions import Forbidden
 
         checker = selectChecker(module.test_instance)
         self.assertEqual(checker.permission_id('m1'), (m1P or None))
@@ -103,7 +100,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         "Verify that class, instance, and methods have expected permissions."
 
         from zope.security.checker import selectChecker
-        from zope.exceptions import Forbidden
 
         checker = selectChecker(module.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))

@@ -12,10 +12,9 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.7 2003/05/01 15:10:23 gvanrossum Exp $
+$Id: form.py,v 1.8 2003/05/01 19:35:21 faassen Exp $
 """
-from zope.interface import Interface, Attribute
-from zope.publisher.interfaces.browser import IBrowserView
+from zope.interface import Interface
 from zope.app.interfaces.form import IWidget
 
 class IAddFormCustomization(Interface):

@@ -13,11 +13,11 @@
 ##############################################################################
 """ Test handler for 'definePermission' directive
 
-$Id: test_permissionregistry.py,v 1.2 2002/12/25 14:13:18 jim Exp $
+$Id: test_permissionregistry.py,v 1.3 2003/05/01 19:35:33 faassen Exp $
 """
 
 
-import unittest, sys
+import unittest
 
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.exceptions import UndefinedPermissionError

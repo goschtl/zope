@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.8 2003/03/23 22:35:42 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.9 2003/05/01 19:35:35 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zope.interface import Interface
 
@@ -29,7 +29,7 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager
 from zope.component.service import defineService
 from zope.app.interfaces.services.service import IBindingAware
-from zope.app.interfaces.services.configuration import Active, Unregistered
+from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import Registered
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.services.service import ISimpleService

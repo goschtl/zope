@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_zopeconnection.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: test_zopeconnection.py,v 1.3 2003/05/01 19:35:30 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from transaction import get_transaction
 from zope.app.rdb import ZopeConnection
 from zope.app.interfaces.rdb import IZopeCursor

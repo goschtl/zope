@@ -11,7 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component import getAdapter
 from zope.component.adapter import provideAdapter

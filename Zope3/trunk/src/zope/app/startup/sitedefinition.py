@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.14 2003/04/18 22:12:29 jim Exp $
+$Id: sitedefinition.py,v 1.15 2003/05/01 19:35:36 faassen Exp $
 """
 
 from zope.interface import classProvides
@@ -34,9 +34,7 @@ from zope.app.startup import bootstrap
 from zope.app.startup.servertyperegistry import getServerType
 
 # Import Undo-related classes
-from zope.app.content.folder import RootFolder
 from zope.app.interfaces.undo import IUndoManager
-from zope.app.publication.zopepublication import ZopePublication
 from zope.app.browser.undo import ZODBUndoManager
 from zope.component import getService
 from zope.app.services.servicenames import Utilities

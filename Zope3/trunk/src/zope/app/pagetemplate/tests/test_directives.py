@@ -13,15 +13,13 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.1 2003/04/15 18:52:58 matth Exp $
+$Id: test_directives.py,v 1.2 2003/05/01 19:35:26 faassen Exp $
 """
 
 import unittest
 from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.configuration.exceptions import ConfigurationError
-from zope.app.security.exceptions import UndefinedPermissionError
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 

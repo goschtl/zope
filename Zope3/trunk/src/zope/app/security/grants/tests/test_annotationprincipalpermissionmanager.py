@@ -13,7 +13,6 @@
 ##############################################################################
 """Test handler for AnnotationPrincipalPermissionManager module."""
 
-import sys
 import unittest
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable

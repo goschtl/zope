@@ -13,10 +13,10 @@
 ##############################################################################
 """Tests of xmlpickle package
 
-$Id: test_xmlpickle.py,v 1.3 2003/04/16 22:12:40 jeremy Exp $
+$Id: test_xmlpickle.py,v 1.4 2003/05/01 19:35:52 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zope.xmlpickle.xmlpickle import dumps, loads
 

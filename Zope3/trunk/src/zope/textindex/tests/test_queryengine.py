@@ -17,7 +17,7 @@ import unittest
 from zodb.btrees.IIBTree import IIBucket
 
 from zope.textindex.queryparser import QueryParser
-from zope.textindex.parsetree import ParseError, QueryError
+from zope.textindex.parsetree import QueryError
 from zope.textindex.lexicon import Lexicon, Splitter
 
 class FauxIndex:

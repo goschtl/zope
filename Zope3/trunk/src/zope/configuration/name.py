@@ -13,11 +13,10 @@
 ##############################################################################
 """Provide configuration object name resolution
 
-$Id: name.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: name.py,v 1.3 2003/05/01 19:35:39 faassen Exp $
 """
 
 import os
-import sys
 from types import ModuleType
 
 def resolve(name, package='zopeproducts', _silly=('__doc__',), _globals={}):

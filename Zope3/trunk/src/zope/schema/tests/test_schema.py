@@ -12,13 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_schema.py,v 1.4 2003/01/28 02:56:46 rdmurray Exp $
+$Id: test_schema.py,v 1.5 2003/05/01 19:35:46 faassen Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.schema.interfaces import StopValidation, ValidationError
+from unittest import TestCase, main, makeSuite
 from zope.interface import Interface
 from zope.schema import Bytes
-from zope.schema.errornames import RequiredMissing
 from zope.schema import getFields, getFieldsInOrder
 from zope.schema import getFieldNames, getFieldNamesInOrder
 

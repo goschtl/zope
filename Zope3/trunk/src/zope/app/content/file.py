@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.7 2003/04/14 17:15:20 stevea Exp $
+$Id: file.py,v 1.8 2003/05/01 19:35:10 faassen Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -21,10 +21,7 @@ zerotime = datetime.datetime.fromtimestamp(0)
 from persistence import Persistent
 from transaction import get_transaction
 
-from zope.component import getAdapter
 from zope.publisher.browser import FileUpload
-
-from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.content.file import IFile, IReadFile
 
 # set the size of the chunks

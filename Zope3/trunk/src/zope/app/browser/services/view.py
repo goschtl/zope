@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view configuration.
 
-$Id: view.py,v 1.14 2003/05/01 16:28:28 gvanrossum Exp $
+$Id: view.py,v 1.15 2003/05/01 19:35:04 faassen Exp $
 """
 __metaclass__ = type
 
@@ -26,14 +26,12 @@ from zope.component import getAdapter, getServiceManager, getView
 from zope.proxy.context import ContextWrapper
 from zope.publisher.browser import BrowserView
 
-from zope.app.browser.services.configuration import AddComponentConfiguration
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.form.utility import setUpWidgets
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
-from zope.app.traversing import traverse, getPath, getParent, objectName
+from zope.app.interfaces.services.configuration import \
+     Unregistered, Registered, Active
+from zope.app.traversing import getPath, getParent, objectName
 
 # XXX These are not used in this module, but are referenced in configure.zcml.
 #  either configure.zcml should be fixed, or a comment should replace

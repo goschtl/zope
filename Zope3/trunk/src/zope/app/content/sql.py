@@ -142,13 +142,12 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.3 2003/02/20 16:46:07 stevea Exp $
+$Id: sql.py,v 1.4 2003/05/01 19:35:10 faassen Exp $
 """
 
 import re
 import sys
 
-from time import time
 from types import StringTypes
 
 from persistence import Persistent
@@ -160,7 +159,6 @@ from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.component import getService
 from zope.proxy.context import ContextMethod
-from zope.proxy.introspection import removeAllProxies
 
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.interfaces.content.file import IFileContent
@@ -168,9 +166,6 @@ from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.rdb import SQLCommand
 from zope.app.rdb import queryForResults
-from zope.app.traversing import getParent
-
-
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
 parmre = re.compile(r'([\000- ]*([^\000- ="]+)=([^\000- ="]+))')

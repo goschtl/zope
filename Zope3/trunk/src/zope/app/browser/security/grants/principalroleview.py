@@ -14,11 +14,10 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: principalroleview.py,v 1.6 2003/04/30 23:37:54 faassen Exp $
+$Id: principalroleview.py,v 1.7 2003/05/01 19:35:03 faassen Exp $
 """
 import time
 
-from zope.app.interfaces.security import IPermission
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.security import IPrincipalRoleMap
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

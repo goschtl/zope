@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys, os
+import unittest, os
 from tempfile import mktemp
 import zope.configuration.tests.directives
-from zope.configuration.tests.directives import protections, done
+from zope.configuration.tests.directives import protections
 from zope.configuration.xmlconfig import XMLConfig
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 

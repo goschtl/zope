@@ -39,10 +39,9 @@
    reference and/or overwrite the results of previous assignments,
    as desired.
 
-$Id: dt_let.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_let.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
 """
 from zope.documenttemplate.dt_util import render_blocks, Eval, ParseError
-from zope.documenttemplate.dt_util import str # Probably needed due to hysterical pickles.
 
 from types import StringType
 import re

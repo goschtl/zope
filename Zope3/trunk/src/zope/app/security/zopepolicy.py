@@ -13,29 +13,18 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.7 2003/03/20 12:00:04 mgedmin Exp $
+$Id: zopepolicy.py,v 1.8 2003/05/01 19:35:31 faassen Exp $
 """
-__version__='$Revision: 1.7 $'[11:-2]
+__version__='$Revision: 1.8 $'[11:-2]
 
-from zope.component import queryAdapter, getService
-from zope.app.services.servicenames import Authentication
+from zope.component import queryAdapter
 from zope.proxy.context import ContainmentIterator
-
-from zope.exceptions import Unauthorized, Forbidden
 
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
 
-from zope.app.interfaces.security \
-     import IRolePermissionManager, IRolePermissionMap
-from zope.app.interfaces.security \
-    import IPrincipalPermissionManager, IPrincipalPermissionMap
-from zope.app.interfaces.security \
-    import IPrincipalRoleManager, IPrincipalRoleMap
-from zope.app.interfaces.security import IRolePermissionManager
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.app.security.registries.principalregistry import principalRegistry
-from zope.app.security.registries.roleregistry import roleRegistry
+from zope.app.interfaces.security import \
+     IRolePermissionMap, IPrincipalPermissionMap, IPrincipalRoleMap
 from zope.app.security.grants.principalpermission \
      import principalPermissionManager
 from zope.app.security.grants.rolepermission import rolePermissionManager

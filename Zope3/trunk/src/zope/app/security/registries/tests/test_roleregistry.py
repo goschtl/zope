@@ -13,7 +13,7 @@
 ##############################################################################
 """ Test handler for 'defineRole' directive """
 
-import unittest, sys
+import unittest
 
 from zope.app.security.registries.roleregistry import roleRegistry
 from zope.app.interfaces.security import IRole

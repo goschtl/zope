@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.5 2003/01/31 16:22:03 stevea Exp $
+$Id: test_type.py,v 1.6 2003/05/01 19:35:44 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 from zope.interface.type import TypeRegistry
 from zope.interface import Interface
 

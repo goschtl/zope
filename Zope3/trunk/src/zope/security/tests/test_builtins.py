@@ -14,17 +14,16 @@
 """
 
 Revision information:
-$Id: test_builtins.py,v 1.1 2002/12/31 03:35:15 jim Exp $
+$Id: test_builtins.py,v 1.2 2003/05/01 19:35:47 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import makeSuite, TestCase, main
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 class Test(CleanUp, TestCase):
 
     def test(self):
         from zope.security.builtins import RestrictedBuiltins
-        from zope.security.proxy import Proxy
         from zope.exceptions import Forbidden
 
         def e(expr):

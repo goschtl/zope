@@ -15,7 +15,6 @@
 """
 
 import unittest
-from cStringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.startup.servertyperegistry import getServerType

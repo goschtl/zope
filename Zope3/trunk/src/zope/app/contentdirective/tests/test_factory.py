@@ -14,11 +14,9 @@
 """ Test handler for 'factory' subdirective of 'content' directive """
 
 import unittest
-import sys
-import os
 from cStringIO import StringIO
 
-from zope.configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
+from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.xmlconfig import XMLConfig
 from zope.app.services.servicenames import Factories
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -26,11 +24,9 @@ from zope.security.management import newSecurityManager, system_user
 
 import zope.configuration
 import zope.app.security
-from zope.app.security.exceptions import UndefinedPermissionError
-
 import zope.app.contentdirective
-from zope.app.contentdirective.tests.exampleclass \
-    import ExampleClass, IExample, IExampleContainer
+
+from zope.app.contentdirective.tests.exampleclass import ExampleClass
 
 def configfile(s):
     return StringIO("""<zopeConfigure

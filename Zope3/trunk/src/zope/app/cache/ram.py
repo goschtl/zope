@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.4 2003/04/24 21:01:25 gvanrossum Exp $
+$Id: ram.py,v 1.5 2003/05/01 19:35:06 faassen Exp $
 """
 
 from time import time
@@ -22,14 +22,10 @@ from pickle import dumps
 
 from persistence import Persistent
 
-from zope.component import getAdapter
-from zope.component.exceptions import ComponentLookupError
-
 from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.configuration \
-     import IAttributeUseConfigurable
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.services.configuration import \
+     IAttributeUseConfigurable
 
 # A global caches dictionary shared between threads
 caches = {}

@@ -14,10 +14,10 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: size.py,v 1.3 2003/03/12 10:07:25 stevea Exp $
+$Id: size.py,v 1.4 2003/05/01 19:35:21 faassen Exp $
 """
 
-from zope.interface import Interface, Attribute
+from zope.interface import Interface
 
 # basic units:
 #   'byte'

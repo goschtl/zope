@@ -13,7 +13,7 @@
 ##############################################################################
 """A query processor to the TextIndex that supports batching and ranking.
 
-$Id: processors.py,v 1.5 2003/02/11 15:59:46 sidnei Exp $
+$Id: processors.py,v 1.6 2003/05/01 19:35:20 faassen Exp $
 """
 
 from zope.component import getAdapter
@@ -23,7 +23,6 @@ from zope.app.interfaces.index.interfaces import IBatchedResult
 from zope.app.interfaces.index.interfaces import IRankedHubIdList
 from zope.app.interfaces.index.interfaces import IBatchedTextIndexQuery
 from zope.app.interfaces.services.query import IQueryProcessor
-from zope.app.index.text.queries import BatchedTextIndexQuery
 from zope.app.index.queries import BatchedRankedResult
 
 class BatchedRankedProcessor:

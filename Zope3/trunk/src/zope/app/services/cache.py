@@ -13,12 +13,12 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.8 2003/04/28 15:21:08 gvanrossum Exp $
+$Id: cache.py,v 1.9 2003/05/01 19:35:34 faassen Exp $
 """
 
 from persistence import Persistent
 
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.proxy.context import ContextMethod
 
 from zope.app.component.nextservice import queryNextService
@@ -26,14 +26,13 @@ from zope.app.interfaces.cache.cache import ICache, ICachingService
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.cache import ICacheConfiguration
 from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable, IUseConfiguration
+     import INameComponentConfigurable
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.event import ServiceSubscriberEventChannel
-from zope.app.traversing import getPath
 
 class ILocalCachingService(ICachingService, IEventChannel,
                            INameComponentConfigurable):

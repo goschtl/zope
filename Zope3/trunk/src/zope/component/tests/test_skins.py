@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getView, getService, queryView

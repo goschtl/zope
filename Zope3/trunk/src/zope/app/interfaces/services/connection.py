@@ -13,16 +13,15 @@
 ##############################################################################
 """A configuration for a database adapter.
 
-$Id: connection.py,v 1.7 2003/04/24 15:07:25 gvanrossum Exp $
+$Id: connection.py,v 1.8 2003/05/01 19:35:22 faassen Exp $
 """
 
 from zope.schema import TextLine
 from zope.app.interfaces.services.configuration import IComponentConfiguration
 from zope.app.interfaces.services.configuration import ComponentPath
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.services.configuration \
-        import INameComponentConfigurable
+     import INameComponentConfigurable
 
 class IConnectionConfiguration(IComponentConfiguration):
     """Database Connection Configuration

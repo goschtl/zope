@@ -14,10 +14,9 @@
 """
 
 Revision information:
-$Id: event.py,v 1.5 2003/02/03 15:59:12 stevea Exp $
+$Id: event.py,v 1.6 2003/05/01 19:35:22 faassen Exp $
 """
 
-from zope.interface import Interface
 from zope.app.interfaces.event import ISubscribable, ISubscriber, IPublisher
 from zope.app.interfaces.event import IEvent
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.4 2003/04/29 16:37:39 gvanrossum Exp $
+$Id: test_utility.py,v 1.5 2003/05/01 19:35:35 faassen Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.component.utility import utilityService as globalUtilityService
 from zope.interface import Interface
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
-from zope.app.traversing import traverse, getPath
+from zope.app.traversing import traverse
 from zope.app.interfaces.services.configuration import IConfigurationRegistry
 from zope.app.interfaces.services.configuration \
      import Active, Registered, Unregistered

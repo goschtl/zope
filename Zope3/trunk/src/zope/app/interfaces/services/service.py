@@ -13,12 +13,10 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.12 2003/03/24 11:09:39 jim Exp $
+$Id: service.py,v 1.13 2003/05/01 19:35:22 faassen Exp $
 """
 __metaclass__ = type
 
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.component.interfaces import IPresentation
 from zope.interface import Interface
 from zope.component.interfaces import IServiceService
 from zope.app.interfaces.services import configuration

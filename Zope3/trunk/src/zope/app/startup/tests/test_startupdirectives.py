@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_startupdirectives.py,v 1.4 2003/02/28 22:37:51 jim Exp $
+$Id: test_startupdirectives.py,v 1.5 2003/05/01 19:35:37 faassen Exp $
 """
 
 import unittest, sys, tempfile, os
@@ -22,7 +22,6 @@ import logging
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.startup.metaconfigure import SiteDefinition
 from zope.configuration.name import resolve
-from zope.component.adapter import provideAdapter
 
 _fsname = tempfile.mktemp()+'.fs'
 
@@ -83,8 +82,6 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testAddServer(self):
         sd = self._createBlankSiteDefinition()
-
-        from zope.configuration.action import Action
 
         self.assertEqual(sd.addServer(ContextStub(), 'Browser',
                                       '8081', 'true'), [])

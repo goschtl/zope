@@ -13,7 +13,6 @@
 ##############################################################################
 """Test handler for PrincipalPermissionManager module."""
 
-import sys
 import unittest
 
 from zope.component.service import serviceManager as services

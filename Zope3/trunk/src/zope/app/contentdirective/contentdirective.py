@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.12 2003/04/18 22:12:26 jim Exp $
+$Id: contentdirective.py,v 1.13 2003/05/01 19:35:13 faassen Exp $
 """
 from zope.interface import classProvides
 from types import ModuleType
@@ -27,7 +27,7 @@ from zope.configuration.action import Action
 from zope.app.component.classfactory import ClassFactory
 from zope.app.component.metaconfigure import resolveInterface
 from zope.app.security.protectclass \
-    import protectLikeUnto, protectName, checkPermission, protectSetAttribute
+    import protectLikeUnto, protectName, protectSetAttribute
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.security.proxy import ProxyFactory
 from zope.security.checker import NamesChecker, CheckerPublic

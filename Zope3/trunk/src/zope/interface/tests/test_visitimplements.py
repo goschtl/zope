@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 
 from zope.interface.implements import visitImplements
 from zope.interface import Interface

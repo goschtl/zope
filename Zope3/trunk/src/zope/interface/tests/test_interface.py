@@ -13,7 +13,6 @@
 ##############################################################################
 
 import unittest
-import zope.interface
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation
 from zope.interface.implements import instancesOfObjectImplements

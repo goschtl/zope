@@ -14,7 +14,6 @@
 
 import unittest
 
-from zope.pagetemplate.tests import util
 from zope.app.pagetemplate.tests.testpackage.content \
      import Content, PTComponent
 

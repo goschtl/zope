@@ -13,29 +13,20 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.1 2003/03/26 16:00:15 andreasjung Exp $
+$Id: test_index.py,v 1.2 2003/05/01 19:35:19 faassen Exp $
 """
 
 import unittest
 
-from zope.component.adapter import provideAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent
-
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-
-from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing import traverse
 from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
-from zope.app.services.hub import \
-     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
-     ObjectModifiedHubEvent
-from zope.app.services.hub import ObjectHub
-
+from zope.app.services.hub import ObjectRegisteredHubEvent
 from zope.app.index.field.index import FieldIndex
-
 
 class FakeSearchableObject:
 

@@ -62,16 +62,13 @@ sys.path.insert(0, zopecode)
 from zodb.db import DB
 from zodb.storage.file import FileStorage
 from transaction import get_transaction
-from persistence import Persistent
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 from zodb.btrees.IIBTree import IIBTree
 
-from zope.textindex.nbest import NBest
 from zope.textindex.okapiindex import OkapiIndex
-from zope.textindex.lexicon import Lexicon, Splitter
+from zope.textindex.lexicon import Splitter
 from zope.textindex.lexicon import CaseNormalizer, StopWordRemover
-from zope.textindex.queryparser import QueryParser
 from zope.textindex.stopdict import get_stopdict
 from zope.textindex.textindexwrapper import TextIndexWrapper
 

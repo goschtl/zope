@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: permissionroles.py,v 1.2 2002/12/25 14:13:16 jim Exp $
+$Id: permissionroles.py,v 1.3 2003/05/01 19:35:32 faassen Exp $
 """
 
 from zope.component import getAdapter
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.interfaces.security import IPermission
-from zope.app.security.settings import Unset, Allow, Deny
+from zope.app.security.settings import Unset
 
 class PermissionRoles:
 

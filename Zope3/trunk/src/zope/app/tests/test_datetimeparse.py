@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 from zope.app.datetimeutils import parse, time, DateTimeError
 
 class Test(unittest.TestCase):

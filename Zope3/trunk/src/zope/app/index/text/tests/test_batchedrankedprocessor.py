@@ -12,10 +12,10 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.5 2003/02/11 15:59:47 sidnei Exp $
+$Id: test_batchedrankedprocessor.py,v 1.6 2003/05/01 19:35:20 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.interface.verify import verifyObject
@@ -24,10 +24,9 @@ from zope.component import getAdapter
 
 from zope.textindex.textindexinterfaces import IQuerying
 from zope.app.interfaces.index.interfaces import \
-    IBatchedQuery, ITextIndexQuery, IBatchedResult, IRankedHubIdList
+    IBatchedResult, IRankedHubIdList
 from zope.app.interfaces.services.query import IQueryProcessor
 from zope.app.index.text.processors import BatchedRankedProcessor
-from zope.app.index.queries import BatchedRankedResult
 from zope.app.index.text.queries import BatchedTextIndexQuery
 
 class StupidTextIndex:

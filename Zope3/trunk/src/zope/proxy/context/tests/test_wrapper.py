@@ -16,7 +16,7 @@ import unittest
 
 from zope.proxy.context import wrapper, getcontext, getobject
 from zope.proxy.context import ContextMethod, ContextProperty, ContextAware
-from zope.proxy.tests.test_proxy import Comparable, Thing, ProxyTestCase
+from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
 
 _marker = object()

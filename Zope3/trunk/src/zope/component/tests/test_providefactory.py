@@ -13,11 +13,11 @@
 ##############################################################################
 """Test the provideFactory method.
 
-$Id: test_providefactory.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
+$Id: test_providefactory.py,v 1.5 2003/05/01 19:35:39 faassen Exp $
 """
 
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.servicenames import Factories
 
@@ -26,7 +26,7 @@ class ProvideFactoryTestCase(PlacelessSetup, TestCase):
 
     def test_provide_factory(self):
         from zope.component import getService, createObject
-        from zope.component.tests.factory import f, X, IX
+        from zope.component.tests.factory import f, X
         factories=getService(None, Factories)
         factories.provideFactory("Some.Object", f)
         thing = createObject(None,"Some.Object")

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 
 from zope.app.security.registries.principalregistry import PrincipalRegistry
 from zope.app.security.registries.principalregistry \

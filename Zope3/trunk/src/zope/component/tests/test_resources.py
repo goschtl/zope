@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_resources.py,v 1.5 2003/02/12 02:17:43 seanb Exp $
+$Id: test_resources.py,v 1.6 2003/05/01 19:35:39 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 
 from zope.component import getService
 from zope.component.tests.placelesssetup import PlacelessSetup

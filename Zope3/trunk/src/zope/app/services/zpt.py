@@ -12,20 +12,14 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.9 2003/04/02 19:48:20 jim Exp $
+$Id: zpt.py,v 1.10 2003/05/01 19:35:34 faassen Exp $
 """
 
 import re
 
-from zope.interface import Interface, Attribute
-import zope.schema
 from persistence import Persistent
 
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import getWrapperContainer
 from zope.security.proxy import ProxyFactory
-
-from zope.app.interfaces.content.file import IFileContent
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.interfaces.services.view import IZPTTemplate

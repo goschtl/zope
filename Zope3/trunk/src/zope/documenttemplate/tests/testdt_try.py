@@ -12,11 +12,10 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_try.py,v 1.3 2003/03/13 18:49:13 alga Exp $
+$Id: testdt_try.py,v 1.4 2003/05/01 19:35:41 faassen Exp $
 """
 
 import unittest
-from zope.documenttemplate import String
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase
 
 class TestDT_Try(DTMLTestBase):

@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os
-import sys
 import unittest
 
-from zope.testing.cleanup import CleanUp
 from zope.component import getService
 from zope.app.services.servicenames import Views
 from zope.interface import Interface

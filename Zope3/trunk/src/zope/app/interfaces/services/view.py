@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: view.py,v 1.1 2003/03/11 16:15:52 jim Exp $
+$Id: view.py,v 1.2 2003/05/01 19:35:22 faassen Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -23,7 +23,6 @@ from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
-from zope.app.interfaces.container import IDeleteNotifiable
 
 class IAdapterConfigurationInfo(Interface):
 

@@ -13,10 +13,10 @@
 ##############################################################################
 """
 Revision Information:
-$Id: i18nimage.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: i18nimage.py,v 1.3 2003/05/01 19:35:10 faassen Exp $
 """
 
-from zope.app.content.image import IImage, Image, getImageInfo
+from zope.app.content.image import Image, getImageInfo
 from zope.app.content.i18nfile import I18nFile
 from zope.app.interfaces.content.i18nimage import II18nImage
 

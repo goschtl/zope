@@ -14,29 +14,26 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.19 2003/03/23 22:35:42 jim Exp $
+$Id: test_eventservice.py,v 1.20 2003/05/01 19:35:35 faassen Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.interface import Interface
 from zope.app.services.service import ServiceManager, ServiceConfiguration
-from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.event import EventService
 from zope.app.traversing import getPath, traverse
 from zope.exceptions import NotFoundError
 from zope.app.services.event import subscribe, unsubscribe, unsubscribeAll
-from zope.app.services.event import iterSubscriptions, getSubscriptionService
-from zope.app.event import getEventService, publish
+from zope.app.services.event import getSubscriptionService
+from zope.app.event import publish
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
 from zope.app.interfaces.event import IObjectEvent, IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectAddedEvent
 from zope.app.interfaces.event import ISubscriber
 from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
-from zope.app.event.globalservice import GlobalEventPublisher
 from zope.app.interfaces.event import IEvent, ISubscribingAware
 from zope.app.interfaces.services.configuration import Active
-from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered
 from zope.proxy.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.3 2003/04/02 19:48:21 jim Exp $
+$Id: test_zpt.py,v 1.4 2003/05/01 19:35:35 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, TestSuite, makeSuite
 import zope.app.services.zpt
 from zope.publisher.browser import BrowserView, TestRequest
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.20 2003/04/25 12:48:01 stevea Exp $
+$Id: checker.py,v 1.21 2003/05/01 19:35:47 faassen Exp $
 """
 
 import os
@@ -20,12 +20,10 @@ import sys
 import types
 import datetime
 
-from zope.i18n.messageid import MessageID
 from zope.security.interfaces import IChecker
 from zope.exceptions \
-     import Unauthorized, ForbiddenAttribute, Forbidden, DuplicationError
+     import Unauthorized, ForbiddenAttribute, DuplicationError
 from zope.interface.interfaces import IInterface
-from zope.interface.implements import flattenInterfaces
 from zope.interface import Interface
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.interfaces import ISecurityProxyFactory

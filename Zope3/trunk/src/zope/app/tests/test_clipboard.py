@@ -13,21 +13,19 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.4 2003/03/13 18:49:11 alga Exp $
+$Id: test_clipboard.py,v 1.5 2003/05/01 19:35:37 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-from zope.app.interfaces.services.auth import IUser
 from zope.component import getAdapter, getService, getServiceManager
 from zope.component.adapter import provideAdapter
 from zope.app.services.principalannotation \
     import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \
     import IPrincipalAnnotationService
-from zope.app.services.tests.placefulsetup \
-    import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.annotation import IAnnotations
 
 class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):

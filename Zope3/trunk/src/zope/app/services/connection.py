@@ -12,21 +12,18 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.10 2003/04/28 15:21:08 gvanrossum Exp $
+$Id: connection.py,v 1.11 2003/05/01 19:35:34 faassen Exp $
 """
 
 from persistence import Persistent
 from zope.proxy.context import ContextMethod
-from zope.component import getAdapter
 
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.component.nextservice import queryNextService
 from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.traversing import getPath
 
 class ConnectionService(Persistent, NameComponentConfigurable):
 

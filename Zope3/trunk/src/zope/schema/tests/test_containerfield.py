@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_containerfield.py,v 1.1 2003/01/25 02:49:27 rdmurray Exp $
+$Id: test_containerfield.py,v 1.2 2003/05/01 19:35:46 faassen Exp $
 """
 from UserDict import UserDict
-from unittest import TestSuite, main, makeSuite
+from unittest import main, makeSuite
 from zope.schema import Container
 from zope.schema.errornames import RequiredMissing, NotAContainer
 from zope.schema.tests.test_field import FieldTestBase

@@ -14,18 +14,15 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.7 2003/03/24 11:09:40 jim Exp $
+$Id: test_servicemanager.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import Interface
-from zope.app.content.folder import RootFolder
-from zope.app.content.folder import Folder
-from zope.proxy.context import getWrapperContext, getWrapperContainer
+from zope.proxy.context import getWrapperContainer
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
 from zope.component import getService, getServiceManager
-from zope.exceptions import ZopeError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.configuration import Active, Unregistered

@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.7 2003/04/24 00:20:44 gvanrossum Exp $
+$Id: test_connectionservice.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
 """
 
 import unittest
@@ -25,8 +25,6 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.dependable import IDependable
-from zope.app.interfaces.rdb import IConnectionService
-from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.interfaces.services.configuration \

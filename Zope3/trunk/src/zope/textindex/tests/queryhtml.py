@@ -11,10 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os
 from time import clock
 
-import zodb
 from zodb.storage.file import FileStorage
 
 QUERIES = ["nested recursive functions",

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: test_interfacefield.py,v 1.1 2003/04/24 20:51:58 poster Exp $
+$Id: test_interfacefield.py,v 1.2 2003/05/01 19:35:46 faassen Exp $
 """
-from unittest import TestSuite, main, makeSuite
+from unittest import main, makeSuite
 from zope.schema import InterfaceField
 from zope.schema.errornames import RequiredMissing, WrongType
 from zope.schema.tests.test_field import FieldTestBase

@@ -19,13 +19,13 @@ that creates a wrapper object, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.3 2003/04/09 11:44:27 philikon Exp $
+$Id: test_wrapperinteraction.py,v 1.4 2003/05/01 19:35:45 faassen Exp $
 """
 import sys
 import unittest
 
 from zope.proxy.context import Wrapper, ContextMethod, ContextProperty
-from zope.proxy.context import ContextSuper, ContextWrapper, ContextAware
+from zope.proxy.context import ContextSuper
 
 class NewStyleClass(object):
 

@@ -13,16 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.8 2003/03/21 21:03:41 jim Exp $
+$Id: test_directives.py,v 1.9 2003/05/01 19:35:14 faassen Exp $
 """
 
 import unittest
-import sys
-import os
 from StringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.configuration.xmlconfig import ZopeXMLConfigurationError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.management import newSecurityManager, system_user
 from zope.security.proxy import Proxy

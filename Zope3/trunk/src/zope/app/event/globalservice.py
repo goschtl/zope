@@ -14,20 +14,18 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.7 2003/04/10 09:29:08 philikon Exp $
+$Id: globalservice.py,v 1.8 2003/05/01 19:35:15 faassen Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface.type import TypeRegistry
-from zope.component import getAdapter, queryAdapter
+from zope.component import queryAdapter
 from zope.exceptions import NotFoundError
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribingAware
 from zope.app.interfaces.event import IGlobalSubscribable, IPublisher
-
-from zope.app.component.metaconfigure import resolveInterface
 
 from zope.configuration.action import Action
 

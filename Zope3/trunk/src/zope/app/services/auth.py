@@ -13,10 +13,8 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.14 2003/03/11 16:11:22 jim Exp $
+$Id: auth.py,v 1.15 2003/05/01 19:35:34 faassen Exp $
 """
-
-from types import TupleType
 
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
@@ -34,7 +32,6 @@ from zope.app.interfaces.services.auth import IAnnotatableUser
 
 from zope.proxy.introspection import removeAllProxies
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.component.nextservice import getNextService
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.service import ISimpleService

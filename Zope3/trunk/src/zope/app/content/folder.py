@@ -17,7 +17,6 @@ from zodb.btrees.OOBTree import OOBTree
 from zope.app.interfaces.content.folder import IFolder, IRootFolder, \
      ICloneWithoutChildren
 from zope.app.services.servicecontainer import ServiceManagerContainer
-from zope.app.interfaces.services.service import IServiceManagerContainer
 from zope.exceptions import DuplicationError
 
 

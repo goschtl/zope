@@ -15,10 +15,10 @@
 ExceptionFormatter tests.
 
 Revision information:
-$Id: test_exceptionformatter.py,v 1.2 2002/12/25 14:13:39 jim Exp $
+$Id: test_exceptionformatter.py,v 1.3 2003/05/01 19:35:41 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 import sys

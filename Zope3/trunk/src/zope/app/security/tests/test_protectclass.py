@@ -56,7 +56,6 @@ class Test(CleanUp, unittest.TestCase):
         "Verify that class, instance, and methods have expected permissions."
 
         from zope.security.checker import selectChecker
-        from zope.exceptions import Forbidden
 
         checker = selectChecker(TestModule.test_instance)
         self.assertEqual(checker.permission_id('m1'), (m1P or None))
@@ -82,7 +81,6 @@ class Test(CleanUp, unittest.TestCase):
         "Verify that class, instance, and methods have expected permissions."
 
         from zope.security.checker import selectChecker
-        from zope.exceptions import Forbidden
 
         checker = selectChecker(TestModule.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))

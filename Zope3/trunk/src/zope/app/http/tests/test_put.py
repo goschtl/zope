@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_put.py,v 1.2 2003/02/28 22:33:46 jim Exp $
+$Id: test_put.py,v 1.3 2003/05/01 19:35:17 faassen Exp $
 """
 __metaclass__ = type
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, TestSuite, makeSuite
 from StringIO import StringIO
 import zope.app.http.put
 from zope.publisher.browser import TestRequest

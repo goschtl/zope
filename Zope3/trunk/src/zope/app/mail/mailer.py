@@ -15,10 +15,9 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: mailer.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: mailer.py,v 1.2 2003/05/01 19:35:23 faassen Exp $
 """
 from smtplib import SMTP
-from time import sleep
 
 from zope.app.interfaces.mail import IMailer, IBatchMailer
 from zope.app.event import publish

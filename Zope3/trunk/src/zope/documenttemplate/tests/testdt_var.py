@@ -12,15 +12,14 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_var.py,v 1.3 2002/12/27 20:06:54 gvanrossum Exp $
+$Id: testdt_var.py,v 1.4 2003/05/01 19:35:41 faassen Exp $
 """
 
 # XXX Don't normalize whitespace in this file -- the tests depend on the
 # whitespace in the triple quoted strings.
 
 import unittest
-from zope.documenttemplate import String
-from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase, dict, ObjectStub
+from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase
 
 class TestDT_Var(DTMLTestBase):
 

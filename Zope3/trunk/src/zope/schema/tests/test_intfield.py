@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: test_intfield.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
+$Id: test_intfield.py,v 1.4 2003/05/01 19:35:46 faassen Exp $
 """
-from unittest import TestSuite, main, makeSuite
+from unittest import main, makeSuite
 from zope.schema import Int, EnumeratedInt
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase

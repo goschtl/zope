@@ -13,11 +13,10 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: queries.py,v 1.2 2002/12/25 14:12:55 jim Exp $
+$Id: queries.py,v 1.3 2003/05/01 19:35:20 faassen Exp $
 """
 
-from zope.app.interfaces.index.interfaces import \
-    IBatchedTextIndexQuery, IBatchedResult, IRankedHubIdList
+from zope.app.interfaces.index.interfaces import IBatchedTextIndexQuery
 
 class BatchedTextIndexQuery:
 

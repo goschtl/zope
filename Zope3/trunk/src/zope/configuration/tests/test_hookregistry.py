@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_hookregistry.py,v 1.2 2002/12/25 14:13:34 jim Exp $
+$Id: test_hookregistry.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
 """
 
-import unittest, sys
+import unittest
 
 def dummyHook():
     return "hooked implementation"

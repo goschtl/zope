@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.17 2003/04/28 15:21:08 gvanrossum Exp $
+$Id: service.py,v 1.18 2003/05/01 19:35:34 faassen Exp $
 """
 
 import sys
@@ -31,10 +31,8 @@ import sys
 from zodb.code.module import PersistentModule
 from zodb.code.module import PersistentModuleRegistry
 
-from zope.component import getAdapter
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IServiceService
 
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import ContextWrapper
@@ -48,8 +46,6 @@ from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.module import IModuleService
 from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
-from zope.app.interfaces.services.service import IServiceManagerContainer
-from zope.app.interfaces.services.configuration import IUseConfiguration
 
 # XXX This makes no sense?
 ModuleType = type(IModuleService), PersistentModule
@@ -58,7 +54,6 @@ from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.folder import SiteManagementFolders
-from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.services.service import ILocalService
 
 from zope.app.traversing import getPath

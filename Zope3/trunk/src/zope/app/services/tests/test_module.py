@@ -14,24 +14,14 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.5 2003/03/23 22:35:42 jim Exp $
+$Id: test_module.py,v 1.6 2003/05/01 19:35:35 faassen Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import Interface
-from zope.app.content.folder import RootFolder
-from zope.app.content.folder import Folder
-from zope.proxy.context import getWrapperContext, getWrapperContainer
 from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceConfiguration
-from zope.component import getService, getServiceManager
-from zope.exceptions import ZopeError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.configuration import Active, Unregistered
-from zope.app.interfaces.services.configuration import Registered
-from zope.component.service import serviceManager
-from zope.proxy.context import ContextWrapper as cw
 from zope.app.services.module import Manager
 from zodb.storage.mapping import MappingStorage
 from zodb.db import DB

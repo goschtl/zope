@@ -13,11 +13,11 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.3 2002/12/31 03:35:12 jim Exp $
+$Id: metaconfigure.py,v 1.4 2003/05/01 19:35:32 faassen Exp $
 """
-from zope.app.security.registries.permissionregistry import permissionRegistry as perm_reg
+from zope.app.security.registries.permissionregistry import \
+     permissionRegistry as perm_reg
 from zope.app.security.registries.roleregistry import roleRegistry as role_reg
-from zope.security.manager import setSecurityPolicy
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.configuration.action import Action
 

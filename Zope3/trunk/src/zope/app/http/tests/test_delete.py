@@ -12,15 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_delete.py,v 1.1 2003/02/28 22:34:28 jim Exp $
+$Id: test_delete.py,v 1.2 2003/05/01 19:35:17 faassen Exp $
 """
 __metaclass__ = type
 
-from unittest import TestCase, TestSuite, main, makeSuite
-from StringIO import StringIO
+from unittest import TestCase, TestSuite, makeSuite
 import zope.app.http.delete
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
+from zope.app.interfaces.file import IWriteDirectory, IFileFactory
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.proxy.context import ContextWrapper

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.5 2003/03/31 14:48:39 sidnei Exp $
+$Id: copypastemove.py,v 1.6 2003/05/01 19:35:02 faassen Exp $
 """
 
 from zope.app.traversing import getParent, objectName, getPath
@@ -27,13 +27,11 @@ from zope.app.interfaces.container import IMoveNotifiable
 from zope.app.interfaces.container import ICopyNotifiable
 from zope.app.interfaces.container import IMoveSource
 from zope.app.interfaces.container import ICopySource, INoChildrenCopySource, \
-     CopyException, MoveException
+     CopyException
 from zope.app.interfaces.container import IPasteTarget
-from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.event.objectevent import ObjectMovedEvent, ObjectCopiedEvent
 from zope.app.event import publish
 from zope.proxy.introspection import removeAllProxies
-from zope.app.attributeannotations import AttributeAnnotations
 
 class ObjectMover:
     '''Use getAdapter(obj, IObjectMover) to move an object somewhere.'''

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zope.textindex.nbest import NBest
 

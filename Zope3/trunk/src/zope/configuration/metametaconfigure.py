@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.5 2003/04/18 22:12:31 jim Exp $
+$Id: metametaconfigure.py,v 1.6 2003/05/01 19:35:39 faassen Exp $
 """
 from zope.interface import directlyProvides
 from zope.configuration.meta \
      import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
 from zope.configuration.interfaces import INonEmptyDirective
-from zope.configuration.interfaces import IEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 
 #

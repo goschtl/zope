@@ -13,7 +13,7 @@
 ##############################################################################
 
 import sys
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from zope.textindex.lexicon import Lexicon
 from zope.textindex.lexicon import Splitter, CaseNormalizer

@@ -13,4 +13,4 @@
 ##############################################################################
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+#from zope.app.pagetemplate.simpleviewclass import SimpleViewClass

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_user.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_user.py,v 1.3 2003/05/01 19:35:35 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.app.services.auth import User
 
 class UserTest(TestCase):

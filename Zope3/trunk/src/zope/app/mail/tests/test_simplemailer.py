@@ -15,10 +15,10 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_simplemailer.py,v 1.1 2003/04/16 13:45:44 srichter Exp $
+$Id: test_simplemailer.py,v 1.2 2003/05/01 19:35:24 faassen Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
-from zope.app.interfaces.mail import IAsyncMailService, IMailer, IMailSentEvent
+from zope.app.interfaces.mail import IMailer
 from zope.app.mail.event import MailSentEvent 
 import zope.app.mail.mailer 
 

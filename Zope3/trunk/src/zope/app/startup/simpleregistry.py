@@ -12,11 +12,10 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.5 2003/03/13 18:49:10 alga Exp $
+$Id: simpleregistry.py,v 1.6 2003/05/01 19:35:36 faassen Exp $
 """
-from zope.configuration.name import resolve
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
-from types import StringTypes, ListType, TupleType
+from types import ListType, TupleType
 ListTypes = (TupleType, ListType)
 
 

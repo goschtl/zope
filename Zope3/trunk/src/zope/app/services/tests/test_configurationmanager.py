@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.7 2003/04/28 18:40:04 gvanrossum Exp $
+$Id: test_configurationmanager.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IDeleteNotifiable

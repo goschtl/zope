@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, sys
+import unittest
 from zope.interface import Interface
 from zope.component.tests.request import Request
 from zope.component.servicenames import Adapters

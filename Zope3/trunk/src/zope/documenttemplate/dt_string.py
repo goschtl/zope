@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: dt_string.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_string.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
 """
 import re, thread
 
-from zope.documenttemplate.dt_util import ParseError, InstanceDict, TemplateDict, render_blocks, str
+from zope.documenttemplate.dt_util import \
+     ParseError, InstanceDict, TemplateDict, render_blocks
 from zope.documenttemplate.dt_var import Var, Call, Comment
 from zope.documenttemplate.dt_return import ReturnTag, DTReturn
 

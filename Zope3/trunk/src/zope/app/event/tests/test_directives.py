@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.8 2003/03/08 21:46:04 seanb Exp $
+$Id: test_directives.py,v 1.9 2003/05/01 19:35:16 faassen Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -28,12 +28,10 @@ from zope.app.event import globalUnsubscribe, publish
 from zope.app.event.objectevent import ObjectAddedEvent
 from zope.app.event.objectevent import ObjectRemovedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event.tests.test_eventpublisher \
-     import DummyEvent
+from zope.app.event.tests.test_eventpublisher import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
-from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.interfaces.event import IEvent
 
 class Test(PlacelessSetup, TestCase):

@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.12 2003/04/17 20:05:11 bwarsaw Exp $
+$Id: engine.py,v 1.13 2003/05/01 19:35:25 faassen Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -27,10 +27,8 @@ from zope.tales.expressions import NotExpr
 from zope.tales.expressions import DeferExpr
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine
-from zope.tales.tales import RegistrationError
 from zope.tales.tales import Context
 
-from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing.adapters import Traverser
 from zope.proxy.introspection import removeAllProxies
 from zope.security.proxy import ProxyFactory

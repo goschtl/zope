@@ -12,7 +12,6 @@
 #
 ##############################################################################
 import sys, unittest
-from cStringIO import StringIO
 
 # Caution:  tempfile.NamedTemporaryFile cannot be used on Windows, because
 # the tests here want to open the file more than once.  You can't do that
@@ -20,6 +19,7 @@ from cStringIO import StringIO
 import tempfile
 
 class TempFile:
+    # this actually becomes the remove() method
     from os import remove
 
     def __init__(self):
@@ -38,9 +38,6 @@ class TempFile:
             self.remove(self.file.name)
             self.closed = 1
 
-from zope.configuration.xmlconfig import xmlconfig
-from zope.configuration.xmlconfig import testxmlconfig
-from zope.configuration.meta import InvalidDirective, BrokenDirective
 from zope.testing.cleanup import CleanUp
 
 class Test(CleanUp, unittest.TestCase):

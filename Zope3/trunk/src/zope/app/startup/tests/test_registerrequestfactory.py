@@ -13,11 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_registerrequestfactory.py,v 1.5 2003/03/13 18:49:10 alga Exp $
+$Id: test_registerrequestfactory.py,v 1.6 2003/05/01 19:35:37 faassen Exp $
 """
 
 import unittest
-from cStringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.startup.requestfactoryregistry import getRequestFactory

@@ -12,14 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.12 2003/03/23 22:35:42 jim Exp $
+$Id: test_auth.py,v 1.13 2003/05/01 19:35:35 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.auth \
-     import AuthenticationService, DuplicateLogin, DuplicateId
+from zope.app.services.auth import AuthenticationService
 from zope.app.services.auth import User
-from zope.app.interfaces.services.auth import IUser
 from zope.app.services.servicenames import Adapters, Authentication
 
 from zope.exceptions import NotFoundError
@@ -27,7 +25,7 @@ from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.traversing import getPath, traverse
-from zope.app.interfaces.services.configuration import Active, Registered
+from zope.app.interfaces.services.configuration import Active
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 

@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.6 2003/05/01 14:07:29 mgedmin Exp $
+$Id: functional.py,v 1.7 2003/05/01 19:35:51 faassen Exp $
 """
 
 import logging
@@ -31,7 +31,6 @@ from zodb.storage.memory import MemoryFullStorage
 from zodb.storage.demo import DemoStorage
 from zope.app import Application
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.traversing import traverse
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
 from zope.exceptions import Forbidden, Unauthorized

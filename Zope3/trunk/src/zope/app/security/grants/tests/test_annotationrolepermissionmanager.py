@@ -16,18 +16,16 @@ from zope.app.security.grants.rolepermission \
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.component \
-     import getServiceManager, getService
+from zope.component import getServiceManager, getService
 from zope.app.services.servicenames import Permissions, Adapters
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.roleregistry import roleRegistry
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.settings import Allow, Deny
-from zope.app.services.tests.placefulsetup \
-    import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 
-import unittest, sys
+import unittest
 
 class Manageable:
     __implements__ = IAttributeAnnotatable

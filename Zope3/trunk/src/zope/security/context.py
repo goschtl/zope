@@ -30,6 +30,8 @@ class SecurityContext:
                 )
     """
 
+    __implements__ = ISecurityContext
+    
     def __init__(self, user):
 
         self.stack       = []

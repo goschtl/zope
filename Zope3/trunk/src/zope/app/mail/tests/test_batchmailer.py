@@ -15,9 +15,9 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_batchmailer.py,v 1.1 2003/04/16 13:45:44 srichter Exp $
+$Id: test_batchmailer.py,v 1.2 2003/05/01 19:35:24 faassen Exp $
 """
-from unittest import TestCase, TestSuite, makeSuite
+from unittest import TestSuite, makeSuite
 from test_simplemailer import TestSimpleMailer
 
 

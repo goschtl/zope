@@ -14,11 +14,10 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.2 2003/01/27 18:23:00 stevea Exp $
+$Id: test_eventpublisher.py,v 1.3 2003/05/01 19:35:16 faassen Exp $
 """
 
-import unittest, sys
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+import unittest
 
 from zope.app.interfaces.event import IObjectEvent, IObjectAddedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent
