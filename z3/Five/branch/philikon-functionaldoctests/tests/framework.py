@@ -100,7 +100,7 @@ if 1:   # Create a new scope
         sys.exit(1)
 
     # run configuration
-    import zopeconf; zopeconf.process()
+    import zopeconf; zopeconf.products()
     
 # Debug
 #
