@@ -597,6 +597,18 @@
   </view>
     
 
+<!-- Bundles -->
+
+  <page
+      name="bundle.html"
+      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+      menu="zmi_views" title="Bundle"
+      permission="zope.ManageServices"
+      class=".bundle.BundleView"
+      template="bundle.pt"
+      />
+
+
 <!-- Translation Service Views -->
 <include package=".translation" />
 

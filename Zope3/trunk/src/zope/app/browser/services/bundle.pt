@@ -1,0 +1,34 @@
+<html metal:use-macro="views/standard_macros/page">
+
+<div metal:fill-slot="body">
+
+<h1>Bundle Configuration</h1>
+
+<h4>Services needed by this bundle:</h4>
+
+<ul>
+  <li tal:repeat="svc view/listServices">
+    <i tal:content="svc/service">Foo</i> service presently at
+    <a tal:content="svc/path" tal:attributes="href svc/path">/somewhere</a>
+  </li>
+</ul>
+
+<h4>Configurations present in this bundle:</h4>
+
+<ul>
+
+  <li tal:repeat="cnf view/listConfigurations">
+    For <i tal:content="cnf/service">Foo</i> service:
+    <a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
+    (status <b tal:content="cnf/status">Active</b>)
+    <br>
+    <i tal:content="cnf/usage">Usage summary</i>
+    implemented by
+    <i tal:content="cnf/implementation">Implementation summary</i>
+  </li>
+
+</ul>
+
+</div>
+
+</html>
