@@ -8,6 +8,7 @@
 default: build
 
 PYTHON=@PYTHON@
+TESTOPTS=-v
 
 prefix=@prefix@
 
@@ -18,3 +19,6 @@ build:
 
 install: build
 	$(PYTHON) install.py -q install --home "$(prefix)"
+
+test: build
+	$(PYTHON) test.py $(TESTOPTS)
