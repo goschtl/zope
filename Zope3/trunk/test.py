@@ -384,7 +384,7 @@ def gui_runner(files, test_filter):
     import unittestgui
     suites = []
     for file in files:
-        suites.append(module_from_path(file) + '.test_suite')
+        suites.append(finder.module_from_path(file) + '.test_suite')
 
     suites = ", ".join(suites)
     minimal = (GUI == 'minimal')
