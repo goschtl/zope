@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.2 2002/12/25 14:12:24 jim Exp $
+$Id: _app.py,v 1.3 2002/12/26 20:18:07 jim Exp $
 """
 
 import base64
@@ -75,7 +75,11 @@ def database(db):
 
 class Application:
 
-    def __init__(self, db, config_file=None):
+    def __init__(self, db=None, config_file=None):
+        if db is None and config_file is None:
+            db = 'Data.fs'
+            config_file = 'site.zcml'
+        
         if config_file is not None:
             config(config_file)
         self.db = database(db)
