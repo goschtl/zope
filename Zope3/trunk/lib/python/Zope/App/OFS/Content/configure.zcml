@@ -6,5 +6,7 @@
   <include package=".Folder" />
   <include package=".Image" />
   <include package=".ZPTPage" />
+  <include package=".DTMLPage" />
+  <include package=".SQLScript" />
 
 </zopeConfigure>

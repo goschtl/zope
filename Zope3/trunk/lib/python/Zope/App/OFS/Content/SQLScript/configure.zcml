@@ -1,0 +1,49 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- SQL Script Directives -->
+
+  <permission id="Zope.AddSQLScripts" title="Add SQL Scripts" />
+
+  <content class=".SQLScript.">
+    <factory
+        id="SQLScript"
+        permission="Zope.ManageContent"
+        title="SQL Script"
+        description="Dynamic SQL Script" />
+    <require
+        permission="Zope.ManageContent"
+        interface=".ISQLScript." />
+    <require
+        permission="Zope.ManageContent"
+        interface="Zope.App.OFS.Content.IFileContent." />
+  </content>
+
+  <adapter
+      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+      provides="Zope.App.OFS.Annotation.IAnnotations."
+      for=".ISQLScript." />
+
+
+  <!-- Arguments Directives -->
+
+  <content class=".Arguments.">
+    <require
+        permission="Zope.ManageContent"
+        interface="Interface.Common.Mapping.IEnumerableMapping" />
+  </content>
+
+
+  <!-- SQL DTML Directives -->
+
+  <content class=".SQLScript.SQLDTML">
+    <require
+        permission="Zope.ManageContent"
+        attributes="__call__" />
+  </content>
+
+
+  <!-- Further Directives -->
+
+  <include package=".Views" />
+
+</zopeConfigure>

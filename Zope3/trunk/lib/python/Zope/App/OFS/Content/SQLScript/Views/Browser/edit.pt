@@ -1,0 +1,52 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>Edit SQL Script</title>
+</head>
+<body>
+
+  <div metal:fill-slot="body">
+    <form action="." method="post">
+      <input type="hidden" name="nextURL" value=""
+          tal:attributes="value request/URL">
+    
+      <table>      
+    	<tbody>       	
+    	  <tr>
+    	    <th>Connection:</th>
+    	    <td>
+	      <select size="1" name="connection">
+                 <tal:block repeat="name view/getAllConnections">
+                   <option value="" selected=""
+                     tal:condition="python: name==context.getConnectionName()"
+                     tal:attributes="value name" tal:content="name" />
+                   <option value=""
+                     tal:condition="python: name!=context.getConnectionName()"
+                     tal:attributes="value name" tal:content="name" />
+                 </tal:block>
+	      </select>
+            </td>
+    	  </tr>
+    	  <tr>
+    	    <th>Arguments:</th>
+    	    <td>
+	      <textarea name="arguments" cols="60" rows="5"
+                  tal:content="context/getArgumentsString"></textarea> 
+            </td>
+    	  </tr>
+    	  <tr>
+    	    <th>SQL Template:</th>
+    	    <td>
+	      <textarea name="sql" cols="60" rows="10"
+                  tal:content="context/getSource"></textarea> 
+            </td>
+    	  </tr>
+    	    	
+    	</tbody>     
+      </table>
+      <input type="submit" name="edit.html:method" value="Save Changes" />
+    
+    </form> 
+  </div>
+
+</body>
+</html>
