@@ -1610,8 +1610,8 @@ class datetimetz(datetime):
         return datetimetz(year, month, day, hour, minute, second,
                           microsecond, tzinfo)
 
-    def _inconsistent_utcoffset_error(self):
-        raise ValueError("astimezone():  tz.utcoffset() gave "
+    def _inconsistent_dst(self):
+        raise ValueError("astimezone():  tz.dst() gave "
                          "inconsistent results; cannot convert")
 
     def astimezone(self, tz):
@@ -1633,38 +1633,37 @@ class datetimetz(datetime):
 
         # See the long comment block at the end of this file for an
         # explanation of this algorithm.  That it always works requires a
-        # pretty intricate proof.
+        # pretty intricate proof.  There are many equivalent ways to code
+        # up the proof as an algorithm.  This way favors calling dst() over
+        # calling utcoffset(), because "the usual" utcoffset() calls dst()
+        # itself, and calling the latter instead saves a Python-level
+        # function call.  This way of coding it also follow the proof
+        # closely, w/ x=self, y=other, z=other, and z'=another.
         otdst = other.dst()
         if otdst is None:
-            raise ValueError("astimezone():  utcoffset() returned a duration "
+            raise ValueError("astimezone(): utcoffset() returned a duration "
                              "but dst() returned None")
-        total_added_to_other = otoff - otdst - myoff
-        if total_added_to_other:
-            other += total_added_to_other
-            otoff = other.utcoffset()
-            if otoff is None:
-                self._inconsistent_utcoffset_error()
-        # The distance now from self to other is
-        # self - other == naive(self) - myoff - (naive(other) - otoff) ==
-        # naive(self) - myoff -
-        #             ((naive(self) + total_added_to_other - otoff) ==
-        # - myoff - total_added_to_other + otoff
-        delta = otoff - myoff - total_added_to_other
-        ##assert (other == self) == (not delta) # expensive
-        if not delta:
+        delta = otoff - otdst - myoff
+        if delta:
+            other += delta
+            otdst = other.dst()
+            if otdst is None:
+                self._inconsistent_dst()
+        if not otdst:
             return other
 
-        # Must have crossed a DST switch point.
-        total_added_to_other += delta
-        other += delta
-        otoff = other.utcoffset()
-        if otoff is None:
-            self._inconsistent_utcoffset_error()
-        ##assert (other == self) == (otoff - myoff == total_added_to_other)
-        if otoff - myoff == total_added_to_other:
-            return other
-        raise ValueError("astimezone():  the source datetimetz can't be "
-                         "expressed in the target timezone's local time")
+        another = other + otdst
+        anotherdst = another.dst()
+        if anotherdst is None:
+            self._inconsistent_dst()
+
+        if otdst == anotherdst:
+            other = another
+        else:
+            # This is the "unspellable hour" case, and we *don't* want
+            # the DST spelling here.
+            pass
+        return other
 
     def isoformat(self, sep='T'):
         s = super(datetimetz, self).isoformat(sep)
