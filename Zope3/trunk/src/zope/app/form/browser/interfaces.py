@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.schema import TextLine, Bool
+from zope.schema import TextLine, Bool, Field
 from zope.app.form.interfaces import IWidget, IInputWidget
 
 
@@ -176,6 +176,10 @@ class ITerms(Interface):
 class ISourceQueryView(Interface):
     """View support for querying non-iterable sources
     """
+
+    context = Field(
+        title=u'Context',
+        description=u'Context of the view.')
         
     def render(name):
         """Return a rendering of the search form elements
