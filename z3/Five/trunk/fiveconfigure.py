@@ -69,11 +69,3 @@ def viewable(_context, class_):
         callable = classViewable,
         args = (class_,)
         )
-
-def layer(_context, name):
-
-    _context.action(
-        discriminator = ('layer', name),
-        callable = handler,
-        args = (Presentation, 'defineLayer', name, _context.info)
-        )
