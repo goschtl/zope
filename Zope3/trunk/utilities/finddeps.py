@@ -41,7 +41,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.19 2004/05/10 17:03:25 fdrake Exp $
+$Id$
 """
 import sys
 import getopt
@@ -398,9 +398,13 @@ def getDependencies(path, zcml=False):
                 deps += getDependenciesOfPythonFile(filePath)
             elif zcml and zcmlfile.match(file):
                 deps += getDependenciesOfZCMLFile(filePath)
-            elif os.path.isdir(filePath) and \
-                     '__init__.py' in os.listdir(filePath):
-                deps += getDependencies(filePath)
+            elif os.path.isdir(filePath):
+                filenames = os.listdir(filePath)
+                if (  'PUBLICATION.cfg' not in filenames
+                      and 'SETUP.cfg' not in filenames
+                      and 'DEPENDENCIES.cfg' not in filenames
+                      and '__init__.py' in filenames):
+                    deps += getDependencies(filePath)
 
     elif os.path.isfile(path):
         ext = os.path.splitext(path)[1]
