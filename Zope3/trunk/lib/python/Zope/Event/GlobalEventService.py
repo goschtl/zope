@@ -14,20 +14,27 @@
 """
 
 Revision information:
-$Id: GlobalEventService.py,v 1.4 2002/12/01 10:32:29 jim Exp $
+$Id: GlobalEventService.py,v 1.5 2002/12/05 17:20:29 stevea Exp $
 """
 
-from IEventService import IEventService
+from IEventService import IGlobalEventService
 from Subscribable import Subscribable
 
 class GlobalEventService(Subscribable):
     
-    __implements__ = IEventService
-        
+    __implements__ = IGlobalEventService
+
+    def globalSubscribe(self, *args, **kw):
+        super(GlobalEventService, self).subscribe(*args, **kw)
+
+    def subscribe(self, subscriber, event_type=None, filter=None):
+        """Don't allow regular persistent subscriptions."""
+        raise NotImplementedError("You cannot subscribe to the "
+            "GlobalEventService. Use the 'globalSubscribe' method instead.")
+
     def publish(self, event):
         
         for subscriptions in self.subscriptionsForEvent(event):
-            
             for subscriber, filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
@@ -35,7 +42,6 @@ class GlobalEventService(Subscribable):
     
 
 eventService = GlobalEventService()
-
 
 _clear = eventService._clear
 

@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: testLogger.py,v 1.6 2002/12/05 13:44:11 stevea Exp $
+$Id: testLogger.py,v 1.7 2002/12/05 17:20:29 stevea Exp $
 """
 
 import unittest, sys
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
 
-from Zope.Event import subscribe, unsubscribe, publish
+from Zope.Event import globalSubscribe, unsubscribe, publish
 from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.Logger import Logger
 
@@ -53,7 +53,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         self.logger = DopeyLogger()
         zLOG.log_write = self.logger.log_write
         # register a logger
-        subscribe(self.eventlogger)
+        globalSubscribe(self.eventlogger)
         # send an event
         publish(None, ObjectAddedEvent(None, 'foo'))
 

@@ -14,7 +14,7 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: PlacelessSetup.py,v 1.2 2002/10/04 20:07:09 jim Exp $
+$Id: PlacelessSetup.py,v 1.3 2002/12/05 17:20:29 stevea Exp $
 """
 
 from Zope.ComponentArchitecture import getServiceManager
@@ -54,4 +54,4 @@ class PlacelessSetup:
         provideService("Events", eventService)
         
         del events[:]
-        eventService.subscribe(EventRecorder)
+        eventService.globalSubscribe(EventRecorder)

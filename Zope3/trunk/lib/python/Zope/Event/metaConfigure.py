@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: metaConfigure.py,v 1.3 2002/11/19 23:25:15 jim Exp $
+$Id: metaConfigure.py,v 1.4 2002/12/05 17:20:29 stevea Exp $
 """
 
 from Zope.Configuration.Action import Action
 
-from Zope.Event import subscribeMany
+from Zope.Event import globalSubscribeMany
 from Zope.Event.IEvent import IEvent
 from Interface import Interface
 
@@ -43,12 +43,12 @@ def subscribe(_context, subscriber, event_types=(IEvent), filter=None):
         Action(
              # subscriptions can never conflict
              discriminator = ('subscribe', counter),
-             callable = subscribeMany,
+             callable = globalSubscribeMany,
              args = (subscriber, event_types, filter)
              ),
         Action(
             discriminator = None,
-            callable = subscribeMany,
+            callable = globalSubscribeMany,
             args = ('Interfaces', 'provideInterface',
                     type.__module__+'.'+type.__name__, type)
               )      
