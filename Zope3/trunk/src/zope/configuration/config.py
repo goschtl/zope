@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.21 2004/03/08 17:26:59 jim Exp $
+$Id: config.py,v 1.22 2004/03/08 23:39:00 tim_one Exp $
 """
 
 import os.path
@@ -189,7 +189,7 @@ class ConfigurationContext(object):
             try:
                 return __import__(mname+'.'+oname, *_import_chickens)
             except ImportError:
-                
+
                 # We need to try to figure out what module the import
                 # error is complaining about.  If the import failed
                 # due to a failure to import some other module
@@ -259,10 +259,12 @@ class ConfigurationContext(object):
 
         >>> c = ConfigurationContext()
         >>> c.checkDuplicate('/foo.zcml')
-        >>> c.checkDuplicate('/foo.zcml')
-        Traceback (most recent call last):
-        ...
-        ConfigurationError: '/foo.zcml' included more than once
+        >>> try:
+        ...     c.checkDuplicate('/foo.zcml')
+        ... except ConfigurationError, e:
+        ...     # On Linux the exact msg has /foo, on Windows \foo.
+        ...     str(e).endswith("foo.zcml' included more than once")
+        True
 
         You may use different ways to refer to the same file:
 
@@ -740,7 +742,7 @@ class GroupingStackItem(RootStackItem):
     >>> item.finish()
 
     Then before will be when we call finish:
-    
+
     >>> pprint(context.actions)
     [(('before', 1, 2), f), ('after', f)]
 
