@@ -62,6 +62,9 @@ class IDAVOpaqueNamespaces(IMapping):
         property name are taken to be stored.
         
         """
+        
+    def removeProperty(ns, prop):
+        """Remove the indicated property altogether"""
 
     
 class DAVOpaqueNamespacesAdapter(DictMixin, Location):
@@ -121,6 +124,13 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
         props = self.setdefault(ns, OOBTree())
         propel = makeDOMStandalone(propel)
         props[propel.nodeName] = propel.toxml('utf-8')
+        
+    def removeProperty(self, ns, prop):
+        if self.get(ns, {}).get(prop) is None:
+            return
+        del self[ns][prop]
+        if not self[ns]:
+            del self[ns]
 
 
 def makeDOMStandalone(element):

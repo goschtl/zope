@@ -169,10 +169,7 @@ class PROPPATCH(object):
             # opaque DAV properties
             if self.oprops is None:
                 return 200
-            if self.oprops.get(ns, {}).get(prop.localName):
-                del self.oprops[ns][prop.localName]
-                if not list(self.oprops[ns].keys()):
-                    del self.oprops[ns]
+            self.oprops.removeProperty(ns, prop.localName)
             return 200
             
         # XXX: Deal with registered ns interfaces here
