@@ -22,7 +22,7 @@ class TestCalendar(unittest.TestCase):
         # Log in as a god :-)
         newSecurityManager(None, UnrestrictedUser('god',
                                                   'god',
-                                                  ['Manager'],
+                                                  [],
                                                   ''))
         app = self.app
 
@@ -71,20 +71,11 @@ class TestCalendar(unittest.TestCase):
         self.assertEqual(tool.getId(),'portal_calendar')
 
     def test_types(self):
-        self.assertEqual(self.Tool.getCalendarTypes(), ('Event',))
+        self.assertEqual(self.Tool.getCalendarTypes(),['Event'])
 
         self.Tool.edit_configuration(show_types=['Event','Party']
-                                    , show_states=[] 
                                     , use_session="")
-        self.assertEqual(self.Tool.getCalendarTypes(), ('Event', 'Party'))
-
-    def test_states(self):
-        self.assertEqual(self.Tool.getCalendarStates(), ('published',))
-
-        self.Tool.edit_configuration(show_types=[]
-                                    , show_states=['pending', 'published'] 
-                                    , use_session="")
-        self.assertEqual(self.Tool.getCalendarStates(), ('pending', 'published'))
+        self.assertEqual(self.Tool.getCalendarTypes(),['Event', 'Party'])
 
     def test_Days(self):
         assert self.Tool.getDays() == ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -485,41 +476,6 @@ class TestCalendar(unittest.TestCase):
 
         events = self.Site.portal_calendar.catalog_getevents(2002, 6)
         self.assertEqual([events[e] for e in range(1, 8)], data)
-
-    def test_workflowStateRendering(self):
-        # Calendar should return events in all of the selected workflow states
-
-        self.Site.invokeFactory('Event', id='meeting',
-                                 start_date='2002/05/01 11:00:00', 
-                                 end_date='2002/05/01 13:30:00')
-
-        self.Site.invokeFactory('Event', id='dinner',
-                                 start_date='2002/05/01 20:00:00', 
-                                 end_date='2002/05/01 22:00:00')
-
-        self.assertEqual(len(self.Site.portal_catalog(portal_type='Event')), 2)
-
-        # No published events
-        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 0) 
-        
-        # One published event
-        self.Site.portal_workflow.doActionFor(self.Site.meeting, 'publish')
-        self.assertEqual(len(self.Site.portal_catalog(review_state='published')), 1)
-
-        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 1) 
-
-        # One pending event
-        self.Site.portal_workflow.doActionFor(self.Site.dinner, 'submit')
-        self.assertEqual(len(self.Site.portal_catalog(review_state='pending')), 1)
-
-        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 1) 
-
-        # Make calendar return pending events
-        self.Site.portal_calendar.edit_configuration(show_types=('Event',), 
-                                                     show_states=('pending', 'published'), 
-                                                     use_session='')
-
-        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 2)
 
 def test_suite():
     return unittest.TestSuite((

@@ -28,20 +28,6 @@
  an attribute 'end' which return DateTime objects to the Catalog.
  </p>
 
- <h3>Workflow states to show in the calendar</h3>
- <tal:define define="states here/getCalendarStates">
-
-  <textarea name="show_states:lines" rows="5" cols="20" wrap="off"
-            tal:content="python:'\n'.join(states)">state</textarea>
-
- </tal:define>
-
- <p>
- Each name must be on a separate line.
- </p>
-
- <h3>Preserve selected year and month</h3>
- <p>
   <tal:define tal:define="use_session here/portal_calendar/getUseSession">
 
     <tal:use_session tal:condition="python:use_session">

@@ -33,10 +33,6 @@ class CalendarTool (UniqueObject, SimpleItem):
     security = ClassSecurityInfo()
     plone_tool = 1
 
-    calendar_types = ('Event',)
-    calendar_states = ('published',)
-    use_session = ''
-
     manage_options = ( ({ 'label' : 'Overview', 'action' : 'manage_overview' }
                      ,  { 'label' : 'Configure', 'action' : 'manage_configure' }
                      ,
@@ -54,11 +50,14 @@ class CalendarTool (UniqueObject, SimpleItem):
     manage_configure = PageTemplateFile('www/configureCalendarTool', globals(),
                                    __name__='manage_configure')
 
+    def __init__(self):
+        self.calendar_types = ['Event']
+        self.use_session = ""
+
     security.declareProtected( ManagePortal, 'edit_configuration' )
-    def edit_configuration(self, show_types, use_session, show_states):
+    def edit_configuration(self, show_types, use_session):
         """ Change the configuration of the calendar tool """
-        self.calendar_types = tuple(show_types)
-        self.calendar_states = tuple(show_states)
+        self.calendar_types = show_types
         self.use_session = use_session
         if hasattr(self.REQUEST, 'RESPONSE'):
             self.REQUEST.RESPONSE.redirect('manage_configure')
@@ -67,11 +66,6 @@ class CalendarTool (UniqueObject, SimpleItem):
     def getCalendarTypes(self):
         """ Returns a list of type that will show in the calendar """
         return self.calendar_types
-
-    security.declarePublic('getCalendarStates')
-    def getCalendarStates(self):
-        """ Returns a list of workflow states that will show in the calendar """
-        return self.calendar_states
 
     security.declarePublic('getUseSession')
     def getUseSession(self):
@@ -139,8 +133,8 @@ class CalendarTool (UniqueObject, SimpleItem):
         first_date=self.getBeginAndEndTimes(1, month, year)[0]
         last_date=self.getBeginAndEndTimes(last_day, month, year)[1]
 
-        query=self.portal_catalog(portal_type=self.getCalendarTypes(),
-                                  review_state=self.getCalendarStates(),
+        query=self.portal_catalog(portal_type=self.calendar_types,
+                                  review_state='published',
                                   start={'query': last_date,
                                          'range': 'max'},
                                   end={'query': first_date,
@@ -207,20 +201,20 @@ class CalendarTool (UniqueObject, SimpleItem):
         #last_date=DateTime(thisDay.Date()+" 23:59:59")
 
         # Get all events that Start on this day
-        query=self.portal_catalog(portal_type=self.getCalendarTypes(),
-                                  review_state=self.getCalendarStates(),
+        query=self.portal_catalog(portal_type=self.calendar_types,
+                                  review_state='published',
                                   start={'query': (first_date,last_date),
                                          'range': 'min:max'})
 
         # Get all events that End on this day
-        query+=self.portal_catalog(portal_type=self.getCalendarTypes(),
-                                  review_state=self.getCalendarStates(),
+        query+=self.portal_catalog(portal_type=self.calendar_types,
+                                  review_state='published',
                                   end={'query': (first_date,last_date),
                                        'range': 'min:max'})
 
         # Get all events that Start before this day AND End after this day
-        query+=self.portal_catalog(portal_type=self.getCalendarTypes(),
-                                  review_state=self.getCalendarStates(),
+        query+=self.portal_catalog(portal_type=self.calendar_types,
+                                  review_state='published',
                                   start={'query': first_date,
                                          'range': 'max'},
                                   end={'query': last_date,

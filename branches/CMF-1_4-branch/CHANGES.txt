@@ -2,9 +2,6 @@ After CMF 1.4.6
 
   New Features
 
-    - CMFCalendar.CalendarTool: Made workflow states configurable TTW.
-      Also see http://www.zope.org/Collectors/CMF/110
-
     - Minor featurelet: The "Action Providers" ZMI tab on the portal_actions 
       tool now links directly to the tools shown 
       http://www.zope.org/Collectors/CMF/181)
