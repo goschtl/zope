@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.5 2002/12/02 20:03:46 alga Exp $
+$Id: RAMCache.py,v 1.6 2002/12/03 08:45:46 alga Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -28,6 +28,10 @@ caches = {}
 
 # A writelock for caches dictionary
 writelock = allocate_lock()
+
+# A counter for cache ids and its lock
+cache_id_counter = 0
+cache_id_writelock = allocate_lock()
 
 class RAMCache(Persistent):
     """RAM Cache
@@ -50,7 +54,15 @@ class RAMCache(Persistent):
     __implements__ = IRAMCache
 
     def __init__(self):
-        self._cacheId = "%s_%f" % (id(self), time())
+        global cache_id_counter
+        cache_id_nr = 0
+        cache_id_writelock.acquire()
+        try:
+            cache_id_counter +=1
+            cache_id_nr = cache_id_counter
+        finally:
+            cache_id_writelock.release()
+        self._cacheId = "%s_%f_%d" % (id(self), time(), cache_id_nr)
         self.requestVars = ()
         self.maxEntries = 1000
         self.maxAge = 3600

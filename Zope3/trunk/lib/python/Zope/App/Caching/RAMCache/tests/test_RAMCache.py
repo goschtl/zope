@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.5 2002/12/02 20:03:47 alga Exp $
+$Id: test_RAMCache.py,v 1.6 2002/12/03 08:45:46 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -58,9 +58,9 @@ class TestRAMCache(PlacelessSetup,
 
     def test_init(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
-        c1 = RAMCache()
-        c2 = RAMCache()
-        self.assertNotEquals(c1._cacheId, c2._cacheId,
+        c1 = RAMCache()._cacheId
+        c2 = RAMCache()._cacheId
+        self.assertNotEquals(c1, c2,
                              "The cacheId is not unique")
 
 
