@@ -19,4 +19,8 @@
       alias="zope.app.interfaces.services.interface"
       />
 
+  <vocabulary
+      name="Object Interfaces"
+      factory=".vocabulary.ObjectInterfacesVocabulary" />
+
 </configure>
