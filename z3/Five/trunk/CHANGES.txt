@@ -36,6 +36,9 @@ Trunk
 
 * Support for browser:editform. You can now use schemas for editing.
 
+* Fixed a traversal bug which caused Zope to give the wrong error when
+  a page could not be found (missing docstring instead of not found).
+
 Five 0.2b
 ---------
 
