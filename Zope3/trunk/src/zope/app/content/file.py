@@ -13,11 +13,8 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.11 2003/07/23 21:46:18 philikon Exp $
+$Id: file.py,v 1.12 2003/08/26 18:00:25 fdrake Exp $
 """
-import datetime
-zerotime = datetime.datetime.fromtimestamp(0)
-
 from persistence import Persistent
 from transaction import get_transaction
 from zope.interface import implements
