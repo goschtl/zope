@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: ZopeSecurityPolicy.py,v 1.6 2002/08/13 17:46:12 jim Exp $
+$Id: ZopeSecurityPolicy.py,v 1.7 2002/11/08 17:14:19 stevea Exp $
 """
-__version__='$Revision: 1.6 $'[11:-2]
+__version__='$Revision: 1.7 $'[11:-2]
 
 from Zope.ComponentArchitecture import queryAdapter
 
@@ -99,12 +99,13 @@ class ZopeSecurityPolicy:
 
         # get placeless principal permissions
         for principal in principals:
-            for permission, setting in getPermissionsForPrincipal(principal):
-                if setting is Deny:
-                    return 0
-                assert setting is Allow
-                remove[principal] = 1
-
+            for principal_permission, setting in (
+                getPermissionsForPrincipal(principal)):
+                if principal_permission == permission:
+                    if setting is Deny:
+                        return 0
+                    assert setting is Allow
+                    remove[principal] = 1
 
         # Clean out removed principals
         if remove:
@@ -166,14 +167,14 @@ class ZopeSecurityPolicy:
             prinper = queryAdapter(object, IPrincipalPermissionMap)
             if prinper is not None:
                 for principal in principals:
-                    for permission, setting in (
+                    for principal_permission, setting in (
                         prinper.getPermissionsForPrincipal(principal)):
+                        if principal_permission == permission:
+                            if setting is Deny:
+                                return 0
 
-                        if setting is Deny:
-                            return 0
-
-                        assert setting is Allow
-                        remove[principal] = 1
+                            assert setting is Allow
+                            remove[principal] = 1
 
             # Clean out removed principals
             if remove:
