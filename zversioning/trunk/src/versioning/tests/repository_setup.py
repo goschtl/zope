@@ -57,7 +57,7 @@ def buildDatabaseRoot():
     connection = db.open()
     return connection.root()
 
-def buildOldStyleRepository():
+def buildRepository(factory=zope.app.versioncontrol.repository.Repository):
     """Setup a zope.app.versioncontrol repository
     
     Placing an object under version control requires an instance of an
@@ -70,7 +70,7 @@ def buildOldStyleRepository():
     import zope.app.versioncontrol.repository
     import zope.interface.verify
     
-    repository = zope.app.versioncontrol.repository.Repository()
+    repository = factory()
     assert zope.interface.verify.verifyObject(
                interfaces.IVersionControl,
                repository)

@@ -46,10 +46,10 @@ the hierarchical ones, which should be naturally handled in Zope3:
 In order to show some limitations of the current implementation we use a
 prebuild version control repository :
 
-  >>> from versioning.tests.repository_setup import buildOldStyleRepository, buildDatabaseRoot
+  >>> from versioning.tests.repository_setup import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
   >>> db_root["sample"] = sample 
-  >>> repository = buildOldStyleRepository()
+  >>> repository = buildRepository()
   
 The current policy forces us to remove __parent__ and __name__. We'll do that
 by specializing the standard adapter that removes nothing:
@@ -91,7 +91,37 @@ its reference to a because c is not contained in a. (See
   >>> new_c.refers_to == new_a
   False
   
+This demonstrates that the reference to a is not correctly preserved. To
+achieve this goal we overwrite some methods :
 
+  >>> class RefertialVersionControl(Repository) : 
+  ...   # an implementation that preprocesses the object states
+  ...
+  ...   def applyVersionControl(self, object, message) :
+  ...       obj = self.preprocess(object)
+  ...       super(RefertialVersionControl, self).applyVersionControl(obj, message)
+  ...
+  ...   def getVersionOfResource(self, history_id, branch) :
+  ...       obj = super(RefertialVersionControl, self).getVersionOfResource(history_id, branch)
+  ...       return self.postprocess(obj)
+  ...
+  ...   def preprocess(self, obj) :
+  ...       # We replace python references by unique ids
+  ...       
+  
+  >>> repository2 = buildRepository(RefertialVersionControl)
+  >>> repository2.applyVersionControl(sample)
+  >>> repository2.applyVersionControl(a)
+  >>> repository2.applyVersionControl(b)
+  >>> repository2.applyVersionControl(c)
+  
+  
+
+  >>> new_a = accessVersion(repository2, a)
+  >>> new_c = accessVersion(repository2, c)
+  >>> new_c.refers_to == new_a
+  True
+  
 
 
 
