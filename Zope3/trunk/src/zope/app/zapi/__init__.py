@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: __init__.py,v 1.2 2004/03/21 17:09:43 srichter Exp $
+$Id: __init__.py,v 1.3 2004/04/27 10:53:57 jim Exp $
 """
 
 from interfaces import IZAPI
@@ -29,6 +29,7 @@ __all__ = tuple(IZAPI)
 from zope.component import *
 
 from zope.app.traversing import *
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.exception.interfaces import UserError
 
 name = getName

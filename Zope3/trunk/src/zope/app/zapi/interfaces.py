@@ -13,15 +13,16 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: interfaces.py,v 1.2 2004/03/21 17:09:43 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/04/27 10:53:57 jim Exp $
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
 from zope.app.traversing.interfaces import ITraversalAPI
+from zope.app.traversing.browser.interfaces import IAbsoluteURLAPI
 
 class IZAPI(
     IComponentArchitecture,
-    ITraversalAPI,
+    ITraversalAPI, IAbsoluteURLAPI,
     ):
     """Convenience API for use with Zope applications.
     """
