@@ -6,11 +6,15 @@
 
   <!-- File View Directives -->
 
-  <browser:defaultView 
+  <browser:view
       name="view"
       for=".IFile."
       permission="Zope.View"
       factory=".Views.Browser.FileView." />
+
+  <browser:defaultView
+      for=".IFile."
+      name="view" />
 
   <browser:view
       for=".IFile."
@@ -20,6 +24,22 @@
     <browser:page name="editForm.html" attribute="index" />
     <browser:page name="edit.html" attribute="action" />
   </browser:view>
+
+  <browser:view
+      name="view"
+      for=".I18nFile.II18nFile."
+      permission="Zope.View"
+      factory=".Views.Browser.I18nFileView." />
+
+  <browser:view
+      for="Zope.App.OFS.Content.File.I18nFile.II18nFile."
+      permission="Zope.View"
+      factory=".Views.Browser.I18nFileEdit.">
+
+    <browser:page name="editForm.html" template="Views/Browser/i18n_edit.pt" />
+    <browser:page name="edit.html" attribute="action" />
+  </browser:view>
+
 
   <!-- Registering all the field views for the browser -->
 
@@ -45,6 +65,10 @@
   <browser:menuItem menu="add_content"
                     for="Zope.App.OFS.Container.IAdding."
                     title="File" action="File" />
+
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Container.IAdding."
+                    title="I18n File" action="I18nFile" />
  
   <browser:menuItem menu="add_content"
                     for="Zope.App.OFS.Container.IAdding."

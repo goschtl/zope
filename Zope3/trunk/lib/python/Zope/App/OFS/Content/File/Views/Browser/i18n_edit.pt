@@ -1,0 +1,108 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <style metal:fill-slot="headers" type="text/css">
+      <!--
+      .ContentIcon {
+	  width: 20px;
+      }
+      
+      .ContentTitle {
+	  text-align: left;
+      }
+      -->
+    </style>
+  </head>
+
+  <body>
+    <div metal:fill-slot="body">
+
+ 
+      <p tal:content="context/msg"
+         tal:condition="python: hasattr(context, 'msg')">
+        Message will go here.
+      </p>
+
+      <p tal:content="view/description">
+        Description of the Form.
+      </p>
+
+      <form action="edit.html" method="post">
+
+        <table class="EditTable">
+	  <tbody>
+
+            <tr>
+              <th class="EditAttributeName">Content Type</th>
+              <td class="EditAttributeValue">
+                <input name="contentType" type="text" size=20
+                       tal:attributes="value context/getContentType" />
+            </tr>
+            <tr>
+              <th class="EditAttributeName">Default Language</th>
+              <td class="EditAttributeValue">
+                <select name="defaultLanguage">
+                  <span tal:repeat="lang context/getAvailableLanguages"
+                        tal:omit-tag="">
+                  <option selected
+                          tal:attributes="value lang"
+                          tal:condition="python:context.getDefaultLanguage() == lang"
+                          tal:content="lang" />
+                  <option
+                          tal:attributes="value lang"
+                          tal:condition="python:context.getDefaultLanguage() != lang"
+                          tal:content="lang" />
+                 </span>
+                </select>
+            </tr>
+            <tr>
+              <td colspan=2>
+                <hr>
+              </td>
+            </tr>
+            <tr>
+              <th class="EditAttributeName">Language</th>
+              <td class="EditAttributeValue">
+                <select name="language">
+                  <span tal:repeat="lang context/getAvailableLanguages"
+                        tal:omit-tag="">
+                  <option selected
+                          tal:attributes="value lang"
+                          tal:condition="python:request.get('language',
+                                context.getDefaultLanguage()) == lang"
+                          tal:content="lang" />
+                  <option
+                          tal:attributes="value lang"
+                          tal:condition="python:request.get('language',
+                                context.getDefaultLanguage()) != lang"
+                          tal:content="lang" />
+                 </span>
+                </select>
+                <input type="submit" name="selectLanguage"
+                       value="Show" />
+                <input type="submit" name="removeLanguage"
+                       value="Remove" />
+                &nbsp;&nbsp;
+                <input type="submit" name="addLanguage"
+                       value="Add new language" />
+                <input type="text" name="newLanguage" size=10 />
+            </tr>
+            <tr>
+              <th class="EditAttributeName">Data</th>
+              <td class="EditAttributeValue">
+                <textarea name="data" cols=70 rows=10
+                 tal:content="python:context.getData(request.get('language'))">
+                </textarea>
+            </tr>
+ 
+	  </tbody>
+      </table>
+
+      <input type="submit" name="edit" value="Save Changes" />
+
+      </form>
+
+    </div>
+  </body>
+</html>
+
+

@@ -38,6 +38,29 @@
       for=".IFile." />
 
 
+  <!-- I18n File Directives -->
+
+  <content class=".I18nFile.">
+    <factory
+        id="I18nFile"
+        permission="Zope.ManageContent"
+        title="I18n File"
+        description="An Internationalized File" />
+    <require
+        permission="Zope.View"
+        interface=".IFile.IReadFile" />
+    <require
+        permission="Zope.ManageContent"
+        interface=".IFile.IWriteFile" />
+    <require
+        permission="Zope.View"
+        attributes="getDefaultLanguage getAvailableLanguages" />
+    <require
+        permission="Zope.ManageContent"
+        attributes="setDefaultLanguage removeLanguage" />
+  </content>
+
+
   <!-- Further Directives -->
 
   <include package=".Views" />
