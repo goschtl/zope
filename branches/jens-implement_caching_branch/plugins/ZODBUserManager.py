@@ -260,6 +260,10 @@ class ZODBUserManager( BasePlugin, PASCacheable ):
         self._login_to_userid[ login_name ] = user_id
         self._userid_to_login[ user_id ] = login_name
 
+        # enumerateUsers return value has changed
+        view_name = createViewName('enumerateUsers')
+        self.ZCacheable_invalidate(view_name=view_name)
+
     security.declarePrivate( 'removeUser' )
     def removeUser( self, user_id ):
 
@@ -273,6 +277,8 @@ class ZODBUserManager( BasePlugin, PASCacheable ):
         del self._userid_to_login[ user_id ]
 
         # Also, remove from the cache
+        view_name = createViewName('enumerateUsers')
+        self.ZCacheable_invalidate(view_name=view_name)
         view_name = createViewName('enumerateUsers', user_id)
         self.ZCacheable_invalidate(view_name=view_name)
 

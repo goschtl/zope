@@ -242,10 +242,7 @@ class PluggableAuthService( Folder, PASCacheable ):
         plugins = self._getOb( 'plugins' )
         is_top = self._isTop()
 
-        user_ids = self._extractUserIds( request
-                                       , plugins
-                                     # , cache=self._v_credentials_cache
-                                       )
+        user_ids = self._extractUserIds(request, plugins)
         ( accessed
         , container
         , name
@@ -254,10 +251,7 @@ class PluggableAuthService( Folder, PASCacheable ):
 
         for user_id, login in user_ids:
 
-            user = self._findUser( plugins, user_id, login
-                               # , cache=self._getUserCache()
-                                 , request=request
-                                 )
+            user = self._findUser(plugins, user_id, login, request=request)
 
             if aq_base( user ) is emergency_user:
 
@@ -633,7 +627,7 @@ class PluggableAuthService( Folder, PASCacheable ):
     #   Helper methods
     #
     security.declarePrivate( '_extractUserIds' )
-    def _extractUserIds( self, request, plugins, cache=None ):
+    def _extractUserIds( self, request, plugins ):
 
         """ request -> [ validated_user_id ]
 
@@ -641,9 +635,6 @@ class PluggableAuthService( Folder, PASCacheable ):
           a user;  accumulate a list of the IDs of such users over all
           our authentication and extraction plugins.
         """
-        if cache is None:
-            cache = {}
-
         result = []
         user_ids = []
 
@@ -681,16 +672,13 @@ class PluggableAuthService( Folder, PASCacheable ):
                 try:
                     credentials[ 'extractor' ] = extractor_id # XXX: in key?
                     items = credentials.items()
-                  # credentials[ 'extractor' ] = extractor_id # XXX: in key?
                     items.sort()
-                    cache_key = tuple( items )
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                     LOG('PluggableAuthService', WARNING,
                         'Credentials error: %s' % credentials,
                         error=sys.exc_info())
-                    cache_key = None
                 else:
-                    user_ids = cache.get( cache_key, [] )
+                    user_ids = []
 
                 if not user_ids:
 
@@ -718,10 +706,6 @@ class PluggableAuthService( Folder, PASCacheable ):
                                                         user_id)
                             user_ids.append( (mangled_id, name) )
 
-
-                    if cache_key is not None:
-                        cache[ cache_key ] = user_ids
-
                 result.extend( user_ids )
 
         if not user_ids:
@@ -730,6 +714,7 @@ class PluggableAuthService( Folder, PASCacheable ):
 
             if user_id is not None:
                 result.append( ( user_id, name ) )
+
         return result
 
     security.declarePrivate( '_unmangleId' )
@@ -836,8 +821,7 @@ class PluggableAuthService( Folder, PASCacheable ):
         return PropertiedUser( user_id, name ).__of__( self )
 
     security.declarePrivate( '_findUser' )
-    def _findUser( self, plugins, user_id, name=None, cache=None
-                 , request=None ):
+    def _findUser( self, plugins, user_id, name=None, request=None ):
 
         """ user_id -> decorated_user
         """
@@ -905,6 +889,15 @@ class PluggableAuthService( Folder, PASCacheable ):
             criteria[ 'login' ] = login
 
         if criteria:
+            view_name = createViewName('_verifyUser', user_id or login)
+            cached_info = self.ZCacheable_get( view_name=view_name
+                                             , keywords=criteria
+                                             , default=None
+                                             )
+
+            if cached_info is not None:
+                return cached_info
+
 
             enumerators = plugins.listPlugins( IUserEnumerationPlugin )
 
@@ -913,7 +906,12 @@ class PluggableAuthService( Folder, PASCacheable ):
                     info = enumerator.enumerateUsers( **criteria )
 
                     if info:
-                        return self._computeMangledId( info[0] )
+                        id = self._computeMangledId( info[0] )
+                        # Put the computed value into the cache
+                        self.ZCacheable_set( id
+                                           , view_name=view_name
+                                           , keywords=criteria
+                                           )
 
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                     LOG('PluggableAuthService', WARNING,
