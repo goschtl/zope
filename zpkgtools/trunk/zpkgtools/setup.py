@@ -43,6 +43,30 @@ class SetupContext:
         self.load_metadata(
             os.path.join(self._working_dir, pkgname,
                          publication.PUBLICATION_CONF))
+        pkgdir = os.path.join(self._working_dir, pkgname)
+        self.scan(pkgname, pkgdir, pkgname)
+        depsdir = os.path.join(self._working_dir, "Dependencies")
+        if os.path.isdir(depsdir):
+            depnames = os.listdir(depsdir)
+            suffix = "-%s-%s" % (pkgname, version)
+            print depnames
+            print "suffix = %r" % suffix
+            for name in depnames:
+                if not name.endswith(suffix):
+                    # an unexpected name; we didn't put this here!
+                    print >>sys.stderr, \
+                          "unexpected name in Dependencies/: %r" % name
+                    continue
+                depdir = os.path.join(depsdir, name)
+                if not os.path.isdir(depdir):
+                    # a file; we didn't put this here either!
+                    print >>sys.stderr, \
+                          "unexpected file in Dependencies/: %r" % name
+                    continue
+                depname = name[:-len(suffix)]
+                pkgdir = os.path.join(depdir, depname)
+                reldir = posixpath.join("Dependencies", name, depname)
+                self.scan(depname, pkgdir, reldir)
 
     def setup(self):
         kwargs = self.__dict__.copy()
@@ -77,6 +101,18 @@ class SetupContext:
         if self.platforms:
             self.platforms = ", ".join(self.platforms)
 
+    def scan(self, name, directory, reldir):
+        init_py = os.path.join(directory, "__init__.py")
+        if os.path.isfile(init_py):
+            self.scan_package(name, directory, reldir)
+        else:
+            self.scan_collection(name, directory, reldir)
+
+    def scan_collection(self, name, directory, reldir):
+        # load the collection metadata
+        pkginfo = package.loadCollectionInfo(directory, reldir)
+        self.scripts.extend(pkginfo.script)
+
     def scan_package(self, name, directory, reldir):
         # load the package metadata
         pkginfo = package.loadPackageInfo(name, directory, reldir)
@@ -106,8 +142,8 @@ class SetupContext:
                 self.add_package_file(name, fn)
 
         # We need to check that any files that were labelled as
-        # scripts aren't copied in as package data; they don't expect
-        # to be installed into the package itself.
+        # scripts aren't copied in as package data; they shouldn't be
+        # installed into the package itself.
         #
         # XXX I'm not sure whether documentation files should be
         # removed from package_data or not, given that there's no spec
@@ -141,32 +177,8 @@ class SetupContext:
             self.package_dir[pkgname] = reldir
 
     def add_package_file(self, pkgname, relfn):
-        L = self.package_data.setdefault(pkgname, [])
-        L.append(relfn)
-
-
-class PackageContext(SetupContext):
-
-    def __init__(self, pkgname, version, setup_file):
-        SetupContext.__init__(self, pkgname, version, setup_file)
-        self.scan_package(pkgname, os.path.join(self._working_dir, pkgname),
-                          pkgname)
-
-
-class CollectionContext(SetupContext):
-
-    def __init__(self, pkgname, version, setup_file,
-                 packages=(), collections=()):
-        SetupContext.__init__(self, pkgname, version, setup_file)
-        reldir = posixpath.join(name, name)
-        for name in packages:
-            pkgdir = os.path.join(self._working_dir, name, name)
-            self.scan_package(name, pkgdir, reldir)
-        for name in collections:
-            pkgdir = os.path.join(self._working_dir, name, name)
-            self.scan_collection(name, pkgdir, reldir)
-
-    def scan_collection(self, name, directory, reldir):
-        # load the collection metadata
-        pkginfo = package.loadCollectionInfo(directory, reldir)
-        self.scripts.extend(pkginfo.script)
+        # Only add the file as package data if it's not a Python
+        # source file; Python files are copied in automatically.
+        if not relfn.endswith(".py"):
+            L = self.package_data.setdefault(pkgname, [])
+            L.append(relfn)
