@@ -13,9 +13,9 @@
 ##############################################################################
 """Schemas for the 'help' ZCML namespace 
 
-$Id: metadirectives.py,v 1.1 2003/08/02 11:19:21 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/08/03 19:08:30 philikon Exp $
 """
-from zope.configuration.fields import GlobalObject, Path
+from zope.configuration.fields import GlobalObject, Path, MessageID
 from zope.interface import Interface, implements, classProvides
 from zope.schema import TextLine, BytesLine
 
@@ -26,31 +26,31 @@ class IRegisterDirective(Interface):
         title=u"Topic Id",
         description=u"Id of the topic as it will appear in the URL.",
         required=True)
-    
-    title = TextLine(
+
+    title = MessageID(
         title=u"Title",
         description=u"Provides a title for the online Help Topic.",
         required=True)
-    
+
     parent = BytesLine(
         title=u"Parent Topic",
         description=u"Id of the parent topic.",
         default="",
         required=False)
-    
+
     for_ = GlobalObject(
         title=u"Object Interface",
         description=u"Interface for which this Help Topic is registered.",
         default=None,
         required=False)
-    
+
     view = BytesLine(
         title=u"View Name",
         description=u"The view name for which this Help Topic is registered.",
         default="",
         required=False)
-    
+
     doc_path = Path(
         title=u"Path to File",
-        description=u"Path to the fiel that contains the Help Topic content.",
+        description=u"Path to the file that contains the Help Topic content.",
         required=True)

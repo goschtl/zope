@@ -2,7 +2,7 @@
       Don't simply copy this file to principals.zcml unless you
       absolutely know it will only be used for development.
    -->
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns='http://namespaces.zope.org/zope'>
 
 
 <unauthenticatedPrincipal  id="anybody" 
@@ -29,4 +29,4 @@
 <grant role="Manager" principal="sample_manager" />
 <grant role="Member"  principal="sample_member" />
 
-</zopeConfigure>
+</configure>

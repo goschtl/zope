@@ -1,6 +1,8 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:service="http://namespaces.zope.org/service">
+   xmlns:service="http://namespaces.zope.org/service"
+   i18n_domain="zope"
+   >
 
 <!-- Workflow Permissions -->
 

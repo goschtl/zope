@@ -1,4 +1,4 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns='http://namespaces.zope.org/zope'>
 
 <!-- add include directives for products here -->
 
@@ -6,4 +6,4 @@
 <include package="zopeproducts.demo.jobboard" />
 -->
 
-</zopeConfigure>
+</configure>

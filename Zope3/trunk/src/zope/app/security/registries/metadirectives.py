@@ -13,10 +13,11 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.1 2003/08/02 20:05:39 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/08/03 19:08:39 philikon Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, Text, Id
+from zope.configuration.fields import MessageID
 
 class IBaseDefineDirective(Interface):
     """Define a new security object."""
@@ -26,12 +27,12 @@ class IBaseDefineDirective(Interface):
         description=u"Id as which this object will be known and used.",
         required=True)
 
-    title = TextLine(
+    title = MessageID(
         title=u"Title",
         description=u"Provides a title for the object.",
         required=True)
 
-    description = Text(
+    description = MessageID(
         title=u"Title",
         description=u"Provides a description for the object.",
         required=False)

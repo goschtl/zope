@@ -1,9 +1,10 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
    xmlns:event='http://namespaces.zope.org/event'
    package="zope.app.cache"
->
+   i18n_domain="zope"
+   >
 
   <serviceType id="Caching"
                interface="zope.app.interfaces.cache.cache.ICachingService" 
@@ -26,4 +27,4 @@
         />
   </content>
 
-</zopeConfigure>
+</configure>

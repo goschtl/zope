@@ -1,6 +1,8 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:mail="http://namespaces.zope.org/mail">
+   xmlns:mail="http://namespaces.zope.org/mail"
+   i18n_domain="zope"
+   >
 
   <serviceType
       id="Mail"

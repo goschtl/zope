@@ -1,6 +1,8 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'
-               xmlns:browser='http://namespaces.zope.org/browser'
->
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <include package="zope.app" />
 
@@ -32,4 +34,4 @@
 <browser:skin name="" layers="rotterdam default" />
 -->
 
-</zopeConfigure>
+</configure>
