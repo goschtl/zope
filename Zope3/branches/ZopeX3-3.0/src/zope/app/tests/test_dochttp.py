@@ -42,14 +42,6 @@ expected = r'''
   </html>
   <BLANKLINE>
   <BLANKLINE>
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-        lang="en">
-  <BLANKLINE>
-  ...
-  <BLANKLINE>
-  </html>
-  <BLANKLINE>
-  <BLANKLINE>
 
 
   >>> print http(r"""
@@ -59,14 +51,6 @@ expected = r'''
   HTTP/1.1 200 Ok
   Content-Length: 89
   Content-Type: text/html;charset=utf-8
-  <BLANKLINE>
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-        lang="en">
-  <BLANKLINE>
-  ...
-  <BLANKLINE>
-  </html>
-  <BLANKLINE>
   <BLANKLINE>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
         lang="en">
@@ -106,14 +90,6 @@ expected = r'''
   </html>
   <BLANKLINE>
   <BLANKLINE>
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-        lang="en">
-  <BLANKLINE>
-  ...
-  <BLANKLINE>
-  </html>
-  <BLANKLINE>
-  <BLANKLINE>
 
 
   >>> print http(r"""
@@ -124,14 +100,6 @@ expected = r'''
   HTTP/1.1 200 Ok
   Content-Length: 89
   Content-Type: text/html;charset=utf-8
-  <BLANKLINE>
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-        lang="en">
-  <BLANKLINE>
-  ...
-  <BLANKLINE>
-  </html>
-  <BLANKLINE>
   <BLANKLINE>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
         lang="en">
@@ -152,7 +120,7 @@ class Test(unittest.TestCase):
         dochttp(['-p', 'test', directory])
         got = sys.stdout.getvalue()
         sys.stdout = old
-        self.assert_(got, expected)
+        self.assert_(got == expected)
 
 def test_suite():
     suite = unittest.TestSuite()

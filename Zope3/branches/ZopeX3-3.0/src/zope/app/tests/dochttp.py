@@ -158,7 +158,6 @@ class Message:
             output.extend(headers)
             output.append('')
             output.extend(self.body)
-            output.extend(self.body)
         else:
             output = []
 
