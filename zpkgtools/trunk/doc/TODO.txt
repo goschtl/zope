@@ -64,6 +64,10 @@ Things that need to be done
     Perhaps a configuration option should specify which are produced
     by default.  Low priority.
 
+  - When installing an application bundle, it should be an error if
+    the installation directory already exists and the user hasn't
+    explicitly said that's ok (-f/--force).
+
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
