@@ -52,6 +52,11 @@ Options:
 -h / --help
     Print this help text and exit.
 
+   / --libdir test_root
+    Search for tests starting in the specified start directory
+    (useful for testing components being developed outside the main
+    'src' or 'build' trees).
+
 -L
     Keep running the selected tests in a loop.  You may experience memory
     leakage, but this is a handy option for catching race conditions.
@@ -250,7 +255,7 @@ class ImmediateTestRunner(unittest.TextTestRunner):
 
 # setup list of directories to put on the path
 class PathInit:
-    def __init__(self, build, build_inplace):
+    def __init__(self, build, build_inplace, libdir=None):
         self.inplace = None
         # Figure out if we should test in-place or test in-build.  If the -b
         # or -B option was given, test in the place we were told to build in.
@@ -266,6 +271,7 @@ class PathInit:
                 self.inplace = True
         # Calculate which directories we're going to add to sys.path, and cd
         # to the appropriate working directory
+        org_cwd = os.getcwd()
         if self.inplace:
             self.libdir = 'src'
         else:
@@ -273,8 +279,16 @@ class PathInit:
             os.chdir('build')
         # Hack sys.path
         self.cwd = os.getcwd()
-        print 'Running tests from', self.cwd
         sys.path.insert(0, os.path.join(self.cwd, self.libdir))
+        # Hack again for external products.
+        if libdir:
+            extra = os.path.join(org_cwd, libdir)
+            print 'Running tests from', extra
+            self.libdir = extra
+            sys.path.insert(0, extra)
+        else:
+            print 'Running tests from', self.cwd
+
 
 
 def match(rx, s):
@@ -425,7 +439,7 @@ def remove_stale_bytecode(arg, dirname, names):
                 os.unlink(fullname)
 
 
-def main(module_filter, test_filter):
+def main(module_filter, test_filter, libdir):
     global pathinit
 
     os.path.walk(os.curdir, remove_stale_bytecode, None)
@@ -437,7 +451,7 @@ def main(module_filter, test_filter):
     logini = os.path.abspath('log.ini')
 
     # Initialize the path and cwd
-    pathinit = PathInit(build, build_inplace)
+    pathinit = PathInit(build, build_inplace, libdir)
 
     # Initialize the logging module.
     import logging.config
@@ -480,6 +494,7 @@ def process_args(argv=None):
     global debug
     global debugger
     global build
+    global libdir
     global gcthresh
     global progress
     global build_inplace
@@ -498,6 +513,7 @@ def process_args(argv=None):
     debugger = False
     build = False
     build_inplace = False
+    libdir = None
     gcthresh = None
     gcflags = []
     progress = False
@@ -505,7 +521,7 @@ def process_args(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:],
                                    'bBcdDg:G:hLumpTv',
-                                   ['help'])
+                                   ['help', 'libdir='])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -534,6 +550,8 @@ def process_args(argv=None):
         elif k in ('-h', '--help'):
             print __doc__ % globals()
             sys.exit(0)
+        elif k == '--libdir':
+            libdir = v
         elif k == '-L':
             LOOP = True
         elif k == '-u':
@@ -582,7 +600,7 @@ def process_args(argv=None):
             test_filter = args[1]
         module_filter = args[0]
     try:
-        bad = main(module_filter, test_filter)
+        bad = main(module_filter, test_filter, libdir)
         if bad:
             sys.exit(1)
     except ImportError, err:
