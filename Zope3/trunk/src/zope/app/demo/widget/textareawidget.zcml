@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <content class=".textareawidget.DemoTextAreaWidget">
+
+    <factory />
+
+    <require permission="zope.View" 
+        interface=".interfaces.IDemoTextAreaWidget"
+        />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".interfaces.IDemoTextAreaWidget"
+        />
+
+  </content>
+
+</configure>
