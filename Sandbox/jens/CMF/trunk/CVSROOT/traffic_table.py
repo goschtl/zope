@@ -112,6 +112,10 @@ def init_table():
         {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
          'remote': products_remote},
 
+        {'path': "Packages/Products/PythonMethod",
+         'addrs': None,
+         'remote': products_remote},
+
         {'path': "Packages/Products/TrackerBase",
          'addrs': ['tracker-dev@zope.org'],
          'remote': products_remote},
