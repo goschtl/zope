@@ -12,22 +12,39 @@
 #
 ##############################################################################
 """
-Basic tests for Page Templates used in content-space.
+Basic tests for XML Document.
 
-$Id: test_xmldocument.py,v 1.1 2003/04/09 11:47:52 philikon Exp $
+$Id: test_xmldocument.py,v 1.2 2003/04/10 13:04:43 faassen Exp $
 """
 
 import unittest
+
 from zope.schema.interfaces import ValidationError
 from zope.app.content.xmldocument import XMLDocument
+from zope.app.interfaces.content.xmldocument import IXMLDocument
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-class XMLDocumentTests(unittest.TestCase):
+from zope.interface import Interface
+from zope.interface.interface import InterfaceClass
+from zope.app.interfaces.xml.representable import IXMLRepresentable
+from zope.app.component.globalinterfaceservice import interfaceService
+
+class IRandomInterface(Interface):
+    pass
+
+class XMLDocument2(XMLDocument):
+    __implements__ = IXMLDocument, IRandomInterface
+
+    
+class XMLDocumentTests(PlacelessSetup, unittest.TestCase):
 
     def test_create(self):
         doc = XMLDocument()
+        self.assertEquals('<doc/>', doc.source)
+        
         doc = XMLDocument('<mydoc/>')
-        self.assertRaises(ValidationError, XMLDocument, 'foo')
-
+        self.assertEquals('<mydoc/>', doc.source)
+    
     def test_set(self):
         src = '<mydoc/>'
         doc = XMLDocument(src)
@@ -36,5 +53,114 @@ class XMLDocumentTests(unittest.TestCase):
         doc.source = new_src
         self.assertEqual(new_src, doc.source)
 
+    def test_xmlschema_interfaces(self):
+        doc = XMLDocument()
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+
+        schema1 = 'http://schema.zope.org/hypothetical/schema1'
+        schema2 = 'http://schema.zope.org/hypothetical/schema2'
+        extends = (IXMLRepresentable,)
+        interface1 = InterfaceClass(schema1, extends, {})
+        interface2 = InterfaceClass(schema2, extends, {})
+        
+        interfaceService.provideInterface(schema1, interface1)
+
+        xml = '''
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://schema.zope.org/hypothetical/schema1">
+foo
+</doc>'''
+        doc.source = xml
+
+        self.assert_(interface1.isImplementedBy(doc))
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        
+        doc.source = '<doc />'
+
+        self.assert_(not interface1.isImplementedBy(doc))
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+
+        xml = '''
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://schema.zope.org/hypothetical/schema1
+                         http://schema.zope.org/hypothetical/schema2">
+foo
+</doc>'''
+        doc.source = xml
+        
+        self.assert_(interface1.isImplementedBy(doc))
+        # can't find it as it isn't provided yet
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+
+        # finally provide and set document again
+        interfaceService.provideInterface(schema2, interface2)
+
+        doc.source = xml
+        
+        self.assert_(interface1.isImplementedBy(doc))
+        self.assert_(interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+
+    def test_xmlschema_interfaces2(self):
+        # the same tests, but XMLDocument2 has two interfaces not just one
+        
+        doc = XMLDocument2()
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        self.assert_(IRandomInterface.isImplementedBy(doc))
+        
+        schema1 = 'http://schema.zope.org/hypothetical/schema1'
+        schema2 = 'http://schema.zope.org/hypothetical/schema2'
+        extends = (IXMLRepresentable,)
+        interface1 = InterfaceClass(schema1, extends, {})
+        interface2 = InterfaceClass(schema2, extends, {})
+        
+        interfaceService.provideInterface(schema1, interface1)
+
+        xml = '''
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://schema.zope.org/hypothetical/schema1">
+foo
+</doc>'''
+        doc.source = xml
+
+        self.assert_(interface1.isImplementedBy(doc))
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        self.assert_(IRandomInterface.isImplementedBy(doc))
+
+        doc.source = '<doc />'
+
+        self.assert_(not interface1.isImplementedBy(doc))
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        self.assert_(IRandomInterface.isImplementedBy(doc))
+        
+        xml = '''
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://schema.zope.org/hypothetical/schema1
+                         http://schema.zope.org/hypothetical/schema2">
+foo
+</doc>'''
+        doc.source = xml
+        
+        self.assert_(interface1.isImplementedBy(doc))
+        # can't find it as it isn't provided yet
+        self.assert_(not interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        self.assert_(IRandomInterface.isImplementedBy(doc))
+        
+        # finally provide and set document again
+        interfaceService.provideInterface(schema2, interface2)
+
+        doc.source = xml
+        
+        self.assert_(interface1.isImplementedBy(doc))
+        self.assert_(interface2.isImplementedBy(doc))
+        self.assert_(IXMLDocument.isImplementedBy(doc))
+        self.assert_(IRandomInterface.isImplementedBy(doc))
+        
 def test_suite():
     return unittest.makeSuite(XMLDocumentTests)
