@@ -1,6 +1,6 @@
 ﻿##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -10,11 +10,6 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
 #
-# FakeLDAP      Fake LDAP interface to test LDAP functionality
-#               independently of a running LDAP server
-#
-# This software is governed by a license (ZPL v2.1).
-# (c) Jens Vagelpohl, Nicolas Évrard
 ##############################################################################
 """LDAPAdapter test packages.
 
