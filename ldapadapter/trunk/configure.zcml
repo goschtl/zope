@@ -5,41 +5,42 @@
     i18n_domain="ldapadapter"
     >
 
-    <content class="ldapadapter.utility.ManageableLDAPAdapter">
+  <content class="ldapadapter.utility.ManageableLDAPAdapter">
 
-        <factory
-            id="ldapadapter.utility.ManageableLDAPAdapter" />
-   
-        <implements
-            interface="zope.app.utility.interfaces.ILocalUtility" />
+    <factory
+        id="ldapadapter.utility.ManageableLDAPAdapter" />
 
-        <implements
-            interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+    <implements
+        interface="zope.app.utility.interfaces.ILocalUtility" />
 
-        <require
-            permission="zope.ManageServices"
-            interface="ldapadapter.interfaces.IManageableLDAPAdapter" />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-        <require
-            permission="zope.ManageServices" 
-            set_schema="ldapadapter.interfaces.IManageableLDAPAdapter" />
-
-    </content>
-
-    <!-- LDAP connection test adapter -->
-    <adapter
-        factory="ldapadapter.check.CheckLDAPAdapter"
-        provides="ldapadapter.interfaces.ICheckLDAPAdapter"
-        for="ldapadapter.interfaces.IManageableLDAPAdapter"
+    <require
+        permission="zope.ManageServices"
+        interface="ldapadapter.interfaces.IManageableLDAPAdapter"
         />
 
-    <include package=".browser" />
+    <require
+        permission="zope.ManageServices"
+        set_schema="ldapadapter.interfaces.IManageableLDAPAdapter"
+        />
 
-    <!-- add onlinehelp text -->
-    <help:register
-        id="ldapadapter"
-        title="LDAP Adapter"
-        doc_path="./help/ldapadapter.stx" />
+  </content>
 
+  <!-- LDAP connection test adapter -->
+  <adapter
+      factory="ldapadapter.check.CheckLDAPAdapter"
+      provides="ldapadapter.interfaces.ICheckLDAPAdapter"
+      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      />
+
+  <include package=".browser" />
+
+  <!-- add onlinehelp text -->
+  <help:register
+      id="ldapadapter"
+      title="LDAP Adapter"
+      doc_path="./help/ldapadapter.stx" />
 
 </configure>
