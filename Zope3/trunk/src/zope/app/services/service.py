@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.4 2002/12/30 12:50:27 jim Exp $
+$Id: service.py,v 1.5 2003/01/08 17:41:49 stevea Exp $
 """
 
 import sys
@@ -49,14 +49,44 @@ from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
 from zope.app.interfaces.services.service import IServiceManagerContainer
 
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.services.configuration import NamedComponentConfiguration
-
-from zope.app.services.package import Packages
 
 ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
+
+class ServiceManagerContainer:
+
+    __implements__ =  IServiceManagerContainer
+
+    def hasServiceManager(self):
+        '''See interface IReadServiceManagerContainer'''
+        return hasattr(self, '_ServiceManagerContainer__sm')
+
+    def getServiceManager(self):
+        '''See interface IReadServiceManagerContainer'''
+
+        try:
+            return self.__sm
+        except AttributeError:
+            raise ComponentLookupError('no service manager defined')
+
+    def queryServiceManager(self, default=None):
+        '''See interface IReadServiceManagerContainer'''
+
+        return getattr(self, '_ServiceManagerContainer__sm', default)
+
+    def setServiceManager(self, sm):
+        '''See interface IWriteServiceManagerContainer'''
+
+        if IServiceService.isImplementedBy(sm):
+            self.__sm = sm
+        else:
+            raise ValueError('setServiceManager requires an IServiceService')
+
+
+from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.services.configuration import NamedComponentConfiguration
+from zope.app.services.package import Packages
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
@@ -275,33 +305,4 @@ class ServiceConfiguration(NamedComponentConfiguration):
             service.unbound(self.name)
 
     deactivated = ContextMethod(deactivated)
-
-class ServiceManagerContainer:
-
-    __implements__ =  IServiceManagerContainer
-
-    def hasServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-        return hasattr(self, '_ServiceManagerContainer__sm')
-
-    def getServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-
-        try:
-            return self.__sm
-        except AttributeError:
-            raise ComponentLookupError('no service manager defined')
-
-    def queryServiceManager(self, default=None):
-        '''See interface IReadServiceManagerContainer'''
-
-        return getattr(self, '_ServiceManagerContainer__sm', default)
-
-    def setServiceManager(self, sm):
-        '''See interface IWriteServiceManagerContainer'''
-
-        if IServiceService.isImplementedBy(sm):
-            self.__sm = sm
-        else:
-            raise ValueError('setServiceManager requires an IServiceService')
 
