@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.18 2003/03/11 16:11:22 jim Exp $
+$Id: event.py,v 1.19 2003/03/12 19:22:36 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -112,9 +112,11 @@ class EventChannel(Subscribable):
                 # adding this subscriber to badSubscribers is inappropriate.
                 getAdapter(obj, ISubscriber).notify(event)
 
-        for subscriber in badSubscribers:
-            # XXX this ought to be logged
-            clean_self.unsubscribe(subscriber)
+##        # XXX This code is bogus: unsubscribe() takes two arguments, not one.
+##        #     Alas, I don't know how to fix it; I just don't want it to fail.
+##        for subscriber in badSubscribers:
+##            # XXX this ought to be logged
+##            clean_self.unsubscribe(subscriber)
 
     def notify(wrapped_self, event):
         clean_self = removeAllProxies(wrapped_self)
