@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.10 2003/03/21 20:57:11 jim Exp $
+$Id: add.py,v 1.11 2003/03/22 19:11:24 jim Exp $
 """
 
 import sys
@@ -31,6 +31,8 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.browser.form.submit import Update
 from zope.app.browser.form.editview import EditView, _normalize
+from zope.app.publisher.browser.globalbrowsermenuservice \
+     import menuItemDirective
 
 class AddView(EditView):
     """Simple edit-view base class.
@@ -154,7 +156,22 @@ def add(_context, name, schema, content_factory, label='',
         class_ = None, for_ = 'zope.app.interfaces.container.IAdding',
         template = None, omit=None, fields=None,
         arguments='', keyword_arguments='',
-        set_before_add='', set_after_add=''):
+        set_before_add='', set_after_add='',
+        menu=None, title=None,
+        ):
+
+    # Handle menu attrs. We do this now to rather than later becaise
+    # menuItemDirective expects a dotted name for for_. 
+    if menu or title:
+        if (not menu) or (not title):
+            raise ValueError("If either menu or title are specified, "
+                             "they must both be specified")
+        actions = menuItemDirective(
+            _context, menu, for_, '@@' + name, title,
+            permission=permission)
+    else:
+        actions = []
+
 
     content_factory = _context.resolve(content_factory)
 
@@ -206,7 +223,9 @@ def add(_context, name, schema, content_factory, label='',
 
         set_after_add = leftover
 
-    return [
+        
+
+    actions += [
         Action(
         discriminator = ('view', for_, name, IBrowserPresentation, layer),
         callable = AddViewFactory,
@@ -215,3 +234,5 @@ def add(_context, name, schema, content_factory, label='',
                 keyword_arguments, set_before_add, set_after_add),
         )
         ]
+
+    return actions
