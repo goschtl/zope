@@ -52,8 +52,16 @@
     </form>
 
     <div tal:condition="request/queryText|nothing" tal:omit-tag="">
-        Search results:
-        <span tal:replace="python:context.query(request['queryText'])[1]" />
+        <span tal:define="
+            result_tuple python:context.query(request['queryText']);
+            total python:result_tuple[1];
+            result_list python:result_tuple[0]" tal:omit-tag="">
+        Search results: <span tal:replace="total" />
+            <div tal:repeat="match_tuple result_list">
+                 Hubid: <span tal:replace="python:match_tuple[0]" />
+                 Score: <span tal:replace="python:match_tuple[1]" />
+            </div>
+        </span>
     </div>
 
   </div>
