@@ -23,6 +23,18 @@ except ImportError:
                                tuple( interfaces )
                              )
 
+try:
+    from zope.interface import providedBy
+except ImportError:
+    def providedBy(obj, interface):
+        return list( obj.__implements__ )
+
+try:
+    from zope.interface import implementedBy
+except ImportError:
+    def implementedBy(cls, interface):
+        return list( cls.__implements__ )
+
 product_dir, utils_module_file = os.path.split( __file__ )
 
 product_prefix = product_dir
