@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.4 2003/02/20 14:45:44 stevea Exp $
+$Id: test_radiowidget.py,v 1.5 2003/04/04 15:39:29 stevea Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import RadioWidget
@@ -69,7 +69,36 @@ class RadioWidgetTest(BrowserWidgetTest):
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.renderHidden(value), check_list)
 
+    def testLabel(self):
+        label = ' '.join(self._widget.label().strip().split())
+        self.assertEqual(label, 'Foo Title')
 
+    def testTranslatedLabel(self):
+        import zope.app.browser.form.tests
+        from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
+        from zope.i18n.globaltranslationservice import translationService
+        import os
+        path = os.path.dirname(zope.app.browser.form.tests.__file__)
+        catalog = GettextMessageCatalog(
+            'pl', 'zope',
+            os.path.join(path, 'testlabeltranslation.mo'))
+        translationService.addCatalog(catalog)
+
+        label = ' '.join(self._widget.label().strip().split())
+        self.assertEqual(label, 'oofay itletay')
+
+    def testRow(self):
+        self._widget.request.form.clear()
+        label = ''.join(self._widget.label().strip().split())
+        value = ''.join(self._widget().strip().split())
+        row = ''.join(self._widget.row().strip().split())
+        id = 'field.foo'
+        self.assertEqual(row, '<divclass="label">'
+                              '<labelfor="%s">%s</label>'
+                              '</div>'
+                              '<divclass="field"id="%s">'
+                              '%s'
+                              '</div>' % (id, label, id, value))
 
 def test_suite():
     return makeSuite(RadioWidgetTest)

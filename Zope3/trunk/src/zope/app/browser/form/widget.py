@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.25 2003/03/26 15:26:21 jim Exp $
+$Id: widget.py,v 1.26 2003/04/04 15:39:28 stevea Exp $
 """
 
 __metaclass__ = type
@@ -577,6 +577,20 @@ class RadioWidget(SingleItemsWidget):
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         return self._renderItem(index, text, value, name, cssClass, True)
+
+    def label(self):
+        ts = getService(self.context.context, "Translation")
+        title = ts.translate("zope", self.title, context=self.request)
+        if title is None:
+            title = self.title
+        # radio field's label isn't "for" anything
+        return title
+
+    def row(self):
+        return ('<div class="label"><label for="%s">%s</label></div>'
+                '<div class="field" id="%s">%s</div>' % (
+                 self.name, self.label(), self.name, self())
+                )
 
 class MultiItemsWidget(ItemsWidget):
     """A widget with a number of items that has multiple selectable items."""

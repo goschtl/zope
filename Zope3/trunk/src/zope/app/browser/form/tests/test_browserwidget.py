@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.9 2003/03/25 23:20:57 bwarsaw Exp $
+$Id: test_browserwidget.py,v 1.10 2003/04/04 15:39:29 stevea Exp $
 """
 
 from zope.app.browser.form.widget import BrowserWidget
@@ -83,7 +83,7 @@ class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
             'pl', 'zope',
             os.path.join(path, 'testlabeltranslation.mo'))
         translationService.addCatalog(catalog)
-        
+
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
 
