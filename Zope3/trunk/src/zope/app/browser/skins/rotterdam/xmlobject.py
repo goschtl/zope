@@ -1,9 +1,26 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""Service manager interfaces
+
+$Id: xmlobject.py,v 1.3 2002/12/30 12:52:36 jim Exp $
+"""
+
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.container import IReadContainer
-from zope.app.traversing import objectName, getParents, getParent
+from zope.app.traversing import objectName, getParents, getParent, traverse
 from zope.component import queryView
 from zope.interface import Interface
-
 
 class ReadContainerXmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
@@ -21,8 +38,19 @@ class ReadContainerXmlObjectView(BrowserView):
         """Return an XML document that contains the children of an object."""
         result = []
         container = self.context
-        for name in container.keys():
-            item = container[name]
+
+        keys = list(container.keys())
+
+        # include the service manager
+        keys.append('++etc++Services')
+
+        for name in keys:
+
+            # Only include items we can traverse to
+            item = traverse(container, name, None)
+            if item is None:
+                continue
+            
             iconUrl = self.getIconUrl(item)
             if IReadContainer.isImplementedBy(item):
                 result.append(
@@ -32,6 +60,7 @@ class ReadContainerXmlObjectView(BrowserView):
                 result.append(
                     '<item name="%s" icon_url="%s"/>'
                     % (name, iconUrl))
+
         return ' '.join(result)
 
         
