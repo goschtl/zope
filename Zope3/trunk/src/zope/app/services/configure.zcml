@@ -169,45 +169,6 @@
         />
     </content>
 
-<!-- Error reporting service -->
-
-  <serviceType
-      id="ErrorLogging"
-      interface="zope.app.interfaces.services.error.IErrorReportingService" 
-      />
-
-  <content class='zope.app.services.error.ErrorReportingService'>
-    <require
-        permission="zope.Public"
-        interface="zope.app.interfaces.services.error.IErrorReportingService"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="
-          zope.app.interfaces.services.error.ILocalErrorReportingService"
-        />
-    <factory
-        id="ErrorLogging"
-        />
-    </content>
-
-  <content class="zope.app.services.error.RootErrorReportingService">
-    <require
-        permission="zope.Public"
-        interface="zope.app.interfaces.services.error.IErrorReportingService"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="
-          zope.app.interfaces.services.error.ILocalErrorReportingService"
-        />
-    </content>
-
-  <service serviceType="ErrorLogging"
-      permission='zope.Public'        
-      component="zope.app.services.error.globalErrorReportingService" 
-      />
-
 <!-- Object Hub -->
 
   <serviceType

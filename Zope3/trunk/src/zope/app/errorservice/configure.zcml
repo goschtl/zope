@@ -1,0 +1,60 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- For backward compatibility -->
+
+  <modulealias
+      module="zope.app.errorservice"
+      alias="zope.app.services.error"
+      />
+
+  <modulealias
+      module="zope.app.errorservice"
+      alias="zope.app.services.errorr"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.services.error"
+      />
+
+  <!-- Error Reporting Service -->
+
+  <serviceType
+      id="ErrorLogging"
+      interface=".interfaces.IErrorReportingService" 
+      />
+
+  <content class=".ErrorReportingService">
+    <factory
+        id="ErrorLogging"
+        />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IErrorReportingService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.ILocalErrorReportingService"
+        />
+    </content>
+
+  <content class=".RootErrorReportingService">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IErrorReportingService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.ILocalErrorReportingService"
+        />
+    </content>
+
+  <service 
+      serviceType="ErrorLogging"
+      permission="zope.Public"
+      component=".globalErrorReportingService" 
+      />
+
+  <include package=".browser" />
+
+</configure>

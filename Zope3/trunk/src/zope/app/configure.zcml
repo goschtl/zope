@@ -57,6 +57,7 @@
 
   <!-- Services -->
   <include package="zope.app.bundle" />  
+  <include package="zope.app.errorservice" />  
 
   <!-- Utilities -->
   <include package="zope.app.session" />

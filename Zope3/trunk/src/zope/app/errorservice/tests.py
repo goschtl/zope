@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Error Reporting Service Tests
 
-Revision information:
-$Id: test_errorreportingservice.py,v 1.3 2003/06/22 14:01:44 jim Exp $
+$Id: tests.py,v 1.1 2004/03/10 13:43:35 srichter Exp $
 """
-
 import sys
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.services.error import ErrorReportingService
+from zope.app.errorservice import ErrorReportingService
 from zope.testing.cleanup import CleanUp
 from zope.exceptions.exceptionformatter import format_exception
 

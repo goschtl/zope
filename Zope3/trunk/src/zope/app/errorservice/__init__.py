@@ -15,20 +15,20 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: error.py,v 1.5 2004/03/08 12:06:10 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/10 13:43:35 srichter Exp $
 """
+import time
+import logging
 from persistent import Persistent
 from random import random
 from thread import allocate_lock
 from types import StringTypes
-from zope.app.interfaces.services.error import IErrorReportingService
-from zope.app.interfaces.services.error import ILocalErrorReportingService
-from zope.app.interfaces.services.service import ISimpleService
+
 from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
-import logging
-import time
+from zope.app.interfaces.services.service import ISimpleService
 from zope.app.container.contained import Contained
+from interfaces import IErrorReportingService, ILocalErrorReportingService
 
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
@@ -238,10 +238,3 @@ _clear = _cleanup_temp_log
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 del addCleanUp
-
-
-
-# XXX Pickle backward compatability
-import sys
-sys.modules['zope.app.services.errorr'
-            ] = sys.modules['zope.app.services.error']

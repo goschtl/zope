@@ -13,9 +13,8 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.12 2004/03/05 22:09:12 jim Exp $
+$Id: test_bootstrap.py,v 1.13 2004/03/10 13:43:37 srichter Exp $
 """
-
 import unittest
 from transaction import get_transaction
 from ZODB.tests.util import DB
@@ -23,14 +22,14 @@ from zope.exceptions import NotFoundError
 
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
-from zope.app.interfaces.services.error import IErrorReportingService
+from zope.app.errorservice.interfaces import IErrorReportingService
 from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.app.interfaces.services.event import IEventService
 from zope.app.interfaces.services.hub import IObjectHub
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.error import ErrorReportingService
+from zope.app.errorservice import ErrorReportingService
 from zope.app.services.servicenames import ErrorLogging
 from zope.app.traversing import traverse
 from zope.app.services.service import ServiceManager
