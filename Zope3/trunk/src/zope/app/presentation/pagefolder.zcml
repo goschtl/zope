@@ -8,8 +8,8 @@
 
 <content class=".pagefolder.PageFolder">
   <factory
-    id = "zope.app.presentation.pagefolder.PageFolder"
-    title = "View Folder"
+    id="zope.app.presentation.pagefolder.PageFolder"
+    title="View Folder"
     />
   <require
       permission="zope.View"

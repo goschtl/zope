@@ -36,8 +36,8 @@
 
   <content class=".registration.RegistrationManager">
     <factory
-        id = "zope.app.services.RegistrationManager"
-        title = "Registration Manager" />
+        id="zope.app.services.RegistrationManager"
+        title="Registration Manager" />
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer" />
