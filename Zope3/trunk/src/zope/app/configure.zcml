@@ -44,7 +44,6 @@
 
   <include package="zope.app.publisher" />
   <include package="zope.app.traversing" />
-  <include package="zope.app.form" />
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.interpreter" />
