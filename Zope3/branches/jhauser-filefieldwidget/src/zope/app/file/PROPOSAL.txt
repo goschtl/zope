@@ -73,7 +73,7 @@ IFile refactoring
               required=False,
               )
       
-    IFile/contents/Mime field - MimeInputWidget:
+    IFile/contents/Mime field - MimeWidget:
     
       The input widget is like a object widget which renders it's information 
       from the schema IMime. The widget is used for the field contents in the 
@@ -96,20 +96,16 @@ IFile refactoring
       
       - set the encoding if given and type is a text format
       
-    IMime/data/MimeData - MimeDataWidget:
- 
-      - render input field of type=file
-    
-      - store fileupload to the field data
-    
-      - don't override data value if upload is empty
-    
     IMime/data/MimeData - MimeDataWidget (IInputWidget):
     
       The widget is used in the IMime schema on the data field
       The interface field is called MimeData
-    
-      - stores FileChunk or str to the value
+ 
+        - render input field of type=file
+      
+        - stores FileChunk or str to the value (field data)
+      
+        - don't override data value if upload is empty
     
     IMime/data/MimeData - MimeDataDisplayWidget (IDisplayWidget):
     
