@@ -165,7 +165,8 @@
 /ZEO/ZEO                          /Packages/ZEO
 
 # Zope 3 layout.
-/Zope3/src/ZConfig		       /Packages/ZConfig
+/Zope3/src/ZConfig		/Packages/ZConfig
+/Zope3/src/zdaemon       	/Packages3/zdaemon
 
 # ZopeProducts
 /zopeproducts                   /Products3
