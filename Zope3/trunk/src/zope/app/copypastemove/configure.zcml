@@ -9,6 +9,7 @@
       provides="zope.app.copypastemove.interfaces.IObjectMover"
       permission="zope.ManageContent"
       for="*"
+      trusted="y"
       />
 
   <adapter
@@ -16,6 +17,7 @@
       provides="zope.app.copypastemove.interfaces.IObjectCopier"
       permission="zope.ManageContent"
       for="*"
+      trusted="y"
       />
 
   <adapter
