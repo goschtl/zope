@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.10 2003/05/23 17:51:05 jim Exp $
+$Id: __init__.py,v 1.11 2003/05/23 22:17:53 jim Exp $
 """
 __metaclass__ = type
 
@@ -34,6 +34,7 @@ from zope.proxy.interfaces.context import IContextDecorator
 from zope.hookable import hookable
 
 moduleProvides(IContextDecorator)
+__all__ = tuple(IContextDecorator)
 
 def ContextWrapper(_ob, _parent, **kw):
     if type(_ob) in BasicTypes:
