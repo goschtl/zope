@@ -1,8 +1,6 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
-
 <!-- ZopeDatabaseAdapter default views -->
-
 
   <!-- XXX need an index.html that gives the source and is the def view -->
   <defaultView for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
@@ -12,7 +10,7 @@
          for="zope.app.interfaces.rdb.IZopeDatabaseAdapter">
     <menuItem title="Edit" action="editForm.html"/>
     <menuItem title="Test" action="testForm.html"/>
-    </menuItems>
+  </menuItems>
 
   <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
@@ -25,7 +23,7 @@
     <page name="connect.html" attribute="connect" />
     <page name="disconnect.html" attribute="disconnect" />
   
-    </pages>
+  </pages>
 
   <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
@@ -35,8 +33,7 @@
     <page name="testForm.html" template="rdbtestsql.pt" />
     <page name="test.html" template="rdbtestresults.pt" />
 
-    </pages>
-
+  </pages>
 
 <!-- Gadfly DA -->
 
@@ -55,7 +52,8 @@
   <menuItem
       menu="add_component"
       for="zope.app.interfaces.container.IAdding"
-      title="Gadfly Database Adapter" 
+      title="Gadfly DA" 
+      description="A DA for the built-in 100% Pure Python Gadfly Database"
       action="zope.app.rdb.gadflyda.GadflyAdapter"
       />
 
@@ -63,7 +61,8 @@
   <menuItem
       menu="add_connection"
       for="zope.app.interfaces.container.IAdding"
-      title="Gadfly Database Adapter" 
+      title="Gadfly DA" 
+      description="A DA for the built-in 100% Pure Python Gadfly Database"
       action="zope.app.rdb.gadflyda.GadflyAdapter"
       />
 
