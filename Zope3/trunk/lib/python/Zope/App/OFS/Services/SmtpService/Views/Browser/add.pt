@@ -1,0 +1,33 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title>Add an SMTP Service</title></head>
+<body>
+<div metal:fill-slot="body">
+
+<p>Enter the SmtpHost and SmtpPort</p>
+
+<form action="action.html" method="post">
+<table>
+<tr>
+   <th>SMTP Host:</th>
+   <td><input name="smtphost" value="localhost"></td>
+</tr>
+<tr>
+   <th>SMTP Port:</th>
+   <td><input name="smtpport" size=4 value="25"></td>
+
+</tr>
+
+<tr>
+   <td colspan=2>
+     <input type="submit" value="Add"/>
+   </td>
+  </tr>
+</table>
+
+
+</form>
+
+</div></body></html>
+
+            	    
+            

@@ -1,0 +1,38 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Services.SmtpService">
+
+  <browser:menu id="add_smtp"
+      title="Menu for adding new smtp." />
+
+  <browser:defaultView
+     for=".ISMTPService."
+     name="index.html" />
+
+  
+  <browser:view
+      for="Zope.App.OFS.Container.IAdding."
+       name="SmtpService"
+      factory=".Views.Browser.Adding." >
+
+    <browser:page name="add.html"  template="Views/Browser/add.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view>
+
+  <browser:defaultView for=".ISMTPService." name="edit.html" />
+    <browser:view 
+       for=".ISMTPService."
+       factory=".Views.Browser.Edit."
+       >
+     <browser:page name="edit.html" template="Views/Browser/edit.pt" />
+     <browser:page name="action.html" attribute="action" />
+    </browser:view>
+
+
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+       action="SmtpService"  title="SMTP Service"
+       />
+
+</zopeConfigure>
