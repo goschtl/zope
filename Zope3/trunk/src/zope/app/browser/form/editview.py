@@ -13,18 +13,17 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.37 2003/08/28 22:40:25 sidnei Exp $
+$Id: editview.py,v 1.38 2003/09/21 17:30:35 jim Exp $
 """
 from datetime import datetime
 
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
 from zope.component import getAdapter
 
-from zope.app.context import ContextWrapper
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
@@ -57,7 +56,7 @@ class EditView(BrowserView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            adapted = ContextWrapper(adapted, self.context, name='(adapted)')
+            adapted.__parent__ = self.context
         self.adapted = adapted
         setUpEditWidgets(self, self.schema, names=self.fieldNames,
                          content=self.adapted)
