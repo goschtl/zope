@@ -13,7 +13,7 @@
 ##############################################################################
 """Content-related interfaces.
 
-$Id: __init__.py,v 1.4 2004/02/20 20:33:37 srichter Exp $
+$Id: content.py,v 1.2 2004/02/24 16:50:18 philikon Exp $
 """
 from zope.interface.interfaces import IInterface
 
