@@ -612,4 +612,7 @@
 <!-- Translation Service Views -->
 <include package=".translation" />
 
+<!-- Local Interface Service -->
+<include package=".interface" />
+
 </zopeConfigure>

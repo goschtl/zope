@@ -78,3 +78,9 @@ class LocalInterfaceService(object):
         # Return the ids of the interfaces that match the search criteria.
         next = getNextService(self, Interfaces)
         return next.searchInterfaceIds(search_string, base)
+
+    def items(self, search_string="", base=None):
+        # Return id, interface pairs for all items matching criteria.
+        next = getNextService(self, Interfaces)
+        return next.items(search_string, base)
+        

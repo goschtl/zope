@@ -1,0 +1,14 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+<content class=".interface.LocalInterfaceService">
+  <factory
+      id="zope.app.services.LocalInterfaceService"
+      permission="zope.ManageServices"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.component.IInterfaceService"
+      />
+</content>
+
+</zopeConfigure>

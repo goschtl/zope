@@ -566,5 +566,7 @@
   permission="zope.ManageContent"
   />
 
+<!-- Local Interface Service -->
+<include file="interface.zcml" />
 
 </zopeConfigure>
