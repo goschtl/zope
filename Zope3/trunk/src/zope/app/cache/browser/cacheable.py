@@ -42,10 +42,14 @@ class CacheableView(BrowserView):
 
     def current_cache_url(self):
         "Returns the current cache provider's URL."
-        # XXX: it would be *really* useful to the user to be able to jump to
-        # the cache component and see the stats etc. directly from the
-        # cacheable view.  All this needs is to find out the URL somehow.
-        return None
+        cache = getCacheForObject(self.context)
+        absolute_url = zapi.getView(cache, 'absolute_url', self.request)
+        try:
+            return absolute_url()
+        except TypeError:
+            # In case the cache object is a global one and does not have a
+            # location, then we just return None. 
+            return None
 
     def invalidate(self):
         "Invalidate the current cached value."
