@@ -27,7 +27,7 @@ Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
 and written in binary mode.
 
-$Id: snarf.py,v 1.3 2003/05/27 14:45:36 gvanrossum Exp $
+$Id: snarf.py,v 1.4 2003/07/08 16:00:56 fdrake Exp $
 """
 
 import os
@@ -53,6 +53,9 @@ class Snarfer(object):
         prefix -- optional snarf path prefix, either empty or ending in '/'.
         filter -- optional filter predicate.
         """
+        if prefix:
+            assert prefix[0] != "/"
+            assert prefix[-1] == "/"
         if filter is None:
             def filter(fspath):
                 return True
@@ -69,6 +72,7 @@ class Snarfer(object):
 
     def addfile(self, fspath, path):
         """Snarf a single file given by fspath."""
+        assert path[-1] != "/"
         f = open(fspath, "rb")
         try:
             f.seek(0, 2)
