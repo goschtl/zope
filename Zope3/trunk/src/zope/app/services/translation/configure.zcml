@@ -50,7 +50,6 @@
     for="zope.app.interfaces.services.translation.ILocalTranslationService"
     provides="zope.i18n.interfaces.IMessageImportFilter" />
 
-<gts:registerTranslations directory="./locale" />
 <gts:defaultLanguages languages="en" />
 
 </configure>
