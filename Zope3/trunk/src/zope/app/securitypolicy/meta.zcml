@@ -7,6 +7,11 @@
                   handler=".metaconfigure.grant" />
 
   <meta:directive namespace="http://namespaces.zope.org/zope"
+                  name="grantAll"
+                  schema=".metadirectives.IGrantAllDirective"
+                  handler=".metaconfigure.grantAll" />
+
+  <meta:directive namespace="http://namespaces.zope.org/zope"
                   name="role"
                   schema=".metadirectives.IDefineRoleDirective"
                   handler=".metaconfigure.defineRole" />

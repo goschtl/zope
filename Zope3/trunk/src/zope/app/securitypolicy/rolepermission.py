@@ -20,7 +20,7 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.security.permission import checkPermission
+from zope.app.security.permission import checkPermission, allPermissions
 from zope.app.securitypolicy.role import checkRole
 
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
@@ -168,6 +168,10 @@ class RolePermissionManager(SecurityMap):
             checkPermission(None, permission_id)
 
         self.addCell(permission_id, role_id, Allow)
+
+    def grantAllPermissionsToRole(self, role_id):
+        for permission_id in allPermissions(None):
+            self.grantPermissionToRole(permission_id, role_id, False)
 
     def denyPermissionToRole(self, permission_id, role_id, check=True):
         '''See interface IRolePermissionMap'''

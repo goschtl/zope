@@ -79,6 +79,20 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(len(perms), 2)
         self.failUnless((perm2,Allow) in perms)
 
+    def testAllPermissions(self):
+        perm1 = definePermission('Perm One', 'P1').id
+        perm2 = definePermission('Perm Two', 'P2').id
+        perm3 = definePermission('Perm Three', 'P3').id
+        role1 = defineRole('Role One', 'Role #1').id
+        perms = manager.getPermissionsForRole(role1)
+        self.assertEqual(len(perms), 0)
+        manager.grantAllPermissionsToRole(role1)
+        perms = manager.getPermissionsForRole(role1)
+        self.assertEqual(len(perms), 3)
+        self.failUnless((perm1, Allow) in perms)
+        self.failUnless((perm2, Allow) in perms)
+        self.failUnless((perm3, Allow) in perms)
+
     def testManyRolesOnePermission(self):
         perm1 = definePermission('Perm One', 'title').id
         role1 = defineRole('Role One', 'Role #1').id

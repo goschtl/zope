@@ -141,6 +141,16 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.failUnless((perm1,prin1,Allow) in perms)
         self.failUnless((perm2,prin1,Deny) in perms)
 
+    def testAllPermissions(self):
+        perm1 = definePermission('Perm One', 'title').id
+        perm2 = definePermission('Perm Two', 'title').id
+        prin1 = self._make_principal()
+        manager.grantAllPermissionsToPrincipal(prin1)
+        perms = manager.getPermissionsForPrincipal(prin1)
+        self.assertEqual(len(perms), 2)
+        self.failUnless((perm1,Allow) in perms)
+        self.failUnless((perm2,Allow) in perms)
+
     def testManyPrincipalsOnePermission(self):
         perm1 = definePermission('Perm One', 'title').id
         prin1 = self._make_principal()

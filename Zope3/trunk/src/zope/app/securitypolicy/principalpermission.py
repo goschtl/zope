@@ -22,7 +22,7 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.security.principal import checkPrincipal
-from zope.app.security.permission import checkPermission
+from zope.app.security.permission import checkPermission, allPermissions
 
 from zope.app.securitypolicy.securitymap import SecurityMap
 
@@ -120,6 +120,12 @@ class PrincipalPermissionManager(SecurityMap):
             checkPrincipal(None, principal_id)
 
         self.addCell(permission_id, principal_id, Allow)
+
+    def grantAllPermissionsToPrincipal(self, principal_id):
+        ''' See the interface IPrincipalPermissionManager '''
+
+        for permission_id in allPermissions(None):
+            self.grantPermissionToPrincipal(permission_id, principal_id, False)
 
     def denyPermissionToPrincipal(self, permission_id, principal_id,
                                   check=True):

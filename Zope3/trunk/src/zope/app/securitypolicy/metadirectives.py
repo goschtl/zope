@@ -20,7 +20,7 @@ from zope.schema import Id
 from zope.app.security.metadirectives import IBaseDefineDirective
 from zope.app.security.fields import Permission
 
-class IGrantDirective(Interface):
+class IGrantAllDirective(Interface):
     """Grant Permissions to roles and principals and roles to principals."""
 
     principal = Id(
@@ -28,14 +28,17 @@ class IGrantDirective(Interface):
         description=u"Specifies the Principal to be mapped.",
         required=False)
 
-    permission = Permission(
-        title=u"Permission",
-        description=u"Specifies the Permission to be mapped.",
-        required=False)
-
     role = Id(
         title=u"Role",
         description=u"Specifies the Role to be mapped.",
+        required=False)
+
+class IGrantDirective(IGrantAllDirective):
+    """Grant Permissions to roles and principals and roles to principals."""
+
+    permission = Permission(
+        title=u"Permission",
+        description=u"Specifies the Permission to be mapped.",
         required=False)
 
 class IDefineRoleDirective(IBaseDefineDirective):
