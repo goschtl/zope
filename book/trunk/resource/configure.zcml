@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="resource">
+
+  <browser:resource 
+      name="resource.txt" 
+      file="resource.txt" 
+      layer="default" />
+
+  <browser:resource 
+      name="img.png" 
+      image="img.png" 
+      permission="zope.ManageContent" />
+
+  <browser:resourceDirectory 
+      name="resources" 
+      directory="../resource" />
+
+</configure>
