@@ -14,7 +14,7 @@
 """
 Test class for use by test modules
 
-$Id: Directives.py,v 1.3 2002/09/01 18:29:58 rdmurray Exp $
+$Id: Directives.py,v 1.4 2002/09/22 16:05:18 rdmurray Exp $
 """
 
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
@@ -47,6 +47,14 @@ class protectClass:
         d=self._name, names
         self._children.append(p)
         return [(d, protections.append, (p,))]
+
+    def subsub(self, _context):
+        #Dummy subdirective-with-subdirectives.  Define this and you
+        #can define 'protect' subdirectives within it.  This lets
+        #us excercise the subdirectives-of-subdirectives code.
+        #If you put a protect inside a subsub, that'll set children,
+        #so when the parser calls us, __call__ will return ().
+        return self
 
 done = []
 

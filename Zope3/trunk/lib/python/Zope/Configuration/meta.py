@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.12 2002/09/19 15:09:58 rdmurray Exp $
+$Id: meta.py,v 1.13 2002/09/22 16:05:18 rdmurray Exp $
 """
 
 
@@ -313,7 +313,7 @@ class Subdirective:
             raise InvalidDirectiveDefinition(name)
         #If handler_method is None, registersub will use name.
         subs = registersub(self._subs, (namespace, name), handler_method)
-        return Subdirective(subs)
+        return Subdirective(subs,namespace=namespace)
 
     def __call__(self):
         return ()

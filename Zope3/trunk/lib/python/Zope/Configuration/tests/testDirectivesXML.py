@@ -31,7 +31,7 @@ ns='http://www.zope.org/NS/Zope3/test'
 
 class Test(CleanUp, unittest.TestCase):
         
-    def xtestDirective(self):
+    def testDirective(self):
         xmlconfig(StringIO(
             template % (
             '''<directives  namespace="%s">
@@ -43,7 +43,7 @@ class Test(CleanUp, unittest.TestCase):
 
         self.assertEqual(done, ['splat'])
         
-    def xtestSimpleComplexDirective(self):
+    def testSimpleComplexDirective(self):
         xmlconfig(StringIO(
             template % (
             '''<directives  namespace="%s">
@@ -54,11 +54,30 @@ class Test(CleanUp, unittest.TestCase):
                </directives>
                           ''' % ns,
             '''<test:protectClass
-              name=".Contact" permission="splat" names="update"
-              />'''
+                   name=".Contact" permission="splat" names="update"
+               >
+                 <test:protect permission="beep" names="update" />
+               </test:protectClass>'''
+            )))
+        
+        self.assertEquals(protections, [(".Contact", "beep", 'update')])
+
+    def testDirectiveDirective(self):
+        xmlconfig(StringIO(
+            template % (
+            '''<directive name="protectClass" namespace="%s"
+                    handler="Zope.Configuration.tests.Directives.protectClass">
+                       <subdirective name="protect"/>
+               </directive>
+                          ''' % ns,
+            '''<test:protectClass
+                   name=".Contact" permission="splat" names="update"
+               >
+                 <test:protect permission="beep" names="update" />
+               </test:protectClass>'''
             )))
 
-        self.assertEquals(protections, [(".Contact", "splat", 'update')])
+        self.assertEquals(protections, [(".Contact", "beep", 'update')])
         
     def testComplexDirective(self):
         xmlconfig(StringIO(
@@ -79,7 +98,30 @@ class Test(CleanUp, unittest.TestCase):
             (".Contact", "edit", 'update'),
             (".Contact", "view", 'name email'),
             ])
-      
+        
+    def testSubSubdirective(self):
+        xmlconfig(StringIO(
+            template % (
+            '''<directives  namespace="%s">
+                 <directive name="protectClass"
+                    handler="Zope.Configuration.tests.Directives.protectClass">
+                       <subdirective name="subsub">
+                           <subdirective name="protect"/>
+                       </subdirective>
+                 </directive>
+               </directives>
+                          ''' % ns,
+            '''<test:protectClass
+                   name=".Contact" permission="splat" names="update"
+               >
+                 <test:subsub>
+                   <test:protect permission="beep" names="update" />
+                 </test:subsub>
+               </test:protectClass>'''
+            )))
+        
+        self.assertEquals(protections, [(".Contact", "beep", 'update')])
+
     def testHandlerMethod(self):
         xmlconfig(StringIO(
             template % (
