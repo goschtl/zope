@@ -17,13 +17,11 @@ $Id$
 """
 from zope.interface import implements, Attribute
 from zope.interface.interfaces import IInterface
-from zope.component.interfaces import IFactory
 from zope.app.pagetemplate.simpleviewclass import simple as SimpleView
 from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app import zapi
 from zope.app.copypastemove import rename
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.site.folder import SiteManagementFolder 
 from zope.app.servicenames import Services, Utilities
 from zope.app.utility.browser import AddRegistration
 from zope.app.utility import UtilityRegistration
@@ -32,7 +30,6 @@ from zope.app.site.folder import SiteManagementFolder
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
-from zope.app.site.interfaces import ILocalService
 from zope.app.site.browser import ServiceAdding
 
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -43,18 +40,8 @@ class IToolType(IInterface):
 
 class IToolView(IBrowserView):
 
-    folder = Attribute("Name of the folder the tools are stored in.")
-
     title = Attribute("Title for the view.")
-
     description = Attribute("Description for the view.")
-
-    def addTool(self):
-        """Add a tool to the Site Manager.
-
-        This method is responsible of creating the correct folder, if
-        necessary, and forward the user to the adding screen.
-        """
 
     def update(self):
         """Update the data."""
@@ -89,24 +76,55 @@ class ToolsBacklink(object):
 
         return self.request.response.redirect(url)
 
-
-class ServiceToolView(SimpleView):
-    """Tools view for services."""
-    implements(IToolView)
+class AbstractToolView(SimpleView):
+    """Abstract tools view."""
 
     index = ViewPageTemplateFile('tool.pt')
 
-    folder = None
     title = None
     description = None
 
     can_rename = False
 
-    def addTool(self):
-        if not self.folder in self.context:
-            self.context[self.folder] = SiteManagementFolder()
-        link = './%s/AddServiceTool' %self.folder
-        return self.request.response.redirect(link)
+    def update(self):
+        status = ''
+        self.renameList = []
+
+        has_key = self.request.form.has_key
+        selected = self.request.form.get('selected', [])
+        doAdd = has_key('ADD')
+        doDelete = has_key('DELETE')
+        doRename = has_key('RENAME')
+        applyRename = has_key('APPLY_RENAME')
+        doActivate = has_key('ACTIVATE')
+        doDeactivate = has_key('DEACTIVATE')
+
+        if doAdd:
+            self.add()
+        elif not selected:
+            if (doDelete or doRename or applyRename
+                or doActivate or doDeactivate):
+                status = _('Please select at least one checkbox')
+        elif doDelete:
+            self.delete()
+            status = _('Deleted selected tools.')
+        elif doRename:
+            self.renameList = selected
+        elif applyRename:
+            self.rename()
+            status = _('Renamed selected tools.')
+        elif doActivate:
+            self.activate()
+            status = _('Activated registrations.')
+        elif doDeactivate:
+            self.deactivate()
+            status = _('Deactivated registrations.')
+
+        return status
+
+class ServiceToolView(AbstractToolView):
+    """Tools view for services."""
+    implements(IToolView)
 
     def delete(self):
         for name in self.request.form['selected']:
@@ -140,7 +158,7 @@ class ServiceToolView(SimpleView):
             for info in reg.info():
                 conf = info['registration']
                 conf.status = ActiveStatus
-        
+
     def deactivate(self):
         for name in self.request.form['selected']:
             reg = self.context.queryRegistrations(name)
@@ -149,32 +167,12 @@ class ServiceToolView(SimpleView):
                 conf = info['registration']
                 conf.status = RegisteredStatus
 
-    def update(self):
-        status = ''
-        self.renameList = []
-        
-        if self.request.form.has_key('ADD'):
-            self.request.response.redirect('./AddServiceTool')
-        elif self.request.form.has_key('DELETE'):
-            self.delete()
-            status = _('Deleted selected tools.')
-        elif self.request.form.has_key('APPLY_RENAME'):
-            self.rename()
-            status = _('Renamed selected tools.')         
-        elif self.request.form.has_key('REFRESH'):
-            pass
-        elif self.request.form.has_key('ACTIVATE'):
-            self.activate()
-            status = _('Activated registrations.')
-        elif self.request.form.has_key('DEACTIVATE'):
-            self.deactivate()
-            status = _('Deactivated registrations.')
-            
-        return status
-    
+    def add(self):
+        self.request.response.redirect('./AddServiceTool')
+
     def getComponents(self):
         items = []
-        
+
         for name in self.context.listRegistrationNames():
             registry = self.context.queryRegistrations(name)
 
@@ -188,7 +186,7 @@ class ServiceToolView(SimpleView):
                            'parent_url': zapi.getPath(parent),
                            'parent_name':zapi.name(parent),
                            'active':registry.info()[0]['active'] })
-        
+
         return items
 
 class ServiceToolAdding(ServiceAdding):
@@ -206,30 +204,17 @@ class ServiceToolAdding(ServiceAdding):
     def add(self, content):
         self.context = self.context[self.folder]
         return super(ServiceToolAdding, self).add(content)
-    
+
     def nextURL(self):
         return '../@@manageILocalServiceTool.html'
 
 
-class UtilityToolView(SimpleView):
+class UtilityToolView(AbstractToolView):
     """Tools view for utilities."""
 
     implements(IUtilityToolView)
 
-    index = ViewPageTemplateFile('tool.pt')
-
-    interface = None
-    folder = None
-    title = None
-    description = None
-
     can_rename = True
-
-    def addTool(self):
-        if not self.folder in self.context:
-            self.context[self.folder] = SiteManagementFolder()
-        link = './%s/AddUtilityTool?interface=%s' %(self.folder, self.interface)
-        return self.request.response.redirect(link)
 
     def delete(self):
         for name in self.request.form['selected']:
@@ -260,7 +245,7 @@ class UtilityToolView(SimpleView):
         for name in self.request.form['old_names']:
             newname = self.request.form['new_names'][
                 self.request.form['old_names'].index(name)]
-            
+
             utils = zapi.getService('Utilities')
             reg = utils.queryRegistrations(name, self.interface)
 
@@ -281,7 +266,7 @@ class UtilityToolView(SimpleView):
             for info in reg.info():
                 conf = info['registration']
                 conf.status = ActiveStatus
-        
+
     def deactivate(self):
         for name in self.request.form['selected']:
             utils = zapi.getService('Utilities')
@@ -292,32 +277,10 @@ class UtilityToolView(SimpleView):
                 conf = info['registration']
                 conf.status = RegisteredStatus
 
-    def update(self):
-        status = ''
-        self.renameList = []
-        
-        if self.request.form.has_key('ADD'):
-            self.request.response.redirect('./Add%sTool' %
-                                           self.interface.getName())
-        elif self.request.form.has_key('DELETE'):
-            self.delete()
-            status = _('Deleted selected tools.')
-        elif self.request.form.has_key('RENAME'):
-            self.renameList = self.request.form.get('selected', [])
-        elif self.request.form.has_key('APPLY_RENAME'):
-            self.rename()
-            status = _('Renamed selected tools.')         
-        elif self.request.form.has_key('REFRESH'):
-            pass
-        elif self.request.form.has_key('ACTIVATE'):
-            self.activate()
-            status = _('Activated registrations.')
-        elif self.request.form.has_key('DEACTIVATE'):
-            self.deactivate()
-            status = _('Deactivated registrations.')
-            
-        return status
-    
+    def add(self):
+        self.request.response.redirect('./Add%sTool' %
+                                       self.interface.getName())
+
     def getComponents(self):
         utils = zapi.getService(Utilities)
         items = []
@@ -330,7 +293,7 @@ class UtilityToolView(SimpleView):
                 'name': registration.name,
                 'url': zapi.getPath(registration.component),
                 'parent_url': zapi.getPath(parent),
-                'parent_name': zapi.name(parent),                
+                'parent_name': zapi.name(parent),
                 'active': stack.active()})
 
         return items
@@ -357,14 +320,14 @@ class UtilityToolAdding(ComponentAdding):
                 content, self._addFilterInterface.getName()))
         self.context = self.context[self.folder]
         util = super(UtilityToolAdding, self).add(content)
-        
+
         # Add registration
         registration = UtilityRegistration(self.contentName,
                                            self._addFilterInterface,
                                            zapi.getPath(util))
         reg_view = AddRegistration(util, self.request)
         reg_view.add(registration)
-        
+
         return util
 
     def nextURL(self):

@@ -14,11 +14,11 @@
        <br /><br />
        <i><a href="" i18n:translate="">(click to clear message)</a></i>
     </div>
-    
+
     <p tal:condition="not:registries" i18n:translate="">
       No services are registered.
     </p>
-    
+
     <div tal:condition="registries">
       <p i18n:translate="">
          Unless a service is disabled the service name links to the
@@ -27,9 +27,9 @@
          link allows activating a different implementation or
          disabling the service altogether.
       </p>
-    
+
       <form method="POST" action="services.html">
-    
+
         <table>
           <tr tal:repeat="reg registries">
             <td><input tal:condition="reg/manageable" type="checkbox"
