@@ -19,6 +19,13 @@
       template="widget_macros.pt"
       />
 
+  <browser:page 
+      for="*"
+      name="addform_macros"
+      permission="zope.Public"
+      template="add.pt"
+      />
+
   <!-- Views for Widget Errors -->
 
   <view

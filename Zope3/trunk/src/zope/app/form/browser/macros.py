@@ -20,4 +20,4 @@ from zope.app.basicskin.standardmacros import StandardMacros
 
 class FormMacros(StandardMacros):
     
-    macro_pages = ('widget_macros',)
+    macro_pages = ('widget_macros', 'addform_macros')
