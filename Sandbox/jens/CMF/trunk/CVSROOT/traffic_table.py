@@ -3,6 +3,10 @@
 the global var 'table' contains a list of entries identifying project dirs
 to be mirrored.
 
+Custom (local, consulting-business) entries should go in
+/cvs-repository/custom_traffic_table.py, which is not mirrored in the
+public repository.
+
 Each 'table' entry is a dictionary containing some mandatory and some
 optional fields (optional fields have default values described)
 
@@ -27,7 +31,8 @@ optional fields (optional fields have default values described)
     'host' - string naming the remote host
     'acct' - the pserver acct that should have access (XXX not yet implemented)
     'repodir' - the repository directory to which syncs should be done.
-    'leading_path' - if any, substitute for leading path for remote component.
+    'leading_path' - if any, substitute as leading path for remote component.
+    'receiver_id' - account id of receiving account.
 
    The default value used for every entry is dictated by a module global
    variable, 'remote'.
@@ -50,8 +55,23 @@ products_remote = {'host': "cvs.zope.org",
 
 zopeaddr = ["zope-checkins@zope.org"]
 
-table = [
-    {'path': "CVSROOT",
+_TABLE = []
+
+def add_to_table(entries, prepend=0):
+    global _TABLE
+    if type(entries) not in [type([]), type(())]:
+        entries = [entries]
+    if prepend:
+        _TABLE = entries + _TABLE
+    else:
+        _TABLE = _TABLE + entries
+
+def get_table():
+    return _TABLE[:]
+
+def init_table():
+    add_to_table([
+        {'path': "CVSROOT",
      'remote': public_remote,
      'addrs': ["digicool-cvs@zope.org"],
      'excludes': ["/history"]},
@@ -65,39 +85,32 @@ table = [
      'addrs': "support@digicool.com",
      'remote': None},
 
-    {'path': "Custom/ZapMedia",
-     'addrs': ["klm@digicool.com", "chrism@digicool.com",
-               "karl@digicool.com", "evan@digicool.com"],
-     'remote': None},
-
-    {'path': "Custom/BeOpen",
-     'addrs': ["boi@digicool.com",],
-     'remote': None},
-    
     {'path': "Zope2",
      'remote': public_remote,
      'addrs': zopeaddr},
 
     {'path': "ZopeDocs",
      'addrs': 'zopedocs-checkins@zope.org',
-     'remote': None},
+         'remote': None},
 
-#    {'path': "Documentation/Guides/Book",
-#     'addrs': 'zope-book@zope.org',
-#     'remote': None},
+#        {'path': "Documentation/Guides/Book",
+#         'addrs': 'zope-book@zope.org',
+#         'remote': None},
 
-    {'path': "ZopeMozilla",
-     'addrs': 'zope-mozilla@zope.org',
-     'remote': None},
+        {'path': "ZopeMozilla",
+         'addrs': 'zope-mozilla@zope.org',
+         'remote': None},
 
-    {'path': "ZopePTK",
-     'addrs': 'zope-ptk@zope.org',
-     'remote': None},
+        {'path': "ZopePTK",
+         'addrs': 'zope-ptk@zope.org',
+         'remote': None},
 
-    {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
-     'remote': products_remote},
+        {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
+         'remote': products_remote},
 
-    {'path': "Packages/Products/TrackerBase",
-     'addrs': ['tracker-dev@zope.org'],
-     'remote': products_remote},
-]
+        {'path': "Packages/Products/TrackerBase",
+         'addrs': ['tracker-dev@zope.org'],
+         'remote': products_remote},
+    ])
+
+init_table()
