@@ -109,14 +109,17 @@ class StateVocabulary(object):
     def __contains__(self, value):
         return value in _states
 
-    def getTerm(self, value):
-        return _states[value]
-
     def __iter__(self):
         return _states.itervalues()
 
     def __len__(self):
         return len(_states)
+
+    def getQuery(self):
+        return None
+
+    def getTerm(self, value):
+        return _states[value]
 
 
 class StateSelectionField(vocabulary.VocabularyField):

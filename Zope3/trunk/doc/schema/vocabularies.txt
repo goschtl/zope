@@ -185,6 +185,12 @@ This is the vocabulary implementation::
       def __len__(self):
           return len(_states)
 
+      def getQuery(self):
+          return None
+
+      def getTerm(self, value):
+          return _states[value]
+
 Using this vocabulary is quite easy.  A simple schema for an address
 might require the state to be specified::
 
