@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: PathSubscriber.py,v 1.2 2002/06/10 23:28:10 jim Exp $
+$Id: PathSubscriber.py,v 1.3 2002/07/02 23:44:12 jim Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -45,8 +45,8 @@ class PathSubscriber:
                other.subscriber_path==self.subscriber_path
     
     def __getSubscriber(self, wrapped_self):
-        return getAdapter(wrapped_self, ITraverser).traverse(
-            self.subscriber_path)
+        traverser = getAdapter(wrapped_self, ITraverser)
+        return traverser.traverse(self.subscriber_path)
     
     def notify(wrapped_self, event):
         removeAllProxies(wrapped_self).__getSubscriber(

@@ -42,6 +42,13 @@
   <hookable name=".getServiceManager" />
   <hookable name=".getNextServiceManager" />
 
+  <hook module="Zope.ComponentArchitecture"
+        name="getServiceManager"
+        implementation=".hooks.getServiceManager_hook" />
+  <hook module="Zope.ComponentArchitecture"
+        name="getNextServiceManager"
+        implementation=".hooks.getNextServiceManager_hook" />
+
 </zopeConfigure>
 
 

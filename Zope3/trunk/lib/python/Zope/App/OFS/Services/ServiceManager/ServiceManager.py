@@ -13,23 +13,27 @@
 ##############################################################################
 """
 
-$Id: ServiceManager.py,v 1.2 2002/06/10 23:28:12 jim Exp $
+$Id: ServiceManager.py,v 1.3 2002/07/02 23:44:12 jim Exp $
 """
+from Zope.Exceptions import NotFoundError, ZopeError
 
-from IServiceManager import IServiceManager
 from Zope.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
-from Zope.ComponentArchitecture import getService, \
-     getNextServiceManager, getNextService
+from Zope.ComponentArchitecture \
+     import getService, getNextServiceManager, getNextService
 from Zope.ComponentArchitecture.GlobalServiceManager import UndefinedService
 from Zope.ComponentArchitecture.GlobalServiceManager import InvalidService
-from Zope.Exceptions import NotFoundError, ZopeError
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
+
 from Zope.App.OFS.Content.Folder.Folder import Folder
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
+
 from IBindingAware import IBindingAware
+from IServiceManager import IServiceManager
+
 
 class ServiceManager(BTreeContainer):
 
@@ -64,6 +68,14 @@ class ServiceManager(BTreeContainer):
         return serviceDefs
 
     getServiceDefinitions=ContextMethod(getServiceDefinitions)
+
+    def queryService(self, name, default=None):
+        try:
+            return self.getService(name)
+        except ComponentLookupError:
+            return default
+
+    queryService=ContextMethod(queryService)
 
     def getService(wrapped_self, name):
         """ see IServiceManager Interface"""

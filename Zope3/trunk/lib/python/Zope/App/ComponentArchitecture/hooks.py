@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: hooks.py,v 1.2 2002/06/10 23:28:12 jim Exp $
+$Id: hooks.py,v 1.1 2002/07/02 23:44:12 jim Exp $
 """
 from Zope.ComponentArchitecture.IServiceManager import IServiceManager
-from Zope.ComponentArchitecture.IServiceManagerContainer import \
- IServiceManagerContainer
+from Zope.ComponentArchitecture.IServiceManagerContainer \
+     import IServiceManagerContainer
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.Proxy.ContextWrapper import getWrapperContainer, ContextWrapper
 from Zope.ComponentArchitecture import getServiceManager
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -54,8 +55,9 @@ def getNextServiceManager_hook(context):
     """if the context is a service manager or a placeful service, tries
     to return the next highest service manager"""
 
-    context = getServiceManager(context)
-    if context is serviceManager: return None
+    context = getServiceManager_hook(context)
+    if context is serviceManager:
+        raise ComponentLookupError('service manager')
 
     context=getWrapperContainer(context)
     while (context and not 
@@ -66,4 +68,4 @@ def getNextServiceManager_hook(context):
     # able to rely on the first step getting us a
     # ServiceManagerContainer
     context=getWrapperContainer(context)
-    return getServiceManager(context)
+    return getServiceManager_hook(context)
