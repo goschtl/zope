@@ -136,6 +136,7 @@
 /Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
 /Zope3/lib/python/Zope/ZServer                 /Packages/ZServer
 /Zope3/lib/python/Zope/ZTUtils                 /Packages/ZTUtils
+/Zope3/lib/python/Zope/zExceptions             /Zope/lib/python/zExceptions
 
 /Zope3/lib/python/ZopeLegacy/AccessControl     /Packages/AccessControl
 /Zope3/lib/python/ZopeLegacy/App               /Packages/App
