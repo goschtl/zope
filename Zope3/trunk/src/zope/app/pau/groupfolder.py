@@ -146,7 +146,7 @@ class GroupFolder(BTreeContainer):
                     search in groupinfo.description.lower()):
                     if not ((start is not None and i < start)
                             or
-                            (batch_size is not None and n > batch_size)):
+                            (batch_size is not None and n >= batch_size)):
                         n += 1
                         yield self.prefix+id
                 i += 1
