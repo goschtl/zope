@@ -226,7 +226,7 @@ def applyWidgetsChanges(view, schema, target=None, names=None):
             except InputErrors, v:
                 errors.append(v)
     if errors:
-        raise WidgetsError(*errors)
+        raise WidgetsError(errors)
 
     return changed
 
