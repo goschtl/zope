@@ -208,6 +208,6 @@ fi
 
 sed -e "s|@prefix@|$prefix|g" \
     -e "s|@PYTHON@|$FOUND|g" \
-    "$HERE/Makefile" > "$HERE/Makefile.in"
+    "$HERE/Makefile.in" > "$HERE/Makefile"
 
 exit $?
