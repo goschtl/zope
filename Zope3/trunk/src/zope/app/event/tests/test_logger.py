@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.9 2003/06/30 17:50:30 jeremy Exp $
+$Id: test_logger.py,v 1.10 2003/06/30 20:48:39 jeremy Exp $
 """
 
 import unittest
@@ -89,7 +89,6 @@ class TestLogger2(TestLogger1):
         result = results[0]
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.CRITICAL)
-        print result.getMessage()
         self.assertEqual(result.getMessage(),
                          "zope.app.event.objectevent.ObjectAddedEvent: "
                          "[('_ObjectEvent__location', 'foo'), "
