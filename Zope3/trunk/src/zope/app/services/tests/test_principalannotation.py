@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.4 2003/05/29 18:16:55 jim Exp $
+$Id: test_principalannotation.py,v 1.5 2003/06/03 14:47:05 stevea Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -51,7 +51,8 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
         svc = PrincipalAnnotationService()
 
-        root_sm.defineService("PrincipalAnnotation", IPrincipalAnnotationService)
+        root_sm.defineService("PrincipalAnnotation",
+                              IPrincipalAnnotationService)
         root_sm.provideService("PrincipalAnnotation", svc)
 
         self.createServiceManager()
