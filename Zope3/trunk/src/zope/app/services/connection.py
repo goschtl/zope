@@ -12,17 +12,21 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.8 2003/04/22 18:02:55 gvanrossum Exp $
+$Id: connection.py,v 1.9 2003/04/23 21:03:37 gvanrossum Exp $
 """
 
 from persistence import Persistent
 from zope.proxy.context import ContextMethod
-from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.services.connection import ILocalConnectionService
-from zope.app.services.configuration import NameComponentConfigurable
+from zope.component import getAdapter
+
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
 
+from zope.app.component.nextservice import queryNextService
+from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.traversing import getPath
 
 class ConnectionService(Persistent, NameComponentConfigurable):
 
@@ -89,3 +93,24 @@ class ConnectionConfiguration(NamedComponentConfiguration):
     def getInterface(self):
         return IZopeDatabaseAdapter
 
+    def afterAddHook(self, configuration, container):
+        """Hook method will call after an object is added to container.
+
+        Defined in IAddNotifiable.
+        """
+        super(ConnectionConfiguration, self).afterAddHook(configuration,
+                                                          container)
+        utility = configuration.getComponent()
+        adapter = getAdapter(utility, IUseConfiguration)
+        adapter.addUsage(getPath(configuration))
+
+    def beforeDeleteHook(self, configuration, container):
+        """Hook method will call before object is removed from container.
+
+        Defined in IDeleteNotifiable.
+        """
+        utility = configuration.getComponent()
+        adapter = getAdapter(utility, IUseConfiguration)
+        adapter.removeUsage(getPath(configuration))
+        super(ConnectionConfiguration, self).beforeDeleteHook(configuration,
+                                                              container)
