@@ -65,7 +65,7 @@
        (Thus leaving only permission and registration status.) -->
   <editform
       menu="zmi_views" title="Edit"
-      label="Utility Registration"
+      label="Edit Utility Registration"
       name="index.html"
       schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
       permission="zope.ManageServices"
