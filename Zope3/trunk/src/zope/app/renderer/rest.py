@@ -13,15 +13,100 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.2 2003/08/17 06:07:54 philikon Exp $
+$Id: rest.py,v 1.3 2003/09/09 06:43:32 jshell Exp $
 """
 import re
 import docutils.core, docutils.io
+from docutils import writers
+from docutils import nodes
+from docutils.writers.html4css1 import HTMLTranslator
+from docutils.writers.html4css1 import Writer as HTMLWriter
 
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.renderer import IReStructuredTextSource, IHTMLRenderer
 
+
+class Writer(writers.Writer):
+    """
+    A custom docutils writer that will ultimately give us
+    only a body, utilizing the docutils framework.
+    """
+    supported = ('html',)
+    """ Formats this writer supports."""
+
+    settings_spec = (
+        'Zope 3 Specific Options',
+        None,
+        (('Specify base section (i.e. if 3, a top-level section '
+          'would be written as H3, 2nd level H4, etc...).  Default is 3.',
+          ['--base-section'],
+          {'choices': ['1','2','3','4'], 
+            'default': '3', 
+            'metavar': '<NUMBER>'}),) + HTMLWriter.settings_spec[2]
+        )
+
+    relative_path_settings = ('stylesheet_path',)
+
+    output = None
+
+    def __init__(self):
+        writers.Writer.__init__(self)
+        self.translator_class = ZopeTranslator
+
+    def translate(self):
+        visitor = self.translator_class(self.document)
+        self.document.walkabout(visitor)
+        self.output = visitor.astext()
+        self.stylesheet = visitor.stylesheet
+        self.body = visitor.body
+
+
+class ZopeTranslator(HTMLTranslator):
+    """
+    The ZopeTranslator extends the base HTML processor for reST.  It
+    augments reST by:
+
+    - Starting headers at level 3 (this does not apply to the title
+      header, which occurs if a reST header element appears as the first
+      element in a document).  This generally allows reST HTML code to
+      fit in an existing site.
+
+    - Outputs *only* the 'body' parts of the document tree, using the
+      internal docutils structure.
+    """
+    def __init__(self, document):
+        document.settings.embed_stylesheet = 0
+        document.settings.base_section = int(document.settings.base_section)
+        
+        HTMLTranslator.__init__(self, document)
+
+    def astext(self):
+        """
+        This is where we join the document parts that we want in
+        the output.
+        """
+        body = self.body_pre_docinfo + self.docinfo + self.body
+        return u"".join(body)
+
+    def visit_title(self, node):
+        """
+        Handles the base section settings (ie - starting the
+        document with header level 3)
+        """
+        if isinstance(node.parent, nodes.topic):
+            HTMLTranslator.visit_title(self, node)
+        elif self.section_level == 0:
+            HTMLTranslator.visit_title(self, node)
+            # document title
+            title = node.astext()
+        else:
+            # offset section level to account for ``base_section``.
+            self.section_level += (self.settings.base_section - 1)
+            HTMLTranslator.visit_title(self, node)
+            self.section_level -= (self.settings.base_section - 1)
+    
+    
 
 class ReStructuredTextSource(unicode):
     """Represents Restructured Text source code""" 
@@ -42,45 +127,19 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
 
     def render(self, context):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
-        # format with strings
-        pub = docutils.core.Publisher()
-        pub.set_reader('standalone', None, 'restructuredtext')
-        pub.set_writer('html')
-
-        # go with the defaults
-        pub.get_settings()
-
-        # this is needed, but doesn't seem to do anything
-        pub.settings._destination = ''
-
-        # use the Zope 3 stylesheet
-        pub.settings.stylesheet = 'zope3.css'
-
-        # set the reporting level to something sane (1 being the smallest)
-        pub.settings.report_level = 1
-
-        # don't break if we get errors
-        pub.settings.halt_level = 6
-
-        # input
-        pub.source = docutils.io.StringInput(source=self.context)
-
-        # output - not that it's needed
-        pub.destination = docutils.io.StringOutput(encoding='UTF-8')
-
-        # parse!
-        document = pub.reader.read(pub.source, pub.parser, pub.settings)
-
-        # transform
-        pub.apply_transforms(document)
-
-        # do the format
-        html = pub.writer.write(document, pub.destination)
-        html = re.sub(
-            r'(?sm)^<\?xml.*<html.*<body.*?>\n(.*)</body>\n</html>\n',r'\1',
-            html)
+        settings_overrides = {
+            'footnote_references': 'brackets',
+            'report_level': 1,
+            'halt_level': 6,
+            'stylesheet': 'zope3.css',
+            }
+        html = docutils.core.publish_string(
+            self.context,
+            writer=Writer(),            # Our custom writer
+            settings_overrides=settings_overrides,
+            )
         return html
-    
+
 
 comment_template = '''
 
