@@ -268,7 +268,7 @@ class Test(BrowserTestCase):
             'field.i1' : 'foo' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists('i1', 'Invalid integer data',
-           response.getBody()))
+                                           response.getBody()))
 
 
 def test_suite():
