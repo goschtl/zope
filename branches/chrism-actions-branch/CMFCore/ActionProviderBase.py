@@ -48,7 +48,7 @@ class ActionProviderBase:
 
         """ Return all the actions defined by a provider.
         """
-        return self._actions or None
+        return self._actions or []
 
     #
     #   ZMI methods
@@ -59,23 +59,21 @@ class ActionProviderBase:
         """ Show the 'Actions' management tab.
         """
         actions = []
-        if self.listActions() is not None:
+        for a in self.listActions():
 
-            for a in self.listActions():
-
-                a1 = a.getActionInfoDict()
-                a1['id'] = a.getId()
-                a1['name'] = a.Title()
-                p = a.getPermissions()
-                if p:
-                    a1['permission'] = p[0]
-                else:
-                    a1['permission'] = ''
-                a1['category'] = a.getCategory() or 'object'
-                a1['visible'] = a.getVisibility()
-                a1['action'] = a.getActionExpression()
-                a1['condition'] = a.getCondition()
-                actions.append(a1)
+            a1 = a.getActionInfoDict()
+            a1['id'] = a.getId()
+            a1['name'] = a.Title()
+            p = a.getPermissions()
+            if p:
+                a1['permission'] = p[0]
+            else:
+                a1['permission'] = ''
+            a1['category'] = a.getCategory() or 'object'
+            a1['visible'] = a.getVisibility()
+            a1['action'] = a.getActionExpression()
+            a1['condition'] = a.getCondition()
+            actions.append(a1)
 
         # possible_permissions is in AccessControl.Role.RoleManager.
         pp = self.possible_permissions()
