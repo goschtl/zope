@@ -53,8 +53,8 @@ class TextExceptionFormatter:
         if revision is not None:
             try:
                 revision = str(revision).strip()
-            # XXX bare except without a comment explaining it.
-            except:
+            except (ValueError, AttributeError):
+                # Just in case revisions cannot be converted to strings.
                 revision = '???'
         return revision
 
