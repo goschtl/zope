@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.13 2003/12/17 08:06:10 philikon Exp $
+$Id: config.py,v 1.14 2004/01/22 23:53:15 srichter Exp $
 """
 
 import os.path
@@ -310,11 +310,32 @@ class ConfigurationAdapterRegistry(object):
     >>> r.register(IConfigurationContext, 'yyy', f)
     >>> r.factory(c, ('http://www.zope.com','yyy')) is f
     1
+
+    Test the documentation feature:
+
+    >>> r._docRegistry
+    []
+    >>> r.document(('ns', 'dir'), IFullInfo, IConfigurationContext, 'inf', None)
+    >>> r._docRegistry[0][0] == ('ns', 'dir')
+    1
+    >>> r._docRegistry[0][1] is IFullInfo
+    1
+    >>> r._docRegistry[0][2] is IConfigurationContext
+    1
+    >>> r._docRegistry[0][3] == 'inf'
+    1
+    >>> r._docRegistry[0][4] is None
+    1
+    >>> r.document('all-dir', None, None, None, None)
+    >>> r._docRegistry[1][0]
+    ('', 'all-dir')
     """
 
 
     def __init__(self):
         self._registry = {}
+        # Stores tuples of form: (namespace, name), schema, usedIn, info, parent
+        self._docRegistry = []
 
     def register(self, interface, name, factory):
         r = self._registry.get(name)
@@ -323,6 +344,11 @@ class ConfigurationAdapterRegistry(object):
             self._registry[name] = r
 
         r.register(interface, Interface, factory)
+
+    def document(self, name, schema, usedIn, info, parent=None):
+        if isinstance(name, (str, unicode)):
+            name = ('', name)
+        self._docRegistry.append((name, schema, usedIn, info, parent))
 
     def factory(self, context, name):
         r = self._registry.get(name)
@@ -484,7 +510,7 @@ class ConfigurationExecutionError(ConfigurationError):
 class IStackItem(Interface):
     """Configuration machine stack items
 
-    Stack items are created when a directive if being processed.
+    Stack items are created when a directive is being processed.
 
     A stack item is created for each directive use.
     """
@@ -841,7 +867,7 @@ class ComplexStackItem(object):
 class GroupingContextDecorator(ConfigurationContext):
     """Helper mix-in class for building grouping directives
 
-    See the discussion (and test) id GroupingStackItem.
+    See the discussion (and test) in GroupingStackItem.
     """
 
     implements(IConfigurationContext, IGroupingContext)
@@ -982,6 +1008,7 @@ def defineSimpleDirective(context, name, schema, handler,
         return SimpleStackItem(context, handler, info, schema, data)
 
     context.register(usedIn, name, factory)
+    context.document(name, schema, usedIn, context.info)
 
 def defineGroupingDirective(context, name, schema, handler,
                             namespace='', usedIn=IConfigurationContext):
@@ -1040,6 +1067,7 @@ def defineGroupingDirective(context, name, schema, handler,
         return GroupingStackItem(newcontext)
 
     context.register(usedIn, name, factory)
+    context.document(name, schema, usedIn, context.info)
 
 
 class IComplexDirectiveContext(IFullInfo, IConfigurationContext):
@@ -1059,8 +1087,12 @@ class ComplexDirectiveDefinition(GroupingContextDecorator, dict):
             return ComplexStackItem(self, context, data, info)
 
         self.register(self.usedIn, (self.namespace, self.name), factory)
+        self.document((self.namespace, self.name), self.schema, self.usedIn,
+                      self.info)
 
 def subdirective(context, name, schema):
+    context.document((context.namespace, name), schema, context.usedIn,
+                     context.info, context.context)
     context.context[name] = schema, context.info
 
 
@@ -1354,11 +1386,15 @@ def _bootstrap(context):
     # Define the directive (simple directive) directive by calling it's
     # handler directly
 
+    info = 'Manually registered in zope/configuration/config.py'
+
+    context.info = info
     defineSimpleDirective(
         context,
         namespace=metans, name='directive',
         schema=IStandaloneDirectiveInfo,
         handler=defineSimpleDirective)
+    context.info = ''
 
     # OK, now that we have that, we can use the machine to define the
     # other directives. This isn't the easiest way to proceed, but it lets
@@ -1366,6 +1402,7 @@ def _bootstrap(context):
 
     # Standalone groupingDirective
     context((metans, 'directive'),
+            info,
             name='groupingDirective',
             namespace=metans,
             handler="zope.configuration.config.defineGroupingDirective",
@@ -1374,6 +1411,7 @@ def _bootstrap(context):
 
     # Now we can use the grouping directive to define the directives directive
     context((metans, 'groupingDirective'),
+            info,
             name='directives',
             namespace=metans,
             handler="zope.configuration.config.DirectivesHandler",
@@ -1382,6 +1420,7 @@ def _bootstrap(context):
 
     # directive and groupingDirective inside directives
     context((metans, 'directive'),
+            info,
             name='directive',
             namespace=metans,
             usedIn="zope.configuration.config.IDirectivesContext",
@@ -1389,6 +1428,7 @@ def _bootstrap(context):
             schema="zope.configuration.config.IFullInfo"
             )
     context((metans, 'directive'),
+            info,
             name='groupingDirective',
             namespace=metans,
             usedIn="zope.configuration.config.IDirectivesContext",
@@ -1399,12 +1439,14 @@ def _bootstrap(context):
     # Setup complex directive directive, both standalone, and in
     # directives directive
     context((metans, 'groupingDirective'),
+            info,
             name='complexDirective',
             namespace=metans,
             handler="zope.configuration.config.ComplexDirectiveDefinition",
             schema="zope.configuration.config.IStandaloneDirectiveInfo"
             )
     context((metans, 'groupingDirective'),
+            info,
             name='complexDirective',
             namespace=metans,
             usedIn="zope.configuration.config.IDirectivesContext",
@@ -1414,6 +1456,7 @@ def _bootstrap(context):
 
     # Finally, setup subdirective directive
     context((metans, 'directive'),
+            info,
             name='subdirective',
             namespace=metans,
             usedIn="zope.configuration.config.IComplexDirectiveContext",
