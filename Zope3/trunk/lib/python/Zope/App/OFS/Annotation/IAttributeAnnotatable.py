@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAttributeAnnotatable.py,v 1.2 2002/06/10 23:27:51 jim Exp $
+$Id: IAttributeAnnotatable.py,v 1.3 2002/07/20 23:31:57 sidnei Exp $
 """
 from IAnnotatable import IAnnotatable
 from Interface.Attribute import Attribute
@@ -21,7 +21,7 @@ from Interface.Attribute import Attribute
 class IAttributeAnnotatable(IAnnotatable):
     """
     Marker interface giving permission for an IAnnotations adapter to store
-    data in an an attribute named __annotations__.
+    data in an attribute named __annotations__.
     """
 
     __annotations__ = Attribute(
