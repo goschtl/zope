@@ -13,7 +13,8 @@
 ##############################################################################
 """ Generic two-dimensional array type """
 
-from Persistence import Persistent, PersistentMapping
+from Persistence import Persistent
+from Persistence.PersistentMapping import PersistentMapping
 from Zope.App.Security.Grants.ILocalSecurityMap import ILocalSecurityMap
 from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
 

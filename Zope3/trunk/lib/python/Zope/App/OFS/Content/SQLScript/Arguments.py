@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: Arguments.py,v 1.1 2002/07/11 00:03:18 srichter Exp $
+$Id: Arguments.py,v 1.2 2002/07/22 20:15:28 jeremy Exp $
 """
 
 import re
-from Persistence import PersistentMapping
+from Persistence.PersistentMapping import PersistentMapping
 from Interface.Common.Mapping import IEnumerableMapping
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
