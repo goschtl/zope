@@ -18,7 +18,9 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-This is an object hub.
+This is an object hub.  There are 
+<span tal:replace="context/numRegistrations">(some number of)</span>
+objects registered.
 </div>
 </body>
 </html>

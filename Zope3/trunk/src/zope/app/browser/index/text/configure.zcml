@@ -6,7 +6,7 @@
   <browser:menuItem
     menu="add_component"
     for="zope.app.interfaces.container.IAdding"
-    action="zope.app.index.text.factory"
+    action="zope.app.index.text.TextIndex"
     title="Text Index"
     description="An index to support full-text search"
     />
