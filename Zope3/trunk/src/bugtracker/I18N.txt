@@ -1,16 +1,16 @@
-Internationalization (I18n) and Localalization (L10n)
+Internationalization (I18n) and Localization (L10n)
 =====================================================
 
-  Crating/Updating Message Catalog Template (POT) Files
+  Creating/Updating Message Catalog Template (POT) Files
   -----------------------------------------------------
 
-    0. Install 'bugtracker' in 'ZOPE3/src'. See INSTALL.txt for details.
+    1. Install 'bugtracker' in 'ZOPE3/src'. See INSTALL.txt for details.
 
-    1. Set the the Python path::
+    2. Set the the Python path::
        
         export PYTHONPATH=ZOPE3/src
   
-    2. Go into the 'locales' directory and execute extract.py::
+    3. Go into the 'locales' directory and execute extract.py::
 
       python2.3 utilities/i18nextract.py -d bugtracker \
                                          -p src/bugtracker/ \
