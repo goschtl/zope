@@ -17,12 +17,13 @@ Usage: %(PROGRAM)s [options] [modfilter [testfilter]]
 Options:
 
 -b
-    Run "python setup.py -q build" before running tests, where "python" is the
+    Run "python setup.py build" before running tests, where "python" is the
     version of python used to run test.py.  Highly recommended.  Tests will be
-    run from the build directory.
+    run from the build directory.  (Note: In Python < 2.3 the -q flag is
+    added to the setup.py command line.)
 
 -B
-    Run "python setup.py -q build_ext -i" before running tests.  Tests will be
+    Run "python setup.py build_ext -i" before running tests.  Tests will be
     run from the source directory.
 
 -c
@@ -60,7 +61,10 @@ Options:
     Use the PyUnit GUI instead of output to the command line.  The GUI imports
     tests on its own, taking care to reload all dependencies on each run.  The
     debug (-d), verbose (-v), and Loop (-L) options will be ignored.  The
-    testfilter filter is also not applied.  -m starts the gui minimized.
+    testfilter filter is also not applied.
+
+    -m starts the gui minimized.  Double-clicking the progress bar will start
+    the import and run all tests.
 
 -p
     Show running progress.  It can be combined with -v or -vv.
@@ -79,12 +83,13 @@ Options:
 
 modfilter
 testfilter
-    Case-sensitive regexps to limit which tests are run, used in search
-    (not match) mode.
-    In an extension of Python regexp notation, a leading "!" is stripped
-    and causes the sense of the remaining regexp to be negated (so "!bc"
-    matches any string that does not match "bc", and vice versa).
-    By default these act like ".", i.e. nothing is excluded.
+    Case-sensitive regexps to limit which tests are run, used in search (not
+    match) mode.
+
+    In an extension of Python regexp notation, a leading "!" is stripped and
+    causes the sense of the remaining regexp to be negated (so "!bc" matches
+    any string that does not match "bc", and vice versa).  By default these
+    act like ".", i.e. nothing is excluded.
 
     modfilter is applied to a test file's path, starting at "build" and
     including (OS-dependent) path separators.
@@ -97,8 +102,8 @@ Extreme (yet useful) examples:
     test.py -vvb . "^checkWriteClient$"
 
     Builds the project silently, then runs unittest in verbose mode on all
-    tests whose names are precisely "checkWriteClient".  Useful when
-    debugging a specific test.
+    tests whose names are precisely "checkWriteClient".  Useful when debugging
+    a specific test.
 
     test.py -vvb . "!^checkWriteClient$"
 
@@ -109,8 +114,7 @@ Extreme (yet useful) examples:
     test.py -m . "!^checkWriteClient$"
 
     As before, but now opens up a minimized PyUnit GUI window (only showing
-    the progressbar).  Double-clicking the progressbar will start the import
-    and run all tests.  Useful for refactoring runs where you continually want
+    the progress bar).  Useful for refactoring runs where you continually want
     to make sure all tests still pass.
 """
 
@@ -119,6 +123,7 @@ import os
 import re
 import pdb
 import sys
+import getopt
 import unittest
 import linecache
 import traceback
@@ -136,30 +141,22 @@ except NameError:
     False = 0
 
 
-# We know we're going to need this so import it now.  Python 2.2 does not come
-# with the pyexpat library by default, although Python 2.3 will.
-try:
-    import xml.parsers.expat
-except ImportError:
-    print >> sys.stderr, "WARNING: the pyexpat module is required"
-    raise
-
 class ImmediateTestResult(unittest._TextTestResult):
 
     __super_init = unittest._TextTestResult.__init__
     __super_startTest = unittest._TextTestResult.startTest
     __super_printErrors = unittest._TextTestResult.printErrors
 
-    def __init__(self, stream, descriptions, verbosity, debug=None,
-                 count=None, progress=0):
+    def __init__(self, stream, descriptions, verbosity, debug=False,
+                 count=None, progress=False):
         self.__super_init(stream, descriptions, verbosity)
         self._debug = debug
         self._progress = progress
-        self._progressWithNames = 0
+        self._progressWithNames = False
         self._count = count
         if progress and verbosity == 1:
-            self.dots = 0
-            self._progressWithNames = 1
+            self.dots = False
+            self._progressWithNames = True
             self._lastWidth = 0
             self._maxWidth = 80 # would be nice to determine terminal width
             self._maxWidth -= len('xxxx/xxxx (xxx.x%): ') + 1
@@ -225,6 +222,7 @@ class ImmediateTestResult(unittest._TextTestResult):
             self.stream.writeln(self.separator2)
             self.stream.writeln(err)
 
+
 class ImmediateTestRunner(unittest.TextTestRunner):
 
     __super_init = unittest.TextTestRunner.__init__
@@ -249,17 +247,15 @@ class ImmediateTestRunner(unittest.TextTestRunner):
         self._count = test.countTestCases()
         return unittest.TextTestRunner.run(self, test)
 
-# setup list of directories to put on the path
 
+# setup list of directories to put on the path
 class PathInit:
-    def __init__(self):
+    def __init__(self, build, build_inplace):
         self.inplace = None
         # Figure out if we should test in-place or test in-build.  If the -b
         # or -B option was given, test in the place we were told to build in.
         # Otherwise, we'll look for a build directory and if we find one,
         # we'll test there, otherwise we'll test in-place.
-        #
-        # XXX build and build_inplace are globals created in process_args()
         if build:
             self.inplace = build_inplace
         if self.inplace is None:
@@ -283,7 +279,7 @@ class PathInit:
 
 def match(rx, s):
     if not rx:
-        return 1
+        return True
     if rx[0] == '!':
         return re.search(rx[1:], s) is None
     else:
@@ -427,7 +423,7 @@ def main(module_filter, test_filter):
 
     os.path.walk(os.curdir, remove_stale_bytecode, None)
     # Initialize the path and cwd
-    pathinit = PathInit()
+    pathinit = PathInit(build, build_inplace)
 
     # Initialize the logging module.
     import logging.config
@@ -443,7 +439,7 @@ def main(module_filter, test_filter):
     if GUI:
         gui_runner(files, test_filter)
     elif LOOP:
-        while 1:
+        while True:
             runner(files, test_filter, debug)
     elif TRACE:
         coverdir = os.path.join(os.getcwd(), "coverage")
@@ -459,10 +455,6 @@ def main(module_filter, test_filter):
 
 
 def process_args(argv=None):
-    if argv is None:
-        argv = sys.argv
-
-    import getopt
     global module_filter
     global test_filter
     global VERBOSE
@@ -475,6 +467,9 @@ def process_args(argv=None):
     global gcthresh
     global progress
     global build_inplace
+
+    if argv is None:
+        argv = sys.argv
 
     module_filter = None
     test_filter = None
@@ -492,9 +487,9 @@ def process_args(argv=None):
     progress = False
 
     try:
-        opts, args = getopt.getopt(
-            argv[1:], 'bBcdDg:G:hLumpTv',
-            ['help'])
+        opts, args = getopt.getopt(argv[1:],
+                                   'bBcdDg:G:hLumpTv',
+                                   ['help'])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -580,18 +575,10 @@ def process_args(argv=None):
         raise
 
 
-
 def print_tb_last():
-    """Print up to 'limit' stack trace entries from the traceback 'tb'.
-
-    If 'limit' is omitted or None, all entries are printed.  If 'file'
-    is omitted or None, the output goes to sys.stderr; otherwise
-    'file' should be an open file or file-like object with a write()
-    method.
-    """
     tb = sys.exc_info()[2]
     file = sys.stderr
-    while 1:
+    while True:
         f = tb.tb_frame
         lineno = traceback.tb_lineno(tb)
         tb = tb.tb_next
@@ -603,7 +590,8 @@ def print_tb_last():
         name = co.co_name
         file.write('  File "%s", line %d, in %s\n' % (filename,lineno,name))
         line = linecache.getline(filename, lineno)
-        if line: file.write('    %s\n' % line.strip())
+        if line:
+            file.write('    %s\n' % line.strip())
         break
 
 
