@@ -20,7 +20,6 @@ from datetime import datetime
 import transaction
 from zope.pagetemplate.tests.util import normalize_xml
 
-from zope.app import zapi
 from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces

@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.size import byteDisplay
 from zope.app.size.interfaces import ISized
 
 class ImageData(object):

@@ -21,7 +21,6 @@ from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
 
-from zope.publisher.browser import FileUpload
 from interfaces import IFile, IFileContent
 
 # set the size of the chunks

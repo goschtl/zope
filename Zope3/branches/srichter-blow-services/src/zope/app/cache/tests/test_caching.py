@@ -24,7 +24,7 @@ from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.caching import getCacheForObject
 from zope.app.cache.annotationcacheable import AnnotationCacheable
-from zope.app.testing import ztapi, setup, placelesssetup
+from zope.app.testing import ztapi, placelesssetup
 
 class ObjectStub(object):
     implements(IAttributeAnnotatable)

@@ -20,7 +20,6 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
 
-from zope.app import zapi
 from zope.app.container.sample import SampleContainer
 from zope.event import notify
 from zope.app.event.objectevent import ObjectCopiedEvent

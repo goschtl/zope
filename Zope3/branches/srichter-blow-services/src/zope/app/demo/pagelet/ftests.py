@@ -16,7 +16,6 @@
 $Id$
 """
 import unittest
-from zope.publisher.interfaces import NotFound
 from zope.app.testing.functional import BrowserTestCase
 
 

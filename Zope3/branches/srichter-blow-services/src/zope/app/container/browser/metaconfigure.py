@@ -19,7 +19,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalInterface
-from zope.schema import Id
 from zope.app.publisher.browser.viewmeta import page, view
 from zope.app.container.browser.contents import Contents
 from zope.app.container.browser.adding import Adding

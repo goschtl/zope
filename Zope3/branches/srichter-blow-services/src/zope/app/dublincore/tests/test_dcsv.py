@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.dublincore.dcsv import encode, decode, createMapping
+from zope.app.dublincore.dcsv import encode, decode
 
 
 # XXX still need tests for errors, and createMapping()

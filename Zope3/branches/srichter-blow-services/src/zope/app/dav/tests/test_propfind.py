@@ -20,9 +20,8 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import Interface, implements, directlyProvides
+from zope.interface import Interface,  directlyProvides
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.publisher.http import status_reasons
 
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
@@ -50,8 +49,6 @@ from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
 from unitfixtures import File, Folder, FooZPT
-
-import zope.app.location
 
 
 def _createRequest(body=None, headers=None, skip_headers=None):

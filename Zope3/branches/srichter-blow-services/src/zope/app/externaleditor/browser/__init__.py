@@ -17,7 +17,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
-from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IReadFile
 from zope.app.interface import queryType
 from zope.app.content.interfaces import IContentType
 from zope.security.proxy import removeSecurityProxy

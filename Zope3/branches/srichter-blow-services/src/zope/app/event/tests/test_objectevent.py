@@ -16,9 +16,7 @@
 $Id$
 """
 import unittest
-import doctest
 
-from zope.interface import implements
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.event.objectevent import ObjectContentModifiedEvent

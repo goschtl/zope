@@ -15,7 +15,6 @@
 
 $Id$
 """
-from zope.app.container.browser.adding import Adding
 from zope.app.catalog.interfaces import ICatalog
 
 class Advanced:

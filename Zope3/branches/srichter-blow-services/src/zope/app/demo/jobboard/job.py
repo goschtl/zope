@@ -61,8 +61,6 @@ class Job(Persistent):
 
 
 from persistent.dict import PersistentDict
-from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
 
 class JobList(Persistent):
     """ the Joblist class manages the creation, deletion of job list and

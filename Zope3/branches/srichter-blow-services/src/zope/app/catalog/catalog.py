@@ -15,10 +15,7 @@
 
 $Id$
 """
-from persistent import Persistent
 from zope.interface import implements
-from zope.app.zapi import getUtility
-from zope.security.proxy import removeSecurityProxy
 from zope.app.container.btree import BTreeContainer
 import zope.index.interfaces
 

@@ -13,18 +13,14 @@
 ##############################################################################
 """Pagelet Demo
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent import Persistent
-
-import zope.interface
 
 from zope.interface import implements
 
 from zope.app.publisher.browser import BrowserView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.app.pagelet.interfaces import IPageData
 from zope.app.demo.pagelet.interfaces import IPageletContent

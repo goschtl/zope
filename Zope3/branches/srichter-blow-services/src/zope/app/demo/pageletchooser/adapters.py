@@ -17,14 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent.dict import PersistentDict
 
 from zope.interface import implements
 from zope.interface import directlyProvides
-
-from zope.app import zapi
-
-from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.pageletchooser.interfaces import IAnnotatableMappingAdapter
 from zope.app.pageletchooser.interfaces import IPageletNameManager
