@@ -38,6 +38,7 @@ from security import getSecurityInfo, protectClass, protectName,\
      initializeClass
 from pagetemplatefile import ZopeTwoPageTemplateFile
 
+import ExtensionClass
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -440,13 +441,18 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.generated_form = ZopeTwoPageTemplateFile(default_template)
 
-    # Not the prettiest solution, but it works...
-    class_.__init__ = EditView.__init__
 
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
 
-class EditFormDirective(BaseFormDirective):
+class FiveFormDirective(BaseFormDirective):
+
+    def _processWidgets(self):
+        if self._widgets:
+            customWidgetsObject = makeClass('CustomWidgetsMixin', (ExtensionClass.Base,), self._widgets)
+            self.bases = self.bases + (customWidgetsObject,)
+
+class EditFormDirective(FiveFormDirective):
 
     view = EditView
     default_template = 'edit.pt'
