@@ -22,6 +22,28 @@ from zpkgtools import cvsloader
 from zpkgtools import svnloader
 
 
+class SubversionRepositoryBase(unittest.TestCase):
+    """Mix-in test support class that provides a fake Subversion repository.
+
+    :ivar repodir: Directory containing the fake repository.
+
+    """
+
+    def setUp(self):
+        super(SubversionRepositoryBase, self).setUp()
+        self.svnrepodir = tempfile.mkdtemp()
+        os.mkdir(os.path.join(self.svnrepodir, "conf"))
+        os.mkdir(os.path.join(self.svnrepodir, "dav"))
+        os.mkdir(os.path.join(self.svnrepodir, "db"))
+        os.mkdir(os.path.join(self.svnrepodir, "hooks"))
+        os.mkdir(os.path.join(self.svnrepodir, "locks"))
+        open(os.path.join(self.svnrepodir, "db", "DB_CONFIG"), "w").close()
+
+    def tearDown(self):
+        super(SubversionRepositoryBase, self).tearDown()
+        shutil.rmtree(self.svnrepodir)
+
+
 class SubversionUrlTestCase(unittest.TestCase):
     """Test handling of svn://host/... URLs."""
 
@@ -97,7 +119,8 @@ class SubversionSshUrlTestCase(SubversionUrlTestCase):
     HOSTPART = "svn.example.com"
 
 
-class SubversionFileUrlTestCase(SubversionUrlTestCase):
+class SubversionFileUrlTestCase(SubversionRepositoryBase,
+                                SubversionUrlTestCase):
     """Test handling of file:///... URLs."""
 
     # We create a "stub" repository so is_subversion_url() can
@@ -109,18 +132,9 @@ class SubversionFileUrlTestCase(SubversionUrlTestCase):
     HOSTPART = ""
 
     def setUp(self):
-        self.repodir = tempfile.mkdtemp()
-        os.mkdir(os.path.join(self.repodir, "conf"))
-        os.mkdir(os.path.join(self.repodir, "dav"))
-        os.mkdir(os.path.join(self.repodir, "db"))
-        os.mkdir(os.path.join(self.repodir, "hooks"))
-        os.mkdir(os.path.join(self.repodir, "locks"))
-        open(os.path.join(self.repodir, "db", "DB_CONFIG"), "w").close()
-        parts = self.repodir.split(os.sep)
+        super(SubversionFileUrlTestCase, self).setUp()
+        parts = self.svnrepodir.split(os.sep)
         self.SVNROOT = "/".join(parts)
-
-    def tearDown(self):
-        shutil.rmtree(self.repodir)
 
 
 class SubversionLocalhostFileUrlTestCase(SubversionFileUrlTestCase):
