@@ -215,18 +215,11 @@
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
       for="zope.schema.interfaces.IIterableVocabularyQuery"
-      name="widget-query-multi-helper"
+      name="widget-query-list-helper"
       factory=".vocabularywidget.IterableVocabularyQueryMultiView"
       />
 
-  <view
-      permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
-      factory=".vocabularywidget.VocabularyEditWidget"
-      name="field-edit-widget"
-      for="zope.schema.interfaces.IVocabulary"
-      />
-
+  <!-- Vocabulary field display widgets -->
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
@@ -238,16 +231,49 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
-      factory=".vocabularywidget.VocabularyMultiEditWidget"
-      name="field-multi-edit"
+      factory=".vocabularywidget.VocabularyBagDisplayWidget"
+      name="field-bag-display-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
-      factory=".vocabularywidget.VocabularyMultiDisplayWidget"
-      name="field-multi-display"
+      factory=".vocabularywidget.VocabularyListDisplayWidget"
+      name="field-list-display-widget"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyBagDisplayWidget"
+      name="field-set-display-widget"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyListDisplayWidget"
+      name="field-unique-list-display-widget"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+
+  <!-- Vocabulary edit widgets -->
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyEditWidget"
+      name="field-edit-widget"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyMultiEditWidget"
+      name="field-list-edit-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
