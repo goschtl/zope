@@ -99,9 +99,7 @@ Random Details
 Troubleshooting
 
     * We've seen segfaults when running the test suite.  This was
-      invariably caused by having parts of Zope 2 or ZODB 3 (which goes
-      with Zope 2) installed in site-packages or elsewhere on Python's
-      module search path (sys.path); in particular, the presence of
-      Missing.so (from Zope 2's ExtensionClass) can cause this.  So
-      make sure you have no parts of Zope 2 or ZODB 3 on sys.path when
-      running Zope 3!
+      invariably caused by having parts of Zope 2 or ZODB 3 (which
+      goes with Zope 2) installed in site-packages or elsewhere on
+      Python's module search path (sys.path).  So make sure you have
+      no parts of Zope 2 or ZODB 3 on sys.path when running Zope 3!
