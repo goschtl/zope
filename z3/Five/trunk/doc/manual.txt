@@ -27,7 +27,7 @@ to develop for Zope 3 directly.
 
 Five is only useful on the Python (Product) level in Zope 2, not from
 within the Zope Management Interface. Five makes no attempt to provide
-a user interface, but it aimed squarely at the Python developer.
+a user interface, but is aimed squarely at the Python developer.
 
 Zope 3 interfaces
 -----------------

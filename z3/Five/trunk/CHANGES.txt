@@ -45,7 +45,7 @@ Five 0.2 (in development)
   requires Zope 2.7.2, as earlier Zope versions have a bug in this
   area which causes them to look in lib/python/Testing.
 
-* Expose the Zope 3 event system to Five. A class can be made to send
+* Exposed the Zope 3 event system to Five. A class can be made to send
   out event notifications using the five:sendEvents directive. Events can
   be subscribed to using the subscriber directive.
 
