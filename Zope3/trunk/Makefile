@@ -1,4 +1,4 @@
-PYTHON=python2.2
+PYTHON=python2.3
 TESTOPTS="!(:?zeo|zodb)"
 
 # XXX What should the default be?
