@@ -16,7 +16,7 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.10 2003/07/15 14:20:12 srichter Exp $
+$Id: __init__.py,v 1.11 2003/08/02 11:19:21 srichter Exp $
 """
 import os
 from zope.app.container.sample import SampleContainer
@@ -96,17 +96,6 @@ class OnlineHelp(OnlineHelpTopic):
             self._registry[(interface, view)] = []
         self._registry[(interface, view)].append(topic)
 
-    def unregisterHelpTopic(self, topic_path):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
-        # Delete topic from tree
-        topic = traverse(self, topic_path)
-        name = getName(topic)
-        parent = getParent(topic)
-        del parent[name]
-        # unregister from registry
-        for item in self._registry.items():
-            if topic in item[1]:
-                item[1].remove(topic)
 
 # Global Online Help
 path = os.path.join(os.path.dirname(zope.app.__file__),

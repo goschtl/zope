@@ -13,7 +13,7 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.3 2003/07/15 14:20:15 srichter Exp $
+$Id: test_onlinehelp.py,v 1.4 2003/08/02 11:19:25 srichter Exp $
 """
 import os
 from unittest import TestSuite, makeSuite
@@ -49,9 +49,6 @@ class TestOnlineHelp(PlacelessSetup, TestOnlineHelpTopic):
         self.assertEqual(self.topic['help2'].title, 'Help 2')
         self.assertEqual(self.topic._registry[(I1, 'view.html')][0].title,
                          'Help 2')
-        self.topic.unregisterHelpTopic('help2')
-        self.assertEqual(self.topic.get('help2', None), None)
-        self.assertEqual(self.topic._registry[(I1, 'view.html')], [])
         
     def test_getTopicsForInterfaceAndView(self):
         path = os.path.join(testdir(), 'help2.txt')

@@ -13,30 +13,21 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.4 2003/07/28 22:20:30 jim Exp $
+$Id: test_helpdirectives.py,v 1.5 2003/08/02 11:19:25 srichter Exp $
 """
-import os
 import unittest
 
-from zope.interface import Interface
+from zope.app.interfaces.traversing import \
+     ITraverser, ITraversable, IPhysicallyLocatable
+from zope.app.onlinehelp import tests
+from zope.app.onlinehelp import help
+from zope.app.traversing.adapters import \
+     Traverser, DefaultTraversable, WrapperPhysicallyLocatable
 from zope.component.adapter import provideAdapter
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
-from zope.app.interfaces.traversing import \
-     ITraverser, ITraversable, IPhysicallyLocatable
-from zope.app.traversing.adapters import \
-     Traverser, DefaultTraversable, WrapperPhysicallyLocatable
+from zope.interface import Interface
 
-import zope.app.onlinehelp
-from zope.app.onlinehelp import help
-from zope.app.onlinehelp.tests.test_onlinehelptopic import testdir
-
-template = """<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:help='http://namespaces.zope.org/help'>
-   xmlns:test='http://www.zope.org/NS/Zope3/test'>
-   %s
-   </zopeConfigure>"""
 
 class I1(Interface):
     pass
@@ -49,40 +40,18 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         provideAdapter(None, ITraverser, Traverser)
         provideAdapter(None, ITraversable, DefaultTraversable)
         provideAdapter(None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
-        self.context = xmlconfig.file('meta.zcml', zope.app.onlinehelp)
 
     def test_register(self):
         self.assertEqual(help.keys(), [])
-        xmlconfig.string(template % (
-            '''
-              <help:register 
-                  id = "help1"
-                  title = "Help"
-                  for = "zope.app.onlinehelp.tests.test_helpdirectives.I1"
-                  view = "view.html"
-                  doc_path = "tests/help.txt" />
-                  '''), self.context)
+        self.context = xmlconfig.file("help.zcml", tests)
         self.assertEqual(help.keys(), ['help1'])
         self.assertEqual(help._registry[(I1, 'view.html')][0].title, 'Help')
-        help._register = {}
-        del help['help1']
-
-    def test_unregister(self):
-        self.assertEqual(help.keys(), [])
-        path = os.path.join(testdir(), 'help.txt')
-        help.registerHelpTopic('', 'help', 'Help',
-                               path, 'txt', I1, 'view.html')
-
-        xmlconfig.string(template % (
-            '''
-              <help:unregister path="help" />
-              '''), self.context)
-        self.assertEqual(help.keys(), [])
-
 
 
 def test_suite():
-    return unittest.makeSuite(DirectivesTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(DirectivesTest),
+        ))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main()
