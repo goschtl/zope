@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectEvent.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: IObjectEvent.py,v 1.3 2002/09/03 20:12:46 jim Exp $
 """
 
 from IEvent import IEvent
@@ -33,7 +33,9 @@ class IObjectAddedEvent(IObjectEvent):
     """An object has been added to a container."""
 
     def getLocation():        
-        """returns the object location after it has been added to the container"""
+        """Returns the object location.
+
+        This is the location after it has been added to the container"""
 
 class IObjectModifiedEvent(IObjectEvent):
     """An object has been modified"""

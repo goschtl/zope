@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscriber.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: ISubscriber.py,v 1.3 2002/09/03 20:14:00 jim Exp $
 """
 
 from Interface import Interface
@@ -34,9 +34,11 @@ class IIndirectSubscriber(ISubscriber):
     """Interface for objects that handle subscriptions for another object"""
     
     def __eq__(other):
-        """this standard python hook allows indirect subscribers to
-        participate in subscribable introspection and unsubscription
-        without being the actual original subscriber object"""
+        """Compare two indirect subscribers
+
+        Two indirect subscribers are the same if they reference the
+        same object.
+        """
 
     
     
