@@ -2,20 +2,20 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.8 2002/11/18 12:22:27 mgedmin Exp $
+$Id: DateTimeParse.py,v 1.9 2002/11/18 12:32:47 mgedmin Exp $
 """
-    
+
 import re, math, DateTimeZone
 from types import StringTypes
 from time import \
@@ -176,24 +176,24 @@ class _cache:
            'gmt+130':'GMT+0130',  'gmt+0130':'GMT+0130',
            'gmt+230':'GMT+0230',  'gmt+0230':'GMT+0230',
            'gmt+330':'GMT+0330',  'gmt+0330':'GMT+0330',
-           'gmt+430':'GMT+0430',  'gmt+0430':'GMT+0430',           
+           'gmt+430':'GMT+0430',  'gmt+0430':'GMT+0430',
            'gmt+530':'GMT+0530',  'gmt+0530':'GMT+0530',
            'gmt+630':'GMT+0630',  'gmt+0630':'GMT+0630',
            'gmt+730':'GMT+0730',  'gmt+0730':'GMT+0730',
-           'gmt+830':'GMT+0830',  'gmt+0830':'GMT+0830',           
+           'gmt+830':'GMT+0830',  'gmt+0830':'GMT+0830',
            'gmt+930':'GMT+0930',  'gmt+0930':'GMT+0930',
            'gmt+1030':'GMT+1030',
            'gmt+1130':'GMT+1130',
-           'gmt+1230':'GMT+1230',      
+           'gmt+1230':'GMT+1230',
 
            'gmt-130':'GMT-0130',  'gmt-0130':'GMT-0130',
            'gmt-230':'GMT-0230',  'gmt-0230':'GMT-0230',
            'gmt-330':'GMT-0330',  'gmt-0330':'GMT-0330',
-           'gmt-430':'GMT-0430',  'gmt-0430':'GMT-0430',           
+           'gmt-430':'GMT-0430',  'gmt-0430':'GMT-0430',
            'gmt-530':'GMT-0530',  'gmt-0530':'GMT-0530',
            'gmt-630':'GMT-0630',  'gmt-0630':'GMT-0630',
            'gmt-730':'GMT-0730',  'gmt-0730':'GMT-0730',
-           'gmt-830':'GMT-0830',  'gmt-0830':'GMT-0830',           
+           'gmt-830':'GMT-0830',  'gmt-0830':'GMT-0830',
            'gmt-930':'GMT-0930',  'gmt-0930':'GMT-0930',
            'gmt-1030':'GMT-1030',
            'gmt-1130':'GMT-1130',
@@ -214,7 +214,7 @@ class _cache:
            'us/mountain':'US/Mountain','us/pacific':'US/Pacific',
            'us/samoa':'US/Samoa',
 
-           'ut':'Universal',      
+           'ut':'Universal',
            'bst':'GMT+1', 'mest':'GMT+2', 'sst':'GMT+2',
            'fst':'GMT+2', 'wadt':'GMT+8', 'eadt':'GMT+11', 'nzdt':'GMT+13',
            'wet':'GMT', 'wat':'GMT-1', 'at':'GMT-2', 'ast':'GMT-4',
@@ -269,7 +269,7 @@ def _findLocalTimeZoneName(isDST):
         except:
             _localzone = ''
     return _localzone
-    
+
 # Some utility functions for calculating dates:
 
 def _calcSD(t):
@@ -285,7 +285,7 @@ def _calcDependentSecond(tz, t):
     # from the timezone-independent second.
     fset = _tzoffset(tz, t)
     return fset + long(math.floor(t)) + long(EPOCH) - 86400L
-    
+
 def _calcDependentSecond2(yr,mo,dy,hr,mn,sc):
     # Calculates the timezone-dependent second (integer part only)
     # from the date given.
@@ -387,7 +387,7 @@ def safegmtime(t):
     try:
         t_int = int(t)
     except OverflowError:
-        raise TimeError('The time %f is beyond the range ' 
+        raise TimeError('The time %f is beyond the range '
                         'of this Python implementation.' % float(t))
     rval = gmtime(t_int)
     return rval
@@ -397,7 +397,7 @@ def safelocaltime(t):
     try:
         t_int = int(t)
     except OverflowError:
-        raise TimeError('The time %f is beyond the range ' 
+        raise TimeError('The time %f is beyond the range '
                         'of this Python implementation.' % float(t))
     rval = localtime(t_int)
     return rval
@@ -405,9 +405,12 @@ def safelocaltime(t):
 class DateTimeParser:
 
     def parse(self, arg, local=1):
-        """Parse a string containing some sort of date-time data
-        
-        As a general rule, any date-time representation that is 
+        """Parse a string containing some sort of date-time data.
+
+        This function returns a tuple (year, month, day, hour, minute,
+        second, timezone_string).
+
+        As a general rule, any date-time representation that is
         recognized and unambigous to a resident of North America is
         acceptable.(The reason for this qualification is that
         in North America, a date like: 2/1/1994 is interpreted
@@ -423,17 +426,17 @@ class DateTimeParser:
         value will essentially be the same as if you had captured
         time.time() at the specified date and time on a machine in
         that timezone)
-        
-        x=DateTime('1997/3/9 1:45pm')
+
+        x=parse('1997/3/9 1:45pm')
         # returns specified time, represented in local machine zone.
-        
-        y=DateTime('Mar 9, 1997 13:45:00')
+
+        y=parse('Mar 9, 1997 13:45:00')
         # y is equal to x
-        
+
         The function automatically detects and handles
         ISO8601 compliant dates (YYYY-MM-DDThh:ss:mmTZD).
         See http://www.w3.org/TR/NOTE-datetime for full specs.
-        
+
         The date component consists of year, month, and day
         values. The year value must be a one-, two-, or
         four-digit integer. If a one- or two-digit year is
@@ -449,7 +452,7 @@ class DateTimeParser:
         as it is possible to distinguish the components. If all
         three components are numbers that are less than 13,
         then a a month-day-year ordering is assumed.
-        
+
         The time component consists of hour, minute, and second
         values separated by colons.  The hour value must be an
         integer between 0 and 23 inclusively. The minute value
@@ -463,7 +466,7 @@ class DateTimeParser:
         If a string argument passed to the DateTime constructor cannot be
         parsed, it will raise SyntaxError. Invalid date components
         will raise a DateError, while invalid time or timezone components
-        will raise a DateTimeError. 
+        will raise a DateTimeError.
         """
         if not isinstance(arg, StringTypes):
             raise TypeError, 'Expected a string argument'
@@ -485,9 +488,15 @@ class DateTimeParser:
         return yr, mo, dy, hr, mn, sc, tz
 
     def time(self, arg):
+        """Parse a string containing some sort of date-time data.
+
+        This function returns the time in seconds since the Epoch (in UTC).
+
+        See date() for the description of allowed input values.
+        """
 
         yr, mo, dy, hr, mn, sc, tz = self.parse(arg)
-        
+
         ms = sc - math.floor(sc)
         x = _calcDependentSecond2(yr,mo,dy,hr,mn,sc)
 
@@ -502,14 +511,14 @@ class DateTimeParser:
         s,d,t,millisecs = _calcIndependentSecondEtc(tz, x, ms)
 
         return t
-        
+
 
     int_pattern  =re.compile(r'([0-9]+)') #AJ
     flt_pattern  =re.compile(r':([0-9]+\.[0-9]+)') #AJ
     name_pattern =re.compile(r'([a-zA-Z]+)', re.I) #AJ
     space_chars  =' \t\n'
     delimiters   ='-/.:,+'
-    _month_len  =((0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), 
+    _month_len  =((0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
                   (0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))
     _until_month=((0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334),
                   (0, 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335))
@@ -539,7 +548,7 @@ class DateTimeParser:
     # For backward compatibility only:
     _isDST = localtime(_time())[8]
     _localzone  = _isDST and _localzone1 or _localzone0
-    
+
     _tzinfo     = _cache()
 
     def localZone(self, ltm=None):
@@ -552,7 +561,7 @@ class DateTimeParser:
         isDST = ltm[8]
         lz = isDST and self._localzone1 or self._localzone0
         return lz
-        
+
     def _calcTimezoneName(self, x, ms):
         # Derive the name of the local time zone at the given
         # timezone-dependent second.
@@ -594,7 +603,7 @@ class DateTimeParser:
         # Find timezone first, since it should always be the last
         # element, and may contain a slash, confusing the parser.
 
-        
+
         # First check for time zone of form +dd:dd
         tz = _iso_tz_re.search(string)
         if tz:
@@ -634,10 +643,10 @@ class DateTimeParser:
                 i=i+len(s)
                 ints.append(float(s))
                 continue
-            
+
             #AJ
             ts_results = intpat.match(string, i)
-            if ts_results: 
+            if ts_results:
                 s=ts_results.group(0)
 
                 ls=len(s)
@@ -722,14 +731,14 @@ class DateTimeParser:
                 day=ints[1]
                 year=ints[2]
             del ints[:3]
-            
+
         if day is None:
             # Use today's date.
             year,month,day = localtime(_time())[:3]
 
         year = _correctYear(year)
         if year < 1000: raise SyntaxError(string)
-        
+
         leap = year%4==0 and (year%100!=0 or year%400==0)
         try:
             if not day or day > self._month_len[leap][month]:
@@ -757,7 +766,7 @@ class DateTimeParser:
                     del ints[0]
                     if ints: raise SyntaxError(string)
 
-    
+
         tod_int = int(math.floor(tod))
         ms = tod - tod_int
         hr,mn,sc = _calcHMS(tod_int, ms)
