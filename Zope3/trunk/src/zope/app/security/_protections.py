@@ -13,8 +13,7 @@
 ##############################################################################
 """Register protection information for some standard low-level types
 
-Revision information:
-$Id: _protections.py,v 1.6 2003/11/21 17:11:00 jim Exp $
+$Id: _protections.py,v 1.7 2004/02/05 22:17:00 srichter Exp $
 """
 
 def protect():
