@@ -16,6 +16,8 @@
 import os
 import unittest
 
+from StringIO import StringIO
+
 from zpkgtools import cfgparser
 from zpkgtools import config
 
@@ -32,6 +34,12 @@ class ConfigTestCase(unittest.TestCase):
         self.assert_(isinstance(path, basestring))
 
     def test_constructor(self):
+        cf = config.Configuration()
+        self.assert_(cf.include_support_code)
+        self.assertEqual(len(cf.locations), 0)
+        self.assertEqual(len(cf.location_maps), 0)
+
+    def test_loadPath(self):
         path = os.path.join(here, "zpkg-ok.conf")
         cf = config.Configuration()
         cf.loadPath(path)
@@ -42,22 +50,35 @@ class ConfigTestCase(unittest.TestCase):
 
     def test_constructor_bad_config_setting(self):
         # unknown option:
-        path = os.path.join(here, "zpkg-error-1.conf")
-        cf = config.Configuration()
         self.assertRaises(cfgparser.ConfigurationError,
-                          cf.loadPath, path)
+                          self.load_text, "unknown-option 42\n")
 
         # repository-map without path
-        path = os.path.join(here, "zpkg-error-2.conf")
-        cf = config.Configuration()
         self.assertRaises(cfgparser.ConfigurationError,
-                          cf.loadPath, path)
+                          self.load_text, "resource-map \n")
 
-    def test_constructor_no_such_file(self):
+        # include-support-code too many times
+        self.assertRaises(cfgparser.ConfigurationError,
+                          self.load_text, ("include-support-code false\n"
+                                           "include-support-code false\n"))
+
+    def test_loadPath_no_such_file(self):
         path = os.path.join(here, "no-such-file")
         cf = config.Configuration()
         self.assertRaises(IOError, cf.loadPath, path)
 
+    def load_text(self, text, path=None, basedir=None):
+        if path is None:
+            if basedir is None:
+                basedir = "foo"
+            path = os.path.join(basedir, "bar.conf")
+        if basedir is None:
+            os.path.dirname(path)
+        cf = config.Configuration()
+        sio = StringIO(text)
+        cf.loadStream(sio, path, basedir)
+        return cf
+        
 
 def test_suite():
     return unittest.makeSuite(ConfigTestCase)

@@ -62,6 +62,8 @@ class Application:
             cf.location_maps[:0] = options.location_maps
         cf.finalize()
         self.locations = cf.locations
+        if options.include_support_code is None:
+            options.include_support_code = cf.include_support_code
 
         if resource not in self.locations:
             print >>sys.stderr, "unknown resource:", resource
@@ -253,8 +255,10 @@ def main(argv=None):
         default="HEAD")
     parser.add_option(
         "-S", dest="include_support_code", action="store_false",
-        help="don't include copies of the zpkgtools support code",
-        default=True)
+        help="don't include copies of the zpkgtools support code")
+    parser.add_option(
+        "-s", dest="include_support_code", action="store_true",
+        help="include copies of the zpkgtools support code (the default)")
     parser.add_option(
         "-v", dest="version",
         help="version label for the new distribution",
