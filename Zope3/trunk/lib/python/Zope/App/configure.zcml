@@ -18,5 +18,6 @@
   <include package=".DublinCore" />
   <include package=".DependencyFramework" />
   <include package=".StartUp" />
+  <include package=".index" />
 
 </zopeConfigure>
