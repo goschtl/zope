@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.1 2002/12/31 03:35:10 jim Exp $
+$Id: zopepolicy.py,v 1.2 2003/01/16 15:11:02 rdmurray Exp $
 """
-__version__='$Revision: 1.1 $'[11:-2]
+__version__='$Revision: 1.2 $'[11:-2]
 
 from zope.component import queryAdapter, getService
 
@@ -50,7 +50,7 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 globalContext = object()
 
 
-def _computeBasePrincipalRoles(principalid,object):
+def _computeBasePrincipalRoles(principalid, object):
     auth = getService(object, "Authentication")
     p = auth.getPrincipal(principalid)
     roles = tuple(p.getRoles()) + ('Anonymous',)
