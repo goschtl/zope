@@ -28,6 +28,11 @@
       usage="addingdialog" />
 
   <menu
+      id="zope.app.container.add"
+      title="Menu for objects added according to containment constraints"
+      usage="addingdialog" />
+
+  <menu
       id="add_component"
       title="Menu of objects to be added to service manager packages"
       usage="addingdialog" />
