@@ -219,7 +219,9 @@ if [ -e "$prefix" -a ! "$FORCE_APP_HOME" ] ; then
     exit 2
 fi
 
-if [ ! "${prefix::1}" = "/" ] ; then
+# iff $prefix starts with '/', $FIRSTPART will be ''
+FIRSTPART="`echo $prefix | cut -f1 -d/`"
+if [ ! "" = "" ] ; then
     prefix="`pwd`/$prefix"
 fi
 
