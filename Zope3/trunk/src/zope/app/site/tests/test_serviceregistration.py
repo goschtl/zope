@@ -38,7 +38,7 @@ class ITestService(Interface):
 class TestServiceBase(object):
     __name__ = __parent__ = None
     implements(ITestService, IBindingAware, IDependable)
-    
+
     _bound = _unbound = ()
 
     def bound(self, name):
@@ -99,15 +99,15 @@ class Test(PlacefulSetup, TestCase):
     def test_handleActivated(self):
         old = self.__c._bound
         event = Event(self.__config)
-        from zope.app.site.service import handleActivated
-        handleActivated(event)
+        from zope.app.site.service import bindOnActivated
+        bindOnActivated(self.__config.component, event)
         self.assertEqual(self.__c._bound, old+('test_service',))
 
     def test_deactivated(self):
         old = self.__c._unbound
         event = Event(self.__config)
-        from zope.app.site.service import handleDeactivated
-        handleDeactivated(event)
+        from zope.app.site.service import unbindOnDeactivated
+        unbindOnDeactivated(self.__config.component, event)
         self.assertEqual(self.__c._unbound, old+('test_service',))
 
     def test_getInterface(self):
