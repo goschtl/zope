@@ -340,7 +340,7 @@ class BrowserPublicationTests(BasePublicationTests):
         ac = pub.traverseName(r, None, '++etc++ApplicationController')
         self.assertEqual(ac, ApplicationController)
         r = self._createRequest('/++etc++ApplicationController',pub)
-        app = r.getPublication().getApplication(r)
+        app = r.publication.getApplication(r)
         self.assertEqual(app, ApplicationController)
         self.failIf(r.getTraversalStack())
 
