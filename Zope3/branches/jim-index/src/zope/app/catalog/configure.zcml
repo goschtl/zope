@@ -48,6 +48,20 @@
       permission="zope.Public"/>
 </content>
 
+  <subscriber
+      factory=".catalog.indexDocSubscriber"
+      for="zope.app.uniqueid.interfaces.UniqueIdAddedEvent"
+      />
+
+  <subscriber
+      factory=".catalog.reindexDocSubscriber"
+      for="zope.app.event.objectevent.ObjectModifiedEvent"
+      />
+
+  <subscriber
+      factory=".catalog.unindexDocSubscriber"
+      for="zope.app.uniqueid.interfaces.UniqueIdRemovedEvent"
+      />
 
 <!-- Include browser package -->
 

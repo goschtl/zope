@@ -23,7 +23,7 @@ import doctest
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
-from zope.app.tests import ztapi
+from zope.app.tests import ztapi, setup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from BTrees.IIBTree import IISet
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
@@ -31,6 +31,10 @@ from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.index.interfaces import IInjection, ISimpleQuery
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
+from zope.app import zapi
+
+from zope.app.utility import LocalUtilityService
+from zope.app.servicenames import Utilities
 
 
 class ReferenceStub:
@@ -59,6 +63,7 @@ class UniqueIdUtilityStub:
             uid = self._generateId()
             self.ids[ob] = uid
             self.objs[uid] = ob
+            return uid
         else:
             return self.ids[ob]
 
@@ -191,12 +196,84 @@ class Test(PlacelessSetup, unittest.TestCase):
                           simiantype='monkey', hat='beret')
 
 
+class CatalogStub:
+    implements(ICatalog)
+    def __init__(self):
+        self.regs = []
+        self.unregs = []
+
+    def index_doc(self, docid, doc):
+        self.regs.append((docid, doc))
+
+    def unindex_doc(self, docid):
+        self.unregs.append(docid)
+
+class Stub:
+
+    __name__ = None
+    __parent__ = None
+
+class TestEventSubscribers(unittest.TestCase):
+
+    def setUp(self):
+        self.root = setup.placefulSetUp(True)
+        sm = zapi.getServices(self.root)
+        setup.addService(sm, Utilities, LocalUtilityService())
+        self.utility = setup.addUtility(
+            sm, '', IUniqueIdUtility, UniqueIdUtilityStub())
+        self.cat = setup.addUtility(sm, '', ICatalog, CatalogStub())
+
+    def tearDown(self):
+        setup.placefulTearDown()
+
+    def test_indexDocSubscriber(self):
+        from zope.app.catalog.catalog import indexDocSubscriber
+        from zope.app.container.contained import ObjectAddedEvent
+        from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
+
+        ob = Stub()
+
+        id = self.utility.register(ob)
+        indexDocSubscriber(UniqueIdAddedEvent(ObjectAddedEvent(ob)))
+
+        self.assertEqual(self.cat.regs, [(id, ob)])
+        self.assertEqual(self.cat.unregs, [])
+
+    def test_reindexDocSubscriber(self):
+        from zope.app.catalog.catalog import reindexDocSubscriber
+        from zope.app.event.objectevent import ObjectModifiedEvent
+
+        ob = Stub()
+        id = self.utility.register(ob)
+
+        reindexDocSubscriber(ObjectModifiedEvent(ob))
+
+        self.assertEqual(self.cat.regs, [(1, ob)])
+        self.assertEqual(self.cat.unregs, [])
+
+    def test_unindexDocSubscriber(self):
+        from zope.app.catalog.catalog import unindexDocSubscriber
+        from zope.app.container.contained import ObjectRemovedEvent
+        from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
+
+        ob = Stub()
+        ob2 = Stub()
+        id = self.utility.register(ob)
+
+        unindexDocSubscriber(UniqueIdRemovedEvent(ObjectRemovedEvent(ob2)))
+        self.assertEqual(self.cat.unregs, [])
+        self.assertEqual(self.cat.regs, [])
+
+        unindexDocSubscriber(UniqueIdRemovedEvent(ObjectRemovedEvent(ob)))
+        self.assertEqual(self.cat.unregs, [id])
+        self.assertEqual(self.cat.regs, [])
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(unittest.makeSuite(TestEventSubscribers))
     return suite
 
 
 if __name__ == "__main__":
     unittest.main()
-

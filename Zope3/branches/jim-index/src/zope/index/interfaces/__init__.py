@@ -21,11 +21,11 @@ from zope.interface import Interface
 class IInjection(Interface):
     """Interface for injecting documents into an index."""
 
-    def index_doc(docid, texts):
+    def index_doc(docid, doc):
         """Add a document to the index.
 
         docid: int, identifying the document
-        texts: list of unicode, the text to be indexed in a list
+        doc: the document to be indexed
         return: None
 
         This can also be used to reindex documents.
@@ -147,10 +147,10 @@ class ITopicQuerying(Interface):
         """
 
 class ISimpleQuery(Interface):
-    "A simple query interface."
+    """A simple query interface."""
 
     def query(term, start=0, count=None):
-        "search for the given term, return a sequence of hubids"
+        """Search for the given term, return a sequence of docids"""
 
 
 class ITopicFilteredSet(Interface):

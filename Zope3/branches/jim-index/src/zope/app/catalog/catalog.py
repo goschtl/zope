@@ -21,6 +21,7 @@ from zope.app.zapi import getUtility
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.container.sample import SampleContainer
 
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
@@ -64,7 +65,7 @@ class CatalogBase(Persistent, SampleContainer):
             index.unindex_doc(docid)
 
     def updateIndexes(self):
-        uidutil = getUtility(IUniqueIdUtility)
+        uidutil = zapi.getUtility(IUniqueIdUtility)
         for uid, ref in uidutil.items():
             obj = ref()
             for index in self.values():
@@ -90,7 +91,7 @@ class CatalogBase(Persistent, SampleContainer):
             if not pendingResults:
                 break # nothing left, short-circuit
         # Next we turn the IISet of docids into a generator of objects
-        uidutil = getUtility(IUniqueIdUtility)
+        uidutil = zapi.getUtility(IUniqueIdUtility)
         results = ResultSet(pendingResults, uidutil)
         return results
 
@@ -106,3 +107,31 @@ class CatalogUtility(CatalogBase):
 
 class Catalog(CatalogBase):
     """A catalog in content-space."""
+
+
+def indexDocSubscriber(event):
+    """A subscriber to UniqueIdAddedEvent"""
+    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+        ob = event.original_event.object
+        id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
+        cat.index_doc(id, ob)
+
+
+def reindexDocSubscriber(event):
+    """A subscriber to ObjectModifiedEvent"""
+    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+        ob = event.object
+        id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
+        cat.index_doc(id, ob)
+
+
+def unindexDocSubscriber(event):
+    """A subscriber to UniqueIdRemovedEvent"""
+    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+        ob = event.original_event.object
+        try:
+            id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
+        except KeyError:
+            pass
+        else:
+            cat.unindex_doc(id)
