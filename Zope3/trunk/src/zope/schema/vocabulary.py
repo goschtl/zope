@@ -102,7 +102,8 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
                 try:
                     v = vocab.getTermByToken(token).value
                 except LookupError:
-                    raise ValidationError(errornames.ConstraintNotSatisfied, v)
+                    raise ValidationError(errornames.ConstraintNotSatisfied,
+                                          "token: " + repr(token))
                 if v not in vocab:
                     raise ValidationError(errornames.ConstraintNotSatisfied, v)
         for v in value:
