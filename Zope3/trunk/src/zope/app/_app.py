@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.9 2003/05/02 18:00:10 jim Exp $
+$Id: _app.py,v 1.10 2003/05/20 20:24:30 jim Exp $
 """
 
 import base64, time
@@ -60,12 +60,12 @@ def database(db):
             else:
                 storage = globals['Storage']
                 from zodb.db import DB
-                db = DB(storage)
+                db = DB(storage, cache_size=4000)
         elif db.endswith(".fs"):
             from zodb.storage.file import FileStorage
             from zodb.db import DB
             storage = FileStorage(db)
-            db = DB(storage)
+            db = DB(storage, cache_size=4000)
 
     # XXX When bootstrapping a new database, the following will fail
     #     while trying to add services when no config_file was passed

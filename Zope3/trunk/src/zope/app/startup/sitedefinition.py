@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.15 2003/05/01 19:35:36 faassen Exp $
+$Id: sitedefinition.py,v 1.16 2003/05/20 20:24:30 jim Exp $
 """
 
 from zope.interface import classProvides
@@ -97,7 +97,7 @@ class SiteDefinition:
         from zodb.storage.file import FileStorage
         if self._zodb is not None:
             raise RuntimeError("Database already open")
-        self._zodb = DB(FileStorage(file))
+        self._zodb = DB(FileStorage(file), cache_size=4000)
         return []
 
     def useMappingStorage(self, _context):
@@ -113,7 +113,7 @@ class SiteDefinition:
         from zodb.config import convertBDBStorageArgs
         from zodb.storage.bdbfull import BDBFullStorage
         kws = convertBDBStorageArgs(**kws)
-        self._zodb = DB(BDBFullStorage(**kws))
+        self._zodb = DB(BDBFullStorage(**kws), cache_size=4000)
         return []
 
     def useMemoryFullStorage(self, _context, **kws):
