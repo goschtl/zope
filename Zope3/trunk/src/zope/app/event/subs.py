@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.8 2003/02/14 03:18:03 poster Exp $
+$Id: subs.py,v 1.9 2003/02/17 18:22:02 poster Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -514,11 +514,11 @@ def getWaysToSubscribe(context, reference, allways=True):
         else:
             cleanobj = removeAllProxies(wrappedobj)
             if allways:
-	        try:
+                try:
                     hub = getService(context, HubIds)
-		except ComponentLookupError:
-		    pass
-		else:
+                except ComponentLookupError:
+                    pass
+                else:
                     try:
                         hubId = hub.getHubId(path)
                     except NotFoundError:
@@ -528,11 +528,11 @@ def getWaysToSubscribe(context, reference, allways=True):
         wrappedobj = reference
         cleanobj = clean_reference
         path = getPhysicalPathString(wrappedobj)
-	try:
+        try:
             hub = getService(context, HubIds)
-	except ComponentLookupError:
-	    pass
-	else:
+        except ComponentLookupError:
+            pass
+        else:
             try:
                 hubId = hub.getHubId(path)
             except NotFoundError:
