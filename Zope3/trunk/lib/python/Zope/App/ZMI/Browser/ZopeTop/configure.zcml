@@ -1,0 +1,103 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:skin name="ZopeTop" layers="templates images css default">
+
+  <browser:view name="standard_macros"
+                permission="Zope.View"
+                template="www/standard_macros.pt" 
+		layer="templates" />
+
+  <browser:view name="standard_widgets"
+                permission="Zope.View"
+                template="www/standard_widgets.pt" 
+		layer="templates" />
+
+  <browser:resource name="zopetopBasic.css" 
+               	file="www/zopetopBasic.css"
+		layer="css" />
+  <browser:resource name="zopetopWidgets.css" 
+                file="www/zopetopWidgets.css"
+		layer="css" />
+  <browser:resource name="zopetopStructure.css" 
+	        file="www/zopetopStructure.css" 
+	        layer="css" />
+  <browser:resource name="service_manager.gif" 
+		file="www/service_manager.gif"
+		layer="images" />
+  <browser:resource name="arrowUp.gif" 
+		file="www/arrowUp.gif"
+		layer="images" />
+  <browser:resource name="zope3logo.jpg" 
+		file="www/zope3logo.jpg"
+		layer="images" />
+  <browser:resource name="bg_top.jpg" 
+		file="www/bg_top.jpg"
+		layer="images" />
+  <browser:resource name="bg_bar.jpg" 
+		file="www/bg_bar.jpg"
+		layer="images" />
+  <browser:resource name="closed_folder.gif" 
+		file="www/closed_folder.gif"
+		layer="images" />
+  <browser:resource name="spacer1.gif" 
+		file="www/spacer1.gif"
+		layer="images" />
+  <browser:resource name="spacer2.gif" 
+		file="www/spacer2.gif"
+		layer="images" />
+  <browser:resource name="spacer3.gif" 
+		file="www/spacer3.gif"
+		layer="images" />
+  <browser:resource name="x.gif" 
+		file="www/x.gif"
+		layer="images" />
+  <browser:resource name="new_file.gif" 
+		file="www/new_file.gif"
+		layer="images" />
+  <browser:resource name="new_folder.gif" 
+		file="www/new_folder.gif"
+		layer="images" />
+  <browser:resource name="new_template.gif" 
+		file="www/new_template.gif"
+		layer="images" />
+  <browser:resource name="control_panels.gif" 
+		file="www/control_panels.gif"
+		layer="images" />
+  <browser:resource name="system_security.gif" 
+                file="www/system_security.gif"
+		layer="images" />
+  <browser:resource name="user_accounts.gif" 
+		file="www/user_accounts.gif"
+		layer="images" />
+  <browser:resource name="control_panels_folder.gif"
+		file="www/control_panels_folder.gif"
+		layer="images" />
+  <browser:resource name="add_more.gif" 
+		file="www/add_more.gif"
+		layer="images" />
+  <browser:resource name="bg_root_folder.jpg" 
+		file="www/bg_root_folder.jpg"
+		layer="images" />
+  <browser:resource name="plus.gif" 
+		file="www/plus.gif"
+		layer="images" />
+  <browser:resource name="minus.gif" 
+		file="www/minus.gif"
+		layer="images" />
+  <browser:resource name="users_folder.gif" 
+		file="www/users_folder.gif"
+		layer="images" />
+  <browser:resource name="website_settings.gif" 
+		file="www/website_settings.gif"
+		layer="images" />
+  <browser:resource name="bg_content.jpg" 
+		file="www/bg_content.jpg"
+		layer="images" />
+  <browser:resource name="help.gif" 
+		file="www/help.gif"
+		layer="images" />
+
+</zopeConfigure>
