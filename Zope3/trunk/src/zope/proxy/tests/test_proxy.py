@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.6 2003/05/08 09:40:11 stevea Exp $
+$Id: test_proxy.py,v 1.7 2003/05/09 14:02:56 stevea Exp $
 """
 import pickle
 import unittest
@@ -73,7 +73,36 @@ class ProxyTestCase(unittest.TestCase):
         self.assertRaises(TypeError, self.proxy_class, o, key='value')
         self.assertRaises(TypeError, self.proxy_class, key='value')
 
+    def test_leak(self):
+        # XXX Leaky. This is the same leak as in test_subclass_constructor,
+        #     but isolated to depend only on code in Python 2.2.2.
+        #     It still leaks on the release22-maint branch, but not with
+        #     Python 2.3 from CVS HEAD.
+        class SomeClass(object):
+            def somemethod():
+                # XXX The next line produces the following leak:
+                #
+                # totalrefcount=233207   change=32
+                # <type 'tuple'>                3       12
+                # <type 'type'>                 1        7
+                # <type 'dict'>                 1        5
+                # <type 'staticmethod'>         1        4
+                # <type 'function'>             1        4
+                # <type 'getset_descriptor'>    1        4
+                # <type 'member_descriptor'>    1        4
+                # <type 'cell'>                 1        4
+                # <type 'weakref'>              1        4
+                # <type 'str'>                  0       10
+                # <type 'class'>                0        1
+                # <type 'code'>                 0        1
+
+                super(SomeClass, None)
+            somemethod = staticmethod(somemethod)
+        SomeClass.somemethod()
+
     def test_subclass_constructor(self):
+        # NB This leaks due to a bug in Python 2.2.2.
+        #    See test_leak, above.
         class MyProxy(self.proxy_class):
             def __new__(cls, *args, **kwds):
                 return super(MyProxy, cls).__new__(cls, *args, **kwds)
@@ -82,6 +111,7 @@ class ProxyTestCase(unittest.TestCase):
         o1 = object()
         o2 = object()
         o = MyProxy((o1, o2))
+
         self.assertEquals(o1, o[0])
         self.assertEquals(o2, o[1])
 

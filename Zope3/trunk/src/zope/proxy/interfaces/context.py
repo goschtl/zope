@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.7 2003/05/08 15:16:33 stevea Exp $
+$Id: context.py,v 1.8 2003/05/09 14:02:56 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -133,24 +133,38 @@ class IWrapper(Interface):
 class IDecoratorFuncs(Interface):
     """Interface implemented by callables in 'decorator' module"""
 
-    def Decorator(object, context=None, mixinfactory=None, names=(), **data):
+    def Decorator(object, context=None, mixinfactory=None, names=(),
+                  attrdict={}, **data):
         """Create and return a new decorator for object.
 
         Decorator is a subtype of Wrapper.
 
         If context is not None, context will be the context object.
+
         If mixinfactory is not None, mixinfactory is a callable that need
         take no arguments for creating the decorator mixin.
+
         'names' is a tuple of names that are dispatched to the mixin rather
         than to the object. The mixin is instantiated from the factory
         before the first dispatch of one of the names.
+        If names is passed in with a None value, it is the same as ().
+
+        'attrdict' is a dict of name:value. Values may take any value
+        including None. If an attribute with a name in 'attrdict' is
+        sought from the decorator, the value from the attrdict will be
+        returned. Attempting to setattr or delattr with this name results in
+        an AttributeError. If attrdict is passed in with a None value, it is
+        the same as {}.
+
+        If the same name appears in names and in attrdict, the behaviour is
+        as if the name appeared only in attrdict.
 
         Wrapper data may be passed as keyword arguments. The data are added
         to the context dictionary.
 
-        Note that the arguments object, context, mixinfactory, and names,
-        must be given as positional arguments. All keyword arguments are
-        taken to be part of **data.
+        Note that the arguments object, context, mixinfactory, names, and
+        attrdict must be given as positional arguments. All keyword arguments
+        are taken to be part of **data.
         """
 
     def getmixin(obj):
@@ -163,8 +177,15 @@ class IDecoratorFuncs(Interface):
         """Returns the mixin factory."""
 
     def getnames(obj):
-        """Returns the names."""
+        """Returns the tuple of names."""
 
+    def getnamesdict(obj):
+        """Returns a read-only dict used for fast lookup of names.
+
+        This method is provided so that unit-tests can check that the
+        dict is created properly. It should otherwise be considered
+        a private API.
+        """
 
 class IDecorator(IWrapper):
     """A Decorator is a subtype of Wrapper.
@@ -209,7 +230,7 @@ class IContextWrapper(Interface):
     def ContextWrapper(object, parent, **data):
         """Create a context wrapper for object in parent
 
-        If the object is in a security proxy, then result will will be
+        If the object is in a security proxy, then result will be
         a security proxy for the unproxied object in context.
 
         Consider an object, o1, in a proxy p1 with a checker c1.
@@ -218,10 +239,7 @@ class IContextWrapper(Interface):
         get::
 
           Proxy(Wrapper(o1, parent, name='foo'), c1)
-
         """
-
-    # TODO: Add decorator callables here.
 
     def getWrapperData(ob):
         """Get the context wrapper data for an object"""
@@ -253,5 +271,19 @@ class IContextWrapper(Interface):
         The iteration starts at ob and proceeds through ob's containers.
         As with getWrapperContainer, the container is the context of the
         innermost wrapper.
+        """
+
+class IContextDecorator(IContextWrapper):
+    """Wrapper and Decorator API provided to applications."""
+
+    def ContextWrapper(object, parent, **data):
+        """Create a context wrapper for object in parent
+
+        If the object is in a security proxy, then result will be
+        a security proxy for the unproxied object in context.
+
+        The object is examined to see if it should be wrapped with
+        a Wrapper or with a Decorator. How this is done is up to the
+        implementation.
         """
 

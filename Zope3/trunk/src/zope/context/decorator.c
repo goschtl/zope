@@ -26,6 +26,7 @@
 static PyTypeObject DecoratorType;
 
 static PyObject *empty_tuple = NULL;
+static PyObject *dispatch_to_mixin_marker = NULL;
 
 /* We need to use PyStrings for the various python special method names,
  * such as __len__ and next and __getitem__.
@@ -81,9 +82,10 @@ decorate_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     PyObject *object;
     PyObject *mixin_factory;
     PyObject *names;
+    PyObject *attrdict;
 
-    if (PyArg_UnpackTuple(args, "__new__", 1, 4, &object, &context,
-            &mixin_factory, &names)) {
+    if (PyArg_UnpackTuple(args, "__new__", 1, 5, &object, &context,
+            &mixin_factory, &names, &attrdict)) {
         PyObject *wrapperargs = create_wrapper_args(args, object, context);
         if (wrapperargs == NULL)
             goto finally;
@@ -103,10 +105,12 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *object;
     PyObject *mixin_factory = NULL;
     PyObject *names = NULL;
+    PyObject *attrdict = NULL;
     PyObject *fast_names = NULL;
+    PyObject *names_dict = NULL;
 
-    if (PyArg_UnpackTuple(args, "__init__", 1, 4, &object, &context,
-            &mixin_factory, &names)) {
+    if (PyArg_UnpackTuple(args, "__init__", 1, 5, &object, &context,
+            &mixin_factory, &names, &attrdict)) {
         PyObject *temp;
         int size;
         DecoratorObject *decorator = (DecoratorObject *)self;
@@ -129,7 +133,7 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
          * If the tuple is empty, names_dict should be NULL.
          * Otherwise, names_dict should have the names as keys.
          */
-        if (names == NULL) {
+        if (names == NULL || names == Py_None) {
             fast_names = empty_tuple;
             Py_INCREF(fast_names);
         } else {
@@ -145,9 +149,9 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
 
         size = PySequence_Fast_GET_SIZE(fast_names);
         if (size) {
-            PyObject *names_dict = PyDict_New();
             int i;
 
+            names_dict = PyDict_New();
             if (names_dict == NULL) goto finally;
             /* names_dict is private to this type, so there really shouldn't
              * be anything in it already.
@@ -160,12 +164,33 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
                                     "'names' must contain only strings.");
                     goto finally;
                 }
-                if (PyDict_SetItem(names_dict, temp, Py_None) != 0) {
+                if (PyDict_SetItem(names_dict, temp,
+                                   dispatch_to_mixin_marker) != 0) {
                     goto finally;
                 }
             }
         }
         /* otherwise, names == (), and names_dict == NULL */
+
+        if (attrdict != NULL && attrdict != Py_None) {
+            int l = PyMapping_Length(attrdict);
+            if (l == -1)
+                goto finally;
+            if (l > 0) {
+                /* XXX: it might be a good idea to check that attrdict contains
+                 * only strings as keys */
+                if (names_dict == NULL) {
+                    names_dict = PyDict_New();
+                    if (names_dict == NULL) goto finally;
+                    /* names_dict is private to this type, so there really
+                     * shouldn't be anything in it already.
+                     */
+                    decorator->names_dict = names_dict;
+                }
+                if (PyDict_Update(names_dict, attrdict) == -1)
+                    goto finally;
+            }
+        }
 
         result = 0;
     }
@@ -243,21 +268,21 @@ decorate_dealloc(PyObject *self)
  * we don't want to depend on the Internal API.
  */
 
-
-#define DISPATCH_TO_DECORATOR(BADVAL) \
-        if (PyErr_Occurred()) return (BADVAL); \
+#define DISPATCH_TO_DECORATOR(BADVAL, SELF, WRAPPED) \
         /* We have a name.
          * If the mixin exists, dispatch the name to the mixin.
          * If the mixin doesn't exist, create it from the factory.
          */ \
-        if (Decorator_GetMixin(self) != NULL) \
-            wrapped = Decorator_GetMixin(self); \
-        else if (Decorator_GetMixinFactory(self) != NULL) { \
-            wrapped = PyObject_CallObject(Decorator_GetMixinFactory(self), \
-                                          NULL); \
-            if (wrapped == NULL) \
+        if (Decorator_GetMixin((SELF)) != NULL) \
+            (WRAPPED) = Decorator_GetMixin((SELF)); \
+        else if (Decorator_GetMixinFactory((SELF)) != NULL) { \
+            (WRAPPED) = PyObject_CallFunctionObjArgs( \
+                Decorator_GetMixinFactory((SELF)), \
+                Wrapper_GetObject((SELF)), \
+                (SELF), NULL); \
+            if ((WRAPPED) == NULL) \
                 return (BADVAL); \
-            ((DecoratorObject *)self)->mixin = wrapped; \
+            ((DecoratorObject *)(SELF))->mixin = (WRAPPED); \
         } else { \
             PyErr_SetString(PyExc_TypeError, \
                     "Cannot create mixin, as there is no mixin factory."); \
@@ -267,16 +292,20 @@ decorate_dealloc(PyObject *self)
 /* Perhaps we don't need to check that the namesdict is non-null, as it
  * will always have been created.
  */
-#define MAYBE_DISPATCH_TO_DECORATOR_NAMEVAR(BADVAL) \
-    if (Decorator_GetNamesDict(self) && \
-            PyDict_GetItem(Decorator_GetNamesDict(self), name) != NULL) { \
-      DISPATCH_TO_DECORATOR(BADVAL) \
-    }
-
 #define MAYBE_DISPATCH_TO_DECORATOR(NAME, BADVAL) \
-    if (Decorator_GetNamesDict(self) && \
-        PyDict_GetItem(Decorator_GetNamesDict(self), (NAME)) != NULL) { \
-      DISPATCH_TO_DECORATOR(BADVAL) \
+    if (Decorator_GetNamesDict(self)) { \
+        PyObject *value = PyDict_GetItem(Decorator_GetNamesDict(self), \
+                                         (NAME)); \
+        if (value == NULL) { \
+            if (PyErr_Occurred()) return (BADVAL); \
+        } else if (value == dispatch_to_mixin_marker) { \
+            DISPATCH_TO_DECORATOR(BADVAL, self, wrapped) \
+        } else { \
+            PyErr_Format(PyExc_AttributeError, \
+                         "Cannot return value from attrdict for slot %s", \
+                         PyString_AS_STRING(NAME)); \
+            return (BADVAL); \
+        } \
     }
 
 static PyObject *
@@ -293,7 +322,20 @@ decorate_getattro(PyObject *self, PyObject *name)
             PyString_AS_STRING(name));
         return NULL;
     }
-    MAYBE_DISPATCH_TO_DECORATOR_NAMEVAR(NULL)
+    /* Special version of MAYBE_DISPATCH_TO_DECORATOR macro that also
+     * looks more closely at the attrdict.
+     */
+    if (Decorator_GetNamesDict(self)) {
+        PyObject *value = PyDict_GetItem(Decorator_GetNamesDict(self), name);
+        if (value == NULL) {
+            if (PyErr_Occurred()) return NULL;
+        } else if (value == dispatch_to_mixin_marker) {
+            DISPATCH_TO_DECORATOR(NULL, self, wrapped)
+        } else {
+            Py_INCREF(value);
+            return value;
+        }
+    }
 
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
@@ -328,7 +370,7 @@ decorate_setattro(PyObject *self, PyObject *name, PyObject *value)
             PyString_AS_STRING(name));
         return -1;
     }
-    MAYBE_DISPATCH_TO_DECORATOR_NAMEVAR(-1)
+    MAYBE_DISPATCH_TO_DECORATOR(name, -1)
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
@@ -453,7 +495,7 @@ decorate_nonzero(PyObject *self)
                        SlotStrings[LEN_IDX]) != NULL &&
           _PyType_Lookup(wrapped->ob_type, SlotStrings[NONZERO_IDX]) == NULL
         ))) {
-        DISPATCH_TO_DECORATOR(-1)
+        DISPATCH_TO_DECORATOR(-1, self, wrapped)
     }
     descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[NONZERO_IDX]);
     if (descriptor == NULL)
@@ -710,7 +752,7 @@ DecoratorType = {
 
 static PyObject *
 create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
-                 PyObject *names)
+                 PyObject *names, PyObject* attrdict)
 {
     PyObject *result = NULL;
     PyObject *args;
@@ -732,6 +774,10 @@ create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
     Py_INCREF(names);
     PyTuple_SET_ITEM(args, 3, names);
 
+    if (!attrdict) attrdict = Py_None;
+    Py_INCREF(attrdict);
+    PyTuple_SET_ITEM(args, 4, attrdict);
+
     result = PyObject_CallObject((PyObject *)&DecoratorType, args);
     Py_DECREF(args);
     return result;
@@ -745,14 +791,14 @@ api_check(PyObject *obj)
 
 static PyObject *
 api_create(PyObject *object, PyObject *context, PyObject *mixin_factory,
-           PyObject *names)
+           PyObject *names, PyObject *attrdict)
 {
     if (object == NULL) {
         PyErr_SetString(PyExc_ValueError,
                         "cannot create decorator around NULL");
         return NULL;
     }
-    return create_decorator(object, context, mixin_factory, names);
+    return create_decorator(object, context, mixin_factory, names, attrdict);
 }
 
 static PyObject *
@@ -854,23 +900,10 @@ static PyObject *
 decorator_getmixincreate(PyObject *unused, PyObject *obj)
 {
     PyObject *result = NULL;
-    PyObject *temp;
 
     if (!check_decorator(obj, "getmixincreate"))
         return NULL;
-    result = Decorator_GetMixin(obj);
-    if (result == NULL) {
-        temp = Decorator_GetMixinFactory(obj);
-        if (temp == NULL) {
-            PyErr_SetString(PyExc_TypeError,
-                        "Cannot create mixin as there is no mixinfactory");
-            return NULL;
-        }
-        result = PyObject_CallObject(temp, NULL);
-        if (result == NULL)
-            return NULL;
-        ((DecoratorObject *)obj)->mixin = result;
-    }
+    DISPATCH_TO_DECORATOR(NULL, obj, result)
     Py_INCREF(result);
     return result;
 }
@@ -924,6 +957,15 @@ decorator_getnamesdict(PyObject *unused, PyObject *obj)
 {
     if (!check_decorator(obj, "getnamesdict"))
         return NULL;
+    if (Decorator_GetNamesDict(obj) == NULL) {
+        PyObject *newproxydict;
+        PyObject *newdict = PyDict_New();
+        if (newdict == NULL)
+            return NULL;
+        newproxydict = PyDictProxy_New(newdict);
+        Py_DECREF(newdict);
+        return newproxydict;
+    }
     return PyDictProxy_New(Decorator_GetNamesDict(obj));
 }
 
@@ -995,4 +1037,7 @@ initdecorator(void)
 
     if (empty_tuple == NULL)
         empty_tuple = PyTuple_New(0);
+    if (dispatch_to_mixin_marker == NULL)
+        dispatch_to_mixin_marker = PyObject_CallObject(
+            (PyObject *)&PyBaseObject_Type, NULL);
 }

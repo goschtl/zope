@@ -23,7 +23,7 @@ typedef struct {
 typedef struct {
     int (*check)(PyObject *obj);
     PyObject *(*create)(PyObject *object, PyObject *context,
-        PyObject *mixin_factory, PyObject *names);
+        PyObject *mixin_factory, PyObject *names, PyObject *attrdict);
     PyObject *(*getmixin)(PyObject *wrapper);
     PyObject *(*getmixinfactory)(PyObject *wrapper);
     PyObject *(*getnames)(PyObject *wrapper);
@@ -59,9 +59,9 @@ Decorator_Import(void)
 
 #define Decorator_Check(obj)                                              \
         (_decorator_api->check((obj)))
-#define Decorator_New(object, context, mixin_factory, names)  \
+#define Decorator_New(object, context, mixin_factory, names, attrdict)    \
         (_decorator_api->create((object), (context), (mixin_factory),     \
-                                (names)))
+                                (names), (attrdict)))
 #define Decorator_GetMixin(wrapper)                                       \
         (_decorator_api->getmixin((wrapper)))
 #define Decorator_GetMixinFactory(wrapper)                                \

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.3 2003/05/08 15:16:33 stevea Exp $
+$Id: test_decorator.py,v 1.4 2003/05/09 14:02:55 stevea Exp $
 """
 import unittest
 
@@ -23,8 +23,9 @@ class DecoratorTestCase(WrapperTestCase):
 
     proxy_class = decorator.Decorator
 
-    def new_proxy(self, o, c=None, mixinfactory=None, names=()):
-        return self.proxy_class(o, c, mixinfactory, names)
+    def new_proxy(self, o, c=None, mixinfactory=None, names=None,
+                  attrdict=None):
+        return self.proxy_class(o, c, mixinfactory, names, attrdict)
 
     def test_subclass_constructor(self):
         class MyWrapper(self.proxy_class):
@@ -36,7 +37,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertEquals(wrapper.getdict(w), {'key': 'value'})
 
         # __new__ catches too many positional args:
-        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5)
+        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5, 6)
 
     def test_decorator_basics(self):
         # check that default arguments are set correctly as per the interface
@@ -47,6 +48,14 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertEquals(decorator.getnames(w), ())
         self.assert_(decorator.getmixinfactory(w) is None)
 
+        # getnamesdict is not in the official decorator interface, but it
+        # is provided so that the caching dict can be unit-tested from Python.
+
+        # dictproxy instances are not comparable for equality with dict
+        # instances
+        # self.assertEquals(decorator.getnamesdict(w), {})
+        self.assertEquals(len(decorator.getnamesdict(w)), 0)
+
         # check that non-default arguments are set correctly
         class SomeObject(object):
             def bar(self):
@@ -54,6 +63,9 @@ class DecoratorTestCase(WrapperTestCase):
         obj = SomeObject()
 
         class MixinFactory(object):
+            def __init__(self, inner, outer):
+                self.inner = inner
+                self.outer = outer
             def foo(self):
                 pass
             def bar(self):
@@ -62,11 +74,13 @@ class DecoratorTestCase(WrapperTestCase):
         c = object()
         f = MixinFactory
         n = ('foo',)
-        w = self.proxy_class(obj, c, f, n)
+        ad = {'baz':23}
+        w = self.proxy_class(obj, c, f, n, ad)
 
-        # getnamesdict is not in the official decorator interface, but it
-        # is provided so that the caching dict can be unit-tested from Python.
-        self.assertEquals(decorator.getnamesdict(w).keys(), ['foo',])
+        keys = decorator.getnamesdict(w).keys()
+        keys.sort()
+        self.assertEquals(keys, ['baz', 'foo'])
+        self.assertEquals(decorator.getnamesdict(w)['baz'], 23)
 
         self.assert_(wrapper.getcontext(w) is c)
         self.assert_(decorator.getmixin(w) is None)
@@ -76,9 +90,19 @@ class DecoratorTestCase(WrapperTestCase):
         # Check that accessing a non-name does not create the mixin.
         w.bar()
         self.assert_(decorator.getmixin(w) is None)
+        # Check that accessing something from the attrdict does not create the
+        # mixin.
+        w.baz
+        self.assert_(decorator.getmixin(w) is None)
+
         # Check that accessing a name creates the mixin.
         w.foo()
-        self.assert_(type(decorator.getmixin(w)) is MixinFactory)
+        mixin = decorator.getmixin(w)
+        self.assert_(type(mixin) is MixinFactory)
+
+        # Check that the mixin factory is constructed with the correct args.
+        self.assert_(mixin.inner is obj)
+        self.assert_(mixin.outer is w)
 
         # check that getmixincreate works
         w = self.proxy_class(obj, c, f, n)
@@ -94,14 +118,17 @@ class DecoratorTestCase(WrapperTestCase):
         obj = SomeObject()
 
         class MixinFactory(object):
+            def __init__(self, inner, outer):
+                pass
             def foo(self):
                 pass
             def bar(self):
                 pass
+            spoo = 23
 
         c = object()
         f = MixinFactory
-        n = ('foo',)
+        n = ('foo', 'spoo')
         w = self.proxy_class(obj, c, f, n)
 
         self.assert_(decorator.getmixin(w) is None)
@@ -113,6 +140,7 @@ class DecoratorTestCase(WrapperTestCase):
         w.foo()
         mixin2 = decorator.getmixin(w)
         self.assert_(mixin is mixin2)
+        self.assertEqual(w.spoo, 23)
 
     def test_typeerror_if_no_factory(self):
         w = self.proxy_class(object(), None, None, ('foo',))
@@ -123,6 +151,8 @@ class DecoratorTestCase(WrapperTestCase):
         obj = object()
 
         class MixinFactory(object):
+            def __init__(self, inner, outer):
+                pass
             def setFoo(self, value):
                 self.fooval = value
             def getFoo(self):
@@ -131,7 +161,7 @@ class DecoratorTestCase(WrapperTestCase):
                 del self.fooval
             foo = property(getFoo, setFoo, delFoo)
 
-        w = self.proxy_class(obj, None, MixinFactory, ('foo',))
+        w = self.proxy_class(obj, None, MixinFactory, ('foo',), {'baz': 23})
         mixin = decorator.getmixincreate(w)
         self.failIf(hasattr(mixin, 'fooval'))
         self.assertRaises(AttributeError, getattr, w, 'foo')
@@ -140,6 +170,10 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertEquals(mixin.fooval, 'skidoo')
         del w.foo
         self.failIf(hasattr(mixin, 'fooval'))
+
+        # check that trying to set something in attrdict fails.
+        self.assertRaises(AttributeError, setattr, w, 'baz', 23)
+        self.assertRaises(AttributeError, delattr, w, 'baz')
 
     def test_decorated_slots(self):
         obj = object()
@@ -236,7 +270,7 @@ class DecoratorTestCase(WrapperTestCase):
         obj = object()
         a = [1, 2, 3]
         b = []
-        factory = lambda: a
+        factory = lambda inner, outer: a
         names = ('__iter__',)
         for x in self.proxy_class(obj, None, factory, names):
             b.append(x)
@@ -248,7 +282,7 @@ class DecoratorTestCase(WrapperTestCase):
         obj = object()
         a = [1, 2, 3]
         b = []
-        factory = lambda: iter(a)
+        factory = lambda inner, outer: iter(a)
         names = ('__iter__',)
         for x in self.proxy_class(obj, None, factory, names):
             b.append(x)
@@ -273,7 +307,7 @@ class DecoratorTestCase(WrapperTestCase):
             def __iter__(self):
                 obj = object()
                 names = ('__iter__', 'next')
-                factory = lambda: iter(self.data)
+                factory = lambda inner, outer: iter(self.data)
                 return self.test.proxy_class(obj, None, factory, names)
 
         a = [1, 2, 3]

@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.7 2003/05/01 19:35:45 faassen Exp $
+$Id: __init__.py,v 1.8 2003/05/09 14:02:55 stevea Exp $
 """
 __metaclass__ = type
 
@@ -28,45 +28,38 @@ from zope.proxy.context.wrapper import getinnerwrapper, getbaseobject
 from zope.proxy.context.wrapper import ContextDescriptor, ContextAware
 from zope.proxy.context.wrapper import ContextMethod, ContextProperty
 from zope.proxy.context.wrapper import Wrapper
+from zope.proxy.context.decorator import Decorator
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
 
-from zope.proxy.interfaces.context import IContextWrapper
+from zope.proxy.interfaces.context import IContextDecorator
 
-moduleProvides(IContextWrapper)
+moduleProvides(IContextDecorator)
 
-def ContextWrapper(_ob, _parent, **kw):
+def ContextWrapper(_ob, _parent, **kw): # hookable
     """Create a context wrapper around an object with data
 
     If the object is wrapped in a security proxy, then the context
     wrapper is inserted inside an equivalent security proxy.
     """
+    return ContextWrapper_hook(_ob, _parent, **kw)
 
+def ContextWrapper_hook(_ob, _parent, **kw):
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
-
-##     if type(_ob.__class__) is ClassType:
-##         # We have an instance of a classic class.
-##         # This isn't *too* bad in itself, but we're going to make sure that
-##         # it doesn't have any ContextDescriptor members.
-##         cls = _ob.__class__
-                    
-##         for name, member in inspect.getmembers(cls):
-##             if isinstance(member, ContextDescriptor):
-##                 raise TypeError("Class %s is a classic class, but has a"
-##                                 " ContextDescriptor member '%s'. This member"
-##                                 " will not work properly." %
-##                                 (cls, name))
 
     if type(_ob) is Proxy:
         # insert into proxies
         checker = getChecker(_ob)
         _ob = getObject(_ob)
-        _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
+        _ob = Proxy(makeWrapper_hook(_ob, _parent, kw, checker), checker)
     else:
-        _ob = Wrapper(_ob, _parent, **kw)
+        _ob = makeWrapper_hook(_ob, _parent, kw)
 
     return _ob
+
+def makeWrapper_hook(ob, parent, kw, checker=None):
+    return Wrapper(ob, parent, **kw)
 
 def getWrapperObject(_ob):
     """Remove a context wrapper around an object with data
@@ -151,9 +144,10 @@ def queryAttr(collection, name, default=None):
     return ContextWrapper(getattr(collection, name, default),
                           collection, name=name)
 
-wrapperTypes = (Wrapper,)
+wrapperTypes = (Wrapper, Decorator)
 
 defineChecker(Wrapper, _contextWrapperChecker)
+defineChecker(Decorator, _contextWrapperChecker)
 
 class ContextSuper:
 
