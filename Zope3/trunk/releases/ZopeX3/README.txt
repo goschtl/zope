@@ -137,6 +137,8 @@ can be run using the command:
   Running UNIT tests at level 1
   Running UNIT tests from C:\ZopeX3-3.0.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
+  diff3 doesn't work, diff3 tests disabled
+  [...more dots...]
   ----------------------------------------------------------------------
   Ran 4500 tests in 501.389s
 
@@ -144,7 +146,10 @@ can be run using the command:
 
 The line before the final "OK" tells how many individual tests were
 run, and long it took to run them.  These numbers will vary based on
-release, operating system, and host platform.
+release, operating system, and host platform.  This line is expected
+on Windows:
+
+    diff3 doesn't work, diff3 tests disabled
 
 At this point, you can install the software using the command:
 
