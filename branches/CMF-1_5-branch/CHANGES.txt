@@ -5,6 +5,11 @@ After CMF-1.5.1beta
     - CMFCore.TypesTool: Added backwards compatibility code to the fix for
       collector issue 49 (http://collector.zope.org/CMF/49)
 
+    - CMFCore.Skinnable: Changed the way layers (skindata) are stored
+      (no more _v_ attribute) to prevent them being lost in the middle
+      of a request when memory pressure is high. This change is
+      incompatible with SpeedPack, but includes one of its two
+      optimizations about skins. (http://collector.zope.org/CMF/198)
 
 CMF 1.5.1beta (2005/03/24)
 
