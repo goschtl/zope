@@ -5178,10 +5178,6 @@ msgstr "Aggiungi"
 msgid "Root Folder"
 msgstr "Cartella radice"
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
-msgstr ""
-
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
 msgstr "Aggiungi una ZPT"
@@ -5224,6 +5220,7 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr "Ci sono ${num_errors} errori di inserimento."
 
+#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
 msgid "ZPT Page"
 msgstr "Pagina ZPT"

@@ -48,6 +48,11 @@
         />
   </content>
 
+  <subscriber
+      factory=".removeUniqueIdSubscriber"
+      for="zope.app.container.interfaces.IObjectRemovedEvent"
+      />
+
   <!-- Views -->
   <include package=".browser" />
 

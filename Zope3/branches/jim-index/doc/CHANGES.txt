@@ -10,6 +10,15 @@ Zope Changes
 
     New features
 
+      - Added ++debug++ traversal adapter that allows you to turn on debugging
+        flags in request.debug.  Currently there is only one flag named
+        "source" that adds HTML comments to rendered page templates showing
+        where each code snippet came from.  Try
+
+          http://localhost:8080/++debug++source/@@contents.html
+
+        and view the source of the resulting page.
+
     Bug fixes
 
       - Fixed bug in TypeRegistry for
@@ -32,11 +41,13 @@ Zope Changes
 
     Restructuring
 
+      - Templated Pages are now called ZPT Pages.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
-      Eckart Hertzler, Roger Ineichen, Stuart Bishop
+      Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
@@ -709,7 +720,7 @@ Zope Changes
     - Major fixes to the TAL I18n-Namespace support. Almost all fixes were
       backported to Zope 2.7 as well.
 
-    - Templated Pages support for a <script> tag, that allows inline Python
+    - ZPT Pages support for a <script> tag, that allows inline Python
       code. The <script> tag can be used in other TAL sources as well, but is
       turned off by default.
 
