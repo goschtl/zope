@@ -237,6 +237,10 @@ ext_modules = [
               ["src/zope/interface/_zope_interface_ospec.c"],
               include_dirs = include_dirs,
               depends = []),
+    Extension("zope.hookable._zope_hookable",
+              ["src/zope/hookable/_zope_hookable.c"],
+              include_dirs = include_dirs,
+              depends = []),
     ]
 
 # On Window, there are more extensions that need to be built
