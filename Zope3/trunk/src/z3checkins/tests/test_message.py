@@ -11,8 +11,10 @@ import sys
 import time
 from difflib import SequenceMatcher
 from datetime import datetime, timedelta
+
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component import getService, servicenames
+from zope.publisher.browser import TestRequest
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyObject
 from zope.exceptions import DuplicationError
@@ -391,7 +393,7 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        getService('Utilities').provideUtility(IMessageParser, ParserStub())
+        ztapi.provideUtility(IMessageParser, ParserStub())
 
     def test_createAndAdd(self):
         from z3checkins.message import MessageUpload
@@ -444,9 +446,6 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
 class IUnitTestPresentation(Interface):
     pass
 
-class IRequest(Interface):
-    pass
-
 class MessageTestView:
     def __init__(self, context, request):
         self.context = context
@@ -464,8 +463,6 @@ class BookmarkTestView:
 
 class RequestStub(dict):
 
-    implements(IRequest)
-
     _cookies = ()
 
     def __init__(self, **kw):
@@ -482,13 +479,13 @@ class RequestStub(dict):
     def getPresentationSkin(self):
         return ''
 
+
 class TestContainerView(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
         from z3checkins.message import MessageContainerAdapter
-        getService(servicenames.Adapters).register(
-                [None], IMessageArchive, "", MessageContainerAdapter)
+        PlacelessSetup.setUp(self)
+        ztapi.provideAdapter(None, IMessageArchive, MessageContainerAdapter)
 
     def test_checkins(self):
         from z3checkins.message import ContainerView
@@ -686,10 +683,9 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
                         'z': MessageStub(date=1, log_message='xxx'),
                         'a': MessageStub(date=2, log_message='xxx'),
                         'c': MessageStub(date=3, log_message='yyy')}
-        view.request = RequestStub()
+        view.request = TestRequest()
         view.index = view
-        getService(servicenames.Presentation).provideView(
-                ICheckinMessage, 'html', IRequest, MessageTestView)
+        ztapi.browserView(ICheckinMessage, 'html', MessageTestView)
 
         res = view.renderCheckins()
         self.assertEquals(res, 'msg3\nmsg2\nmsg1*\n')
@@ -703,13 +699,11 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
                         'z': MessageStub(date=1, log_message='xxx'),
                         'a': MessageStub(date=2, log_message='xxx'),
                         'c': MessageStub(date=3, log_message='yyy')}
-        view.request = RequestStub()
+        view.request = TestRequest()
         view.index = view
         view.bookmarks = lambda: [1]
-        getService(servicenames.Presentation).provideView(
-                ICheckinMessage, 'html', IRequest, MessageTestView)
-        getService(servicenames.Presentation).provideView(
-                IBookmark, 'html', IRequest, BookmarkTestView)
+        ztapi.browserView(ICheckinMessage, 'html', MessageTestView)
+        ztapi.browserView(IBookmark, 'html', BookmarkTestView)
 
         res = view.renderCheckins()
         self.assertEquals(res, 'msg3\nmsg2\n-\nmsg1*\n')
@@ -746,8 +740,7 @@ class TestCheckinMessageView(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         from z3checkins.message import MessageContainerAdapter
-        getService(servicenames.Adapters).register(
-                [None], IMessageArchive, "", MessageContainerAdapter)
+        ztapi.provideAdapter(None, IMessageArchive, MessageContainerAdapter)
 
     def test_body_strange(self):
         from z3checkins.message import CheckinMessageView
