@@ -130,12 +130,6 @@ finder = Finder(EXTS, basedir)
 os.path.walk(basedir, finder.visit, None)
 packages = finder.get_packages()
 
-# The logging package is standard in Python 2.3.  Don't include it unless
-# we're building a source distribution.
-if 'sdist' not in sys.argv:
-    if sys.hexversion >= 0x02030000:
-        packages.remove('logging')
-
 # Distutils hook classes
 class MyBuilder(buildcmd):
     def run(self):
