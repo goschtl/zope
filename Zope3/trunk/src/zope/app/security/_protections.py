@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.4 2003/08/06 14:37:52 srichter Exp $
+$Id: _protections.py,v 1.5 2003/09/21 17:32:43 jim Exp $
 """
 
 def protect():
@@ -111,3 +111,7 @@ def protect():
     # Make sure the message id gets never proxied
     from zope.i18n.messageid import MessageID
     defineChecker(MessageID, NoProxy)
+
+    # add __parent__ and __name__ to always available names
+    import zope.security.checker
+    zope.security.checker._always_available.extend(['__name__', '__parent__'])
