@@ -175,7 +175,7 @@ class Specification:
 class InclusionProcessor:
     """Handler for processing inclusion specifications.
 
-    Methods are provided for both reading specifications and creating
+    Methods are provided for managing manifest lists and creating
     the output tree.
 
     """
