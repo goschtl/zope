@@ -5,7 +5,7 @@ Things that need to be done
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
-- Package assembler script to build sumo/combined distro (mostly done)
+- Package assembler script and distribution runtime
 
   - Move the revision control repository to Subversion.
 
@@ -105,11 +105,6 @@ Things that need to be done
 
 - Fix up finddeps.py to stop searching at defined boundaries.  How to
   define these boundaries is in flux at the moment.
-
-- Find a way to use ZConfig itself instead of the half-way
-  re-implementation in ``zpkgtools.cfgparser``; it's a real pain
-  having to give up %defines and some of the nicer aspects of schemas
-  (or having to re-implement them).
 
 - Write a new setup.py for Zope 3 and ZODB to use in a checkout that
   uses the package metadata; this can happen after the ZopeX3 release.
