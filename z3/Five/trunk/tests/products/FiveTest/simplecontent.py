@@ -11,7 +11,7 @@ class SimpleContent(SimpleItem, Viewable):
 
     implements(ISimpleContent)
     
-    meta_type = 'SimpleContent'
+    meta_type = 'TestSimpleContent'
     security = ClassSecurityInfo()
 
     def __init__(self, id, title):
