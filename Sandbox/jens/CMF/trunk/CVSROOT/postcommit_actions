@@ -321,11 +321,7 @@ def find_entries(repo=None, all=None):
         elif all:
             is_match = 1
         elif got_re:
-            try:
-                is_match = re.match(t['path'], repo)
-            except TypeError:
-                complain("Whoops - t: %s, repo: %s\n" % (t, repo))
-                raise
+            is_match = re.match(t['path'], repo)
         else:
             is_match = (regex.match(t['path'], repo) != -1)
         if is_match:
@@ -344,7 +340,9 @@ def find_entries(repo=None, all=None):
     for e in entries:
         if not e.has_key('excludes'): e['excludes'] = []
         if not e.has_key('remote'):
-            e['remote'] = traffic_table.get('remote', None)
+            if hasattr(traffic_table, 'remote'):
+                e['remote'] = traffic_table.remote
+            else: e['remote'] = None
         if e.has_key('addrs'):
             if type(e['addrs']) == type(""):
                 # Be lenient - listify string args.
