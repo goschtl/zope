@@ -40,8 +40,8 @@ ZopeTree comes with several predefined views:
 - root_cookie_tree: same as above, with the root container as root
   node.
 
-The example page template(s) in the 'example' directory give an idea
-how to use these views for HTML templating.
+The example page template(s) in the browser package give an idea how
+to use these views for HTML templating.
 
 Customization
 -------------
