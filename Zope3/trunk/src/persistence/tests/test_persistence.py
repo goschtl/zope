@@ -141,7 +141,7 @@ class Test(unittest.TestCase):
         dm = BrokenDM()
         p._p_jar = dm
         p._p_deactivate()  # make it a ghost
-        
+
         try:
             p._p_activate()
         except NotImplementedError:
@@ -246,7 +246,7 @@ class Test(unittest.TestCase):
 
         self.assert_(shouldHaveDict.__dictoffset__ <> 0)
         self.assert_(p_shouldHaveDict.__dictoffset__ <> 0)
-        
+
     def testBasicTypeStructure(self):
         # test that a persistent class has a sane C type structure
         # use P (defined below) as simplest example
@@ -263,7 +263,7 @@ class Test(unittest.TestCase):
         p._p_oid = '\0\0\0\0\0\0hi'
         dm = DM()
         p._p_jar = dm
-        
+
         def typeerr(*args, **kwargs):
             self.assertRaises(TypeError, p, *args, **kwargs)
 

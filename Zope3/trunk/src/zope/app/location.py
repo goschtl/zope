@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.2 2003/09/21 17:30:13 jim Exp $
+$Id: location.py,v 1.3 2003/09/24 21:00:39 sidnei Exp $
 """
 from __future__ import generators
 import zope.interface
@@ -43,13 +43,13 @@ def locate(object, parent, name=None):
 
     This method should only be called from trusted code, because it
     sets attributes that are normally unsettable.
-    
+
     """
 
     object = removeAllProxies(object)
     object.__parent__ = parent
     object.__name__ = name
-    
+
 
 
 def LocationIterator(object):
@@ -458,8 +458,8 @@ class LocationProxy(ProxyBase):
     Traceback (most recent call last):
     ...
     TypeError: Not picklable
-    
-    
+
+
     """
 
     zope.interface.implements(ILocation)

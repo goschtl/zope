@@ -13,9 +13,10 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.5 2003/09/21 17:31:15 jim Exp $
+$Id: schema.py,v 1.6 2003/09/24 21:00:40 sidnei Exp $
 """
 from persistence.dict import PersistentDict
+from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app import zapi
 from zope.app.introspector import nameToInterface, interfaceToName
 from zope.app.browser.container.adding import Adding
@@ -28,7 +29,7 @@ from zope.app.services.utility import UtilityRegistration
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.schema import getFieldsInOrder, getFieldNamesInOrder
-from zope.app.container.contained import Contained
+from zope.app.container.contained import Contained, setitem, uncontained
 
 class SchemaUtility(PersistentInterfaceClass):
 
@@ -37,6 +38,7 @@ class SchemaUtility(PersistentInterfaceClass):
     def __init__(self):
         super(SchemaUtility, self).__init__('', (PersistentInterface,))
         self.schemaPermissions = PersistentDict()
+        self._InterfaceClass__attrs = PersistentDict()
 
     def setName(self, name):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -52,7 +54,6 @@ class SchemaUtility(PersistentInterfaceClass):
         if fields:
             field.order = fields[-1].order + 1
         self._setField(name, field)
-        self._p_changed = 1
 
     def removeField(self, name):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -60,7 +61,6 @@ class SchemaUtility(PersistentInterfaceClass):
         if name not in fields:
             raise KeyError, "Field %s does not exists." % name
         self._delField(name)
-        self._p_changed = 1
 
     def renameField(self, orig_name, target_name):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -72,7 +72,6 @@ class SchemaUtility(PersistentInterfaceClass):
         field = self._getField(orig_name)
         self._delField(orig_name)
         self._setField(target_name, field)
-        self._p_changed = 1
 
     def insertField(self, name, field, position):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -90,7 +89,6 @@ class SchemaUtility(PersistentInterfaceClass):
         self._setField(name, field)
         for field in fields[position:]:
             field.order += 1
-        self._p_changed = 1
 
     def moveField(self, name, position):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -106,19 +104,21 @@ class SchemaUtility(PersistentInterfaceClass):
         field.order = fields[position-1].order + 1
         for field in fields[position:]:
             field.order += 1
-        self._p_changed = 1
 
     def _getField(self, name):
         return self._InterfaceClass__attrs[name]
 
     def _setField(self, name, field):
+        field = trustedRemoveSecurityProxy(field)
         if not field.__name__:
             field.__name__ = name
-        self._InterfaceClass__attrs[name] = field
+        setitem(self, self._InterfaceClass__attrs.__setitem__, name, field)
+        self._p_changed = 1
 
     def _delField(self, name):
+        uncontained(self._InterfaceClass__attrs[name], self, name)
         del self._InterfaceClass__attrs[name]
-
+        self._p_changed = 1
 
 class SchemaAdding(Adding):
 

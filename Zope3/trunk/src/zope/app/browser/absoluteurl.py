@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.16 2003/09/21 17:30:19 jim Exp $
+$Id: absoluteurl.py,v 1.17 2003/09/24 21:00:39 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -33,7 +33,7 @@ class AbsoluteURL(BrowserView):
         context = self.context
         request = self.request
 
-        
+
         if sameProxiedObjects(context, request.getVirtualHostRoot()):
             return request.getApplicationURL()
 
@@ -95,7 +95,7 @@ class SiteAbsoluteURL(BrowserView):
         name = getattr(context, '__name__', None)
         if name:
             url += '/'+name
-                
+
         return url
 
     __call__ = __str__
@@ -115,5 +115,5 @@ class SiteAbsoluteURL(BrowserView):
             base += ({'name': name,
                       'url': ("%s/%s" % (base[-1]['url'], name))
                       }, )
-                
+
         return base
