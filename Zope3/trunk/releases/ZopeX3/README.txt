@@ -109,7 +109,7 @@ Windows
 ~~~~~~~
 
 Using the source distribution on Windows is possible, but is somewhat
-different from using the distribution on Unix.  You may want to using
+different from using the distribution on Unix.  You may want to use
 the Windows installer instead of the source distribution.  If you
 don't have a supported C compiler, you need to use the installer.
 
@@ -119,7 +119,10 @@ careful to use the same Python installation for each of these.  The
 default installation for Python 2.3.x on Windows places the Python
 interpreter at \Python23\python; this will be used in the examples,
 but you may need to use a different path to the interpreter if you
-installed Python in a non-default location.
+installed Python in a non-default location.  On NT/2000/XP using
+cmd.exe, and if Python 2.3.x is associated with the .py extension
+(the Python Windows installer does so by default), you can leave off
+the "\Python23\python " at the start of each command line.
 
 Build the Zope software by switching to the directory created by
 unpacking the source distribution, then running the command:
@@ -132,7 +135,7 @@ can be run using the command:
 
   C:\ZopeX3-3.0.0> \Python23\python test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from /home/user/ZopeX3-3.0.0/build/lib.linux-i686-2.3
+  Running UNIT tests from C:\ZopeX3-3.0.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 4500 tests in 501.389s
