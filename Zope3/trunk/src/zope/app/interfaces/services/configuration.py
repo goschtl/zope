@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.11 2003/04/14 18:03:18 gvanrossum Exp $
+$Id: configuration.py,v 1.12 2003/04/28 16:57:41 gvanrossum Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -63,7 +63,7 @@ class IConfiguration(Interface):
     interface.
     """
 
-    status = ConfigurationStatus(title = u"Configuration status")
+    status = ConfigurationStatus(title = u"Registration status")
 
     def activated():
         """Method called when a configuration is made active
@@ -122,7 +122,7 @@ class IComponentConfiguration(IConfiguration):
         required=True)
 
     permission = PermissionField(
-        title=u"The permission needed to use the component.",
+        title=u"The permission needed to use the component",
         required=False,
         )
 
