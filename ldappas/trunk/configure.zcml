@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="ldappas"
+    >
+
+  <localUtility class=".authentication.LDAPAuthentication">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.pas.interfaces.IAuthenticationPlugin"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        interface="ldappas.interfaces.ILDAPAuthentication"
+        set_schema="ldappas.interfaces.ILDAPAuthentication"
+        />
+
+  </localUtility>
+
+  <browser:addMenuItem
+      title="PAS LDAP Authentication Plugin"
+      description="A PAS LDAP Authentication Plugin"
+      class=".authentication.LDAPAuthentication"
+      permission="zope.ManageServices"
+      view="addPASLDAPAuthenticationPlugin"
+      />
+
+  <browser:addform
+      schema="ldappas.interfaces.ILDAPAuthentication"
+      label="Add a PAS LDAP Authentication Plugin"
+      content_factory=".authentication.LDAPAuthentication"
+      name="addPASLDAPAuthenticationPlugin"
+      permission="zope.ManageServices"
+      />
+
+  <browser:editform
+      schema="ldappas.interfaces.ILDAPAuthentication"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      permission="zope.ManageServices"
+      />
+
+</configure>
