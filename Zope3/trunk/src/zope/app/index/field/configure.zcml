@@ -1,0 +1,29 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+<content class="zope.app.index.field.index.FieldIndex">
+
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.index.field.IUIFieldIndex"
+      attributes="query"
+      />
+
+  <factory
+      id="zope.app.index.field.FieldIndex"
+      permission="zope.ManageServices"
+      />
+  <implements
+      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      />
+
+</content>
+
+<!--
+<adapter
+    factory="zope.app.index.text.processors.BatchedRankedProcessor"
+    provides="zope.app.interfaces.services.query.IQueryProcessor"
+    for="zope.textindex.textindexinterfaces.IQuerying"
+    />
+-->
+
+</zopeConfigure>
