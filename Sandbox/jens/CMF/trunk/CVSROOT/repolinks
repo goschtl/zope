@@ -104,9 +104,17 @@
 /Zope/lib/python/Products/SiteErrorLog          /Products/SiteErrorLog
 /Zope/utilities/ZODBTools                       /ZODB3/Tools
 
-/ZODB/src/ZODB		 /Packages/ZODB
-/ZODB/src/ZEO		 /Packages/ZEO
-/ZODB/src/BTrees	 /Packages/BTrees
+/ZODB/src/ZODB		    /Packages/ZODB
+/ZODB/src/ZEO		    /Packages/ZEO
+/ZODB/src/BTrees	    /Packages/BTrees
+/ZODB/src/BDBStorage	    /Packages/bsddb3Storage/bsddb3Storage
+/ZODB/src/zdaemon	    /Packages/zdaemon
+/ZODB/src/Persistence	    /Packages/Persistence
+/ZODB/src/ThreadedAsync	    /Packages/ThreadedAsync
+/ZODB/src/persistent/pickle /Zope/lib/python/ExtensionClass/pickle
+/ZODB/src/ZopeUndo	    /Packages/ZopeUndo
+/ZODB/src/ZConfig           /Packages/ZConfig
+/ZODB/src/zLOG              /Packages/zLOG
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
