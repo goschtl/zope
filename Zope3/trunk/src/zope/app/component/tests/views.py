@@ -13,36 +13,44 @@
 ##############################################################################
 """
 
-Revision information: $Id: views.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
+Revision information: $Id: views.py,v 1.1 2003/12/17 10:05:54 jim Exp $
 """
 
 from zope.interface import Interface, implements
 
+class IR(Interface):
+    pass
 
 class IV(Interface):
-    def index(): pass
+    def index():
+        pass
 
 class IC(Interface): pass
 
 class V1:
     implements(IV)
 
-    def __init__(self,context, request):
+    def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def index(self): return 'V1 here'
+    def index(self):
+        return 'V1 here'
 
-    def action(self): return 'done'
+    def action(self):
+        return 'done'
 
 class VZMI(V1):
-    def index(self): return 'ZMI here'
+    def index(self):
+        return 'ZMI here'
 
 class R1:
 
-    def index(self): return 'R1 here'
+    def index(self):
+        return 'R1 here'
 
-    def action(self): return 'R done'
+    def action(self):
+        return 'R done'
 
     def __init__(self, request):
         pass
