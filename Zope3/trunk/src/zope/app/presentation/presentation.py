@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.11 2004/03/23 00:23:10 maru Exp $
+$Id: presentation.py,v 1.12 2004/03/29 15:08:58 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -502,10 +502,6 @@ class PageRegistrationAddSubscriber:
             dependents = IDependable(template)
             objectpath = zapi.getPath(self)
             dependents.addDependent(objectpath)
-            # Also update usage, if supported
-            adapter = IRegistered(template, None)
-            if adapter is not None:
-                adapter.addUsage(objectpath)
 
 
 class PageRegistrationRemoveSubscriber:
@@ -523,10 +519,6 @@ class PageRegistrationRemoveSubscriber:
             dependents = IDependable(template)
             objectpath = zapi.getPath(self)
             dependents.removeDependent(objectpath)
-            # Also update usage, if supported
-            adapter = IRegistered(template, None)
-            if adapter is not None:
-                adapter.removeUsage(zapi.getPath(self))
 
 
 class TemplateViewFactory:
@@ -560,7 +552,5 @@ class BoundTemplate:
         self.template = template
         self.view = view
 
-    def __call__(self, template_usage=u'', *args, **kw):
-        if not template_usage:
-            kw["template_usage"] = template_usage
+    def __call__(self, *args, **kw):
         return self.template.render(self.view, *args, **kw)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.9 2004/03/23 00:23:11 maru Exp $
+$Id: test_presentation.py,v 1.10 2004/03/29 15:08:58 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -98,7 +98,6 @@ class PhonyTemplate:
     implements(IZPTTemplate, IDependable, IRegistered)
 
     _dependents = ()
-    _usages = ()
 
     def addDependent(self, location):
         self._dependents = tuple(
@@ -115,21 +114,6 @@ class PhonyTemplate:
     def dependents(self):
         return self._dependents
 
-    def addUsage(self, location):
-        self._usages = tuple(
-            [d for d in self._usages if d != location]
-            +
-            [location]
-            )
-
-    def removeUsage(self, location):
-        self._usages = tuple(
-            [d for d in self._usages if d != location]
-            )
-
-    def usages(self):
-        return self._usages
- 
 
 class A:
     def __init__(self, object, request):
@@ -452,8 +436,6 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         self.folder['test'] = registration
         dependents = zapi.getAdapter(self.__template, IDependable)
         self.assert_('test' in dependents.dependents())
-        usages = zapi.getAdapter(self.__template, IRegistered)
-        self.assert_('test' in usages.usages())
 
     def test_registerRemoveSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
@@ -468,8 +450,6 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         uncontained(registration, self.folder, 'test')
         dependents = zapi.getAdapter(self.__template, IDependable)
         self.assert_('test' not in dependents.dependents())
-        usages = zapi.getAdapter(self.__template, IRegistered)
-        self.assert_('test' not in usages.usages())
         
     def test_addremoveNotify_attribute(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,

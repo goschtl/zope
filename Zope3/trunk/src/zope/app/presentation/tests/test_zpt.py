@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.2 2004/03/19 20:26:29 srichter Exp $
+$Id: test_zpt.py,v 1.3 2004/03/29 15:08:58 srichter Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.presentation.zpt import ZPTTemplate, ZPTFactory
@@ -46,35 +46,6 @@ class Test(TestCase):
         source = '<p>Test content</p>'
         template = factory('foo', 'text/html', source)
         self.assertEqual(template.source, source)
-
-    def test_usage(self):
-        template = ZPTTemplate()
-        template.source = ('usage: <span tal:replace="usage" />\n'
-                           'options: <span tal:replace="options" />'
-                           )
-        view = BrowserView(42, TestRequest())
-
-        self.assertEqual(template.render(view),
-                         'usage: \n'
-                         'options: {}\n'
-                         )
-
-        self.assertEqual(template.render(view, template_usage=u"spam"),
-                         "usage: spam\n"
-                         "options: {'template_usage': u'spam'}\n"
-                         )
-                           
-        template.usage = u'eggs'
-
-        self.assertEqual(template.render(view, template_usage=u"spam"),
-                         "usage: spam\n"
-                         "options: {'template_usage': u'spam'}\n"
-                         )
-
-        self.assertEqual(template.render(view),
-                         "usage: eggs\n"
-                         "options: {'template_usage': u'eggs'}\n"
-                         )
                            
 
 def test_suite():
