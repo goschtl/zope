@@ -19,6 +19,7 @@ from transaction import get_transaction
 from zodb.storage.mapping import DB
 from zodb.code.module import ManagedRegistry
 
+from zope.interface import Interface
 from zope.app.services.interface import PersistentInterface
 
 code = """\
@@ -60,6 +61,8 @@ class PersistentInterfaceTest(unittest.TestCase):
         get_transaction().commit()
         imodule = self.registry.findModule("imodule")
         self.assert_(imodule.IFoo.isImplementedBy(imodule.aFoo))
+        # the conversion should not affect Interface
+        self.assert_(imodule.Interface is Interface)
         
 
 def test_suite():
