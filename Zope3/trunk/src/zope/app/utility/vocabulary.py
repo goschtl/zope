@@ -174,6 +174,7 @@ class UtilityVocabulary(object):
 
     <zope:vocabulary
         name='IObjects'
+        factory='zope.app.utility.vocabulary.UtilityVocabulary'
         interface='zope.app.utility.vocabulary.IObject' />
 
     >>> ztapi.provideUtility(IInterface, IObject,
