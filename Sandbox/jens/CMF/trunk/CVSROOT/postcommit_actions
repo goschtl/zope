@@ -344,6 +344,8 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
     the recursion extends to full depth below the repo dir (and the
     activity is conducted in the foreground)."""
 
+    #print "Repo:", repo, "Path:", path, "Remote:", remote # DEBUG
+
     RSYNC_EXE = get_command("rsync", RSYNC_EXE_PATH)
     if not RSYNC_EXE:
         note_failure("*** Rsync executable not found, skipping it!")
@@ -397,7 +399,12 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
         cmd = cmd + ' --exclude "/*/*"'
 
     reposubdir = string.join(string.split(repo, '/')[1:], '/')
-    if reposubdir and reposubdir != '/':
+    # XXX BOGUS - this twisted condition is because i haven't thought through
+    #     the proper way to handle special locations for remote repositories
+    #     (eg for amos' XMLDocument).
+    if (reposubdir
+        and (reposubdir != '/')
+        and (reposubdir != path[-1 * len(reposubdir):])):
         path = path + '/' + reposubdir
 
     try:
@@ -433,6 +440,7 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
     remotepath = ("%s:%s%s" % (remote['host'], remote['repodir'],
                                remotesubpath))
 
+    #print "Path:", path, "Repodir:", repodir, "Reposubdir:", reposubdir #DEBUG
     cmd = ("%s%s %s/%s%s %s" % ((VERBOSE and "set -x; ") or "",
                                 cmd,
                                 os.environ["CVSROOT"], path,
