@@ -11,5 +11,6 @@
   <include package=".Undo" />
   <include package=".Forms" />
   <include package=".Caching" />
+  <include package=".DublinCore" />
 
 </zopeConfigure>

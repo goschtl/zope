@@ -1,0 +1,40 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""Objects that take care of annotating dublin core meta data times
+
+$Id: TimeAnnotators.py,v 1.2 2002/10/04 19:05:50 jim Exp $
+"""
+__metaclass__ = type
+
+from datetime import datetime
+from Zope.ComponentArchitecture import queryAdapter
+from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
+
+class DCTimeAnnotatorClass:
+    """Update Dublin-Core time property
+    """
+
+    def __init__(self, property):
+        self.property = property
+
+    def notify(self, modified_event):
+        dc = queryAdapter(modified_event.object, IZopeDublinCore)
+        if dc is not None:
+            setattr(dc, self.property, datetime.utcnow())
+
+ModifiedAnnotator = DCTimeAnnotatorClass('modified')
+CreatedAnnotator = DCTimeAnnotatorClass('created')
+    
+        
+        
