@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.6 2003/07/15 14:09:27 Zen Exp $
+$Id: editwizard.py,v 1.7 2003/07/28 22:20:58 jim Exp $
 """
 
 import logging
@@ -23,8 +23,6 @@ from zope.component import getAdapter
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective, globalBrowserMenuService
 from zope.configuration.action import Action
-from zope.configuration.interfaces import INonEmptyDirective
-from zope.configuration.interfaces import ISubdirectiveHandler
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from editview import normalize, EditViewFactory, EditView
@@ -226,9 +224,6 @@ class Pane:
 
 
 class EditWizardDirective:
-
-    classProvides(INonEmptyDirective)
-    implements(ISubdirectiveHandler)
 
     def __init__(self, _context, name, schema, permission, 
                  for_=None, class_=None, template=None, layer='default',

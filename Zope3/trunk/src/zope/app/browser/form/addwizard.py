@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: addwizard.py,v 1.3 2003/07/14 15:28:23 Zen Exp $
+$Id: addwizard.py,v 1.4 2003/07/28 22:20:58 jim Exp $
 """
 
 import sys
@@ -25,8 +25,6 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.configuration.action import Action
-from zope.configuration.interfaces import INonEmptyDirective
-from zope.configuration.interfaces import ISubdirectiveHandler
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
@@ -148,9 +146,6 @@ def AddWizardViewFactory(
 
 
 class AddWizardDirective:
-
-    classProvides(INonEmptyDirective)
-    implements(ISubdirectiveHandler)
 
     def __init__(
         self, _context, name, schema, permission, content_factory='',
