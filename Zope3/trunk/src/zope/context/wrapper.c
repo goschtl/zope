@@ -641,11 +641,10 @@ wrap_dealloc(PyObject *self)
 
 /* A variant of _PyType_Lookup that doesn't look in WrapperType or ProxyType.
  *
- * The argument is_reduce is 1 iff name is "__reduce__".
- * If is_reduce is 1, we may look in WrapperType.
+ * If argument search_wrappertype is nonzero, we can look in WrapperType.
  */
 PyObject *
-WrapperType_Lookup(PyTypeObject *type, PyObject *name, int is_reduce)
+WrapperType_Lookup(PyTypeObject *type, PyObject *name, int search_wrappertype)
 {
     int i, n;
     PyObject *mro, *res, *base, *dict;
@@ -666,7 +665,7 @@ WrapperType_Lookup(PyTypeObject *type, PyObject *name, int is_reduce)
         base = PyTuple_GET_ITEM(mro, i);
 
         if (((PyTypeObject *)base) != &ProxyType &&
-            (((PyTypeObject *)base) != &WrapperType || is_reduce)) {
+            (((PyTypeObject *)base) != &WrapperType || search_wrappertype)) {
             if (PyClass_Check(base))
                 dict = ((PyClassObject *)base)->cl_dict;
             else {
@@ -691,6 +690,7 @@ wrap_getattro(PyObject *self, PyObject *name)
     PyObject *wrapped_type;
     PyObject *res = NULL;
     char *name_as_string;
+    int maybe_special_name;
 
 #ifdef Py_USING_UNICODE
     /* The Unicode to string conversion is done here because the
@@ -718,12 +718,13 @@ wrap_getattro(PyObject *self, PyObject *name)
             name_as_string);
         goto finally;
     }
-    if (strcmp(name_as_string, "__class__") != 0) {
+    maybe_special_name = name_as_string[0] == '_' && name_as_string[1] == '_';
+
+    if (!(maybe_special_name && strcmp(name_as_string, "__class__") == 0)) {
 
         descriptor = WrapperType_Lookup(
                 self->ob_type, name,
-                (name_as_string[0] == '_' && name_as_string[1] == '_'
-                 &&
+                (maybe_special_name &&
                  (
                   strcmp(name_as_string, "__reduce__") == 0
                   ||
