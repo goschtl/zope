@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.27 2004/03/06 22:07:25 jim Exp $
+$Id: registration.py,v 1.28 2004/03/06 22:20:47 jim Exp $
 """
 __metaclass__ = type
 
@@ -438,14 +438,14 @@ class ComponentRegistration(SimpleRegistration):
             adapter.removeUsage(zapi.getPath(self))
 
 
-class NameRegistry:
-    """Mixin for implementing INameRegistry
+class NameComponentRegistry:
+    """Mixin for implementing INameComponentRegistry
     """
-    implements(interfaces.INameRegistry)
+    implements(interfaces.INameComponentRegistry)
 
     def __init__(self, *args, **kw):
         self._bindings = {}
-        super(NameRegistry, self).__init__(*args, **kw)
+        super(NameComponentRegistry, self).__init__(*args, **kw)
 
     def queryRegistrationsFor(self, cfg, default=None):
         """See IRegistry"""
@@ -473,12 +473,6 @@ class NameRegistry:
         """See INameRegistry"""
         return filter(self._bindings.get,
                       self._bindings.keys())
-
-
-class NameComponentRegistry(NameRegistry):
-    """Mixin for implementing INameComponentRegistry
-    """
-    implements(interfaces.INameComponentRegistry)
 
     def queryActiveComponent(self, name, default=None):
         """See INameComponentRegistry"""

@@ -13,12 +13,11 @@
 ##############################################################################
 """NameRegistry tests
 
-$Id: test_nameregistry.py,v 1.2 2003/09/21 17:31:13 jim Exp $
+$Id: test_nameregistry.py,v 1.3 2004/03/06 22:20:48 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from zope.app.services.registration import NameRegistry
 from zope.app.services.registration import NameComponentRegistry
 
 class RegistrationStub:
@@ -43,11 +42,11 @@ class RegistryStub:
         return self._active
 
 
-class TestNameRegistry(TestCase):
+class TestNameComponentRegistry(TestCase):
 
     def setUp(self):
         self.container = object()
-        self.subject = NameRegistry()
+        self.subject = NameComponentRegistry()
         self.subject.__parent__ = self.container
 
     def test_queryRegistrationsFor(self):
@@ -110,13 +109,6 @@ class TestNameRegistry(TestCase):
         subject._bindings['Bar'] = 0   # false values should be filtered out
         self.assertEquals(tuple(subject.listRegistrationNames()), ('Foo',))
 
-class TestNameComponentRegistry(TestNameRegistry):
-
-    def setUp(self):
-        self.container = object()
-        self.subject = NameComponentRegistry()
-        self.subject.__parent__ = self.container
-
     def test_queryActiveComponent(self):
         subject = self.subject
         self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
@@ -131,10 +123,7 @@ class TestNameComponentRegistry(TestNameRegistry):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestNameRegistry),
-        makeSuite(TestNameComponentRegistry),
-        ))
+    return makeSuite(TestNameComponentRegistry)
 
 
 if __name__=='__main__':

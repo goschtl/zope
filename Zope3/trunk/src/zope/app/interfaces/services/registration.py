@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.19 2004/03/06 22:07:25 jim Exp $
+$Id: registration.py,v 1.20 2004/03/06 22:20:47 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -275,13 +275,15 @@ class IRegistry(Interface):
         """
 
 
-class INameRegistry(IRegistry):
-    """An IRegistry, where a name is used to decide which registry to
-    return for methods in IRegistry.
+
+class INameComponentRegistry(IRegistry):
+    """A name where the registrations refer to components.
 
     All registrations that pass through queryRegistrationsFor and
-    createRegistrationsFor are expected to implement INamedRegistration.
+    createRegistrationsFor are expected to implement
+    INamedComponentRegistration.
     """
+
 
     def queryRegistrations(name, default=None):
         """Return an IRegistrationRegistry for the registration name.
@@ -302,18 +304,13 @@ class INameRegistry(IRegistry):
         """Return a list of all registered registration names.
         """
 
-class INameComponentRegistry(INameRegistry):
-    """An INameRegistry where the registrations refer to components.
 
-    All registrations that pass through queryRegistrationsFor and
-    createRegistrationsFor are expected to implement
-    INamedComponentRegistration.
-    """
     def queryActiveComponent(name, default=None):
         """Finds the registration registry for a given name, checks if it has
         an active registration, and if so, returns its component.  Otherwise
         returns default.
         """
+
 class IOrderedContainer(Interface):
     """Containers whose items can be reorderd.
 
