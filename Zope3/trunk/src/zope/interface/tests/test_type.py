@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.3 2003/01/29 18:48:54 jim Exp $
+$Id: test_type.py,v 1.4 2003/01/30 13:38:43 stevea Exp $
 """
 
 import unittest, sys
@@ -23,6 +23,11 @@ from zope.interface import Interface
 
 def getAllForObject(reg, ob):
     all = list(reg.getAllForObject(ob))
+    all.sort()
+    return all
+
+def getTypesMatching(reg, interface):
+    all = list(reg.getTypesMatching(interface))
     all.sort()
     return all
 
@@ -37,7 +42,13 @@ class TestTypeRegistry(unittest.TestCase):
         class I3(I2): pass
 
         reg = self.new_instance()
+
         reg.register(I2, 2)
+        self.assertEqual(getTypesMatching(reg, None), [I2])
+        self.assertEqual(getTypesMatching(reg, Interface), [I2])
+        self.assertEqual(getTypesMatching(reg, I1), [I2])
+        self.assertEqual(getTypesMatching(reg, I2), [I2])
+        self.assertEqual(getTypesMatching(reg, I3), [])
 
         class C1: __implements__ = I1
         class C2: __implements__ = I2
@@ -54,6 +65,11 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), None)
 
         reg.register(I1, 1)
+        self.assertEqual(getTypesMatching(reg, None), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, Interface), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, I1), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, I2), [I2])
+        self.assertEqual(getTypesMatching(reg, I3), [])
 
         self.assertEqual(getAllForObject(reg, C1()), [1])
         self.assertEqual(getAllForObject(reg, C2()), [1, 2])
@@ -65,6 +81,11 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), None)
 
         reg.register(I3, 3)
+        self.assertEqual(getTypesMatching(reg, None), [I1, I2, I3])
+        self.assertEqual(getTypesMatching(reg, Interface), [I1, I2, I3])
+        self.assertEqual(getTypesMatching(reg, I1), [I1, I2, I3])
+        self.assertEqual(getTypesMatching(reg, I2), [I2, I3])
+        self.assertEqual(getTypesMatching(reg, I3), [I3])
 
         self.assertEqual(getAllForObject(reg, C1()), [1])
         self.assertEqual(getAllForObject(reg, C2()), [1, 2])
@@ -76,7 +97,12 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), 3)
 
         reg.unregister(I3)
-        
+        self.assertEqual(getTypesMatching(reg, None), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, Interface), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, I1), [I1, I2])
+        self.assertEqual(getTypesMatching(reg, I2), [I2])
+        self.assertEqual(getTypesMatching(reg, I3), [])
+
         self.assertEqual(getAllForObject(reg, C1()), [1])
         self.assertEqual(getAllForObject(reg, C2()), [1, 2])
         self.assertEqual(getAllForObject(reg, C3()), [1, 2])
@@ -124,7 +150,7 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertRaises(TypeError, registry.register, 42, '')
 
 def test_suite():
-    loader=unittest.TestLoader()
+    loader = unittest.TestLoader()
     return loader.loadTestsFromTestCase(TestTypeRegistry)
 
 if __name__=='__main__':

@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.4 2003/01/29 18:48:52 jim Exp $
+$Id: type.py,v 1.5 2003/01/30 13:38:41 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -43,7 +43,7 @@ class TypeRegistry:
     def __init__(self, data=None):
         if data is None:
             data = {}
-            
+
         self._reg = data
 
     def register(self, interface, object):
@@ -90,3 +90,14 @@ class TypeRegistry:
         # account implementation registries for objects that can't
         # have '__implements__' attributes.
         return self.getAll(getattr(object, '__implements__', None))
+
+    def getTypesMatching(self, interface):
+        if interface is None:
+            return self._reg.keys()
+
+        result = []
+        for k in self._reg:
+            if k is None or k.extends(interface, strict=False):
+                result.append(k)
+        return result
+

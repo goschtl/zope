@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.5 2003/01/29 18:48:52 jim Exp $
+$Id: interfaces.py,v 1.6 2003/01/30 13:38:41 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -289,6 +289,12 @@ class ITypeRegistry(Interface):
         """Get all registered objects for types that object implements.
         """
 
+    def getTypesMatching(interface):
+        """Get all registered interfaces matching the given interface
+
+        Returns a sequence of all interfaces registered that extend
+        or are equal to the given interface.
+        """
 
 class IAdapterRegistry(Interface):
     """Adapter-style registry
@@ -377,7 +383,7 @@ class IAdapterRegistry(Interface):
         - the object registered specifically for the required and
           provided interfaces.
 
-        To understand hopw the matching works, imagine that we have
+        To understand how the matching works, imagine that we have
         interfaces R1, R2, P1, and P2. R2 extends R1. P2 extends P1.
         We've registered C to require R1 and provide P2.  Given this,
         if we call getRegisteredMatching:
