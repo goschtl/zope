@@ -134,6 +134,10 @@ class Application:
             source = self.loader.load(self.locations[resource])
             self.handled_resources.add(resource)
             deps = self.add_collection_component(name, source)
+            if type == "package" and "." in name:
+                # this is a sub-package; always depend on the parent package
+                i = name.rfind()
+                deps.add("package:" + name[:i])
             remaining |= (deps - self.handled_resources)
         self.generate_collection_setup(packages, collections)
 
@@ -155,7 +159,7 @@ class Application:
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
         spec = include.Specification(source)
-        include_path = os.path.join(source, "INCLUDE.txt")
+        include_path = os.path.join(source, "INCLUDE.cfg")
         if os.path.isfile(include_path):
             f = open(include_path)
             try:
@@ -169,14 +173,14 @@ class Application:
             sys.exit(1)
         self.create_manifest(destination)
         
-        deps_file = os.path.join(self.source, "DEPENDENCIES.txt")
+        deps_file = os.path.join(self.source, "DEPENDENCIES.cfg")
         if os.path.isfile(deps_file):
             return dependencies.load(open(deps_file))
         else:
             return sets.Set()
 
     def load_metadata(self):
-        metadata_file = os.path.join(self.source, "PUBLICATION.txt")
+        metadata_file = os.path.join(self.source, "PUBLICATION.cfg")
         if not os.path.isfile(metadata_file):
             print >>sys.stderr, \
                   "source-dir does not contain required publication data file"
@@ -218,7 +222,7 @@ class Application:
           - `destination`: Directory the setup.cfg file should be
             written to.
           - `pkginfo`: Package information loaded from a package's
-            package.conf file.
+            INSTALL.cfg file.
 
         The generated setup.cfg will contain some settings applied for
         all packages, and the list of documentation files from the
