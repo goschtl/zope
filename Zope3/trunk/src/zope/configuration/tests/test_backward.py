@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_backward.py,v 1.1 2003/07/28 22:22:47 jim Exp $
+$Id: test_backward.py,v 1.2 2003/07/30 14:35:13 jim Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
@@ -33,21 +33,22 @@ def test_directive_and_integration():
     ...   print action[:2]
     ...   print action[2]
     ...   print clean_text_w_paths(unicode(action[5]))
-    ...   print action[5].text.strip()
+    ...   if action[5].text.strip():
+    ...      print action[5].text.strip()
     (('simple', u'aa', u'xxx', u'cc'), f)
     (u'aa', u'xxx', u'cc')
     File "tests/backward.zcml", line 26.2-26.34
-       <test:simple a="aa" c="cc">first<
+        <test:simple a="aa" c="cc">first</test:simple>
     first
     (('newsimple', u'naa', u'nbb', u'ncc'), f)
     (u'naa', u'nbb', u'ncc')
     File "tests/backward.zcml", line 27.2-27.48
-       <test:newsimple a="naa" c="ncc" b="nbb">second<
+        <test:newsimple a="naa" c="ncc" b="nbb">second</test:newsimple>
     second
     ('Complex.__init__', None)
     ()
-    File "tests/backward.zcml", line 48.2-55.0
-       <test:testc a="ca" c="cc">
+    File "tests/backward.zcml", line 48.2-53.2
+        <test:testc a="ca" c="cc">
            Third
            <test:factory factory=".f">
               Fourth
@@ -57,19 +58,21 @@ def test_directive_and_integration():
     (('Complex.factory', 1, 2), u'.f')
     (u'ca',)
     File "tests/backward.zcml", line 50.5-52.5
-       <test:factory factory=".f">
+           <test:factory factory=".f">
               Fourth
+           </test:factory>
     Fourth
     (('Complex', 1, 2), f)
     (u'xxx', u'cc')
-    File "tests/backward.zcml", line 48.2-55.0
-       <test:testc a="ca" c="cc">
+    File "tests/backward.zcml", line 48.2-53.2
+        <test:testc a="ca" c="cc">
            Third
            <test:factory factory=".f">
               Fourth
            </test:factory>
         </test:testc>
     Third
+
     """
 
 def test_directive_and_integration_w_python_keywords():
@@ -85,13 +88,14 @@ def test_directive_and_integration_w_python_keywords():
     (('k', u'f'), f)
     (u'f', u'c', u'x')
     File "tests/backwardkw.zcml", line 26.2-26.43
-       <test:k  for="f"  class="c"  x="x" >first<
+        <test:k  for="f"  class="c"  x="x" >first</test:k>
     first
     (('k', u'ff'), f)
     (u'ff', u'cc', u'xx')
     File "tests/backwardkw.zcml", line 27.2-27.44
-       <test:k2 for="ff" class="cc" x="xx">second<
+        <test:k2 for="ff" class="cc" x="xx">second</test:k2>
     second
+    
     """
 
 def test_suite():

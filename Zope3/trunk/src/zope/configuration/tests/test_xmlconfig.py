@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.1 2003/07/28 22:22:47 jim Exp $
+$Id: test_xmlconfig.py,v 1.2 2003/07/30 14:35:13 jim Exp $
 """
 
 import unittest
@@ -171,7 +171,7 @@ def test_processxmlfile():
 
     >>> print clean_info_path(str(data.info))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
-       <test:foo x="blah" y="0" />
+        <test:foo x="blah" y="0" />
 
     >>> data.package
     >>> data.basepath
@@ -193,7 +193,7 @@ def test_file():
 
     >>> print clean_info_path(str(data.info))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
-       <test:foo x="blah" y="0" />
+        <test:foo x="blah" y="0" />
 
     >>> data.package
     >>> print clean_path(data.basepath)
@@ -218,7 +218,7 @@ def test_include_by_package():
 
     >>> print clean_info_path(str(data.info))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
-       <test:foo x="blah" y="0" />
+        <test:foo x="blah" y="0" />
 
     >>> data.package is package
     1
@@ -250,7 +250,7 @@ def test_include_by_file():
 
     >>> print clean_info_path(str(data.info))
     File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
-       <test:foo x="foo" y="2" />
+        <test:foo x="foo" y="2" />
 
     >>> data.package
     
@@ -272,7 +272,7 @@ def clean_actions(actions):
 
 def clean_text_w_paths(error):
     r = []
-    for line in error.split("\n"):
+    for line in unicode(error).split("\n"):
       line = line.rstrip()
       if not line:
         continue
@@ -352,14 +352,14 @@ def test_includeOverrides():
     Conflicting configuration actions
       For: (('x', 'blah'), ('y', 0))
         File "tests/samplepackage/configure.zcml", line 12.2-12.29
-           <test:foo x="blah" y="0" />
+            <test:foo x="blah" y="0" />
         File "tests/samplepackage/bar21.zcml", line 3.2-3.24
-           <foo x="blah" y="0" />
+            <foo x="blah" y="0" />
       For: (('x', 'blah'), ('y', 1))
         File "tests/samplepackage/bar1.zcml", line 5.2-5.24
-           <foo x="blah" y="1" />
+            <foo x="blah" y="1" />
         File "tests/samplepackage/bar2.zcml", line 6.2-6.24
-           <foo x="blah" y="1" />
+            <foo x="blah" y="1" />
 
     Note that the conflicts for (('x', 'blah'), ('y', 2)) aren't
     included in the error because they could be resolved.
