@@ -2,24 +2,26 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.2 2002/11/19 23:25:14 jim Exp $
+$Id: testStartupDirectives.py,v 1.3 2002/12/12 18:35:27 gvanrossum Exp $
 """
 
 import unittest, sys, tempfile, os
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup import \
+     PlacefulSetup
 from Zope.App.StartUp.metaConfigure import SiteDefinition
 from Zope.Configuration.name import resolve
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 
 _fsname = tempfile.mktemp()+'.fs'
 
@@ -29,26 +31,24 @@ class ContextStub:
         return resolve(dottedname)
 
 
-class Test(CleanUp, unittest.TestCase):
+class Test(PlacefulSetup, unittest.TestCase):
 
     def tearDown(self):
 
-        CleanUp.tearDown(self)
+        PlacefulSetup.tearDown(self)
 
         for ext in '', '.lock', '.index', '.tmp':
             try: os.remove(_fsname + ext)
             except: pass
-        
+
 
     def _createBlankSiteDefinition(self):
-        """ """
         return SiteDefinition('', 'Example Site', 4)
-    
+
 
     def testStorageMethods(self):
-        """ """
         sd = self._createBlankSiteDefinition()
-        
+
         self.assertEqual(sd.useFileStorage(ContextStub(), file=_fsname), [])
         self.assertEqual(sd._zodb._storage.__class__.__name__, 'FileStorage')
         self.assertEqual(sd._zodb._storage._file_name, _fsname)
@@ -60,8 +60,6 @@ class Test(CleanUp, unittest.TestCase):
 
 
     def testUseLog(self):
-        """ """
-
         sd = self._createBlankSiteDefinition()
 
         from zLOG.MinimalLogger import _log_dest
@@ -75,8 +73,6 @@ class Test(CleanUp, unittest.TestCase):
 
 
     def testAddServer(self):
-        """ """
-
         sd = self._createBlankSiteDefinition()
 
         from Zope.Configuration.Action import Action
@@ -92,10 +88,7 @@ class Test(CleanUp, unittest.TestCase):
 
 
     def testInitDB(self):
-        """ """
-
         sd = self._createBlankSiteDefinition()
-
 
         from Zope.App.OFS.Content.Folder.RootFolder import IRootFolder
         from Zope.App.ZopePublication.ZopePublication import ZopePublication
@@ -115,9 +108,8 @@ class Test(CleanUp, unittest.TestCase):
         app = root.get(ZopePublication.root_name, None)
         connection.close()
         self.failUnless(IRootFolder.isImplementedBy(app))
-        
 
-    
+
 def test_suite():
     loader=unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)
