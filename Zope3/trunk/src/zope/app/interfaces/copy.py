@@ -1,3 +1,4 @@
+from zope.interface import Interface
 
 class IObjectMover(Interface):
     '''Use getAdapter(obj, IObjectMover) to move an object somewhere.'''
