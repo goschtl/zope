@@ -1,6 +1,4 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/browser'
-   >
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
 <!-- For services, just treat @@manage as @@index.html by default -->
 
@@ -12,6 +10,8 @@
      class="zope.app.browser.managementviewselector.ManagementViewSelector" 
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
+
+<!-- General configuration views --> <include package=".configuration" />
 
 <!--Error Logging Service -->
 
@@ -58,7 +58,7 @@
       for="zope.app.services.cache.ILocalCachingService"
       name="index.html"
       template="caches.pt"
-      class=".namecomponentconfigurableview.NameComponentConfigurableView"
+      class=".configuration.NameComponentConfigurableView"
       permission="zope.ManageServices" 
       />
 
@@ -207,81 +207,22 @@
     <menuItem title="Edit" action="editForm.html"/>
     </menuItems>
 
-<!-- IConfigurationStatus -->
-
-  <page
-      for="zope.app.interfaces.services.configuration.IConfigurationStatus"
-      name="edit"
-      class=
-"zope.app.browser.services.configurationstatuswidget.ConfigurationStatusWidget"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-      permission="zope.ManageServices"
-      />
-
-<!-- IConfigurationRegistry -->
-
-  <page
-      for="zope.app.interfaces.services.configuration.IConfigurationRegistry"
-      name="ChangeConfigurations"
-      template="changeconfigurations.pt"
-      class=
-      "zope.app.browser.services.changeconfigurations.ChangeConfigurations"
-      allowed_interface=
-      "zope.app.interfaces.browser.form.IFormCollaborationView"
-      permission="zope.ManageServices"
-      />
-
-<!-- IConfiguration subclasses -->
-
-  <editform
-      for=
-      "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
-      name="index.html"
-      menu="zmi_views"
-      schema="zope.app.interfaces.services.configuration.IConfiguration."
-      label="XXX Configuration"
-      permission="zope.ManageServices"
-      template="componentconfigedit.pt"
-      class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
-      />
-
-  <page
-      for=
-      "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
-      name="ConfigurationSummary"
-      template="componentconfigsummary.pt"
-      class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
-      permission="zope.ManageServices"
-      />
-
-  <page
-      for="zope.app.interfaces.services.service.ILocalService"
-      name="useConfiguration.html"
-      template="useconfiguration.pt"
-      class=".useconfiguration.UseConfiguration"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Configurations"
-      />
-
-
-<!-- INameComponentConfigurable default view -->
-
-  <page
-      name="index.html" 
-      for=
-      "zope.app.interfaces.services.configuration.INameComponentConfigurable"
-      class=
-      ".namecomponentconfigurableview.NameComponentConfigurableView"
-      permission="zope.ManageServices"
-      attribute="index" 
-      />
-
 <!-- Component Location widget -->
+
+<!-- XXX we are phasing these widgets out -->
 
 <page
     for="zope.app.services.field.IComponentPath"
     name="edit"
     class="zope.app.browser.services.field.ComponentPathWidget"
+    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+    permission="zope.ManageServices"
+    />
+
+<page
+    for="zope.app.services.field.IComponentPath"
+    name="display"
+    class="zope.app.browser.services.field.ComponentPathDisplayWidget"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
     permission="zope.ManageServices"
     />
@@ -295,13 +236,6 @@
     label="Change adapter"
     permission="zope.ManageServices"
     />
-
-<page
-     for = "zope.app.interfaces.services.adapter.IAdapterConfiguration"
-     name = "ConfigurationSummary"
-     template = "adapterconfigsummary.pt"
-     permission="zope.ManageServices" 
-     />  
 
 <page
      for = "zope.component.interfaces.IAdapterService."
@@ -351,13 +285,6 @@
     permission="zope.ManageServices"
     />
 
-<page
-     for = "zope.app.interfaces.services.view.IViewConfiguration"
-     name = "ConfigurationSummary"
-     template = "viewconfigsummary.pt"
-     permission="zope.ManageServices" 
-     />  
-
 <addform
       schema = "zope.app.interfaces.services.view.IViewConfiguration"
       name= "ViewConfiguration"
@@ -404,13 +331,6 @@
     label="Change page"
     permission="zope.ManageServices"
     />
-
-<page
-     for="zope.app.interfaces.services.view.IPageConfiguration"
-     name="ConfigurationSummary"
-     template="pageconfigsummary.pt"
-     permission="zope.ManageServices"
-     />
 
 <addform
       schema = "zope.app.interfaces.services.view.IPageConfiguration"
@@ -493,7 +413,7 @@
       for="zope.app.services.connection.ILocalConnectionService"
       name="index.html"
       template="connections.pt"
-      class=".namecomponentconfigurableview.NameComponentConfigurableView"
+      class=".configuration.NameComponentConfigurableView"
       permission="zope.ManageServices" 
       />
 
@@ -603,6 +523,9 @@
   </pages>
 
 
+  
+
+
 <!-- Package -->
 
   <pages
@@ -638,36 +561,16 @@
 
   </view>
 
-<!-- ConfigurationManager -->
+<!-- ServiceConfiguration -->
 
   <page
-     name="index.html" 
-     for=
-     "zope.app.interfaces.services.configurationmanager.IConfigurationManager"
-     menu="zmi_views" title="Configuration"
-     permission="zope.ManageServices"
-     class=".service.EditConfiguration"
-     template="editconfiguration.pt" 
-     />
-
-  <view
-     for=
-     "zope.app.interfaces.services.configurationmanager.IConfigurationManager"
-     name="+"
-     permission="zope.ManageServices"
-     class="zope.app.browser.services.service.ConfigurationAdding">
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
-  </view>
-
-  <menuItem
-        menu="add_component"
-        for="zope.app.interfaces.container.IAdding"
-        action="zope.app.services.ConfigurationManager"
-        title="Configuration"
-        />
-
-<!-- ServiceConfiguration -->
+      for="zope.app.interfaces.services.service.ILocalService"
+      name="useConfiguration.html"
+      template="configuration/useconfiguration.pt"
+      class=".configuration.NameUseConfiguration"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Configurations"
+      />
 
   <page
       name="addConfiguration.html"
@@ -814,18 +717,10 @@
       for="zope.app.interfaces.services.hub.IObjectHub" 
       file="hub.gif" />
 
+<!-- Utility Service --> <include package=".utility" />
 
 <!-- "Add Service" menu -->
 
-<menuItem
-    menu="zmi_actions"
-    for="zope.app.interfaces.services.package.IPackage"
-    action="AddService"
-    title="Add Service"
-    permission="zope.ManageServices"
-    />
-
-<!-- XXX do we still need this one? -->
 <menuItem
     menu="add_component"
     for="zope.app.interfaces.container.IAdding"
