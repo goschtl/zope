@@ -2,9 +2,9 @@
 
 <div metal:fill-slot="body">
 
-<h1>Bundle Configuration</h1>
+<h1>Bundle Information</h1>
 
-<h4>Services needed by this bundle:</h4>
+<h4>Services needed by this bundle</h4>
 
 <ul>
   <li tal:repeat="svc view/listServices">
@@ -13,21 +13,26 @@
   </li>
 </ul>
 
-<h4>Configurations present in this bundle:</h4>
+<h4>Configurations in this bundle</h4>
 
-<ul>
+<tal:block tal:repeat="svc view/listServices">
 
-  <li tal:repeat="cnf view/listConfigurations">
-    For <i tal:content="cnf/service">Foo</i> service:
-    <a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
-    (status <b tal:content="cnf/status">Active</b>)
-    <br>
-    <i tal:content="cnf/usage">Usage summary</i>
-    implemented by
-    <i tal:content="cnf/implementation">Implementation summary</i>
-  </li>
+  <p>For <i tal:content="svc/service">Foo</i> service</p>
 
-</ul>
+  <ul>
+    <tal:block tal:repeat="cnf view/listConfigurations">
+      <li tal:condition="python: cnf['service'] == svc['service']">
+	<a tal:content="cnf/path" tal:attributes="href cnf/path">somewhere</a>
+	(status <b tal:content="cnf/status">Active</b>)
+	<br>
+	<i tal:content="cnf/usage">Usage summary</i>
+	implemented by
+	<i tal:content="cnf/implementation">Implementation summary</i>
+      </li>
+    </tal:block>
+  </ul>
+
+</tal:block>
 
 </div>
 
