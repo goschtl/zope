@@ -18,6 +18,11 @@
 
   <xmlrpc:view
       name="_traverse" 
+      for=".IContainer.IItemContainer."
+      factory=".ContainerTraverser.ItemTraverser" />
+
+  <xmlrpc:view
+      name="_traverse" 
       for=".IContainer.IReadContainer."
       factory=".ContainerTraverser." />
 

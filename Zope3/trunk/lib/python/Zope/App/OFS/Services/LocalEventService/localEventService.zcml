@@ -16,6 +16,9 @@
                     unsubscribedFrom subscribedTo" />
   </content>
   
+<zmi:icon for=".LocalEventService.ILocalEventService" 
+          file="./event_service.gif" />
+
   <service:factoryFromClass
       id='Events'
       class='.LocalEventService.'

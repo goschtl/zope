@@ -31,6 +31,6 @@
 
   <include package=".Views" file="views.zcml" />
 
-  <zmi:icon for=".RoleService.ILocalRoleService" file="role.gif" />
+  <zmi:icon for=".RoleService.ILocalRoleService" file="role_service.gif" />
 
 </zopeConfigure>

@@ -13,21 +13,15 @@
 ##############################################################################
 """
 
-$Id: Methods.py,v 1.2 2002/06/10 23:28:01 jim Exp $
+$Id: Methods.py,v 1.3 2002/06/16 18:29:24 srichter Exp $
 """
 
-from Zope.Publisher.XMLRPC.MethodPublisher import MethodPublisher
-from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
-from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.Publisher.XMLRPC.XMLRPCView import XMLRPCView
 
 
-class Methods(MethodPublisher):
-    """ """
-
+class Methods(XMLRPCView):
         
-    def __init__(self, folder, request):
-        self.context = folder
-
+    __implements__ = XMLRPCView.__implements__
 
     def objectIds(self):
         ''' '''
