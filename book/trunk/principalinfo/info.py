@@ -36,9 +36,9 @@ class PrincipalInformation(object):
     >>> from zope.app.principalannotation import PrincipalAnnotationService
 
     >>> site = setup.placefulSetUp(site=True)
-    >>> root_sm = zapi.getGlobalServices()
-    >>> root_sm.defineService('PrincipalAnnotation',
-    ...                       IPrincipalAnnotationService)
+    >>> sm = zapi.getGlobalServices()
+    >>> sm.defineService('PrincipalAnnotation',
+    ...                  IPrincipalAnnotationService)
     >>> svc = setup.addService(site.getSiteManager(), 'PrincipalAnnotation',
     ...                        PrincipalAnnotationService())
 
@@ -99,4 +99,3 @@ class PrincipalInformation(object):
             self.info[name] = value
         else:
             super(PrincipalInformation, self).__setattr__(name, value)
-    
