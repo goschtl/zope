@@ -9,6 +9,7 @@
       <require
           permission="Zope.ManageServices"
           interface="Zope.App.OFS.Container.IContainer." />
+      <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
   </content>
 
   <include package=".Views" />

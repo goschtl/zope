@@ -20,6 +20,7 @@
       permission="Zope.ManageServices"
       attributes="bound unbound subscribe unsubscribe subscribeOnBind
                   unsubscribedFrom subscribedTo" />
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." /> 
 </content>
 
 <browser:menuItem
