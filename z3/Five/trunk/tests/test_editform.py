@@ -46,7 +46,22 @@ class EditFormTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.assertEqual(200, response.getStatus())
         self.assertEquals('Test', self.folder.edittest.title)
         self.assertEquals('', self.folder.edittest.description)
-    
+
+    def test_addform(self):
+        response = self.publish('/test_folder_1_/+/addsimplecontent.html',
+                                basic='manager:r00t')
+        # we're using a GET request to post variables, but seems to be
+        # the easiest..
+        response = self.publish(
+            '/test_folder_1_/+/addsimplecontent.html?%s=1&add_input_name=alpha&field.title=FooTitle&field.description=FooDescription' % Update,
+            basic='manager:r00t')
+        # we expect to get a 302 (redirect)
+        self.assertEquals(302, response.getStatus())
+        # we expect the object to be there with the right id
+        self.assertEquals('alpha', self.folder.alpha.id)
+        self.assertEquals('FooTitle', self.folder.alpha.title)
+        self.assertEquals('FooDescription', self.folder.alpha.description)
+        
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EditFormTestCase))

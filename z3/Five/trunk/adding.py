@@ -64,7 +64,8 @@ class BasicAdding(BrowserView):
             elif name == '':
                 name = chooser.chooseName('', content)
             chooser.checkName(name, container)
-
+        
+        content.id = name
         container._setObject(name, content)
         self.contentName = name # Set the added object Name
         return container._getOb(name)
