@@ -79,7 +79,7 @@ class PluggableAuthentication(OrderedContainer):
     def authenticate(self, request):
         """ See `IAuthentication`. """
         for ps_key, ps in self.items():
-            loginView = zapi.queryView(ps, "login", request)
+            loginView = zapi.queryMultiAdapter((ps, request), name="login")
             if loginView is not None:
                 principal = loginView.authenticate()
                 if principal is not None:
