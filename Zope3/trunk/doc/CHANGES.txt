@@ -26,6 +26,9 @@ Zope Changes
       - Location-event subscribers weren't notified when containing
         objects were moved, added, or removed.
 
+      - Changed ILocation interface: __name__ is not required anymore
+        and its default is None.
+
     Restructuring
 
       - New api for getting sublocations and adapters for containers
