@@ -466,7 +466,7 @@
 
   <page
       name="bundle.html"
-      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+      for="zope.app.interfaces.services.bundle.IBundle"
       menu="zmi_views" title="Bundle"
       permission="zope.ManageServices"
       class=".bundle.BundleView"

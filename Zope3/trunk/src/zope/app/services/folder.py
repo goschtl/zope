@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A package contains components and component registrations.
+"""A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.11 2003/06/21 21:22:12 jim Exp $
+$Id: folder.py,v 1.12 2003/08/08 21:56:22 fdrake Exp $
 """
 
 __metaclass__ = type

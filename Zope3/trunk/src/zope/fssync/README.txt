@@ -102,6 +102,9 @@ Platform Notes
 To Do
 -----
 
+- New command-line utility to convert a checkout of a site-management
+  folder to a bundle.
+
 - Documentation for the zsync command line tool (in progress)
 
 - Explicit import/export facilities, similar to the functionality
