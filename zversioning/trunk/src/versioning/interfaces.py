@@ -83,16 +83,26 @@ class ICheckoutCheckinRepository(IRepository):
     """
 
     def checkout(obj):
-        """Marks the object as checked out (being in use somehow).
+        """Marks the object as checked out (being in use/soft locked).
         """
     
     def checkin(obj, metadata=None):
-        """Check in the current state of an object.
+        """Check in the current state of an object and does a soft 
+           unlock.
         
         Raises an RepositoryError if the object is not versionable.
         XXX Other exceptions (for repository problems)?
+        
+        XXX What happens if the follwoing happens:
+            - user A checks out the object
+            - user B checks it out at another location
+            - user B checks in the object
+            - Question: is the object marked as checked in or checked out?
         """
 
+    def isCheckedOut(obj):
+        """Returns true if the object is checked out.
+        """
 
 class IHardlockUnlockRepository(ICheckoutCheckinRepository):
     """Top level API for a lock-modify-unlock repository.
@@ -116,15 +126,26 @@ class IIntrospectableRepository(Interface):
         does). Instead it returns the version as new object.
         """
 
-    def getVersionIds(self, obj):
+    def listVersions(obj):
         """Returns all versions of the given object.
         
-        XXX Naming: Should we name that 'listVersions' just returning
-        references to the objects?
+        XXX YAGNI? This was the former 'getVersionIds'.
         """
 
-    def listMetadata(self, obj):
+    def listMetadata(obj):
         """Returns the metadata of all versions of the given object.
+        """
+
+class IDeletableStorage(IStorage) :
+    """ Most versioning systems do not allow to throw away versioned
+    data, but there might be use cases were simple file repositories
+    or other storage solutions can sweep out old versions. """
+
+    def delete(obj) :
+        """ Forces the repository to remove the version described by the ticket.
+        
+            Raises a VersionUndeletable error if the repository does not
+            allow deletions or something other went wrong.
         """
 
 
@@ -157,7 +178,8 @@ class IVersionableAspects(Interface) :
         XXX VersionableData vermittelt zwischen den Daten und der Storage, 
         was gespeichert werden soll
         
-        XXX Explain that this is a multidapter?
+        XXX Explain that this is a multidapter? Is there a formal way to 
+        do that?
     """
 
     def writeAspects():
@@ -175,10 +197,23 @@ class IVersionableAspects(Interface) :
         """
     
     def readAspects(selector):
-        """
+        """Reads a certain aspect of the selected version.
+        
+        In contrast to 'updateAspects' the aspects are returned and 
+        do not replace the already existing aspects on the adapted 
+        object.
+        
+        XXX copy or ref?
         """
 
- 
+    def getVersionHistory(obj):
+        """Returns the whole version history of the object.
+        """
+        
+    def getMetadataHistory(obj):
+        """Returns the whole metadata history of the object.
+        """
+
 class ITicket(Interface) :
     """ A marker interface for access information for versioned data.
     
@@ -213,31 +248,8 @@ class IHistoryStorage(Interface) : # IHistories
         """
         """
         
-        
-class IPythonReferenceStorage :
-    """ XXX Do we need that? No!
-        Marker interface for a storage that is able to preserve 
-        python references and thus is able to accept originals.
-    
-        A minimal implementation would only ensure that versioned originals
-        are referenced and thus protected against sweep out in ZODB
-        packs.
-    """
-
 class IVersionable(persistent.interfaces.IPersistent):
     """Version control is allowed for objects that provide this."""
-
-class IDeletableStorage(IStorage) :
-    """ Most versioning systems do not allow to throw away versioned
-    data, but there might be use cases were simple file repositories
-    or other storage solutions can sweep out old versions. """
-
-    def delete(obj, ticket) :
-        """ Forces the repository to remove the version described by the ticket.
-        
-            Raises a VersionUndeletable error if the repository does not
-            allow deletions or something other went wrong.
-        """
 
    
 class IMultiClientStorage(Interface) : 
