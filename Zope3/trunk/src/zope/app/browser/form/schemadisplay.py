@@ -14,11 +14,12 @@
 """\
 Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.6 2003/08/02 07:03:55 philikon Exp $
+$Id: schemadisplay.py,v 1.7 2003/08/02 09:11:08 anthony Exp $
 """
 
 from zope.schema import getFieldNamesInOrder
 
+from zope.configuration.action import Action
 from zope.app.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
@@ -33,7 +34,9 @@ from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective, globalBrowserMenuService
 
-from editview import normalize
+# XXX perhaps a little too intimate?
+from zope.app.browser.form.editview import normalize
+
 
 class DisplayView(BrowserView):
     """Simple display-view base class.
@@ -92,21 +95,25 @@ def DisplayViewFactory(name, schema, label, permission, layer,
                                permission))
     provideView(for_, name, IBrowserPresentation, class_, layer)
 
+
 def display(_context, name, schema, permission, label='',
-            layer="default", class_=None, for_=None,
-            template=None, fields=None,
+            layer="default",
+            class_=None, for_=None,
+            template=None, omit=None, fields=None,
             menu=None, title='Display', usage=u''):
+    actions = []
     if menu:
         actions = menuItemDirective(
             _context, menu, for_ or schema, '@@' + name, title,
             permission=permission)
 
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'display.pt', fields, DisplayView)
+    schema, for_, bases, template, fields = normalize(
+        _context, schema, for_, class_, template, 'display.pt', fields, omit,
+        DisplayView)
 
-    _context.action(
+    actions.append(Action(
         discriminator=('view', for_, name, IBrowserPresentation, layer),
         callable=DisplayViewFactory,
         args=(name, schema, label, permission, layer, template, 'display.pt',
-              bases, for_, fields, menu, usage)
-        )
+              bases, for_, fields, menu, usage)))
+    return actions

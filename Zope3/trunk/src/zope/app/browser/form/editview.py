@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.30 2003/08/02 07:03:55 philikon Exp $
+$Id: editview.py,v 1.31 2003/08/02 09:11:08 anthony Exp $
 """
 
 import os
@@ -25,6 +25,7 @@ from zope.schema import getFieldNamesInOrder
 
 from zope.interface import classProvides, implements
 
+from zope.configuration.action import Action
 from zope.app.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
@@ -33,6 +34,7 @@ from zope.component.view import provideView
 from zope.component import getAdapter
 
 from zope.app.interfaces.form import WidgetsError
+from zope.app.component.metaconfigure import resolveInterface
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.browser.form.submit import Update
 from zope.app.event import publish
@@ -42,6 +44,7 @@ from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective, globalBrowserMenuService
+
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -59,6 +62,7 @@ class EditView(BrowserView):
 
     def __init__(self, context, request):
         super(EditView, self).__init__(context, request)
+
         self._setUpWidgets()
 
     def _setUpWidgets(self):
@@ -113,6 +117,7 @@ class EditView(BrowserView):
         self.update_status = status
         return status
 
+
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u'',
@@ -141,68 +146,93 @@ def EditViewFactory(name, schema, label, permission, layer,
     provideView(for_, name, IBrowserPresentation, class_, layer)
 
 
-def normalize(for_, schema, class_, template, default_template, fields, view=EditView):
+def normalize(_context, schema_, for_, class_, template, default_template,
+              fields, omit, view=EditView):
+    schema = resolveInterface(_context, schema_)
+
     if for_ is None:
         for_ = schema
+    else:
+        for_ = resolveInterface(_context, for_)
 
     if class_ is None:
         bases = view,
     else:
-        bases = (class_, view)
+        # XXX What about class_.__implements__ ?
+        bases = _context.resolve(class_), view
 
     if template is not None:
+        template = _context.path(template)
         template = os.path.abspath(str(template))
         if not os.path.isfile(template):
             raise ConfigurationError("No such file", template)
     else:
         template = default_template
 
+
+
     names = getFieldNamesInOrder(schema)
 
     if fields:
+        fields = fields.split()
         for name in fields:
             if name not in names:
                 raise ValueError("Field name is not in schema",
-                                 name, schema)
+                                 name, schema_)
     else:
         fields = names
 
-    return (for_, bases, template, fields)
+    if omit:
+        omit = omit.split()
+        for name in omit:
+            if name not in names:
+                raise ValueError("Field name is not in schema",
+                                 name, schema_)
+        fields = [name for name in fields if name not in omit]
+
+    return schema, for_, bases, template, fields
 
 def edit(_context, name, schema, permission, label='',
-         layer = "default", class_ = None, for_ = None,
-         template = None, fields=None,
+         layer = "default",
+         class_ = None, for_ = None,
+         template = None, omit=None, fields=None,
          menu=None, title='Edit', usage=u''):
 
     if menu:
-        menuItemDirective(
+        actions = menuItemDirective(
             _context, menu, for_ or schema, '@@' + name, title,
             permission=permission)
+    else:
+        actions = []
 
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'edit.pt', fields)
+    schema, for_, bases, template, fields = normalize(
+        _context, schema, for_, class_, template, 'edit.pt', fields, omit)
 
-    _context.action(
-        #XXX added schema to descriminator to make it unique
-        # don't know whether that's a Good Thing(tm) -- philiKON
-        discriminator=('view', for_, name, schema,
-                       IBrowserPresentation, layer),
+    actions.append(
+        Action(
+        discriminator=('view', for_, name, IBrowserPresentation, layer),
         callable=EditViewFactory,
         args=(name, schema, label, permission, layer, template, 'edit.pt',
               bases, for_, fields, menu, usage),
         )
+        )
+
+    return actions
 
 def subedit(_context, name, schema, label,
             permission='zope.Public', layer="default",
-            class_=None, for_=None, template=None, fields=None,
+            class_=None, for_=None,
+            template=None, omit=None, fields=None,
             fulledit=None, fulledit_label=None):
 
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'subedit.pt', fields)
+    schema, for_, bases, template, fields = normalize(
+        _context, schema, for_, class_, template, 'subedit.pt', fields, omit)
 
-    _context.action(
+    return [
+        Action(
         discriminator=('view', for_, name, IBrowserPresentation, layer),
         callable=EditViewFactory,
         args=(name, schema, label, permission, layer, template, 'subedit.pt',
               bases, for_, fields, fulledit, fulledit_label),
         )
+        ]

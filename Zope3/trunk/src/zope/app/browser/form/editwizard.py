@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.8 2003/08/02 07:03:55 philikon Exp $
+$Id: editwizard.py,v 1.9 2003/08/02 09:11:08 anthony Exp $
 """
 
 import logging
@@ -22,6 +22,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component import getAdapter
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective, globalBrowserMenuService
+from zope.configuration.action import Action
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from editview import normalize, EditViewFactory, EditView
@@ -248,10 +249,11 @@ class EditWizardDirective:
         else:
             actions = []
 
-        for_, bases, template, fields = normalize(
-            for_, schema, class_, template, 'editwizard.pt', view=EditWizardView)
+        schema, for_, bases, template, fields = normalize(
+            _context, schema, for_, class_, template, 'editwizard.pt', 
+            fields=None, omit=None, view=EditWizardView
+            )
 
-        self._context = _context
         self.schema = schema
         self.for_ = for_
         self.bases = bases
@@ -262,6 +264,8 @@ class EditWizardDirective:
         self.actions = actions
 
     def pane(self, _context, fields, label=''):
+        fields = [str(f) for f in fields.split(' ')]
+
         for f in fields:
             if f not in self.all_fields:
                 raise ValueError(
@@ -269,16 +273,25 @@ class EditWizardDirective:
                     name, self.schema
                     )
         self.panes.append(Pane(fields, label))
+        return []
 
     def __call__(self):
-        self._context.action(
-            discriminator=(
-            'view', self.for_, self.name, IBrowserPresentation, self.layer),
-            callable=EditWizardViewFactory,
-            args=(self.name, self.schema, self.permission, self.layer, 
-                  self.panes, self.all_fields, self.template, 'editwizard.pt',
-                  self.bases, self.for_, self.menu, u'', self.use_session)
+        self.actions.append(
+            Action(
+                discriminator=(
+                    'view', self.for_, self.name, IBrowserPresentation, 
+                    self.layer
+                    ),
+                callable=EditWizardViewFactory,
+                args=(
+                    self.name, self.schema, self.permission, self.layer, 
+                    self.panes, self.all_fields, self.template, 'editwizard.pt',
+                    self.bases, self.for_, self.menu, u'', self.use_session
+                    )
+                )
             )
+        return self.actions
+
 
 def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_, 
