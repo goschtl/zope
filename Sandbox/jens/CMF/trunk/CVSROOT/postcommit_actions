@@ -116,9 +116,9 @@ def do_sync(repo, remote, subjs=None):
            + " --compress"              # (more compression context than ssh)
            )
     if subjs != None:
-        cmd = basecmd + ' --exclude "/*/*"'
+        cmd = cmd + ' --exclude "/*/*"'
 
-    entire =("echo %s %s %s:%s"
+    entire =("%s %s %s:%s"
              % (cmd, repo, remote['host'], remote['repodir']))
     print "The whole shebang:", entire
 
