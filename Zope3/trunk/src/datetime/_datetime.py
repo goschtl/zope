@@ -600,10 +600,10 @@ class timedelta(object):
         if not isinstance(other, timedelta):
             raise TypeError, ("can't compare timedelta to %s instance" %
                               type(other).__name__)
-        return cmp(self.__getstate__(), other.__getstate__())
+        return cmp(self.__getstate(), other.__getstate())
 
     def __hash__(self):
-        return hash(self.__getstate__())
+        return hash(self.__getstate())
 
     def __nonzero__(self):
         return (self.__days != 0 or
@@ -614,11 +614,11 @@ class timedelta(object):
 
     __safe_for_unpickling__ = True      # For Python 2.2
 
-    def __getstate__(self):
+    def __getstate(self):
         return (self.__days, self.__seconds, self.__microseconds)
 
     def __reduce__(self):
-        return (self.__class__, self.__getstate__())
+        return (self.__class__, self.__getstate())
 
 timedelta.min = timedelta(-999999999)
 timedelta.max = timedelta(days=999999999, hours=23, minutes=59, seconds=59,
@@ -777,7 +777,7 @@ class date(object):
 
     def __hash__(self):
         "Hash."
-        return hash(self.__getstate__())
+        return hash(self.__getstate())
 
     # Computations
 
@@ -852,7 +852,7 @@ class date(object):
 
     __safe_for_unpickling__ = True      # For Python 2.2
 
-    def __getstate__(self):
+    def __getstate(self):
         yhi, ylo = divmod(self.__year, 256)
         return ("%c%c%c%c" % (yhi, ylo, self.__month, self.__day), )
 
@@ -864,7 +864,7 @@ class date(object):
         self.__year = yhi * 256 + ylo
 
     def __reduce__(self):
-        return (self.__class__, self.__getstate__())
+        return (self.__class__, self.__getstate())
 
 _date_class = date  # so functions w/ args named "date" can get at the class
 
@@ -1037,7 +1037,7 @@ class time(object):
         """Hash."""
         tzoff = self._utcoffset()
         if not tzoff: # zero or None
-            return hash(self.__getstate__()[0])
+            return hash(self.__getstate()[0])
         h, m = divmod(self.hour * 60 + self.minute - tzoff, 60)
         if 0 <= h < 24:
             return hash(time(h, m, self.second, self.microsecond))
@@ -1176,7 +1176,7 @@ class time(object):
 
     __safe_for_unpickling__ = True      # For Python 2.2
 
-    def __getstate__(self):
+    def __getstate(self):
         us2, us3 = divmod(self.__microsecond, 256)
         us1, us2 = divmod(us2, 256)
         basestate = ("%c" * 6) % (self.__hour, self.__minute, self.__second,
@@ -1200,7 +1200,7 @@ class time(object):
             self._tzinfo = state[1]
 
     def __reduce__(self):
-        return (self.__class__, self.__getstate__())
+        return (self.__class__, self.__getstate())
 
 _time_class = time  # so functions w/ args named "time" can get at the class
 
@@ -1560,7 +1560,7 @@ class datetime(date):
     def __hash__(self):
         tzoff = self._utcoffset()
         if tzoff is None:
-            return hash(self.__getstate__()[0])
+            return hash(self.__getstate()[0])
         days = _ymd2ord(self.year, self.month, self.day)
         seconds = self.hour * 3600 + (self.minute - tzoff) * 60 + self.second
         return hash(timedelta(days, seconds, self.microsecond))
@@ -1569,7 +1569,7 @@ class datetime(date):
 
     __safe_for_unpickling__ = True      # For Python 2.2
 
-    def __getstate__(self):
+    def __getstate(self):
         yhi, ylo = divmod(self.__year, 256)
         us2, us3 = divmod(self.__microsecond, 256)
         us1, us2 = divmod(us2, 256)
@@ -1596,7 +1596,7 @@ class datetime(date):
             self._tzinfo = state[1]
 
     def __reduce__(self):
-        return (self.__class__, self.__getstate__())
+        return (self.__class__, self.__getstate())
 
 
 datetime.min = datetime(1, 1, 1)
