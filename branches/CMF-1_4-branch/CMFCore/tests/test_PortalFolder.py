@@ -239,11 +239,10 @@ class PortalFolderTests( SecurityTest ):
         assert has_path( catalog._catalog, '/test/folder/sub/foo' )
 
         # WAAAA! must get _p_jar set
-        old, sub._p_jar = sub._p_jar, self.root._p_jar
-        try:
-            folder.manage_renameObject( id='sub', new_id='new_sub' )
-        finally:
-            sub._p_jar = old
+        # XXX This is broken with ZODB 3.3+, use a subtransaction
+        # old, sub._p_jar = sub._p_jar, self.root._p_jar
+        get_transaction().commit(1)
+        folder.manage_renameObject( id='sub', new_id='new_sub' )
         assert 'foo' in catalog.uniqueValuesFor( 'id' )
         assert len( catalog ) == 1
         assert has_path( catalog._catalog, '/test/folder/new_sub/foo' )
@@ -262,13 +261,11 @@ class PortalFolderTests( SecurityTest ):
         sub2.all_meta_types.extend( extra_meta_types() )
 
         # WAAAA! must get _p_jar set
-        old, bar._p_jar = sub._p_jar, self.root._p_jar
-        try:
-            cookie = folder.manage_cutObjects( ids=['bar'] )
-            sub2.manage_pasteObjects( cookie )
-        finally:
-            bar._p_jar = old
-
+        # XXX This is broken with ZODB 3.3+, use a subtransaction
+        # old, bar._p_jar = sub._p_jar, self.root._p_jar
+        get_transaction().commit(1)
+        cookie = folder.manage_cutObjects( ids=['bar'] )
+        sub2.manage_pasteObjects( cookie )
         assert 'foo' in catalog.uniqueValuesFor( 'id' )
         assert 'bar' in catalog.uniqueValuesFor( 'id' )
         assert len( catalog ) == 2
@@ -396,16 +393,15 @@ class PortalFolderTests( SecurityTest ):
         assert not has_path( catalog._catalog, '/test/sub3/dummy' )
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = dummy._p_jar, self.root._p_jar
-        try:
-            cookie = sub1.manage_cutObjects( ids = ( 'dummy', ) )
-            # Waaa! force sub2 to allow paste of Dummy object.
-            sub3.all_meta_types = []
-            sub3.all_meta_types.extend( sub3.all_meta_types )
-            sub3.all_meta_types.extend( extra_meta_types() )
-            sub3.manage_pasteObjects( cookie )
-        finally:
-            dummy._p_jar = old
+        # XXX This is broken with ZODB 3.3+, use a subtransaction
+        # old, dummy._p_jar = dummy._p_jar, self.root._p_jar
+        get_transaction().commit(1)
+        cookie = sub1.manage_cutObjects( ids = ( 'dummy', ) )
+        # Waaa! force sub2 to allow paste of Dummy object.
+        sub3.all_meta_types = []
+        sub3.all_meta_types.extend( sub3.all_meta_types )
+        sub3.all_meta_types.extend( extra_meta_types() )
+        sub3.manage_pasteObjects( cookie )
         assert not 'dummy' in sub1.objectIds()
         assert not 'dummy' in sub1.contentIds()
         assert 'dummy' in sub2.objectIds()
@@ -442,7 +438,7 @@ class PortalFolderTests( SecurityTest ):
         sub2 = test.sub2
         sub2.all_meta_types = extra_meta_types()
 
-        # Copy/paste should work fine 
+        # Copy/paste should work fine
         cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
         sub2.manage_pasteObjects( cookie )
 
@@ -553,7 +549,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Title: foo'
-    
+
     def test_Creator( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -571,7 +567,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         self.assertEqual(len( lines ),1)
         self.assertEqual(lines[0],'Creator: moe')
-    
+
     def test_Description( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -589,7 +585,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Description: funny'
-    
+
     def test_Subject( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -628,7 +624,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Subject: foo, bar'
-    
+
     def test_created( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -649,7 +645,7 @@ class ContentFilterTests( TestCase ):
         assert lines[0] == 'Created since: 2001/01/01'
 
     def test_created2( self ):
-        
+
         from Products.CMFCore.PortalFolder import ContentFilter
 
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
@@ -667,7 +663,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Created before: 2001/01/01'
-    
+
     def test_modified( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -692,7 +688,7 @@ class ContentFilterTests( TestCase ):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
-                               , modified_usage='range:max' )        
+                               , modified_usage='range:max' )
         dummy = self.dummy
         assert not cfilter( dummy )
         dummy.modified_date = DateTime( '2000/12/31' )
@@ -705,7 +701,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Modified before: 2001/01/01'
- 
+
     def test_mixed( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
@@ -852,7 +848,7 @@ class PortalFolderCopySupportTests( TestCase ):
         except CopyError, e:
 
             if ce_regex is not None:
-                
+
                 pattern = re.compile( ce_regex, re.DOTALL )
                 if pattern.search( e ) is None:
                     self.fail( "Paste failed; didn't match pattern:\n%s" % e )
@@ -866,7 +862,7 @@ class PortalFolderCopySupportTests( TestCase ):
         else:
             self.fail( "Paste allowed unexpectedly." )
 
-    def _initPolicyAndUser( self    
+    def _initPolicyAndUser( self
                           , a_lambda=None
                           , v_lambda=None
                           , c_lambda=None
@@ -924,7 +920,7 @@ class PortalFolderCopySupportTests( TestCase ):
                                    )
 
     def test_copy_cant_create_target_metatype_not_supported( self ):
-        
+
         from OFS.CopySupport import CopyError
 
         folder1, folder2 = self._initFolders()
@@ -955,7 +951,7 @@ class PortalFolderCopySupportTests( TestCase ):
         self.failUnless( 'file' in folder2.objectIds() )
 
     def test_move_cant_read_source( self ):
-        
+
         from OFS.CopySupport import CopyError
 
         folder1, folder2 = self._initFolders()
@@ -975,7 +971,7 @@ class PortalFolderCopySupportTests( TestCase ):
                                    )
 
     def test_move_cant_create_target_metatype_not_supported( self ):
-        
+
         from OFS.CopySupport import CopyError
 
         folder1, folder2 = self._initFolders()
@@ -990,7 +986,7 @@ class PortalFolderCopySupportTests( TestCase ):
                                    )
 
     def test_move_cant_create_target_metatype_not_allowed( self ):
-        
+
         #
         #   This test can't succeed on Zope's earlier than 2.7.3 because
         #   of the DWIM'y behavior of 'guarded_getattr', which tries to
@@ -1018,7 +1014,7 @@ class PortalFolderCopySupportTests( TestCase ):
                                    )
 
     def test_move_cant_delete_source( self ):
-        
+
         #
         #   This test fails on Zope's earlier than 2.7.3 because of the
         #   changes required to 'OFS.CopytSupport.manage_pasteObjects'
@@ -1039,7 +1035,7 @@ class PortalFolderCopySupportTests( TestCase ):
         folder1.manage_permission( DeleteObjects, roles=(), acquire=0 )
 
         folder1._setObject( 'sub', PortalFolder( 'sub' ) )
-        get_transaction().commit() # get a _p_jar for 'sub'
+        get_transaction().commit(1) # get a _p_jar for 'sub'
 
         FOLDER_CTOR = 'manage_addProducts/CMFCore/manage_addPortalFolder'
         folder2.all_meta_types = ( { 'name'        : 'CMF Core Content'

@@ -463,7 +463,6 @@ class FTIConstructionTests_w_Roles(TestCase):
                           , UserWithRoles( 'FooViewer' ).__of__( folder ) )
 
     def test_constructInstance_wo_Roles( self ):
-
         ti, folder = self._makeStuff()
 
         newSecurityManager( None
