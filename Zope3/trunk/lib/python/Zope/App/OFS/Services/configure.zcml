@@ -19,5 +19,6 @@
 <include package=".ObjectHub" />
 <include package=".ErrorReportingService" />
 <include package=".Browser" />
+<include package=".PrincipalAnnotationService" />
 
 </zopeConfigure>
