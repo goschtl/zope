@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.2 2003/05/08 14:51:02 stevea Exp $
+$Id: test_decorator.py,v 1.3 2003/05/08 15:16:33 stevea Exp $
 """
 import unittest
 
@@ -23,9 +23,8 @@ class DecoratorTestCase(WrapperTestCase):
 
     proxy_class = decorator.Decorator
 
-    def new_proxy(self, o, c=None, mixinfactory=None, names=(),
-                  providedby=None):
-        return self.proxy_class(o, c, mixinfactory, names, providedby)
+    def new_proxy(self, o, c=None, mixinfactory=None, names=()):
+        return self.proxy_class(o, c, mixinfactory, names)
 
     def test_subclass_constructor(self):
         class MyWrapper(self.proxy_class):
@@ -37,7 +36,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assertEquals(wrapper.getdict(w), {'key': 'value'})
 
         # __new__ catches too many positional args:
-        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5, 6)
+        self.assertRaises(TypeError, MyWrapper, 1, 2, 3, 4, 5)
 
     def test_decorator_basics(self):
         # check that default arguments are set correctly as per the interface
@@ -46,7 +45,6 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(wrapper.getcontext(w) is None)
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), ())
-        self.assert_(decorator.getprovidedby(w) is None)
         self.assert_(decorator.getmixinfactory(w) is None)
 
         # check that non-default arguments are set correctly
@@ -64,8 +62,7 @@ class DecoratorTestCase(WrapperTestCase):
         c = object()
         f = MixinFactory
         n = ('foo',)
-        p = object()
-        w = self.proxy_class(obj, c, f, n, p)
+        w = self.proxy_class(obj, c, f, n)
 
         # getnamesdict is not in the official decorator interface, but it
         # is provided so that the caching dict can be unit-tested from Python.
@@ -74,7 +71,6 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(wrapper.getcontext(w) is c)
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), n)
-        self.assert_(decorator.getprovidedby(w) is p)
         self.assert_(decorator.getmixinfactory(w) is f)
 
         # Check that accessing a non-name does not create the mixin.
@@ -84,14 +80,8 @@ class DecoratorTestCase(WrapperTestCase):
         w.foo()
         self.assert_(type(decorator.getmixin(w)) is MixinFactory)
 
-        # check set and get providedby
-        decorator.setprovidedby(w, None)
-        self.assert_(decorator.getprovidedby(w) is None)
-        decorator.setprovidedby(w, p)
-        self.assert_(decorator.getprovidedby(w) is p)
-
         # check that getmixincreate works
-        w = self.proxy_class(obj, c, f, n, p)
+        w = self.proxy_class(obj, c, f, n)
         self.assert_(decorator.getmixin(w) is None)
         mixin = decorator.getmixincreate(w)
         self.assert_(type(mixin) is MixinFactory)
@@ -112,8 +102,7 @@ class DecoratorTestCase(WrapperTestCase):
         c = object()
         f = MixinFactory
         n = ('foo',)
-        p = object()
-        w = self.proxy_class(obj, c, f, n, p)
+        w = self.proxy_class(obj, c, f, n)
 
         self.assert_(decorator.getmixin(w) is None)
         self.assert_(decorator.getmixinfactory(w) is f)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.6 2003/05/08 14:51:02 stevea Exp $
+$Id: context.py,v 1.7 2003/05/08 15:16:33 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -133,8 +133,7 @@ class IWrapper(Interface):
 class IDecoratorFuncs(Interface):
     """Interface implemented by callables in 'decorator' module"""
 
-    def Decorator(object, context=None, mixinfactory=None,
-                  names=(), providedby=None, **data):
+    def Decorator(object, context=None, mixinfactory=None, names=(), **data):
         """Create and return a new decorator for object.
 
         Decorator is a subtype of Wrapper.
@@ -145,17 +144,13 @@ class IDecoratorFuncs(Interface):
         'names' is a tuple of names that are dispatched to the mixin rather
         than to the object. The mixin is instantiated from the factory
         before the first dispatch of one of the names.
-        If providedby is not None, its value is used as the decorator's
-        __providedBy__ attribute. This is typically used to make the
-        decorator's apparent interface be a union of the object's and the
-        mixin's.
 
         Wrapper data may be passed as keyword arguments. The data are added
         to the context dictionary.
 
-        Note that the arguments object, context, mixinafactory, names,
-        and providedby must be given as positional arguments. All keyword
-        arguments are taken to be part of **data.
+        Note that the arguments object, context, mixinfactory, and names,
+        must be given as positional arguments. All keyword arguments are
+        taken to be part of **data.
         """
 
     def getmixin(obj):
@@ -170,21 +165,6 @@ class IDecoratorFuncs(Interface):
     def getnames(obj):
         """Returns the names."""
 
-    def setprovidedby(obj, providedby):
-        """Sets the __providedBy__ attribute to the given value.
-
-        If the given value is None, remove the providedby so that
-        obj.__providedBy__ will pass through to the decorated object.
-        """
-
-    def getprovidedby(obj):
-        """Returns the 'providedby' value of the object.
-
-        Returns None if there is no providedby.
-        This does not pass through to the decorated object, as
-        obj.__providedBy__ would.
-        """
-
 
 class IDecorator(IWrapper):
     """A Decorator is a subtype of Wrapper.
@@ -192,23 +172,31 @@ class IDecorator(IWrapper):
     In addition to the description in IWrapper's docstring, a decorator
     dispatches certain names to a separate "mixin" instance, rather than
     to the wrapped object.
-
-    There is special support for making the decorator instance appear to
-    provide a particular collection of interfaces via its __providedBy__
-    attribute.
     """
 
 
+class IDecoratorMixinFactory(Interface):
+    """The callable that creates a mixin.
+    """
+    def __call__(inner, outer):
+        """Create a new mixin instance.
+
+        inner is the object being decorated.
+        outer is the decorator wrapper.
+        """
+
 class IDecoratorMixinEnvironment(Interface):
-    """The attributes that an instantiated mixin can expect to have set.
+    """The attributes that an instantiated mixin can expect to have available.
 
     In a mixin, the 'self' of a method is always the normal unwrapped
     self of the mixin instance. ContextMethods and other ContextDescriptors
-    will not work, and are not necessary.
+    will work, but should not be necessary.
 
     When the mixin needs context, for example for using a local service,
     it can use self.outer.
     self.inner is a shortcut for getobject(self.outer).
+
+    This is the application api for writing simple decorator classes.
     """
 
     inner = Attribute('The object that is being decorated')
