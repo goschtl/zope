@@ -18,7 +18,7 @@ ContextMethod and ContextProperty, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.8 2003/06/14 12:32:38 stevea Exp $
+$Id: test_wrapperinteraction.py,v 1.9 2003/06/14 12:53:28 stevea Exp $
 """
 import sys
 import unittest
@@ -555,7 +555,7 @@ class Test_contextAwareDescriptors(unittest.TestCase):
 
         # Check that nothing in particular happens if the class doesn't
         # have the advice, but its superclass does.
-        class SuperX:
+        class SuperX(object):
 
             ndd = normal_data_descriptor
             nd = normal_descriptor
@@ -566,7 +566,7 @@ class Test_contextAwareDescriptors(unittest.TestCase):
         self.assert_(X.ndd is normal_data_descriptor)
         self.assert_(X.nd is normal_descriptor)
 
-        class X:
+        class X(object):
             ContextAwareDescriptors()
 
             cm = context_method

@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.24 2003/06/14 12:32:38 stevea Exp $
+$Id: __init__.py,v 1.25 2003/06/14 12:53:28 stevea Exp $
 """
 from __future__ import generators
 
@@ -124,9 +124,11 @@ class ContextAwareDataDescriptor(ContextAwareDescriptor):
     def __delete__(self, inst):
         self.descriptor.__delete__(inst)
 
+_special_names = ['__module__', '__dict__', '__weakref__', '__doc__']
+_special_names = dict(zip(_special_names, _special_names))
 def _context_aware_advice(cls):
     for name, obj in cls.__dict__.items():
-        if not isinstance(obj, ContextDescriptor):
+        if not (name in _special_names or isinstance(obj, ContextDescriptor)):
             if getattr(obj, '__set__', None) is not None:
                 d = ContextAwareDataDescriptor(obj)
                 setattr(cls, name, d)
