@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.12 2003/03/28 18:17:02 jack-e Exp $
+$Id: __init__.py,v 1.13 2003/04/09 18:34:29 jack-e Exp $
 """
 
 from zope.interface import Interface
@@ -74,7 +74,7 @@ class IProcessDefinition(Interface):
 
     name = Attribute("""The name of the ProcessDefinition""")
 
-    def createProcessInstance():
+    def createProcessInstance(definition_name):
         """Create a new process instance for this process definition.
 
         Returns an IProcessInstance.
@@ -176,7 +176,7 @@ class IProcessDefinitionImportHandler(Interface):
     """Handler for Import of ProcessDefinitions.
     """
     
-    def canImport(data):
+    def canImport(context, data):
         """check if handler can import a processdefinition
            based on the data given.
         """
