@@ -2,20 +2,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <!-- Preliminary tool setup -->
-
-  <tool
-      interface="zope.app.schema.interfaces.ISchemaUtility"
-      title="Persistent, Local Schemas"
-      description="These are schemas that live in the ZODB and are modifiable."
-      />
-
-  <tool
-      interface="zope.app.cache.interfaces.ICache"
-      title="Caches"
-      description="Caches can be used to make your site run faster."
-      />
-
 <!-- SiteManagementFolder -->
 
   <addMenuItem
@@ -244,6 +230,11 @@
 
 <!-- Tools Views -->
 
+  <servicetool
+      title="Service Tools"
+      description="Service tool management."
+      />
+
   <page
      name="tools.html"
      for="zope.app.site.interfaces.ISiteManager"
@@ -256,6 +247,15 @@
   <page
      name="tools.html"
      for="zope.app.utility.interfaces.ILocalUtility"
+     permission="zope.ManageContent"
+     class=".tools.ToolsBacklink"
+     attribute="getLink"
+     menu="zmi_actions" title="Tools"
+     />
+
+  <page
+     name="tools.html"
+     for="zope.app.site.interfaces.ILocalService"
      permission="zope.ManageContent"
      class=".tools.ToolsBacklink"
      attribute="getLink"
