@@ -35,7 +35,7 @@ class PlacelessSetup(CAPlacelessSetup,
                      ContainerPlacelessSetup
                      ):
 
-    def setUp(self):
+    def setUp(self, doctesttest=None):
         CAPlacelessSetup.setUp(self)
         ContainerPlacelessSetup.setUp(self)
         EventPlacelessSetup.setUp(self)
@@ -57,5 +57,13 @@ class PlacelessSetup(CAPlacelessSetup,
 
 ps = PlacelessSetup()
 setUp = ps.setUp
-tearDown = ps.tearDown
+
+def tearDown():
+    tearDown_ = ps.tearDown
+    def tearDown(doctesttest=None):
+        tearDown_()
+    return tearDown
+
+tearDown = tearDown()
+
 del ps

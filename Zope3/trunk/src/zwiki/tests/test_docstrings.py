@@ -46,7 +46,7 @@ def VocabularyFactory(context):
     return SimpleVocabulary.fromValues(('zope.source.rest', 'zope.source.stx'))
 
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     ztapi.provideAdapter(IComment, ICMFDublinCore, DCStub)
 
@@ -56,14 +56,12 @@ def setUp():
     setVocabularyRegistry(registry)
 
 
-def tearDown():
-    placelesssetup.tearDown()
-
-
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zwiki.comment', setUp=setUp, tearDown=tearDown),
-        DocTestSuite('zwiki.wikipage', setUp=setUp, tearDown=tearDown),
+        DocTestSuite('zwiki.comment',
+                     setUp=setUp, tearDown=placelesssetup.tearDown),
+        DocTestSuite('zwiki.wikipage',
+                     setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':

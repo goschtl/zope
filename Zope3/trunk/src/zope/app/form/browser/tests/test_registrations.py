@@ -59,7 +59,7 @@ request = TestRequest()
 sample = SampleObject()
 vocab = SampleVocabulary([])
 
-def setUp():
+def setUp(test):
     setup.placelessSetUp()
     context = xmlconfig.file("tests/registerWidgets.zcml",
                              zope.app.form.browser)

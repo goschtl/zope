@@ -573,21 +573,21 @@ def FunctionalDocFileSuite(*paths, **kw):
     kw['package'] = doctest._normalize_module(kw.get('package'))
 
     kwsetUp = kw.get('setUp')
-    def setUp():
+    def setUp(test):
         FunctionalTestSetup().setUp()
         
         if kwsetUp is not None:
-            kwsetUp()
+            kwsetUp(test)
     kw['setUp'] = setUp
 
     kwtearDown = kw.get('tearDown')
-    def tearDown():
+    def tearDown(test):
         if kwtearDown is not None:
-            kwtearDown()
+            kwtearDown(test)
         FunctionalTestSetup().tearDown()
     kw['tearDown'] = tearDown
 
-    kw['optionflags'] = doctest.ELLIPSIS | doctest.CONTEXT_DIFF
+    kw['optionflags'] = doctest.ELLIPSIS | doctest.REPORT_CDIFF
 
     return doctest.DocFileSuite(*paths, **kw)
 

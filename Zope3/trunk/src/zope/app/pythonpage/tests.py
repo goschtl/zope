@@ -36,7 +36,7 @@ class Root(Contained):
     __parent__ = None
     __name__ = 'root'
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     service = zapi.getGlobalService(Utilities)
     service.provideUtility(IInterpreter, PythonInterpreter,
@@ -48,13 +48,11 @@ def setUp():
                          RootPhysicallyLocatable)
     
 
-def tearDown():
-    placelesssetup.tearDown()
-
     
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.pythonpage', setUp=setUp, tearDown=tearDown),
+        DocTestSuite('zope.app.pythonpage',
+                     setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':
