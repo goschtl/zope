@@ -6,43 +6,50 @@
 
   <!-- Form Widget View Directives -->
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IText"
       name="widget"
       factory=".Widget.TextWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IBytes"
       name="widget"
       factory=".Widget.BytesWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IInt"
       name="widget"
       factory=".Widget.IntWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IFloat"
       name="widget"
       factory=".Widget.FloatWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IBool"
       name="widget"
       factory=".Widget.CheckBoxWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.ITuple"
       name="widget"
       factory=".Widget.TextAreaWidget." />
 
   <browser:view
-      permission="Zope.View"
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
       for="Zope.Schema.IField.IList"
       name="widget"
       factory=".Widget.TextAreaWidget." />
