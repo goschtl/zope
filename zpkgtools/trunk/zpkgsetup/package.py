@@ -213,7 +213,7 @@ def expand_data(directory, reldir, targetdir, paths, datamap):
 
 
 def create_extension(section, pkgname, reldir):
-    """Create an `Extension` instance from a configuration section.
+    """Create an extension object from a configuration section.
 
     :Parameters:
       - `section`: Section object from the configuration file.
@@ -222,6 +222,8 @@ def create_extension(section, pkgname, reldir):
         package.
       - `reldir`: Directory in which the extension lives, relative to
         the top of the distribution, given in POSIX notation.
+
+    :rtype: `zpkgsetup.dist.ZPkgExtension`
 
     """
     kwargs = {}
