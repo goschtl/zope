@@ -28,7 +28,9 @@
     <metal:block define-slot="ecmascript_slot" />
 
     <script type="text/javascript" src="xmltree.js" 
-            tal:attributes="src string:${context/++resource++xmltree.js}" />
+            tal:attributes="src string:${context/++resource++xmltree.js}" >
+    </script>
+
     <link rel="icon" type="image/png"
           tal:attributes="href context/++resource++favicon.png" />
   </head>
@@ -215,9 +217,7 @@
       </div>
     </div>
 
-    <div id="footer"
-      metal:define-macro="footer">
-    </div>
+    <div id="footer" metal:define-macro="footer" />
 
     <div id="logger" />
 
