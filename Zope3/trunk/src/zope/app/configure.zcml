@@ -77,15 +77,15 @@
       for="*" />
 
   <adapter
-      factory="zope.app.copypastemove.NoChildrenObjectCopier"
-      provides="zope.app.interfaces.copypastemove.INoChildrenObjectCopier"
-      permission="zope.ManageContent"
-      for="zope.app.interfaces.content.folder.IFolder" />
-
-  <adapter
       factory="zope.app.copypastemove.PrincipalClipboard"
       provides="zope.app.interfaces.copypastemove.IPrincipalClipboard"
       for="zope.app.interfaces.annotation.IAnnotations" />
+
+  <adapter 
+      for=".interfaces.location.ILocation"
+      provides=".interfaces.traversing.IPhysicallyLocatable"
+      factory=".location.LocationPhysicallyLocatable" 
+      />
 
   <include package="zope.app.container" />
   <include package="zope.app.content" />
@@ -100,7 +100,6 @@
   <include package="zope.app.form" />
   <include package="zope.app.cache" />
   <include package="zope.app.dublincore" />
-  <include package="zope.app.process" />
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.interpreter" />
@@ -142,5 +141,9 @@
   <!-- Backward compatability fixups -->
   <include file="backward.zcml" />
 
+  <!-- Process-configuration support -->
+  <!-- Do this after backward compatability to get fixups before
+       trying to do bootstrapping tasks --> 
+  <include package="zope.app.process" />
 
 </configure>
