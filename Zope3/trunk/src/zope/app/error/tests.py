@@ -11,16 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Error Reporting Service Tests
+"""Error Reporting Utility Tests
 
 $Id$
 """
 import sys
-from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.errorservice import ErrorReportingService
-from zope.testing.cleanup import CleanUp
+import unittest
+
 from zope.exceptions.exceptionformatter import format_exception
 from zope.publisher.tests.httprequest import TestRequest
+from zope.app.tests.placelesssetup import PlacelessSetup
+
+from zope.app.error.error import ErrorReportingUtility
 
 
 class C1(object):
@@ -33,39 +35,40 @@ class C1(object):
         return exc_info
 
 
-class ErrorReportingServiceTests(CleanUp, TestCase):
+class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
+
     def test_checkForEmpryLog(self):
         # Test Check Empty Log
-        errService = ErrorReportingService()
-        getProp = errService.getLogEntries()
+        errUtility = ErrorReportingUtility()
+        getProp = errUtility.getLogEntries()
         self.failIf(getProp)
 
     def test_checkProperties(self):
         # Test Properties test
-        errService = ErrorReportingService()
+        errUtility = ErrorReportingUtility()
         setProp = {
             'keep_entries':10,
             'copy_to_zlog':1,
             'ignored_exceptions':()
             }
-        errService.setProperties(**setProp)
-        getProp = errService.getProperties()
+        errUtility.setProperties(**setProp)
+        getProp = errUtility.getProperties()
         self.assertEqual(setProp, getProp)
 
     def test_ErrorLog(self):
         # Test for Logging Error.  Create one error and check whether its
         # logged or not.
-        errService = ErrorReportingService()
+        errUtility = ErrorReportingUtility()
         exc_info = C1().getAnErrorInfo()
-        errService.raising(exc_info)
-        getErrLog = errService.getLogEntries()
+        errUtility.raising(exc_info)
+        getErrLog = errUtility.getLogEntries()
         self.assertEquals(1, len(getErrLog))
 
         tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
 
         err_id =  getErrLog[0]['id']
         self.assertEquals(tb_text,
-                          errService.getLogEntryById(err_id)['tb_text'])
+                          errUtility.getLogEntryById(err_id)['tb_text'])
 
     def test_ErrorLog_Unicode_urls(self):
         # Emulate a unicode url, it gets encoded to utf-8 before it's passed
@@ -73,22 +76,23 @@ class ErrorReportingServiceTests(CleanUp, TestCase):
         # environment
         request = TestRequest(environ={'PATH_INFO': '/\xd1\x82',
                                        'SOME_UNICODE': u'\u0441'})
-        errService = ErrorReportingService()
+        errUtility = ErrorReportingUtility()
         exc_info = C1().getAnErrorInfo()
-        errService.raising(exc_info, request=request)
-        getErrLog = errService.getLogEntries()
+        errUtility.raising(exc_info, request=request)
+        getErrLog = errUtility.getLogEntries()
         self.assertEquals(1, len(getErrLog))
 
         tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
 
         err_id =  getErrLog[0]['id']
         self.assertEquals(tb_text,
-                          errService.getLogEntryById(err_id)['tb_text'])
+                          errUtility.getLogEntryById(err_id)['tb_text'])
         
 
 def test_suite():
-    loader=TestLoader()
-    return loader.loadTestsFromTestCase(ErrorReportingServiceTests)
+    return unittest.TestSuite((
+        unittest.makeSuite(ErrorReportingUtilityTests),
+        ))
 
-if __name__=='__main__':
-    TextTestRunner().run(test_suite())
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

@@ -161,6 +161,11 @@ Zope Changes
 
     Restructuring
 
+      - Removal of Services.
+
+        + Converted Error Reporting Service to a utility. Added database
+          evolution code to convert all serice instances to utilities.
+
       - The `pluggableauth` package has been deprecated. The `pas` module
         provides a much more modular approach with many more capabilities.
 

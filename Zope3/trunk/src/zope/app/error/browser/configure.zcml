@@ -16,10 +16,10 @@
       title="Errors"
       action="@@errorRedirect.html" />
 
-  <!--Error Logging Service -->
+  <!--Error Logging Utility -->
 
   <pages
-      for="zope.app.errorservice.interfaces.IErrorReportingService"
+      for="zope.app.error.interfaces.IErrorReportingUtility"
       permission="zope.ManageServices"
       class=".EditErrorLog">
 
@@ -33,14 +33,14 @@
   </pages>
 
   <addMenuItem
-     class="zope.app.errorservice.ErrorReportingService"
-     title="Error Logging Service"
-     description="Error Reporting Service for Logging Errors"
+     class="zope.app.error.error.ErrorReportingUtility"
+     title="Error Logging Utility"
+     description="Error Reporting Utility for Logging Errors"
      permission="zope.ManageServices" />
 
   <icon name="zmi_icon"
-      for="zope.app.errorservice.interfaces.IErrorReportingService"
-      file="error_service.gif" />
+      for="zope.app.error.interfaces.IErrorReportingUtility"
+      file="error.gif" />
 
 </zope:configure>
 

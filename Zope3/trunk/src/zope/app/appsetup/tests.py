@@ -19,21 +19,22 @@ import unittest
 from transaction import get_transaction
 from ZODB.tests.util import DB
 
+from zope.app.error.error import ErrorReportingUtility
+from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
-from zope.app.traversing.api import traverse
-from zope.app.errorservice.interfaces import IErrorReportingService
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.servicenames import ErrorLogging, Utilities
-from zope.app.errorservice import ErrorReportingService
-from zope.app.traversing.api import traverse
+from zope.app.servicenames import Utilities
 from zope.app.site.service import ServiceManager
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.traversing.api import traverse
+from zope.app.utility.utility import LocalUtilityService
 
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import addService, configureService, \
-     ensureService, getInformationFromEvent, getServiceManager, ensureObject
+     ensureService, getInformationFromEvent, getServiceManager, ensureObject,\
+     ensureUtility
 
 class EventStub(object):
 
@@ -84,7 +85,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         package = traverse(root_folder, package_name)
         cx.close()
 
-    def test_ensureService(self):
+    def test_ensureUtility(self):
         self.createRFAndSM()
         self.createRootFolder()
 
@@ -94,13 +95,16 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         # XXX check EventSub
         root_folder = self.root_folder
         service_manager = getServiceManager(root_folder)
+        ensureService(service_manager, root_folder, Utilities,
+                      LocalUtilityService)
         for i in range(2):
             cx = self.db.open()
-            name = ensureService(service_manager, root_folder,
-                                 ErrorLogging,
-                                 ErrorReportingService)
+            name = ensureUtility(root_folder, IErrorReportingUtility,
+                                 'ErrorReporting', ErrorReportingUtility,
+                                 'ErrorReporting')
+
             if i == 0:
-                self.assertEqual(name, 'ErrorLogging')
+                self.assertEqual(name, 'ErrorReporting')
             else:
                 self.assertEqual(name, None)
 
@@ -110,8 +114,8 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
             package_name = '/++etc++site/default'
             package = traverse(self.root_folder, package_name)
 
-            self.assert_(IErrorReportingService.providedBy(
-                traverse(package, 'ErrorLogging')))
+            self.assert_(IErrorReportingUtility.providedBy(
+                traverse(package, 'ErrorReporting')))
             get_transaction().commit()
             cx.close()
 

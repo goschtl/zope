@@ -11,18 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Define view component for event service control.
+"""Define view component for event utility control.
 
 $Id$
 """
 from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.servicenames import ErrorLogging
-from zope.app.errorservice.interfaces import ILocalErrorReportingService
+from zope.app.error.interfaces import IErrorReportingUtility
+from zope.app.error.interfaces import ILocalErrorReportingUtility
 
 class EditErrorLog(object):
-    __used_for__ = ILocalErrorReportingService
+    __used_for__ = ILocalErrorReportingUtility
 
     def updateProperties(self, keep_entries, copy_to_zlog=None,
                          ignored_exceptions=None):
@@ -42,12 +42,12 @@ class ErrorRedirect(BrowserView):
         # redirect the browser to the site root "/@@errorRedirect.html"
         # to handle redirection to the site error logger instead
         try:
-            err = zapi.getService(ErrorLogging)
+            err = zapi.getUtility(IErrorReportingUtility)
             url = str(zapi.getView(err, 'absolute_url', self.request))
             url = url + "/@@SelectedManagementView.html"
         except TypeError:
-            siterooturl = self.request.getApplicationURL()
-            url = siterooturl + "/@@errorRedirect.html"
+            # siterooturl = self.request.getApplicationURL()
+            url = self.request.getURL(1) + "/@@SelectedManagementView.html"
 
         self.request.response.redirect(url)
 

@@ -47,8 +47,12 @@
   <!-- Local Component Registration -->
   <include package="zope.app.registration" />
 
+
+  <!-- Database boostrapping and maintanance -->
+  <include package=".appsetup" />
+  <include package=".zopeappgenerations" />
+
   <!-- Services -->
-  <include package="zope.app.errorservice" />
   <include package="zope.app.pluggableauth" />
   <include package="zope.app.site" />
   <include package="zope.app.adapter" />
@@ -56,6 +60,7 @@
   <include package="zope.app.principalannotation" />
 
   <!-- Utilities -->
+  <include package="zope.app.error" />
   <include package="zope.app.schema" />
   <include package="zope.app.intid" />
   <include package="zope.app.keyreference" />
@@ -65,12 +70,6 @@
 
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
-
-
-  <!-- Database boostrapping and maintanance -->
-  <include package=".appsetup" />
-  <include package=".zopeappgenerations" />
-
 
   <!-- Skins -->
 

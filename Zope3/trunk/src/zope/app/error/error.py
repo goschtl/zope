@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Error reporting service
+"""Error Reporting Utility
 
 This is a port of the Zope 2 error reporting object
 
-$Id$
+$Id: __init__.py 26735 2004-07-23 22:04:28Z pruggera $
 """
 __docformat__ = 'restructuredtext'
 
@@ -28,9 +28,10 @@ from types import StringTypes
 
 from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
-from zope.app.site.interfaces import ISimpleService
+
 from zope.app.container.contained import Contained
-from interfaces import IErrorReportingService, ILocalErrorReportingService
+from zope.app.error.interfaces import IErrorReportingUtility
+from zope.app.error.interfaces import ILocalErrorReportingUtility
 
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
@@ -49,13 +50,9 @@ _temp_logs = {}  # { oid -> [ traceback string ] }
 
 cleanup_lock = allocate_lock()
 
-class ErrorReportingService(Persistent, Contained):
-    """Error Reporting Service
-    """
-    implements(IErrorReportingService,
-               ILocalErrorReportingService,
-               ISimpleService,
-               )
+class ErrorReportingUtility(Persistent, Contained):
+    """Error Reporting Utility"""
+    implements(IErrorReportingUtility, ILocalErrorReportingUtility)
 
     keep_entries = 20
     copy_to_zlog = 0
@@ -135,7 +132,7 @@ class ErrorReportingService(Persistent, Contained):
             # useful instead, but also log the error.
             except:
                 logging.getLogger('SiteError').exception(
-                    'Error in ErrorReportingService while getting a str '
+                    'Error in ErrorReportingUtility while getting a str '
                     'representation of an object')
                 strv = '<unprintable %s object>' % (
                         str(type(info[1]).__name__)
@@ -216,12 +213,13 @@ class ErrorReportingService(Persistent, Contained):
             if entry['id'] == id:
                 return entry.copy()
         return None
-
-class RootErrorReportingService(ErrorReportingService):
+    
+class RootErrorReportingUtility(ErrorReportingUtility):
     rootId = 'root'
     
     def _getLog(self):
         """Returns the log for this object.
+
         Careful, the log is shared between threads.
         """
         log = _temp_logs.get(self.rootId, None)
@@ -230,12 +228,14 @@ class RootErrorReportingService(ErrorReportingService):
             _temp_logs[self.rootId] = log
         return log
 
-globalErrorReportingService = RootErrorReportingService()
+
+globalErrorReportingUtility = RootErrorReportingUtility()
 
 def _cleanup_temp_log():
     _temp_logs.clear()
 
 _clear = _cleanup_temp_log
+
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Error Reporting Service interfaces
+"""Error Reporting Utility interfaces
 
 $Id$
 """
@@ -19,18 +19,17 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 
-class IErrorReportingService(Interface):
-    """Error Reporting Service
-    """
+class IErrorReportingUtility(Interface):
+    """Error Reporting Utility"""
 
     def raising(info, request=None):
-        """Logs an exception.
-        """
+        """Logs an exception."""
 
-class ILocalErrorReportingService(Interface):
-    """Local Error Reporting Service
 
-    Included management functions
+class ILocalErrorReportingUtility(Interface):
+    """Local Error Reporting Utility
+
+    This interface contains additional management functions.
     """
 
     def getProperties():
@@ -47,9 +46,15 @@ class ILocalErrorReportingService(Interface):
         """
 
     def getLogEntries():
-        """Returns the entries in the log, most recent first.
-        """
+        """Returns the entries in the log, most recent first."""
 
     def getLogEntryById(id):
-        """Return LogEntry by ID
-        """
+        """Return LogEntry by ID"""
+
+###############################################################################
+# BBB: 12/14/2004
+
+IErrorReportingService = IErrorReportingUtility
+ILocalErrorReportingService = ILocalErrorReportingUtility
+
+###############################################################################

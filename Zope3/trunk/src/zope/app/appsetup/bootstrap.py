@@ -31,11 +31,11 @@ from zope.app.traversing.api import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
 from zope.app.servicenames import PrincipalAnnotation
-from zope.app.servicenames import ErrorLogging, Utilities
+from zope.app.servicenames import Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
-from zope.app.errorservice import RootErrorReportingService
 from zope.app.container.interfaces import INameChooser
 from zope.app.utility import UtilityRegistration, LocalUtilityService
+from zope.app.utility.interfaces import ILocalUtilityService
 
 # XXX It should be possible to remove each of these from the basic
 # bootstrap, at which point we can remove the
@@ -87,8 +87,8 @@ def ensureUtility(root_folder, interface, utility_type,
     Returns the name added or ``None`` if nothing was added.
     """
     utility_manager = zapi.getService(Utilities, root_folder)
-    utility = utility_manager.queryUtility(interface, name)
-    if utility is None:
+    utils = list(utility_manager.getLocalUtilitiesFor(interface))
+    if len(utils) == 0:
         return addConfigureUtility(
             root_folder, interface, utility_type, utility_factory,
             name, **kw
@@ -125,7 +125,7 @@ def addService(root_folder, service_type, service_factory, **kw):
         setattr(service, k, v)
     return name
 
-def configureService(root_folder, service_type, name, initial_status='Active'):
+def configureService(root_folder, service_type, name, initial_status=u'Active'):
     """Configure a service in the root folder."""
     package = getServiceManagerDefault(root_folder)
     registration_manager = package.getRegistrationManager()
@@ -139,8 +139,8 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
 def addConfigureUtility(
         root_folder, interface, utility_type, utility_factory, name='', **kw):
     """Add and configure a service to the root folder."""
-    folder_name = addUtility(root_folder, utility_type, utility_factory, **kw)
-    configureUtility(root_folder, interface, utility_type, name, folder_name)
+    utility_name = addUtility(root_folder, utility_type, utility_factory, **kw)
+    configureUtility(root_folder, interface, utility_type, name, utility_name)
     return name
 
 def addUtility(root_folder, utility_type, utility_factory, **kw):
@@ -161,7 +161,7 @@ def addUtility(root_folder, utility_type, utility_factory, **kw):
 
 def configureUtility(
         root_folder, interface, utility_type, name, folder_name,
-        initial_status='Active'):
+        initial_status=u'Active'):
     """Configure a utility in the root folder."""
     package = getServiceManagerDefault(root_folder)
     registration_manager = package.getRegistrationManager()
@@ -223,9 +223,6 @@ def bootStrapSubscriber(event):
         service_manager = getServiceManager(root_folder)
 
         # Sundry other services
-        ensureService(service_manager, root_folder, ErrorLogging,
-                      RootErrorReportingService,
-                      copy_to_zlog=False)
         ensureService(service_manager, root_folder, PrincipalAnnotation,
                       PrincipalAnnotationService)
         ensureService(service_manager, root_folder, Utilities,
