@@ -165,6 +165,15 @@ class MyDistribution(Distribution):
 # Set up dependencies for the BTrees package
 base_btrees_depends = [
     "src/persistent/cPersistence.h",
+    "src/BTrees/BTreeItemsTemplate.c",
+    "src/BTrees/BTreeModuleTemplate.c",
+    "src/BTrees/BTreeTemplate.c",
+    "src/BTrees/BucketTemplate.c",
+    "src/BTrees/MergeTemplate.c",
+    "src/BTrees/SetOpTemplate.c",
+    "src/BTrees/SetTemplate.c",
+    "src/BTrees/TreeSetTemplate.c",
+    "src/BTrees/sorters.c",
     ]
 
 _flavors = {"O": "object", "I": "int"}
