@@ -12,12 +12,14 @@ These directives are specific to Five and have no equivalents in Zope 3.
 
 $Id$
 """
+
 import os
+import warnings
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
 
-from viewable import Viewable
+from traversable import Traversable
 
 def findProducts():
     import Products
@@ -64,26 +66,36 @@ def implements(_context, class_, interface):
                     interface)
             )
 
-def classViewable(class_):
+def classTraversable(class_):
     # if a class already has this attribute, it means it is either a
-    # subclass of api.Viewable or was already processed with this
+    # subclass of api.Traversable or was already processed with this
     # directive; in either case, do nothing...
-    if hasattr(class_, '__five_viewable__'):
+    if hasattr(class_, '__five_traversable__'):
         return
 
     if hasattr(class_, '__bobo_traverse__'):
         # if there's an existing bobo_traverse hook already, use that
         # as the traversal fallback method
-        setattr(class_, "__fallback_traverse__", class_.__bobo_traverse__)
+        setattr(class_, "__fallback_traverse__",
+                class_.__bobo_traverse__)
     else:
-        setattr(class_, "__fallback_traverse__", Viewable.__fallback_traverse__)
+        setattr(class_, "__fallback_traverse__",
+                Traversable.__fallback_traverse__)
 
-    setattr(class_, '__bobo_traverse__', Viewable.__bobo_traverse__)
-    setattr(class_, '__five_viewable__', True)
+    setattr(class_, '__bobo_traverse__', Traversable.__bobo_traverse__)
+    setattr(class_, '__five_traversable__', True)
 
-def viewable(_context, class_):
+def traversable(_context, class_):
     _context.action(
         discriminator = (class_,),
-        callable = classViewable,
+        callable = classTraversable,
         args = (class_,)
         )
+
+def viewable(_context, class_):
+    dotted_name = "...%s" % class_.__name__
+    warnings.warn('<five:viewable class="%(k)s" /> is deprecated. '
+                  'Please switch to <five:traversable class="%(k)s" />' %
+                  {'k':dotted_name},
+                  DeprecationWarning)
+    traversable(_context, class_)
