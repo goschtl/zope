@@ -44,10 +44,12 @@
 
   <hook module="Zope.ComponentArchitecture"
         name="getServiceManager"
-        implementation=".hooks.getServiceManager_hook" />
+        implementation="
+           Zope.App.ComponentArchitecture.hooks.getServiceManager_hook" />
   <hook module="Zope.ComponentArchitecture"
         name="getNextServiceManager"
-        implementation=".hooks.getNextServiceManager_hook" />
+        implementation="
+           Zope.App.ComponentArchitecture.hooks.getNextServiceManager_hook" />
 
 </zopeConfigure>
 
