@@ -30,11 +30,10 @@ tool itself and at least a minimal configuration.  This only needs to
 be done once.
 
 There isn't a distribution for |zpkg|_ yet (simply because we haven't
-had time), but this is easy to get from CVS.  Use the following
+had time), but this is easy to get from Subversion.  Use the following
 command to retrieve the ``zpkgtools`` code::
 
-  cvs -d :pserver:anonymous@cvs.zope.org:/cvs-repository \
-      checkout -d zpkgtools Packages/zpkgtools
+  svn co svn://svn.zope.org/repos/main/zpkgtools/trunk zpkgtools
 
 It can be convenient to either add *zpkgtools/bin/* to your PATH or
 add a symlink to *zpkgtools/bin/zpkg* to a directory already on your
@@ -67,14 +66,10 @@ defined for the Zope 3 project would be::
   resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
 
   # Resources for use by zpkg:
-  resource-map cvs://cvs.zope.org/cvs-repository:Releases/packages.map:HEAD
+  resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/support.map
 
-The map from svn.zope.org is used to locate the Zope 3 implementation
-components.  The map from cvs.zope.org is used to locate the actual
-release information and support code added to the generated
-distribution package.  Read more about resource maps in |zpkg|_, and
-about how resource locations are specified in `Resource Locations
-<resources.html>`_.
+Read more about resource maps in |zpkg|_, and about how resource
+locations are specified in `Resource Locations <resources.html>`_.
 
 
 Building a Distribution
