@@ -27,5 +27,10 @@ def load_compat(modname, globals):
     else:
         raise
 
-    for attr in mod.__all__:
+    try:
+        all = mod.__all__
+    except AttributeError:
+        all = [name for name in dir(mod) if not name.startswith('_')]
+
+    for attr in all:
         globals[attr] = getattr(mod, attr)
