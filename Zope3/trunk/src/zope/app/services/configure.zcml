@@ -293,6 +293,10 @@
         permission="zope.ManageCode"
         interface="zodb.code.interfaces.IPersistentModuleManager"
         />
+    <require
+        permission="zope.ManageCode"
+        attributes="beforeDeleteHook"
+        />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
         />
