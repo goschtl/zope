@@ -170,11 +170,11 @@
            attributes="__call__" />
 
   <require permission="zope.ManageContent"
-           interface="zope.app.content.dtmlpage.IDTMLPage" />
+           interface="zope.app.interfaces.content.dtmlpage.IDTMLPage" 
+           set_attributes="source" />
 
   <require permission="zope.View"
-           interface="zope.app.content.dtmlpage.IRenderDTMLPage" />
-
+           interface="zope.app.interfaces.content.dtmlpage.IRenderDTMLPage" />
 
   <implements
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />

@@ -12,51 +12,19 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: dtmlpage.py,v 1.3 2003/01/06 15:46:26 srichter Exp $
 """
-import zope.schema
-
 from persistence import Persistent
 
-from zope.interface import Interface, Attribute
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.content.file import IFileContent
+from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
 
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import getWrapperContainer
 from zope.security.proxy import ProxyFactory
 
 from zope.documenttemplate.dt_html import HTML
-
-
-class IDTMLPage(Interface):
-    """DTML Pages are a persistent implementation of DTML."""
-
-    def setSource(text, content_type='text/html'):
-        """Save the source of the page template."""
-
-    def getSource():
-        """Get the source of the page template."""
-
-    source = zope.schema.Bytes(
-        title=u"Source",
-        description=u"""The source od the page template.""",
-        required=True)
-
-
-class IRenderDTMLPage(Interface):
-
-    content_type = Attribute('Content type of generated output')
-
-    def render(request, *args, **kw):
-        """Render the page template.
-
-        The first argument is bound to the top-level 'request'
-        variable. The positional arguments are bound to the 'args'
-        variable and the keyword arguments are bound to the 'options'
-        variable.
-        """
-
 
 class DTMLPage(Persistent):
 
