@@ -20,7 +20,7 @@ __version__='$Revision$'[11:-2]
 import OFS
 from Globals import InitializeClass, DTMLFile
 from utils import UniqueObject, SimpleItemWithProperties, tuplize
-from utils import _dtmldir, _checkPermission, cookString
+from utils import _dtmldir, _checkPermission, cookString, getToolByName
 import string
 import urllib
 from AccessControl import getSecurityManager, ClassSecurityInfo
@@ -448,7 +448,9 @@ class FactoryTypeInformation (TypeInformation):
 
         if hasattr(ob, '_setPortalTypeName'):
             ob._setPortalTypeName(self.getId())
-
+        wf = getToolByName(ob, 'portal_workflow', None)
+        if wf is not None:
+            wf.notifyCreated(ob)
         return ob
 
 InitializeClass( FactoryTypeInformation )

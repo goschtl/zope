@@ -17,6 +17,12 @@
 
  Bugs Fixed
 
+  - Fixed a bug where the workflow notifyCreated method was called during
+    manage_afterAdd in PortalContent, making it possible for the
+    notification to occur on the wrong workflow.  The notification has 
+    moved to the contstructInstance method on the TypesTool after
+    the _setPortalTypeName method has been called on the object.
+
   - Fixed a bug in Favorites.getObject to use restrictedTraverse on the portal
     object.
 
