@@ -16,7 +16,7 @@
 This dispatcher supports a 'named command' dispatch similar to that
 found in the standard CVS and Subversion client applications.
 
-$Id: command.py,v 1.4 2003/08/12 17:12:50 fdrake Exp $
+$Id: command.py,v 1.5 2003/08/12 18:06:20 fdrake Exp $
 """
 
 import getopt
@@ -55,6 +55,26 @@ class Command:
         for n in names:
             assert n not in self.command_table
             self.command_table[n] = cmdinfo
+
+    def main(self, args=None):
+        try:
+            self.realize()
+            self.run()
+
+        except Usage, msg:
+            self.usage(sys.stderr, msg)
+            self.usage(sys.stderr, 'for help use "%(program)s help"')
+            return 2
+
+        except Error, msg:
+            self.usage(sys.stderr, msg)
+            return 1
+
+        except SystemExit:
+            raise
+
+        else:
+            return None
 
     def realize(self, args=None):
         if "help" not in self.command_table:
@@ -97,6 +117,7 @@ class Command:
         func(self.local_options, self.args)
 
     def usage(self, file, text):
+        text = str(text)
         print >>file, text % {"program": self.program}
 
     def help(self, opts, args):

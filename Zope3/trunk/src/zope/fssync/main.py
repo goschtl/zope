@@ -32,7 +32,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.32 2003/08/12 17:51:09 fdrake Exp $
+$Id: main.py,v 1.33 2003/08/12 18:06:20 fdrake Exp $
 """
 
 import os
@@ -55,24 +55,7 @@ def main():
     for func, aliases, short, long in command_table:
         cmd.addCommand(func.__name__, func, short, long, aliases)
 
-    try:
-        cmd.realize()
-        cmd.run()
-
-    except Usage, msg:
-        print >>sys.stderr, msg
-        print >>sys.stderr, "for help use --help"
-        return 2
-
-    except Error, msg:
-        print >>sys.stderr, msg
-        return 1
-
-    except SystemExit:
-        raise
-
-    else:
-        return None
+    return cmd.main()
 
 def checkout(opts, args):
     """%(program)s checkout URL [TARGETDIR]
