@@ -54,7 +54,7 @@ class FilterList(Contents):
 
     published_content = ViewPageTemplateFile('published_content.pt')
 
-    # XXX: This method assumes you have a publishing workflow (SR) 
+    # TODO: This method assumes you have a publishing workflow
     def listPublishedItems(self):
         return self.filterByState(self.listContentInfo(), 'published')
 
