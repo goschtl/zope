@@ -46,6 +46,10 @@ class Test(BrowserTestCase):
                   'new_value': 'pd' })
 
 
+    def tearDown(self):
+        BrowserTestCase.tearDown(self)
+
+
     def test_processdefinition(self):
         response = self.publish(
             self.basepath + '/pd/index.html',
