@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:event="http://namespaces.zope.org/event"
+    >
+
+  <event:subscribe
+      subscriber=".undo.undoSetup"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
+      />
+
+
+  <!-- Browser directives -->
+
+  <browser:pages
+      for="*"
+      permission="zope.ManageContent"
+      class="zope.app.undo.browser.UndoView"
+      >
+
+    <browser:page name="undoForm.html" template="undo_log.pt" />
+    <browser:page name="undo.html" attribute="action" />
+  </browser:pages>
+
+  <browser:menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo"
+      action="@@undoForm.html"
+      />
+
+</configure>

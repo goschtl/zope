@@ -16,7 +16,6 @@
   <include package=".index" />
   <include package=".rdb" />
   <include file="traversal.zcml" />
-  <include file="undo.zcml" />
   <include file="auth.zcml" />
 
   <include package=".exception" />

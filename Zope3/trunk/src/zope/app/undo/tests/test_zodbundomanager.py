@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_zodbundomanager.py,v 1.4 2003/07/10 12:42:15 anthony Exp $
+$Id: test_zodbundomanager.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
 """
 
-from unittest import TestCase, main, makeSuite
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 from time import time
+from unittest import TestCase, main, makeSuite
+
+from zope.testing.cleanup import CleanUp 
+from zope.app.undo.undo import ZODBUndoManager
 
 def dict(**kw): return kw
 
@@ -72,7 +72,6 @@ class StubDB:
 class Test(CleanUp, TestCase):
 
     def test(self):
-        from zope.app.browser.undo import ZODBUndoManager
         um = ZODBUndoManager(StubDB())
 
         self.assertEqual(list(um.getUndoInfo()), testdata)

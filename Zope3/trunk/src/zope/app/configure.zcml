@@ -126,6 +126,7 @@
 
   <!-- Additional packages -->
 
+  <include package="zope.app.undo" />
   <include package="zope.app.applicationcontrol" />
   <include package="zope.app.dublincore" />
   <include package="zope.app.cache" />

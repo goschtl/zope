@@ -13,16 +13,17 @@
 ##############################################################################
 """Undo Tests
 
-$Id: test_undo.py,v 1.8 2004/02/05 22:52:20 srichter Exp $
+$Id: test_undo.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
 """
 from datetime import datetime
 from unittest import TestCase, main, makeSuite
 
 from zope.interface import implements
-from zope.app.interfaces.undo import IUndoManager
-from zope.app.browser.undo import Undo
-from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.publisher.browser import TestRequest
+
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.undo.interfaces import IUndoManager
+from zope.app.undo.browser import UndoView
 
 class TestIUndoManager:
     implements(IUndoManager)
@@ -65,13 +66,13 @@ class Test(PlacefulSetup, TestCase):
               TestIUndoManager())
 
     def testGetUndoInfo(self):
-        view = Undo()
+        view = UndoView()
         view.context = None
         view.request = TestRequest()
         self.checkResult(view.getUndoInfo())
 
     def testUndoSingleTransaction(self):
-        view = Undo()
+        view = UndoView()
         view.context = None
         view.request = TestRequest()
         id_list = ['1']
@@ -83,7 +84,7 @@ class Test(PlacefulSetup, TestCase):
         self.checkResult(view.getUndoInfo())
 
     def testUndoManyTransactions(self):
-        view = Undo()
+        view = UndoView()
         view.context = None
         view.request = TestRequest()
         id_list = ['1','2','3']
