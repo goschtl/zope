@@ -13,22 +13,38 @@
 ##############################################################################
 """
 
-$Id: test_registerrequestfactory.py,v 1.2 2003/06/25 15:29:33 fdrake Exp $
+$Id: test_registerrequestfactory.py,v 1.3 2003/07/28 22:21:41 jim Exp $
 """
 
 import unittest
 from zope.configuration.xmlconfig import xmlconfig
-from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.process.requestfactoryregistry import getRequestFactory
 from zope.testing.cleanup import CleanUp
 from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 from zope.interface import implements
+from cStringIO import StringIO
 
 class TF:
     "test request factory"
     implements(IPublicationRequestFactoryFactory)
 
 tf = TF()
+
+ns = 'http://www.zope.org/NS/Zope3/test'
+
+def makeconfig(metadirectives,directives):
+    return StringIO(
+        '''<zopeConfigure
+               xmlns="http://namespaces.zope.org/zope"
+               xmlns:test="%(ns)s">
+            <directives namespace="%(ns)s">
+              %(metadirectives)s
+            </directives>
+            %(directives)s
+            </zopeConfigure>''' % {
+                'metadirectives': metadirectives,
+                'directives': directives,
+                'ns': ns})
 
 class Test(CleanUp, unittest.TestCase):
 
@@ -66,7 +82,7 @@ class Test(CleanUp, unittest.TestCase):
         xmlconfig(makeconfig(
             '''<directive
                    name="registerRequestFactory"
-                   attributes="name publication request"
+                   attributes="name publication request factory"
                    handler=
                    "zope.app.process.metaconfigure.registerRequestFactory"
                    />''',

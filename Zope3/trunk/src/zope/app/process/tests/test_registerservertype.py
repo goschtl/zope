@@ -16,9 +16,24 @@
 
 import unittest
 from zope.configuration.xmlconfig import xmlconfig
-from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.process.servertyperegistry import getServerType
+from cStringIO import StringIO
 
+ns = 'http://www.zope.org/NS/Zope3/test'
+
+def makeconfig(metadirectives,directives):
+    return StringIO(
+        '''<zopeConfigure
+               xmlns="http://namespaces.zope.org/zope"
+               xmlns:test="%(ns)s">
+            <directives namespace="%(ns)s">
+              %(metadirectives)s
+            </directives>
+            %(directives)s
+            </zopeConfigure>''' % {
+                'metadirectives': metadirectives,
+                'directives': directives,
+                'ns': ns})
 
 class Test(unittest.TestCase):
 
@@ -26,7 +41,8 @@ class Test(unittest.TestCase):
         xmlconfig(makeconfig(
             '''<directive
                    name="registerServerType"
-                   attributes="name publication request"
+                   attributes="name publication request factory requestFactory
+                               defaultPort logFactory defaultVerbose"
                    handler="zope.app.process.metaconfigure.registerServerType"
                    />''',
             '''<test:registerServerType
