@@ -12,11 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.4 2002/10/28 23:52:31 jim Exp $
+$Id: Widget.py,v 1.5 2002/11/11 20:52:57 jim Exp $
 """
 from IWidget import IWidget
 from Zope.Schema.Exceptions import ValidationError
 from Zope.App.Forms.Exceptions import WidgetInputError
+from Zope.ComponentArchitecture.IView import IViewFactory
 
 class Widget(object):
     """Mix-in class providing some functionality common accross view types
@@ -25,9 +26,13 @@ class Widget(object):
 
     __implements__ = IWidget
 
+    _prefix = 'field.'
+    _data = None
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.name = self._prefix + context.__name__
 
     # See Zope.App.Forms.IWidget.IWidget
     propertyNames = []
@@ -37,25 +42,28 @@ class Widget(object):
         if name in self.propertyNames:
             return getattr(self, name, None)
 
-    def getName(self):
-        return self.context.getName()
+    def setPrefix(self, prefix):
+        if not prefix.endswith("."):
+            prefix += '.'
+        self._prefix = prefix
+        self.name = prefix + self.context.__name__
 
-    def getTitle(self):
-        return self.context.title
+    def setData(self, value):
+        self._data = value
+
+    def haveData(self):
+        raise TypeError("haveData has not been implemented")
 
     def getData(self):
-        raw = self._getRawData()
-        value = self._convert(raw)
-        try:
-            self.context.validate(value)
-        except ValidationError, v:
-            raise WidgetInputError(self.getName(), self.getTitle(), v)
+        raise TypeError("haveData has not been implemented")
 
-        return value
+    title = property(lambda self: self.context.title)
+
+    required = property(lambda self: self.context.required)
 
 class CustomWidget(object):
     """Custom Widget."""
-    __instance_implements__ = IWidget
+    __implements__ = IViewFactory
 
     def __init__(self, widget, **kw):
         self.widget = widget
@@ -66,14 +74,3 @@ class CustomWidget(object):
         for item in self.kw.items():
             setattr(instance, item[0], item[1])
         return instance
-                  
-class Customizer:
-    """Objects for making shorthands for creating CustomWidgets
-    """
-    
-    def __init__(self, widget_class):
-        self.__widget_class = widget_class
-
-    def __call__(self, **kw):
-        # XXX should have error checking here!
-        return CustomWidgets(self.__widget_class, **kw)
