@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.10 2003/06/05 20:52:45 gvanrossum Exp $
+$Id: committer.py,v 1.11 2003/06/05 21:50:46 gvanrossum Exp $
 """
 
 import os
@@ -281,6 +281,9 @@ class Committer(object):
         entry = self.metadata.getentry(fspath)
         if entry.get("flag") == "removed":
             delete_item(container, name)
+            return
+        if not entry:
+            # This object was not included on the filesystem; skip it
             return
         obj = traverseName(container, name)
         adapter = get_adapter(obj)
