@@ -40,6 +40,7 @@
   </content>
 
    <adapter
+       for='*'
        factory="zope.app.introspector.Introspector"
        permission="zope.View"
        provides="zope.app.interfaces.introspector.IIntrospector" />
@@ -55,6 +56,7 @@
       for="zope.app.interfaces.annotation.IAnnotatable" />
 
   <adapter
+      for="*"
       factory="zope.app.size.DefaultSized"
       provides="zope.app.interfaces.size.ISized"
       permission="zope.View" />
