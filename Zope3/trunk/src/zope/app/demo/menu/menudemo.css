@@ -54,6 +54,7 @@ ul li {
 
 ul ul {
   display: none;
+  width: 10em;
 }
 
 ul li:hover > ul {
@@ -67,15 +68,6 @@ li a {
   display: block; 
   padding: 1px; 
   text-decoration: none;
-  background: #EEE;
-}
-
-ul.topmenu li a:hover {
-  background: #DDD;
-}
-
-li.sub > a {
-  background: #EEE;
 }
 
 ul.topmenu {
@@ -87,12 +79,22 @@ ul.topmenu ul {
   border: 1px solid #BBB;
 }
 
+ul.topmenu > li:hover {
+  bottom: -2px;
+  padding-bottom: 1px;
+  padding: 0px;
+  border: 1px solid #BBB;
+  background: #DDD;
+}
+
+ul > li:hover {
+  background: #DDD;
+}
+
 ul.topmenu > li:hover > ul {
   width: 10em; 
   top: 1.5em; 
-  left: -3px;
+  left: -1px;
 }
 
-ul ul {
-  width: 10em;
-}
+
