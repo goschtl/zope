@@ -20,8 +20,7 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import implements, directlyProvides
-from zope.component import getView
+from zope.interface import Interface, implements, directlyProvides
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
@@ -134,11 +133,10 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
-        ps = zapi.getGlobalService(zapi.servicenames.Presentation)
-        ps.provideView(None, 'absolute_url', IHTTPRequest,
-                       AbsoluteURL)
-        ps.provideView(None, 'PROPFIND', IHTTPRequest,
-                       propfind.PROPFIND)
+        ztapi.provideView(None, IHTTPRequest, Interface,
+                          'absolute_url', AbsoluteURL)
+        ztapi.provideView(None, IHTTPRequest, Interface,
+                          'PROPFIND', propfind.PROPFIND)
         ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ITextLine, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(IDatetime, TextDAVWidget, IDAVWidget)
@@ -272,7 +270,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'0'})
 
-        resource_url = str(getView(zpt, 'absolute_url', request))
+        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
@@ -313,7 +311,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'0'})
 
-        resource_url = str(getView(zpt, 'absolute_url', request))
+        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
@@ -355,7 +353,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'0'})
 
-        resource_url = str(getView(zpt, 'absolute_url', request))
+        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
@@ -393,7 +391,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'0'})
 
-        resource_url = str(getView(zpt, 'absolute_url', request))
+        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
@@ -438,7 +436,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'0'})
 
-        resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = str(zapi.getView(folder, 'absolute_url', request))
         resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
@@ -485,7 +483,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'1'})
 
-        resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = str(zapi.getView(folder, 'absolute_url', request))
         resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
@@ -639,7 +637,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                                  headers={'Content-type':'text/xml',
                                           'Depth':'infinity'})
 
-        resource_url = str(getView(folder, 'absolute_url', request))
+        resource_url = str(zapi.getView(folder, 'absolute_url', request))
         resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
