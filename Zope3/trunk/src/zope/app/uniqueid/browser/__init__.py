@@ -26,7 +26,7 @@ class UniqueIdUtilityView:
         return len(trustedRemoveSecurityProxy(self.context).refs)
 
     def populate(self):
-        # XXX I think this should be moved to the functional test.
+        # TODO: I think this should be moved to the functional test.
         self.context.register(zapi.traverse(self.context, "/"))
         self.context.register(zapi.traverse(self.context, "/++etc++site"))
         self.request.response.redirect('index.html')
