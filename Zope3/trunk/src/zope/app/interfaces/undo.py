@@ -17,9 +17,20 @@ from zope.interface import Interface
 class IUndoManager(Interface):
     " Interface for the Undo Manager "
 
-    def getUndoInfo():
+    def getUndoInfo(first=0, last=-20, user_name=None):
         """
-        Gets all undo information.
+        Gets some undo information. It skips the 'first' most
+        recent transactions; i.e. if first is N, then the first
+        transaction returned will be the Nth transaction.
+
+        If last is less than zero, then its absolute value is the
+        maximum number of transactions to return.  Otherwise if last
+        is N, then only the N most recent transactions following start
+        are considered.
+
+        If user_name is not None, only transactions from the given
+        user_name are returned.
+
         Note: at the moment, doesnt care where called from
 
         returns sequence of mapping objects by date desc
@@ -27,7 +38,8 @@ class IUndoManager(Interface):
         keys of mapping objects:
           id          -> internal id for zodb
           user_name   -> name of user that last accessed the file
-          time        -> date of last access
+          time        -> unix timestamp of last access
+          datetime    -> datetime object of time
           description -> transaction description
         """
 
