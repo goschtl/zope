@@ -3,6 +3,13 @@ Credits
   The Zope software receives contributions from far and wide.  Here's
   the Zope Hall of Fame:
 
+    o The many participants in Zope 3 sprints worldwide should be
+      listed here!  Also other contributors.  And several of the
+      features below are no longer part of Zope 3 -- but does that
+      mean that they should be removed?  In the open source world,
+      credits are important currency.  It's best not to remove
+      credits, ever.
+
     o Stephen Purcell allows us to distribute his PyUnit unit testing
       framework with Zope.
 
