@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter registry tests
 
-$Id: test_adapter.py,v 1.6 2004/04/15 13:26:25 srichter Exp $
+$Id: test_adapter.py,v 1.7 2004/04/20 11:38:06 jim Exp $
 """
 import unittest, doctest
 import zope.interface
@@ -38,6 +38,11 @@ class IR1(IR0):
 def test_multi_adapter_w_default():
     """
     >>> registry = AdapterRegistry()
+    
+    >>> registry.register([None, None], IB1, 'bob', 'A0')
+
+    >>> registry.lookup((IF1, IR1), IB0, 'bob')
+    'A0'
     
     >>> registry.register([None, IR0], IB1, 'bob', 'A1')
 

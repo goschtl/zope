@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.16 2004/04/15 15:29:53 jim Exp $
+$Id: adapter.py,v 1.17 2004/04/20 11:38:04 jim Exp $
 """
 
 
@@ -85,7 +85,7 @@ import weakref
 from sets import Set
 from zope.interface.ro import ro
 from zope.interface.declarations import providedBy
-from zope.interface.interface import InterfaceClass
+from zope.interface.interface import InterfaceClass, Interface
 
 Default = InterfaceClass("Default", (), {})
 Null = InterfaceClass("Null", (), {})
@@ -251,7 +251,6 @@ class Surrogate(object):
     def __repr__(self):
         return '<%s(%s)>' % (self.__class__.__name__, self.spec())
 
-
 def orderwith(bywith):
 
     # Convert {with -> adapter} to withs, [(with, value)]
@@ -269,6 +268,7 @@ def orderwith(bywith):
             
     return withs
     
+
 def withextends(with1, with2):
     for spec1, spec2 in zip(with1, with2):
         if spec1.extends(spec2):
@@ -318,10 +318,16 @@ class AdapterRegistry(object):
 
     def register(self, required, provided, name, value):
         if required:
-            required, with = self.get(required[0]), tuple(required[1:])
+            with = []
+            for iface in required[1:]:
+                if iface is None:
+                    iface = Interface
+                with.append(iface)
+            with = tuple(with)
+            required = self.get(required[0])
         else:
-            required = self._null
             with = ()
+            required = self._null
         
         if not isinstance(name, basestring):
             raise TypeError("The name provided to provideAdapter "
