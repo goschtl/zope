@@ -44,15 +44,15 @@
 
   <!-- STX support -->
 
-  <!--renderer:sourcetype 
+  <renderer:sourcetype 
       title="Structured Text (STX)"
       interface="zope.app.interfaces.renderer.IStructuredTextSource"
-      class=".stx.StructuredTextSource" /-->
+      class=".stx.StructuredTextSource" />
 
-  <!--renderer:renderer 
+  <renderer:renderer 
       sourceType="zope.app.interfaces.renderer.IStructuredTextSource"
       for="zope.publisher.interfaces.browser.IBrowserRequest" 
-      factory=".stx.StructuredTextToHTMLRenderer" /-->
+      factory=".stx.StructuredTextToHTMLRenderer" />
 
 
   <!-- ReST support -->
