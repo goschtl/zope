@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 import unittest, sys
 from Zope.Misc.DateTimeParse import parse, time, DateTimeError
@@ -77,7 +77,13 @@ class Test(unittest.TestCase):
                          (2000, 2, 29, 1, 2, 3))
         self.assertEqual(parse('2004-02-29 1:2:3')[:6],
                          (2004, 2, 29, 1, 2, 3))
-        
+
+    def test_tzoffset(self):
+        from Zope.Misc.DateTimeParse import _tzoffset
+        self.assertEqual(_tzoffset('-0400', None), -4*60*60)
+        self.assertEqual(_tzoffset('-0030', None), -30*60)
+        self.assertEqual(_tzoffset('+0200', None), 2*60*60)
+        self.assertEqual(_tzoffset('EET', None), 2*60*60)
 
 def test_suite():
     loader=unittest.TestLoader()

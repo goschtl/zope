@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.6 2002/11/11 16:42:26 stevea Exp $
+$Id: DateTimeParse.py,v 1.7 2002/11/18 11:46:43 mgedmin Exp $
 """
     
 import re, math, DateTimeZone
@@ -364,7 +364,11 @@ def _tzoffset(tz, t):
         return DateTimeParser._tzinfo[tz].info(t)[0]
     except:
         if numericTimeZoneMatch(tz) is not None:
-            return -int(tz[1:3])*3600-int(tz[3:5])*60
+            offset = int(tz[1:3])*3600+int(tz[3:5])*60
+            if tz[0] == '-':
+                return -offset
+            else:
+                return offset
         else:
             return 0 # XXX ??
 
