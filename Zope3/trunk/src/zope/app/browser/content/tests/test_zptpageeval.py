@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_zptpageeval.py,v 1.2 2002/12/25 14:12:31 jim Exp $
+$Id: test_zptpageeval.py,v 1.3 2003/01/25 13:34:17 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,6 +22,7 @@ from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 from zope.app.browser.content.zpt import ZPTPageEval
 from zope.proxy.context import ContextWrapper
+from zope.publisher.browser import TestRequest
 
 
 class Test(CleanUp, TestCase):
@@ -51,8 +52,8 @@ class Test(CleanUp, TestCase):
 
         template = ContextWrapper(Template(), folder)
 
-        view = ZPTPageEval(template, None)
-        self.assertEqual(view.index(request), 42)
+        view = ZPTPageEval(template, request)
+        self.assertEqual(view.index(), 42)
         self.assertEqual(template.called, (request, {}))
         self.assertEqual(getattr(request, 'content-type'), 'text/x-test')
 
