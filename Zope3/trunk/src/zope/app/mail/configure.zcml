@@ -3,11 +3,15 @@
    xmlns:mail="http://namespaces.zope.org/mail"
    >
 
-  <serviceType id="Mail"
-	       interface="zope.app.interfaces.mail.IMailService" />
+  <serviceType
+      id="Mail"
+      interface="zope.app.interfaces.mail.IMailService"
+      />
 
-  <permission id="zope.SendMail" 
-              title="Send out mail with arbitrary from and to addresses" />
+  <permission
+      id="zope.SendMail" 
+      title="Send out mail with arbitrary from and to addresses"
+      />
 
   <mail:sendmailMailer id="sendmail" />
 

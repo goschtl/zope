@@ -2,113 +2,118 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:dav='http://namespaces.zope.org/zope/dav'>
 
- <view for="*"
-	 name="PROPFIND"
-	 type="zope.publisher.interfaces.http.IHTTPPresentation"
-	 factory=".propfind.PROPFIND"
-	 permission="zope.ManageContent"
-	 allowed_attributes="PROPFIND setDepth getDepth"
-	 />
+<view
+    for="*"
+    name="PROPFIND"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory=".propfind.PROPFIND"
+    permission="zope.ManageContent"
+    allowed_attributes="PROPFIND setDepth getDepth"
+    />
 
-  <view for="zope.app.interfaces.http.INullResource"
- 	name="MKCOL"
-	type="zope.publisher.interfaces.http.IHTTPPresentation"
-	factory=".mkcol.NullResource"
-	permission="zope.ManageContent"
-	allowed_attributes="MKCOL"
-  />
+<view
+    for="zope.app.interfaces.http.INullResource"
+    name="MKCOL"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory=".mkcol.NullResource"
+    permission="zope.ManageContent"
+    allowed_attributes="MKCOL"
+    />
 
-  <view for="*"
- 	name="MKCOL"
-	type="zope.publisher.interfaces.http.IHTTPPresentation"
-	factory=".mkcol.MKCOL"
-	permission="zope.ManageContent"
-	allowed_attributes="MKCOL"
-  />
+<view
+    for="*"
+    name="MKCOL"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory=".mkcol.MKCOL"
+    permission="zope.ManageContent"
+    allowed_attributes="MKCOL"
+    />
 
 
 <!-- Disabled for now. Need to write tests before checking in. 
-  <view for="*"
- 	name="MOVE"
-	type="zope.publisher.interfaces.http.IHTTPPresentation"
-	factory=".move.MOVE"
-	permission="zope.ManageContent"
-	allowed_attributes="MOVE"
-  />
+<view
+    for="*"
+    name="MOVE"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory=".move.MOVE"
+    permission="zope.ManageContent"
+    allowed_attributes="MOVE"
+    />
 
-  <view for="*"
- 	name="COPY"
-	type="zope.publisher.interfaces.http.IHTTPPresentation"
-	factory=".copy.COPY"
-	permission="zope.ManageContent"
-	allowed_attributes="COPY"
-  />
+<view
+    for="*"
+    name="COPY"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory=".copy.COPY"
+    permission="zope.ManageContent"
+    allowed_attributes="COPY"
+    />
 
 -->
 
- <defaultView
-       for="zope.schema.interfaces.IText"
-       name="view"
-       permission="zope.Public"
-       type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.TextDAVWidget"
-       allowed_attributes="getData haveData setData __call__ __str__"
-       />
+<defaultView
+    for="zope.schema.interfaces.IText"
+    name="view"
+    permission="zope.Public"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory="zope.app.dav.widget.TextDAVWidget"
+    allowed_attributes="getData haveData setData __call__ __str__"
+    />
 
- <defaultView
-       for="zope.schema.interfaces.ITextLine"
-       name="view"
-       permission="zope.Public"
-       type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.TextDAVWidget"
-       allowed_attributes="getData haveData setData __call__ __str__"
-       />
+<defaultView
+    for="zope.schema.interfaces.ITextLine"
+    name="view"
+    permission="zope.Public"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory="zope.app.dav.widget.TextDAVWidget"
+    allowed_attributes="getData haveData setData __call__ __str__"
+    />
 
- <defaultView
-       for="zope.schema.interfaces.IDatetime"
-       name="view"
-       permission="zope.Public"
-       type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.TextDAVWidget"
-       allowed_attributes="getData haveData setData __call__ __str__"
-       />
+<defaultView
+    for="zope.schema.interfaces.IDatetime"
+    name="view"
+    permission="zope.Public"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory="zope.app.dav.widget.TextDAVWidget"
+    allowed_attributes="getData haveData setData __call__ __str__"
+    />
 
- <defaultView
-       for="zope.schema.interfaces.ISequence"
-       name="view"
-       permission="zope.Public"
-       type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.SequenceDAVWidget"
-       allowed_attributes="getData haveData setData __call__ __str__"
-       />
+<defaultView
+    for="zope.schema.interfaces.ISequence"
+    name="view"
+    permission="zope.Public"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    factory="zope.app.dav.widget.SequenceDAVWidget"
+    allowed_attributes="getData haveData setData __call__ __str__"
+    />
 
- <adapter
-      provides="zope.app.interfaces.dav.IDAVSchema"
-      for="*"
-      permission="zope.Public"
-      factory=".adapter.DAVSchemaAdapter"
-      />
+<adapter
+    provides="zope.app.interfaces.dav.IDAVSchema"
+    for="*"
+    permission="zope.Public"
+    factory=".adapter.DAVSchemaAdapter"
+    />
 
 
- <serviceType
-	id='DAVSchema'
-	interface='zope.app.interfaces.component.IDAVSchemaService'
-	/>
+<serviceType
+    id='DAVSchema'
+    interface='zope.app.interfaces.component.IDAVSchemaService'
+    />
 
- <service
-	serviceType='DAVSchema'
-	permission='zope.Public'
-	component='zope.app.dav.globaldavschemaservice.davSchemaService'
-	/>
+<service
+    serviceType='DAVSchema'
+    permission='zope.Public'
+    component='zope.app.dav.globaldavschemaservice.davSchemaService'
+    />
 
- <dav:provideInterface
-	for="http://purl.org/dc/1.1"
- 	interface="zope.app.interfaces.dublincore.IZopeDublinCore"
-	/>
+<dav:provideInterface
+    for="http://purl.org/dc/1.1"
+    interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+    />
 
- <dav:provideInterface
-	for="DAV:"
-	interface="zope.app.interfaces.dav.IDAVSchema"
-	/>
+<dav:provideInterface
+    for="DAV:"
+    interface="zope.app.interfaces.dav.IDAVSchema"
+    />
 
 </zopeConfigure>
