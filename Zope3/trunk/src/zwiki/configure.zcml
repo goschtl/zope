@@ -99,6 +99,15 @@
         id="zwiki.Wiki"
         description="Minimal Wiki Page Container implementation " />
 
+    <allow
+        attributes="getSiteManager"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        attributes="setSiteManager"
+        />
+
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer"/>
