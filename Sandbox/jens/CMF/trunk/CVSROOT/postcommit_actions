@@ -209,7 +209,7 @@ def main(args):
         complain("Done.\n")
 
     if failures:
-        handle_failures()
+        handle_failures(orig_args)
 
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG.
@@ -434,16 +434,9 @@ def note_failure(msg, *args):
     failures = 1
     apply(complain, (msg,) + args)
 
-def handle_failures():
-    """Do something useful with the session log, if we saw any failures."""
-    complain("Sending session log to %s\n", CVSMASTER)
-    all = "-- Begin complaints --\n"
-    all = all + string.join(complaints, "\n")
-    all = all + "-- End complaints --\n"
-    if os.path.isfile(OUTPUT_LOG):
-        all = all + "\n-- Begin full log --\n"
-        all = all + open(OUTPUT_LOG, 'r').read()
-        all = all + "-- End full log --\n"
+def handle_failures(argstring):
+    """On serious failures, send the complaints log to CVSMASTER."""
+    import time
 
     if os.environ.has_key('LOGNAME'):
         user = os.environ['LOGNAME']
@@ -451,13 +444,24 @@ def handle_failures():
         user = os.environ['USER']
     else:
         user = '<unidentified user>'
+
+    if os.path.isfile(OUTPUT_LOG):
+        log_file_expr = ("\n\tSee log file for application errors:\n\t\t%s"
+                         % OUTPUT_LOG)
+    else:
+        log_file_expr = ""
+
+    complain("Sending complaints log to CVSMASTER %s\n", CVSMASTER)
+    complain("Time stamp: %s\n", time.ctime(time.time()))
+    complain("Fatal failures in %s:%s\n\tCheckin by: %s\n\tInvocation: %s\n\n",
+             SCRIPT, log_file_expr, user, argstring)
+
     cmd = ('%s %s -s "CVS errors in %s for %s" %s'
            % (MAIL_CMD, ((VERBOSE and "-v") or ""), SCRIPT, user, CVSMASTER))
-
     f = os.popen(cmd, 'w')
-    f.write('Transcript of %s session for %s with fatal errors.\n\n'
-            % (SCRIPT, user))
-    f.write(all)
+    f.write("Serious errors encountered during CVS postcommit actions,\n")
+    f.write("the log is below with orienting details at the bottom.\n\n")
+    f.write(string.join(complaints, ""))
     return f.close()
 
 def usage():
