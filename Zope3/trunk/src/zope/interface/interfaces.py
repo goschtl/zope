@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.3 2002/12/30 14:01:21 stevea Exp $
+$Id: interfaces.py,v 1.4 2003/01/29 17:03:33 jim Exp $
 """
 
 from zope.interface import Interface
@@ -259,39 +259,23 @@ class ITypeRegistry(Interface):
     a required interface.
     """
 
-    def register(require, object):
-        """Register an object for a required interface.
+    def register(interface, object):
+        """Register an object for an interface.
 
-        The require argument may be None.  This effectively defines a
+        The interface argument may be None.  This effectively defines a
         default object.
-
         """
 
-    def get(implements, default=None):
-        """Return a registered object
-
-        The registered object is one that was registered to require an
-        interface that one of the interfaces in the 'implements'
-        specification argument extends or equals.  An attempt will be
-        made to find the component that most closely matches the input
-        arguments.
-
-        The object returned could have been registred to require None.
-
-        Note that the implements may be None, it which case a
-        component will be returned only if it was registered with a
-        require of None.
-
+    def get(interface, default=None):
+        """Return the object registered for the given interface.
         """
 
-    def getAll(implements=None):
+    def getAll(implements):
         """Get registered objects
 
-        Return all objects registered with a require interfaces such
-        that if the 'implements' argumennt is not None, it is an
-        implementation specification such that some of the interfaces
-        in the specification extend or equal the require interface (or
-        the require interface was None).
+        Return a sequence of all objects registered with interfaces
+        that are extended by or equal to one or more interfaces in the
+        given interface specification.
 
         """
 
