@@ -16,17 +16,17 @@
 Page Templates and ZCML.
 
 This tool will extract all findable message strings from all
-internationalizable files in your Zope 3 product. It only extracts
-message ids of the specified domain. It defaults to the 'zope' domain
-and the zope package.
+internationalizable files in your Zope 3 product. It only extracts message ids
+of the specified domain. It defaults to the 'zope' domain and the zope
+package.
 
 Note: The Python Code extraction tool does not support domain
       registration, so that all message strings are returned for
       Python code.
 
-Note: The script expects to be executed either from inside the Zope 3 source tree
-      or with the Zope 3 source tree on the Python path.
-      Execution from a symlinked directory inside the Zope 3 source tree will not work.
+Note: The script expects to be executed either from inside the Zope 3 source
+      tree or with the Zope 3 source tree on the Python path.  Execution from
+      a symlinked directory inside the Zope 3 source tree will not work.
 
 Usage: i18nextract.py [options]
 Options:
