@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.3 2003/08/05 20:25:03 poster Exp $
+$Id: metaconfigure.py,v 1.4 2003/08/12 12:47:55 Zen Exp $
 """
 
 __metaclass__ = type
@@ -96,6 +96,14 @@ class BaseFormDirective:
         return ('view', self.for_, self.name, IBrowserPresentation,
                 self.layer)
 
+class Pane:
+    ''' Holder for information about a Pane of a wizard '''
+    # TODO: Add more funky stuff to each pane, such as a validator
+    def __init__(self, field_names, label):
+        self.names = field_names
+        self.label = label
+
+
 class BaseWizardDirective(BaseFormDirective):
 
     # default wizard information
@@ -103,7 +111,7 @@ class BaseWizardDirective(BaseFormDirective):
     use_sessions = True
 
     def __init__(self, _context, **kwargs):
-        super(AddWizardDirective, self).__init__(_context, **kwargs)
+        super(BaseWizardDirective, self).__init__(_context, **kwargs)
         self.panes = []
 
     def _args(self):

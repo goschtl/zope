@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Wizard View Classes
 
-$Id: addwizard.py,v 1.9 2003/08/07 17:40:28 srichter Exp $
+$Id: addwizard.py,v 1.10 2003/08/12 12:47:55 Zen Exp $
 """
 import sys
 
@@ -119,10 +119,10 @@ def AddWizardViewFactory(
     class_.panes = panes
     class_.fieldNames = fields
     class_._factory = content_factory
-    class_._arguments = arguments
-    class_._keyword_arguments = keyword_arguments
-    class_._set_before_add = set_before_add
-    class_._set_after_add = set_after_add
+    class_._arguments = arguments or []
+    class_._keyword_arguments = keyword_arguments or []
+    class_._set_before_add = set_before_add or []
+    class_._set_after_add = set_after_add or []
     class_.use_session = use_session
 
     class_.generated_form = ViewPageTemplateFile(default_template)

@@ -13,8 +13,9 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.12 2003/08/07 17:40:28 srichter Exp $
+$Id: editwizard.py,v 1.13 2003/08/12 12:47:55 Zen Exp $
 """
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component import getAdapter
 from zope.app.publisher.browser.globalbrowsermenuservice import \
@@ -210,12 +211,6 @@ class EditWizardView(EditView):
                     out(widget.hidden())
             return ''.join(olist)
 
-
-class Pane:
-    # TODO: Add more funky stuff to each pane, such as a validator
-    def __init__(self, field_names, label):
-        self.names = field_names
-        self.label = label
 
 def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_, 

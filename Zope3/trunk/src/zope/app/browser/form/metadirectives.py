@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.6 2003/08/05 15:23:17 philikon Exp $
+$Id: metadirectives.py,v 1.7 2003/08/12 12:47:55 Zen Exp $
 """
 
 from zope.interface import Interface
@@ -194,7 +194,7 @@ class ICommonAddInformation(Interface):
         A list of fields to be assigned to the newly created object
         before it is added.""",
         required=False,
-        value_type=PythonIdentifier()        
+        value_type=PythonIdentifier(),
         )
 
     set_after_add = Tokens(
@@ -244,6 +244,13 @@ class IPaneSubdirective(Interface):
         title=u"Label",
         description=u"The label used as the heading on this pane",
         required=False,
+        )
+
+    fields = Tokens(
+        title=u"Fields",
+        description=u"The fields to display on this pane of the wizard",
+        required=True,
+        value_type=PythonIdentifier()
         )
 
 class IEditFormDirective(ICommonFormInformation):
