@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.6 2003/05/13 14:13:20 gvanrossum Exp $
+$Id: test_merger.py,v 1.7 2003/05/14 19:00:16 gvanrossum Exp $
 """
 
 import os
@@ -98,8 +98,8 @@ class TestMerger(unittest.TestCase):
         return data1 == data2
 
     def runtest(self, localdata, origdata, remotedata,
-                localmetadata, remotemetadata, exp_action, exp_state,
-                exp_merge_state=None):
+                localmetadata, remotemetadata, exp_localdata,
+                exp_action, exp_state, exp_merge_state=None):
         local = self.addfile(localdata)
         orig = self.addfile(origdata)
         remote = self.addfile(remotedata)
@@ -111,10 +111,24 @@ class TestMerger(unittest.TestCase):
         m = Merger(md)
         action, state = m.classify_files(local, orig, remote)
         self.assertEqual((action, state), (exp_action, exp_state))
+
         # Now try the actual merge
         state = m.merge_files(local, orig, remote, action, state)
         self.assertEqual(state, exp_merge_state or exp_state)
         self.assert_(md.getentry(remote).get("flag") is None)
+        if exp_localdata is None:
+            self.assert_(not exists(local))
+        else:
+            f = open(local, "r")
+            try:
+                data = f.read()
+            finally:
+                f.close()
+            if exp_merge_state != "Conflict":
+                self.assertEqual(data, exp_localdata)
+            else:
+                self.assert_(data.find(exp_localdata) >= 0)
+
         # Verify that the returned state matches reality
         if state == "Uptodate":
             self.assert_(self.cmpfile(local, orig))
@@ -161,57 +175,60 @@ class TestMerger(unittest.TestCase):
     # Test cases for files
 
     def test_all_equal(self):
-        self.runtest("a", "a", "a", {}, {}, "Nothing", "Uptodate")
+        self.runtest("a", "a", "a", {}, {}, "a", "Nothing", "Uptodate")
 
     def test_local_modified(self):
-        self.runtest("ab", "a", "a", {}, {}, "Nothing", "Modified")
+        self.runtest("ab", "a", "a", {}, {}, "ab", "Nothing", "Modified")
 
     def test_remote_modified(self):
-        self.runtest("a", "a", "ab", {}, {}, "Copy", "Uptodate")
+        self.runtest("a", "a", "ab", {}, {}, "ab", "Copy", "Uptodate")
 
     def test_both_modified_resolved(self):
         if os.name != "posix":
             # Alas, this test requires the external command 'diff3'
             # which isn't usually found on Windows
             return
-        self.runtest("l\na\n", "a\n", "a\nr\n", {}, {}, "Merge", "Modified")
+        self.runtest("l\na\n", "a\n", "a\nr\n", {}, {},
+                     "l\na\nr\n", "Merge", "Modified")
 
     def test_both_modified_conflict(self):
-        self.runtest("ab", "a", "ac", {}, {}, "Merge", "Modified", "Conflict")
+        self.runtest("ab", "a", "ac", {}, {},
+                     "", "Merge", "Modified", "Conflict")
 
     def test_local_added(self):
-        self.runtest("a", None, None, added, None, "Nothing", "Added")
+        self.runtest("a", None, None, added, None, "a", "Nothing", "Added")
 
     def test_remote_added(self):
-        self.runtest(None, None, "a", None, {}, "Copy", "Uptodate")
+        self.runtest(None, None, "a", None, {}, "a", "Copy", "Uptodate")
 
     def test_both_added_same(self):
-        self.runtest("a", None, "a", added, {}, "Fix", "Uptodate")
+        self.runtest("a", None, "a", added, {}, "a", "Fix", "Uptodate")
 
     def test_both_added_different(self):
         self.runtest("a", None, "b", added, {},
-                     "Merge", "Modified", "Conflict")
+                     "", "Merge", "Modified", "Conflict")
 
     def test_local_removed(self):
-        self.runtest(None, "a", "a", removed, {}, "Nothing", "Removed")
+        self.runtest(None, "a", "a", removed, {}, None, "Nothing", "Removed")
 
     def test_remote_removed(self):
-        self.runtest("a", "a", None, {}, None, "Remove", "Nonexistent")
+        self.runtest("a", "a", None, {}, None, None, "Remove", "Nonexistent")
 
     def test_both_removed(self):
-        self.runtest(None, "a", None, removed, None, "Remove", "Nonexistent")
+        self.runtest(None, "a", None, removed, None,
+                     None, "Remove", "Nonexistent")
 
     def test_local_lost_remote_unchanged(self):
-        self.runtest(None, "a", "a", {}, {}, "Copy", "Uptodate")
+        self.runtest(None, "a", "a", {}, {}, "a", "Copy", "Uptodate")
 
     def test_local_lost_remote_modified(self):
-        self.runtest(None, "a", "b", {}, {}, "Copy", "Uptodate")
+        self.runtest(None, "a", "b", {}, {}, "b", "Copy", "Uptodate")
 
     def test_local_lost_remote_removed(self):
-        self.runtest(None, "a", None, {}, None, "Remove", "Nonexistent")
+        self.runtest(None, "a", None, {}, None, None, "Remove", "Nonexistent")
 
     def test_spurious(self):
-        self.runtest("a", None, None, None, None, "Nothing", "Spurious")
+        self.runtest("a", None, None, None, None, "a", "Nothing", "Spurious")
 
     # XXX need test cases for anomalies, e.g. files missing or present
     # in spite of metadata, or directories instead of files, etc.

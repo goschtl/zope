@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.4 2003/05/14 15:20:14 gvanrossum Exp $
+$Id: merger.py,v 1.5 2003/05/14 19:00:16 gvanrossum Exp $
 """
 
 import os
@@ -155,7 +155,9 @@ class Merger(object):
         cmd = "diff3 -m -E %s %s %s" % (commands.mkarg(local),
                                         commands.mkarg(origfile),
                                         commands.mkarg(remote))
-        sts, output = commands.getstatusoutput(cmd)
+        pipe = os.popen(cmd, "r")
+        output = pipe.read()
+        sts = pipe.close()
         f = open(local, "wb")
         try:
             f.write(output)
