@@ -122,6 +122,11 @@ CMF1.2
 
  Bugs Fixed
 
+  - Fixed a bug in the regular expression check for valid user id's in
+    CMFCore.RegistrationTool._ALLOWED_MEMBER_ID_PATTERN; user id's with
+    anything other then what matches the regular expression will be allowed.
+    (Tracker #456)
+
   - Added .html and .htm files to be loaded from the filesystem as
     FSPageTemplates.
 
