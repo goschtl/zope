@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.6 2004/03/25 14:37:09 hdima Exp $
+$Id: __init__.py,v 1.7 2004/04/02 15:33:57 srichter Exp $
 """
 import re
 from persistent import Persistent
@@ -70,25 +70,44 @@ class PythonPage(Contained, Persistent):
       >>> pp.__name__ = 'pp'
       >>> request = None
 
+      Test that can produce the correct filename
+      
+      >>> pp._PythonPage__filename()
+      u'/pp'
+
+      A simple test that checks that any lone-standing triple-quotes are
+      being printed.
+
       >>> pp.setSource(u"'''<html>...</html>'''")
       >>> pp(request)
       u'<html>...</html>\n'
+
+      Make sure that Windows users input also works. Normally Python does not
+      like '\r' as line endings.
 
       >>> pp.setSource(u"if 1 == 1:\r\r\n\n   '''<html>...</html>'''")
       >>> pp(request)
       u'<html>...</html>\n'
 
+      Here you can see a simple Python command...
+
       >>> pp.setSource(u"print u'<html>...</html>'")
       >>> pp(request)
       u'<html>...</html>\n'
+
+      ... and here a triple quote with some variable replacement. 
 
       >>> pp.setSource(u"'''<html>%s</html>''' %x")
       >>> pp(request, x='test')
       u'<html>test</html>\n'
 
+      Make sure that the context of the page is available.
+
       >>> pp.setSource(u"'''<html>%s</html>''' %context.__name__")
       >>> pp(request)
       u'<html>root</html>\n'
+
+      Make sure that faulty syntax is interpreted correctly.
 
       >>> try:
       ...     pp.setSource(u"'''<html>...</html>") #'''"
@@ -96,16 +115,16 @@ class PythonPage(Contained, Persistent):
       ...     print err
       No matching closing quotes found. (line 1)
 
+      # XXX: Note: We cannot just print the error directly, since there is a
+      # bug in the Linux version of Python that does not display the filename
+      # of the source correctly. So we construct an information string by hand.
+
       >>> try:
       ...     pp.setSource(u"prin 'hello'")
       ... except SyntaxError, err:
-      ...     print err
-      invalid syntax (pp, line 1)
-
-      XXX That last one fails on Windows.  The actual error msg there is
-      XXX    invalid syntax (/pp, line 1)
-      XXX The leading slash evidently comes from self.__filename(), but
-      XXX no idea which (there are many) "getPath()" function that's calling.
+      ...     err_dict = err.__dict__
+      ...     print '%(filename)s, line %(lineno)i, offset %(offset)i' %err_dict
+      /pp, line 1, offset 12
     """
 
     implements(IPythonPage)
