@@ -108,8 +108,18 @@ from distutils.util import get_platform
 try:
     import pyexpat
 except ImportError:
-    print >> sys.stderr, "WARNING: the pyexpat module is required"
-    raise
+    
+    # lets try Kapil's nasty hack to see if we can get further
+    # this isn't nice, surely there must be a better way?!
+    from xml.parsers import expat as pyexpat
+    sys.modules['pyexpat']=pyexpat
+    
+    # now lets try again...
+    try:        
+        import pyexpat
+    except:
+        print >> sys.stderr, "WARNING: the pyexpat module is required"
+        raise
 
 class ImmediateTestResult(unittest._TextTestResult):
 
