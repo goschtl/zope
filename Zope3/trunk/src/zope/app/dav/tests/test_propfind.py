@@ -47,6 +47,7 @@ from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
+from zope.app.dav.adapter import DAVSchemaAdapter
 
 from unitfixtures import File, Folder, FooZPT
 
@@ -108,6 +109,8 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                              ZDCAnnotatableAdapter)
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
+        ztapi.provideAdapter(None, IDAVSchema,
+                             DAVSchemaAdapter)
         sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
         sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
@@ -216,11 +219,14 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 400)
         self.assertEqual(pfind.getDepth(), 'full')
-        
+
     def _checkPropfind(self, obj, req, expect, depth='0', resp=None):
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">%s</propfind>
-        ''' % req
+        if req:
+            body = '''<?xml version="1.0" ?>
+            <propfind xmlns="DAV:">%s</propfind>
+            ''' % req
+        else:
+            body = ''
         request = _createRequest(body=body, headers={
             'Content-type': 'text/xml', 'Depth': depth})
         resource_url = zapi.absoluteURL(obj, request)
@@ -244,7 +250,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         s1 = normalize_xml(request.response._body)
         s2 = normalize_xml(expect)
         self.assertEqual(s1, s2)
-        
+
     def test_davpropdctitle(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
@@ -253,11 +259,11 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:title />
         </prop>'''
-        
+
         expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
         <title xmlns="a0">Test Title</title></prop>'''
         self._checkPropfind(zpt, req, expect)
-        
+
     def test_davpropdccreated(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
@@ -369,7 +375,39 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         resp = '''<?xml version="1.0" encoding="utf-8"?>
         <multistatus xmlns="DAV:">%s</multistatus>'''
         self._checkPropfind(folder, req, expect, depth='infinity', resp=resp)
-        
+
+    def test_davemptybodyallpropzptdepth0(self):
+        # RFC 2518, Section 8.1: A client may choose not to submit a
+        # request body.  An empty PROPFIND request body MUST be
+        # treated as a request for the names and values of all
+        # properties.
+
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        dc = IZopeDublinCore(zpt)
+        dc.created = now = datetime.utcnow()
+
+        req = ''
+        expect = ''
+        props = getFieldNamesInOrder(IZopeDublinCore)
+        pvalues = {'created': '%s+00:00' % now}
+        for p in props:
+            if pvalues.has_key(p):
+                expect += '<%s xmlns="a0">%s</%s>' % (p, pvalues[p], p)
+            else:
+                expect += '<%s xmlns="a0"></%s>' % (p, p)
+        props = getFieldNamesInOrder(IDAVSchema)
+        pvalues = {'displayname':'zpt',
+                   'creationdate':now.strftime('%Y-%m-%d %TZ')}
+        for p in props:
+            if pvalues.has_key(p):
+                expect += '<%s>%s</%s>' % (p, pvalues[p], p)
+            else:
+                expect += '<%s></%s>' % (p, p)
+        expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
+        %s</prop>''' % expect
+        self._checkPropfind(zpt, req, expect)
+
     def test_propfind_opaque_simple(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
@@ -385,7 +423,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         oprops = IDAVOpaqueNamespaces(zpt)
-        oprops[u'http://foo/bar'] = {u'egg': 
+        oprops[u'http://foo/bar'] = {u'egg':
             '<egg xmlns:bacon="http://bacon">\n'
             '  <bacon:pork>crispy</bacon:pork>\n'
             '</egg>\n'}
