@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.6 2003/11/21 17:09:29 jim Exp $
+$Id: service.py,v 1.7 2003/12/03 05:41:43 jim Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -61,8 +61,8 @@ class GlobalServiceManager(object):
         self.__module__ = module
 
     def _clear(self):
-        self.__defs     = {}
-        self.__services = {}
+        self.__defs     = {'Services': IServiceService}
+        self.__services = {'Services': self}
 
     def __reduce__(self):
         # Global service managers are pickled as global objects

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_service.py,v 1.4 2003/11/21 17:09:29 jim Exp $
+$Id: test_service.py,v 1.5 2003/12/03 05:41:43 jim Exp $
 """
 
 import unittest
@@ -29,6 +29,7 @@ from zope.component.service import UndefinedService, InvalidService
 from zope.component.service import GlobalServiceManager, GlobalService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import queryService
+from zope.component.interfaces import IServiceService
 
 class IOne(Interface):
     pass
@@ -97,17 +98,18 @@ class Test(CleanUp, unittest.TestCase):
 
     def testGetServiceDefinitions(self):
         # test that the service definitions are the ones we added
-        getServiceManager(None).defineService('one', IOne)
+        sm = getServiceManager(None)
+        sm.defineService('one', IOne)
         c = ServiceOne()
-        getServiceManager(None).provideService('one', c)
+        sm.provideService('one', c)
 
-        getServiceManager(None).defineService('two', ITwo)
+        sm.defineService('two', ITwo)
         d = ServiceTwo()
-        getServiceManager(None).provideService('two', d)
+        sm.provideService('two', d)
         defs = getServiceDefinitions(None)
         defs.sort()
         self.assertEqual(defs,
-            [('one', IOne), ('two', ITwo)])
+            [('Services', IServiceService), ('one', IOne), ('two', ITwo)])
 
 
     def testPickling(self):
