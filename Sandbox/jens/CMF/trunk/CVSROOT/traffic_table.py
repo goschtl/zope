@@ -84,19 +84,19 @@ def init_table():
          'addrs': ["cmf-checkins@zope.org"]},
 
         {'path': "Packages/TAL",
-         'addrs': ["zpt-checkins@mail.zope.org"]},
+         'addrs': ["zpt-checkins@zope.org"]},
         {'path': "Products/PageTemplates",
-         'addrs': ["zpt-checkins@mail.zope.org"]},
+         'addrs': ["zpt-checkins@zope.org"]},
         {'path': "Packages/ZTUtils",
-         'addrs': ["zpt-checkins@mail.zope.org"]},
+         'addrs': ["zpt-checkins@zope.org"]},
         {'path': "Products/PresentationTemplates",
-         'addrs': ["zpt-checkins@mail.zope.org"]},
+         'addrs': ["zpt-checkins@zope.org"]},
 
         {'path': "Packages/Spread",
          'addrs': ["pythonlabs@zope.com"]},
 
         {'path': "Products/ParsedXML",
-         'addrs': ["parsed-xml-dev@mail.zope.org"]},
+         'addrs': ["parsed-xml-dev@zope.org"]},
 
         {'path': "ZEO",
          'addrs': ['zodb-checkins@zope.org']},
