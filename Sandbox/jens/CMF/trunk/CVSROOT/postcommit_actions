@@ -64,7 +64,7 @@ RSYNC_CMD = "/usr/bin/rsync"
 #     virtue of a particular group membership - world readable opens up the 
 #     rsync privilege to everyone on the system.
 IDENTITY_ACCT = "dccvs"
-IDENTITY_FILE = "/home/dccvs/cvsidentity"
+IDENTITY_FILE = "/cvs-repository/cvsidentity"
 
 
 WAIT = 0                                # Fork unless waiting is requested.
