@@ -15,6 +15,8 @@ node 'loginfo' for more format-string details.)
 Currently the actions are emailing checkin messages and doing an rsync 
 to the public repository."""
 
+mail_cmd = "/bin/mail -v"
+
 VERBOSE = 1
 SCRIPT = "postcommit_actions"           # Changes to args[0], when obtained.
 
@@ -55,7 +57,7 @@ def main(args):
     for entry in got:
         (nm, expr, addrs, accts) = entry
         if addrs:
-            do_notice(repo, addrs, subjs)
+            do_mail(nm, repo, addrs, subjs)
         if accts:
             do_sync(repo, accts, subjs)
 
@@ -70,11 +72,17 @@ def find_entries(repo):
             got.append(t)
     return got
 
-def do_notice(repo, addrs, subjs):
-    """Send notice about checkin."""
+def do_mail(name, repo, addrs, subjs):
+    """Send notice about checkin to addresses dictated by traffic table."""
+    fnames = string.join(map(lambda x: x[0], subjs), ",")
     if VERBOSE:
-        fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
+    # The message contents are on stdin, just _yearning_ to be sent...-)
+    subject = "CVS: %s %s" % (repo, fnames)
+    os.system("%s -s '%s' %s" % (mail_cmd,
+                                 subject,
+                                 string.join(addrs, ",")))
+
 def do_sync(repo, accts, subjs):
     """Instigate repository mirror synchronize."""
     #/usr/bin/rsync --verbose --archive --delete test dccvs@www.zope.org
