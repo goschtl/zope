@@ -13,16 +13,15 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.12 2004/04/15 15:29:46 jim Exp $
+$Id: utility.py,v 1.13 2004/04/17 14:33:54 srichter Exp $
 """
-
 from zope.component.exceptions import Invalid, ComponentLookupError
-from zope.component.interfaces import IUtilityService, IComponentRegistry
+from zope.component.interfaces import IUtilityService, IRegistry
 from zope.component.service import GlobalService
 from zope.interface.adapter import AdapterRegistry
 import zope.interface
 
-class IGlobalUtilityService(IUtilityService, IComponentRegistry):
+class IGlobalUtilityService(IUtilityService, IRegistry):
 
     def provideUtility(providedInterface, component, name=''):
         """Provide a utility
@@ -81,29 +80,13 @@ class GlobalUtilityService(UtilityService, GlobalService):
 
     def registrations(self):
         return self._registrations.itervalues()
-        
 
-    def getRegisteredMatching(self, interface=None, name=None):
-        # doomed lame depreceated method
-        lameresult = []
-        for registration in self.registrations():
-            if (interface is not None
-                and interface is not registration.provided):
-                continue
-            if (name is not None
-                and registration.name.find(name) < 0):
-                continue
-            lameresult.append((registration.provided, registration.name,
-                               registration.component))
-        return lameresult
 
 class UtilityRegistration(object):
 
     def __init__(self, provided, name, component, doc):
-        self.provided = provided
-        self.name = name
-        self.component = component
-        self.doc = doc
+        (self.provided, self.name, self.component, self.doc
+         ) = provided, name, component, doc
 
     def __repr__(self):
         return '%s(%r, %r, %r, %r)' % (
