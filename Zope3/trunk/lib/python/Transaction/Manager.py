@@ -1,6 +1,6 @@
 import logging
 
-from IDataManager import IRollback
+from interfaces import IRollback
 from Transaction import Transaction, Status
 
 # XXX need to change asserts of transaction status into explicit checks

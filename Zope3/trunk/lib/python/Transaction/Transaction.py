@@ -3,8 +3,7 @@
 
 __metaclass__ = type
 
-from ITransaction import ITransaction
-from Exceptions import TransactionError
+from interfaces import ITransaction, TransactionError
 
 class Set(dict):
 

@@ -11,11 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-try:
-    from Interface import Interface
-except ImportError:
-    class Interface: pass
+from Interface import Interface
 
+class TransactionError(StandardError):
+    """An error occured due to normal transaction processing."""
+
+class ConflictError(TransactionError):
+    """Two transactions tried to modify the same object at once
+
+    This transaction should be resubmitted.
+    """
+
+class RollbackError(TransactionError):
+    """An error occurred rolling back a savepoint."""
 
 class IDataManager(Interface):
     """Data management interface for storing objects transactionally
@@ -45,3 +53,25 @@ class IRollback(Interface):
     
     def rollback():
         """Rollback changes since savepoint."""
+
+class ITransaction(Interface):
+    """Transaction objects
+
+    Application code typically gets these by calling
+    get_transaction().
+    """
+
+    def abort():
+        """Abort the current transaction."""
+
+    def begin():
+        """Begin a transaction."""
+
+    def commit():
+        """Commit a transaction."""
+
+    def join(resource):
+        """Join a resource manager to the current transaction."""
+
+    def status():
+        """Return status of the current transaction."""
