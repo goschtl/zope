@@ -15,11 +15,12 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.16 2003/06/20 06:43:05 stevea Exp $
+$Id: engine.py,v 1.17 2003/06/30 22:47:37 bwarsaw Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 import sys
+from types import StringTypes
 
 from zope.tales.expressions import PathExpr
 from zope.tales.expressions import StringExpr
@@ -29,11 +30,17 @@ from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine
 from zope.tales.tales import Context
 
-from zope.app.traversing.adapters import Traverser
+from zope.context.wrapper import getbaseobject
+from zope.proxy import proxy_compatible_isinstance as isinstance_ex
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
 from zope.i18n.translate import Translator
+
+from zope.app.traversing.adapters import Traverser
+
+_default = object()
+
 
 def zopeTraverser(object, path_items, econtext):
     """Traverses a sequence of names, first trying attributes then items.
@@ -60,6 +67,15 @@ class ZopeContext(Context):
     def setContext(self, name, value):
         # Hook to allow subclasses to do things like adding security proxies
         Context.setContext(self, name, ProxyFactory(value))
+
+    def evaluateText(self, expr):
+        text = self.evaluate(expr)
+        if text is _default or text is None:
+            return text
+        if isinstance_ex(text, StringTypes):
+            # text could be a proxied/wrapped object
+            return getbaseobject(text)
+        return unicode(text)
 
     def evaluateMacro(self, expr):
         macro = Context.evaluateMacro(self, expr)
