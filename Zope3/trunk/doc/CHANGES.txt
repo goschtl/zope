@@ -461,6 +461,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #329 (apidoc + TAL)
+
       - Object copy events weren't dispatched for object sublocations.
 
       - When I converted layers and skins to interfaces, I got the layer part

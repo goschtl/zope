@@ -71,8 +71,6 @@ Bug Fixes
 * 321: TravelsalError after renaming or moving Sites with local services 
 
 * 323: Permission zope.Public in addfrom does not work
-
-* 329: apidoc + TAL (Stephan)
  
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
