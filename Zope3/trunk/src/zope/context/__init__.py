@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.4 2003/04/08 12:21:38 stevea Exp $
+$Id: __init__.py,v 1.5 2003/04/09 11:36:21 philikon Exp $
 """
 __metaclass__ = type
 
@@ -45,17 +45,18 @@ def ContextWrapper(_ob, _parent, **kw):
         # Don't wrap basic objects
         return _ob
 
-    if type(_ob.__class__) is ClassType:
-        # We have an instance of a classic class.
-        # This isn't *too* bad in itself, but we're going to make sure that
-        # it doesn't have any ContextDescriptor members.
-        cls = _ob.__class__
-        for name, member in inspect.getmembers(cls):
-            if isinstance(member, ContextDescriptor):
-                raise TypeError("Class %s is a classic class, but has a"
-                                " ContextDescriptor member '%s'. This member"
-                                " will not work properly." %
-                                (cls, name))
+##     if type(_ob.__class__) is ClassType:
+##         # We have an instance of a classic class.
+##         # This isn't *too* bad in itself, but we're going to make sure that
+##         # it doesn't have any ContextDescriptor members.
+##         cls = _ob.__class__
+                    
+##         for name, member in inspect.getmembers(cls):
+##             if isinstance(member, ContextDescriptor):
+##                 raise TypeError("Class %s is a classic class, but has a"
+##                                 " ContextDescriptor member '%s'. This member"
+##                                 " will not work properly." %
+##                                 (cls, name))
 
     if type(_ob) is Proxy:
         # insert into proxies
