@@ -1,7 +1,7 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<include package="Zope/Configuration" file="metameta.zcml" />
-<include package="Zope/Configuration" file="metametaForDocgen.zcml" />
+<include package="Zope.Configuration" file="metameta.zcml" />
+<include package="Zope.Configuration" file="metametaForDocgen.zcml" />
 <include package="Zope" />
 
 </zopeConfigure>
