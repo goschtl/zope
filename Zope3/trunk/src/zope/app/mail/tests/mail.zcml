@@ -1,0 +1,32 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:mail="http://namespaces.zope.org/mail">
+
+  <include package="zope.app.mail" file="meta.zcml"/>
+
+  <mail:queuedService 
+      name="Mail"
+      queuePath="./mailbox"
+      mailer="test.smtp"
+      permission="zope.Public" />
+  
+  <mail:directService 
+      name="Mail2"
+      mailer="test.mailer"
+      permission="zope.Public" />
+
+  <mail:sendmailMailer 
+      id="Sendmail"
+      command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s" />
+  
+  <mail:smtpMailer 
+      id="smtp"
+      hostname="localhost"
+      port="25"
+      username="zope3"
+      password="xyzzy"/>
+  
+  <mail:smtpMailer 
+      id="smtp2"
+      hostname="smarthost"/>
+ 
+</configure>

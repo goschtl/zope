@@ -13,9 +13,8 @@
 ##############################################################################
 """mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.3 2003/06/23 15:45:39 alga Exp $
+$Id: metaconfigure.py,v 1.4 2003/08/02 12:30:24 srichter Exp $
 """
-
 from zope.component import getService
 from zope.configuration.action import Action
 from zope.configuration.exceptions import ConfigurationError
@@ -26,9 +25,6 @@ from zope.app.mail.mailer import SendmailMailer, SMTPMailer
 
 
 def queuedService(_context, permission, queuePath, mailer, name="Mail"):
-    # XXX what if queuePath is relative?  I'd like to make it absolute here,
-    # but should it be relative to $CWD or $INSTANCE_HOME (if there is one
-    # in Zope 3)?
 
     def createQueuedService():
         component = QueuedMailService(queuePath)
@@ -40,13 +36,10 @@ def queuedService(_context, permission, queuePath, mailer, name="Mail"):
         thread.setDaemon(True)
         thread.start()
 
-    return [
-        Action(
+    _context.action(
             discriminator = ('service', name),
             callable = createQueuedService,
-            args = (),
-            )
-        ]
+            args = () )
 
 def directService(_context, permission, mailer, name="Mail"):
 
@@ -57,30 +50,26 @@ def directService(_context, permission, mailer, name="Mail"):
         component = DirectMailService(mailer_component)
         provideService(name, component, permission)
 
-    return [
-        Action(
+    _context.action(
             discriminator = ('service', name),
             callable = makeService,
-            args = (),
-            )
-        ]
+            args = () )
 
 
 def sendmailMailer(_context, id,
                    command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s"):
-    return [Action(discriminator=('mailer', id),
-                   callable=provideMailer,
-                   args=(id, SendmailMailer(command)),)
-        ]
+    _context.action(
+        discriminator=('mailer', id),
+        callable=provideMailer,
+        args=(id, SendmailMailer(command)) )
 
 
 def smtpMailer(_context, id, hostname="localhost", port="25",
                username=None, password=None):
-    return [Action(discriminator=('mailer', id),
-                   callable=provideMailer,
-                   args=(id, SMTPMailer(hostname, port,
-                                          username, password)),)
-        ]
+    _context.action(
+        discriminator=('mailer', id),
+        callable=provideMailer,
+        args=(id, SMTPMailer(hostname, port, username, password)) )
 
 # Example of mailer configuration:
 #

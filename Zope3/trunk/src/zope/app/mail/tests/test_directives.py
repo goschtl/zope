@@ -13,28 +13,20 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.5 2003/07/28 22:20:27 jim Exp $
+$Id: test_directives.py,v 1.6 2003/08/02 12:30:28 srichter Exp $
 """
+import os
 import unittest
 import threading
 
-from cStringIO import StringIO
-
+from zope.app.component.metaconfigure import managerHandler, provideInterface
+from zope.app.interfaces.mail import IMailService, ISMTPMailer, ISendmailMailer
+from zope.app.mail.metaconfigure import provideMailer, queryMailer
+from zope.app.mail import service
 from zope.component import getService
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
-
-from zope.app.component.metaconfigure import managerHandler, provideInterface
-import zope.app.mail
-import zope.app.interfaces.mail
-from zope.app.mail.metaconfigure import provideMailer
-
-template = """<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:mail='http://namespaces.zope.org/mail'>
-   xmlns:test='http://www.zope.org/NS/Zope3/test'>
-   %s
-   </zopeConfigure>"""
+import zope.app.mail.tests
 
 
 class MaildirStub:
@@ -50,86 +42,47 @@ class MaildirStub:
         return None
 
 
-
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        managerHandler('defineService', 'Mail',
-                       zope.app.interfaces.mail.IMailService)
-        provideInterface('zope.app.interfaces.mail.IMailService',
-                         zope.app.interfaces.mail.IMailService)
-        self.context = xmlconfig.file('meta.zcml', zope.app.mail)
-        from zope.app.mail import service
+        managerHandler('defineService', 'Mail', IMailService)
+        managerHandler('defineService', 'Mail2', IMailService)
+        provideInterface('zope.app.interfaces.mail.IMailService', IMailService)
+        provideMailer("test.smtp", object())
+        self.testMailer = object()
+        provideMailer('test.mailer', self.testMailer)
+        self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
         self.orig_maildir = service.Maildir
         service.Maildir = MaildirStub
 
     def tearDown(self):
-        from zope.app.mail import service
         service.Maildir = self.orig_maildir
 
     def testQueuedService(self):
-        threads = threading.activeCount()
-        provideMailer("smtp", object())
-        xmlconfig.string(template % 
-            '''
-            <mail:queuedService name="Mail"
-               queuePath="/path/to/mailbox"
-               mailer="smtp"
-               permission="zope.Public" />
-            ''', self.context)         
         service = getService(None, 'Mail')
         self.assertEqual('QueuedMailService', service.__class__.__name__)
-        self.assertEqual('/path/to/mailbox', service.queuePath)
-        self.assertEqual(threading.activeCount(), threads + 1)
+        testdir = os.path.dirname(zope.app.mail.tests.__file__)
+        self.assertEqual(os.path.join(testdir, 'mailbox'),
+                         service.queuePath)
 
     def testDirectService(self):
-        testMailer = object()
-        provideMailer('test.mailer', testMailer)
-        xmlconfig.string(template % 
-            '''
-            <mail:directService name="Mail"
-               mailer="test.mailer"
-               permission="zope.Public" />
-            ''', self.context)
-        service = getService(None, 'Mail')
+        service = getService(None, 'Mail2')
         self.assertEqual('DirectMailService', service.__class__.__name__)
-        self.assert_(testMailer is service.mailer)
+        self.assert_(self.testMailer is service.mailer)
 
 
     def testSendmailMailer(self):
-        from zope.app.interfaces.mail import ISendmailMailer
-        from zope.app.mail.metaconfigure import queryMailer
-        xmlconfig.string(template % 
-            '''
-            <mail:sendmailMailer id="Sendmail"
-               command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s" />
-            ''', self.context)
         self.assert_(ISendmailMailer.isImplementedBy(queryMailer("Sendmail")))
 
     def testSMTPMailer(self):
-        from zope.app.interfaces.mail import ISMTPMailer
-        from zope.app.mail.metaconfigure import queryMailer
-        xmlconfig.string(template % (
-            '''
-            <mail:smtpMailer id="smtp"
-               hostname="localhost"
-               port="25"
-               username="zope3"
-               password="xyzzy"
-               />
-            '''), self.context)
-
-        xmlconfig.string(template % (
-            '''
-            <mail:smtpMailer id="smtp2"
-              hostname="smarthost"
-            />
-            '''), self.context)
         self.assert_(ISMTPMailer.isImplementedBy(queryMailer("smtp")))
 
+
 def test_suite():
-    return unittest.makeSuite(DirectivesTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(DirectivesTest),
+        ))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main()

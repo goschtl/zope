@@ -1,128 +1,29 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-  <directives namespace="http://namespaces.zope.org/mail">
+  <meta:directive 
+      namespace="http://namespaces.zope.org/mail"
+      name="queuedService" 
+      schema=".metadirectives.IQueuedServiceDirective"
+      handler=".metaconfigure.queuedService" />
 
-    <directive name="queuedService" handler=".metaconfigure.queuedService">
+  <meta:directive 
+      namespace="http://namespaces.zope.org/mail"
+      name="directService" 
+      schema=".metadirectives.IDirectServiceDirective"
+      handler=".metaconfigure.directService" />
 
-      <description>
-        This directive creates and registers a global queued mail service. It
-        should be only called once during startup. 
-      </description>
+  <meta:directive 
+      namespace="http://namespaces.zope.org/mail"
+      name="sendmailMailer" 
+      schema=".metadirectives.ISendmailMailerDirective"
+      handler=".metaconfigure.sendmailMailer" />
 
-      <attribute name="name" required="no">
-        <description>
-          Specifies the Service name of the mail service. The default is
-          "Mail".
-        </description>
-      </attribute>
+  <meta:directive 
+      namespace="http://namespaces.zope.org/mail"
+      name="smtpMailer" 
+      schema=".metadirectives.ISMTPMailerDirective"
+      handler=".metaconfigure.smtpMailer" />
 
-      <attribute name="permission" required="yes">
-        <description>
-          Defines the permission that is required to use this object.
-        </description>
-      </attribute>
-
-      <attribute name="queuePath" required="yes">
-        <description>
-          Defines the path for the queue directory.
-        </description>
-      </attribute>
-
-      <attribute name="mailer" required="yes">
-        <description>
-          The id of the mailer used by this service.
-        </description>
-      </attribute>
-
-    </directive>
-
-    <directive name="directService" handler=".metaconfigure.directService">
-
-      <description>
-        This directive creates and registers a global direct mail service. It
-        should be only called once during startup. 
-      </description>
-
-      <attribute name="name" required="no">
-        <description>
-          Specifies the Service name of the mail service. The default is
-          "Mail".
-        </description>
-      </attribute>
-
-      <attribute name="permission" required="yes">
-        <description>
-          Defines the permission that is required to use this object.
-        </description>
-      </attribute>
-
-      <attribute name="mailer" required="yes">
-        <description>
-          Defines the mailer to be used for sending mail.
-        </description>
-      </attribute>
-
-    </directive>
-
-    <directive name="sendmailMailer" handler=".metaconfigure.sendmailMailer">
-
-      <description>
-        Registers a new Sendmail mailer.
-      </description>
-
-      <attribute name="id" required="yes">
-        <description>
-          Id of the mailer.
-        </description>
-      </attribute>
-
-      <attribute name="command" required="no">
-        <description>
-        A template command for sending out mail, containing %(from)s
-        and %(to)s for respective addresses.
-        </description>
-      </attribute>
-
-    </directive>
-
-    <directive name="smtpMailer" handler=".metaconfigure.smtpMailer">
-
-      <description>
-        Registers a new SMTP mailer.
-      </description>
-
-      <attribute name="id" required="yes">
-        <description>
-          Name of the mailer.
-        </description>
-      </attribute>
-
-      <attribute name="hostname" required="no">
-        <description>
-        Hostname of the SMTP host.
-        </description>
-      </attribute>
-
-      <attribute name="port" required="no">
-        <description>
-        Port of the SMTP server.
-        </description>
-      </attribute>
-
-      <attribute name="username" required="no">
-        <description>
-        A username for SMTP AUTH.
-        </description>
-      </attribute>
-
-      <attribute name="password" required="no">
-        <description>
-        A password for SMTP AUTH.
-        </description>
-      </attribute>
-
-    </directive>
-
-  </directives>
-
-</zopeConfigure>
+</configure>
