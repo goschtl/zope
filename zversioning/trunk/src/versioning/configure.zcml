@@ -4,7 +4,7 @@
     i18n_domain="versioning"
     >
     
-  <!--include package=".demo" /-->
+  <include package=".demo" />
 
   <adapter
       factory=".repository.DummyCheckoutAware"
