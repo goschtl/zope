@@ -10,6 +10,10 @@
       for=".IConnectionManager."
       name="index.html" />
 
+  <browser:menuItems menu="zmi_views" for=".IConnectionManager.">
+    <browser:menuItem title="Edit" action="index.html"/>
+  </browser:menuItems>
+
   <browser:view 
       for=".IConnectionManager."
       name="index.html"
