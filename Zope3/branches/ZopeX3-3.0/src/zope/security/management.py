@@ -24,6 +24,7 @@ import traceback
 from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import IInteractionManagement
+from zope.security.interfaces import NoInteraction
 from zope.testing.cleanup import addCleanUp
 import zope.thread
 
@@ -34,7 +35,7 @@ moduleProvides(ISecurityManagement, IInteractionManagement)
 
 def _clear():
     global _defaultPolicy
-    _defaultPolicy = ParanoidSecurityPolicy()
+    _defaultPolicy = ParanoidSecurityPolicy
 
 addCleanUp(_clear)
 
@@ -66,23 +67,55 @@ def setSecurityPolicy(aSecurityPolicy):
 #
 
 def queryInteraction():
-    """Get the current interaction."""
     return getattr(thread_local, 'interaction', None)
 
-def newInteraction(participation=None, _policy=None):
+def getInteraction():
+    """Get the current interaction."""
+    try:
+        return thread_local.interaction
+    except AttributeError:
+        raise NoInteraction
+
+def newInteraction(*participations):
     """Start a new interaction."""
+    
+    
     if queryInteraction() is not None:
         stack = queryInteraction()._newInteraction_called_from
         raise AssertionError("newInteraction called"
                              " while another interaction is active:\n%s"
                              % "".join(traceback.format_list(stack)))
-    interaction = getSecurityPolicy().createInteraction(participation)
+
+    interaction = getSecurityPolicy()(*participations)
+
     interaction._newInteraction_called_from = traceback.extract_stack()
     thread_local.interaction = interaction
 
 def endInteraction():
     """End the current interaction."""
-    thread_local.interaction = None
+
+    try:
+        del thread_local.interaction
+    except AttributeError:
+        pass
+
+
+def checkPermission(permission, object, interaction=None):
+    """Return whether security policy allows permission on object.
+
+    Arguments:
+    permission -- A permission name
+    object -- The object being accessed according to the permission
+    interaction -- An interaction, which provides access to information
+        such as authenticated principals.  If it is None, the current
+        interaction is used.
+
+    checkPermission is guaranteed to return True if permission is
+    CheckerPublic or None.
+    """
+    if interaction is None:
+        interaction = thread_local.interaction
+    return interaction.checkPermission(permission, object)
 
 addCleanUp(endInteraction)
 
@@ -90,4 +123,4 @@ addCleanUp(endInteraction)
 # circular imports are not fun
 
 from zope.security.simplepolicies import ParanoidSecurityPolicy
-_defaultPolicy = ParanoidSecurityPolicy()
+_defaultPolicy = ParanoidSecurityPolicy

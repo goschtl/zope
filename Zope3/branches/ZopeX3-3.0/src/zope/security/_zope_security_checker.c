@@ -1,13 +1,14 @@
 #include <Python.h>
 
 static PyObject *_checkers, *_defaultChecker, *_always_available, *NoProxy;
-static PyObject *Proxy, *getSecurityPolicy, *queryInteraction, *CheckerPublic;
+static PyObject *Proxy, *thread_local, *CheckerPublic;
 static PyObject *ForbiddenAttribute, *Unauthorized;
 
 #define DECLARE_STRING(N) static PyObject *str_##N
 
 DECLARE_STRING(checkPermission);
 DECLARE_STRING(__Security_checker__);
+DECLARE_STRING(interaction);
 
 #define CLEAR(O) if (O) {PyObject *t = O; O = 0; Py_DECREF(t); }
 
@@ -59,25 +60,16 @@ Checker_setattr_permission_id(Checker *self, PyObject *name)
 static int
 checkPermission(PyObject *permission, PyObject *object, PyObject *name)
 {
-      PyObject *policy, *interaction, *r;
+      PyObject *interaction, *r;
       int i;
 
-/*             policy = getSecurityPolicy() */
-      policy = PyObject_CallObject(getSecurityPolicy, NULL);
-      if (policy == NULL)
-        return -1;
-/*             interaction = queryInteraction() */
-      interaction = PyObject_CallObject(queryInteraction, NULL);
-      if (interaction == NULL)
-        {
-          Py_DECREF(policy);
-          return -1;
-        }
-/*             if policy.checkPermission(permission, object, interaction): */
+/*          if thread_local.interaction.checkPermission(permission, object): */
 /*                 return */
-      r = PyObject_CallMethodObjArgs(policy, str_checkPermission,
-                                     permission, object, interaction, NULL);
-      Py_DECREF(policy);
+      interaction = PyObject_GetAttr(thread_local, str_interaction);
+      if (interaction == NULL)
+        return -1;
+      r = PyObject_CallMethodObjArgs(interaction, str_checkPermission,
+                                     permission, object, NULL);
       Py_DECREF(interaction);
       if (r == NULL)
         return -1;
@@ -537,6 +529,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
 
   INIT_STRING(checkPermission);
   INIT_STRING(__Security_checker__);
+  INIT_STRING(interaction);
 
   if ((_checkers = PyDict_New()) == NULL) 
     return;
@@ -550,10 +543,8 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   Py_DECREF(m);
 
   if ((m = PyImport_ImportModule("zope.security.management")) == NULL) return;
-  getSecurityPolicy = PyObject_GetAttrString(m, "getSecurityPolicy");
-  if (getSecurityPolicy == NULL) return;
-  queryInteraction = PyObject_GetAttrString(m, "queryInteraction");
-  if (queryInteraction == NULL) return;
+  thread_local = PyObject_GetAttrString(m, "thread_local");
+  if (thread_local == NULL) return;
   Py_DECREF(m);
 
   if ((m = PyImport_ImportModule("zope.exceptions")) == NULL) return;

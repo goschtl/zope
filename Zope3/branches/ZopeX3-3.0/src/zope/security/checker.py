@@ -38,7 +38,7 @@ from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IDeclaration
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
-from zope.security.management import getSecurityPolicy, queryInteraction
+from zope.security.management import thread_local
 from zope.security._proxy import _Proxy as Proxy, getChecker
 from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
 
@@ -131,10 +131,8 @@ class Checker(object):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            policy = getSecurityPolicy()
-            interaction = queryInteraction()
-            if policy.checkPermission(permission, object, interaction):
-                return
+            if thread_local.interaction.checkPermission(permission, object):
+                return # allowed
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name, permission=permission)
@@ -148,9 +146,7 @@ class Checker(object):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            policy = getSecurityPolicy()
-            interaction = queryInteraction()
-            if policy.checkPermission(permission, object, interaction):
+            if thread_local.interaction.checkPermission(permission, object):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)

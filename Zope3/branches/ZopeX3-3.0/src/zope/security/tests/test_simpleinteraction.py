@@ -16,7 +16,8 @@
 import unittest
 
 from zope.interface.verify import verifyObject
-
+from zope.security.interfaces import IInteraction
+from zope.security.simplepolicies import ParanoidSecurityPolicy
 
 class RequestStub:
 
@@ -28,15 +29,12 @@ class RequestStub:
 class TestInteraction(unittest.TestCase):
 
     def test(self):
-        from zope.security.interfaces import IInteraction
-        from zope.security.simpleinteraction import Interaction
-        interaction = Interaction()
+        interaction = ParanoidSecurityPolicy()
         verifyObject(IInteraction, interaction)
 
     def test_add(self):
-        from zope.security.simpleinteraction import Interaction
         rq = RequestStub()
-        interaction = Interaction()
+        interaction = ParanoidSecurityPolicy()
         interaction.add(rq)
         self.assert_(rq in interaction.participations)
         self.assert_(rq.interaction is interaction)
@@ -44,13 +42,12 @@ class TestInteraction(unittest.TestCase):
         # rq already added
         self.assertRaises(ValueError, interaction.add, rq)
 
-        interaction2 = Interaction()
+        interaction2 = ParanoidSecurityPolicy()
         self.assertRaises(ValueError, interaction2.add, rq)
 
     def test_remove(self):
-        from zope.security.simpleinteraction import Interaction
         rq = RequestStub()
-        interaction = Interaction()
+        interaction = ParanoidSecurityPolicy()
 
         self.assertRaises(ValueError, interaction.remove, rq)
 
@@ -61,15 +58,13 @@ class TestInteraction(unittest.TestCase):
         self.assert_(rq.interaction is None)
 
     def testCreateInteraction(self):
-        from zope.security.interfaces import IInteraction
-        from zope.security.simpleinteraction import createInteraction
-        i1 = createInteraction()
+        i1 = ParanoidSecurityPolicy()
         verifyObject(IInteraction, i1)
         self.assertEquals(list(i1.participations), [])
 
         user = object()
         request = RequestStub(user)
-        i2 = createInteraction(request)
+        i2 = ParanoidSecurityPolicy(request)
         verifyObject(IInteraction, i2)
         self.assertEquals(list(i2.participations), [request])
 

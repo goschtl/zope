@@ -22,7 +22,7 @@ from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Forbidden, Unauthorized, ForbiddenAttribute
-from zope.security.management import setSecurityPolicy
+from zope.security.management import setSecurityPolicy, newInteraction, endInteraction, getInteraction
 from zope.proxy import getProxiedObject
 from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory
@@ -34,7 +34,7 @@ __metaclass__ = type
 class SecurityPolicy:
     implements(ISecurityPolicy)
 
-    def checkPermission(self, permission, object, interaction):
+    def checkPermission(self, permission, object):
         'See ISecurityPolicy'
         return permission == 'test_allowed'
 
@@ -45,7 +45,7 @@ class RecordedSecurityPolicy:
         self._checked = []
         self.permissions = {}
 
-    def checkPermission(self, permission, object, interaction):
+    def checkPermission(self, permission, object):
         'See ISecurityPolicy'
         self._checked.append(permission)
         return self.permissions.get(permission, True)
@@ -100,9 +100,11 @@ class Test(TestCase, CleanUp):
 
     def setUp(self):
         CleanUp.setUp(self)
-        self.__oldpolicy = setSecurityPolicy(SecurityPolicy())
+        self.__oldpolicy = setSecurityPolicy(SecurityPolicy)
+        newInteraction()
 
     def tearDown(self):
+        endInteraction()
         setSecurityPolicy(self.__oldpolicy)
         CleanUp.tearDown(self)
 
@@ -380,36 +382,39 @@ class TestCheckerPublic(TestCase):
 class TestMixinDecoratedChecker(TestCase):
 
     def decoratedSetUp(self):
-        self.policy = RecordedSecurityPolicy()
+        self.policy = RecordedSecurityPolicy
         self._oldpolicy = setSecurityPolicy(self.policy)
+        newInteraction()
+        self.interaction = getInteraction()
         self.obj = object()
 
     def decoratedTearDown(self):
+        endInteraction()
         setSecurityPolicy(self._oldpolicy)
 
     def check_checking_impl(self, checker):
         o = self.obj
         checker.check_getattr(o, 'both_get_set')
-        self.assert_(self.policy.checkChecked(['dc_get_permission']))
+        self.assert_(self.interaction.checkChecked(['dc_get_permission']))
         checker.check_getattr(o, 'c_only')
-        self.assert_(self.policy.checkChecked(['get_permission']))
+        self.assert_(self.interaction.checkChecked(['get_permission']))
         checker.check_getattr(o, 'd_only')
-        self.assert_(self.policy.checkChecked(['dc_get_permission']))
+        self.assert_(self.interaction.checkChecked(['dc_get_permission']))
         self.assertRaises(ForbiddenAttribute,
                           checker.check_getattr, o,
                           'completely_different_attr')
-        self.assert_(self.policy.checkChecked([]))
+        self.assert_(self.interaction.checkChecked([]))
         checker.check(o, '__str__')
-        self.assert_(self.policy.checkChecked(['get_permission']))
+        self.assert_(self.interaction.checkChecked(['get_permission']))
 
         checker.check_setattr(o, 'both_get_set')
-        self.assert_(self.policy.checkChecked(['dc_set_permission']))
+        self.assert_(self.interaction.checkChecked(['dc_set_permission']))
         self.assertRaises(ForbiddenAttribute,
                           checker.check_setattr, o, 'c_only')
-        self.assert_(self.policy.checkChecked([]))
+        self.assert_(self.interaction.checkChecked([]))
         self.assertRaises(ForbiddenAttribute,
                           checker.check_setattr, o, 'd_only')
-        self.assert_(self.policy.checkChecked([]))
+        self.assert_(self.interaction.checkChecked([]))
 
     originalChecker = NamesChecker(['both_get_set', 'c_only', '__str__'],
                                    'get_permission')
@@ -439,10 +444,10 @@ class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
         # When a permission is not authorized by the security policy,
         # the policy is queried twice per check_getattr -- once for each
         # checker.
-        self.policy.permissions['dc_get_permission'] = False
+        self.interaction.permissions['dc_get_permission'] = False
         cc.check_getattr(self.obj, 'both_get_set')
         self.assert_(
-            self.policy.checkChecked(['dc_get_permission', 'get_permission'])
+            self.interaction.checkChecked(['dc_get_permission', 'get_permission'])
             )
 
         # This should raise Unauthorized instead of ForbiddenAttribute, since

@@ -28,9 +28,6 @@ from zope.app.security.principalregistry import principalRegistry
 
 def securityPolicy(_context, component):
 
-    if callable(component):
-        component = component()
-
     _context.action(
             discriminator = 'defaultPolicy',
             callable = setSecurityPolicy,

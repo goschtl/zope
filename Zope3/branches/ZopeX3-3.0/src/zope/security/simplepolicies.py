@@ -15,40 +15,47 @@
 
 $Id$
 """
-
-from zope.interface import implements
-from zope.security.interfaces import ISecurityPolicy
+import zope.interface
+from zope.security.checker import CheckerPublic
+from zope.security.interfaces import IInteraction, ISecurityPolicy
 from zope.security.management import system_user
-from zope.security.simpleinteraction import createInteraction \
-                                            as _createInteraction
-import zope.security.checker
 
-class ParanoidSecurityPolicy:
-    """Deny all access."""
-    implements(ISecurityPolicy)
+class ParanoidSecurityPolicy(object):
+    zope.interface.implements(IInteraction)
+    zope.interface.classProvides(ISecurityPolicy)
 
-    createInteraction = staticmethod(_createInteraction)
+    def __init__(self, *participations):
+        self.participations = []
+        for participation in participations:
+            self.add(participation)
 
-    def checkPermission(self, permission, object, interaction):
-        if permission is zope.security.checker.CheckerPublic:
+    def add(self, participation):
+        if participation.interaction is not None:
+            raise ValueError("%r already belongs to an interaction"
+                             % participation)
+        participation.interaction = self
+        self.participations.append(participation)
+
+    def remove(self, participation):
+        if participation.interaction is not self:
+            raise ValueError("%r does not belong to this interaction"
+                             % participation)
+        self.participations.remove(participation)
+        participation.interaction = None
+
+    def checkPermission(self, permission, object):
+        if permission is CheckerPublic:
             return True
 
-        if interaction is None:
-            return False
+        users = [p.principal
+                 for p in self.participations
+                 if p.principal is not system_user]
 
-        users = [p.principal for p in interaction.participations]
-        if len(users) == 1 and users[0] is system_user:
-            return True # Nobody not to trust!
+        return not users
 
-        return False
-
-
-class PermissiveSecurityPolicy:
+class PermissiveSecurityPolicy(ParanoidSecurityPolicy):
     """Allow all access."""
-    implements(ISecurityPolicy)
+    zope.interface.classProvides(ISecurityPolicy)
 
-    createInteraction = staticmethod(_createInteraction)
-
-    def checkPermission(self, permission, object, interaction):
+    def checkPermission(self, permission, object):
         return True
-

@@ -37,7 +37,7 @@ class Test(CleanUp, unittest.TestCase):
         from zope.security.management import getSecurityPolicy
         from zope.security.simplepolicies import PermissiveSecurityPolicy
 
-        policy = PermissiveSecurityPolicy()
+        policy = PermissiveSecurityPolicy
         setSecurityPolicy(policy)
         self.assert_(getSecurityPolicy() is policy)
 
@@ -47,11 +47,10 @@ class Test(CleanUp, unittest.TestCase):
 
         from zope.security.management import newInteraction
 
-        rq = None
-        newInteraction(rq)
+        newInteraction()
 
         self.assert_(queryInteraction() is not None)
-        self.assertRaises(AssertionError, newInteraction, rq)
+        self.assertRaises(AssertionError, newInteraction)
 
         from zope.security.management import endInteraction
 
@@ -68,25 +67,22 @@ class Test(CleanUp, unittest.TestCase):
 
         permission = 'zope.Test'
         obj = object()
-        interaction = object()
 
         class InteractionStub:
             pass
 
         class PolicyStub:
-            def createInteraction(s, r):
-                return InteractionStub()
 
-            def checkPermission(s, p, o, i):
+            def checkPermission(s, p, o,):
                 self.assert_(p is permission)
                 self.assert_(o is obj)
-                self.assert_(i is queryInteraction() or i is interaction)
-                return i is interaction
+                self.assert_(s is queryInteraction() or s is interaction)
+                return s is interaction
 
-        setSecurityPolicy(PolicyStub())
-        newInteraction(None)
-        self.assertEquals(checkPermission(permission, obj), False)
-        self.assertEquals(checkPermission(permission, obj, interaction), True)
+        setSecurityPolicy(PolicyStub)
+        newInteraction()
+        interaction = queryInteraction()
+        self.assertEquals(checkPermission(permission, obj), True)
 
 
 def test_suite():

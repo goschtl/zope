@@ -135,24 +135,10 @@ class INameBasedChecker(IChecker):
 
 class ISecurityPolicy(Interface):
 
-    def createInteraction(participation=None):
+    def __call__(participation=None):
         """Creates a new interaction for a given request.
 
         If participation is not None, it is added to the new interaction.
-
-        XXX perhaps this should be a separate interface IInteractionFactory,
-            and the factory registered by calling
-            ISecurityManagement.global setInteractionFactory(factory).
-        """
-
-    def checkPermission(permission, object, interaction):
-        """Return whether security context allows permission on object.
-
-        Arguments:
-        permission -- A permission name
-        object -- The object being accessed according to the permission
-        interaction -- An interaction, which provides access to information
-            such as authenticated principals.
         """
 
 
@@ -168,12 +154,24 @@ class IInteraction(Interface):
     def remove(participation):
         """Remove a participation."""
 
+    def checkPermission(permission, object):
+        """Return whether security context allows permission on object.
+
+        Arguments:
+        permission -- A permission name
+        object -- The object being accessed according to the permission
+        """
+
 
 class IParticipation(Interface):
 
     interaction = Attribute("The interaction")
     principal = Attribute("The authenticated principal")
 
+
+class NoInteraction(Exception):
+    """No interaction started
+    """
 
 class IInteractionManagement(Interface):
     """Interaction management API.
@@ -192,7 +190,13 @@ class IInteractionManagement(Interface):
     def queryInteraction():
         """Return the current interaction.
 
-        Returns None if there is no interaction.
+        Return None if there is no interaction.
+        """
+
+    def getInteraction():
+        """Return the current interaction.
+
+        Raise NoInteraction if there isn't a current interaction.
         """
 
     def endInteraction():
