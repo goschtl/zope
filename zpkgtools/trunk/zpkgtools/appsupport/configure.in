@@ -75,7 +75,7 @@ get_python() {
         IFS="$OLDIFS"
         for EXECUTABLE in $EXENAMES; do
             FULL="$DIR/$EXECUTABLE"
-            if [ -x "$FULL" ]; then
+            if [ -x "$FULL" -a -f "$FULL" ]; then
                 CMD="import string,sys;a=string.split(sys.version)[0]"
 		# Strip trailing + from version number
 		CMD="$CMD;a=(a[-1]=='+')and(a[:-1])or(a);print a"
