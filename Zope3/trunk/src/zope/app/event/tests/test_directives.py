@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.11 2003/09/21 17:32:09 jim Exp $
+$Id: test_directives.py,v 1.12 2003/09/23 19:12:28 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -73,6 +73,8 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(subscriber.notified, 4) # NB: increased by 2 ;-)
 
         globalUnsubscribe(subscriber)
+
+        subscriber.notified = 0
 
 def test_suite():
     return makeSuite(Test)
