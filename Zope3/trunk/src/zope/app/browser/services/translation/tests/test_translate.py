@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.4 2003/03/13 18:49:04 alga Exp $
+$Id: test_translate.py,v 1.5 2003/07/20 12:17:16 srichter Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.component.adapter import provideAdapter
 from zope.component.factory import provideFactory
 
 from zope.app.browser.services.translation.translate \
-     import Translate
+     import Translate as Translate
 from zope.app.services.translation.translationservice import \
      TranslationService
 from zope.app.services.translation.messagecatalog import \
@@ -34,6 +34,13 @@ from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets
 from zope.publisher.browser import BrowserRequest
 
+class Translate(Translate):
+    """Make Translate a valid Browser view. Usually done by ZCML."""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        
 
 class TranslateTest(unittest.TestCase, PlacelessSetup):
 
