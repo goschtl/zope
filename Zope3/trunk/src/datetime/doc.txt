@@ -919,10 +919,14 @@ Instance attributes (read-only):
 
 Supported operations:
 
-    - comparison of timetz to timetz, where timetz1 is considered
-      less than timetz2 when timetz1 precedes timetz2 in time, and
-      where the timetz objects are first adjusted by subtracting
-      their UTC offsets (obtained from self.utcoffset()).
+    - comparison of timetz to time or timetz, where a is considered
+      less than b when a precedes b in time.  If one comparand is
+      naive and the other is aware, TypeError is raised.  If both
+      comparands are aware, and have the same tzinfo member, the
+      common tzinfo member is ignored and the base times are compared.
+      If both comparands are aware and have different tzinfo members,
+      the comparands are first adjusted by subtracting their UTC
+      offsets (obtained from self.utcoffset()).
 
     - hash, use as dict key
 
@@ -1052,8 +1056,8 @@ Supported operations:
       datetimetz2.tzinfo is set to datetimetz1.tzinfo.
 
     - datetimetz1 - timedelta -> datetimetz2
-      The same as addition of datetime objects, except that
-      datetimetz2.tzinfo is set to datetimetz1.tzinfo.
+      The same as subtraction of timedelta from datetime objects, except
+      that datetimetz2.tzinfo is set to datetimetz1.tzinfo.
 
     - aware_datetimetz1 - aware_datetimetz2 -> timedelta
       naive_datetimetz1 - naive_datetimetz2 -> timedelta
@@ -1065,22 +1069,23 @@ Supported operations:
       both are aware.  If one is aware and the other is naive, TypeError
       is raised.
 
-      If both are naive, subtraction acts as for datetime subtraction.
+      If both are naive, or both are aware and have the same tzinfo
+      member, subtraction acts as for datetime subtraction.
 
-      If both are aware datetimetz objects, a-b acts as if a and b were
-      first converted to UTC datetimes (by subtracting a.utcoffset()
-      minutes from a, and b.utcoffset() minutes from b), and then doing
-      datetime subtraction, except that the implementation never
-      overflows.
+      If both are aware and have different tzinfo members, a-b acts as
+      if a and b were first converted to UTC datetimes (by subtracting
+      a.utcoffset() minutes from a, and b.utcoffset() minutes from b),
+      and then doing datetime subtraction, except that the implementation
+      never  overflows.
 
-    - Comparison of datetimetz to datetime or datetimetz.  As for
-      subtraction, comparison is defined only if both operands are
-      naive or both are aware.  If both are naive, comparison is as
-      for datetime objects with the same date and time components.
-      If both are aware, comparison acts as if both were converted to
-      UTC datetimes first, except the the implementation never
-      overflows.  If one comparand is naive and the other aware,
-      TypeError is raised.
+    - Comparison of datetimetz to datetime or datetimetz, where a is
+      considered less than b when a precedes b in time.  If one
+      comparand is naive and the other is aware, TypeError is raised.
+      If both comparands are aware, and have the same tzinfo member,
+      the common tzinfo member is ignored and the base datetimes
+      are compared.  If both comparands are aware and have different
+      tzinfo members, the comparands are first adjusted by subtracting
+      their UTC offsets (obtained from self.utcoffset()).
 
     - hash, use as dict key
 

@@ -892,13 +892,38 @@ class time(object):
 
     def __cmp__(self, other):
         """Three-way comparison."""
-        if isinstance(other, time):
+        if not isinstance(other, time):
+            # XXX Buggy in 2.2.2.
+            raise TypeError("can't compare '%s' to '%s'" % (
+                            type(self).__name__, type(other).__name__))
+        mytz = myoff = None
+        if isinstance(self, timetz):
+            mytz = self._tzinfo
+        ottz = otoff = None
+        if isinstance(other, timetz):
+            ottz = other._tzinfo
+
+        if mytz is ottz:
+            base_compare = True
+        else:
+            if isinstance(self, timetz):
+                myoff = self._utcoffset()
+            if isinstance(other, timetz):
+                otoff = other._utcoffset()
+            base_compare = myoff == otoff
+
+        if base_compare:
             return cmp((self.__hour, self.__minute, self.__second,
                         self.__microsecond),
                        (other.__hour, other.__minute, other.__second,
                         other.__microsecond))
-        raise TypeError, ("can't compare time to %s instance" %
-                          type(other).__name__)
+        if myoff is None or otoff is None:
+            # XXX Buggy in 2.2.2.
+            raise TypeError("cannot compare naive and aware times")
+        myhhmm = self.__hour * 60 + self.__minute - myoff
+        othhmm = other.__hour * 60 + other.__minute - otoff
+        return cmp((myhhmm, self.__second, self.__microsecond),
+                   (othhmm, other.__second, other.__microsecond))
 
     def __hash__(self):
         """Hash."""
@@ -1042,35 +1067,17 @@ class timetz(time):
         """
         _check_tzinfo_arg(tzinfo)
         super(timetz, self).__init__(hour, minute, second, microsecond)
-        self.__tzinfo = tzinfo
+        self._tzinfo = tzinfo
 
     # Read-only field accessors
-    tzinfo = property(lambda self: self.__tzinfo, doc="timezone info object")
+    tzinfo = property(lambda self: self._tzinfo, doc="timezone info object")
 
-    # Standard conversions, __cmp__, __hash__ (and helpers)
-
-    def __cmp__(self, other):
-        """Three-way comparison."""
-        if not isinstance(other, time):
-            raise TypeError("can't compare timetz to %s instance" %
-                            type(other).__name__)
-        superself = super(timetz, self)
-        supercmp = superself.__cmp__
-        myoff = self._utcoffset()
-        otoff = other._utcoffset()
-        if myoff == otoff:
-            return supercmp(other)
-        if myoff is None or otoff is None:
-            raise TypeError, "cannot mix naive and timezone-aware time"
-        myhhmm = self.hour * 60 + self.minute - myoff
-        othhmm = other.hour * 60 + other.minute - otoff
-        return cmp((myhhmm, self.second, self.microsecond),
-                   (othhmm, other.second, other.microsecond))
+    # Standard conversions, __hash__ (and helpers)
 
     def __hash__(self):
         """Hash."""
         tzoff = self._utcoffset()
-        if not tzoff: # zero or None!
+        if not tzoff: # zero or None
             return super(timetz, self).__hash__()
         h, m = divmod(self.hour * 60 + self.minute - tzoff, 60)
         if 0 <= h < 24:
@@ -1098,9 +1105,9 @@ class timetz(time):
     def __repr__(self):
         """Convert to formal string, for repr()."""
         s = super(timetz, self).__repr__()
-        if self.__tzinfo is not None:
+        if self._tzinfo is not None:
             assert s[-1:] == ")"
-            s = s[:-1] + ", tzinfo=%r" % self.__tzinfo + ")"
+            s = s[:-1] + ", tzinfo=%r" % self._tzinfo + ")"
         return s
 
     def isoformat(self):
@@ -1121,7 +1128,7 @@ class timetz(time):
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
         offset = _check_utc_offset("utcoffset", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1129,7 +1136,7 @@ class timetz(time):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _utcoffset(self):
-        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
         offset = _check_utc_offset("utcoffset", offset)
         return offset
 
@@ -1140,7 +1147,7 @@ class timetz(time):
         it mean anything in particular. For example, "GMT", "UTC", "-500",
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
-        name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        name = _call_tzinfo_method(self, self._tzinfo, "tzname")
         _check_tzname(name)
         return name
 
@@ -1153,7 +1160,7 @@ class timetz(time):
         need to consult dst() unless you're interested in displaying the DST
         info.
         """
-        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
         offset = _check_utc_offset("dst", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1178,7 +1185,7 @@ class timetz(time):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _dst(self):
-        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
         offset = _check_utc_offset("dst", offset)
         return offset
 
@@ -1192,10 +1199,10 @@ class timetz(time):
 
     def __getstate__(self):
         basestate = time.__getstate__(self)
-        if self.__tzinfo is None:
+        if self._tzinfo is None:
             return (basestate,)
         else:
-            return (basestate, self.__tzinfo)
+            return (basestate, self._tzinfo)
 
     def __setstate__(self, state):
         if not isinstance(state, tuple):
@@ -1205,9 +1212,9 @@ class timetz(time):
                             "2-tuple argument")
         time.__setstate__(self, state[0])
         if len(state) == 1:
-            self.__tzinfo = None
+            self._tzinfo = None
         else:
-            self.__tzinfo = state[1]
+            self._tzinfo = state[1]
 
 timetz.min = timetz(0, 0, 0)
 timetz.max = timetz(23, 59, 59, 999999)
@@ -1373,16 +1380,45 @@ class datetime(date):
         return temp.replace(tzinfo=tz)
 
     def __cmp__(self, other):
-        "Three-way comparison."
-        if isinstance(other, datetime):
+        import datetime
+        if not isinstance(other, datetime.datetime):
+            # XXX Buggy in 2.2.2.
+            raise TypeError("can't compare '%s' to '%s'" % (
+                            type(self).__name__, type(other).__name__))
+        mytz = myoff = None
+        if isinstance(self, datetimetz):
+            mytz = self._tzinfo
+        ottz = otoff = None
+        if isinstance(other, datetimetz):
+            ottz = other._tzinfo
+
+        if mytz is ottz:
+            base_compare = True
+        else:
+            if isinstance(self, datetimetz):
+                myoff = self._utcoffset()
+            if isinstance(other, datetimetz):
+                otoff = other._utcoffset()
+            base_compare = myoff == otoff
+
+        if base_compare:
             return cmp((self.__year, self.__month, self.__day,
                         self.__hour, self.__minute, self.__second,
                         self.__microsecond),
                        (other.__year, other.__month, other.__day,
                         other.__hour, other.__minute, other.__second,
                         other.__microsecond))
-        raise TypeError, ("can't compare datetime to %s instance" %
-                          type(other).__name__)
+        if myoff is None or otoff is None:
+            # XXX Buggy in 2.2.2.
+            raise TypeError("cannot compare naive and aware datetimes")
+        # XXX What follows could be done more efficiently...
+        diff = (datetime.datetime.__sub__(self, other) +
+                timedelta(minutes=otoff-myoff))
+        if diff.days < 0:
+            return -1
+        if diff == timedelta():
+            return 0
+        return 1
 
     def __hash__(self):
         "Hash."
@@ -1497,9 +1533,9 @@ class datetimetz(datetime):
         _check_tzinfo_arg(tzinfo)
         super(datetimetz, self).__init__(year, month, day,
                                          hour, minute, second, microsecond)
-        self.__tzinfo = tzinfo
+        self._tzinfo = tzinfo
 
-    tzinfo = property(lambda self: self.__tzinfo, doc="timezone info object")
+    tzinfo = property(lambda self: self._tzinfo, doc="timezone info object")
 
     def fromtimestamp(cls, t, tzinfo=None):
         """Construct a datetimetz from a POSIX timestamp (like time.time()).
@@ -1549,7 +1585,7 @@ class datetimetz(datetime):
     def timetz(self):
         "Return the time part."
         return timetz(self.hour, self.minute, self.second, self.microsecond,
-                      self.__tzinfo)
+                      self._tzinfo)
 
     def replace(self, year=None, month=None, day=None, hour=None,
                 minute=None, second=None, microsecond=None, tzinfo=True):
@@ -1603,15 +1639,15 @@ class datetimetz(datetime):
 
     def __repr__(self):
         s = super(datetimetz, self).__repr__()
-        if self.__tzinfo is not None:
+        if self._tzinfo is not None:
             assert s[-1:] == ")"
-            s = s[:-1] + ", tzinfo=%r" % self.__tzinfo + ")"
+            s = s[:-1] + ", tzinfo=%r" % self._tzinfo + ")"
         return s
 
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
         offset = _check_utc_offset("utcoffset", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1619,7 +1655,7 @@ class datetimetz(datetime):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _utcoffset(self):
-        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
         offset = _check_utc_offset("utcoffset", offset)
         return offset
 
@@ -1630,7 +1666,7 @@ class datetimetz(datetime):
         it mean anything in particular. For example, "GMT", "UTC", "-500",
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
-        name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        name = _call_tzinfo_method(self, self._tzinfo, "tzname")
         _check_tzname(name)
         return name
 
@@ -1643,7 +1679,7 @@ class datetimetz(datetime):
         need to consult dst() unless you're interested in displaying the DST
         info.
         """
-        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
         offset = _check_utc_offset("dst", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1651,14 +1687,14 @@ class datetimetz(datetime):
 
     # Return an integer (or None) instead of a timedelta (or None).1573
     def _dst(self):
-        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
         offset = _check_utc_offset("dst", offset)
         return offset
 
     def __add__(self, other):
         result = super(datetimetz, self).__add__(other)
         assert isinstance(result, datetimetz)
-        result.__tzinfo = self.__tzinfo
+        result._tzinfo = self._tzinfo
         return result
 
     __radd__ = __add__
@@ -1671,35 +1707,22 @@ class datetimetz(datetime):
             # self + (-timedelta) by datetime.__sub__, and the latter is
             # handled by datetimetz.__add__.
             return supersub(other)
-        myoff = self._utcoffset()
-        otoff = other._utcoffset()
-        if myoff == otoff:
+        mytz = self._tzinfo
+        ottz = None
+        if isinstance(other, datetimetz):
+            ottz = other._tzinfo
+        if mytz is ottz:
             return supersub(other)
-        if myoff is None or otoff is None:
-            raise TypeError, "cannot mix naive and timezone-aware time"
-        return supersub(other) + timedelta(minutes=otoff-myoff)
 
-    def __cmp__(self, other):
-        if not isinstance(other, datetime):
-            raise TypeError("can't compare datetime to %s instance" %
-                            type(other).__name__)
-        superself = super(datetimetz, self)
-        supercmp = superself.__cmp__
         myoff = self._utcoffset()
         otoff = None
         if isinstance(other, datetimetz):
             otoff = other._utcoffset()
         if myoff == otoff:
-            return supercmp(other)
+            return supersub(other)
         if myoff is None or otoff is None:
             raise TypeError, "cannot mix naive and timezone-aware time"
-        # XXX What follows could be done more efficiently...
-        diff = superself.__sub__(other) + timedelta(minutes=otoff-myoff)
-        if diff.days < 0:
-            return -1
-        if diff == timedelta():
-            return 0
-        return 1
+        return supersub(other) + timedelta(minutes=otoff-myoff)
 
     def __hash__(self):
         tzoff = self._utcoffset()
@@ -1711,10 +1734,10 @@ class datetimetz(datetime):
 
     def __getstate__(self):
         basestate = datetime.__getstate__(self)
-        if self.__tzinfo is None:
+        if self._tzinfo is None:
             return (basestate,)
         else:
-            return (basestate, self.__tzinfo)
+            return (basestate, self._tzinfo)
 
     def __setstate__(self, state):
         if not isinstance(state, tuple):
@@ -1724,9 +1747,9 @@ class datetimetz(datetime):
                             "2-tuple argument")
         datetime.__setstate__(self, state[0])
         if len(state) == 1:
-            self.__tzinfo = None
+            self._tzinfo = None
         else:
-            self.__tzinfo = state[1]
+            self._tzinfo = state[1]
 
 
 datetimetz.min = datetimetz(1, 1, 1)
