@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.5 2004/03/19 20:26:25 srichter Exp $
+$Id: widget.py,v 1.6 2004/04/11 10:34:40 srichter Exp $
 """
 import re, cgi
 import traceback
@@ -90,9 +90,9 @@ class BrowserWidget(Widget, BrowserView):
     ...     widget.getInputValue()
     ... except WidgetInputError:
     ...     print widget._error.errors
-    (u'Constraint not satisfied', u'bye world')
+    bye world
     >>> widget.error()
-    u'Constraint not satisfied'
+    u'bye world'
     >>> widget._error = None # clean up for next round of tests
 
     >>> widget.setPrefix('test')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Security related configuration fields.
 
-$Id: fields.py,v 1.1 2004/03/20 19:52:38 srichter Exp $
+$Id: fields.py,v 1.2 2004/04/11 10:34:41 srichter Exp $
 """
 from zope import schema
 from zope.interface import implements
@@ -48,7 +48,7 @@ class Permission(schema.Id):
     >>> field._validate('3 foo')
     Traceback (most recent call last):
     ...
-    ValidationError: ('Invalid id', '3 foo')
+    InvalidId: 3 foo
 
     zope.Public is always valid
     >>> field._validate('zope.Public')
