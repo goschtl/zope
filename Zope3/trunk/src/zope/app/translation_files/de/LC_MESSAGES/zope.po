@@ -6,11 +6,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Zope 3 Pre-M4\n"
-"POT-Creation-Date: Sat Aug  9 07:29:41 2003\n"
-"PO-Revision-Date: 2003-08-09 07:05-0400\n"
+"Project-Id-Version: zope\n"
+"POT-Creation-Date: Tue Aug 12 15:32:00 2003\n"
+"PO-Revision-Date: 2003-08-12 15:35-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
-"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"Language-Team: German <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,9 +41,42 @@ msgstr "Laufzeit-Informationen"
 msgid "ZODB Control"
 msgstr "ZODB-Kontrolle"
 
+#: src/zope/app/browser/applicationcontrol/configure.zcml:31
+msgid "Global Translation Service Control"
+msgstr "Globale Übersetzungsdienst-Kontrolle"
+
 #: src/zope/app/browser/applicationcontrol/configure.zcml:9
 msgid "Server Control"
 msgstr "Serverkontrolle"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.pt:14
+#: src/zope/app/browser/services/translation/synchronize.pt:108
+#: src/zope/app/browser/services/translation/translate.pt:113
+msgid "Domain"
+msgstr "Domäne"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.pt:15
+#: src/zope/app/browser/content/i18n_edit.pt:54
+#: src/zope/app/browser/content/i18nimageedit.pt:55
+#: src/zope/app/browser/services/translation/synchronize.pt:109
+msgid "Language"
+msgstr "Sprache"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.pt:16
+msgid "Files"
+msgstr "Dateien"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.pt:23
+msgid "Reload"
+msgstr "Neu Laden"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.pt:3
+msgid "ZGlobal Transaction Service Controller"
+msgstr "Globale Übersetzungsdienst-Kontrolle"
+
+#: src/zope/app/browser/applicationcontrol/globaltranslationservicecontrol.py:53
+msgid "message catalog successfully reloaded."
+msgstr "Nachrichtenkatalog erfolgreich neu geladen."
 
 #: src/zope/app/browser/applicationcontrol/runtimeinfo.pt:10
 msgid "Zope version:"
@@ -166,11 +199,11 @@ msgstr "Cache Name"
 
 #: src/zope/app/browser/cache/cacheableedit.pt:45
 #: src/zope/app/browser/cache/ramedit.pt:51
-#: src/zope/app/browser/rdb/rdbconnection.pt:28
 #: src/zope/app/browser/content/i18n_edit.pt:87
 #: src/zope/app/browser/content/i18nimageedit.pt:101
 #: src/zope/app/browser/content/imageedit.pt:17
 #: src/zope/app/browser/dublincore/edit.pt:33
+#: src/zope/app/browser/rdb/rdbconnection.pt:28
 #: src/zope/app/browser/security/grants/manage_permissionform.pt:86
 #: src/zope/app/browser/security/grants/manage_roleform.pt:63
 #: src/zope/app/browser/services/error.pt:46
@@ -183,8 +216,7 @@ msgstr "Cache ungültig machen"
 
 #: src/zope/app/browser/cache/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
-msgstr ""
-"Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
+msgstr "Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
 
 #: src/zope/app/browser/cache/cacheableedit.pt:9
 msgid "Currently there is no cache associated with the object."
@@ -237,8 +269,8 @@ msgid "You can configure the RAM Cache here."
 msgstr "Hier können sie den RAM Cache konfigurieren."
 
 #: src/zope/app/browser/cache/ramedit.pt:53
-#: src/zope/app/browser/services/bundle.pt:120
 #: src/zope/app/browser/services/add_svc_config.pt:35
+#: src/zope/app/browser/services/bundle.pt:120
 msgid "reset-button"
 msgstr "Zurücksetzen"
 
@@ -266,9 +298,34 @@ msgstr "Einträge"
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr "Katalog ist dezeit bei der Objekt Hub <strong>aboniert</strong>."
 
+#: src/zope/app/browser/catalog/advanced.pt:27
+#: src/zope/app/browser/index/field/control.pt:57
+#: src/zope/app/browser/index/text/control.pt:52
+msgid "subscribe-button"
+msgstr "Abonnieren"
+
 #: src/zope/app/browser/catalog/advanced.pt:30
 msgid "(and reindex all objects, if checked)"
 msgstr "(und reindiziere alle Objekte, wenn aus ausgewählt)"
+
+#: src/zope/app/browser/catalog/advanced.pt:51
+#: src/zope/app/browser/dublincore/edit.pt:31
+#: src/zope/app/browser/form/add.pt:49 src/zope/app/browser/form/edit.pt:51
+#: src/zope/app/browser/services/adapter_search.pt:10
+#: src/zope/app/browser/services/add_adapter_config.pt:23
+#: src/zope/app/browser/services/caches.pt:54
+#: src/zope/app/browser/services/connections.pt:53
+#: src/zope/app/browser/services/error.pt:94
+#: src/zope/app/browser/services/services.pt:65
+#: src/zope/app/browser/services/views.pt:49
+#: src/zope/app/browser/services/views.pt:72
+#: src/zope/app/browser/services/registration/editregistration.pt:49
+#: src/zope/app/browser/services/utility/utilities.pt:50
+#: src/zope/app/browser/workflow/stateful/instance_manage.pt:77
+#: src/zope/app/browser/workflow/stateful/definition_edit.pt:21
+#: src/zope/app/browser/workflow/stateful/definition_edit.pt:50
+msgid "refresh-button"
+msgstr "Auffrischen"
 
 #: src/zope/app/browser/catalog/advanced.pt:6
 msgid "Advanced Catalog Thingies"
@@ -374,10 +431,26 @@ msgstr "Anwenden"
 msgid "container-cancel-button"
 msgstr "Abbrechen"
 
+#: src/zope/app/browser/container/contents.pt:27
+#: src/zope/app/browser/container/index.pt:18
+msgid "Content listing"
+msgstr "Inhaltsauflistung"
+
 #: src/zope/app/browser/container/contents.pt:35
 #: src/zope/app/browser/content/imageedit.pt:11
 msgid "Size"
 msgstr "Größe"
+
+#: src/zope/app/browser/container/contents.pt:36
+#: src/zope/app/browser/container/index.pt:28
+#: src/zope/app/browser/dublincore/edit.pt:39
+msgid "Created"
+msgstr "Erstellt am"
+
+#: src/zope/app/browser/container/contents.pt:37
+#: src/zope/app/browser/container/index.pt:29
+msgid "Modified"
+msgstr "Modifiziert am"
 
 #: src/zope/app/browser/container/contents.py:218
 msgid "You didn't specify any ids to remove."
@@ -398,22 +471,6 @@ msgstr "Sie haben keine Ids zum umbenennen angegeben."
 #: src/zope/app/browser/container/find.pt:7
 msgid "find-button"
 msgstr "Suchen"
-
-#: src/zope/app/browser/container/index.pt:18
-#: src/zope/app/browser/container/contents.pt:27
-msgid "Content listing"
-msgstr "Inhaltsauflistung"
-
-#: src/zope/app/browser/container/index.pt:28
-#: src/zope/app/browser/container/contents.pt:36
-#: src/zope/app/browser/dublincore/edit.pt:39
-msgid "Created"
-msgstr "Erstellt am"
-
-#: src/zope/app/browser/container/index.pt:29
-#: src/zope/app/browser/container/contents.pt:37
-msgid "Modified"
-msgstr "Modifiziert am"
 
 #: src/zope/app/browser/content/configure.zcml:101
 msgid "Upload an image"
@@ -444,8 +501,7 @@ msgstr "Hochladen"
 
 #: src/zope/app/browser/content/configure.zcml:217
 msgid "An object for dynamic content based on Page Templates."
-msgstr ""
-"Ein auf Seitenschablonen basierendes Objekt zum Erstellen dynamischer Inhalte"
+msgstr "Ein auf Seitenschablonen basierendes Objekt zum Erstellen dynamischer Inhalte"
 
 #: src/zope/app/browser/content/configure.zcml:217
 msgid "Templated Page"
@@ -501,8 +557,7 @@ msgstr "Eine DTML-Seite bearbeiten"
 
 #: src/zope/app/browser/content/configure.zcml:323
 msgid "An object for dynamic content based on Document Templates."
-msgstr ""
-"Ein Objekt für dynamischen Inhalt auf der Basis von Dokumentenschablonen."
+msgstr "Ein Objekt für dynamischen Inhalt auf der Basis von Dokumentenschablonen."
 
 #: src/zope/app/browser/content/configure.zcml:341
 msgid "Edit an XML document"
@@ -561,12 +616,6 @@ msgstr "Der Inhaltstyp ist nicht application/x-snarf"
 msgid "Default Language"
 msgstr "Vorgegebene Sprache"
 
-#: src/zope/app/browser/content/i18n_edit.pt:54
-#: src/zope/app/browser/content/i18nimageedit.pt:55
-#: src/zope/app/browser/services/translation/synchronize.pt:109
-msgid "Language"
-msgstr "Sprache"
-
 #: src/zope/app/browser/content/i18n_edit.pt:66
 #: src/zope/app/browser/content/i18nimageedit.pt:67
 msgid "show-button"
@@ -582,8 +631,7 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/browser/content/i18nimage.py:26
-msgid ""
-"This edit form allows you to make changes to the properties of this image."
+msgid "This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es ihnen Änderungen an den "
 "Einstellungen ihres Bildes vorzunehmen."
@@ -619,25 +667,6 @@ msgstr "Ein Fehler ist aufgetreten"
 msgid "Metadata"
 msgstr "Metadaten"
 
-#: src/zope/app/browser/dublincore/edit.pt:31
-#: src/zope/app/browser/form/add.pt:49 src/zope/app/browser/form/edit.pt:51
-#: src/zope/app/browser/services/adapter_search.pt:10
-#: src/zope/app/browser/services/add_adapter_config.pt:23
-#: src/zope/app/browser/services/caches.pt:54
-#: src/zope/app/browser/services/connections.pt:53
-#: src/zope/app/browser/services/error.pt:94
-#: src/zope/app/browser/services/services.pt:65
-#: src/zope/app/browser/services/views.pt:49
-#: src/zope/app/browser/services/views.pt:72
-#: src/zope/app/browser/services/utility/utilities.pt:50
-#: src/zope/app/browser/services/registration/editregistration.pt:49
-#: src/zope/app/browser/catalog/advanced.pt:51
-#: src/zope/app/browser/workflow/stateful/instance_manage.pt:77
-#: src/zope/app/browser/workflow/stateful/definition_edit.pt:21
-#: src/zope/app/browser/workflow/stateful/definition_edit.pt:50
-msgid "refresh-button"
-msgstr "Auffrischen"
-
 #: src/zope/app/browser/dublincore/edit.pt:43
 msgid "Content Last Modified"
 msgstr "Inhalt wurde zuletzt geändert am"
@@ -650,15 +679,21 @@ msgstr "Autor"
 msgid "Changed data ${datetime}"
 msgstr "Daten am ${datetime} geändert"
 
+#: src/zope/app/browser/exception/unauthorized.pt:8
+#: src/zope/app/browser/skins/debug/unauthorized.pt:7
+msgid "Unauthorized"
+msgstr "Unberechtigt"
+
 #: src/zope/app/browser/form/add.pt:22 src/zope/app/browser/form/edit.pt:23
 msgid "There are ${num_errors} input errors."
 msgstr "Es gab ${num_errors} Eingabefehler."
 
-#: src/zope/app/browser/form/add.pt:51 src/zope/app/browser/form/edit.pt:53
+#: src/zope/app/browser/form/add.pt:51
 #: src/zope/app/browser/form/addwizard.pt:62
+#: src/zope/app/browser/form/edit.pt:53
 #: src/zope/app/browser/form/editwizard.pt:53
-#: src/zope/app/browser/services/serviceactivation.pt:54
 #: src/zope/app/browser/services/add_svc_config.pt:37
+#: src/zope/app/browser/services/serviceactivation.pt:54
 #: src/zope/app/browser/services/registration/editregistration.pt:51
 #: src/zope/app/browser/workflow/stateful/instance_manage.pt:79
 msgid "submit-button"
@@ -737,8 +772,8 @@ msgstr "Unzugängliches Objekt"
 
 #: src/zope/app/browser/form/complexsample/interfaces.py:28
 #: src/zope/app/interfaces/services/pluggableauth/__init__.py:34
-#: src/zope/app/browser/container/index.pt:27
 #: src/zope/app/browser/container/contents.pt:34
+#: src/zope/app/browser/container/index.pt:27
 #: src/zope/app/browser/dublincore/edit.pt:14
 #: src/zope/app/browser/services/addrole.pt:20
 #: src/zope/app/browser/services/adduser.pt:18
@@ -758,11 +793,11 @@ msgstr "Mehrere Werte fehlen"
 msgid "Updated on ${date_time}"
 msgstr "Daten am ${date_time} geändert"
 
-#: src/zope/app/browser/form/editwizard.py:143
+#: src/zope/app/browser/form/editwizard.py:144
 msgid "No changes to save"
 msgstr "Keine Änderungen zum speichern"
 
-#: src/zope/app/browser/form/editwizard.py:145
+#: src/zope/app/browser/form/editwizard.py:146
 msgid "Changes saved"
 msgstr "Änderungen gespeichert"
 
@@ -803,6 +838,11 @@ msgstr "Feldindex bearbeiten"
 msgid "Field Index"
 msgstr "Feldindex"
 
+#: src/zope/app/browser/index/field/control.pt:104
+#: src/zope/app/browser/index/text/control.pt:101
+msgid "NEXT BATCH --&gt;"
+msgstr "NÄCHSTER STAPEL --&gt;"
+
 #: src/zope/app/browser/index/field/control.pt:12
 msgid "FieldIndex"
 msgstr "Feldindex"
@@ -822,9 +862,21 @@ msgstr ""
 "Index, der nicht \"abonniert\" hat, wird die Indexinformationen behalten, "
 "sich aber nicht weiterhin aktualisieren."
 
+#: src/zope/app/browser/index/field/control.pt:26
+#: src/zope/app/browser/index/text/control.pt:26
+#: src/zope/app/browser/services/subscription_control.pt:16
+msgid "Successfully subscribed."
+msgstr "Erfolgreich abonniert."
+
 #: src/zope/app/browser/index/field/control.pt:3
 msgid "FieldIndex Control Page"
 msgstr "Feldindex Kontrollseite"
+
+#: src/zope/app/browser/index/field/control.pt:31
+#: src/zope/app/browser/index/text/control.pt:31
+#: src/zope/app/browser/services/subscription_control.pt:20
+msgid "Successfully unsubscribed."
+msgstr "Abonnement erfolgreich gekündigt."
 
 #: src/zope/app/browser/index/field/control.pt:36
 msgid "Adapting objects to: ${iface_name}"
@@ -834,9 +886,50 @@ msgstr "Adaptiere Objekte zu: ${iface_name}"
 msgid "Indexing on attribute: ${field_name}"
 msgstr "Indiziere Attribut: ${field_name}"
 
+#: src/zope/app/browser/index/field/control.pt:46
+#: src/zope/app/browser/index/text/control.pt:36
+msgid "Documents: ${doc_count}"
+msgstr "Dokumente: ${doc_count}"
+
+#: src/zope/app/browser/index/field/control.pt:51
+#: src/zope/app/browser/index/text/control.pt:46
+#: src/zope/app/browser/services/subscription_control.pt:29
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:23
+msgid "Subscription state: ON"
+msgstr "Abonnementsstatus: AN"
+
+#: src/zope/app/browser/index/field/control.pt:52
+#: src/zope/app/browser/index/text/control.pt:47
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:24
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:29
+msgid "unsubscribe-button"
+msgstr "Abonnieren"
+
+#: src/zope/app/browser/index/field/control.pt:56
+#: src/zope/app/browser/index/text/control.pt:51
+#: src/zope/app/browser/services/subscription_control.pt:33
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:28
+msgid "Subscription state: OFF"
+msgstr "Abonnementsstatus: AUS"
+
+#: src/zope/app/browser/index/field/control.pt:73
+#: src/zope/app/browser/index/text/control.pt:68
+msgid "No hits. Please try another query."
+msgstr "Keine Ergebnisse. Bitte versuchen Sie eine andere Abfrage."
+
+#: src/zope/app/browser/index/field/control.pt:84
+#: src/zope/app/browser/index/text/control.pt:79
+msgid "Hits ${first} - ${last} of ${total}:"
+msgstr "Ergebnisse ${first} - ${last} von ${total}:"
+
 #: src/zope/app/browser/index/field/control.pt:88
 msgid "title=${title}; url=${title}"
 msgstr "Titel=${title}; URL=${title}"
+
+#: src/zope/app/browser/index/field/control.pt:96
+#: src/zope/app/browser/index/text/control.pt:93
+msgid "&lt;-- PREVIOUS BATCH"
+msgstr "&lt;-- VORHERIGER STAPEL"
 
 #: src/zope/app/browser/index/keyword/configure.zcml:3
 msgid "Edit Keyword Index"
@@ -850,11 +943,6 @@ msgstr "Text-Index bearbeiten"
 #: src/zope/app/browser/catalog/configure.zcml:49
 msgid "Text Index"
 msgstr "Text-Index"
-
-#: src/zope/app/browser/index/text/control.pt:101
-#: src/zope/app/browser/index/field/control.pt:104
-msgid "NEXT BATCH --&gt;"
-msgstr "NÄCHSTER STAPEL --&gt;"
 
 #: src/zope/app/browser/index/text/control.pt:12
 msgid "TextIndex"
@@ -874,76 +962,17 @@ msgstr ""
 "geändert werden; ein Index, der nicht \"abonniert\" hat, wird die "
 "Indexinformationen behalten, sich aber nicht weiterhin aktualisieren."
 
-#: src/zope/app/browser/index/text/control.pt:26
-#: src/zope/app/browser/index/field/control.pt:26
-#: src/zope/app/browser/services/subscription_control.pt:16
-msgid "Successfully subscribed."
-msgstr "Erfolgreich abonniert."
-
 #: src/zope/app/browser/index/text/control.pt:3
 msgid "TextIndex Control Page"
 msgstr "Textindex Kontrollseite"
-
-#: src/zope/app/browser/index/text/control.pt:31
-#: src/zope/app/browser/index/field/control.pt:31
-#: src/zope/app/browser/services/subscription_control.pt:20
-msgid "Successfully unsubscribed."
-msgstr "Abonnement erfolgreich gekündigt."
-
-#: src/zope/app/browser/index/text/control.pt:36
-#: src/zope/app/browser/index/field/control.pt:46
-msgid "Documents: ${doc_count}"
-msgstr "Dokumente: ${doc_count}"
 
 #: src/zope/app/browser/index/text/control.pt:41
 msgid "Words: ${word_count}"
 msgstr "Wörter: ${word_count}"
 
-#: src/zope/app/browser/index/text/control.pt:46
-#: src/zope/app/browser/index/field/control.pt:51
-#: src/zope/app/browser/services/subscription_control.pt:29
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:23
-msgid "Subscription state: ON"
-msgstr "Abonnementsstatus: AN"
-
-#: src/zope/app/browser/index/text/control.pt:47
-#: src/zope/app/browser/index/field/control.pt:52
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:24
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
-msgstr "Abonnieren"
-
-#: src/zope/app/browser/index/text/control.pt:51
-#: src/zope/app/browser/index/field/control.pt:56
-#: src/zope/app/browser/services/subscription_control.pt:33
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:28
-msgid "Subscription state: OFF"
-msgstr "Abonnementsstatus: AUS"
-
-#: src/zope/app/browser/index/text/control.pt:52
-#: src/zope/app/browser/index/field/control.pt:57
-#: src/zope/app/browser/catalog/advanced.pt:27
-msgid "subscribe-button"
-msgstr "Abonnieren"
-
-#: src/zope/app/browser/index/text/control.pt:68
-#: src/zope/app/browser/index/field/control.pt:73
-msgid "No hits. Please try another query."
-msgstr "Keine Ergebnisse. Bitte versuchen Sie eine andere Abfrage."
-
-#: src/zope/app/browser/index/text/control.pt:79
-#: src/zope/app/browser/index/field/control.pt:84
-msgid "Hits ${first} - ${last} of ${total}:"
-msgstr "Ergebnisse ${first} - ${last} von ${total}:"
-
 #: src/zope/app/browser/index/text/control.pt:88
 msgid "title=${title}; url=${url}; score=${score}"
 msgstr "Titel=${title}; URL=${url}; Punkte=${score}"
-
-#: src/zope/app/browser/index/text/control.pt:93
-#: src/zope/app/browser/index/field/control.pt:96
-msgid "&lt;-- PREVIOUS BATCH"
-msgstr "&lt;-- VORHERIGER STAPEL"
 
 #: src/zope/app/browser/introspector.pt:104 src/zope/app/browser/marker.pt:27
 msgid "Class Browser"
@@ -1016,8 +1045,7 @@ msgid "Login Failed!"
 msgstr "Login fehlgeschlagen!"
 
 #: src/zope/app/browser/login_failed.pt:9
-msgid ""
-"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 "Sie haben den Loginprozess abgebrochen. <a href=\"\"> Bitte hier klicken um "
 "zurückzukehren. </a>"
@@ -1041,8 +1069,8 @@ msgstr "Entfernen"
 msgid "Add Interfaces:"
 msgstr "Interfaces hinzufügen:"
 
-#: src/zope/app/browser/marker.pt:115 src/zope/app/browser/rdb/rdbadd.pt:27
-#: src/zope/app/browser/container/add.pt:39
+#: src/zope/app/browser/marker.pt:115 src/zope/app/browser/container/add.pt:39
+#: src/zope/app/browser/rdb/rdbadd.pt:27
 #: src/zope/app/browser/services/adduser.pt:56
 #: src/zope/app/browser/services/translation/translate.pt:78
 #: src/zope/app/browser/services/translation/translate.pt:84
@@ -1062,13 +1090,11 @@ msgstr "Menü zum Darstellen von Hilfen via eine Popup Fensters"
 
 #: src/zope/app/browser/menus.zcml:18
 msgid "Menu of objects to be added to content folders"
-msgstr ""
-"Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
+msgstr "Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
 
 #: src/zope/app/browser/menus.zcml:23
 msgid "Menu of objects to be added to service manager packages"
-msgstr ""
-"Menü der Objekte die zu Diensteverwalter-Paketen hinzugefügt werden können"
+msgstr "Menü der Objekte die zu Diensteverwalter-Paketen hinzugefügt werden können"
 
 #: src/zope/app/browser/menus.zcml:28
 msgid "Menu of services to be added"
@@ -1146,8 +1172,7 @@ msgstr "Datenbankadapter - Testverbindung"
 
 #: src/zope/app/browser/rdb/rdbtestsql.pt:13
 msgid "Here you can enter an SQL statement, so you can test the connection."
-msgstr ""
-"Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
+msgstr "Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
 
 #: src/zope/app/browser/rdb/rdbtestsql.pt:18
 msgid "Query"
@@ -1212,8 +1237,7 @@ msgstr "Der Rolle zugewiesene Berechtigungen ${perm_title} (id: ${perm_id})"
 
 #: src/zope/app/browser/security/grants/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
-msgstr ""
-"Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
+msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
 
 #: src/zope/app/browser/security/grants/principal_permission_edit.pt:12
 msgid "Permission Settings"
@@ -1364,16 +1388,14 @@ msgstr "(ist: ${active_status})"
 
 #: src/zope/app/browser/services/bundle.pt:113
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr ""
-"Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
+msgstr "Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
 
 #: src/zope/app/browser/services/bundle.pt:117
 msgid "activate-bundle-button"
 msgstr "Aktivieren"
 
 #: src/zope/app/browser/services/bundle.pt:127
-msgid ""
-"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 "Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem "
 "Bündel nichtig zu machen."
@@ -1415,6 +1437,15 @@ msgstr ""
 #: src/zope/app/browser/services/bundle.pt:43
 msgid "Registrations in this bundle"
 msgstr "Registrierungen in diesem Bündel"
+
+#: src/zope/app/browser/services/bundle.pt:49
+#: src/zope/app/browser/services/caches.pt:11
+#: src/zope/app/browser/services/connections.pt:11
+#: src/zope/app/browser/services/services.pt:15
+#: src/zope/app/browser/services/views.pt:11
+#: src/zope/app/browser/services/utility/utilities.pt:11
+msgid "(click to clear message)"
+msgstr "(Nachricht löschen)"
 
 #: src/zope/app/browser/services/bundle.pt:58
 msgid "For ${service_name} service"
@@ -1505,15 +1536,6 @@ msgstr "Ein persistenter Cachingdienst für die TTW Entwicklung"
 msgid "Caching Service"
 msgstr "Cachingdienst"
 
-#: src/zope/app/browser/services/caches.pt:11
-#: src/zope/app/browser/services/connections.pt:11
-#: src/zope/app/browser/services/services.pt:15
-#: src/zope/app/browser/services/views.pt:11
-#: src/zope/app/browser/services/bundle.pt:49
-#: src/zope/app/browser/services/utility/utilities.pt:11
-msgid "(click to clear message)"
-msgstr "(Nachricht löschen)"
-
 #: src/zope/app/browser/services/caches.pt:33
 #: src/zope/app/browser/services/connections.pt:33
 msgid "(inactive)"
@@ -1546,9 +1568,9 @@ msgstr "Deaktivieren"
 #: src/zope/app/browser/services/connections.pt:50
 #: src/zope/app/browser/services/services.pt:62
 #: src/zope/app/browser/services/views.pt:46
-#: src/zope/app/browser/services/utility/utilities.pt:47
 #: src/zope/app/browser/services/translation/translate.pt:37
 #: src/zope/app/browser/services/translation/translate.pt:67
+#: src/zope/app/browser/services/utility/utilities.pt:47
 #: src/zope/app/browser/workflow/instancecontainer_main.pt:47
 msgid "delete-button"
 msgstr "Löschen"
@@ -1685,10 +1707,10 @@ msgstr "Rollendienst"
 #: src/zope/app/browser/services/configureCache.pt:19
 #: src/zope/app/browser/services/configureConnection.pt:19
 #: src/zope/app/browser/services/configureView.pt:18
-#: src/zope/app/browser/services/utility/configureutility.pt:29
 #: src/zope/app/browser/services/registration/namecomponentregistry.pt:42
 #: src/zope/app/browser/services/registration/nameregistry.pt:44
 #: src/zope/app/browser/services/translation/synchronize.pt:142
+#: src/zope/app/browser/services/utility/configureutility.pt:29
 msgid "update-button"
 msgstr "Aktualisieren"
 
@@ -2200,19 +2222,13 @@ msgstr "Exportieren"
 msgid "Message Id"
 msgstr "Message Id"
 
-#: src/zope/app/browser/services/translation/synchronize.pt:108
-#: src/zope/app/browser/services/translation/translate.pt:113
-msgid "Domain"
-msgstr "Domäne"
-
 #: src/zope/app/browser/services/translation/synchronize.pt:110
 msgid "Status"
 msgstr "Status"
 
 #: src/zope/app/browser/services/translation/synchronize.pt:147
 msgid "No connection could be made to remote data source."
-msgstr ""
-"Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
+msgstr "Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
 
 #: src/zope/app/browser/services/translation/synchronize.pt:26
 msgid "Server URL"
@@ -2323,8 +2339,7 @@ msgid "Utility registrations for interface ${interface}"
 msgstr "Werkzeugregistrierung für Interface ${interface}"
 
 #: src/zope/app/browser/services/utility/configureutility.pt:9
-msgid ""
-"Utility registrations for interface ${interface} with name ${utility_name}"
+msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 "Werkzeugregistrierung für Interface ${interface} mit dem Namen "
 "${utility_name}"
@@ -2394,19 +2409,6 @@ msgstr "Suchfilter:"
 msgid "Pages registered in this views service:"
 msgstr "Seiten die mit diesem Ansichtsdienst registriert wurden:"
 
-#: src/zope/app/browser/skins/basic/view_macros.pt:35
-#: src/zope/app/browser/skins/onlinehelp/view_macros.pt:28
-msgid "User: ${user_title}"
-msgstr "Benutzer: ${user_title}"
-
-#: src/zope/app/browser/skins/basic/view_macros.pt:40
-#: src/zope/app/browser/skins/rotterdam/dialog_macros.pt:158
-#: src/zope/app/browser/skins/rotterdam/view_macros.pt:41
-#: src/zope/app/browser/skins/zopetop/widget_macros.pt:205
-#: src/zope/app/browser/skins/onlinehelp/view_macros.pt:34
-msgid "Powered by Zope"
-msgstr "Powered by Zope"
-
 #: src/zope/app/browser/skins/debug/error_debug.pt:12
 msgid "Error object: ${error_object}"
 msgstr "Fehlerobjekt: ${error_object}"
@@ -2414,10 +2416,6 @@ msgstr "Fehlerobjekt: ${error_object}"
 #: src/zope/app/browser/skins/debug/error_debug.pt:7
 msgid "Error type: ${error_type}"
 msgstr "Fehlertyp: ${error_type}"
-
-#: src/zope/app/browser/skins/debug/unauthorized.pt:7
-msgid "Unauthorized"
-msgstr "Unberechtigt"
 
 #: src/zope/app/browser/skins/debug/unauthorized.pt:8
 msgid "You're not allowed in here."
@@ -2457,6 +2455,10 @@ msgstr "Drucken"
 msgid "Z3 UI Onlinehelp"
 msgstr "Z3 Oberfläche Online-Hilfe"
 
+#: src/zope/app/browser/skins/onlinehelp/view_macros.pt:28
+msgid "User: ${user_title}"
+msgstr "Benutzer: ${user_title}"
+
 #: src/zope/app/browser/skins/rotterdam/dialog_macros.pt:11
 #: src/zope/app/browser/skins/rotterdam/template.pt:9
 msgid "Z3 UI"
@@ -2466,12 +2468,6 @@ msgstr "Z3 Oberfläche"
 #: src/zope/app/browser/skins/rotterdam/template.pt:215
 msgid "Tip"
 msgstr "Tipp"
-
-#: src/zope/app/browser/skins/rotterdam/dialog_macros.pt:51
-#: src/zope/app/browser/skins/rotterdam/template.pt:50
-#: src/zope/app/browser/skins/rotterdam/view_macros.pt:36
-msgid "User:"
-msgstr "Benutzer:"
 
 #: src/zope/app/browser/skins/rotterdam/simpleeditingrow.pt:3
 msgid "Extended Editor"
@@ -2517,6 +2513,15 @@ msgstr "Oftgenutzte Aufgaben"
 #: src/zope/app/browser/skins/onlinehelp/template.pt:54
 msgid "Online Help - TOC"
 msgstr "Online-Hilfe - Inhalt"
+
+#: src/zope/app/browser/skins/rotterdam/view_macros.pt:36
+msgid "User:"
+msgstr "Benutzer:"
+
+#: src/zope/app/browser/skins/rotterdam/view_macros.pt:41
+#: src/zope/app/browser/skins/onlinehelp/view_macros.pt:34
+msgid "Powered by Zope"
+msgstr "Powered by Zope"
 
 #: src/zope/app/browser/skins/zopetop/widget_macros.pt:13
 msgid "Logged in as ${user_title}"
@@ -2632,7 +2637,7 @@ msgid "by ${username}"
 msgstr "von ${username}"
 
 #: src/zope/app/browser/workflow/configure.zcml:15
-msgid "'Workflow Service"
+msgid "Workflow Service"
 msgstr "Arbeitsablaufdienst"
 
 #: src/zope/app/browser/workflow/configure.zcml:15
@@ -2764,11 +2769,11 @@ msgstr "Zustandsbasierte Prozessdefinition"
 msgid "Stateful State"
 msgstr "Zustandsbasierter Zustand"
 
-#: src/zope/app/browser/workflow/stateful/contentworkflow.py:86
+#: src/zope/app/browser/workflow/stateful/contentworkflow.py:85
 msgid "Mapping(s) added."
 msgstr "Zuweisung(en) hinzugefügt."
 
-#: src/zope/app/browser/workflow/stateful/contentworkflow.py:94
+#: src/zope/app/browser/workflow/stateful/contentworkflow.py:93
 msgid "Mapping(s) removed."
 msgstr "Zuweisung(en) entfernt."
 
@@ -3161,8 +3166,8 @@ msgstr "Befehl zum Emai versenden"
 #: src/zope/app/interfaces/services/connection.py:34
 #: src/zope/app/interfaces/services/registration.py:112
 #: src/zope/app/interfaces/services/utility.py:35
-#: src/zope/app/browser/container/index.pt:26
 #: src/zope/app/browser/container/contents.pt:33
+#: src/zope/app/browser/container/index.pt:26
 #: src/zope/app/browser/workflow/instancecontainer_index.pt:19
 #: src/zope/app/browser/workflow/instancecontainer_main.pt:18
 msgid "Name"
@@ -3223,8 +3228,7 @@ msgstr "Anmeldung"
 
 #: src/zope/app/interfaces/services/pluggableauth/__init__.py:45
 msgid "The Login/Username of the user. This value can change."
-msgstr ""
-"Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
+msgstr "Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
 
 #: src/zope/app/interfaces/services/pluggableauth/__init__.py:50
 msgid "The password for the user."
@@ -3510,3 +3514,4 @@ msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 #: src/zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
+
