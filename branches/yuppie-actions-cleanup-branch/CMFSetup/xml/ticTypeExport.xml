@@ -38,20 +38,20 @@
   <action
      action_id="view"
      title="View"
-     condition=""
-     action_expr="string:${object_url}/foo_view"
-     permissions="View"
+     condition_expr=""
+     url_expr="string:${object_url}/foo_view"
      category="object"
      visible="True"
      tal:repeat="action info/actions"
      tal:attributes="action_id action/id;
                      title action/title;
-                     condition action/condition;
-                     action_expr action/action;
-                     permissions python:
-                       ','.join( action[ 'permissions' ] );
+                     condition_expr action/condition;
+                     url_expr action/action;
                      category action/category;
                      visible action/visible;
-                    "
-     />
+                    ">
+   <permission
+      tal:repeat="permission action/permissions"
+      tal:content="permission">View</permission>
+  </action>
 </type-info>
