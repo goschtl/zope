@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: typereg.py,v 1.2 2002/12/12 10:45:53 faassen Exp $
+$Id: typereg.py,v 1.3 2002/12/20 22:30:36 tim_one Exp $
 """
 
 from Interface.Implements import visitImplements
@@ -62,7 +62,9 @@ class DatetimeRepresentation:
     __implements__ = ITypeRepresentation
 
     def __init__(self, dt):
-        self.text = repr(dt)
+        r = repr(dt)
+        assert r.startswith('datetime.')
+        self.text = r[9:]
         self.importList = [('datetime', type(dt).__name__)]
 
     def getTypes():

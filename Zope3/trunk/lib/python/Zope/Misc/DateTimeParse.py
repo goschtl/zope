@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.9 2002/11/18 12:32:47 mgedmin Exp $
+$Id: DateTimeParse.py,v 1.10 2002/12/20 22:30:37 tim_one Exp $
 """
 
 import re, math, DateTimeZone
@@ -837,7 +837,8 @@ parser = DateTimeParser()
 parse = parser.parse
 time = parser.time
 
-class tzinfo(object):
+from datetime import tzinfo as _tzinfo
+class tzinfo(_tzinfo):
 
     __slots__ = ('offset', )
 
