@@ -27,6 +27,11 @@ class BrowserView(Acquisition.Explicit):
 
     def __call__(self, *args, **kw):
         # XXX this is definitely not the way Zope 3 does it..
+
+        # XXX and it is only needed for tests so that they can all
+        # views directly. ZPublisher will either find a __call__ on a
+        # view class or use __browswer_default__ from
+        # ViewMixinForAttributes
         if hasattr(self, 'index'):
             attr = 'index'
         else:
