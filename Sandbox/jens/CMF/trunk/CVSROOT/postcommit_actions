@@ -243,6 +243,10 @@ def find_entries(repo):
                     raise AttributeError, ("traffic_table must have default"
                                            " repo setting or explicit repo"
                                            " values on all entries")
+            if t.has_key('addrs'):
+                if type(t['addrs']) == type(""):
+                    # Be lenient - listify string args.
+                    t['addrs'] = [t['addrs']]
             entries.append(t)
     if VERBOSE > 1:
         complain("Resolved table entry:\n  %s\n", entries)
@@ -428,7 +432,9 @@ def handle_failures():
 
 def usage():
     complain("Usage: %s [options...] ", SCRIPT)
-    complain("repo-path file,oldv,newv [f2,o2,n2 ...]\n")
+    complain('"repo-path file,oldv,newv [f2,o2,n2 ...]"\n')
+    complain("(Note that repo-path and files must be"
+             " quoted so they are a single token.)\n")
 
 def get_command(cmd, path):
     """Get a valid exe for cmd on path."""
