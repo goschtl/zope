@@ -23,6 +23,7 @@ LOCAL_HTML=\
 	index.html \
 	metadata.html \
 	resources.html \
+	TODO.html \
 	zpkg.html
 
 

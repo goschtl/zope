@@ -1,10 +1,14 @@
+===========================
+Things that need to be done
+===========================
+
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).
 
 - Need to add support for Subversion checkouts.
 
 - We should have some way to wildcard an entire hierarchy of packages
-  in resource maps.  Something like
+  in resource maps.  Something like::
 
     zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
 
@@ -16,16 +20,17 @@
   priority.
 
 - There needs to be a better error message when two resources use the
-  same name part.  The problem is that package:foo and collection:foo
-  both have the same name, and zpkg tries to create two different
-  directories of the same name as children of the distribution root.
+  same name part.  The problem is that ``package:foo`` and
+  ``collection:foo`` both have the same name, and **zpkg** tries to
+  create two different directories of the same name as children of the
+  distribution root.
 
   Other ways to solve the problem:
 
   - Remove the resource type from the resource identifier, so names
     have to be unique to begin with.  Each resource will be expected
     to identify itself in some way (possibly implicitly, such as by
-    the presence of an __init__.py file).  This would mean we need an
+    the presence of an *__init__.py* file).  This would mean we need an
     explicit control of how we deal with dependencies (whether or not
     we include them in the distribution package, in particular); this
     would likely be a good thing, but doesn't depend on the change in
@@ -33,7 +38,7 @@
 
   - Change the structure of the distribution, so that collection and
     package resources are located in different directories; for
-    collection:foo and package:foo, we could end up with::
+    ``collection:foo`` and ``package:foo``, we could end up with::
 
       foo-x.y/
           collections/
@@ -44,7 +49,7 @@
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
-  $prefix and $exec_prefix.  (The pkgutil module from the standard
+  $prefix and $exec_prefix.  (The ``pkgutil`` module from the standard
   library does not provide an acceptable solution due to a bug: see
   http://www.python.org/sf/935117 for more info.)
 
@@ -56,7 +61,7 @@
 - CVS retriever (mostly done; need to deal with unspecified type and
   user for remote repositories)
 
-  - can check ~/.cvspass to see if there's an entry there
+  - can check *~/.cvspass* to see if there's an entry there
 
   - otherwise assume :ext: if there's a CVS_RSH setting?  or just
     always?  try anonymous :pserver: access?

@@ -26,6 +26,10 @@ Overview
   package is entirely open to change at this point, but this might
   help to understand how to tool works.
 
+`To-do list <TODO.html>`_
+  List of things that still need to be handled, of course.
+
+
 Related Links
 -------------
 
