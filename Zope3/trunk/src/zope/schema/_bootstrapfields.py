@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.30 2004/04/26 23:15:01 srichter Exp $
+$Id: _bootstrapfields.py,v 1.31 2004/05/11 11:20:09 garrett Exp $
 """
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation
@@ -318,6 +318,23 @@ class Bool(Field):
             if isinstance(value, int):
                 value = bool(value)
             Field.set(self, object, value)
+            
+    def fromUnicode(self, str):
+        """
+        >>> b = Bool()
+        >>> b.fromUnicode('True')
+        True
+        >>> b.fromUnicode('')
+        False
+        >>> b.fromUnicode('true')
+        True
+        >>> b.fromUnicode('false') or b.fromUnicode('False')
+        False
+        """
+        v = str == 'True' or str == 'true'
+        self.validate(v)
+        return v
+        
 
 class Int(Orderable, Field):
     """A field representing an Integer."""
