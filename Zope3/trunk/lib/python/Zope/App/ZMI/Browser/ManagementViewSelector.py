@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ManagementViewSelector.py,v 1.2 2002/10/03 12:25:14 jim Exp $
+$Id: ManagementViewSelector.py,v 1.3 2002/10/21 14:13:36 stevea Exp $
 """
 
 __metaclass__ = type
@@ -20,7 +20,6 @@ __metaclass__ = type
 from Zope.ComponentArchitecture import getService
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
-from Zope.Exceptions import Unauthorized
 
 class ManagementViewSelector(BrowserView):
     """View that selects the first available management view
