@@ -13,10 +13,12 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.3 2003/08/17 06:05:50 philikon Exp $
+$Id: __init__.py,v 1.4 2003/08/21 21:57:41 fdrake Exp $
 """
 
 from zope.app.services.module import Manager
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.publisher.browser import BrowserView
 
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -32,6 +34,7 @@ class AddModule(BrowserView):
         mgr = self.context.add(mgr)  # local registration
         mgr.execute()
         self.request.response.redirect(self.context.nextURL())
+        publish(self.context.context, ObjectCreatedEvent(mgr))
 
 class EditModule(BrowserView):
 
