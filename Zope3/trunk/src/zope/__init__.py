@@ -14,11 +14,6 @@
 #
 # This file is necessary to make this directory a package.
 
-import pkgutil
-
-__path__ = pkgutil.extend_path(__path__, __name__)
-del pkgutil
-
 # XXX Evil monkey patch of weakref to avoid a Python 2.3.3 weakref bug that
 # causes sporadic segfaults
 
