@@ -5,7 +5,8 @@
   <adapter
     for=".interfaces.IAdaptable"
     provides=".interfaces.IAdapted"
-    factory=".classes.Adapter" />
+    factory=".classes.Adapter"
+    />
 
   <!-- attribute page -->
   <browser:page
