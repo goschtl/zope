@@ -13,7 +13,9 @@
 ##############################################################################
 """Tests for zpkgtools.app."""
 
+import os.path
 import unittest
+import urllib
 
 from zpkgtools import app
 
@@ -24,8 +26,8 @@ CMD = "./foo/bar.py"
 class CommandLineTestCase(unittest.TestCase):
 
     def parse_args(self, args):
-        args = [CMD] + args + ["resource"]
-        options = app.parse_args(args)
+        argv = [CMD] + args + ["resource"]
+        options = app.parse_args(argv)
         self.assertEqual(options.resource, "resource")
         return options
 
@@ -133,8 +135,32 @@ class CommandLineTestCase(unittest.TestCase):
         self.assertEqual(options.configfile, "somepath.conf")
 
 
+class ApplicationSupportTestCase(unittest.TestCase):
+
+    here = os.path.dirname(os.path.abspath(__file__))
+
+    mapfile = os.path.join(here, "input", "packages.map")
+    mapfile = "file://" + urllib.pathname2url(mapfile)
+
+    def test_load_metadata(self):
+        # Check that when the metadata for an application distribution
+        # is loaded, that the resource_type is revised to reflect the
+        # application status.
+        argv = [CMD,
+                "-f", "-m", self.mapfile, "-v1.0",
+                "collection:application"]
+        options = app.parse_args(argv)
+        application = app.Application(options)
+        self.assertEqual(application.resource_type, "collection")
+        #
+        application.load_resource()
+        self.assertEqual(application.resource_type, "application")
+
+
 def test_suite():
-    return unittest.makeSuite(CommandLineTestCase)
+    suite = unittest.makeSuite(CommandLineTestCase)
+    suite.addTest(unittest.makeSuite(ApplicationSupportTestCase))
+    return suite
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")

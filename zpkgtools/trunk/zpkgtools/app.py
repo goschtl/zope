@@ -67,10 +67,13 @@ class Application:
             options.include_support_code = cf.include_support_code
 
         if self.resource not in self.locations:
-            print >>sys.stderr, "unknown resource:", self.resource
-            sys.exit(1)
+            self.error("unknown resource: %s" % self.resource)
         self.resource_url = self.locations[self.resource]
         self.handled_resources = sets.Set()
+
+    def error(self, message, rc=1):
+        print >>sys.stderr, message
+        sys.exit(rc)
 
     def build_distribution(self):
         """Create the distribution tree.
@@ -98,14 +101,21 @@ class Application:
         try:
             self.ip.createDistributionTree(pkgdest)
         except cvsloader.CvsLoadingError, e:
-            print >>sys.stderr, e
-            sys.exit(1)
+            self.error(str(e))
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         self.generate_setup_cfg(self.destination, pkginfo)
         self.generate_package_setup(self.destination, self.resource_name)
 
+    def build_application_distribution(self):
+        packages, collections = self.assemble_collection()
+
     def build_collection_distribution(self):
+        packages, collections = self.assemble_collection()
+        self.generate_collection_setup(self.destination, self.resource_name,
+                                       packages, collections)
+
+    def assemble_collection(self):
         # Build the destination directory:
         deps = self.add_component("collection",
                                   self.resource_name,
@@ -141,8 +151,7 @@ class Application:
                 i = name.rfind(".")
                 deps.add("package:" + name[:i])
             remaining |= (deps - self.handled_resources)
-        self.generate_collection_setup(self.destination, self.resource_name,
-                                       packages, collections)
+        return packages, collections
 
     def add_component(self, type, name, source):
         """Add a single component to a collection.
@@ -193,8 +202,7 @@ class Application:
         try:
             self.ip.createDistributionTree(destination, spec)
         except cvsloader.CvsLoadingError, e:
-            print >>sys.stderr, e
-            sys.exit(1)
+            self.error(str(e))
         # load package information and generate setup.cfg
         pkginfo = package.loadCollectionInfo(destination)
         self.generate_setup_cfg(destination, pkginfo)
@@ -205,8 +213,7 @@ class Application:
         try:
             self.ip.createDistributionTree(pkgdest, spec)
         except cvsloader.CvsLoadingError, e:
-            print >>sys.stderr, e
-            sys.exit(1)
+            self.error(str(e))
         # load package information and generate setup.cfg
         pkginfo = package.loadPackageInfo(name, pkgdest, name)
         self.generate_setup_cfg(destination, pkginfo)
@@ -215,10 +222,27 @@ class Application:
     def load_metadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.cfg")
         if not os.path.isfile(metadata_file):
-            print >>sys.stderr, \
-                  "source-dir does not contain required publication data file"
-            sys.exit(1)
-        self.metadata = publication.load(open(metadata_file))
+            self.error("source-dir does not contain required"
+                       " publication data file")
+        f = open(metadata_file)
+        try:
+            self.metadata = publication.load(f)
+        finally:
+            f.close()
+        if self.resource_type == "collection":
+            # If this is an application collection, change the
+            # resource_type to "application":
+            from email.Parser import Parser
+            parser = Parser()
+            f = open(metadata_file)
+            msg = parser.parse(f, headersonly=True)
+            apptypes = msg.get_all("Installation-type", [])
+            if len(apptypes) > 1:
+                self.error("installation-type can only be"
+                           " specified once in PUBLICATION.cfg")
+            if apptypes and apptypes[0].lower() == "application":
+                # This is an application rather than a normal collection
+                self.resource_type = "application"
 
     def load_resource(self):
         """Load the primary resource and initialize internal metadata."""
@@ -405,8 +429,7 @@ class Application:
         finally:
             os.chdir(pwd)
         if rc:
-            print >>sys.stderr, "error generating", self.target_file
-            sys.exit(1)
+            self.error("error generating %s" % self.target_file)
         # We have a tarball; clear some space, then copy the tarball
         # to the current directory:
         shutil.rmtree(self.destination)
@@ -428,8 +451,7 @@ class Application:
                 if self.options.include_support_code:
                     self.include_support_code()
             except cvsloader.CvsLoadingError, e:
-                print >>sys.stderr, e
-                sys.exit(e.exitcode)
+                self.error(str(e), e.exitcode)
             self.create_manifest(self.destination)
             self.create_tarball()
             self.cleanup()
