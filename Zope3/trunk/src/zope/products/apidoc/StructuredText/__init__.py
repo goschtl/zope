@@ -15,7 +15,6 @@ import HTMLClass, DocumentClass
 import ClassicDocumentClass
 from StructuredText import html_with_references, HTML, html_quote
 from ST import Basic
-import DocBookClass
 import HTMLWithImages
 from types import StringType, UnicodeType
 import DocumentWithImages
@@ -32,8 +31,3 @@ Classic=ClassicDocumentClass.DocumentClass()
 Document=DocumentClass.DocumentClass()
 DocumentWithImages=DocumentWithImages.DocumentWithImages()
 HTMLWithImages=HTMLWithImages.HTMLWithImages()
-
-DocBookBook=DocBookClass.DocBookBook()
-DocBookChapter=DocBookClass.DocBookChapter()
-DocBookChapterWithFigures=DocBookClass.DocBookChapterWithFigures()
-DocBookArticle=DocBookClass.DocBookArticle()
