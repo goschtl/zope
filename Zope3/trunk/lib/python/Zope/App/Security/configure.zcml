@@ -55,6 +55,8 @@
   <adapter factory="Zope.App.Security.BasicVFSAuthAdapter."
            provides="Zope.App.Security.ILoginPassword."
            for="Zope.Publisher.VFS.IVFSCredentials." />
+
+  <include package=".Browser" />
   
 </zopeConfigure>
 
