@@ -138,6 +138,7 @@
 /ZODB3/ZConfig           /Packages/ZConfig
 /ZODB3/logging           /Packages/logging
 
+/ZODB4/log.ini,v         /Zope3/log.ini,v
 /ZODB4/ZODB		 /Packages3/ZODB
 /ZODB4/ZEO		 /Packages3/ZEO
 /ZODB4/Interface	 /Packages3/Interface
