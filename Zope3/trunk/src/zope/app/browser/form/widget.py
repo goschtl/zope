@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.23 2003/03/25 20:39:45 jim Exp $
+$Id: widget.py,v 1.24 2003/03/26 11:28:53 tseaver Exp $
 """
 
 __metaclass__ = type
@@ -20,12 +20,15 @@ __metaclass__ = type
 import sys
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
+from datetime import datetime
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
+from zope.app.datetimeutils import parseDatetimetz
+from zope.app.datetimeutils import DateTimeError
 from zope.schema.interfaces import ValidationError
 from zope.component import getService
 
@@ -311,6 +314,17 @@ class FloatWidget(TextWidget):
                 return float(value)
             except ValueError, v:
                 raise ConversionError("Invalid floating point data", v)
+
+class DatetimeWidget(TextWidget):
+    """Datetime entry widget."""
+    displayWidth = 20
+
+    def _convert(self, value):
+        if value:
+            try:
+                return parseDatetimetz(value)
+            except (DateTimeError, ValueError, IndexError), v:
+                raise ConversionError("Invalid datetime data", v)
 
 class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     """Textarea widget."""
