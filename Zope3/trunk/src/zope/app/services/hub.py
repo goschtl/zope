@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.13 2003/06/07 05:31:58 stevea Exp $
+$Id: hub.py,v 1.14 2003/06/07 07:23:52 stevea Exp $
 """
 
 from __future__ import generators
@@ -280,7 +280,6 @@ class ObjectHub(ServiceSubscriberEventChannel):
         #     refactoring that. So, I'll do it here for now.
         if not pathslash.startswith(u'/'):
             raise ValueError('Path must be absolute, not relative:', path)
-
         path_to_hubid = clean_self.__path_to_hubid
         if path_to_hubid.has_key(pathslash):
             raise ObjectHubError('path %s already in object hub' % path)

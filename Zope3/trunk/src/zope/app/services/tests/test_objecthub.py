@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.10 2003/06/07 05:32:01 stevea Exp $
+$Id: test_objecthub.py,v 1.11 2003/06/07 07:23:52 stevea Exp $
 """
 
 import unittest
@@ -460,7 +460,6 @@ class TestObjectMovedEvent(BasicHubTest):
 
         hub.notify(added_event)
         hubid = hub.getHubId(location)
-
         hub.notify(moved_event)
 
         location_from_hub = hub.getPath(hubid)

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.11 2003/06/06 19:42:56 stevea Exp $
+$Id: objecthubsetup.py,v 1.12 2003/06/07 07:23:52 stevea Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -22,7 +22,7 @@ from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.traversing import traverse, canonicalPath
 
-from zope.app.interfaces.event import IObjectAddedEvent
+from zope.app.interfaces.event import IObjectAddedEvent, IObjectMovedEvent
 from zope.app.interfaces.event import ISubscriber
 
 from zope.interface import implements
@@ -78,7 +78,9 @@ class RegistrationSubscriber(LoggingSubscriber):
 
     def notify(self, event):
         LoggingSubscriber.notify(self, event)
-        if IObjectAddedEvent.isImplementedBy(event):
+        # The policy is to register on object adds and object copies.
+        if (IObjectAddedEvent.isImplementedBy(event)
+            and not IObjectMovedEvent.isImplementedBy(event)):
             self.hub.register(event.location)
 
 class ObjectHubSetup(EventSetup):
@@ -94,7 +96,7 @@ class ObjectHubSetup(EventSetup):
         self.rootFolder.setObject('logging_subscriber', subscriber)
         self.subscriber = traverse(self.rootFolder, 'logging_subscriber')
         self.object_hub.subscribe(self.subscriber)
-        
+
     def setUp(self):
         EventSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, HubIds)

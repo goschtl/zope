@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.8 2003/06/07 07:00:18 stevea Exp $
+$Id: event.py,v 1.9 2003/06/07 07:23:51 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -297,15 +297,12 @@ class IObjectContentModifiedEvent(IObjectModifiedEvent):
 class IObjectRemovedEvent(IObjectEvent):
     """An object has been removed from a container"""
 
-# XXX IObjectMovedEvent should extend IObjectAddedEvent and
-#     IObjectRemovedEvent
-class IObjectMovedEvent(IObjectEvent):
+class IObjectMovedEvent(IObjectRemovedEvent, IObjectAddedEvent):
     """An object has been moved"""
 
     fromLocation = Attribute("The old location for the object.")
 
-# XXX IObjectCopiedEvent should extend IObjectAddedEvent
-class IObjectCopiedEvent(IObjectEvent):
+class IObjectCopiedEvent(IObjectAddedEvent):
     """An object has been copied"""
 
     fromLocation = Attribute("The old location for the object.")

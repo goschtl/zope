@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.5 2003/06/07 06:36:51 stevea Exp $
+$Id: objectevent.py,v 1.6 2003/06/07 07:23:51 stevea Exp $
 """
 
 __metaclass__ = type
@@ -25,7 +25,7 @@ from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
 from zope.app.traversing import getPath
-from zope.interface import implements, implementsOnly
+from zope.interface import implements
 
 _marker = object()
 
@@ -78,8 +78,7 @@ class ObjectRemovedEvent(ObjectEvent):
 class ObjectMovedEvent(ObjectAddedEvent):
     """An object has been moved"""
 
-    # XXX IObjectMovedEvent should derive from IObjectAddedEvent
-    implementsOnly(IObjectMovedEvent)
+    implements(IObjectMovedEvent)
 
     fromLocation = None
 
