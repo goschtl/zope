@@ -109,6 +109,10 @@
 
 # Zope 3 layout.
 
+/Zope3/doc           /Zope/doc
+/Zope3/inst          /Zope/inst
+/Zope3/utilities     /Zope/utilities
+
 /Zope3/lib/python/Interface                    /Packages/Interface
 /Zope3/lib/python/Persistence                  /Packages/Persistence
 /Zope3/lib/python/Persistence/BTrees           /Packages/BTrees
