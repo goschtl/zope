@@ -20,7 +20,8 @@
                       keys maxKey minKey" /> 
 </content>
 <content class="BTrees.IIBTree.IITreeIterator">
-   <allow attributes="__iter__ __str__ __getitem__ __len__ __contains__ next" /> 
+   <allow attributes="__iter__ __str__ __getitem__ __len__
+                      __contains__ next" /> 
 </content>
 
 <!-- ===================================================================== -->
@@ -40,7 +41,8 @@
                       keys maxKey minKey" /> 
 </content>
 <content class="BTrees.IOBTree.IOTreeIterator">
-   <allow attributes="__iter__ __str__ __getitem__ __len__ __contains__ next" /> 
+   <allow attributes="__iter__ __str__ __getitem__ __len__
+                      __contains__ next" /> 
 </content>
 
 <!-- ===================================================================== -->
@@ -60,7 +62,8 @@
                       keys maxKey minKey" /> 
 </content>
 <content class="BTrees.OIBTree.OITreeIterator">
-   <allow attributes="__iter__ __str__ __getitem__ __len__ __contains__ next" /> 
+   <allow attributes="__iter__ __str__ __getitem__ __len__ 
+                      __contains__ next" /> 
 </content>
 
 <!-- ===================================================================== -->
@@ -80,7 +83,8 @@
                       keys maxKey minKey" /> 
 </content>
 <content class="BTrees.OOBTree.OOTreeIterator">
-   <allow attributes="__iter__ __str__ __getitem__ __len__ __contains__ next" /> 
+   <allow attributes="__iter__ __str__ __getitem__ __len__
+                      __contains__ next" /> 
 </content>
 
 <!-- ===================================================================== -->
