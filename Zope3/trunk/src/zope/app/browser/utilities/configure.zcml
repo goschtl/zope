@@ -31,7 +31,8 @@
       content_factory="zope.app.utilities.schema.SchemaRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status" />
+      fields="name interface componentPath permission status"
+      usage="addingdialog" />
 
 
   <!-- Menu entry for "add component" menu -->
