@@ -101,7 +101,7 @@ class HTTPBasicAuthHelper( BasePlugin ):
                 m = m + '<p>\nUsername and password are not correct.'
             else:
                 m = m + '<p>\nNo Authorization header found.'
-            
+
         response.setBody(m, is_error=1)
         response.setStatus(401)
         return 1
