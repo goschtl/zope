@@ -49,6 +49,8 @@ class PermissionSetting(object):
     def __str__(self):
         return "PermissionSetting: %s" % self.__name
 
+    __repr__ = __str__
+
 # register PermissionSettings to be symbolic constants by identity,
 # even when pickled and unpickled.
 import copy_reg
