@@ -13,35 +13,28 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.12 2003/08/13 21:28:11 garrett Exp $
+$Id: test_permissionwidget.py,v 1.1 2004/03/08 12:07:19 srichter Exp $
 """
-
-__metaclass__ = type
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.security.checker import CheckerPublic
-from zope.app.security.permission import PermissionField
-from zope.app.browser.security.permissionwidget import SinglePermissionWidget
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission, PermissionField
+from zope.app.security.browser.permissionwidget import SinglePermissionWidget
 from zope.publisher.browser import TestRequest
-from zope.component.service import serviceManager, defineService
 
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.app.services.servicenames import Permissions
-from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.form import WidgetInputError
 
 class TestPermissionWidget(PlacelessSetup, TestCase):
 
     def testPermissionWidget(self):
-        defineService(Permissions, IPermissionService)
-        serviceManager.provideService(Permissions, permissionRegistry)
+        read_permission = Permission('read', 'Read', 'Read something')
+        ztapi.provideUtility(IPermission, read_permission, 'read')
 
-        permissionRegistry.definePermission('read', 'Read', 'Read something')
-        read_permission = permissionRegistry.getPermission('read')
-        permissionRegistry.definePermission('reread', 'ReRead',
-                                            'ReRead something')
-        reread_permission = permissionRegistry.getPermission('reread')
+        reread_permission = Permission('reread', 'ReRead', 'ReRead something')
+        ztapi.provideUtility(IPermission, reread_permission, 'reread')
+
         request = TestRequest()
 
         permissionField = PermissionField(__name__ = 'TestName',
@@ -56,26 +49,9 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '<input type="text" name="field.TestName.search" value="">'
         '<select name="field.TestName">'
         '<option value="">---select permission---</option>'
-
-        '<option value="'
-        'read'
-        '">'
-        'read'
-        '</option>'
-
-        '<option value="'
-        'reread'
-        '">'
-        'reread'
-        '</option>'
-
-        '<option value="'
-        'zope.Public'
-        '">'
-        'zope.Public'
-        '</option>'
-
-
+        '<option value="read">read</option>'
+        '<option value="reread">reread</option>'
+        '<option value="zope.Public">zope.Public</option>'
         '</select>'
         )
 
@@ -85,39 +61,22 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '<input type="text" name="field.TestName.search" value="">'
         '<select name="field.TestName">'
         '<option value="">---select permission---</option>'
-
-        '<option value="'
-        'read'
-        '" selected>'
-        'read'
-        '</option>'
-
-        '<option value="'
-        'reread'
-        '">'
-        'reread'
-        '</option>'
-
-        '<option value="'
-        'zope.Public'
-        '">'
-        'zope.Public'
-        '</option>'
-
+        '<option value="read" selected>read</option>'
+        '<option value="reread">reread</option>'
+        '<option value="zope.Public">zope.Public</option>'
         '</select>'
         )
 
-        widget.setRenderedValue(read_permission.getId())
+        widget.setRenderedValue(read_permission.id)
         self.assertEqual(widget(), out)
 
         self.assertRaises(WidgetInputError, widget.getInputValue)
 
         widget = SinglePermissionWidget(permissionField, request)
 
-        request.form["field.TestName"] = (
-        'read'
-        )
-        self.assertEqual(widget.getInputValue(), read_permission.getId())
+        request.form["field.TestName"] = 'read'
+        
+        self.assertEqual(widget.getInputValue(), read_permission.id)
 
         self.assertEqual(widget(), out)
 
@@ -127,32 +86,20 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '<input type="text" name="field.TestName.search" value="read">'
         '<select name="field.TestName">'
         '<option value="">---select permission---</option>'
-
-        '<option value="'
-        'read'
-        '" selected>'
-        'read'
-        '</option>'
-
-        '<option value="'
-        'reread'
-        '">'
-        'reread'
-        '</option>'
-
+        '<option value="read" selected>read</option>'
+        '<option value="reread">reread</option>'
         '</select>'
         )
         self.assertEqual(widget(), out)
 
-    def testPermissionWidget_w_public(self):
-        defineService(Permissions, IPermissionService)
-        serviceManager.provideService(Permissions, permissionRegistry)
 
-        permissionRegistry.definePermission('read', 'Read', 'Read something')
-        read_permission = permissionRegistry.getPermission('read')
-        permissionRegistry.definePermission('reread', 'ReRead',
-                                            'ReRead something')
-        reread_permission = permissionRegistry.getPermission('reread')
+    def testPermissionWidget_w_public(self):
+        read_permission = Permission('read', 'Read', 'Read something')
+        ztapi.provideUtility(IPermission, read_permission, 'read')
+
+        reread_permission = Permission('reread', 'ReRead', 'ReRead something')
+        ztapi.provideUtility(IPermission, reread_permission, 'reread')
+
         request = TestRequest()
 
         permissionField = PermissionField(__name__ = 'TestName',
@@ -165,25 +112,9 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '<input type="text" name="field.TestName.search" value="">'
         '<select name="field.TestName">'
         '<option value="">---select permission---</option>'
-
-        '<option value="'
-        'read'
-        '">'
-        'read'
-        '</option>'
-
-        '<option value="'
-        'reread'
-        '">'
-        'reread'
-        '</option>'
-
-        '<option value="'
-        'zope.Public'
-        '" selected>'
-        'zope.Public'
-        '</option>'
-
+        '<option value="read">read</option>'
+        '<option value="reread">reread</option>'
+        '<option value="zope.Public" selected>zope.Public</option>'
         '</select>'
         )
 
