@@ -29,7 +29,7 @@ fssync [global_options] checkin [local_options] URL [TARGETDIR]
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.20 2003/06/30 19:03:58 fdrake Exp $
+$Id: main.py,v 1.21 2003/07/25 08:11:21 mgedmin Exp $
 """
 
 import os
@@ -77,6 +77,8 @@ def main(argv=None):
         if argv is None:
             argv = sys.argv
 
+        progname = os.path.split(argv[0])[1]
+
         try:
             opts, args = getopt.getopt(argv[1:], "h", ["help"])
         except getopt.error, msg:
@@ -84,7 +86,7 @@ def main(argv=None):
 
         for o, a in opts:
             if o in ("-h", "--help"):
-                print __doc__
+                print __doc__.replace("fssync ", progname + " ")
                 return 0
 
         if not args:
@@ -113,7 +115,8 @@ def main(argv=None):
             raise Usage("%s option error: %s", command, msg)
 
         if ("-h", "") in opts or ("--help", "") in opts:
-            print handler.__doc__ or "No help for %s" % handler.__name__
+            message = handler.__doc__ or "No help for %s" % handler.__name__
+            print message.replace("fssync ", progname + " ")
             return 0
 
         return handler(opts, args)
@@ -170,7 +173,7 @@ def commit(opts, args):
     in sync with the server.
 
     The -m option specifies a message to label the transaction.
-    The default message is 'fssync'.
+    The default message is 'fssync_commit'.
     """
     message = "fssync_commit"
     raise_on_conflicts = False
@@ -281,7 +284,7 @@ def status(opts, args):
     fs.multiple(args, fs.status)
 
 def checkin(opts, args):
-    """checkin [-m message] URL [TARGETDIR]
+    """fssync checkin [-m message] URL [TARGETDIR]
 
     URL should be of the form ``http://user:password@host:port/path''.
     Only http and https are supported (and https only where Python has
