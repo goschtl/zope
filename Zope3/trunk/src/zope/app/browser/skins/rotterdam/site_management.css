@@ -1,6 +1,10 @@
 /*
-** Customisations for the Site Management view (usage="siteobjectview")
+** Customisations for the Site Management view 
+** Used when the URL contains ++etc++site
 */
+a {
+	color: #963;
+}
 
 #actions {
     background: #963;
@@ -38,4 +42,13 @@
 .itemViews a:hover {
     background-color: #963;
     color: White;
+}
+
+hr {
+    color: #963;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    border-bottom: 1px solid #963;
 }
