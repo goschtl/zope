@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.23 2004/01/23 08:20:16 fdrake Exp $
+$Id: test_adding.py,v 1.24 2004/02/13 16:46:26 jim Exp $
 """
 
 import unittest
@@ -173,7 +173,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         ztapi.browserView(IAdding, "Thing", CreationView)
         ztapi.browserView(Interface, "absolute_url", AbsoluteURL)
         self.assertRaises(UserError, adding.action, '', 'foo')
-        self.assertRaises(UserError, adding.action, 'Unknown', '')
         adding.action('Thing', 'foo')
         self.assertEqual(adding.request.response._headers['location'],
                          '/container/+/Thing=foo')
