@@ -12,13 +12,11 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.29 2003/04/30 23:37:51 faassen Exp $
+$Id: widget.py,v 1.30 2003/05/19 20:54:03 fdrake Exp $
 """
 
 __metaclass__ = type
 
-from types import ListType, TupleType
-ListTypes = (ListType, TupleType)
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -29,6 +27,8 @@ from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 from zope.schema.interfaces import ValidationError
 from zope.component import getService
+
+ListTypes = list, tuple
 
 
 class BrowserWidget(Widget, BrowserView):
@@ -82,16 +82,20 @@ class BrowserWidget(Widget, BrowserView):
         return value
 
     def _showData(self):
-
-        if (self._data is None):
+        if self._data is None:
             if self.haveData():
                 data = self.getData(1)
             else:
-                data = self.context.default
+                data = self._getDefault()
         else:
             data = self._data
 
         return self._unconvert(data)
+
+    def _getDefault(self):
+        # Return the default value for this widget;
+        # may be overridden by subclasses.
+        return self.context.default
 
     def __call__(self):
         return renderElement(self.getValue('tag'),
@@ -110,8 +114,6 @@ class BrowserWidget(Widget, BrowserView):
                              value = self._showData(),
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
-
-
 
     def render(self, value):
         self.setData(value)
@@ -333,8 +335,7 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     default = ""
     width = 60
     height = 15
-    extra=""
-    #style="width:100%"
+    extra = ""
     style = ''
 
     def _convert(self, value):
@@ -594,7 +595,7 @@ class MultiItemsWidget(ItemsWidget):
     """A widget with a number of items that has multiple selectable items."""
     default = []
 
-    def _convert(self, value, ListTypes = (list, tuple)):
+    def _convert(self, value):
         if value is None:
             return []
         if isinstance(value, ListTypes):
@@ -717,7 +718,8 @@ def renderTag(tag, **kw):
     else:
         cssWidgetType = ''
     if cssWidgetType or cssClass:
-        attr_list.append('class="%s"' % ' '.join((cssClass, cssWidgetType)))
+        names = filter(None, (cssClass, cssWidgetType))
+        attr_list.append('class="%s"' % ' '.join(names))
 
     if 'style' in kw:
         if kw['style'] != '':
