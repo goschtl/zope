@@ -16,7 +16,7 @@ from Interface.Verify import verifyClass
 from Zope.App.Security.Grants.ILocalSecurityMap import ILocalSecurityMap
 from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
 
-class TestLocalSecuritMap(unittest.TestCase):
+class TestLocalSecurityMap(unittest.TestCase):
 
     def testInterface(self):
         verifyClass(ILocalSecurityMap, LocalSecurityMap)
@@ -24,7 +24,7 @@ class TestLocalSecuritMap(unittest.TestCase):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(TestLocalSecuritMap)
+    return loader.loadTestsFromTestCase(TestLocalSecurityMap)
 
 if __name__ == '__main__':
     unittest.main()
