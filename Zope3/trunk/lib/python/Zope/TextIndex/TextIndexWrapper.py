@@ -15,7 +15,7 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: TextIndexWrapper.py,v 1.5 2002/12/05 12:41:08 gvanrossum Exp $
+$Id: TextIndexWrapper.py,v 1.6 2002/12/05 14:39:12 gvanrossum Exp $
 """
 
 from Persistence import Persistent
@@ -85,4 +85,4 @@ class TextIndexWrapper(Persistent):
 
     def wordCount(self):
         """Return the number of words in the index."""
-        return self.index.documentCount()
+        return self.index.wordCount()

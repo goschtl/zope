@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for TextIndexWrapper.
 
-$Id: testTextIndexWrapper.py,v 1.3 2002/12/05 12:41:09 gvanrossum Exp $
+$Id: testTextIndexWrapper.py,v 1.4 2002/12/05 14:39:12 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,6 +30,15 @@ class Test(TestCase):
         doc = u"the brown fox and the yellow fox don't need the retriever"
         w.index_doc(1001, [doc])
         self.wrapper = w
+
+    def testCounts(self):
+        w = self.wrapper
+        self.assertEqual(self.wrapper.documentCount(), 2)
+        self.assertEqual(self.wrapper.wordCount(), 12)
+        doc = u"foo bar"
+        w.index_doc(1002, [doc])
+        self.assertEqual(self.wrapper.documentCount(), 3)
+        self.assertEqual(self.wrapper.wordCount(), 14)
 
     def testOne(self):
         matches, total = self.wrapper.query(u"quick fox", 0, 10)
