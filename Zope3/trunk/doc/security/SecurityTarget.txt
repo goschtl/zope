@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.12 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.13 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.12 $ (Draft)
-:Date: $Date: 2004/05/06 17:09:56 $
+:Version: $Revision: 1.13 $ (Draft)
+:Date: $Date: 2004/05/06 17:14:06 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>, Jim Fulton <jim@zope.com>
-:DocumentID: $Id: SecurityTarget.txt,v 1.12 2004/05/06 17:09:56 ctheune Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.13 2004/05/06 17:14:06 ctheune Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.12 2004/05/06 17:09:56 ctheune Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.13 2004/05/06 17:14:06 ctheune Exp $
 
-:Document Version: $Revision: 1.12 $
+:Document Version: $Revision: 1.13 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -1036,8 +1036,7 @@ TOE summary specification
 TOE security functions
 ----------------------
 
-Zope's security functions are provided via four independent subsystems:
-
+Zope's security functions are provided via independent subsystems:
 
 - permission declarations
 
@@ -1045,7 +1044,22 @@ Zope's security functions are provided via four independent subsystems:
 
 - authentication
 
-- authorization
+- authorization (aka access)
+
+- audition
+
+- synchronization
+
+- transaction management
+
+- undo
+
+- publisher
+
+- automated tests
+
+Additionally the Python and host environment provide functionality required by
+the security functions.
 
 Definitions
 ^^^^^^^^^^^
@@ -1065,8 +1079,7 @@ Permission
 Christian
 
 The auditing subsystem
-**********************
-
+^^^^^^^^^^^^^^^^^^^^^^
 Zope provides an auditing system that listens for events within Zope according
 to the SFRs described above. It is implemented using the internal "event
 service" of Zope 3 to subscribe to the audit relevant events and log them
@@ -1079,7 +1092,7 @@ within the other Zope packages that are relevant for the events defined by the
 SFRs.
 
 Events supported by Zope
-~~~~~~~~~~~~~~~~~~~~~~~~
+************************
 
 Following events are supported by Zope:
 
@@ -1126,7 +1139,7 @@ Following events are supported by Zope:
         (FMT_MSA.1, FMT_SMR.1) XXX FMT_MSA.1 is not required by minimal auditing
         
 Exceptions from the functional requirements for auditing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+********************************************************
 
 As Zope relies on Python and the host environment to provide reliable time
 stamps, we regard auditing adjustments to the time beeing out of scope.
