@@ -13,15 +13,17 @@
 ##############################################################################
 """Interface widgets
 
-$Id: interfacewidget.py,v 1.47 2004/03/05 15:48:01 eddala Exp $
+$Id: interfacewidget.py,v 1.48 2004/03/06 04:17:17 garrett Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.browser.interfaces.form import IBrowserWidget
-from zope.app.interfaces.form \
-     import WidgetInputError, ConversionError, MissingInputError
+from zope.app.interfaces.form import IInputWidget
+from zope.app.interfaces.form import WidgetInputError
+from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import MissingInputError
 from zope.app.introspector import interfaceToName
+from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import BrowserView
 from xml.sax.saxutils import quoteattr
@@ -30,7 +32,7 @@ from zope.app.component.interface import searchInterface
 
 class InterfaceWidget(BrowserWidget, BrowserView):
 
-    implements(IBrowserWidget)
+    implements(IInputWidget)
 
     def _convert(self, value):
         if value and value != 'None':
@@ -73,7 +75,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             selected = field.default
         else:
             selected = marker
-        if self._data is self._data_marker:
+        if not self._renderedValueSet():
             value = self.request.form.get(self.name, marker) or marker
             if value is not marker:
                 try:
@@ -104,7 +106,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
 # which is a tuple of interfaces.
 class MultiInterfaceWidget(BrowserWidget, BrowserView):
 
-    implements(IBrowserWidget)
+    implements(IInputWidget)
 
     # Names used:
     #
@@ -260,16 +262,6 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
             count += 1
         return ''.join(elements)
 
-    # --- deprecated methods of IBrowserWidget
-
-    def renderHidden(self, value):
-        'See IBrowserWidget'
-        raise NotImplementedError
-
-    def render(self, value):
-        'See IBrowserWidget'
-        raise NotImplementedError
-
 
 class InterfaceDisplayWidget(InterfaceWidget):
     def __call__(self):
@@ -282,6 +274,7 @@ class InterfaceDisplayWidget(InterfaceWidget):
         else:
             data = self._data
         return interfaceToName(field.context, data)
+        
 
 class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
     def __call__(self):
@@ -292,6 +285,7 @@ class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
             data = self._data
         return ', '.join([interfaceToName(field.context, interface)
                           for interface in data])
+                          
 
 def renderInterfaceSelect(
         interfaces, selected, search_name, search_string, select_name):

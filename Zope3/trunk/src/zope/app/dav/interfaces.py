@@ -13,7 +13,7 @@
 ##############################################################################
 """WebDAV-specific interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/03 17:06:30 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/06 04:17:22 garrett Exp $
 """
 from zope.interface import Interface
 from zope.schema import Text
@@ -26,7 +26,6 @@ class IDAVNamespace(Interface):
     DAV namespaces and their associated interface are utilities that fullfill
     provide this interface
     """
-
 
 class IDAVCreationDate(Interface):
 
@@ -139,6 +138,7 @@ class IGETDependentDAVSchema(Interface):
                                 Last-Modified header in response to a
                                 GET.''')
 
+
 class IDAV1Schema(IGETDependentDAVSchema):
     """DAV properties required for Level 1 compliance"""
 
@@ -149,6 +149,7 @@ class IDAV1Schema(IGETDependentDAVSchema):
                                 defined on all DAV compliant
                                 resources.  The default value is
                                 empty.''')
+
 
 class IDAV2Schema(IDAV1Schema):
     """DAV properties required for Level 2 compliance"""
@@ -189,8 +190,14 @@ class IDAVSchema(IOptionalDAVSchema, IDAV2Schema):
     """Full DAV properties schema"""
 
 
-class ISimpleDAVWidget(IWidget):
-    """A specialized widget used to render DAV properties output (eg:
-    for the response of a PROPFIND request)"""
+class IDAVWidget(IWidget):
+    """A specialized widget used to render DAV properties output."""
 
+
+class ITextDAVWidget(IDAVWidget):
+    """A DAV widget for text values."""
+
+
+class ISequenceDAVWidget(IDAVWidget):
+    """A DAV widget for sequences."""
 

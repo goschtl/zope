@@ -30,18 +30,23 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.26 2004/03/05 22:09:06 jim Exp $
+$Id: utility.py,v 1.27 2004/03/06 04:17:24 garrett Exp $
 """
 __metaclass__ = type
 
 from warnings import warn
-from zope.component import getView, getDefaultViewName
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import ValidationError
+from zope.app import zapi
 from zope.app.interfaces.form import IWidget
 from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.interfaces.form import InputErrors
+from zope.app.interfaces.form import IInputWidget, IDisplayWidget
 from zope.component.interfaces import IViewFactory
+
+# A marker that indicates 'no value' for any of the utility functions that
+# accept a 'value' argument.
+no_value = object()
 
 def _fieldlist(names, schema):
     if not names:
@@ -49,372 +54,230 @@ def _fieldlist(names, schema):
     else:
         fields = [ (name, schema[name]) for name in names ]
     return fields
+    
+    
+def _createWidget(context, field, viewType, request):
+    """Creates a widget given a context, field, and viewType.
+    
+    Uses zapi.getViewProviding to lookup a view for the field and the
+    viewType.
+    """    
+    field = field.bind(context)
+    return zapi.getViewProviding(field, viewType, request)        
 
-def _whine(view, name):
-    url = view.request.URL
-    vname = view.__class__.__name__
-    warn(
-        "View (%s) saved a widget (%s) without a '_widget' suffix.\n"
-        "Url: %s"
-        % (vname, name, url),
-        DeprecationWarning, stacklevel=4,
-        )
-
-class WhiningWidget:
-
-    def __init__(self, view, name, widget):
-        self.__widget = widget
-        self.__whineargs = view, name
-
-    def __whine(self):
-        whineargs = self.__whineargs
-        if whineargs:
-            _whine(*whineargs)
-            self.__whineargs = ()
-
-    def __call__(self, *args, **kw):
-        self.__whine()
-        return self.__widget(*args, **kw)
-
-    def __repr__(self):
-        self.__whine()
-        return `self.__widget`
-
-    def __str__(self):
-        self.__whine()
-        return str(self.__widget)
-
-    def __getattr__(self, name):
-        self.__whine()
-        return getattr(self.__widget, name)
-
-def setUpWidget(view, name, field, value=None, prefix=None,
-                force=False, vname=None, context=None):
-    """Set up a single view widget
+def _widgetHasStickyValue(widget):
+    """Returns True if the widget has a sticky value.
+    
+    A sticky value is input from the user that should not be overridden
+    by an object's current field value. E.g. a user may enter an invalid
+    postal code, submit the form, and receive a validation error - the postal
+    code should be treated as 'sticky' until the user successfully updates
+    the object.
+    """
+    return IInputWidget.providedBy(widget) and widget.hasInput()
+    
+def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
+                ignoreStickyValues=False, context=None):
+    """Sets up a single view widget.
 
     The widget will be an attribute of the view. If there is already
     an attribute of the given name, it must be a widget and it will be
-    initialized with the given value if not None.
+    initialized with the given value if not no_value.
 
     If there isn't already a view attribute of the given name, then a
     widget will be created and assigned to the attribute.
     """
-    # Has a (custom) widget already been defined?
-
-    wname = name+'_widget'
-
-    widget = getattr(view, wname, None)
-    installold = False
-    if widget is None:
-        widget = getattr(view, name, None)
-        if widget is not None:
-            if IViewFactory.providedBy(widget):
-                # Old custom widget definition.
-                # We'll accept it, but we'll whine
-                _whine(view, name)
-
-                # we also need to remember to install the widget
-                installold = True
-            elif IWidget.providedBy(widget):
-                # Old widget definition. We'll accept it, but we'll whine
-                _whine(view, name)
-            else:
-                # we found something else, which is innocent.
-                widget = None
-                installold = True
-
     if context is None:
         context = view.context
-
+    widgetName = name + '_widget'
+    
+    # check if widget already exists
+    widget = getattr(view, widgetName, None)
     if widget is None:
-        # There isn't already a widget, create one
-        field = field.bind(context)
-        if vname is None:
-            vname = getDefaultViewName(field, view.request)
-        widget = getView(field, vname, view.request)
-        setattr(view, wname, widget)
-        if not hasattr(view, name):
-            setattr(view, name, WhiningWidget(view, name, widget))
-
-    else:
-        # We have an attribute of the right name, is it really a widget
-        if IViewFactory.providedBy(widget):
-            # This is a view factory, probably a custom widget.
-            # Try to make it into a widget.
-            field = field.bind(context)
-            widget = widget(field, view.request)
-            if IWidget.providedBy(widget):
-                # Yee ha! We have a widget now, save it
-                setattr(view, wname, widget)
-                if installold or not hasattr(view, name):
-                    setattr(view, name, WhiningWidget(view, name, widget))
-
-        if not IWidget.providedBy(widget):
-            raise TypeError(
-                "The %s view attribute named, %s, should be a widget, "
-                "but isn't."
-                % (view.__class__.__name__, name))
-
-        if not hasattr(view, wname):
-            setattr(view, wname, widget)
-
+        # does not exist - create it
+        widget = _createWidget(context, field, viewType, view.request)
+        setattr(view, widgetName, widget)
+    elif IViewFactory.providedBy(widget):
+        # exists, but is actually a factory - use it to create the widget
+        widget = widget(field.bind(context), view.request)
+        setattr(view, widgetName, widget)
+        
+    # widget must implement IWidget
+    if not IWidget.providedBy(widget):
+        raise TypeError(
+            "Unable to configure a widget for %s - attribute %s does not "
+            "implement IWidget" % (name, widgetName))
+    
     if prefix:
         widget.setPrefix(prefix)
-
-    if force or not widget.hasInput() and value is not None:
-        # XXX: The doc string sez value should not be None; maybe it should not 
-        # be field.missing_value instead?
+        
+    if value is not no_value and (
+        ignoreStickyValues or not _widgetHasStickyValue(widget)):
         widget.setRenderedValue(value)
 
 
-def setUpWidgets(view, schema, prefix=None, force=False,
+def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                  initial={}, names=None, context=None):
-    """Set up widgets for the fields defined by a schema
-
+    """Sets up widgets for the fields defined by a schema.
+    
+    view is the view that will be configured with widgets. 
+        
+    schema is an interface containing the fields that widgets will be
+    created for.
+    
+    prefix is a string that is appended to the widget names in the generated
+    HTML. This can be used to differentiate widgets for different schemas.
+    
+    ignoreStickyValues is a flag that, when True, will cause widget sticky
+    values to be replaced with the context field value or a value specified
+    in initial.
+    
+    initial is a mapping of field names to initial values.
+    
+    names is an optional iterable that provides an ordered list of field
+    names to use. If names is None, the list of fields will be defined by
+    the schema.
+    
+    context provides an alternative context for acquisition.
     """
     for (name, field) in _fieldlist(names, schema):
-        setUpWidget(view, name, field, initial.get(name),
-                    prefix=prefix, force=force, context=context)
+        setUpWidget(view, name, field, viewType, 
+                    value=initial.get(name, no_value),
+                    prefix=prefix,
+                    ignoreStickyValues=ignoreStickyValues, 
+                    context=context)
 
-
-def setUpEditWidgets(view, schema, content=None, prefix=None, force=False,
-                     names=None, context=None):
-    """Set up widgets for the fields defined by a schema
-
-    Initial data is provided by content object attributes.
-    No initial data is provided if the content lacks a named
-    attribute, or if the named attribute value is None.
+def setUpEditWidgets(view, schema, source=None, prefix=None,
+                     ignoreStickyValues=False, names=None, context=None):
+    """Sets up widgets to collect input on a view.
+    
+    See setUpWidgets for details on view, schema, prefix, ignoreStickyValues,
+    names, and context.
+    
+    source, if specified, is an object from which initial widget values are
+    read. If source is not specified, the view context is used as the source.
     """
-    _setUpWidgets(view, schema, content, prefix, force,
-                  names, context, 'display', 'edit')
+    _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
+                      names, context, IDisplayWidget, IInputWidget)
 
-def setUpDisplayWidgets(view, schema, content=None, prefix=None, force=False,
-                        names=None, context=None):
-    """Set up widgets for the fields defined by a schema
-
-    Initial data is provided by content object attributes.
-    No initial data is provided if the content lacks a named
-    attribute, or if the named attribute value is None.
+def setUpDisplayWidgets(view, schema, source=None, prefix=None, 
+                        ignoreStickyValues=False, names=None, context=None):
+    """Sets up widgets to display field values on a view.
+    
+    See setUpWidgets for details on view, schema, prefix, ignoreStickyValues,
+    names, and context.
+    
+    source, if specified, is an object from which initial widget values are
+    read. If source is not specified, the view context is used as the source.
     """
-    _setUpWidgets(view, schema, content, prefix, force,
-                  names, context, 'display', 'display')
+    _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
+                      names, context, IDisplayWidget, IDisplayWidget)
 
-def _setUpWidgets(view, schema, content, prefix, force,
-                  names, context, displayname, editname):
-    # Set up widgets for the fields defined by a schema.
-    #
-    # displayname is the name of the view used for a field that is
-    # marked read-only; editname is the name of the view used for a
-    # field that is editable.
-    #
-    # Initial data is provided by content object attributes.
-    # No initial data is provided if the content lacks a named
-    # attribute, or if the named attribute value is None.
-    #
-    if content is None:
-        if context is None:
-            content = view.context
-        else:
-            content = context
-
+def _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
+                      names, context, displayType, inputType):
+    """A helper function used by setUpDisplayWidget and setUpEditWidget."""
+    if context is None:
+        context = view.context
+    if source is None:
+        source = view.context
     for name, field in _fieldlist(names, schema):
         if field.readonly:
-            vname = displayname
+            viewType = displayType
         else:
-            vname = editname
-
+            viewType = inputType
         try:
-            value = field.get(content)
+            value = field.get(source)
         except AttributeError, v:
-            if v.__class__ != AttributeError:
-                raise
-            value = None
-
-        setUpWidget(view, name, field, value,
-                    prefix=prefix, force=force, vname=vname, context=context)
+            value = no_value
+        setUpWidget(view, name, field, viewType, value, prefix,
+                    ignoreStickyValues, context)
 
 def viewHasInput(view, schema, names=None):
-    """Check if we have any user-entered data defined by a schema.
-
-    Returns True if any schema field related widget has input provided by 
-    the user.
+    """Returns True if the any of the view's widgets contain user input.
+    
+    schema specifies the set of fields that correspond to the view widgets.
+    names can be specified to provide a subset of these fields.
     """
     for name, field in _fieldlist(names, schema):
-        if  getattr(view, name+'_widget').hasInput():
+        if  getattr(view, name + '_widget').hasInput():
             return True
     return False
 
-def applyWidgetsChanges(view, content, schema, strict=True,
-        names=None, set_missing=True, do_not_raise=False,
-        exclude_readonly=False):
-    """Apply changes in widgets to the object.
+def applyWidgetsChanges(view, schema, target=None, names=None):
+    """Updates an object with values from a view's widgets.
     
-    XXX this needs to be thoroughly documented.
+    view contained the widgets that perform the update. By default, the widgets
+    will update the view's context. target can be specified as an alternative
+    object to update.
+    
+    schema contrains the values provided by the widgets.
+    
+    names can be specified to update a subset of the schema constrained values.    
     """
+    
     errors = []
     changed = False
+    if target is None:
+        target = view.context
+
     for name, field in _fieldlist(names, schema):
-        widget = getattr(view, name+'_widget')
-        if exclude_readonly and field.readonly:
-            continue
-        if widget.hasInput():
+        widget = getattr(view, name + '_widget')
+        if IInputWidget.providedBy(widget) and widget.hasInput():
             try:
-                changed = widget.applyChanges(content) or changed
+                changed = widget.applyChanges(target) or changed
             except InputErrors, v:
                 errors.append(v)
-
-    if errors and not do_not_raise:
+    if errors:
         raise WidgetsError(*errors)
 
     return changed
 
-def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
-                   do_not_raise=False, exclude_readonly=False):
-    """Collect the user-entered data defined by a schema
-
-    Data is collected from view widgets. For every field in the
-    schema, we look for a view of the same name and get it's data.
-
-    The data are returned in a mapping from field name to value.
-
-    If the strict argument is true, then all of the data defined by
-    the schema will be returned. If some required data are missing
-    from the input, an error will be raised.
-
-    If set_missing is true and the widget has no data, then the
-    field's value is set to its missing value.  Otherwise, a widget
-    with no data is ignored. (However, if that field is required and
-    strict is true, an error will be raised.)
-
-    E.g., a typical text line widget should have a min_length of 1,
-    and if it is required, it has got to have something in, otherwise
-    WidgetsError is raised.  If it's not required and it's empty, its
-    value will be the appropriate missing value.  Right now this is
-    hardcoded as None, but it should be changed so the field can
-    provide it as an empty string.
-
-    do_not_raise is used if a call to getWidgetsData raises an exception,
-    and you want to make use of the data that *is* available in your
-    error-handler.
-
-    Normally, readonly fields are included. To exclude readonly fields,
-    provide a exclude_readonly keyword argument with a true value.
-
+def getWidgetsData(view, schema, names=None):
+    """Returns user entered data for a set of schema fields.
+    
+    The return value is a map of field names to data values.
+    
+    view is the view containing the widgets. schema is the schema that
+    defines the widget fields. An optional names argument can be provided
+    to specify an alternate list of field values to return. If names is
+    not specified, or is None, getWidgetsData will attempt to return values
+    for all of the fields in the schema.
+    
+    A requested field value may be omitted from the result for one of two
+    reasons:
+        
+        - The field is read only, in which case its widget will not have
+          user input.
+          
+        - The field is editable and not required but its widget does not 
+          contain user input.
+    
+    If a field is required and its widget does not have input, getWidgetsData
+    raises an error.
+    
+    A widget may raise a validation error if it cannot return a value that
+    satisfies its field's contraints.
+    
+    Errors, if any, are collected for all fields and reraised as a single
+    WidgetsError.
     """
-
     result = {}
     errors = []
-
+    
     for name, field in _fieldlist(names, schema):
-        widget = getattr(view, name+'_widget')
-        if exclude_readonly and widget.context.readonly:
-            continue
-        if widget.hasInput():
-            try:
-                result[name] = widget.getInputValue()
-            except InputErrors, v:
-                errors.append(v)
-        elif strict and field.required:
-            errors.append(MissingInputError(name, widget.title,
-                                            'the field is required')
-                          )
-        elif set_missing:
-            result[name] = field.missing_value
-
-    if errors and not do_not_raise:
-        raise WidgetsError(*errors)
-
-    return result
-
-def getWidgetsDataForContent(view, schema, content=None, strict=True,
-                             names=None, set_missing=True):
-    """Collect the user-entered data defined by a schema
-
-    Data is collected from view widgets. For every field in the
-    schema, we look for a view of the same name and get it's data.
-
-    The data are assigned to the given content object.
-
-    If the strict argument is true, then if some required data are
-    missing from the input, an error will be raised.
-
-    If set_missing is true and the widget has no data, then the
-    field's value is set to its missing value.  Otherwise, a widget
-    with no data is ignored. (However, if that field is required and
-    strict is true, an error will be raised.)
-
-    If the strict argument is true, then all of the data defined by
-    the schema will be set, at least for required fields. If some data
-    for required fields are missing from the input, an error will be
-    raised.
-
-    """
-    data = getWidgetsData(view, schema, strict, names)
-
-    if content is None:
-        content = view.context
-
-    errors = []
-
-    for name in data:
-        try:
-            field = schema[name]
-            field.set(content, data[name])
-        except ValidationError, v:
-            errors.append(v)
-
+        widget = getattr(view, name + '_widget')
+        if IInputWidget.providedBy(widget):
+            if widget.hasInput():
+                try:
+                    result[name] = widget.getInputValue()
+                except InputErrors, v:
+                    errors.append(v)
+            elif field.required:
+                errors.append(MissingInputError(
+                    name, widget.title, 'the field is required'))
+            
     if errors:
-        raise WidgetsError(*errors)
-
-def getWidgetsDataFromAdapter(adapter, schema, strict=True,
-                              names=None, set_missing=True,
-                              do_not_raise=True):
-    """Collect the user-entered data defined by a schema
-
-    Data is collected from adapter properties. For every field in the
-    schema, we look for a property of the same name and get it's data.
-
-    The data are returned in a mapping from field name to value.
-
-    If the strict argument is true, then all of the data defined by
-    the schema will be returned. If some required data are missing
-    from the input, an error will be raised.
-
-    If set_missing is true and the widget has no data, then the
-    field's value is set to its missing value.  Otherwise, a widget
-    with no data is ignored. (However, if that field is required and
-    strict is true, an error will be raised.)
-
-    E.g., a typical text line widget should have a min_length of 1,
-    and if it is required, it has got to have something in, otherwise
-    WidgetsError is raised.  If it's not required and it's empty, its
-    value will be the appropriate missing value.  Right now this is
-    hardcoded as None, but it should be changed so the field can
-    provide it as an empty string.
-
-    do_not_raise is used if a call to getWidgetsData raises an exception,
-    and you want to make use of the data that *is* available in your
-    error-handler.
-    """
-
-    result = {}
-    errors = []
-
-    for name, field in _fieldlist(names, schema):
-        prop = getattr(adapter, name, None)
-        if prop is not None:
-            if callable(prop):
-                value = prop()
-            else:
-                value = prop
-            result[name] = value
-        elif strict and field.required:
-            errors.append(MissingInputError(name, name,
-                                            'the field is required'))
-        elif set_missing:
-            result[name] = field.missing_value
-
-    if errors and not do_not_raise:
-        raise WidgetsError(*errors)
-
+        raise WidgetsError(errors, widgetsData=result)
+        
     return result
+

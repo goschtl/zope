@@ -12,25 +12,31 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.9 2003/08/16 17:23:37 sidnei Exp $
+$Id: test_textareawidget.py,v 1.10 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import TextAreaWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
-
+from zope.interface.verify import verifyClass
 
 class TextAreaWidgetTest(BrowserWidgetTest):
+    """Documents and tests the text area widget.
+
+        >>> verifyClass(IInputWidget, TextAreaWidget)
+        True
+    """
 
     _WidgetFactory = TextAreaWidget
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('tag'), 'input')
-        self.assertEqual(self._widget.getValue('type'), 'text')
-        self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('width'), 60)
-        self.assertEqual(self._widget.getValue('height'), 15)
+        self.assertEqual(self._widget.tag, 'input')
+        self.assertEqual(self._widget.type, 'text')
+        self.assertEqual(self._widget.cssClass, '')
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.width, 60)
+        self.assertEqual(self._widget.height, 15)
 
     def testRender(self):
         value = "Foo Value"
@@ -47,7 +53,10 @@ class TextAreaWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(TextAreaWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(TextAreaWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

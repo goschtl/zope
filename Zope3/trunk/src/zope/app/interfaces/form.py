@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.10 2004/02/24 14:19:07 srichter Exp $
+$Id: form.py,v 1.11 2004/03/06 04:17:25 garrett Exp $
 """
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
@@ -54,7 +54,7 @@ InputErrors = WidgetInputError, ValidationError
 
 
 class ErrorContainer(Exception):
-    """A base error class for collecting multiple errors
+    """A base error class for collecting multiple errors.
     """
 
     def append(self, error):
@@ -79,23 +79,57 @@ class ErrorContainer(Exception):
 
 class WidgetsError(ErrorContainer):
     """A collection of errors from widget processing.
+    
+    widgetValues is a map containing the list of values that were obtained
+    from the widget, keyed by field name.
     """
+    
+    def __init__(self, errors, widgetsData={}):
+        Exception.__init__(self, *errors)
+        self.widgetsData = widgetsData
 
 class IWidget(IView):
     """Generically describes the behavior of a widget.
 
-    The widget defines a list of propertyNames, which describes
-    what properties of the widget are available to use for
-    constructing the widget render output.
-
     Note that this level must be still presentation independent.
     """
 
-    propertyNames = Attribute("""This is a list of attributes that are
-                                 defined for the widget.""")
+    name = Attribute(
+        """The uniquewidget name
 
-    def getValue(name):
-        """Look up a Widget configuration setting by name."""
+        This must be unique within a set of widgets.""")
+
+    title = Attribute(
+        """The widget title.
+        
+        Title may be translated for the request.""")
+
+    description = Attribute(
+        """The widget description.
+        
+        Description may be translated for the request.""")
+        
+    visible = Attribute(
+        """A flag indicating whether or not the widget is visible.""")
+       
+    def setRenderedValue(value):
+        """Set the value to be rendered by the widget.
+
+        Calling this method will override any values provided by the user.
+        """
+        
+    def setPrefix(prefix):
+        """Set the name prefix used for the widget
+
+        The widget name is used to identify the widget's data within
+        input data. For example, for HTTP forms, the widget name is
+        used for the form key.
+    """
+
+class IInputWidget(IWidget):
+    """A widget for editing a field value."""
+
+    required = Attribute("Flag indicating whether the field is required")
 
     def validate():
         """Validate the widget data.
@@ -125,7 +159,6 @@ class IWidget(IView):
         See validate() for validation performed.
         """
 
-
     def hasInput():
         """Returns True if the widget has input.
 
@@ -149,29 +182,5 @@ class IWidget(IView):
         based on the field constraints.
         """
 
-    name = Attribute("""The uniquewidget name
-
-        This must be unique within a set of widgets.
-        """)
-
-    title = Attribute(
-        """The widget title; may be translated for the request""")
-
-    description = Attribute(
-        """The widget description; may be translated for the request""")
-
-    required = Attribute("Flag indicating whether the field is required")
-
-    def setRenderedValue(value):
-        """Set the value to be rendered by the widget.
-
-        Calling this method will override any values provided by the user.
-        """
-
-    def setPrefix(prefix):
-        """Set the name prefix used for the widget
-
-        The widget name is used to identify the widget's data within
-        input data. For example, for HTTP forms, the widget name is
-        used for the form key.
-        """
+class IDisplayWidget(IWidget):
+    """A widget for displaying a field value."""

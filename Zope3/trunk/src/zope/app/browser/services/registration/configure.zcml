@@ -2,12 +2,13 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <page
+  <zope:view
       for="zope.app.interfaces.services.registration.IRegistrationStatus"
-      name="edit"
-      class=".RegistrationStatusWidget"
-      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
-      permission="zope.ManageServices" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory=".RegistrationStatusWidget"
+      permission="zope.ManageServices"
+      />
 
   <page
       for="zope.app.interfaces.services.registration.IRegistrationStack"
@@ -34,19 +35,21 @@
       permission="zope.ManageServices"
       attribute="index" />
 
-  <page
-      permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+  <zope:view
       for="zope.app.interfaces.services.registration.IComponentPath"
-      name="edit"
-      class=".ComponentPathWidget" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory=".ComponentPathWidget"
+      permission="zope.Public"
+      />
 
-  <page
-      permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+  <zope:view
       for="zope.app.interfaces.services.registration.IComponentPath"
-      name="display"
-      class=".ComponentPathWidget" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      factory=".ComponentPathWidget"
+      permission="zope.Public"
+      />
 
 <!-- RegistrationManager -->
 

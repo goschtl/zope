@@ -12,26 +12,32 @@
 #
 ##############################################################################
 """
-$Id: test_passwordwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
+$Id: test_passwordwidget.py,v 1.9 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import PasswordWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
-
+from zope.interface.verify import verifyClass
 
 class PasswordWidgetTest(BrowserWidgetTest):
+    """Documents and tests the password widget.
+
+        >>> verifyClass(IInputWidget, PasswordWidget)
+        True
+    """
 
     _WidgetFactory = PasswordWidget
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('tag'), 'input')
-        self.assertEqual(self._widget.getValue('type'), 'password')
-        self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('default'), '')
-        self.assertEqual(self._widget.getValue('displayWidth'), 20)
-        self.assertEqual(self._widget.getValue('displayMaxWidth'), '')
+        self.assertEqual(self._widget.tag, 'input')
+        self.assertEqual(self._widget.type, 'password')
+        self.assertEqual(self._widget.cssClass, '')
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.default, '')
+        self.assertEqual(self._widget.displayWidth, 20)
+        self.assertEqual(self._widget.displayMaxWidth, '')
 
     def testRender(self):
         value = 'Foo Value'
@@ -44,7 +50,10 @@ class PasswordWidgetTest(BrowserWidgetTest):
         self.assertRaises(NotImplementedError, self._widget.hidden)
 
 def test_suite():
-    return unittest.makeSuite(PasswordWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(PasswordWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

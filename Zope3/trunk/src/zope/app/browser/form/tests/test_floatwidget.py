@@ -12,16 +12,24 @@
 #
 ##############################################################################
 """
-$Id: test_floatwidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
+$Id: test_floatwidget.py,v 1.3 2004/03/06 04:17:19 garrett Exp $
 """
-from unittest import main, makeSuite
+import unittest, doctest
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import FloatWidget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
+from zope.interface.verify import verifyClass
+
 from zope.schema import Float
 
 
 class FloatWidgetTest(BrowserWidgetTest):
+    """Documents and tests the float widget.
+        
+        >>> verifyClass(IInputWidget, FloatWidget)
+        True
+    """
 
     _FieldFactory = Float
     _WidgetFactory = FloatWidget
@@ -45,7 +53,10 @@ class FloatWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(FloatWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(FloatWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

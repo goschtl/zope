@@ -12,14 +12,21 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.10 2003/08/16 17:23:37 sidnei Exp $
+$Id: test_radiowidget.py,v 1.11 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import RadioWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.interface.verify import verifyClass
 
 class RadioWidgetTest(BrowserWidgetTest):
+    """Documents and tests the radio widget.
+        
+        >>> verifyClass(IInputWidget, RadioWidget)
+        True
+    """
 
     _WidgetFactory = RadioWidget
 
@@ -28,10 +35,10 @@ class RadioWidgetTest(BrowserWidgetTest):
         self._widget.context.allowed_values = (u'foo', u'bar')
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('cssClass'), "")
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('firstItem'), 0)
-        self.assertEqual(self._widget.getValue('orientation'), 'vertical')
+        self.assertEqual(self._widget.cssClass, "")
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.firstItem, 0)
+        self.assertEqual(self._widget.orientation, 'vertical')
 
 
     def testRenderItem(self):
@@ -117,7 +124,10 @@ class RadioWidgetTest(BrowserWidgetTest):
                               '</div>' % (id, label, id, value))
 
 def test_suite():
-    return unittest.makeSuite(RadioWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(RadioWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

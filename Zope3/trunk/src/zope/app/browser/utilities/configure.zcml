@@ -98,30 +98,39 @@
 
   <!-- Widgets for the MutableSchemaField -->
 
-  <page
-      class="zope.app.browser.component.interfacewidget.InterfaceWidget"
+  <zope:view
       for="zope.app.interfaces.utilities.schema.IMutableSchemaField"
-      name="edit"
-      permission="zope.Public" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory="zope.app.browser.component.interfacewidget.InterfaceWidget"
+      permission="zope.Public"
+      />
 
-  <page
-      class="zope.app.browser.component.interfacewidget.InterfaceDisplayWidget"
+  <zope:view
       for="zope.app.interfaces.utilities.schema.IMutableSchemaField"
-      name="display"
-      permission="zope.Public" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      factory="
+           zope.app.browser.component.interfacewidget.InterfaceDisplayWidget"
+      permission="zope.Public"
+      />
 
-  <page
-      class="zope.app.browser.component.interfacewidget.MultiInterfaceWidget"
+  <zope:view
       for="zope.app.interfaces.utilities.schema.IMutableSchemasField"
-      name="edit"
-      permission="zope.Public" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory="zope.app.browser.component.interfacewidget.MultiInterfaceWidget"
+      permission="zope.Public"
+      />
 
-  <page
-      class="
+  <zope:view
+      for="zope.app.interfaces.utilities.schema.IMutableSchemasField"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      factory="
       zope.app.browser.component.interfacewidget.MultiInterfaceDisplayWidget"
-      for="zope.app.interfaces.utilities.schema.IMutableSchemasField"
-      name="display"
-      permission="zope.Public" />
+      permission="zope.Public"
+      />
 
   <editform
      schema="zope.app.utilities.interfaces.IMutableSchemaContent"

@@ -12,14 +12,21 @@
 #
 ##############################################################################
 """
-$Id: test_multilistwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
+$Id: test_multilistwidget.py,v 1.9 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import MultiListWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.interface.verify import verifyClass
 
 class MultiListWidgetTest(BrowserWidgetTest):
+    """Documents and tests the multi-list widget.
+        
+        >>> verifyClass(IInputWidget, MultiListWidget)
+        True
+    """
 
     _WidgetFactory = MultiListWidget
 
@@ -28,9 +35,9 @@ class MultiListWidgetTest(BrowserWidgetTest):
         self._widget.context.allowed_values = (u'foo', u'bar')
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('cssClass'), "")
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('size'), 5)
+        self.assertEqual(self._widget.cssClass, "")
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.size, 5)
 
 
     def testRenderItem(self):
@@ -70,7 +77,10 @@ class MultiListWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(MultiListWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(MultiListWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

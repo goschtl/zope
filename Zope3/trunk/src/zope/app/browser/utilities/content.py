@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: content.py,v 1.5 2004/03/03 10:38:38 philikon Exp $
+$Id: content.py,v 1.6 2004/03/06 04:17:21 garrett Exp $
 """
 import copy
 from zope.app import zapi
@@ -21,6 +21,7 @@ from zope.app.browser.form.add import AddView
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget
+from zope.app.interfaces.form import IInputWidget
 from zope.app.interfaces.utilities.content import IContentComponentDefinition
 from zope.app.security.permission import PermissionField
 from zope.app.services.servicenames import Utilities
@@ -53,7 +54,8 @@ class ContentComponentPermissionEdit(EditView):
                 title=u"Accessor Permission",
                 default=CheckerPublic,
                 required=False)
-            setUpWidget(self, name+'_get_perm', permField, value=get_perm)
+            setUpWidget(self, name+'_get_perm', permField, IInputWidget,
+                        value=get_perm)
 
             # Create the Mutator Permission Widget for this field
             permField = PermissionField(
@@ -61,7 +63,8 @@ class ContentComponentPermissionEdit(EditView):
                 title=u"Mutator Permission",
                 default=CheckerPublic,
                 required=False)
-            setUpWidget(self, name+'_set_perm', permField, value=set_perm)
+            setUpWidget(self, name+'_set_perm', permField, IInputWidget,
+                        value=set_perm)
 
     def update(self):
         status = ''

@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Wizard View Classes
 
-$Id: addwizard.py,v 1.12 2003/11/21 17:10:10 jim Exp $
+$Id: addwizard.py,v 1.13 2004/03/06 04:17:17 garrett Exp $
 """
 import sys
 
@@ -22,6 +22,7 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets
 from zope.app.interfaces.form import WidgetsError
+from zope.app.interfaces.form import IInputWidget
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import getAdapter
@@ -44,7 +45,7 @@ class AddWizardView(EditWizardView):
         else:
             self.storage = WizardStorage(self.fieldNames, None)
 
-        setUpWidgets(self, self.schema, names=self.fieldNames)
+        setUpWidgets(self, self.schema, IInputWidget, names=self.fieldNames)
 
     def create(self, *args, **kw):
         """Do the actual instantiation."""

@@ -89,14 +89,14 @@
       layer="rotterdam"
       template="navigation_macros.pt"
       />
- 
-  <browser:page
-      permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ISourceText"
-      name="edit"
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory=".editingwidgets.SimpleEditingWidget"
+      permission="zope.Public"
       layer="rotterdam"
-      class=".editingwidgets.SimpleEditingWidget" 
       />
 
 </configure>

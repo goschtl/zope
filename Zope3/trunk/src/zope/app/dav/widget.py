@@ -13,19 +13,24 @@
 ##############################################################################
 """Widgets specific to WebDAV
 
-$Id: widget.py,v 1.6 2004/03/03 17:06:30 srichter Exp $
+$Id: widget.py,v 1.7 2004/03/06 04:17:22 garrett Exp $
 """
-from zope.app.dav.interfaces import ISimpleDAVWidget
+
+from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.interfaces import ITextDAVWidget
+from zope.app.dav.interfaces import ISequenceDAVWidget
+
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
 from zope.app.form.widget import Widget
 from zope.interface import implements
 
-class SimpleDAVWidget(Widget):
-    implements(ISimpleDAVWidget, IWidget, IViewFactory)
+class DAVWidget(Widget):
+
+    implements(IDAVWidget)
 
     def hasInput(self):
-        return 1
+        return True
 
     def getInputValue(self):
         return self._data
@@ -36,10 +41,13 @@ class SimpleDAVWidget(Widget):
     def __call__(self):
         return self.getInputValue()
 
-class TextDAVWidget(SimpleDAVWidget):
-    pass
+class TextDAVWidget(DAVWidget):
 
-class SequenceDAVWidget(SimpleDAVWidget):
+    implements(ITextDAVWidget)
+
+class SequenceDAVWidget(DAVWidget):
+
+    implements(ISequenceDAVWidget)
 
     def __str__(self):
         return u', '.join(self._data)

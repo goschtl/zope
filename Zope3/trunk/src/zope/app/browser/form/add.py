@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.38 2004/02/25 23:02:17 faassen Exp $
+$Id: add.py,v 1.39 2004/03/06 04:17:17 garrett Exp $
 """
 import sys
 
@@ -24,6 +24,7 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.form import IInputWidget
 from zope.app.interfaces.form import WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -42,7 +43,7 @@ class AddView(EditView):
     """
 
     def _setUpWidgets(self):
-        setUpWidgets(self, self.schema, names=self.fieldNames)
+        setUpWidgets(self, self.schema, IInputWidget, names=self.fieldNames)
 
     def update(self):
 
@@ -54,10 +55,7 @@ class AddView(EditView):
 
             self.update_status = ''
             try:
-                data = getWidgetsData(self, self.schema,
-                                      strict=True,
-                                      names=self.fieldNames,
-                                      set_missing=False)
+                data = getWidgetsData(self, self.schema, names=self.fieldNames)
                 self.createAndAdd(data)
             except WidgetsError, errors:
                 self.errors = errors

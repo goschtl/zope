@@ -1,4 +1,4 @@
-###########################################################IC#############
+#############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -66,12 +66,11 @@ class Ob:
 ob = Ob()
 
 
-
-
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
+        XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.browser.form)()
         XMLConfig('meta.zcml', zope.app.publisher.browser)()
 
@@ -88,24 +87,23 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testEditForm(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
-        xmlconfig(StringIO(template % (
-            """
-              <browser:page
-                  permission="zope.Public"
-                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
-                  for="zope.schema.interfaces.ITextLine"
-                  name="edit"
-                  class="zope.app.browser.form.widget.TextWidget"
-                  />
-              <browser:editform
-                  for="zope.app.browser.form.tests.test_directives.IC"
-                  schema="zope.app.browser.form.tests.test_directives.Schema"
-                  name="edit.html"
-                  label="Edit a ZPT page"
-                  fields="text"
-                  permission="zope.Public" />
-            """
-            )))
+        xmlconfig(StringIO(template % ("""
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.interfaces.form.IInputWidget"
+              factory="zope.app.browser.form.widget.TextWidget"
+              permission="zope.Public"
+              />
+
+          <browser:editform
+              for="zope.app.browser.form.tests.test_directives.IC"
+              schema="zope.app.browser.form.tests.test_directives.Schema"
+              name="edit.html"
+              label="Edit a ZPT page"
+              fields="text"
+              permission="zope.Public" />
+            """)))
 
         v = queryView(ob, 'edit.html', request)
         # expect component lookup as standard macros are not configured
@@ -115,28 +113,26 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testEditFormWithMenu(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
-        xmlconfig(StringIO(template % (
-            """
-              <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
-              <browser:page
-                  permission="zope.Public"
-                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
-                  for="zope.schema.interfaces.ITextLine"
-                  name="edit"
-                  class="zope.app.browser.form.widget.TextWidget"
-                  />
-              <browser:editform
-                  for="zope.app.browser.form.tests.test_directives.IC"
-                  schema="zope.app.browser.form.tests.test_directives.Schema"
-                  name="edit.html"
-                  label="Edit a ZPT page"
-                  fields="text"
-                  permission="zope.Public"
-                  menu="test_menu"
-                  title="Test View"
-                  />
-            """
-            )))
+        xmlconfig(StringIO(template % ("""
+          <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.interfaces.form.IInputWidget"
+              factory="zope.app.browser.form.widget.TextWidget"
+              permission="zope.Public"
+              />
+          <browser:editform
+              for="zope.app.browser.form.tests.test_directives.IC"
+              schema="zope.app.browser.form.tests.test_directives.Schema"
+              name="edit.html"
+              label="Edit a ZPT page"
+              fields="text"
+              permission="zope.Public"
+              menu="test_menu"
+              title="Test View"
+              />
+            """)))
 
         v = queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')
@@ -146,26 +142,24 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testEditFormWithUsage(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
-        xmlconfig(StringIO(template % (
-            """
-              <browser:page
-                  permission="zope.Public"
-                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
-                  for="zope.schema.interfaces.ITextLine"
-                  name="edit"
-                  class="zope.app.browser.form.widget.TextWidget"
-                  />
-              <browser:editform
-                  for="zope.app.browser.form.tests.test_directives.IC"
-                  schema="zope.app.browser.form.tests.test_directives.Schema"
-                  name="edit.html"
-                  label="Edit a ZPT page"
-                  fields="text"
-                  permission="zope.Public"
-                  usage="objectview"
-                  />
-            """
-            )))
+        xmlconfig(StringIO(template % ("""
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.interfaces.form.IInputWidget"
+              factory="zope.app.browser.form.widget.TextWidget"
+              permission="zope.Public"
+              />
+          <browser:editform
+              for="zope.app.browser.form.tests.test_directives.IC"
+              schema="zope.app.browser.form.tests.test_directives.Schema"
+              name="edit.html"
+              label="Edit a ZPT page"
+              fields="text"
+              permission="zope.Public"
+              usage="objectview"
+              />
+            """)))
 
         v = queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')
@@ -176,29 +170,27 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testEditFormWithMenuAndUsage(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
-        xmlconfig(StringIO(template % (
-            """
-              <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
-              <browser:page
-                  permission="zope.Public"
-                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
-                  for="zope.schema.interfaces.ITextLine"
-                  name="edit"
-                  class="zope.app.browser.form.widget.TextWidget"
-                  />
-              <browser:editform
-                  for="zope.app.browser.form.tests.test_directives.IC"
-                  schema="zope.app.browser.form.tests.test_directives.Schema"
-                  name="edit.html"
-                  label="Edit a ZPT page"
-                  fields="text"
-                  permission="zope.Public"
-                  menu="test_menu"
-                  title="Test View"
-                  usage="objectview"        
-                  />
-            """
-            )))
+        xmlconfig(StringIO(template % ("""
+          <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.interfaces.form.IInputWidget"
+              factory="zope.app.browser.form.widget.TextWidget"
+              permission="zope.Public"
+              />
+          <browser:editform
+              for="zope.app.browser.form.tests.test_directives.IC"
+              schema="zope.app.browser.form.tests.test_directives.Schema"
+              name="edit.html"
+              label="Edit a ZPT page"
+              fields="text"
+              permission="zope.Public"
+              menu="test_menu"
+              title="Test View"
+              usage="objectview"        
+              />
+            """)))
 
         v = queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')

@@ -1,29 +1,35 @@
-<zope:configure 
-   xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser">
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <page 
-      class=".interfacewidget.InterfaceWidget"
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.app.interfaces.component.IInterfaceField"
-      name="edit"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory=".interfacewidget.InterfaceWidget"
+      permission="zope.Public"
+      />
 
-  <page 
-      class=".interfacewidget.InterfaceDisplayWidget"
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.app.interfaces.component.IInterfaceField"
-      name="display"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      factory=".interfacewidget.InterfaceDisplayWidget"
+      permission="zope.Public"
+      />
 
-  <page 
-      class=".interfacewidget.MultiInterfaceWidget"
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.app.interfaces.component.IInterfacesField"
-      name="edit"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IInputWidget"
+      factory=".interfacewidget.MultiInterfaceWidget"
+      permission="zope.Public"
+      />
 
-  <page 
-      class=".interfacewidget.MultiInterfaceDisplayWidget"
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.app.interfaces.component.IInterfacesField"
-      name="display"
-      permission="zope.Public" />
+      provides="zope.app.interfaces.form.IDisplayWidget"
+      factory=".interfacewidget.MultiInterfaceDisplayWidget"
+      permission="zope.Public"
+      />
 
-</zope:configure>
+</configure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: schema.py,v 1.5 2003/11/12 18:46:30 sidnei Exp $
+$Id: schema.py,v 1.6 2004/03/06 04:17:21 garrett Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.editview import EditView
@@ -83,5 +83,5 @@ class EditMutableSchema(EditView):
         adapted = zapi.getAdapter(self.context, self.schema)
         if adapted is not self.context:
             adapted.__parent__ = self.context
-        setUpEditWidgets(self, self.schema, names=self.fieldNames,
-                         content=self.adapted)
+        setUpEditWidgets(self, self.schema, source=self.adapted,
+                         names=self.fieldNames)

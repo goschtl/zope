@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.65 2004/03/02 18:27:36 philikon Exp $
+$Id: widget.py,v 1.66 2004/03/06 04:17:17 garrett Exp $
 """
 __metaclass__ = type
 
@@ -31,6 +31,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
@@ -50,7 +51,7 @@ class BrowserWidget(Widget, BrowserView):
     labels, titles, and descriptions are translated and the
     errors are rendered with the view machinery, so we need to set up
     a lot of machinery to support translation and views:
-
+        
     >>> setUp() # now we have to set up an error view...
     >>> from zope.app.interfaces.form import IWidgetInputError
     >>> from zope.app.publisher.browser import BrowserView
@@ -138,13 +139,9 @@ class BrowserWidget(Widget, BrowserView):
     Now we clean up.
 
     >>> tearDown()
-
     """
 
     implements(IBrowserWidget)
-
-    propertyNames = (Widget.propertyNames +
-                     ['tag', 'type', 'cssClass', 'extra'])
 
     tag = 'input'
     type = 'text'
@@ -152,16 +149,8 @@ class BrowserWidget(Widget, BrowserView):
     extra = ''
     _missing = ''
     _error = None
-
-    def haveData(self):
-        if traceback.extract_stack()[-2][2] != 'hasInput':
-            warn("haveData is deprecated - use hasInput",
-                DeprecationWarning, 2)
-
-        # XXX - move this implementation to hasInput when deprecation is
-        # removed
-
-        return self.name in self.request.form
+    
+    required = property(lambda self: self.context.required)
 
     def hasInput(self):
         """See IWidget.hasInput.
@@ -174,7 +163,7 @@ class BrowserWidget(Widget, BrowserView):
         forms when their value is 'off' -- in this case the widget will
         need to add a hidden element to signal its presence in the form.
         """
-        return self.haveData()
+        return self.name in self.request.form
 
     def hasValidInput(self):
         try:
@@ -183,14 +172,7 @@ class BrowserWidget(Widget, BrowserView):
         except WidgetInputError:
             return False
 
-    def getData(self):
-        if traceback.extract_stack()[-2][2] != 'getInputValue':
-            warn("getData is deprecated - use getInputValue",
-                DeprecationWarning, 2)
-
-        # XXX - move this implementation to getInputValue when deprecation
-        # is removed
-
+    def getInputValue(self):
         self._error = None
         field = self.context
 
@@ -214,9 +196,6 @@ class BrowserWidget(Widget, BrowserView):
                 self.context.__name__, self.title, v)
             raise self._error
         return value
-
-    def getInputValue(self):
-        return self.getData()
 
     def validate(self):
         self.getInputValue()
@@ -263,7 +242,7 @@ class BrowserWidget(Widget, BrowserView):
     def _showData(self):
         """Returns a value suitable for use as an HTML form value."""
 
-        if self._data is self._data_marker:
+        if not self._renderedValueSet():
             if self.hasInput():
                 try:
                     value = self.getInputValue()
@@ -282,22 +261,22 @@ class BrowserWidget(Widget, BrowserView):
         return self.context.default
 
     def __call__(self):
-        return renderElement(self.getValue('tag'),
-                             type = self.getValue('type'),
-                             name = self.name,
-                             id = self.name,
-                             value = self._showData(),
-                             cssClass = self.getValue('cssClass'),
-                             extra = self.getValue('extra'))
+        return renderElement(self.tag,
+                             type=self.type,
+                             name=self.name,
+                             id=self.name,
+                             value=self._showData(),
+                             cssClass=self.cssClass,
+                             extra=self.extra)
 
     def hidden(self):
-        return renderElement(self.getValue('tag'),
-                             type = 'hidden',
-                             name = self.name,
-                             id = self.name,
-                             value = self._showData(),
-                             cssClass = self.getValue('cssClass'),
-                             extra = self.getValue('extra'))
+        return renderElement(self.tag,
+                             type='hidden',
+                             name=self.name,
+                             id=self.name,
+                             value=self._showData(),
+                             cssClass=self.cssClass,
+                             extra=self.extra)
 
     def render(self, value):
         warn("The widget render method is deprecated",
@@ -335,91 +314,24 @@ class BrowserWidget(Widget, BrowserView):
                                                  self.error())
         else:
             return '<div class="%s">%s</div><div class="field">%s</div>' % (
-                self.labelClass(), self.label(), self()
-                )
+                self.labelClass(), self.label(), self())
+                
 
 class DisplayWidget(BrowserWidget):
 
     def __call__(self):
         return self._showData()
+        
 
 class CheckBoxWidget(BrowserWidget):
-    """Checkbox widget
-
-    >>> from zope.publisher.browser import TestRequest
-    >>> from zope.schema import Bool
-    >>> field = Bool(__name__='foo', title=u'on')
-    >>> request = TestRequest(form={'field.foo.used': u'on',
-    ...                             'field.foo': u'on'})
-    >>> widget = CheckBoxWidget(field, request)
-    >>> widget.hasInput()
-    True
-    >>> widget.getInputValue()
-    True
-
-    >>> def normalize(s):
-    ...   return '\\n  '.join(s.split())
-
-    >>> print normalize( widget() )
-    <input
-      class="hiddenType"
-      id="field.foo.used"
-      name="field.foo.used"
-      type="hidden"
-      value=""
-      />
-      <input
-      class="checkboxType"
-      checked="checked"
-      id="field.foo"
-      name="field.foo"
-      type="checkbox"
-      />
-
-    >>> print normalize( widget.hidden() )
-    <input
-      class="hiddenType"
-      id="field.foo"
-      name="field.foo"
-      type="hidden"
-      value="on"
-      />
-
-    Calling setRenderedValue will change what gets output:
-
-    >>> widget.setRenderedValue(False)
-    >>> print normalize( widget() )
-    <input
-      class="hiddenType"
-      id="field.foo.used"
-      name="field.foo.used"
-      type="hidden"
-      value=""
-      />
-      <input
-      class="checkboxType"
-      id="field.foo"
-      name="field.foo"
-      type="checkbox"
-      />
-
-    When a checkbox is not 'checked', it's value is not
-    sent in the request, so we consider it 'False', which
-    means that 'required' for a boolean field doesn't make
-    much sense in the end.
-
-    >>> field = Bool(__name__='foo', title=u'on', required=True)
-    >>> request = TestRequest(form={'field.foo.used': u''})
-    >>> widget = CheckBoxWidget(field, request)
-    >>> widget.hasInput()
-    True
-    >>> widget.validate()
-    >>> widget.getInputValue()
-    False
+    """A checkbox widget used to display Bool fields.
+    
+    For more detailed documentation, including sample code, see
+    tests/test_checkboxwidget.py.
     """
-    propertyNames = BrowserWidget.propertyNames + \
-                     ['extra', 'default']
-
+    
+    implements(IInputWidget)
+    
     type = 'checkbox'
     default = 0
     extra = ''
@@ -431,18 +343,18 @@ class CheckBoxWidget(BrowserWidget):
         else:
             kw = {}
         return "%s %s" % (
-            renderElement(self.getValue('tag'),
-                          type = 'hidden',
-                          name = self.name+".used",
-                          id = self.name+".used",
+            renderElement(self.tag,
+                          type='hidden',
+                          name=self.name+".used",
+                          id=self.name+".used",
                           value=""
                           ),
-            renderElement(self.getValue('tag'),
-                             type = self.getValue('type'),
-                             name = self.name,
-                             id = self.name,
-                             cssClass = self.getValue('cssClass'),
-                             extra = self.getValue('extra'),
+            renderElement(self.tag,
+                             type=self.type,
+                             name=self.name,
+                             id=self.name,
+                             cssClass=self.cssClass,
+                             extra=self.extra,
                              **kw),
             )
 
@@ -515,9 +427,9 @@ class TextWidget(BrowserWidget):
       />
 
     """
-    propertyNames = (BrowserWidget.propertyNames +
-                     ['displayWidth', 'displayMaxWidth', 'extra', 'default']
-                     )
+    
+    implements(IInputWidget)
+
     default = ''
     displayWidth = 20
     displayMaxWidth = ""
@@ -531,28 +443,28 @@ class TextWidget(BrowserWidget):
         super(TextWidget, self).__init__(*args)
 
     def __call__(self):
-        displayMaxWidth = self.getValue('displayMaxWidth') or 0
+        displayMaxWidth = self.displayMaxWidth or 0
         if displayMaxWidth > 0:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 value = self._showData(),
-                                 cssClass = self.getValue('cssClass'),
-                                 style = self.style,
-                                 size = self.getValue('displayWidth'),
-                                 maxlength = displayMaxWidth,
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 value=self._showData(),
+                                 cssClass=self.cssClass,
+                                 style=self.style,
+                                 size=self.displayWidth,
+                                 maxlength=displayMaxWidth,
+                                 extra=self.extra)
         else:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 value = self._showData(),
-                                 cssClass = self.getValue('cssClass'),
-                                 style = self.style,
-                                 size = self.getValue('displayWidth'),
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 value=self._showData(),
+                                 cssClass=self.cssClass,
+                                 style=self.style,
+                                 size=self.displayWidth,
+                                 extra=self.extra)
 
 class Bytes(BrowserWidget):
 
@@ -565,6 +477,7 @@ class Bytes(BrowserWidget):
                 raise ConversionError("Invalid textual data", v)
 
         return value
+        
 
 class BytesWidget(Bytes, TextWidget):
     """Bytes widget.
@@ -580,11 +493,11 @@ class BytesWidget(Bytes, TextWidget):
     True
     >>> widget.getInputValue()
     'Bob'
-    """
+    """    
 
 class ASCII(Bytes):
-    """ ASCII
-    """
+    """ASCII"""
+    
 
 class ASCIIWidget(BytesWidget):
     """ASCII widget.
@@ -593,6 +506,7 @@ class ASCIIWidget(BytesWidget):
     """
 
 class IntWidget(TextWidget):
+
     displayWidth = 10
 
     def _convert(self, value):
@@ -603,8 +517,11 @@ class IntWidget(TextWidget):
                 return int(value)
             except ValueError, v:
                 raise ConversionError("Invalid integer data", v)
+                
 
 class FloatWidget(TextWidget):
+    
+    implements(IInputWidget)
     displayWidth = 10
 
     def _convert(self, value):
@@ -615,9 +532,11 @@ class FloatWidget(TextWidget):
                 return float(value)
             except ValueError, v:
                 raise ConversionError("Invalid floating point data", v)
+                
 
 class DatetimeWidget(TextWidget):
     """Datetime entry widget."""
+
     displayWidth = 20
 
     def _convert(self, value):
@@ -628,10 +547,12 @@ class DatetimeWidget(TextWidget):
                 return parseDatetimetz(value)
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
+                
 
 class DateWidget(TextWidget):
     """Date entry widget.
     """
+
     displayWidth = 20
 
     def _convert(self, value):
@@ -642,6 +563,7 @@ class DateWidget(TextWidget):
                 return parseDatetimetz(value).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
+                
 
 class TextAreaWidget(BrowserWidget):
     """TextArea widget.
@@ -693,7 +615,8 @@ class TextAreaWidget(BrowserWidget):
     dude!</textarea>
 
     """
-    propertyNames = BrowserWidget.propertyNames + ['width', 'height', 'extra']
+
+    implements(IInputWidget)
 
     default = ""
     width = 60
@@ -715,14 +638,14 @@ class TextAreaWidget(BrowserWidget):
 
     def __call__(self):
         return renderElement("textarea",
-                             name = self.name,
-                             id = self.name,
-                             cssClass = self.getValue('cssClass'),
-                             rows = self.getValue('height'),
-                             cols = self.getValue('width'),
-                             style = self.style,
-                             contents = self._showData(),
-                             extra = self.getValue('extra'))
+                             name=self.name,
+                             id=self.name,
+                             cssClass=self.cssClass,
+                             rows=self.height,
+                             cols=self.width,
+                             style=self.style,
+                             contents=self._showData(),
+                             extra=self.extra)
 
 class BytesAreaWidget(Bytes, TextAreaWidget):
     """BytesArea widget.
@@ -738,64 +661,66 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     True
     >>> widget.getInputValue()
     'Hello\\nworld!'
-
-    """
+    """    
 
 class PasswordWidget(TextWidget):
     """Password Widget"""
-    type='password'
+    
+    type = 'password'
 
     def __call__(self):
-        displayMaxWidth = self.getValue('displayMaxWidth') or 0
+        displayMaxWidth = self.displayMaxWidth or 0
         if displayMaxWidth > 0:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 value = '',
-                                 cssClass = self.getValue('cssClass'),
-                                 style = self.style,
-                                 size = self.getValue('displayWidth'),
-                                 maxlength = displayMaxWidth,
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 value='',
+                                 cssClass=self.cssClass,
+                                 style=self.style,
+                                 size=self.displayWidth,
+                                 maxlength=displayMaxWidth,
+                                 extra=self.extra)
         else:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 value = '',
-                                 cssClass = self.getValue('cssClass'),
-                                 style = self.style,
-                                 size = self.getValue('displayWidth'),
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 value='',
+                                 cssClass=self.cssClass,
+                                 style=self.style,
+                                 size=self.displayWidth,
+                                 extra=self.extra)
 
     def hidden(self):
         raise NotImplementedError(
             'Cannot get a hidden tag for a password field')
+            
 
 class FileWidget(TextWidget):
     """File Widget"""
+    
     type = 'file'
 
     def __call__(self):
-        displayMaxWidth = self.getValue('displayMaxWidth') or 0
+        displayMaxWidth = self.displayMaxWidth or 0
         if displayMaxWidth > 0:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 cssClass = self.getValue('cssClass'),
-                                 size = self.getValue('displayWidth'),
-                                 maxlength = displayMaxWidth,
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=self.displayWidth,
+                                 maxlength=displayMaxWidth,
+                                 extra=self.extra)
         else:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 cssClass = self.getValue('cssClass'),
-                                 size = self.getValue('displayWidth'),
-                                 extra = self.getValue('extra'))
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=self.displayWidth,
+                                 extra=self.extra)
 
     def hasInput(self):
         file = self.request.form.get(self.name)
@@ -834,13 +759,15 @@ class FileWidget(TextWidget):
 
 class ItemsWidget(BrowserWidget):
     """A widget that has a number of items in it."""
-
     # What the heck is this for?
-
+    
+    implements(IInputWidget)
+    
 
 class SingleItemsWidget(ItemsWidget):
     """A widget with a number of items that has only a single
     selectable item."""
+    
     default = ""
     firstItem = False
 
@@ -866,7 +793,7 @@ class SingleItemsWidget(ItemsWidget):
             and len(items) > 0):
             value = items[0]
 
-        cssClass = self.getValue('cssClass')
+        cssClass = self.cssClass
 
         # FIXME: what if we run into multiple items with same value?
         rendered_items = []
@@ -895,20 +822,18 @@ class SingleItemsWidget(ItemsWidget):
 
 class ListWidget(SingleItemsWidget):
     """List widget."""
-    propertyNames = (SingleItemsWidget.propertyNames +
-                     ['firstItem', 'items', 'size', 'extra']
-                     )
+    
     size = 5
 
     def __call__(self):
         renderedItems = self.renderItems(self._showData())
         return renderElement('select',
-                              name = self.name,
-                              id = self.name,
-                              cssClass = self.getValue('cssClass'),
-                              size = self.getValue('size'),
-                              contents = "\n".join(renderedItems),
-                              extra = self.getValue('extra'))
+                              name=self.name,
+                              id=self.name,
+                              cssClass=self.cssClass,
+                              size=self.size,
+                              contents="\n".join(renderedItems),
+                              extra=self.extra)
 
     def renderItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value,
@@ -921,13 +846,12 @@ class ListWidget(SingleItemsWidget):
 
 class RadioWidget(SingleItemsWidget):
     """Radio buttons widget."""
-    propertyNames = SingleItemsWidget.propertyNames +\
-                     ['firstItem', 'orientation']
+    
     orientation = "vertical"
 
     def __call__(self):
         rendered_items = self.renderItems(self._showData())
-        orientation = self.getValue('orientation')
+        orientation = self.orientation
         if orientation == 'horizontal':
             return "&nbsp;&nbsp;".join(rendered_items)
         else:
@@ -970,11 +894,12 @@ class RadioWidget(SingleItemsWidget):
     def row(self):
         return ('<div class="%s"><label for="%s">%s</label></div>'
                 '<div class="field" id="%s">%s</div>' % (
-                self.labelClass(), self.name, self.label(), self.name, self())
-                )
+                self.labelClass(), self.name, self.label(), self.name, self()))
+                
 
 class MultiItemsWidget(ItemsWidget):
     """A widget with a number of items that has multiple selectable items."""
+        
     default = []
 
     def _convert(self, value):
@@ -992,7 +917,7 @@ class MultiItemsWidget(ItemsWidget):
             value = [value]
         name = self.name
         items = self.context.allowed_values
-        cssClass = self.getValue('cssClass')
+        cssClass = self.cssClass
         rendered_items = []
         count = 0
         for item in items:
@@ -1023,7 +948,7 @@ class MultiItemsWidget(ItemsWidget):
 
 class MultiListWidget(MultiItemsWidget):
     """List widget with multiple select."""
-    propertyNames = MultiItemsWidget.propertyNames + ['size', 'extra']
+
     size = 5
 
     def __call__(self):
@@ -1032,10 +957,10 @@ class MultiListWidget(MultiItemsWidget):
                               name=self.name,
                               id=self.name,
                               multiple=None,
-                              cssClass=self.getValue('cssClass'),
-                              size=self.getValue('size'),
+                              cssClass=self.cssClass,
+                              size=self.size,
                               contents="\n".join(rendered_items),
-                              extra=self.getValue('extra'))
+                              extra=self.extra)
 
     def renderItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value)
@@ -1047,12 +972,12 @@ class MultiListWidget(MultiItemsWidget):
 
 class MultiCheckBoxWidget(MultiItemsWidget):
     """Multiple checkbox widget."""
-    propertyNames = MultiItemsWidget.propertyNames + ['orientation']
+
     orientation = "vertical"
 
     def __call__(self):
         rendered_items = self.renderItems(self._showData())
-        orientation = self.getValue('orientation')
+        orientation = self.orientation
         if orientation == 'horizontal':
             return "&nbsp;&nbsp;".join(rendered_items)
         else:
@@ -1074,14 +999,18 @@ class MultiCheckBoxWidget(MultiItemsWidget):
                               id=name,
                               value=value,
                               checked=None) + text
+                              
 
 class SequenceWidget(BrowserWidget):
-    """A sequence of fields.
+    """A widget baseclass for a sequence of fields.
 
     subwidget  - Optional CustomWidget used to generate widgets for the
                  items in the sequence
     """
-    _type = tuple
+
+    implements(IInputWidget)
+
+    _type = tuple    
     _data = () # pre-existing sequence items (from setRenderedValue)
 
     def __init__(self, context, request, subwidget=None):
@@ -1151,7 +1080,8 @@ class SequenceWidget(BrowserWidget):
         if self.subwidget:
             widget = self.subwidget(field, self.request)
         else:
-            widget = zapi.getView(field, 'edit', self.request, self.context)
+            widget = zapi.getViewProviding(field, IInputWidget, self.request,
+                                           context=self.context)
         widget.setPrefix('%s.%d.'%(self.name, i))
         return widget
 
@@ -1275,11 +1205,14 @@ class SequenceWidget(BrowserWidget):
 
         return sequence
 
+
 class TupleSequenceWidget(SequenceWidget):
     pass
 
 class ListSequenceWidget(SequenceWidget):
+    
     _type = list
+
 
 class ObjectWidget(BrowserWidget):
     """A widget over an Interface that contains Fields.
@@ -1289,6 +1222,9 @@ class ObjectWidget(BrowserWidget):
     *_widget   - Optional CustomWidgets used to generate widgets for the
                  fields in this widget
     """
+
+    implements(IInputWidget)
+    
     _object = None      # the object value (from setRenderedValue & request)
     _request_parsed = False
 
@@ -1314,8 +1250,9 @@ class ObjectWidget(BrowserWidget):
 
     def _setUpEditWidgets(self):
         # subwidgets need a new name
-        setUpEditWidgets(self, self.context.schema, content=None,
-            prefix=self.name, names=self.names, context=self.context)
+        setUpEditWidgets(self, self.context.schema, source=self.context,
+                         prefix=self.name, names=self.names, 
+                         context=self.context)
 
     def __call__(self):
         """Render the widget
@@ -1371,8 +1308,8 @@ class ObjectWidget(BrowserWidget):
 
         # apply sub changes, see if there *are* any changes
         # XXX ObjectModifiedEvent here would be nice
-        changes = applyWidgetsChanges(self, value, field.schema,
-            names=self.names, exclude_readonly=True)
+        changes = applyWidgetsChanges(self, field.schema, target=value,
+                                      names=self.names)
 
         # if there's changes, then store the new value on the content
         if changes:
@@ -1400,6 +1337,7 @@ class ObjectWidget(BrowserWidget):
         self._setUpEditWidgets()
         for name, widget in self.getSubWidgets():
             widget.setRenderedValue(getattr(value, name, None))
+            
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
 
@@ -1463,12 +1401,14 @@ def renderElement(tag, **kw):
         return "%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
     else:
         return renderTag(tag, **kw) + " />"
+        
 
 def setUp():
     import zope.app.tests.placelesssetup
     global setUp
     setUp = zope.app.tests.placelesssetup.setUp
     setUp()
+    
 
 def tearDown():
     import zope.app.tests.placelesssetup

@@ -12,27 +12,108 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.9 2003/08/13 21:28:04 garrett Exp $
+$Id: test_checkboxwidget.py,v 1.10 2004/03/06 04:17:18 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import CheckBoxWidget
+from zope.publisher.browser import TestRequest
 from zope.schema import Bool
+from zope.interface.verify import verifyClass
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 
 class CheckBoxWidgetTest(BrowserWidgetTest):
+    """Documents and tests thec checkbox widget.
+        
+        >>> verifyClass(IInputWidget, CheckBoxWidget)
+        True
+        
+    The rest of the this doctest was moved from widget.py to this test module
+    to keep widget.py free of detailed tests. XXX the tests below should be
+    more narrative to highlight the 'story' being told.
+
+    >>> field = Bool(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo.used': u'on',
+    ...                             'field.foo': u'on'})
+    >>> widget = CheckBoxWidget(field, request)
+    >>> widget.hasInput()
+    True
+    >>> widget.getInputValue()
+    True
+
+    >>> def normalize(s):
+    ...   return '\\n  '.join(s.split())
+
+    >>> print normalize( widget() )
+    <input
+      class="hiddenType"
+      id="field.foo.used"
+      name="field.foo.used"
+      type="hidden"
+      value=""
+      />
+      <input
+      class="checkboxType"
+      checked="checked"
+      id="field.foo"
+      name="field.foo"
+      type="checkbox"
+      />
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value="on"
+      />
+
+    Calling setRenderedValue will change what gets output:
+
+    >>> widget.setRenderedValue(False)
+    >>> print normalize( widget() )
+    <input
+      class="hiddenType"
+      id="field.foo.used"
+      name="field.foo.used"
+      type="hidden"
+      value=""
+      />
+      <input
+      class="checkboxType"
+      id="field.foo"
+      name="field.foo"
+      type="checkbox"
+      />
+
+    When a checkbox is not 'checked', it's value is not
+    sent in the request, so we consider it 'False', which
+    means that 'required' for a boolean field doesn't make
+    much sense in the end.
+
+    >>> field = Bool(__name__='foo', title=u'on', required=True)
+    >>> request = TestRequest(form={'field.foo.used': u''})
+    >>> widget = CheckBoxWidget(field, request)
+    >>> widget.hasInput()
+    True
+    >>> widget.validate()
+    >>> widget.getInputValue()
+    False
+    """
 
     _FieldFactory = Bool
     _WidgetFactory = CheckBoxWidget
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('tag'), 'input')
-        self.assertEqual(self._widget.getValue('type'), 'checkbox')
-        self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('default'), 0)
+        self.assertEqual(self._widget.tag, 'input')
+        self.assertEqual(self._widget.type, 'checkbox')
+        self.assertEqual(self._widget.cssClass, '')
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.default, 0)
 
     def testRender(self):
         value = 1
@@ -60,7 +141,10 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(CheckBoxWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(CheckBoxWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

@@ -12,16 +12,25 @@
 #
 ##############################################################################
 """
-$Id: test_intwidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
+$Id: test_intwidget.py,v 1.3 2004/03/06 04:17:19 garrett Exp $
 """
+import unittest, doctest
 from unittest import main, makeSuite
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import IntWidget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
+from zope.interface.verify import verifyClass
+
 from zope.schema import Int
 
 
 class IntWidgetTest(BrowserWidgetTest):
+    """Documents and tests the int widget.
+        
+        >>> verifyClass(IInputWidget, IntWidget)
+        True
+    """
 
     _FieldFactory = Int
     _WidgetFactory = IntWidget
@@ -45,7 +54,10 @@ class IntWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(IntWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(IntWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.64 2004/03/02 18:27:36 philikon Exp $
+$Id: vocabularywidget.py,v 1.65 2004/03/06 04:17:17 garrett Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -164,8 +164,6 @@ class ViewSupport(object, TranslationHook):
 
 class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
     """Convenience base class for vocabulary-based widgets."""
-
-    propertyNames = widget.BrowserWidget.propertyNames + ["extra"]
 
     extra = ""
     type = "vocabulary"
@@ -324,32 +322,29 @@ class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
 
 class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
 
-    propertyNames = (VocabularyWidgetBase.propertyNames
-                     + ['itemTag', 'tag'])
-
     itemTag = 'li'
     tag = 'ol'
 
     def render(self, value):
         if value:
             rendered_items = self.renderItems(value)
-            return widget.renderElement(self.getValue('tag'),
-                                        type=self.getValue('type'),
+            return widget.renderElement(self.tag,
+                                        type=self.type,
                                         name=self.name,
                                         id=self.name,
-                                        cssClass=self.getValue('cssClass'),
+                                        cssClass=self.cssClass,
                                         contents="\n".join(rendered_items),
-                                        extra=self.getValue('extra'))
+                                        extra=self.extra)
         else:
             return self.translate(_msg_missing_multiple_value_display)
 
     def renderItems(self, value):
         L = []
         vocabulary = self.context.vocabulary
-        cssClass = self.getValue('cssClass') or ''
+        cssClass = self.cssClass or ''
         if cssClass:
             cssClass += "-item"
-        tag = self.getValue('itemTag')
+        tag = self.itemTag
         for v in value:
             term = vocabulary.getTerm(v)
             L.append(widget.renderElement(tag,
@@ -403,8 +398,7 @@ class ActionHelper(object, TranslationHook):
 
 
 class VocabularyEditWidgetBase(VocabularyWidgetBase):
-    propertyNames = (VocabularyWidgetBase.propertyNames
-                     + ['size', 'tag'])
+    
     size = 5
     tag = 'select'
 
@@ -446,7 +440,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
             s = self.queryview.renderInput()
             if s:
                 contents.append(self._div('queryinput', s))
-        return self._div(self.getValue('cssClass'), "\n".join(contents),
+        return self._div(self.cssClass, "\n".join(contents),
                          id=self.name)
 
     def _div(self, cssClass, contents, **kw):
@@ -461,7 +455,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
         """Render the list of possible values, with those found in
         'values' being marked as selected."""
 
-        cssClass = self.getValue('cssClass')
+        cssClass = self.cssClass
 
         # multiple items with the same value are not allowed from a
         # vocabulary, so that need not be considered here
@@ -508,7 +502,6 @@ class RadioWidget(SingleDataHelper, VocabularyEditWidgetBase):
     to be small.
     """
     implements(implementedBy(widget.SingleItemsWidget))
-    propertyNames = VocabularyEditWidgetBase.propertyNames + ['firstItem']
     firstItem = False
 
     _msg_no_value = _msg_missing_single_value_edit
@@ -559,7 +552,7 @@ class RadioWidget(SingleDataHelper, VocabularyEditWidgetBase):
             values = ()
         L = self.renderItemsWithValues(values)
         if not self.context.required:
-            cssClass = self.getValue('cssClass')
+            cssClass = self.cssClass
             kwargs = {
                 'value':'',
                 'name':self.name,
@@ -580,7 +573,6 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     to be very large.
     """
     implements(implementedBy(widget.SingleItemsWidget))
-    propertyNames = VocabularyEditWidgetBase.propertyNames + ['firstItem']
     firstItem = False
 
     _msg_no_value = _msg_missing_single_value_edit
@@ -591,8 +583,8 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
         return widget.renderElement('select',
                                     name=self.name,
                                     contents=contents,
-                                    size=self.getValue('size'),
-                                    extra=self.getValue('extra'))
+                                    size=self.size,
+                                    extra=self.extra)
 
     def renderItems(self, value):
         vocabulary = self.context.vocabulary
@@ -637,12 +629,12 @@ class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
         # All we really add here is the ':list' in the name argument
         # to widget.renderElement().
         rendered_items = self.renderItems(value)
-        return widget.renderElement(self.getValue('tag'),
+        return widget.renderElement(self.tag,
                                     name=self.name + ':list',
                                     multiple=None,
-                                    size=self.getValue('size'),
+                                    size=self.size,
                                     contents="\n".join(rendered_items),
-                                    extra=self.getValue('extra'))
+                                    extra=self.extra)
 
 
 class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):

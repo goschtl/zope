@@ -12,17 +12,19 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.5 2003/11/21 17:11:56 jim Exp $
+$Id: test_objectwidget.py,v 1.6 2004/03/06 04:17:19 garrett Exp $
 """
 
-import unittest
+import unittest, doctest
 
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import TextWidget, ObjectWidget
+from zope.interface.verify import verifyClass
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
@@ -33,13 +35,19 @@ class TestContact:
     implements(ITestContact)
 
 class ObjectWidgetTest(BrowserWidgetTest):
+    """Documents and tests the object widget.
+        
+        >>> verifyClass(IInputWidget, ObjectWidget)
+        True
+    """
+
     _FieldFactory = Object
     def _WidgetFactory(self, context, request, **kw):
         kw.update({'factory': TestContact})
         return ObjectWidget(context, request, **kw)
 
     def setUpContent(self, desc=u''):
-        ztapi.browserView(ITextLine, 'edit', TextWidget)
+        ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 
         class ITestContent(Interface):
             foo = self._FieldFactory(
@@ -67,7 +75,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
     def setUp(self):
         BrowserWidgetTest.setUp(self)
         self.field = Object(ITestContact, __name__=u'foo')
-        ztapi.browserView(ITextLine, 'edit', [TextWidget])
+        ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 
     def test_applyChanges(self):
         self.request.form['field.foo.name'] = u'Foo Name'
@@ -124,7 +132,10 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.verifyResult(widget(), check_list)
 
 def test_suite():
-    return unittest.makeSuite(ObjectWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(ObjectWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

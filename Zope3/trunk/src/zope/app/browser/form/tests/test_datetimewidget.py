@@ -12,17 +12,25 @@
 #
 ##############################################################################
 """
-$Id: test_datetimewidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
+$Id: test_datetimewidget.py,v 1.3 2004/03/06 04:17:18 garrett Exp $
 """
-from unittest import main, makeSuite
+import unittest, doctest
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import DatetimeWidget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
+from zope.interface.verify import verifyClass
+
 from zope.schema import Datetime
 
 
 class DatetimeWidgetTest(BrowserWidgetTest):
+    """Documents and tests the datetime widget.
+        
+        >>> verifyClass(IInputWidget, DatetimeWidget)
+        True
+    """
 
     _FieldFactory = Datetime
     _WidgetFactory = DatetimeWidget
@@ -47,8 +55,11 @@ class DatetimeWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(DatetimeWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(DatetimeWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
 

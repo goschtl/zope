@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.18 2004/02/26 10:28:41 dominikhuber Exp $
+"""$Id: test_editview.py,v 1.19 2004/03/06 04:17:18 garrett Exp $
 """
 import unittest
 
@@ -28,7 +28,8 @@ from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.submit import Update
-
+from zope.component.exceptions import ComponentLookupError
+from zope.app.interfaces.form import IInputWidget
 
 class I(Interface):
     foo = TextLine(title=u"Foo")
@@ -102,8 +103,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        ztapi.browserView(ITextLine, 'edit', TextWidget)
-        ztapi.setDefaultViewName(ITextLine, "edit")
+        ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
         ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
 
     def test_setPrefix_and_widgets(self):

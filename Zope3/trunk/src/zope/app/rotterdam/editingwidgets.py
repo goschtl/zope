@@ -12,16 +12,19 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
+$Id: editingwidgets.py,v 1.2 2004/03/06 04:17:26 garrett Exp $
 """
 __metaclass__ = type
 
+from zope.interface import implements
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import BrowserWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 class SimpleEditingWidget(BrowserWidget):
     """Improved textarea editing, with async saving using JavaScript."""
-    propertyNames = BrowserWidget.propertyNames + ['width', 'height', 'extra']
+
+    implements(IInputWidget)
 
     default = ""
     width = 60
@@ -38,24 +41,16 @@ class SimpleEditingWidget(BrowserWidget):
 
     def __call__(self):
         return renderElement("textarea",
-                             name = self.name,
-                             id = self.name,
-                             cssClass = self.getValue('cssClass'),
-                             rows = self.getValue('height'),
-                             cols = self.getValue('width'),
-                             style = self.style,
-                             contents = self._showData(),
-                             extra = self.getValue('extra'))
+                             name=self.name,
+                             id=self.name,
+                             cssClass=self.cssClass,
+                             rows=self.height,
+                             cols=self.width,
+                             style=self.style,
+                             contents=self._showData(),
+                             extra=self.extra)
 
     def contents(self):
         """Make the contents available to the template"""
         return self._showData()
 
-    # XXX: This is ridiculous! This cannot work in any browser well!
-    #def row(self):
-    #    # XXX This was originally set to make a colspan=2 table cell, and
-    #    #     have the label above the text area. Perhaps we should use
-    #    #     different div classes for this case?
-    #    return self.rowTemplate()
-    #    return '<h1>here</h1><div class="label">%s</div><div class="field">%s</div>' % (
-    #            self.label(), self())

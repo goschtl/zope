@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.23 2004/03/05 22:08:55 jim Exp $
+$Id: editwizard.py,v 1.24 2004/03/06 04:17:17 garrett Exp $
 """
 
 from zope.component import getAdapter
@@ -79,9 +79,8 @@ class EditWizardView(EditView):
             self.storage = WizardStorage(self.fieldNames, adapted)
 
         # Add all our widgets as attributes on this view
-        setUpEditWidgets(
-            self, self.schema, names=self.fieldNames, content=self.storage
-            )
+        setUpEditWidgets(self, self.schema, source=self.storage,
+                         names=self.fieldNames)
 
     def widgets(self):
         return [getattr(self, name+'_widget')
@@ -124,10 +123,7 @@ class EditWizardView(EditView):
         # Validate the current pane, and set self.errors
         try:
             names = self.currentPane().names
-            data = getWidgetsData(
-                self, self.schema, strict=True, set_missing=True,
-                names=names, exclude_readonly=True
-                )
+            data = getWidgetsData(self, self.schema, names=names)
             self.errors = {}
         except WidgetsError, errors:
             x = {}
@@ -149,10 +145,7 @@ class EditWizardView(EditView):
                     # Data from panes other than the current one is still
                     # stuck in request
                     self.storage.update(getWidgetsData(
-                            self, self.schema, strict=True, set_missing=True,
-                            names=self.fieldNames, exclude_readonly=True
-                            ))
-
+                        self, self.schema, names=self.fieldNames))
                 if self.apply_update(self.storage):
                     self.feedback = _(u'No changes to save')
                 else:
@@ -186,10 +179,8 @@ class EditWizardView(EditView):
         for k,v in storage.items():
             getattr(self,k).setRenderedValue(v)
         content = self.adapted
-        changed = applyWidgetsChanges(
-                self, content, self.schema,
-                names=self.fieldNames, exclude_readonly=True
-                )
+        changed = applyWidgetsChanges(self, self.schema, target=content,
+                names=self.fieldNames)
         # We should not generate events when an adapter is used.
         # That's the adapter's job
         if changed and self.context is self.adapted:

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.19 2004/01/20 20:15:26 fdrake Exp $
+$Id: test_browserwidget.py,v 1.20 2004/03/06 04:17:18 garrett Exp $
 """
 
 from zope.interface import Interface, implements
@@ -68,10 +68,10 @@ class BrowserWidgetTest(PlacelessSetup,
         self.failIf(self._widget.hasInput())
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('tag'), 'input')
-        self.assertEqual(self._widget.getValue('type'), 'text')
-        self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('extra'), '')
+        self.assertEqual(self._widget.tag, 'input')
+        self.assertEqual(self._widget.type, 'text')
+        self.assertEqual(self._widget.cssClass, '')
+        self.assertEqual(self._widget.extra, '')
 
     def testRender(self):
         value = 'Foo Value'

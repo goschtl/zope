@@ -12,14 +12,21 @@
 #
 ##############################################################################
 """
-$Id: test_listwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
+$Id: test_listwidget.py,v 1.9 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import ListWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
+from zope.interface.verify import verifyClass
 
 class ListWidgetTest(BrowserWidgetTest):
+    """Documents and tests the list widget.
+        
+        >>> verifyClass(IInputWidget, ListWidget)
+        True
+    """
 
     def setUp(self):
         BrowserWidgetTest.setUp(self)
@@ -28,10 +35,10 @@ class ListWidgetTest(BrowserWidgetTest):
     _WidgetFactory = ListWidget
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('cssClass'), "")
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('firstItem'), 0)
-        self.assertEqual(self._widget.getValue('size'), 5)
+        self.assertEqual(self._widget.cssClass, "")
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.firstItem, 0)
+        self.assertEqual(self._widget.size, 5)
 
 
     def testRenderItem(self):
@@ -71,7 +78,10 @@ class ListWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(ListWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(ListWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

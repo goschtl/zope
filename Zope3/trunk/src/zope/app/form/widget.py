@@ -12,39 +12,56 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.11 2004/02/19 20:15:17 philikon Exp $
+$Id: widget.py,v 1.12 2004/03/06 04:17:24 garrett Exp $
 """
 import traceback
 from warnings import warn
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
+from zope.component import queryService
 from zope.interface import implements
 from zope.app.services.servicenames import Translation
-from zope.component import getService
 
 __metaclass__ = type
 
 class Widget:
-    """Mix-in class providing some functionality common accross view types
-    """
+    """Mixin class providing functionality common accross view types."""
+    
     implements(IWidget)
 
     _prefix = 'field.'
     _data_marker = object()
     _data = _data_marker
+    
+    visible = True
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
         self.name = self._prefix + context.__name__
-
-    # See IWidget
-    propertyNames = []
-
-    def getValue(self, name):
-        'See IWidget'
-        if name in self.propertyNames:
-            return getattr(self, name, None)
+        
+    title = property(lambda self: self._translate(
+        self.context.title))
+    
+    description = property(lambda self: self._translate(
+        self.context.description))
+    
+    def _translate(self, text):
+        ts = queryService(self.context, Translation)
+        if ts is not None:
+            # The domain is not that important here, since the title is most 
+            # likely a message id carrying the domain.
+            return (ts.translate(text, "zope", context=self.request) or text)
+        else:
+            return text
+            
+    def _renderedValueSet(self):
+        """Returns True if the the widget's rendered value has been set.
+        
+        This is a convenience method that widgets can use to check whether
+        or not setRenderedValue was called.
+        """
+        return self._data is not self._data_marker
 
     def setPrefix(self, prefix):
         if not prefix.endswith("."):
@@ -52,52 +69,8 @@ class Widget:
         self._prefix = prefix
         self.name = prefix + self.context.__name__
 
-    def setData(self, value):
-        if traceback.extract_stack()[-2][2] != 'setRenderedValue':
-            warn("setData is deprecated - use setRenderedValue",
-                DeprecationWarning, 2)
-
-        # XXX - move this implementation to setRenderedValue when
-        # deprecation is removed
-
-        self._data = value
-
     def setRenderedValue(self, value):
-        self.setData(value)
-
-    def hasInput(self):
-        raise TypeError("hasInput has not been implemented")
-
-    def hasValidInput(self):
-        raise TypeError("hasValidInput has not been implemented")
-
-    def getInputValue(self):
-        raise TypeError("getInputValue has not been implemented")
-
-    def validate(self):
-        raise TypeError("validate has not been implemented")
-
-    def applyChanges(self, content):
-        raise TypeError("applyChanges has not been implemented")
-
-    def title(self):
-        ts = getService(self.context, Translation)
-        # Note that the domain is not that important here, since the title
-        # is most likely a message id carrying the domain anyways.
-        context_title = self.context.title
-        return (ts.translate(context_title, "zope", context=self.request)
-                or context_title)
-    title = property(title)
-
-    def description(self):
-        ts = getService(self.context, Translation)
-        # hopefully the description is a message id with domain (?).
-        context_desc = self.context.description
-        return (ts.translate(context_desc, "zope", context=self.request)
-                or context_desc)
-    description = property(description)
-
-    required = property(lambda self: self.context.required)
+        self._data = value
 
 class CustomWidgetFactory:
     """Custom Widget Factory.

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.2 2004/03/01 15:02:54 philikon Exp $
+$Id: instance.py,v 1.3 2004/03/06 04:17:26 garrett Exp $
 """
 from zope.component import getAdapter, getService
 from zope.proxy import removeAllProxies
@@ -23,6 +23,7 @@ from zope.schema import getFields
 
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
+from zope.app.interfaces.form import IInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.services.servicenames import Workflows
@@ -46,7 +47,7 @@ class ManagementView(BrowserView):
         for name, field in getFields(schema).items():
             # setUpWidget() does not mutate the field, so it is ok.
             field = trustedRemoveSecurityProxy(field)
-            setUpWidget(self, name, field,
+            setUpWidget(self, name, field, IInputWidget,
                         value=getattr(workflow.data, name))
         
     def _extractContentInfo(self, item):
@@ -141,9 +142,8 @@ class ManagementView(BrowserView):
 
         if Update in self.request and workflow.data is not None:
             schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
-            changed = applyWidgetsChanges(
-                self, workflow.data, schema, names=getFields(schema).keys(),
-                exclude_readonly=True)
+            changed = applyWidgetsChanges(self, schema, target=workflow.data, 
+                names=getFields(schema).keys())
             if changed:
                 status = _('Updated Workflow Data.')
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.2 2004/03/05 15:57:05 eddala Exp $
+$Id: contentworkflow.py,v 1.3 2004/03/06 04:17:26 garrett Exp $
 """
 from zope.app.introspector import interfaceToName
 from zope.app.component.interface import nameToInterface
@@ -21,6 +21,7 @@ from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.services.servicenames import Workflows
+from zope.app.interfaces.form import IInputWidget
 from zope.component import getService
 from zope.interface import Interface
 from zope.publisher.browser import BrowserView
@@ -57,7 +58,7 @@ class ManageContentProcessRegistry(BrowserView):
 
     def __init__(self, *args):
         super(ManageContentProcessRegistry, self).__init__(*args)
-        setUpWidgets(self, IContentProcessMapping)
+        setUpWidgets(self, IContentProcessMapping, IInputWidget)
         self.process_based = int(self.request.get('process_based', '1'))
 
     def getProcessInterfacesMapping(self):

@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: __init__.py,v 1.3 2004/02/25 23:02:19 faassen Exp $
+$Id: __init__.py,v 1.4 2004/03/06 04:17:20 garrett Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,8 @@ from zope.publisher.browser import BrowserView
 
 from zope.app.services.adapter import IAdapterRegistration
 from zope.app.interfaces.services.registration import IRegistration
-from zope.app.form.utility import getWidgetsDataForContent
+from zope.app.interfaces.form import IInputWidget
+from zope.app.form.utility import applyWidgetsChanges
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.services.adapter import AdapterRegistration
@@ -41,16 +42,15 @@ class AdapterRegistrationAdd(BrowserView):
 
     def __init__(self, *args):
         super(AdapterRegistrationAdd, self).__init__(*args)
-        setUpWidgets(self, IAdapterRegistration)
+        setUpWidgets(self, IAdapterRegistration, IInputWidget)
 
     def refresh(self):
         if "FINISH" in self.request:
-            data = getWidgetsData(self, IAdapterRegistration, strict=True)
+            data = getWidgetsData(self, IAdapterRegistration)
             registration = AdapterRegistration(**data)
             publish(self.context.context, ObjectCreatedEvent(registration))
             registration = self.context.add(registration)
-            getWidgetsDataForContent(self, IRegistration, registration,
-                                     strict=False)
+            applyWidgetsChanges(view, IRegistration, target=registration) 
             self.request.response.redirect(self.context.nextURL())
             return False
 

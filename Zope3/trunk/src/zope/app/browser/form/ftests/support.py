@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: support.py,v 1.4 2004/03/02 18:27:37 philikon Exp $
+$Id: support.py,v 1.5 2004/03/06 04:17:18 garrett Exp $
 """
 
 import re
@@ -47,20 +47,22 @@ def defineSecurity(class_, schema):
         """ % (class_, schema, schema))
 
 
-def defineWidgetView(name, field_interface, widget_class):
+def defineWidgetView(field_interface, widget_class, view_type):
     field_interface = field_interface.__identifier__
     widget_class = '%s.%s' % (widget_class.__module__, widget_class.__name__)
+    view_type = '%s.%s' % (view_type.__module__, view_type.__name__)
     xmlconfig.string("""
-        <configure xmlns="http://namespaces.zope.org/browser">
-          <include package="zope.app.publisher.browser" file="meta.zcml" />
-          <page
-            name="%s"
-            permission="zope.Public"
-            allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+        <configure xmlns="http://namespaces.zope.org/zope">
+          <include package="zope.app.component" file="meta.zcml" />
+          <view
             for="%s"
-            class="%s" />
+            type="zope.publisher.interfaces.browser.IBrowserRequest"
+            factory="%s"
+            provides="%s"
+            permission="zope.Public"
+            />
         </configure>
-        """ % (name, field_interface, widget_class))
+        """ % (field_interface, widget_class, view_type))
 
 
 def patternExists(pattern, source, flags=0):
@@ -69,7 +71,7 @@ def patternExists(pattern, source, flags=0):
 
 def validationErrorExists(field, error_msg, source):
     return patternExists(
-        'name="field.%s".*%s' % (field, error_msg), source)
+        'name="field.%s".*%s' % (field, error_msg), source, re.DOTALL)
 
 
 def missingInputErrorExists(field, source):

@@ -46,37 +46,37 @@
   
   -->
   
-  <defaultView
-      for="zope.schema.interfaces.IField"
-      name="view"
-      permission="zope.Public"
+  <view
       type="zope.publisher.interfaces.http.IHTTPRequest"
+      for="zope.schema.interfaces.IText"
+      provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
+      permission="zope.Public"
+      />
   
-  <defaultView
+  <view
+      type="zope.publisher.interfaces.http.IHTTPRequest"
       for="zope.schema.interfaces.ITextLine"
-      name="view"
-      permission="zope.Public"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
+      permission="zope.Public"
+      />
   
-  <defaultView
+  <view
+      type="zope.publisher.interfaces.http.IHTTPRequest"
       for="zope.schema.interfaces.IDatetime"
-      name="view"
-      permission="zope.Public"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
-  
-  <defaultView
-      for="zope.schema.interfaces.ISequence"
-      name="view"
       permission="zope.Public"
+      />
+  
+  <view
       type="zope.publisher.interfaces.http.IHTTPRequest"
+      for="zope.schema.interfaces.ISequence"
+      provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.SequenceDAVWidget"
-      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
+      permission="zope.Public"
+      />
   
   <adapter
       provides="zope.app.dav.interfaces.IDAVSchema"

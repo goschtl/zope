@@ -12,16 +12,24 @@
 #
 ##############################################################################
 """
-$Id: test_filewidget.py,v 1.7 2003/08/13 21:28:04 garrett Exp $
+$Id: test_filewidget.py,v 1.8 2004/03/06 04:17:19 garrett Exp $
 """
-import unittest
+import unittest, doctest
 
 from StringIO import StringIO
+from zope.app.interfaces.form import IInputWidget
 from zope.app.browser.form.widget import FileWidget
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
+from zope.interface.verify import verifyClass
+
 class FileWidgetTest(BrowserWidgetTest):
+    """Documents and tests the file widget.
+    
+        >>> verifyClass(IInputWidget, FileWidget)
+        True
+    """
 
     _WidgetFactory = FileWidget
 
@@ -33,13 +41,13 @@ class FileWidgetTest(BrowserWidgetTest):
         self._widget.request.form['field.foo'] = file
 
     def testProperties(self):
-        self.assertEqual(self._widget.getValue('tag'), 'input')
-        self.assertEqual(self._widget.getValue('type'), 'file')
-        self.assertEqual(self._widget.getValue('cssClass'), '')
-        self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('default'), '')
-        self.assertEqual(self._widget.getValue('displayWidth'), 20)
-        self.assertEqual(self._widget.getValue('displayMaxWidth'), '')
+        self.assertEqual(self._widget.tag, 'input')
+        self.assertEqual(self._widget.type, 'file')
+        self.assertEqual(self._widget.cssClass, '')
+        self.assertEqual(self._widget.extra, '')
+        self.assertEqual(self._widget.default, '')
+        self.assertEqual(self._widget.displayWidth, 20)
+        self.assertEqual(self._widget.displayMaxWidth, '')
 
     def testRender(self):
         value = 'Foo Value'
@@ -57,7 +65,10 @@ class FileWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return unittest.makeSuite(FileWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(FileWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

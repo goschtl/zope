@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.15 2004/03/03 17:06:31 srichter Exp $
+$Id: test_propfind.py,v 1.16 2004/03/06 04:17:23 garrett Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -40,7 +40,9 @@ from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 
 from zope.app.dav import propfind
-from zope.app.dav.interfaces import IDAVSchema, IDAVNamespace
+from zope.app.dav.interfaces import IDAVSchema
+from zope.app.dav.interfaces import IDAVNamespace
+from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 
 import zope.app.location
@@ -135,14 +137,10 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                        [AbsoluteURL])
         ps.provideView(None, 'PROPFIND', IHTTPRequest,
                        [propfind.PROPFIND])
-        ztapi.browserView(IText, 'view', [TextDAVWidget])
-        ztapi.browserView(ITextLine, 'view', [TextDAVWidget])
-        ztapi.browserView(IDatetime, 'view', [TextDAVWidget])
-        ztapi.browserView(ISequence, 'view', [SequenceDAVWidget])
-        ztapi.setDefaultViewName(IText, 'view')
-        ztapi.setDefaultViewName(ITextLine, 'view')
-        ztapi.setDefaultViewName(IDatetime, 'view')
-        ztapi.setDefaultViewName(ISequence, 'view')
+        ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(ITextLine, TextDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(IDatetime, TextDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)

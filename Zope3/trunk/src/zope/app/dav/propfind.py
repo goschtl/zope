@@ -11,14 +11,15 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.15 2004/03/05 22:09:01 jim Exp $
+$Id: propfind.py,v 1.16 2004/03/06 04:17:22 garrett Exp $
 """
 from xml.dom import minidom
 from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.form.utility import setUpWidgets, getWidgetsDataFromAdapter
+from zope.app.dav.interfaces import IDAVWidget
+from zope.app.form.utility import setUpWidgets
 
 from interfaces import IDAVNamespace
 
@@ -105,10 +106,18 @@ class PROPFIND(object):
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
                 adapter = zapi.queryAdapter(self.context, iface, None)
-                initial = getWidgetsDataFromAdapter(
-                    adapter, iface, names=avail.get(ns))
-                setUpWidgets(self, iface, initial=initial, \
-                             names=avail.get(ns), force=True)
+                initial = {}
+                for name in avail.get(ns):
+                    attr = getattr(adapter, name, None)
+                    if attr is not None:
+                        if callable(attr):
+                            value = attr()
+                        else:
+                            value = attr
+                        initial[name] = value
+                setUpWidgets(self, iface, IDAVWidget,
+                    ignoreStickyValues=True, initial=initial, 
+                    names=avail.get(ns))
                 for p in avail.get(ns):
                     el = response.createElement('%s' % p )
                     if ns is not None and ns != self.default_ns:

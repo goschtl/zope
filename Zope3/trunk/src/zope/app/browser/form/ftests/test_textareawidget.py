@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textareawidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
+$Id: test_textareawidget.py,v 1.5 2004/03/06 04:17:18 garrett Exp $
 """
 
 import unittest
@@ -114,8 +114,8 @@ class Test(BrowserTestCase):
             'field.s1' : 'foo' }) # not unicode
 
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(patternExists(
-            'name="field.s1".*Wrong type', response.getBody()))
+        self.assert_(validationErrorExists(
+            's1', 'Wrong type', response.getBody()))
 
 
     def test_missing_value(self):
@@ -166,8 +166,8 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'a' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(patternExists(
-            'name="field.s1".*Too short', response.getBody()))
+        self.assert_(validationErrorExists(
+            's1', 'Too short', response.getBody()))
 
         # submit value for s1 that is too long
         response = self.publish('/test/edit.html', form={

@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.50 2004/03/05 22:08:55 jim Exp $
+$Id: editview.py,v 1.51 2004/03/06 04:17:17 garrett Exp $
 """
 from datetime import datetime
 
@@ -66,8 +66,8 @@ class EditView(BrowserView):
                 adapted = LocationProxy(adapted)
             adapted.__parent__ = self.context
         self.adapted = adapted
-        setUpEditWidgets(self, self.schema, names=self.fieldNames,
-                         content=self.adapted)
+        setUpEditWidgets(self, self.schema, source=self.adapted, 
+                         names=self.fieldNames)
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
@@ -95,8 +95,8 @@ class EditView(BrowserView):
         if Update in self.request:
             changed = False
             try:
-                changed = applyWidgetsChanges(self, content, self.schema,
-                    names=self.fieldNames, exclude_readonly=True)
+                changed = applyWidgetsChanges(self, self.schema,
+                    target=content, names=self.fieldNames)
                 # We should not generate events when an adapter is used.
                 # That's the adapter's job.
                 if changed and self.context is self.adapted:
@@ -105,8 +105,9 @@ class EditView(BrowserView):
                 self.errors = errors
                 status = _("An error occured.")
             else:
-                setUpEditWidgets(self, self.schema, force=1,
-                                 names=self.fieldNames, content=self.adapted)
+                setUpEditWidgets(self, self.schema, source=self.adapted,
+                                 ignoreStickyValues=True, 
+                                 names=self.fieldNames)
                 if changed:
                     self.changed()
                     formatter = self.request.locale.dates.getFormatter(

@@ -12,25 +12,36 @@
 #
 ##############################################################################
 """
-$Id: test_sequencewidget.py,v 1.6 2004/01/05 11:24:58 philikon Exp $
+$Id: test_sequencewidget.py,v 1.7 2004/03/06 04:17:19 garrett Exp $
 """
 
-import unittest
+import unittest, doctest
 
 from zope.app.tests import ztapi
 from zope.app.browser.form.widget import TextWidget
 from zope.schema.interfaces import ITextLine, ValidationError
 from zope.publisher.browser import TestRequest
 from zope.schema import Tuple, List, TextLine
-from zope.app.browser.form.widget import TupleSequenceWidget, \
-    ListSequenceWidget
-
+from zope.app.interfaces.form import IInputWidget
+from zope.app.browser.form.widget import TupleSequenceWidget
+from zope.app.browser.form.widget import ListSequenceWidget
+from zope.interface.verify import verifyClass
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 class SequenceWidgetTest(BrowserWidgetTest):
+    """Documents and tests the tuple and list (sequence) widgets.
+    
+        >>> verifyClass(IInputWidget, TupleSequenceWidget)
+        True
+        >>> verifyClass(IInputWidget, ListSequenceWidget)
+        True
+    """
+
     def _FieldFactory(self, **kw):
-        kw.update({'__name__': u'foo', 'value_type': TextLine(__name__=u'bar')})
+        kw.update({
+            '__name__': u'foo', 
+            'value_type': TextLine(__name__=u'bar')})
         return Tuple(**kw)
     _WidgetFactory = TupleSequenceWidget
 
@@ -39,9 +50,10 @@ class SequenceWidgetTest(BrowserWidgetTest):
 
     def setUp(self):
         BrowserWidgetTest.setUp(self)
-        self.field = Tuple(__name__=u'foo',
+        self.field = Tuple(
+            __name__=u'foo',
             value_type=TextLine(__name__=u'bar'))
-        ztapi.browserView(ITextLine, 'edit', TextWidget)
+        ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 
     def test_haveNoData(self):
         self.failIf(self._widget.hasInput())
@@ -51,7 +63,9 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.failUnless(self._widget.hasInput())
 
     def test_list(self):
-        self.field = List(__name__=u'foo', value_type=TextLine(__name__=u'bar'))
+        self.field = List(
+            __name__=u'foo',
+            value_type=TextLine(__name__=u'bar'))
         request = TestRequest()
         widget = ListSequenceWidget(self.field, request)
         self.failIf(widget.hasInput())
@@ -167,7 +181,10 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.verifyResult(s, check_list, inorder=True)
 
 def test_suite():
-    return unittest.makeSuite(SequenceWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(SequenceWidgetTest),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

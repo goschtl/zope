@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_imageupload.py,v 1.2 2004/02/24 16:49:49 philikon Exp $
+$Id: test_imageupload.py,v 1.3 2004/03/06 04:17:23 garrett Exp $
 """
 
 import os
@@ -24,6 +24,7 @@ import unittest
 from zope.app.tests import ztapi
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.widget import BytesWidget, BytesAreaWidget
+from zope.app.interfaces.form import IInputWidget
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import IField, IBytesLine, IBytes
@@ -43,9 +44,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         super(Test, self).setUp()
 
         # Configure the widget views
-        ztapi.setDefaultViewName(IField, 'edit')
-        ztapi.browserView(IBytesLine, 'edit', BytesWidget)
-        ztapi.browserView(IBytes, 'edit', BytesAreaWidget)
+        ztapi.browserViewProviding(IBytesLine, BytesWidget, IInputWidget)
+        ztapi.browserViewProviding(IBytes, BytesAreaWidget, IInputWidget)
 
         icondir = os.path.split(zope.app.file.browser.__file__)[0]
         data = open(os.path.join(icondir, 'image_icon.gif'), 'rb').read()
