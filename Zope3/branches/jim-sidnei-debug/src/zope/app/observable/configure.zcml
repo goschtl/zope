@@ -1,8 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-<subscriber
-    factory=".observerevent.observerEventNotifier"
-    for="zope.app.event.interfaces.IObjectEvent" 
-    />
-
-</configure>
