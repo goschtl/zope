@@ -48,7 +48,7 @@ def checkPermission(context, permission_id):
 
     >>> tearDown()
     """
-    if permission_id == CheckerPublic:
+    if permission_id is CheckerPublic:
         return
     if not zapi.queryUtility(IPermission, permission_id, context=context):
         raise ValueError("Undefined permission id", permission_id)
