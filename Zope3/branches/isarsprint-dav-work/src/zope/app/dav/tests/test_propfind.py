@@ -30,6 +30,7 @@ from zope.app import zapi
 from zope.app.tests import ztapi
 
 from zope.app.traversing.api import traverse
+from zope.app.container.interfaces import IReadContainer
 from zope.publisher.browser import TestRequest
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
@@ -216,242 +217,112 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 400)
         self.assertEqual(pfind.getDepth(), 'full')
-
+        
+    def _checkPropfind(self, obj, req, expect, depth='0', resp=None):
+        body = '''<?xml version="1.0" ?>
+        <propfind xmlns="DAV:">%s</propfind>
+        ''' % req
+        request = _createRequest(body=body, headers={
+            'Content-type': 'text/xml', 'Depth': depth})
+        resource_url = str(zapi.getView(obj, 'absolute_url', request))
+        if IReadContainer.providedBy(obj):
+            resource_url += '/'
+        if resp is None:
+            resp = '''<?xml version="1.0" ?>
+            <multistatus xmlns="DAV:"><response>
+            <href>%%(resource_url)s</href>
+            <propstat>%s
+            <status>HTTP/1.1 200 OK</status>
+            </propstat></response></multistatus>
+            '''
+        expect = resp % expect
+        expect = expect % {'resource_url': resource_url}
+        pfind = propfind.PROPFIND(obj, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), depth)
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
+        
     def test_davpropdctitle(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         dc = IZopeDublinCore(zpt)
         dc.title = u'Test Title'
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <prop xmlns:DC="http://www.purl.org/dc/1.1">
+        req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:title />
-        </prop>
-        </propfind>
-        '''
-
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0">Test Title</title>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url}
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
-
+        </prop>'''
+        
+        expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0">Test Title</title></prop>'''
+        self._checkPropfind(zpt, req, expect)
+        
     def test_davpropdccreated(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         dc = IZopeDublinCore(zpt)
         dc.created = datetime.utcnow()
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <prop xmlns:DC="http://www.purl.org/dc/1.1">
-        <DC:created />
-        </prop>
-        </propfind>
-        '''
-
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <created xmlns="a0">%(created)s</created>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'created': dc.created }
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
+        <DC:created /></prop>'''
+        expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <created xmlns="a0">%s</created></prop>''' % dc.created
+        self._checkPropfind(zpt, req, expect)
 
     def test_davpropdcsubjects(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         dc = IZopeDublinCore(zpt)
         dc.subjects = (u'Bla', u'Ble', u'Bli')
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <prop xmlns:DC="http://www.purl.org/dc/1.1">
-        <DC:subjects />
-        </prop>
-        </propfind>
-        '''
+        req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
+        <DC:subjects /></prop>'''
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <subjects xmlns="a0">%(subjects)s</subjects>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'subjects': u', '.join(dc.subjects) }
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <subjects xmlns="a0">%s</subjects></prop>''' % u', '.join(dc.subjects)
+        self._checkPropfind(zpt, req, expect)
 
     def test_davpropname(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         oprops = IDAVOpaqueNamespaces(zpt)
         oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <propname/>
-        </propfind>
-        '''
+        req = '''<propname/>'''
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        props_xml = ''
+        expect = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
-            props_xml += '<%s xmlns="a0"/>' % p
-        props_xml += '<egg xmlns="a1"/>'
+            expect += '<%s xmlns="a0"/>' % p
+        expect += '<egg xmlns="a1"/>'
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
-            props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
+            expect += '<%s/>' % p
+        expect = '''
         <prop xmlns:a0="http://www.purl.org/dc/1.1" xmlns:a1="http://foo/bar">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'props_xml':props_xml}
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        %s</prop>''' % expect
+        self._checkPropfind(zpt, req, expect)
 
     def test_davpropnamefolderdepth0(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <propname/>
-        </propfind>
-        '''
+        req = '''<propname/>'''
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(folder, 'absolute_url', request))
-        resource_url = "%s/" % resource_url
-        props_xml = ''
+        expect = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
-            props_xml += '<%s xmlns="a0"/>' % p
+            expect += '<%s xmlns="a0"/>' % p
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
-            props_xml += '<%s/>' % p
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'props_xml':props_xml}
-
-        pfind = propfind.PROPFIND(folder, request)
-
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+            expect += '<%s/>' % p
+        expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
+        %s</prop>''' % expect
+        self._checkPropfind(folder, req, expect)
 
     def test_davpropnamefolderdepth1(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <propname/>
-        </propfind>
-        '''
+        req = '''<propname/>'''
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'1'})
-
-        resource_url = str(zapi.getView(folder, 'absolute_url', request))
-        resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
@@ -460,74 +331,24 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         for p in props:
             props_xml += '<%s/>' % p
 
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)s1</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)s2</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>''' % {
-            'resource_url': resource_url,
-            'props_xml': props_xml}
+        expect = ''
+        for p in ('', '1', '2', 'sub1/'):
+            expect += '''
+            <response><href>%(path)s</href>
+            <propstat><prop xmlns:a0="http://www.purl.org/dc/1.1">
+            %(props_xml)s</prop><status>HTTP/1.1 200 OK</status>
+            </propstat></response>
+            ''' % {'path': '%(resource_url)s' + p, 'props_xml': props_xml}
 
-
-        pfind = propfind.PROPFIND(folder, request)
-
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '1')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        resp = '''<?xml version="1.0" ?>
+        <multistatus xmlns="DAV:">%s</multistatus>'''
+        self._checkPropfind(folder, req, expect, depth='1', resp=resp)
 
     def test_davpropnamefolderdepthinfinity(self):
         root = self.rootFolder
         folder = traverse(root, 'folder')
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <propname/>
-        </propfind>
-        '''
+        req = '''<propname/>'''
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'infinity'})
-
-        resource_url = str(zapi.getView(folder, 'absolute_url', request))
-        resource_url = "%s/" % resource_url
         props_xml = ''
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
@@ -536,134 +357,30 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         for p in props:
             props_xml += '<%s/>' % p
 
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)s1</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)s2</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/1</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/2</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/sub1/</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        <response>
-        <href>%(resource_url)ssub1/sub1/last</href>
-        <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>''' % {
-            'resource_url': resource_url,
-            'props_xml': props_xml}
+        expect = ''
+        for p in ('', '1', '2', 'sub1/', 'sub1/1', 'sub1/2', 'sub1/sub1/',
+                  'sub1/sub1/last'):
+            expect += '''
+            <response><href>%(path)s</href>
+            <propstat><prop xmlns:a0="http://www.purl.org/dc/1.1">
+            %(props_xml)s</prop><status>HTTP/1.1 200 OK</status>
+            </propstat></response>
+            ''' % {'path': '%(resource_url)s' + p, 'props_xml': props_xml}
 
-        pfind = propfind.PROPFIND(folder, request)
-
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), 'infinity')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        resp = '''<?xml version="1.0" ?>
+        <multistatus xmlns="DAV:">%s</multistatus>'''
+        self._checkPropfind(folder, req, expect, depth='infinity', resp=resp)
         
     def test_propfind_opaque_simple(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         oprops = IDAVOpaqueNamespaces(zpt)
         oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <prop xmlns:foo="http://foo/bar">
-        <foo:egg />
-        </prop>
-        </propfind>
-        '''
+        req = '<prop xmlns:foo="http://foo/bar"><foo:egg /></prop>'
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://foo/bar">
-        <egg xmlns="a0">spam</egg>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url }
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        expect = '''<prop xmlns:a0="http://foo/bar"><egg xmlns="a0">spam</egg>
+        </prop>'''
+        self._checkPropfind(zpt, req, expect)
 
     def test_propfind_opaque_complex(self):
         root = self.rootFolder
@@ -673,43 +390,13 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
             '<egg xmlns:bacon="http://bacon">\n'
             '  <bacon:pork>crispy</bacon:pork>\n'
             '</egg>\n'}
-        body = '''<?xml version="1.0" ?>
-        <propfind xmlns="DAV:">
-        <prop xmlns:foo="http://foo/bar">
-        <foo:egg />
-        </prop>
-        </propfind>
-        '''
+        req = '<prop xmlns:foo="http://foo/bar"><foo:egg /></prop>'
 
-        request = _createRequest(body=body,
-                                 headers={'Content-type':'text/xml',
-                                          'Depth':'0'})
-
-        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
-        <multistatus xmlns="DAV:">
-        <response>
-        <href>%(resource_url)s</href>
-        <propstat>
-        <prop xmlns:a0="http://foo/bar">
+        expect = '''<prop xmlns:a0="http://foo/bar">
         <egg xmlns="a0" xmlns:bacon="http://bacon">
             <bacon:pork>crispy</bacon:pork>
-        </egg>
-        </prop>
-        <status>HTTP/1.1 200 OK</status>
-        </propstat>
-        </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url }
-
-        pfind = propfind.PROPFIND(zpt, request)
-        pfind.PROPFIND()
-        # Check HTTP Response
-        self.assertEqual(request.response.getStatus(), 207)
-        self.assertEqual(pfind.getDepth(), '0')
-        s1 = normalize_xml(request.response._body)
-        s2 = normalize_xml(expect)
-        self.assertEqual(s1, s2)
+        </egg></prop>'''
+        self._checkPropfind(zpt, req, expect)
 
 def test_suite():
     return TestSuite((
