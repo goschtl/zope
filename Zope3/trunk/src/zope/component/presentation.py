@@ -11,13 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Global Presentation Service
 
-XXX longer description goes here.
+This module contains an adapter-registry-based global presentation
+service. Additionally it contains all registration classes that can occur:
 
-$Id: presentation.py,v 1.12 2004/04/09 11:36:14 jim Exp $
+  - SkinRegistration
+
+  - LayerRegistration
+
+  - DefaultSkinRegistration
+
+  - PresentationRegistration
+
+$Id: presentation.py,v 1.13 2004/04/15 13:26:17 srichter Exp $
 """
-
 from types import ClassType
 from zope.component.interfaces import IPresentationService, IComponentRegistry
 from zope.component.service import GlobalService
@@ -191,29 +199,6 @@ class GlobalPresentationService(GlobalService):
        True
        >>> v.context is c
        True
-
-       Let's now test 'getRegisteredMatching()'. This function returns a
-       dictionary with the keys being the layers.
-       
-       >>> match = s.getRegisteredMatching(request=IRequest)
-       >>> match.keys()
-       ['custom']
-       >>> matcheditems = list(match['custom'])
-       >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
-       >>> matcheditems[0] == \
-       ...     (IContact, ITraverse, (IRequest,), u'', Traverser)
-       True
-
-       >>> match = s.getRegisteredMatching(IContact, IRequest)
-       >>> matcheditems = list(match['custom'])
-       >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
-       >>> matcheditems[0] == \
-       ...     (IContact, ITraverse, (IRequest,), u'', Traverser)
-       True
-
-       >>> s.getRegisteredMatching(request=IRequest, layers=['default']) == {}
-       True
-
        """
 
     zope.interface.implements(IPresentationService,
@@ -357,7 +342,7 @@ class GlobalPresentationService(GlobalService):
             raise ValueError("Can\'t redefine layer", name)
 
         self._layers[name] = GlobalLayer(self, name)
-        self._registrations['layer'] = LayerRegistration(name, info)
+        self._registrations[('layer', name)] = LayerRegistration(name, info)
 
     def provideAdapter(self, request_type, factory, name=u'', contexts=(), 
                        providing=zope.interface.Interface, layer='default',
@@ -441,39 +426,6 @@ class GlobalPresentationService(GlobalService):
         return default
 
 
-    def getRegisteredMatching(self,
-                              object=None,
-                              request=None,
-                              name=None,
-                              providing=zope.interface.Interface,
-                              layers=None):
-        """Search for registered presentation components
-
-        'object' is usually an interface, but can also be a class, since one
-        can also create a view for a particular class/implementation.
-
-        'layers' is expected to be none or a list of existing layer names. If
-        you specified a layer that is not known, a 'KeyError' will be raised.
-
-        There is probably no need to ever change 'providing' to something
-        else.
-        """
-        assert request is not None
-        
-        results = {}
-        
-        if layers is None:
-            layers = self._layers.keys()
-
-        for layername in layers:
-            layer = self._layers[layername]
-            views = tuple(layer.getRegisteredMatching(object, providing,
-                                                      name, (request,)))
-            if views:
-                results[layername] = views
-                
-        return results
-
     ############################################################
     #
     # The following methods are provided for convenience and for
@@ -545,53 +497,62 @@ class GlobalLayer(Layer):
     def __reduce__(self):
         return GL, (self.__parent__, self.__name__)
 
-class SkinRegistration(object):
 
+class SkinRegistration(object):
+    """Registration for a global skin."""
+    
     def __init__(self, skin, layers, info):
         self.skin, self.layers, self.doc = skin, layers, info
 
     def __repr__(self):
-        "For testing"
+        """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
             self.skin, self.layers, self.doc) 
 
+
+
 class LayerRegistration(object):
+    """Registration for a global layer."""
 
     def __init__(self, layer, info):
         self.layer, self.doc = layer, info
 
     def __repr__(self):
-        "For testing"
+        """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
             self.layer, self.doc) 
 
+
 class DefaultSkinRegistration(object):
+    """Registration for the global default skin."""
 
     def __init__(self, skin, info):
         self.skin, self.doc = skin, info
 
     def __repr__(self):
-        "For testing"
+        """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
             self.skin, self.doc) 
 
+
 class PresentationRegistration(object):
+    """Registration for a single presentation component."""
 
     def __init__(self, layer, required, provided, name, factory, info):
         (self.layer, self.required, self.provided, self.name,
-         self.factory, self.info
+         self.factory, self.doc
          ) = layer, required, provided, name, factory, info
 
     def __repr__(self):
-        "For testing"
+        """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%s, %r, %r, %r, %r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
             self.layer,
             tuple([getattr(s, '__name__', None) for s in self.required]),
             self.provided.__name__,
             self.name, getattr(self.factory, '__name__', self.factory),
-            self.info)
+            self.doc)
 
