@@ -10,14 +10,13 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-"""
-    Unit tests for Favorites.
+""" Unit tests for Favorites.
 
 $Id$
 """
-__version__ = "$Revision$"[11:-2]
-import Zope
+
 from unittest import TestCase, TestSuite, makeSuite, main
+import Zope
 
 from Products.CMFCore.tests.base.dummy import \
      DummyTool as DummyURLTool, \

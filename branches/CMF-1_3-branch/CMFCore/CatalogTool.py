@@ -10,12 +10,10 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
+""" Basic portal catalog.
 
-"""Basic portal catalog.
 $Id$
 """
-__version__='$Revision$'[11:-2]
-
 
 import os
 from utils import UniqueObject, _checkPermission, _getAuthenticatedUser

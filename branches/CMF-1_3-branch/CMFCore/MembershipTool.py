@@ -10,11 +10,10 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
+""" Basic membership tool.
 
-"""Basic membership tool.
 $Id$
 """
-__version__='$Revision$'[11:-2]
 
 from string import find
 from utils import UniqueObject, _getAuthenticatedUser, _checkPermission
