@@ -13,27 +13,24 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.15 2003/06/16 15:55:48 gvanrossum Exp $
+$Id: committer.py,v 1.16 2003/07/29 16:53:43 fdrake Exp $
 """
 
 import os
-import shutil
 
 from zope.component import getAdapter, queryAdapter, getService
-from zope.xmlpickle import dumps, loads
+from zope.xmlpickle import loads
 from zope.configuration.name import resolve
 from zope.proxy import removeAllProxies
 
 from zope.fssync.metadata import Metadata
 from zope.fssync import fsutil
 
-from zope.app.interfaces.fssync \
-     import IObjectEntry, IObjectDirectory, IObjectFile
+from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
 
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.container import IContainer, IZopeContainer
-from zope.app.fssync.classes import Default
-from zope.app.traversing import getPath, traverseName, getName
+from zope.app.traversing import traverseName, getName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
@@ -69,6 +66,16 @@ class Checker(object):
         or a non-existing file marked as added).
         """
         return self.conflicts
+
+    def conflict(self, fspath):
+        """Helper to report a conflict.
+
+        Conflicts can be retrieved by calling errors().
+        """
+        if self.raise_on_conflicts:
+            raise SynchronizationError(fspath)
+        if fspath not in self.conflicts:
+            self.conflicts.append(fspath)
 
     def check(self, container, name, fspath):
         """Compare an object or object tree from the filesystem.
@@ -180,16 +187,6 @@ class Checker(object):
                 if curdata != olddata:
                     self.conflict(fspath)
 
-    def conflict(self, fspath):
-        """Helper to report a conflict.
-
-        Conflicts can be retrieved by calling errors().
-        """
-        if self.raise_on_conflicts:
-            raise SynchronizationError(fspath)
-        if fspath not in self.conflicts:
-            self.conflicts.append(fspath)
-
 class Committer(object):
     """Commit changes from the filesystem to the object database.
 
@@ -254,11 +251,12 @@ class Committer(object):
     def synch_dir(self, container, fspath):
         """Helper to synchronize a directory."""
         adapter = get_adapter(container)
-        nameset = {}
+        nameset = {} # name --> absolute path
         if IObjectDirectory.isImplementedBy(adapter):
             for name, obj in adapter.contents():
                 nameset[name] = os.path.join(fspath, name)
         else:
+            # Annotations, Extra
             for name in container:
                 nameset[name] = os.path.join(fspath, name)
         for name in self.metadata.getnames(fspath):
@@ -267,7 +265,9 @@ class Committer(object):
         names_paths = nameset.items()
         names_paths.sort()
         subdirs = []
-        # Do the non-directories first
+        # Do the non-directories first.
+        # This ensures that the objects are created before dealing
+        # with Annotations/Extra for those objects.
         for name, path in names_paths:
             if os.path.isdir(path):
                 subdirs.append((name, path))
