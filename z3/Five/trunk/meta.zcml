@@ -67,27 +67,27 @@
 
     </meta:complexDirective>
 
+  </meta:directives>
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
     <meta:directive
        name="layer"
-       schema="zope.app.component.metadirectives.ILayerDirective"
-       handler="zope.app.component.metaconfigure.layer"
+       schema="zope.app.publisher.browser.metadirectives.ILayerDirective"
+       handler="zope.app.publisher.browser.metaconfigure.layer"
        />
 
      <meta:directive
        name="skin"
-       schema="zope.app.component.metadirectives.ISkinDirective"
-       handler="zope.app.component.metaconfigure.skin"
+       schema="zope.app.publisher.browser.metadirectives.ISkinDirective"
+       handler="zope.app.publisher.browser.metaconfigure.skin"
        />
 
      <meta:directive
        name="defaultSkin"
-       schema="zope.app.component.metadirectives.IDefaultSkinDirective"
-       handler="zope.app.component.metaconfigure.defaultSkin"
+       schema="zope.app.publisher.browser.metadirectives.IDefaultSkinDirective"
+       handler="zope.app.publisher.browser.metaconfigure.defaultSkin"
        />
-
-  </meta:directives>
-
-  <meta:directives namespace="http://namespaces.zope.org/browser">
 
     <meta:directive
         name="page"

@@ -22,20 +22,6 @@ content
 Declare interface and permissions on content object. Declares Zope 2
 permissions.
 
-defaultSkin
------------
-
-Declare the default skin used.
-
-interface
----------
-Define an interface in ZCML.
-
-layer
------
-
-Declare a layer.
-
 permission 
 ----------
 
@@ -81,6 +67,20 @@ pages
 
 Declare multiple page views for an interface. Permissions are Zope 2
 permissions.
+
+defaultSkin
+-----------
+
+Declare the default skin used.
+
+interface
+---------
+Define an interface in ZCML.
+
+layer
+-----
+
+Declare a layer.
 
 five ``http://namespaces.zope.org/five``
 ========================================
