@@ -1,13 +1,15 @@
-Post CMF 1,4.2
+Post CMF 1.4.2
 
   Bug Fixes
-  
+
+    - CMFCore.PortalFolder: Explicitly declare base interfaces.
+
     - CMFCore.FSMetadata: the "acquire" flag for permission mappings was
       not converted to an int;  '0' was therefore coming through as true.
 
     - CMFCore.CookieCrumbler: No longer disregards an existing cookie auth
       token for DAV requests (like PROPFIND) that occur over the main HTTP
-      port. Eliminates additional user challenges for browser-based DAV 
+      port. Eliminates additional user challenges for browser-based DAV
       clients like MS WebFolders.
 
     - CMFCore.MembershipTool: Don't swallow ConflictError during wrapUser.
@@ -95,7 +97,7 @@ CMF 1.4beta1 (2003/04/28)
     - Made TypeInformation objects derive from CMFCore.ActionProviderBase:
       their actions are now TALES expressions, and they have conditions
       (like all the "tool actions").
-      
+
     - zpt skins (CMFDefault): Added i18n attributes.
       See INSTALL.txt for installing internationalization support.
       (Collector #122, thanks to Gitte Wange for her contribution)
@@ -126,13 +128,13 @@ CMF 1.4beta1 (2003/04/28)
       The head check in bodyfinder is removed. In most cases you want to call
       bodyfinder only if html_headcheck is true.
 
-    - Added FSFile skin object, in order to allow .swf files (et al.) in 
+    - Added FSFile skin object, in order to allow .swf files (et al.) in
       skins
 
     - Added 'listMetaTags' skin method, which filters the DublinCore
       metadata into a form suitable for inclusion as <meta> tags.
 
-    - Added .metadata file for FSObjects, which allows the easy addition of 
+    - Added .metadata file for FSObjects, which allows the easy addition of
       more features without adding lots and lots of files. ConfigParser format.
 
     - Added proxy roles to FS Python Scripts and FS DTML Methods via the proxy
@@ -175,7 +177,7 @@ CMF 1.4beta1 (2003/04/28)
 
     - MembershipTool (CMFDefault): Fixed acquisition bug. (Collector #102)
 
-    - Skinnable: Changed docstring for setupCurrentSkin and added 
+    - Skinnable: Changed docstring for setupCurrentSkin and added
       docstring to changeSkin: the latter is now used to set skin
       manually mid-request. (Collector #27)
 
@@ -190,12 +192,12 @@ CMF 1.4beta1 (2003/04/28)
 
     - Fixed some minor buglets. (Collector #80, #94 and #95)
 
-    - Ensure that a couple of calls to string.split only split into a 
-      maximum of two parts. 
+    - Ensure that a couple of calls to string.split only split into a
+      maximum of two parts.
       (Collector #82)
 
     - Enabled the CMF to be installed in a PRODUCTS_PATH.
-      In doing so, also made it easier to move CMF sites between 
+      In doing so, also made it easier to move CMF sites between
       Windows and Unix.
       (Collector #64)
 
