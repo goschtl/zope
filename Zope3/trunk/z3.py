@@ -14,16 +14,14 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.9 2002/11/25 17:08:32 jeremy Exp $
+$Id: z3.py,v 1.10 2002/11/26 15:09:59 jeremy Exp $
 """
 
 import os, sys
-import ThreadedAsync
 
 basepath = filter(None, sys.path)
 
 def run(argv=sys.argv):
-
     # Refuse to run without principals.zcml
     if not os.path.exists('principals.zcml'):
         print """ERROR: You need to create principals.zcml
@@ -57,6 +55,7 @@ def run(argv=sys.argv):
     from Zope.Configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 
+    import ThreadedAsync
     try:
         ThreadedAsync.loop()
     except KeyboardInterrupt:
