@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.5 2002/12/20 19:46:46 jeremy Exp $
+$Id: testStartupDirectives.py,v 1.6 2002/12/20 19:52:57 jeremy Exp $
 """
 
 import unittest, sys, tempfile, os
@@ -54,11 +54,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(sd.useFileStorage(ContextStub(), file=_fsname), [])
         self.assertEqual(sd._zodb._storage.__class__.__name__, 'FileStorage')
         self.assertEqual(sd._zodb._storage._file_name, _fsname)
-        sd._zodb.close()
+        sd.close()
 
         self.assertEqual(sd.useMappingStorage(ContextStub()), [])
         self.assertEqual(sd._zodb._storage.__class__.__name__,
                          'MappingStorage')
+        sd.close()
 
 
     def testUseLog(self):
