@@ -55,6 +55,11 @@ view_names = [
     'flamingo2.html',
     'condor.html']
 
+public_view_names = [
+    'public_attribute_page',
+    'public_template_page',
+    'public_template_class_page']
+
 class SecurityTestCase(RestrictedPythonTest):
     
     def afterSetUp(self):
@@ -76,6 +81,11 @@ class SecurityTestCase(RestrictedPythonTest):
             self.check(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
 
+    def test_public_permission(self):
+        for view_name in public_view_names:
+            self.check(
+                'context.restrictedTraverse("testoid/%s")()' % view_name)
+            
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """A functional test for security actually involving the publisher.
     """
@@ -101,6 +111,11 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
             # we expect that we get a 200 Ok
             self.assertEqual(response.getStatus(), 200)
 
+    def test_public_permission(self):
+        for view_name in public_view_names:
+            response = self.publish('/test_folder_1_/testoid/%s' % view_name)
+            self.assertEqual(response.getStatus(), 200)
+            
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SecurityTestCase))

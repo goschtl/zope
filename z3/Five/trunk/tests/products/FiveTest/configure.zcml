@@ -125,4 +125,29 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- a publicly accessible page, attribute, template, template/class -->
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="eagle"
+    name="public_attribute_page"
+    permission="zope.Public"
+    />
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    template="owl.pt"
+    name="public_template_page"
+    permission="zope.Public"
+    />
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    template="falcon.pt"
+    name="public_template_class_page"
+    permission="zope.Public"
+    />
+
 </configure>
