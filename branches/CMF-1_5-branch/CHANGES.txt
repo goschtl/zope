@@ -2,6 +2,10 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - ActionProviderBase: Modified exceptions raised by getActionInfo().
+      Now Unauthorized is raised if at least one Action was found but the user
+      is not allowed to access any of them.
+
     - RegistrationTool: Generated passwords no longer contain 'OQ0Il1'.
 
     - The permalink feature is now turned off by default and may be turned 
@@ -13,7 +17,6 @@ CMF 1.5.0rc1 (unreleased)
       (http://www.example.com/permalink/isAvailable). Returns '1' or '0'.
       Also removed the badly designed 'tal:on-error' directive in 
       'main_template'.
-
 
 CMF 1.5.0beta2 (2004/09/27)
 
