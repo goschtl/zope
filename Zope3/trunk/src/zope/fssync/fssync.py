@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.40 2003/08/11 22:02:09 fdrake Exp $
+$Id: fssync.py,v 1.41 2003/08/12 20:49:15 fdrake Exp $
 """
 
 import os
@@ -39,7 +39,7 @@ from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import dumps
 
-from zope.fssync.metadata import Metadata
+from zope.fssync.metadata import Metadata, dump_entries
 from zope.fssync.fsmerger import FSMerger
 from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
@@ -525,7 +525,7 @@ class FSSync(object):
             if not exists(efile):
                 if not exists(zopedir):
                     os.makedirs(zopedir)
-                    self.network.writefile(dumps({}), efile)
+                    self.network.writefile(dump_entries({}), efile)
             print "A", join(path, "")
         else:
             print "A", path
@@ -545,11 +545,7 @@ class FSSync(object):
         if exists(path):
             raise Error("%r already exists" % path)
         os.mkdir(path)
-        mdmanager = self.metadata.getmanager(dir)
-        entry = mdmanager.getentry(name)
-        entry["flag"] = "added"
-        mdmanager.flush()
-        print "A", path
+        self.add(path)
 
     def remove(self, path):
         if exists(path):
