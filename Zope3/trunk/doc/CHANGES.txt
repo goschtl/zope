@@ -96,6 +96,13 @@ Zope Changes
       o Made Zope-specific Vocabulary Registry use utilities. The vocabulary
         directive now registers vocabulary factories as utilities.
     
+      o Roles are now stored as utilities. While doing this, I also schemafied
+        the IRole interface to use 'id', 'title', 'description' instead of
+        'getId()', 'getTitle()' and 'getDescription()'. This was done for
+        global and local roles. Local roles only have a valid 'id' if they are
+        registered "active" and the id value is the registration name for the
+        utility.
+
     - Converted local Workflow Definitions from being registerable components
       to be local utilities. Therefore, **a lot** of boiler-plate registration
       code became obselete and was removed. Using utilities is a huge
