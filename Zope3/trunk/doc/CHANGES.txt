@@ -192,6 +192,8 @@ Zope Changes
 
     Bug Fixes
 
+      - contents.html no longer breaks when no IAdding is available.
+
       - Fixed the page that reports "system errors", errors that
         represent a failure of the system, rather than the user, to set
         the response status to 500.

@@ -59,7 +59,7 @@
         <td><br /></td>
         <td>
             <input type="text" name="id"
-                   tal:condition="view/namesAccepted"
+                   tal:condition="view/nameAllowed"
                    tal:attributes="value request/id | nothing"
             />
             <input type="submit" value="Add" 
