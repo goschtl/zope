@@ -22,6 +22,7 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.security.checker import CheckerPublic
 
+from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
 from zope.event import notify
@@ -30,11 +31,11 @@ from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IState, IStateContained
-from zope.app.workflow.stateful.interfaces import ITransition, ITransitionContained, INITIAL
+from zope.app.workflow.stateful.interfaces import ITransition, \
+     ITransitionContained, INITIAL
 from zope.app.workflow.stateful.interfaces import IStatefulStatesContainer
 from zope.app.workflow.stateful.interfaces import IStatefulTransitionsContainer
 from zope.app.workflow.stateful.interfaces import MANUAL
-
 
 class State(Persistent, Contained):
     """State."""
@@ -72,8 +73,6 @@ class StateNamesVocabulary(SimpleVocabulary):
                     return obj.getStateNames()
         raise 'NoLocalProcessDefinition', 'No local process definition found.'
 
-
-
 class Transition(Persistent, Contained):
     """Transition from one state to another."""
 
@@ -99,8 +98,6 @@ class Transition(Persistent, Contained):
 
     def getProcessDefinition(self):
         return self.__parent__.getProcessDefinition()
-
-
 
 class TransitionsContainer(ProcessDefinitionElementContainer):
     """Container that stores Transitions."""
@@ -138,7 +135,7 @@ class StatefulProcessDefinition(ProcessDefinition):
 
     def setTargetInterface(self, i):
         self.__targetInterface = i
-        
+
         # XXX register an Adapter for targetInterface
         # that provides IStatefulProcessDefinition here
 
@@ -244,3 +241,4 @@ class StatefulProcessDefinition(ProcessDefinition):
         """See zope.app.container.interfaces.IReadContainer"""
         return 2
 
+#################################################################
