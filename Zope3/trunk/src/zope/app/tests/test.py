@@ -988,10 +988,10 @@ def process_args(argv=None):
         print "-r ignored, because it needs a debug build of Python"
         REFCOUNT = False
 
-    if sys.version_info < ( 2,3,2 ):
+    if sys.version_info < ( 2,3,4 ):
         print """\
         ERROR: Your python version is not supported by Zope3.
-        Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
+        Zope3 needs Python 2.3.4 or greater. You are running:""" + sys.version
         sys.exit(1)
 
     if GC_THRESHOLD is not None:
