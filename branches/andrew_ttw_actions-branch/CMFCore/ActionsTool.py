@@ -185,7 +185,6 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         for provider_name in self.listActionProviders():
             provider = getattr(self, provider_name)
             a = provider.listActions(info)
-            #import pdb; pdb.set_trace()
             if a and type(a[0]) is not type({}):
                 ai_objs.extend(list(a))
             else:

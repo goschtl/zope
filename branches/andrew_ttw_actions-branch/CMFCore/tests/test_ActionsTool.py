@@ -6,10 +6,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl import SecurityManager
 from Products.CMFCore.ActionsTool import *
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.PortalContent import PortalContent
-from Products.CMFCore.CMFCorePermissions import AddPortalContent, ManagePortal
+from Products.CMFCore.CMFCorePermissions import AddPortalContent
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
 from Products.CMFCore import utils
 import ZPublisher.HTTPRequest
@@ -36,36 +33,6 @@ class PermissiveSecurityPolicy:
         if permission == 'forbidden permission':
             return 0
         return 1
-
-class OmnipotentUser( Acquisition.Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def getId( self ):
-        return 'all_powerful_Oz'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        return 1
-
-class UserWithRoles( Acquisition.Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def __init__( self, *roles ):
-        self._roles = roles
-
-    def getId( self ):
-        return 'high_roller'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        for orole in object_roles:
-            if orole in self._roles:
-                return 1
-        return 0
 
 class UnitTestUser( Acquisition.Implicit ):
     """
@@ -101,8 +68,11 @@ class ActionsToolTests( unittest.TestCase ):
         root.REQUEST = ZPublisher.HTTPRequest.HTTPRequest( None, env, None )
         
         root._setObject( 'portal_actions', ActionsTool() )
-        tool = root.portal_actions
-        tool.action_providers = ('portal_actions')
+        self.tool = tool = root.portal_actions
+        tool.action_providers = ('portal_actions',)
+
+    def test_actionProviders(self):
+        tool = self.tool
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
 
     def tearDown( self ):
@@ -111,37 +81,9 @@ class ActionsToolTests( unittest.TestCase ):
         noSecurityManager()
         SecurityManager.setSecurityPolicy(self._oldPolicy)
 
-class ActionInformationTests(unittest.TestCase):
-    
-    def test_basic_construction(self):
-        ai = ActionInformation(id='view'
-                              )
-        self.assertEqual(ai.getId(), 'view')
-        self.assertEqual(ai.Title(), 'view')
-        self.assertEqual(ai.Description(), '')
-        self.assertEqual(ai.getCondition(), '')
-        self.assertEqual(ai.getActionExpression(), '')
-        self.assertEqual(ai.getPermissions(), ())
-
-    def test_construction_with_Expressions(self):
-        ai = ActionInformation(id='view'
-                             , title='View'
-                             , action=Expression(
-             text='view')
-                             , condition=Expression(
-             text='member'))
-        self.assertEqual(ai.getId(), 'view')
-        self.assertEqual(ai.Title(), 'View')
-        self.assertEqual(ai.Description(), '')
-        self.assertEqual(ai.getCondition(), 'member')
-        self.assertEqual(ai.getActionExpression(), 'view')
-        self.assertEqual(ai.getPermissions(), ())
-        
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ActionsToolTests))
-    suite.addTest(unittest.makeSuite(ActionInformationTests))
     return suite
 
 def run():
