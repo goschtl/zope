@@ -33,8 +33,15 @@
 <browser:view
     for="zope.app.interfaces.container.IReadContainer"
     permission="zope.View"
-    factory=".xmlobject.XmlObjectView">
+    factory=".xmlobject.ReadContainerXmlObjectView">
   <browser:page name="children.xml" attribute="children" />
+  <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
+</browser:view>
+
+<browser:view
+    for="zope.interface.interface.Interface"
+    permission="zope.View"
+    factory=".xmlobject.XmlObjectView">
   <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
 </browser:view>
 

@@ -21,7 +21,7 @@ var LG_NOLOG = 0;
 var baseurl;
 var navigationTree;
 
-var loglevel = LG_NOLOG;
+var loglevel = LG_INFO;
 
 
 
@@ -31,7 +31,7 @@ function navigationTreeNode (domNode) {
         this.isEmpty = 1;
         this.isCollapsed = 1;
         this.domNode = domNode;
-        this.name = '';
+        this.path = '';
         this.parentNode = null;
 }
 
@@ -41,13 +41,9 @@ navigationTreeNode.prototype.appendChild = function(node) {
         node.parentNode = this;
 }
 
-navigationTreeNode.prototype.getName = function() {
-        return this.name;
-}
-
-navigationTreeNode.prototype.setName = function(name) {
-        this.name = name;
-        this.domNode.setAttribute("name", name);
+navigationTreeNode.prototype.setPath = function(path) {
+        this.path = path;
+        this.domNode.setAttribute("path", path);
 }
 
 navigationTreeNode.prototype.collapse = function() {
@@ -65,14 +61,14 @@ navigationTreeNode.prototype.changeExpandIcon = function(icon) {
         expand.style.backgroundImage = 'url("' + baseurl + '@@/' + icon + '")';
         }
 
-navigationTreeNode.prototype.getNodeByName = function(name) {
+navigationTreeNode.prototype.getNodeByPath = function(path) {
         var numchildren = this.childNodes.length;
-        if (name == this.name) {
+        if (path == this.path) {
                 return this;
                 }
         else {
                 for (var i=0; i< numchildren; i++) {
-                        foundChild = this.childNodes[i].getNodeByName(name);
+                        foundChild = this.childNodes[i].getNodeByPath(path);
                         if (foundChild) {
                                 return foundChild;
                                 }
@@ -88,7 +84,7 @@ with (this) {
         // todo xxx optimize for the case where collection has null length
         var elem = domNode;
         if (isEmpty) {
-                var url = baseurl + name + XML_CHILDREN_VIEW;
+                var url = baseurl + path + XML_CHILDREN_VIEW;
                 var data = loadtreexml(url);
                 addNavigationTreeNodes(data, this, 0);
                 isEmpty = 0;
@@ -244,7 +240,7 @@ function treeclicked (e) {
         if (isExpand(elem)) {
                 //get collection node
                 elem = elem.parentNode;
-                var navTreeNode = navigationTree.getNodeByName(elem.getAttribute('name'));
+                var navTreeNode = navigationTree.getNodeByPath(elem.getAttribute('path'));
                 navTreeNode.toggleExpansion();
                 }
         }
@@ -253,7 +249,7 @@ function treeclicked (e) {
 
 function getTargetURL(elem) {
         var location_href = baseurl;
-	location_href = location_href + elem.getAttribute('name');
+	location_href = location_href + elem.getAttribute('path');
 	location_href = location_href + CONTENT_VIEW;
         return location_href;
         }
@@ -342,14 +338,14 @@ function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
         // create tree nodes from XML children nodes of sourceNode         
         // and add them to targetNode
         // if deep, create all descendants of sourceNode
-        var basename = "";
+        var basePath = "";
         if (targetNavTreeNode) {
-                basename = targetNavTreeNode.name;
+                basePath = targetNavTreeNode.path;
                 }
         var items = getCollectionChildNodes(sourceNode);
         var numitems = items.length;
         for (var i=0; i< numitems; i++) {
-                var navTreeChild = createNavigationTreeNode(items[i], basename, deep);
+                var navTreeChild = createNavigationTreeNode(items[i], basePath, deep);
                 if (targetNavTreeNode) {
                         targetNavTreeNode.appendChild(navTreeChild);
                         }
@@ -377,24 +373,24 @@ function createPresentationNodes(title, icon_url, length) {
         return expandElem;
         }
 
-function createNavigationTreeNode(source, basename, deep) {
+function createNavigationTreeNode(source, basePath, deep) {
         var newelem = document.createElement(source.tagName);
 
         var navTreeNode = new navigationTreeNode(newelem);
-        var elemName;
+        var elemPath;
         var elemTitle;
-        //XXX should not hardcode root folder name string
+        //XXX should not hardcode root folder title string
         if (source.getAttribute('isroot') != null) {
                 elemTitle = '[top]';
-                elemName = basename;
+                elemPath = basePath;
                 newelem.style.marginLeft = '0px';
                 navigationTree = navTreeNode;
                 }
         else {
                 elemTitle = source.getAttribute('name');
-                elemName = basename + elemTitle + '/';
+                elemPath = basePath + elemTitle + '/';
                 }
-        navTreeNode.setName(elemName);
+        navTreeNode.setPath(elemPath);
         
         //could show number of child items
         var length = source.getAttribute('length');
@@ -411,7 +407,7 @@ function createNavigationTreeNode(source, basename, deep) {
                 var children = getCollectionChildNodes(source);
                 var numchildren = children.length;
                 for (var i=0; i< numchildren; i++) {
-                        var navTreeNodeChild =  createNavigationTreeNode(children[i], navTreeNode.name, deep); 
+                        var navTreeNodeChild =  createNavigationTreeNode(children[i], navTreeNode.path, deep); 
                         var newchild = navTreeNodeChild.domNode;
                         newelem.appendChild(newchild);
                         navTreeNode.appendChild(navTreeNodeChild);
