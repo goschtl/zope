@@ -1,37 +1,59 @@
 <html metal:use-macro="views/standard_macros/page">
-<head>
-  <title>View Service Configuration</title>
-</head>
-<body>
-<div metal:fill-slot="body">
-<form action="." method="POST"
-      tal:define="info view/action"
-      tal:attributes="action request/URL">
+  <head>
+    <title>View Service Configuration</title>
+  </head>
 
-<div tal:condition="info" tal:content="info" />
-<div class="row" tal:repeat="config view/configInfo">
-   <div style="float:left">
-      <input type=checkbox name='keys:list'
-             value='2' 
-             tal:attributes="value config/key"/>
-   </div>
-   <div class="item">
-         <div tal:content="structure config/view">
-             Edit Adapter Directives
-         </div>
-   </div>
-</div>
-<div class="row">
-    <input type=submit name='refresh_submit' value="Refresh">
-    <input type=submit name='UPDATE_SUBMIT' value="Update">
-    <input type=submit name='add_submit' value="Add">
-    <input type=submit name='remove_submit' value="Remove">&nbsp;&nbsp;
-    <input type=submit name='top_submit' value="Top">
-    <input type=submit name='up_submit' value="Up">
-    <input type=submit name='down_submit' value="Down">
-    <input type=submit name='bottom_submit' value="Bottom">
-</div>
-</form>
-</div>
-</body>
+  <body metal:fill-slot="body">
+
+    <h2>Configuration Manager</h2>
+
+    <form action="." method="POST"
+          tal:define="message view/update"
+          tal:attributes="action request/URL">
+
+      <p tal:condition="message" tal:content="message" />
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th align="left">Summary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="config view/configInfo">
+            <td valign="top">
+              <input type=checkbox name='keys:list' value='1'
+                     tal:attributes="value config/name" />
+            </td>
+            <td>
+              <a href="." tal:attributes="href config/name">
+                <span tal:content="config/line1|default">
+		  Config item <span tal:content="config/name" />
+                </span>
+              </a>
+              <span tal:condition="not:config/active">(disabled)</span>
+              <br>
+              <span tal:content="config/line2|default">
+                (No implementation summary)
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="row">
+        <input type=submit name='refresh_submit' value="Refresh">
+        <input type=submit name='UPDATE_SUBMIT' value="Submit">
+        <input type=submit name='remove_submit' value="Remove">
+        &nbsp;&nbsp;
+        <input type=submit name='top_submit' value="Top">
+        <input type=submit name='up_submit' value="Up">
+        <input type=submit name='down_submit' value="Down">
+        <input type=submit name='bottom_submit' value="Bottom">
+      </div>
+
+    </form>
+
+  </body>
 </html>

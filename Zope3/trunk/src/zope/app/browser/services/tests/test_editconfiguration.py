@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.3 2003/03/10 22:09:46 gvanrossum Exp $
+$Id: test_editconfiguration.py,v 1.4 2003/03/10 22:46:32 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface
 from zope.app.browser.services.service import EditConfiguration
 from zope.publisher.browser import TestRequest
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component.view import provideView
 from zope.component.adapter import provideAdapter
@@ -34,18 +34,22 @@ from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.interfaces.services.configuration \
+     import Unregistered, Registered, Active
 
 class Container(dict):
-    __implements__ = IContainer
+    __implements__ = IContainer, IContainmentRoot
 
 class I(Interface):
     pass
 
 class C:
     __implements__ = I
+    status = Active
 
 
-class Test(PlacelessSetup, TestCase):
+class Test(PlacefulSetup, TestCase):
 
     def test_remove_objects(self):
 
@@ -90,18 +94,9 @@ class Test(PlacelessSetup, TestCase):
 
         info = view.configInfo()
         self.assertEqual(len(info), 3)
-        self.assertEqual(info[0]['key'], '1')
-        self.assertEqual(info[1]['key'], '2')
-        self.assertEqual(info[2]['key'], '7')
-        self.assertEqual(info[0]['view'].__class__, V)
-        self.assertEqual(info[0]['view'].context, c1)
-        self.assertEqual(info[0]['view']._prefix, 'config1')
-        self.assertEqual(info[1]['view'].__class__, V)
-        self.assertEqual(info[1]['view'].context, c2)
-        self.assertEqual(info[1]['view']._prefix, 'config2')
-        self.assertEqual(info[2]['view'].__class__, V)
-        self.assertEqual(info[2]['view'].context, c7)
-        self.assertEqual(info[2]['view']._prefix, 'config7')
+        self.assertEqual(info[0]['name'], '1')
+        self.assertEqual(info[1]['name'], '2')
+        self.assertEqual(info[2]['name'], '7')
 
 def test_suite():
     return TestSuite((

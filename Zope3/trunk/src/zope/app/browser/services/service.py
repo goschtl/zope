@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.9 2003/03/10 20:35:16 jim Exp $
+$Id: service.py,v 1.10 2003/03/10 22:46:30 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -93,19 +93,14 @@ class ConfigurationAdding(Adding):
 
 
 class EditConfiguration(BrowserView):
-    """Adding component for service containers."""
-
-    menu_id = "add_component"
+    """A view on a configuration manager, used by configurations.pt."""
 
     def __init__(self, context, request):
         self.request = request
         self.context = context
 
-    def action(self):
+    def update(self):
         """Perform actions depending on user input."""
-        if 'add_submit' in self.request:
-            self.request.response.redirect('+')
-            return ''
 
         if 'keys' in self.request:
             k = self.request['keys']
@@ -129,6 +124,8 @@ class EditConfiguration(BrowserView):
         elif 'down_submit' in self.request:
             if not k: return msg
             self.context.moveDown(k)
+        elif 'refresh_submit' in self.request:
+            pass # Nothing to do
 
         return ''
 
@@ -140,13 +137,20 @@ class EditConfiguration(BrowserView):
 
     def configInfo(self):
         """Render View for each directives."""
-        r = []
-        for name, directive in self.context.items():
-            d = ContextWrapper(directive, self.context, name = name)
-            view = getView(d, 'ItemEdit', self.request)
-            view.setPrefix('config'+str(name))
-            r.append({'key': name, 'view': view})
-        return r
+        result = []
+        for name, configobj in self.context.items():
+            configobj = ContextWrapper(configobj, self.context, name=name)
+            url = str(getView(configobj, 'absolute_url', self.request))
+            active = configobj.status == Active
+            summary1 = getattr(configobj, "usageSummary", None)
+            summary2 = getattr(configobj, "implementationSummary", None)
+            item = {'name': name, 'url': url, 'active': active}
+            if summary1:
+                item['line1'] = summary1()
+            if summary2:
+                item['line2'] = summary2()
+            result.append(item)
+        return result
 
 
 class AddServiceConfiguration(BrowserView):

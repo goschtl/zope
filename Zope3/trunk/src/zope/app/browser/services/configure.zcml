@@ -245,17 +245,6 @@
       class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
       />
 
-  <editform
-      for=
-      "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
-      name="ItemEdit"
-      schema="zope.app.interfaces.services.configuration.IConfiguration"
-      template="componentconfigitemedit.pt"
-      label="XXX not used but can't be omitted"
-      class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
-      permission = "zope.ManageServices"
-      />
-
   <page
       for=
       "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
@@ -305,15 +294,6 @@
     menu="zmi_views"
     label="Change adapter"
     permission="zope.ManageServices"
-    />
-
-<subeditform
-    schema="zope.app.interfaces.services.interfaces.IAdapterConfiguration"
-    name="ItemEdit"
-    label="Adapter"
-    permission="zope.ManageServices"
-    fields="forInterface providedInterface adapterName factoryName status"
-    fulledit="."
     />
 
 <page
@@ -369,15 +349,6 @@
     menu="zmi_views"
     label="Change view"
     permission="zope.ManageServices"
-    />
-
-<subeditform
-    schema="zope.app.interfaces.services.interfaces.IViewConfiguration"
-    name="ItemEdit"
-    label="View"
-    permission="zope.ManageServices"
-    fields="forInterface viewName presentationType class_ layer permission
-            status"
     />
 
 <page
@@ -436,15 +407,6 @@
     menu="zmi_views"
     label="Change page"
     permission="zope.ManageServices"
-    />
-
-<subeditform
-    schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
-    name="ItemEdit"
-    label="Page"
-    permission="zope.ManageServices"
-    fields="forInterface viewName class_ layer permission
-            status"
     />
 
 <page
@@ -572,7 +534,7 @@
 
   <page
      for="zope.app.interfaces.services.service.IServiceManager"
-     name="services.html"
+     name="index.html"
      menu="zmi_views" title="Services"
      template="services.pt"
      class=".service.ServiceSummary"
@@ -584,13 +546,6 @@
      name="serviceActivation.html"
      template="serviceactivation.pt"
      class=".service.ServiceActivation"
-     permission="zope.ManageServices"
-     />
-
-  <page
-     for="zope.app.interfaces.services.service.IServiceManager"
-     name="index.html"
-     template="service_index.pt"
      permission="zope.ManageServices"
      />
 
@@ -703,19 +658,13 @@
 
 <!-- ConfigurationManager -->
 
-  <defaultView
-     for=
-     "zope.app.interfaces.services.configurationmanager.IConfigurationManager"
-     name="contents.html"
-     />
-
   <page
-     name="contents.html" 
+     name="index.html" 
      for=
      "zope.app.interfaces.services.configurationmanager.IConfigurationManager"
      menu="zmi_views" title="Configuration"
      permission="zope.ManageServices"
-     class="zope.app.browser.services.service.EditConfiguration"
+     class=".service.EditConfiguration"
      template="editconfiguration.pt" 
      />
 
