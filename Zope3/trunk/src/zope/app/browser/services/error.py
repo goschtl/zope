@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for event service control.
 
-$Id: error.py,v 1.8 2004/02/09 02:09:01 anthony Exp $
+$Id: error.py,v 1.9 2004/02/09 08:19:43 bjdean Exp $
 """
 from zope.app.services.error import ILocalErrorReportingService
 from zope.publisher.browser import BrowserView
@@ -35,7 +35,18 @@ class EditErrorLog:
 class ErrorRedirect(BrowserView):
 
     def action(self):
-        err = zapi.getService(self, ErrorLogging)
-        url = str(zapi.getView(err, 'absolute_url', self.request))
-        url = url + "/@@SelectedManagementView.html"
+
+        # Some locations (eg ++site++process) throw a TypeError exception when
+        # finding their absoluteurl, if this happens catch the error and
+        # redirect the browser to the site root "/@@errorRedirect.html"
+        # to handle redirection to the site error logger instead
+        try:
+            err = zapi.getService(self, ErrorLogging)
+            url = str(zapi.getView(err, 'absolute_url', self.request))
+            url = url + "/@@SelectedManagementView.html"
+        except TypeError:
+            siterooturl = self.request.getApplicationURL()
+            url = siterooturl + "/@@errorRedirect.html"
+
         self.request.response.redirect(url)
+
