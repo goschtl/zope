@@ -1,6 +1,6 @@
 <tal:block define="addingInfo context/@@+/addingInfo|nothing"
-           condition="addingInfo">
-<div class="content even"><strong>Add new content</strong></div>
+           condition="addingInfo" i18n:domain="zope">
+<div class="content even"><strong i18n:translate="">Add new content</strong></div>
 
   <tal:block repeat="info addingInfo">
   <div tal:define="oddrow repeat/info/odd" class="even"
@@ -8,7 +8,7 @@
       <a href="#"
       tal:attributes="href string:${request/getURL}?type_name=${info/action};
                        class info/selected"
-                       tal:content="info/title">Folder
+                       tal:content="info/title" i18n:translate="">Folder
       </a>
   </div>
   </tal:block>
