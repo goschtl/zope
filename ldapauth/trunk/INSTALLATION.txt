@@ -1,0 +1,3 @@
+INSTALLATION
+
+  For more information see in help/ldapauth.stx

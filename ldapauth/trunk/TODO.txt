@@ -1,0 +1,46 @@
+TODO
+
+  What's implemented:
+
+    - IPrincipalSource's methods and ILoginPasswordPrincipalSource's
+      methods.
+    
+    - as I said earlier it will play nicely with the pluggableauth
+      service only if some class in this service are patched (namely the
+      SimplePrincipal class, and IBTreePrincipalSourceContained class).
+
+      This is quite a problem, should I re-implement a SimpleUser
+      (that's ugly) or should I change the one there is actually (but
+      then the ldapsource is viewed as a container (why not)).
+
+  What's missing :
+
+    - The method to use the source as a container (but I still don't
+      know if this is a good way to view the ldapsource).
+
+    - Adding, deleting, modifying a user
+
+    - Caching the users
+
+    - An adapter to provide the information contained in the ldap server
+
+    - SSL support (should be easy I thinka : just use ldaps instead of
+      ldap in the connection string).
+
+    - A more decent way to add the principalsource, for now you must add
+      it then edit it.
+
+    - Add LDAP server configuration sample for to run tests and
+      describe how to setup a test environment.
+
+    - Add links to availabel LDAP servers for linux and windows
+
+    - Add a documentation for to use ldapauth with ms active directory
+
+    - Check the INSTALLATION.txt if it's consitent.
+
+    - Clean up the README.txt, INSTALLATION.txt
+
+    - Add more onlinehelp text in ./help/ldapauth.stx
+
+    - correct license header?

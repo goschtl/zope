@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="ldapauth"
+    >
+
+    <content class=".LDAPPrincipalSource">
+        <factory
+            id="zope.products.ldapauth.LDAPPrincipalSource"/>
+        <allow interface=".interfaces.ILDAPBasedPrincipalSource"/>
+        <require
+            permission="zope.ManageContent"
+            set_schema=".interfaces.ILDAPBasedPrincipalSource"/>
+    </content>
+
+    <browser:addMenuItem
+        title="Add LDAP Principal Source"
+        class=".LDAPPrincipalSource"
+        permission="zope.ManageServices" />
+
+    <browser:addform
+        schema=".interfaces.ILDAPBasedPrincipalSource" 
+        label="Add LDAP-based Principal Source" 
+        name="AddLDAPPrincipalSourceForm" 
+        permission="zope.ManageContent" /> 
+
+    <browser:editform 
+        schema=".interfaces.ILDAPBasedPrincipalSource" 
+        label="Edit LDAP-based Principal Source" 
+        name="edit.html"        
+        menu="zmi_views" title="Edit" 
+        permission="zope.ManageContent" /> 
+
+    <!-- add onlinehelp text -->
+    <help:register
+        id="ldapauth"
+        title="LDAP Auth"
+        doc_path="./help/ldapauth.stx" />
+
+</configure>

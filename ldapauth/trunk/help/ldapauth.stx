@@ -1,0 +1,41 @@
+Overview
+
+  XXX what's ldapauth?
+
+Requirements
+
+  XXX add description
+
+Installation
+
+  Download the python package python-ldap from
+  <a href="http://python-ldap.sourceforge.net/download.shtml" target="_blank">
+  http://python-ldap.sourceforge.net/download.shtml</a>
+  
+  Install the downloaded package python-ldap like described in the
+  download. You can find additional information abaout the installation
+  of this package under 
+  <a href="http://python-ldap.sourceforge.net" target="_blank">http://python-ldap.sourceforge.net</a> 
+  
+  Copy this package "ldapauth" to the "src" folder of your
+  Zope installation.
+  
+  Add a file with the name "ldapauth-configure.zcml" to the
+  package-includes folder of your installation and add the following
+  content
+  
+  ::
+
+    <include package="ldapauth"/>
+
+  Make shure there is a LDAP server available
+  
+  Add a local "Authentication Service" in ++etc++site
+  
+  Add a LDAP Principal Source to the auth service
+  
+  Now it's time to make shure you havea LDAP server available 
+  XXX more description how to install or where to find a LDAP server
+  
+  Go to the added ldap authentication source and edit the configuration.
+  You can find the edit view under the tab "edit".
