@@ -239,7 +239,7 @@ class PluggableAuthService( Folder ):
         , name
         , value
         ) = self._getObjectContext( request[ 'PUBLISHED' ], request )
-
+        
         for user_id, login in user_ids:
 
             user = self._findUser( plugins, user_id, login
@@ -735,7 +735,6 @@ class PluggableAuthService( Folder ):
 
             if user_id is not None:
                 result.append( ( user_id, name ) )
-
         return result
 
     security.declarePrivate( '_unmangleId' )
@@ -745,7 +744,9 @@ class PluggableAuthService( Folder ):
 
     security.declarePrivate( '_mangleId' )
     def _mangleId( self, namespace, id ):
-
+    
+        if id.find(MANGLE_DELIMITER) != -1: 
+            return id 
         return MANGLE_DELIMITER.join( ( namespace, id ) )
 
     security.declarePrivate( '_computeMangledId' )
