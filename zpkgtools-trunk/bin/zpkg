@@ -6,11 +6,6 @@ import shutil
 import sys
 import tempfile
 
-try:
-    __file__
-except NameError:
-    __file__ = sys.argv[0]
-
 script = os.path.realpath(__file__)
 here = os.path.dirname(script)
 
@@ -26,7 +21,6 @@ from zpkgtools import config
 from zpkgtools import cvsloader
 from zpkgtools import locationmap
 from zpkgtools import publication
-from zpkgtools import setup
 from zpkgtools.include import InclusionProcessor
 
 
@@ -100,10 +94,16 @@ class Application:
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
     def generateSetup(self):
-        setup.generate(self.destination,
-                       self.resource_name,
-                       self.options.version,
-                       self.resource_type)
+        setup_py = os.path.join(self.destination, "setup.py")
+        pkgname = self.resource_name
+        type = self.resource_type
+        f = open(setup_py, "w")
+        print >>f, SETUP_HEADER
+        print >>f, "context = zpkgtools.setup.%sContext(" % type.capitalize()
+        print >>f, "    %r, %r, __file__)" % (pkgname, self.options.version)
+        print >>f
+        print >>f, "context.setup()"
+        f.close()
 
     def createTarball(self):
         pwd = os.getcwd()
@@ -134,6 +134,16 @@ class Application:
         except:
             print >>sys.stderr, "temporary files are in", self.tmpdir
             raise
+
+
+SETUP_HEADER = """\
+#! /usr/bin/env python
+#
+# THIS IS A GENERATED FILE.  DO NOT EDIT THIS DIRECTLY.
+
+import zpkgtools.setup
+
+"""
 
 
 def main(argv=None):
