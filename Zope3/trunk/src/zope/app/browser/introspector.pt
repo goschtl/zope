@@ -28,14 +28,14 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="interface-component">Interface></span>:
+            <tal:span i18n:translate="interface-component">Interface></tal:span>:
             </th>
           <td tal:content="python:interfacedata[0]">Interface</td>
         </tr>
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="class-bases">Bases</span>:
+            <tal:span i18n:translate="class-bases">Bases</tal:span>:
           </th>
           <td>
             <div tal:repeat="interface python:interfacedata[1]">
@@ -49,7 +49,7 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="">Description</span>:
+            <tal:span i18n:translate="">Description</tal:span>:
           </th>
           <td>
             <!-- the start of all of these preclass spans are carefully
@@ -63,7 +63,7 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="class-attributes">Attributes</span>:
+            <tal:span i18n:translate="class-attributes">Attributes</tal:span>:
           </th>
           <td>
             <div tal:repeat="attributes python:interfacedata[4]">
@@ -80,7 +80,7 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="class-methods">Methods</span>:
+            <tal:span i18n:translate="class-methods">Methods</tal:span>:
           </th>
           <td>
             <div tal:repeat="methods python:interfacedata[3]">
@@ -100,7 +100,7 @@
         <!-- this section is currently not available
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="">Services</span>:
+            <tal:span i18n:translate="">Services</tal:span>:
           </th>
           <td>
             <div tal:repeat="servicedic services">
@@ -123,14 +123,15 @@
 
         <tr>
           <th class="introspector">
-            <span omit-tag="" i18n:translate="class-component">Class</span>:
+            <tal:span i18n:translate="class-component">Class</tal:span>:
           </th>
-          <td><span tal:content="introspector/getClass">Name</span></td>
+          <td><span tal:replace="introspector/getModule">Module</span
+            >.<span tal:replace="introspector/getClass">Name</span></td>
         </tr>
 
         <tr>
           <th class="introspector">
-            <span omit-tag="" i18n:translate="class-bases">Bases</span>:
+            <tal:span i18n:translate="class-bases">Bases</tal:span>:
           </th>
           <td>
             <div tal:repeat="base introspector/getBaseClassNames">
@@ -145,15 +146,8 @@
         </tr>
 
         <tr>
-          <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="python-module">Module</span>:
-          </th>
-          <td><span tal:content="introspector/getModule">Module</span></td>
-        </tr>
-
-        <tr>
           <th>
-            <span tal:omit-tag="" i18n:translate="">Description</span>:
+            <tal:span i18n:translate="">Description</tal:span>:
           </th>
           <td>
             <span class="preclass"
@@ -164,7 +158,7 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="">Interfaces from Class</span>:
+            <tal:span i18n:translate="">Interfaces from Class</tal:span>:
           </th>
           <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
@@ -182,7 +176,7 @@
 
         <tr>
           <th class="introspector">
-            <span tal:omit-tag="" i18n:translate="">Interfaces from Object</span>:
+            <tal:span i18n:translate="">Interfaces from Object</tal:span>:
           </th>
           <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames"
