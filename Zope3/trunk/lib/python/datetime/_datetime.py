@@ -932,6 +932,12 @@ class tzinfo(object):
         """
         raise NotImplementedError("tzinfo subclass must override dst()")
 
+    # pickle support
+
+    __safe_for_unpickling__ = True
+
+    def __reduce__(self):
+        return type(self), (), self.__dict__
 
 class timetz(time):
     """Time with time zone.
