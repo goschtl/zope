@@ -13,7 +13,7 @@
 ##############################################################################
 """Functions that control how the Zope appserver knits itself together.
 
-$Id: main.py,v 1.5 2004/04/12 18:12:03 fdrake Exp $
+$Id: main.py,v 1.6 2004/04/17 21:49:06 gintautasm Exp $
 """
 
 import logging
@@ -84,10 +84,6 @@ def setup(args=None):
 
     sys.setcheckinterval(options.check_interval)
 
-    # XXX desparate hack to prevent zLOG from clobber our initialization
-    # zLOG must die!
-    import zLOG
-    zLOG._call_initialize = False
     options.eventlog()
 
     config(options.site_definition)
