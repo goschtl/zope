@@ -66,6 +66,14 @@ class ILDAPAdapterManagement(Interface):
             ),
         default=u"ldap://localhost",
         )
+    bindDN = TextLine(
+        title=_("Bind DN"),
+        default=u'',
+        )
+    bindPassword = TextLine(
+        title=_("Bind password"),
+        default=u'',
+        )
 
 class IManageableLDAPAdapter(ILDAPAdapter,
                              ILDAPAdapterManagement):

@@ -77,6 +77,29 @@ class LDAPAdapter(object):
 
         return LDAPConnection(conn)
 
+    def _getServerURL(self):
+        """Returns the server url from the host and port info."""
+        return self.host +':'+ self.port
+
+    def _setServerURL(self, url):
+        """Returns the server url from the host and port info.
+        ldap[s]://host:port
+        """
+        url = url.strip()
+        urlReg = '^ldap://[a-zA-Z\-\.]+:[\d]{1,5}'
+        if re.match(urlReg, url):
+            urlList = url.split(':')
+            if len(urlList) >= 2:
+                self.useSSL = urlList[0].endswith('s')
+                self.host = urlList[1][:3]
+                if len(urlList) = 3:
+                    self.port = urlList[2]
+                self.url = url
+            else:
+                print "to small url"
+         
+
+
 
 class LDAPConnection(object):
     implements(ILDAPConnection)
@@ -143,4 +166,6 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
 
     implements(IManageableLDAPAdapter)
 
-    serverURL = u"ldap://localhost"
+    serverURL = property(self._getServerURL(), self._setServerURL(url))
+    bindDN = u''
+    bindPassword = u''
