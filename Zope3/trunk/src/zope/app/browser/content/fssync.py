@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.13 2003/05/27 19:46:51 gvanrossum Exp $
+$Id: fssync.py,v 1.14 2003/05/28 19:58:50 gvanrossum Exp $
 """
 
 import os
@@ -97,9 +97,12 @@ class SnarfCommit(BrowserView):
             if container is None and name == "":
                 # Hack to get loading the root to work
                 container = getRoot(self.context)
+                fspath = os.path.join(working, "root")
+            else:
+                fspath = os.path.join(working, name)
             md = Metadata()
             c = Committer(md)
-            c.synch(container, name, os.path.join(working, name))
+            c.synch(container, name, fspath)
             # 4) Generate response (snarfed archive or error text)
             errors = c.get_errors()
             if not errors:
