@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.9 2003/08/17 06:08:49 philikon Exp $
+$Id: config.py,v 1.10 2003/09/21 17:34:10 jim Exp $
 """
 
 import os.path
@@ -174,6 +174,22 @@ class ConfigurationContext(object):
             try:
                 return __import__(mname+'.'+oname, *_import_chickens)
             except ImportError:
+                
+                # We need to try to figure out what module the import
+                # error is complaining about.  If the import failed
+                # due to a failure to import some other module
+                # imported by the module we are importing, we want to
+                # know it. Unfortunately, the value of the import
+                # error is just a string error message. :( We can't
+                # pull it apart directly to see what module couldn't
+                # be imported. The only thing we can really do is to
+                # try to "screen scrape" the error message:
+
+                if str(sys.exc_info()[1]).find(oname) < 0:
+                    # There seems to have been an error further down,
+                    # so reraise the exception so as not to hide it.
+                    raise
+
                 raise ConfigurationError("Module %s has no global %s"
                                          % (mname, oname))
 
