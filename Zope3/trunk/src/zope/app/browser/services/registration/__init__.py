@@ -13,13 +13,14 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.17 2004/03/06 16:50:14 jim Exp $
+$Id: __init__.py,v 1.18 2004/03/07 11:50:36 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.interfaces.form import IBrowserWidget
+from zope.app.interfaces.form import IInputWidget
 from zope.app.container.interfaces import INameChooser
 
 from zope.app.interfaces.services.registration import IRegistration
@@ -237,7 +238,7 @@ class ComponentPathWidget(BrowserWidget):
     the context.
     """
 
-    implements(IBrowserWidget)
+    implements(IBrowserWidget, IInputWidget)
 
     def __call__(self):
         """See zope.app.browser.interfaces.form.IBrowserWidget"""
