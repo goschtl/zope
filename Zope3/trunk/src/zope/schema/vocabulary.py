@@ -29,6 +29,7 @@ from zope.schema.interfaces import IVocabularySetField
 from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
+from zope.schema.interfaces import IFromUnicode
 
 class ContainerValidatedProperty(ValidatedProperty):
 
@@ -72,7 +73,7 @@ class VocabularyField(BaseVocabularyField):
 
     The value is a single value from the vocabulary.
     """
-    implements(IVocabularyField)
+    implements(IVocabularyField, IFromUnicode)
 
     def _validate(self, value):
         if self.vocabulary is None:
@@ -84,7 +85,20 @@ class VocabularyField(BaseVocabularyField):
         if value not in self.vocabulary:
             raise ValidationError(errornames.ConstraintNotSatisfied,
                                   value)
-
+    
+    def fromUnicode(self, str):
+        """
+        >>> t = VocabularyField(
+        ...     vocabulary=SimpleVocabulary.fromValues([u'foo',u'bar']))
+        >>> t.fromUnicode(u"baz")
+        Traceback (most recent call last):
+        ...
+        ValidationError: (u'Constraint not satisfied', u'baz')
+        >>> t.fromUnicode(u"foo")
+        u'foo'
+        """
+        self.validate(str)
+        return str
 
 class VocabularyMultiField(MinMaxLen, BaseVocabularyField):
     """Field that adds support for use of an external vocabulary.

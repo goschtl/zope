@@ -21,6 +21,7 @@ from zope.interface import Interface, implements
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
+from zope.testing.doctestunit import DocTestSuite
 
 
 class DummyRegistry(vocabulary.VocabularyRegistry):
@@ -293,6 +294,7 @@ def test_suite():
     suite = unittest.makeSuite(RegistryTests)
     suite.addTest(unittest.makeSuite(VocabularyFieldTests))
     suite.addTest(unittest.makeSuite(SimpleVocabularyTests))
+    suite.addTest(DocTestSuite("zope.schema.vocabulary"))
     return suite
 
 if __name__ == "__main__":
