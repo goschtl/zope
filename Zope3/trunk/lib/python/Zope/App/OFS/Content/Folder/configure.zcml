@@ -47,62 +47,6 @@
 
 </content>
 
-<!-- Loaded Folder Directives -->
-
-<content class=".LoadedFolder.">
-
-  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
-
-  <implements interface="Zope.App.OFS.Container.IContentContainer." />
-
-  <factory
-      id="LoadedFolder"
-      permission="Zope.ManageContent"
-      title="Loaded Folder"
-      description="A Folder having all the goodies."
-      />
-
-  <allow
-      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Read"
-      />
-
-  <require
-      permission="Zope.ManageServices"
-      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Write"
-      />
-
-  <require
-      permission="Zope.View"
-      interface="Zope.App.OFS.Container.IContainer.IReadContainer"
-      />
-
-  <require
-      permission="Zope.ManageContent"
-      interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
-      />
-
-  <require
-      permission="Zope.View"
-      interface="Zope.App.OFS.Container.IOrderedContainer.Read" 
-      />
-
-  <require
-      permission="Zope.ManageContent"
-      interface="
-      Zope.App.OFS.Container.IOrderedContainer.Write" />
-
-  <require
-      permission="Zope.View"
-      interface="Zope.App.OFS.Container.IContainerLimit.IReadContainerLimit"
-      />
-
-  <require
-      permission="Zope.ManageContent"
-      interface="Zope.App.OFS.Container.IContainerLimit.IWriteContainerLimit"
-      />
-
-</content>
-
 <include package=".Views" />
 
 </zopeConfigure>

@@ -48,37 +48,4 @@
 
 </browser:view>
 
-<!-- Loaded Folder View Directives -->
-   
-<browser:defaultView for=".LoadedFolder.ILoadedFolder." name="index.html" />
-
-<browser:view
-    for=".LoadedFolder.ILoadedFolder."
-    permission="Zope.View" 
-    factory=".Views.Browser.LoadedFolderContents.">
-
-  <browser:page name="index.html" attribute="index" />
-
-</browser:view>
-
-<browser:view
-    for="Zope.App.OFS.Container.IContainerLimit."
-    permission="Zope.ManageContent" 
-    factory=".Views.Browser.FolderLimitEdit.">
-
-  <browser:page name="FolderLimitEditForm.html" attribute="index" />
-  <browser:page name="SetFolderLimit.html" attribute="action" />
-
-</browser:view>
-
-<browser:menuItems menu="zmi_views"
-    for="Zope.App.OFS.Container.IContainerLimit.">
-  <browser:menuItem title="Limit" action="@@FolderLimitEditForm.html"/>
-</browser:menuItems>
-
-<browser:menuItem menu="add_content"
-  for="Zope.App.OFS.Container.IAdding."
-  title="Loaded Folder" action="LoadedFolder"
-  description="A Folder having all the goodies." />
-
 </zopeConfigure>

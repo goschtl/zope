@@ -20,19 +20,6 @@
 
 </content>
 
-<content class=".NaiveFile.">
-
-  <factory
-      id="NaiveFile"
-      permission="Zope.ManageContent"
-      title="Naive File"
-      description="This is a simple file" />
-  <require like_class=".File." />
-
-  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
-
-</content>
-
 <content class=".I18nFile.">
   <factory
       id="I18nFile"

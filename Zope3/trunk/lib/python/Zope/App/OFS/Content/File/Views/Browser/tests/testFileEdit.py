@@ -13,20 +13,20 @@
 ##############################################################################
 """
 
-$Id: testFileEdit.py,v 1.2 2002/06/10 23:27:59 jim Exp $
+$Id: testFileEdit.py,v 1.3 2002/11/04 22:11:00 jim Exp $
 """
 
 import unittest
 
 from Zope.App.OFS.Content.File.Views.Browser.FileEdit import FileEdit
-from Zope.App.OFS.Content.File.NaiveFile import NaiveFile
+from Zope.App.OFS.Content.File.File import File
 
 
 class Test( unittest.TestCase ):
 
     def testEdit(self):
         """ """
-        file = NaiveFile()
+        file = File()
 
         fe = FileEdit(file, None) 
 

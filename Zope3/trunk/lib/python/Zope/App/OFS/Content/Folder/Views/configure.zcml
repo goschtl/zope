@@ -3,7 +3,6 @@
 >
 
   <include package=".Browser" />
-  <include package=".XMLRPC" />
   <include package=".VFS" />
 
 </zopeConfigure>

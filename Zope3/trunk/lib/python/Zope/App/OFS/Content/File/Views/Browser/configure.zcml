@@ -62,11 +62,6 @@
   title="I18n File" action="I18nFile"
   description="A file that supports multiple locales." />
 
-<browser:menuItem menu="add_content"
-  for="Zope.App.OFS.Container.IAdding."
-  title="Naive File" action="NaiveFile" 
-  description="A simple, non-scalable file." />
-
 <browser:icon name="zmi_icon" for=".IFile." file="File_icon.gif" />
 
 </zopeConfigure>
