@@ -9,7 +9,7 @@ Here's what I want to do:
 
 These let us rip out most of the code here. :)
 
-Move the rest ofg the code here to zope.app.server.  The
+Move the rest of the code here to zope.app.server.  The
 zope.app.server package is just tha zope.app. customization of
 zope.server.
 
