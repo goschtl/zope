@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Mappings between principals and roles, stored in an object locally."""
+"""Mappings between principals and roles, stored in an object locally.
+
+$Id$
+"""
 
 __metaclass__ = type
 

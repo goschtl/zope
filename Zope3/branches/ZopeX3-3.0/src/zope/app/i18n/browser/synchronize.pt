@@ -88,7 +88,7 @@
         <th width="15%" i18n:translate="">Language</th>
         <th width="20%" i18n:translate="">Status</th>
       </tr>
-      <tal:block repeat="message python: view.queryMessages().items()">
+      <tal:block repeat="message python: view.queryMessageItems()">
         <tr tal:define="number repeat/message/number;
                         oddrow repeat/message/odd"
             tal:attributes="class python: oddrow and 'odd' or 'even'">
