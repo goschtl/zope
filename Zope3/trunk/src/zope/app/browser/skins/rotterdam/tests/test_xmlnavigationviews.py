@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.4 2003/01/02 15:03:21 stevea Exp $
+$Id: test_xmlnavigationviews.py,v 1.5 2003/01/02 15:26:37 gotcha Exp $
 """
 
 #import sys
@@ -50,13 +50,10 @@ class TestXmlObject(EventSetup, TestCase):
         treeView = rcxov(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
 
-        treeView = rcxov(self.folder1_1_1, TestRequest()).singleBranchTree
-        check_xml(treeView(), util.read_output('test5.xml'))
-
         from zope.app.content.file import File
         from zope.proxy.context import ContextWrapper
         file1 = File()
-        self.rootFolder.setObject("file1", self.folder1_1_1)
+        self.folder1_1_1.setObject("file1", self.folder1_1_1)
         self.file1 = ContextWrapper(file1, self.folder1_1_1, name = "file1")
         from zope.component.view import provideView
         from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -72,8 +69,12 @@ class TestXmlObject(EventSetup, TestCase):
                 return self.singleBranchTree()
         provideView(IReadContainer, 'singleBranchTree.xml',
                     IBrowserPresentation, ReadContainerView)
+
+        treeView = rcxov(self.folder1_1_1, TestRequest()).singleBranchTree
+        check_xml(treeView(), util.read_output('test5.xml'))
+
         treeView = XmlObjectView(self.file1, TestRequest()).singleBranchTree
-        #check_xml(treeView(), util.read_output('test5.xml'))
+        check_xml(treeView(), util.read_output('test5.xml'))
 
 
 def test_suite():
