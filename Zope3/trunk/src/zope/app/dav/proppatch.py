@@ -17,6 +17,7 @@ __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
 
+import transaction
 from zope.app import zapi
 from zope.schema import getFieldNamesInOrder
 from zope.app.container.interfaces import IReadContainer
@@ -110,7 +111,7 @@ class PROPPATCH(object):
         
         if _propresults.keys() != [200]:
             # At least some props failed, abort transaction
-            get_transaction().abort()
+            transaction.abort()
             # Move 200 succeeded props to the 424 status
             if _propresults.has_key(200):
                 failed = _propresults.setdefault(424, {})
@@ -168,10 +169,7 @@ class PROPPATCH(object):
             # opaque DAV properties
             if self.oprops is None:
                 return 200
-            if self.oprops.get(ns, {}).get(prop.localName):
-                del self.oprops[ns][prop.localName]
-                if not list(self.oprops[ns].keys()):
-                    del self.oprops[ns]
+            self.oprops.removeProperty(ns, prop.localName)
             return 200
             
         # XXX: Deal with registered ns interfaces here

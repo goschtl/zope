@@ -17,12 +17,13 @@ $Id$
 """
 import unittest
 from datetime import datetime
-from transaction import get_transaction
+import transaction
 from zope.pagetemplate.tests.util import normalize_xml
 
 from zope.app import zapi
 from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 from zope.app.traversing.api import traverse
 
 class TestPROPFIND(DAVTestCase):
@@ -37,7 +38,7 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.title = u'Test Title'
-        get_transaction().commit()
+        transaction.commit()
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='title', expect='Test Title', basic='mgr:mgrpw')
 
@@ -46,7 +47,7 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.created = datetime.utcnow()
-        get_transaction().commit()
+        transaction.commit()
         expect = str(adapted.created)
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='created', expect=expect, basic='mgr:mgrpw')
@@ -56,10 +57,20 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.subjects = (u'Bla', u'Ble', u'Bli')
-        get_transaction().commit()
+        transaction.commit()
         expect = ', '.join(adapted.subjects)
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='subjects', expect=expect, basic='mgr:mgrpw')
+        
+    def test_opaque(self):
+        self.addPage('/pt', u'<span />')
+        pt = traverse(self.getRootFolder(), '/pt')
+        adapted = IDAVOpaqueNamespaces(pt)
+        adapted[u'uri://bar'] = {u'foo': '<foo>spam</foo>'}
+        transaction.commit()
+        expect = 'spam'
+        self.verifyPropOK(path='/pt', ns='uri://bar',
+                          prop='foo', expect=expect, basic='mgr:mgrpw')
 
     def verifyPropOK(self, path, ns, prop, expect, basic):
         body = """<?xml version="1.0" ?>

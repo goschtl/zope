@@ -11,9 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Attribute Annotations implementation 
+"""DAV Opaque properties implementation details
 
-$Id: attribute.py 26632 2004-07-19 14:56:53Z jim $
+Opaque properties are arbitrary propterties set trhough DAV and which have no
+special meaning to the Zope application.
+
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -41,6 +44,27 @@ class IDAVOpaqueNamespaces(IMapping):
     actual opaque value, of the form (((attr1, val1), (attr2, val2)), value) 
     
     """
+    
+    def renderProperty(ns, nsprefix, prop, propel):
+        """Render the named property to a DOM subtree
+        
+        ns and prop are keys defining the property, nsprefix is the namespace
+        prefix used in the DOM for the namespace of the property, and propel
+        is the <prop> element in the target DOM to which the property DOM 
+        elements need to be added.
+        
+        """
+        
+    def setProperty(propel):
+        """Store a DOM property in the opaque storage
+        
+        propel is expected to be a DOM element from which the namespace and
+        property name are taken to be stored.
+        
+        """
+        
+    def removeProperty(ns, prop):
+        """Remove the indicated property altogether"""
 
     
 class DAVOpaqueNamespacesAdapter(DictMixin, Location):
@@ -100,6 +124,13 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
         props = self.setdefault(ns, OOBTree())
         propel = makeDOMStandalone(propel)
         props[propel.nodeName] = propel.toxml('utf-8')
+        
+    def removeProperty(self, ns, prop):
+        if self.get(ns, {}).get(prop) is None:
+            return
+        del self[ns][prop]
+        if not self[ns]:
+            del self[ns]
 
 
 def makeDOMStandalone(element):
@@ -160,7 +191,7 @@ def makeDOMStandalone(element):
     return DOMTransformer(element).makeStandalone()
 
 
-def _numberGenerator(i = 0):
+def _numberGenerator(i=0):
     while True:
         yield i
         i += 1
