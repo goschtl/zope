@@ -1,28 +1,45 @@
-icon (function IconDirective)
+icon
+
+  File zope/app/publisher/browser/meta.zcml, lines 143 - 147.
+
+  Define an icon for an interface
 
   Attributes
 
-    layer -- 
+    name -- TextLine (required)
 
+      The name of the icon.
 
+      The name shows up in URLs/paths. For example 'foo'.
 
-    resource -- 
+    for -- GlobalObject (required)
 
+      The interface this icon is for.
 
+      The icon will be for all objects that implement this interface.
 
-    name -- 
+    file -- Path (optional, default=None)
 
+      File
 
+      The file containing the icon.
 
-    file -- 
+    resource -- TextLine (optional, default=None)
 
+      Resource
 
+      A resource containing the icon.
 
-    alt -- 
+    alt -- TextLine (optional, default=None)
 
+      Title
 
+      Descriptive title
 
-    for -- 
+    layer -- TextLine (optional, default=None)
 
+      The layer the icon should be found in
 
+      For information on layers, see the documentation for the skin
+      Defaults to "default".
 

@@ -1,1 +1,20 @@
-The skin directive.
+skin
+
+  File zope/app/component/meta.zcml, lines 49 - 53.
+
+  Register a skin
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Skin name
+
+      Skin name
+
+    layers -- Tokens (required)
+
+      The layers it consists of.
+
+      
+

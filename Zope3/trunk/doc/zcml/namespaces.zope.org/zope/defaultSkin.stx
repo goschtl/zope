@@ -1,0 +1,14 @@
+defaultSkin
+
+  File zope/app/component/meta.zcml, lines 55 - 59.
+
+  Register a skin
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Default skin name
+
+      Default skin name
+

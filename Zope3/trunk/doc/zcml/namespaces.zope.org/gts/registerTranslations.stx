@@ -1,0 +1,14 @@
+registerTranslations
+
+  File zope/app/i18n/meta.zcml, lines 8 - 12.
+
+  
+
+  Attributes
+
+    directory -- Path (required)
+
+      Directory
+
+      Directory containing the translations
+

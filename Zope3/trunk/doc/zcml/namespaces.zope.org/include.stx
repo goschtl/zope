@@ -1,0 +1,20 @@
+include
+
+  
+
+  Attributes
+
+    file -- BytesLine (required)
+
+      Configuration file name
+
+      The name of a configuration file to be included, relative to the
+      containing the including configuration file.
+
+    package -- GlobalObject (optional, default=None)
+
+      Include packahe
+
+      Include the named file (or configure.zcml) from the directory of this
+      
+

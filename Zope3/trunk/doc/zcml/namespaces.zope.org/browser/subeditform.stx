@@ -1,4 +1,88 @@
-subeditform (function zope.app.browser.form.subedit)
+subeditform
+
+  File zope/app/browser/form/meta.zcml, lines 40 - 44.
+
+  Define a subedit form
 
   Attributes
+
+    usage -- TextLine (optional, default=u'')
+
+      The template usage top-level variable
+
+      See the usage documentation in the README.txt in the
+      directory. If this view is associated with a menu item, this attribute
+      not be supplied as the view will get its usage from the menu the menu
+      is registered to. This attribute is available for views not associated
+      a menu item.
+
+    name -- TextLine (required)
+
+      Name
+
+      The name of the generated view.
+
+    schema -- GlobalObject (required)
+
+      Schema
+
+      The schema from which the form is generated.
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
+
+      The interface this page (view) applies to.
+
+      The view will be for all objects that implement this interface. The
+      is used if the for attribute is not specified.
+
+      If the for attribute is specified, then the objects views must
+      or be adaptable to the schema.
+
+    permission -- Id (required)
+
+      Permission
+
+      The permission needed to use the view.
+
+    layer -- TextLine (optional, default=None)
+
+      Layer
+
+      The later the view is in. Default: 'default'
+
+    template -- Path (optional, default=None)
+
+      Template
+
+      An alternate template to use for the form.
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class to provide custom widget definitions or methods to be used by a
+      template.
+
+      This class is used as a mix-in class. As a result, it needn't subclass
+      special classes, such as BrowserView.
+
+    label -- TextLine (optional, default=None)
+
+      Label
+
+      A label to be used as the heading for the form.
+
+    fulledit_path -- TextLine (optional, default=None)
+
+      Path (relative URL) to the full edit form
+
+      
+
+    fulledit_label -- MessageID (optional, default=None)
+
+      Label of the full edit form
+
+      
 

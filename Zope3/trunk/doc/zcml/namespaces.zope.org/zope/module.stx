@@ -1,0 +1,14 @@
+module
+
+  File zope/app/security/meta.zcml, lines 14 - 21.
+
+  
+
+  Attributes
+
+    module -- GlobalObject (required)
+
+      Module
+
+      
+

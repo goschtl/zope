@@ -1,10 +1,26 @@
-The factory directive.
+factory
 
-See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+  File zope/app/component/meta.zcml, lines 25 - 29.
 
-Attributes
+  Define a factory
 
-  * component
-  
-  * id, optional
-  
+  Attributes
+
+    component -- GlobalObject (required)
+
+      Component to be used
+
+      
+
+    id -- TextLine (optional, default=None)
+
+      ID
+
+      
+
+    permission -- Id (optional, default=None)
+
+      Permission
+
+      
+

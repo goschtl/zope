@@ -1,20 +1,41 @@
-The adapter directive.
+adapter
 
-See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+  File zope/app/component/meta.zcml, lines 13 - 17.
 
-Attributes
+  Register an adapter
 
-  * factory, a callable, or list of callables, that creates the adapted object.
-    An adapter factory is passed one argument, the object to be adapted.
-  
-  * provides, the interface this adapter adapts to
-  
-  * for, optional, the interface this adapter adapts from.
-  
-  * permission, optional, the permission required to use this adapter
-  
-  If the 'for' attribute is not present, the adapter can adapt from any
-  component.
-  
-  
-  
+  Attributes
+
+    factory -- Tokens (required)
+
+      Adapter factory/factories
+
+      A list of factories (usually just one) that create the adapter
+      
+
+    provides -- GlobalObject (required)
+
+      Interface the component provides
+
+      This attribute specifes the interface the adapter instance must
+      
+
+    for -- GlobalObject (required)
+
+      Interface the component is used for
+
+      This is the interface from which is being adapted.
+
+    permission -- Id (optional, default=None)
+
+      Permission
+
+      This adapter is only available, if the principal has this permission.
+
+    name -- TextLine (optional, default=None)
+
+      Name
+
+      Adapters can have names. This attribute allows you to specify the name
+      this adapter.
+

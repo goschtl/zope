@@ -1,0 +1,101 @@
+schemadisplay
+
+  File zope/app/browser/form/meta.zcml, lines 52 - 56.
+
+  Define an automatically generated display form.
+
+  The schemadisplay directive creates and register's a view for displaying an
+  based on a schema.
+
+  Attributes
+
+    usage -- TextLine (optional, default=u'')
+
+      The template usage top-level variable
+
+      See the usage documentation in the README.txt in the
+      directory. If this view is associated with a menu item, this attribute
+      not be supplied as the view will get its usage from the menu the menu
+      is registered to. This attribute is available for views not associated
+      a menu item.
+
+    name -- TextLine (required)
+
+      Name
+
+      The name of the generated view.
+
+    schema -- GlobalObject (required)
+
+      Schema
+
+      The schema from which the form is generated.
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
+
+      The interface this page (view) applies to.
+
+      The view will be for all objects that implement this interface. The
+      is used if the for attribute is not specified.
+
+      If the for attribute is specified, then the objects views must
+      or be adaptable to the schema.
+
+    permission -- Id (required)
+
+      Permission
+
+      The permission needed to use the view.
+
+    layer -- TextLine (optional, default=None)
+
+      Layer
+
+      The later the view is in. Default: 'default'
+
+    template -- Path (optional, default=None)
+
+      Template
+
+      An alternate template to use for the form.
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class to provide custom widget definitions or methods to be used by a
+      template.
+
+      This class is used as a mix-in class. As a result, it needn't subclass
+      special classes, such as BrowserView.
+
+    label -- MessageID (optional, default=None)
+
+      Label
+
+      A label to be used as the heading for the form.
+
+    menu -- TextLine (optional, default=None)
+
+      The browser menu to include the form in.
+
+      Many views are included in menus. It's convenient to name the menu in
+      page directive, rather than having to give a separate menuItem
+      
+
+    fields -- Tokens (optional, default=None)
+
+      Fields
+
+      The fields and the order in which to display them. If this is not
+      all schema fields will be displayed in the order specified in the
+      itself.
+
+    title -- MessageID (optional, default=None)
+
+      The browser menu label for the edit form
+
+      This attribute defaults to 'Edit'.
+

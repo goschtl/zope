@@ -1,0 +1,14 @@
+layer
+
+  File zope/app/component/meta.zcml, lines 61 - 65.
+
+  Register a layer
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Layer name
+
+      Layer name
+

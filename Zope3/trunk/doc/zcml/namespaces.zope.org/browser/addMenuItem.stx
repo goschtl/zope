@@ -1,0 +1,60 @@
+addMenuItem
+
+  File zope/app/publisher/browser/meta.zcml, lines 149 - 153.
+
+  Define an add-menu item
+
+  Attributes
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class to be used as a factory for creating new objects
+
+    factory -- GlobalObject (optional, default=None)
+
+      Factory
+
+      A factory for creating new objects
+
+    title -- TextLine (required)
+
+      Title
+
+      A one-line description of the objects to be added
+
+    description -- Text (optional, default=None)
+
+      Text
+
+      A multi-line description of the objects to be added
+
+    permission -- Id (optional, default=None)
+
+      The permission needed to add an object.
+
+      
+
+    filter -- TextLine (optional, default=None)
+
+      A condition for displaying the menu item
+
+      The condition is given as a TALES expression. The expression has access
+      the variables:
+
+      context -- The object the menu is being displayed for
+
+      request -- The browser request
+
+      nothing -- None
+
+      The menu item will not be displayed if there is a filter and the filter
+      to a false value.
+
+    view -- TextLine (optional, default=None)
+
+      Custom view name
+
+      The name of a custom add view
+

@@ -1,3 +1,60 @@
-The view directive.
+view
 
-see src/zope/publisher/xmlrpc/meta.zcml
+  File zope/app/publisher/xmlrpc/meta.zcml, lines 5 - 9.
+
+  View Directive for XML-RPC methods.
+
+  Attributes
+
+    for -- GlobalObject (optional, default=None)
+
+      The interface this view applies to.
+
+      The view will be for all objects that implement this interface. If this
+      not supplied, the view applies to all objects (XXX this ought to
+      
+
+    permission -- Id (optional, default=None)
+
+      Permission
+
+      The permission needed to use the view.
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class that provides attributes used by the view.
+
+    layer -- TextLine (optional, default=None)
+
+      The layer the view is in.
+
+      A skin is composed of layers. It is common to put skin specific views
+      a layer named after the skin. If the 'layer' attribute is not supplied,
+      defaults to 'default'.
+
+    allowed_interface -- Tokens (optional, default=None)
+
+      Interface that is also allowed if user has permission.
+
+      By default, 'permission' only applies to viewing the view and any
+      sub views. By specifying this attribute, you can make the permission
+      apply to everything described in the supplied interface.
+
+      Multiple interfaces can be provided, separated by whitespace.
+
+    allowed_attributes -- Tokens (optional, default=None)
+
+      View attributes that are also allowed if user has permission.
+
+      By default, 'permission' only applies to viewing the view and any
+      sub views. By specifying 'allowed_attributes', you can make the
+      also apply to the extra attributes on the view object.
+
+    name -- TextLine (optional, default=None)
+
+      The name of the view.
+
+      The name shows up in URLs/paths. For example 'foo'.
+

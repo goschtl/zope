@@ -1,0 +1,37 @@
+vocabulary
+
+  File zope/app/schema/meta.zcml, lines 5 - 9.
+
+  Define a named vocabulary.
+
+  This associates a vocabulary name in the global vocabulary service with a
+  Each name may only be defined once.
+
+  Additional keyword arguments may be passed to the factory by adding
+  attributes beyond those listed here. This can be useful when using
+  which implement various kinds of filtering.
+
+  Example::
+
+  <vocabulary name="garys-favorite-path-references"
+  />
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      Provides a title for the source type.", The name of the vocabulary;
+      can be used as the value for the "vocabulary" argument to the
+      and VocabularyMultiField constructors to cause this vocabulary to be
+      
+
+    factory -- GlobalObject (required)
+
+      Factory
+
+      Factory that returns an instance of the named vocabulary when called
+      the context object as the only argument. This should be a dotted-name
+      refers to a Python object.
+

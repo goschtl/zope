@@ -1,1 +1,14 @@
-The require subdirective of the content directive.
+require
+
+  File zope/app/security/meta.zcml, lines 36 - 48.
+
+  
+
+  Attributes
+
+    permission -- Id (required)
+
+      Permission ID
+
+      The id of the permission to require.
+

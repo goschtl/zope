@@ -1,1 +1,32 @@
-The service directive.
+service
+
+  File zope/app/component/meta.zcml, lines 73 - 77.
+
+  Register a service
+
+  Attributes
+
+    component -- GlobalObject (optional, default=None)
+
+      Component to be used
+
+      
+
+    permission -- Id (optional, default=None)
+
+      Permission
+
+      
+
+    factory -- GlobalObject (optional, default=None)
+
+      Factory
+
+      
+
+    serviceType -- TextLine (required)
+
+      ID of service type
+
+      
+

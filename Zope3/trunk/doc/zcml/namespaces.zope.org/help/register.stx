@@ -1,44 +1,44 @@
-register (class zope.app.onlinehelp.metaconfigure)
+register
 
-  The register directive defines a help topic in the help system.
+  File zope/app/onlinehelp/meta.zcml, lines 5 - 9.
+
+  Register directive for onlien help topics.
 
   Attributes
 
-    parent -- (optional)
+    id -- BytesLine (required)
 
-      Location of this topic's parent in the OnlineHelp tree.
+      Topic Id
 
-    id -- (required)
+      Id of the topic as it will appear in the URL.
 
-      The id of the help topic.
+    title -- MessageID (required)
 
-    title -- (required)
+      Title
 
-      Specifies title of the topic. This title will be used in
-      the tree as Identification.
+      Provides a title for the online Help Topic.
 
-    doc_path --  (required)
+    parent -- BytesLine (optional, default='')
 
-      Specifies where the file that contains the topic content is located on the
-      filesystem.
+      Parent Topic
 
-    doc_type -- (optional)
+      Id of the parent topic.
 
-      Defines the type of document this topic will be.
-      Examples (not necessarily available) are: TXT, reST, HTML
+    for -- GlobalObject (optional, default=None)
 
-    for -- (optional)
+      Object Interface
 
-      The interface this help topic applies to.
+      Interface for which this Help Topic is registered.
 
-      The help topic will be for all objects that implement this interface.
-      If 'for' is not supplied, the help topic applies to all objects
-      (XXX this ought to change).
-      This can be optional, since not all topics must be bound to a particular
-      interface.
+    view -- BytesLine (optional, default='')
 
-    view -- (optional)
+      View Name
 
-      This attribute specifies the name of the view for which
-      this topic is registered. Note that this attribute is also
-      optional.
+      The view name for which this Help Topic is registered.
+
+    doc_path -- Path (required)
+
+      Path to File
+
+      Path to the file that contains the Help Topic content.
+

@@ -1,1 +1,22 @@
-The allow subdirective of the content directive.
+allow
+
+  File zope/app/security/meta.zcml, lines 23 - 34.
+
+  
+
+  Attributes
+
+    attributes -- Tokens (optional, default=None)
+
+      Attributes
+
+      The attributes to provide access to.
+
+    interface -- Tokens (optional, default=None)
+
+      Interface
+
+      Interfaces whos names to provide access to. Access will be provided to
+      of the names defined by the interface(s). Multiple interfaces can be
+      
+

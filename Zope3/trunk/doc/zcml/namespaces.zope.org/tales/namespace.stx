@@ -1,0 +1,24 @@
+namespace
+
+  File zope/app/pagetemplate/meta.zcml, lines 8 - 11.
+
+  Define a new tales namespace A namespace is defined by providing a prefix
+  an interface. A handler for the namespace will be obtained by looking up an
+  for the given interface.
+
+  Attributes
+
+    prefix -- TextLine (required)
+
+      The prefix used in tales expressions.
+
+      For example, if the prefix is "dc", then a tales expression would look
+      ``foo/bar/dc:title``.
+
+    interface -- GlobalObject (required)
+
+      The namespace interface
+
+      This is an interface that the namespace must provide. we'll get the
+      by getting an adapter for this interface.
+

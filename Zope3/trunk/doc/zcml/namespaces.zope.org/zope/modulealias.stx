@@ -1,0 +1,20 @@
+modulealias
+
+  File zope/modulealias/meta.zcml, lines 5 - 9.
+
+  Define a new module alias
+
+  Attributes
+
+    module -- PythonIdentifier (required)
+
+      
+
+      
+
+    alias -- PythonIdentifier (required)
+
+      
+
+      
+

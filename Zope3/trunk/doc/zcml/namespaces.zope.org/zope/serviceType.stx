@@ -1,1 +1,20 @@
-The serviceType directive.
+serviceType
+
+  File zope/app/component/meta.zcml, lines 67 - 71.
+
+  
+
+  Attributes
+
+    id -- TextLine (required)
+
+      ID of the service type
+
+      
+
+    interface -- GlobalObject (required)
+
+      Interface of the service type
+
+      
+

@@ -1,0 +1,12 @@
+directives
+
+  Schema for the ``directives`` directive
+
+  Attributes
+
+    namespace -- URI (required)
+
+      Namespace
+
+      The namespace that directives' names will be defined in
+

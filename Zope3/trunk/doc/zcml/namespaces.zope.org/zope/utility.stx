@@ -1,17 +1,38 @@
-The utility directive.
+utility
 
-See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+  File zope/app/component/meta.zcml, lines 19 - 23.
 
-Attributes
+  Register a utility
 
-  * factory, a callable that provides a component.  It will be
-    called with no arguments.
-  
-  * component, a name that can be resolved to an object
-  
-  * provides, the interface this utility provides
-  
-  * permission, optional, the permission id required to use this utility
-  
-  
-  Either component or factory must be given, not both.
+  Attributes
+
+    component -- GlobalObject (optional, default=None)
+
+      Component to be used
+
+      
+
+    permission -- Id (optional, default=None)
+
+      Permission
+
+      
+
+    factory -- GlobalObject (optional, default=None)
+
+      Factory
+
+      
+
+    provides -- GlobalObject (required)
+
+      Interface the component provides
+
+      
+
+    name -- TextLine (optional, default=None)
+
+      Name
+
+      
+

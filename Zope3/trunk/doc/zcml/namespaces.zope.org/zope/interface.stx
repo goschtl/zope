@@ -1,0 +1,20 @@
+interface
+
+  File zope/app/component/meta.zcml, lines 7 - 11.
+
+  Define an interface
+
+  Attributes
+
+    interface -- GlobalObject (required)
+
+      Interface
+
+      
+
+    type -- GlobalObject (optional, default=None)
+
+      Interface type
+
+      
+

@@ -1,24 +1,14 @@
-The securityPolicy directive
+securityPolicy
 
-Overview
+  File zope/app/security/meta.zcml, lines 7 - 12.
 
-  Sets the security policy that Zope will use.
-  
-  XXX: Explain what this means.
-  
-Attributes
+  Defines the security policy that will be used for Zope.
 
-  The securityPolicy directive takes these attributes
-  
-    * component, the component that implements the security policy
-    
-    * factory, a callable that returns a security policy
-    
-    
-  The security policy component should implement the interface
-  "Zope.Security.ISecurityPolicy."
-  
-  
-  
-  
-  
+  Attributes
+
+    component -- GlobalObject (required)
+
+      Component
+
+      Pointer to the object that will handle the security.
+

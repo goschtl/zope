@@ -1,16 +1,30 @@
-menu (function              zope.app.publisher.browser.menuDirective)
+menu
 
-  Define a new browser menu
+  File zope/app/publisher/browser/meta.zcml, lines 104 - 108.
+
+  Define a browser menu
 
   Attributes
 
-    name -- 
+    usage -- TextLine (optional, default=u'')
+
+      The template usage top-level variable
+
+      See the usage documentation in the README.txt in the
+      directory. If this view is associated with a menu item, this attribute
+      not be supplied as the view will get its usage from the menu the menu
+      is registered to. This attribute is available for views not associated
+      a menu item.
+
+    id -- TextLine (required)
 
       The name of the menu.
-      
+
       This is, effectively, an id.
 
-    title -- 
+    title -- MessageID (required)
+
+      Title
 
       A descriptive title for documentation purposes
 

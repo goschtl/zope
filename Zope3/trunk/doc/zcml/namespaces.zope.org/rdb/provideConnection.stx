@@ -1,0 +1,28 @@
+provideConnection
+
+  File zope/app/rdb/meta.zcml, lines 5 - 9.
+
+  This directive creates a globale connection to an RDBMS.
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      This is the name the connection will be known as.
+
+    component -- GlobalObject (required)
+
+      Component
+
+      Specifies the component that provides the connection. This component
+      one particular RDBMS.
+
+    dsn -- TextLine (required)
+
+      DSN
+
+      The DSN contains all the connection information. Thesyntax looks as
+      dbi://username:password@host:port/dbname;param1=value...
+

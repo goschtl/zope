@@ -1,30 +1,82 @@
-i18n-resource (type zope.app.publisher.browser.I18nResource)
+i18n-resource
+
+  File zope/app/publisher/browser/meta.zcml, lines 88 - 99.
+
+  Defines an i18n'd resource.
 
   Attributes
 
-    default_language -- 
+    layer -- TextLine (optional, default=None)
 
+      The layer the resource should be found in
 
+      For information on layers, see the documentation for the skin
+      Defaults to "default".
 
-    name -- 
+    permission -- Id (optional, default=None)
 
+      The permission needed to access the resource.
+
+      If a permission isn't specified, the resource will always be
+      
+
+    name -- TextLine (required)
+
+      The name of the resource
+
+      This is the name used in resource urls. Resource urls are of the form
+      where site is the url of "site", a folder with a service manager.
+
+      We make resource urls site-relative (as opposed to content-relative) so
+      not to defeat caches.
+
+    defaultLanguage -- TextLine (optional, default=None)
+
+      Default language
+
+      Defines the default language
 
 
   Subdirectives
 
-    translation (method translation)
+    translation
+
+      File zope/app/publisher/browser/meta.zcml, lines 94 - 97.
+
+      Subdirective to II18nResourceDirective.
 
       Attributes
 
-        image -- 
+        layer -- TextLine (optional, default=None)
 
+          The layer the resource should be found in
 
+          For information on layers, see the documentation for the skin
+          Defaults to "default".
 
-        file -- 
+        permission -- Id (optional, default=None)
 
+          The permission needed to access the resource.
 
+          If a permission isn't specified, the resource will always be
+          
 
-        language -- 
+        language -- TextLine (required)
 
+          Language
 
+          Language of this translation of the resource
+
+        file -- Path (optional, default=None)
+
+          File
+
+          The file containing the resource data.
+
+        image -- Path (optional, default=None)
+
+          Image
+
+          If the image attribute is used, then an image resource, rather than
+          file resource will be created.
 

@@ -1,117 +1,149 @@
-ZCML addform directive
+addform
+
+  File zope/app/browser/form/meta.zcml, lines 46 - 50.
 
   Define an automatically generated add form
-  
-  The addForm directive creates and register's a view for
-  adding an object based on a schema.
-  
-  Adding an object is a bit trickier than editing an object,
-  because the object the schema applies to isn't available when
-  forms are being rendered.  The addForm directive provides an
-  customization interface to overcome this difficulty.
-  
+
+  The addform directive creates and registers a view for adding an object
+  on a schema.
+
+  Adding an object is a bit trickier than editing an object, because the
+  the schema applies to isn't available when forms are being rendered. The
+  directive provides an customization interface to overcome this difficulty.
+
   See zope.app.interfaces.browser.form.IAddFormCustomization.
 
   Attributes
 
-    layer -- (optional) 
+    usage -- TextLine (optional, default=u'')
 
-      The layer the view is in.
-      
-      A skin is composed of layers. It is common to put skin specific
-      views in a layer named after the skin. If the 'layer' attribute
-      is not supplied, it defaults to 'default'.
+      The template usage top-level variable
 
-    name -- (required) 
+      See the usage documentation in the README.txt in the
+      directory. If this view is associated with a menu item, this attribute
+      not be supplied as the view will get its usage from the menu the menu
+      is registered to. This attribute is available for views not associated
+      a menu item.
 
-      The name of the generated add view.
+    name -- TextLine (required)
 
-    for -- (optional) 
+      Name
+
+      The name of the generated view.
+
+    schema -- GlobalObject (required)
+
+      Schema
+
+      The schema from which the form is generated.
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
 
       The interface this page (view) applies to.
-      
-      The view will be for all objects that implement this interface.
-      
-      zope.app.interfaces.container.IAdding is used if this
-      attribute isn't specified.  If this attribute is specified,
-      then either the named interface must extend IAdding or a class
-      attribute must be used to supply a class implements certain
-      methods described in
-      zope.app.interfaces.browser.form.IAddFormCustomization.
-      
-      The schema is used if the for attribute is not specified.
-      
-      If the for attribute is specified, then the objects views must
-      implement or be adaptable to the schema.
 
-    permission -- (required) 
+      The view will be for all objects that implement this interface. The
+      is used if the for attribute is not specified.
+
+      If the for attribute is specified, then the objects views must
+      or be adaptable to the schema.
+
+    permission -- Id (required)
+
+      Permission
 
       The permission needed to use the view.
 
-    menu -- (optional) 
+    layer -- TextLine (optional, default=None)
 
-      The browser menu to include the edit form in.
-      
-      Many views are included in menus. It's convenient to name
-      the menu in the page directive, rather than having to give a
-      separate menuItem directive.
+      Layer
 
-    title -- (optional) 
+      The later the view is in. Default: 'default'
 
-      The browser menu label for the edit form
-      
-      This attribute defaults to "Edit".
+    template -- Path (optional, default=None)
 
-    content_factory -- (optional) 
+      Template
 
-      The dotted name of an object to call to create new content objects.
-      
-      This attribute isn't used if a class is specified that
-      implements createAndAdd.
+      An alternate template to use for the form.
 
-    keyword_arguments -- (optional) 
+    class -- GlobalObject (optional, default=None)
 
-      A list of field names to supply as keyword arguments to
-      the factory.
+      Class
 
-    set_after_add -- (optional) 
+      A class to provide custom widget definitions or methods to be used by a
+      template.
 
-      A list of fields to be assigned to the newly created object
-      after it is added.
+      This class is used as a mix-in class. As a result, it needn't subclass
+      special classes, such as BrowserView.
 
-    set_before_add -- (optional) 
+    label -- MessageID (optional, default=None)
 
-      A list of fields to be assigned to the newly created object
-      before it is added.
-
-    arguments -- (optional) 
-
-      A list of field names to supply as positional arguments to
-      the factory.
-
-    template -- (optional) 
-
-      An alternate template to use for the edit form.
-      
-      XXX Need to document how to extend the default.
-
-    label -- (optional) 
+      Label
 
       A label to be used as the heading for the form.
 
-    class -- (optional) 
+    menu -- TextLine (optional, default=None)
 
-      A class to provide custom widget definitions or methods to be
-      used by a custom template.
-      
-      This class can override methods defined in IAddFormCustomization.
-      
-      This class is used as a mix-in class. As a result, it needn't
-      subclass any special classes, such as BrowserView.
+      The browser menu to include the form in.
 
-    schema -- (required) 
-
-      The schema from which the add form is generated.
+      Many views are included in menus. It's convenient to name the menu in
+      page directive, rather than having to give a separate menuItem
       
-      A schema is an interface that includes fields.
+
+    title -- MessageID (optional, default=None)
+
+      Menu title
+
+      The browser menu label for the form.
+
+    fields -- Tokens (optional, default=None)
+
+      Fields
+
+      The fields and the order in which to display them. If this is not
+      all schema fields will be displayed in the order specified in the
+      itself.
+
+    content_factory -- GlobalObject (optional, default=None)
+
+      Content factory
+
+      An object to call to create new content objects.
+
+      This attribute isn't used if a class is specified that implements
+      
+
+    arguments -- Tokens (optional, default=None)
+
+      Arguments
+
+      A list of field names to supply as positional arguments to the factory.
+
+    keyword_arguments -- Tokens (optional, default=None)
+
+      Keyword arguments
+
+      A list of field names to supply as keyword arguments to the factory.
+
+    set_before_add -- Tokens (optional, default=None)
+
+      Set before add
+
+      A list of fields to be assigned to the newly created object before it
+      added.
+
+    set_after_add -- Tokens (optional, default=None)
+
+      Set after add
+
+      A list of fields to be assigned to the newly created object after it is
+      
+
+    description -- Text (optional, default=None)
+
+      A longer description of the add form.
+
+      A UI may display this with the item or display it when the user
+      more assistance.
 

@@ -1,74 +1,101 @@
-ZCML editform directive
+editform
+
+  File zope/app/browser/form/meta.zcml, lines 34 - 38.
 
   Define an automatically generated edit form
-  
-  The editForm directive creates and register's a view for
-  editing an object based on a schema.
+
+  The editform directive creates and register's a view for editing an object
+  on a schema.
 
   Attributes
 
-    layer -- (optional) 
+    usage -- TextLine (optional, default=u'')
 
-      The layer the view is in.
-      
-      A skin is composed of layers. It is common to put skin specific
-      views in a layer named after the skin. If the 'layer' attribute
-      is not supplied, it defaults to 'default'.
+      The template usage top-level variable
 
-    title -- (optional) 
+      See the usage documentation in the README.txt in the
+      directory. If this view is associated with a menu item, this attribute
+      not be supplied as the view will get its usage from the menu the menu
+      is registered to. This attribute is available for views not associated
+      a menu item.
 
-      The browser menu label for the edit form
-      
-      This attribute defaults to "Edit".
+    name -- TextLine (required)
 
-    name -- (required) 
+      Name
 
-      The name of the generated edit view.
+      The name of the generated view.
 
-    for -- (optional) 
+    schema -- GlobalObject (required)
+
+      Schema
+
+      The schema from which the form is generated.
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
 
       The interface this page (view) applies to.
-      
-      The view will be for all objects that implement this interface.
-      
-      The schema is used if the for attribute is not specified.
-      
-      If the for attribute is specified, then the objects views must
-      implement or be adaptable to the schema.
 
-    permission -- (required) 
+      The view will be for all objects that implement this interface. The
+      is used if the for attribute is not specified.
+
+      If the for attribute is specified, then the objects views must
+      or be adaptable to the schema.
+
+    permission -- Id (required)
+
+      Permission
 
       The permission needed to use the view.
 
-    menu -- (optional) 
+    layer -- TextLine (optional, default=None)
 
-      The browser menu to include the edit form in.
-      
-      Many views are included in menus. It's convenient to name
-      the menu in the page directive, rather than having to give a
-      separate menuItem directive.
+      Layer
 
-    schema -- (required) 
+      The later the view is in. Default: 'default'
 
-      The schema from which the edit form is generated.
-      
-      A schema is an interface that includes fields.
+    template -- Path (optional, default=None)
 
-    class -- (optional) 
+      Template
 
-      A class to provide custom widget definitions or methods to be
-      used by a custom template.
-      
-      This class is used as a mix-in class. As a result, it needn't
-      subclass any special classes, such as BrowserView.
+      An alternate template to use for the form.
 
-    template -- (optional) 
+    class -- GlobalObject (optional, default=None)
 
-      An alternate template to use for the edit form.
-      
-      XXX Need to document how to extend the default.
+      Class
 
-    label -- (optional) 
+      A class to provide custom widget definitions or methods to be used by a
+      template.
+
+      This class is used as a mix-in class. As a result, it needn't subclass
+      special classes, such as BrowserView.
+
+    label -- MessageID (optional, default=None)
+
+      Label
 
       A label to be used as the heading for the form.
+
+    menu -- TextLine (optional, default=None)
+
+      The browser menu to include the form in.
+
+      Many views are included in menus. It's convenient to name the menu in
+      page directive, rather than having to give a separate menuItem
+      
+
+    title -- MessageID (optional, default=None)
+
+      Menu title
+
+      The browser menu label for the form.
+
+    fields -- Tokens (optional, default=None)
+
+      Fields
+
+      The fields and the order in which to display them. If this is not
+      all schema fields will be displayed in the order specified in the
+      itself.
 
