@@ -142,6 +142,8 @@ class INoiseMaker(Interface):
     def makeNoise():
          "Returns the noise that's made."
 
+%page
+
 Adapters, example continued
 
 
@@ -159,7 +161,7 @@ class ElephantNoiseMaker:
 
 %page
 
-Adapters, example continued
+Adapters, example continued 2
 
 
 %size 4, fore "blue"
