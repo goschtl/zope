@@ -4,7 +4,8 @@ See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
 
 Attributes
 
-  * factory, a callable or list of callables, that realises the adaption
+  * factory, a callable, or list of callables, that creates the adapted object.
+    An adapter factory is passed one argument, the object to be adapted.
   
   * provides, the interface this adapter adapts to
   

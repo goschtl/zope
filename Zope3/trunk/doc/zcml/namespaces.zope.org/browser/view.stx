@@ -8,7 +8,10 @@ Attributes
 
   * name
   
-  * factory, a callable or list of callables that realizes the view
+  * factory, a callable or list of callables that realizes the view.
+    The View factory interface is documented in IViewFactory.  View
+    factories are passed two arguments, the context object and
+    the request object.
   
   * for, the interface this view applies to
   
