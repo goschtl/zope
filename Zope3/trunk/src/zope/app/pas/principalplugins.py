@@ -22,6 +22,8 @@ from zope.event import notify
 from zope.interface import implements
 
 from zope.app.container.contained import Contained
+from zope.app.security.interfaces import IPrincipal
+
 import interfaces
 
 class Principal:
@@ -39,6 +41,9 @@ class Principal:
     >>> p.id
     'foo'
     """
+    implements(IPrincipal)
+
+    title = description = u''
     
     def __init__(self, id):
         self.id = id
