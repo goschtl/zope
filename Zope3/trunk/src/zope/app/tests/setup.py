@@ -13,10 +13,11 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.25 2004/04/15 15:29:41 jim Exp $
+$Id: setup.py,v 1.26 2004/04/18 16:00:32 jim Exp $
 """
 
 import zope.component
+import zope.interface
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.interface import classImplements
@@ -49,7 +50,7 @@ from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
 from zope.app.location import LocationPhysicallyLocatable
-from zope.app.traversing.namespace import etc, provideNamespaceHandler
+from zope.app.traversing.namespace import etc
 
 def setUpTraversal():
     ztapi.provideAdapter(None, ITraverser, Traverser)
@@ -63,7 +64,8 @@ def setUpTraversal():
         IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
 
     # set up etc namespace
-    provideNamespaceHandler("etc", etc)
+    ztapi.provideAdapter(None, ITraversable, etc, name="etc")
+    ztapi.provideView(None, zope.interface.Interface, ITraversable, "etc", etc)
 
     ztapi.browserView(None, "absolute_url", AbsoluteURL)
     ztapi.browserView(IContainmentRoot, "absolute_url", SiteAbsoluteURL)

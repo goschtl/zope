@@ -13,7 +13,7 @@
 ##############################################################################
 """Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
+$Id: test_zptpage.py,v 1.9 2004/04/18 16:00:35 jim Exp $
 """
 
 import unittest
@@ -117,9 +117,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
                     return 'None'
                 return name
 
-        from zope.app.traversing.namespace import provideNamespaceHandler
         from zope.app.traversing.namespace import view
-        provideNamespaceHandler('view', view)
+        ztapi.provideNamespaceHandler('view', view)
         ztapi.browserView(IZPTPage, 'name', AU)
 
         page = ZPTPage()

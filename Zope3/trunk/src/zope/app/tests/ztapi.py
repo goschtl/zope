@@ -13,12 +13,19 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.7 2004/03/23 00:23:12 maru Exp $
+$Id: ztapi.py,v 1.8 2004/04/18 16:00:32 jim Exp $
 """
 from zope.app import zapi
 import zope.interface
 from zope.component.servicenames import Presentation, Adapters, Utilities
 from zope.publisher.browser import IBrowserRequest
+from zope.app.traversing.interfaces import ITraversable
+
+def provideView(for_, type, providing, name, factory, layer="default"):
+    s = zapi.getService(None, Presentation)
+    return s.provideView(for_, name, type, factory, layer,
+                         providing=providing)
+    
 
 def browserView(for_, name, factory, layer='default',
                 providing=zope.interface.Interface):
@@ -70,3 +77,7 @@ def subscribe(required, provided, factory):
 def provideUtility(provided, component, name=''):
     s = zapi.getService(None, Utilities)
     s.provideUtility(provided, component, name)
+
+def provideNamespaceHandler(name, handler):
+    provideAdapter(None, ITraversable, handler, name=name)
+    provideView(None, zope.interface.Interface, ITraversable, name, handler)
