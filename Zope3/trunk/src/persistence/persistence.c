@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.19 2003/06/30 21:31:07 jeremy Exp $\n";
+"$Id: persistence.c,v 1.20 2003/07/03 19:12:56 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -446,15 +446,15 @@ persist_check_getattr(const char *s)
 	switch (*s) {
 	case 'd':
 	    s++;
-	    if (!strncmp(s, "ict__", 5))
+	    if (!strcmp(s, "ict__"))
 		return 0; /* __dict__ */
-	    if (!strncmp(s, "el__", 4))
+	    if (!strcmp(s, "el__"))
 		return 0; /* __del__ */
 	    return 1;
 	case 'c':
-	    return strncmp(s, "class__", 7);
+	    return strcmp(s, "class__");
 	case 's':
-	    return strncmp(s, "setstate__", 10);
+	    return strcmp(s, "setstate__");
 	default:
 	    return 1;
 	}
