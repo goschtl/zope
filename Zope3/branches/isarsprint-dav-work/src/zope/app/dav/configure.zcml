@@ -107,23 +107,7 @@
       for="*"
       permission="zope.Public"
       factory=".adapter.DAVSchemaAdapter" />
-
-  <!-- XXX: This interface needs to be split up so we can apply seperate 
-       permissions for reading and writing -->
-  <adapter
-      factory=".opaquenamespacesadapter.DAVOpaqueNamespacesAdapter"
-      provides="zope.app.dav.interfaces.IDAVOpaqueNamespaces"
-      for="zope.app.annotation.interfaces.IAnnotatable"
-      trusted="true"
-      />
-      
-  <class class=".opaquenamespacesadapter.DAVOpaqueNamespacesAdapter">
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IDAVOpaqueNamespaces"
-        />
-  </class>
-
+  
   <dav:provideInterface
       for="http://purl.org/dc/1.1"
       interface="zope.app.dublincore.interfaces.IZopeDublinCore" />

@@ -19,7 +19,7 @@ from xml.dom import minidom
 from zope.schema import getFieldNamesInOrder
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.dav.interfaces import IDAVWidget, IDAVOpaqueNamespaces
+from zope.app.dav.interfaces import IDAVWidget
 from zope.app.form.utility import setUpWidgets
 
 from interfaces import IDAVNamespace
@@ -78,15 +78,11 @@ class PROPFIND(object):
         r_url = response.createTextNode(resource_url)
         href.appendChild(r_url)
         _avail_props = {}
-        
-        # List all *registered* DAV interface namespaces and their properties
+        # TODO: For now, list the propnames for the all namespaces
+        # but later on, we need to list *all* propnames from *all* known
+        # namespaces that this object has.
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
-            
-        # List all opaque DAV namespaces and the properties we know of
-        for ns, oprops in IDAVOpaqueNamespaces(self.context, {}).items():
-            _avail_props[ns] = oprops.keys()
-        
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:
             self._handlePropname(response, re, _avail_props)

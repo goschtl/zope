@@ -18,7 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.interface.common.mapping import IMapping
 from zope.schema import Text
 from zope.app.form.interfaces import IWidget
 
@@ -204,12 +203,3 @@ class ITextDAVWidget(IDAVWidget):
 class ISequenceDAVWidget(IDAVWidget):
     """A DAV widget for sequences."""
 
-
-class IDAVOpaqueNamespaces(IMapping):
-    """Opaque storage for non-registered DAV namespace properties.
-
-    Any unknown (no interface registered) DAV properties are stored opaquely
-    keyed on their namespace URI, so we can return them later when requested.
-    Thus this is a mapping of a mapping.
-    
-    """
