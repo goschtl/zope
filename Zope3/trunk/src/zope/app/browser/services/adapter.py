@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.14 2003/08/16 00:42:54 srichter Exp $
+$Id: adapter.py,v 1.15 2003/09/21 17:30:48 jim Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,6 @@ from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
 from zope.component import getView
 from zope.publisher.browser import BrowserView
-from zope.app.context import ContextWrapper
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.services.adapter import IAdapterRegistration
@@ -77,7 +76,6 @@ class AdapterServiceView(BrowserView):
             providedInterface = (
                 providedInterface.__module__ +"."+ providedInterface.getName())
 
-            registry = ContextWrapper(registry, self.context)
             view = getView(registry, "ChangeRegistrations", self.request)
             prefix = md5.new('%s %s' %
                              (forInterface, providedInterface)).hexdigest()
