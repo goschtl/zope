@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: query.py,v 1.1 2004/04/01 17:12:25 philikon Exp $
+$Id: query.py,v 1.2 2004/04/01 17:15:50 faassen Exp $
 """
 
 def advancedQueryMechanism(arguments,action='query',
@@ -100,6 +100,7 @@ class AdvancedSuperClass:
     
     def superHasAttr(self,attr):
         obj=self
+
         seen={}
         vals=[]
         have=seen.has_key
@@ -123,6 +124,7 @@ class AdvancedSuperClass:
 
     def superValues(self,t):
         if type(t)==type('s'): t=(t,)
+
         obj=self
         seen={}
         vals=[]
