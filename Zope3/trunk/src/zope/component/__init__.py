@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.16 2003/12/19 16:53:20 mchandra Exp $
+$Id: __init__.py,v 1.17 2004/02/09 07:41:20 dunny Exp $
 """
 
 import sys
@@ -120,6 +120,38 @@ def queryNamedAdapter(object, interface, name, default=None, context=None):
     return adapters.queryNamedAdapter(object, interface, name, default)
 
 queryNamedAdapter = hookable(queryNamedAdapter)
+
+def queryMultiAdapter(objects, interface, context, name=u'', default=None):
+    try:
+        adapters = getService(context, Adapters)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return default
+
+    return adapters.queryMultiAdapter(objects, interface, name, default)
+
+def querySubscriptionAdapter(object, interface, name, default=(),
+                             context=None):
+    if context is None:
+        context = object
+    try:
+        adapters = getService(context, Adapters)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return default
+
+    return adapters.querySubscriptionAdapter(object, interface, name, default)
+
+def querySubscriptionMultiAdapter(objects, interface, context, name=u'',
+                             default=()):
+    try:
+        adapters = getService(context, Adapters)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return default
+
+    return adapters.querySubscriptionMultiAdapter(objects, interface, name,
+                                                  default)
 
 # Factory service
 

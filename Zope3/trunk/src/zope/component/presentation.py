@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.5 2004/01/29 17:36:49 srichter Exp $
+$Id: presentation.py,v 1.6 2004/02/09 07:41:20 dunny Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -202,12 +202,16 @@ class GlobalPresentationService(GlobalService):
        >>> match = s.getRegisteredMatching(request=IRequest)
        >>> match.keys()
        ['custom']
-       >>> match['custom'][0] == \
+       >>> matcheditems = list(match['custom'])
+       >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
+       >>> matcheditems[0] == \
        ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
        True
 
        >>> match = s.getRegisteredMatching(IContact, IRequest)
-       >>> match['custom'][0] == \
+       >>> matcheditems = list(match['custom'])
+       >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
+       >>> matcheditems[0] == \
        ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
        True
 

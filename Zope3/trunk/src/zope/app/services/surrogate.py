@@ -13,7 +13,7 @@
 ##############################################################################
 """Local/persistent surrogate (adapter) registry support
 
-$Id: surrogate.py,v 1.2 2003/11/21 17:09:52 jim Exp $
+$Id: surrogate.py,v 1.3 2004/02/09 07:41:20 dunny Exp $
 """
 
 from persistence import Persistent
@@ -104,7 +104,7 @@ class LocalSurrogateRegistry(SurrogateRegistry, Persistent):
     def queryRegistrationsFor(self, registration, default=None):
         stacks = self.stacks.get(registration.required)
         if stacks:
-            stack = stacks.get((registration.with, registration.name,
+            stack = stacks.get((False, registration.with, registration.name,
                                 registration.provided))
             if stack is not None:
                 return stack
@@ -119,7 +119,7 @@ class LocalSurrogateRegistry(SurrogateRegistry, Persistent):
             stacks = PersistentDict()
             self.stacks[registration.required] = stacks
 
-        key = registration.with, registration.name, registration.provided
+        key = False, registration.with, registration.name, registration.provided
         stack = stacks.get(key)
         if stack is None:
             stack = self._stackType(self)

@@ -20,6 +20,7 @@ from zope.component import getNamedAdapter, queryNamedAdapter
 from zope.component import getService
 from zope.component import getUtility, queryUtility
 from zope.component import getDefaultViewName
+from zope.component import queryMultiAdapter
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Adapters
 from zope.component.tests.placelesssetup import PlacelessSetup
@@ -163,6 +164,24 @@ class Test(PlacelessSetup, unittest.TestCase):
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context.context, ob)
+
+    def testQueryMultiAdapter(self):
+        # Adapting a combination of 2 objects to an interface
+        class DoubleAdapter:
+            implements(I3)
+            def __init__(self, first, second):
+                self.first = first
+                self.second = second
+        class Ob2:
+            implements(I2)
+        ob2 = Ob2()
+        context = None
+        getService(context, Adapters).provideAdapter(I1, I3, [DoubleAdapter],
+                                                     with=[I2])
+        c = queryMultiAdapter((ob, ob2), I3, context=context)
+        self.assertEquals(c.__class__, DoubleAdapter)
+        self.assertEquals(c.first, ob)
+        self.assertEquals(c.second, ob2)
 
     def testAdapterForInterfaceNone(self):
 

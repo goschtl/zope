@@ -13,7 +13,7 @@
 ##############################################################################
 """Surrogate-specification registry implementation
 
-$Id: surrogate.py,v 1.2 2003/11/21 17:11:46 jim Exp $
+$Id: surrogate.py,v 1.3 2004/02/09 07:41:21 dunny Exp $
 """
 
 # Implementation notes
@@ -21,7 +21,7 @@ $Id: surrogate.py,v 1.2 2003/11/21 17:11:46 jim Exp $
 # We keep a collection of surrogates.
 
 # A surrogate is a surrogate for a specification (interface or
-# declaration).  We use week references in order to remove surrogates
+# declaration).  We use weak references in order to remove surrogates
 # if the corresponding specification goes away.
 
 # Each surrogate keeps track of:
@@ -36,39 +36,44 @@ $Id: surrogate.py,v 1.2 2003/11/21 17:11:46 jim Exp $
 
 # The registrations are of the form:
 
-#   {(with, name, specification) -> factories}
+#   {(subscription, with, name, specification) -> factories}
 
 # where:
 
-#   with is a tuple of specs that is non-empty only in the case
+#   'subscription' is a flag indicating if this registration is for
+#   subscription adapters.
+
+#   'with' is a tuple of specs that is non-empty only in the case
 #   of multi-adapters.  
 
-#   name is a unicode adapter name.  Unnamed adapters have an empty
+#   'name' is a unicode adapter name.  Unnamed adapters have an empty
 #   name.
 
-#   specification is the interface being adapted to.
+#   'specification' is the interface being adapted to.
 
-#   factories is normally a tuple of factories, but can be anything.
-#   (See the "raw" option to the query-adapter calls.)
+#   'factories' is normally a tuple of factories, but can be anything.
+#   (See the "raw" option to the query-adapter calls.)  For subscription
+#   adapters, it is a tuple of tuples of factories.
 
 # The implied adapters are held in a single dictionary. The items in the
 # dictionary are of 3 forms:
 
-#   specification -> factories
+#   (subscription, specification) -> factories
 
 #      for simple unnamed adapters
 
-#   (specification, name) -> factories
+#   (subscription, specification, name) -> factories
 
 #      for named adapters
 
-#   (specification, name, order) -> {with -> factories}
+#   (subscription, specification, name, order) -> {with -> factories}
 
 #      for multi-adapters.  
 
 
 from __future__ import generators
 import weakref
+from sets import Set
 from zope.interface.ro import ro
 from zope.interface.declarations import providedBy
 from zope.interface.interface import InterfaceClass
@@ -122,13 +127,27 @@ class Surrogate(object):
         # override less-specific data.
         ancestors.reverse()
         for ancestor in ancestors:
-            implied.update(ancestor.selfImplied)
+            for key, adapters in ancestor.selfImplied.iteritems():
+                subscription = key[0]
+                if subscription:
+                    adapters = tuple(map(tuple, adapters))
+                    implied[key] = tuple(Set(implied.get(key, ()) + adapters))
+                else:
+                    implied[key] = adapters
             for k, ancestor_adapters in ancestor.multImplied.iteritems():
                 implied_adapters = implied.get(k)
                 if implied_adapters:
-                    implied_adapters.update(ancestor_adapters)
+                    subscription = k[0]
+                    if subscription:
+                        for key, adapters in ancestor_adapters.iteritems():
+                            # XXX: remove dupes?
+                            implied_adapters[key] = implied_adapters.get(
+                                key, []) + adapters
+                    else:
+                        implied_adapters.update(ancestor_adapters)
                 else:
                     implied[k] = ancestor_adapters.copy()
+
 
         self.get = implied.get
 
@@ -163,11 +182,24 @@ class Surrogate(object):
     def _adaptTo(self, specification, factories, name='', with=()):
         if factories is None:
             try:
-                del self.adapters[with, name, specification]
+                del self.adapters[False, tuple(with), name, specification]
             except KeyError:
                 pass
         else:
-            self.adapters[tuple(with), name, specification] = factories
+            self.adapters[False, tuple(with), name, specification] = factories
+
+        self.dirty()
+
+    def _subscriptionAdaptTo(self, specification, factories, name='', with=()):
+        if factories is None:
+            raise TypeError, ("Unregistering subscription adapters" 
+                              " isn't implemented")
+
+        # Add factories to our list of factory lists.
+        key = (True, tuple(with), name, specification)
+        factoriesList = self.adapters.get(key, ())
+        factoriesList = factoriesList + (factories,)
+        self.adapters[key] = factoriesList
 
         self.dirty()
 
@@ -213,8 +245,7 @@ class SurrogateRegistry(object):
             self._surrogates[ref] = surrogate
 
         return surrogate
-
-
+        
     def provideAdapter(self, required, provided, factories, name=u'', with=()):
         """Register an adapter
 
@@ -232,6 +263,25 @@ class SurrogateRegistry(object):
             raise TypeError("The name provided to provideAdapter "
                             "must be a string or unicode")
         required._adaptTo(provided, factories, unicode(name), with)
+
+    def provideSubscriptionAdapter(self, required, provided, factories,
+                                   name=u'', with=()):
+        """Register a subscription adapter
+
+        Note that the given name must be convertable to unicode.
+        Use an empty string for unnamed subscription adapters. It is
+        impossible to have a named subscription adapter with an empty name.
+        """
+        required = self.get(required)
+        if with:
+            with = tuple(with)
+        else:
+            with = ()
+
+        if not isinstance(name, basestring):
+            raise TypeError("The name provided to provideAdapter "
+                            "must be a string or unicode")
+        required._subscriptionAdaptTo(provided, factories, unicode(name), with)
 
     def queryAdapter(self, ob, interface, default=None, raw=False):
         """Query a simple adapter
@@ -289,9 +339,9 @@ class SurrogateRegistry(object):
         declaration = providedBy(ob)
         s = self.get(declaration)
 
-        factories = s.get(interface)
+        factories = s.get((False, interface))
         if factories is None:
-            factories = self._default.get(interface)
+            factories = self._default.get((False, interface))
 
         if factories is not None:
             if raw:
@@ -302,6 +352,109 @@ class SurrogateRegistry(object):
             return ob
 
         return default
+
+
+    def querySubscriptionAdapter(self, ob, interface, name=u'', default=(),
+                            raw=False):
+        """Query for subscription adapters
+
+        >>> import zope.interface
+        >>> class IAnimal(zope.interface.Interface):
+        ...     pass
+        >>> class IPoultry(IAnimal):
+        ...     pass
+        >>> class IChicken(IPoultry):
+        ...     pass
+        >>> class ISeafood(IAnimal):
+        ...     pass
+
+        >>> class Poultry:
+        ...     zope.interface.implements(IPoultry)
+        >>> poultry = Poultry()
+
+        >>> registry = SurrogateRegistry()
+
+        Adapting to some other interface for which there is no
+        subscription adapter returns the default:
+
+        >>> class IRecipe(zope.interface.Interface):
+        ...     pass
+        >>> class ISausages(IRecipe):
+        ...     pass
+        >>> class INoodles(IRecipe):
+        ...     pass
+        >>> class IKFC(IRecipe):
+        ...     pass
+
+        >>> list(registry.querySubscriptionAdapter(poultry, IRecipe))
+        []
+        >>> registry.querySubscriptionAdapter(poultry, IRecipe, default=42)
+        42
+
+        Unless we define a subscription adapter:
+
+        >>> def sausages(ob):
+        ...     return 'sausages'
+
+        >>> registry.provideSubscriptionAdapter(IAnimal, ISausages, [sausages])
+        >>> list(registry.querySubscriptionAdapter(poultry, ISausages))
+        ['sausages']
+
+        And define another subscription adapter:
+
+        >>> def noodles(ob):
+        ...     return 'noodles'
+
+        >>> registry.provideSubscriptionAdapter(IPoultry, INoodles, [noodles])
+        >>> meals = list(registry.querySubscriptionAdapter(poultry, IRecipe))
+        >>> meals.sort()
+        >>> meals
+        ['noodles', 'sausages']
+
+        >>> class Chicken:
+        ...     zope.interface.implements(IChicken)
+        >>> chicken = Chicken()
+
+        >>> def kfc(ob):
+        ...     return 'kfc'
+
+        >>> registry.provideSubscriptionAdapter(IChicken, IKFC, [kfc])
+        >>> meals = list(registry.querySubscriptionAdapter(chicken, IRecipe))
+        >>> meals.sort()
+        >>> meals
+        ['kfc', 'noodles', 'sausages']
+
+        And the answer for poultry hasn't changed:
+
+        >>> registry.provideSubscriptionAdapter(IPoultry, INoodles, [noodles])
+        >>> meals = list(registry.querySubscriptionAdapter(poultry, IRecipe))
+        >>> meals.sort()
+        >>> meals
+        ['noodles', 'sausages']
+        """
+
+        declaration = providedBy(ob)
+        s = self.get(declaration)
+
+        if name:
+            key = (True, interface, name)
+        else:
+            key = (True, interface)
+
+        factoriesLists = s.get(key)
+        if factoriesLists is None:
+            factoriesLists = self._default.get(key)
+
+        if factoriesLists is not None:
+            if raw:
+                return factoriesLists
+            
+            return [factory(ob)
+                    for factories in factoriesLists
+                    for factory in factories]
+
+        return default
+
 
     def queryNamedAdapter(self, ob, interface, name, default=None, raw=False):
         """Query a named simple adapter
@@ -356,7 +509,10 @@ class SurrogateRegistry(object):
 
         declaration = providedBy(ob)
         s = self.get(declaration)
-        key = name and (interface, name) or interface
+        if name:
+            key = (False, interface, name)
+        else:
+            key = (False, interface)
         factories = s.get(key)
         if factories is None:
             factories = self._default.get(key)
@@ -370,7 +526,7 @@ class SurrogateRegistry(object):
         return default
 
     def queryMultiAdapter(self, objects, interface, name=u'',
-                          default=None, raw=False):
+                          default=None, raw=False, _subscription=False):
         """
 
         >>> import zope.interface
@@ -432,54 +588,218 @@ class SurrogateRegistry(object):
         True
         >>> a.y is r
         True
-        
+
         """
         ob = objects[0]
         order = len(objects)
         obs = objects[1:]
 
         declaration = providedBy(ob)
-        surrogate = self.get(declaration)
+        if _subscription:
+            result = []
 
-        while 1:
-            adapters = surrogate.get((interface, name, order))
+        surrogates = (self.get(declaration), self._default)
+
+        for surrogate in surrogates:
+            adapters = surrogate.get((_subscription, interface, name, order))
             if adapters:
-                matched = None
-                matched_factories = None
+                if _subscription:
+                    matched_factories = []
+                else:
+                    matched = None
+                    matched_factories = None
                 for interfaces, factories in adapters.iteritems():
                     for iface, ob in zip(interfaces, obs):
                         if not iface.isImplementedBy(ob):
                             break # This one is no good
                     else:
-                        # we didn't break, so we have a match
-                        if matched is None:
-                            matched = interfaces
-                            matched_factories = factories
+                        if _subscription:
+                            matched_factories.extend(factories)
                         else:
-                            # see if the new match is better than the old one:
-                            for iface, m in zip(interfaces, matched):
-                                if iface.extends(m):
-                                    # new is better than old
-                                    matched = interfaces
-                                    matched_factories = factories
-                                    break
-                                elif m.extends(iface):
-                                    # old is better than new
-                                    break
+                            # we didn't break, so we have a match
+                            if matched is None:
+                                matched = interfaces
+                                matched_factories = factories
+                            else:
+                                # see if the new match is better than the old
+                                # one:
+                                for iface, m in zip(interfaces, matched):
+                                    if iface.extends(m):
+                                        # new is better than old
+                                        matched = interfaces
+                                        matched_factories = factories
+                                        break
+                                    elif m.extends(iface):
+                                        # old is better than new
+                                        break
                                 
 
                 if matched_factories is not None:
                     if raw:
                         return matched_factories
 
-                    assert len(matched_factories) == 1
+                    if not _subscription:
+                        assert len(matched_factories) == 1, \
+                               "matched_factories has more than 1 element: " \
+                               + repr(matched_factories)
+                        return matched_factories[0](*objects)
+                    else:
+                        for factories in matched_factories:
+                            assert len(factories) == 1
+                            result.append(factories[0](*objects))
 
-                    return matched_factories[0](*objects)
+        if _subscription and result:
+            return result
+        else:
+            return default
 
-            # Fall back to default if we haven't already
-            if surrogate is self._default:
-                return default
-            surrogate = self._default
+    def querySubscriptionMultiAdapter(self, objects, interface, name=u'',
+                                 default=(), raw=False):
+        """
+        Subscription multiadaption works too:
+
+        >>> import zope.interface
+        >>> class IAnimal(zope.interface.Interface):
+        ...     pass
+        >>> class IPoultry(IAnimal):
+        ...     pass
+        >>> class IChicken(IPoultry):
+        ...     pass
+        >>> class ISeafood(IAnimal):
+        ...     pass
+
+        >>> class Animal:
+        ...     zope.interface.implements(IAnimal)
+        >>> animal = Animal()
+
+        >>> class Poultry:
+        ...     zope.interface.implements(IPoultry)
+        >>> poultry = Poultry()
+
+        >>> class Poultry:
+        ...     zope.interface.implements(IPoultry)
+        >>> poultry = Poultry()
+
+        >>> class Chicken:
+        ...     zope.interface.implements(IChicken)
+        >>> chicken = Chicken()
+        
+
+        >>> class IRecipe(zope.interface.Interface):
+        ...     pass
+        >>> class ISausages(IRecipe):
+        ...     pass
+        >>> class INoodles(IRecipe):
+        ...     pass
+        >>> class IKFC(IRecipe):
+        ...     pass
+
+        >>> class IDrink(zope.interface.Interface):
+        ...     pass
+
+        >>> class Drink:
+        ...     zope.interface.implements(IDrink)
+        >>> drink = Drink()
+
+        >>> class Meal:
+        ...     def __init__(self, animal, drink):
+        ...         self.animal, self.drink = animal, drink
+        >>> class Lunch(Meal):
+        ...     pass
+        >>> class Dinner(Meal):
+        ...     pass
+
+        >>> registry = SurrogateRegistry()
+        >>> query = registry.querySubscriptionMultiAdapter
+        >>> provide = registry.provideSubscriptionAdapter
+
+        Can't find adapters for insufficiently specific interfaces:
+        
+        >>> provide(IPoultry, IRecipe, [Dinner], with=[IDrink])
+        >>> list(query((animal, drink), IRecipe))
+        []
+
+        But we can for equally specific:
+
+        >>> adapters = list(query((poultry, drink), IRecipe))
+        >>> len(adapters)
+        1
+
+        And for more specific:
+
+        >>> adapters = list(query((chicken, drink), IRecipe))
+        >>> len(adapters)
+        1
+
+        >>> provide(IAnimal, IRecipe, [Meal], with=[IDrink])
+        >>> provide(IAnimal, IRecipe, [Lunch], with=[IDrink])
+        >>> adapters = list(query((animal, drink), IRecipe)) 
+        >>> names = [a.__class__.__name__ for a in adapters]
+        >>> names.sort()
+        >>> names
+        ['Lunch', 'Meal']
+        >>> adapters[0].animal is animal
+        True
+        >>> adapters[0].drink is drink
+        True
+        >>> adapters[1].animal is animal
+        True
+        >>> adapters[1].drink is drink
+        True
+
+        Mixed specificities:
+
+        >>> registry = SurrogateRegistry()
+        >>> query = registry.querySubscriptionMultiAdapter
+        >>> provide = registry.provideSubscriptionAdapter
+
+        >>> provide(IPoultry, IRecipe, [Meal], with=[IDrink])
+        >>> provide(IChicken, IRecipe, [Lunch], with=[IDrink])
+
+        We can only use IPoultry recipes on poultry -- we can't apply chicken
+        recipes because poultry isn't specific enough.  So there's only one
+        choice for poultry:
+        
+        >>> adapters = list(query((poultry, drink), IRecipe))
+        >>> len(adapters)
+        1
+
+        But using chicken, we can use poultry *and* chicken recipes:
+        
+        >>> adapters = list(query((chicken, drink), IRecipe))
+        >>> len(adapters)
+        2
+
+        We should get the same results if we swap the order of the input types:
+
+        >>> registry = SurrogateRegistry()
+        >>> query = registry.querySubscriptionMultiAdapter
+        >>> provide = registry.provideSubscriptionAdapter
+
+        >>> provide(IDrink, IRecipe, [Meal], with=[IPoultry])
+        >>> provide(IDrink, IRecipe, [Lunch], with=[IChicken])
+
+        >>> adapters = list(query((drink,poultry), IRecipe))
+        >>> len(adapters)
+        1
+        >>> adapters = list(query((drink,chicken), IRecipe))
+        >>> len(adapters)
+        2
+
+        And check that names work, too:
+
+        >>> adapters = list(query((drink,poultry), IRecipe, name='Joes Diner'))
+        >>> len(adapters)
+        0
+        
+        >>> provide(IDrink, IRecipe, [Meal], with=[IPoultry],name='Joes Diner')
+        >>> adapters = list(query((drink,poultry), IRecipe, name='Joes Diner'))
+        >>> len(adapters)
+        1
+
+        """
+        return self.queryMultiAdapter(objects, interface, name, default, raw,
+                                      _subscription=True)
 
     def getRegisteredMatching(self,
                               required=None,
@@ -645,7 +965,10 @@ class SurrogateRegistry(object):
                     ancestor = ancestor.spec()
                     if ancestor is Default:
                         ancestor = None
-                    for (rwith, aname, target), factories in items:
+                    for key, factories in items:
+                        subscription, rwith, aname, target = key
+                        if subscription:
+                            raise NotImplementedError
                         if with is not None and not mextends(with, rwith):
                             continue
                         if name is not None and aname != name:
@@ -675,33 +998,36 @@ def adapterImplied(adapters):
     implied = {}
     multi = {}
     registered = {}
-
     # Add adapters and interfaces directly implied by same:
-    for (with, name, target), factories in adapters.iteritems():
+    for (subscription, with, name, target), factories in adapters.iteritems():
         if with:
             _add_multi_adapter(with, name, target, target, multi,
-                               registered, factories)
+                               registered, factories, subscription)
         elif name:
             _add_named_adapter(target, target, name, implied,
-                               registered, factories)
+                               registered, factories, subscription)
         else:
-            _add_adapter(target, target, implied, registered, factories)
+            _add_adapter(target, target, implied, registered, factories,
+                         subscription)
 
     return implied, multi
 
-def _add_adapter(target, provided, implied, registered, factories):
-    if (target not in implied
+def _add_adapter(target, provided, implied, registered, factories,
+                 subscription):
+    key = subscription, target
+    if (key not in implied
         or
-        (target in registered and registered[target].extends(provided))
+        (key in registered and registered[key].extends(provided))
         ):
-        registered[target] = provided
-        implied[target] = factories
+        registered[key] = provided
+        implied[key] = factories
         for b in target.__bases__:
-            _add_adapter(b, provided, implied, registered, factories)
+            _add_adapter(b, provided, implied, registered, factories,
+                         subscription)
 
 def _add_named_adapter(target, provided, name,
-                        implied, registered, factories):
-    key = target, name
+                        implied, registered, factories, subscription):
+    key = subscription, target, name
     if (key not in implied
         or
         (key in registered and registered[key].extends(provided))
@@ -710,18 +1036,18 @@ def _add_named_adapter(target, provided, name,
         implied[key] = factories
         for b in target.__bases__:
             _add_named_adapter(b, provided, name,
-                               implied, registered, factories)
+                               implied, registered, factories, subscription)
 
 def _add_multi_adapter(interfaces, name, target, provided, implied,
-                       registered, factories):
+                       registered, factories, subscription):
     order = len(interfaces)+1
-    key = target, name, order
+    key = subscription, target, name, order
     adapters = implied.get(key)
     if adapters is None:
         adapters = {}
         implied[key] = adapters
 
-    key = key, interfaces # The full key has all 4
+    key = key, interfaces # The full key has all 5
     if key not in registered or registered[key].extends(provided):
         # This is either a new entry or it is an entry for a more
         # general interface that is closer provided than what we had
@@ -731,4 +1057,4 @@ def _add_multi_adapter(interfaces, name, target, provided, implied,
 
     for b in target.__bases__:
         _add_multi_adapter(interfaces, name, b, provided, implied,
-                           registered, factories)
+                           registered, factories, subscription)
