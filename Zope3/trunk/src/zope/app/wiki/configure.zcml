@@ -92,7 +92,6 @@
 
     <factory
         id="zope.wiki.Wiki"
-        permission="zope.ManageContent"
         description="Minimal Wiki Page Container implementation " />
 
     <require
@@ -126,7 +125,6 @@
 
     <factory
         id="zope.wiki.WikiPage"
-        permission="zope.app.wiki.AddWikiPage"
         title="Wiki Page"
         description="A Wiki Page" />
 
@@ -157,7 +155,6 @@
 
     <factory
         id="zope.wiki.Comment"
-        permission="zope.app.wiki.CommentWikiPage"
         title="Wiki Page Comment"
         description="A Wiki Page Comment" />
 
