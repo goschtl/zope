@@ -13,10 +13,10 @@
 ##############################################################################
 """Security map to hold matrix-like relationships.
 
-$Id: interfaces.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/05 18:38:04 srichter Exp $
 """
 from zope.interface import Interface
-from zope.app.interfaces.security import IRegisteredObject
+from zope.schema import TextLine, Text
 
 class ISecurityMap(Interface):
     """Security map to hold matrix-like relationships."""
@@ -40,33 +40,24 @@ class ISecurityMap(Interface):
     def getAllCells():
         " return a list of (rowentry, colentry, value) "
 
-class IRole(IRegisteredObject):
+class IRole(Interface):
     """A role object."""
 
-class IRoleService(Interface):
-    """Define roles
+    id = TextLine(
+        title=u"Id",
+        description=u"Id as which this role will be known and used.",
+        readonly=True,
+        required=True)
 
-     'IRoleService' objects are used to implement role-definition
-     services. Because they implement services, they are expected to
-     collaborate with services in other contexts. Client code doesn't
-     sarch a context and call multiple services. Instead, client code
-     will call the most specific service in a place and rely on the
-     service to delegate to other services as necessary.
+    title = TextLine(
+        title=u"Title",
+        description=u"Provides a title for the role.",
+        required=True)
 
-     The interface doesn't include methods for data
-     management. Services may use external data and not allow
-     management in Zope. Simularly, the data to be managed may vary
-     with different implementations of a service.
-     """
-
-    def getRole(rid):
-        """Return an 'IRole' object for the given role id."""
-
-
-    def getRoles():
-        """Return a sequence of the roles (IRole objects)
-        defined in the place containing the service."""
-
+    description = Text(
+        title=u"Description",
+        description=u"Provides a description for the role.",
+        required=False)
 
 
 
