@@ -119,7 +119,14 @@ class Loader:
             try:
                 parsed_url = cvsloader.parse(url)
             except ValueError:
-                pass
+                try:
+                    parsed_url = svnloader.parse(url)
+                except ValueError:
+                    pass
+                else:
+                    if not parsed_url.tag:
+                        parsed_url.tag = self.tag
+                        url = parsed_url.getUrl()
             else:
                 if not parsed_url.tag:
                     parsed_url.tag = self.tag
@@ -229,9 +236,6 @@ class Loader:
     def load_svn(self, url):
         if self.svnloader is None:
             self.svnloader = svnloader.SubversionLoader()
-        parsed_url = svnloader.parse(url)
-        repo_url = cvsloader.RepositoryUrl(None, tag=self.tag)
-        url = parsed_url.join(repo_url).getUrl()
         tmp = tempfile.mkdtemp(prefix="svnloader-")
         path = self.svnloader.load(url, tmp)
         self.add_working_dir(url, tmp, path, True)

@@ -21,30 +21,34 @@ import unittest
 import urllib
 
 from zpkgtools import loader
+from zpkgtools.tests import test_svnloader
 
 
 class LoaderTestBase(unittest.TestCase):
 
     def setUp(self):
+        super(LoaderTestBase, self).setUp()
         self.workingdir = tempfile.mkdtemp(prefix="test-workdir-")
         self.cvsdir = os.path.join(self.workingdir, "CVS")
         os.mkdir(self.cvsdir)
 
     def tearDown(self):
+        super(LoaderTestBase, self).tearDown()
         shutil.rmtree(self.workingdir)
 
     def createLoader(self, tag=None):
         return loader.Loader(tag)
 
 
-class LoaderTestCase(LoaderTestBase):
+class LoaderTestCase(LoaderTestBase, test_svnloader.SubversionRepositoryBase):
 
     def test_transform_url_with_default_tag(self):
         convert = loader.Loader("TAG").transform_url
         self.check_unchanging_urls(convert)
         eq = self.assertEqual
         # cvs:
-        
+        eq(convert("cvs://cvs.example.org/cvsroot:module"),
+           "cvs://cvs.example.org/cvsroot:module:TAG")
         # repository:
         eq(convert("repository::"),
            "repository::TAG")
@@ -52,6 +56,23 @@ class LoaderTestCase(LoaderTestBase):
            "repository:path:TAG")
         eq(convert("repository:/some/path/:"),
            "repository:/some/path/:TAG")
+        # Subversion:
+        self.check_changing_subversion_urls("svn", "svn.example.org")
+        self.check_changing_subversion_urls("svn+ssh", "svn.example.org")
+        self.check_changing_subversion_urls("file", "",
+                                            prefix=self.svnrepodir)
+        self.check_changing_subversion_urls("file", "localhost",
+                                            prefix=self.svnrepodir)
+
+    def check_changing_subversion_urls(self, scheme, hostname, prefix=None):
+        if not prefix:
+            prefix = "/some/path/to/svnroot"
+        convert = loader.Loader("TAG").transform_url
+        eq = self.assertEqual
+        def mkurl(path):
+            return "%s://%s%s%s" % (scheme, hostname, prefix, path)
+        eq(convert(mkurl("/tags/*/module/file.txt")),
+           mkurl("/tags/TAG/module/file.txt"))
 
     def test_transform_url_without_default_tag(self):
         convert = loader.Loader().transform_url
