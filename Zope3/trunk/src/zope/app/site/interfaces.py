@@ -99,7 +99,7 @@ class ISiteManager(IServiceService, IComponentManager,
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
-    contains before using a context based lookup to find another service
+    contains before using a context-based lookup to find another service
     manager to delegate to.  If no other service manager is found they defer
     to the ComponentArchitecture ServiceManager which contains file based
     services.
@@ -134,8 +134,6 @@ class ISiteManager(IServiceService, IComponentManager,
         """Return a local service, if there is one
 
         A local service is one configured in the local service manager.
-
-        The service must be returned in the context of the service manager.
         """
 
     def addSubsite(subsite):
