@@ -19,7 +19,6 @@ from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
 from monkey import DebugFlags
-from Products.PageTemplates.Expressions import SubPathExpr
 
 _marker = object
 
@@ -45,7 +44,8 @@ class Traversable:
         This method is called by __bobo_traverse___ when Zope3-style
         ITraverser traversal fails.
 
-        Just raise a AttributeError and let Zope do it's job.
+        Just raise a AttributeError to indicate traversal has failed
+        and let Zope do it's job.
         """
         raise AttributeError, name
 
@@ -95,4 +95,3 @@ class FiveTraversable(DefaultTraversable):
             pass
         # If a view can't be found, then use default traversable
         return super(FiveTraversable, self).traverse(name, furtherPath)
-
