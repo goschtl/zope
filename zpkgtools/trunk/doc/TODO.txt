@@ -5,10 +5,6 @@ Things that need to be done
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
-- Remove the "resource type" notion; the differences between Python
-  packages and everything else is quite small, and the `__init__.py`
-  file is sufficient to identify Python packages.
-
 - Components that aren't Python packages should be required to have a
   `SETUP.cfg` file that defines what is installed how.
 
