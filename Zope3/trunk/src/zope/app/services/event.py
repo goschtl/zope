@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.29 2003/06/16 20:35:47 stevea Exp $
+$Id: event.py,v 1.30 2003/06/16 20:40:44 stevea Exp $
 """
 
 from __future__ import generators
@@ -213,12 +213,20 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
             while hubIds:
                 hubId = iter(hubIds).next()
                 # XXX This code path needs a unit test!
+                #     This code is also wrong.
+                #     The call to unsubscribeAll assumes that we are using
+                #     the subscriptions service. In fact, this could be
+                #     any service that implements ISubscriptionService.
+                #     The appropriate service should be sought using
+                #     self._subscribeToServiceName, and unsubscribeAll
+                #     should be called on that service.
                 unsubscribeAll(hubId, local_only=True)
 
             paths = clean_self._paths
             while paths:
                 path = iter(paths).next()
                 # XXX This code path needs a unit test!
+                #     Also, see comment above.
                 unsubscribeAll(path, local_only=True)
         finally:
             del clean_self._v_ssecunbinding
