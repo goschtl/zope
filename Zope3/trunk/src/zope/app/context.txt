@@ -30,7 +30,15 @@ That also makes the checker to use for decorators more complex and special.
 
 - Rename gets proxied by magic in the decorator.
 We could declare that rename is a special "untrusted" method, and cause
-its 'self' argument to be bound to the proxied object in a security proxy,
-instead of the plain proxied object.
+its 'self' argument to be bound not to the decorator instance, but to
+some special object that is like the original decorator, but which wraps
+a security-proxied object.
 
+- Register decorators to classes rather than interfaces.
+Security declarations are made by class, not by interface, so it makes sense
+for a decorator that needs particular security declarations to be declared
+for a class, and not an interface.
+It is not possible, currently, to register an adapter for a class.
+If it is made possible to do this, adapters registered for classes would
+always trump those registered for interfaces.
 
