@@ -3,6 +3,8 @@ embedded -a Components/principia Components/ExtensionClass \
   Packages/DocumentTemplate Packages/SearchIndex
 
 
+PrincipiaSB Principia README
+
 AccessControl    Packages/AccessControl
 App              Packages/App
 BoboPOS2         Packages/BoboPOS2
