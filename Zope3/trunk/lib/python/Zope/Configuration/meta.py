@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.11 2002/09/18 18:52:40 rdmurray Exp $
+$Id: meta.py,v 1.12 2002/09/19 15:09:58 rdmurray Exp $
 """
 
 
@@ -271,6 +271,7 @@ def end(base):
 class DirectiveNamespace:
 
     __class_implements__ = INonEmptyDirective
+    __implements__ = ISubdirectiveHandler
 
     def __init__(self, _context, namespace):
         self._namespace = namespace
