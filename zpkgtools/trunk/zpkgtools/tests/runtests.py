@@ -33,6 +33,7 @@ def load_tests(name):
     mod = sys.modules[name]
     return mod.test_suite()
 
+
 def test_suite():
     L = []
     for fn in os.listdir(TESTDIR):
@@ -44,7 +45,18 @@ def test_suite():
         suite.addTest(t)
     return suite
 
+
+class MyTestProgram(unittest.TestProgram):
+    """Test runner program that doesn't use docstrings as descriptions."""
+
+    def runTests(self):
+        if self.testRunner is None:
+            self.testRunner = unittest.TextTestRunner(descriptions=False,
+                                                      verbosity=self.verbosity)
+        unittest.TestProgram.runTests(self)
+
+
 if __name__ == "__main__":
     if TOPDIR not in sys.path:
         sys.path.insert(0, TOPDIR)
-    unittest.main(defaultTest="test_suite")
+    MyTestProgram(defaultTest="test_suite")
