@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Converter.py,v 1.3 2002/07/17 18:43:41 srichter Exp $
+$Id: Converter.py,v 1.4 2002/07/19 13:12:30 srichter Exp $
 """
 from IConverter import IConverter
 from Exceptions import ConversionError
@@ -71,3 +71,18 @@ IntToStrConverter = _functionConverterFactory('IntToStrConverter', str)
 
 StrToFloatConverter = _functionConverterFactory('StrToFloatConverter', float)
 FloatToStrConverter = _functionConverterFactory('FloatToStrConverter', str)
+
+
+class FileToStrConverter(object):
+    __implements__ = IConverter    
+
+    def convert(self, value):
+        try:
+            value = value.read()
+        except Exception, e:
+            raise ConversionError('Value is not a file object', e)
+        else:
+            if len(value):
+                return value
+            else:
+                return None

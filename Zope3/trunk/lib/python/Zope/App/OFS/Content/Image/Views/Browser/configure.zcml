@@ -3,6 +3,8 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    package="Zope.App.OFS.Content.Image">
 
+<browser:defaultView for=".Image.IImage." name="data" />
+
 <!-- Image View Directives -->
 
 <browser:view
@@ -12,31 +14,15 @@
     allowed_attributes="__call__ tag"
     factory=".Views.Browser.ImageData." />
 
-<browser:defaultView for=".Image.IImage." name="data" />
-
 <browser:view
     for=".Image.IImage."
     permission="Zope.ManageContent"
     factory=".Views.Browser.ImageEdit.">
 
-  <browser:page name="editForm.html" attribute="index" />
+  <browser:page name="editForm.html" attribute="form" />
   <browser:page name="edit.html" attribute="action" />
 
 </browser:view>
-
-<!-- Formulator directives -->
-
-<browser:view
-    name="DataFieldView"
-    for=".Image.IImage."
-    factory=".ImageFields.DataField.
-             Zope.App.Formulator.Widgets.Browser.FileWidget." />
-
-<browser:view
-    name="ContentTypeFieldView"
-    for=".Image.IImage."
-    factory=".ImageFields.ContentTypeField.
-             Zope.App.Formulator.Widgets.Browser.TextWidget." />
 
 <!-- I18n Image View Directives -->
 
@@ -48,11 +34,11 @@
     factory=".Views.Browser.I18nImageData." />
 
 <browser:defaultView
-    for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+    for=".I18nImage.II18nImage"
     name="data" />
 
 <browser:view
-    for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+    for=".I18nImage.II18nImage"
     permission="Zope.ManageContent"
     factory=".Views.Browser.I18nImageEdit.">
 

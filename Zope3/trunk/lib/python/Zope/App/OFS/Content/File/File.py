@@ -13,58 +13,48 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.5 2002/07/18 16:02:16 jeremy Exp $
+$Id: File.py,v 1.6 2002/07/19 13:12:31 srichter Exp $
 """
-
 from types import StringType, UnicodeType, NoneType
 
-import Persistence
+from Persistence import Persistent
 from Transaction import get_transaction
 
 from Zope.App.OFS.Content.File.FileChunk import FileChunk
 from Zope.App.OFS.Content.File.IFile import IFile
 from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
+from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
+from Zope.App.OFS.Content.File.SFile import SFile
+from Zope.App.OFS.Content.File.IFile import IFile
+
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
-class File(Persistence.Persistent):
-    """ """
+class File(Persistent):
+    __implements__ = SFile, IFile, IAnnotatable
 
-    __implements__ = IFile
+    def __init__(self, data='', contentType=''):
+        self.data = data
+        self.contentType = contentType
 
-    def __init__(self, data='', contentType=None):
-        """ """
-
-        self.setData(data)
-
-        if contentType is None:
-            self._contentType = ''
-        else:
-            self._contentType = contentType
-        
 
     def __len__(self):
-        return self.getSize()
+        return self.size
 
-
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.IFile.IFile
 
     def setContentType(self, contentType):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         self._contentType = contentType
 
         
     def getContentType(self):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         return self._contentType
 
         
     def edit(self, data, contentType=None):
-        '''See interface IFile'''
-
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         # XXX This seems broken to me, as setData can override the
         # content type explicitly passed in.
         
@@ -74,21 +64,20 @@ class File(Persistence.Persistent):
            and not data.filename:
            data = None          # Ignore empty files
         if data is not None:
-            self.setData(data)
+            self.data = data
 
 
     def getData(self):
-        '''See interface IFile'''
-        if ( hasattr(self._data, '__class__')
-         and self._data.__class__ is FileChunk ):
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
+        if hasattr(self._data, '__class__') and \
+           self._data.__class__ is FileChunk:
             return str(self._data)
         else:
             return self._data
 
 
     def setData(self, data):
-        '''See interface IFile'''
-
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         # Handle case when data is a string
         if isinstance(data, UnicodeType):
             data = data.encode('UTF-8')
@@ -112,7 +101,7 @@ class File(Persistence.Persistent):
             self._data, self._size = data, size
             return None
 
-        # Handle case when File is a file object
+        # Handle case when data is a file object
         seek = data.seek
         read = data.read
         
@@ -175,10 +164,16 @@ class File(Persistence.Persistent):
 
 
     def getSize(self):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         return self._size
 
-    #
-    ############################################################
 
+    # See schema Zope.App.OFS.File.SFile.SFile
+    data = property(getData, setData, None,
+                    """Contains the data of the file.""")
 
+    contentType = property(getContentType, setContentType, None,
+                           """Specifies the content type of the data.""")
+
+    size = property(getSize, None, None,
+                    """Specifies the size of the file in bytes. Read only.""")

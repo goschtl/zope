@@ -12,8 +12,9 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.9 2002/07/17 18:43:41 srichter Exp $
+$Id: testFormView.py,v 1.10 2002/07/19 13:12:30 srichter Exp $
 """
+from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
@@ -36,7 +37,8 @@ class TestFormView(TestCase, PlacelessSetup):
         viewService.provideView(IStr, 'widget', IBrowserView, [TextWidget])
         request = SchemaTestObject.TestBrowserRequest(
             {'field_id': '1', 'field_title': 'Test New',
-             'field_creator': 'srichter@cbu.edu', 'field_data': 'Data'})
+             'field_creator': 'srichter@cbu.edu',
+             'field_data': StringIO('Data')})
         self._form = SchemaTestObject.EditFactory(request=request)
         
     def getViewService(self):
@@ -103,10 +105,13 @@ class TestFormView(TestCase, PlacelessSetup):
 
     def testGetAllRawFieldData(self):
         data = self._form.getAllRawFieldData()
-        result = {'data': 'Data', 'id': '1', 'title': 'Test New',
+        result = {'data': StringIO('Data'), 'id': '1', 'title': 'Test New',
                   'creator': 'srichter@cbu.edu'}
         for field in data.keys():
-            self.assertEqual(result[field.id], data[field])
+            if field.id == 'data':
+                self.assertEqual(result[field.id].read(), data[field].read())
+            else:
+                self.assertEqual(result[field.id], data[field])
 
 
     def testConvertAllFieldData(self):
@@ -136,6 +141,8 @@ class TestFormView(TestCase, PlacelessSetup):
     def testSaveValuesInContect(self):
         data = self._form.getAllRawFieldData()
         data = self._form.convertAllFieldData(data)
+        # The StrinIO must be reloaded.
+        self.setUp()
         self._form.saveValuesInContext()
         obj = self._form.context
         for field in data.keys():

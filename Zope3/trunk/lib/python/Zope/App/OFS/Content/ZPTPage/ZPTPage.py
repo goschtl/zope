@@ -12,19 +12,21 @@
 # 
 ##############################################################################
 """
-
-$Id: ZPTPage.py,v 1.3 2002/07/03 13:30:44 jim Exp $
+$Id: ZPTPage.py,v 1.4 2002/07/19 13:12:33 srichter Exp $
 """
-
 from Interface import Interface
 from Interface.Attribute import Attribute
+import Schema
 from Persistence import Persistent
-from Zope.PageTemplate.PageTemplate import PageTemplate
-from Zope.App.PageTemplate.Engine import AppPT
+
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import getWrapperContainer
 from Zope.Security.Proxy import ProxyFactory
+
+from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from Zope.App.OFS.Content.IFileContent import IFileContent
+from Zope.PageTemplate.PageTemplate import PageTemplate
+from Zope.App.PageTemplate.Engine import AppPT
 
 class IZPTPage(Interface):
     """ZPT Pages are a persistent implementation of Page Templates.
@@ -35,13 +37,19 @@ class IZPTPage(Interface):
     """
 
     def setSource(text, content_type='text/html'):
-        """Save the source of the page template.
-        """
-
+        """Save the source of the page template."""
 
     def getSource():
-        """Get the source of the page template.
-        """
+        """Get the source of the page template."""
+
+
+class SZPTPage(Schema.Schema):
+    source = Schema.Str(
+        id="source",
+        title="Source",
+        description="""The source od the page template.""",
+        required=1)
+    
 
 class IRenderZPTPage(Interface):
 
@@ -60,27 +68,20 @@ class IRenderZPTPage(Interface):
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
     # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IZPTPage, IRenderZPTPage
-
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage
+    __implements__ = IFileContent, SZPTPage, IZPTPage, IRenderZPTPage, \
+                     IAnnotatable
 
     def getSource(self):
-        '''See interface IZPTPage'''
+        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
         return self.read()
 
 
     def setSource(self, text, content_type='text/html'):
-        '''See interface IZPTPage'''
-
+        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
         if isinstance(text, unicode):
             text = text.encode('utf-8')
         
         self.pt_edit(text, content_type)
-
-    #
-    ############################################################
 
 
     def pt_getContext(self, instance, request, **_kw):
@@ -106,3 +107,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
     render = ContextMethod(render)
     
+
+    source = property(getSource, setSource, None,
+                      """Source of the Page Template.""")

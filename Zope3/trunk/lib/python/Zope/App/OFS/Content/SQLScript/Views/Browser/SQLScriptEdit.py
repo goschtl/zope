@@ -12,28 +12,22 @@
 # 
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.3 2002/07/16 23:41:14 jim Exp $
+$Id: SQLScriptEdit.py,v 1.4 2002/07/19 13:12:33 srichter Exp $
 """
-from Zope.ComponentArchitecture import getService
-from Zope.App.Traversing import getParent
+from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.App.Forms.Views.Browser import Widget 
+from Zope.App.Forms.Widget import CustomWidget 
+from Zope.App.Forms.Views.Browser.FormView import FormView
 
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
-
-class SQLScriptEdit(BrowserView):
-    """Edit View for SQL Scripts"""
-    __implements__ = BrowserView.__implements__
-    __used_for__ = ISQLScript
-
-    def edit(self, connection, arguments, sql):
-        if arguments != self.context.getArgumentsString():
-            self.context.setArguments(arguments)
-        if sql != self.context.getSource():
-            self.context.setSource(sql)
-        if connection != self.context.getConnectionName():
-            self.context.setConnectionName(connection)
-        return self.request.response.redirect(self.request['nextURL'])
-
+class SQLScriptEdit(FormView):
+    form = ViewPageTemplateFile('edit.pt')
+    custom_widgets = {'connectionName': CustomWidget(Widget.ListWidget,
+                                                     size=1),
+                      'arguments': CustomWidget(Widget.TextAreaWidget,
+                                                height=3, width=40),
+                      'source': CustomWidget(Widget.TextAreaWidget,
+                                             height=10, width=80)}
+    fields_order = ('connectionName', 'arguments', 'source')
 
     def getAllConnections(self):
         parent = getParent(self.context)

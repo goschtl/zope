@@ -11,7 +11,8 @@
         description="A simple, content-based Page Template" />
     <require permission="Zope.View"
                       attributes="content_type __call__" />
-
+    <require permission="Zope.View"
+                      interface=".ZPTPage.SZPTPage" />
     <require permission="Zope.ManageContent"
                       interface=".ZPTPage.IZPTPage" />
     <require permission="Zope.View"

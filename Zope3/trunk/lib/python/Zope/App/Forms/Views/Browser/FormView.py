@@ -12,14 +12,16 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.7 2002/07/17 18:43:41 srichter Exp $
+$Id: FormView.py,v 1.8 2002/07/19 13:12:30 srichter Exp $
 """
 from Interface.Implements import flattenInterfaces
 from Schema.IField import IField
 from Schema.Exceptions import StopValidation, ValidationError, \
      ConversionError, ValidationErrorsAll, ConversionErrorsAll
 
+from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getView
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
 
 from IForm import IForm
@@ -36,7 +38,8 @@ class FormView(BrowserView):
 
     def getFields(self):
         'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
-        interfaces = self.context.__implements__
+        context = removeAllProxies(self.context)
+        interfaces = context.__implements__
         if isinstance(interfaces, (tuple, list)):
             interfaces = flattenInterfaces(interfaces)
         else:
@@ -47,7 +50,10 @@ class FormView(BrowserView):
             for name in interface.names(1):
                 attr = interface.getDescriptionFor(name)
                 if IField.isImplementedBy(attr):
-                    fields[name] = attr
+                    # Give the field a context before adding, so they
+                    # know how to retrieve data.
+                    fields[name] = ContextWrapper(attr, self.context,
+                                                  name=name)
 
         if self.fields_order is None:
             return fields.values()
@@ -129,10 +135,11 @@ class FormView(BrowserView):
 
     def storeAllDataInContext(self, mapping):
         """Store the data back into the context object."""
+        context = removeAllProxies(self.context)
         for field in mapping:
             value = mapping[field]
-            if value != getattr(self.context, field.id):
-                setattr(self.context, field.id, value)
+            if value != getattr(context, field.id):
+                setattr(context, field.id, value)
 
 
     def saveValuesInContext(self):
@@ -150,5 +157,7 @@ class FormView(BrowserView):
         except (ValidationErrorsAll, ConversionErrorsAll), e:
             return self.form(self, errors=e)
         else:
+            # XXX This should do a redirect by looking up the object in
+            # the view registry
             return self.form(self)
         

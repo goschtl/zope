@@ -12,22 +12,15 @@
 # 
 ##############################################################################
 """
-
-$Id: ZPTPageEdit.py,v 1.2 2002/06/10 23:28:06 jim Exp $
+$Id: ZPTPageEdit.py,v 1.3 2002/07/19 13:12:33 srichter Exp $
 """
-
-from Zope.App.Formulator.Form import Form
 from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.App.Forms.Views.Browser import Widget
+from Zope.App.Forms.Widget import CustomWidget
+from Zope.App.Forms.Views.Browser.FormView import FormView
 
-
-class ZPTPageEdit(Form):
-
-    __implements__ = Form.__implements__
-
-    name = 'editForm'     
-    title = 'Edit Form'
-    description = ('This edit form allows you to make changes to the ' +
-                   'source code of this ZPT Page.')
-
-    _fieldViewNames = ['SourceFieldView']
-    template = ViewPageTemplateFile('edit.pt')
+class ZPTPageEdit(FormView):
+    form = ViewPageTemplateFile('edit.pt')
+    custom_widgets = {'source': CustomWidget(Widget.TextAreaWidget,
+                                             cols=80, rows=15)}
+    fields_order = ('source',)

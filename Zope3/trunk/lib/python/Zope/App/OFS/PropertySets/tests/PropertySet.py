@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""
+$Id: PropertySet.py,v 1.5 2002/07/19 13:12:33 srichter Exp $
+"""
 from Zope.App.OFS.PropertySets.PropertySetDef import PropertySetDef
 from Zope.App.OFS.PropertySets.PropertySet import PropertySetFactory
 

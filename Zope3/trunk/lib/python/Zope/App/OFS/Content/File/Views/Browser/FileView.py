@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileView.py,v 1.3 2002/06/18 14:47:02 jim Exp $
+$Id: FileView.py,v 1.4 2002/07/19 13:12:31 srichter Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -21,7 +21,7 @@ from Zope.Publisher.Browser.BrowserView import BrowserView
 
 class FileView(BrowserView):
 
-    def __call__(self):
+    def show(self):
         """Call the File"""
         request = self.request
         if request is not None:

@@ -22,8 +22,10 @@
     for=".ISQLScript."
     permission="Zope.View"
     factory=".Views.Browser.SQLScriptEdit.">
-  <browser:page name="editForm.html" template="Views/Browser/edit.pt" />
+
+  <browser:page name="editForm.html" attribute="form" />
   <browser:page name="edit.html" attribute="edit" />
+
 </browser:view>
 
 <browser:menuItems menu="zmi_views" for=".ISQLScript.">

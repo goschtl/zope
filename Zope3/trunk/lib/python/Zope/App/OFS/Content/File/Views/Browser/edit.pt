@@ -1,60 +1,48 @@
 <html metal:use-macro="views/standard_macros/page">
-  <head>
-    <style metal:fill-slot="headers" type="text/css">
-      <!--
-      .ContentIcon {
-	  width: 20px;
-      }
-      
-      .ContentTitle {
-	  text-align: left;
-      }
-      -->
-    </style>
-  </head>
-
   <body>
-    <div metal:fill-slot="body">
+  <div metal:fill-slot="body">
 
- 
-      <p tal:content="context/msg"
-         tal:condition="python: hasattr(context, 'msg')">
-        Message will go here.
-      </p>
+    <p>This edit form allows you to make changes to the properties 
+      of this file.</p>
 
-      <p tal:content="view/description">
-        Description of the Form.
-      </p>
-
-
-      <div tal:condition="python: options.has_key('errors') and options['errors']">
-        Errors:
-        <div tal:repeat="error options/errors | nothing"
-             tal:content="error">Foo </div>
+    <div tal:condition="python: options.has_key('errors') and 
+                                options['errors']">
+      <span style="font-weight: bold">Errors:</span>
+      <div tal:repeat="error options/errors | nothing">
+        <span tal:replace="python: error[0].title" />: 
+        <span tal:replace="python: error[1].error_name" />
       </div>
-
-      <form action="edit.html" method="post">
-
-        <table class="EditTable">      
-	  <tbody>   
-  
-	    <tr tal:repeat="fieldView python:view.getFieldViews(request)">
-	      <th class="EditAttributeName"
-                  tal:content="python: fieldView.context.getValue('title')">Title</th>
-	      <td class="EditAttributeValue"
-	          tal:content="structure fieldView/render"><input />
-              </td>
-	    </tr>
-  
-	  </tbody>     
-      </table>
-
-      <input type="submit" name="edit" value="Save Changes">
-
-      </form> 
-
     </div>
+    <br />
+
+    <form action="./edit.html" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="nextURL" value=""
+          tal:attributes="value request/URL" />   
+
+      <table class="EditTable">
+        <tr>
+          <th class="EditAttributeName">Size</th>
+	  <td class="EditAttributeValue">
+            <span tal:content="context/getSize">1034</span> bytes
+          </td>            
+        </tr>
+        <tal:block repeat="field view/getFields">
+        <tr>
+          <th class="EditAttributeName"
+              tal:content="field/title">Title</th>
+	  <td class="EditAttributeValue"
+              tal:content="structure python: view.renderField(field)">
+            <input size="20" />
+          </td>            
+        </tr>
+	</tal:block>
+      </table>
+ 
+      <input type="submit" name="save" value="Save Changes" />
+
+    </form>
+
+  </div>
   </body>
+
 </html>
-
-

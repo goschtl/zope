@@ -13,15 +13,23 @@
 ##############################################################################
 """
 
-$Id: DTMLPageEdit.py,v 1.2 2002/07/19 13:12:31 srichter Exp $
+$Id: SFile.py,v 1.1 2002/07/19 13:12:31 srichter Exp $
 """
-from Zope.App.PageTemplate import ViewPageTemplateFile
-from Zope.App.Forms.Views.Browser import Widget
-from Zope.App.Forms.Widget import CustomWidget
-from Zope.App.Forms.Views.Browser.FormView import FormView
+import Schema
 
-class DTMLPageEdit(FormView):
-    form = ViewPageTemplateFile('edit.pt')
-    custom_widgets = {'source': CustomWidget(Widget.TextAreaWidget,
-                                             cols=80, rows=15)}
-    fields_order = ('source',)
+
+class SFile(Schema.Schema):
+
+    contentType = Schema.Str(
+        id = 'contentType',
+        title = 'Content Type',
+        description = 'The content type identifies the type of data.',
+        default = 'text/plain',
+        )
+
+
+    data = Schema.Str(
+        id = 'data',
+        title = 'Data',
+        description = 'The actual content of the object.',
+        )

@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-
-$Id: PublisherFTPTask.py,v 1.2 2002/06/10 23:29:35 jim Exp $
-"""
+$Id: PublisherFTPTask.py,v 1.3 2002/07/19 13:12:34 srichter Exp $
+""
 
 from FTPTask import FTPTask
 from Zope.Publisher.Publish import publish
@@ -43,7 +42,7 @@ class PublisherFTPTask(FTPTask):
 
         # This should probably change to reflect calling the FileSystem
         # methods
-        env = {'command': request_data.command
+        env = {'command': request_data.command,
                'args': request_data.args
                }
 

@@ -12,13 +12,10 @@
 # 
 ##############################################################################
 """
-
-$Id: RequestFactoryRegistry.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: RequestFactoryRegistry.py,v 1.3 2002/07/19 13:12:34 srichter Exp $
 """
-
-
-from Zope.App.Formulator.SimpleRegistry import SimpleRegistry
-from Zope.App.Formulator.ISimpleRegistry import ISimpleRegistry
+from Zope.StartUp.SimpleRegistry import SimpleRegistry
+from Zope.StartUp.ISimpleRegistry import ISimpleRegistry
 from RequestFactory import IRequestFactory 
 
 class IRequestFactoryRegistry(ISimpleRegistry):
@@ -36,7 +33,6 @@ class IRequestFactoryRegistry(ISimpleRegistry):
 
 class RequestFactoryRegistry(SimpleRegistry):
     """ """
-
     __implements__ =  (IRequestFactoryRegistry,)
 
 

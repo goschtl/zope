@@ -11,30 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-Define view component for image editing.
+"""Define view component for image editing.
 
-Revision Information:
-$Id: ImageEdit.py,v 1.2 2002/06/10 23:28:04 jim Exp $
+$Id: ImageEdit.py,v 1.3 2002/07/19 13:12:32 srichter Exp $
 """
-
-from Zope.App.Formulator.Form import Form
 from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.App.Forms.Views.Browser import Widget 
+from Zope.App.Forms.Views.Browser.FormView import FormView
 
-
-class ImageEdit(Form):
-
-    __implements__ = Form.__implements__
-
-    name = 'editForm'     
-    title = 'Edit Form'
-    description = ('This edit form allows you to make changes to the ' +
-                   'properties of this image.')
-
-    _fieldViewNames = ['ContentTypeFieldView', 'DataFieldView']
-    template = ViewPageTemplateFile('edit.pt')
-    
-    def getImageSize(self):
-        size=self.context.getImageSize()
-        return "%d x %d" % (size[0], size[1])
+class ImageEdit(FormView):
+    form = ViewPageTemplateFile('edit.pt')
+    custom_widgets = {'data': Widget.FileWidget}
+    fields_order = ('contentType', 'data')
  

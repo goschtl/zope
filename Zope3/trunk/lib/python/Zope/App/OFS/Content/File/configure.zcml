@@ -1,69 +1,66 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-  <!-- NaiveFile Directives -->
+<!-- File Directives -->
 
-  <permission id="Zope.AddNaiveFiles" 
-                       title="Add Naive Files" />
+<content class=".File.">
+  <factory
+      id="File"
+      permission="Zope.ManageContent"
+      title="File"
+      description="A File" />
+  <require
+      permission="Zope.View"
+      interface=".SFile.SFile" />
+  <require
+      permission="Zope.View"
+      interface=".IFile.IReadFile" />
+  <require
+      permission="Zope.ManageContent"
+      interface=".IFile.IWriteFile" />
+</content>
 
-  <content class=".NaiveFile.">
-    <factory
-        id="NaiveFile"
-        permission="Zope.AddNaiveFiles"
-        title="Naive File"
-        description="This is a simple file" />
-  </content>
+<adapter
+    factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+    provides="Zope.App.OFS.Annotation.IAnnotations."
+    for=".IFile." />
 
+<!-- NaiveFile Directives -->
 
-  <!-- File Directives -->
+<content class=".NaiveFile.">
+  <factory
+      id="NaiveFile"
+      permission="Zope.ManageContent"
+      title="Naive File"
+      description="This is a simple file" />
+  <require like_class=".File." />
+</content>
 
-  <permission id="Zope.AddFiles" title="Add Files" />
+<!-- I18n File Directives -->
 
-  <content class=".File.">
-    <factory
-        id="File"
-        permission="Zope.ManageContent"
-        title="File"
-        description="A File" />
-    <require
-        permission="Zope.View"
-        interface=".IFile.IReadFile" />
-    <require
-        permission="Zope.ManageContent"
-        interface=".IFile.IWriteFile" />
-  </content>
-
-  <adapter
-      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-      provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".IFile." />
-
-
-  <!-- I18n File Directives -->
-
-  <content class=".I18nFile.">
-    <factory
-        id="I18nFile"
-        permission="Zope.ManageContent"
-        title="I18n File"
-        description="An Internationalized File" />
-    <require
-        permission="Zope.View"
-        interface=".IFile.IReadFile" />
-    <require
-        permission="Zope.ManageContent"
-        interface=".IFile.IWriteFile" />
-    <require
-        permission="Zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages" />
-    <require
-        permission="Zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage" />
-  </content>
+<content class=".I18nFile.">
+  <factory
+      id="I18nFile"
+      permission="Zope.ManageContent"
+      title="I18n File"
+      description="An Internationalized File" />
+  <require
+      permission="Zope.View"
+      interface=".IFile.IReadFile" />
+  <require
+      permission="Zope.ManageContent"
+      interface=".IFile.IWriteFile" />
+  <require
+      permission="Zope.View"
+      attributes="getDefaultLanguage getAvailableLanguages" />
+  <require
+      permission="Zope.ManageContent"
+      attributes="setDefaultLanguage removeLanguage" />
+</content>
 
 
-  <!-- Further Directives -->
+<!-- Further Directives -->
 
-  <include package=".Views" />
+<include package=".Views" />
 
 </zopeConfigure>
 

@@ -12,89 +12,68 @@
 # 
 ##############################################################################
 """
-
-$Id: NaiveFile.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: NaiveFile.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
 """
-
-import Persistence
-from IFile import IFile
+from Persistence import Persistent
+from Zope.App.OFS.Content.File.IFile import IFile
+from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 
 
-_RAISE_KEYERROR = []
-
-
-class NaiveFile:
+class NaiveFile(Persistent):
     """This is a very simple implementation of a file.
 
     WARNING: This implementation should not be used to save large amounts
              of Data.
     """
+    __implements__ = IFile, SFile, IAnnotatable
 
-    __implements__ = (
-        IFile,
-        IAnnotatable)
-
-
-    def __init__(self, data='', contentType=None):
-        """ """
-
+    def __init__(self, data='', contentType=''):
         self.setData(data)
-
-        if contentType is None:
-            self._contentType = ''
-        else:
-            self._contentType = contentType
-
+        self._contentType = contentType
 
     def __str__(self):
         return self.getData()
 
-
     def __len__(self):
         return 1
         
-
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.File.IFile
-
     def setContentType(self, contentType):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
+        SFile.getDescriptionFor('contentType').validate(contentType)
         self._contentType = contentType
-
-        
+    
     def getContentType(self):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
         return self._contentType
 
-        
     def edit(self, data, contentType=None):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
         self._data = data
         if contentType is not None:
             self._contentType = contentType
 
-
     def getData(self):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
         return self._data
 
-
     def setData(self, data):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
+        SFile.getDescriptionFor('data').validate(data)
         if data is not None:
             self._size = len(data)
-        else:
-            self._size = 0
-        self._data = data
-
+            self._data = data
 
     def getSize(self):
-        '''See interface IFile'''
+        '''See interface Zope.App.OFS.File.IFile.IFile'''
         return self._size
-        
-    #
-    ############################################################
 
+    # See schema Zope.App.OFS.File.SFile.SFile
+    data = property(getData, setData, None,
+                    """Contains the data of the file.""")
 
+    contentType = property(getContentType, setContentType, None,
+                           """Specifies the content type of the data.""")
+
+    size = property(getSize, None, None,
+                    """Specifies the size of the file in bytes. Read only.""")

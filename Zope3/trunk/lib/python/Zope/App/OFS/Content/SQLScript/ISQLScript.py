@@ -12,15 +12,13 @@
 # 
 ##############################################################################
 """
-
-$Id: ISQLScript.py,v 1.1 2002/07/11 00:03:18 srichter Exp $
+$Id: ISQLScript.py,v 1.2 2002/07/19 13:12:32 srichter Exp $
 """
-
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
 
 class ISQLScript(ISQLCommand):
-    """ """
+    """A persistent script that can execute SQL."""
 
     arguments = Attribute('''A set of attributes that can be used during
                              the DTML rendering process to provide dynamic
@@ -40,21 +38,16 @@ class ISQLScript(ISQLCommand):
         """This method returns the arguments string."""
 
     def setSource(source):
-        """Save the source of the page template.
-        """
+        """Save the source of the page template."""
 
     def getSource():
-        """Get the source of the page template.
-        """
+        """Get the source of the page template."""
 
     def getTemplate():
-        """Get the SQL DTML Template object.
-        """
+        """Get the SQL DTML Template object."""
 
     def setConnectionName(name):
-        """Save the connection name for this SQL Script.
-        """
+        """Save the connection name for this SQL Script."""
 
     def getConnectionName():
-        """Get the connection name for this SQL Script.
-        """
+        """Get the connection name for this SQL Script."""

@@ -17,6 +17,9 @@
         permission="Zope.View"
         interface=".Image.IImage" />
     <require
+        permission="Zope.View"
+        interface=".Image.SImage" />
+    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Content.File.IFile.IWriteFile" />
   </content>

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.4 2002/07/17 18:43:41 srichter Exp $
+$Id: SchemaTestObject.py,v 1.5 2002/07/19 13:12:30 srichter Exp $
 """
 import Schema
 from Schema.Converter import StrToIntConverter
@@ -96,6 +96,6 @@ def EditFactory(context=None, request=None):
     if request is None:
         request = TestBrowserRequest({})
 
-    object = TestObject(id=1, title="Test", creator="srichter@cbu.edu",
+    object = TestObject(id=5, title="Test", creator="strichter@yahoo.com",
                         data="Some data")
     return Edit(object, request)

@@ -12,8 +12,7 @@
 # 
 ##############################################################################
 """
-
-$Id: SQLScript.py,v 1.3 2002/07/16 23:41:14 jim Exp $
+$Id: SQLScript.py,v 1.4 2002/07/19 13:12:32 srichter Exp $
 """
 from types import StringTypes
 
@@ -28,6 +27,7 @@ from Zope.App.RDB.Util import queryForResults
 
 from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
+from Zope.App.OFS.Content.SQLScript.SSQLScript import SSQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import parseArguments
 
 from DT_SQLVar import SQLVar
@@ -51,29 +51,24 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    __implements__ = ISQLScript, IFileContent
+    __implements__ = ISQLScript, SSQLScript, IFileContent
     
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)
-        self.connectionName = connectionName
+        self.setConnectionName(connectionName)
         # In our case arguments should be a string that is parsed
         self.setArguments(arguments)
-
-
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.Content.SQLScript.ISQLScript.
 
     def setArguments(self, arguments):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         assert isinstance(arguments, StringTypes), \
                '"arguments" argument of setArguments() must be a string' 
         self._arg_string = arguments
-        self.arguments = parseArguments(arguments)
+        self._arguments = parseArguments(arguments)
 
     def getArguments(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        return self.arguments
+        return self._arguments
 
     def getArgumentsString(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
@@ -93,14 +88,11 @@ class SQLScript(SQLCommand, Persistent):
 
     def setConnectionName(self, name):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        self.connectionName = name
+        self._connectionName = name
 
     def getConnectionName(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
-        return self.connectionName
-
-    ######################################
-    # from: Zope.App.RDB.ISQLCommand.ISQLCommand
+        return self._connectionName
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
@@ -116,14 +108,14 @@ class SQLScript(SQLCommand, Persistent):
         # Try to resolve arguments
         arg_values = {}
         missing = []
-        for name in self.arguments.keys():
+        for name in self._arguments.keys():
             name = name.encode('UTF-8')
             try:
                 # Try to find argument in keywords
                 arg_values[name] = kw[name]
             except:
                 # Okay, the first try failed, so let's try to find the default
-                arg = self.arguments[name]
+                arg = self._arguments[name]
                 try:
                     arg_values[name] = arg['default']
                 except:
@@ -151,5 +143,12 @@ class SQLScript(SQLCommand, Persistent):
 
     __call__ = ContextMethod(__call__)
 
-    #
-    ############################################################
+
+    # See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript
+    arguments = property(getArgumentsString, setArguments, None,
+                         "Set the arguments that are used for the SQL Script.")
+    source = property(getSource, setSource, None,
+                      "Set the SQL template source.")
+    connectionName = property(getConnectionName, setConnectionName, None,
+                              "Connection Name for the SQL scripts.")
+                              

@@ -12,24 +12,13 @@
 # 
 ##############################################################################
 """
-Revision information: 
-$Id: FileEdit.py,v 1.2 2002/06/10 23:27:58 jim Exp $
+$Id: FileEdit.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
 """
-
-from Zope.App.Formulator.Form import Form
 from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.App.Forms.Views.Browser import Widget 
+from Zope.App.Forms.Views.Browser.FormView import FormView
 
-
-
-class FileEdit(Form):
-
-    __implements__ = Form.__implements__
-
-    name = 'editForm'     
-    title = 'Edit Form'
-    description = ('This edit form allows you to make changes to the ' +
-                   'properties of this file.')
-
-    _fieldViewNames = ['ContentTypeFieldView', 'DataFieldView']
-    template = ViewPageTemplateFile('edit.pt')
-
+class FileEdit(FormView):
+    form = ViewPageTemplateFile('edit.pt')
+    custom_widgets = {'data': Widget.FileWidget}
+    fields_order = ('contentType', 'data')

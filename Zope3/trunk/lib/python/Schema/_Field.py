@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.9 2002/07/17 18:43:41 srichter Exp $
+$Id: _Field.py,v 1.10 2002/07/19 13:12:30 srichter Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -26,6 +26,8 @@ class Field(Attribute):
     __implements__ = ()
     type = None
     default = None
+    setter = None
+    getter = None
     required = 0
     allowed_values = []
     

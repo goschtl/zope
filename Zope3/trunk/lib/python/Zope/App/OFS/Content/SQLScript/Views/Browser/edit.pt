@@ -1,52 +1,42 @@
 <html metal:use-macro="views/standard_macros/page">
-<head>
-  <title>Edit SQL Script</title>
-</head>
-<body>
-
+  <body>
   <div metal:fill-slot="body">
-    <form action="." method="post">
-      <input type="hidden" name="nextURL" value=""
-          tal:attributes="value request/URL">
-    
-      <table>      
-    	<tbody>       	
-    	  <tr>
-    	    <th>Connection:</th>
-    	    <td>
-	      <select size="1" name="connection">
-                 <tal:block repeat="name view/getAllConnections">
-                   <option value="" selected=""
-                     tal:condition="python: name==context.getConnectionName()"
-                     tal:attributes="value name" tal:content="name" />
-                   <option value=""
-                     tal:condition="python: name!=context.getConnectionName()"
-                     tal:attributes="value name" tal:content="name" />
-                 </tal:block>
-	      </select>
-            </td>
-    	  </tr>
-    	  <tr>
-    	    <th>Arguments:</th>
-    	    <td>
-	      <textarea name="arguments" cols="60" rows="5"
-                  tal:content="context/getArgumentsString"></textarea> 
-            </td>
-    	  </tr>
-    	  <tr>
-    	    <th>SQL Template:</th>
-    	    <td>
-	      <textarea name="sql" cols="60" rows="10"
-                  tal:content="context/getSource"></textarea> 
-            </td>
-    	  </tr>
-    	    	
-    	</tbody>     
-      </table>
-      <input type="submit" name="edit.html:method" value="Save Changes" />
-    
-    </form> 
-  </div>
 
-</body>
+    <p>This edit form allows you to make changes to the properties 
+      of this sql script.</p>
+
+    <div tal:condition="python: options.has_key('errors') and 
+                                options['errors']">
+      <span style="font-weight: bold">Errors:</span>
+      <div tal:repeat="error options/errors | nothing">
+        <span tal:replace="python: error[0].title" />: 
+        <span tal:replace="python: error[1].error_name" />
+      </div>
+    </div>
+    <br />
+
+    <form action="./edit.html" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="nextURL" value=""
+          tal:attributes="value request/URL" />   
+
+      <table class="EditTable">
+        <tal:block repeat="field view/getFields">
+        <tr>
+          <th class="EditAttributeName"
+              tal:content="field/title">Title</th>
+	  <td class="EditAttributeValue"
+              tal:content="structure python: view.renderField(field)">
+            <input size="20" />
+          </td>            
+        </tr>
+	</tal:block>
+      </table>
+ 
+      <input type="submit" name="save" value="Save Changes" />
+
+    </form>
+
+  </div>
+  </body>
+
 </html>

@@ -12,70 +12,58 @@
 # 
 ##############################################################################
 """
-Revision Information:
-$Id: Image.py,v 1.2 2002/06/10 23:28:03 jim Exp $
+$Id: Image.py,v 1.3 2002/07/19 13:12:32 srichter Exp $
 """
-
 import struct
 
-from Zope.App.OFS.Content.File.File import IFile, File
+from Zope.App.OFS.Content.File.File import File
+from Zope.App.OFS.Content.File.IFile import IFile
+from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from StringIO import StringIO
 
 
 class IImage(IFile):
-    """This interface defines an Image that can be displayed.
-    """
+    """This interface defines an Image that can be displayed."""
 
     def getImageSize():
         """Return a tuple (x, y) that describes the dimensions of
-           the object.
-        """
+        the object."""
+
     
+class SImage(SFile):
+    """Image properties."""
+
 
 class Image(File):
-    """ """
-
-    __implements__ = (
-        IImage,
-        IAnnotatable,
-        )
+    __implements__ = (SImage, IImage, IAnnotatable,)
 
     def __init__(self, data=None):
-        """ """
-        self._contentType, self._width, self._height = getImageInfo(data)
-        self.setData(data)
+        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
+        self.contentType, self._width, self._height = getImageInfo(data)
+        self.data = data
 
 
     def setData(self, data):
-        """ """
         super(Image, self).setData(data)
 
-        contentType = None
-        contentType, self._width, self._height = getImageInfo(self._data)
-        if contentType:
-            self._contentType = contentType
+        if data is not None:
+            contentType = None
+            contentType, self._width, self._height = getImageInfo(self.data)
+            if contentType:
+                self.contentType = contentType
 
-
-    
-
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.Image.IImage
 
     def getImageSize(self):
         '''See interface IImage'''
-
         return (self._width, self._height)
 
-    #
-    ############################################################
-    
+    # See schema Zope.App.OFS.File.SFile.SFile
+    data = property(File.getData, setData, None,
+                    """Contains the data of the file.""")
 
 
 def getImageInfo(data):
-    """ """
-    
     data = str(data)
     size = len(data)
     height = -1

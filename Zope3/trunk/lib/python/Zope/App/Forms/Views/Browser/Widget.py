@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.4 2002/07/17 02:36:37 srichter Exp $
+$Id: Widget.py,v 1.5 2002/07/19 13:12:30 srichter Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -147,7 +147,27 @@ class PasswordWidget(TextWidget):
 
 class FileWidget(TextWidget):
     """File Widget"""
+    converter = Converter.FileToStrConverter()
     type = 'file'
+
+    def render(self, value):
+        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
+        displayMaxWidth = self.getValue('displayMaxWidth') or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.getValue('tag'),
+                                 type = self.getValue('type'),
+                                 name = self.context.id,
+                                 cssClass = self.getValue('cssClass'),
+                                 size = self.getValue('displayWidth'),
+                                 maxlength = displayMaxWidth,
+                                 extra = self.getValue('extra'))
+        else:
+            return renderElement(self.getValue('tag'),
+                                 type = self.getValue('type'),
+                                 name = self.context.id,
+                                 cssClass = self.getValue('cssClass'),
+                                 size = self.getValue('displayWidth'),
+                                 extra = self.getValue('extra'))
 
 
 class ItemsWidget(BrowserWidget):
@@ -164,9 +184,11 @@ class SingleItemsWidget(ItemsWidget):
     def renderItems(self, value):
         name = self.context.id
         # get items
-        items = self.context.get('items')
+        items = self.context.items
+        if callable(items):
+            items = items()
         # check if we want to select first item
-        if not value and self.context.get_value('firstItem') and \
+        if not value and getattr(self.context, 'firstItem', None) and \
                len(items) > 0:
             try:
                 text, value = items[0]

@@ -13,23 +13,23 @@
 ##############################################################################
 """
 
-$Id: FileFields.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: FileFields.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
 """
-
-from Zope.App.Formulator.FieldRegistry import getField
-from Zope.App.Formulator.ValidatorRegistry import getValidator
+import Schema
 
 
-ContentTypeField = getField('StringField')(
-    id = 'contentType',
-    title = 'Content Type',
-    description = 'The content type identifies the type of data.',
-    default = 'text/plain',
-    )
+class SFile(Schema):
+
+    contentType = Schema.Str(
+        id = 'contentType',
+        title = 'Content Type',
+        description = 'The content type identifies the type of data.',
+        default = 'text/plain',
+        )
 
 
-DataField = getField('FileField')(
-    id = 'data',
-    title = 'Data',
-    description = 'The actual content of the object.',
-    )
+    data = Schema.Str(
+        id = 'data',
+        title = 'Data',
+        description = 'The actual content of the object.',
+        )
