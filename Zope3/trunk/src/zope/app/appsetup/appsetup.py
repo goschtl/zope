@@ -57,6 +57,8 @@ def config(file, execute=True):
 
     _configured = execute
 
+    global __config_context
+    __config_context = context
 
     return context
 
@@ -86,6 +88,9 @@ def database(db):
 
     return db
 
+__config_context = None
+def getConfigContext():
+    return __config_context
 
 __config_source = None
 def getConfigSource():
