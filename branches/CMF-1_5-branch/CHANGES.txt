@@ -11,6 +11,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - FSFile, FSImage: Made available to caching policy manager as
+      standard content. (http://zope.org/Collectors/CMF/299)
+
     - FSDTMLMethod: Small code cleanup to remove duplicate variable
       definition (http://collector.zope.org/CMF/291)
 
