@@ -299,6 +299,7 @@ pre {
     float: left;
     width: 15%;
 	padding: 1em;
+    overflow: hidden;
 }
 
 #workspace {
