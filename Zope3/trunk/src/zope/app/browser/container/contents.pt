@@ -143,8 +143,8 @@
 	     tal:define="has_custom_add_view context/@@+/hasCustomAddView; 
 			 names_required context/@@+/namesAccepted">
           <input type="submit" name="container_add_button" value="Add"
-		i18n:attributes="value container-add-button"
-               i18n:domain="zope"
+	         i18n:attributes="value add-button"
+                 i18n:domain="zope"
                />
           <input type="text" name="single_new_value" id="focusid"
 		 tal:condition="python:names_required and not has_custom_add_view"
