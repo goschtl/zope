@@ -244,10 +244,6 @@ ext_modules = [
     
     ]
 
-if sys.version_info[:2] == (2, 2):
-    ext_modules.append(Extension("pythonlib.compat22._csv",
-                                 ["src/pythonlib/compat22/_csv.c"]))
-
 # We're using the module docstring as the distutils descriptions.
 doclines = __doc__.split("\n")
 
