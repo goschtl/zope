@@ -10,7 +10,7 @@
 <b  i18n:translate="">Please note the following:</b>
 <br/>
 <ol>
-   <li i18n:translate=""> You might have miss-spelled the url </li>
+   <li i18n:translate=""> You might have misspelled the url </li>
    <li i18n:translate="">
      You might be trying to access a non-existing page
    </li>
