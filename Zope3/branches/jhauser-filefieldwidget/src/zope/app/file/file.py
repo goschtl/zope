@@ -307,7 +307,7 @@ class File(Persistent):
     True
     """
 
-    implements(IFile, IFileContent)
+    implements(IFile, IMime, IFileContent)
     
     def __init__(self, data='', contentType=''):
         self.contents = Mime()
@@ -324,6 +324,11 @@ class File(Persistent):
 
     def _setData(self, data):
         self.contents.data = data
+
+    def open(self, mode='r'):
+        """return a file-like object for reading or updating the file value.
+        """
+        pass
 
 ## Leads to maximum recursion erro ?
 ##     # new access to file data

@@ -11,11 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""File and Image content components
+"""File content components
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
 from file import File
-from image import Image
+try:
+    # TODO: solve recursion and add real BBB
+    # I see no way for doing this right now, perhaps we have to move the 
+    # zope.app.image package back to zope.app.file
+    from zope.app.image import Image, getImageInfo
+except:
+    pass

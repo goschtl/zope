@@ -9,9 +9,4 @@
       factory=".adapter.FileAdapter"
       />
 
-  <fssync:adapter
-      class="zope.app.file.Image"
-      factory=".adapter.FileAdapter"
-      />
-
 </configure>

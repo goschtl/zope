@@ -2,7 +2,7 @@ IFile refactoring
 
   Status
 
-    IsProposal
+    IsDraft
 
   Author
 
@@ -11,10 +11,10 @@ IFile refactoring
   Problem/Proposal
 
     Constraints of field data in IFile does'nt fit. The interface field Bytes
-    ignores the possible FileChunk as value we get on bigger values.
+    ignores the possible FileChunk as value we get on bigger files.
     
-    We allready added a branch called for the refactoring. The branch is
-    called jhauser-filefieldwidget.
+    We allready added a branch for the refactoring. The branch is called 
+    jhauser-filefieldwidget.
 
   Goals
 
