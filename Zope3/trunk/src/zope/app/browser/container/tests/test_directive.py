@@ -48,14 +48,12 @@ def test_containerViews():
     ((('browser:menuItem',
        'zmi_views',
        <InterfaceClass zope.app.browser.container.tests.test_directive.I>,
-       'Contents'),
-      <bound method GlobalBrowserMenuService.menuItem of """ \
-          """<zope.app.publisher.browser.globalbrowsermenuservice.""" \
-          """GlobalBrowserMenuService object>>,
+       u'Contents'),
+      <bound method GlobalBrowserMenuService.menuItem of <zope.app.publisher.browser.globalbrowsermenuservice.GlobalBrowserMenuService object>>,
       ('zmi_views',
        <InterfaceClass zope.app.browser.container.tests.test_directive.I>,
        '@@contents.html',
-       'Contents',
+       u'Contents',
        '',
        None,
        'zope.ManageContent',
@@ -111,14 +109,12 @@ def test_containerViews():
      (('browser:menuItem',
        'zmi_actions',
        <InterfaceClass zope.app.browser.container.tests.test_directive.I>,
-       'Add'),
-      <bound method GlobalBrowserMenuService.menuItem of """ \
-          """<zope.app.publisher.browser.globalbrowsermenuservice."""\
-          """GlobalBrowserMenuService object>>,
+       u'Add'),
+      <bound method GlobalBrowserMenuService.menuItem of <zope.app.publisher.browser.globalbrowsermenuservice.GlobalBrowserMenuService object>>,
       ('zmi_actions',
        <InterfaceClass zope.app.browser.container.tests.test_directive.I>,
        '@@+',
-       'Add',
+       u'Add',
        '',
        None,
        'zope.ManageContent',
@@ -153,7 +149,7 @@ def test_containerViews():
        [<class 'zope.app.publisher.browser.viewmeta.+'>],
        'default',
        <InterfaceClass zope.interface.Interface>)))
-   """
+    """
     
        
 def test_suite():

@@ -18,6 +18,7 @@ from zope.schema import TextLine, Text, Id
 from zope.app.publisher.browser.viewmeta import page, view
 from zope.app.browser.container.contents import Contents
 from zope.app.browser.container.adding import Adding
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IContainerViews(Interface):
     """Define a container views"""
@@ -53,17 +54,17 @@ def containerViews(_context, for_, contents=None, add=None, index=None):
             raise ValueError("A for interface must be specified.")
 
     if contents is not None:
-        page(_context=_context, name='contents.html', permission=contents,
+        page(_context, name='contents.html', permission=contents,
             for_=for_, class_=Contents, attribute='contents', menu='zmi_views',
-            title='Contents')
+            title=_('Contents'))
             
     if index is not None:
-        page(_context=_context, name='index.html', permission=index, for_=for_, 
+        page(_context, name='index.html', permission=index, for_=for_, 
             class_=Contents, attribute='contents')
 
     if add is not None:
         viewObj = view(_context, name='+', menu='zmi_actions',
-                       title='Add', for_=for_, permission=add, class_=Adding)
+                       title=_('Add'), for_=for_, permission=add, class_=Adding)
         viewObj.page(_context, name='index.html', attribute='index')
         viewObj.page(_context, name='action.html', attribute='action')
         viewObj()
