@@ -43,7 +43,7 @@
          tal:condition="view/strip|nothing"
          metal:define-macro="commontasks_box">
 
-      <h5 i18n:translate="">Common Tasks</h5>
+      <h5 i18n:translate="">Add:</h5>
 
       <div class="body" tal:content="structure view">
         CommonTasks
