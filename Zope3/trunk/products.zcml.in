@@ -8,7 +8,7 @@
   -->
 
   <!-- Example:
-       <include package="zopeproducts.demo.jobboard" />
+       <include package="zope.app.demo.jobboard" />
   -->
 
 </configure>
