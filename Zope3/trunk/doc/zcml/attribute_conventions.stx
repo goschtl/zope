@@ -32,6 +32,6 @@ The attributes used in zcml usually follow this convention
     A dotted name that resolves to a callable that acts as a factory.
     A factory can also be made of several callables chained together.
     In this case, the factory attribute is a whitespace separated list
-    of dotted-names.
-    
-    
+    of dotted-names.  If a factory attribute is given as "a b c"
+    (three chained factories), this results in a composite factory
+    of the form c(b(a(context))).
