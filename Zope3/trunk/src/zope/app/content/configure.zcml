@@ -375,7 +375,7 @@
 
 <!-- fssync:adapter directives -->
 
-<fssync:adapter factory="zope.app.fssync.classes.Default" />
+<fssync:adapter factory="zope.app.fssync.classes.DefaultFileAdpater" />
 
 <fssync:adapter class=".file.File" factory=".fssync.FileAdapter" />
 

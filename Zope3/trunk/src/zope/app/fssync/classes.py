@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.15 2003/09/21 17:32:11 jim Exp $
+$Id: classes.py,v 1.16 2004/01/13 16:59:30 fdrake Exp $
 """
 
 from zope.app.fssync import fspickle
@@ -85,7 +85,7 @@ class ObjectEntryAdapter(object):
         class_ = self.context.__class__
         return "%s.%s" % (class_.__module__, class_.__name__)
 
-class Default(ObjectEntryAdapter):
+class DefaultFileAdpater(ObjectEntryAdapter):
     """Default File-system representation for objects."""
 
     implements(IObjectFile)

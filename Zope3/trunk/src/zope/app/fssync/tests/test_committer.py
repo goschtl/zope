@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.19 2003/11/27 13:59:19 philikon Exp $
+$Id: test_committer.py,v 1.20 2004/01/13 16:59:31 fdrake Exp $
 """
 
 import os
@@ -42,7 +42,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.fssync import committer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-from zope.app.fssync.classes import Default
+from zope.app.fssync.classes import DefaultFileAdpater
 
 
 class Sample(object):
@@ -98,7 +98,7 @@ class PretendRootContainer(PretendContainer):
     implements(IContainmentRoot)
 
 
-class DictAdapter(Default):
+class DictAdapter(DefaultFileAdpater):
 
     def setBody(self, body):
         old = self.context
@@ -122,7 +122,7 @@ class TestBase(PlacelessSetup, TempFiles):
         # Set up FSRegistryService
         serviceManager.defineService("FSRegistryService", IGlobalFSSyncService)
         serviceManager.provideService("FSRegistryService", fsRegistry)
-        provideSynchronizer(None, Default)
+        provideSynchronizer(None, DefaultFileAdpater)
 
         # Set up temporary name administration
         TempFiles.setUp(self)
@@ -155,7 +155,7 @@ class TestCommitterModule(TestBase):
     def test_get_adapter(self):
         obj = Sample()
         adapter = committer.get_adapter(obj)
-        self.assertEqual(adapter.__class__, Default)
+        self.assertEqual(adapter.__class__, DefaultFileAdpater)
 
     def test_read_file(self):
         data = "12345\rabcde\n12345\r\nabcde"
