@@ -12,8 +12,11 @@
 #
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.16 2002/12/05 17:37:31 fdrake Exp $
+$Id: ZPTPage.py,v 1.17 2002/12/07 16:52:19 zagy Exp $
 """
+
+import re
+
 from Interface import Interface
 from Interface.Attribute import Attribute
 import Zope.Schema
@@ -125,4 +128,11 @@ class SearchableText:
         #   text was already Unicode, which happens, but unclear how it
         #   gets converted to Unicode since the ZPTPage stores UTF-8 as
         #   an 8-bit string.
+        
+        
+        if self.page.content_type.startswith('text/html'):
+            tag = re.compile(r"<[^>]+>")
+            text = tag.sub('', text)
+        
+           
         return [text]
