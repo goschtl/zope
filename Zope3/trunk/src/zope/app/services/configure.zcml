@@ -185,7 +185,7 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.services.cache.ICacheConfiguration"
-        set_attributes="name componentPath"
+        set_attributes="name componentPath permission"
         set_schema=
             "zope.app.interfaces.services.configuration.IConfiguration" />
     <require
