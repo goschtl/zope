@@ -14,7 +14,7 @@
     <div class="box" id="navigationTree">
       <h4 i18n:translate="">Navigation</h4>
         <div class="treebody">
-<tal:block define="root context/@@root_cookie_tree;
+<tal:block define="root context/@@virtualhost_cookie_tree;
                    result root/getFlatDicts;
                    nodeDictList python:result[0];
                    maxDepth python:result[1]">

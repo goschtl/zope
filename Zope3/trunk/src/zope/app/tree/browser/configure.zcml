@@ -33,6 +33,10 @@
         name="root_cookie_tree"
         attribute="rootTree"
         />
+    <browser:page
+        name="virtualhost_cookie_tree"
+        attribute="virtualHostTree"
+        />
   </browser:pages>
 
   <!-- Set up the skin -->

@@ -65,3 +65,14 @@ class CookieTreeView(StatefulTreeView):
         """
         root = zapi.getRoot(self.context)
         return self.folderTree(root)
+
+    def virtualHostTree(self):
+        """Cookie tree with only folders and the root container as
+        root node.
+        """
+        vh = self.request.getVirtualHostRoot()
+        if vh:
+            return self.folderTree(vh)
+        else:
+            root = zapi.getRoot(self.context)
+            return self.folderTree(root)
