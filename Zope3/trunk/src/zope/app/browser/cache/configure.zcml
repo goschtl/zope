@@ -21,7 +21,7 @@
   </pages>
 
   <pages 
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.interfaces.content.sql.ISQLScript"
       permission="zope.ManageBindings"
       class="zope.app.browser.cache.cacheable.CacheableView">
     <page name="Caching.html" attribute="form"  
