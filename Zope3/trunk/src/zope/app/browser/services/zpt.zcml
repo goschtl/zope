@@ -17,10 +17,9 @@
     label="ZPT Template"
     permission="zope.ManageServices" />
 
-  <menuItem
-    for="zope.app.interfaces.container.IAdding"
-    menu="add_component"
-    action="zope.app.services.zpt.ZPTTemplate"
+  <addMenuItem
+    permission="zope.ManageServices"
+    class="zope.app.services.zpt.ZPTTemplate"
     title="ZPT Template" />
 
 </zope:configure>
