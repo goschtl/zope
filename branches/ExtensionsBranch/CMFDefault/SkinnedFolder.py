@@ -42,21 +42,21 @@ Skinned folders can define custom 'view' actions."""
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'folder_edit_form'
+                                  , 'action'        : 'folder_edit_form.pt'
                                   , 'permissions'   :
                                      (CMFCorePermissions.ManageProperties,)
                                   , 'category'      : 'folder'
                                   }
                                 , { 'id'            : 'syndication'
                                   , 'name'          : 'Syndication'
-                                  , 'action'        : 'synPropertiesForm'
+                                  , 'action'        : 'synPropertiesForm.pt'
                                   , 'permissions'   :
                                      (CMFCorePermissions.ManageProperties,)
                                   , 'category'      : 'folder'
                                   }
                                 , { 'id'            : 'foldercontents'
                                   , 'name'          : 'Folder contents'
-                                  , 'action'        : 'folder_contents'
+                                  , 'action'        : 'folder_contents.pt'
                                   , 'permissions'   : 
                                      (CMFCorePermissions.ListFolderContents,)
                                   , 'category'      : 'folder'

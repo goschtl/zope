@@ -32,23 +32,23 @@ News Items contain short text articles and carry a title as well as an optional 
                              , 'icon'           : 'newsitem_icon.gif'
                              , 'product'        : 'CMFDefault'
                              , 'factory'        : 'addNewsItem'
-                             , 'immediate_view' : 'metadata_edit_form'
+                             , 'immediate_view' : 'metadata_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
-                                  , 'action'        : 'newsitem_view'
+                                  , 'action'        : 'newsitem_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'newsitem_edit_form'
+                                  , 'action'        : 'newsitem_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }
                                 , { 'id'            : 'metadata'
                                   , 'name'          : 'Metadata'
-                                  , 'action'        : 'metadata_edit_form'
+                                  , 'action'        : 'metadata_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }

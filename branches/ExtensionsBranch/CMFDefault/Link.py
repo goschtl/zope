@@ -33,23 +33,23 @@ Link items are URLs that come with additional information."""
                              , 'icon'           : 'link_icon.gif'
                              , 'product'        : 'CMFDefault'
                              , 'factory'        : 'addLink'
-                             , 'immediate_view' : 'metadata_edit_form'
+                             , 'immediate_view' : 'metadata_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
-                                  , 'action'        : 'link_view'
+                                  , 'action'        : 'link_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'link_edit_form'
+                                  , 'action'        : 'link_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }
                                 , { 'id'            : 'metadata'
                                   , 'name'          : 'Metadata'
-                                  , 'action'        : 'metadata_edit_form'
+                                  , 'action'        : 'metadata_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }

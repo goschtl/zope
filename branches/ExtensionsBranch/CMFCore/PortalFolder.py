@@ -40,7 +40,7 @@ Use folders to put content in categories."""
                              , 'product'        : 'CMFCore'
                              , 'factory'        : 'manage_addPortalFolder'
                              , 'filter_content_types' : 0
-                             , 'immediate_view' : 'folder_edit_form'
+                             , 'immediate_view' : 'folder_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
@@ -50,26 +50,20 @@ Use folders to put content in categories."""
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'folder_edit_form'
+                                  , 'action'        : 'folder_edit_form.pt'
                                   , 'permissions'   : (ManageProperties,)
                                   , 'category'      : 'folder'
                                   }
                                 , { 'id'            : 'localroles'
                                   , 'name'          : 'Local Roles'
-                                  , 'action'        : 'folder_localrole_form'
+                                  , 'action'        : 'folder_localrole_form.pt'
                                   , 'permissions'   : (ManageProperties,)
                                   , 'category'      : 'folder'
                                   }
                                 , { 'id'            : 'syndication'
                                   , 'name'          : 'Syndication'
-                                  , 'action'        : 'synPropertiesForm'
+                                  , 'action'        : 'synPropertiesForm.pt'
                                   , 'permissions'   : (ManageProperties,)
-                                  , 'category'      : 'folder'
-                                  }
-                                , { 'id'            : 'foldercontents'
-                                  , 'name'          : 'Folder contents'
-                                  , 'action'        : 'folder_contents'
-                                  , 'permissions'   : (CMFCorePermissions.ListFolderContents,)
                                   , 'category'      : 'folder'
                                   }
                                 )

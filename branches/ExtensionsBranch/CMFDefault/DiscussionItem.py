@@ -39,7 +39,7 @@ interface."""
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
-                                  , 'action'        : 'discussionitem_view'
+                                  , 'action'        : 'discussionitem_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }

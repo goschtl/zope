@@ -1,6 +1,6 @@
 <html xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      metal:use-macro="here/main_template/macros/master">
+      metal:use-macro="here/main_template.pt/macros/master">
     <metal:block fill-slot="base">
         <base href=""
               tal:attributes="href python: here.absolute_url() + '/'">
@@ -16,7 +16,7 @@
       Document Description goes here.
   </div>
 
-  <div metal:use-macro="here/content_byline/macros/byline">By Me</div>
+  <div metal:use-macro="here/content_byline.pt/macros/byline">By Me</div>
 
 </div>
 

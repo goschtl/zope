@@ -1,6 +1,6 @@
 <html xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      metal:use-macro="here/main_template/macros/master">
+      metal:use-macro="here/main_template.pt/macros/master">
 <body>
 <div metal:fill-slot="main">	
 <div tal:define="dummy python:here.portal_discussion.getDiscussionFor(here)">This is evaluated.</div>

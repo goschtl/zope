@@ -158,11 +158,11 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
         if info.isAnonymous:
             user_actions = (
                 {'name': 'Log in',
-                 'url': portal_url + '/login_form',
+                 'url': portal_url + '/login_form'.pt,
                  'permissions': [],
                  'category': 'user'},
                 {'name': 'Join',
-                 'url': portal_url + '/join_form',
+                 'url': portal_url + '/join_form.pt',
                  'permissions': [AddPortalMember],
                  'category': 'user'},
                 )
@@ -172,7 +172,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
             homeUrl = self.getHomeUrl()
             user_actions = (
                 {'name': 'Preferences',
-                 'url': portal_url + '/personalize_form',
+                 'url': portal_url + '/personalize_form.pt',
                  'permissions': [],
                  'category': 'user'},
                 {'name': 'Log out',
@@ -180,7 +180,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                  'permissions' : [],
                  'category': 'user'},
                 {'name': 'Reconfigure portal',
-                 'url': portal_url + '/reconfig_form',
+                 'url': portal_url + '/reconfig_form.pt',
                  'permissions': ['Manage portal'],
                  'category': 'global'},
                 )
@@ -193,7 +193,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                      'permissions' : [],
                      'category': 'user'},
                     {'name': 'My Stuff',
-                     'url': homeUrl + '/folder_contents',
+                     'url': homeUrl + '/folder_contents.pt',
                      'permissions': [],
                      'category': 'user'},
                     )
@@ -202,7 +202,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                 if hasattr( home_folder, 'Favorites' ):
                     added_actions = (
                       {'name': 'My Favorites',
-                       'url' : homeUrl + '/Favorites/folder_contents',
+                       'url' : homeUrl + '/Favorites/folder_contents.pt',
                        'permissions': [],
                        'category': 'user'},) 
                     user_actions = user_actions + added_actions

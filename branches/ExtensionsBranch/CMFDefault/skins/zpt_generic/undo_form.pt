@@ -1,6 +1,6 @@
 <html xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      metal:use-macro="here/main_template/macros/master">
+      metal:use-macro="here/main_template.pt/macros/master">
 <body>
 <div metal:fill-slot="main">
 <div class="Desktop">
@@ -23,7 +23,7 @@
          <tbody tal:condition="request/first_transaction">
            <tr><td colspan=2 align=center>
             <a href=""
-               tal:attributes="href python:here.portal_url() + '/undo_form?first_transaction:int=' + 
+               tal:attributes="href python:here.portal_url() + '/undo_form.pt?first_transaction:int=' + 
                                str(request.first_transaction*2-request.last_transaction) +
                                '&last_transaction:int=' +
                                str(request.first_transaction) + 
@@ -53,7 +53,7 @@
     <tr><td colspan=2 align=center>
     <span tal:condition="python: len(transactions) == request.PrincipiaUndoBatchSize">
         <a href=""
-           tal:attributes="href python: here.absolute_url() + '/undo_form?first_transaction:int=' + str(request.last_transaction) + '&last_transaction:int=' + str(request.last_transaction+request.PrincipiaUndoBatchSize) + '&PrincipiaUndoBatchSize:int=' + str(request.PrincipiaUndoBatchSize)">Earlier Transactions</a>
+           tal:attributes="href python: here.absolute_url() + '/undo_form.pt?first_transaction:int=' + str(request.last_transaction) + '&last_transaction:int=' + str(request.last_transaction+request.PrincipiaUndoBatchSize) + '&PrincipiaUndoBatchSize:int=' + str(request.PrincipiaUndoBatchSize)">Earlier Transactions</a>
     </span>
     </td></tr>
     <tr><td></td></tr>

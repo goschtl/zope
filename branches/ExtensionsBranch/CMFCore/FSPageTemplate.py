@@ -50,6 +50,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     security.declarePrivate('pt_edit', 'write')
 
     def __init__(self, id, filepath, fullname=None, properties=None):
+        id = fullname or id
         FSObject.__init__(self, id, filepath, fullname, properties)
         self.ZBindings_edit(self._default_bindings)
 

@@ -33,23 +33,23 @@ Documents can contain text that can be formatted using 'Structured Text.'"""
                              , 'icon'           : 'document_icon.gif'
                              , 'product'        : 'CMFDefault'
                              , 'factory'        : 'addDocument'
-                             , 'immediate_view' : 'metadata_edit_form'
+                             , 'immediate_view' : 'metadata_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view' 
                                   , 'name'          : 'View'
-                                  , 'action'        : 'document_view'
+                                  , 'action'        : 'document_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'document_edit_form'
+                                  , 'action'        : 'document_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }
                                 , { 'id'            : 'metadata'
                                   , 'name'          : 'Metadata'
-                                  , 'action'        : 'metadata_edit_form'
+                                  , 'action'        : 'metadata_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }

@@ -337,4 +337,4 @@ def manage_addCMFSite(self, id, title='Portal', description='',
                                email_from_address, email_from_name,
                                validate_email)
     if RESPONSE is not None:
-        RESPONSE.redirect(p.absolute_url() + '/finish_portal_construction')
+        RESPONSE.redirect(p.absolute_url() + '/finish_portal_construction.pt')

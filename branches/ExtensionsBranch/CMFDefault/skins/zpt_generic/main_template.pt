@@ -23,8 +23,8 @@
  <title tal:content="here/expanded_title"> Title goes here </title>
 
  <!-- Bug in ZPT Causes this to break-metal:block define-slot="base" / --> 
- <link rel="stylesheet" href="zpt_stylesheet.css" type="text/css"
-       tal:attributes="href here/zpt_stylesheet/absolute_url">
+ <link rel="stylesheet" href="../zpt_generic/zpt_stylesheet.css" type="text/css"
+       tal:attributes="href here/zpt_stylesheet.css/absolute_url">
 
 </head>
 
@@ -48,7 +48,7 @@
 
    <td id="PortalLogo">
     <a href="." tal:attributes="href portal_url"
-    ><img src="Zope_logo.gif" alt="Zope Logo"
+    ><img src="../Images/Zope_logo.gif" alt="Zope Logo"
           border="0" width="87" height="38"
           tal:attributes="src string:${portal_url}/Zope_logo.gif"></a> 
    </td>
@@ -67,7 +67,7 @@
        tal:attributes="href string:${portal_url}/search_form">search</a> 
 
     <input name="SearchableText" size="16">
-    <input border="0" type="image" name="go" value="go" src="go.gif"
+    <input border="0" type="image" name="go" value="go" src="../Images/go.gif"
            align="middle" width="20" height="20"
            tal:attributes="src string:go.gif"> &nbsp;
    </td>

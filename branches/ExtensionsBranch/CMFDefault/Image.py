@@ -34,23 +34,23 @@ Image objects can be embedded in Portal documents."""
                              , 'icon'           : 'image_icon.gif'
                              , 'product'        : 'CMFDefault'
                              , 'factory'        : 'addImage'
-                             , 'immediate_view' : 'metadata_edit_form'
+                             , 'immediate_view' : 'metadata_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
-                                  , 'action'        : 'image_view'
+                                  , 'action'        : 'image_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'image_edit_form'
+                                  , 'action'        : 'image_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }
                                 , { 'id'            : 'metadata'
                                   , 'name'          : 'Metadata'
-                                  , 'action'        : 'metadata_edit_form'
+                                  , 'action'        : 'metadata_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }

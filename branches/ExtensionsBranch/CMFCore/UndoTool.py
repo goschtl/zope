@@ -50,7 +50,7 @@ class UndoTool (UniqueObject, SimpleItem):
         if info.isAnonymous:
             return []
         return [ { 'name': 'Undo'
-                 , 'url': 'undo_form'
+                 , 'url': 'undo_form.pt'
                  , 'permissions': [ ListUndoableChanges ]
                  , 'category': 'global'
                  } ]

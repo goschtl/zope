@@ -36,11 +36,11 @@ File objects can contain arbitrary downloadable files."""
                              , 'icon'           : 'file_icon.gif'
                              , 'product'        : 'CMFDefault'
                              , 'factory'        : 'addFile'
-                             , 'immediate_view' : 'metadata_edit_form'
+                             , 'immediate_view' : 'metadata_edit_form.pt'
                              , 'actions'        :
                                 ( { 'id'            : 'view'
                                   , 'name'          : 'View'
-                                  , 'action'        : 'file_view'
+                                  , 'action'        : 'file_view.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.View, )
                                   }
@@ -52,13 +52,13 @@ File objects can contain arbitrary downloadable files."""
                                   }
                                 , { 'id'            : 'edit'
                                   , 'name'          : 'Edit'
-                                  , 'action'        : 'file_edit_form'
+                                  , 'action'        : 'file_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }
                                 , { 'id'            : 'metadata'
                                   , 'name'          : 'Metadata'
-                                  , 'action'        : 'metadata_edit_form'
+                                  , 'action'        : 'metadata_edit_form.pt'
                                   , 'permissions'   : (
                                       CMFCorePermissions.ModifyPortalContent, )
                                   }

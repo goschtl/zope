@@ -53,6 +53,10 @@ class FSDTMLMethod(RestrictedDTML, FSObject, Globals.HTML):
     manage_main = Globals.DTMLFile('custdtml', _dtmldir)
 
     def __init__(self, id, filepath, fullname=None, properties=None):
+        if fullname:
+            f_name, f_ext = path.splitext(fullname)
+            if f_ext == '.css' or f_ext == '.js':
+                id = fullname
         FSObject.__init__(self, id, filepath, fullname, properties)
         # Normally called via HTML.__init__ but we don't need the rest that
         # happens there.
@@ -139,4 +143,5 @@ Globals.InitializeClass(FSDTMLMethod)
 
 registerFileExtension('dtml', FSDTMLMethod)
 registerFileExtension('css', FSDTMLMethod)
+registerFileExtension('js', FSDTMLMethod)
 registerMetaType('DTML Method', FSDTMLMethod)
