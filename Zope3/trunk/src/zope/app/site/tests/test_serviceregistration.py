@@ -104,7 +104,7 @@ class Test(PlacefulSetup, TestCase):
     def test_getInterface(self):
         self.assertEquals(self.__config.getInterface(), ITestService)
 
-    # XXX the following tests check the same things as
+    # The following tests check the same things as
     # zope.app.services.tests.testregistrations, but in a different way
 
     def test_getComponent(self):
