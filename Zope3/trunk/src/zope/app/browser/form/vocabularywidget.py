@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.54 2003/08/17 06:05:44 philikon Exp $
+$Id: vocabularywidget.py,v 1.55 2003/08/20 19:10:40 poster Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -192,7 +192,7 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
                 try:
                     value = self.getInputValue()
                 except WidgetInputError:
-                    return self.request.form.get(self.name, self._missing)
+                    value = self.request.form.get(self.name, self._missing)
             else:
                 value = self._getDefault()
         else:
