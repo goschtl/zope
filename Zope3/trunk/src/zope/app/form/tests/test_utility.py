@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.9 2003/02/21 17:52:18 stevea Exp $
+$Id: test_utility.py,v 1.10 2003/03/07 21:27:33 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -395,6 +395,36 @@ class Test(PlacelessSetup, TestCase):
         self.assertRaises(KeyError, getWidgetsData, view, I, names=['bar'])
         self.assertRaises(AttributeError, getWidgetsData, view, I,
                           names=['foo'])
+
+    def test_getWidgetsData_w_readonly_fields(self):
+        class ITest(I):
+            name = Text(title=u"Title", readonly=True)
+
+        c = C()
+        request = TestRequest()
+        request.form['field.name'] = u'foo'
+        request.form['field.title'] = u'ft'
+        request.form['field.description'] = u'fd'
+        view = BrowserView(c, request)
+        setUpWidgets(view, ITest, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(getWidgetsData(view, ITest, names=['name', 'title']),
+                         {'title': u'ft', 'name': 'foo'})
+
+    def test_getWidgetsData_w_readonly_fields_but_exclude_anyway(self):
+        class ITest(I):
+            name = Text(title=u"Title", readonly=True)
+
+        c = C()
+        request = TestRequest()
+        request.form['field.name'] = u'foo'
+        request.form['field.title'] = u'ft'
+        request.form['field.description'] = u'fd'
+        view = BrowserView(c, request)
+        setUpWidgets(view, ITest, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(
+            getWidgetsData(view, ITest, names=['name', 'title'],
+                           exclude_readonly=True),
+            {'title': u'ft'})
 
     def test_haveWidgetsData(self):
         c = C()
