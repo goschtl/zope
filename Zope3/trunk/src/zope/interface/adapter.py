@@ -380,21 +380,7 @@ class AdapterLookup(object):
         return default
 
     def lookup1(self, required, provided, name='', default=None):
-        s = self.get(required)
-        byname = s.get(provided)
-        if byname:
-            value = byname.get(name)
-        else:
-            value = None
-
-        if value is None:
-            byname = self._default.get(provided)
-            if byname:
-                value = byname.get(name, default)
-            else:
-                return default
-
-        return value
+        return self.lookup((required,), provided, name, default)
 
     def adapter_hook(self, interface, object, name='', default=None):
         """Hook function used when calling interfaces.
