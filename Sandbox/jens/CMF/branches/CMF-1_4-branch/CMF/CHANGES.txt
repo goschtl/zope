@@ -2,6 +2,11 @@ Next release
 
   Bug Fixes
 
+    - CMFDefault.File and CMFDefault.Image: setFormat() failed to update
+      the content_type property causing a stale mimetype to be used when
+      serving the file or image.
+      Also see http://plone.org/collector/1323
+
     - CMFDefault.Document and CMFDefault.Link: PUT() caused improper
       splitting of 'Contributors' metadata header.
       Also see http://plone.org/collector/3217
