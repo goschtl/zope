@@ -67,8 +67,11 @@ import getopt
 
 import traffic_table
 
-OUTPUT_LOG = "/var/tmp/cvs-postcommit_actions.log"
-ERROR_LOG = "/var/tmp/cvs-postcommit_actions.errors"
+# We need this file to be writable by anyone using this script for the
+# logging to happen.
+OUTPUT_LOG = "/cvs-repository/cvs-postcommit_actions.log"
+# Email address destination for fatal session errors:
+CVSMASTER = "klm@aldous.digicool.com"
 
 MAIL_CMD = "/bin/mail"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
@@ -146,10 +149,16 @@ def main(args):
 
     repo = split_args[0]
     doing_directory = 0
-    if split_args[1] == "-":
+    no_files = 1
+    if len(split_args) == 0:
+        subjs = ["<no files>", "", ""]
+    elif len(split_args) == 1:
+        subjs = split_args + ["", ""]
+    elif split_args[1] == "-":
         subjs = split_args
         doing_directory = 1
     else:
+        no_files = 0
         subjs = map(grok_file, split_args[1:])
 
     if VERBOSE:
@@ -164,7 +173,7 @@ def main(args):
     if not only_repo:
         if doing_directory:
             do_chmod(['.'])
-        else:
+        elif not no_files:
             do_chmod(subjs)
 
     for entry in entries:
@@ -172,10 +181,10 @@ def main(args):
         excludes, remote = entry['excludes'], entry['remote']
         if addrs and not only_repo:
                 do_mail(path, repo, addrs, subjs,
-                        doing_directory=doing_directory)
+                        doing_directory=doing_directory, no_files=no_files)
         if remote:
-            do_sync(path, repo, remote, subjs, excludes,
-                    recurse=RECURSE, doing_directory=doing_directory)
+            do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE,
+                    doing_directory=doing_directory, no_files=no_files)
     if not entries and only_repo:
             note_failure("*** --syncrepo invalid - no repository"
                          " for %s in config file.\n",
@@ -239,13 +248,13 @@ def find_entries(repo):
         complain("Resolved table entry:\n  %s\n", entries)
     return entries
 
-def do_mail(name, repo, addrs, subjs, doing_directory=0):
+def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table."""
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS checkin: %s " % name
-    if doing_directory:
+    if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
     else:
         subject = subject + " -"
@@ -269,8 +278,8 @@ def do_mail(name, repo, addrs, subjs, doing_directory=0):
     if MSGFILENM:
         os.unlink(MSGFILENM)
 
-def do_sync(name, repo, remote,
-            subjs=None, excludes=None, recurse=0, doing_directory=0):
+def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
+            doing_directory=0, no_files=0):
     """Instigate repository mirror synchronize.
 
     The repository directory containing the subjects is synced.  (In fact,
@@ -289,7 +298,9 @@ def do_sync(name, repo, remote,
 
     if VERBOSE:
         if doing_directory:
-            fnames = "<directory>"
+            fnames = "<.>"
+        elif no_files:
+            fnames = "<>"
         else:
             fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s to %s; of %s/ %s / %s\n",
@@ -373,7 +384,7 @@ def loosen_file(fname):
     try:
         os.chmod(fname, 0777)
     except os.error, err:
-        complain("loosen_file of %s can't: %s", fname, err)
+        pass
 
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
@@ -391,16 +402,29 @@ def note_failure(msg, *args):
 
 def handle_failures():
     """Do something useful with the session log, if we saw any failures."""
-    complain("Adding session log to errors %s\n", `ERROR_LOG`)
+    complain("Sending session log to %s\n", CVSMASTER)
+    all = "-- Begin complaints --\n"
+    all = all + string.join(complaints, "\n")
+    all = all + "-- End complaints --\n"
     if os.path.isfile(OUTPUT_LOG):
-        all = open(OUTPUT_LOG, 'r').read()
-    else:
-        # Can only do the complaints:
-        all = string.join(complaints, "\n")
-    loosen_file(OUTPUT_LOG)
+        all = all + "\n-- Begin full log --\n"
+        all = all + open(OUTPUT_LOG, 'r').read()
+        all = all + "-- End full log --\n"
 
-    open(ERROR_LOG, 'a').write(all)
-    loosen_file(ERROR_LOG)
+    if os.environ.has_key('LOGNAME'):
+        user = os.environ['LOGNAME']
+    elif os.environ.has_key('USER'):
+        user = os.environ['USER']
+    else:
+        user = '<unidentified user>'
+    cmd = ('%s %s -s "CVS %s errors for %s" %s'
+           % (MAIL_CMD, ((VERBOSE and "-v") or ""), SCRIPT, user, CVSMASTER))
+
+    f = os.popen(cmd, 'w')
+    f.write('Transcript of %s session for %s with fatal errors.\n\n'
+            % (SCRIPT, user))
+    f.write(all)
+    return f.close()
 
 def usage():
     complain("Usage: %s [options...] ", SCRIPT)
