@@ -13,10 +13,10 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.2 2003/05/05 18:01:01 gvanrossum Exp $
+$Id: syncer.py,v 1.3 2003/05/05 19:51:28 gvanrossum Exp $
 """
 
-import os, string
+import os
 
 from zope.component import queryAdapter, getService
 from zope.xmlpickle.xmlpickle import dumps, loads
@@ -115,9 +115,9 @@ def toFS(ob, name, location, mode=None, objpath=None):
                 f = open(path, 'r')
                 data = f.read()
                 f.close()
-                open(path, 'w').write(string.strip(data))
+                open(path, 'w').write(data.strip())
             else:
-                open(path, 'w').write(string.strip(adapter.getBody()))
+                open(path, 'w').write(adapter.getBody().strip())
             if objectPath:
                 print 'U %s' % (objectPath[1:])
         original_path = os.path.join(admin_dir, 'Original')
@@ -125,9 +125,9 @@ def toFS(ob, name, location, mode=None, objpath=None):
             os.mkdir(original_path)
         original_path = os.path.join(original_path, name)
         if data:
-            open(original_path, 'w').write(string.strip(data))
+            open(original_path, 'w').write(data.strip())
         else:
-            open(original_path, 'w').write(string.strip(adapter.getBody()))
+            open(original_path, 'w').write(adapter.getBody().strip())
 
 
     else:
@@ -305,23 +305,26 @@ def fromFS(container, name, location, mode=None):
             raise SynchronizationError("Object is file, but data is directory")
         adapter.setBody(open(path).read())
         if mode is not None and mode != 'T':
-            if string.find(path,'@@Zope')==-1:
+            if path.find('@@Zope') < 0:
                 #copying to original
                 fspath = path
                 f = open(fspath, 'r')
                 data = f.read()
                 f.close()
-                original_path = os.path.join(os.path.dirname(fspath),'@@Zope','Original',os.path.basename(fspath))
+                original_path = os.path.join(os.path.dirname(fspath),
+                                             '@@Zope', 'Original',
+                                             os.path.basename(fspath))
                 f = open(original_path, 'w')
-                f.write(string.strip(data))
+                f.write(data.strip())
                 f.close()
-                entries_path = os.path.join(os.path.dirname(fspath),'@@Zope','Entries.xml')
+                entries_path = os.path.join(os.path.dirname(fspath),
+                                            '@@Zope', 'Entries.xml')
                 entries = loads(open(entries_path).read())
                 if entries[os.path.basename(fspath)].has_key('isNew'):
                     del entries[os.path.basename(fspath)]['isNew']
                     open(entries_path, 'w').write(dumps(entries))
                 objectpath = entries[os.path.basename(fspath)]['path']
-                msg = "%s  <--  %s" %(objectpath, string.split(objectpath,'/')[-1])
+                msg = "%s  <--  %s" %(objectpath, objectpath.split('/')[-1])
                 print msg
 
 
@@ -331,7 +334,8 @@ def fromFS(container, name, location, mode=None):
             raise SynchronizationError("Object is directory, but data is file")
 
         if mode != 'T':
-            entries_path = os.path.join(os.path.dirname(path),'@@Zope','Entries.xml')
+            entries_path = os.path.join(os.path.dirname(path),
+                                        '@@Zope', 'Entries.xml')
             entries = loads(open(entries_path).read())
             if entries[os.path.basename(path)].has_key('isNew'):
                 del entries[os.path.basename(path)]['isNew']
