@@ -51,11 +51,19 @@ def main():
     args = tuple(sys.argv[1:])
     if not args:
         args = ('clean',)
+    try:
+        __file__
+    except NameError:
+        includes = os.path.dirname(sys.argv[0])
+    else:
+        includes = os.path.dirname(__file__)
+    includes = os.path.join(os.path.abspath(includes), "include")
     for dir in setup_dirs:
         print "Building extensions in %s" % dir
         os.chdir(dir)
         os.spawnl(os.P_WAIT, sys.executable,
-                  sys.executable, "setup.py", 'build_ext', '-i', *args)
+                  sys.executable, "setup.py", 'build_ext', '-i',
+                  '-I', includes, *args)
         print
 
 if __name__ == "__main__":
