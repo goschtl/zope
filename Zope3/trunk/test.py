@@ -754,23 +754,11 @@ def main(module_filter, test_filter, libdir):
     if not KEEP_STALE_BYTECODE:
         os.path.walk(os.curdir, remove_stale_bytecode, None)
 
+    configure_logging()
+
     # Initialize the path and cwd
     global pathinit
     pathinit = PathInit(BUILD, BUILD_INPLACE, libdir)
-
-    configure_logging()
-
-##    try:
-##        import zLOG
-##    except ImportError:
-##        pass
-##    else:
-##        # zLOG is available, so we need to make sure it doesn't
-##        # re-initialize anything we set up.  If we don't, zLOG assumes
-##        # it can clobber everything the first time it's initialized.
-##        def null_initializer():
-##            pass
-##        zLOG.set_initializer(null_initializer)
 
     files = find_tests(module_filter)
     files.sort()
