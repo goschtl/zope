@@ -37,7 +37,7 @@
       permission="zope.ManageServices"
       interface="zope.app.interfaces.container.IDeleteNotifiable"
       />
-</content>    
+</content>
 
 <!-- View Service -->
 
@@ -65,7 +65,7 @@
       permission="zope.ManageServices"
       interface="zope.app.interfaces.container.IDeleteNotifiable"
       />
-</content>    
+</content>
 
 <content class="zope.app.services.view.PageConfiguration">
   <require
@@ -77,7 +77,7 @@
       permission="zope.ManageServices"
       interface="zope.app.interfaces.container.IDeleteNotifiable"
       />
-</content>    
+</content>
 
 <!-- Page Templates -->
 
@@ -285,10 +285,10 @@
 <!-- View Packages -->
 
   <content class="zope.app.services.viewpackage.ViewPackage">
-    <factory 
+    <factory
         id = "zope.app.services.ViewPackage" 
-	permission = "zope.ManageServices"
-	title = "View Package" />
+    permission = "zope.ManageServices"
+    title = "View Package" />
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
@@ -343,7 +343,7 @@
 <!-- Principal annotations (user data) service -->
 
   <serviceType
-      id="PrincipalAnnotation" 
+      id="PrincipalAnnotation"
       interface="
    zope.app.interfaces.services.principalannotation.IPrincipalAnnotationService
       " />
@@ -355,15 +355,15 @@
         permission="zope.Public"
         interface="
   zope.app.interfaces.services.principalannotation.IPrincipalAnnotationService
-        " 
+        "
         />
     <factory
         id="IPrincipalAnnotationService"
-        permission="zope.ManageServices" 
+        permission="zope.ManageServices"
         />
     <implements 
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
-       /> 
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+       />
     </content>
 
 <!-- Error reporting service -->
@@ -375,14 +375,14 @@
   <content class='zope.app.services.errorr.ErrorReportingService'>
     <require
         permission="zope.Public"
-        interface="zope.app.interfaces.services.error.IErrorReportingService" 
+        interface="zope.app.interfaces.services.error.IErrorReportingService"
         />
     <factory
         id='ErrorReportingService'
         permission='zope.Public' />
-    <implements 
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
-        /> 
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        />
     </content>
 
 <!-- Object Hub -->
@@ -404,13 +404,13 @@
         attributes="bound unbound subscribe unsubscribe subscribeOnBind
                     unsubscribedFrom subscribedTo" />
     <implements 
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" /> 
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
 
 <!-- Authentication Service -->
 
   <content class="zope.app.services.auth.AuthenticationService">
- 
+
     <factory id="AuthenticationService" permission="zope.ManageServices" />
 
     <!-- XXX Should you *really* be able to get all this with just the
