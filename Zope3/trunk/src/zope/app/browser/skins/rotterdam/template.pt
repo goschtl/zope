@@ -11,7 +11,9 @@
 
     <style type="text/css" 
            media="all"
-           tal:content="string: @import url(${context/++resource++zope3.css});">
+           tal:content=
+           "string: @import url(${context/++resource++zope3.css});"
+           >
       @import url(zope3.css);
     </style>
 
@@ -19,11 +21,18 @@
     <metal:block define-slot="ecmascript_slot" />
 
     <script type="text/javascript" src="xmltree.js" 
-            tal:attributes="src string:${context/++resource++xmltree.js}"></script>
+            tal:attributes="src string:${context/++resource++xmltree.js}"
+            ></script>
   </head>
 
   <body onload="loadtree('');"
-    tal:attributes="onload string:loadtree('${request/URL/1}/', '${request/URL/-1}/');" >
+        tal:define="rooturl     request/getApplicationURL;
+                    thisbaseurl request/URL/-1;
+                    "
+        tal:attributes="
+          onload string:loadtree('${rooturl}/', '${thisbaseurl}/');
+          " 
+        >
 
     <div id="global">
       Global elements
@@ -43,14 +52,21 @@
     </div>
 
     <div id="breadcrumbs"
-         metal:define-macro="breadcrumbs"> Location:&nbsp;<tal:block repeat="breadcrumb context/@@absolute_url/breadcrumbs"><a href=""
-          tal:condition="repeat/breadcrumb/start"
-          tal:content="string:[top]"
-          tal:attributes="href string:${breadcrumb/url}/@@SelectedManagementView.html">XXX should not hardcode root folder name string</a><a href=""
-           tal:condition="not:repeat/breadcrumb/start"
-           tal:content="string:${breadcrumb/name}"
-           tal:attributes="
-           href string:${breadcrumb/url}/@@SelectedManagementView.html">breadcrumb item</a>/</tal:block></div>
+         metal:define-macro="breadcrumbs"
+         > Location:&nbsp;<tal:block
+             repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+            ><a href=""
+                tal:condition="repeat/breadcrumb/start"
+                tal:content="string:[top]"
+                tal:attributes="
+                href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                >XXX should not hardcode root folder name string</a
+               ><a href=""
+                   tal:condition="not:repeat/breadcrumb/start"
+                   tal:content="string:${breadcrumb/name}"
+                   tal:attributes="
+                   href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                    >breadcrumb item</a>/</tal:block></div>
 
 
     <div id="navigators">
