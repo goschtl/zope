@@ -54,7 +54,7 @@ def protectModule(module, name, permission):
         permission = CheckerPublic
 
     # We know a dictionary get method was used because we set it
-    protections = checker.getPermission_func().__self__
+    protections = checker.get_permissions
     protections[name] = permission
 
 

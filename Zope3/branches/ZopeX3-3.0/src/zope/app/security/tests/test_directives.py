@@ -60,7 +60,7 @@ def test_protectModule():
     name and permission:
 
     >>> checker = moduleChecker(test_directives)
-    >>> cdict = checker.getPermission_func().__self__
+    >>> cdict = checker.get_permissions
     >>> pprint(cdict)
     {'foo': 'zope.app.security.metaconfigure.test'}
     

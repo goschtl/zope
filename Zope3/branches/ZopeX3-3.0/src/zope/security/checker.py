@@ -98,43 +98,35 @@ class TrustedCheckerBase:
 class Checker(TrustedCheckerBase):
     implements(INameBasedChecker)
 
-    def __init__(self, permission_func,
-                 setattr_permission_func=lambda name: None
-                 ):
+    def __init__(self, get_permissions, set_permissions=None):
         """Create a checker
 
-        A dictionary or a callable must be provided for computing
-        permissions for names. The callable will be called with
-        attribute names and must return a permission id, None, or the
-        special marker, CheckerPublic. If None is returned, then
-        access to the name is forbidden. If CheckerPublic is returned,
-        then access will be granted without checking a permission.
+        A dictionary must be provided for computing permissions for
+        names. The disctionary get will be called with attribute names
+        and must return a permission id, None, or the special marker,
+        CheckerPublic. If None is returned, then access to the name is
+        forbidden. If CheckerPublic is returned, then access will be
+        granted without checking a permission.
 
-        An optional setattr permission function or dictionary may be
-        provided for checking set attribute access.
+        An optional setattr dictionary may be provided for checking
+        set attribute access.
+
         """
 
-        if type(permission_func) is dict:
-            permission_func = permission_func.get
-        self._permission_func = permission_func
-
-        if type(setattr_permission_func) is dict:
-            setattr_permission_func = setattr_permission_func.get
-        self._setattr_permission_func = setattr_permission_func
-
-    def getPermission_func(self):
-        return self._permission_func
-
-    def getSetattrPermission_func(self):
-        return self._setattr_permission_func
+        assert isinstance(get_permissions, dict)
+        self.get_permissions = get_permissions
+        if set_permissions is not None:
+            assert isinstance(set_permissions, dict)
+        self.set_permissions = set_permissions
 
     def permission_id(self, name):
         'See INameBasedChecker'
-        return self._permission_func(name)
+        return self.get_permissions.get(name)
 
     def setattr_permission_id(self, name):
         'See INameBasedChecker'
-        return self._setattr_permission_func(name)
+        if self.set_permissions:
+            return self.set_permissions.get(name)
 
     def check_getattr(self, object, name):
         'See IChecker'
@@ -142,7 +134,11 @@ class Checker(TrustedCheckerBase):
 
     def check_setattr(self, object, name):
         'See IChecker'
-        permission = self._setattr_permission_func(name)
+        if self.set_permissions:
+            permission = self.set_permissions.get(name)
+        else:
+            permission = None
+            
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
@@ -159,7 +155,7 @@ class Checker(TrustedCheckerBase):
 
     def check(self, object, name):
         'See IChecker'
-        permission = self._permission_func(name)
+        permission = self.get_permissions.get(name)
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
@@ -410,7 +406,7 @@ def NamesChecker(names=(), permission_id=CheckerPublic, **__kw__):
             raise DuplicationError(name)
         data[name] = permission_id
 
-    return Checker(data.get)
+    return Checker(data)
 
 def InterfaceChecker(interface, permission_id=CheckerPublic, **__kw__):
     return NamesChecker(interface.names(all=True), permission_id, **__kw__)
@@ -449,7 +445,7 @@ def MultiChecker(specs):
                     raise DuplicationError(name)
                 data[name] = permission_id
 
-    return Checker(data.get)
+    return Checker(data)
 
 def selectChecker(object):
     """Get a checker for the given object
@@ -527,7 +523,7 @@ else:
 
 _getChecker = _checkers.get
 
-_defaultChecker = Checker({}.get)
+_defaultChecker = Checker({})
 
 def _instanceChecker(inst):
     checker = _checkers.get(inst.__class__, _defaultChecker)

@@ -46,10 +46,6 @@ def getTestProxyItems(proxy):
     otherwise, None is returned.
     """
     checker = getChecker(proxy)
-    func = checker.getPermission_func()
-    dict = getattr(func, '__self__', None)
-    if dict is None:
-        return None
-    items = dict.items()
+    items = checker.get_permissions.items()
     items.sort()
     return items

@@ -27,7 +27,7 @@ def protectName(class_, name, permission):
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
-        checker = Checker({}.get, {}.get)
+        checker = Checker({}, {})
         defineChecker(class_, checker)
 
     if permission == 'zope.Public':
@@ -35,7 +35,7 @@ def protectName(class_, name, permission):
         permission = CheckerPublic
 
     # We know a dictionart get method was used because we set it
-    protections = checker.getPermission_func().__self__
+    protections = checker.get_permissions
     protections[name] = permission
 
 def protectSetAttribute(class_, name, permission):
@@ -43,7 +43,7 @@ def protectSetAttribute(class_, name, permission):
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
-        checker = Checker({}.get, {}.get)
+        checker = Checker({}, {})
         defineChecker(class_, checker)
 
     if permission == 'zope.Public':
@@ -51,7 +51,7 @@ def protectSetAttribute(class_, name, permission):
         permission = CheckerPublic
 
     # We know a dictionart get method was used because we set it
-    protections = checker.getSetattrPermission_func().__self__
+    protections = checker.set_permissions
     protections[name] = permission
 
 def protectLikeUnto(class_, like_unto):
@@ -62,19 +62,19 @@ def protectLikeUnto(class_, like_unto):
         return
 
     # We know a dictionart get method was used because we set it
-    unto_get_protections = unto_checker.getPermission_func().__self__
-    unto_set_protections = unto_checker.getSetattrPermission_func().__self__
+    unto_get_protections = unto_checker.get_permissions
+    unto_set_protections = unto_checker.set_permissions
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
-        checker = Checker({}.get, {}.get)
+        checker = Checker({}, {})
         defineChecker(class_, checker)
 
     # OK, so it's a hack.
-    get_protections = checker.getPermission_func().__self__
+    get_protections = checker.get_permissions
     for name in unto_get_protections:
         get_protections[name] = unto_get_protections[name]
 
-    set_protections = checker.getSetattrPermission_func().__self__
+    set_protections = checker.set_permissions
     for name in unto_set_protections:
         set_protections[name] = unto_set_protections[name]
