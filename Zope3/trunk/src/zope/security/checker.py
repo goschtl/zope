@@ -316,9 +316,6 @@ def selectChecker(object):
     if checker is NoProxy:
         return None
 
-    if checker is _defaultChecker and isinstance(object, Exception):
-        return None
-
     while not isinstance(checker, Checker):
         checker = checker(object)
         if checker is NoProxy or checker is None:
@@ -502,16 +499,7 @@ if WATCH_CHECKERS:
         verbosity = WATCH_CHECKERS
 
 def _instanceChecker(inst):
-    checker = _checkers.get(inst.__class__, _defaultChecker)
-    if checker is _defaultChecker and isinstance(inst, Exception):
-        return NoProxy # TODO: we should be more careful
-    return checker
-
-def _classChecker(class_):
-    if issubclass(class_, Exception):
-        return NoProxy  # TODO: we should be more careful
-
-    return _typeChecker
+    return _checkers.get(inst.__class__, _defaultChecker)
 
 def moduleChecker(module):
     return _checkers.get(module)
@@ -604,7 +592,7 @@ _default_checkers = {
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
     type(weakref.ref(_Sequence())): NamesChecker(['__call__']),
-    types.ClassType: _classChecker,
+    types.ClassType: _typeChecker,
     types.FunctionType: _callableChecker,
     types.MethodType: _callableChecker,
     types.BuiltinFunctionType: _callableChecker,
