@@ -1,5 +1,6 @@
 from unittest import TestCase, TestSuite, makeSuite, main
 
+import Testing
 import Zope
 try:
     Zope.startup()
@@ -325,6 +326,7 @@ class PortalFolderTests( SecurityTest ):
                 self._context = context
 
             def __call__( self, id ):
+                from Products.CMFCore.PortalFolder import PortalFolder
                 self._grabbed_with = id
                 self._context._setOb( id, PortalFolder( id ) )
                 self._context._getOb( id )._setPortalTypeName( 'Grabbed' )
@@ -1046,6 +1048,7 @@ class PortalFolderCopySupportTests( TestCase ):
         self.app.portal_types = DummyTypesTool()
 
         def _no_delete_objects(permission, object, context):
+            from AccessControl.Permissions import delete_objects as DeleteObjects
             return permission != DeleteObjects
 
         self._initPolicyAndUser( c_lambda=_no_delete_objects )
@@ -1060,7 +1063,7 @@ class PortalFolderCopySupportTests( TestCase ):
 class DummyTypeInfo:
 
     def allowType( self, portal_type ):
-        return True
+        return 1
 
 class DummyTypesTool( Implicit ):
 
