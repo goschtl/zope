@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.19 2003/09/04 14:59:32 fdrake Exp $
+$Id: fsmerger.py,v 1.20 2003/09/05 19:09:36 fdrake Exp $
 """
 
 import os
@@ -57,24 +57,25 @@ class FSMerger(object):
             # XXX probably for the best; we *don't* know the right
             # thing to do anyway
             return
-        self.merge_extra(local, remote)
-        self.merge_annotations(local, remote)
+        flag = self.metadata.getentry(local).get("flag")
+        self.merge_extra(local, remote, flag)
+        self.merge_annotations(local, remote, flag)
         if not exists(local) and not self.metadata.getentry(local):
             self.remove_special(local, "Extra")
             self.remove_special(local, "Annotations")
             self.remove_special(local, "Original")
 
-    def merge_extra(self, local, remote):
+    def merge_extra(self, local, remote, flag):
         """Helper to merge the Extra trees."""
         lextra = fsutil.getextra(local)
         rextra = fsutil.getextra(remote)
-        self.merge_dirs(lextra, rextra)
+        self.merge_dirs(lextra, rextra, flag=flag, special=True)
 
-    def merge_annotations(self, local, remote):
+    def merge_annotations(self, local, remote, flag):
         """Helper to merge the Anotations trees."""
         lannotations = fsutil.getannotations(local)
         rannotations = fsutil.getannotations(remote)
-        self.merge_dirs(lannotations, rannotations)
+        self.merge_dirs(lannotations, rannotations, flag=flag, special=True)
 
     def remove_special(self, local, what):
         """Helper to remove an Original, Extra or Annotations file/tree."""
@@ -86,7 +87,7 @@ class FSMerger(object):
             else:
                 # XXX when should this ever happen?
                 os.remove(target)
-        # remove the specials directory if it's empty
+        # remove the specials directory only if it's empty
         if isdir(dir):
             try:
                 os.rmdir(dir)
@@ -108,7 +109,7 @@ class FSMerger(object):
                                         action, state) or state
         self.reportaction(action, state, local)
 
-    def merge_dirs(self, localdir, remotedir):
+    def merge_dirs(self, localdir, remotedir, flag=None, special=False):
         """Merge remote directory into local directory."""
         lentrynames = self.metadata.getnames(localdir)
         rentrynames = self.metadata.getnames(remotedir)
@@ -119,7 +120,7 @@ class FSMerger(object):
 
             if not lentry:
                 if not rentry:
-                    if exists(localdir):
+                    if exists(localdir) and not special:
                         self.reportdir("?", localdir)
                 else:
                     if not exists(localdir):
@@ -152,11 +153,14 @@ class FSMerger(object):
                 self.clear_dir(localdir)
                 return
 
+        if not special:
+            flag = lentry.get("flag")
         if exists(localdir):
-            if lentry.get("flag") == "added":
+            if flag == "added":
                 if exists(remotedir):
                     self.reportdir("U", localdir)
-                    del lentry["flag"]
+                    if "flag" in lentry:
+                        del lentry["flag"]
                 else:
                     self.reportdir("A", localdir)
             else:
@@ -169,13 +173,13 @@ class FSMerger(object):
                         # remote versions are gone, unless there have
                         # been local changes.
                         self.merge(join(localdir, name), join(remotedir, name))
-                    self.clear_dir(localdir)
+                    if flag != "added":
+                        self.clear_dir(localdir)
                     return
 
             lnames = dict([(normcase(name), name)
                            for name in os.listdir(localdir)])
         else:
-            flag = lentry.get("flag")
             if flag == "removed":
                 self.reportdir("R", localdir)
                 return # There's no point in recursing down!

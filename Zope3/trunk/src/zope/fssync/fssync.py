@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.45 2003/08/29 12:47:36 fdrake Exp $
+$Id: fssync.py,v 1.46 2003/09/05 19:09:36 fdrake Exp $
 """
 
 import os
@@ -496,6 +496,8 @@ class FSSync(object):
             # XXX how to recurse?
             self.dirrevert(target)
         self.metadata.flush()
+        if os.path.isdir(target):
+            target = join(target, "")
         self.reporter("Reverted " + target)
 
     def dirrevert(self, target):
@@ -587,6 +589,35 @@ class FSSync(object):
         if factory:
             entry["factory"] = factory
         return entry
+
+    def copy(self, src, dst=None, children=True):
+        if not exists(src):
+            raise Error("%s does not exist" % src)
+        dst = dst or ''
+        if (not dst) or isdir(dst):
+            target_dir = dst
+            target_name = basename(os.path.abspath(src))
+        else:
+            target_dir, target_name = os.path.split(dst)
+            if target_dir:
+                if not exists(target_dir):
+                    raise Error("destination directory does not exist: %r"
+                                % target_dir)
+                if not isdir(target_dir):
+                    import errno
+                    err = IOError(errno.ENOTDIR, "Not a directory", target_dir)
+                    raise Error(str(err))
+        if not self.metadata.getentry(target_dir):
+            raise Error("nothing known about '%s'" % target_dir)
+        srcentry = self.metadata.getentry(src)
+        from zope.fssync import copier
+        if srcentry:
+            # already known to fssync; we need to deal with metadata,
+            # Extra, and Annotations
+            copier = copier.ObjectCopier(self)
+        else:
+            copier = copier.FileCopier(self)
+        copier.copy(src, join(target_dir, target_name), children)
 
     def mkdir(self, path):
         dir, name = split(path)

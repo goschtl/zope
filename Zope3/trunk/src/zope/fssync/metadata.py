@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.10 2003/08/17 06:08:56 philikon Exp $
+$Id: metadata.py,v 1.11 2003/09/05 19:09:36 fdrake Exp $
 """
 
 import os
@@ -58,6 +58,10 @@ class Metadata(object):
         file = realpath(file)
         dir, base = split(file)
         return self.getmanager(dir).getentry(base)
+
+    def gettypeinfo(self, path):
+        entry = self.getentry(path)
+        return entry.get("type"), entry.get("factory")
 
     def getmanager(self, dir):
         dir = realpath(dir)

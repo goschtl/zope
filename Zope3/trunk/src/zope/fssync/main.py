@@ -16,23 +16,26 @@
 
 Command line syntax summary:
 
-%(program)s help [COMMAND ...]
-%(program)s checkout [local_options] URL [TARGETDIR]
-%(program)s update [local_options] [TARGET ...]
-%(program)s commit [local_options] [TARGET ...]
-%(program)s diff [local_options] [TARGET ...]
-%(program)s status [local_options] [TARGET ...]
-%(program)s add [local_options] PATH ...
-%(program)s mkdir [local_options] PATH ...
-%(program)s remove [local_options] TARGET ...
-%(program)s resolve [local_options] PATH ...
-%(program)s checkin [local_options] URL [TARGETDIR]
+%(program)s add [options] PATH ...
+%(program)s checkin [options] URL [TARGETDIR]
+%(program)s checkout [options] URL [TARGETDIR]
+%(program)s commit [options] [TARGET ...]
+%(program)s copy [options] SOURCE [TARGET]
+%(program)s diff [options] [TARGET ...]
+%(program)s login [options] URL
+%(program)s logout [options] URL
+%(program)s mkdir PATH ...
+%(program)s remove [options] TARGET ...
+%(program)s resolve PATH ...
+%(program)s revert PATH ...
+%(program)s status [TARGET ...]
+%(program)s update [TARGET ...]
 
 ``%(program)s help'' prints the global help (this message)
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.36 2003/08/27 19:36:21 fdrake Exp $
+$Id: main.py,v 1.37 2003/09/05 19:09:36 fdrake Exp $
 """
 
 import os
@@ -149,6 +152,36 @@ def add(opts, args):
     fs = FSSync()
     for a in args:
         fs.add(a, type, factory)
+
+def copy(opts, args):
+    """%(program)s copy [-l | -R] SOURCE [TARGET]
+
+    """
+    recursive = None
+    for o, a in opts:
+        if o in ("-l", "--local"):
+            if recursive:
+                raise Usage("%r conflicts with %r" % (o, recursive))
+            recursive = False
+        elif o in ("-R", "--recursive"):
+            if recursive is False:
+                raise Usage("%r conflicts with -l" % o)
+            recursive = o
+    if not args:
+        raise Usage("copy requires at least one argument")
+    if len(args) > 2:
+        raise Usage("copy allows at most two arguments")
+    source = args[0]
+    if len(args) == 2:
+        target = args[1]
+    else:
+        target = None
+    if recursive is None:
+        recursive = True
+    else:
+        recursive = bool(recursive)
+    fs = FSSync()
+    fs.copy(source, target, children=recursive)
 
 def remove(opts, args):
     """%(program)s remove TARGET ...
@@ -321,6 +354,7 @@ command_table = [
     (checkin,  "",        "F:m:",       "file= message="),
     (checkout, "co",      "",           ""),
     (commit,   "ci",      "F:m:r",      "file= message= raise-on-conflicts"),
+    (copy,     "cp",      "lR",         "local recursive"),
     (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
     (login,    "",        "u:",         "user="),
     (logout,   "",        "u:",         "user="),
