@@ -25,30 +25,28 @@ Options:
               remote copy or rectifying gaps that crept in).  The rsync
               will be verbose when doing --syncrepo.
 
- --msgfile MSGFILENM - get log message from MSGFILENM (and delete it!)
+ --msgfile MSGFILENM - internal - get log message from MSGFILENM (and delete)
 
-An optional leading arg --verbose argument says operate verbosely.
-
-We expect to be invoked from loginfo with %{CVSROOT} %{sVv}: The %{sVv}
-format string is expanded into a single argument passed in, containing
-multiple space-delimited parts:
+We expect to be invoked from loginfo with %{CVSROOT} %{sVv}: CVS expands
+the loginfo %{sVv} into a single command-line token (bizarrely enough)
+containing multiple, space-delimited parts:
 
   - The first part is the path of repository directory
 
-  - Then a comma-concatenated string for each file being checked in,
+  - Then comes a comma-concatenated string for each file being checked in,
     consisting of:
 
     - The file name,
     - The old version number, then
-    - the new one, like so
+    - the new one, like so:
 
-    filename,1.1,1.2
+      filename,1.52,1.53
 
 \(See the CVS Gnu INFO file for loginfo for more format-string details.)
 
 Currently the actions are:
 
- - do a g+w chmod of the subject files - this is done regardless of entries
+ - do a g+w chmod of the subject files - unset CHMOD_GW to disable this
  - email checkin messages to designated recipients
  - do an rsync of the repository to the public repository host.
 
@@ -74,11 +72,16 @@ except ImportError:
 
 import traffic_table
 
-# We need this file to be writable by anyone using this script for the
-# logging to happen.
+# OUTPUT_LOG must be writable by anyone whose checkins will invoke this
+# script in order for their logging to happen.
 OUTPUT_LOG = "/cvs-repository/cvs-postcommit_actions.log"
-# Email address destination for fatal session errors:
+
+# Set CVSMASTER to the email address of someone managing your CVS mirroring.
 CVSMASTER = "klm@digicool.com"
+
+# Zero CHMOD_GW this if you don't want automatic chmod g+w of files that were
+# checked in. 
+CHMOD_GW = 1
 
 MAIL_CMD = "/bin/mail"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
@@ -140,9 +143,9 @@ def main(args):
             complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
         elif opt == "--wait":
             WAIT = 1
-            complain("%s: WAIT mode - not doing activities"
-                     " in background...\n", SCRIPT)
+            complain("%s: WAIT mode - continuing in foreground...\n", SCRIPT)
         elif opt == "--msgfile":
+            # This is internal, for the script to pass itself a file.
             MSGFILENM = val
         elif opt == "--syncrepo":
             SYNCREPO = 1
@@ -182,7 +185,7 @@ def main(args):
 
     entries = find_entries(repo)
 
-    if not only_repo:
+    if CHMOD_GW and not only_repo:
         if doing_directory:
             do_chmod(['.'])
         elif not no_files:
@@ -389,7 +392,10 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
         note_failure("*** Rsync returned %s...", result)
 
 def do_chmod(subjs):
-    fnames = map(lambda x: x[0], subjs)
+    fnames = []
+    for i in subjs:
+        if len(i) == 3 and i[2] != "NONE":
+            fnames.append(i[0])
     if not fnames:
         fnames = ["."]
     cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
@@ -445,7 +451,7 @@ def handle_failures():
         user = os.environ['USER']
     else:
         user = '<unidentified user>'
-    cmd = ('%s %s -s "CVS %s errors for %s" %s'
+    cmd = ('%s %s -s "CVS errors in %s for %s" %s'
            % (MAIL_CMD, ((VERBOSE and "-v") or ""), SCRIPT, user, CVSMASTER))
 
     f = os.popen(cmd, 'w')
