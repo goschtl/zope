@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.5 2002/12/31 03:35:08 jim Exp $
+$Id: engine.py,v 1.6 2003/03/25 20:07:16 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -28,8 +28,8 @@ from zope.pagetemplate.tales \
      import ExpressionEngine, RegistrationError, Context
 
 from zope.app.interfaces.traversing import ITraverser
+from zope.component import getService
 from zope.app.traversing.adapters import Traverser
-from zope.i18n.globaltranslationservice import translationService
 from zope.proxy.introspection import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
@@ -63,8 +63,8 @@ class ZopeContext(Context):
         return macro
 
     def translate(self, domain, msgid, mapping):
-        return translationService.translate(domain, msgid, mapping,
-                                            self.request)
+        ts = getService(self.context, 'Translation')
+        return ts.translate(domain, msgid, mapping, self.request)
 
 
 class ZopeEngine(ExpressionEngine):
@@ -81,6 +81,11 @@ class ZopeEngine(ExpressionEngine):
         # Put request into context so path traversal can find it
         if 'request' in namespace:
             context.request = namespace['request']
+
+        # Put context into context so path traversal can find it
+        # XXX: Change to container once the renaming has been done!
+        if 'context' in namespace:
+            context.context = namespace['context']
 
         return context
 
