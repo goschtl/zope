@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.4 2002/12/27 18:41:21 rdmurray Exp $
+$Id: test_auth.py,v 1.5 2003/01/31 11:03:32 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,10 @@ from zope.app.interfaces.services.auth import IUser
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.services.service import ServiceConfiguration
+from zope.app.services.tests.eventsetup import EventSetup
+from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.interfaces.services.configuration import Active, Registered
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 
@@ -42,10 +45,10 @@ class Request:
         self.challenge = challenge
 
 
-class AuthServiceTest(TestCase, PlacefulSetup):
+class AuthSetup(EventSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
+        EventSetup.setUp(self)
 
         from zope.component import getService
         from zope.app.security.basicauthadapter import BasicAuthAdapter
@@ -53,15 +56,43 @@ class AuthServiceTest(TestCase, PlacefulSetup):
         getService(None, "Adapters").provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
-        auth = AuthenticationService()
+        folder = self.rootFolder
+
+        if not folder.hasServiceManager():
+            self.createServiceManager(folder)
+
+        default = traverse(folder, '++etc++Services/Packages/default')
+        key = default.setObject("AuthenticationService", AuthenticationService())
+        auth = traverse(default, key)
+
+        path = getPhysicalPathString(auth)
+        configuration = ServiceConfiguration("Authentication", path)
+        configure = traverse(default, 'configure')
+        key = configure.setObject(None, configuration)
+        traverse(configure, key).status = Active
+
         auth.setObject('srichter', User('srichter', 'Stephan', 'Richter',
                                         'srichter', 'hello'))
-        auth.setObject('jim', User('jim', 'Jim', 'Foulton',
-                                        'jim', 'hello2'))
+        auth.setObject('jim', User('jim', 'Jim', 'Fulton',
+                                   'jim', 'hello2'))
         auth.setObject('stevea', User('stevea', 'Steve', 'Alexander',
-                                        'stevea', 'hello3'))
+                                      'stevea', 'hello3'))
+
         self._auth = auth
 
+    def createStandardServices(self):
+        EventSetup.createStandardServices(self)
+
+        from zope.component import getServiceManager
+        from zope.app.security.registries.principalregistry \
+             import principalRegistry
+        from zope.app.interfaces.security import IAuthenticationService
+        sm = getServiceManager(None)
+        sm.defineService("Authentication", IAuthenticationService)
+        sm.provideService("Authentication", principalRegistry)
+
+
+class AuthServiceTest(AuthSetup, TestCase):
 
     def testGetPrincipalByLogin(self):
         auth = self._auth

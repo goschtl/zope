@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.7 2002/12/27 20:16:34 rdmurray Exp $
+$Id: auth.py,v 1.8 2003/01/31 11:03:34 alga Exp $
 """
 
 from types import TupleType
@@ -35,7 +35,8 @@ from zope.proxy.introspection import removeAllProxies
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.grants.principalrole import principalRoleManager
-
+from zope.app.component.nextservice import getNextService
+from zope.proxy.context import ContextMethod
 
 
 class DuplicateLogin(Exception):
@@ -73,7 +74,12 @@ class AuthenticationService(Persistent):
                     password = a.getPassword()
                     if p.validate(password):
                         return p
-        return None
+                    else:
+                        return None
+        next = getNextService(self, 'Authentication')
+        return next.authenticate(request)
+
+    authenticate = ContextMethod(authenticate)
 
     def unauthenticatedPrincipal(self):
         'See IAuthenticationService'
@@ -91,7 +97,10 @@ class AuthenticationService(Persistent):
         try:
             return self._usersbyid[id]
         except KeyError:
-            raise NotFoundError(id)
+            next = getNextService(self, 'Authentication')
+            return next.getPrincipal(id)
+
+    getPrincipal = ContextMethod(getPrincipal)
 
     def getPrincipals(self, name):
         'See IAuthenticationService'
