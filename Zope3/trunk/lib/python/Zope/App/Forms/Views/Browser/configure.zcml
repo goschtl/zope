@@ -8,24 +8,41 @@
   <browser:view
       permission="Zope.View"
       for="Schema.IField.IStr"
-      name="normal"
-      factory=".TextWidget." />
+      name="widget"
+      factory=".Widget.TextWidget." />
+
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.IInt"
+      name="widget"
+      factory=".Widget.TextWidget." />
+
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.IFloat"
+      name="widget"
+      factory=".Widget.TextWidget." />
 
   <browser:view
       permission="Zope.View"
       for="Schema.IField.IBool"
-      name="normal"
-      factory=".CheckboxWidget." />
+      name="widget"
+      factory=".Widget.CheckBoxWidget." />
 
-  <!-- Test view for folders -->
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.ITuple"
+      name="widget"
+      factory=".Widget.TextAreaWidget." />
 
-   <browser:view
-       permission="Zope.View" 
-       for="Zope.App.OFS.Content.Folder.Folder.IFolder."  
-       factory=".FormView.">
-       <browser:page name="testFormView.html"
-        template="testFormView.pt" />
-   </browser:view>
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.IList"
+      name="widget"
+      factory=".Widget.TextAreaWidget." />
 
+  <!-- Insert a simple test/demo -->
+
+  <include package=".tests" file="testConfigure.zcml" />
   
 </zopeConfigure>

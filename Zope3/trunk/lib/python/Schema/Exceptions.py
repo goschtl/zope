@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.6 2002/07/17 02:36:36 srichter Exp $
+$Id: Exceptions.py,v 1.7 2002/07/17 18:43:41 srichter Exp $
 """
 
 class StopValidation(Exception):
@@ -35,15 +35,6 @@ class ValidationError(Exception):
         return cmp(self.error_name, other.error_name)
 
 
-class ValidationErrorsAll(Exception):
-    """This is a collection error that contains all exceptions that occured
-    during the validation process."""
-
-    def __init__(self, list):
-        Exception.__init__(self)
-        self.errors = list
-
-
 class ConversionError(Exception):
     """If some conversion fails, this exception is raised."""
 
@@ -53,10 +44,29 @@ class ConversionError(Exception):
         self.original_exception = original_exception
 
 
-class ConversionErrorsAll(Exception):
+class ErrorContainer(Exception):
+    """ """
+
+    def __init__(self, errors):
+        Exception.__init__(self)
+        self.errors = errors
+
+    def __len__(self):
+        return len(self.errors)
+
+    def __getitem__(self, key):
+        return self.errors[key]
+
+    def __iter__(self):
+        return iter(self.errors)
+
+
+class ValidationErrorsAll(ErrorContainer):
+    """This is a collection error that contains all exceptions that occured
+    during the validation process."""
+
+
+class ConversionErrorsAll(ErrorContainer):
     """This is a collection error that contains all exceptions that occured
     during the conversion process."""
 
-    def __init__(self, list):
-        Exception.__init__(self)
-        self.errors = list

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.6 2002/07/17 02:36:37 srichter Exp $
+$Id: FormView.py,v 1.7 2002/07/17 18:43:41 srichter Exp $
 """
 from Interface.Implements import flattenInterfaces
 from Schema.IField import IField
@@ -32,6 +32,7 @@ class FormView(BrowserView):
 
     form = None
     custom_widgets = None
+    fields_order = None
 
     def getFields(self):
         'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
@@ -41,13 +42,20 @@ class FormView(BrowserView):
         else:
             interfaces = (interfaces,)
         request = self.request
-        fields = []
+        fields = {}
         for interface in interfaces:
             for name in interface.names(1):
                 attr = interface.getDescriptionFor(name)
                 if IField.isImplementedBy(attr):
-                    fields.append(attr)
-        return fields
+                    fields[name] = attr
+
+        if self.fields_order is None:
+            return fields.values()
+
+        result = []
+        for id in self.fields_order:
+            result.append(fields[id])
+        return result
 
 
     def getWidgetForFieldId(self, id):
@@ -98,7 +106,7 @@ class FormView(BrowserView):
             try:
                 data[field] = widget.convert(mapping[field])
             except ConversionError, error:
-                errors.append((field.id, error))
+                errors.append((field, error))
 
         if errors:
             raise ConversionErrorsAll, errors
@@ -113,7 +121,7 @@ class FormView(BrowserView):
             try:
                 field.validate(mapping[field])
             except ValidationError, error:
-                errors.append((field.id, error))
+                errors.append((field, error))
 
         if errors:
             raise ValidationErrorsAll, errors
@@ -139,8 +147,8 @@ class FormView(BrowserView):
         'See Zope.App.Forms.Views.Browser.IForm.IWriteForm'
         try:
             self.saveValuesInContext()
-        except Error, e:
-            errors = e
+        except (ValidationErrorsAll, ConversionErrorsAll), e:
+            return self.form(self, errors=e)
         else:
-            return self.request.response.redirect(self.request.URL[-1])
+            return self.form(self)
         

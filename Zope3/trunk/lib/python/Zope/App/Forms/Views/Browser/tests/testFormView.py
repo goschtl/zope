@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.8 2002/07/17 16:54:15 jeremy Exp $
+$Id: testFormView.py,v 1.9 2002/07/17 18:43:41 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
@@ -47,7 +47,12 @@ class TestFormView(TestCase, PlacelessSetup):
         schema = SchemaTestObject.STestObject
         for name in schema.names(1):
             fields.append(schema.getDescriptionFor(name))
-        self.assertEqual(fields, self._form.getFields())
+        fields.sort()
+
+        result = self._form.getFields()
+        result.sort()
+
+        self.assertEqual(fields, result)
 
 
     def _compareWidgets(self, widget1, widget2):

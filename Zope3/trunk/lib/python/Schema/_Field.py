@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.8 2002/07/16 23:25:58 jeremy Exp $
+$Id: _Field.py,v 1.9 2002/07/17 18:43:41 srichter Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -43,7 +43,7 @@ class Field(Attribute):
 
 class Str(Field):
     """A field representing a Str."""
-    type = str
+    type = str, unicode
     min_length = None
     max_length = None
 

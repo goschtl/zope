@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Converter.py,v 1.2 2002/07/16 15:15:54 srichter Exp $
+$Id: Converter.py,v 1.3 2002/07/17 18:43:41 srichter Exp $
 """
 from IConverter import IConverter
 from Exceptions import ConversionError
@@ -57,7 +57,7 @@ class FunctionConverter(object):
         try:
             return self._function(value)
         except Exception, e:
-            raise ConversionError('exception', e)
+            raise ConversionError('Conversion error', e)
         
 def _functionConverterFactory(klass_name, function):
     """Create a derived class of FunctionConvert which uses function.

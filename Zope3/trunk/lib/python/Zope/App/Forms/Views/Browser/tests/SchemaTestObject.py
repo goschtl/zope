@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.3 2002/07/17 02:36:37 srichter Exp $
+$Id: SchemaTestObject.py,v 1.4 2002/07/17 18:43:41 srichter Exp $
 """
 import Schema
 from Schema.Converter import StrToIntConverter
@@ -88,6 +88,7 @@ class Edit(FormView):
                       'creator': CustomWidget(Widget.TextWidget,
                                               displayWidth=30),
                       'data': CustomWidget(Widget.FileWidget)}
+    fields_order = ('id', 'title', 'creator', 'data')
 
 
 def EditFactory(context=None, request=None):
