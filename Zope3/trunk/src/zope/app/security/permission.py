@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permission.py,v 1.5 2003/02/12 02:17:31 seanb Exp $
+$Id: permission.py,v 1.6 2003/03/07 21:13:49 jim Exp $
 """
 
 from zope.schema import ValueSet
@@ -21,6 +21,7 @@ from zope.schema.interfaces import ValidationError
 from zope.component import getService
 from zope.app.services.servicenames import Permissions
 from zope.app.interfaces.security import IPermissionField
+from zope.security.checker import CheckerPublic
 
 
 def checkPermission(context, permission_id):
@@ -33,6 +34,8 @@ class PermissionField(ValueSet):
     __implements__ = IPermissionField
 
     def _validate(self, value):
+        if value is CheckerPublic:
+            return
         super(PermissionField, self)._validate(value)
         service = getService(self.context, Permissions)
         if service.getPermission(value) is None:

@@ -13,10 +13,11 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.7 2003/02/12 02:17:33 seanb Exp $
+$Id: test_permissionfield.py,v 1.8 2003/03/07 21:13:49 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.security.checker import CheckerPublic
 from zope.app.security.permission import PermissionField
 from zope.schema.interfaces import ValidationError
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -38,6 +39,7 @@ class TestPermissionField(PlacelessSetup, TestCase):
         self.assertRaises(ValidationError, field.validate, dummy)
         permissionRegistry.definePermission('read', 'Read', 'Read something')
         field.validate(permissionRegistry.getPermission('read').getId())
+        field.validate(CheckerPublic)
 
 def test_suite():
     return TestSuite((makeSuite(TestPermissionField),))
