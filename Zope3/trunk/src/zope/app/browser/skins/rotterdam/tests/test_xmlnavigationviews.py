@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.2 2003/01/02 12:04:36 gotcha Exp $
+$Id: test_xmlnavigationviews.py,v 1.3 2003/01/02 14:07:27 stevea Exp $
 """
 
 #import sys
@@ -25,7 +25,8 @@ from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.pagetemplate.tests.util import check_xml
 from zope.app.browser.skins.rotterdam.tests import util
-from zope.app.browser.skins.rotterdam.xmlobject import ReadContainerXmlObjectView
+from zope.app.browser.skins.rotterdam.xmlobject \
+    import ReadContainerXmlObjectView
 from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
 from zope.publisher.browser import TestRequest
 
@@ -35,19 +36,20 @@ class TestXmlObject(EventSetup, TestCase):
         EventSetup.setUp(self)
 
     def testXMLTreeViews(self):
-        treeView = ReadContainerXmlObjectView(self.folder1, TestRequest()).singleBranchTree
+        rcxov = ReadContainerXmlObjectView
+        treeView = rcxov(self.folder1, TestRequest()).singleBranchTree
         check_xml(treeView(), util.read_output('test1.xml'))
 
-        treeView = ReadContainerXmlObjectView(self.folder1, TestRequest()).children
+        treeView = rcxov(self.folder1, TestRequest()).children
         check_xml(treeView(), util.read_output('test2.xml'))
 
-        treeView = ReadContainerXmlObjectView(self.folder1_1_1, TestRequest()).children
+        treeView = rcxov(self.folder1_1_1, TestRequest()).children
         check_xml(treeView(), util.read_output('test3.xml'))
         
-        treeView = ReadContainerXmlObjectView(self.rootFolder, TestRequest()).children
+        treeView = rcxov(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
 
-        treeView = ReadContainerXmlObjectView(self.folder1_1_1, TestRequest()).singleBranchTree
+        treeView = rcxov(self.folder1_1_1, TestRequest()).singleBranchTree
         check_xml(treeView(), util.read_output('test5.xml'))
 
         from zope.app.content.file import File
