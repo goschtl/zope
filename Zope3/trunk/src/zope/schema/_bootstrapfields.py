@@ -12,17 +12,23 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.27 2004/03/15 18:12:39 jim Exp $
+$Id: _bootstrapfields.py,v 1.28 2004/04/11 10:35:04 srichter Exp $
 """
 __metaclass__ = type
 
 import warnings
 
 from zope.interface import Attribute, providedBy, implements
-from zope.schema._bootstrapinterfaces import StopValidation, ValidationError
+from zope.schema._bootstrapinterfaces import StopValidation
 from zope.schema._bootstrapinterfaces import IFromUnicode
+from zope.schema._bootstrapinterfaces import RequiredMissing, WrongType
+from zope.schema._bootstrapinterfaces import ConstraintNotSatisfied
+from zope.schema._bootstrapinterfaces import NotAContainer, NotAnIterator
+from zope.schema._bootstrapinterfaces import TooSmall, TooBig
+from zope.schema._bootstrapinterfaces import TooShort, TooLong
+from zope.schema._bootstrapinterfaces import InvalidValue
+
 from zope.schema._schema import getFields
-from zope.schema import errornames
 
 class ValidatedProperty:
 
@@ -150,7 +156,7 @@ class Field(Attribute):
     def validate(self, value):
         if value == self.missing_value:
             if self.required:
-                raise ValidationError(errornames.RequiredMissing)
+                raise RequiredMissing
         else:
             try:
                 self._validate(value)
@@ -180,10 +186,10 @@ class Field(Attribute):
 
     def _validate(self, value):
         if self._type is not None and not isinstance(value, self._type):
-            raise ValidationError(errornames.WrongType, value, self._type)
+            raise WrongType(value, self._type)
 
         if self.constraint is not None and not self.constraint(value):
-            raise ValidationError(errornames.ConstraintNotSatisfied, value)
+            raise ConstraintNotSatisfied(value)
 
     def get(self, object):
         return getattr(object, self.__name__)
@@ -209,7 +215,7 @@ class Container(Field):
             try:
                 iter(value)
             except TypeError:
-                raise ValidationError(errornames.NotAContainer, value)
+                raise NotAContainer(value)
 
 
 class Iterable(Container):
@@ -221,7 +227,7 @@ class Iterable(Container):
         try:
             iter(value)
         except TypeError:
-            raise ValidationError(errornames.NotAnIterator, value)
+            raise NotAnIterator(value)
 
 
 class Orderable:
@@ -257,10 +263,10 @@ class Orderable:
         super(Orderable, self)._validate(value)
 
         if self.min is not None and value < self.min:
-            raise ValidationError(errornames.TooSmall, value, self.min)
+            raise TooSmall(value, self.min)
 
         if self.max is not None and value > self.max:
-            raise ValidationError(errornames.TooBig, value, self.max)
+            raise TooBig(value, self.max)
 
 
 class MinMaxLen:
@@ -280,10 +286,10 @@ class MinMaxLen:
         super(MinMaxLen, self)._validate(value)
 
         if self.min_length is not None and len(value) < self.min_length:
-            raise ValidationError(errornames.TooShort, value, self.min_length)
+            raise TooShort(value, self.min_length)
 
         if self.max_length is not None and len(value) > self.max_length:
-            raise ValidationError(errornames.TooLong, value, self.max_length)
+            raise TooLong(value, self.max_length)
 
 
 class Enumerated:
@@ -330,8 +336,7 @@ class Enumerated:
         super(Enumerated, self)._validate(value)
         if self.allowed_values:
             if not value in self.allowed_values:
-                raise ValidationError(errornames.InvalidValue, value,
-                                      self.allowed_values)
+                raise InvalidValue(value, self.allowed_values)
 
 class Text(MinMaxLen, Field):
     """A field containing text used for human discourse."""
@@ -348,13 +353,13 @@ class Text(MinMaxLen, Field):
         >>> t.fromUnicode("foo x spam")
         Traceback (most recent call last):
         ...
-        ValidationError: (u'Wrong type', 'foo x spam', <type 'unicode'>)
+        WrongType: ('foo x spam', <type 'unicode'>)
         >>> t.fromUnicode(u"foo x spam")
         u'foo x spam'
         >>> t.fromUnicode(u"foo spam")
         Traceback (most recent call last):
         ...
-        ValidationError: (u'Constraint not satisfied', u'foo spam')
+        ConstraintNotSatisfied: foo spam
         """
         self.validate(str)
         return str

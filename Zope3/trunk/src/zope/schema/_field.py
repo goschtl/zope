@@ -14,7 +14,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.31 2004/03/15 18:12:40 jim Exp $
+$Id: _field.py,v 1.32 2004/04/11 10:35:04 srichter Exp $
 """
 __metaclass__ = type
 
@@ -24,10 +24,6 @@ import re
 from zope.interface import classImplements, implements
 from zope.interface.interfaces import IInterface
 from zope.interface.interfaces import IMethod
-
-from zope.schema.interfaces import ValidationError
-from zope.schema.errornames import WrongContainedType, WrongType
-from zope.schema import errornames
 
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
@@ -40,6 +36,11 @@ from zope.schema.interfaces import IPassword, IObject, IDate, IEnumeratedDate
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
 from zope.schema.interfaces import IURI, IId, IFromUnicode
+
+from zope.schema.interfaces import ValidationError, InvalidValue
+from zope.schema.interfaces import WrongType, WrongContainedType
+from zope.schema.interfaces import SchemaNotProvided, SchemaNotFullyImplemented
+from zope.schema.interfaces import InvalidURI, InvalidId, InvalidDottedName
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen, Enumerated
@@ -87,7 +88,7 @@ class Bytes(MinMaxLen, Field):
         >>> b.fromUnicode(u" foo y.z bat")
         Traceback (most recent call last):
         ...
-        ValidationError: (u'Constraint not satisfied', ' foo y.z bat')
+        ConstraintNotSatisfied:  foo y.z bat
 
         """
         v = str(u)
@@ -116,13 +117,13 @@ class ASCII(Bytes):
         >>> ascii._validate(umlauts)
         Traceback (most recent call last):
         ...
-        ValidationError: Invalid value
+        InvalidValue
         """
         super(ASCII, self)._validate(value)
         if not value:
             return
         if not max(map(ord, value)) < 128:
-            raise ValidationError(errornames.InvalidValue)
+            raise InvalidValue
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""
@@ -188,7 +189,7 @@ class InterfaceField(Field):
     def _validate(self, value):
         super(InterfaceField, self)._validate(value)
         if not IInterface.providedBy(value):
-            raise ValidationError(WrongType)
+            raise WrongType
 
 def _validate_sequence(value_type, value, errors=None):
     if errors is None:
@@ -231,7 +232,7 @@ class Sequence(MinMaxLen, Iterable, Field):
         super(Sequence, self)._validate(value)
         errors = _validate_sequence(self.value_type, value)
         if errors:
-            raise ValidationError(WrongContainedType, errors)
+            raise WrongContainedType, errors
 
 class Tuple(Sequence):
     """A field representing a Tuple."""
@@ -259,8 +260,7 @@ def _validate_fields(schema, value, errors=None):
                 errors.append(error)
             except AttributeError, error:
                 # property for the given name is not implemented
-                errors.append(errornames.SchemaNotFullyImplemented)
-                
+                errors.append(SchemaNotFullyImplemented())
     return errors
 
 
@@ -270,7 +270,7 @@ class Object(Field):
 
     def __init__(self, schema, **kw):
         if not IInterface.providedBy(schema):
-            raise ValidationError(WrongType)
+            raise WrongType
             
         self.schema = schema
         super(Object, self).__init__(**kw)
@@ -280,12 +280,12 @@ class Object(Field):
         
         # schema has to be implemented by value    
         if not self.schema.providedBy(value):
-            raise ValidationError(errornames.SchemaNotProvided)
+            raise SchemaNotProvided
             
-        # check the value against  schema
+        # check the value against schema
         errors = _validate_fields(self.schema, value)
         if errors:
-            raise ValidationError(WrongContainedType, errors)
+            raise WrongContainedType(errors)
 
 
 class Dict(MinMaxLen, Iterable, Field):
@@ -315,7 +315,7 @@ class Dict(MinMaxLen, Iterable, Field):
             errors = _validate_sequence(self.key_type, value, errors)
 
             if errors:
-                raise ValidationError(WrongContainedType, errors)
+                raise WrongContainedType, errors
 
         finally:
             errors = None
@@ -339,14 +339,14 @@ class URI(BytesLine):
         >>> uri.validate("www.python.org/foo/bar")
         Traceback (most recent call last):
         ...
-        ValidationError: ('Invalid uri', 'www.python.org/foo/bar')
+        InvalidURI: www.python.org/foo/bar
         """
 
         super(URI, self)._validate(value)
         if _isuri(value):
             return
 
-        raise ValidationError("Invalid uri", value)
+        raise InvalidURI, value
 
     def fromUnicode(self, value):
         """
@@ -360,7 +360,7 @@ class URI(BytesLine):
         >>> uri.fromUnicode("http://www.python.org/ foo/bar")
         Traceback (most recent call last):
         ...
-        ValidationError: ('Invalid uri', 'http://www.python.org/ foo/bar')
+        InvalidURI: http://www.python.org/ foo/bar
         """
         v = str(value.strip())
         self.validate(v)
@@ -389,11 +389,11 @@ class Id(BytesLine):
         >>> id.validate("zope.app.content/a")
         Traceback (most recent call last):
         ...
-        ValidationError: ('Invalid id', 'zope.app.content/a')
+        InvalidId: zope.app.content/a
         >>> id.validate("http://zope.app.content x y")
         Traceback (most recent call last):
         ...
-        ValidationError: ('Invalid id', 'http://zope.app.content x y')
+        InvalidId: http://zope.app.content x y
         """
         super(Id, self)._validate(value)
         if _isuri(value):
@@ -401,7 +401,7 @@ class Id(BytesLine):
         if _isdotted(value) and "." in value:
             return
 
-        raise ValidationError("Invalid id", value)
+        raise InvalidId, value
 
     def fromUnicode(self, value):
         """
@@ -413,7 +413,7 @@ class Id(BytesLine):
         >>> id.fromUnicode("http://www.python.org/ foo/bar")
         Traceback (most recent call last):
         ...
-        ValidationError: ('Invalid id', 'http://www.python.org/ foo/bar')
+        InvalidId: http://www.python.org/ foo/bar
         >>> id.fromUnicode("      \\n x.y.z \\n")
         'x.y.z'
 
@@ -475,7 +475,7 @@ class DottedName(BytesLine):
         >>> dotted_name.validate("   a   ")
         Traceback (most recent call last):
         ...
-        ValidationError: ('invalid dotted name', '   a   ')
+        InvalidDottedName:    a   
 
         >>> dotted_name = DottedName(__name__='test', min_dots=1)
         >>> dotted_name.validate('a.b')
@@ -483,14 +483,14 @@ class DottedName(BytesLine):
         >>> dotted_name.validate('a')
         Traceback (most recent call last):
         ...
-        ValidationError: ('too few dots; 1 required', 'a')
+        InvalidDottedName: ('too few dots; 1 required', 'a')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=0)
         >>> dotted_name.validate('a')
         >>> dotted_name.validate('a.b')
         Traceback (most recent call last):
         ...
-        ValidationError: ('too many dots; no more than 0 allowed', 'a.b')
+        InvalidDottedName: ('too many dots; no more than 0 allowed', 'a.b')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=2)
         >>> dotted_name.validate('a')
@@ -499,31 +499,31 @@ class DottedName(BytesLine):
         >>> dotted_name.validate('a.b.c.d')
         Traceback (most recent call last):
         ...
-        ValidationError: ('too many dots; no more than 2 allowed', 'a.b.c.d')
+        InvalidDottedName: ('too many dots; no more than 2 allowed', 'a.b.c.d')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=1, min_dots=1)
         >>> dotted_name.validate('a.b')
         >>> dotted_name.validate('a')
         Traceback (most recent call last):
         ...
-        ValidationError: ('too few dots; 1 required', 'a')
+        InvalidDottedName: ('too few dots; 1 required', 'a')
         >>> dotted_name.validate('a.b.c')
         Traceback (most recent call last):
         ...
-        ValidationError: ('too many dots; no more than 1 allowed', 'a.b.c')
+        InvalidDottedName: ('too many dots; no more than 1 allowed', 'a.b.c')
 
         """
         super(DottedName, self)._validate(value)
         if not _isdotted(value):
-            raise ValidationError("invalid dotted name", value)
+            raise InvalidDottedName(value)
         dots = value.count(".")
         if dots < self.min_dots:
-            raise ValidationError("too few dots; %d required" % self.min_dots,
-                                  value)
+            raise InvalidDottedName, \
+                  ("too few dots; %d required" % self.min_dots, value)
         if self.max_dots is not None and dots > self.max_dots:
-            raise ValidationError("too many dots; no more than %d allowed"
-                                  % self.max_dots,
-                                  value)
+            raise InvalidDottedName, \
+                  ("too many dots; no more than %d allowed" % self.max_dots,
+                   value)
 
     def fromUnicode(self, value):
         v = str(value.strip())

@@ -13,12 +13,11 @@
 ##############################################################################
 """Vocabulary support for schema.
 
-$Id: vocabulary.py,v 1.20 2004/02/14 23:35:59 srichter Exp $
+$Id: vocabulary.py,v 1.21 2004/04/11 10:35:04 srichter Exp $
 """
 import copy
 
 from zope.interface.declarations import directlyProvides, implements
-from zope.schema import errornames
 from zope.schema import Field
 from zope.schema import MinMaxLen
 from zope.schema._bootstrapfields import ValidatedProperty
@@ -31,6 +30,8 @@ from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IFromUnicode
+
+from zope.schema.interfaces import ConstraintNotSatisfied
 
 class ContainerValidatedProperty(ValidatedProperty):
 
@@ -84,8 +85,7 @@ class VocabularyField(BaseVocabularyField):
             # vocabulary without context
             return
         if value not in self.vocabulary:
-            raise ValidationError(errornames.ConstraintNotSatisfied,
-                                  value)
+            raise ConstraintNotSatisfied, value
     
     def fromUnicode(self, str):
         """
@@ -94,7 +94,7 @@ class VocabularyField(BaseVocabularyField):
         >>> t.fromUnicode(u"baz")
         Traceback (most recent call last):
         ...
-        ValidationError: (u'Constraint not satisfied', u'baz')
+        ConstraintNotSatisfied: baz
         >>> t.fromUnicode(u"foo")
         u'foo'
         """
@@ -127,7 +127,7 @@ class VocabularyMultiField(MinMaxLen, BaseVocabularyField):
                 raise ValueError("can't validate value without vocabulary")
             for v in value:
                 if v not in vocab:
-                    raise ValidationError(errornames.ConstraintNotSatisfied, v)
+                    raise ConstraintNotSatisfied, v
         super(VocabularyMultiField, self)._validate(value)
 
 class UniqueElements(object):
