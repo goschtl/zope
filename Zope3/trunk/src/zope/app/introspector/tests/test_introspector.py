@@ -15,9 +15,13 @@
 
 $Id$
 """
+import zope.deprecation
+
 from unittest import TestCase, TestSuite, main, makeSuite
+zope.deprecation.__show__.off()
 from zope.app.introspector import Introspector
 from zope.app.introspector.interfaces import IIntrospector
+zope.deprecation.__show__.on()
 from zope.interface import Interface, Attribute, implements, directlyProvides
 from zope.interface.verify import verifyObject
 from zope.app.component.interface import provideInterface
@@ -90,7 +94,9 @@ class TestIntrospector(TestCase):
     def test_setRequest(self):
         ints = Introspector(Interface)
         request = {'PATH_INFO': '++module++zope.app.introspector.Introspector'}
+        zope.deprecation.__show__.off()
         ints.setRequest(request)
+        zope.deprecation.__show__.on()
         self.assertEqual(ints.currentclass, Introspector)
 
     def test_getClass(self):

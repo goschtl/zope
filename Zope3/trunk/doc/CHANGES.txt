@@ -288,6 +288,10 @@ Zope Changes
 
     Restructuring
 
+      - Deprecated `zope.app.introspector`. You should use the public apidoc
+        utilities isntead. A new "Introspector" tab was implemented that
+        redirects you to the correct code browser documentation screen.
+
       - Ensured that all adapters can be registered for classes as well as
         interfaces by writing tests for all adapter-based directives. It
         turned out that subscribers did not accept classes yet, so I

@@ -81,7 +81,7 @@ class Introspector(object):
         base_names = []
         for base in bases:
             base_names.append(base.__module__+'.'+base.__name__)
-        return base_names
+            return base_names
 
     def getModule(self):
         """Returns the module name of the class"""
@@ -204,3 +204,12 @@ def interfaceToName(context, interface):
 
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
     return ids[0]
+
+# BBB: Deprecated module; Will be gone in 3.3.
+from zope.deprecation import deprecated
+deprecated('Introspector',
+           'Use the public apidoc utilities. Will be gone in 3.3.')
+
+deprecated('interfaceToName',
+           'Use zope.app.component.interface.interfaceToName instead. '
+           'Will be gone in 3.3.')

@@ -59,3 +59,8 @@ class IntrospectorView(BrowserView):
                     interface = getInterface(ob, interface)
                     directlyProvides(removeAllProxies(ob), directlyProvidedBy(ob)-interface)
 
+
+# BBB: Deprecated module; Will be gone in 3.3.
+from zope.deprecation import deprecated
+deprecated('IntrospectorView',
+           'Use the public apidoc utilities. Will be gone in 3.3.')

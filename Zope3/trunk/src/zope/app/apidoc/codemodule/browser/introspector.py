@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,27 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Introspector funcional tests
+"""Introspector view for content components
 
-$Id$
+$Id: browser.py 29143 2005-02-14 22:43:16Z srichter $
 """
 __docformat__ = 'restructuredtext'
-
-import unittest
-from zope.app.testing.functional import BrowserTestCase
-
-
-class TestIntrospector(BrowserTestCase):
-
-    def test_introspector(self):
-        response = self.publish('/@@introspector.html', basic='mgr:mgrpw')
-        self.assertEquals(response.getStatus(), 302)
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestIntrospector))
-    return suite
+from zope.security.proxy import removeSecurityProxy
+from zope.app.publisher.browser import BrowserView
 
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+class Introspector(BrowserView):
+
+    def __call__(self):
+        klass = type(removeSecurityProxy(self.context))
+        url = self.request.getApplicationURL() + '/++apidoc++/Code/'
+        url += klass.__module__.replace('.', '/') + '/'
+        url += klass.__name__ + '/index.html'
+        self.request.response.redirect(url)

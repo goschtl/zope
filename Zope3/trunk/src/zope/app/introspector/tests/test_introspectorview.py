@@ -15,16 +15,21 @@
 
 $Id$
 """
-
 import unittest
+
+import zope.deprecation
+
 from zope.app.component.testing import PlacefulSetup
 from zope.publisher.browser import TestRequest
 from zope.interface import Interface, directlyProvidedBy
 from zope.interface import directlyProvides, implements
 from zope.app.component.interface import provideInterface
 from zope.app.testing import ztapi, setup
+zope.deprecation.__show__.off()
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.introspector import Introspector
+from zope.app.introspector.browser import IntrospectorView
+zope.deprecation.__show__.on()
 
 class I1(Interface):
     pass
@@ -48,7 +53,6 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
 
     def test_getInterfaceURL(self):
-        from zope.app.introspector.browser import IntrospectorView
 
         request = TestRequest()
         view = IntrospectorView(self.rootFolder, request)
@@ -62,7 +66,6 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
                          '')
 
     def test_update(self):
-        from zope.app.introspector.browser import IntrospectorView
 
         class Context(object):
             implements(Interface)
@@ -76,7 +79,7 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
         view.update()
         self.assert_(I1 in directlyProvidedBy(context))
         self.assert_(I2 in directlyProvidedBy(context))
-
+        
         context = Context()
         directlyProvides(context, I1)
         request = TestRequest()

@@ -13,7 +13,8 @@
       "
       />
 
-
+<!-- BBB: Deprecated -->
+<!--
   <adapter
       for='*'
       factory="zope.app.introspector.Introspector"
@@ -21,17 +22,6 @@
       provides="zope.app.introspector.interfaces.IIntrospector"
       />
 
-
-  <!-- Browser directives -->
-
-  <!--browser:page
-      name="classBrowser.html"
-      for = "zope.interface.Interface"
-      permission="zope.ManageServices"
-      template="introspector.pt"
-      class="zope.app.introspector.browser.IntrospectorView"
-      menu="zmi_views" title="Introspector"
-      /-->
 
   <browser:pages
       for="zope.interface.Interface"
@@ -57,5 +47,6 @@
       template="introspector.pt"
       class="zope.app.introspector.browser.IntrospectorView"
       />
+-->
 
 </configure>

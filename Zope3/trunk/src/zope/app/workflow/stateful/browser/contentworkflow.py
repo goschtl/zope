@@ -16,8 +16,7 @@
 $Id$
 """
 from zope.app import zapi
-from zope.app.introspector import interfaceToName
-from zope.app.component.interface import nameToInterface
+from zope.app.component.interface import nameToInterface, interfaceToName
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import IInputWidget
