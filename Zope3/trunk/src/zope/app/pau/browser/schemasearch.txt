@@ -1,14 +1,27 @@
 The Query View for Schema Search Plugins
 ========================================
 
-If a plugin supports `IQuerySchemaSearch`: 
+Placefull setup for making the search plugin IPhysicallyLocatable:
+
+  >>> from zope.app.tests import ztapi
+  >>> from zope.schema.interfaces import ITextLine
+  >>> from zope.app.form.browser import TextWidget
+  >>> from zope.app.form.interfaces import IInputWidget
+  >>> from zope.app.tests.setup import placefulSetUp, placefulTearDown
+  >>> site = placefulSetUp(True)
+  >>> ztapi.browserView(ITextLine, '', TextWidget, providing=IInputWidget)
+
+If a plugin supports `IQuerySchemaSearch`:
 
   >>> from zope.interface import Interface
   >>> import zope.schema
   >>> class ISearchCriteria(Interface):
   ...     search = zope.schema.TextLine(title=u"Search String")
 
+  >>> from zope.interface import implements
   >>> class MySearchPlugin:
+  ...     __name__ = 'searchplugin'
+  ...     __parent__ = site
   ...     schema = ISearchCriteria
   ...     data = ['foo', 'bar', 'blah']
   ...
@@ -38,6 +51,7 @@ then we can get a view:
 This allows us to render a search form.
 
   >>> print view.render('test') # doctest: +NORMALIZE_WHITESPACE
+  <h4 i18n:translate="">searchplugin /searchplugin</h4>
   <div class="row">
   <div class="label">
   <label for="test.field.search" title="">
@@ -45,11 +59,15 @@ This allows us to render a search form.
   </label>
   </div>
   <div class="field">
-  <input class="textType" id="test.field.search" name="test.field.search" 
+  <input class="textType" id="test.field.search" name="test.field.search"
          size="20" type="text" value=""  />
   </div>
   </div>
-  <br /><input type="submit" name="test.search" value="Search" />
+  <div class="row">
+  <div class="field">
+  <input type="submit" name="test.search" value="Search" />
+  </div>
+  </div>
 
 If we ask for results:
 
@@ -71,3 +89,5 @@ so that we now get results (!):
 
   >>> list(view.results('test'))
   ['bar', 'blah']
+
+  >>> placefulTearDown()

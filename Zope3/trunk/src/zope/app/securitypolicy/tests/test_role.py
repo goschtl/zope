@@ -13,7 +13,7 @@
 ##############################################################################
 """Doctests for 'permission' module.
 
-$Id: test_permission.py 26201 2004-07-08 10:42:46Z srichter $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite

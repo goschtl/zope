@@ -23,7 +23,7 @@
   <body tal:attributes="onload body_onload | nothing">
 
     <div class="top">
-      <a href="#" tal:attributes="href string:${request/URL/1}/@@manage">
+      <a href="#" name="top" tal:attributes="href string:${request/URL/1}/@@manage">
         <img src="zope3logo.jpg" width="366" height="37"
              alt="Zope 3 Logo"
              tal:attributes="src context/++resource++zope3logo.jpg" />

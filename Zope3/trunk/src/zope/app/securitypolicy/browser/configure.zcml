@@ -10,6 +10,16 @@
       to principals."
       />
 
+<!-- RadioWidget for build a matrix for granting permissions -->
+  <zope:view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoice
+           zope.app.securitypolicy.interfaces.IGrantVocabulary"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory="zope.app.securitypolicy.browser.granting.GrantWidget"
+      permission="zope.Public"
+      />
+
 <!-- Role Utility -->
 
   <addform

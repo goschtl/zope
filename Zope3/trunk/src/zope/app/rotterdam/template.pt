@@ -1,4 +1,4 @@
-<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+﻿<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
@@ -26,6 +26,11 @@
     <metal:block define-slot="headers" />
     <metal:block define-slot="style_slot" />
     <metal:block define-slot="ecmascript_slot" />
+
+    <!-- Basic zope3 javascript's -->
+    <script type="text/javascript" src="zope3.js"
+            tal:attributes="src string:${context/++resource++zope3.js}" >
+    </script>
 
     <!-- Popup script for the OnlineHelp -->
     <script type="text/javascript" src="onlinehelp.js"
@@ -63,7 +68,8 @@
         </metal:block>
       </div>
       <metal:slot define-slot="logo">
-        <img tal:attributes="src context/++resource++zope3logo.gif" />
+        <a href="#" name="top"
+           tal:attributes="href string:${request/URL/0}/@@SelectedManagementView.html"><img tal:attributes="src context/++resource++zope3logo.gif" /></a>
       </metal:slot>
     </div>
     </metal:slot>

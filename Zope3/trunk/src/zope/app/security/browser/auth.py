@@ -17,6 +17,7 @@ $Id$
 """
 from zope.interface import implements
 from zope.i18n import translate
+from zope.app.zapi import getName, getPath
 from zope.app.publisher.interfaces.http import ILogin, ILogout
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import UnauthenticatedPrincipal
@@ -35,7 +36,12 @@ class AuthUtilitySearchView(object):
         self.request = request
 
     def render(self, name):
+        sourcename = 'principals.zcml'
         html = []
+        
+        # add sub title for source search field
+        html.append('<h4 i18n:translate="">%s</h4>' % sourcename)
+        # start row for search fields
         html.append('<div class="row">')
         html.append('<div class="label">')
         html.append('Search String')
@@ -45,9 +51,16 @@ class AuthUtilitySearchView(object):
         html.append('</div>')
         html.append('</div>')
 
-        html.append('<br /><input type="submit" name="%s" value="%s" />'
+        # add search button for search fields
+        html.append('<div class="row">')
+        html.append('<div class="field">')
+        html.append('<input type="submit" name="%s" value="%s" />'
                     % (name+'.search',
                        translate(search_label, context=self.request)))
+        html.append('</div>')
+
+        # end row
+        html.append('</div>')
 
         return '\n'.join(html)
 

@@ -147,9 +147,11 @@ class SessionExtractor(Persistent, Contained):
 
 
 class IFormChallengerLoginPageName(Interface):
-    """HTTP Basic Auth Realm
+    """Defines the login page name which provides a login form.
 
-    Represents the realm string that is used during basic HTTP authentication
+    The default login page name is loginForm.html. This page has
+    to provide two input fields named 'login' and 'password'.
+
     """
 
     loginpagename = TextLine(title=u'loginpagename',
@@ -188,7 +190,7 @@ class FormChallenger(Persistent, Contained):
     loginpagename = 'loginForm.html'
 
     def challenge(self, request, response):
-        """ Response shuold redirect to login page cause Credebtials
+        """ Response should redirect to login page cause Credentials
             could not have been extracted.
         """
         site = hooks.getSite()

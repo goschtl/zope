@@ -39,7 +39,7 @@ elements for inputing security settings:
   >>> print http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 169
+  ... Content-Length: 62415
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
   ... 
@@ -49,17 +49,52 @@ elements for inputing security settings:
   ... """&field.principal.MA__.apply=Apply""")
   HTTP/1.1 200 Ok
   ...
-  <select name="field.em9wZS5tZ3I_.role.zope.Member" size="1" >
-  <option value="allow">Allow</option>
-  <option selected="selected" value="unset">Unset</option>
-  <option value="deny">Deny</option>
-  </select>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.0" title="Allow">
+  <input class="radioType" id="field.em9wZS5tZ3I_.role.zope.Member.0" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="allow" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="default">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.1" title="Unset">
+  <input class="radioType" checked="checked" id="field.em9wZS5tZ3I_.role.zope.Member.1" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="unset" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.2" title="Deny">
+  <input class="radioType" id="field.em9wZS5tZ3I_.role.zope.Member.2" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="deny" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
   ...
-  <select name="field.em9wZS5tZ3I_.permission.zope.ManageCode" size="1" >
-  <option value="allow">Allow</option>
-  <option selected="selected" value="unset">Unset</option>
-  <option value="deny">Deny</option>
-  </select>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.0" title="Allow">
+  <input class="radioType" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.0" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="allow" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="default">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.1" title="Unset">
+  <input class="radioType" checked="checked" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.1" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="unset" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.2" title="Deny">
+  <input class="radioType" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.2" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="deny" onclick="changeMatrix(this);" />
+  </label>
+  </center>
   ...
 
 Before we submit any data, there are no grants for the root object
@@ -82,7 +117,7 @@ to reduce dependencies on specific roles and permissions:
   >>> print http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 6311
+  ... Content-Length: 62437
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
   ... 
@@ -96,17 +131,52 @@ to reduce dependencies on specific roles and permissions:
   ... """&GRANT_SUBMIT=Change""")
   HTTP/1.1 200 Ok
   ...
-  <select name="field.em9wZS5tZ3I_.role.zope.Member" size="1" >
-  <option selected="selected" value="allow">Allow</option>
-  <option value="unset">Unset</option>
-  <option value="deny">Deny</option>
-  </select>
+  <td class="default">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.0" title="Allow">
+  <input class="radioType" checked="checked" id="field.em9wZS5tZ3I_.role.zope.Member.0" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="allow" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.1" title="Unset">
+  <input class="radioType" id="field.em9wZS5tZ3I_.role.zope.Member.1" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="unset" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.role.zope.Member.2" title="Deny">
+  <input class="radioType" id="field.em9wZS5tZ3I_.role.zope.Member.2" name="field.em9wZS5tZ3I_.role.zope.Member" type="radio" value="deny" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
   ...
-  <select name="field.em9wZS5tZ3I_.permission.zope.ManageCode" size="1" >
-  <option value="allow">Allow</option>
-  <option value="unset">Unset</option>
-  <option selected="selected" value="deny">Deny</option>
-  </select>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.0" title="Allow">
+  <input class="radioType" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.0" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="allow" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.1" title="Unset">
+  <input class="radioType" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.1" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="unset" onclick="changeMatrix(this);" />
+  </label>
+  </center>
+  </td>
+  <BLANKLINE>
+  <td class="default">
+  <center>
+  <label for="field.em9wZS5tZ3I_.permission.zope.ManageCode.2" title="Deny">
+  <input class="radioType" checked="checked" id="field.em9wZS5tZ3I_.permission.zope.ManageCode.2" name="field.em9wZS5tZ3I_.permission.zope.ManageCode" type="radio" value="deny" onclick="changeMatrix(this);" />
+  </label>
+  </center>
   ...
 
 And, if we check the grants, we see the changes:

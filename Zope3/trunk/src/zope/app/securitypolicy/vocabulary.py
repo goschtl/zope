@@ -15,11 +15,13 @@
 
 This vocabulary provides role IDs.
 
-$Id:$
+$Id$
 """
+from zope.interface import implements
 from zope.app import zapi
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.interfaces import IGrantVocabulary
 
 class RoleIdsVocabulary(SimpleVocabulary):
     """A vocabular of role IDs.
@@ -62,5 +64,11 @@ class RoleIdsVocabulary(SimpleVocabulary):
         for name, role in roles:
             terms.append(SimpleTerm(name, name, name))
         super(RoleIdsVocabulary, self).__init__(terms)
+
+
+class GrantVocabulary(SimpleVocabulary):
+    """A vocabular for getting the RadioWidget via the Choice field."""
+    
+    implements(IGrantVocabulary)
 
 
