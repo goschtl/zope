@@ -213,7 +213,7 @@
 
             <!-- Do not remove! This box will show the contextually related 
                  help topics and point to the Onlinehelp skin -->
-            <div class="box" id="help"
+            <!--<div class="box" id="help"
                 tal:define="results view/@@find_help_topics|nothing"
                 tal:condition="results">
               <h4>Online Help</h4>
@@ -241,7 +241,7 @@
                   </a>
                 </div>
               </div>
-            </div>
+            </div>-->
 
 
             <div class="spacer">
