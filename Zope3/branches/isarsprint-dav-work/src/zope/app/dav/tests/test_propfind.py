@@ -22,6 +22,8 @@ from datetime import datetime
 
 from zope.interface import Interface, implements, directlyProvides
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.publisher.http import status_reasons
+
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence

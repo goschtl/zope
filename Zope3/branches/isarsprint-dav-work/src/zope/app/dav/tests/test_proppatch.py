@@ -22,6 +22,9 @@ from StringIO import StringIO
 
 from zope.interface import Interface, implements, directlyProvides
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.publisher.http import status_reasons
+from zope.pagetemplate.tests.util import normalize_xml
+from ZODB.tests.util import DB
 	
 from zope.app import zapi
 from zope.app.tests import ztapi
@@ -41,27 +44,32 @@ from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
 from zope.app.dav import proppatch
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
+from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
+from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
 def _createRequest(body=None, headers=None, skip_headers=None,
                    namespaces=(('Z', 'http://www.w3.com/standards/z39.50/'),),
                    set=('<Z:authors>\n<Z:Author>Jim Whitehead</Z:Author>\n',
                         '<Z:Author>Roy Fielding</Z:Author>\n</Z:authors>'),
-                   remove=('<D:prop><Z:Copyright-Owner/></D:prop>\n')):
+                   remove=('<Z:Copyright-Owner/>'), extra=''):
+    if headers is None:
+        headers = {'Content-type':'text/xml'}
     if body is None:
-        setProps = removeProps = ''
+        nsAttrs = setProps = removeProps = ''
         if set:
             setProps = '<set><prop>\n%s\n</prop></set>\n' % (''.join(set))
         if remove:
             removeProps = '<remove><prop>\n%s\n</prop></remove>\n' % (
                 ''.join(remove))
+        for prefix, ns in namespaces:
+            nsAttrs += ' xmlns:%s="%s"' % (prefix, ns)
             
         body = '''<?xml version="1.0"  ?>
 
-        <propertyupdate xmlns="DAV:"
-                        xmlns:Z="http://www.w3.com/standards/z39.50/">
+        <propertyupdate xmlns="DAV:"%s>
         %s
         </propertyupdate>
-        ''' % (setProps + removeProps)
+        ''' % (nsAttrs, setProps + removeProps + extra)
 
     _environ = {'CONTENT_TYPE': 'text/xml',
                 'CONTENT_LENGTH': str(len(body))}
@@ -100,12 +108,22 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
+        ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
+                             DAVOpaqueNamespacesAdapter)
         utils = zapi.getGlobalService('Utilities')
         directlyProvides(IDAVSchema, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IZopeDublinCore,
                              'http://www.purl.org/dc/1.1')
+        self.db = DB()
+        self.conn = self.db.open()
+        root = self.conn.root()
+        root['Application'] = self.rootFolder
+        get_transaction().commit()
+        
+    def tearDown(self):
+        self.db.close()
 
     def test_contenttype1(self):
         file = self.file
@@ -154,6 +172,142 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
         self.assertEqual(ppatch.content_type, 'text/xml')
+        
+    def test_noupdates(self):
+        file = self.file
+        request = _createRequest(namespaces=(), set=(), remove=())
+        ppatch = proppatch.PROPPATCH(file, request)
+        ppatch.PROPPATCH()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 422)
+        
+    def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
+        request = _createRequest(namespaces=ns, set=set, remove=rm, 
+                                 extra=extra)
+        resource_url = str(zapi.getView(obj, 'absolute_url', request))
+        expect = '''<?xml version="1.0" ?>
+            <multistatus xmlns="DAV:"><response>
+            <href>%%(resource_url)s</href>
+            %s
+            </response></multistatus>
+            ''' % expect
+        expect = expect % {'resource_url': resource_url}
+        ppatch = proppatch.PROPPATCH(obj, request)
+        ppatch.PROPPATCH()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
+        
+    def _makePropstat(self, ns, properties, status=200):
+        nsattrs = ''
+        count = 0
+        for uri in ns:
+            nsattrs += ' xmlns:a%d="%s"' % (count, uri)
+            count += 1
+        reason = status_reasons[status]
+        return '''<propstat>
+            <prop%s>%s</prop>
+            <status>HTTP/1.1 %d %s</status>
+            </propstat>''' % (nsattrs, properties, status, reason)
+
+    def _assertOPropsEqual(self, obj, expect):
+        oprops = IDAVOpaqueNamespaces(obj)
+        namespacesA = list(oprops.keys())
+        namespacesA.sort()
+        namespacesB = expect.keys()
+        namespacesB.sort()
+        self.assertEqual(namespacesA, namespacesB, 
+                         'available opaque namespaces were %s, '
+                         'expected %s' % (namespacesA, namespacesB))
+        
+        for ns in namespacesA:
+            propnamesA = list(oprops[ns].keys())
+            propnamesA.sort()
+            propnamesB = expect[ns].keys()
+            propnamesB.sort()
+            self.assertEqual(propnamesA, propnamesB, 
+                             'props for opaque namespaces %s were %s, '
+                             'expected %s' % (ns, propnamesA, propnamesB))
+            for prop in propnamesA:
+                valueA = oprops[ns][prop]
+                valueB = expect[ns][prop]
+                self.assertEqual(valueA, valueB, 
+                                 'opaque prop %s:%s was %s, '
+                                 'expected %s' % (ns, prop, valueA, valueB))
+        
+    def test_removenonexisting(self):
+        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            rm=('<foo:bar />'), expect=expect)
+        
+    def test_opaque_set_simple(self):
+        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>spam</foo:bar>'), expect=expect)
+        self._assertOPropsEqual(self.zpt, 
+                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
+        
+    def test_opaque_remove_simple(self):
+        oprops = IDAVOpaqueNamespaces(self.zpt)
+        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
+        expect = self._makePropstat(('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            rm=('<foo:bar>spam</foo:bar>'), expect=expect)
+        self._assertOPropsEqual(self.zpt, {})
+        
+    def test_opaque_add_and_replace(self):
+        oprops = IDAVOpaqueNamespaces(self.zpt)
+        oprops['uri://foo'] = {'bar': '<bar>eggs</bar>'}
+        expect = self._makePropstat(
+            ('uri://castle', 'uri://foo'), 
+            '<camelot xmlns="a0"/><bar xmlns="a1"/>')
+        self._checkProppatch(self.zpt, 
+            ns=(('foo', 'uri://foo'), ('c', 'uri://castle')),
+            set=('<foo:bar>spam</foo:bar>', 
+                 '<c:camelot place="silly" xmlns:k="uri://knights">'
+                 '  <k:roundtable/>'
+                 '</c:camelot>'), 
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, {
+            u'uri://foo': {u'bar': '<bar>spam</bar>'},
+            u'uri://castle': {u'camelot': 
+                '<camelot place="silly" xmlns:p0="uri://knights">'
+                '  <p0:roundtable/></camelot>'}})
+        
+    def test_opaque_set_and_remove(self):
+        expect = self._makePropstat(
+            ('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>eggs</foo:bar>',), rm=('<foo:bar/>',),
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, {})
+        
+    def test_opaque_complex(self):
+        # PROPPATCH allows us to set, remove and set the same property, ordered
+        expect = self._makePropstat(
+            ('uri://foo',), '<bar xmlns="a0"/>')
+        self._checkProppatch(self.zpt, ns=(('foo', 'uri://foo'),),
+            set=('<foo:bar>spam</foo:bar>',), rm=('<foo:bar/>',),
+            extra='<set><prop><foo:bar>spam</foo:bar></prop></set>',
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, 
+                                {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
+        
+    def test_proppatch_failure(self):
+        # XXX: This relies on the fact that only opaque properties can be set 
+        # for now. As soon as registered interfaces support is implemented, 
+        # this test will need to be rewritten.
+        expect = self._makePropstat(
+            ('uri://foo',), '<bar xmlns="a0"/>', 424)
+        expect += self._makePropstat(
+            ('http://www.purl.org/dc/1.1',), '<title xmlns="a0"/>', 403)
+        self._checkProppatch(self.zpt, 
+            ns=(('foo', 'uri://foo'), ('DC', 'http://www.purl.org/dc/1.1')),
+            set=('<foo:bar>spam</foo:bar>', '<DC:title>Test</DC:title>'),
+            expect=expect)
+        self._assertOPropsEqual(self.zpt, {})
 
     
 def test_suite():

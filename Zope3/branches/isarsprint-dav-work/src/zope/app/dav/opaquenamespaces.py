@@ -94,3 +94,122 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
         el = propel.ownerDocument.importNode(value.documentElement, True)
         el.setAttribute('xmlns', nsprefix)
         propel.appendChild(el)
+
+    def setProperty(self, propel):
+        ns = propel.namespaceURI
+        props = self.setdefault(ns, OOBTree())
+        propel = makeDOMStandalone(propel)
+        props[propel.nodeName] = propel.toxml('utf-8')
+
+
+def makeDOMStandalone(element):
+    """Make a DOM Element Node standalone
+    
+    The DOM tree starting at element is copied to a new DOM tree where:
+        
+    - Any prefix used for the element namespace is removed from the element 
+      and all attributes and decendant nodes.
+    - Any other namespaces used on in the DOM tree is explcitly declared on
+      the root element.
+      
+    So, if the root element to be transformed is defined with a prefix, that 
+    prefix is removed from the whole tree:
+        
+      >>> dom = minidom.parseString('''<?xml version="1.0"?>
+      ...      <foo xmlns:bar="http://bar.com">
+      ...         <bar:spam><bar:eggs /></bar:spam>
+      ...      </foo>''')
+      >>> element = dom.documentElement.getElementsByTagName('bar:spam')[0]
+      >>> standalone = makeDOMStandalone(element)
+      >>> standalone.toxml()
+      u'<spam><eggs/></spam>'
+      
+    Prefixes are of course also removed from attributes:
+        
+      >>> element.setAttributeNS(element.namespaceURI, 'bar:vikings', 
+      ...                        'singing')
+      >>> standalone = makeDOMStandalone(element)
+      >>> standalone.toxml()
+      u'<spam vikings="singing"><eggs/></spam>'
+      
+    Any other namespace used will be preserved, with the prefix definitions
+    for these renamed and moved to the root element:
+      
+      >>> dom = minidom.parseString('''<?xml version="1.0"?>
+      ...      <foo xmlns:bar="http://bar.com" xmlns:mp="uri://montypython">
+      ...         <bar:spam>
+      ...           <bar:eggs mp:song="vikings" />
+      ...           <mp:holygrail xmlns:c="uri://castle">
+      ...             <c:camelot place="silly" />
+      ...           </mp:holygrail>
+      ...           <lancelot xmlns="uri://montypython" />
+      ...         </bar:spam>
+      ...      </foo>''')
+      >>> element = dom.documentElement.getElementsByTagName('bar:spam')[0]
+      >>> standalone = makeDOMStandalone(element)
+      >>> print standalone.toxml()
+      <spam xmlns:p0="uri://montypython" xmlns:p1="uri://castle">
+                <eggs p0:song="vikings"/>
+                <p0:holygrail>
+                  <p1:camelot place="silly"/>
+                </p0:holygrail>
+                <p0:lancelot/>
+              </spam>
+    """
+    
+    return DOMTransformer(element).makeStandalone()
+
+
+def _numberGenerator(i = 0):
+    while True:
+        yield i
+        i += 1
+
+
+class DOMTransformer(object):
+    def __init__(self, el):
+        self.source = el
+        self.ns = el.namespaceURI
+        self.prefix = el.prefix
+        self.doc = minidom.getDOMImplementation().createDocument(
+            self.ns, el.localName, None)
+        self.dest = self.doc.documentElement
+        self.prefixes = {}
+        self._seq = _numberGenerator()
+        
+    def seq(self): return self._seq.next()
+    seq = property(seq)
+    
+    def _prefixForURI(self, uri):
+        if not uri or uri == self.ns:
+            return ''
+        if not self.prefixes.has_key(uri):
+            self.prefixes[uri] = 'p%d' % self.seq
+        return self.prefixes[uri] + ':'
+
+    def makeStandalone(self):
+        self._copyElement(self.source, self.dest)
+        for ns, prefix in self.prefixes.items():
+            self.dest.setAttribute('xmlns:%s' % prefix, ns)
+        return self.dest
+
+    def _copyElement(self, source, dest):
+        for i in range(source.attributes.length):
+            attr = source.attributes.item(i)
+            if attr.prefix == 'xmlns' or attr.nodeName == 'xmlns':
+                continue
+            ns = attr.prefix and attr.namespaceURI or source.namespaceURI
+            qname = attr.localName
+            if ns != dest.namespaceURI:
+                qname = '%s%s' % (self._prefixForURI(ns), qname)
+            dest.setAttributeNS(ns, qname, attr.value)
+
+        for node in source.childNodes:
+            if node.nodeType == node.ELEMENT_NODE:
+                ns = node.namespaceURI
+                qname = '%s%s' % (self._prefixForURI(ns), node.localName)
+                copy = self.doc.createElementNS(ns, qname)
+                self._copyElement(node, copy)
+            else:
+                copy = self.doc.importNode(node, True)
+            dest.appendChild(copy)
