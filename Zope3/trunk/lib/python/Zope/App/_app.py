@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.5 2002/12/12 20:16:34 gvanrossum Exp $
+$Id: _app.py,v 1.6 2002/12/13 19:15:42 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -76,7 +76,8 @@ class Application:
         self.db = database(db)
 
     def __call__(self):
-        return self.db.open().root()['Application']
+        from Zope.App.ZopePublication.ZopePublication import ZopePublication
+        return self.db.open().root()[ZopePublication.root_name]
 
     __browser_pub = None
     __TestRequest = None
