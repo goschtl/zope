@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_i18nfile.py,v 1.3 2004/03/05 22:09:08 jim Exp $
-"""
+"""I18n File Tests
 
+$Id: test_i18nfile.py,v 1.4 2004/03/19 03:17:42 srichter Exp $
+"""
 import unittest
 from zope.interface.verify import verifyClass
 from zope.i18n.tests.testii18naware import TestII18nAware
@@ -39,13 +39,13 @@ class Test(TestII18nAware):
     def testEmpty(self):
         file = self._makeFile()
 
-        self.assertEqual(file.getContentType(), '')
+        self.assertEqual(file.contentType, '')
         self.assertEqual(file.getData(), '')
         self.assertEqual(file.getDefaultLanguage(), 'en')
 
     def testConstructor(self):
         file = self._makeFile('Foobar')
-        self.assertEqual(file.getContentType(), '')
+        self.assertEqual(file.contentType, '')
         self.assertEqual(file.getData(), 'Foobar')
         self.assertEqual(file.getData('en'), 'Foobar')
         self.assertEqual(file.getData('nonexistent'), 'Foobar')
@@ -54,7 +54,7 @@ class Test(TestII18nAware):
 
 
         file = self._makeFile('Foobar', 'text/plain')
-        self.assertEqual(file.getContentType(), 'text/plain')
+        self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
         self.assertEqual(file.getData('en'), 'Foobar')
         self.assertEqual(file.getData('nonexistent'), 'Foobar')
@@ -63,7 +63,7 @@ class Test(TestII18nAware):
 
 
         file = self._makeFile(data='Foobar', contentType='text/plain')
-        self.assertEqual(file.getContentType(), 'text/plain')
+        self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
         self.assertEqual(file.getData('en'), 'Foobar')
         self.assertEqual(file.getData('nonexistent'), 'Foobar')
@@ -72,7 +72,7 @@ class Test(TestII18nAware):
 
         file = self._makeFile(data='Foobar', contentType='text/plain',
                               defaultLanguage='fr')
-        self.assertEqual(file.getContentType(), 'text/plain')
+        self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
         self.assertEqual(file.getData('en'), 'Foobar')
         self.assertEqual(file.getData('nonexistent'), 'Foobar')
@@ -82,8 +82,8 @@ class Test(TestII18nAware):
     def testMutators(self):
         file = self._makeFile()
 
-        file.setContentType('text/plain')
-        self.assertEqual(file.getContentType(), 'text/plain')
+        file.contentType = 'text/plain'
+        self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en'])
 
         file.setData('Foobar')
@@ -95,24 +95,27 @@ class Test(TestII18nAware):
         self.assertEqual(file.getData('fr'), 'Barbaz')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en', 'fr'])
 
-        file.edit('Blah', 'text/html')
-        self.assertEqual(file.getContentType(), 'text/html')
+        file.data = 'Blah'
+        file.contentType = 'text/html'
+        self.assertEqual(file.contentType, 'text/html')
         self.assertEqual(file.getData(), 'Blah')
         self.assertEqual(file.getData('fr'), 'Barbaz')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en', 'fr'])
 
-        file.edit('Quux', 'text/html', 'lt')
-        self.assertEqual(file.getContentType(), 'text/html')
+        file.setData('Quux', 'lt')
+        file.contentType = 'text/html'
+        self.assertEqual(file.contentType, 'text/html')
         self.assertEqual(file.getData(), 'Blah')
         self.assertEqual(file.getData('fr'), 'Barbaz')
         self.assertEqual(file.getData('lt'), 'Quux')
         self.assertEqual(file.getSize(), len('Blah'))
         self.assertEqual(file.getSize('fr'), len('Barbaz'))
         self.assertEqual(file.getSize('lt'), len('Quux'))
-        self.assertEqual(sorted(file.getAvailableLanguages()), ['en', 'fr', 'lt'])
+        self.assertEqual(sorted(file.getAvailableLanguages()),
+                         ['en', 'fr', 'lt'])
 
         file.removeLanguage('lt')
-        self.assertEqual(file.getContentType(), 'text/html')
+        self.assertEqual(file.contentType, 'text/html')
         self.assertEqual(file.getData(), 'Blah')
         self.assertEqual(file.getData('fr'), 'Barbaz')
         self.assertEqual(file.getSize(), len('Blah'))
@@ -122,7 +125,7 @@ class Test(TestII18nAware):
         self.assertEqual(file.getSize('lt'), len('Blah'))
 
         file.removeLanguage('nonexistent')
-        self.assertEqual(file.getContentType(), 'text/html')
+        self.assertEqual(file.contentType, 'text/html')
         self.assertEqual(file.getData(), 'Blah')
         self.assertEqual(file.getData('fr'), 'Barbaz')
         self.assertEqual(file.getSize(), len('Blah'))
@@ -131,7 +134,8 @@ class Test(TestII18nAware):
         self.assertEqual(file.getData('lt'), 'Blah')
         self.assertEqual(file.getSize('lt'), len('Blah'))
 
-        self.assertRaises(ValueError, file.removeLanguage, file.getDefaultLanguage())
+        self.assertRaises(ValueError, file.removeLanguage,
+                          file.getDefaultLanguage())
         self.assertRaises(ValueError, file.setDefaultLanguage, 'nonexistent')
 
     def testLargeDataInput(self):

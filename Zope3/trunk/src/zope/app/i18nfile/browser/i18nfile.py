@@ -13,7 +13,7 @@
 ##############################################################################
 """I18n versions of several content objects.
 
-$Id: i18nfile.py,v 1.2 2004/02/24 16:50:08 philikon Exp $
+$Id: i18nfile.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
 """
 from zope.i18n.negotiator import negotiator
 
@@ -57,6 +57,7 @@ class I18nFileEdit:
             if addLanguage:
                 language = newLanguage
             self.context.setDefaultLanguage(defaultLanguage)
-            self.context.edit(data, contentType, language)
+            self.context.setData(data, language)
+            self.context.contentType = contentType
         return self.request.response.redirect(self.request.URL[-1] +
                       "/editForm.html?language=%s" %language)  # XXX url_quote

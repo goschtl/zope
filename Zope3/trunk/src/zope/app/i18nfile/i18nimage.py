@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: i18nimage.py,v 1.2 2004/02/24 16:50:07 philikon Exp $
+$Id: i18nimage.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
 """
 
 from zope.interface import implements
@@ -41,7 +41,7 @@ class I18nImage(I18nFile):
             # work.
             contentType = getImageInfo(self.getData(language))[0]
             if contentType:
-                self.setContentType(contentType)
+                self.contentType = contentType
 
     def getImageSize(self, language=None):
         '''See interface IImage'''

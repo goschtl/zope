@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.3 2004/03/03 11:03:59 philikon Exp $
+$Id: image.py,v 1.4 2004/03/19 03:17:38 srichter Exp $
 """
 import struct
 from cStringIO import StringIO
@@ -37,10 +37,10 @@ class Image(File):
         self.contentType, self._width, self._height = getImageInfo(data)
         self.data = data
 
-    def setData(self, data):
-        super(Image, self).setData(data)
+    def _setData(self, data):
+        super(Image, self)._setData(data)
 
-        contentType, self._width, self._height = getImageInfo(self.data)
+        contentType, self._width, self._height = getImageInfo(self._data)
         if contentType:
             self.contentType = contentType
 
@@ -48,8 +48,7 @@ class Image(File):
         '''See interface IImage'''
         return (self._width, self._height)
 
-    data = property(File.getData, setData, None,
-                    """Contains the data of the file.""")
+    data = property(File._getData, _setData)
 
 class ImageSized:
     implements(ISized)

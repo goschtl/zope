@@ -50,20 +50,19 @@
 
   <content class=".file.File">
     <factory
-        id="File"
+        id="zope.app.content.File"
         title="File"
         description="A File"
         />
 
     <require
         permission="zope.View"
-        interface=".interfaces.IReadFile"
+        interface=".interfaces.IFile"
         />
 
     <require
         permission="zope.ManageContent"
-        interface=".interfaces.IWriteFile"
-        set_schema=".interfaces.IReadFile"
+        set_schema=".interfaces.IFile"
         />
 
     <implements
@@ -73,21 +72,19 @@
 
   <content class=".image.Image">
     <factory
-        id="Image"
+        id="zope.app.content.Image"
         title="Image"
         description="An Image"
         />
 
     <require
         permission="zope.View"
-        interface="zope.app.file.interfaces.IReadFile"
-        attributes="getImageSize"
+        interface="zope.app.file.interfaces.IImage"
         />
 
     <require
         permission="zope.ManageContent"
-        interface="zope.app.file.interfaces.IWriteFile"
-        set_schema="zope.app.file.interfaces.IReadFile"
+        set_schema="zope.app.file.interfaces.IFile"
         />
 
     <implements
@@ -119,7 +116,7 @@
       />
 
   <adapter
-      for=".interfaces.IReadFile"
+      for=".interfaces.IFile"
       provides="zope.app.index.interfaces.text.ISearchableText"
       factory=".file.SearchableText"
       />

@@ -13,59 +13,31 @@
 ##############################################################################
 """Basic File interfaces.
 
-$Id: interfaces.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
+$Id: interfaces.py,v 1.3 2004/03/19 03:17:38 srichter Exp $
 """
-import zope.schema
+from zope.schema import BytesLine, Bytes
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class IReadFile(Interface):
+class IFile(Interface):
 
-    contentType = zope.schema.BytesLine(
+    contentType = BytesLine(
         title = _(u'Content Type'),
         description=_(u'The content type identifies the type of data.'),
         default = 'text/plain',
         required=False
         )
 
-    data = zope.schema.Bytes(
+    data = Bytes(
         title = _(u'Data'),
         description = _(u'The actual content of the object.'),
         default='',
         required=False,
         )
 
-    def getData():
-        """Return the contained data of the object."""
-
-    def getContentType():
-        """Returns the content type of the file using mime-types syntax."""
-
     def getSize():
         """Return the byte-size of the data of the object."""
 
-
-class IWriteFile(Interface):
-
-    def edit(data, contentType=None):
-        """Sets the data and the content type for the object.
-
-           Since some implementations will provide their content type
-           through the data, it is good to leave the argument optional.
-        """
-
-    def setData(data):
-        """Rewrite the 'file'."""
-
-    def setContentType(contentType):
-        """Sets the content type of the file."""
-
-
-class IFile(IReadFile, IWriteFile):
-    """The basic methods that are required to implement
-       a file as a Zope Content object.
-
-    """
 
 class IFileContent(Interface):
     """Marker interface for content that can be managed as files.

@@ -13,9 +13,8 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.4 2004/03/05 22:09:04 jim Exp $
+$Id: test_image.py,v 1.5 2004/03/19 03:17:40 srichter Exp $
 """
-
 import unittest
 from zope.interface.verify import verifyClass
 from zope.app.file.interfaces import IImage
@@ -49,13 +48,13 @@ class TestImage(unittest.TestCase):
 
     def testEmpty(self):
         file = self._makeImage()
-        self.assertEqual(file.getContentType(), '')
-        self.assertEqual(file.getData(), '')
+        self.assertEqual(file.contentType, '')
+        self.assertEqual(file.data, '')
 
     def testConstructor(self):
         file = self._makeImage('Data')
-        self.assertEqual(file.getContentType(), '')
-        self.assertEqual(file.getData(), 'Data')
+        self.assertEqual(file.contentType, '')
+        self.assertEqual(file.data, 'Data')
 
     def testMutators(self):
         # XXX What's the point of this test? Does it test that data
@@ -64,15 +63,16 @@ class TestImage(unittest.TestCase):
 
         file = self._makeImage()
 
-        file.setContentType('text/plain')
-        self.assertEqual(file.getContentType(), 'text/plain')
+        file.contentType = 'text/plain'
+        self.assertEqual(file.contentType, 'text/plain')
 
-        file.setData('Foobar')
-        self.assertEqual(file.getData(), 'Foobar')
+        file._setData('Foobar')
+        self.assertEqual(file.data, 'Foobar')
 
-        file.edit('Blah', 'text/html')
-        self.assertEqual(file.getContentType(), 'text/html')
-        self.assertEqual(file.getData(), 'Blah')
+        file.data = 'Blah'
+        file.contentType = 'text/html'
+        self.assertEqual(file.contentType, 'text/html')
+        self.assertEqual(file.data, 'Blah')
 
     def testInterface(self):
         self.failUnless(IImage.implementedBy(Image))
@@ -86,7 +86,8 @@ class TestFileAdapters(unittest.TestCase):
     def test_ReadFile(self):
         file = self._makeFile()
         content = "This is some file\ncontent."
-        file.edit(content, 'text/plain')
+        file.data = content
+        file.contentType = 'text/plain'
         self.assertEqual(FileReadFile(file).read(), content)
         self.assertEqual(FileReadFile(file).size(), len(content))
 
@@ -94,7 +95,7 @@ class TestFileAdapters(unittest.TestCase):
         file = self._makeFile()
         content = "This is some file\ncontent."
         FileWriteFile(file).write(content)
-        self.assertEqual(file.getData(), content)
+        self.assertEqual(file.data, content)
 
 class DummyImage:
 

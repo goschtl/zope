@@ -12,17 +12,16 @@
 #
 ##############################################################################
 """
-$Id: i18nfile.py,v 1.2 2004/02/24 16:50:07 philikon Exp $
+$Id: i18nfile.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
 """
-
-import persistence
+from persistent import Persistent
 from zope.interface import implements
 from zope.publisher.browser import FileUpload
 from zope.app.file.file import File
 
 from interfaces import II18nFile
 
-class I18nFile(persistence.Persistent):
+class I18nFile(Persistent):
     """I18n aware file object.  It contains a number of File objects --
     one for each language.
     """
@@ -34,13 +33,7 @@ class I18nFile(persistence.Persistent):
         self.defaultLanguage = defaultLanguage
         self.setData(data, language=defaultLanguage)
 
-        if contentType is None:
-            self.setContentType('')
-        else:
-            self.setContentType(contentType)
-
-    def __len__(self):
-        return self.getSize()
+        self.contentType = contentType or ''
 
     def _create(self, data):
         """Create a new subobject of the appropriate type.  Should be
@@ -70,37 +63,13 @@ class I18nFile(persistence.Persistent):
             self._p_changed = 1
         return file
 
-    def setContentType(self, contentType):
-        '''See interface IFile'''
-        self._contentType = contentType
-
-    def getContentType(self):
-        '''See interface IFile'''
-        return self._contentType
-
-    contentType = property(getContentType, setContentType)
-
-    def edit(self, data, contentType=None, language=None):
-        '''See interface IFile'''
-
-        # XXX This seems broken to me, as setData can override the
-        # content type explicitly passed in.
-
-        if contentType is not None:
-            self.setContentType(contentType)
-        if isinstance(data, FileUpload) and not data.filename:
-            data = None          # Ignore empty files
-        if data is not None:
-            self.setData(data, language)
-
     def getData(self, language=None):
-        '''See interface IFile'''
-        return self._get(language).getData()
+        return self._get(language).data
 
     def setData(self, data, language=None):
-        '''See interface IFile'''
-        self._get_or_add(language).setData(data)
+        self._get_or_add(language).data = data
 
+    # See IFile.
     data = property(getData, setData)
 
     def getSize(self, language=None):

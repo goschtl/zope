@@ -13,7 +13,7 @@
 ##############################################################################
 """File Functional Tests
 
-$Id: test_file.py,v 1.3 2004/03/08 12:05:57 srichter Exp $
+$Id: test_file.py,v 1.4 2004/03/19 03:17:40 srichter Exp $
 """
 import unittest
 
@@ -26,7 +26,8 @@ class TestFile(BrowserTestCase):
         # Step 1: add the file
         response = self.publish('/+/action.html',
                                 basic='mgr:mgrpw',
-                                form={'type_name': u'File', 'id': u'foo'})
+                                form={'type_name': u'zope.app.content.File',
+                                      'id': u'foo'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                          'http://localhost/@@contents.html')

@@ -51,11 +51,11 @@
         />
     <require
         permission="zope.View"
-        interface="zope.app.file.interfaces.IReadFile"
+        interface="zope.app.file.interfaces.IFile"
         />
     <require
         permission="zope.ManageContent"
-        interface="zope.app.file.interfaces.IWriteFile"
+        set_schema="zope.app.file.interfaces.IFile"
         />
     <require
         permission="zope.View"
@@ -78,12 +78,12 @@
         />
     <require
         permission="zope.View"
-        interface="zope.app.file.interfaces.IReadFile"
+        interface="zope.app.file.interfaces.IFile"
         attributes="getImageSize"
         />
     <require
         permission="zope.ManageContent"
-        interface="zope.app.file.interfaces.IWriteFile"
+        set_schema="zope.app.file.interfaces.IFile"
         />
     <require
         permission="zope.View"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
+$Id: fssync.py,v 1.3 2004/03/19 03:17:38 srichter Exp $
 """
 from zope.interface import implements
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
@@ -25,10 +25,10 @@ class FileAdapter(ObjectEntryAdapter):
     implements(IObjectFile)
 
     def getBody(self):
-        return self.context.getData()
+        return self.context.data
 
     def setBody(self, data):
-        self.context.setData(data)
+        self.context.data = data
 
     def extra(self):
         return AttrMapping(self.context, ('contentType',))

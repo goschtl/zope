@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_imagedata.py,v 1.2 2004/02/24 16:49:49 philikon Exp $
+$Id: test_imagedata.py,v 1.3 2004/03/19 03:17:39 srichter Exp $
 """
 
 import unittest
@@ -26,7 +26,9 @@ class Test(unittest.TestCase):
     def testData(self):
         """ """
         image = Image('Data')
-        id = ImageData(image, None)
+        id = ImageData()
+        id.context = image
+        id.request = None
         self.assertEqual(id(), 'Data')
 
     def testTag(self):
@@ -37,7 +39,9 @@ class Test(unittest.TestCase):
             return '/img'
 
         image = Image()
-        fe = ImageData(image, None)
+        fe = ImageData()
+        fe.context = image
+        fe.request = None
         fe.absolute_url = absolute_url
 
         self.assertEqual(fe.tag(),

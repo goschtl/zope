@@ -13,21 +13,17 @@
 ##############################################################################
 """Define view component for naive file editing.
 
-$Id: image.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
+$Id: image.py,v 1.3 2004/03/19 03:17:39 srichter Exp $
 """
 from zope.app.size import byteDisplay
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.event import publish
-from zope.app.publisher.browser import BrowserView
 
-class ImageData(BrowserView):
+class ImageData(object):
 
     def __call__(self):
         image = self.context
         if self.request is not None:
-            self.request.response.setHeader('content-type',
-                                            image.getContentType())
-        return image.getData()
+            self.request.response.setHeader('content-type', image.contentType)
+        return image.data
 
     def tag(self, height=None, width=None, alt=None,
             scale=0, xscale=0, yscale=0, css_class=None, **args):
@@ -85,7 +81,7 @@ class ImageData(BrowserView):
         return '%s />' % result
 
 
-class ImageUpload:
+class ImageUpload(object):
     """Image edit view mix-in that provides access to image size info"""
 
     def size(self):
@@ -97,31 +93,3 @@ class ImageUpload:
         return "%s x %s pixels, %s" % (
                 sx, sy, byteDisplay(self.context.getSize())
                 )
-
-    def apply_update(self, data):
-        """Apply user inputs
-
-        These inputs have already been validated.
-
-        Return a boolean indicating whether we changed anything,
-        """
-
-        unchanged = True
-
-        # if we can compute the content type from the raw data, then
-        # that overrides what the user provided, so set the content
-        # type first.
-
-        contentType = data.get('contentType')
-        if contentType and contentType != self.context.contentType:
-            self.context.contentType = contentType
-            unchanged = False
-
-        if 'data' in data:
-            self.context.data = data['data']
-            unchanged = False
-
-        if not unchanged:
-            publish(self.context, ObjectModifiedEvent(self.context))
-
-        return unchanged

@@ -13,16 +13,15 @@
 ##############################################################################
 """File content component
 
-$Id: file.py,v 1.4 2004/03/05 22:09:04 jim Exp $
+$Id: file.py,v 1.5 2004/03/19 03:17:38 srichter Exp $
 """
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
-from interfaces import IFile, IReadFile, IFileContent
-
-__metaclass__ = type
+from zope.app.index.interfaces.text import ISearchableText
+from interfaces import IFile, IFileContent
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -33,48 +32,42 @@ class File(Persistent):
     Let's test the constructor:
 
     >>> file = File()
-    >>> file.getContentType()
+    >>> file.contentType
     ''
-    >>> file.getData()
+    >>> file.data
     ''
 
     >>> file = File('Foobar')
-    >>> file.getContentType()
+    >>> file.contentType
     ''
-    >>> file.getData()
+    >>> file.data
     'Foobar'
 
     >>> file = File('Foobar', 'text/plain')
-    >>> file.getContentType()
+    >>> file.contentType
     'text/plain'
-    >>> file.getData()
+    >>> file.data
     'Foobar'
 
     >>> file = File(data='Foobar', contentType='text/plain')
-    >>> file.getContentType()
+    >>> file.contentType
     'text/plain'
-    >>> file.getData()
+    >>> file.data
     'Foobar'
 
 
     Let's test the mutators:
 
     >>> file = File()
-    >>> file.setContentType('text/plain')
-    >>> file.getContentType()
+    >>> file.contentType = 'text/plain'
+    >>> file.contentType
     'text/plain'
 
-    >>> file.setData('Foobar')
-    >>> file.getData()
+    >>> file.data = 'Foobar'
+    >>> file.data
     'Foobar'
 
-    >>> file.edit('Blah', 'text/html')
-    >>> file.getContentType()
-    'text/html'
-    >>> file.getData()
-    'Blah'
-
-    >>> file.setData(None)
+    >>> file.data = None
     Traceback (most recent call last):
     ...
     TypeError: Cannot set None data on a file.
@@ -86,19 +79,19 @@ class File(Persistent):
 
     Insert as string:
 
-    >>> file.setData('Foobar'*60000)
+    >>> file.data = 'Foobar'*60000
     >>> file.getSize()
     360000
-    >>> file.getData() == 'Foobar'*60000
+    >>> file.data == 'Foobar'*60000
     True
 
     Insert data as FileChunk:
 
     >>> fc = FileChunk('Foobar'*4000)
-    >>> file.setData(fc)
+    >>> file.data = fc
     >>> file.getSize()
     24000
-    >>> file.getData() == 'Foobar'*4000
+    >>> file.data == 'Foobar'*4000
     True
 
     Insert data from file object:
@@ -107,10 +100,10 @@ class File(Persistent):
     >>> sio = cStringIO.StringIO()
     >>> sio.write('Foobar'*100000)
     >>> sio.seek(0)
-    >>> file.setData(sio)
+    >>> file.data = sio
     >>> file.getSize()
     600000
-    >>> file.getData() == 'Foobar'*100000
+    >>> file.data == 'Foobar'*100000
     True
 
 
@@ -129,38 +122,13 @@ class File(Persistent):
         self.data = data
         self.contentType = contentType
 
-    def __len__(self):
-        return self.size
-
-    def setContentType(self, contentType):
-        '''See interface IFile'''
-        self._contentType = contentType
-
-    def getContentType(self):
-        '''See interface IFile'''
-        return self._contentType
-
-    def edit(self, data, contentType=None):
-        '''See interface IFile'''
-        # XXX This seems broken to me, as setData can override the
-        # content type explicitly passed in.
-
-        if contentType is not None:
-            self._contentType = contentType
-        if isinstance(data, FileUpload) and not data.filename:
-            data = None          # Ignore empty files
-        if data is not None:
-            self.data = data
-
-    def getData(self):
-        '''See interface IFile'''
+    def _getData(self):
         if isinstance(self._data, FileChunk):
             return str(self._data)
         else:
             return self._data
 
-    def setData(self, data):
-        '''See interface IFile'''
+    def _setData(self, data):
         # Handle case when data is a string
         if isinstance(data, unicode):
             data = data.encode('UTF-8')
@@ -241,27 +209,18 @@ class File(Persistent):
         return
 
     def getSize(self):
-        '''See interface IFile'''
+        '''See IFile'''
         return self._size
 
-    data = property(getData, setData, None,
-                    """Contains the data of the file.""")
-
-    contentType = property(getContentType, setContentType, None,
-                           """Specifies the content type of the data.""")
-
-    size = property(getSize, None, None,
-                    """Specifies the size of the file in bytes. Read only.""")
+    # See IFile.
+    data = property(_getData, _setData)
 
 
-# Adapter for ISearchableText
-
-from zope.app.index.interfaces.text import ISearchableText
-
-class SearchableText:
+class SearchableText(object):
+    """Make File objects searchable."""
 
     implements(ISearchableText)
-    __used_for__ = IReadFile
+    __used_for__ = IFile
 
     def __init__(self, file):
         self.file = file
@@ -301,39 +260,40 @@ class FileChunk(Persistent):
 
         return ''.join(result)
 
-class FileReadFile:
-    """Adapter for file-system style read access.
+
+class FileReadFile(object):
+    '''Adapter for file-system style read access.
 
     >>> file = File()
     >>> content = "This is some file\\ncontent."
-    >>> file.edit(content, 'text/plain')
+    >>> file.data = content
+    >>> file.contentType = "text/plain"
     >>> FileReadFile(file).read() == content
     True
     >>> FileReadFile(file).size() == len(content)
     True
-    """
-
+    '''
     def __init__(self, context):
         self.context = context
 
     def read(self):
-        return self.context.getData()
+        return self.context.data
 
     def size(self):
-        return len(self.context.getData())
+        return len(self.context.data)
 
-class FileWriteFile:
+
+class FileWriteFile(object):
     """Adapter for file-system style write access.
 
     >>> file = File()
     >>> content = "This is some file\\ncontent."
     >>> FileWriteFile(file).write(content)
-    >>> file.getData() == content
+    >>> file.data == content
     True
     """
-
     def __init__(self, context):
         self.context = context
 
     def write(self, data):
-        self.context.setData(data)
+        self.context.data = data

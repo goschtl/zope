@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/02/24 16:50:07 philikon Exp $
+$Id: interfaces.py,v 1.3 2004/03/19 03:17:41 srichter Exp $
 """
-
 from zope.i18n.interfaces import II18nAware
 from zope.app.file.interfaces import IFile, IImage
 

@@ -13,28 +13,26 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.5 2004/03/18 17:01:08 philikon Exp $
+$Id: file.py,v 1.6 2004/03/19 03:17:39 srichter Exp $
 """
 from zope.app.form.browser import BytesAreaWidget
 from zope.app.form import CustomWidgetFactory
 
-__metaclass__ = type
-
-class FileView:
+class FileView(object):
 
     def show(self):
         """Call the File"""
         request = self.request
         if request is not None:
             request.response.setHeader('Content-Type',
-                                       self.context.getContentType())
+                                       self.context.contentType)
             request.response.setHeader('Content-Length',
                                        self.context.getSize())
 
-        return self.context.getData()
+        return self.context.data
 
 
-class FileTextEdit:
+class FileTextEdit(object):
     """File editing mix-in that uses a file-upload widget.
     """
 

@@ -14,9 +14,6 @@
       </tr>
     </table>
 
-    <input type="submit" name="save" value="Save Changes" 
-        i18n:attributes="value save-changes-button"/>
-
   </form>
 
   </div>
