@@ -393,4 +393,35 @@
       description="An object for dynamic content based on Document Templates." 
       />
 
+
+<!-- XML Document View Directives -->
+
+  <browser:page
+      name="index.html" 
+      for="zope.app.content.xmldocument.IXMLDocument"
+      class="zope.app.browser.content.xmldocument.XMLDocumentView"
+      attribute="show" 
+      permission="zope.View"
+      />
+
+  <browser:editform
+      schema="zope.app.content.xmldocument.IXMLDocument"
+      name="edit.html"
+      menu="zmi_views" 
+      label="Edit an XML document"
+      permission="zope.ManageContent"
+      />
+
+  <!-- XXX we don't have an icon for this yet
+  <browser:icon name="zmi_icon"
+           for="zope.app.content.xmldocument.IXMLDocument" file="xml.gif" />
+  -->
+
+  <browser:menuItem
+      menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="XML Document" action="XMLDocument"
+      description="An object storing XML text." 
+      />
+
 </zopeConfigure>
