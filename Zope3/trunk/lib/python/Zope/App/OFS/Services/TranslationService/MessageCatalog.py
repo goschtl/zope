@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog. 
 
-$Id: MessageCatalog.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
+$Id: MessageCatalog.py,v 1.2 2002/10/06 18:30:27 efge Exp $
 """
 import time
 
@@ -51,10 +51,11 @@ class MessageCatalog(RegisteredObject, Persistent):
 
     def queryMessage(self, id, default=None):
         'See Zope.I18n.IMessageCatalog.IReadMessageCatalog'
-        if default is None:
-            default = id
-        result = removeAllProxies(self._messages.get(id, default))
-        if result != default: result = result[0]
+        result = removeAllProxies(self._messages.get(id))
+        if result is not None:
+            result = result[0]
+        else:
+            result = default
         return result
 
     def getLanguage(self):
