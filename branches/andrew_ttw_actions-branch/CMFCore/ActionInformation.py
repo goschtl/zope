@@ -180,6 +180,7 @@ class ActionInformation(SimpleItemWithProperties):
     def getPriority(self):
         """
         Return integer priority for sorting
+        Not used....keep and implement or toss?
         """
         if self.priority:
             return self.priority
