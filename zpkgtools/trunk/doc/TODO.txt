@@ -20,7 +20,7 @@ Things that need to be done
     "beta" status, check the Trove "Development Status" classifier to
     see that it matches, and issue a warning if not.
 
-  - Re-visit the abstrations for parsed revision control URLs:
+  - Re-visit the abstractions for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and
       requires too much awareness of what kind of URL is being
@@ -49,8 +49,8 @@ Things that need to be done
     It's not clear these remaining issues are particularly important.
 
   - When building a distribution that specifies explicit inclusions,
-    the packaging metadata (`*.cfg`) files should be included
-    automatically.
+    the packaging metadata (`*.cfg` except `PACKAGE.cfg`) files should
+    be included automatically.
 
   - We should have a way to express dependence on particular versions
     of Python, and a way to say which is preferred.  (This can be used
