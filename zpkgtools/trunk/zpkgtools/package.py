@@ -32,7 +32,6 @@ PACKAGE_CONF = "package.conf"
 
 
 def loadPackageInfo(pkgname, directory, reldir, file=None):
-    print (pkgname, directory, reldir, file)
     if not file:
         file = PACKAGE_CONF
     path = os.path.join(directory, file)
