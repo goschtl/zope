@@ -19,7 +19,6 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
-from zope.schema._bootstrapfields import MimeData, MimeDataEncoding, MimeType
 
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory("zope")
@@ -274,52 +273,6 @@ class IBytes(IMinMaxLen, IIterable, IField):
 
     The value might be constrained to be with length limits.
     """
-
-
-
-# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
-class IMimeData(IBytes):
-    u"""Field holding a byte string (in an efficient data structure).
-
-    The type of the data is described by it's mime type.
-    """
-
-# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
-class IMimeDataEncoding(IBytes):
-    u"""Field containing the encoding used for text-based files."""
-
-# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
-class IMimeType(IBytes):
-    u"""Field containing the mime-type for a file."""
-
-class IMime(IField):
-    u"""Field describing the subwidgets of IMime used in IFile."""
-
-    contentType = MimeType(
-        title = _(u'Content type'),
-        description=_(u'The content type identifies the type of data.'),
-        default='',
-        required=False,
-        missing_value=''
-        )
-
-    encoding = MimeDataEncoding(
-        title = _(u'Encoding type'),
-        description=_(u'The encoding of the data if it is text.'),
-        default='',
-        required=False,
-        missing_value=''
-        )
-
-    data = MimeData (
-        title=_(u'Data'),
-        description=_(u'The actual content of the file.'),
-        default='',
-        missing_value='',
-        required=False,
-        )
-
-
     
 class IASCII(IBytes):
     u"""Field containing a 7-bit ASCII string. No characters > DEL
@@ -485,6 +438,21 @@ class ISchema(IField):
         description=(u"The factory id which is used for to initalize the object."),
         required=False,
         default=None)
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeData(IBytes):
+    u"""Field holding a byte string (in an efficient data structure).
+
+    The type of the data is described by it's mime type.
+    """
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeDataEncoding(IBytes):
+    u"""Field containing the encoding used for text-based files."""
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeType(IBytes):
+    u"""Field containing the mime-type for a file."""
 
 class IDict(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a conventional dict.

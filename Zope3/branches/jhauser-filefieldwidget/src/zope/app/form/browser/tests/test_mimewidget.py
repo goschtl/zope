@@ -13,29 +13,29 @@
 ##############################################################################
 """File Widget tests
 
-$Id:$
+$Id$
 """
 import unittest, doctest
 
 from StringIO import StringIO
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser import MimeWidget
+from zope.app.form.browser import MimeDataWidget
 
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 from zope.interface.verify import verifyClass
 
-class MimeWidgetTest(SimpleInputWidgetTest):
+class MimeDataWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the mime widget.
     
-        >>> verifyClass(IInputWidget, MimeWidget)
+        >>> verifyClass(IInputWidget, MimeDataWidget)
         True
     """
 
-    _WidgetFactory = MimeWidget
+    _WidgetFactory = MimeDataWidget
 
     def setUp(self):
-        super(MimeWidgetTest, self).setUp()
+        super(MimeDataWidgetTest, self).setUp()
         file = StringIO('Foo Value')
         file.filename = 'test.txt'
         self._widget.request.form['field.foo'] = file
@@ -65,7 +65,7 @@ class MimeWidgetTest(SimpleInputWidgetTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(MimeWidgetTest),
+        unittest.makeSuite(MimeDataWidgetTest),
         doctest.DocTestSuite(),
         ))
 

@@ -11,9 +11,65 @@
       permission="zope.Public"
       />
 
-<!-- Old style text-based files -->
+<!-- new style files -->
+
+  <browser:addMenuItem
+      class="zope.app.file.interfaces.IFile"
+      title="- File"
+      description="A content type File"
+      permission="zope.ManageContent"
+      view="addFile.html"
+      />
+
+  <browser:addform
+      name="addFile.html"
+      label="Add a content type File"
+      schema="zope.app.file.interfaces.IFile"
+      fields="contents"
+      content_factory="zope.app.file.File"
+      permission="zope.ManageContent"
+      />
+
+  <browser:menuItem
+      menu="zmi_views" title="Text Edit"
+      for="zope.app.file.interfaces.IFile"
+      action="fileedit.html"
+      filter="python:context.contents.contentType.startswith('text/')"
+      permission="zope.ManageContent" />
+
   <browser:editform
-      name="BBB_edit.html"
+      name="fileedit.html"
+      schema="zope.app.file.interfaces.IFile"
+      label="Change a text file"
+      permission="zope.ManageContent" 
+      >
+
+    <widget
+        field="data"
+        class="zope.app.form.browser.BytesAreaWidget" />
+
+  </browser:editform>
+
+  <browser:editform
+      name="fileupload.html"
+      menu="zmi_views" title="Upload"
+      for="zope.app.file.interfaces.IFile"
+      schema="zope.app.file.interfaces.IFile"
+      fields="contents"
+      permission="zope.ManageContent"
+      />
+
+<!-- BBB: old style files -->
+
+  <browser:menuItem
+      menu="zmi_views" title="Edit"
+      for="zope.app.file.interfaces.IFile"
+      action="edit.html"
+      filter="python:context.contentType.startswith('text/')"
+      permission="zope.ManageContent" />
+
+  <browser:editform
+      name="edit.html"
       schema="zope.app.file.interfaces.IFile"
       label="Change a file"
       permission="zope.ManageContent" 
@@ -25,31 +81,8 @@
 
   </browser:editform>
 
-
-  <browser:menuItem
-      menu="zmi_views" title="Edit"
-      for="zope.app.file.interfaces.IFile"
-      action="edit.html"
-      filter="python:context.contentType.startswith('text/')"
-      permission="zope.ManageContent" />
-
-
-
-<!-- upload for new style files -->
-
-  <browser:editform
-      name="upload.html"
-      menu="zmi_views" title="Upload"
-      for="zope.app.file.interfaces.IFile"
-      schema="zope.app.file.interfaces.IFile"
-      fields="contents"
-      permission="zope.ManageContent"
-      />
-
-<!-- BBB: upload for old style files -->
-
   <browser:page
-      name="BBB_upload.html"
+      name="upload.html"
       menu="zmi_views" title="BBB Upload"
       for="zope.app.file.interfaces.IFile"
       template="file_upload.pt"

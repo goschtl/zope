@@ -6,7 +6,7 @@ TODO
 
 - Implement Mime widgets
 
-- Add new widget tests
+- Add new widget tests for MimeDataWidget, MimeDataEncodingWidget and MimeTypeWidget
 
 - Refactor IImage, I didn't look at it till now, but the test runs well. ;-)
 

@@ -65,7 +65,7 @@ class FileTest(BrowserTestCase):
     def testEditForm(self):
         self.addFile()
         response = self.publish(
-            '/file/@@BBB_edit.html',
+            '/file/@@edit.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
@@ -78,7 +78,7 @@ class FileTest(BrowserTestCase):
     def testEdit(self):
         self.addFile()
         response = self.publish(
-            '/file/@@BBB_edit.html',
+            '/file/@@edit.html',
             form={'field.data': u'<h1>A File</h1>',
                   'field.contentType': u'text/plain',
                   'UPDATE_SUBMIT': u'Edit'},
@@ -97,11 +97,11 @@ class FileTest(BrowserTestCase):
     def testUploadForm(self):
         self.addFile()
         response = self.publish(
-            '/file/@@BBB_upload.html',
+            '/file/@@fileupload.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Upload a file' in body)
+        self.assert_('Encoding Type' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.failIf(escape(self.content) in body)
@@ -110,20 +110,21 @@ class FileTest(BrowserTestCase):
     def testUpload(self):
         self.addFile()
         response = self.publish(
-            '/file/@@BBB_upload.html',
-            form={'field.data': StringIO('<h1>A file</h1>'),
+            '/file/@@fileupload.html',
+            form={'field.contents': StringIO('<h1>A file</h1>'),
                   'field.contentType': u'text/plain',
+                  'field.encoding': u'UTF-8',
                   'UPDATE_SUBMIT': u'Change'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Upload a file' in body)
+        self.assert_('Encoding Type' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.failIf(escape(u'<h1>A File</h1>') in body)
         root = self.getRootFolder()
         file = root['file']
-        self.assertEqual(file.data, '<h1>A file</h1>')
+        self.assertEqual(file.contents, '<h1>A file</h1>')
         self.assertEqual(file.contentType, 'text/plain')
         
     def testIndex(self):

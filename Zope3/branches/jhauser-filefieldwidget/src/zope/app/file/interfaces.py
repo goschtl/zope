@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.schema import Bytes
-from zope.schema import Mime, MimeData, MimeDataEncoding, MimeType
+from zope.schema import MimeData, MimeDataEncoding, MimeType
 from zope.schema import Schema
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -61,7 +61,7 @@ class IMime(Interface):
     # TODO: remove the line below
     #encoding = BytesLine(
     encoding = MimeDataEncoding(
-        title = _(u'Encoding type'),
+        title = _(u'Encoding Type'),
         description=_(u'The encoding of the data if it is text.'),
         default='',
         required=False,
@@ -88,7 +88,26 @@ class IMime(Interface):
         """
 
 
+class IReadFileAccess(Interface):
+    """File read interface."""
+
+    def read():
+        """Write access on file."""
+
+    def size():
+        """Size of the file."""
+
+
+class IWriteFileAccess(Interface):
+    """File write interface."""
+
+    def write():
+        """Write access on file."""
+
+
+
 class IFile(Interface):
+    """File interface."""
 
     contents = Schema(IMime, "zope.app.file.Mime",
         title = _(u'The file data'),
@@ -99,7 +118,7 @@ class IFile(Interface):
         required=False,
         )
     
-    # deprectiated field
+    # BBB: remove deprectiated field
     data = Bytes(
         title=_(u'Data'),
         description=_(u'The actual content of the object.'),

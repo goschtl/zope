@@ -28,6 +28,9 @@ from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
+# TODO: remove it 
+from zope.proxy import isProxy
+
 
 class SchemaWidgetView:
 
@@ -45,13 +48,10 @@ class SchemaWidget(BrowserWidget, InputWidget):
     """A widget over an Interface that contains Fields."""
 
     implements(IInputWidget)
-    
-    _object = None      # the object value (from setRenderedValue & request)
-    _request_parsed = False
 
     def __init__(self, context, request, **kw):
         super(SchemaWidget, self).__init__(context, request)
-        
+
         # define view that renders the widget
         self.view = SchemaWidgetView(self, request)
 

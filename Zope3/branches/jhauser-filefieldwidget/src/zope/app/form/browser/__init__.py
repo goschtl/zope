@@ -34,7 +34,6 @@ from zope.app.form.browser.schemawidgets import SchemaWidget
 
 # Widgets for file-based fields
 from zope.app.form.browser.filewidgets import FileWidget
-from zope.app.form.browser.filewidgets import MimeWidget
 from zope.app.form.browser.filewidgets import MimeDataWidget
 from zope.app.form.browser.filewidgets import MimeDataEncodingWidget
 from zope.app.form.browser.filewidgets import MimeTypeWidget

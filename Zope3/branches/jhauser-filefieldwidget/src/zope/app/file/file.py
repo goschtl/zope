@@ -21,9 +21,15 @@ from persistent import Persistent
 from transaction import get_transaction
 
 from zope.interface import implements
+from zope.schema.fieldproperty import FieldProperty
 from zope.publisher.browser import FileUpload
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.file.interfaces import IMime, IFile, IFileStorage, IFileContent
+
+# TODO: remove it, just for testing
+from zope.proxy import isProxy
+
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -124,9 +130,9 @@ class FileStorage(Persistent):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> IMime.implementedBy(Mime)
+    >>> IFileStorage.implementedBy(FileStorage)
     True
-    >>> verifyClass(IMime, Mime)
+    >>> verifyClass(IFileStorage, FileStorage)
     True
     """
 
@@ -379,7 +385,8 @@ class Mime(Persistent):
 
     def _getData(self):
         # TODO: shold we read via the open() method, not really? ri
-        return self._data.read()
+        file = self._data.read()
+        return file
 
     def _setData(self, data):
         # TODO: shold we write via the open() method, not really? ri
@@ -506,41 +513,50 @@ class File(Persistent):
     implements(IFile, IMime, IFileContent)
     
     def __init__(self, data='', contentType=''):
-        self.contents = Mime()
-        self.contents.data = data
+        self._contents = Mime()
+        self.open(mode='w').write(data)
+        # BBB: map it to the right contentType
         self.contentType = contentType
 
-    # old compatibility methods
+    # TODO: Fix the widgets for to store the data
+    # now we get a Mime instance form the widget, but _get/_setContents 
+    # points to _contents.data
+    # We have to change this, that we can set on the contents attribute 
+    # directly a Mime instance.
+    # But how should we access the file data? Only with the open method?
+    # This whould break everything... hm, perhaps we can use the data property 
+    # for BBB and a access directly to the file data.
     def _getContents(self):
-        return self.contents.data
+        return removeSecurityProxy(self._contents.data)
 
     def _setContents(self, data):
-        self.contents.data = data
+        self._contents.data = removeSecurityProxy(data)
 
     def open(self, mode='r'):
         """return a file-like object for reading or updating the file value.
         """
         if mode == 'r':
-            return self.contents.open(mode='r')
+            return self._contents.open(mode='r')
         if mode == 'w':
-            return self.contents.open(mode='w')
+            return self._contents.open(mode='w')
         else:
             pass
             # TODO: raise wrong file open attribute error
 
     def getSize(self):
-        return self.contents.getSize()
+        return self._contents.getSize()
     
     # See IFile.
-    content = property(_getContents, _setContents)
+    contents = property(_getContents, _setContents)
+    #contents = FieldProperty(IFile['contents'])
     
     # BBB: remove it after removing BBB
     # old compatibility methods
     def _getData(self):
-        return self.contents.data
+        return self._contents
 
     def _setData(self, data):
-        self.contents.data = data
+        self._contents = data
 
     data = property(_getContents, _setContents)
 
