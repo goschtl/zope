@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.8 2003/01/21 21:45:06 jim Exp $
+$Id: interfaces.py,v 1.9 2003/01/25 13:28:54 jim Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -79,6 +79,7 @@ class IViewConfigurationInfo(Interface):
         readonly = True,
         required = True,
         basetype = IPresentation,
+        constraint = lambda i: i.__name__.endswith("Presentation"),
         )
 
     viewName = TextLine(
