@@ -41,37 +41,37 @@ from zope.app.pas.interfaces import IPrincipalSearchPlugin
 class IPAS(zope.interface.Interface):
     """Pluggable Authentication Service
     """
-    
+
     extractors = zope.schema.List(
         title=u"Credential Extractors",
         value_type = zope.schema.Choice(vocabulary='ExtractionPlugins'),
         default=[],
         )
-    
+
     authenticators = zope.schema.List(
         title=u"Authenticators",
         value_type = zope.schema.Choice(vocabulary='AuthenticationPlugins'),
         default=[],
         )
-    
+
     challengers = zope.schema.List(
         title=u"Challengers",
         value_type = zope.schema.Choice(vocabulary='ChallengePlugins'),
         default=[],
         )
-    
+
     factories = zope.schema.List(
         title=u"Principal Factories",
         value_type = zope.schema.Choice(vocabulary='PrincipalFactoryPlugins'),
         default=[],
         )
-    
+
     searchers = zope.schema.List(
         title=u"Search Plugins",
         value_type = zope.schema.Choice(vocabulary='PrincipalSearchPlugins'),
         default=[],
         )
-    
+
 class PAS:
 
     zope.interface.implements(IPAS, IAuthenticationService)
@@ -96,7 +96,7 @@ class PAS:
                     credentials)
                 if authenticated is None:
                     continue
-                
+
                 id, info = authenticated
                 return self._create('createAuthenticatedPrincipal',
                                     self.prefix+id, info, request)
@@ -125,7 +125,7 @@ class PAS:
             searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher)
             if searcher is None:
                 continue
-        
+
             info = searcher.get(id)
             if info is None:
                 continue
@@ -139,7 +139,7 @@ class PAS:
 
     def unauthorized(self, id, request):
         protocol = None
-        
+
         for challenger in self.challengers:
             challenger = zapi.queryUtility(IChallengePlugin, challenger)
             if challenger is None:
@@ -160,7 +160,7 @@ class PAS:
         next = queryNextService(self, Authentication, None)
         if next is not None:
             return getattr(next, meth)(*args)
-        
+
 
 class LocalPAS(PAS, Persistent, Contained):
     zope.interface.implements(IPAS, ILocation, ISimpleService)
