@@ -47,7 +47,8 @@ table = [
 
     {'path': "test", 'addrs': "klm@digicool.com"},
 
-    {'path': "Zope2", 'addrs': ["klm@digicool.com"]},
+    {'path': "Zope2", 'addrs': ["klm@digicool.com", "jim@digicool.com",
+                                "zope-checkins@digicool.com"]},
 
 
 ##     {'path': "Publishers/ZServer", 'addrs': zopeaddr},
