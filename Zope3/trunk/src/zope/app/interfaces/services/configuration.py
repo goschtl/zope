@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.4 2003/03/03 23:16:10 gvanrossum Exp $
+$Id: configuration.py,v 1.5 2003/03/07 16:44:48 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -35,17 +35,7 @@ class ConfigurationStatus(TextLine):
     __implements__ = IConfigurationStatus
     allowed_values = Unregistered, Registered, Active
 
-class IConfigurationSummary(Interface):
-    """Configuration summary data
-    """
-
-    title = TextLine(title = u"Title",
-                 description = u"Descriptive title",
-                 required = True)
-
-    status = ConfigurationStatus(title = u"Configuration status")
-
-class IConfiguration(IConfigurationSummary):
+class IConfiguration(Interface):
     """Configuration object
 
     A configuration object represents a specific configuration
@@ -59,9 +49,7 @@ class IConfiguration(IConfigurationSummary):
     interface.
     """
 
-    description = Text(title=u"Description",
-                       description=u"Detailed description",
-                       )
+    status = ConfigurationStatus(title = u"Configuration status")
 
     def activated():
         """Method called when a configuration is made active

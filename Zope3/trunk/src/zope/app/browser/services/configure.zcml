@@ -238,8 +238,7 @@
       for=
       "zope.app.interfaces.services.configuration.INamedComponentConfiguration"
       name="ItemEdit"
-      schema=
-      "zope.app.interfaces.services.configuration.IConfigurationSummary."
+      schema="zope.app.interfaces.services.configuration.IConfiguration"
       template="componentconfigitemedit.pt"
       label="XXX not used but can't be omitted"
       class="zope.app.browser.services.componentconfigurl.ComponentConfigURL"
@@ -302,7 +301,7 @@
     name="ItemEdit"
     label="Adapter"
     permission="zope.ManageServices"
-    fields="forInterface providedInterface adapterName factoryName title status"
+    fields="forInterface providedInterface adapterName factoryName status"
     fulledit="."
     />
 
@@ -367,7 +366,7 @@
     label="View"
     permission="zope.ManageServices"
     fields="forInterface viewName presentationType class_ layer permission
-            title status"
+            status"
     />
 
 <page
@@ -387,7 +386,7 @@
       label = "Configure a view" 
       permission="zope.ManageServices" 
       fields="forInterface viewName presentationType
-              class_ layer permission title status description"
+              class_ layer permission status"
       />
 
 <menuItem
@@ -434,7 +433,7 @@
     label="Page"
     permission="zope.ManageServices"
     fields="forInterface viewName class_ layer permission
-            title status"
+            status"
     />
 
 <page
@@ -453,7 +452,7 @@
       label = "Configure a view page"
       permission="zope.ManageServices"
       fields="forInterface viewName
-              template class_ layer permission title status description"
+              template class_ layer permission status"
       />
 
 <menuItem

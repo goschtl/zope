@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.12 2003/03/02 03:34:04 tseaver Exp $
+$Id: editview.py,v 1.13 2003/03/07 16:44:40 jim Exp $
 """
 
 from datetime import datetime
@@ -206,7 +206,7 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
         fields = fields.split()
         for name in fields:
             if name not in names:
-                raise ValueError("Field name %s is not in schema %s",
+                raise ValueError("Field name is not in schema",
                                  name, schema_)
     else:
         fields = names
@@ -215,7 +215,7 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
         omit = omit.split()
         for name in omit:
             if name not in names:
-                raise ValueError("Field name %s is not in schema %s",
+                raise ValueError("Field name is not in schema",
                                  name, schema_)
         fields = [name for name in fields if name not in omit]
 

@@ -13,11 +13,13 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.8 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: configuration.py,v 1.9 2003/03/07 16:44:49 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 from zope.component \
      import getAdapter, getService, queryService, getServiceManager
@@ -257,9 +259,13 @@ class SimpleConfiguration(Persistent):
     IDeleteNotifiable.
     """
 
-    __implements__ = IConfiguration, IDeleteNotifiable
-
-    title = description = u''
+    __implements__ = (IConfiguration, IDeleteNotifiable,
+                      # We are including this here because we want all of the
+                      # subclasses to get it and we don't really need to be
+                      # flexible about the policy here. At least we don't
+                      # *think* we do. :)
+                      IAttributeAnnotatable,
+                      )
 
     def activated(self):
         pass
