@@ -13,14 +13,14 @@
 ##############################################################################
 """Configuration directives that have subdirectives
 
-$Id: INonEmptyDirective.py,v 1.2 2002/09/03 16:02:30 jim Exp $
+$Id: INonEmptyDirective.py,v 1.3 2002/09/03 16:04:06 jim Exp $
 """
 from Interface import Interface
 
 class INonEmptyDirective(Interface):
 
     def __call__(**kw):
-        """Compute complex directive handler
+        """Compute subdirective handler
 
         Return an ISubdirectiveHandler.
         """

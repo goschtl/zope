@@ -13,16 +13,20 @@
 ##############################################################################
 """Psuedo-directive (or meta-meta directive) to handle subdirectives
 
-$Id: ISubdirectiveHandler.py,v 1.1 2002/09/01 18:29:58 rdmurray Exp $
+$Id: ISubdirectiveHandler.py,v 1.2 2002/09/03 16:07:08 jim Exp $
 """
 from Interface import Interface
 
 class ISubdirectiveHandler(Interface):
     """Handle subdirectives
 
-    Provide methods for registered subdirectives.
+    Provide methods for registered subdirectives. The methods are
+    typically IEmptyDirective objects. They could, theoretically be
+    INonEmptyDirective objects. 
 
-    Also provide a call that can provide additional configuration actions.
+    Also provide a call that can provide additional configuration
+    actions. 
+    
     """
 
     def __call__():
