@@ -40,6 +40,7 @@ from zpkgtools import publication
 class Application:
 
     def __init__(self, options, resource, program):
+        self.logger = logging.getLogger(program)
         self.ip = None
         self.options = options
         self.resource = locationmap.normalizeResourceId(resource)
@@ -151,6 +152,31 @@ class Application:
             # support the setup.py script:
             if os.path.isdir(tests_dir):
                 shutil.rmtree(tests_dir)
+        # now we need to find setuptools:
+        setuptools_dest = os.path.join(self.destination, "setuptools")
+        if os.path.exists(setuptools_dest):
+            # already have it
+            return
+        try:
+            import setuptools
+        except ImportError:
+            if "setuptools" in self.locations:
+                url = self.locations["setuptools"]
+            else:
+                # last resort
+                url = ("cvs://cvs.python.sourceforge.net/cvsroot/python"
+                       ":python/nondist/sandbox/setuptools/setuptools")
+                self.logger.info("resource package:setuptools not configured;"
+                                 " using bootstrap URL")
+            source = self.loader.load(url)
+        else:
+            source = os.path.abspath(setuptools.__path__[0])
+        self.ip.copyTree(source, setuptools_dest)
+        tests_dir = os.path.join(setuptools_dest, "tests")
+        # but we don't need the tests if this was only added to
+        # support the setup.py script:
+        if os.path.isdir(tests_dir):
+            shutil.rmtree(tests_dir)
 
     def createTarball(self):
         pwd = os.getcwd()
