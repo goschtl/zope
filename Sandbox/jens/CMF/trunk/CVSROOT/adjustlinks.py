@@ -232,44 +232,36 @@ class LinkManager:
         got = {path: 1}
 
         if path[:len(os.sep)] == os.sep:
+            # Strip the leading '/'
             path = path[len(os.sep):]
         path = os.path.join(REPO_ROOT, path)
 
         actual_path, element_inodes = path_element_inodes(path)
         if element_inodes:
-            # Include actual path - it may be different than specified one.
-            got[actual_path[len(REPO_ROOT)+1:]] = 1
+            # Include actual path (relative to actual repo root).
+            got[actual_path[len(ACTUAL_REPO_ROOT())+len(os.sep):]] = 1
             for link, target, lineno in self._recipe_lines:
                 if (exists(target)
                     and (os.stat(target)[ST_INO] in element_inodes)):
                     # (Strip the REPO_ROOT prefix.)
-                    got[link[len(REPO_ROOT)+1:]] = 1
+                    got[link[len(REPO_ROOT)+len(os.sep):]] = 1
 
         return got.keys()
 
 def path_element_inodes(path, split=os.path.split,
                         stat=os.stat, ST_INO=stat.ST_INO):
-    """Return inodes of directory elements leading to path's physical location.
+    """Return actual path relative to repository, and root inodes of directory
+    elements leading to path's physical location.
     We return the empty list if path doesn't actually exist."""
+
     actual_path = None
     got = []
     if (os.path.exists(path) or os.path.exists(split(path)[0])):
-        origdir = os.getcwd()
-        try:
-            if os.path.isdir(path):
-                os.chdir(path)
-            else:
-                os.chdir(split(path)[0])
-
-            here = actual_path = os.getcwd()
-            while here and (here != '/'):
-                got.insert(0, stat(here)[ST_INO])
-                here = split(here)[0]
-
-        finally:
-            os.chdir(origdir)
+        here = actual_path = actual_dir(path)
+        while here and (here != '/'):
+            got.insert(0, stat(here)[ST_INO])
+            here = split(here)[0]
     return (actual_path, got)
-    
 
 def find_fs_links(dir,
                   join=os.path.join,
@@ -287,6 +279,28 @@ def find_fs_links(dir,
         got.extend(find_fs_links(d))
 
     return got
+
+def actual_dir(path):
+    """Return the real directory, as reported by os.getcwd from inside the dir.
+
+    If the arg is not a directory, try with the final path element stripped."""
+    origdir = os.getcwd()
+    try:
+        if os.path.isdir(path):
+            os.chdir(path)
+        else:
+            os.chdir(os.path.split(path)[0])
+        return os.getcwd()
+
+    finally:
+        os.chdir(origdir)
+
+_ACTUAL_REPO_ROOT = None
+def ACTUAL_REPO_ROOT():
+    global _ACTUAL_REPO_ROOT
+    if _ACTUAL_REPO_ROOT is None:
+        _ACTUAL_REPO_ROOT = actual_dir(REPO_ROOT)
+    return _ACTUAL_REPO_ROOT
 
 def info(*args):
     if not QUIET:
