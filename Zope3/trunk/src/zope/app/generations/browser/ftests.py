@@ -39,7 +39,7 @@ class TestDatabaseSchema(BrowserTestCase):
                                 basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
-        expect = ('<td>zope.app.generations.demo</td> '
+        expect = ('zope.app.generations.demo</a> </td> '
                   '<td>0</td> <td>3</td> <td>0</td> '
                   '<td> <input type="submit" value=" evolve " '
                   'name="evolve-app-zope.app.generations.demo"> </td>')
@@ -50,7 +50,7 @@ class TestDatabaseSchema(BrowserTestCase):
                                 basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
-        expect = ('<td>zope.app.generations.demo</td> '
+        expect = ('zope.app.generations.demo</a> </td> '
                   '<td>0</td> <td>3</td> <td>1</td> '
                   '<td> <input type="submit" value=" evolve " '
                   'name="evolve-app-zope.app.generations.demo"> </td>')
@@ -61,7 +61,7 @@ class TestDatabaseSchema(BrowserTestCase):
                                 basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
-        expect = ('<td>zope.app.generations.demo</td> '
+        expect = ('zope.app.generations.demo</a> </td> '
                   '<td>0</td> <td>3</td> <td>2</td> '
                   '<td> <input type="submit" value=" evolve " '
                   'name="evolve-app-zope.app.generations.demo"> </td>')
@@ -72,7 +72,7 @@ class TestDatabaseSchema(BrowserTestCase):
                                 basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
-        expect = ('<td>zope.app.generations.demo</td> '
+        expect = ('zope.app.generations.demo</a> </td> '
                   '<td>0</td> <td>3</td> <td>3</td> '
                   '<td> <span>')
         self.assert_(body.find(expect) > 0)
