@@ -89,9 +89,9 @@ class SkinnedFolder(CMFCatalogAware, PortalFolder):
         """
             Return the ID of our owner.
         """
-        owner = self.getOwner()
-        if hasattr( owner, 'getId' ):
-            return owner.getId()
+        owner_tuple = self.getOwnerTuple()
+        if owner_tuple:
+            return owner_tuple[1]
         return 'No owner'
 
     # We derive from CMFCatalogAware first, so we are cataloged too.

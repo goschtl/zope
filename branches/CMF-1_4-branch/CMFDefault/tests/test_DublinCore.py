@@ -58,6 +58,13 @@ class DublinCoreTests( SecurityRequestTest ):
 
         self.assertEqual( content.Publisher(), PUBLISHER )
 
+    def test_Creator(self):
+        from AccessControl import getSecurityManager
+        user_id = getSecurityManager().getUser().getUserName()
+        site = self._makeSite()
+        content = self._makeDummyContent().__of__(site)
+        self.assertEqual(content.Creator(), user_id)
+
 class DummyMetadataTool( Implicit ):
 
     def __init__( self, publisher ):

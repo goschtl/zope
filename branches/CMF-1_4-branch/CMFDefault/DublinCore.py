@@ -103,9 +103,9 @@ class DefaultDublinCoreImpl( PropertyManager ):
         # XXX: fixme using 'portal_membership' -- should iterate over
         #       *all* owners
         "Dublin Core element - resource creator"
-        owner = self.getOwner()
-        if hasattr( owner, 'getId' ):
-            return owner.getId()
+        owner_tuple = self.getOwnerTuple()
+        if owner_tuple:
+            return owner_tuple[1]
         return 'No owner'
 
     security.declarePublic( 'Subject' )
