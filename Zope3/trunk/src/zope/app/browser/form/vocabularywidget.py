@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.55 2003/08/20 19:10:40 poster Exp $
+$Id: vocabularywidget.py,v 1.56 2003/08/25 14:30:27 fdrake Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -85,9 +85,6 @@ def VocabularyUniqueListFieldEditWidget(field, request):
 
 def _get_vocabulary_widget(field, request, viewname):
     view = getView(field.vocabulary, "field-%s-widget" % viewname, request)
-    # XXX: The hack of the century. After all ZCML attempts via ZCML failed,
-    #      this is the only way I could find to make it work! (SR)
-    #      Fred, please have a look at this.
     view = trustedRemoveSecurityProxy(view)
     view.setField(field)
     return view
@@ -131,6 +128,8 @@ def message(msgid, default):
 # Widget implementation:
 
 class ViewSupport(object, TranslationHook):
+    # This is mixed into the vocabulary widget base classes.
+
     """Helper class for vocabulary and vocabulary-query widgets."""
 
     def textForValue(self, term):
