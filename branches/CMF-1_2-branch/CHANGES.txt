@@ -11,6 +11,8 @@
 
  Bugs Fixed
 
+  - Use ID to label Favorite when target has an empty Title (Tracker #440).
+
   - Allowed sub-folders to have different syndication properties 
     than parents (Tracker #421).
 
