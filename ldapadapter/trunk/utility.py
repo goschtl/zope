@@ -54,9 +54,10 @@ def valuesToUTF8(values):
 class LDAPAdapter(object):
     implements(ILDAPAdapter)
 
-    def __init__(self, host='localhost', port=389, bindDN='', bindPassword='', useSSL=False):
+    def __init__(self, host='localhost', port=389, baseDN='', bindDN='', bindPassword='', useSSL=False):
         self.host = host
         self.port = port
+        self.baseDN = baseDN
         self.bindDN = bindDN
         self.bindPassword = bindPassword
         self.useSSL = useSSL
@@ -78,6 +79,9 @@ class LDAPAdapter(object):
             dn = self.bindDN
         conn.simple_bind_s(dn, password)
         # May raise INVALID_CREDENTIALS, SERVER_DOWN, ...
+        
+        # set baseDN to the wrapper class
+        conn.baseDN = self.baseDN
 
         return LDAPConnection(conn)
 
@@ -93,19 +97,20 @@ class LDAPAdapter(object):
         """Returns the server url from the host and port info.
         ldap[s]://host:port
         """
+        port = 389
         url = url.strip()
-        urlReg = '^ldap://[a-zA-Z0-9\-\.]+:[\d]{1,5}'
-        if re.match(urlReg, url):
-            urlList = url.split(':')
-            if len(urlList) >= 2:
-                useSSL = urlList[0].endswith('s')
-                host = urlList[1][2:]
-                if len(urlList) == 3:
-                    port = int(urlList[2])
-            else:
-                URLFormatError(LDAP_url_format_error)
+        #urlReg = '^ldap://[a-zA-Z0-9\-\.]+:[\d]{1,5}'
+        #if re.match(urlReg, url):
+        urlList = url.split(':')
+        if len(urlList) >= 2:
+            useSSL = urlList[0].endswith('s')
+            host = urlList[1][2:]
+            if len(urlList) == 3:
+                port = int(urlList[2])
         else:
-            raise URLFormatError(LDAP_url_format_error)
+            URLFormatError(LDAP_url_format_error)
+        #else:
+        #    raise URLFormatError(LDAP_url_format_error)
          
         self.host = host
         self.port = port
@@ -117,6 +122,7 @@ class LDAPConnection(object):
 
     def __init__(self, conn):
         self.conn = conn
+        self.baseDN = None
 
     def add(self, dn, entry):
         attrs_list = []
