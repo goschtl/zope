@@ -54,7 +54,7 @@ def main(args = sys.argv[1:]):
  <adapter
     for="zope.wfmc.interfaces.IActivity"
     provides="zope.wfmc.interfaces.IParticipant"
-    factory=".%s.%s"
+    factory="%s.%s"
     name="%s.%s"
     />
 """ % (participant.__name__, pid, participant.id, pid, participant.id)
@@ -82,8 +82,8 @@ def main(args = sys.argv[1:]):
 <!-- %s -->
 <adapter
     for="zope.wfmc.interfaces.IParticipant"
-    provides="zope.wfmc.interfaces.IWorkitem"
-    factory=".%s.%s"
+    provides="zope.wfmc.interfaces.IWorkItem"
+    factory="%s.%s"
     name="%s.%s"
     />
 """ % (descr, pid, application.id, pid, application.id)
