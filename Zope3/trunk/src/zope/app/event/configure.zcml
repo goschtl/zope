@@ -28,10 +28,6 @@
     subscriber=".objectevent.objectEventNotifierInstance"
     event_types="zope.app.event.interfaces.IObjectEvent" />
 
-<event:subscribe
-    subscriber=".objectevent.observerEventNotifierInstance"
-    event_types="zope.app.event.interfaces.IObjectEvent" />
-
 <!-- Local Event Service -->
 <content class=".localservice.EventService">
   <factory
