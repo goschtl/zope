@@ -13,6 +13,8 @@
 ##############################################################################
 """
     Interfaces for workflow service, definition and instance.
+
+$Id: __init__.py,v 1.2 2003/02/01 19:19:03 jack-e Exp $
 """
 
 from zope.interface import Interface
