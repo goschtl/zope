@@ -3,23 +3,42 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
-  <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-  </localUtility>
-  
   <browser:tool
       interface=".interfaces.IChallengePlugin"
       title="PAS Challenge Plugin"
       description="PAS Challenge Plugin"
       />
   
+  <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        
+    <require
+        permission="zope.ManageServices"
+        interface=".httpplugins.IHTTPBasicAuthRealm"
+        set_schema=".httpplugins.IHTTPBasicAuthRealm" />
+
+  </localUtility>
+  
   <browser:addMenuItem
-      title="PAS HTTP Basic Auth Challenge Plugin"
-      description="A PAS Challenge Plugin"
-      class="zope.app.pas.httpplugins.HTTPBasicAuthChallenger"
+      title="PAS Basic Auth Challenge Plugin"
+      description="A PAS Basic Auth Challenge Plugin"
+      class=".httpplugins.HTTPBasicAuthChallenger"
+      permission="zope.ManageContent"
+      />
+
+  <localUtility class=".generic.AlreadyAuthenticatedUserChallenger">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+  </localUtility>
+  
+  <browser:addMenuItem
+      title="PAS Authenticated User Challenge Plugin"
+      description="A PAS Authenticated User Challenge Plugin"
+      class=".generic.AlreadyAuthenticatedUserChallenger"
       permission="zope.ManageServices"
       />
 
