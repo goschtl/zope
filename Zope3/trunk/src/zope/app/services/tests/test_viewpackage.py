@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_viewpackage.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_viewpackage.py,v 1.3 2003/02/03 17:29:11 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -39,6 +39,7 @@ class Test(PlacefulSetup, TestCase):
         views = traverse(default, 'Views')
         views.forInterface = Interface
         views.factoryName = None
+        views.permission = None
 
         #set up view service
         default.setObject('ViewService', ViewService())

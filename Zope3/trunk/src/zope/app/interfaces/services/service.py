@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.6 2003/01/08 17:46:53 stevea Exp $
+$Id: service.py,v 1.7 2003/02/03 17:29:07 jim Exp $
 """
 __metaclass__ = type
 
@@ -22,11 +22,9 @@ from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine
 from zope.component.interfaces import IPresentation
 from zope.app.interfaces.container import IContainer
-
+from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute
-
 from zope.component.interfaces import IServiceService
-
 from zope.app.interfaces.services.configuration \
      import INamedComponentConfiguration, INameComponentConfigurable
 
@@ -139,14 +137,6 @@ class IViewPackageInfo(Interface):
         required = True,
         )
 
-    presentationType = InterfaceField(
-        title = u"Presentation type",
-        description = u"The presentation type of a view",
-        required = True,
-        basetype = IPresentation,
-        default = IBrowserPresentation,
-        )
-
     factoryName = BytesLine(
         title=u"The dotted name of a factory for creating the view",
         required = True,
@@ -158,6 +148,12 @@ class IViewPackageInfo(Interface):
         required = False,
         min_length = 1,
         default = "default",
+        )
+
+    permission = PermissionField(
+        title=u"Permission",
+        description=u"The permission required to use the view",
+        required = True,
         )
 
 class IViewPackage(IViewPackageInfo,  IContainer):

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.7 2003/01/31 16:22:01 stevea Exp $
+$Id: interfaces.py,v 1.8 2003/02/03 17:29:12 jim Exp $
 """
 
 from zope.interface import Interface
@@ -430,3 +430,134 @@ class IImplementorRegistry(Interface):
         interface that extends or equals the 'provides' argument.
 
         """
+
+class IImplements(Interface):
+    """Functions for reasoning about implementation assertions
+    """
+
+    def getImplements(object):
+        """Return an interface specification for an object
+
+        Returns the interfaces that an object asserts that it implements.
+        """
+
+    def getImplementsOfInstances(class_):
+        """Return the interface specification ofr instances of a class
+
+        Returns the interfaces that a class asserts that it's
+        instances implement.
+
+        """
+
+    def visitImplements(implements, object, visitor, getInterface=None):
+        """Call visitor for each interace in an interface specification
+
+        The interface specification is given as the first argument. It
+        should be gotten by calling getImplements on an object, but
+        often object.__implements__ is passed.
+
+        The second argument is the object that implements the
+        interface. It is used for special experimental interface
+        features. (IOW, it is a burnt offering).
+
+        The third argument is a callable that will be called for each
+        interface in the specification.
+
+        The getImplements argument is a hook that will be called if a
+        certian experimental (and soon to be removed) feature is used
+        in the interface specification.
+        
+        This method will soon be depricated.
+
+        """
+
+    def assertTypeImplements(type, interface):
+        """Assert that instances of a type implement an interface.
+        """
+
+    def objectImplements(object, getInterface=None):
+        """Get a sequence of the interfaces the object implements
+
+        The getImplements argument is a hook that will be called if a
+        certian experimental (and soon to be removed) feature is used
+        in the interface specification.
+
+        """
+
+    def instancesOfObjectImplements(class_, getInterface=None):
+        """Get a sequence of the interfaces instances of the class implements
+
+        The getImplements argument is a hook that will be called if a
+        certian experimental (and soon to be removed) feature is used
+        in the interface specification.
+
+        """
+
+    def flattenInterfaces(interfaces, remove_duplicates=True):
+        """Get a sequence of the interfaces in an interface specification
+
+        The result includes all base interfaces of the interfaces in
+        the specification.
+
+        If remove_duplicates is true, then duplicate interfaces are
+        removed.  The interfaces are included in order from most
+        specifgic to most general.
+        """
+
+    def implements(class_, interface, check=True):
+        """Assert that instanced of a class implement the given interface
+
+        If the check argument is true, the class will be checked to
+        see if it obviously fails the assertion.
+        """
+
+class INewImplements(Interface):
+    """
+
+    We say that a class implements.
+
+    We say that an object provides.
+
+    From types sig:
+       conforms to, indicates
+
+
+    From John Williams:
+       someinterface.bind(someclass)
+
+       someinterface(someobject) --> a proxy that exposes only methods
+           defined by the interface.
+
+    """
+
+
+    def implements(*interfaces):
+        """Assert interfaces implemented by class
+
+        This function is normally called in a class definition. In
+        this case, it makes the assertion about the class being
+        defined.
+
+        If a class is provided as the first argument, then the
+        assertion will be made bout that class.
+
+        
+        """
+
+    def provides(object, *interfaces):
+        """Assert that an object provides the interfaces.
+
+        XXX Modules?
+        """
+
+    
+    def implementsLike(class_):
+        ""
+
+    # not classImplements (see provides)
+
+    def implementsAdditional(ob, ):
+        pass
+
+    
+    

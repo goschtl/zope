@@ -763,11 +763,21 @@
      label="Default configuration parameters"
      />
 
-  <browser:menuItems menu="zmi_views"
-             for="zope.app.interfaces.services.service.IViewPackage">
-    <browser:menuItem title="Contents"
-              action="@@contents.html"/>
-  </browser:menuItems>
+  <browser:menuItem
+     menu="zmi_actions"
+     for="zope.app.interfaces.services.service.IViewPackage"
+     title="Add"
+     action="."
+     filter="nothing"
+     />
+
+  <browser:menuItem
+     menu="zmi_views"
+     for="zope.app.interfaces.services.service.IViewPackage"
+     title="Contents"
+     action="@@contents.html"
+     filter="context/configured"
+     />
 
   <browser:menuItem menu="add_component"
      for="zope.app.interfaces.container.IAdding"

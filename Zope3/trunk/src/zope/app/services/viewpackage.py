@@ -13,7 +13,7 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: viewpackage.py,v 1.3 2003/02/03 17:29:09 jim Exp $
 """
 __metaclass__ = type
 
@@ -35,11 +35,11 @@ class ViewPackage(BTreeContainer):
 
     __implements__ = IViewPackage
 
-
     presentationType = IBrowserPresentation
     layer = "default"
     description = ''
     title = ''
+    factoryName = None
 
     def __init__(self):
         super(ViewPackage, self).__init__()
@@ -56,7 +56,7 @@ class ViewPackage(BTreeContainer):
         template = getItem(self, name)
         template = getPhysicalPathString(template)
         config = PageConfiguration(self.forInterface, name,
-                                   self.presentationType,
+                                   self.permission,
                                    self.factoryName, template,
                                    self.layer)
         configure = traverse(self, 'configure')
@@ -66,6 +66,11 @@ class ViewPackage(BTreeContainer):
         return name
 
     setObject = ContextMethod(setObject)
+
+    def configured(self):
+        return (hasattr(self, 'permission')
+                and hasattr(self, 'forInterface')
+                )
 
     def activated(self):
         "See IConfiguration"

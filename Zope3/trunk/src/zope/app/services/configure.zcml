@@ -300,6 +300,7 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.services.service.IViewPackageInfo"
+        attributes="configured"
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />

@@ -15,9 +15,12 @@
   <div metal:use-macro="view/contentsMacros/macros/contents_table" />
 
   <br />
-    <input type="text" name="name" />
-    <input type="submit" name="@@add.html:method" value="Add"
-           i18nXXX:attributes="value string:menu_add_button" />
+    <div tal:condition="context/configured">
+      <input type="text" name="name" />
+      <input type="submit" name="@@add.html:method" value="Add"
+             i18nXXX:attributes="value string:menu_add_button"
+             />
+    </div>
     <input type="submit" name="@@removeObjects.html:method" value="Delete"
            i18nXXX:attributes="value string:menu_delete_button" /> 
 </form>
