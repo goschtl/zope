@@ -10,6 +10,10 @@
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
 
+    <implements
+        interface="zope.app.pas.interfaces.ISearchableAuthenticationPlugin"
+        />
+
     <require
         permission="zope.ManageServices"
         interface="zope.app.pas.interfaces.IAuthenticationPlugin"

@@ -56,9 +56,18 @@ class ILDAPAuthentication(Interface):
         )
     idAttribute = TextLine(
         title=_("Id attribute"),
-        description=_(u"The LDAP attribute used to determine principal ids."),
+        description=_(
+            u"The LDAP attribute used to determine a principal's id."),
         constraint=re.compile("[a-zA-Z][-a-zA-Z0-9]*$").match,
         default=u'uid',
+        required=True,
+        )
+    titleAttribute = TextLine(
+        title=_("Title attribute"),
+        description=_(
+            u"The LDAP attribute used to determine a principal's title."),
+        constraint=re.compile("[a-zA-Z][-a-zA-Z0-9]*$").match,
+        default=u'cn',
         required=True,
         )
     #searchObjectClasses
