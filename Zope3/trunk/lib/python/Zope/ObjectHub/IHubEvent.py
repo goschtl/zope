@@ -14,9 +14,10 @@
 """
 
 Revision information:
-$Id: IHubEvent.py,v 1.2 2002/09/03 20:16:50 jim Exp $
+$Id: IHubEvent.py,v 1.3 2002/10/03 20:53:22 jim Exp $
 """
 from Zope.Event.IEvent import IEvent
+from Interface.Attribute import Attribute
 
 class IHubEvent(IEvent):
     """Internal Object Hub Event : something has happened to an object for
@@ -24,14 +25,11 @@ class IHubEvent(IEvent):
        An ruid is a way of refering to an object independent of location.
     """
 
-    def getRuid():
-        """Returns the object's ruid."""
-   
-    def getLocation():
-        """Returns the object's current location."""
-   
-    def getObject():
-        """Returns the object."""
+    object = Attribute("The subject of the event.")
+
+    hid = Attribute("the object's hub-unique id")
+
+    location = Attribute("An optional object location.")
    
 
 class IRegistrationHubEvent(IHubEvent):
@@ -59,9 +57,7 @@ class IObjectMovedHubEvent(IHubEvent):
     """An object with an ruid has had its context changed. Typically, this
        means that it has been moved."""
 
-    def getFromLocation():
-        """Returns the location before the move
-        """
+    fromLocation = Attribute("The old location for the object.")
 
 class IObjectRemovedHubEvent(IHubEvent):
     """An object with an ruid has been removed."""

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
+$Id: testEventService.py,v 1.4 2002/10/03 20:53:22 jim Exp $
 """
 
 import unittest, sys
@@ -44,7 +44,7 @@ class TestEventService(CleanUp, unittest.TestCase):
     def setUp(self):
         CleanUp.setUp(self)
         self.service = GlobalEventService()
-        self.event = ObjectAddedEvent('/foo')
+        self.event = ObjectAddedEvent(None, '/foo')
         self.subscriber = DummySubscriber()
         
     def testSubscribe1(self):
@@ -169,7 +169,7 @@ class TestEventService(CleanUp, unittest.TestCase):
         "Test selective unsubscribe"
         subscriber2=DummySubscriber()
         filter=DummyFilter()
-        event2=ObjectModifiedEvent('/foo')
+        event2=ObjectModifiedEvent(None, '/foo')
         self.service.subscribe(
             self.subscriber)
         self.service.subscribe(

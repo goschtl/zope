@@ -14,8 +14,10 @@
 """
 
 Revision information:
-$Id: HubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
+$Id: HubEvent.py,v 1.2 2002/10/03 20:53:22 jim Exp $
 """
+
+__metaclass__ = type
 
 from IHubEvent import IObjectRegisteredHubEvent
 from IHubEvent import IObjectAddedHubEvent
@@ -26,26 +28,25 @@ from IHubEvent import IObjectRemovedHubEvent
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""
+
+    location = None
+    hid = None
     
-    def __init__(self, objecthub, ruid, location):
+    def __init__(self, objecthub, hid, location):
         # we keep all three, to avoid unnecessary lookups
         # and to give the objecthub an opportunity to do
         # caching of objects
         self.__objecthub = objecthub
-        self.__ruid = ruid
-        self.__location = location
+        self.hid = hid
+        self.location = location
         
-    def getRuid(self):
-        return self.__ruid
-        
-    def getLocation(self):
-        return self.__location
-        
-    def getObject(self):
+    def __getObject(self):
         if hasattr(self, '_v_object'):
             return self._v_object
-        obj = self._v_object = self.__objecthub.getObject(self.__ruid)
+        obj = self._v_object = self.__objecthub.getObject(self.hid)
         return obj
+
+    object = property(__getObject)
 
 
 class ObjectRegisteredHubEvent(HubEvent):
@@ -85,16 +86,9 @@ class ObjectRemovedHubEvent(HubEvent):
 
     __implements__ = IObjectRemovedHubEvent
 
-    def __init__(self, obj, ruid, location):
-        self.__object = obj
-        self.__ruid = ruid
-        self.__location = location
+    object = None
 
-    def getRuid(self):
-        return self.__ruid
-        
-    def getLocation(self):
-        return self.__location
-
-    def getObject(self):
-        return self.__object
+    def __init__(self, obj, hid, location):
+        self.object = obj
+        self.hid = hid
+        self.location = location

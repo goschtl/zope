@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testHubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
+$Id: testHubEvent.py,v 1.2 2002/10/03 20:53:23 jim Exp $
 """
 
 import unittest, sys
@@ -53,16 +53,13 @@ class TestObjectAddedHubEvent(unittest.TestCase):
         self.event = self.klass(objecthub, self.ruid, self.location)
         
     def testGetLocation(self):
-        "Test getLocation method"
-        self.assertEqual(self.event.getLocation(), self.location)
+        self.assertEqual(self.event.location, self.location)
         
     def testGetRuid(self):
-        "Test getRuid method"
-        self.assertEqual(self.event.getRuid(), self.ruid)
+        self.assertEqual(self.event.hid, self.ruid)
     
     def testGetObject(self):
-        "Test getObject method"
-        self.assertEqual(self.event.getObject(), self.obj)
+        self.assertEqual(self.event.object, self.obj)
     
 class TestObjectRegisteredHubEvent(TestObjectAddedHubEvent):
 

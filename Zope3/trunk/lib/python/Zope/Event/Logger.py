@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: Logger.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: Logger.py,v 1.3 2002/10/03 20:53:22 jim Exp $
 """
 
 from ISubscriber import ISubscriber
@@ -32,7 +32,9 @@ class Logger:
     def notify(self, event):
         c = event.__class__
         detail = StringIO()
-        pprint (event.__dict__,detail)
+        data = event.__dict__.items()
+        data.sort()
+        pprint (data, detail)
         LOG('Event.Logger',
             self.severity,
             c.__module__+'.'+c.__name__,

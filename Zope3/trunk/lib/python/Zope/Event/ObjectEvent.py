@@ -14,46 +14,41 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: ObjectEvent.py,v 1.3 2002/10/03 20:53:22 jim Exp $
 """
 
+__metaclass__ = type
+
+from IObjectEvent import IObjectEvent, IObjectCreatedEvent
 from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 
-class ObjectAddedEvent:
+class ObjectEvent:
     """An object has been added to a container."""
+
+    __implements__ = IObjectEvent
+
+    object = None
+    location = None
+
+    def __init__(self, object, location=None):
+        self.object = object
+        self.location = location
+
+class ObjectAddedEvent(ObjectEvent):
+    """An object has been added"""
 
     __implements__ = IObjectAddedEvent
 
-    def __init__(self, location):
-        self.__location = location
-        
-    def getLocation(self):        
-        """returns the object location after it has been added to the container"""
-        return self.__location
-
-class ObjectModifiedEvent(ObjectAddedEvent):
+class ObjectModifiedEvent(ObjectEvent):
     """An object has been modified"""
 
     __implements__ = IObjectModifiedEvent
 
-class ObjectRemovedEvent:
+class ObjectRemovedEvent(ObjectEvent):
     """An object has been removed from a container"""
 
     __implements__ = IObjectRemovedEvent
-
-
-    def __init__(self, location, obj):
-        self.__location = location
-        self.__obj = obj
-        
-    def getLocation(self):        
-        """returns the location the object was removed from"""
-        return self.__location
-        
-    def getObject(self):
-        """returns the object that was removed."""
-        return self.__obj
 
 
 class ObjectMovedEvent(ObjectAddedEvent):
@@ -61,10 +56,8 @@ class ObjectMovedEvent(ObjectAddedEvent):
 
     __implements__ = IObjectMovedEvent
 
-    def __init__(self, from_location, location):
-        ObjectAddedEvent.__init__(self, location)
-        self.__from_location = from_location
-        
-    def getFromLocation(self):
-        """location of the object before it was moved"""
-        return self.__from_location
+    fromLocation = None
+
+    def __init__(self, object, from_location, to_location):
+        super(ObjectMovedEvent, self).__init__(object, to_location)
+        self.fromLocation = from_location

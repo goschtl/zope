@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testDirectives.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
+$Id: testDirectives.py,v 1.4 2002/10/03 20:53:22 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -65,11 +65,11 @@ class Test(PlacelessSetup, TestCase):
                              filter="Zope.Event.tests.subscriber.filter"/>
             """)))
 
-        publishEvent(None,ObjectAddedEvent('foo'))
+        publishEvent(None,ObjectAddedEvent(None, 'foo'))
         self.assertEqual(subscriber.notified,1)
-        publishEvent(None,ObjectRemovedEvent('foo', object()))
+        publishEvent(None,ObjectRemovedEvent(object(), 'foo'))
         self.assertEqual(subscriber.notified,2)
-        publishEvent(None,ObjectModifiedEvent('foo'))
+        publishEvent(None,ObjectModifiedEvent(None, 'foo'))
         self.assertEqual(subscriber.notified,2) # NB: no increase ;-)
         publishEvent(None,DummyEvent())
         self.assertEqual(subscriber.notified,4) # NB: increased by 2 ;-)

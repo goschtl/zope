@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.8 2002/08/22 17:05:24 gotcha Exp $
+$Id: ObjectHub.py,v 1.9 2002/10/03 20:53:22 jim Exp $
 """
 
 from IObjectHub import IObjectHub
@@ -95,14 +95,14 @@ class ObjectHub(Persistent):
             # generate NotificationHubEvents only if object is known
             # ie registered  
             if IObjectMovedEvent.isImplementedBy(event):
-                canonical_location = locationAsUnicode(event.getFromLocation())
+                canonical_location = locationAsUnicode(event.fromLocation)
                 ruid = self._lookupRuid(canonical_location)
                 if ruid is not None:
-                    self._objectMoved(event.getFromLocation(),
-                                      event.getLocation())
+                    self._objectMoved(event.fromLocation,
+                                      event.location)
                 return
                 
-            canonical_location = locationAsUnicode(event.getLocation())
+            canonical_location = locationAsUnicode(event.location)
             ruid = self._lookupRuid(canonical_location)
             if ruid is not None:
                 if IObjectAddedEvent.isImplementedBy(event): 
@@ -114,7 +114,7 @@ class ObjectHub(Persistent):
                 elif IObjectRemovedEvent.isImplementedBy(event):
                     self._objectRemoved(canonical_location,
                                         ruid,
-                                        event.getObject())
+                                        event.object)
         # otherwise, ignore the event
 
     def lookupRuid(self, location):

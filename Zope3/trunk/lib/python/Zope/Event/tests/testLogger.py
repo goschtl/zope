@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testLogger.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
+$Id: testLogger.py,v 1.4 2002/10/03 20:53:22 jim Exp $
 """
 
 import unittest, sys
@@ -55,7 +55,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         # register a logger
         subscribe(self.eventlogger)
         # send an event
-        publishEvent(None, ObjectAddedEvent('foo'))
+        publishEvent(None, ObjectAddedEvent(None, 'foo'))
 
     def tearDown(self):
         unsubscribe(self.eventlogger)
@@ -71,7 +71,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
             'Event.Logger',
             BLATHER,
             'Zope.Event.ObjectEvent.ObjectAddedEvent',
-            "{'_ObjectAddedEvent__location': 'foo'}\n",
+            "[('location', 'foo'), ('object', None)]\n",
             None,
             )
             ])
@@ -89,7 +89,7 @@ class TestLogger2(TestLogger1):
             'Event.Logger',
             PANIC,
             'Zope.Event.ObjectEvent.ObjectAddedEvent',
-            "{'_ObjectAddedEvent__location': 'foo'}\n",
+            "[('location', 'foo'), ('object', None)]\n",
             None,
             )
             ])

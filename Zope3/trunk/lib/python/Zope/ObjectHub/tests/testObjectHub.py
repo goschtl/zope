@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.7 2002/08/22 17:05:24 gotcha Exp $
+$Id: testObjectHub.py,v 1.8 2002/10/03 20:53:23 jim Exp $
 """
 
 import unittest, sys
@@ -76,15 +76,15 @@ class LoggingSubscriber:
             location = self._canonical(location)
             testcase.assert_(interface.isImplementedBy(event),
                              'Interface %s' % interface.getName())
-            testcase.assertEqual(event.getLocation(), location)
+            testcase.assertEqual(event.location, location)
             
             if obj is not None:
-                testcase.assertEqual(event.getObject(), obj)
+                testcase.assertEqual(event.object, obj)
             
             # Sometimes, the test won't care about the ruid. In this case,
             # it is passed into the spec as None.
             if ruid is not None:
-                testcase.assertEqual(event.getRuid(), ruid)
+                testcase.assertEqual(event.hid, ruid)
 
         self.events_received = []
 
@@ -96,15 +96,15 @@ class RegistrationSubscriber(LoggingSubscriber):
     def notify(self, event):
         LoggingSubscriber.notify(self, event)
         if IObjectAddedEvent.isImplementedBy(event):
-            self.hub.register(event.getLocation())                  
+            self.hub.register(event.location)                  
         elif IObjectRemovedEvent.isImplementedBy(event):
             try:
-                ruid = self.hub.lookupRuid(event.getLocation())
+                ruid = self.hub.lookupRuid(event.location)
             except NotFoundError:
                 pass
             else:   
-                location = event.getLocation()
-                obj = event.getObject()
+                location = event.location
+                obj = event.object
                 removeEvent = RuidObjectEvent.ObjectRemovedHubEvent(
                     obj, ruid, location)
                 self.hub.notify(removeEvent)
@@ -173,11 +173,13 @@ class BasicHubTest(unittest.TestCase):
         self.object_hub.subscribe(self.subscriber)
 
     def setEvents(self):
-        self.added_event = ObjectAddedEvent(self.location)
-        self.added_new_location_event = ObjectAddedEvent(self.new_location)
-        self.removed_event = ObjectRemovedEvent(self.location, self.obj)
-        self.modified_event = ObjectModifiedEvent(self.location)
-        self.moved_event = ObjectMovedEvent(self.location,
+        self.added_event = ObjectAddedEvent(self.obj, self.location)
+        self.added_new_location_event = ObjectAddedEvent(
+            self.obj, self.new_location)
+        self.removed_event = ObjectRemovedEvent(self.obj, self.location)
+        self.modified_event = ObjectModifiedEvent(self.obj, self.location)
+        self.moved_event = ObjectMovedEvent(self.obj,
+                                            self.location,
                                             self.new_location)
 
 class TestRegistrationEvents(BasicHubTest):

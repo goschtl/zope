@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectEvent.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
+$Id: testObjectEvent.py,v 1.4 2002/10/03 20:53:22 jim Exp $
 """
 
 import unittest, sys
@@ -25,14 +25,17 @@ from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
 class TestObjectAddedEvent(unittest.TestCase):
     
     location = '/some/location'
+    object = object()
     klass = ObjectAddedEvent
     
     def setUp(self):
-        self.event = self.klass(self.location)
+        self.event = self.klass(self.object, self.location)
         
     def testGetLocation(self):
-        "Test getLocation method"
-        self.assertEqual(self.event.getLocation(),self.location)
+        self.assertEqual(self.event.location, self.location)
+        
+    def testGetObject(self):
+        self.assertEqual(self.event.object, self.object)
 
 class TestObjectModifiedEvent(TestObjectAddedEvent):
 
@@ -42,18 +45,15 @@ class TestObjectRemovedEvent(TestObjectAddedEvent):
 
     
     location = '/some/location'
-    obj = object()
     
     def setUp(self):
-        self.event = ObjectRemovedEvent(self.location, self.obj)
+        self.event = ObjectRemovedEvent(self.object, self.location)
         
     def testGetLocation(self):
-        "Test getLocation method"
-        self.assertEqual(self.event.getLocation(),self.location)
+        self.assertEqual(self.event.location, self.location)
         
     def testGetObject(self):
-        "Test getObject method"
-        self.assertEqual(self.event.getObject(), self.obj)
+        self.assertEqual(self.event.object, self.object)
 
 
 
@@ -62,11 +62,11 @@ class TestObjectMovedEvent(TestObjectAddedEvent):
     from_location = '/some/other/location'
     
     def setUp(self):
-        self.event = ObjectMovedEvent(self.from_location, self.location)
+        self.event = ObjectMovedEvent(self.object,
+                                      self.from_location, self.location)
 
     def testFromLocation(self):
-        "Test getFromLocation method"
-        self.assertEqual(self.event.getFromLocation(),self.from_location)
+        self.assertEqual(self.event.fromLocation, self.from_location)
         
 def test_suite():
     return unittest.TestSuite((unittest.makeSuite(TestObjectAddedEvent),

@@ -14,46 +14,38 @@
 """
 
 Revision information:
-$Id: IObjectEvent.py,v 1.3 2002/09/03 20:12:46 jim Exp $
+$Id: IObjectEvent.py,v 1.4 2002/10/03 20:53:22 jim Exp $
 """
 
 from IEvent import IEvent
+from Interface.Attribute import Attribute
 
 class IObjectEvent(IEvent):
     """Something has happened to an object.
 
     The object that generated this event is not necessarily the object
-    refered to by getLocation.
+    refered to by location.
     """
 
-    def getLocation():        
-        """returns the object location."""
+    object = Attribute("The subject of the event.")
+
+    location = Attribute("An optional object location.")
+
+class IObjectCreatedEvent(IObjectEvent):
+    """An object has been created.
+
+    The location will usually be None for this event."""
 
 class IObjectAddedEvent(IObjectEvent):
     """An object has been added to a container."""
-
-    def getLocation():        
-        """Returns the object location.
-
-        This is the location after it has been added to the container"""
 
 class IObjectModifiedEvent(IObjectEvent):
     """An object has been modified"""
 
 class IObjectRemovedEvent(IObjectEvent):
     """An object has been removed from a container"""
-    
-    def getLocation():
-        """location of the object before it was removed"""
-        
-    def getObject():
-        """the object that was removed"""
 
 class IObjectMovedEvent(IObjectEvent):
     """An object has been moved"""
 
-    def getFromLocation():
-        """location of the object before it was moved"""
-
-    def getLocation():
-        """location of the object after it was moved"""
+    fromLocation = Attribute("The old location for the object.")
