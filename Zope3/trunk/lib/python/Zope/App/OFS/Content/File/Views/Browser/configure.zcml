@@ -13,7 +13,6 @@
       factory=".Views.Browser.FileView." />
 
   <browser:view
-      name="edit"
       for=".IFile."
       permission="Zope.View"
       factory=".Views.Browser.FileEdit.">
@@ -39,8 +38,8 @@
   <browser:menuItems menu="zmi_views" for=".IFile.">
     <browser:menuItem title="View" action="."/>
     <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="Role Permissions" 
-             action="AllRolePermissions.html"/>
+    <!-- <browser:menuItem title="Role Permissions" 
+             action="AllRolePermissions.html"/> -->
   </browser:menuItems>
 
   <browser:menuItem menu="add_content"
