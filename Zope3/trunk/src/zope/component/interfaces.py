@@ -13,7 +13,7 @@
 ##############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.22 2004/03/06 02:54:29 garrett Exp $
+$Id: interfaces.py,v 1.23 2004/03/09 12:40:59 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -142,6 +142,20 @@ class IComponentArchitecture(Interface):
         ComponentLookupError
         """
 
+    def getFactoryInterfaces(context, name):
+        """Get interfaces implemented by a factory
+
+        finds the factory of the given name that is nearest to the
+        context, and returns the interface or interface tuple that
+        object instances created by the named factory will implement.
+        """
+
+    def getFactoriesFor(context, interface):
+        """Return a tuple (name, factory) of registered factories that
+        create objects which implement the given interface.
+        """
+
+    # XXX: This method is deprecated, since factories are utiltities
     def getFactory(context, name):
         """Get a factory
 
@@ -150,20 +164,13 @@ class IComponentArchitecture(Interface):
         ComponentLookupError
         """
 
+    # XXX: This method is deprecated, since factories are utiltities
     def queryFactory(context, name, default=None):
         """Get a factory
 
         Get the factory of the given name that is nearest to the
         context.  If a matching factory cannot be found then the
         default is returned.
-        """
-
-    def getFactoryInterfaces(context, name):
-        """Get interfaces implemented by a factory
-
-        finds the factory of the given name that is nearest to the
-        context, and returns the interface or interface tuple that
-        object instances created by the named factory will implement.
         """
 
     # Presentation service
@@ -284,6 +291,10 @@ class IServiceService(Interface):
 class IFactory(Interface):
     """A factory is responsible for creating other components."""
 
+    title = Attribute("The factory title.")
+
+    description = Attribute("A brief description of the factory.")
+
     # XXX Because __call__ does not receive a context, it is not possible
     #     to write a factory that does its job in terms of another factory.
     #     This functionality is needed for making advanced factories that
@@ -300,63 +311,6 @@ class IFactory(Interface):
         will implement.
         """
 
-class IFactoryInfo(Interface):
-    """Additional information about a factory."""
-
-    title = Attribute("The factory title.")
-
-    description = Attribute("A brief description of the factory.")
-
-
-class IFactoryService(Interface):
-    """A service to manage Factories."""
-
-    def createObject(name, *args, **kwargs):
-        """Create an object using a factory
-
-        Create a new object using the factory with the given name,
-        passing all remaining arguments to the factory transparently.
-
-        A ComponentLookupError will be raised if the factory component
-        can't be found.
-        """
-
-    def getFactory(name):
-        """Return a registered factory
-
-        A ComponentLookupError will be
-        raised if the factory component can't be found.
-        """
-
-    def queryFactory(name, default=None):
-        """Return a registered factory
-        """
-
-    def getInterfaces(name):
-        """returns the interface or interface tuple that
-        object instances created by the named factory will implement."""
-
-    def getFactoriesFor(iface):
-        """Return a tuple (name, factory) of registered factories that
-        create objects which implement the given interface.
-
-        A ComponentLookupError will be  raised if the factory component
-        can't be found.
-        """
-
-    def queryFactoriesFor(iface, default=None):
-        """Return a tuple (name, factory) list of registered factories
-        that create objects which implement the given interface
-
-        If no factory is found, the default value is returned.
-        """
-
-    def getFactoryInfo(name):
-        """Returns information about the specified factory.
-
-        Return value implements IFactoryInfo or is None if information
-        about the factory is not available.
-        """
 
 class IUtilityService(Interface):
     """A service to manage Utilities."""
