@@ -84,4 +84,4 @@ class BrowserDefault(object):
             name = getDefaultViewName(context, request)
         except ComponentLookupError:
             pass
-        return context, (name,)
+        return context, [name,]
