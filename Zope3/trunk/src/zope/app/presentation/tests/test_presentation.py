@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.12 2004/04/09 11:36:13 jim Exp $
+$Id: test_presentation.py,v 1.13 2004/04/17 14:33:13 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -313,6 +313,12 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                "'absolute_url', 'AbsoluteURL', '')"
              ]
             )
+
+    def test_localOnly_registrations(self):
+        self.test_queryView()
+        registrations = map(str, self._service.registrations(localOnly=True))
+        registrations.sort()
+        self.assertEqual(registrations, ['Registration(A)'])
 
     def test_getRegistrationsForInterface(self):
         self.test_queryView()

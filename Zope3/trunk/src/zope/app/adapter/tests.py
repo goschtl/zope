@@ -132,7 +132,7 @@
 
    This shows only the local registrations in L1.
 
-   $Id: tests.py,v 1.7 2004/04/08 21:31:39 jim Exp $
+   $Id: tests.py,v 1.8 2004/04/17 14:33:06 srichter Exp $
    """
 
 def test_named_adapters():
@@ -806,7 +806,7 @@ def test_service_registrations():
        those "above" them.
 
        Suppose we have a global adapter service, which is a type of
-       adapter registry that is an IComponentRegistry:
+       adapter registry that is an zope.component.interfaces.IRegistry:
 
        >>> G = GlobalAdapterService()
 
@@ -854,7 +854,15 @@ def test_service_registrations():
        Registration('IF1', (), 'IB0', u'', 'A102')
        Registration('IF1', (), 'IB1', u'', 'A112')
 
-       $Id: tests.py,v 1.7 2004/04/08 21:31:39 jim Exp $
+       Now we just want the local registrations for L1:
+
+       >>> registrations = map(repr, L1.registrations(localOnly=True))
+       >>> registrations.sort()
+       >>> for registration in registrations:
+       ...     print registration
+       Registration('IF0', (), 'IB1', u'', 'A011')
+
+       $Id: tests.py,v 1.8 2004/04/17 14:33:06 srichter Exp $
        """
     
     

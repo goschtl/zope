@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.15 2004/04/15 13:25:33 srichter Exp $
+$Id: presentation.py,v 1.16 2004/04/17 14:33:09 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -51,7 +51,6 @@ class LocalPresentationService(
 
     zope.interface.implements(
         zope.component.interfaces.IPresentationService,
-        zope.component.interfaces.IComponentRegistry,
         zope.app.site.interfaces.ISimpleService,
         zope.app.registration.interfaces.IRegistry,
         zope.app.interface.interfaces.IInterfaceBasedRegistry,
@@ -213,10 +212,13 @@ class LocalPresentationService(
             
         return layer.createRegistrationsFor(registration)
 
-    def registrations(self):
+    def registrations(self, localOnly=False):
         for layer in self.layers.itervalues():
             for registration in layer.registrations():
                 yield registration
+
+        if localOnly is True:
+            return
 
         next = self.next
         if next is None:
