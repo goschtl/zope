@@ -1,3 +1,26 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: checker.py,v 1.14 2003/04/15 21:23:47 bwarsaw Exp $
+"""
+
+import os
+import sys
+import types
+import datetime
+
+from zope.i18n.messageid import MessageID
 from zope.security.interfaces import IChecker
 from zope.exceptions \
      import Unauthorized, ForbiddenAttribute, Forbidden, DuplicationError
@@ -6,8 +29,6 @@ from zope.interface import Interface
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityManager
-import sys, os, types
-import datetime
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = True
@@ -368,6 +389,7 @@ BasicTypes = {
     types.NoneType: NoProxy,
     str: NoProxy,
     unicode: NoProxy,
+    MessageID: NoProxy,
     type(True): NoProxy, # Boolean, if available :)
     datetime.timedelta: NoProxy,
     datetime.datetime: NoProxy,
