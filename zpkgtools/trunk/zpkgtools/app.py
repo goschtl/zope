@@ -76,9 +76,7 @@ class Application:
 
         self.ip = include.InclusionProcessor(
             self.source, os.path.join(self.destination, pkgname))
-        # XXX Ouch!  Need a better way to deal with this.  The
-        # InclusionProcessor API doesn't smell right.
-        self.ip.manifest_prefix = os.path.join(self.destination, "")
+        self.manifest = self.ip.add_manifest(self.destination)
         try:
             self.ip.createDistributionTree()
         except cvsloader.CvsLoadingError, e:
@@ -102,6 +100,7 @@ class Application:
         # Build the destination directory:
         self.ip = include.InclusionProcessor(self.source,
                                              self.destination)
+        self.manifest = self.ip.add_manifest(self.destination)
         try:
             self.ip.createDistributionTree()
         except cvsloader.CvsLoadingError, e:
@@ -153,10 +152,10 @@ class Application:
         # Since we might actually be including zpkgtools as an
         # installable package, we only do this if we need to:
         if not os.path.exists(zpkgtools_dest):
-            self.ip.copyTree(zpkgtools.__path__[0], zpkgtools_dest)
+            tests_dir = os.path.join(zpkgtools.__path__[0], "tests")
+            self.ip.copyTree(zpkgtools.__path__[0], zpkgtools_dest,
+                             excludes={tests_dir: tests_dir})
             tests_dir = os.path.join(zpkgtools_dest, "tests")
-            # XXX We could toss the tests, but that would screw up the
-            # manifest, so we'll leave them in for now.
         # now we need to find setuptools:
         setuptools_dest = os.path.join(self.destination, "setuptools")
         if os.path.exists(setuptools_dest):
@@ -179,17 +178,17 @@ class Application:
         if source is None:
             source = self.loader.load(url)
 
-        self.ip.copyTree(source, setuptools_dest)
-        tests_dir = os.path.join(setuptools_dest, "tests")
-        # XXX We could toss the tests, but that would screw up the
-        # manifest, so we'll leave them in for now.
+        tests_dir = os.path.join(source, "tests")
+        self.ip.copyTree(source, setuptools_dest,
+                         excludes={tests_dir: tests_dir})
 
     def createManifest(self):
         if self.ip is None:
             return
         manifest_path = os.path.join(self.destination, "MANIFEST")
+        self.ip.add_output(manifest_path)
         f = file(manifest_path, "w")
-        for name in self.ip.manifest:
+        for name in self.manifest:
             print >>f, name
         f.close()
 
