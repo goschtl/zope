@@ -39,8 +39,10 @@
 
 
 <!-- States/Transitions Container Adding Menus -->
-  <menu id="add_stateful_states" title="State Items" />
-  <menu id="add_stateful_transitions" title="Transition Items" />
+  <menu id="add_stateful_states" title="State Items"
+        usage="addingdialog"/>
+  <menu id="add_stateful_transitions" title="Transition Items"
+        usage="addingdialog" />
 
 
 <!-- States Container -->

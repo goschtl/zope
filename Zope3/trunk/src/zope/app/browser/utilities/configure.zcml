@@ -6,7 +6,8 @@
 
   <menu
       id="add_schema_field"
-      title="Menu of Fields to be added to a schema."/>
+      title="Menu of Fields to be added to a schema."
+      usage="addingdialog" />
 
   <view
       name="+"

@@ -41,7 +41,8 @@
       content_factory="zope.app.workflow.service.ProcessDefinitionRegistration"
       arguments="name componentPath"
       set_after_add="status"
-      fields="name componentPath permission status" />
+      fields="name componentPath permission status" 
+      usage="addingdialog" />
    
   <editform
       name="index.html"
