@@ -18,8 +18,6 @@ out whether the existing implementation fits our needs.
 
 """
 import unittest
-import doctest
-
 from zope.interface import implements
 from zope.app.container.sample import SampleContainer
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -44,7 +42,7 @@ def setUpOldStyleVersionControl() :
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        doctest.DocFileSuite("README.txt", setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite("../README.txt", setUp=setUp, tearDown=tearDown),
         ))
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
