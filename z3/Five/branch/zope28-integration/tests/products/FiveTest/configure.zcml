@@ -191,6 +191,15 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- template security -->
+
+  <browser:page
+      for=".interfaces.ISimpleContent"
+      template="security.pt"
+      name="security.html"
+      permission="zope2.View"
+      />
+
   <!-- macro page -->
   <browser:page
       for=".interfaces.ISimpleContent"

@@ -175,6 +175,16 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+    def test_zpt_security(self):
+        self.logout()
+        view = self.folder.unrestrictedTraverse('testoid/security.html')
+        expected = """\
+<div>NoneType</div>
+<div>smtpd</div>
+"""
+        self.assertEquals(expected, view())
+
+
     def test_template_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++cockatiel.html')
         self.assert_(isinstance(resource, Resource))
