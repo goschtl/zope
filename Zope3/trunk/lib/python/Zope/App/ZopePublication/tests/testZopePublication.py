@@ -108,8 +108,10 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         
         from Zope.App.Traversing.Namespaces import provideNamespaceHandler
         from Zope.App.Traversing.PresentationNamespaces import view, resource
+        from Zope.App.Traversing.EtcNamespace import etc
         provideNamespaceHandler('view', view)
         provideNamespaceHandler('resource', resource)
+        provideNamespaceHandler('etc', etc)
 
 
         

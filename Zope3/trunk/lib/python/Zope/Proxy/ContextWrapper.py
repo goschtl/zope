@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: ContextWrapper.py,v 1.4 2002/07/11 18:21:37 jim Exp $
+$Id: ContextWrapper.py,v 1.5 2002/07/13 14:18:37 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy, getChecker, getObject
@@ -33,7 +33,7 @@ def ContextWrapper(_ob, _parent, **kw):
     """Create a context wrapper around an object with data
 
     If the object is wrapped in a security proxy, then the context
-    wrapper is inserted inside the security proxy.
+    wrapper is inserted inside an equivalent security proxy.
     """
     
     if type(_ob) in BasicTypes:
@@ -46,6 +46,26 @@ def ContextWrapper(_ob, _parent, **kw):
         _ob = Proxy(_Wrapper(_ob, _parent, **kw), checker)
     else:
         _ob = _Wrapper(_ob, _parent, **kw)
+        
+    return _ob
+
+def getWrapperObject(_ob):
+    """Remove a context wrapper around an object with data
+
+    If the object is wrapped in a security proxy, then the object
+    is inserted inside an equivalent  security proxy.
+    """
+    
+    if type(_ob) in BasicTypes:
+        # Don't wrap basic objects
+        return _ob
+    elif type(_ob) is Proxy:
+        # insert into proxies
+        checker = getChecker(_ob)
+        _ob = getObject(_ob)
+        _ob = Proxy(getobject(_ob), checker)
+    else:
+        _ob = getobject(_ob)
         
     return _ob
 
