@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.5 2003/06/02 11:08:29 jim Exp $
+$Id: test_declarations.py,v 1.6 2003/06/02 14:46:16 jim Exp $
 """
 
 import unittest
@@ -167,6 +167,27 @@ def test_signature_w_no_class_interfaces():
     >>> int(providedBy(c).__signature__
     ...     == directlyProvidedBy(c).__signature__)
     1
+    """
+
+def test_classImplement_on_deeply_nested_classes():
+    """This test is in response to a bug found, which is why it's a bit
+    contrived
+
+    >>> from zope.interface import *
+    >>> class B1:
+    ...     pass
+    >>> class B2(B1):
+    ...     pass
+    >>> class B3(B2):
+    ...     pass
+    >>> class D:
+    ...     implements()
+    >>> class S(B3, D):
+    ...     implements()
+
+    This failed due to a bug in the code for finding __providedBy__
+    descriptors for old-style classes.
+
     """
 
 def test_suite():

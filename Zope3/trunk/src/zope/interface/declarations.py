@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.11 2003/06/02 11:07:58 jim Exp $
+$Id: declarations.py,v 1.12 2003/06/02 14:46:15 jim Exp $
 """
 
 import sys
@@ -1301,7 +1301,7 @@ def _finddescr(cls):
         return d
     for b in cls.__bases__:
         d = _finddescr(b)
-        if d is not cls:
+        if d is not b:
             return d
 
     return cls
