@@ -8,6 +8,10 @@ Post-CMF 1.5.0
 
   Bug Fixes
 
+    - Portal: Fixed 'setupDefaultProperties'.
+      Backwards compatibility was broken and the 'default_charset' argument
+      was ignored.
+
     - Document/NewsItem: If the "plain text" format is selected the
       content will no longer be tested for HTML and reduced to text
       between opening and closing "body" tags
