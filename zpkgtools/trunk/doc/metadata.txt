@@ -66,6 +66,89 @@ Package Construction Information
   isn't a collection; this name is used since it usually will be a
   collection).
 
+  The way `PACKAGE.cfg` is processed is straightforward, but warrants
+  explanation.  The process has the following steps:
+
+  1. A copy of the component is made that can be written to.  This is
+     the *workspace*.
+
+  2. External references are loaded into the workspace.  It is
+     possible for this to overwrite portions of the component itself,
+     so specify the loads carefully.  This is based on the ``<load>``
+     section of `PACKAGE.cfg`; the ``<load>`` section cannot contain
+     exclusions.
+
+  3. Files from the workspace are copied into their final locations in
+     the component-specific portion of the distribution tree.
+
+     By default, the entire workspace is copied to the
+     component-specific portion of the distribution tree, with the
+     exception of files and directories associated with various
+     revision control systems.  Files named `.cvsignore` and
+     directories with names of `CVS`, `RCS`, or `SCCS` are excluded.
+
+     Files in the workspace can be excluded from this copy operation
+     using a line of the form
+
+       *files* ``-``
+
+     The hyphen indicates that this is an exclusion.  In this case,
+     *files* can contain globbing wildcards; these patterns will be
+     matched against the workspace, and can include files loaded as
+     part of the component or from external references.
+
+     A copy of a file with a new name can be generated in the
+     distribution tree using a line like this in `PACKAGE.cfg`:
+
+       *destination*   *source*
+
+     This causes the file or directory identified by *source* in the
+     workspace to be copied to the name *destination* in the
+     distribution tree.  This does *not* prevent a file named *source*
+     from also being created in the distribution; an exclusion must be
+     used to completely rename the file.  For example, to rename a
+     file named `README` to `README.txt`, use::
+
+       README.txt  README
+       README      -
+
+     The order of the two lines is irrelevant.
+
+     This operation is based on the ``<collection>`` section of the
+     `PACKAGE.cfg` file.
+
+  4. If the component being processed is the primary resource being
+     packaged, files from the workspace can be copied into the
+     distribution root.  This is done using the ``<distribution>``
+     section of `PACKAGE.cfg`.  This is most useful for including a
+     `README.txt` in the distribution root so people unpacking the
+     distribution can read about the package they've just unpacked.
+
+     Including a file in the distribution root is done using a basic
+     inclusion line of the form
+
+       *destination*   *source*
+
+     Unlike inclusions in the ``<collection>`` section, the
+     *destination* is interpreted relative to the distribution root
+     rather than the component-specific portion of the distribution
+     tree.
+
+     To move a file from the component into the distribution root, and
+     not include it when using the component as part of some other
+     distribution, use an inclusion in the ``<distribution>`` section
+     and an exclusion in the ``<collection>`` section::
+
+       <collection>
+         README       -
+       </collection>
+
+       <distribution>
+         README.txt   README
+       </distribution>
+
+     The ``<distribution>`` section may not contain exclusions.
+
   As an example, this is the `PACKAGE.cfg` being used for the
   ``ZConfig`` package at the time of this writing::
 
@@ -105,7 +188,9 @@ Package Construction Information
 
   This wouldn't have made it as screamingly obvious that we were
   dropping a text file from the finished package that wasn't already
-  mentioned, however.
+  mentioned, however.  This re-write would not be possible if there
+  were other files matching ``*.txt`` that should be copied into the
+  installed ``ZConfig`` package.
 
 
 Embedded Package Definitions
