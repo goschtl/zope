@@ -22,6 +22,7 @@ from Products.CMFCore.tests.base.content import STX_NO_HEADERS
 from Products.CMFCore.tests.base.content import STX_NO_HEADERS_BUT_COLON
 from Products.CMFCore.tests.base.content import SIMPLE_STRUCTUREDTEXT
 from Products.CMFCore.tests.base.content import SIMPLE_HTML
+from Products.CMFCore.tests.base.content import SIMPLE_XHTML
 
 from Products.CMFDefault.Document import Document
 
@@ -39,30 +40,25 @@ class DocumentTests(RequestTest):
         self.assertEqual( d.text_format, 'structured-text' )
         self.assertEqual( d._stx_level, 1 )
 
-    def test_BasicHtmlPUT(self):
-        self.REQUEST['BODY'] = BASIC_HTML
+    def test_editBasicHTML(self):
         d = self.d
-        d.PUT(self.REQUEST, self.RESPONSE)
+        d.edit('html', BASIC_HTML)
+        self.failUnless( hasattr(d, 'cooked_text') )
         self.assertEqual( d.Format(), 'text/html' )
-        self.assertEqual( d.title, 'Title in tag' )
         self.assertEqual( d.text.find('</body>'), -1 )
-        self.assertEqual( d.Description(), 'Describe me' )
-        self.assertEqual( len(d.Contributors()), 3 )
-        self.assertEqual( d.Contributors()[-1], 'Benotz, Larry J (larry@benotz.stuff)' )
+        self.assertEqual( d.cooked_text, '\n  <h1>Not a lot here</h1>\n ' )
 
         # Since the format is html, the STX level operands should
         # have no effect.
         ct = d.CookedBody(stx_level=3, setlevel=1)
         self.assertEqual( d._stx_level, 1 )
 
-        subj = list(d.Subject())
-        self.assertEqual( len(subj), 4 )
-        subj.sort()
-        self.assertEqual( subj, [ 'content management'
-                                , 'framework'
-                                , 'unit tests'
-                                , 'zope'
-                                ] )
+    def test_editSimpleXHTML(self):
+        d = self.d
+        d.edit('html', SIMPLE_XHTML)
+        self.failUnless( hasattr(d, 'cooked_text') )
+        self.assertEqual( d.Format(), 'text/html' )
+        self.assertEqual( d.cooked_text, '\n  <h1>Not a lot here</h1>\n ')
 
     def test_UpperedHtml(self):
         self.REQUEST['BODY'] = BASIC_HTML.upper()
@@ -92,16 +88,6 @@ class DocumentTests(RequestTest):
         d.PUT(self.REQUEST, self.RESPONSE)
         self.assertEqual( d.Format(), 'text/html' )
         self.assertEqual( d.Description(), 'Describe me' )
-
-    def test_EditStripHTMLToBody(self):
-        # bodyfind should strip away everything but the contents of the body
-        # tag.
-        self.REQUEST['BODY'] = BASIC_HTML
-        d = self.d
-        d.PUT(self.REQUEST, self.RESPONSE)
-        self.failUnless( hasattr(d, 'cooked_text') )
-        self.assertEqual( d.Format(), 'text/html' )
-        self.assertEquals(d.cooked_text, '\n  <h1>Not a lot here</h1>\n ')
 
     def test_EditPlainDocumentWithEmbeddedHTML(self):
         d = self.d
@@ -371,6 +357,40 @@ class TestDocumentPUT(RequestTest):
         RequestTest.setUp(self)
         self.d = Document('foo')
 
+    def test_PUTBasicHTML(self):
+        self.REQUEST['BODY'] = BASIC_HTML
+        d = self.d
+        r = d.PUT(self.REQUEST, self.RESPONSE)
+        self.failUnless( hasattr(d, 'cooked_text') )
+        self.assertEqual( d.Format(), 'text/html' )
+        self.assertEqual( d.title, 'Title in tag' )
+        self.assertEqual( d.text.find('</body>'), -1 )
+        self.assertEqual( d.Description(), 'Describe me' )
+        self.assertEqual( len(d.Contributors()), 3 )
+        self.assertEqual( d.Contributors()[-1],
+                          'Benotz, Larry J (larry@benotz.stuff)' )
+        self.assertEqual( d.cooked_text, '\n  <h1>Not a lot here</h1>\n ' )
+        self.assertEqual( r.status, 204 )
+
+        subj = list(d.Subject())
+        self.assertEqual( len(subj), 4 )
+        subj.sort()
+        self.assertEqual( subj, [ 'content management'
+                                , 'framework'
+                                , 'unit tests'
+                                , 'zope'
+                                ] )
+
+    def test_PUTSimpleXHTML(self):
+        self.REQUEST['BODY'] = SIMPLE_XHTML
+        d = self.d
+        r = d.PUT(self.REQUEST, self.RESPONSE)
+        self.failUnless( hasattr(d, 'cooked_text') )
+        self.assertEqual( d.Format(), 'text/html' )
+        self.assertEqual( d.Description(), 'Describe me' )
+        self.assertEqual( d.cooked_text, '\n  <h1>Not a lot here</h1>\n ' )
+        self.assertEqual( r.status, 204 )
+
     def test_PutStructuredTextWithHTML(self):
             
         self.REQUEST['BODY'] = STX_WITH_HTML
@@ -392,14 +412,6 @@ class TestDocumentPUT(RequestTest):
         html = '%s\n\n  \n   %s' % (DOCTYPE, BASIC_HTML)
         self.REQUEST['BODY'] = html
         
-        r = self.d.PUT(self.REQUEST, self.RESPONSE)
-        self.assertEqual( self.d.Format(), 'text/html' )
-        self.assertEqual( self.d.Description(), 'Describe me' )
-        self.assertEqual( r.status, 204 )
-
-    def test_PutHtml(self):
-        
-        self.REQUEST['BODY'] = BASIC_HTML
         r = self.d.PUT(self.REQUEST, self.RESPONSE)
         self.assertEqual( self.d.Format(), 'text/html' )
         self.assertEqual( self.d.Description(), 'Describe me' )

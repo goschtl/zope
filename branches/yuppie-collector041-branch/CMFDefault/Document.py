@@ -167,7 +167,8 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             contents=file.read()
             if contents:
                 text = self.text = contents
-        text = bodyfinder(text)
+        if html_headcheck(text):
+            text = bodyfinder(text)
         self.setFormat(text_format)
         self._edit(text=text, text_format=text_format, safety_belt=safety_belt)
         self.reindexObject()

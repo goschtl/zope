@@ -374,41 +374,38 @@ def isHTMLSafe( html ):
     else:
         return 1
 
-security.declarePrivate('_bodyre')
-_bodyre = re.compile( r'^\s*<html.*<body.*?>', re.DOTALL | re.I )
-
-security.declarePrivate('_endbodyre')
-_endbodyre = re.compile( r'</body', re.DOTALL | re.I )
-
 security.declarePublic('bodyfinder')
-def bodyfinder( text ):
+def bodyfinder(text):
+    """ Return body or unchanged text if no body tags found.
 
-    bod = _bodyre.search( text )
-    if not bod:
+    Always use html_headcheck() first.
+    """
+    lowertext = text.lower()
+    bodystart = lowertext.find('<body')
+    if bodystart == -1:
         return text
+    bodystart = lowertext.find('>', bodystart) + 1
+    if bodystart == 0:
+        return text
+    bodyend = lowertext.rfind('</body>', bodystart)
+    if bodyend == -1:
+        return text
+    return text[bodystart:bodyend]
 
-    end = _endbodyre.search( text )
-    if not end:
-        return text
-    else:
-        return text[bod.end():end.start()]
+security.declarePrivate('_htfinder')
+_htfinder = re.compile(r'(\s|(<[^<>]*?>))*<html.*<body.*?>.*</body>',
+                       re.DOTALL)
 
 security.declarePublic('html_headcheck')
-def html_headcheck( html ):
+def html_headcheck(html):
     """ Return 'true' if document looks HTML-ish enough.
+
+    If true bodyfinder() will be able to find the HTML body.
     """
     lowerhtml = html.lower()
     if lowerhtml.find('<html') == -1:
         return 0
-
-    lines = re.split(r'[\n\r]+?', html)
-
-    for line in lines:
-        line = line.strip()
-
-        if not line:
-            continue
-        elif line.lower().startswith( '<html' ):
-            return 1
-        elif line[0] != '<':
-            return 0
+    elif _htfinder.match(lowerhtml):
+        return 1
+    else:
+        return 0
