@@ -14,10 +14,9 @@
 """
 
 Revision information:
-$Id: Role.py,v 1.4 2002/06/23 17:03:42 jim Exp $
+$Id: Role.py,v 1.5 2002/11/11 08:36:54 stevea Exp $
 """
 
-from Zope.App.Security.IRole import IRole
 from Zope.App.Security.Registries.RoleRegistry import Role
 from Persistence import Persistent
 

@@ -14,12 +14,11 @@
 """
 
 Revision information:
-$Id: RoleService.py,v 1.5 2002/08/01 18:42:12 jim Exp $
+$Id: RoleService.py,v 1.6 2002/11/11 08:36:54 stevea Exp $
 """
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.Security.IRoleService import IRoleService
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.App.Security.Registries.RoleRegistry import roleRegistry
 from Zope.ContextWrapper import ContextMethod
 from Zope.App.ComponentArchitecture.NextService import getNextService
 
@@ -28,7 +27,7 @@ class ILocalRoleService(IRoleService, IContainer):
 
 class RoleService(BTreeContainer):
 
-    __implements__ =  ILocalRoleService
+    __implements__ = ILocalRoleService
 
     ############################################################
     # Implementation methods for interface
@@ -36,14 +35,15 @@ class RoleService(BTreeContainer):
 
     def getRole(wrapped_self, rid):
         '''See interface IRoleService'''
-        try: return wrapped_self[rid]
+        try:
+            return wrapped_self[rid]
         except KeyError:
             # We failed locally: delegate to a higher-level service.
-            sv= getNextService(wrapped_self, 'Roles')
-            if sv: return sv.getRole(rid)
+            sv = getNextService(wrapped_self, 'Roles')
+            if sv:
+                return sv.getRole(rid)
             raise # will be original Key Error
-    
-    getRole=ContextMethod(getRole)
+    getRole = ContextMethod(getRole)
 
     def getRoles(wrapped_self):
         '''See interface IRoleService'''
@@ -52,8 +52,7 @@ class RoleService(BTreeContainer):
         if roleserv:
             roles.extend(roleserv.getRoles())
         return roles
-    
-    getRoles=ContextMethod(getRoles)
+    getRoles = ContextMethod(getRoles)
 
     #
     ############################################################
