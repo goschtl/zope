@@ -111,6 +111,7 @@ class Test(unittest.TestCase):
         p._p_deactivate()
         # XXX does this really test the activate method?
         p._p_activate()
+        self.assertEqual(p._p_state, 0)
         self.assertEqual(p.x, 42)
 
     def testDeactivate(self):
@@ -122,9 +123,9 @@ class Test(unittest.TestCase):
         p._p_jar = dm
         p._p_changed = 0
         p._p_deactivate()
-        # XXX does this really test the activate method?
         self.assertEqual(p._p_state, 3)
         p._p_activate()
+        self.assertEqual(p._p_state, 0)
         self.assertEqual(p.x, 42)
 
     def testInterface(self):
