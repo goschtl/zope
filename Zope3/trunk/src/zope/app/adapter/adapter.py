@@ -161,7 +161,8 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
             for key, stack in stacks.iteritems():
                 registration = stack.active()
                 if registration is not None:
-                    radapters[key] = registration.factory
+                    from zope.proxy import removeAllProxies
+                    radapters[key] = removeAllProxies(registration.factory)
 
 
         if adapters != self.adapters:
