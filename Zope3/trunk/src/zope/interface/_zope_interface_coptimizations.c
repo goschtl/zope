@@ -70,7 +70,7 @@ import_declarations(void)
   return 0;
 }
 
-extern PyTypeObject SpecType;   /* Forward */
+static PyTypeObject SpecType;   /* Forward */
 
 static PyObject *
 implementedByFallback(PyObject *cls)

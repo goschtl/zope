@@ -461,6 +461,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #366 (_zope_interface_coptimizations.c compilation error)
+
+      - Fixed issue #368 (Typo fix in src/zope/app/container/constraints.py)
+
       - Fixed issue #329 (apidoc + TAL)
 
       - Object copy events weren't dispatched for object sublocations.
