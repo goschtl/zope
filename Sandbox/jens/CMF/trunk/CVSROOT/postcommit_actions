@@ -412,13 +412,6 @@ def do_sync(path, repo, remote, receiverid, subjs=None,
         cmd = cmd + ' --exclude "/*/*/*"'
 
     reposubdir = string.join(string.split(repo, '/')[1:], '/')
-##    # XXX BOGUS - this twisted condition is because i haven't thought through
-##    #     the proper way to handle special locations for remote repositories
-##    #     (eg for amos' XMLDocument).
-##    if (reposubdir
-##        and (reposubdir != '/')
-##        and (reposubdir != path[-1 * len(reposubdir):])):
-##        path = path + '/' + reposubdir
 
     try:
         repodir = remote['repodir'] % path
@@ -465,8 +458,8 @@ def do_sync(path, repo, remote, receiverid, subjs=None,
         complain("%sDoing rsync cmd:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), cmd)
     elif SYNCREPO:
-        complain("%sDoing syncrepo rsync of %s\n", 
-                 ((DRYRUN and "NOT ") or ""), path)
+        complain("%sDoing syncrepo rsync of %s\n  to %s\n", 
+                 ((DRYRUN and "NOT ") or ""), path, remotepath)
 
     if DRYRUN:
         print "Would do:\n\t", cmd
