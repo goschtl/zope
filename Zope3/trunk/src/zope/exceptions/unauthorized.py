@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: unauthorized.py,v 1.4 2003/02/11 16:00:06 sidnei Exp $
+$Id: unauthorized.py,v 1.5 2003/02/17 18:01:13 stevea Exp $
 """
 
 from types import StringType
@@ -40,21 +40,24 @@ class Unauthorized(ZopeError):
         if name is None and (
             not isinstance(message, StringType) or len(message.split()) <= 1):
             # First arg is a name, not a message
-            name=message
-            message=None
+            name = message
+            message = None
 
-        self.name=name
-        self.message=message
-        self.value=value
+        self.name = name
+        self.message = message
+        self.value = value
 
         if kw:
-            if needed: needed.update(kw)
-            else: needed=kw
+            if needed:
+                needed.update(kw)
+            else:
+                needed = kw
 
-        self.needed=needed
+        self.needed = needed
 
     def __str__(self):
-        if self.message is not None: return self.message
+        if self.message is not None:
+            return self.message
         if self.name is not None:
             return ("You are not allowed to access %s in this context"
                     % self.name)
@@ -64,9 +67,10 @@ class Unauthorized(ZopeError):
 
 
     def getValueName(self):
-        v=self.value
-        vname=getattr(v, '__name__', None)
-        if vname: return vname
+        v = self.value
+        vname = getattr(v, '__name__', None)
+        if vname:
+            return vname
         c = getattr(v, '__class__', type(v))
         c = getattr(c, '__name__', 'object')
         return "a particular %s" % c
