@@ -7,6 +7,12 @@ After 1.3
 
   Bug Fixes
 
+    - Remove workaround in CMFCore.utils for recognizing links in
+      StructuredText:  STX in CMF content should now recognize exactly
+      the same links as the underlying Zope.  Note that we *do* still
+      provide a customized HTML class, to permit embedding images without
+      generating the "whole" page.  Collector #6.
+
     - Remove bizarre, shadowing import of CMFCore.utils as 'utils'
       into package namespace of CMFDefault;  instead, import specific
       names from that package directly (thanks to Paul Winkler for

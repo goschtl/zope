@@ -43,10 +43,6 @@ try:
 except ImportError:
     UNIQUE = 2
 
-import StructuredText
-from StructuredText.HTMLWithImages import HTMLWithImages
-
-_STXDWI = StructuredText.DocumentWithImages.__class__
 
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
 
@@ -537,57 +533,41 @@ def registerIcon(klass, iconspec, _prefix=None):
 #   XXX:    This section is mostly workarounds for things fixed in the
 #           core, and should go away soon.
 #
+from StructuredText import Basic as STXBasic
+from StructuredText import DocumentWithImages
+from StructuredText.HTMLClass import HTMLClass
+from StructuredText.HTMLWithImages import HTMLWithImages
 
-class CMFDocumentClass( StructuredText.DocumentWithImages.__class__ ):
+
+class _CMFHtmlWithImages( HTMLWithImages ):
+
+    """ Special subclass of HTMLWithImages, overriding document()
     """
-    Override DWI to get '_' into links, and also turn on inner/named links.
-    """
-    text_types = [
-        'doc_named_link',
-        'doc_inner_link',
-        ] + _STXDWI.text_types
-    
-    _URL_AND_PUNC = r'([a-zA-Z0-9_\@\.\,\?\=\&\+\!\/\:\;\-\#\~]+)'
-    def doc_href( self
-                , s
-                , expr1 = re.compile( _STXDWI._DQUOTEDTEXT
-                                    + "(:)"
-                                    + _URL_AND_PUNC
-                                    + _STXDWI._SPACES
-                                    ).search
-                , expr2 = re.compile( _STXDWI._DQUOTEDTEXT
-                                    + r'(\,\s+)'
-                                    + _URL_AND_PUNC
-                                    + _STXDWI._SPACES
-                                    ).search
-                ):
-        return _STXDWI.doc_href( self, s, expr1, expr2 )
-
-CMFDocumentClass = CMFDocumentClass()
-
-class CMFHtmlWithImages( HTMLWithImages ):
-    """ Special subclass of HTMLWithImages, overriding document() """
 
     def document(self, doc, level, output):
-        """\
+
+        """ Return only the "meat", not the "skeleton", of the text.
+
         HTMLWithImages.document renders full HTML (head, title, body).  For
         CMF Purposes, we don't want that.  We just want those nice juicy
         body parts perfectly rendered.
         """
         for c in doc.getChildNodes():
-           getattr(self, self.element_types[c.getNodeName()])(c, level, output)
+            func = getattr(self, self.element_types[c.getNodeName()])
+            func(c, level, output)
 
-CMFHtmlWithImages = CMFHtmlWithImages()
+CMFHtmlWithImages = _CMFHtmlWithImages()
+
             
 def format_stx( text, level=1 ):
     """
         Render STX to HTML.
     """
-    st = StructuredText.Basic( text )   # Creates the basic DOM
-    if not st:                          # If it's an empty object
-        return ""                       # return now or have errors!
+    st = STXBasic( text )   # Creates the basic DOM
+    if not st:              # If it's an empty object
+        return ""           # return now or have errors!
 
-    doc = CMFDocumentClass( st )
+    doc = DocumentWithImages( st )
     html = CMFHtmlWithImages( doc, level )
     return html
 
