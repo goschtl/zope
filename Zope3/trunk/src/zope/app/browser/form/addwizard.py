@@ -13,10 +13,11 @@
 ##############################################################################
 """Add Wizard View Classes
 
-$Id: addwizard.py,v 1.11 2003/10/22 19:17:09 sidnei Exp $
+$Id: addwizard.py,v 1.12 2003/11/21 17:10:10 jim Exp $
 """
 import sys
 
+from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets
@@ -24,8 +25,7 @@ from zope.app.interfaces.form import WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import getAdapter
-from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
 from editwizard import EditWizardView, WizardStorage
@@ -134,4 +134,5 @@ def AddWizardViewFactory(
                     )
                   )
 
-    provideView(for_, name, IBrowserPresentation, class_, layer)
+    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s.provideView(for_, name, IBrowserRequest, class_, layer)

@@ -13,14 +13,15 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.11 2003/09/21 17:30:36 jim Exp $
+$Id: schemadisplay.py,v 1.12 2003/11/21 17:10:10 jim Exp $
 """
+from zope.app import zapi
+
 from zope.schema import getFieldNamesInOrder
 
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component.view import provideView
 from zope.component import getAdapter
 
 from zope.app.form.utility import setUpDisplayWidgets
@@ -82,4 +83,5 @@ def DisplayViewFactory(name, schema, label, permission, layer,
     defineChecker(class_,
                   NamesChecker(("__call__", "__getitem__", "browserDefault"),
                                permission))
-    provideView(for_, name, IBrowserPresentation, class_, layer)
+    s = zapi.getService(None, zapi.servicenames.Prefix)
+    s.provideView(for_, name, IBrowserRequest, class_, layer)

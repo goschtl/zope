@@ -13,15 +13,15 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.40 2003/10/23 14:54:32 garrett Exp $
+$Id: editview.py,v 1.41 2003/11/21 17:10:10 jim Exp $
 """
 from datetime import datetime
 
+from zope.app import zapi
 from zope.schema import getFieldNamesInOrder
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component.view import provideView
 from zope.component import getAdapter
 
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -139,4 +139,5 @@ def EditViewFactory(name, schema, label, permission, layer,
                                 "browserDefault", "publishTraverse"),
                                permission))
 
-    provideView(for_, name, IBrowserPresentation, class_, layer)
+    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s.provideView(for_, name, IBrowserRequest, class_, layer)

@@ -13,10 +13,11 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.34 2003/11/03 21:38:02 jeremy Exp $
+$Id: add.py,v 1.35 2003/11/21 17:10:10 jim Exp $
 """
 import sys
 
+from zope.app import zapi
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.submit import Update
 from zope.app.event import publish
@@ -26,9 +27,9 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.form import WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.component.servicenames import Presentation
 from zope.component import getAdapter
-from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
 
@@ -162,4 +163,5 @@ def AddViewFactory(name, schema, label, permission, layer,
                     )
                   )
 
-    provideView(for_, name, IBrowserPresentation, class_, layer)
+    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s.provideView(for_, name, IBrowserRequest, class_, layer)

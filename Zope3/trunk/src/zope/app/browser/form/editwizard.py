@@ -13,17 +13,17 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.17 2003/11/03 21:38:01 jeremy Exp $
+$Id: editwizard.py,v 1.18 2003/11/21 17:10:10 jim Exp $
 """
+from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.component import getAdapter
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      globalBrowserMenuService
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component.view import provideView
 from zope.app.form.utility \
         import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
 from zope.app.interfaces.form import WidgetInputError
@@ -231,6 +231,7 @@ def EditWizardViewFactory(name, schema, permission, layer,
         NamesChecker(("__call__", "__getitem__", "browserDefault"), permission)
         )
 
-    provideView(for_, name, IBrowserPresentation, class_, layer)
+    s = zapi.getService(None, zapi.servicenames.Previous)
+    s.provideView(for_, name, IBrowserRequest, class_, layer)
 
 
