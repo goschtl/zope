@@ -453,7 +453,34 @@ def test_iter_of_sequences():
     >>> check_forbidden_call(list, p)
     'ForbiddenAttribute: __iter__'
     """
-    
+
+def test_interfaces_and_declarations():
+    """Test that we can still use interfaces though proxies
+
+    >>> import zope.interface
+    >>> class I(zope.interface.Interface):
+    ...     pass
+    >>> class IN(zope.interface.Interface):
+    ...     pass
+    >>> class II(zope.interface.Interface):
+    ...     pass
+    >>> class N(object):
+    ...     zope.interface.implements(I)
+    ...     zope.interface.classProvides(IN)
+    >>> n = N()
+    >>> zope.interface.directlyProvides(n, II)
+    >>> from zope.security.checker import ProxyFactory
+    >>> N = ProxyFactory(N)
+    >>> n = ProxyFactory(n)
+    >>> I.implementedBy(N)
+    True
+    >>> IN.providedBy(N)
+    True
+    >>> I.providedBy(n)
+    True
+    >>> II.providedBy(n)
+    True
+    """
 
     
 from zope.testing.doctestunit import DocTestSuite
