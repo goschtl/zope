@@ -37,7 +37,7 @@ framework:
   in folders.  Each folder has a registration manager containing all
   of the registration objects for that folder.
 
-- RegistrationStack objects manage multiple registrations for
+- `RegistrationStack` objects manage multiple registrations for
   the same registration parameters (at most one of which is active at
   any given time).  For example, in the case of a utility service
   these would be registrations for the same interface and name.
@@ -79,7 +79,7 @@ There are several major concepts/terms that need to be understood
 - Registerables
 
   Registerables are objects that can be registered.  They implement the
-  ``IRegisterable'' interface.
+  `IRegisterable` interface.
 
 - Registries
 
@@ -110,8 +110,8 @@ There are several major concepts/terms that need to be understood
   parameters can be active at one time, but multiple registrations are
   managed. 
 
-  Registries provide functions for looking up (``queryRegistrationsFor'')
-  or creating (``createRegistrationsFor'') registration stacks.  These
+  Registries provide functions for looking up (`queryRegistrationsFor()`)
+  or creating (`createRegistrationsFor()`) registration stacks.  These
   methods are passed registration objects whos attribute values are
   used to specify the desired registration stacks.
 
@@ -120,13 +120,13 @@ There are several major concepts/terms that need to be understood
   by the uttility, and the utility name.  For a given interface and
   name, the utility service may have multiple ustility
   registrations. It uses a registration stack to store these. We can
-  get the registration stack by calling ``queryRegistrationsFor'' with
+  get the registration stack by calling `queryRegistrationsFor()` with
   a registration object that has the desired interface and name.  The
   registration object passed need not be in in the stack. It is used
   soley to provide the parameters.  
 
 - Registered
 
-  The interface ``IRegistered'' provides storage and access to the
+  The interface `IRegistered` provides storage and access to the
   registrations for a registerable.  When we make a registration, we
   refer to it in a registration stack and in the registered object.
