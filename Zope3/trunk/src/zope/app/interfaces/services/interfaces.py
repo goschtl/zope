@@ -13,12 +13,11 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.3 2003/01/06 18:39:37 stevea Exp $
+$Id: interfaces.py,v 1.4 2003/01/07 19:50:26 stevea Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.component.interfacefield import InterfaceField
-from zope.app.component.interfacefield import InterfacesField
 from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
 from zope.app.services.field import ComponentLocation
