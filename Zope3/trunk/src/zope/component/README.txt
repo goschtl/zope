@@ -206,7 +206,7 @@ a callable object adapts some interfaces (or classes):
     >>> personJob = zope.interface.implementer(IJob)(personJob)
     >>> personJob = zope.component.adapter(IPerson)(personJob)
 
-(In Python 2.4, the example can be written:
+(In Python 2.4, the example can be written::
 
     @zope.interface.implementer(IJob)
     @zope.component.adapter(IPerson)
