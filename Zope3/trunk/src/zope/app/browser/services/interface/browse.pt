@@ -1,0 +1,19 @@
+<html metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="zope">
+
+<div metal:fill-slot="body">
+
+<h2 i18n:translate="">Interfaces registered with the interface service</h2>
+
+<ul>
+<li tal:repeat="dict view/getInterfaces">
+    <a href="/" 
+       tal:attributes="href string:detail.html?id=${dict/id}"
+       tal:content="dict/name">An interface name
+    </a>
+</li>
+</ul>
+
+</div>
+
+</html>
