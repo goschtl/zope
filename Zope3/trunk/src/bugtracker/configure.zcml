@@ -326,40 +326,25 @@
 
   <!-- XML-RPC presentation -->
   <xmlrpc:view
-      name="methods"
       for=".interfaces.IBugTracker"
       permission="bugtracker.ViewBug" 
-      allowed_attributes="getBugNames addBug deleteBug"
+      methods="getBugNames addBug deleteBug"
       class=".xmlrpc.BugTrackerMethods" />
 
-  <xmlrpc:defaultView
-      name="methods"
-      for=".interfaces.IBugTracker" />
-
   <xmlrpc:view
-      name="methods"
       for=".interfaces.IBug"
       permission="bugtracker.ViewBug" 
-      allowed_attributes="getProperties setProperties 
+      methods="getProperties setProperties 
                        getCommentNames addComment deleteComment
                        getAttachmentNames addAttachment deleteAttachment
                        "
       class=".xmlrpc.BugMethods" />
 
-  <xmlrpc:defaultView
-      name="methods"
-      for=".interfaces.IBug" />
-
   <xmlrpc:view
-      name="methods"
       for=".interfaces.IComment"
       permission="bugtracker.ViewBug" 
-      allowed_attributes="getBody setBody"
+      methods="getBody setBody"
       class=".xmlrpc.CommentMethods" />
-
-  <xmlrpc:defaultView
-      name="methods"
-      for=".interfaces.IComment" />
 
 
   <!-- Register Mailer and Mail Service -->
