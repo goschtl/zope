@@ -200,10 +200,14 @@ class Application:
 
     def run(self):
         try:
-            self.loadResource()
-            self.buildDistribution()
-            if self.options.include_support_code:
-                self.includeSupportCode()
+            try:
+                self.loadResource()
+                self.buildDistribution()
+                if self.options.include_support_code:
+                    self.includeSupportCode()
+            except cvsloader.CvsLoadingError, e:
+                print >>sys.stderr, e
+                sys.exit(e.exitcode)
             self.createTarball()
             self.cleanup()
         except:
