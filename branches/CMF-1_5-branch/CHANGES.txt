@@ -2,6 +2,10 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CMFSetup: When importing skins configurations you can now specify a
+      layer to be inserted after a given layer. Previously you could only
+      insert before a given layer.
+
     - CatalogTool: All default FieldIndex instances used for indexing
       DateTime values are now created as DateIndex instances instead. All
       default TextIndex instances are now created as ZCTextIndex instances.
