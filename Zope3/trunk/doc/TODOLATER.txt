@@ -160,11 +160,6 @@ Things to do After the next release (in no particular order)
   
   missing WebDAV verbs: PROPPATCH, MOVE, COPY, DELETE, LOCK and UNLOCK
 
-- Help System?
-
-  There is one, but I don't know what state it's in or how to write
-  help for it.
-
 - Python scripts
 
   What form should these take? Should they be like Zope 2 Python
