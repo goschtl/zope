@@ -21,12 +21,6 @@ from zope.interface import Interface, directlyProvides, Attribute
 
 class InterfaceTests(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def testClassImplements(self):
         self.assert_(IC.implementedBy(C))
 
@@ -248,6 +242,14 @@ class InterfaceTests(unittest.TestCase):
         self.assertEqual(I.__doc__, "")
         self.assertEqual(list(I), ['__doc__'])
 
+    def testIssue228(self):
+        # Test for http://collector.zope.org/Zope3-dev/228
+        class I(Interface):
+            "xxx"
+        class Bad:
+            __providedBy__ = None
+        # Old style classes don't have a '__class__' attribute
+        self.failUnlessRaises(AttributeError, I.providedBy, Bad)
 
 
 class _I1(Interface):

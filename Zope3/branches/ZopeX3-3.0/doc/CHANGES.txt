@@ -12,6 +12,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 228.
+
       - A service registration form now displays correct information
         about the registration.
 
