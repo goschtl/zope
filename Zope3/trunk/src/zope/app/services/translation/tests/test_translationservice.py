@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.6 2003/03/25 23:25:13 bwarsaw Exp $
+$Id: test_translationservice.py,v 1.7 2003/03/26 00:19:57 srichter Exp $
 """
 import sys
 import unittest
@@ -44,7 +44,7 @@ class Environment:
         return self.langs
 
 
-class TestILocalTranslationService(unittest.TestCase):
+class TestILocalTranslationService:
 
     def _getTranslationService(self):
         """This should be overwritten by every clas that inherits this test.
