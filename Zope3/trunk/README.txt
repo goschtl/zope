@@ -78,7 +78,7 @@ Finding out how to develop new content types:
 
   - The Zope3 developer cookbook at:
 
-    http://dev/zope.org/Zope3/DevelCookbook
+    http://dev.zope.org/Zope3/DevelCookbook
 
   - Look for tidbits in the doc directory.
 
