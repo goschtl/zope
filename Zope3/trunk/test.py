@@ -163,6 +163,7 @@ import sys
 import time
 import traceback
 import unittest
+import warnings
 
 from distutils.util import get_platform
 
@@ -799,6 +800,9 @@ def process_args(argv=None):
         else:
             print "Running %s tests at level %d" % (kind, level)
 
+    warnings.filterwarnings("error")
+    warnings.filterwarnings("ignore", module="logging")
+
     if args:
         if len(args) > 1:
             test_filter = args[1]
@@ -809,12 +813,20 @@ def process_args(argv=None):
             # status if on a false return value from main.
             coverdir = os.path.join(os.getcwd(), "coverage")
             import trace
+            ignoremods = ["os", "posixpath", "stat"]
             tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
-                                 trace=0, count=1)
+                                 ignoremods=ignoremods,
+                                 trace=False, count=True)
 
             tracer.runctx("main(module_filter, test_filter, libdir)",
                           globals=globals(), locals=vars())
             r = tracer.results()
+            path = "/tmp/trace.%s" % os.getpid()
+            import cPickle
+            f = open(path, "wb")
+            cPickle.dump(r, f)
+            f.close()
+            print path
             r.write_results(show_missing=True, summary=True, coverdir=coverdir)
         else:
             bad = main(module_filter, test_filter, libdir)
