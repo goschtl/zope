@@ -19,7 +19,7 @@ MailHost -d Products/MailHost Packages/Products/MailHost
 
 z Components/GreyThing \
   &AccessControl &App &BoboPOS2 &DateTime &DocumentTemplate \
-  &HTTP_ORB &OFS &PrincipiaHelp &StructuredText &TreeDisplay \
+  &HTTP_ORB &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
   &OFSP &MailHost
 
 
