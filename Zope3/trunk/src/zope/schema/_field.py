@@ -1,3 +1,5 @@
+# -*- coding: ISO-8859-1 -*-
+##############################################################################
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
@@ -8,8 +10,6 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
-# -*- coding: ISO-8859-1 -*-     
 ##############################################################################
 """Schema Fields
 
