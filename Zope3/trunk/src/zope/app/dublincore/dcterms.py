@@ -13,8 +13,10 @@
 ##############################################################################
 """Support information for qualified Dublin Core metadata.
 
-$Id: dcterms.py,v 1.1 2003/08/20 21:25:15 fdrake Exp $
+$Id: dcterms.py,v 1.2 2003/08/21 04:53:49 fdrake Exp $
 """
+
+from zope.app.dublincore import dcsv
 
 # useful namespace URIs
 DC_NS = "http://purl.org/dc/elements/1.1/"
@@ -72,8 +74,26 @@ def check_box(value):
 def check_tgn(value):
     pass
 
+_period_fields = "name start end scheme".split()
+
 def check_period(value):
-    pass
+    # checks a Period in DCSV format; see:
+    # http://dublincore.org/documents/dcmi-period/
+    items = dcsv.decode(value)
+    d = {}
+    for k, v in items:
+        if not k:
+            raise ValueError("missing field label")
+        if k not in _period_fields:
+            raise ValueError("unknown field label %r" % k)
+        if k in d:
+            raise ValueError("duplicate field label %r" % k)
+        d[k] = v
+    if d.get("scheme", "w3cdtf").lower() == "w3cdtf":
+        if "start" in d:
+            check_w3cdtf(d["start"])
+        if "end" in d:
+            check_w3cdtf(d["end"])
 
 def check_w3cdtf(value):
     pass
