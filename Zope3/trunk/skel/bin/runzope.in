@@ -34,7 +34,7 @@ def run():
     sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
                    SOFTWARE_HOME] + basepath
 
-    from zope.app.process.main import main
+    from zope.app.server.main import main
     main(["-C", CONFIG_FILE] + sys.argv[1:])
 
 
