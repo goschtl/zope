@@ -22,23 +22,18 @@ from zope.schema.interfaces import IChoice, IIterableVocabulary
 from zope.schema import Choice
 
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.browser import ChoiceDisplayWidget, ChoiceInputWidget
 from zope.app.form.browser import ItemDisplayWidget, DropdownWidget
 
 
-def provideMultiView(for_, factory, providing, name='', layer="default"):
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
-    return s.provideAdapter(IBrowserRequest, factory, name, for_,
-                            providing, layer)
-
-
 class ChoiceWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def test_ChoiceDisplayWidget(self):
-        provideMultiView((IChoice, IIterableVocabulary),
-                         ItemDisplayWidget, IDisplayWidget)
+        ztapi.provideMultiView((IChoice, IIterableVocabulary), IBrowserRequest,
+                               IDisplayWidget, '', ItemDisplayWidget)
         field = Choice(values=[1, 2, 3])
         bound = field.bind(object())
         widget = ChoiceDisplayWidget(bound, TestRequest())
@@ -48,8 +43,8 @@ class ChoiceWidgetTest(PlacelessSetup, unittest.TestCase):
 
 
     def test_ChoiceInputWidget(self):
-        provideMultiView((IChoice, IIterableVocabulary),
-                         DropdownWidget, IInputWidget)
+        ztapi.provideMultiView((IChoice, IIterableVocabulary), IBrowserRequest,
+                               IInputWidget, '', DropdownWidget)
         field = Choice(values=[1, 2, 3])
         bound = field.bind(object())
         widget = ChoiceInputWidget(bound, TestRequest())

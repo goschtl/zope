@@ -18,23 +18,22 @@ $Id$
 import os
 import unittest
 from cStringIO import StringIO
+
 from zope.component.exceptions import ComponentLookupError
+from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.exceptions import NotFoundError
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
+from zope.schema import TextLine, Int
+from zope.security.proxy import ProxyFactory
 
 from zope.app import zapi
 import zope.app.component
 import zope.app.form.browser
 import zope.app.publisher.browser
-
-from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.component import getDefaultViewName, getResource
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.security.proxy import ProxyFactory
-
-from zope.schema import TextLine, Int
 from zope.app.form.browser import TextWidget
+from zope.app.tests.placelesssetup import PlacelessSetup
+
 
 tests_path = os.path.join(
     os.path.dirname(zope.app.publisher.browser.__file__),
@@ -88,7 +87,6 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 
-        ps =  zapi.getGlobalService(zapi.servicenames.Presentation)
         
     def testAddForm(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),

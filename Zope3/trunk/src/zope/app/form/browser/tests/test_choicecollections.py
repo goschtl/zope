@@ -22,6 +22,7 @@ from zope.schema.interfaces import IList, IChoice, IIterableVocabulary
 from zope.schema import Choice, List
 
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.browser import CollectionDisplayWidget
@@ -30,20 +31,13 @@ from zope.app.form.browser import ChoiceCollectionDisplayWidget
 from zope.app.form.browser import ChoiceCollectionInputWidget
 from zope.app.form.browser import ItemsMultiDisplayWidget, SelectWidget
 
-
-def provideMultiView(for_, factory, providing, name='', layer="default"):
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
-    return s.provideAdapter(IBrowserRequest, factory, name, for_,
-                            providing, layer)
-
-
 class ListOfChoicesWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def test_ListOfChoicesDisplayWidget(self):
-        provideMultiView((IList, IChoice),
-                         ChoiceCollectionDisplayWidget, IDisplayWidget)
-        provideMultiView((IList, IIterableVocabulary),
-                         ItemsMultiDisplayWidget, IDisplayWidget)
+        ztapi.provideMultiView((IList, IChoice), IBrowserRequest,
+                         IDisplayWidget, '', ChoiceCollectionDisplayWidget)
+        ztapi.provideMultiView((IList, IIterableVocabulary), IBrowserRequest,
+                         IDisplayWidget, '', ItemsMultiDisplayWidget)
         field = List(value_type=Choice(values=[1, 2, 3]))
         bound = field.bind(object())
         widget = CollectionDisplayWidget(bound, TestRequest())
@@ -53,10 +47,10 @@ class ListOfChoicesWidgetTest(PlacelessSetup, unittest.TestCase):
 
 
     def test_ChoiceSequenceEditWidget(self):
-        provideMultiView((IList, IChoice),
-                         ChoiceCollectionInputWidget, IInputWidget)
-        provideMultiView((IList, IIterableVocabulary),
-                         SelectWidget, IInputWidget)
+        ztapi.provideMultiView((IList, IChoice), IBrowserRequest,
+                               IInputWidget, '', ChoiceCollectionInputWidget)
+        ztapi.provideMultiView((IList, IIterableVocabulary), IBrowserRequest,
+                               IInputWidget, '', SelectWidget)
         field = List(value_type=Choice(values=[1, 2, 3]))
         bound = field.bind(object())
         widget = CollectionInputWidget(bound, TestRequest())

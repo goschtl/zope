@@ -31,12 +31,6 @@ from zope.app.form.browser.interfaces import IVocabularyQueryView
 from zope.app.form.browser.vocabularyquery import VocabularyQueryViewBase
 from zope.app.form.browser.tests import support
 
-
-def provideMultiView(for_, factory, providing, name='', layer="default"):
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
-    return s.provideAdapter(IBrowserRequest, factory, name, for_,
-                            providing, layer)
-
 _marker = object()
 
 class SampleContent(object):
@@ -170,8 +164,9 @@ class SingleSelectionQuerySupportTests(QuerySupportTestBase):
         return field.bind(content)
 
     def registerViews(self):
-        provideMultiView((ISampleVocabularyQuery, IChoice),
-                         SampleQueryViewSingle, IVocabularyQueryView)
+        ztapi.provideMultiView(
+            (ISampleVocabularyQuery, IChoice), IBrowserRequest,
+            IVocabularyQueryView, '', SampleQueryViewSingle)
 
 
 class MultiSelectionQuerySupportTests(QuerySupportTestBase):
@@ -195,8 +190,9 @@ class MultiSelectionQuerySupportTests(QuerySupportTestBase):
         return field.bind(content)
 
     def registerViews(self):
-        provideMultiView((ISampleVocabularyQuery, ICollection),
-                         SampleQueryViewMulti, IVocabularyQueryView)
+        ztapi.provideMultiView(
+            (ISampleVocabularyQuery, ICollection), IBrowserRequest,
+            IVocabularyQueryView, '', SampleQueryViewMulti)
 
 
 def test_suite():
