@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test the Role service.
 
-Revision information:
-$Id: test_roleservice.py,v 1.5 2003/09/21 17:30:46 jim Exp $
+$Id: test_roleservice.py,v 1.6 2003/12/14 08:47:31 srichter Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -43,38 +42,42 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.rs = setup.addService(sm, 'Roles', RoleService())
 
     def testGetRole(self):
-        self.roleRegistry.defineRole('Manager', 'Manager', '')
+        self.roleRegistry.defineRole('zope.Manager', 'Manager', '')
 
-        r = Role("Hacker","","")
-        self.rs["Hacker"] = r
-        self.assertEqual(self.rs.getRole('Hacker').getId(), 'Hacker')
-        self.assertEqual(self.rs.getRole('Manager').getId(), 'Manager')
+        r = Role("zope.Hacker","","")
+        self.rs["zope.Hacker"] = r
+        self.assertEqual(self.rs.getRole('zope.Hacker').getId(), 'zope.Hacker')
+        self.assertEqual(self.rs.getRole('zope.Manager').getId(),
+                         'zope.Manager')
 
         roles = [role.getId() for role in self.rs.getRoles()]
         roles.sort()
 
-        self.assertEqual(roles, ['Anonymous', 'Hacker', 'Manager'])
+        self.assertEqual(roles,
+                         ['zope.Anonymous', 'zope.Hacker', 'zope.Manager'])
 
     def testGetRoleFromLayeredServices(self):
-        self.roleRegistry.defineRole('Manager', 'Manager', '')
+        self.roleRegistry.defineRole('zope.Manager', 'Manager', '')
 
-        r = Role("Hacker","","")
-        self.rs["Hacker"] = r
+        r = Role("zope.Hacker","","")
+        self.rs["zope.Hacker"] = r
 
         sm1 = self.makeSite('folder1')
         rs1 = setup.addService(sm1, 'Roles', RoleService())
 
-        r1 = Role("Reviewer",'','')
-        rs1["Reviewer"] = r1
+        r1 = Role("zope.Reviewer",'','')
+        rs1["zope.Reviewer"] = r1
 
-        self.assertEqual(rs1.getRole('Hacker').getId(), 'Hacker')
-        self.assertEqual(rs1.getRole('Manager').getId(), 'Manager')
-        self.assertEqual(rs1.getRole('Reviewer').getId(), 'Reviewer')
+        self.assertEqual(rs1.getRole('zope.Hacker').getId(), 'zope.Hacker')
+        self.assertEqual(rs1.getRole('zope.Manager').getId(), 'zope.Manager')
+        self.assertEqual(rs1.getRole('zope.Reviewer').getId(), 'zope.Reviewer')
 
         roles = [role.getId() for role in rs1.getRoles()]
         roles.sort()
 
-        self.assertEqual(roles, ['Anonymous', 'Hacker', 'Manager','Reviewer'])
+        self.assertEqual(
+            roles,
+            ['zope.Anonymous', 'zope.Hacker', 'zope.Manager','zope.Reviewer'])
 
 
 
