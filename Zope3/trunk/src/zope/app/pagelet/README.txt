@@ -38,16 +38,16 @@ Definition
         | Pagelet |               | Portlet |
         |_________|               |_________|
 
-A view instance is assoziated with one context. A context may be viewed 
+A view instance is associated with one context. A context may be viewed 
 with none ore more views.
 
 The distinction between Pagelet and Portlet is still fuzzy. Pagelets and 
 portlets are designed to be parts of a view. In that meaning pagelets 
-and portles are equal. They are specialized viewlets. A view is composed 
+and portlets are equal. They are specialized viewlets. A view is composed 
 of viewlets which are related to a specific slot of that view.
 
 But what is the difference between them? The reconstructed interpretation 
-of zope's common sense is the following::
+of Zope's common sense is the following::
 
     A pagelet of a view displays the underlying context. 
     A portlet of a view displays data from different contexts.
@@ -63,7 +63,7 @@ of zope's common sense is the following::
 
 
 In view of the component architecture this differentiation does not make
-sense anymore, because the adaption mechanism hides such criterias 
+sense anymore, because the adaption mechanism hides such criteria 
 (implementation decisions and details) transparently inside an adapter.
 
 That is the reason, why we try to provide a new definition::
@@ -75,9 +75,9 @@ That is the reason, why we try to provide a new definition::
     Examples: The metadata pagelet displays the metadata. 
     Therefore it adapts the underlying context to IMetadata. 
     The metadata portlet displays metadata too, but it adapts 
-    a context indepentently to the underlying view context.
+    a context independently to the underlying view context.
 
-    Hence serveral pagelets of the same type composed inside 
+    Hence several pagelets of the same type composed inside 
     one view must display always the similar content where 
     several portlets of the same type composed inside a view 
     can present different contents.
@@ -85,14 +85,14 @@ That is the reason, why we try to provide a new definition::
 
 Usage
 -----
-This pagelet implementation suports pagelets and portlets in respect of 
-the first definition, but it only suports pagelets in respect of the 
+This pagelet implementation supports pagelets and portlets in respect of 
+the first definition, but it only supports pagelets in respect of the 
 second definition.
 
 In the following text we us pagelet in the sense of the latter.
 
 Pagelets are responsible for a piece of content in a view. They can be 
-used to render additionaly provided information into a pagetemplate.
+used to render additionally provided information into a pagetemplate.
 
 Pagelets are small, view-like components that can registered to 
 skin layers(request)-, contenttype-, view- and slot-interfaces.
@@ -116,11 +116,11 @@ view-namespace for dynamic contents::
     <span tal:content="view/title">title</span>
   </div>
 
-The latter is not recommend, because it glues view and pagelet together. 
+The latter is not recommended, because it glues view and pagelet together. 
 That means a pagelet depends on a specific view- or context implementation.
 
 In respect of modularization we provide an additional tal:pagedata 
-command. This command allows to lookup adapters providing an interface 
+command. This command allows to look up adapters providing an interface 
 derived form IPageletData::
 
   <div class="row">
@@ -214,7 +214,7 @@ Setup a view page template called 'index':
   >>> index = ViewPageTemplateFile('index_pagelets.pt', path)
 
 Call the 'index' (view) on the browser view instance the sample pagelet
-'index_pagelets.pt' calls pagelets registred for the slot
+'index_pagelets.pt' calls pagelets registered for the slot
 'zope.app.pagelet.interfaces.IPageletSlot'. We registred the 
 'test_pagelet' for this slot in the TestPagelet class. For more info 
 take a look at the index_pagelets.pt' file in the tests/testfiles folder:
