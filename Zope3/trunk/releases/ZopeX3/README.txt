@@ -146,10 +146,7 @@ can be run using the command:
 
 The line before the final "OK" tells how many individual tests were
 run, and long it took to run them.  These numbers will vary based on
-release, operating system, and host platform.  This line is expected
-on Windows:
-
-    diff3 doesn't work, diff3 tests disabled
+release, operating system, and host platform.
 
 At this point, you can install the software using the command:
 
