@@ -13,14 +13,13 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: CacheableView.py,v 1.1 2002/10/09 13:08:44 alga Exp $
+$Id: CacheableView.py,v 1.2 2002/11/11 20:57:20 jim Exp $
 """
 
 from Zope.App.Caching.ICacheable import ICacheable
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from Zope.App.Caching.Caching import getCacheForObj
 from Zope.App.PageTemplate import ViewPageTemplateFile
-#from Zope.App.Forms.Views.Browser.FormView import FormView
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Widget import CustomWidget
 from Zope.App.Forms.Views.Browser import Widget
@@ -29,12 +28,18 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll, ConversionErrorsAll
 from Zope.App.Forms.Exceptions import WidgetInputError
+from Zope.App.Forms.Utility import setUpEditWidgets
 
 class CacheableView(BrowserView):
 
     __used_for__ = IAnnotatable
     
     form = ViewPageTemplateFile("edit.pt")
+
+    def __init__(self, *args):
+        super(CacheableView, self).__init__(*args)
+        self.cachable = getAdapter(self.context, ICacheable)
+        setUpEditWidgets(self, ICacheable, self.cachable)
 
     def invalidate(self):
         "Invalidate the current cached value."
@@ -49,26 +54,15 @@ class CacheableView(BrowserView):
     def action(self):
         "Change the cacheId"
         try:
-            cacheId = self._getCacheIdWidget().getData()
+            cacheId = self.cacheId.getData()
         except (ValidationErrorsAll, ConversionErrorsAll), e:
             return self.form(errors=e)
         except WidgetInputError, e:
             #return self.form(errors=e.errors)
             return repr(e.errors)
         else:
-            getAdapter(self.context, ICacheable).setCacheId(cacheId)
+            self.cachable.setCacheId(cacheId)
             return self.form(message="Saved changes.")
-
-    def renderCacheId(self):
-        cacheId = getAdapter(self.context, ICacheable).getCacheId()
-        return self._getCacheIdWidget().render(cacheId)
-    
-    def _getCacheIdWidget(self):
-        cacheId = getAdapter(self.context, ICacheable).getCacheId()
-        field = ICacheable.getDescriptionFor('cacheId')
-        field = ContextWrapper(field, self.context)
-        w = CustomWidget(Widget.ListWidget, size=1)
-        return w(field, self.request)
 
 
 

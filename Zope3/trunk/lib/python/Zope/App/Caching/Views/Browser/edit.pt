@@ -22,13 +22,14 @@
         <tr>
           <th class="EditAttributeName">Cache name</th>
           <td class="EditAttributeValue"
-              tal:content="structure python: view.renderCacheId()">
+              tal:content="structure view/cacheId">
             <input size="20" />
           </td>
         </tr>
       </table>
 
-      <input type="submit" name="ChangeCaching.html:method" value="Save Changes" />
+      <input type="submit" name="ChangeCaching.html:method" 
+             value="Save Changes" />
       <input type="submit" name="InvalidateCache.html:method"
              value="Invalidate Cached Value" />
 

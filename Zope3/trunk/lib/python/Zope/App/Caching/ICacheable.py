@@ -12,29 +12,32 @@
 # 
 ##############################################################################
 """
-$Id: ICacheable.py,v 1.2 2002/10/09 13:08:44 alga Exp $
+$Id: ICacheable.py,v 1.3 2002/11/11 20:57:20 jim Exp $
 """
 from Interface import Interface
-from Zope.ContextWrapper import ContextMethod
 from Zope.ComponentArchitecture import getService
+from Zope.ContextWrapper import ContextProperty
 import Zope.Schema
 
-class CacheName(Zope.Schema.Text):
+class CacheName(Zope.Schema.TextLine):
     """Cache Name"""
 
-    def items(self):
+    def __allowed(self):
         """Note that this method works only if the Field is context wrapped."""
-        caching_service = getService(self, "Caching")
-        return [('', '(None)')] + caching_service.getAvailableCaches() # FIXME: i18n
+        caching_service = getService(self.context, "Caching")
 
-    items = ContextMethod(items)
+        # FIXME: i18n
+        return [''] + list(caching_service.getAvailableCaches())
+
+    allowed_values = ContextProperty(__allowed)
 
 class ICacheable(Interface):
     """Object that can be associated with a cache manager."""
 
-    cacheId = CacheName(title=u"Cache Name",
-                        description=u"The name of the cache used for this object.",
-                        required=False)
+    cacheId = CacheName(
+        title=u"Cache Name",
+        description=u"The name of the cache used for this object.",
+        required=True)
 
     def getCacheId():
         """Gets the associated cache manager ID."""
