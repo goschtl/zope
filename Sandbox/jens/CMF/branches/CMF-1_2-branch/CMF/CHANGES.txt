@@ -13,6 +13,8 @@
     specifying an operator ('and', for the most part) for indexes which
     support it, e.g., KeywordIndex (Tracker #442).
 
+  - Added ZMI interface for editing Link URL (Tracker #364).
+
  Bugs Fixed
 
   - Added external method update_catalogIndexes.py to run as part of a
