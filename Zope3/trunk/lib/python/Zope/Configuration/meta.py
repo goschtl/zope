@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.16 2002/11/06 22:30:22 rdmurray Exp $
+$Id: meta.py,v 1.17 2002/11/08 19:08:27 rdmurray Exp $
 """
 
 
@@ -297,17 +297,6 @@ class DirectiveNamespace:
         return ()
 
 
-def _registerDirective(_context, namespace, name, handler, attributes=''):
-    subs = register((namespace, name), _context.resolve(handler))
-    return subs, namespace
-
-def Directive(*args, **kw):
-    subs, namespace = _registerDirective(*args, **kw)
-    return Subdirective(subs, namespace=namespace)
-
-Directive.__implements__ = INonEmptyDirective
-
-
 class Subdirective:
     """This is the meta-meta-directive"""
     # 
@@ -348,14 +337,9 @@ def _clear():
     # (whose implementation is contained in this module) we can use
     # zcml to define any other directives needed for a given system.
     #
-    # The data structure created here is both recursive and incestuous.
-    # The recursive part allows for an unlimited number of levels
-    # of subdirective definition nesting.  The incestuous part is
-    # perhaps less legitimate, but seems logical since I can't think of
-    # a reason you would want the subdirective subdirective of the
-    # directive directive to do anything different from the subdirective
-    # subdirective of the directive subdirective of the directives
-    # directive.
+    # The data structure created here is recursive.  This allows for
+    # an unlimited number of levels of subdirective definition
+    # nesting.
     #
     # This initialziation is done in a function to facilitate support
     # the unittest CleanUp class.
@@ -365,7 +349,6 @@ def _clear():
     subdirkey = (zopens, 'subdirective')
     subs = {}
     subs[subdirkey] = (subs, 'subdirective')
-    _directives[(zopens, 'directive')] = (Directive, subs)
     directive = {(zopens, 'directive'): (subs, 'directive')}
     _directives[(zopens, 'directives')] = (DirectiveNamespace, directive)
 

@@ -12,11 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: metametaConfigure.py,v 1.2 2002/11/06 22:30:22 rdmurray Exp $
+$Id: metametaConfigure.py,v 1.3 2002/11/08 19:08:27 rdmurray Exp $
 """
 from meta import DirectiveNamespace as bootstrapDirectiveNamespace
 from meta import Subdirective as bootstrapSubdirective
-from meta import _registerDirective
 from INonEmptyDirective import INonEmptyDirective
 from IEmptyDirective import IEmptyDirective
 from ISubdirectiveHandler import ISubdirectiveHandler
@@ -41,14 +40,6 @@ class DirectiveNamespace(bootstrapDirectiveNamespace):
         self._useDescription(namespace, name, handler, description, subs)
         return self._Subdirective(subs, namespace=namespace, name=name)
     directive.__implements__ = INonEmptyDirective
-
-
-def Directive(_cotnext, namespace, name, handler, description='',
-        attributes=''):
-    subs, namespace = _registerDirective(_context, namespace, name, handler)
-    return self._Subdirective(subs, namespace=namespace, name=name)
-
-Directive.__implements__ = INonEmptyDirective
 
 
 class Subdirective(bootstrapSubdirective):

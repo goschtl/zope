@@ -12,11 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: metametaConfigureForDocgen.py,v 1.2 2002/11/06 22:30:22 rdmurray Exp $
+$Id: metametaConfigureForDocgen.py,v 1.3 2002/11/08 19:08:27 rdmurray Exp $
 """
 from metametaConfigure import DirectiveNamespace as baseDirectiveNamespace
 from metametaConfigure import Subdirective as baseSubdirective
-from metametaConfigure import Directive as baseDirective
 from INonEmptyDirective import INonEmptyDirective
 from ISubdirectiveHandler import ISubdirectiveHandler
 
@@ -78,14 +77,6 @@ class DirectiveNamespace(baseDirectiveNamespace):
 
     def _useDescription(self, namespace, name, handler, description, subs):
         _recordCommandMetadata(subs, description, handler)
-
-
-def Directive(_cotnext, namespace, name, handler, attributes='',
-        description=''):
-    subs = baseDirective(_context, namespace, name, handler, description)
-    _recordCommandMetadata(subs, description, handler)
-
-Directive.__implements__ = INonEmptyDirective
 
 
 class Subdirective(baseSubdirective):
