@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.42 2003/12/07 10:04:49 gotcha Exp $
+$Id: editview.py,v 1.43 2003/12/16 20:33:36 garrett Exp $
 """
 from datetime import datetime
 
@@ -45,8 +45,6 @@ class EditView(BrowserView):
     errors = ()
     update_status = None
     label = ''
-
-    form = ViewPageTemplateFile('edit.pt')
 
     # Fall-back field names computes from schema
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
