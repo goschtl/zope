@@ -18,6 +18,7 @@ from datetime import datetime
 from zope.interface import implements
 from persistent.dict import PersistentDict
 from zope.app.folder import Folder
+from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.exception.interfaces import UserError
 from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.container.interfaces import INameChooser
@@ -71,7 +72,7 @@ class SimpleHistoryStorage(Folder) :
         
     """
     
-    implements(IHistoryStorage)
+    implements(IHistoryStorage, IAnnotatable)
  
     def register(self, obj):
         """ Register an obj for version control.

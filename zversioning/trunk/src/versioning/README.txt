@@ -48,7 +48,6 @@ as an example :
          |--> c
      
   >>> import zope.app.versioncontrol.interfaces
-  >>> from zope.app.annotation.interfaces import IAnnotatable
   >>> from zope.interface import directlyProvides
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.tests.setup import setUpTraversal
@@ -81,8 +80,8 @@ more about this and then talk about this in the interfaces.
   >>> util.commit()
 
 
-Setting up a Repository
------------------------
+Setting up a ICheckoutCheckinRepository
+---------------------------------------
 
 In this architecture we can choose between several repositories. We take a
 CopyModifyMergeRepository without check in and check out as an example.
@@ -118,10 +117,6 @@ handles the checkout/checkin status for the repository.
   ...                      interfaces.ICheckoutAware,
   ...                      storage.DefaultCheckoutAware)
 
-Our 'ICheckoutAware' adapter XXX
-
-  >>> directlyProvides(histories_storage, IAnnotatable)
-
 In this implementation the repository is simply a adapter to a 
 'IHistoryStorage'. This ensures that several versioning strategies 
 can be used with the same storage:
@@ -136,8 +131,8 @@ Now we adapt our history storage to the chosen repository strategy:
   >>> repo = interfaces.ICopyModifyMergeRepository(histories_storage)
 
 
-Use the CheckoutCheckinRepository
----------------------------------
+Useing the ICheckoutCheckinRepository
+-------------------------------------
 
 An object that isn't 'IVersionable' can't be put under version control.
 Applying version control should raise an exception:
