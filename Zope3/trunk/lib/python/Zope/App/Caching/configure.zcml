@@ -4,6 +4,8 @@
    package="Zope.App.Caching"
 >
 
+  <serviceType id="Caching" interface=".ICachingService." />
+
   <adapter factory=".AnnotationCacheable."
            provides=".ICacheable."
            for="Zope.App.OFS.Annotation.IAnnotatable." />
