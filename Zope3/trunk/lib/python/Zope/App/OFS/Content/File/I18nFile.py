@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: I18nFile.py,v 1.2 2002/06/25 10:47:44 mgedmin Exp $
+$Id: I18nFile.py,v 1.3 2002/06/25 11:27:50 mgedmin Exp $
 """
 
 import Persistence
 from IFile import IFile
 from Zope.I18n.II18nAware import II18nAware
 from File import File
+from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
 
 class II18nFile(IFile, II18nAware):
@@ -106,7 +107,11 @@ class I18nFile(Persistence.Persistent):
 
         if contentType is not None:
             self.setContentType(contentType)
-        self.setData(data, language)
+        if hasattr(data, '__class__') and data.__class__ is FileUpload \
+           and not data.filename:
+           data = None          # Ignore empty files
+        if data is not None:
+            self.setData(data, language)
 
 
     def getData(self, language=None):

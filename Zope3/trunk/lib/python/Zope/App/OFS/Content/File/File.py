@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.3 2002/06/24 15:41:10 mgedmin Exp $
+$Id: File.py,v 1.4 2002/06/25 11:27:50 mgedmin Exp $
 """
 
 import Persistence
 from types import StringType, UnicodeType, NoneType
 from FileChunk import FileChunk
 from IFile import IFile
+from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -66,7 +67,11 @@ class File(Persistence.Persistent):
         
         if contentType is not None:
             self._contentType = contentType
-        self.setData(data)
+        if hasattr(data, '__class__') and data.__class__ is FileUpload \
+           and not data.filename:
+           data = None          # Ignore empty files
+        if data is not None:
+            self.setData(data)
 
 
     def getData(self):
@@ -93,7 +98,7 @@ class File(Persistence.Persistent):
             self._data, self._size = FileChunk(data), size
             return None
 
-        # Handle case when data is a string
+        # Handle case when data is None
         if isinstance(data, NoneType):
             self._data, self._size = None, 0
             return None
