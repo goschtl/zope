@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.11 2002/12/22 17:25:46 jim Exp $
+$Id: ConfigurationInterfaces.py,v 1.12 2002/12/22 21:18:12 stevea Exp $
 """
 
 from Interface import Interface
@@ -71,18 +71,22 @@ class IConfiguration(IConfigurationSummary):
         """
 
 
-class INamedConfiguration(IConfiguration):
+class INamedConfigurationInfo(Interface):
     """Configuration object that is registered by name
     """
 
-    name = Attribute("The name that is registered")
+    name = TextLine(title=u"Name",
+                    description=u"The name that is registered")
 
-    label = TextLine(title=u"Label",
-                     description=u"Descriptive label of the configuration"
-                                 u" type (e.g. Service, Connection)")
+    # The label is generally set as a class attribute on the
+    # configuration class.
+    label = Attribute("Descriptive label of the configuration type "
+                      "(for example, Service, Connection)")
 
+class INamedConfiguration(INamedConfigurationInfo, IConfiguration):
+    pass
 
-class INamedComponentConfiguration(INamedConfiguration):
+class INamedComponentConfigurationInfo(INamedConfigurationInfo):
     """Configuration object that configures a component associated with a name
     """
 
@@ -91,10 +95,11 @@ class INamedComponentConfiguration(INamedConfiguration):
 
     componentPath = Attribute("The physical path to the component")
 
+class INamedComponentConfiguration(INamedComponentConfigurationInfo,
+                                   INamedConfiguration):
     def getComponent():
         """Return the component named in the configuration.
         """
-
 
 class IConfigurationRegistry(Interface):
     """A registry of configurations for a set of parameters
