@@ -286,7 +286,6 @@ BasicTypes = {
     str: NoProxy,
     unicode: NoProxy,
     type(not 1): NoProxy, # Boolean, if available :)
-    type(iter(())): NoProxy,  # iterator, needed for Python 2.3
 }
 
 _default_checkers = {
@@ -310,7 +309,8 @@ _default_checkers = {
     types.BuiltinMethodType: _callableChecker,
     type: _typeChecker,
     types.ModuleType: _moduleChecker,
-    type(iter([])): NamesChecker(['next']),
+    type(iter([])): NamesChecker(['next']), # same types in Python 2.2.1,
+    type(iter(())): NamesChecker(['next']), # different in Python 2.3
     type(Interface): _interfaceChecker,
     }
 
