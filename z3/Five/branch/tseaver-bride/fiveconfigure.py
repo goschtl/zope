@@ -18,6 +18,7 @@ from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
 
 from viewable import Viewable
+from bridge import fromZ2Interface
 
 def findProducts():
     import Products
@@ -86,4 +87,23 @@ def viewable(_context, class_):
         discriminator = (class_,),
         callable = classViewable,
         args = (class_,)
+        )
+
+def createZope2Bridge(zope2, package, name):
+    # Map a Zope 2 interface into a Zope3 interface, seated within 'package'
+    # as 'name'.
+    z3i = fromZ2Interface(zope2)
+
+    if name is not None:
+        z3i.__dict__['__name__'] = name
+
+    z3i.__dict__['__module__'] = package.__name__
+    setattr(package, z3i.getName(), z3i)
+
+def bridge(_context, zope2, package, name=None):
+    # Directive handler for <five:bridge> directive.
+    _context.action(
+        discriminator = (zope2,),
+        callable = createZope2Bridge,
+        args = (zope2, package, name)
         )

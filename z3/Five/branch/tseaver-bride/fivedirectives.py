@@ -11,7 +11,7 @@
 $Id$
 """
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject, Tokens
+from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
 
 class IImplementsDirective(Interface):
     """State that a class implements something.
@@ -33,5 +33,26 @@ class IViewableDirective(Interface):
     class_ = GlobalObject(
         title=u"Class",
         required=True
+        )
+
+
+class IBridgeDirective(Interface):
+    """Bridge from a Zope 2 interface to an equivalent Zope3 interface.
+    """
+    zope2 = GlobalObject(
+        title=u"Zope2",
+        required=True
+        )
+
+    package = GlobalObject(
+        title=u"Target package",
+        required=True
+        )
+
+    name = PythonIdentifier(
+        title=u"Zope3 Interface name",
+        description=u"If not supplied, the new interface will have the same "
+                    u"name as the source interface.",
+        required=False
         )
 
