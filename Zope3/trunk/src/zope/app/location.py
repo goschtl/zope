@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.4 2003/11/05 03:08:27 jeremy Exp $
+$Id: location.py,v 1.5 2003/11/20 07:30:31 philikon Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -441,7 +441,7 @@ class LocationProxy(ProxyBase):
     """Contained-object proxy
 
     This is a non-picklable proxy that can be put around objects that
-    don't implemeny ILocation.
+    don't implement ILocation.
 
     >>> l = [1, 2, 3]
     >>> p = LocationProxy(l, "Dad", "p")
