@@ -1,0 +1,21 @@
+<configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/smiley">
+
+  <zope:include package="book.smileyutility" file="meta.zcml" />
+
+  <theme name="yazoo">
+    <smiley text=":(" file="../smileys/yazoo/sad.png"/>
+    <smiley text=":)" file="../smileys/yazoo/smile.png"/>
+  </theme>
+
+  <theme name="plain" />
+
+  <smiley
+      theme="plain"
+      text=":("
+      file="../smileys/yazoo/sad.png"/>
+
+  <defaultTheme name="plain" />
+
+</configure>

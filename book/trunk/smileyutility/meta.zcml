@@ -1,0 +1,28 @@
+<configure xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/smiley">
+
+    <meta:complexDirective
+        name="theme"
+        schema=".metadirectives.IThemeDirective"
+        handler=".metaconfigure.theme">
+
+      <meta:subdirective
+          name="smiley"
+          schema=".metadirectives.ISmileySubdirective" />
+
+    </meta:complexDirective>
+
+    <meta:directive
+        name="smiley"
+        schema=".metadirectives.ISmileyDirective"
+        handler=".metaconfigure.smiley" />
+
+    <meta:directive
+        name="defaultTheme"
+        schema=".metadirectives.IDefaultThemeDirective"
+        handler=".metaconfigure.defaultTheme" />
+
+  </meta:directives>
+
+</configure>

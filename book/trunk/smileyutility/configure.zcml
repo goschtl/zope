@@ -1,0 +1,119 @@
+<configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns="http://namespaces.zope.org/smiley"
+    i18n_domain="smileyutility">
+
+  <theme name="plain">
+    <smiley text=":D"  file="./smileys/plain/biggrin.png"/>
+    <smiley text=":-D" file="./smileys/plain/biggrin.png"/>
+    <smiley text=":/"  file="./smileys/plain/confused.png"/>
+    <smiley text=":-/" file="./smileys/plain/confused.png"/>
+    <smiley text="8)"  file="./smileys/plain/cool.png"/>
+    <smiley text="8-)" file="./smileys/plain/cool.png"/>
+    <smiley text=":o"  file="./smileys/plain/oh.png"/>
+    <smiley text=":-o" file="./smileys/plain/oh.png"/>
+    <smiley text=":("  file="./smileys/plain/sad.png"/>
+    <smiley text=":-(" file="./smileys/plain/sad.png"/>
+    <smiley text=":)"  file="./smileys/plain/smile.png"/>
+    <smiley text=":-)" file="./smileys/plain/smile.png"/>
+    <smiley text=":P"  file="./smileys/plain/tongue.png"/>
+    <smiley text=":-P" file="./smileys/plain/tongue.png"/>
+    <smiley text=";)"  file="./smileys/plain/wink.png"/>
+    <smiley text=";-)" file="./smileys/plain/wink.png"/>
+  </theme>             
+                       
+  <theme name="yazoo"> 
+    <smiley text=":D"  file="./smileys/yazoo/biggrin.png"/>
+    <smiley text=":-D" file="./smileys/yazoo/biggrin.png"/>
+    <smiley text=":/"  file="./smileys/yazoo/confused.png"/>
+    <smiley text=":-/" file="./smileys/yazoo/confused.png"/>
+    <smiley text="8)"  file="./smileys/yazoo/cool.png"/>
+    <smiley text="8-)" file="./smileys/yazoo/cool.png"/>
+    <smiley text=":o"  file="./smileys/yazoo/oh.png"/>
+    <smiley text=":-o" file="./smileys/yazoo/oh.png"/>
+    <smiley text=":("  file="./smileys/yazoo/sad.png"/>
+    <smiley text=":-(" file="./smileys/yazoo/sad.png"/>
+    <smiley text=":)"  file="./smileys/yazoo/smile.png"/>
+    <smiley text=":-)" file="./smileys/yazoo/smile.png"/>
+    <smiley text=":P"  file="./smileys/yazoo/tongue.png"/>
+    <smiley text=":-P" file="./smileys/yazoo/tongue.png"/>
+    <smiley text=";)"  file="./smileys/yazoo/wink.png"/>
+    <smiley text=";-)" file="./smileys/yazoo/wink.png"/>
+  </theme>
+
+  <defaultTheme name="plain" />
+
+
+  <zope:content class=".localtheme.SmileyTheme">  
+    <zope:factory
+        id="book.smileyutility.SmileyTheme"
+        title="Smiley Theme"
+        description="A Smiley Theme"
+        />
+    <zope:implements
+        interface="zope.app.utility.interfaces.ILocalUtility" 
+        />
+    <zope:implements
+        interface="zope.app.container.interfaces.IContentContainer" 
+        />
+    <zope:implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+        />
+    <zope:allow
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <zope:require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+    <zope:require
+        permission="zope.ManageServices"
+        interface=".interfaces.ISmileyTheme"
+        set_schema=".interfaces.ISmileyTheme"
+        />
+  </zope:content>
+
+  <zope:content class=".localtheme.Smiley">
+    <zope:require
+        like_class="zope.app.file.image.Image"
+        />
+  </zope:content>
+
+  <browser:tool
+      interface=".interfaces.ISmileyTheme"
+      title="Smiley Themes"
+      description="Smiley Themes allow you to convert text-based to icon-based
+      smileys."
+      />
+
+  <browser:addMenuItem
+      class=".localtheme.Smiley"
+      title="Smiley"
+      description="A Smiley"
+      permission="zope.ManageServices"
+      />
+
+  <browser:addMenuItem
+      class=".localtheme.SmileyTheme"
+      title="Smiley Theme"
+      description="A Smiley Theme"
+      permission="zope.ManageServices"
+      />
+
+  <browser:containerViews
+      for=".localtheme.SmileyTheme"
+      index="book.messageboard.View"
+      contents="zope.ManageServices"
+      add="zope.ManageServices"
+      />
+
+  <browser:page
+      name="overview.html"
+      menu="zmi_views" title="Overview"
+      for=".localtheme.SmileyTheme"
+      permission="zope.ManageServices"
+      class=".browser.Overview"
+      template="overview.pt" />
+
+</configure>
