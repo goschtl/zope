@@ -14,7 +14,7 @@
 Zope's built-in File object, but modifies the behaviour slightly to
 make it more Portal-friendly.
 
-$Id:
+$Id$
 """
 
 from Globals import InitializeClass

@@ -12,7 +12,7 @@
 ##############################################################################
 """ Allow the "view" of a folder to be skinned by type.
 
-$Id:
+$Id$
 """
 
 from Products.CMFCore.PortalFolder import PortalFolder

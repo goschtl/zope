@@ -12,7 +12,7 @@
 ##############################################################################
 """ News content object.
 
-$Id:
+$Id$
 """
 
 from Globals import InitializeClass

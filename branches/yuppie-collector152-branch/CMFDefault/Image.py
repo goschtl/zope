@@ -13,7 +13,7 @@
 """ This module implements a portal-managed Image class. It is based on
 Zope's built-in Image object.
 
-$Id:
+$Id$
 """
 
 from Globals import InitializeClass
