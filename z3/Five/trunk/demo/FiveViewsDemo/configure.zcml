@@ -10,7 +10,7 @@
     permission="zope2.ViewManagementScreens"
     />
 
-  <five:viewable
+  <five:traversable
     class="OFS.Folder.Folder"
     />
 
@@ -31,5 +31,9 @@
 	     />
 
   </content>
+
+  <five:traversable 
+   class=".simplecontent.SimpleContent" 
+   />
 
 </configure>

@@ -1,4 +1,4 @@
-from Products.Five.api import BrowserView
+from Products.Five import BrowserView
 
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.schema import getFieldNamesInOrder

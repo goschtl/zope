@@ -1,4 +1,4 @@
-from Products.Five.api import BrowserView
+from Products.Five import BrowserView
 
 class SimpleContentView(BrowserView):
     """More docstring. Please Zope"""
