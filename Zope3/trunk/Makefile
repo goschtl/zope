@@ -10,7 +10,7 @@ all: inplace
 inplace:
 	$(PYTHON) setup.py $(SETUPFLAGS) build_ext -i
 
-build:
+build::
 	$(PYTHON) setup.py $(SETUPFLAGS) build
 
 test_build: build
