@@ -54,12 +54,7 @@
           <div class="error" tal:content="error">error</div>
         </tal:block>
 
-        <div class="row"
-             metal:define-macro="widget_rows" tal:repeat="widget view/widgets"
-             tal:content="structure widget/row">
-            <div class="label">Name</div>
-            <div class="field"><input type="text" style="width:100%" /></div>
-        </div>
+        <div metal:use-macro="context/@@form_macros/widget_rows" />
 
       </div>
 
