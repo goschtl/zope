@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Resource.py,v 1.3 2002/07/12 22:11:03 jim Exp $
+$Id: Resource.py,v 1.4 2002/10/28 11:47:21 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -26,22 +26,24 @@ class Resource:
     def __init__(self, request):
         self.request = request
 
-    def __call__(self):
-        name = getInnerWrapperData(self)['name']
+    def __call__(wrapped_self):
+        name = getInnerWrapperData(wrapped_self)['name']
         if name.startswith('++resource++'):
             name = name[12:]
 
-        service = getWrapperContainer(self)
+        service = getWrapperContainer(wrapped_self)
         site = getWrapperContainer(service)
 
-        skin = self.request.getPresentationSkin()
+        skin = wrapped_self.request.getPresentationSkin()
         if skin:
             skin = "++skin++%s/" % skin
 
         if site is None:
             return "/%s@@/%s" % (skin, name)
 
-        absolute_url = queryView(service, 'absolute_url', self.request)
+        absolute_url = queryView(service,
+                                 'absolute_url',
+                                 wrapped_self.request)
 
         if absolute_url is None:
             return "/%s@@/%s" % (skin, name)
