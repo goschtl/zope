@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.2 2003/05/03 16:38:00 jim Exp $
+$Id: test_declarations.py,v 1.3 2003/05/13 19:48:23 jim Exp $
 """
 
 import unittest
@@ -53,16 +53,19 @@ class Test(unittest.TestCase):
     def test_doctest(self):
         doctest(self, declarations)
 
+
+
     def test_ObjectSpecification_Simple(self):
         c = C()
         directlyProvides(c, I4)
         spec = providedBy(c)
         sig = spec.__signature__
-        expect = (c.__provides__.__signature__,
-                  C.__dict__['__implements__'].__signature__,
-                  A.__dict__['__implements__'].__signature__,
-                  B.__dict__['__implements__'].__signature__,
-                  )
+        expect = ('zope.interface.tests.test_declarations.I4\t'
+                  'zope.interface.Interface',
+                  'zope.interface.tests.test_declarations.I3\t'
+                  'zope.interface.tests.test_declarations.I1\t'
+                  'zope.interface.tests.test_declarations.I2\t'
+                  'zope.interface.Interface')
         self.assertEqual(sig, expect)
 
     def test_ObjectSpecification_Simple_w_only(self):
@@ -70,11 +73,10 @@ class Test(unittest.TestCase):
         directlyProvides(c, I4)
         spec = providedBy(c)
         sig = spec.__signature__
-        expect = (c.__provides__.__signature__,
-                  COnly.__dict__['__implements__'].__signature__,
-                  A.__dict__['__implements__'].__signature__,
-                  B.__dict__['__implements__'].__signature__,
-                  )
+        expect = ('zope.interface.tests.test_declarations.I4\t'
+                  'zope.interface.Interface',
+                  'zope.interface.tests.test_declarations.I3\t'
+                  'zope.interface.Interface')
         self.assertEqual(sig, expect)
 
     def test_ObjectSpecification_Simple_old_style(self):
@@ -82,11 +84,10 @@ class Test(unittest.TestCase):
         directlyProvides(c, I4)
         spec = providedBy(c)
         sig = spec.__signature__
-        expect = (c.__provides__.__signature__,
-                  COnly_old.__dict__['__implements__'].__signature__,
-                  A.__dict__['__implements__'].__signature__,
-                  B.__dict__['__implements__'].__signature__,
-                  )
+        expect = ('zope.interface.tests.test_declarations.I4\t'
+                  'zope.interface.Interface',
+                  'zope.interface.tests.test_declarations.I3\t'
+                  'zope.interface.Interface')
         self.assertEqual(sig, expect)
 
     def test_backward_compat(self):

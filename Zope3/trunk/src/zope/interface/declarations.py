@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.5 2003/05/07 15:48:57 stevea Exp $
+$Id: declarations.py,v 1.6 2003/05/13 19:48:23 jim Exp $
 """
 
 import sys
@@ -88,6 +88,7 @@ class InterfaceSpecification:
 
         """
         self.__signature__ = '\t'.join([iface.__identifier__ for iface in iro])
+
 
     def __contains__(self, interface):
         """Test whether an interface is in the specification
@@ -312,6 +313,11 @@ class InterfaceSpecification:
 
 class ImplementsSpecification(InterfaceSpecification):
 
+    _cspec = None
+    def setClass(self, cls):
+        self._cspec = ImplementsSpecification(_gatherSpecs(cls, []))
+        self.__signature__ = self._cspec.__signature__
+
     def __get__(self, inst, cls):
         """Get an implementation specification for an object.
 
@@ -485,79 +491,144 @@ class ObjectSpecification:
     def __init__(self, ob):
         self.ob = ob
 
+    def _gathersig(self, c, result):
+        flags = getattr(c, '__flags__', heap)
+
+        if flags & heap:
+            try:
+                dict = c.__dict__
+            except AttributeError:
+
+                # XXX If we got here, we must have a
+                # security-proxied class. This introduces an
+                # indirect dependency on security proxies,
+                # which we don't want. This is necessary to
+                # support old-style __implements__ interface
+                # declarations.
+
+                # If we got here, we must have an old-style
+                # declaration, so we'll just look for an
+                # __implements__.  We can't fix it because the class
+                # is probably security proxied.
+
+                implements = getattr(c, '__implements__', None)
+                if implements is not None:
+                    assert ((implements.__class__ == tuple)
+                            or
+                            (InterfaceClass in
+                             implements.__class__.__mro__)
+                            )
+                    result.append(`implements`)
+
+            else:
+                # Normal case
+                implements = dict.get('__implements__')
+                if implements is None:
+                    # No implements spec, lets add one:
+                    classImplements(c)
+                    implements = dict['__implements__']
+
+                try:
+                    sig = implements.__signature__
+                except AttributeError:
+                    # Old-style implements!  Fix it up.
+                    implements = OnlyImplementsSpecification(
+                        implements)
+                    _setImplements(c, implements)
+                    sig = implements.__signature__
+
+                if sig:
+                    result.append(sig)
+                
+        else:
+            # Look in reg
+            implements = _implements_reg.get(c)
+            if implements is None:
+                    # No implements spec, lets add one:
+                    classImplements(c)
+                    implements = _implements_reg[c]
+            sig = implements.__signature__
+            if sig:
+                result.append(sig)
+
+
     def __signature__(self):
         ob = self.ob
 
         provides = getattr(ob, '__provides__', None)
         if provides is not None:
-            result = [provides.__signature__]
+            provides = provides.__signature__
         else:
-            result = []
+            provides = ''
+        sig = ''
 
         try:
             cls = ob.__class__
         except AttributeError:
+            # If there's no class, we'll just use the instance spec
             pass
         else:
 
-            try:
-                mro = cls.__mro__
-            except AttributeError:
-                mro = _getmro(cls, [])
+            flags = getattr(cls, '__flags__', heap)
 
-            for c in mro:
-                try: flags = c.__flags__
-                except AttributeError: flags = heap
+            if flags & heap:
+                try:
+                    dict = cls.__dict__
+                except AttributeError:
 
-                if flags & heap:
-                    try:
-                        dict = c.__dict__
-                    except AttributeError:
+                    # XXX If we got here, we must have a
+                    # security-proxied class. This introduces an
+                    # indirect dependency on security proxies,
+                    # which we don't want. This is necessary to
+                    # support old-style __implements__ interface
+                    # declarations.
 
-                        # XXX If we got here, we must have a
-                        # security-proxied class. This introduces an
-                        # indirect dependency on security proxies,
-                        # which we don't want. This is necessary to
-                        # support old-style __implements__ interface
-                        # declarations.
+                    # If we got here, we must have an old-style
+                    # declaration, so we'll just look for an
+                    # __implements__.  We can't fix it because the class
+                    # is probably security proxied.
 
-                        # If we got here, we must have an old-style
-                        # declaration, so we'll just look for an
-                        # __implements__.
-
-                        implements = getattr(c, '__implements__', None)
-                        if implements is not None:
-                            assert ((implements.__class__ == tuple)
-                                    or
-                                    (InterfaceClass in
-                                     implements.__class__.__mro__)
-                                    )
-                            result.append(`implements`)
-
-                    else:
-
-                        # Normal case
-
-                        implements = dict.get('__implements__')
-
-                        if implements is not None:
-                            try:
-                                sig = implements.__signature__
-                            except AttributeError:
-                                # Old-style implements!  Fix it up.
-                                implements = OnlyImplementsSpecification(
-                                    implements)
-                                _setImplements(c, implements)
-                                sig = implements.__signature__
-
-                            result.append(sig)
-                else:
-                    # Look in reg
-                    implements = _implements_reg.get(c)
+                    implements = getattr(cls, '__implements__', None)
                     if implements is not None:
-                        result.append(implements.__signature__)
+                        assert ((implements.__class__ == tuple)
+                                or
+                                (InterfaceClass in
+                                 implements.__class__.__mro__)
+                                )
+                        sig = `implements`
 
-        return tuple(result)
+                else:
+                    # Normal case
+                    implements = dict.get('__implements__')
+                    if implements is None:
+                        # No implements spec, lets add one:
+                        classImplements(cls)
+                        implements = dict['__implements__']
+
+                    try:
+                        sig = implements.__signature__
+                    except AttributeError:
+                        # Old-style implements!  Fix it up.
+                        implements = OnlyImplementsSpecification(
+                            implements)
+                        _setImplements(cls, implements)
+                        sig = implements.__signature__
+
+            else:
+                # Look in reg
+                implements = _implements_reg.get(cls)
+                if implements is None:
+                        # No implements spec, lets add one:
+                        classImplements(cls)
+                        implements = _implements_reg[cls]
+                sig = implements.__signature__
+
+        if sig:
+            if provides:
+                return provides, sig
+            return sig
+        else:
+            return provides
 
     __signature__ = property(__signature__)
 
@@ -574,7 +645,6 @@ class ObjectSpecification:
         except AttributeError:
             pass
         else:
-
             _gatherSpecs(cls, result)
 
         self.__dict__['_v_spec'] = spec = InterfaceSpecification(*result)
@@ -836,6 +906,24 @@ def directlyProvidedBy(object):
     return getattr(object, "__provides__", _empty)
 
 
+class metaclasshooker:
+
+    def __init__(self, metaclass):
+        self.metaclass = metaclass
+
+    def __call__(self, name, bases, dict):
+        metaclass = self.metaclass
+        if metaclass is None:
+            if bases:
+                metaclass = type(bases[0])
+            else:
+                metaclass = ClassType
+
+        cls = metaclass(name, bases, dict)
+        _setImplements(cls, dict['__implements__'])
+
+        return cls
+
 def _implements(name, spec):
     frame = sys._getframe(2)
     locals = frame.f_locals
@@ -848,7 +936,11 @@ def _implements(name, spec):
         raise TypeError(name+" can be used only once in a class definition.")
 
     locals["__implements__"] = spec
-    locals["__providedBy__"] = _objectSpecificationDescriptor
+
+    metaclass = locals.get('__metaclass__')
+    if metaclass is None:
+        metaclass = frame.f_globals.get('__metaclass__')
+    locals["__metaclass__"] = metaclasshooker(metaclass)
 
 def implements(*interfaces):
     """Declare interfaces implemented by instances of a class
@@ -1090,9 +1182,7 @@ def moduleProvides(*interfaces):
 
 
 def _getImplements(cls):
-
-    try: flags = cls.__flags__
-    except AttributeError: flags = heap
+    flags = getattr(cls, '__flags__', heap)
 
     if flags & heap:
         try:
@@ -1125,17 +1215,15 @@ def _getImplements(cls):
     return d.get(k)
 
 def _setImplements(cls, v):
-
-    try:
-        flags = cls.__flags__
-    except AttributeError:
-        flags = heap
+    flags = getattr(cls, '__flags__', heap)
 
     if flags & heap:
         cls.__implements__ = v
         cls.__providedBy__ = _objectSpecificationDescriptor
     else:
         _implements_reg[cls] = v
+
+    v.setClass(cls)
 
 def _flattenSpecs(specs, result):
     """Flatten a sequence of interfaces and interface specs to interfaces
@@ -1194,6 +1282,44 @@ def _gatherSpecs(cls, result):
     if not stop:
         for b in cls.__bases__:
             _gatherSpecs(b, result)
+
+    return result
+
+def _gatherSpecs(cls, result):
+    implements = _getImplements(cls)
+    if implements is not None:
+        try:
+            stop = implements.only
+        except AttributeError:
+            # Must be an old-style interface spec
+            implements = OnlyImplementsSpecification(
+                _flattenSpecs([implements], []))
+            stop = 1
+            _setImplements(cls, implements)
+
+        if stop:
+            result.append(implements)
+            return result
+
+        cspec = implements._cspec
+        if cspec is not None:
+            # We have a cached spec.
+            # This makes out job much easier
+            result.append(cspec)
+            return result
+
+        # No cached cspec. Compute one if we're being called recursively:
+        if result:
+            implements.setClass(cls)
+            cspec = implements._cspec
+            # Now we have one
+            result.append(cspec)
+            return result
+
+        result.append(implements)
+
+    for b in cls.__bases__:
+        _gatherSpecs(b, result)
 
     return result
 
