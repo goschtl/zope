@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zptpage.py,v 1.6 2004/03/15 13:10:55 srichter Exp $
+$Id: zptpage.py,v 1.7 2004/03/19 23:35:04 srichter Exp $
 """
 import re
 
@@ -53,7 +53,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
         """See zope.app.zptpage.interfaces.IZPTPage"""
         if not isinstance(text, unicode):
             raise TypeError("source text must be Unicode" , text)
-        self.pt_edit(text.encode('utf-8'), content_type)
+        self.pt_edit(text, content_type)
 
     # See zope.app.zptpage.interfaces.IZPTPage
     source = property(getSource, setSource, None,

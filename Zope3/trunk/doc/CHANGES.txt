@@ -74,6 +74,10 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 154. Page Template code entered TTW is now stored as
+      unicode, which had no side effect whatsoever. We only had to allow in
+      the general page template code for the source to be unicode.
+
     - Removed 'zope.app' and 'zope.component' dependency from
       'zope.publisher'. Now it only depends on 'zope.proxy' (eek, should also
       go), 'zope.interface', 'zope.exceptions' and 'zope.i18n'.
