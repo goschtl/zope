@@ -75,6 +75,7 @@ def classTraversable(class_):
     # didn't bother with the base classes __bobo_traverse__ anyway and
     # we step __fallback_traverse__.
     if (hasattr(class_, '__five_traversable__') and
+        hasattr(class_, '__dict__') and
         not class_.__dict__.has_key('__bobo_traverse__')):
         return
 

@@ -16,8 +16,11 @@ from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
+from zope.app.traversing.adapters import traversePathElement
 from zope.app.traversing.namespace import queryResourceInContext
 from monkey import DebugFlags
+
+_marker = object
 
 class FakeRequest:
     implements(IBrowserRequest)
@@ -68,6 +71,7 @@ class Traversable:
             pass
         return self.__fallback_traverse__(REQUEST, name)
 
+
 class FiveTraversable(DefaultTraversable):
 
     def traverse(self, name, furtherPath):
@@ -79,7 +83,7 @@ class FiveTraversable(DefaultTraversable):
             REQUEST = FakeRequest()
         # Try to lookup a view first
         try:
-            return getView(context, name, REQUEST).__of__(context)
+            return getView(context, name, REQUEST)
         except ComponentLookupError:
             pass
         # If a view can't be found, then use default traversable

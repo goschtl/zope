@@ -13,10 +13,14 @@ from Testing.ZopeTestCase.functional import Functional
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
+from zope.component import getViewProviding
+from zope.app.traversing.browser.interfaces import IAbsoluteURL
+
 from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
 from Products.Five.resource import Resource
+from Products.Five.traversable import FakeRequest
 
 from Products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
@@ -119,7 +123,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
     def test_macro_access(self):
         view = self.folder.unrestrictedTraverse('testoid/seagull.html')
         self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
- 
+
     # this doesn't work; it looks like Zope 3 security gets involved,
     # but I do not yet understand where this could be.
 ##     def test_repeat_iterator(self):
@@ -159,6 +163,9 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         for r in dir_resource_names:
             resource = self.folder.unrestrictedTraverse(base % r)
             self.assert_(isinstance(resource, Resource))
+        abs_url = self.folder.unrestrictedTraverse(base % '')()
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++fivetest_resources'
+        self.assertEquals(abs_url, expected)
 
     def test_breadcrumbs(self):
         view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
@@ -208,7 +215,6 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.folder.manage_addProduct['FiveTest'].manage_addFancyContent(
             'fancy')
 
-
         # check if the old bobo_traverse method can still kick in
         response = self.publish('/test_folder_1_/fancy/something-else')
         self.assertEquals('something-else', response.getBody())
@@ -217,6 +223,15 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         response = self.publish('/test_folder_1_/fancy/fancy')
         self.assertEquals("Fancy, fancy", response.getBody())
 
+    def test_publish_image_resource(self):
+        url = '/test_folder_1_/testoid/++resource++pattern.png'
+        response = self.publish(url, basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
+
+    def test_publish_file_resource(self):
+        url = '/test_folder_1_/testoid/++resource++style.css'
+        response = self.publish(url, basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
 
 def test_suite():
     suite = unittest.TestSuite()

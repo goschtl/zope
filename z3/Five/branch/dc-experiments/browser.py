@@ -35,15 +35,18 @@ class BrowserView(Acquisition.Explicit):
 
 InitializeClass(BrowserView)
 
-class AbsoluteURL(BrowserView):
+class AbsoluteURL:
     """An adapter for Zope3-style absolute_url
     view using Zope2 methods
     """
 
+    def __init__(self, context, request):
+        self.context, self.request = context, request
+
     implements(IAbsoluteURL)
 
     def __str__(self):
-        context = self.context
+        context = aq_inner(self.context)
         return context.absolute_url()
 
     __call__ = __str__

@@ -14,6 +14,7 @@ $Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
 import os
 
 from Acquisition import Explicit, aq_inner, aq_parent
+from ComputedAttribute import ComputedAttribute
 from browser import BrowserView
 from OFS.Traversable import Traversable as OFSTraversable
 from zope.exceptions import NotFoundError
@@ -40,13 +41,12 @@ class Resource(Explicit):
 
     def __call__(self):
         name = self.__name__
-        if name.startswith('++resource++'):
-            name = name[12:]
         container = aq_parent(self)
 
         url = str(getViewProviding(container, IAbsoluteURL, self.request))
-        return "%s/++resource++%s" % (url, name)
-
+        if not '++resource++' in url:
+            name = '++resource++%s' % name
+        return "%s/%s" % (url, name)
 
 class PageTemplateResource(BrowserView, Resource):
 
@@ -65,7 +65,7 @@ class FileResource(BrowserView, Resource):
     #implements(IBrowserPublisher)
 
     def __browser_default__(self, request):
-        return self, (request.method,)
+        return self, (request.REQUEST_METHOD,)
 
     def GET(self):
         """Default content"""
@@ -77,7 +77,7 @@ class FileResource(BrowserView, Resource):
         # HTTP If-Modified-Since header handling. This is duplicated
         # from OFS.Image.Image - it really should be consolidated
         # somewhere...
-        header = request.getHeader('If-Modified-Since', None)
+        header = request.environ.get('If-Modified-Since', None)
         if header is not None:
             header = header.split(';')[0]
             # Some proxies seem to send invalid date strings for this
@@ -175,7 +175,10 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
     default_factory = FileResourceFactory
 
     def getId(self):
-        return self.__name__
+        name = self.__name__
+        if not name.startswith('++resource++'):
+            name = '++resource++%s' % self.__name__
+        return name
 
     def __browser_default__(self, request):
         '''See interface IBrowserPublisher'''
@@ -198,7 +201,6 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
         ext = name.split('.')[-1]
         factory = self.resource_factories.get(ext, self.default_factory)
         resource = factory(name, filename)(self.request)
-        resource.__parent__ = self
         resource.__name__ = name
         # XXX __of__ wrapping is usually done on traversal.
         # However, we don't want to subclass Traversable (or do we?)
