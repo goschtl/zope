@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.12 2004/03/12 15:58:23 fdrake Exp $
+$Id: finddeps.py,v 1.13 2004/03/12 16:08:49 fdrake Exp $
 """
 import sys
 import getopt
@@ -157,7 +157,6 @@ class ImportFinder:
 
     def add_import(self, name, lineno):
         if name not in self.module_checks:
-            # determine if a module name, or something in a module:
             self.check_module_name(name)
             if not self.module_checks[name] and "." in name:
                 # if "." isn't in name, I'd be very surprised!
@@ -170,11 +169,11 @@ class ImportFinder:
             self.deps.append(Dependency(name, self.path, lineno))
 
     def check_module_name(self, name):
+        """Check whether 'name' is a module name.  Update module_checks."""
         try:
             __import__(name)
         except ImportError:
             self.module_checks[name] = False
-            # XXX remove the last part and check again:
         else:
             self.module_checks[name] = name in sys.modules
 
