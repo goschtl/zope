@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.16 2003/03/21 21:05:58 jim Exp $
+$Id: configuration.py,v 1.17 2003/03/23 19:24:46 jim Exp $
 """
 __metaclass__ = type
 
@@ -35,6 +35,8 @@ from zope.app.interfaces.services.configuration import INameConfigurable
 from zope.app.interfaces.services.configuration \
      import INamedComponentConfiguration, IComponentConfiguration
 from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.configuration \
+     import NoConfigurationManagerError
 
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered, Active
@@ -608,6 +610,44 @@ class ConfigurationManager(Persistent):
         for k, v in self._data:
             del container[k]
 
+
+class ConfigurationManagerContainer(object):
+    """Mix-in to implement IConfigurationManagerContainer
+    """
+
+    def __init__(self):
+        super(ConfigurationManagerContainer, self).__init__()
+        self.setObject('configure', ConfigurationManager())
+
+    def __delitem__(self, name):
+        """Delete an item, but not if it's the last configuration manager
+        """
+
+        item = self[name]
+        if IConfigurationManager.isImplementedBy(item):
+            # Check to make sure it's not the last one
+            if len([i for i in self.values()
+                    if IConfigurationManager.isImplementedBy(i)]) < 2:
+                raise NoConfigurationManagerError(
+                    "Can't delete the last configuration manager")
+        super(ConfigurationManagerContainer, self).__delitem__(name)
+
+    def getConfigurationManager(self):
+        """Get a configuration manager
+        """
+
+        # Get the configuration manager for this folder
+        for name in self:
+            item = self[name]
+            if IConfigurationManager.isImplementedBy(item):
+                # We found one. Get it in context
+                return ContextWrapper(item, self, name=name)
+        else:
+            raise NoConfigurationManagerError(
+                "Couldn't find an configuration manager")
+    
+    getConfigurationManager = ContextMethod(getConfigurationManager)
+    
 
 # XXX Backward Compatibility for pickles
 import sys

@@ -12,20 +12,22 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.4 2003/03/21 21:06:27 jim Exp $
+$Id: test_configurationmanager.py,v 1.5 2003/03/23 19:24:46 jim Exp $
 """
 
-from zope.app.services.configuration import ConfigurationManager
-from zope.app.interfaces.services.configuration import IConfigurationManager
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IDeleteNotifiable
+from zope.app.interfaces.container import IZopeContainer
+from zope.app.interfaces.services.configuration import IConfigurationManager
+from zope.app.services.configuration import ConfigurationManager
+from zope.app.services.tests import placefulsetup
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.traversing import traverse
+from zope.component.adapter import provideAdapter
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
-from zope.app.interfaces.container import IDeleteNotifiable
-from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.container import IZopeContainer
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component.adapter import provideAdapter
 
 
 class Undeletable:
@@ -339,6 +341,35 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         manager.setObject('xyzzy', thingy)
         manager.beforeDeleteHook(manager, container)
         self.failUnless(thingy.was_called)
+
+class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
+
+    def test_getConfigurationManager(self):
+        self.buildFolders()
+        sm = placefulsetup.createServiceManager(self.rootFolder)
+        default = traverse(sm, 'default')
+        self.assertEqual(default.getConfigurationManager(),
+                         default['configure'])
+        default.setObject('xxx', ConfigurationManager())
+        del default['configure']
+        self.assertEqual(default.getConfigurationManager(),
+                         default['xxx'])
+
+
+#       Can't test empty because there's no way to make it empty.
+##         del default['xxx']
+##         self.assertRaises(Exception,
+##                           default.getConfigurationManager)
+
+    def test_cant_remove_last_cm(self):
+        self.buildFolders()
+        sm = placefulsetup.createServiceManager(self.rootFolder)
+        default = traverse(sm, 'default')
+        self.assertRaises(Exception,
+                          default.__delitem__, 'configuration')
+        default.setObject('xxx', ConfigurationManager())
+        del default['configure']
+        
 
 
 def test_suite():

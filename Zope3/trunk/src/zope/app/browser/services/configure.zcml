@@ -557,15 +557,6 @@
 
 </view>
 
-<page
-    for="zope.app.interfaces.services.folder.INoConfigurationManagerError"
-    name="index.html"
-    permission="zope.Public"
-    template="../exception/user.pt"
-    class="zope.app.browser.exception.user.UserErrorView"
-    />
-
-
 <!-- ServiceConfiguration -->
 
   <page

@@ -13,31 +13,17 @@
 ##############################################################################
 """Interfaces for packages.
 
-$Id: folder.py,v 1.3 2003/03/23 18:04:26 jim Exp $
+$Id: folder.py,v 1.4 2003/03/23 19:24:45 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding, IContainer
 from zope.app.interfaces.services.service import IComponentManager
-from zope.interface import Interface
+from zope.app.interfaces.services.configuration \
+     import IConfigurationManagerContainer
 
-class INoConfigurationManagerError(Interface):
-    """No configuration manager error
-    """
-    
-
-class NoConfigurationManagerError(Exception):
-    """No configuration manager
-
-    There is no configuration manager in a site-management folder, or
-    an operation would result in no configuration manager in a
-    site-management folder.
-
-    """
-
-    __implements__ = INoConfigurationManagerError
-
-class ISiteManagementFolder(IContainer):
+class ISiteManagementFolder(IContainer, IConfigurationManagerContainer):
     """Component and component configuration containers."""
+
 
 class ISiteManagementFolders(IContainer, IComponentManager):
     """A collection of ISiteManagementFolder objects.
@@ -46,17 +32,6 @@ class ISiteManagementFolders(IContainer, IComponentManager):
     well as package query and lookup.
     
     """
-
-    def getConfigurationManager():
-        """get a configuration manager
-
-        Find a configuration manager.  Clients can get the
-        configuration manager without knowing it's name. Normally,
-        folders have one configuration manager. If there is more than
-        one, this method willl return one; which one is undefined.
-
-        An error is raised if no configuration manager can be found.
-        """
 
 class ISiteManagementFolderAdding(IAdding):
     """A special package that is not content but is similar to a folder.

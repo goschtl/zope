@@ -77,4 +77,15 @@
         title="Configuration"
         />
 
+
+<page
+    for="
+    zope.app.interfaces.services.configuration.INoConfigurationManagerError"
+    name="index.html"
+    permission="zope.Public"
+    template="../../exception/user.pt"
+    class="zope.app.browser.exception.user.UserErrorView"
+    />
+
+
 </zopeConfigure>

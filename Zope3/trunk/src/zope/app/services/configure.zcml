@@ -253,7 +253,8 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IWriteContainer"
-        attributes="getConfigurationManager" />
+        attributes="getConfigurationManager" 
+        />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
@@ -310,7 +311,7 @@
         interface="zope.app.interfaces.container.IWriteContainer
                    zope.app.interfaces.services.pagefolder.IPageFolderInfo"
         set_schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
-        attributes="configured"
+        attributes="configured getConfigurationManager" 
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />

@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
+$Id: pagefolder.py,v 1.2 2003/03/23 19:24:46 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,13 +27,15 @@ from zope.app.traversing import getPath, traverse
 from zope.proxy.context import getItem, getAttr
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.configuration import Active
-from zope.app.services.configuration import ConfigurationManager
+from zope.app.services.configuration import ConfigurationManagerContainer
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.proxy.introspection import removeAllProxies
+from zope.app.services.folder import SiteManagementFolder
 from zope.app.services.view import PageConfiguration
 from zope.app.interfaces.services.pagefolder import IPageFolder
+from zope.app.interfaces.services.configuration import IConfigurationManager
 
-class PageFolder(BTreeContainer):
+class PageFolder(ConfigurationManagerContainer, BTreeContainer):
 
     __implements__ = IPageFolder
 
@@ -45,11 +47,11 @@ class PageFolder(BTreeContainer):
     attribute = None
     template = None
 
-    def __init__(self):
-        super(PageFolder, self).__init__()
-        super(PageFolder, self).setObject('configure', ConfigurationManager())
-
     def setObject(self, name, object):
+        if IConfigurationManager.isImplementedBy(object):
+            # We allow configuration managers as well as templates
+            return super(PageFolder, self).setObject(name, object)
+            
         if not IZPTTemplate.isImplementedBy(object):
             raise TypeError("Can only add templates", object)
 

@@ -13,42 +13,16 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.2 2003/03/23 18:04:27 jim Exp $
+$Id: test_folder.py,v 1.3 2003/03/23 19:24:46 jim Exp $
 """
 
 import unittest
-from zope.app.services.tests import placefulsetup
-from zope.app.traversing import traverse
-from zope.app.services.configuration import ConfigurationManager
-
-class TestSomething(placefulsetup.PlacefulSetup, unittest.TestCase):
-
-    def test_getConfigurationManager(self):
-        self.buildFolders()
-        sm = placefulsetup.createServiceManager(self.rootFolder)
-        default = traverse(sm, 'default')
-        self.assertEqual(default.getConfigurationManager(),
-                         default['configure'])
-        default.setObject('xxx', ConfigurationManager())
-        del default['configure']
-        self.assertEqual(default.getConfigurationManager(),
-                         default['xxx'])
+from zope.app.services.tests.test_configurationmanager \
+     import ConfigurationManagerContainerTests
 
 
-#       Can't test empty because there's no way to make it empty.
-##         del default['xxx']
-##         self.assertRaises(Exception,
-##                           default.getConfigurationManager)
-
-    def test_cant_remove_last_cm(self):
-        self.buildFolders()
-        sm = placefulsetup.createServiceManager(self.rootFolder)
-        default = traverse(sm, 'default')
-        self.assertRaises(Exception,
-                          default.__delitem__, 'configuration')
-        default.setObject('xxx', ConfigurationManager())
-        del default['configure']
-        
+class TestSomething(ConfigurationManagerContainerTests, unittest.TestCase):
+    "Test configuration manager access"
         
 
 def test_suite():

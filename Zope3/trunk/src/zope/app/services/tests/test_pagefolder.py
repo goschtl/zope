@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_viewpackage.py,v 1.7 2003/03/23 16:45:45 jim Exp $
+$Id: test_pagefolder.py,v 1.1 2003/03/23 19:24:46 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -27,10 +27,12 @@ from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.app.services.tests.test_configurationmanager \
+     import ConfigurationManagerContainerTests
 
 class I(Interface): pass
 
-class Test(PlacefulSetup, TestCase):
+class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
 
     def test_setObject(self):
         self.buildFolders()

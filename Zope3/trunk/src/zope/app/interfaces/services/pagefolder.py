@@ -16,12 +16,14 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
+$Id: pagefolder.py,v 1.2 2003/03/23 19:24:45 jim Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine
 from zope.app.interfaces.container import IContainer
 from zope.app.security.permission import PermissionField
+from zope.app.interfaces.services.configuration \
+     import IConfigurationManagerContainer
 from zope.interface import Interface
 
 class IPageFolderInfo(Interface):
@@ -55,6 +57,8 @@ class IPageFolderInfo(Interface):
         required = True,
         )
     
-class IPageFolder(IPageFolderInfo,  IContainer):
+class IPageFolder(IPageFolderInfo,
+                  IContainer,
+                  IConfigurationManagerContainer):
     """Sub-packages that contain templates that are registered as page views
     """

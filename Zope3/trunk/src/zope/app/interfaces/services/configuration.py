@@ -13,12 +13,12 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.8 2003/03/21 21:04:12 jim Exp $
+$Id: configuration.py,v 1.9 2003/03/23 19:24:45 jim Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.container  import IContainerNamesContainer
+from zope.app.interfaces.container  import IContainerNamesContainer, IContainer
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute
 from zope.schema import Text, TextLine
@@ -338,3 +338,43 @@ class IOrderedContainer(Interface):
 class IConfigurationManager(IContainerNamesContainer, IOrderedContainer):
     """Manage Configurations
     """
+
+class INoConfigurationManagerError(Interface):
+    """No configuration manager error
+    """
+    
+
+class NoConfigurationManagerError(Exception):
+    """No configuration manager
+
+    There is no configuration manager in a site-management folder, or
+    an operation would result in no configuration manager in a
+    site-management folder.
+
+    """
+
+    __implements__ = INoConfigurationManagerError
+
+class IConfigurationManagerContainer(IContainer):
+    """Containers with configuration managers
+
+    The container provides clients to access the configuration manager
+    without knowing it's name.
+
+    The container prevents deletion of the last configuration manager.
+    The container may allow more than one configuration manager. If it
+    has more than one, the one returned from an unnamed access is
+    undefined.
+
+    """
+
+    def getConfigurationManager():
+        """get a configuration manager
+
+        Find a configuration manager.  Clients can get the
+        configuration manager without knowing it's name. Normally,
+        folders have one configuration manager. If there is more than
+        one, this method willl return one; which one is undefined.
+
+        An error is raised if no configuration manager can be found.
+        """
