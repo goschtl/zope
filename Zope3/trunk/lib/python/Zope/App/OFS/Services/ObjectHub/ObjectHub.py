@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.4 2002/11/29 15:51:03 stevea Exp $
+$Id: ObjectHub.py,v 1.5 2002/12/05 13:54:52 stevea Exp $
 """
 
 from __future__ import generators
@@ -31,7 +31,7 @@ from HubEvent import ObjectRemovedHubEvent
 from Zope.Exceptions import NotFoundError
 
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectEvent
-from Zope.Event.IObjectEvent import IObjectMovedEvent
+from Zope.Event.IObjectEvent import IObjectMovedEvent, IObjectCreatedEvent
 from Zope.Event.IObjectEvent import IObjectModifiedEvent
 
 from Persistence.BTrees.IOBTree import IOBTree
@@ -119,6 +119,11 @@ class ObjectHub(ProtoServiceEventChannel):
                         canonical_new_location,
                         event.object)
                     clean_self._notify(wrapped_self, event)
+            elif IObjectCreatedEvent.isImplementedBy(event):
+                # a newly created object that has not been added to a
+                # container yet has no location. So, we're not interested in
+                # it.
+                pass
             else: 
                 canonical_location = locationAsTuple(event.location)
                 hubid = clean_self.__location_to_hubid.get(canonical_location)
