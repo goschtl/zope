@@ -419,7 +419,7 @@ _default_checkers = {
     datetime.datetime: NamesChecker(['__repr__', '__str__', 'year', 'month',
                                      'day', 'hour', 'minute', 'second',
                                      'microsecond', 'timetuple',
-                                     'utctimetuple', 'toordinal', '__cmp__',
+                                     'toordinal', '__cmp__',
                                      '__hash__', 'ctime', 'strftime',
                                      '__add__', '__radd__', '__sub__',
                                      '__rsub__', 'weekday', 'isoweekday',
@@ -435,7 +435,16 @@ _default_checkers = {
                                        'isocalendar', 'isoformat', 'min',
                                        'max', 'resolution', 'utcoffset',
                                        'tzname', 'dst']),
-    }
+    datetime.time: NamesChecker(['hour', 'minute', 'second', 'microsecond',
+                                 '__cmp__', '__hash__', '__repr__', '__str__',
+                                 'isoformat', 'strftime', 'min', 'max',
+                                 'resolution']),
+    datetime.timetz: NamesChecker(['hour', 'minute', 'second', 'microsecond',
+                                   '__cmp__', '__hash__', '__repr__',
+                                   '__str__', 'isoformat', 'strftime', 'min',
+                                   'max', 'resolution', 'tzinfo', 'utcoffset',
+                                   'tzname', 'dst'])
+}
 
 
 def _clear():
