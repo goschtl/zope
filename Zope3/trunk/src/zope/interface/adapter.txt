@@ -331,3 +331,20 @@ You can have subscriptions that are indepenent of any specifications::
   ['sub1', 'sub2']
   >>> registry.subscriptions([], IP2)
   ['sub2']
+
+Handlers
+--------
+
+A handler is a subscriber factory that doesn't produce any normal
+output. It returns None.  A handler is unlike adapters in that it does
+all of it;s work the factory is called.
+
+To register a handler, simply provide None as the provided interface:
+
+  >>> def handler(event):
+  ...     print 'handler', event
+  
+  >>> registry.subscribe([IR1], None, handler)
+  >>> registry.subscriptions([IR1], None) == [handler]
+  True
+

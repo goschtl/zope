@@ -479,13 +479,18 @@ class AdapterRegistry(object):
         else:
             required = self._null
             with = ()
-        
+
+        if provided is None:
+            provided = self._default
+            
         required._subscriptionAdaptTo(provided, value, with)
 
 
     def subscriptions(self, required, provided):
+        if provided is None:
+            provided = self._default
+
         order = len(required)
-        
         if order == 1:
             # Simple subscriptions:
             s = self.get(required[0])
