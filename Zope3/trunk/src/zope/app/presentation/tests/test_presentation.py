@@ -13,9 +13,8 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: tests.py,v 1.2 2004/03/09 16:34:31 BjornT Exp $
+$Id: test_presentation.py,v 1.1 2004/03/11 10:18:37 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -25,7 +24,7 @@ from zope.interface import Interface, directlyProvides, implements
 from zope.interface.verify import verifyObject
 
 from zope.app.folder import rootFolder
-from zope.app.services.zpt import IZPTTemplate
+from zope.app.presentation.zpt import IZPTTemplate
 from zope.app.services.service import ServiceManager
 from zope.app.services.servicenames import Presentation
 from zope.app.services.tests.iregistry import TestingIRegistry

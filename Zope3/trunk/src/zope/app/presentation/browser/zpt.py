@@ -13,11 +13,9 @@
 ##############################################################################
 """ZPT View Classes
 
-$Id: zpt.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
+$Id: zpt.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
 """
-__metaclass__ = type
-
-class Source:
+class Source(object):
 
     def __call__(self):
         self.request.response.setHeader('content-type',

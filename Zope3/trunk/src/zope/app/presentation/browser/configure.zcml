@@ -29,4 +29,7 @@
               status attribute"
       usage="addingdialog" />
 
+<include file="pagefolder.zcml" />
+<include file="zpt.zcml" />
+
 </configure>

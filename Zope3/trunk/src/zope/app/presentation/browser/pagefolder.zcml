@@ -5,7 +5,7 @@
 <!-- PageFolder -->
 
   <containerViews
-      for="zope.app.services.pagefolder.IPageFolder"
+      for="zope.app.presentation.pagefolder.IPageFolder"
       index="zope.ManageServices"
       contents="zope.ManageServices"
       add="zope.ManageServices"
@@ -14,7 +14,7 @@
   <editform
         name="DefaultRegistration.html"
         label="Default registration parameters"
-        schema="zope.app.services.pagefolder.IPageFolderInfo"
+        schema="zope.app.presentation.pagefolder.IPageFolderInfo"
         menu="zmi_views" title="Default Registration"
         permission="zope.ManageServices"
         class=".pagefolder.PageFolderDefaultConfiguration" 
@@ -23,14 +23,14 @@
   <addform
         name="AddPageFolder.html"
         label="Default registration parameters"
-        schema="zope.app.services.pagefolder.IPageFolderInfo"
+        schema="zope.app.presentation.pagefolder.IPageFolderInfo"
         permission="zope.ManageServices"
-        content_factory="zope.app.services.pagefolder.PageFolder"
+        content_factory="zope.app.presentation.pagefolder.PageFolder"
         />
 
 
   <addMenuItem
-     class="zope.app.services.pagefolder.PageFolder"
+     class="zope.app.presentation.pagefolder.PageFolder"
      title="Page Folder"
      permission="zope.ManageServices"
      view="AddPageFolder.html" 

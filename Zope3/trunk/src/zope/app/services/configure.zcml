@@ -108,13 +108,6 @@
         />
   </content>
 
-<!-- Page templates -->
-  <include file="zpt.zcml" />
-
-<!-- Page Folder --> 
-  <include file="pagefolder.zcml" />
-
-
 
 <!-- Principal annotations (user data) service -->
 

@@ -28,9 +28,6 @@
       permission="zope.ManageServices"
       />
 
-<!-- ZPT Templates -->
-  <include file="zpt.zcml" />
-
 <!-- SiteManagementFolder -->
 
   <addMenuItem
@@ -80,9 +77,6 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Registrations" />
 -->
-
-<!-- PageFolder --> 
-  <zope:include file="pagefolder.zcml" />
 
 <!-- Principal annotations (user data) service -->
 

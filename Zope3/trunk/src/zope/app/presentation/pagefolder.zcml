@@ -6,9 +6,9 @@
 
 <!-- Page Folder -->
 
-<content class="zope.app.services.pagefolder.PageFolder">
+<content class=".pagefolder.PageFolder">
   <factory
-    id = "zope.app.services.PageFolder"
+    id = "zope.app.presentation.pagefolder.PageFolder"
     title = "View Folder"
     />
   <require
@@ -17,8 +17,8 @@
   <require
       permission="zope.ManageServices"
       interface="zope.app.container.interfaces.IWriteContainer
-                 zope.app.services.pagefolder.IPageFolderInfo"
-      set_schema="zope.app.services.pagefolder.IPageFolderInfo"
+                 .pagefolder.IPageFolderInfo"
+      set_schema=".pagefolder.IPageFolderInfo"
       attributes="getRegistrationManager applyDefaults" 
       />
   <implements
@@ -26,7 +26,7 @@
 </content>
 
 <adapter
-  for="zope.app.services.pagefolder.IPageFolder"
+  for=".pagefolder.IPageFolder"
   provides="zope.app.interfaces.file.IFileFactory"
   factory=".zpt.ZPTFactory"
   permission="zope.ManageServices"

@@ -12,47 +12,45 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.20 2004/03/02 14:40:16 philikon Exp $
+$Id: zpt.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
 """
+import re
 
 from zope.security.proxy import ProxyFactory
-import persistent
-import re
-import zope.app.container.contained
-import zope.fssync.server.entryadapter
-import zope.fssync.server.interfaces
-import zope.app.interfaces.file
-import zope.app.index.interfaces.text
-import zope.app.interfaces.services.registration
-import zope.app.pagetemplate.engine
-import zope.interface
-import zope.pagetemplate.pagetemplate
-import zope.schema
+from persistent import Persistent
+from zope.interface import Interface, implements
+from zope.schema import Text, BytesLine, Bool
 
-class IZPTInfo(zope.interface.Interface):
+from zope.app.container.contained import Contained
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.index.interfaces.text import ISearchableText
+from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
+from zope.fssync.server.interfaces import IObjectFile
+from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
+from zope.app.pagetemplate.engine import AppPT
+from zope.pagetemplate.pagetemplate import PageTemplate
+
+class IZPTInfo(Interface):
     """ZPT Template configuration information
     """
 
-    contentType = zope.schema.BytesLine(
+    contentType = BytesLine(
         title=u'Content type of generated output',
         required=True,
         default='text/html'
         )
 
-    source = zope.schema.Text(
+    source = Text(
         title=u"Source",
         description=u"""The source of the page template.""",
         required=True)
 
-    expand = zope.schema.Bool(
+    expand = Bool(
         title=u"Expand macros",
         )
 
-class IZPTTemplate(
-    IZPTInfo,
-    zope.app.interfaces.services.registration.IRegisterable):
-    """ZPT Templates for use in views
-    """
+class IZPTTemplate(IZPTInfo, IRegisterable):
+    """ZPT Templates for use in views"""
 
     def render(context, request, *args, **kw):
         """Render the page template.
@@ -65,14 +63,9 @@ class IZPTTemplate(
 
         """
 
-class ZPTTemplate(
-    zope.app.pagetemplate.engine.AppPT,
-    zope.pagetemplate.pagetemplate.PageTemplate,
-    persistent.Persistent,
-    zope.app.container.contained.Contained,
-    ):
+class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
 
-    zope.interface.implements(IZPTTemplate)
+    implements(IZPTTemplate)
 
     contentType = 'text/html'
     expand = False
@@ -115,7 +108,7 @@ class ZPTTemplate(
 tag = re.compile(r"<[^>]+>")
 class SearchableText:
 
-    zope.interface.implements(zope.app.index.interfaces.text.ISearchableText)
+    implements(ISearchableText)
     __used_for__ = IZPTTemplate
 
     def __init__(self, page):
@@ -139,7 +132,7 @@ class SearchableText:
 
 class ReadFile:
 
-    zope.interface.implements(zope.app.interfaces.file.IReadFile)
+    implements(IReadFile)
 
     def __init__(self, context):
         self.context = context
@@ -153,7 +146,7 @@ class ReadFile:
 
 class WriteFile:
 
-    zope.interface.implements(zope.app.interfaces.file.IWriteFile)
+    implements(IWriteFile)
 
     def __init__(self, context):
         self.context = context
@@ -164,7 +157,7 @@ class WriteFile:
 
 class ZPTFactory:
 
-    zope.interface.implements(zope.app.interfaces.file.IFileFactory)
+    implements(IFileFactory)
 
     def __init__(self, context):
         self.context = context
@@ -175,10 +168,10 @@ class ZPTFactory:
         return r
 
 
-class ZPTPageAdapter(zope.fssync.server.entryadapter.ObjectEntryAdapter):
+class ZPTPageAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for ZPTTemplate objects."""
 
-    zope.interface.implements(zope.fssync.server.entryadapter.IObjectFile)
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.source
@@ -190,5 +183,4 @@ class ZPTPageAdapter(zope.fssync.server.entryadapter.ObjectEntryAdapter):
         self.context.source = unicode(data)
 
     def extra(self):
-        return zope.fssync.server.entryadapter.AttrMapping(
-            self.context, ('contentType', 'expand'))
+        return AttrMapping(self.context, ('contentType', 'expand'))

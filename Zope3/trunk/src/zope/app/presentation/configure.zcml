@@ -43,6 +43,9 @@
              alias="zope.app.services.presentation"
              />
 
+<include file="pagefolder.zcml" />
+<include file="zpt.zcml" />
+
 <include package=".browser" />
 
 </configure>

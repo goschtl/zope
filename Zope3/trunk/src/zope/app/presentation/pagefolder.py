@@ -16,9 +16,12 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.22 2004/03/08 19:40:30 jim Exp $
+$Id: pagefolder.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
 """
-__metaclass__ = type
+from zope.interface import Interface, implements
+from zope.schema import BytesLine, Bool, Field
+from zope.app.component.interfacefield import InterfaceField
+from zope.app.security.permission import PermissionField
 
 from zope.app.container.btree import BTreeContainer
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
@@ -33,41 +36,35 @@ from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.presentation import PageRegistration
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.services.zpt import IZPTTemplate
+from zpt import IZPTTemplate
 from zope.app.traversing import getPath
-from zope.app.traversing import getPath
-from zope.interface import implements
-from zope.proxy import removeAllProxies
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import zope.app.component.interfacefield
-import zope.app.container.interfaces
-import zope.app.interfaces.file
-import zope.fssync.server.interfaces
-import zope.app.interfaces.services.registration
-import zope.app.security.permission
-import zope.interface
-import zope.schema
+from zope.app.container.interfaces import IContainer
+from zope.app.interfaces.file import IDirectoryFactory
+from zope.fssync.server.interfaces import IObjectDirectory
+from zope.app.interfaces.services.registration import \
+       IRegistrationManagerContainer
 
-class IPageFolderInfo(zope.interface.Interface):
+class IPageFolderInfo(Interface):
     """Default registration information for page folders
 
     This information is used to configure the pages in the folder.
     """
 
-    required = zope.app.component.interfacefield.InterfaceField(
+    required = InterfaceField(
         title = u"For interface",
         description = u"The interface of the objects being viewed",
         required = True,
         )
 
-    factoryName = zope.schema.BytesLine(
+    factoryName = BytesLine(
         title=u"The dotted name of a factory for creating the view",
         required = False,
         )
 
-    layer = zope.schema.BytesLine(
+    layer = BytesLine(
         title = u"Layer",
         description = u"The skin layer the view is registered for",
         required = False,
@@ -75,22 +72,18 @@ class IPageFolderInfo(zope.interface.Interface):
         default = "default",
         )
 
-    permission = zope.app.security.permission.PermissionField(
+    permission = PermissionField(
         title=u"Permission",
         description=u"The permission required to use the view",
         required = True,
         )
 
-    apply = zope.schema.Bool(
+    apply = Bool(
         title=u"Apply changes to existing pages",
         required = True,
         )
 
-class IPageFolder(
-    IPageFolderInfo,
-    zope.app.container.interfaces.IContainer,
-    zope.app.interfaces.services.registration.IRegistrationManagerContainer,
-    ):
+class IPageFolder(IPageFolderInfo, IContainer, IRegistrationManagerContainer):
 
     def applyDefaults(self):
         """Apply the default configuration to the already-registered pages. 
@@ -102,12 +95,13 @@ class IPageFolder(
 
     __setitem__.precondition = ItemTypePrecondition(IZPTTemplate)
     
-    __parent__ = zope.schema.Field(
+    __parent__ = Field(
         constraint = ContainerTypesConstraint(IRegistrationManagerContainer))
+
 
 class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
-    zope.interface.implements(IPageFolder)
+    implements(IPageFolder)
 
     requestType = IBrowserRequest
     layer = "default"
@@ -186,7 +180,7 @@ _attrNames = (
 class PageFolderAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for PageFolder objects."""
 
-    zope.interface.implements(zope.fssync.server.interfaces.IObjectDirectory)
+    implements(IObjectDirectory)
 
     def contents(self):
         return self.context.items()
@@ -197,7 +191,7 @@ class PageFolderAdapter(ObjectEntryAdapter):
 
 class PageFolderFactory:
 
-    zope.interface.implements(zope.app.interfaces.file.IDirectoryFactory)
+    implements(IDirectoryFactory)
 
     def __init__(self, context):
         self.context = context
@@ -210,4 +204,4 @@ class PageFolderFactory:
 ViewPackage = PageFolder
 import sys
 sys.modules['zope.app.services.viewpackage'
-            ] = sys.modules['zope.app.services.pagefolder']
+            ] = sys.modules['zope.app.presentation.pagefolder']

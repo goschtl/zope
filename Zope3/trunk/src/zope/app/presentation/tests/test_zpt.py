@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.4 2003/05/01 19:35:35 faassen Exp $
+$Id: test_zpt.py,v 1.1 2004/03/11 10:18:37 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, makeSuite
-import zope.app.services.zpt
+from zope.app.presentation.zpt import ZPTTemplate, ZPTFactory
+from zope.app.presentation.zpt import ReadFile, WriteFile
 from zope.publisher.browser import BrowserView, TestRequest
 
 class Test(TestCase):
@@ -25,29 +25,29 @@ class Test(TestCase):
     # SearchableText adapter.
 
     def test_ReadFile(self):
-        template = zope.app.services.zpt.ZPTTemplate()
+        template = ZPTTemplate()
         source = '<p>Test content</p>'
         template.source = source
-        adapter = zope.app.services.zpt.ReadFile(template)
+        adapter = ReadFile(template)
         self.assertEqual(adapter.read(), source)
         self.assertEqual(adapter.size(), len(source))
 
     def test_WriteFile(self):
-        template = zope.app.services.zpt.ZPTTemplate()
+        template = ZPTTemplate()
         source = '<p>Test content</p>'
         template.source = '<p>Old content</p>'
-        adapter = zope.app.services.zpt.WriteFile(template)
+        adapter = WriteFile(template)
         adapter.write(source)        
         self.assertEqual(template.source, source)
 
     def test_ZPTFactory(self):
-        factory = zope.app.services.zpt.ZPTFactory(None)
+        factory = ZPTFactory(None)
         source = '<p>Test content</p>'
         template = factory('foo', 'text/html', source)
         self.assertEqual(template.source, source)
 
     def test_usage(self):
-        template = zope.app.services.zpt.ZPTTemplate()
+        template = ZPTTemplate()
         template.source = ('usage: <span tal:replace="usage" />\n'
                            'options: <span tal:replace="options" />'
                            )
@@ -75,8 +75,6 @@ class Test(TestCase):
                          "options: {'template_usage': u'eggs'}\n"
                          )
                            
-        
-    
 
 def test_suite():
     return TestSuite((

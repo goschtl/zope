@@ -13,14 +13,14 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.2 2004/03/09 16:34:31 BjornT Exp $
+$Id: presentation.py,v 1.3 2004/03/11 10:18:36 srichter Exp $
 """
-
+import persistent.dict
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.component.presentation import IDefaultViewName
 from zope.security.checker import NamesChecker, ProxyFactory
-import persistent.dict
+
 import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
@@ -30,7 +30,6 @@ import zope.app.adapter
 import zope.app.services.field
 import zope.app.interfaces.services.interface
 import zope.app.adapter
-import zope.app.services.zpt
 import zope.component.interfaces
 import zope.configuration.exceptions
 import zope.interface
