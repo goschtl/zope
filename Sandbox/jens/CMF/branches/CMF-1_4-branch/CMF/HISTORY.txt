@@ -44,7 +44,7 @@ CMF 1.3.2 (2003/09/05)
     - Use return instead of raise in RegistrationTool.testPropertiesValidity
       if id is incorrect (Collector #48).
 
-    - CookieCrumbler: Accept authentication on HEAD requests. 
+    - CookieCrumbler: Accept authentication on HEAD requests.
       Thanks to Brent Hendricks.
 
     - Correctly cleanup temporaries in CMFCore.MemberDataTool when
@@ -54,7 +54,7 @@ CMF 1.3.1 (2003/03/06)
 
   Bug Fixes
 
-    - Fixed editSyInformationProperties in SyndicationTool to ensure  
+    - Fixed editSyInformationProperties in SyndicationTool to ensure
       that updateBase is saved as a DateTime instance.
 
 CMF 1.3.1beta1 (2003/02/26)
@@ -104,7 +104,7 @@ CMF 1.3.1beta1 (2003/02/26)
       'folder_contents' methods.
 
     - Fixed HTML-invalidating call to 'filterCookie' in 'folder_contents'.
-    
+
     - Fixed unclosed 'tr' element  in ZPT version of 'folder_edit_form'
       (Collector #57).
 
@@ -118,7 +118,7 @@ CMF 1.3.1beta1 (2003/02/26)
 CMF 1.3 (2002/08/06)
 
   New Features
-  
+
     - FSPageTemplates now autodetect XML if a document has the standard
       '&lt;?xml version="xx"?&gt;' at the top, setting the content_type to
       "text/xml" so that it is parsed and served as XML.
@@ -131,7 +131,7 @@ CMF 1.3 (2002/08/06)
       JavaScript in content can customize to remove the check).
 
     - Added utility methods for checking / scrubbing HTML content of
-      unwanted tags:  
+      unwanted tags:
 
       CMFDefault.utils:  scrubHTML, isHTMLSafe
 
@@ -430,12 +430,12 @@ CMF 1.3 beta 1 (2001/04/03)
      content of that type.
 
    - Added the ability to limit what types of object an
-     object of a given Portal Type can be created in. 
+     object of a given Portal Type can be created in.
 
-     If 'Implicity Addable' is set (the default), then 
+     If 'Implicity Addable' is set (the default), then
      objects of that Type can be added anywhere.
 
-     If it is not set, then objects of that Type can only be 
+     If it is not set, then objects of that Type can only be
      added to objects whose Type's allowed_content_types
      contains the Type.
 
@@ -475,8 +475,8 @@ CMF 1.3 beta 1 (2001/04/03)
 
    - Turned off auto-expansion of customized FSPageTemplates
      (Tracker #477).
-     
-   - Fixed ActionProvidorBase for the case when no permission 
+
+   - Fixed ActionProvidorBase for the case when no permission
      is specified for an action that is added TTW.
 
    - Fixed ActionsTool so that duplicate actions are stripped.
@@ -485,23 +485,23 @@ CMF 1.3 beta 1 (2001/04/03)
      before creating a portal object with that id.
 
    - Allowed the ActionsTool to gracefully handle objects
-     which return ActionInformation objects. Thanks to 
+     which return ActionInformation objects. Thanks to
      Andy Dawkins for the analysis. (Tracker #457)
 
    - Made workflow Expressions use the correct ModuleImporter
-     so that they operate correctly in their restricted 
+     so that they operate correctly in their restricted
      environment. Thanks to Dieter Maurer for the patch.
      (Tracker 463)
 
-   - Fixed incorrent permissions in "pending" state of default 
-     DCWorkflows. Thanks for Lynn Walton for the report and 
+   - Fixed incorrent permissions in "pending" state of default
+     DCWorkflows. Thanks for Lynn Walton for the report and
      Florent Guillaume for the patch. (Tracker #464)
 
    - Fixed missing comma that affected manager permission to modify
-     in the published state. Thanks to Florent Guillaume for the 
+     in the published state. Thanks to Florent Guillaume for the
      patch (Tracker #459)
 
-   - html_quote'd errors raised by FSPageTemplates. Thanks to 
+   - html_quote'd errors raised by FSPageTemplates. Thanks to
      Dieter Maurer for the patch. (Tracker #462)
 
    - Fixed typo in zpt_stylesheet.css. Thanks to Florent Guillaume
@@ -512,7 +512,7 @@ CMF 1.3 beta 1 (2001/04/03)
      WebDAV. Thanks to John Glavin at South River Technologies for
      help finding the bug.
 
-   - Reworked functionality added in Tracker #409 which broke the 
+   - Reworked functionality added in Tracker #409 which broke the
      Types Tool. (Tracker #458)
 
    - Fixed bug whereby DirectoryView instances were not noticing
@@ -521,7 +521,7 @@ CMF 1.3 beta 1 (2001/04/03)
 
    - Fixed a bug where the workflow notifyCreated method was called during
      manage_afterAdd in PortalContent, making it possible for the
-     notification to occur on the wrong workflow.  The notification has 
+     notification to occur on the wrong workflow.  The notification has
      moved to the contstructInstance method on the TypesTool after
      the _setPortalTypeName method has been called on the object.
 
@@ -566,7 +566,7 @@ CMF 1.3 beta 1 (2001/04/03)
 
    - Use ID to label Favorite when target has an empty Title (Tracker #440).
 
-   - Allowed sub-folders to have different syndication properties 
+   - Allowed sub-folders to have different syndication properties
      than parents (Tracker #421).
 
    - Added 'CMFDefault.Upgrade.upgrade_decor_skins' external method to
@@ -698,7 +698,7 @@ CMF 1.2 beta (2001/12/07)
     reindexes the object;  the underlying methods are much
     simplified.
 
-  - Fixed inner / named links in Document / News Item (thanks to 
+  - Fixed inner / named links in Document / News Item (thanks to
     Kenichi Sato for the patch!)
 
   - Ensured that editing methods handle WebDAV locks correctly,
@@ -721,7 +721,7 @@ CMF 1.2 beta (2001/12/07)
   - Added cookString method to CMFCore.utils for taking a string and
     making it id friendly, it also does a string.lower on the resultant
     regex.
-    
+
   - Made examples in INSTALL.txt less terse, and added notes on
     Windows-specific issues (thanks to Johan Mukhsein for the
     suggestions).
@@ -886,7 +886,7 @@ CMF 1.2 beta (2001/12/07)
     o support for new "restricted execution" mode;
 
     o support for new catalog initialization API.
-  
+
     o updated 'test_all' unit test drivers to use standard
       'unittest' module from Python 2.1 (it no longer has
       'JUnitTestTextRunner' class).
@@ -922,7 +922,7 @@ CMF 1.1 final (2001/06/20)
       for its Type in order to then ask the types tool for a
       TypeInfo object now just asks the types tool for type
       TypeInfo object directly.
-   
+
     o Modified the TypesTool interface to signal that passing an
       object to 'getTypeInfo' is acceptable, with the semantic
       that the tool will attempt to find a TypeInfo object based
@@ -1097,7 +1097,7 @@ CMF 1.1 beta (2001/06/01)
 
   - Implemented 'portal_metadata' tool.  See the dogbowl
     proposal,
-    http://cmf.zope.org/rqmts/proposals/completed/metadata_tool. 
+    http://cmf.zope.org/rqmts/proposals/completed/metadata_tool.
 
   - Extended DirectoryView objects to reload when the directory
     they represent has changed, if Zope is running in debug mode.
@@ -1356,7 +1356,7 @@ CMF 1.0 final (2001/03/29)
  * Added package 'CMFTopic', which provides a new content type,
    'Topic';  topics are "logical" folders, which aggregate
    content based on catalog searches against metadata.
- 
+
  * Revised discussion mechanism to store discussion with its
    underlying content (rather than in members' "Correspondence"
    folders).
@@ -1419,7 +1419,7 @@ CMF 0.10alpha (2001/02/02)
  * Added a "quick start" script for creating a new INSTANCE_HOME
    sandbox (e.g., to allow easy experimentation with new-style
    portal).
- 
+
  * Remove "metadata" editing from most "normal" edit forms.
 
  * Tweak stylesheets to make Netscrape 4.x more happy (links on
@@ -1541,7 +1541,7 @@ CMF 0.10alpha (2001/02/02)
    - Updated PTKDemo.DemoDublinCore.DemoDublinCore to add a
      method, 'getMetadataHeaders()', which builds a list of
      DublinCore headers, suitable for inclusion in <meta> tags
-     or in "Structured Text Headers".  
+     or in "Structured Text Headers".
 
    - Updated PTKDemo.Document.Document to export/import the
      metadata when accessed via FTP.
