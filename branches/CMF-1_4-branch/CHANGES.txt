@@ -1,6 +1,12 @@
-CMF 1.4beta2
+CMF 1.4 (2003/05/19)
 
   Bug Fixes
+
+    - The memberdata tool now fetches properties from member objects using
+      'getProperty' when returning search results, rather than performing
+      direct attribute access on the member.
+
+    - The CookieCrumber now functions for HEAD requests.
 
     - type actions: They are now absolute URLs by default.
       For 'getActionById' and '_getViewFor' they are converted to relative
