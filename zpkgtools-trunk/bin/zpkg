@@ -137,7 +137,10 @@ class Application:
     def loadResource(self):
         self.source = self.loader.load(self.resource_url)
         self.loadMetadata()
-        self.target_name = "%s-%s" % (self.metadata.name, self.options.version)
+        if not self.options.release_name:
+            self.options.release_name = self.metadata.name.replace(" ", "-")
+        release_name = self.options.release_name
+        self.target_name = "%s-%s" % (release_name, self.options.version)
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
@@ -186,6 +189,9 @@ def main(argv=None):
     parser.add_option(
         "-C", "--configure", dest="configfile",
         help="path or URL to the configuration file")
+    parser.add_option(
+        "-n", "--name", dest="release_name",
+        help="base name of the distribution file")
     parser.add_option(
         "-r", "--revision-tag", dest="revision_tag",
         help="default CVS tag to use (default: HEAD)",
