@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="psycopgda">
+
+  <content class=".adapter.PsycopgAdapter">
+    <factory id="zope.da.PsycopgDA" />
+    <require
+        permission="zope.Public"
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+        />
+  </content>
+
+  <browser:addform
+      name="AddPsycopgDA"
+      schema="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      label="Add Psycopg (PostGreSQL) Database Adapter"
+      content_factory=".adapter.PsycopgAdapter"
+      arguments="dsn"
+      fields="dsn"
+      permission="zope.ManageContent"
+      />
+
+  <!-- Menu entry for "add utility" menu -->
+  <browser:addMenuItem
+      class=".adapter.PsycopgAdapter"
+      title="Psycopg DA"
+      description="A PostgreSQL Database Adapter using the Psycopg driver"
+      permission="zope.ManageApplication"
+      view="AddPsycopgDA"
+      />
+
+  <!-- Menu entry for "add connection" menu -->
+  <browser:menuItem
+      menu="add_connection"
+      for="zope.app.container.interfaces.IAdding"
+      title="Psycopg DA"
+      description="A PostgreSQL Database Adapter using the Psycopg driver"
+      action="AddPsycopgDA"
+      />
+
+</configure>
