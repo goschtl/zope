@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.4 2003/01/16 19:50:30 stevea Exp $
+$Id: test_textareawidget.py,v 1.5 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.form.widget import TextAreaWidget
+import unittest
 
+from zope.app.browser.form.widget import TextAreaWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 
@@ -55,7 +55,7 @@ class TextAreaWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(TextAreaWidgetTest)
+    return unittest.makeSuite(TextAreaWidgetTest)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

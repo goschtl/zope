@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_multilistwidget.py,v 1.4 2003/02/20 14:45:44 stevea Exp $
+$Id: test_multilistwidget.py,v 1.5 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.form.widget import MultiListWidget
+import unittest
 
+from zope.app.browser.form.widget import MultiListWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 class MultiListWidgetTest(BrowserWidgetTest):
@@ -69,7 +69,7 @@ class MultiListWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(MultiListWidgetTest)
+    return unittest.makeSuite(MultiListWidgetTest)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

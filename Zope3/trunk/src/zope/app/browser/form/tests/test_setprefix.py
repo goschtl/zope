@@ -12,16 +12,17 @@
 #
 ##############################################################################
 """
-$Id: test_setprefix.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_setprefix.py,v 1.4 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
+
 from zope.app.browser.form.widget import TextWidget
 from zope.publisher.browser import TestRequest
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.schema import Text
 
 
-class Test(TestCase):
+class Test(unittest.TestCase):
 
     def setUp(self):
         field = Text(__name__ = 'foo')
@@ -53,7 +54,7 @@ class Test(TestCase):
 
 
 def test_suite():
-    return makeSuite(Test)
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

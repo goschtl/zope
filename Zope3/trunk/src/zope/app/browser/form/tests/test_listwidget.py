@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_listwidget.py,v 1.4 2003/02/20 14:45:44 stevea Exp $
+$Id: test_listwidget.py,v 1.5 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.form.widget import ListWidget
+import unittest
 
+from zope.app.browser.form.widget import ListWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 class ListWidgetTest(BrowserWidgetTest):
@@ -70,7 +70,7 @@ class ListWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return makeSuite(ListWidgetTest)
+    return unittest.makeSuite(ListWidgetTest)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

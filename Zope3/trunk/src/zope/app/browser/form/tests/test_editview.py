@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.6 2003/03/21 20:57:44 jim Exp $
+"""$Id: test_editview.py,v 1.7 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
+
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.interface import Interface
@@ -22,8 +23,7 @@ from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.browser.form.editview import EditView
-from zope.component.view \
-     import provideView, setDefaultViewName
+from zope.component.view import provideView, setDefaultViewName
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.submit import Update
 
@@ -48,7 +48,7 @@ class C:
 class NonConforming(C):
     __implements__ = ()
 
-class Test(PlacelessSetup, TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
@@ -164,13 +164,11 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.baz, u'c baz')
 
-        
+
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.5 2003/04/04 15:39:29 stevea Exp $
+$Id: test_radiowidget.py,v 1.6 2003/04/08 21:34:22 fdrake Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.form.widget import RadioWidget
+import unittest
 
+from zope.app.browser.form.widget import RadioWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 class RadioWidgetTest(BrowserWidgetTest):
@@ -101,7 +101,7 @@ class RadioWidgetTest(BrowserWidgetTest):
                               '</div>' % (id, label, id, value))
 
 def test_suite():
-    return makeSuite(RadioWidgetTest)
+    return unittest.makeSuite(RadioWidgetTest)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

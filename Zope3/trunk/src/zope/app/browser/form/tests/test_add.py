@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.9 2003/03/25 12:21:11 tseaver Exp $
+$Id: test_add.py,v 1.10 2003/04/08 21:34:22 fdrake Exp $
 """
 
 import sys
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
+
 from zope.app.browser.form.add import add, AddViewFactory, AddView
 from zope.interface import Interface
 from zope.schema import TextLine
@@ -33,13 +34,13 @@ from zope.app.browser.form.submit import Update
 class Context:
 
     def resolve(self, name):
-        l = name.rfind('.') 
+        l = name.rfind('.')
         if l >= 0:
             # eek, we got a real dotted name
             m = sys.modules[name[:l]]
             return getattr(m, name[l+1:])
-            
-            
+
+
         return globals()[name]
 
 class I(Interface):
@@ -83,7 +84,7 @@ class SampleData:
     extra1 = u"extra1"
     extra2 = u"extra2"
 
-class Test(PlacelessSetup, TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def _invoke_add(self, schema="I", name="addthis", permission="zope.Public",
                     label="Add this", content_factory="C", class_="V",
@@ -227,9 +228,9 @@ class Test(PlacelessSetup, TestCase):
         [(descriminator, callable, args, kw)] = self._invoke_add()
         factory = AddViewFactory(*args)
         request = TestRequest()
-        
+
         request.form.update(dict([
-            ("field.%s" % k, v) 
+            ("field.%s" % k, v)
             for (k, v) in dict(SampleData.__dict__).items()
             ]))
         request.form[Update] = ''
@@ -248,13 +249,13 @@ class Test(PlacelessSetup, TestCase):
                  'foo': 'foo',
                  })
             return ob
-        
+
         V.add = add
 
         V.nextURL = lambda self: 'next'
 
         try:
-            
+
             self.assertEqual(view.update(), '')
 
             self.assertEqual(view.errors, ())
@@ -276,12 +277,10 @@ class Test(PlacelessSetup, TestCase):
             # Uninstall hooks
             del V.add
             del V.nextURL
-            
+
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
