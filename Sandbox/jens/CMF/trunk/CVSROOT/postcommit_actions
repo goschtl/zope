@@ -84,6 +84,9 @@ CVSMASTER = "klm@digicool.com"
 # Zero CHMOD_GW this if you don't want automatic chmod g+w of files that were
 # checked in. 
 CHMOD_GW = 1
+# Set if you don't care about chmod failures (apparently necessary for,
+# eg, people doing remote :ext: and :pserver: checkins).
+CHMOD_CASUAL = 1
 
 MAIL_CMD = "/bin/mail"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
@@ -435,9 +438,10 @@ def do_chmod(subjs):
             fnames.append(i[0])
     if not fnames:
         fnames = ["."]
-    cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                 (DRYRUN and "echo would do: ") or "",
-                                 string.join(fnames, " ")))
+    cmd = ("%s%schmod %s g+w %s" % ((VERBOSE and "set -x; ") or "",
+                                    (DRYRUN and "echo would do: ") or "",
+                                    (CHMOD_CASUAL and "-f") or "",
+                                    string.join(fnames, " ")))
     if VERBOSE:
         complain("Reexecing, cmd:\n\t%s\n", cmd)
     result = os.system(cmd)
