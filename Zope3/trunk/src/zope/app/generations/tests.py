@@ -17,10 +17,11 @@ $Id$
 """
 
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 
 def test_suite():
     return unittest.TestSuite((
+        DocFileSuite('README.txt'),
         DocTestSuite('zope.app.generations.generations'),
         DocTestSuite('zope.app.generations.utility'),
         ))

@@ -78,7 +78,7 @@ def findObjectsMatching(root, condition):
 def findObjectsProviding(root, interface):
     """Find all objects in the root that provide the specified interface.
 
-    All sub-objects of the root will also be searched recursively. 
+    All sub-objects of the root will also be searched recursively.
 
     Example:
 
@@ -88,7 +88,7 @@ def findObjectsProviding(root, interface):
     >>> class IB(Interface):
     ...     pass
     >>> class IC(IA):
-    ...     pass    
+    ...     pass
 
     >>> class A(dict):
     ...     implements(IA)
