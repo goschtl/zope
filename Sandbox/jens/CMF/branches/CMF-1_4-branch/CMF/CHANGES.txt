@@ -2,6 +2,17 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - The MemberDataTool was storing a ImplicitAcquirerWrapper on
+      registerMemberData.
+
+    - Changed some places where a bound-method was being bound to a
+      different class to use the .im_func of the method
+
+    - Got rid of all uses of apply()
+
+    - FactoryTypeInformation.manage_propertiesForm was being called
+      unwrapped.
+
     - CMFDefault.RegistrationTool: Allow '+' in e-mail addresses.
       (http://zope.org/Collectors/CMF/322)
 
