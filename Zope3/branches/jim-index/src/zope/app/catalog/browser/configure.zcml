@@ -4,6 +4,12 @@
    i18n_domain="zope"
    >
 
+<tool
+    interface="..interfaces.ICatalog"
+    title="Catalog"
+    description="Objects that support indexed searching"
+    />
+
 <!-- Allow a catalog to be added to content space -->
 <addMenuItem
     title="Catalog"
