@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools View
 
-$Id: tools.py,v 1.3 2004/03/22 00:52:27 srichter Exp $
+$Id: tools.py,v 1.4 2004/04/06 08:34:07 hdima Exp $
 """
 from zope.interface import implements, Attribute
 from zope.interface.interfaces import IInterface
@@ -34,6 +34,8 @@ from zope.app.registration.interfaces import ActiveStatus
 from zope.app.site.interfaces import ILocalService
 from zope.app.copypastemove import rename
 from zope.app.site.browser import ServiceAdding
+
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 class IToolType(IInterface):
@@ -154,18 +156,18 @@ class ServiceToolView(SimpleView):
             self.request.response.redirect('./AddServiceTool')
         elif self.request.form.has_key('DELETE'):
             self.delete()
-            status = 'Deleted selected tools.'
+            status = _('Deleted selected tools.')
         elif self.request.form.has_key('APPLY_RENAME'):
             self.rename()
-            status = 'Renamed selected tools.'            
+            status = _('Renamed selected tools.')         
         elif self.request.form.has_key('REFRESH'):
             pass
         elif self.request.form.has_key('ACTIVATE'):
             self.activate()
-            status = 'Activated registrations.'
+            status = _('Activated registrations.')
         elif self.request.form.has_key('DEACTIVATE'):
             self.deactivate()
-            status = 'Deactivated registrations.'
+            status = _('Deactivated registrations.')
             
         return status
     
@@ -298,20 +300,20 @@ class UtilityToolView(SimpleView):
                                            self.interface.getName())
         elif self.request.form.has_key('DELETE'):
             self.delete()
-            status = 'Deleted selected tools.'
+            status = _('Deleted selected tools.')
         elif self.request.form.has_key('RENAME'):
             self.renameList = self.request.form.get('selected', [])
         elif self.request.form.has_key('APPLY_RENAME'):
             self.rename()
-            status = 'Renamed selected tools.'            
+            status = _('Renamed selected tools.')         
         elif self.request.form.has_key('REFRESH'):
             pass
         elif self.request.form.has_key('ACTIVATE'):
             self.activate()
-            status = 'Activated registrations.'
+            status = _('Activated registrations.')
         elif self.request.form.has_key('DEACTIVATE'):
             self.deactivate()
-            status = 'Deactivated registrations.'
+            status = _('Deactivated registrations.')
             
         return status
     

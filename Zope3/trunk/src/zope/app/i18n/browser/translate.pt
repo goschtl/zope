@@ -99,7 +99,7 @@
       </tr>
       </tal:block>
       <tr>
-        <th colspan="3"
+        <th i18n:translate="" colspan="3"
            tal:attributes="colspan python:len(view.getEditLanguages())+3">
           Add new messages
         </th>

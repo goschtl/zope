@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Thu Apr  1 17:02:04 2004\n"
+"POT-Creation-Date: Tue Apr  6 11:37:04 2004\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -425,24 +425,28 @@ msgstr ""
 msgid "You can configure the RAM Cache here."
 msgstr ""
 
-#: src/zope/app/cache/browser/ramstats.pt:19
+#: src/zope/app/cache/browser/ramstats.pt:20
 msgid "Path"
 msgstr ""
 
-#: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/cache/browser/ramstats.pt:21
 msgid "Hits"
 msgstr ""
 
-#: src/zope/app/cache/browser/ramstats.pt:21
+#: src/zope/app/cache/browser/ramstats.pt:22
 msgid "Misses"
 msgstr ""
 
-#: src/zope/app/cache/browser/ramstats.pt:22
+#: src/zope/app/cache/browser/ramstats.pt:23
 msgid "Size, bytes"
 msgstr ""
 
-#: src/zope/app/cache/browser/ramstats.pt:23
+#: src/zope/app/cache/browser/ramstats.pt:24
 msgid "Entries"
+msgstr ""
+
+#: src/zope/app/cache/browser/ramstats.pt:6
+msgid "RAMCache statistics"
 msgstr ""
 
 #: src/zope/app/catalog/browser/advanced.pt:10
@@ -778,7 +782,7 @@ msgstr ""
 #: src/zope/app/errorservice/browser/configure.zcml:26
 #: src/zope/app/cache/browser/cacheableedit.pt:23
 #: src/zope/app/cache/browser/ramedit.pt:9
-#: src/zope/app/cache/browser/ramstats.pt:9
+#: src/zope/app/cache/browser/ramstats.pt:10
 msgid "Errors"
 msgstr ""
 
@@ -1417,11 +1421,11 @@ msgid "Status"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
-msgid "Up to Date"
+msgid "New Remote"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
-msgid "New Remote"
+msgid "Up to Date"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
@@ -1434,6 +1438,10 @@ msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:31
 msgid "Newer Local"
+msgstr ""
+
+#: src/zope/app/i18n/browser/translate.pt:102
+msgid "Add new messages"
 msgstr ""
 
 #: src/zope/app/i18n/browser/translate.pt:127
@@ -2411,15 +2419,24 @@ msgstr ""
 msgid "This object is currently inactive."
 msgstr ""
 
-#: src/zope/app/registration/browser/registration.pt:35
+#: src/zope/app/registration/browser/registration.pt:30
+#: src/zope/app/site/browser/add_svc_config.pt:16
+#: src/zope/app/site/browser/services.pt:66
+#: src/zope/app/site/browser/tool.pt:90
+#: src/zope/app/utility/browser/utilities.pt:42
+# Default: "Activate"
+msgid "activate-button"
+msgstr ""
+
+#: src/zope/app/registration/browser/registration.pt:36
 msgid "Advanced Options"
 msgstr ""
 
-#: src/zope/app/registration/browser/registration.pt:42
+#: src/zope/app/registration/browser/registration.pt:43
 msgid "This object is not currently active."
 msgstr ""
 
-#: src/zope/app/registration/browser/registration.pt:44
+#: src/zope/app/registration/browser/registration.pt:45
 msgid "This object won't actually be used unless it is registered to perform a specific function and is activated."
 msgstr ""
 
@@ -3342,14 +3359,6 @@ msgstr ""
 msgid "Service name"
 msgstr ""
 
-#: src/zope/app/site/browser/add_svc_config.pt:16
-#: src/zope/app/site/browser/services.pt:66
-#: src/zope/app/site/browser/tool.pt:90
-#: src/zope/app/utility/browser/utilities.pt:42
-# Default: "Activate"
-msgid "activate-button"
-msgstr ""
-
 #: src/zope/app/site/browser/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
 msgstr ""
@@ -3573,6 +3582,26 @@ msgstr ""
 msgid "Available Tools"
 msgstr ""
 
+#: src/zope/app/site/browser/tools.py:159
+#: src/zope/app/site/browser/tools.py:303
+msgid "Deleted selected tools."
+msgstr ""
+
+#: src/zope/app/site/browser/tools.py:162
+#: src/zope/app/site/browser/tools.py:308
+msgid "Renamed selected tools."
+msgstr ""
+
+#: src/zope/app/site/browser/tools.py:167
+#: src/zope/app/site/browser/tools.py:313
+msgid "Activated registrations."
+msgstr ""
+
+#: src/zope/app/site/browser/tools.py:170
+#: src/zope/app/site/browser/tools.py:316
+msgid "Deactivated registrations."
+msgstr ""
+
 #: src/zope/app/site/interfaces.py:161
 #: src/zope/app/container/browser/contents.pt:32
 #: src/zope/app/container/browser/index.pt:26
@@ -3605,6 +3634,11 @@ msgstr ""
 msgid "${size} KB"
 msgstr ""
 
+#: src/zope/app/sqlscript/browser/add.pt:11
+# Default: "Add and Test"
+msgid "add-and-test"
+msgstr ""
+
 #: src/zope/app/sqlscript/browser/configure.zcml:15
 msgid "Add a SQL Script"
 msgstr ""
@@ -3615,6 +3649,11 @@ msgstr ""
 
 #: src/zope/app/sqlscript/browser/configure.zcml:60
 msgid "Caching"
+msgstr ""
+
+#: src/zope/app/sqlscript/browser/edit.pt:11
+# Default: "Change and Test"
+msgid "change-and-test"
 msgstr ""
 
 #: src/zope/app/sqlscript/browser/test.pt:14
@@ -4155,11 +4194,11 @@ msgid "Stateful Transition"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "Content Workflows Manager"
+msgid "An utility to manage content and workflow interaction."
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "An utility to manage content and workflow interaction."
+msgid "Content Workflows Manager"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:14

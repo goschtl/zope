@@ -2,7 +2,8 @@
 <body>
 <div metal:fill-slot="body">
 
-  <p><span tal:replace="context/zope:name"/> RAMCache statistics</p>
+  <p><span tal:replace="context/zope:name"/>
+    <span i18n:translate="">RAMCache statistics</span></p>
 
   <div tal:condition="python: options.has_key('errors') and
                               options['errors']">

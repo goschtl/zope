@@ -27,7 +27,8 @@
       </tal:block>
       <tal:block condition="not:view/active">
         <p i18n:translate="">This object is currently inactive.</p>
-        <input type="submit" value="Activate" name="activate" />
+        <input type="submit" i18n:attributes="value activate-button"
+          value="Activate" name="activate" />
       </tal:block>
     </div>
 
