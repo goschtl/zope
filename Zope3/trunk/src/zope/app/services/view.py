@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.11 2003/03/18 21:02:22 jim Exp $
+$Id: view.py,v 1.12 2003/03/19 17:55:36 alga Exp $
 """
 __metaclass__ = type
 
@@ -38,7 +38,7 @@ from zope.component import getSkin
 from zope.security.checker import NamesChecker, ProxyFactory
 
 from zope.proxy.introspection import removeAllProxies
-from zope.app.traversing import getPhysicalRoot, traverse
+from zope.app.traversing import getRoot, traverse
 from zope.exceptions import NotFoundError
 
 from zope.app.interfaces.services.view import IViewConfiguration
@@ -319,7 +319,7 @@ class PageConfiguration(ViewConfiguration):
         view = class_(object, request)
 
         # This is needed because we need to do an unrestricted traverse
-        root = removeAllProxies(getPhysicalRoot(sm))
+        root = removeAllProxies(getRoot(sm))
 
         if self.attribute:
             template = getattr(view, self.attribute)

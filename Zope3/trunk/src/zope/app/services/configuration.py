@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.12 2003/03/18 21:02:22 jim Exp $
+$Id: configuration.py,v 1.13 2003/03/19 17:55:36 alga Exp $
 """
 __metaclass__ = type
 
@@ -44,7 +44,7 @@ from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
 
 from zope.app.traversing \
-     import getPhysicalRoot, getPhysicalPathString, traverse, locationAsUnicode
+     import getRoot, getPhysicalPathString, traverse, locationAsUnicode
 
 
 class ConfigurationStatusProperty:
@@ -347,7 +347,7 @@ class NamedComponentConfiguration(NamedConfiguration):
         # physical root isn't proxied.
 
         # get the root and unproxy it.
-        root = removeAllProxies(getPhysicalRoot(service_manager))
+        root = removeAllProxies(getRoot(service_manager))
         component = traverse(root, wrapped_self.componentPath)
 
         if wrapped_self.permission:

@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.9 2003/03/16 23:19:30 seanb Exp $
+$Id: subscribers.py,v 1.10 2003/03/19 17:55:36 alga Exp $
 """
 __metaclass__ = type
 
@@ -40,7 +40,7 @@ from zope.component import getService, queryAdapter
 from zope.app.services.servicenames import HubIds
 
 from zope.app.traversing import traverse, traverseName, \
-     getPhysicalPath, getPhysicalRoot
+     getPhysicalPath, getRoot
 from zope.app.interfaces.services.hub import ObjectHubError
 
 class ISubscriptionControl(Interface):
@@ -145,5 +145,5 @@ def findContentObject(context):
             break
     else:
         raise ValueError, "can't find '++etc++Services' in path"
-    root = getPhysicalRoot(context)
+    root = getRoot(context)
     return traverse(root, location)

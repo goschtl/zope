@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.11 2003/03/13 18:49:00 alga Exp $
+Revision information: $Id: contents.py,v 1.12 2003/03/19 17:55:34 alga Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.traversing import traverse, getPhysicalRoot
+from zope.app.traversing import traverse, getRoot
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.container import IPasteTarget
 from zope.app.interfaces.copypastemove import IObjectCopier

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.1 2002/12/28 14:13:24 stevea Exp $
+$Id: traversing.py,v 1.2 2003/03/19 17:55:36 alga Exp $
 """
 
 from zope.interface import Interface
@@ -55,7 +55,7 @@ class IPhysicallyLocatable(Interface):
     """Objects that have a physical location in a containment hierarchy.
     """
 
-    def getPhysicalRoot():
+    def getRoot():
         """Return the physical root object
         """
 
