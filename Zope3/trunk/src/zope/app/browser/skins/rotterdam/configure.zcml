@@ -21,15 +21,6 @@
 <browser:resource 
     name="mi.gif" file="mi.gif" layer="rotterdam" />
 
-<browser:view 
-    for="zope.app.interfaces.services.service.IServiceManager"
-    name="index.html"
-    template="service_manager.pt"
-    class="zope.app.browser.services.namecomponentconfigurableview.NameComponentConfigurableView"
-    permission="zope.ManageServices" 
-    layer="rotterdam" 
-    />
-
 <browser:view
     for="zope.app.interfaces.container.IReadContainer"
     permission="zope.View"
