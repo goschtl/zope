@@ -40,6 +40,8 @@ class TopicTreeView(object):
         self.treecontext = zapi.getUtility(IOnlineHelp,"OnlineHelp")
         return self.subtopics()
 
+    topicTree = property(getTopicTree)
+
     def listHelpItems(self):
         """ recurse through the help topic tree"""
         children=[]
@@ -136,3 +138,6 @@ class ContextHelpView(TopicTreeView):
             self.topic = onlinehelp
 
         return self.topic
+
+    contextHelpTopic = property(getContextHelpTopic)
+
