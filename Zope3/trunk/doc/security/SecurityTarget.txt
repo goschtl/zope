@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.13 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.14 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.13 $ (Draft)
-:Date: $Date: 2004/05/06 17:14:06 $
+:Version: $Revision: 1.14 $ (Draft)
+:Date: $Date: 2004/05/07 08:57:47 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>, Jim Fulton <jim@zope.com>
-:DocumentID: $Id: SecurityTarget.txt,v 1.13 2004/05/06 17:14:06 ctheune Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.14 2004/05/07 08:57:47 jim Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.13 2004/05/06 17:14:06 ctheune Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.14 2004/05/07 08:57:47 jim Exp $
 
-:Document Version: $Revision: 1.13 $
+:Document Version: $Revision: 1.14 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -1151,6 +1151,43 @@ Jim
 
 Protection subsystem
 ^^^^^^^^^^^^^^^^^^^^
+
+The protection subsystem is responsible for controlling the access of
+interactions (subjects) to objects.  It does this through the use of
+security proxies.  Any non-basic objects that an interaction accesses
+is wrapped in a security proxy.  All operations on these non-basic
+object are performed through the security proxies.  
+
+Basic objects are immutable objects that contain only immutable
+subobjects. Examples if basic objects include:
+
+- Strings,
+
+- Integers (long and normal),
+
+- Floating-point objects,
+
+- Date-time objects, 
+
+- Boolean objects (True and False), and 
+
+- The special (nil) object, None.
+
+Subjects only have access to basic objects and proxied objects.
+
+For the purposes of the protection system, all operations can be
+reduced to one of two kinds of operations:
+
+- Read the value of a named attribute
+
+- Write the value of a named attribute
+
+Higher-level operations are reduced to these low-level operations. For
+example, to look up a key in a mapping object, we first execute read
+operation on the '__getitem__' attribute.  The value of the
+'__getitem__' attribute is the Python method for looking up a key.
+To actually call the method, we need to access it's '__call__
+
 
 
 
