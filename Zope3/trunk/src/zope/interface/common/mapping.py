@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: mapping.py,v 1.4 2003/02/03 14:59:24 jim Exp $
-"""
+"""Mapping Interfaces
 
+$Id: mapping.py,v 1.5 2004/02/24 14:28:28 srichter Exp $
+"""
 from zope.interface import Interface
 
 class IItemMapping(Interface):
@@ -27,6 +27,7 @@ class IItemMapping(Interface):
         A KeyError is raised if there is no value for the key.
         """
 
+
 class IReadMapping(IItemMapping):
     """Basic mapping interface
     """
@@ -38,29 +39,43 @@ class IReadMapping(IItemMapping):
         """
 
     def __contains__(key):
-        """Tell if a key exists in the mapping
-        """
+        """Tell if a key exists in the mapping."""
+
+
+class IWriteMapping(Interface):
+    """Mapping methods for changing data"""
+    
+    def __delitem__(key):
+        """Delete a value from the mapping using the key."""
+
+    def __setitem__(key, value):
+        """Set a new item in the mapping."""
+        
 
 class IEnumerableMapping(IReadMapping):
-    """Mapping objects whose items can be enumerated
+    """Mapping objects whose items can be enumerated.
     """
 
     def keys():
-        """Return the keys of the mapping object
+        """Return the keys of the mapping object.
         """
 
     def __iter__():
-        """Return an iterator for the keys of the mapping object
+        """Return an iterator for the keys of the mapping object.
         """
 
     def values():
-        """Return the values of the mapping object
+        """Return the values of the mapping object.
         """
 
     def items():
-        """Return the items of the mapping object
+        """Return the items of the mapping object.
         """
 
     def __len__():
-        """Return the number of items
+        """Return the number of items.
         """
+
+
+class IMapping(IReadMapping, IWriteMapping, IEnumerableMapping):
+    ''' Full mapping interface '''

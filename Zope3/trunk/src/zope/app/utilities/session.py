@@ -15,26 +15,25 @@
 
 This is more of a demonstration than a full implementation, but it should
 work.
-"""
 
-# System imports
+$Id: session.py,v 1.8 2004/02/24 14:28:28 srichter Exp $
+"""
 import sha, time, string, random, hmac, logging
 from UserDict import IterableUserDict
 from heapq import heapify, heappop
 
-# Zope3 imports
 from persistence import Persistent
 from zope.server.http.http_date import build_http_date
 from zope.interface import implements
+from zope.interface.common.mapping import IMapping
 from zope.app import zapi
 from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-# Sibling imports
 from zope.app.interfaces.utilities.session import \
         IBrowserIdManager, IBrowserId, ICookieBrowserIdManager, \
-        ISessionDataContainer, ISession, IFullMapping
+        ISessionDataContainer, ISession
 from zope.app.interfaces.container import IContained
 
 cookieSafeTrans = string.maketrans("+/", "-.")
@@ -168,11 +167,12 @@ class PersistentSessionDataContainer(Persistent, IterableUserDict):
 
 class SessionData(Persistent, IterableUserDict):
     ''' Mapping nodes in the ISessionDataContainer tree '''
-    implements(IFullMapping)
+    implements(IMapping)
 
     def __init__(self):
         self.data = OOBTree()
         self.lastAccessTime = time.time()
+
 
 class Session(IterableUserDict):
     implements(ISession)

@@ -11,56 +11,32 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for session service."""
+"""Interfaces for session service.
 
+$Id: session.py,v 1.5 2004/02/24 14:28:27 srichter Exp $
+"""
 import re
 from zope.interface import Interface
+from zope.interface.common.mapping import IMapping, IReadMapping, IWriteMapping
 from zope import schema
 from zope.app.interfaces.container import IContainer
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-# XXX: These mapping interfaces should probably live somewhere like 
-# zope.interface.common.mapping, but there are already similar but less
-# useful ones defined there.
-class IReadMapping(Interface):
-    ''' Mapping methods for retrieving data '''
-    def __getitem__(key): 'Return a value'
-    def __contains__(key): 'True if there is a value for key'
-    def get(key, default=None):
-        'Return a value, or default if key not found'
-
-class IWriteMapping(Interface):
-    ''' Mapping methods for changing data '''
-    def __delitem__(key): 'Delete a value'
-    def __setitem__(key): 'Set a value'
-
-class IIterableMapping(Interface):
-    ''' Mapping methods for listing keys and values ''' 
-    def __len__(key): 'Number of items in the IMapping'
-    def __iter__(): 'Iterate over all the keys'
-    def keys(): 'Return a sequence of the keys'
-    def items(): 'Return a sequence of the (key, value) tuples'
-    def values(): 'Return a sequence of the values'
-
-class IFullMapping(IReadMapping, IWriteMapping, IIterableMapping):
-    ''' Full mapping interface '''
-
 
 class IBrowserIdManager(Interface):
-    ''' Manages sessions - fake state over multiple browser requests. '''
+    """Manages sessions - fake state over multiple browser requests."""
 
     def getBrowserId(request):
-        ''' Return the IBrowserId for the given request.
+        """Return the IBrowserId for the given request.
+        
+        If the request doesn't have an attached sessionId a new one will be
+        generated.
 
-            If the request doesn't have an attached sessionId a new one will
-            be generated.
-
-            This will do whatever is possible to do the HTTP request to ensure
-            the session id will be preserved. Depending on the specific
-            method, further action might be necessary on the part of the user.
-            See the documentation for the specific implementation and its
-            interfaces.
-        '''
+        This will do whatever is possible to do the HTTP request to ensure the
+        session id will be preserved. Depending on the specific method,
+        further action might be necessary on the part of the user.  See the
+        documentation for the specific implementation and its interfaces.
+        """
 
 
     """ XXX: Want this
@@ -71,7 +47,7 @@ class IBrowserIdManager(Interface):
 
 
 class ICookieBrowserIdManager(IBrowserIdManager):
-    ''' Manages sessions using a cookie '''
+    """Manages sessions using a cookie"""
 
     namespace = schema.TextLine(
             title=_('Cookie Name'),
@@ -101,19 +77,25 @@ class ICookieBrowserIdManager(IBrowserIdManager):
 
 
 class IBrowserId(Interface):
-    ''' A unique ID representing a session '''
-    def __str__(): '''as a unique ASCII string'''
+    """A unique ID representing a session"""
+
+    def __str__():
+        """As a unique ASCII string"""
 
 
 class ISessionDataContainer(IReadMapping, IWriteMapping):
-    ''' Stores data objects for sessions. The object implementing this
-        interface is responsible for expiring data as it feels appropriate.
+    """Stores data objects for sessions.
 
-        Used like:
-            session_data_container[browser_id][product_id][key] = value
+    The object implementing this interface is responsible for expiring data as
+    it feels appropriate.
 
-        Attempting to access a key that does not exist will raise a KeyError.
-    '''
+    Used like::
+
+      session_data_container[browser_id][product_id][key] = value
+
+    Attempting to access a key that does not exist will raise a KeyError.
+    """
+
     timeout = schema.Int(
             title=_(u"Timeout"),
             description=_(
@@ -135,13 +117,16 @@ class ISessionDataContainer(IReadMapping, IWriteMapping):
             )
 
 
-class ISession(IFullMapping):
-    ''' To access bits of data within an ISessionDataContainer, we
-        need to know the browser_id, the product_id, and the actual key.
-        An ISession is a wrapper around an ISessionDataContainer that
-        simplifies this by storing the browser_id and product_id enabling
-        access using just the key.
-    '''
+class ISession(IMapping):
+    """A session object that keeps the state of the user.
+
+    To access bits of data within an ISessionDataContainer, we
+    need to know the browser_id, the product_id, and the actual key.
+    An ISession is a wrapper around an ISessionDataContainer that
+    simplifies this by storing the browser_id and product_id enabling
+    access using just the key.
+    """
+
     def __init__(session_data_container, browser_id, product_id):
-        ''' Construct an ISession '''
+        """Construct an ISession"""
 
