@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+      - Zope 3 can now listen on specified network interfaces only.  Example
+        of a server section in zope.conf:
+
+            <server>
+              type HTTP
+              address 127.0.0.1:8080
+            </server>
+
       - Improvements to zope.i18n.format.
 
         * Support for parsing and formatting timezones based on pytz.
