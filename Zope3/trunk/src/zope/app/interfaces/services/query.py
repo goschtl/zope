@@ -13,15 +13,9 @@
 ##############################################################################
 """Query framework definitions and support interfaces
 
-$Id: query.py,v 1.12 2004/03/09 17:11:55 jim Exp $
+$Id: query.py,v 1.13 2004/03/13 19:02:08 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute
-from zope.schema.interfaces import ITuple
-# There's another import further down
-
-class IQueryProcessorsField(ITuple):
-    """Field for entering a pipeline of query processors."""
 
 class IQueryProcessable(Interface):
     """Query Processor
@@ -41,6 +35,3 @@ class IQueryProcessor(IQueryProcessable):
            The output should be adaptable to each interface in the
            output_interface.
         """
-
-# The import is here to avoid circular imports
-from zope.app.services.queryfield import QueryProcessorsField

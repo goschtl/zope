@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.1 2004/03/13 18:01:16 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 19:02:09 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -109,9 +109,10 @@ class IRegistration(Interface):
 
 class IComponentPath(ITextLine):
     """A component path
+
+    This is just the interface for the ComponentPath field below.  We'll use
+    this as the basis for looking up an appropriate widget.
     """
-    # This is juse the interface for the ComponentPath field below.
-    # We'll use this as the basis for looking up an appriate widget.
 
 class ComponentPath(TextLine):
     """A component path
