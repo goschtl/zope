@@ -66,8 +66,8 @@ sprints.
   College at the Melbourne University.
 
 
-CVS Contributors
-----------------
+Contributors
+------------
 
 - Jim Fulton (a.k.a "The Pope of Zope")
 

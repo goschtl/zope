@@ -82,7 +82,7 @@ Finding out how to develop new content types:
     http://lists.zope.org/mailman/listinfo/zope3-dev,
     or on the irc channel, #zope3-dev, on irc.openprojects.net.
 
-  - To keep up with the latest changes, the cvs-commit mailing list
+  - To keep up with the latest changes, the commits mailing list
     http://lists.zope.org/mailman/listinfo/zope3-checkins
 
 Acknowledgements
