@@ -20,6 +20,9 @@ Zope Changes
       functional tests) without having to do the whole profile setup.
 
     Bug fixes
+    
+    - Validation of object field fixed (zope.schema.Object). Validate only 
+      attributes of the schema that are implemented as fields.
 
     Refactoring
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.24 2003/11/24 17:02:14 dominikhuber Exp $
+$Id: _field.py,v 1.25 2003/12/17 09:51:42 dominikhuber Exp $
 """
 __metaclass__ = type
 
@@ -228,8 +228,10 @@ def _validate_fields(schema, value, errors=None):
     for name in schema.names(all=True):
         if not IMethod.isImplementedBy(schema[name]):
             try:
-                field = schema[name]
-                field.validate(getattr(value, name))
+                attribute = schema[name]
+                if IField.isImplementedBy(attribute):
+                    # validate attributes that are fields  
+                    attribute.validate(getattr(value, name))
             except ValidationError, error:
                 errors.append(error)
             except AttributeError, error:

@@ -14,11 +14,11 @@
 """
 This set of tests exercises Objects.
 
-$Id: test_objectfield.py,v 1.1 2003/11/24 17:03:05 dominikhuber Exp $
+$Id: test_objectfield.py,v 1.2 2003/12/17 09:52:02 dominikhuber Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from zope.i18n import MessageIDFactory
-from zope.interface import Interface, implements
+from zope.interface import Attribute, Interface, implements
 from zope.schema import Object, TextLine
 from zope.schema import errornames
 from zope.schema.fieldproperty import FieldProperty
@@ -42,7 +42,9 @@ class ITestSchema(Interface):
         description=_(u"Bar description"),
         default=u"",
         required=False)
-
+        
+    attribute = Attribute("Test attribute, an attribute can't be validated.")    
+    
 
 class TestClass(object):
     
@@ -50,6 +52,7 @@ class TestClass(object):
     
     _foo = u''
     _bar = u''
+    _attribute = u''
        
     def getfoo(self):
         return self._foo 
@@ -65,16 +68,26 @@ class TestClass(object):
     def setbar(self, value):
         self._bar = value
         
-    bar = property(getbar, setbar, None, u'foo')   
+    bar = property(getbar, setbar, None, u'foo')
+    
+    def getattribute(self):
+        return self._attribute 
+        
+    def setattribute(self, value):
+        self._attribute = value
+        
+    attribute = property(getattribute, setattribute, None, u'attribute')
 
 
 class FieldPropertyTestClass(object):
     
     implements(ITestSchema)
     
+    
     foo = FieldProperty(ITestSchema['foo'])
     bar = FieldProperty(ITestSchema['bar'])
-    
+    attribute = FieldProperty(ITestSchema['attribute'])
+   
 
 class NotFullyImplementedTestClass(object):
     
@@ -82,6 +95,7 @@ class NotFullyImplementedTestClass(object):
     
     foo = FieldProperty(ITestSchema['foo'])
     # bar = FieldProperty(ITestSchema['bar']): bar is not implemented
+    # attribute
     
     
 class ObjectTest(FieldTestBase):
