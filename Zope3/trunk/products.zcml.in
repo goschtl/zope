@@ -5,4 +5,7 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 <!-- add include directives for products here -->
+<!-- Example:
+<include package='ZopeProducts.JobBoardEx' file='JobList.zcml' />
+-->
 </zopeConfigure>
