@@ -1,6 +1,25 @@
-#this is a temporally fix
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Interfaces for apis to make available to TALES
+
+$Id: talesapi.py,v 1.2 2003/04/16 08:26:34 matth Exp $
+"""
 
 from zope.interface import Interface
 
 class IZopeTalesAPI(Interface):
-   pass
+
+    def title():
+        """Return an object title
+        """
