@@ -66,6 +66,7 @@ class ObjectMover(object):
     the mover to do so:
 
     >>> mover.moveTo(container2)
+    u'foo'
     >>> list(container)
     []
     >>> list(container2)
@@ -76,6 +77,7 @@ class ObjectMover(object):
     We can also specify a name:
 
     >>> mover.moveTo(container2, u'bar')
+    u'bar'
     >>> list(container2)
     [u'bar']
     >>> ob.__parent__ is container2
@@ -88,6 +90,7 @@ class ObjectMover(object):
 
     >>> container2[u'splat'] = 1
     >>> mover.moveTo(container2, u'splat')
+    u'splat_'
     >>> l = list(container2)
     >>> l.sort()
     >>> l
@@ -187,6 +190,7 @@ class ObjectMover(object):
 
         target[new_name] = obj
         del container[orig_name]
+        return new_name
 
     def moveable(self):
         '''Returns ``True`` if the object is moveable, otherwise ``False``.'''
@@ -241,6 +245,7 @@ class ObjectCopier(object):
     the copier to do so:
 
     >>> copier.copyTo(container2)
+    u'foo'
     >>> list(container)
     [u'foo']
     >>> list(container2)
@@ -257,6 +262,7 @@ class ObjectCopier(object):
     We can also specify a name:
 
     >>> copier.copyTo(container2, u'bar')
+    u'bar'
     >>> l = list(container2)
     >>> l.sort()
     >>> l
@@ -275,6 +281,7 @@ class ObjectCopier(object):
     use:
 
     >>> copier.copyTo(container2, u'bar')
+    u'bar_'
     >>> l = list(container2)
     >>> l.sort()
     >>> l
@@ -352,8 +359,8 @@ class ObjectCopier(object):
     def copyTo(self, target, new_name=None):
         """Copy this object to the `target` given.
 
-        Returns the new name within the `target`, or ``None``
-        if the target doesn't do names.
+        Returns the new name within the `target`.
+        
         Typically, the `target` is adapted to `IPasteTarget`.
         After the copy is added to the `target` container, publish
         an `IObjectCopied` event in the context of the target container.
@@ -377,6 +384,7 @@ class ObjectCopier(object):
         notify(ObjectCopiedEvent(copy))
 
         target[new_name] = copy
+        return new_name
 
     def _configureCopy(self, copy, target, new_name):
         """Configures the copied object before it is added to `target`.

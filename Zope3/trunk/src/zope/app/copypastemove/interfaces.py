@@ -25,7 +25,7 @@ class IObjectMover(Interface):
     def moveTo(target, new_name=None):
         '''Move this object to the target given.
 
-        Returns the new name within the target
+        Returns the new name within the target.
         Typically, the target is adapted to `IPasteTarget`.'''
 
     def moveable():
@@ -43,8 +43,7 @@ class IObjectCopier(Interface):
     def copyTo(target, new_name=None):
         """Copy this object to the `target` given.
 
-        Returns the new name within the `target`, or ``None``
-        if the target doesn't do names.
+        Returns the new name within the `target`.
         Typically, the target is adapted to `IPasteTarget`.
         After the copy is added to the target container, publish
         an `IObjectCopied` event in the context of the target container.
