@@ -10,15 +10,20 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
+""" Metadata tool interface.
 
+$Id$
 """
-    Type registration tool interface description.
-"""
+
+from Interface import Attribute
+try:
+    from Interface import Interface
+except ImportError:
+    # for Zope versions before 2.6.0
+    from Interface import Base as Interface
 
 
-from Interface import Attribute, Base
-
-class portal_metadata(Base):
+class portal_metadata(Interface):
     """
         CMF metadata policies interface.
     """

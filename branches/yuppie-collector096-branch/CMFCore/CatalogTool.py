@@ -10,12 +10,10 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-
 """ Basic portal catalog.
 
 $Id$
 """
-
 
 import os
 from utils import UniqueObject, _checkPermission, _getAuthenticatedUser
@@ -35,6 +33,8 @@ import os
 from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import AccessInactivePortalContent
 from Acquisition import aq_base
+
+from interfaces.portal_catalog import portal_catalog as ICatalogTool
 
 
 class IndexableObjectWrapper:
@@ -72,7 +72,7 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
     '''This is a ZCatalog that filters catalog queries.
     '''
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (ICatalogTool, ActionProviderBase.__implements__)
 
     id = 'portal_catalog'
     meta_type = 'CMF Catalog'

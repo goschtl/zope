@@ -43,6 +43,8 @@ try:
 except ImportError:
     SUPPORTS_PAGE_TEMPLATES=0
 
+from interfaces.portal_skins import portal_skins as ISkinsTool
+
 
 def modifiedOptions():
     # Remove the existing "Properties" option and add our own.
@@ -61,7 +63,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     This tool is used to supply skins to a portal.
     '''
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (ISkinsTool, ActionProviderBase.__implements__)
 
     id = 'portal_skins'
     meta_type = 'CMF Skins Tool'

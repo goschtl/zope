@@ -21,9 +21,12 @@ def test_suite():
         'test_FSImage',
         'test_CachingPolicyManager',
         'test_FSSecurity',
+        'test_DiscussionTool',
         'test_MemberDataTool',
         'test_MembershipTool',
         'test_RegistrationTool',
+        'test_SkinsTool',
+        'test_UndoTool',
         'test_URLTool',
         ])
 

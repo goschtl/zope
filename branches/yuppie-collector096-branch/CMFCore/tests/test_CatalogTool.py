@@ -1,5 +1,11 @@
-import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
+
+import Zope
+try:
+    from Interface.Verify import verifyClass
+except ImportError:
+    # for Zope versions before 2.6.0
+    from Interface import verify_class_implementation as verifyClass
 
 from Products.CMFCore.tests.base.dummy import \
      DummyContent
@@ -18,6 +24,16 @@ class CatalogToolTests( TestCase ):
 
         tool.catalog_object( dummy, '/dummy' )
         tool.catalog_object( dummy, '/dummy', [ 'SearchableText' ] )
+
+    def test_interface(self):
+        from Products.CMFCore.interfaces.portal_catalog \
+                import portal_catalog as ICatalogTool
+        from Products.CMFCore.interfaces.portal_actions \
+                import ActionProvider as IActionProvider
+
+        verifyClass(ICatalogTool, CatalogTool)
+        verifyClass(IActionProvider, CatalogTool)
+
 
 def test_suite():
     return TestSuite((

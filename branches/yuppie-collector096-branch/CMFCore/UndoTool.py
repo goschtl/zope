@@ -27,9 +27,12 @@ from ActionProviderBase import ActionProviderBase
 from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import ListUndoableChanges
 
+from interfaces.portal_undo import portal_undo as IUndoTool
+
+
 class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (IUndoTool, ActionProviderBase.__implements__)
 
     id = 'portal_undo'
     meta_type = 'CMF Undo Tool'

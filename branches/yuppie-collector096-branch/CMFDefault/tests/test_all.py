@@ -15,6 +15,7 @@ def test_suite():
         'test_utils',
         'test_join',
         'test_Portal',
+        'test_DiscussionTool',
         'test_MembershipTool',
         'test_PropertiesTool',
         'test_RegistrationTool',
