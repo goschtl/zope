@@ -14,11 +14,13 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.4 2003/02/04 21:35:42 jack-e Exp $
+$Id: __init__.py,v 1.5 2003/02/06 01:03:51 jack-e Exp $
 """
 
 from zope.interface import Interface
 from zope.interface import Attribute
+from zope.interface.common.mapping \
+     import IEnumerableMapping
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.configuration \
      import INamedComponentConfiguration
@@ -52,6 +54,12 @@ class IWorkflowService(Interface):
 
 
 
+class IProcessDefinitionConfiguration(INamedComponentConfiguration):
+    """Configuration for a workflow process definition.
+    """
+
+
+
 
 
 
@@ -69,11 +77,9 @@ class IProcessDefinition(Interface):
         """
 
 
-
-class IProcessDefinitionConfiguration(INamedComponentConfiguration):
-    """Configuration for a workflow process definition.
+class IProcessDefinitionElementContainer(IContainer):
+    """Abstract Interface for ProcessDefinitionElementContainers.
     """
-
 
 
 
@@ -90,9 +96,14 @@ class IProcessInstance(Interface):
 
 
 
+
+
 class IProcessInstanceContainer(IContainer):
     """Workflow process instance container.
     """
+
+
+
 
 
 
