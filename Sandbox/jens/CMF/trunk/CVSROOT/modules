@@ -1,0 +1,6 @@
+embedded -a Components/principia Components/ExtensionClass Components/cPickle \
+  Components/PickleJar Components/cPersistence Components/zlib \
+  Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
+embedded2 -a Components/principia Components/ExtensionClass Components/cPickle \
+  Components/PickleJar Components/cPersistence Components/zlib \
+  Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
