@@ -14,7 +14,7 @@
 """Form utility functions
 
 In Zope 2's formulator, forms provide a basic mechanism for
-organizating collections of fields and providing user interfaces for
+organizing collections of fields and providing user interfaces for
 them, especially editing interfaces.
 
 In Zope 3, formulator's forms are replaced by Schema (See
@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.4 2003/01/25 05:19:10 rdmurray Exp $
+$Id: utility.py,v 1.5 2003/01/25 18:30:05 stevea Exp $
 """
 __metaclass__ = type
 
