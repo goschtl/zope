@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.24 2003/08/17 06:05:39 philikon Exp $
+$Id: test_contents.py,v 1.25 2003/09/21 17:30:29 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,20 +28,13 @@ from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.traversing import traverse
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
-from zope.app.interfaces.container import IPasteTarget
-from zope.app.interfaces.container import IMoveSource
-from zope.app.interfaces.container import ICopySource
-from zope.app.interfaces.container import IPasteNamesChooser
 
 from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove import ObjectCopier
-from zope.app.container.copypastemove import PasteTarget
-from zope.app.container.copypastemove import MoveSource
-from zope.app.container.copypastemove import CopySource
-from zope.app.container.copypastemove import PasteNamesChooser
 
 from zope.app.event.tests.placelesssetup import getEvents, clearEvents
-from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
+from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.container import IObjectRemovedEvent
 from zope.interface import Interface, implements
 from zope.proxy import removeAllProxies
 
@@ -52,8 +45,9 @@ from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \
     import IPrincipalAnnotationService
 from zope.app.interfaces.annotation import IAnnotations
+from zope.app.container.contained import contained
 
-class BaseTestContentsBrowserView(PlacelessSetup):
+class BaseTestContentsBrowserView(PlacefulSetup):
     """Base class for testing browser contents.
 
     Subclasses need to define a method, '_TestView__newContext', that
@@ -64,16 +58,25 @@ class BaseTestContentsBrowserView(PlacelessSetup):
     """
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        PlacefulSetup.setUp(self)
+        PlacefulSetup.buildFolders(self)
+        provideAdapter(None, IObjectCopier, ObjectCopier)
         provideAdapter(None, IObjectMover, ObjectMover)
+
+        provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
+        root_sm = getServiceManager(None)
+        svc = PrincipalAnnotationService()
+        root_sm.defineService("PrincipalAnnotation", \
+            IPrincipalAnnotationService)
+        root_sm.provideService("PrincipalAnnotation", svc)
 
     def testInfo(self):
         # Do we get the correct information back from ContainerContents?
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
-        container.setObject('subcontainer', subcontainer)
+        container['subcontainer'] = subcontainer
         document = Document()
-        container.setObject('document', document)
+        container['document'] = document
 
         fc = self._TestView__newView(container)
         info_list = fc.listContentInfo()
@@ -94,7 +97,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
     def testInfoWDublinCore(self):
         container = self._TestView__newContext()
         document = Document()
-        container.setObject('document', document)
+        container['document'] = document
 
         from datetime import datetime
         from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -124,39 +127,17 @@ class BaseTestContentsBrowserView(PlacelessSetup):
     def testRemove(self):
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
-        container.setObject('subcontainer', subcontainer)
+        container['subcontainer'] = subcontainer
         document = Document()
-        container.setObject('document', document)
+        container['document'] = document
         document2 = Document()
-        container.setObject('document2', document2)
+        container['document2'] = document2
 
         fc = self._TestView__newView(container)
-
-        self.failIf(getEvents(IObjectRemovedEvent))
-        self.failUnless(
-            getEvents(IObjectModifiedEvent,
-                      filter =
-                      lambda event:
-                      removeAllProxies(event.object) == container)
-           )
-        clearEvents()
 
         fc.request.form.update({'ids': ['document2']})
 
         fc.removeObjects()
-
-        self.failUnless(
-            getEvents(IObjectRemovedEvent,
-                      filter =
-                      lambda event:
-                      removeAllProxies(event.object) == document2)
-           )
-        self.failUnless(
-            getEvents(IObjectModifiedEvent,
-                      filter =
-                      lambda event:
-                      removeAllProxies(event.object) == container)
-           )
 
         info_list = fc.listContentInfo()
 
@@ -191,10 +172,6 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         PlacefulSetup.buildFolders(self)
         provideAdapter(None, IObjectCopier, ObjectCopier)
         provideAdapter(None, IObjectMover, ObjectMover)
-        provideAdapter(IContainer, IPasteTarget, PasteTarget)
-        provideAdapter(IContainer, IMoveSource, MoveSource)
-        provideAdapter(IContainer, ICopySource, CopySource)
-        provideAdapter(IContainer, IPasteNamesChooser, PasteNamesChooser)
 
         provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
         root_sm = getServiceManager(None)
@@ -209,7 +186,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         ids=['document1', 'document2']
         for id in ids:
             document = Document()
-            container.setObject(id, document)
+            container[id] = document
         fc.request.form.update({'rename_ids': ids,
                                 'new_value': ['document1_1', 'document2_2']
                                 })
@@ -223,15 +200,15 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         ids=['document1', 'document2']
         for id in ids:
             document = Document()
-            container.setObject(id, document)
+            container[id] = document
 
         fc.request.form['ids'] = ids
         fc.copyObjects()
         fc.pasteObjects()
         self.failIf('document1' not in container)
         self.failIf('document2' not in container)
-        self.failIf('copy_of_document1' not in container)
-        self.failIf('copy_of_document2' not in container)
+        self.failIf('document1-2' not in container)
+        self.failIf('document2-2' not in container)
 
     def testCopyFolder(self):
         container = traverse(self.rootFolder, 'folder1')
@@ -241,7 +218,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         fc.copyObjects()
         fc.pasteObjects()
         self.failIf('folder1_1' not in container)
-        self.failIf('copy_of_folder1_1' not in container)
+        self.failIf('folder1_1-2' not in container)
 
     def testCopyFolder2(self):
         container = traverse(self.rootFolder, '/folder1/folder1_1')
@@ -251,7 +228,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         fc.copyObjects()
         fc.pasteObjects()
         self.failIf('folder1_1_1' not in container)
-        self.failIf('copy_of_folder1_1_1' not in container)
+        self.failIf('folder1_1_1-2' not in container)
 
     def testCopyFolder3(self):
         container = traverse(self.rootFolder, '/folder1/folder1_1')
@@ -271,7 +248,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         ids=['document1', 'document2']
         for id in ids:
             document = Document()
-            container.setObject(id, document)
+            container[id] = document
         fc.request.form['ids'] = ids
         fc.cutObjects()
         fc.pasteObjects()
@@ -319,16 +296,17 @@ class Test(BaseTestContentsBrowserView, TestCase):
 
     def _TestView__newContext(self):
         from zope.app.container.sample import SampleContainer
-        from zope.app.content.folder import RootFolder
-        from zope.app.context import ContextWrapper
-        root = RootFolder()
+        from zope.app.content.folder import rootFolder
+        root = rootFolder()
         container = SampleContainer()
-        return ContextWrapper(container, root, name='sample')
+        return contained(container, root, 'sample')
 
     def _TestView__newView(self, container):
         from zope.app.browser.container.contents import Contents
         from zope.publisher.browser import TestRequest
-        return Contents(container, TestRequest())
+        request = TestRequest()
+        request.setUser(Principal())
+        return Contents(container, request)
 
 def test_suite():
     return TestSuite((
