@@ -1,3 +1,11 @@
+After CMF-1.5.1beta
+
+  Bug Fixes
+
+    - CMFCore.TypesTool: Added backwards compatibility code to the fix for
+      collector issue 49 (http://collector.zope.org/CMF/49)
+
+
 CMF 1.5.1beta (2005/03/24)
 
   New Features
