@@ -13,13 +13,15 @@
 ##############################################################################
 """SQL Expression Type
 
-$Id: sqlexpr.py,v 1.1 2004/02/27 14:39:41 philikon Exp $
+$Id: sqlexpr.py,v 1.2 2004/03/04 02:04:13 philikon Exp $
 """
 __metaclass__ = type 
 
 import re
+from zope.interface import implements
 from zope.component import getService, createObject
 from zope.app.rdb import queryForResults
+from zope.tales.interfaces import ITALESExpression
 from zope.tales.expressions import NAME_RE
 
 __metaclass__ = type
@@ -32,6 +34,7 @@ class NoConnectionSpecified(Exception):
 class SQLExpr:
     """SQL Expression Handler class
     """
+    implements(ITALESExpression)
 
     def __init__(self, name, expr, engine):
         # Completely taken from StringExpr
