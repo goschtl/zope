@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: dut.py,v 1.2 2003/12/18 09:55:08 jim Exp $
+$Id: dut.py,v 1.3 2004/03/20 18:06:10 philikon Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
@@ -34,4 +34,5 @@ def test_suite():
         
         ))
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main()
