@@ -16,6 +16,7 @@
 $Id$
 """
 
+import errno
 import optparse
 import os
 import re
@@ -42,6 +43,9 @@ parser.add_option("-I", "--skip-request-header", action="append",
                   help="Request header to skip")
 parser.add_option("-O", "--skip-response-header", action="append",
                   help="Response header to skip")
+parser.add_option("-r", "--clean-redirects", action="store_true",
+                  help="Strip content from redirect responses",
+                  default=False)
 
 default_options = [
     '-e', 'html',
@@ -111,16 +115,32 @@ def dochttp(args=sys.argv[1:], default=None):
                 if skip_url.search(request.path):
                     break
             else:
-                output_test(request, response)
+                try:
+                    output_test(request, response, options.clean_redirects)
+                except IOError, e:
+                    if e.errno == errno.EPIPE:
+                        return
+                    raise
     
 
-def output_test(request, response):
+def output_test(request, response, clean_redirects=False):
     print
     print
     print '  >>> print http(r"""'
     print '  ...', '\n  ... '.join(request.lines())+'""")'
+    if response.code in (301, 302, 303) and clean_redirects:
+        if response.headers:
+            for i in range(len(response.headers)):
+                h, v = response.headers[i]
+                if h == "Content-Length":
+                    response.headers[i] = (h, "...")
+        lines = response.header_lines()
+        if lines:
+            lines.append("...")
+    else:
+        lines = response.lines()
     print ' ', '\n  '.join([line.rstrip() and line or '<BLANKLINE>'
-                             for line in response.lines()])
+                             for line in lines])
 
 class Message:
 
@@ -130,6 +150,9 @@ class Message:
         start = file.readline().rstrip()
         if start:
             self.start = start
+            if start.startswith("HTTP/"):
+                # This is a response; extract the response code:
+                self.code = int(start.split()[1])
             headers = [split_header(header)
                        for header in rfc822.Message(file).headers
                        ]
@@ -151,16 +174,20 @@ class Message:
         return bool(self.start)
 
     def lines(self):
+        output = self.header_lines()
+        if output:
+            output.extend(self.body)
+        return output
+
+    def header_lines(self):
         if self.start:
             output = [self.start]
             headers = ["%s: %s" % (name, v) for (name, v) in self.headers]
             headers.sort()
             output.extend(headers)
             output.append('')
-            output.extend(self.body)
         else:
             output = []
-
         return output
 
 headerre = re.compile('(\S+): (.+)$')
