@@ -1,0 +1,71 @@
+FSDump Change Log
+
+  After FSDump 0.8
+
+    * Applied patch from Willi Langenburger to enable dumping
+      directly from the Zope root object.
+
+  FSDump 0.8 (2004/10/13)
+
+    * Applied patch from Zope collector #1463 to make dumped SQL methods
+      fit better with CMF's FSSQLMethod representation.
+
+  FSDump 0.7 (2004/05/17)
+
+    * Added knob to force use of single '.metadata' file, rather than
+      multiples (CMF 1.4 compatibility).
+
+    * Migrated ZMI to use PageTemplates.
+
+    * Bug:  when synthesizing a file extension, Dumper didn't include the
+      synthesized extension in the name of the "companion" properties file.
+
+  FSDump 0.6 (2001/08/09)
+
+    * Add handlers for:
+
+      - PageTemplate
+
+  FSDump 0.5 (2001/08/03)
+
+    * Add handlers for:
+
+      - PythonScript
+
+  FSDump 0.4 (2001/06/18)
+
+    * Conform to the "Finished Project Guidelines",
+      http://dev.zope.org/Wikis/DevSite/Proposals/FinishedProductGuidelines
+
+    * Added HelpSystem stuff.
+
+    * Moved to use declarative security.
+
+  FSDump 0.3 (2001/01/06)
+
+    * Dump ZClass icon.
+
+    * Add handlers for:
+
+      - Wizards
+
+      - Wizard Pages
+
+  FSDump 0.2 (2000/11/19)
+
+    * Add handlers for:
+
+      - ZClasses
+
+      - ZClass property sheets
+
+      - TTW Permissions
+
+      - TTW Factories
+
+    * Fix unixism in 'Dumper._setFSPath()' -- thanks
+      Craig! (cba@mediaone.net)
+
+  FSDump 0.1 (2000/11/16)
+
+    * Initial release
