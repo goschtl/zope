@@ -152,8 +152,11 @@
 /ZODB4/src/ZConfig	 /Packages/ZConfig
 /ZODB4/src/logging       /Zope3/src/logging
 
+/Packages/SFTPGateway/src/ZConfig /Packages/ZConfig
+/Packages/SFTPGateway/src/zdaemon /Packages/zdaemon
+
 /StandaloneSTX/StructuredText     /Packages/StructuredText
-/StandaloneZConfig/ZConfig     /Packages/ZConfig
+/StandaloneZConfig/ZConfig        /Packages/ZConfig
 
 /CMF/CMFCalendar                  /Products/CMFCalendar
 /CMF/CMFCore                      /Products/CMFCore
