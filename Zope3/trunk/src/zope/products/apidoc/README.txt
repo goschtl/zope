@@ -6,6 +6,12 @@ registered add-on components. The product is very extensible and can be easily
 extended by implementing new modules.
 
 
+Dependencies
+------------
+
+  - The statictree product from 'zope.products.statictree'
+
+
 Installation
 ------------
 
