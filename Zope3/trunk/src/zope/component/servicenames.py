@@ -11,14 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Default service names for CA core services
+"""Default service names for CA core services
 
-$Id: servicenames.py,v 1.7 2004/03/05 15:57:24 eddala Exp $
+$Id: servicenames.py,v 1.8 2004/03/09 12:40:46 srichter Exp $
 """
 
 Adapters = 'Adapters'
 Utilities = 'Utilities'
 Presentation = 'Presentation'
-Factories = 'Factories'
 Services = 'Services'
