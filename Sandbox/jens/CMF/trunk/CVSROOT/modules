@@ -114,7 +114,6 @@ pcgi  -d pcgi Components/pcgi2
 utilities   ZUtil
 ZopeHTTPServer Components/ZopeHTTPServer
 ZServer Publishers/ZServer
-lpZServer -d lib/python/ZServer Packages/ZServer
 
 # '-l' in GreyThing entry is to prevent recusion, excluding the webdav
 # symlink.  The symlink is there for people who checked out when the
@@ -146,7 +145,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZODB &lpZope &lpZopeZODB3 \
-  &lpZSQLMethods &lpZGadflyDA &lpZServer &lpMIMETools
+  &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
 # KLM end
 
