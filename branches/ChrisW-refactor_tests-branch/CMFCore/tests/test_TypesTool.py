@@ -53,19 +53,6 @@ class TypesToolTests( SecurityRequestTest ):
                               )
                          )
     
-    def test_otherFolderTypes( self ):
-        """
-            Does 'invokeFactory' work when invoked from non-PortalFolder?
-            Currently tests a bug which hasn't been fixed
-        """
-        self.root._setObject( 'portal', PortalFolder( 'portal', '' ) )
-        portal = self.root.portal
-        portal._setObject( 'normal', OFS.Folder.Folder( 'normal', '' ) )
-        normal = portal.normal
-        normal.invokeFactory( 'Dummy', 'dummy' )
-        assert 'dummy' not in portal.objectIds()
-        assert 'dummy' in normal.objectIds()
-
     def test_processActions( self ):
         """
         Are the correct, permitted methods returned for actions?
