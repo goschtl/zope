@@ -276,12 +276,18 @@ def openInOrPlain(filename):
     >>> f.name[-11:]
     'foo.zcml.in'
 
-    Make sure other IOErrors are re-raised:
+    Make sure other IOErrors are re-raised.  We need to do this in a
+    try-except block because different errors are raised on Windows and
+    on Linux.
 
-    >>> f = openInOrPlain('.')
-    Traceback (most recent call last):
+    >>> try:
+    ...     f = openInOrPlain('.')
+    ... except IOError:
+    ...     print "passed"
+    ... else:
+    ...     print "failed"
     ...
-    IOError: [Errno 21] Is a directory
+    passed
 
     """
     try:
