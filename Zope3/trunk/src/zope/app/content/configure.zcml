@@ -12,7 +12,7 @@
   <implements
      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
      />
-  
+
   <factory
       id="Folder"
       permission="zope.ManageContent"
