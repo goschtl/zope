@@ -334,8 +334,8 @@ class IWidgetSubdirective(Interface):
     This directive allows you to quickly generate custom widget directives for
     a form.
     
-    Besides the two default arguments, field and class, you can specify any 
-    amount of keyword arguments, e.g. style="background-color:#fefefe;".
+    Besides the two required arguments, field and class, you can specify any 
+    amount of keyword arguments, e.g. style='background-color:#fefefe;'.
     The keywords will be stored as attributes on the widget instance. To see
     which keywords are sensible, you should look at the code of the specified
     widget class.
@@ -346,13 +346,13 @@ class IWidgetSubdirective(Interface):
         description=u"""
         The name of the field/attribute/property for which this widget will be
         used.""",
-        required=False
+        required=True,
         )
 
     class_ = GlobalObject(
         title=u"Widget Class",
         description=u"""The class that will create the widget.""",
-        required=False
+        required=True,
         )
 
 # Arbitrary keys and values are allowed to be passed to the CustomWidget.
