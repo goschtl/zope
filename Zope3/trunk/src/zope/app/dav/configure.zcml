@@ -56,12 +56,28 @@
   
   <view
       type="zope.publisher.interfaces.http.IHTTPRequest"
-      for="zope.schema.interfaces.ITextLine"
+      for="zope.schema.interfaces.IBytes"
       provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.TextDAVWidget"
       permission="zope.Public"
       />
   
+  <view
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      for="zope.schema.interfaces.IInt"
+      provides="zope.app.dav.interfaces.IDAVWidget"
+      factory="zope.app.dav.widget.TextDAVWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      for="zope.schema.interfaces.IFloat"
+      provides="zope.app.dav.interfaces.IDAVWidget"
+      factory="zope.app.dav.widget.TextDAVWidget"
+      permission="zope.Public"
+      />
+
   <view
       type="zope.publisher.interfaces.http.IHTTPRequest"
       for="zope.schema.interfaces.IDatetime"
