@@ -3,6 +3,10 @@
 #
 #   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zodb3.map
 
+# This is the ZODB3 release package:
+#
+ZODB3           svn://svn.zope.org/repos/main/ZODB/tags/*/releases/ZODB3
+
 # This group is maintained as part of the ZODB project:
 #
 BTrees          svn://svn.zope.org/repos/main/ZODB/tags/*/src/BTrees
