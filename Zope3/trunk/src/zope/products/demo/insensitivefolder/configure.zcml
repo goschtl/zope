@@ -28,7 +28,7 @@
 
 <browser:icon
     name="zmi_icon"
-    for=".interfaces.ICaseInsensitiveFolder"
+    for=".ICaseInsensitiveFolder"
     file="cifolder_icon.png"
     />
 
