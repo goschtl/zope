@@ -15,18 +15,18 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.8 2004/03/08 17:26:56 jim Exp $
+$Id: presentation.py,v 1.9 2004/03/15 20:42:27 jim Exp $
 """
 
-from zope.component.interfaces import IPresentationService
-from zope.component.servicenames import Presentation
-from zope.component.service import GlobalService
-import zope.interface
-from zope.interface.interfaces import IInterface
-import zope.schema
-import zope.interface.adapter
 from types import ClassType
-
+from zope.component.interfaces import IPresentationService
+from zope.component.service import GlobalService
+from zope.component.servicenames import Presentation
+from zope.interface import providedBy
+from zope.interface.interfaces import IInterface
+import zope.interface
+import zope.interface.adapter
+import zope.schema
 
 class IGlobalPresentationService(zope.interface.Interface):
     """Provide ability to update the global presentation service
@@ -56,7 +56,7 @@ class IGlobalPresentationService(zope.interface.Interface):
         """Define a usage
         """
 
-    def provideAdapter(request_type, factories, name='', contexts=(),
+    def provideAdapter(request_type, factory, name='', contexts=(),
                        providing=zope.interface.Interface, layer='default'):
         """Provide a presentation adapter
         """
@@ -115,7 +115,7 @@ class GlobalPresentationService(GlobalService):
        register them to provide the empty interface, Interface, which is
        the default provided interface:
 
-       >>> s.provideAdapter(IRequest, [MyResource], name='foo', layer='custom')
+       >>> s.provideAdapter(IRequest, MyResource, name='foo', layer='custom')
 
        Now we can try to look this up:
 
@@ -146,7 +146,7 @@ class GlobalPresentationService(GlobalService):
        ...     def __init__(self, context, request):
        ...         self.context, self.request = context, request
 
-       >>> s.provideAdapter(IRequest, [MyView], contexts=[IContact], 
+       >>> s.provideAdapter(IRequest, MyView, contexts=[IContact], 
        ...                  name='foo', layer='custom')
 
        When defining views, we provide one or more (typically 1) context
@@ -181,7 +181,7 @@ class GlobalPresentationService(GlobalService):
 
        which we register using the provided interface, rather than a name. 
 
-       >>> s.provideAdapter(IRequest, [Traverser], contexts=[IContact],
+       >>> s.provideAdapter(IRequest, Traverser, contexts=[IContact],
        ...                  providing=ITraverse, layer='custom')
 
        (We could use a name too, if we wanted to.)
@@ -205,14 +205,14 @@ class GlobalPresentationService(GlobalService):
        >>> matcheditems = list(match['custom'])
        >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
        >>> matcheditems[0] == \
-       ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
+       ...     (IContact, ITraverse, (IRequest,), u'', Traverser)
        True
 
        >>> match = s.getRegisteredMatching(IContact, IRequest)
        >>> matcheditems = list(match['custom'])
        >>> matcheditems.sort(lambda x,y: cmp(x[3],y[3]))
        >>> matcheditems[0] == \
-       ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
+       ...     (IContact, ITraverse, (IRequest,), u'', Traverser)
        True
 
        >>> s.getRegisteredMatching(request=IRequest, layers=['default']) == {}
@@ -353,7 +353,7 @@ class GlobalPresentationService(GlobalService):
 
 
     
-    def provideAdapter(self, request_type, factories, name=u'', contexts=(), 
+    def provideAdapter(self, request_type, factory, name=u'', contexts=(), 
                        providing=zope.interface.Interface, layer='default'):
         """Provide a presentation adapter
 
@@ -374,7 +374,8 @@ class GlobalPresentationService(GlobalService):
         ifaces.append(request_type)
         
         reg = self._layers[layer]
-        reg.provideAdapter(ifaces[0], providing, factories, name, ifaces[1:])
+        
+        reg.register(ifaces, providing, name, factory)
 
     def queryResource(self, name, request, default=None,
                       providing=zope.interface.Interface):
@@ -465,8 +466,6 @@ class GlobalPresentationService(GlobalService):
     def provideView(self, for_, name, type, maker, layer='default',
                     providing=zope.interface.Interface):
         # Helper function for simple view defs
-        if not isinstance(maker, (list, tuple)):
-            maker = [maker]
         return self.provideAdapter(type, maker, name,
                                    contexts=[for_], layer=layer,
                                    providing=providing)
@@ -490,7 +489,7 @@ class GlobalPresentationService(GlobalService):
         skin = request.getPresentationSkin() or 'default'
         objects = object, request
         for layer in self._skins[skin]:
-            r = layer.queryMultiAdapter(objects, IDefaultViewName, raw=True)
+            r = layer.lookup(map(providedBy, objects), IDefaultViewName)
             if r is not None:
                 return r
         return default
@@ -498,8 +497,6 @@ class GlobalPresentationService(GlobalService):
     def provideResource(self, name, request_type, factory, layer='default',
                         providing=zope.interface.Interface):
         # Helper function for simple view defs
-        if not isinstance(factory, (list, tuple)):
-            factory = [factory]
         return self.provideAdapter(request_type, factory, name, layer=layer,
                                    providing=providing)
 
@@ -510,15 +507,34 @@ def GL(presentation_service, layer_name):
 def GU(presentation_service, usage_name):
     return presentation_service.queryUsage(usage_name)
 
-class GlobalLayer(zope.interface.adapter.AdapterRegistry):
+
+class Layer(zope.interface.adapter.AdapterRegistry):
+
+    def queryNamedAdapter(self, obj, interface, name, default=None):
+        factory = self.lookup1(providedBy(obj), interface, name)
+        if factory is not None:
+            return factory(obj)
+        return default
+
+    def queryMultiAdapter(self, objects, interface, name, default=None):
+        factory = self.lookup(map(providedBy, objects), interface, name)
+        if factory is not None:
+            return factory(*objects)
+        return default
+
+
+class GlobalLayer(Layer):
 
     def __init__(self, parent, name):
-        zope.interface.adapter.AdapterRegistry.__init__(self)
+        super(GlobalLayer, self).__init__()
         self.__parent__ = parent
         self.__name__ = name
 
     def __reduce__(self):
         return GL, (self.__parent__, self.__name__)
+
+    
+        
 
 
 class GlobalUsage(zope.interface.adapter.AdapterRegistry):

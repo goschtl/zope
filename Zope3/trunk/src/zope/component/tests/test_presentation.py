@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_presentation.py,v 1.2 2003/11/21 17:09:27 jim Exp $
+$Id: test_presentation.py,v 1.3 2004/03/15 20:42:28 jim Exp $
 """
 import unittest
 from doctest import DocTestSuite
@@ -48,7 +48,7 @@ def test_view_lookup_fails_w_wrong_skin():
 
     >>> request = Request()
 
-    >>> s.provideAdapter(IRequest, [MyView], contexts=[IContact], name='foo',
+    >>> s.provideAdapter(IRequest, MyView, contexts=[IContact], name='foo',
     ...                  layer='custom')
 
     >>> c = Contact()
@@ -85,7 +85,7 @@ def test_multi_views():
     >>> s = GlobalPresentationService()
     >>> request = Request()
 
-    >>> s.provideAdapter(IRequest, [ContactInCompanyView],
+    >>> s.provideAdapter(IRequest, ContactInCompanyView,
     ...                  contexts=[IContact, ICompany], name='foo')
 
     >>> bob = Contact()
@@ -101,7 +101,7 @@ def test_multi_views():
     >>> v.request is request
     True
 
-    >>> s.provideAdapter(IRequest, [ContactInFamilyView],
+    >>> s.provideAdapter(IRequest, ContactInFamilyView,
     ...                  contexts=[IContact, IFamily], name='foo')
     
     >>> smith = Family()
@@ -125,7 +125,7 @@ def test_provideView():
 
     >>> s = GlobalPresentationService()
     >>> request = Request()
-    >>> s.provideView(IContact, 'foo', IRequest, [MyView])
+    >>> s.provideView(IContact, 'foo', IRequest, MyView)
 
 
     >>> c = Contact()
@@ -212,10 +212,10 @@ def test_default_skin_affects_lookup():
     >>> class MyResource:
     ...    def __init__(self, request):
     ...        self.request = request
-    >>> s.provideAdapter(IRequest, [MyResource], name='foo', layer='custom')
+    >>> s.provideAdapter(IRequest, MyResource, name='foo', layer='custom')
     >>> s.queryResource('foo', request)
 
-    >>> s.provideAdapter(IRequest, [MyView], contexts=[IContact], name='foo',
+    >>> s.provideAdapter(IRequest, MyView, contexts=[IContact], name='foo',
     ...                  layer='custom')
 
     >>> c = Contact()
