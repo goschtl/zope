@@ -6,12 +6,16 @@
 
   <!-- Image View Directives -->
 
-  <browser:defaultView 
+  <browser:view
       name="data"
       for=".Image.IImage."
       permission="Zope.View"
       allowed_attributes="__call__ tag"
       factory=".Views.Browser.ImageData." />
+
+  <browser:defaultView
+      for=".Image.IImage."
+      name="data" />
 
   <browser:view
       for=".Image.IImage."
@@ -26,22 +30,45 @@
         attribute="action" />
   </browser:view>
 
-
   <!-- Formulator directives -->
 
   <browser:view
       name="DataFieldView"
       for=".Image.IImage."
-      factory=".ImageFields.DataField. 
+      factory=".ImageFields.DataField.
                Zope.App.Formulator.Widgets.Browser.FileWidget." />
 
   <browser:view
       name="ContentTypeFieldView"
       for=".Image.IImage."
-      factory=".ImageFields.ContentTypeField. 
+      factory=".ImageFields.ContentTypeField.
                Zope.App.Formulator.Widgets.Browser.TextWidget." />
 
+  <!-- I18n Image View Directives -->
 
+  <browser:view
+      name="data"
+      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+      permission="Zope.View"
+      allowed_attributes="__call__ tag"
+      factory=".Views.Browser.I18nImageData." />
+
+  <browser:defaultView
+      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+      name="data" />
+
+  <browser:view
+      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+      permission="Zope.ManageContent"
+      factory=".Views.Browser.I18nImageEdit.">
+
+    <browser:page
+        name="editForm.html"
+        template="Views/Browser/i18n_edit.pt" />
+    <browser:page
+        name="edit.html"
+        attribute="action" />
+  </browser:view>
 
   <!-- tabs for image -->
 
@@ -57,5 +84,9 @@
   <browser:menuItem menu="add_content"
                     for="Zope.App.OFS.Container.IAdding."
                     title="Image" action="Image"/>
+
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Container.IAdding."
+                    title="I18n Image" action="I18nImage"/>
 
 </zopeConfigure>
