@@ -8,5 +8,6 @@
 <include package=".TranslationService" />
 <include package=".CachingService" />
 <include package=".LocalObjectHub" />
+<include package=".ErrorReportingService" />
 
 </zopeConfigure>
