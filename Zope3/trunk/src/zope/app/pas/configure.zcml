@@ -1,0 +1,55 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <localUtility class=".httpplugin.HTTPBasicAuthExtractor">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IExtractionPlugin" />
+
+  </localUtility>
+
+  <localUtility class=".httpplugin.HTTPBasicAuthChallenger">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IExtractionPlugin" />
+
+  </localUtility>
+
+  <browser:tool
+      interface=".interfaces.IExtractionPlugin"
+      title="PAS Extraction Plugin"
+      description="PAS Extraction Plugin"
+      />
+  
+  <browser:tool
+      interface=".interfaces.IChallengePlugin"
+      title="PAS Challenge Plugin"
+      description="PAS Challenge Plugin"
+      />
+
+  <browser:addMenuItem
+      title="PAS Extraction Plugin"
+      description="A PAS Extraction Plugin"
+      class="zope.app.pas.httpplugin.HTTPBasicAuthExtractor"
+      permission="zope.ManageContent"
+      />
+  
+  <browser:addMenuItem
+      title="PAS Challenge Plugin"
+      description="A PAS Challenge Plugin"
+      class="zope.app.pas.httpplugin.HTTPBasicAuthChallenger"
+      permission="zope.ManageContent"
+      />
+  
+</configure>

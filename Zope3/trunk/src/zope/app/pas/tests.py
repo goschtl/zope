@@ -45,6 +45,7 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('zope.app.pas.httpplugin'),
         doctest.DocFileSuite('README.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
