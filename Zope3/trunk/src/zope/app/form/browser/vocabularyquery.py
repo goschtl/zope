@@ -205,7 +205,9 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
             try:
                 term = self.vocabulary.getTermByToken(token)
             except LookupError:
-                # XXX unsure what to pass to exception constructor
+                # TODO: unsure what to pass to exception constructor
+                # It is probably the wrong exception to use. You should
+                # probably write a custom one.
                 raise WidgetInputError(
                     "(query view for %s)" % self.context,
                     "(query view for %s)" % self.context,
