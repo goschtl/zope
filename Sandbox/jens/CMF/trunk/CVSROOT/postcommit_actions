@@ -479,12 +479,17 @@ def handle_failures(argstring):
     """On serious failures, send the complaints log to CVSMASTER."""
     import time
 
+    if os.environ.has_key('HOSTNAME'):
+        host = os.environ['HOSTNAME')
+    else:
+        host = "<unidentified host>"
+
     if os.environ.has_key('LOGNAME'):
         user = os.environ['LOGNAME']
     elif os.environ.has_key('USER'):
         user = os.environ['USER']
     else:
-        user = '<unidentified user>'
+        user = "<unidentified user>"
 
     if os.path.isfile(OUTPUT_LOG):
         log_file_expr = ("\n\tSee log file for application errors:\n\t\t%s"
@@ -494,8 +499,9 @@ def handle_failures(argstring):
 
     complain("Sending complaints log to CVSMASTER %s\n", CVSMASTER)
     complain("Time stamp: %s\n", time.ctime(time.time()))
-    complain("Fatal failures in %s:%s\n\tCheckin by: %s\n\tInvocation: %s\n\n",
-             SCRIPT, log_file_expr, user, argstring)
+    complain("Fatal failures in %s:%s"
+             "\n\tCheckin by: %s@%s\n\tInvocation: %s\n\n",
+             SCRIPT, log_file_expr, user, host, argstring)
 
     cmd = ('%s %s -s "CVS errors in %s for %s" %s'
            % (MAIL_CMD, ((VERBOSE and "-v") or ""), SCRIPT, user, CVSMASTER))
