@@ -16,7 +16,8 @@ Each entry is a tuple containing:
 
     'host'
     'acct' - the pserver acct that will get access
-    'repodir' - the repository directory to which syncs should be done
+    'repodir' - the repository directory to which syncs should be done. '%s'
+                will be substituted with the entry's name, convenient for:
 
    It's generally convenient to have a module variable, eg "MIRROR",
    for the default host used in most entries.
@@ -31,7 +32,7 @@ MIRROR = {'host': "www.zope.org",
 
 MIRROR = {'host': "www.zope.org",
           'acct': "anonymous",
-          'repodir': "/cvs-repository"}
+          'repodir': "/cvs-repository/%s"}
 
 table = [
     ("test", "^test", ["klm@digicool.com"], MIRROR),
