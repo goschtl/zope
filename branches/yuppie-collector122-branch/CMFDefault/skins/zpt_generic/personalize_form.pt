@@ -27,8 +27,10 @@
    <span tal:replace="request/msg"
          tal:condition="request/msg|nothing" />
 
-   <p i18n:translate=""><a href="password_form">Click here</a> to change your
-     password.</p>
+   <p i18n:translate="">
+     <span i18n:name="link"><a href="password_form"
+                               i18n:translate="">Click here</a></span>
+     to change your password.</p>
 
    <form action="personalize" method="post"
          tal:attributes="action string:${purl}/personalize"
