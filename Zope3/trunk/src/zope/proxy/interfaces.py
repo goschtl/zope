@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: interfaces.py,v 1.4 2003/05/28 17:19:23 jim Exp $
+$Id: interfaces.py,v 1.5 2003/05/28 22:15:27 jim Exp $
 """
 
 from zope.interface import Interface
@@ -28,6 +28,10 @@ class IProxyIntrospection(Interface):
 
         If proxytype is not None, checkes whether the object is
         proxied by the given proxytype.
+        """
+
+    def sameProxiedObjects(ob1, ob2):
+        """Check whether ob1 and ob2 are the same or proxies of the same object
         """
 
     def getProxiedObject(obj):

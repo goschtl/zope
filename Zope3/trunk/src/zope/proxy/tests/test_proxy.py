@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.10 2003/05/28 17:19:23 jim Exp $
+$Id: test_proxy.py,v 1.11 2003/05/28 22:15:27 jim Exp $
 """
 import pickle
 import unittest
@@ -468,6 +468,39 @@ def test_queryInnerProxy():
     >>> int(queryInnerProxy(p3, P2) is p2)
     1
     
+    """
+
+def test_sameProxiedObjects():
+    """
+    >>> from zope.proxy import ProxyBase, sameProxiedObjects
+    >>> class C:
+    ...     pass
+    >>> c1 = C()
+    >>> c2 = C()
+    >>> int(sameProxiedObjects(c1, c1))
+    1
+    >>> int(sameProxiedObjects(ProxyBase(c1), c1))
+    1
+    >>> int(sameProxiedObjects(ProxyBase(c1), ProxyBase(c1)))
+    1
+    >>> int(sameProxiedObjects(ProxyBase(ProxyBase(c1)), c1))
+    1
+    >>> int(sameProxiedObjects(c1, ProxyBase(c1)))
+    1
+    >>> int(sameProxiedObjects(c1, ProxyBase(ProxyBase(c1))))
+    1
+    >>> int(sameProxiedObjects(c1, c2))
+    0
+    >>> int(sameProxiedObjects(ProxyBase(c1), c2))
+    0
+    >>> int(sameProxiedObjects(ProxyBase(c1), ProxyBase(c2)))
+    0
+    >>> int(sameProxiedObjects(ProxyBase(ProxyBase(c1)), c2))
+    0
+    >>> int(sameProxiedObjects(c1, ProxyBase(c2)))
+    0
+    >>> int(sameProxiedObjects(c1, ProxyBase(ProxyBase(c2))))
+    0
     """
 
 

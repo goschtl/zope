@@ -787,6 +787,34 @@ wrapper_removeAllProxies(PyObject *unused, PyObject *obj)
 }
 
 static char
+sameProxiedObjects__doc__[] = 
+"Check whether two objects are the same or proxies of the same object";
+
+static PyObject *
+wrapper_sameProxiedObjects(PyObject *unused, PyObject *args)
+{
+  PyObject *ob1, *ob2;
+
+  if (! PyArg_ParseTuple(args, "OO:sameProxiedObjects", &ob1, &ob2))
+    return NULL;
+
+  while (ob1 && Proxy_Check(ob1)) 
+    ob1 = Proxy_GET_OBJECT(ob1);
+
+  while (ob2 && Proxy_Check(ob2)) 
+    ob2 = Proxy_GET_OBJECT(ob2);
+
+  if (ob1 == ob2)
+    ob1 = Py_True;
+  else
+    ob1 = Py_False;
+
+  Py_INCREF(ob1);
+  return ob1;
+}
+
+
+static char
 queryProxy__doc__[] =
 "Look for a proxy of the given type around the object\n"
 "\n"
@@ -854,6 +882,8 @@ static PyMethodDef
 module_functions[] = {
     {"getProxiedObject", wrapper_getobject, METH_O, getobject__doc__},
     {"isProxy", wrapper_isProxy, METH_VARARGS, isProxy__doc__},
+    {"sameProxiedObjects", wrapper_sameProxiedObjects, METH_VARARGS, 
+     sameProxiedObjects__doc__},
     {"queryProxy", wrapper_queryProxy, METH_VARARGS, queryProxy__doc__},
     {"queryInnerProxy", wrapper_queryInnerProxy, METH_VARARGS, 
      queryInnerProxy__doc__},
