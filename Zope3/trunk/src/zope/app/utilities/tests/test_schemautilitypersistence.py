@@ -13,12 +13,12 @@
 ##############################################################################
 """Tests for Schema Utility Persistence
 
-$Id: test_schemautilitypersistence.py,v 1.4 2004/02/20 16:57:33 fdrake Exp $
+$Id: test_schemautilitypersistence.py,v 1.5 2004/03/03 12:18:52 jim Exp $
 """
 
 import unittest
 
-from persistent.tests.test_persistent import PersistentTest, DM
+from persistent.tests.persistenttestbase import PersistentTest, DM
 from zope.app.utilities.wrapper import Struct
 from zope.app.utilities.schema import SchemaUtility
 from zope.schema import Text, getFieldsInOrder
