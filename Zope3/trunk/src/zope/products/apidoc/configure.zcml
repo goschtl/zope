@@ -19,5 +19,6 @@
   <include package=".utilitymodule" />
   <include package=".viewmodule" />
   <include package=".zcmlmodule" />
+  <!--include package=".cookbookmodule" /-->
 
 </configure>
