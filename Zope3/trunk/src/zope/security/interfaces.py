@@ -275,7 +275,7 @@ class IGroupAwarePrincipal(IPrincipal):
     
     groups = List(
         title=_("Groups"),
-        description=_("List of groups the principal belongs to"),
+        description=_("List of ids of groups the principal belongs to"),
         value_type=TextLine(),
         required=False)
 
@@ -297,30 +297,6 @@ class IPermission(Interface):
     description = Text(
         title=_("Description"),
         description=_("Provides a description for the permission."),
-        required=False)
-        
-class IGroup(IPrincipal):
-    
-    id = TextLine(
-        title=_("Id"),
-        description=_("Id as which this group will be known and used."),
-        readonly=True,
-        required=True)
-
-    title = TextLine(
-        title=_("Title"),
-        description=_("Provides a title for the group."),
-        required=True)
-
-    description = Text(
-        title=_("Description"),
-        description=_("Provides a description for the group."),
-        required=False)
-
-    principals = List(
-        title=_("Principals"),
-        value_type=TextLine(),
-        description=_("List of principals which belong to the group"),
         required=False)
 
 
