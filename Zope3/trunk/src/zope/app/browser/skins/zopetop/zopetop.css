@@ -14,7 +14,7 @@
 
  These are the basic CSS declarations.
 
- $Id: zopetop.css,v 1.2 2003/08/16 00:43:07 srichter Exp $
+ $Id: zopetop.css,v 1.3 2003/08/19 11:43:37 sidnei Exp $
 */
 
 div.label {
@@ -23,6 +23,10 @@ div.label {
 
 div.field {
   margin: 4px 0;
+}
+
+div.required:after{
+   content: " *";
 }
 
 body {
@@ -187,7 +191,6 @@ select {
 abbr, acronym, .explain {
 /* Help classes */
     border-bottom: 1px dotted Black;
-    color: Black;
     background-color: transparent;
     cursor: help;
 }
