@@ -15,7 +15,7 @@
 """Script to determine the dependencies of a package or module
 
 This script walks through the modules of a package or only observes a
-file-based module to determine its dependencies. 
+file-based module to determine its dependencies.
 
 Usage: finddeps.py [options]
 Options:
@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.5 2004/03/11 17:17:07 fdrake Exp $
+$Id: finddeps.py,v 1.6 2004/03/11 17:19:08 fdrake Exp $
 """
 import sys
 import getopt
@@ -62,7 +62,7 @@ class Dependency(object):
 
     def __init__(self, path, file, lineno):
         self.path = path
-        self.occurences = [(file, lineno)] 
+        self.occurences = [(file, lineno)]
 
     def addOccurence(self, file, lineno):
         """Add occurenace of the dependency in the code."""
@@ -83,7 +83,7 @@ class Dependency(object):
     def __cmp__(self, other):
         """Compare dependecies by path."""
         return cmp(self.path, other.path)
-    
+
 
 def usage(code, msg=''):
     """Display help."""
@@ -104,7 +104,7 @@ def makePythonPath(path):
             return dottedPath
 
     raise ValueError, 'Cannot create dotted path.'
-    
+
 
 def getDependenciesOfPythonFile(path):
     """Look through a file for dependencies."""
@@ -130,11 +130,12 @@ def getDependenciesOfZCMLFile(path):
             match[0] = match[0][1:-1]
             match.append('.'.join(match[0].split('.')[:-1]))
 
-            # zope and zope.app shoudl never be dependencies; they are too general
+            # zope and zope.app should never be dependencies; they are
+            # too general
             if 'zope' in match:
                 match.remove('zope')
             if 'zope.app' in match:
-                match.remove('zope.app')                
+                match.remove('zope.app')
 
             for name in match:
                 if name.startswith('.'):
@@ -143,7 +144,7 @@ def getDependenciesOfZCMLFile(path):
                     __import__(name)
                 except:
                     continue
-                deps.append(Dependency(name, path, lineno)) 
+                deps.append(Dependency(name, path, lineno))
     return deps
 
 
@@ -154,7 +155,7 @@ def filterStandardModules(deps):
     basically containers.
     """
     filteredDeps = []
-    for dep in deps:    
+    for dep in deps:
         try:
             module = __import__(dep.path)
         except ImportError:
@@ -179,7 +180,8 @@ def filterLocalModules(deps, path):
     for dep in deps:
         module = dep.path.split('.')[0]
         modulePath = os.path.join(path, module)
-        if not (os.path.exists(modulePath) or os.path.exists(modulePath+'.py')):
+        if not (os.path.exists(modulePath)
+                or os.path.exists(modulePath+'.py')):
             filteredDeps.append(dep)
     deps = filteredDeps
 
@@ -261,7 +263,7 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
     # zope and zope/app are too general to be considered.
     if path.endswith('src/zope/') or path.endswith('src/zope/app/'):
         return deps
-    
+
     if deps is None:
         deps = []
         paths = []
