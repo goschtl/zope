@@ -7,8 +7,7 @@
 
 <form action="action.html">
 <input name="name">
-<textarea name="source" cols="65" rows="25">  
-</textarea>
+<textarea name="source:text" cols="65" rows="25"></textarea>
 <input type="submit" value="Add module"/>
 </form>
 

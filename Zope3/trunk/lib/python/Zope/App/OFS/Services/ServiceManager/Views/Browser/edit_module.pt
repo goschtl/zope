@@ -8,8 +8,9 @@
 <form action="edit.html">
 <span tal:replace="view/update"></span>
 <p>Module: <span tal:content="context/name">Module Name</span></p>
-<textarea name="source" cols="65" rows="25" tal:content="context/source">  
-</textarea>
+<textarea name="source:text" cols="65" rows="25"
+          tal:content="context/source"
+></textarea>
 <input type="submit" value="Edit"/>
 </form>
 
