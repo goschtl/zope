@@ -11,6 +11,10 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - TypeInformation: Simplified Method Aliases API.
+      The new queryMethodID() replaces getMethodPath() and getMethodURL().
+      Aliases for method paths are no longer supported.
+
     - FSFile: Allow setting a content_type value using a .metadata file
       (http://www.zope.org/Collectors/CMF/281)
 
@@ -30,7 +34,7 @@ CMF 1.5.0beta2 (unreleased)
     - DiscussionItem: Made sure that the workflow is notified of their
       creation (Issue #280).
 
-    - http://www.zope.org/Collectors/cmf/205: When pasting a content item,
+    - http://www.zope.org/Collectors/CMF/205: When pasting a content item,
       local roles were not changed to reflect the neew ownership.
 
     - ZPT skin: Added missing RSS script and template.
@@ -52,11 +56,10 @@ CMF 1.5.0beta2 (unreleased)
       once defined there. Note that importing expandpath from DirectoryView is
       deprecated and doesn't work with CMF HEAD / 1.6.
 
-    - RegistrationTool: An optional password can now be passed to 
+    - RegistrationTool: An optional password can now be passed to
       registeredNotify() (Issue #277).
-      
+
     - Tool icons can now reside in subdirectories (Issue #144).
-    
 
 CMF 1.5.0beta (2004/08/12)
 
