@@ -119,7 +119,7 @@ class HTTPAuthenticationLogout(object):
     redirect = ViewPageTemplateFile('redirect.pt')
 
 
-class LoginLogout:
+class LoginLogout(object):
 
     def __init__(self, context, request):
         self.context = context
@@ -132,5 +132,6 @@ class LoginLogout:
         else:
             page = '@@logout.html'
             label = _('[Logout]')
-        return '<a href="%s?nextURL=%s">%s</a>' % (
-            page, urllib.quote(self.request.getURL()), label)
+        return u'<a href="%s?nextURL=%s">%s</a>' % (
+            page, urllib.quote(self.request.getURL()),
+            translate(label, context=self.request))
