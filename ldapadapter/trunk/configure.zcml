@@ -28,11 +28,17 @@
 
   </content>
 
+  <vocabulary
+      name="LDAP Adapter Names"
+      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      interface="ldapadapter.interfaces.ILDAPAdapter"
+      nameOnly="True" />
+
   <!-- LDAP connection test adapter -->
   <adapter
       factory="ldapadapter.check.CheckLDAPAdapter"
       provides="ldapadapter.interfaces.ICheckLDAPAdapter"
-      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      for="ldapadapter.interfaces.ILDAPAdapter"
       />
 
   <include package=".browser" />

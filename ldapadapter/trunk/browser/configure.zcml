@@ -5,7 +5,7 @@
 
     <!-- LDAPAdapter -->
     <tool
-        interface="ldapadapter.interfaces.IManageableLDAPAdapter"
+        interface="ldapadapter.interfaces.ILDAPAdapter"
         title="LDAP Adapter"
         description="A LDAP adapter."
         />
