@@ -462,6 +462,9 @@ Zope Changes
       not included anywhere anyways, so that this should not pose a
       problem. Removed all fixup code as well. 
 
+    - Renamed __implements__ in zope.interface to __implemented__ to
+      make Zope 3 code interoperate with Zope 2 code.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Jeremy Hylton, Fred Drake, Sidnei da Silva,
