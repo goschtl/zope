@@ -1,28 +1,50 @@
 Five Changes
 ============
 
-After 0.1
----------
+Five 0.2 (in development)
+-------------------------
 
-- five:viewable has changed to five:traversable
-- __bobo_traverse__ now uses an ITraverser adapter
-- five monkeypatched methods now have a __five_method__ attribute,
-  making it easier to not stomp on existing methods
-- five:viewable now acts on __browser_default__. by default, it tries
-  to return the browser:defaultView configured for an object. This is
-  hookable by the use of a IBrowserDefault adapter
-- registered absolute_url view and IAbsoluteURL adapter for *
-- by default, OFS.SimpleItem.Item and OFS.ObjectManager.Manager are
-  five:traversable
-- zope.app.traversing is registered by default, to make special
+* five:viewable was renamed to five:traversable, five:viewable still
+  works but is deprecated; a deprecation warning is emitted when it is
+  used.
+
+* like in Zope3, an ITraverser adapter is looked up to determine what
+  happens when traversing into a Five traversable object.
+
+* added five:defaultViewable to make instances of a class directly
+  viewable using browser:defaultView. This is hookable by the use of a
+  IBrowserDefault adapter
+
+* deprecated use of Products.Five.api as public API for other products
+  to use, instead import directly from Products.Five. Retired
+  Traversable and Viewable from the public API; use ZCML directives
+  (five:traversable, five:defaultView) instead of mixins to make
+  instances of classes work with Five.
+
+* classes that Five monkeypatches now have a __five_method__
+  attribute, making it easier for Five not to stomp on existing methods.
+
+* registered absolute_url view and IAbsoluteURL adapter for *
+
+* by default, OFS.SimpleItem.Item and OFS.ObjectManager.Manager are
+  five:traversable. XXX should we do this by default? Could lead to
+  compatibility issues.
+
+* zope.app.traversing is registered by default, to make special
   namespaces available (eg: @@, ++resource++)
-- we now have resources (FileResource, ImageResource,
+
+* we now have resources (FileResource, ImageResource,
   PageTemplateResource) and directory resources.
-- backported the 'StandardMacros' thing from zope 3
-- browser:page now correctly handles the allow_attributes and protects
+
+* Zope 3 'StandardMacros' now works with Five as well.
+
+* browser:page now correctly handles the allow_attributes and protects
   the named attributes on the view with the same permission used for
-  the view (this sounds a bit strange, doesn't it?)
-- zopeconf.py will try to find etc/zope.conf on INSTANCE_HOME
+  the view.
+
+* zopeconf.py will try to find etc/zope.conf on INSTANCE_HOME. This
+  requires Zope 2.7.2, as earlier Zope versions have a bug in this
+  area which causes them to look in lib/python/Testing.
 
 Five 0.1
 --------
