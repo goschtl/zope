@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.10 2003/08/04 17:17:20 philikon Exp $
+$Id: fields.py,v 1.11 2003/08/05 11:59:13 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -366,7 +366,7 @@ class MessageID(schema.Text):
         if strings is None:
             strings = i18n_strings[domain] = {}
         locations = strings.setdefault(v, [])
-        locations.append(`context.info`)
+        locations.append((context.info.file, context.info.line))
 
         # Convert to a message id, importing the factory, if necessary
         factory = self.__factories.get(domain)
