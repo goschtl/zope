@@ -22,7 +22,7 @@
       name="index.html"
       schema="..interfaces.IDemoTextWidget"
       label="TextWidget Index"
-      permission="zope.ManageServices"
+      permission="zope.View"
       menu="zmi_views" title="View"
       />
 
