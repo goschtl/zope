@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ServiceDirective.py,v 1.2 2002/07/16 23:41:16 jim Exp $
+$Id: ServiceDirective.py,v 1.3 2002/07/18 15:08:08 jeremy Exp $
 """
 
 __metaclass__ = type
@@ -65,6 +65,7 @@ class ServiceDirective(Persistent):
 
             if self.permission:
                 if type(service) is Proxy:
+                    # XXX what is this?
                     service = removeSecurityProxy(service)
 
                 interface = service_manager.getInterfaceFor(self.service_type)
