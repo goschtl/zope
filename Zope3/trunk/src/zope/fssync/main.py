@@ -29,7 +29,7 @@ fssync [global_options] checkin [local_options] URL [TARGETDIR]
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.19 2003/06/11 15:50:55 gvanrossum Exp $
+$Id: main.py,v 1.20 2003/06/30 19:03:58 fdrake Exp $
 """
 
 import os
@@ -40,8 +40,8 @@ from os.path import dirname, join, realpath
 
 # Find the zope root directory.
 # XXX This assumes this script is <root>/src/zope/fssync/main.py
-scriptfile = sys.argv[0]
-scriptdir = realpath(dirname(scriptfile))
+scriptfile = realpath(sys.argv[0])
+scriptdir = dirname(scriptfile)
 rootdir = dirname(dirname(dirname(scriptdir)))
 
 # Hack to fix the module search path
