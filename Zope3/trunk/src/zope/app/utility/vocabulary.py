@@ -180,6 +180,7 @@ class UtilityVocabulary(object):
             nameOnly = True
         if isinstance(interface, (str, unicode)):
             interface = zapi.getUtility(IInterface, interface)
+        self.interface = interface
         utils = zapi.getUtilitiesFor(interface, context)
         self._terms = dict([(name, UtilityTerm(nameOnly and name or util, name))
                             for name, util in utils])
