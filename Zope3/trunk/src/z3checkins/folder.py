@@ -6,6 +6,7 @@ Checkin message folder handling.
 $Id$
 """
 
+from persistent.list import PersistentList
 from zope.interface import implements
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.interfaces import INameChooser
@@ -18,7 +19,8 @@ class CheckinFolder(BTreeContainer):
     """A message folder.
 
     The attribute `messages` is a list of Messages sorted by date in
-    reverse order.  It was introduced for performance reasons.
+    reverse order (that is, latest messages first).  It was introduced for
+    performance reasons.
     """
 
     implements(ICheckinFolder, IContainerNamesContainer)
@@ -29,10 +31,9 @@ class CheckinFolder(BTreeContainer):
 
     def __init__(self):
         BTreeContainer.__init__(self)
-        self.messages = []
+        self.messages = PersistentList()
 
     def __setitem__(self, key, message):
-        if not hasattr(self, 'messages'): self.rebuildIndex() # BBB 2005-01-05
         BTreeContainer.__setitem__(self, key, message)
         if IMessage.providedBy(message):
             for ind, oldmsg in enumerate(self.messages):
@@ -57,12 +58,14 @@ class CheckinFolder(BTreeContainer):
         This method is for backwards compatibility, so that data does
         not need to be reimported into existing z3checkins instances.
         """
-        # BBB 2004-01-05
+        # BBB 2005-01-05
         BTreeContainer.__setstate__(self, state)
         if not hasattr(self, 'messages'):
             self.messages = [msg for msg in self.values()
                              if IMessage.providedBy(msg)]
             self.messages.sort(lambda msg1, msg2: cmp(msg2.date, msg1.date))
+        if not isinstance(self.messages, PersistentList):
+            self.messages = PersistentList(self.messages)
 
 
 class MessageNameChooser:

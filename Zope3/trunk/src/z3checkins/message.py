@@ -1,5 +1,5 @@
 """
-Python code for z3checkins product.
+The z3checkins product.
 
 # This module could be split into three: timeutils.py, message.py and views.py
 # but it is small enough IMHO.
@@ -16,23 +16,22 @@ from StringIO import StringIO
 from datetime import datetime, tzinfo, timedelta
 
 from persistent import Persistent
+from zope.app.container.contained import Contained
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import FileWidget
-from zope.app.container.interfaces import IReadContainer
 from zope.app.datetimeutils import parseDatetimetz, DateTimeError
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.component import getUtility
-from zope.component import getView
+from zope.component import getUtility, getView
 from zope.exceptions import DuplicationError
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.app.publisher.browser import BrowserView
 
-from interfaces import IMessage, ICheckinMessage, IMessageContained
-from interfaces import IMessageUpload, IBookmark
-from interfaces import IMessageParser, IMessageArchive
-from interfaces import FormatError
+from z3checkins.interfaces import IMessage, ICheckinMessage, IMessageContained
+from z3checkins.interfaces import IMessageUpload, IBookmark
+from z3checkins.interfaces import IMessageParser, IMessageArchive
+from z3checkins.interfaces import FormatError
 
 __metaclass__ = type
 
@@ -44,7 +43,7 @@ class FixedTimezone(tzinfo):
     """Timezone with a fixed UTC offset"""
 
     def __init__(self, offset=None):
-        """Creates a timezone with a given UTC offset (minutes east of UTC)."""
+        """Create a timezone with a given UTC offset (minutes east of UTC)."""
         self._offset = offset
 
     def tzname(self, dt):
@@ -71,7 +70,7 @@ class RFCDateTimeFormatter:
         self.request = request
 
     def __str__(self):
-        """Renders datetime objects in RFC822 format."""
+        """Render datetime objects in RFC822 format."""
         return self.context.strftime("%a, %d %b %Y %H:%M:%S %z")
 
     __call__ = __str__
@@ -90,8 +89,10 @@ class ISODateTimeFormatter:
         self.request = request
 
     def __str__(self):
-        """Renders datetime objects as "YYYY-MM-DD hh:mm" in the local time
-        zone."""
+        """Render datetime objects as "YYYY-MM-DD hh:mm".
+
+        The result is rendered in the local time zone.
+        """
         return self.context.astimezone(self.userstz).strftime("%Y-%m-%d %H:%M")
 
     __call__ = __str__
@@ -116,12 +117,10 @@ def find_body_start(full_text):
     return min(pos1, pos2)
 
 
-class Message(Persistent):
+class Message(Persistent, Contained):
     """Persistent email message."""
 
     implements(IMessage, IMessageContained)
-
-    __parent__ = __name__ = None
 
     def __init__(self, message_id=None, author_name=None,
                  author_email=None, subject=None, date=None,
@@ -174,7 +173,6 @@ class CheckinMessageParser:
 
     def parse(self, input):
         """See IMessageParser."""
-
         if not hasattr(input, 'readline'):
             full_text = str(input)
         elif hasattr(input, 'seek') and hasattr(input, 'tell'):
@@ -189,7 +187,7 @@ class CheckinMessageParser:
         message_id = m.get('Message-Id', None)
         if message_id is None:
             raise FormatError("Message does not have a message id")
-        if message_id[0] == "<" and message_id[-1] == ">":
+        if message_id.startswith("<") and message_id.endswith(">"):
             message_id = message_id[1:-1] # strip angle brackets
         author = m.get('From', '')
         author_name, author_email = email.Utils.parseaddr(author)
@@ -230,7 +228,6 @@ class CheckinMessageParser:
         Returns a tuple (directory, log_message, branch) for checkin
         messages, and None if the message is not a checkin message.
         """
-
         if subject.startswith("Re:"):
             return None
 
