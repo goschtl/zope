@@ -16,7 +16,7 @@
 This dispatcher supports a 'named command' dispatch similar to that
 found in the standard CVS and Subversion client applications.
 
-$Id: command.py,v 1.3 2003/08/12 16:58:24 fdrake Exp $
+$Id: command.py,v 1.4 2003/08/12 17:12:50 fdrake Exp $
 """
 
 import getopt
@@ -62,7 +62,7 @@ class Command:
         short, long, func = self.command_table["help"]
         for alias in ("h", "?"):
             if alias not in self.command_table:
-                self.addCommand(alias, func, short, long)
+                self.addCommand(alias, func, short, " ".join(long))
         if args is None:
             args = sys.argv[1:]
         self.global_options, args = self.getopt("global",
@@ -100,6 +100,12 @@ class Command:
         print >>file, text % {"program": self.program}
 
     def help(self, opts, args):
+        """%(program)s help [COMMAND ...]
+
+        Display help text.  If COMMAND is specified, help text about
+        each named command is displayed, otherwise general help about
+        using %(program)s is shown.
+        """
         if not args:
             self.usage(sys.stdout, self.helptext)
         else:
