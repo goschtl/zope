@@ -1,0 +1,48 @@
+<html metal:use-macro="views/standard_macros/page">
+  <metal:block fill-slot="itemHelpTitle">
+    ServiceManager
+  </metal:block>
+  <metal:block fill-slot="itemHelp">
+    To configure a service, add a service component to a <em>package</em>
+    in <a href="Packages">Packages</a> or to the <a
+    href="Packages/default">default package</a>. After the component is
+    added, add a service configuration that configures the component to
+    provide a service.
+  </metal:block>
+
+  <body 
+    metal:fill-slot="body" 
+    tal:define="services view/update">
+
+  <h2>Services configured in this service manager.</h2>
+  <p tal:condition="not:services">
+    No services have been configured
+  </p>
+
+  <div tal:condition="services">
+    <form action="." method="post"
+      tal:attributes="action request/URL">
+
+      <table width="100%">
+        <tr tal:repeat="service services">
+          <td valign="top" align="right">
+            <a href="Roles"
+              tal:content="service/name"
+              tal:attributes="href service/name"
+              tal:condition="service/active">
+              Roles
+            </a>
+            <span 
+              tal:replace="service/name" 
+              tal:condition="service/inactive" />
+          </td>
+          <td tal:content="structure service/view">
+          </td>
+        </tr>
+      </table>
+
+      <input type=submit name="submit_update" value="Update"><br>
+    </form>
+  </div>
+</body>
+</html>

@@ -68,10 +68,11 @@
 
 <!-- Introspection -->
 
-  <browser:defaultView
+  <!-- XXX wrong perm  -->
+  <browser:view
       name="classBrowser.html"
       for = "zope.interface.Interface"
-      permission="zope.View"
+      permission="zope.View" 
       template="introspector.pt"
       factory="zope.app.browser.introspector.IntrospectorView"
       />

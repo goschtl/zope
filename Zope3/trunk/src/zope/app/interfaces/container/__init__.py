@@ -4,6 +4,7 @@
 
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IView
+from zope.interface.common.mapping import IItemMapping
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
 
 class DuplicateIDError(KeyError):
@@ -26,13 +27,9 @@ class UnaddableError(ContainerError):
                 "to %(container)s%(message)s" % self.__dict__)
 
 
-class IItemContainer(Interface):
-
-    def __getitem__(key):
-        """Return the content for the given key.
-
-        Raises KeyError if the content can't be found.
-        """
+class IItemContainer(IItemMapping):
+    """Minimal readable container
+    """
 
 class ISimpleReadContainer(IItemContainer, IReadMapping):
     """Readable content containers

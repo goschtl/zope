@@ -9,9 +9,9 @@
       name="standard_macros"
       permission="zope.View"
       factory="zope.app.browser.skins.zopetop.standardmacros.StandardMacros"
-      allowed_interface=
-      "zope.app.browser.skins.basic.standardmacros.IStandardMacros"
-      layer="templates" />
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      layer="templates" 
+      />
 
   <browser:view name="view_macros"
                 permission="zope.View"

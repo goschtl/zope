@@ -8,7 +8,7 @@
   <browser:view name="standard_macros"
                 permission="zope.View"
                 factory=".standardmacros.StandardMacros" 
-                allowed_interface=".standardmacros.IStandardMacros"
+                allowed_interface="zope.interface.common.mapping.IItemMapping"
                 />
 
   <browser:view name="view_macros"

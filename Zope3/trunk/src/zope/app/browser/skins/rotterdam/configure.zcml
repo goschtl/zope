@@ -1,0 +1,93 @@
+<zopeConfigure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<browser:skin
+    name="Rotterdam" layers="rotterdam default" />
+
+<browser:resource 
+    name="zope3.css" file="zope3.css" layer="rotterdam" />
+
+<browser:resource 
+    name="xmltree.js" file="xmltree.js" layer="rotterdam" />
+
+<browser:resource
+    name="logo.gif" file="logo.gif" layer="rotterdam" />
+
+<browser:resource 
+    name="pl.gif" file="pl.gif" layer="rotterdam" />
+
+<browser:resource 
+    name="mi.gif" file="mi.gif" layer="rotterdam" />
+
+<browser:view 
+    for="zope.app.interfaces.services.service.IServiceManager"
+    name="index.html"
+    template="service_manager.pt"
+    class="zope.app.browser.services.namecomponentconfigurableview.NameComponentConfigurableView"
+    permission="zope.ManageServices" 
+    layer="rotterdam" 
+    />
+
+<browser:view
+    for="zope.app.interfaces.container.IReadContainer"
+    permission="zope.View"
+    factory=".xmlobject.XmlObjectView">
+  <browser:page name="children.xml" attribute="children" />
+  <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
+</browser:view>
+
+<!-- below overrides the standard_macros by Rotterdam Skin -->
+<browser:view
+    name="standard_macros"
+    permission="zope.View"
+    factory=".standardmacros.StandardMacros"
+    layer="rotterdam"
+    allowed_interface="zope.interface.common.mapping.IItemMapping" 
+    />
+
+<browser:view 
+    name="skin_macros"
+    permission="zope.View"
+    layer="rotterdam"
+    template="template.pt" />
+
+<browser:view 
+    name="view_macros"
+    permission="zope.View"
+    layer="rotterdam"
+    template="view_macros.pt" />
+
+<browser:view
+    name="dialog_macros"
+    permission="zope.View"
+    layer="rotterdam"
+    template="dialog_macros.pt" />
+
+<browser:view
+    for="zope.app.interfaces.container.IContentContainer"
+    name="+"
+    factory="zope.app.browser.container.adding.Adding"
+    permission="zope.ManageContent"
+    layer="rotterdam"
+    allowed_attributes="addingInfo"
+    >
+
+    <browser:page name="index.html"  template="add.pt" />
+    <browser:page name="action.html" attribute="action" />
+</browser:view>
+
+<browser:view
+    for="zope.app.interfaces.content.folder.IFolder"
+    permission="zope.ManageContent"
+    layer="rotterdam"
+    factory="zope.app.browser.container.contents.Contents">
+
+  <browser:page name="contents.html"
+                 attribute="contents" template="folder_contents.pt" />
+
+</browser:view>
+
+
+</zopeConfigure>

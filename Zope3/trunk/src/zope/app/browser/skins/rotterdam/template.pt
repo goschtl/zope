@@ -1,0 +1,247 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xml:lang="en"
+  lang="en" >
+
+  <head>
+
+    <title metal:define-slot="title">Z3 UI</title>
+
+    <style type="text/css" 
+           media="all"
+           tal:content="string: @import url(${context/++resource++zope3.css});">
+      @import url(zope3.css);
+    </style>
+
+    <metal:block define-slot="style_slot" />
+    <metal:block define-slot="ecmascript_slot" />
+
+    <script type="text/javascript" src="xmltree.js" 
+            tal:attributes="src string:${context/++resource++xmltree.js}"></script>
+  </head>
+
+  <body onload="loadtree('');"
+    tal:attributes="onload string:loadtree('${request/URL/1}/', '${request/URL/-1}/');" >
+
+    <div id="global">
+      Global elements
+    </div>
+
+    <div id="personal">
+
+      <metal:block define-macro="logged_user">
+        User:
+        <tal:block replace="request/user/getTitle">
+          User
+        </tal:block>
+      </metal:block>
+
+      (Personal elements)
+
+    </div>
+
+    <div id="breadcrumbs"
+         metal:define-macro="breadcrumbs"> Location:&nbsp;<tal:block repeat="breadcrumb context/@@absolute_url/breadcrumbs"><a href=""
+          tal:condition="repeat/breadcrumb/start"
+          tal:content="string:[top]"
+          tal:attributes="href string:${breadcrumb/url}/@@SelectedManagementView.html">XXX should not hardcode root folder name string</a><a href=""
+           tal:condition="not:repeat/breadcrumb/start"
+           tal:content="string:${breadcrumb/name}"
+           tal:attributes="
+           href string:${breadcrumb/url}/@@SelectedManagementView.html">breadcrumb item</a>/</tal:block></div>
+
+
+    <div id="navigators">
+
+      <div class="box" id="navigationTree">
+
+        <h3>Navigation</h3>
+
+        <div 
+          xmlns="http://www.zope.org/zope3xmltree"
+          id="navtreecontents" 
+          class="body" 
+          onclick="treeclicked(event);" 
+          onmouseover="mouseOverTree(event);"
+          onmouseout="mouseOutTree(event);"
+          >
+        </div>
+
+      </div>
+
+
+      <div class="box" id="commonTasks">
+
+        <h3>Common Tasks</h3>
+
+        <div class="body">
+
+          <div class="content odd">
+            testing testing
+          </div>
+
+          <metal:block define-slot="commonTasks">
+
+          </metal:block>
+
+          <div class="content even">
+
+            and some more
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div id="content">
+
+      <div class="itemViews"
+           metal:define-macro="zmi_tabs">
+
+        <tal:block repeat="view context/@@view_get_menu/zmi_views">
+
+          <a href="" 
+            tal:attributes="href view/action;
+                            class view/selected;" 
+            tal:content="view/title">
+
+            label
+
+          </a>
+
+        </tal:block>
+
+      </div>
+
+
+      <div class="itemViewsBar">
+      &nbsp;
+      </div>
+
+      <div class="item">
+
+      <metal:block define-slot="body">
+
+          <table class="listing">
+
+            <thead>
+
+              <th>Test</th>
+              <th>Another</th>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr>
+
+                <td>content</td>
+                <td>thingy</td>
+
+              </tr>
+
+
+              <tr class="even">
+
+                <td>more</td>
+                <td>data</td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+      </metal:block>
+
+      </div>
+
+
+      <div id="messages">
+
+        Status and error messages
+
+        <div id="logger"></div>
+
+      </div>
+
+    </div>
+
+
+    <div id="context_information">
+
+    <div id="helpers">
+
+      <div class="box" id="itemHelp">
+
+        <h3>
+
+          <metal:block define-slot="itemHelpTitle">
+            item help
+          </metal:block>
+
+        </h3>
+
+        <div class="body">
+
+          <div class="content odd">
+
+            <metal:block define-slot="itemHelp">
+              Lorem ipsum dolor sit amet, consec tetuer adipiscing elit, sed
+              diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat.
+            </metal:block>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div id="inspectors">
+
+      <div class="box" id="metadata">
+
+        <h3>Metadata</h3>
+
+        <div class="body">
+
+          <div class="content odd">
+            testing testing
+          </div>
+
+          <div class="content even">
+            and some more
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    </div>
+
+
+    <div id="footer"
+      metal:define-macro="footer">
+      Powered by Zope
+    </div>
+
+
+  </body>
+
+</html>
+
+</metal:block>
+

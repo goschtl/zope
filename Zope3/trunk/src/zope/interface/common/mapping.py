@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: mapping.py,v 1.2 2002/12/25 14:15:11 jim Exp $
+$Id: mapping.py,v 1.3 2002/12/26 20:20:49 jim Exp $
 """
 
 from zope.interface import Interface
 
-class IReadMapping(Interface):
-    """Basic mapping interface
+class IItemMapping(Interface):
+    """Simplest readable mapping object
     """
 
     def __getitem__(key):
@@ -26,6 +26,10 @@ class IReadMapping(Interface):
 
         A KeyError is raised if there is no value for the key.
         """
+
+class IReadMapping(IItemMapping):
+    """Basic mapping interface
+    """
 
     def get(key, default=None):
         """Get a value for a key

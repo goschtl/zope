@@ -1,0 +1,480 @@
+/* 
+** Zope3 style sheet for CSS2-capable browsers.
+**
+*/
+
+/*
+* { border: 1px dotted red }
+*/
+
+
+/* Basic Elements */
+
+body {
+    font: 75% Verdana, Helvetica, Arial, sans-serif;
+    background: White;
+    color: Black;
+    margin: 0;
+    padding: 0;
+/* These work in IE only, changes the look of the scrollbar + textareas */
+    scrollbar-base-color: #DEE7EC;
+    scrollbar-highlight-color: #DEE7EC;
+    scrollbar-track-color: #F7F9FA;
+    scrollbar-darkshadow-color: #F7F9FA;
+    scrollbar-3dlight-color: #8CACBB;
+    scrollbar-shadow-color: #8CACBB;
+    scrollbar-arrow-color: #436976;
+}
+
+table {
+    font-size: 100%;
+}
+
+a, #navtreecontents title {
+	text-decoration: none;
+    color: #436976;
+    background-color: transparent;
+}
+
+table {
+
+}
+
+
+img {
+    border: none;
+	vertical-align: middle;
+}
+
+p {
+    margin: 0.5em 0em 1em 0em;
+    text-align: justify;
+    line-height: 1.5em;
+}
+
+p a {
+    text-decoration: underline;
+}
+
+p a:visited {
+	color: Purple;
+    background-color: transparent;
+}
+
+p a:active {
+	color: Red;
+    background-color: transparent;
+}
+
+p img {
+    border: 0;
+    margin: 0;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #8CACBB;
+    background-color: transparent;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: Black;
+    clear: left;
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-top: 1em;
+    border-bottom: 1px solid #8CACBB;
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h3 {
+    font-size: 140%;
+}
+
+h4 {
+    font-size: 120%;
+}
+
+h5 {
+    font-size: 100%;
+}
+
+h6 {
+    font-size: 80%;
+}
+
+ul { 
+    line-height: 1.5em;
+    list-style-image: url("bullet.gif"); 
+    margin-left: 2em;
+    padding:0;
+}
+
+ol {
+    line-height: 1.5em;
+    margin-left: 2em;
+    padding:0;
+}
+
+ul a, ol a {
+    text-decoration: underline;
+}
+
+dl {
+}
+
+dt {
+    font-weight: bold;    
+}
+
+dd {
+    line-height: 1.5em;
+    margin-bottom: 1em;
+}
+
+
+fieldset {
+    border: 1px solid #8cacbb;
+    margin: 2em 0em 1em 0em;
+    padding: 1em 0em;
+}
+
+legend {
+    background: White;
+    padding: 0.5em;
+}
+
+
+form {
+    border: none;
+    margin: 0;
+}
+
+textarea {
+    border: 1px solid #8cacbb;  
+    color: Black;
+    background-color: white;
+    width: 93%;
+    padding: 0.1em;
+}
+
+input {
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    color: Black;
+    background-color: white;
+    vertical-align: middle;
+    margin-bottom: 1px; /* IE bug fix */
+    padding: 0.1em;
+}
+
+select {
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    vertical-align: top;
+}
+
+abbr, acronym, .explain {
+    border-bottom: 1px dotted Black;
+    color: Black;
+    background-color: transparent;
+    cursor: help;
+}
+
+q {
+    font-family: Times, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 120%;
+}
+
+blockquote {
+    font-family: Times, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 120%;
+}
+
+code {
+    font-size: 120%;
+    color: Black;
+    background-color: #dee7ec;
+}
+
+pre {
+    font-size: 120%;
+    padding: 1em;
+    border: 1px solid #8cacbb;
+    color: Black;
+    background-color: #dee7ec;
+}
+
+.netscape4 {
+    display: none;
+}
+
+
+/*  Styles for xmltree
+*/
+
+#navtreecontents title {
+	   display: inline;
+	   cursor: pointer;
+	   height: 18px;
+		 }
+
+#navtreecontents expand {
+  	   background-repeat: no-repeat;
+  	   padding-left: 15px;
+	   display: inline;
+	   cursor: pointer;
+                }
+                 
+#navtreecontents icon {
+  	   background-repeat: no-repeat;
+  	   padding-left: 18px;
+	   display: inline;
+	   cursor: auto;
+                }
+                 
+#navtreecontents collection {
+	   display: block;
+	   margin-left: 15px;
+/*	   border: red solid 1pt;  */
+	   height: auto;
+}
+
+
+
+/* Structural elements */
+
+
+#global {
+    font-size: 1.2em;
+    border-bottom: 1px solid black;
+}
+
+#personal {
+    border-bottom: 1px solid black;
+    text-align: left;
+}
+
+#breadcrumbs {
+    border-bottom: 1px solid black;
+/*    color: blue; */
+    padding-bottom: 1px;
+    padding-top: 1px;
+}
+
+#navigators {
+    float: left;
+    width: 18%;
+}
+
+#content {
+    float: left;
+    width: 64%;
+}
+
+#helpers {
+    /*float: left;
+    width: 18%;*/
+}
+
+#inspectors {
+    /*float: left;
+    width: 18%;*/
+}
+
+#context_information {
+    float: left;
+    width: 18%;
+}
+
+#footer {
+    border-bottom: 1px solid black;
+    float: none;
+    clear: both;
+}
+
+div.box {
+    background: transparent;
+    border-collapse: collapse;
+    margin: 2em 1em 0em 1em;
+    border: none;
+}
+
+div.box h3 {
+    background: #DEE7EC;
+    border: 1px solid #8CACBB;
+    border-style: solid solid none;
+    color: Black;
+    text-transform: lowercase;
+    margin: 0px;
+    font-weight: normal;
+
+    padding: 0.1em 1em 0.3em 0.5em;
+    height: 1em;
+}
+
+div.box h4 {
+    background: #DEE7EC;
+    border-style: solid solid none;
+    border: 1px solid #8CACBB;
+    color: Black;
+    display: inline;
+    font-size: 1em;
+    font-weight: normal;
+    height: 1em;
+    margin: 0px;
+    padding: 0px 1em;
+    text-transform: lowercase;
+}
+
+div.box div.body {
+    background: transparent;
+    border-collapse: collapse;
+    border: 1px solid #8CACBB;
+    margin: 0;
+    padding: 0.1em 1em 0.3em 0.5em;
+}
+
+
+.itemViews {
+    background: transparent;
+    border-collapse: collapse;
+    border-bottom: 1px solid #74AE0B;
+    padding-left: 1em;
+    margin-top: 2em;
+    white-space: nowrap;
+}
+
+.itemViews a {
+    background: transparent;
+    border: 1px solid #74AE0B;
+    color: #578308;
+    font-weight: normal;
+    margin-right: 0.5em;
+    padding: 0em 0.5em;
+    text-transform: lowercase;
+}
+
+.itemViews a.selected {
+    background: #CDE2A7;
+    border-bottom: #CDE2A7 1px solid;
+    color: #578308;
+    font-weight: normal;
+}
+
+.itemViews a:hover {
+    background-color: #CDE2A7;
+    color: #578308;
+}
+
+.itemViewsBar {
+    background: #CDE2A7;
+    border-left: 1px solid #74AE0B;
+    border-right: 1px solid #74AE0B;
+    color: #578308;
+    text-align: right;
+    text-transform: lowercase;
+}
+
+.item {
+    border: 1px solid #74AE0B;
+    padding: 10px;
+}
+
+table.listing {
+    /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
+    border-collapse: collapse;
+    border-left: 1px solid #8CACBB;
+    border-bottom: 1px solid #8CACBB;
+    margin: 1em 0em 1em 0em;
+    clear: both;
+}
+
+table.listing th {
+    background: #DEE7EC;
+    border-top: 1px solid #8CACBB;
+    border-bottom: 1px solid #8CACBB;
+    border-right: 1px solid #8CACBB;
+    color: Black;
+    font-weight: normal;
+    padding: 0em 1em 0em 1em;
+    text-transform: lowercase;
+    white-space: nowrap;
+}
+
+table.listing td.top {
+    border-left: 1px solid White;
+    border-top: 1px solid White ! important;
+    border-right: 1px solid White ! important;
+    text-align: right ! important;
+    padding: 0em 0em 1em 0em;
+    /* insane IE row bug workaround */
+    position: relative;
+    left: -1px;
+    top: -1px;
+}
+
+table.listing tr.odd {
+    /*every second line should be shaded */
+    background: transparent;
+}
+
+table.listing tr.even {
+    background: #F7F9FA;
+}
+
+table.listing td {
+    border-right: 1px solid #8CACBB;
+    padding: 0em 1em;
+    text-align: left;
+}
+
+/*table.listing a:hover { */
+a:hover {
+    text-decoration: underline;
+}
+
+table.listing img {
+	vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+div.message {
+    background: #FFCE7B;
+    border: 1px solid #FFA500;
+    color: Black;
+    font: bold 80% Verdana, Helvetica, Arial, sans-serif;
+    margin: 2em 0em 1em 0em;
+    padding: 0.5em 1em;
+    vertical-align: middle;
+}
+
+div.message a {
+	color: Black;
+    text-decoration: underline;
+}
+
+
+
+
+
+
+

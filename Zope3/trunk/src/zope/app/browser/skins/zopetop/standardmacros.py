@@ -15,9 +15,11 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.2 2002/12/25 14:12:42 jim Exp $
+$Id: standardmacros.py,v 1.3 2002/12/26 20:20:48 jim Exp $
 """
-from zope.app.browser.skins.basic.standardmacros import StandardMacros as ZMIMacros
+from zope.app.browser.skins.basic.standardmacros import StandardMacros
+
+ZMIMacros = StandardMacros
 
 class StandardMacros(ZMIMacros):
 

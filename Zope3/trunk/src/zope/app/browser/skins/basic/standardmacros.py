@@ -15,13 +15,16 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.2 2002/12/25 14:12:40 jim Exp $
+$Id: standardmacros.py,v 1.3 2002/12/26 20:20:47 jim Exp $
 """
 from zope.interface import Interface
+from zope.interface.common.mapping import IItemMapping
 from zope.component import getView
 from zope.publisher.browser import BrowserView
 
 class Macros:
+
+    __implements__ = IItemMapping
 
     macro_pages = ()
 
@@ -39,14 +42,8 @@ class Macros:
         raise KeyError, key
 
 
-class IStandardMacros(Interface):
-
-    def __getitem__(key):
-        """Return the macro named 'key'"""
-
-
 class StandardMacros(BrowserView, Macros):
 
-    __implements__ = IStandardMacros
+    __implements__ = BrowserView.__implements__, Macros.__implements__
 
     macro_pages = ('view_macros', 'dialog_macros')
