@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.12 2003/06/25 21:18:55 philikon Exp $
+$Id: test_field_widget.py,v 1.13 2003/06/30 16:23:33 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -122,95 +122,9 @@ class TestComponentPathWidget(BaseTest):
         self.failIf(widget.haveData())
 
 
-class TestComponentLocationWidget(BaseTest):
-
-    def createWidget(self, field, request):
-        from zope.app.browser.services.field import ComponentLocationWidget
-        return ComponentLocationWidget(field, request)
-
-    def test(self):
-        fake = FakeComponentPath(self.defaultpackage, I1)
-        widget = self.createWidget(fake, self.request)
-
-        expected = (
-            'path: '
-            '<select name="field.X.p">'
-            '<option></option>'
-            '<option>/++etc++site/default/c1</option>'
-            '<option>/++etc++site/default/c2</option>'
-            '<option>/++etc++site/default/c3</option>'
-            '</select>'
-            '<br />'
-            'dotted name: '
-            '<input type="text" name="field.X.d" value="">'
-            )
-
-        self.assertEqual(widget(), expected)
-        self.failIf(widget.haveData())
-        self.assertEqual(widget.hidden(), '')
-
-        self.request.form['field.X.p'] = (
-                u'/++etc++site/default/c2')
-
-        expected = (
-            'path: '
-            '<select name="field.X.p">'
-            '<option></option>'
-            '<option>/++etc++site/default/c1</option>'
-            '<option selected>/++etc++site/default/c2</option>'
-            '<option>/++etc++site/default/c3</option>'
-            '</select>'
-            '<br />'
-            'dotted name: '
-            '<input type="text" name="field.X.d" value="">'
-            )
-
-        self.assertEqual(widget(), expected)
-        self.failUnless(widget.haveData())
-        self.assertEqual(widget.hidden(),
-                         '<input type="hidden" name="field.X.p" value="'
-                         '/++etc++site/default/c2'
-                         '" />'
-                         )
-
-        self.request.form['field.X.d'] = (
-                u'zope.app.browser.services.tests.test_field_widget'
-                u'.instanceOfComponentC')
-        self.failIf(widget.haveData())
-
-        from zope.app.interfaces.form import WidgetInputError
-        self.assertRaises(WidgetInputError, widget.hidden)
-
-        del self.request.form['field.X.p']
-        self.failUnless(widget.haveData())
-
-        expected = (
-            'path: '
-            '<select name="field.X.p">'
-            '<option></option>'
-            '<option>/++etc++site/default/c1</option>'
-            '<option>/++etc++site/default/c2</option>'
-            '<option>/++etc++site/default/c3</option>'
-            '</select>'
-            '<br />'
-            'dotted name: '
-            '<input type="text" name="field.X.d" value="'
-            'zope.app.browser.services.tests.test_field_widget'
-            '.instanceOfComponentC'
-            '">'
-            )
-        self.assertEqual(widget(), expected)
-        self.assertEqual(widget.hidden(),
-                         '<input type="hidden" name="field.X.d" value="'
-                         'zope.app.browser.services.tests.test_field_widget'
-                         '.instanceOfComponentC'
-                         '" />'
-                         )
-
 def test_suite():
     return TestSuite((
         makeSuite(TestComponentPathWidget),
-        makeSuite(TestComponentLocationWidget),
         ))
 
 if __name__=='__main__':

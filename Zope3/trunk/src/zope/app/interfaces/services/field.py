@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: field.py,v 1.3 2003/01/10 19:38:48 stevea Exp $
+$Id: field.py,v 1.4 2003/06/30 16:23:32 jim Exp $
 """
 
 from zope.schema.interfaces import IField
@@ -28,12 +28,6 @@ class IComponentRelated(Interface):
         readonly = True,
         basetype = None
         )
-
-class IComponentLocation(IComponentRelated, IField):
-    '''A field containing a component location.
-
-    This is as an absolute path, or as a dotted module name.'''
-
 
 class IComponentPath(IComponentRelated, IField):
     'A field containing a component path.'
