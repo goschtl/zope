@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.12 2003/01/09 12:58:54 stevea Exp $
+$Id: test_interfacewidget.py,v 1.13 2003/01/09 14:13:02 jim Exp $
 """
 
 __metaclass__ = type
@@ -28,7 +28,7 @@ from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
 from zope.component.service import serviceManager, defineService
-from zope.app.interfaces.forms import ConversionError
+from zope.app.interfaces.form import ConversionError
 
 class I(Interface):
     """bah blah

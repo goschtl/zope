@@ -11,13 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Validation Exceptions
+"""Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.3 2003/01/07 19:49:26 stevea Exp $
+$Id: interfaces.py,v 1.4 2003/01/09 14:13:18 jim Exp $
 """
-
 from zope.interface import Interface
-
 
 class StopValidation(Exception):
     """This exception is raised, if the validation is done for sure early.
@@ -36,37 +34,10 @@ class ValidationError(Exception):
     def __repr__(self):
         return ' '.join(map(str, self.args))
 
-# XXX YAGNI, this is doomed. ;)
-
-class ErrorContainer(Exception):
-    """ """
-
-    def __init__(self, errors):
-        Exception.__init__(self)
-        self.errors = errors
-
-    def __len__(self):
-        return len(self.errors)
-
-    def __getitem__(self, key):
-        return self.errors[key]
-
-    def __iter__(self):
-        return iter(self.errors)
-
-
-class ValidationErrorsAll(ErrorContainer):
-    """This is a collection error that contains all exceptions that occured
-    during the validation process."""
-
-
-class ConversionErrorsAll(ErrorContainer):
-    """This is a collection error that contains all exceptions that occured
-    during the conversion process."""
-
-
+# Delay these imports to avoid circular import problems
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
+
 
 class IField(Interface):
     """Basic Schema Field Interface.

@@ -13,12 +13,11 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.3 2002/12/30 18:42:29 stevea Exp $
+$Id: __init__.py,v 1.4 2003/01/09 14:13:18 jim Exp $
 """
 
 from zope.schema._field import Field, Container, Iterable, Orderable
 from zope.schema._field import MinMaxLen, ValueSet, Sequence, Bytes, BytesLine
 from zope.schema._field import Text, TextLine, Bool, Int, Float, Tuple, List
 from zope.schema._field import Dict, Datetime
-from zope.schema._schema import validateMapping, validateMappingAll
 from zope.schema._schema import getFields, getFieldsInOrder

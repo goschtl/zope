@@ -13,11 +13,13 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: forms.py,v 1.3 2003/01/03 17:47:21 stevea Exp $
+$Id: form.py,v 1.1 2003/01/09 14:13:12 jim Exp $
 """
 
+from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute
+
 
 class WidgetInputError(Exception):
     """There were one or more user input errors
@@ -41,6 +43,9 @@ class ConversionError(WidgetInputError):
         Exception.__init__(self, error_name, original_exception)
         self.error_name = error_name
         self.original_exception = original_exception
+
+
+InputErrors = WidgetInputError, ValidationError
 
 
 class ErrorContainer(Exception):

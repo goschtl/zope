@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_widget.py,v 1.2 2002/12/25 14:12:52 jim Exp $
+$Id: test_widget.py,v 1.3 2003/01/09 14:13:10 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.form.widget import Widget, CustomWidget
-from zope.app.interfaces.forms import IWidget
+from zope.app.interfaces.form import IWidget
 from zope.interface.verify import verifyObject
 from zope.schema import Text
 from zope.publisher.browser import TestRequest

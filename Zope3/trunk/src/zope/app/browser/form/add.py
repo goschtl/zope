@@ -12,13 +12,16 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.4 2002/12/30 14:02:53 stevea Exp $
+$Id: add.py,v 1.5 2003/01/09 14:13:04 jim Exp $
 """
 
 import sys
+
+from zope.schema.interfaces import ValidationError
+
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.interfaces.forms import WidgetsError
+from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.utility import haveWidgetsData, fieldNames
 from zope.configuration.action import Action
@@ -67,9 +70,7 @@ class AddView(EditView):
             if name in data:
                 try:
                     setattr(content, name, data[name])
-                except:
-                    # Yes, I want a bare except here to catch all errors and
-                    # include them in the error list
+                except ValidationError:
                     errors.append(sys.exc_info()[1])
 
         if errors:
@@ -77,20 +78,13 @@ class AddView(EditView):
 
         publish(content, ObjectCreatedEvent(content))
 
-        try:
-            content = self.context.add(content)
-        except:
-            errors.append(sys.exc_info()[1])
-            raise WidgetsError(*errors)
-
+        content = self.context.add(content)
 
         for name in self._set_after_add:
             if name in data:
                 try:
                     setattr(content, name, data[name])
-                except:
-                    # Yes, I want a bare except here to catch all errors and
-                    # include them in the error list
+                except ValidationError:
                     errors.append(sys.exc_info()[1])
 
         if errors:
@@ -106,9 +100,6 @@ class AddView(EditView):
                 content = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors
-                return u"An error occured."
-            except Exception, v:
-                self.errors = (v, )
                 return u"An error occured."
 
             self.request.response.redirect(self.context.nextURL())

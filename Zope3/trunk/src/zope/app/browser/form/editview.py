@@ -12,14 +12,17 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.4 2002/12/30 23:27:47 jim Exp $
+$Id: editview.py,v 1.5 2003/01/09 14:13:04 jim Exp $
 """
 
 from datetime import datetime
+
+from zope.schema.interfaces import ValidationError
+
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.forms import WidgetsError
+from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, getWidgetsData
 from zope.app.form.utility import haveWidgetsData, fieldNames
 from zope.configuration.action import Action
@@ -85,17 +88,15 @@ class EditView(BrowserView):
                 # it's the same.
 
                 change = True
-                try:
-                    # Use self as a marker
-                    change = getattr(content, name, self) != newvalue
-                except:
-                    pass
+
+                # Use self as a marker
+                change = getattr(content, name, self) != newvalue
 
                 if change:
                     setattr(content, name, data[name])
                     unchanged = False
 
-            except Exception, v:
+            except ValidationError, v:
                 errors.append(v)
 
         if errors:
@@ -115,9 +116,6 @@ class EditView(BrowserView):
                 unchanged = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors
-                return u"An error occured."
-            except Exception, v:
-                self.errors = (v, )
                 return u"An error occured."
             else:
                 setUpEditWidgets(self, self.schema, force=1,

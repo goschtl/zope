@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.6 2003/01/03 15:52:30 stevea Exp $
+$Id: widget.py,v 1.7 2003/01/09 14:13:04 jim Exp $
 """
 
 __metaclass__ = type
@@ -24,8 +24,8 @@ from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
-from zope.app.interfaces.forms import ConversionError, WidgetInputError
-from zope.app.interfaces.forms import MissingInputError
+from zope.app.interfaces.form import ConversionError, WidgetInputError
+from zope.app.interfaces.form import MissingInputError
 from zope.schema.interfaces import ValidationError
 
 
@@ -58,16 +58,7 @@ class BrowserWidget(Widget, BrowserView):
                                         'the field is required')
             return field.default
 
-        try:
-            value = self._convert(value)
-        except ConversionError:
-            # Already have right error type
-            raise
-        except:
-            # Convert to conversion error
-            exc = ConversionError(sys.exc_info()[1])
-            raise ConversionError, exc, sys.exc_info()[2]
-
+        value = self._convert(value)
         if value is not None or not optional:
 
             try:
@@ -283,7 +274,10 @@ class Bytes:
 
         value = super(Bytes, self)._convert(value)
         if type(value) is unicode:
-            value = value.encode('ascii')
+            try:
+                value = value.encode('ascii')
+            except UnicodeError, v:
+                raise ConversionError("Invalid textual data", v)
 
         return value
 
@@ -293,12 +287,23 @@ class BytesWidget(Bytes, TextWidget):
 class IntWidget(TextWidget):
     displayWidth = 10
 
-    _convert = int
+    def _convert(self, value):
+        if value:
+            try:
+                return int(value)
+            except ValueError, v:
+                raise ConversionError("Invalid integer data", v)
+        
 
 class FloatWidget(TextWidget):
     displayWidth = 10
 
-    _convert = float
+    def _convert(self, value):
+        if value:
+            try:
+                return float(value)
+            except ValueError, v:
+                raise ConversionError("Invalid floating point data", v)
 
 class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     """Textarea widget."""
@@ -362,22 +367,32 @@ class FileWidget(TextWidget):
     def haveData(self):
         file = self.request.form.get(self.name)
         if file is None:
-            return 0
-        if getattr(file, 'filename', ''):
-            return 1
+            return False
 
-        file.seek(0)
-        if file.read(1):
-            return 1
-        return 0
+        if getattr(file, 'filename', ''):
+            return True
+
+        try:
+            seek = file.seek
+            read = file.read
+        except AttributeError, e:
+            return False
+
+        seek(0)
+        if read(1):
+            return True
+
+        return False
 
     def _convert(self, value):
         try:
-            value.seek(0)
-            data = value.read()
-        except Exception, e:
-            raise ConversionError('Value is not a file object', e)
+            seek = value.seek
+            read = value.read
+        except AttributeError, e:
+            raise ConversionError('Value is not a file object', e)            
         else:
+            seek(0)
+            data = read()
             if data or getattr(value, 'filename', ''):
                 return data
             else:

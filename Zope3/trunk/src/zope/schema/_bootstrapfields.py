@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.2 2002/12/25 14:15:20 jim Exp $
+$Id: _bootstrapfields.py,v 1.3 2003/01/09 14:13:18 jim Exp $
 """
 __metaclass__ = type
 
@@ -20,8 +20,8 @@ from zope.interface import Attribute
 from zope.interface.implements import visitImplements
 
 from zope.schema.interfaces import StopValidation, ValidationError
-from zope.schema import errornames
 from zope.schema._schema import getFields
+from zope.schema import errornames
 
 class ValidatedProperty:
 
@@ -272,3 +272,4 @@ class Bool(Field):
 class Int(ValueSet, Orderable):
     """A field representing a Integer."""
     _type = int, long
+

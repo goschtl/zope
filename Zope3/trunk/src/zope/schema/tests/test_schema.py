@@ -12,16 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_schema.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_schema.py,v 1.3 2003/01/09 14:13:20 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.schema.interfaces import StopValidation, ValidationError, \
-     ValidationErrorsAll
+from zope.schema.interfaces import StopValidation, ValidationError
 from zope.interface import Interface
 from zope.schema import Bytes
 from zope.schema.errornames import RequiredMissing
-from zope.schema import validateMapping, validateMappingAll,\
-     getFields, getFieldsInOrder
+from zope.schema import getFields, getFieldsInOrder
 
 class ISchemaTest(Interface):
     title = Bytes(
@@ -43,42 +41,6 @@ class ISchemaTest(Interface):
         required=True)
 
 class SchemaTest(TestCase):
-
-    def testValidateMapping(self):
-        dict = {'title': 'A title',
-                'description': 'A particular description.',
-                'spam': 'Spam'}
-        try:
-            validateMapping(ISchemaTest, dict)
-        except ValidationError, e:
-            self.fail("Unexpected ValidationError: %s" % e.error_name)
-
-    def testValidateBadMapping(self):
-        dict = {'title': 'A title'}
-        self.assertRaises(ValidationError, validateMapping, ISchemaTest, dict)
-
-    def testValidateMappingAll(self):
-        dict = {'title': 'A title',
-                'description': 'A particular description.',
-                'spam': 'Spam',
-                }
-        try:
-            validateMappingAll(ISchemaTest, dict)
-        except ValidationErrorsAll:
-            self.fail("Unexpected ValidationErrors")
-
-    def test_validateBadMappingAll(self):
-        dict = {'title': 'A title'}
-        try:
-            validateMappingAll(ISchemaTest, dict)
-        except ValidationErrorsAll, e:
-            error=ValidationError(RequiredMissing)
-            self.assertEqual(e.errors ,
-                             [('description',error), ('spam',error)])
-            self.assertRaises(ValidationError, validateMapping, ISchemaTest,
-                              dict)
-            return
-        self.fail('Expected ValidationErrors, but none detected')
 
     def test_getFields(self):
         fields = getFields(ISchemaTest)

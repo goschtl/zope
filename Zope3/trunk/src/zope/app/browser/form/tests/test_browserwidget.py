@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
+$Id: test_browserwidget.py,v 1.4 2003/01/09 14:13:06 jim Exp $
 """
 import unittest
 from zope.app.browser.form.widget import BrowserWidget
 from zope.publisher.browser import TestRequest
 from zope.schema import Text
-from zope.app.interfaces.forms import ConversionError, WidgetInputError, MissingInputError
+from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import WidgetInputError, MissingInputError
 
 class BrowserWidgetTest(unittest.TestCase):
 
@@ -79,7 +80,7 @@ class TestWidget(BrowserWidget):
 
     def _convert(self, v):
         if v == u'barf!':
-            raise "SomethingTerribleHappenedError"
+            raise ConversionError('ralph')
         return v or None
 
 class Test(BrowserWidgetTest):

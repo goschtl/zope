@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.2 2002/12/25 14:12:52 jim Exp $
+$Id: test_utility.py,v 1.3 2003/01/09 14:13:10 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,7 +29,7 @@ from zope.app.browser.form.widget import TextWidget
 from zope.component.view \
      import provideView, setDefaultViewName
 from zope.schema.interfaces import IText
-from zope.app.interfaces.forms import WidgetsError, MissingInputError
+from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidget, setUpWidgets, setUpEditWidgets
 from zope.app.form.utility import getWidgetsData, getWidgetsDataForContent
 from zope.app.form.utility import haveWidgetsData, fieldNames

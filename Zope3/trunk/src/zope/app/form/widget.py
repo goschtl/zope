@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.3 2002/12/31 11:07:10 stevea Exp $
+$Id: widget.py,v 1.4 2003/01/09 14:13:08 jim Exp $
 """
-from zope.app.interfaces.forms import IWidget
+from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
 
 __metaclass__ = type

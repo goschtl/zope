@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.3 2003/01/06 14:36:08 stevea Exp $
+$Id: form.py,v 1.4 2003/01/09 14:13:14 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserView
-from zope.app.interfaces.forms import IWidget
+from zope.app.interfaces.form import IWidget
 
 
 class IReadForm(IBrowserView):
