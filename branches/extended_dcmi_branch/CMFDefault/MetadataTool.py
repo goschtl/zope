@@ -185,6 +185,7 @@ DEFAULT_ELEMENT_SPECS = ( ( 'Title', 0 )
                         , ( 'Format', 0 )
                         , ( 'Language', 0 )
                         , ( 'Rights', 0 )
+                        , ( 'Coverage', 1 )
                         )
 
 class ElementSpec( Persistent ):

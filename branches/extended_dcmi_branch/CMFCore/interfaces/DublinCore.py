@@ -146,6 +146,8 @@ class DublinCore:
             Return type: sequence of strings
             Permission: View
         """
+
+    Contributor = Contributors
     
     def Date( self ):
         """
@@ -242,6 +244,16 @@ class DublinCore:
             Permissions: View
         """
 
+    def Contributors( self ):
+        """
+            Dublin Core element - resource "coverage" (spatial or temporal)
+
+            Return zero or more "coverage" descriptions.
+
+            Return type: sequence of strings
+            Permission: View
+        """
+
 class CatalogableDublinCore:
     """
         Provide Zope-internal date objects for cataloging purposes.
@@ -308,4 +320,7 @@ class MutableDublinCore:
 
     def setRights( self, rights ):
         """ Dublin Core element - update resource copyright """
+
+    def setCoverage( self, coverage ):
+        "Dublin Core element - update coverage descriptors of resource"
 

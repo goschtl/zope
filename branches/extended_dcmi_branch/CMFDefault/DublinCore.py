@@ -101,6 +101,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
     """
 
     security = ClassSecurityInfo()
+    coverage = ()   # must have for forward compatibility
 
     def __init__( self
                 , title=''
@@ -112,6 +113,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
                 , format='text/html'
                 , language='en-US'
                 , rights=''
+                , coverage=()
                 ):
             self.creation_date = DateTime()
             self._editMetadata( title
@@ -123,6 +125,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
                               , format
                               , language
                               , rights
+                              , coverage
                               )
 
     #
@@ -130,14 +133,18 @@ class DefaultDublinCoreImpl( PropertyManager ):
     #
     security.declarePublic( 'Title' )
     def Title( self ):
-        "Dublin Core element - resource name"
+        """
+            Dublin Core element - resource name
+        """
         return self.title
 
     security.declarePublic( 'Creator' )
     def Creator( self ):
         # XXX: fixme using 'portal_membership' -- should iterate over
         #       *all* owners
-        "Dublin Core element - resource creator"
+        """
+            Dublin Core element - resource creator
+        """
         owner = self.getOwner()
         if hasattr( owner, 'getUserName' ):
             return owner.getUserName()
@@ -145,29 +152,46 @@ class DefaultDublinCoreImpl( PropertyManager ):
 
     security.declarePublic( 'Subject' )
     def Subject( self ):
-        "Dublin Core element - resource keywords"
+        """
+            Dublin Core element - resource keywords
+        """
         return self.subject
 
     security.declarePublic( 'Publisher' )
     def Publisher( self ):
-        "Dublin Core element - resource publisher"
+        """
+            Dublin Core element - resource publisher
+        """
         # XXX: fixme using 'portal_metadata'
         return 'No publisher'
 
     security.declarePublic( 'Description' )
     def Description( self ):
-        "Dublin Core element - resource summary"
+        """
+            Dublin Core element - resource summary
+        """
         return self.description
 
     security.declarePublic( 'Contributors' )
     def Contributors( self ):
-        "Dublin Core element - additional contributors to resource"
+        """
+            Dublin Core element - additional contributors to resource
+        """
         # XXX: fixme
         return self.contributors
+
+    security.declarePublic( 'Contributor' )
+    def Contributor( self ):
+        """
+            Alias to comply with DCMI spelling
+        """
+        return self.Contributors()
     
     security.declarePublic( 'Date' )
     def Date( self ):
-        "Dublin Core element - default date"
+        """
+            Dublin Core element - default date
+        """
         # Return effective_date if set, modification date otherwise
         date = getattr(self, 'effective_date', None )
         if date is None:
@@ -204,7 +228,9 @@ class DefaultDublinCoreImpl( PropertyManager ):
 
     security.declarePublic( 'Type' )
     def Type( self ):
-        "Dublin Core element - Object type"
+        """
+            Dublin Core element - Object type
+        """
         if hasattr(aq_base(self), 'getTypeInfo'):
             ti = self.getTypeInfo()
             if ti is not None:
@@ -220,7 +246,9 @@ class DefaultDublinCoreImpl( PropertyManager ):
 
     security.declarePublic( 'Identifier' )
     def Identifier( self ):
-        "Dublin Core element - Object ID"
+        """
+            Dublin Core element - Object ID
+        """
         # XXX: fixme using 'portal_metadata' (we need to prepend the
         #      right prefix to self.getPhysicalPath().
         return self.absolute_url()
@@ -238,6 +266,13 @@ class DefaultDublinCoreImpl( PropertyManager ):
             Dublin Core element - resource copyright
         """
         return self.rights
+
+    security.declarePublic( 'Coverage' )
+    def Coverage( self ):
+        """
+            Dublin Core element - resource "coverage" (spatial or temporal)
+        """
+        return self.coverage
 
     #
     #  DublinCore utility methods
@@ -321,6 +356,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
         hdrlist.append( ( 'Format', self.Format() ) )
         hdrlist.append( ( 'Language', self.Language() ) )
         hdrlist.append( ( 'Rights', self.Rights() ) )
+        hdrlist.append( ( 'Coverage', string.join( self.Coverage(), '; ' ) ) )
         return hdrlist
 
     #
@@ -338,25 +374,33 @@ class DefaultDublinCoreImpl( PropertyManager ):
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
                              , 'setTitle' )
     def setTitle( self, title ):
-        "Dublin Core element - resource name"
+        """
+            Dublin Core element - resource name
+        """
         self.title = title
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
                              , 'setSubject' )
     def setSubject( self, subject ):
-        "Dublin Core element - resource keywords"
+        """
+            Dublin Core element - resource keywords
+        """
         self.subject = tuplize( 'subject', subject )
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
                              , 'setDescription' )
     def setDescription( self, description ):
-        "Dublin Core element - resource summary"
+        """
+            Dublin Core element - resource summary
+        """
         self.description = description
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
                              , 'setContributors' )
     def setContributors( self, contributors ):
-        "Dublin Core element - additional contributors to resource"
+        """
+            Dublin Core element - additional contributors to resource
+        """
         # XXX: fixme
         self.contributors = tuplize('contributors', contributors, semi_split)
 
@@ -400,6 +444,14 @@ class DefaultDublinCoreImpl( PropertyManager ):
         """
         self.rights = rights
 
+    security.declareProtected( CMFCorePermissions.ModifyPortalContent
+                             , 'setCoverage' )
+    def setCoverage( self, coverage ):
+        """
+            Dublin Core element - resource "coverage" (spatial/temporal).
+        """
+        self.coverage = tuplize('coverage', coverage, semi_split)
+
     #
     #  Management tab methods
     #
@@ -415,6 +467,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
                      , format='text/html'
                      , language='en-US'
                      , rights=''
+                     , coverage=()
                      ):
         """
             Update the editable metadata for this resource.
@@ -428,6 +481,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
         self.setFormat( format )
         self.setLanguage( language )
         self.setRights( rights )
+        self.setCoverage( coverage )
         self.reindexObject()
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
@@ -446,14 +500,22 @@ class DefaultDublinCoreImpl( PropertyManager ):
                            , format
                            , language
                            , rights
+                           , coverage
                            , REQUEST
                            ):
         """
             Update metadata from the ZMI.
         """
-        self._editMetadata( title, subject, description, contributors
-                          , effective_date, expiration_date
-                          , format, language, rights
+        self._editMetadata( title
+                          , subject
+                          , description
+                          , contributors
+                          , effective_date
+                          , expiration_date
+                          , format
+                          , language
+                          , rights
+                          , coverage
                           )
         REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                                 + '/manage_metadata'

@@ -2,6 +2,9 @@
 
  New features
 
+  - Added Dublin Core's 'Coverage' field to interface, default
+    implementation, as a multi-valued item (much like Contributors).
+
   - Factored out index and column lists, to ease customization
     (Tracker #289)
 
@@ -41,6 +44,9 @@
       stx_level on the object.
 
  Bug fixes
+
+  - Aliased DublinCore 'Contributors' as 'Contributor', to
+    accomodate DCMI's spellings.
 
   - Overrode DublinCore's isEffective in CMFCalendar.Event to
     always return true;  this change prevents blocking view of
