@@ -16,7 +16,7 @@
 
 # This should point to the Zope3/utilities/rst2html, but just about
 # implementation will do.
-RST2HTML=../../Zope3/utilities/rst2html
+RST2HTML=rst2html
 
 LOCAL_HTML=\
 	collections.html \
