@@ -81,6 +81,10 @@ def getSecurityManager():
 
     return manager
 
+def getSecurityPolicy():
+    """Get the system default security policy."""
+    raise NotImplementedError # XXX
+
 def setSecurityPolicy(aSecurityPolicy):
     """Set the system default security policy, and return the previous
     value.

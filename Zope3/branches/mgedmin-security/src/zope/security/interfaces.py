@@ -17,7 +17,8 @@ $Id: interfaces.py,v 1.8 2004/02/20 20:42:12 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 
-class ISecurityManagementSetup(Interface):
+
+class ISecurityManagementSetup(Interface):  # XXX: going away
     """Methods to manage the security manager.
 
     Infrastructure (including tests, etc.) calls these things to
@@ -39,11 +40,15 @@ class ISecurityManagementSetup(Interface):
     def noSecurityManager():
         """Clear any existing SecurityManager."""
 
+
 class ISecurityManagement(Interface):
     """Public security management API."""
 
-    def getSecurityManager():
+    def getSecurityManager():   # XXX: going away
         """Get a SecurityManager (create if needed)."""
+
+    def getSecurityPolicy():
+        """Get the system default security policy."""
 
     def setSecurityPolicy(aSecurityPolicy):
         """Set the system default security policy.
@@ -51,6 +56,22 @@ class ISecurityManagement(Interface):
         This method should only be called by system startup code.  It
         should never, for example, be called during a web request.
         """
+
+
+class ISecurityChecking(Interface):
+    """Public security API."""
+
+    def checkPermission(permission, object, interaction=None):
+        """Return whether security policy allows permission on object.
+
+        Arguments:
+        permission -- A permission name
+        object -- The object being accessed according to the permission
+        interaction -- An interaction, which provides access to information
+            such as authenticated principals.  If it is None, the current
+            interaction is used.
+        """
+
 
 class ISecurityProxyFactory(Interface):
 
@@ -64,10 +85,11 @@ class ISecurityProxyFactory(Interface):
         returned.
         """
 
+
 # XXX This interface has too much Zope application dependence. This
 # needs to be refactored somehow.
 
-class ISecurityManager(Interface):
+class ISecurityManager(Interface):  # XXX: going away
     """
         A security manager provides methods for checking access and managing
         executable context and policies.
@@ -178,7 +200,7 @@ class ISecurityPolicy(Interface):
         """
 
 
-class ISecurityContext(Interface):
+class ISecurityContext(Interface):  # XXX: going away
     """Capture transient request-specific security information."""
 
     Attribute('stack',
@@ -190,3 +212,43 @@ class ISecurityContext(Interface):
     Attribute('user',
               'The AUTHENTICATED_USER for the request.'
               )
+
+
+class IInteraction(Interface):
+    """A representation of an interaction between some actors and the system.
+    """
+
+    participations = Attribute("""An iterable of participations.""")
+
+    def add(participation):
+        """Add a participation."""
+
+    def remove(participation):
+        """Remove a participation."""
+
+
+class IParticipation(Interface):
+
+    interaction = Attribute("The interaction")
+    principal = Attribute("The authenticated principal")
+
+
+class IInteractionManagement(Interface):
+    """Interaction management API."""
+
+    def newInteraction(participation=None):
+        """Start a new interaction.
+
+        If participation is not None, it is added to the new interaction.
+        """
+
+    def getInteraction():
+        """Return the current interaction.
+
+        Returns None if called outside newInteraction/endInteraction pair.
+        XXX should it raise an exception instead?
+        """
+
+    def endInteraction():
+        """End the current interaction."""
+
