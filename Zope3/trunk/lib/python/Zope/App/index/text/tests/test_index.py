@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.5 2002/12/04 20:03:48 gvanrossum Exp $
+$Id: test_index.py,v 1.6 2002/12/05 09:53:37 zagy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -93,6 +93,15 @@ class Test(PlacefulSetup, TestCase):
         self.assertAbsent(Bruce)
         self.assertAbsent(Sheila)
 
+    def testNotIndexing(self):
+
+        docid = 1000
+        self.object.texts = None
+        event = ObjectRegisteredHubEvent(None, docid, object=self.object)
+        self.index.notify(event)
+        self.assertEqual(self.index.documentCount(), 0)
+        
+    
     def testHubMachinery(self):
         # Technically this is a functional test
         hub = ObjectHub()
