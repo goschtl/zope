@@ -148,7 +148,7 @@
 /ZODB4/src/ThreadedAsync /Packages/ThreadedAsync
 /ZODB4/src/zdaemon       /Packages3/zdaemon
 /ZODB4/src/ZConfig	 /Packages/ZConfig
-/ZODB4/src/logging       /Packages/logging
+/ZODB4/src/logging       /Zope3/src/logging
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 /StandaloneZConfig/ZConfig     /Packages/ZConfig
