@@ -14,9 +14,28 @@
 """Subversion support functions."""
 
 import os
+import posixpath
 import sys
 import urllib
 import urlparse
+
+from zpkgtools import Error
+
+
+class SubversionLoadingError(Error):
+    """Raised when there was some error loading from Subversion.
+
+    :Ivariables:
+      - `url`: Subversion URL.
+      - `exitcode`: Return code of the Subversion process.
+    """
+
+    def __init__(self, url, exitcode):
+        self.url = cvsurl
+        self.exitcode = exitcode
+        Error.__init__(self, ("could not load from %s (svn exit code %d)"
+                              % (url, exitcode)))
+
 
 if sys.platform[:3].lower() == "win":
     ROOTDIR = "\\"
@@ -81,3 +100,33 @@ def is_repository(path):
         if not ok:
             return False
     return True
+
+
+class SubversionLoader:
+    # This is really only an object so the API mirrors the CvsLoader.
+    """Simpler loader object that loads from Subversion."""
+
+    def load(self, url, workdir):
+        # do an "svn cat" to get a file, or learn that this is a directory
+        stdin, stdout, stderr = os.popen3("svn cat '%s'" % url)
+        data = stdout.read()
+        if not data:
+            # maybe url referenced a directory
+            err = stderr.readline()
+            if "directory" in err:
+                # it is!
+                target = os.path.join(workdir, "foo")
+                rc = os.system("svn export -q '%s' '%s'" % (url, target))
+                if rc != 0:
+                    raise SubversionLoadingError(url, rc)
+                return target
+            else:
+                # don't know the exit code, so make one up
+                raise SubversionLoadingError(url, 1)
+        else:
+            name = posixpath.basename(url)
+            path = os.path.join(workdir, name)
+            f = open(path, "wb")
+            f.write(data)
+            f.close()
+            return path

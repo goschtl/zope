@@ -47,6 +47,7 @@ class Loader:
         self.tag = tag or None
         self.workdirs = {}  # URL -> (tmp.directory, path, istemporary)
         self.cvsloader = None
+        self.svnloader = None
 
     def add_working_dir(self, url, directory, path, istemporary):
         self.workdirs[url] = (directory, path, istemporary)
@@ -138,7 +139,7 @@ class Loader:
 
     def load_file(self, url):
         if svnloader.is_subversion_url(url):
-            raise NotImplementedError("loading from Subversion isn't done yet")
+            return self.load_svn(url)
         parts = urlparse.urlsplit(url)
         path = urllib.url2pathname(parts[2])
         if not os.path.exists(path):
@@ -149,13 +150,7 @@ class Loader:
     def load_cvs(self, url):
         if self.cvsloader is None:
             self.cvsloader = cvsloader.CvsLoader()
-        # If we've already loaded this, use that copy.  This doesn't
-        # consider fetching something with a different path that's
-        # represented by a previous load():
-        if url in self.workdirs:
-            return self.workdirs[url][1]
-
-        tmp = tempfile.mkdtemp(prefix="loader-")
+        tmp = tempfile.mkdtemp(prefix="cvsloader-")
         parsed_url = cvsloader.parse(url)
         path = self.cvsloader.load(parsed_url, tmp)
         self.add_working_dir(url, tmp, path, True)
@@ -164,6 +159,17 @@ class Loader:
     def load_repository(self, url):
         raise ValueError("repository: URLs must be joined with an"
                          " appropriate revision-control base URL")
+
+    def load_svn(self, url):
+        if self.svnloader is None:
+            self.svnloader = svnloader.SubversionLoader()
+        tmp = tempfile.mkdtemp(prefix="svnloader-")
+        path = self.svnloader.load(url, tmp)
+        self.add_working_dir(url, tmp, path, True)
+        return path
+
+    def load_svn_ssh(self, url):
+        return self.load_svn(url)
 
     def unknown_load(self, url):
         # XXX This could end up being called with an http: or https:
