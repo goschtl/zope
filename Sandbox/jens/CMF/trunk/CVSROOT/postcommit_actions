@@ -89,7 +89,7 @@ MAIL_CMD = "/usr/lib/sendmail -ba"
 
 WAIT = 0                                # Fork unless --wait is requested.
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 1                             # '--verbose' option
+VERBOSE = 0                             # '--verbose' option
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
@@ -228,34 +228,29 @@ def detach(args):
 
     os._exit(0)
 
-def all_entries():
-    return find_entries(all=1)
-
-def find_entries(repo=None, all=None):
+def find_entries(repo=None):
     """Return dictionary of traffic_table entries qualified by repo regexp.
 
-    all == 1 means return all entries, regardless of repo arg.
-
-    Iff no entries match, we return the catchall entry - the one with path ==
-    None."""
+    Iff no entries match, we return the catchall entry - the (last) one with
+    path == None."""
+    
     entries = []
     catchall = None
-    if not all:
-        linkmgr = adjustlinks.LinkManager()
+    linkmgr = adjustlinks.LinkManager()
 
-    if all:
-        entries.extend(traffic_table.get_table())
-    else:
-        containers = linkmgr.all_containers(repo)
-        for it in traffic_table.get_table():
-            if it['path'] == None:
-                # Retain the catchall entry in case no regular ones qualify.
-                catchall = it
-            else:
-                # Obtain qualifying candidates:
-                for candidate in containers:
-                    if re.match(it['path'], candidate):
-                        entries.append(it)
+    containers = linkmgr.all_containers(repo)
+    if VERBOSE:
+        complain("find_entries - repo: %s, entries: %s, containers: %s\n",
+                 repo, entries, containers)
+    for it in traffic_table.get_table():
+        if it['path'] == None:
+            # Retain the catchall entry in case no regular ones qualify.
+            catchall = it
+        else:
+            # Obtain qualifying candidates:
+            for candidate in containers:
+                if re.match(it['path'], candidate):
+                    entries.append(it)
 
     if entries:
         if VERBOSE > 1:
