@@ -729,6 +729,8 @@ wrap_getattro(PyObject *self, PyObject *name)
                   strcmp(name_as_string, "__reduce__") == 0
                   ||
                   strcmp(name_as_string, "__reduce_ex__") == 0
+                  ||
+                  strcmp(name_as_string, "__providedBy__") == 0
                   )
                  )
                  );
@@ -1684,7 +1686,17 @@ static PyObject *api_object = NULL;
 void
 initwrapper(void)
 {
-    PyObject *m;
+    PyObject *m, *descr;
+
+    /* Get the __providedBy__ descr */
+    m = PyImport_ImportModule("zope.context.declarations");
+    if (m == NULL)
+        return;
+    descr = PyObject_GetAttrString(m, "decoratorSpecificationDescriptor");
+    Py_DECREF(m);
+    if (descr == NULL) 
+        return;
+    
 
     if (Proxy_Import() < 0)
         return;
@@ -1708,6 +1720,10 @@ initwrapper(void)
     WrapperType.tp_alloc = PyType_GenericAlloc;
     WrapperType.tp_free = _PyObject_GC_Del;
     if (PyType_Ready(&WrapperType) < 0)
+        return;
+
+    /* Install the __providedBy__ descr */
+    if (PyDict_SetItemString(WrapperType.tp_dict, "__providedBy__", descr) < 0)
         return;
 
     Py_INCREF(&WrapperType);
