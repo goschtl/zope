@@ -1,6 +1,21 @@
+##############################################################################
+#
+# Copyright (c) 2001-2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE
+#
+##############################################################################
+""" Utility functions.
+
+$Id$
 """
-    Utility functions.
-"""
+
 from sgmllib import SGMLParser
 import re
 import os
@@ -378,15 +393,12 @@ def bodyfinder( text ):
     else:
         return text[bod.end():end.start()]
 
-security.declarePrivate('_htfinder')
-_htfinder = re.compile( r'<html', re.DOTALL | re.I )
-
 security.declarePublic('html_headcheck')
 def html_headcheck( html ):
-
     """ Return 'true' if document looks HTML-ish enough.
     """
-    if not _htfinder.search(html):
+    lowerhtml = html.lower()
+    if lowerhtml.find('<html') == -1:
         return 0
 
     lines = re.split(r'[\n\r]+?', html)

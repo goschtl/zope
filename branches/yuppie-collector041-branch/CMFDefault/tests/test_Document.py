@@ -1,4 +1,11 @@
 from unittest import TestSuite, makeSuite, main
+
+try:
+    from Interface.Verify import verifyClass
+except ImportError:
+    # for Zope versions before 2.6.0
+    from Interface import verify_class_implementation as verifyClass
+
 from StringIO import StringIO
 from re import compile
 
@@ -261,6 +268,25 @@ class DocumentTests(RequestTest):
         d.manage_editDocument( text_format='structured-text'
                              , text=STX_NO_HEADERS_BUT_COLON)
         self.assertEqual( d.EditableBody(), STX_NO_HEADERS_BUT_COLON )
+
+    def test_interface(self):
+        from Products.CMFCore.interfaces.Dynamic \
+                import DynamicType as IDynamicType
+        from Products.CMFCore.interfaces.Contentish \
+                import Contentish as IContentish
+        from Products.CMFCore.interfaces.DublinCore \
+                import DublinCore as IDublinCore
+        from Products.CMFCore.interfaces.DublinCore \
+                import CatalogableDublinCore as ICatalogableDublinCore
+        from Products.CMFCore.interfaces.DublinCore \
+                import MutableDublinCore as IMutableDublinCore
+
+        verifyClass(IDynamicType, Document)
+        verifyClass(IContentish, Document)
+        verifyClass(IDublinCore, Document)
+        verifyClass(ICatalogableDublinCore, Document)
+        # XXX: verifyClass doesn't work with WorkflowMethod wrappers.
+        # verifyClass(IMutableDublinCore, Document)
 
 
 class TestFTPGet( RequestTest ):
