@@ -1,3 +1,1 @@
-^test ${CVSROOT}/CVSROOT/precommit_actions 
-
-ALL	${CVSROOT}/CVSROOT/precommit_actions
+^test	${CVSROOT}/CVSROOT/precommit_actions
