@@ -113,7 +113,7 @@ class InclusionProcessor:
             src = self.normalizePathOrURL(src, "source", filename, lineno)
             if src == "-":
                 path = os.path.join(self.source, dest)
-                expansions = self.glob(path)
+                expansions = self.filterNames(glob.glob(path))
                 if not expansions:
                     raise InclusionSpecificationError(
                         "exclusion %r doesn't match any files" % dest,
@@ -122,9 +122,6 @@ class InclusionProcessor:
                     self.excludes[fn] = fn
             else:
                 self.includes[dest] = src
-
-    def glob(self, pattern):
-        return self.filterNames(glob.glob(pattern))
 
     def filterNames(self, names):
         names = [n for n in names
