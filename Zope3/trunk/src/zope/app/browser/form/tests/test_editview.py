@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.15 2003/11/27 13:59:13 philikon Exp $
+"""$Id: test_editview.py,v 1.16 2004/01/30 22:20:52 sidnei Exp $
 """
 import unittest
 
@@ -45,7 +45,7 @@ class C:
     bar = u"c bar"
     a   = u"c a"
     b   = u"c b"
-    
+
     _baz = u"c baz"
     def getbaz(self): return self._baz
     def setbaz(self, v): self._baz = v
@@ -53,7 +53,7 @@ class C:
 
 class IFoo(Interface):
     foo = TextLine(title=u"Foo")
-    
+
 class IBar(Interface):
     bar = TextLine(title=u"Bar")
 

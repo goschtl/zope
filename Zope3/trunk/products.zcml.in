@@ -7,6 +7,10 @@
   <include package="zope.products.apidoc"/>
   <include package="zope.products.statictree"/>
 
+  <!-- Uncomment this if you want to try External Editor
+  <include package="zope.products.externaleditor"/>
+  -->
+
   <!-- The default security policy, including roles. -->
   <include package="zope.products.securitypolicy"/>
 

@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+    menu="zmi_views"
+    title="External Edit"
+    name="external_edit"
+    for="zope.products.externaleditor.interfaces.IExternallyEditable"
+    class=".browser.ExternalEditor"
+    permission="zope.View" />
+
+</configure>
