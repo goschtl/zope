@@ -192,6 +192,10 @@ class portal_membership(Interface):
         Returns -- created member folder object or None
         """
 
+    def createMemberarea(member_id=''):
+        """ Deprecated alias of createMemberArea.
+        """
+
     def deleteMemberArea(member_id):
         """ Delete member area of member specified by member_id.
 
