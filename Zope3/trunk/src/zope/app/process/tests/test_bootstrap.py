@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.10 2004/02/24 16:51:12 philikon Exp $
+$Id: test_bootstrap.py,v 1.11 2004/03/05 15:55:34 eddala Exp $
 """
 
 import unittest
@@ -28,7 +28,6 @@ from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.app.interfaces.services.event import IEventService
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.app.interfaces.component import IInterfaceService
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.error import ErrorReportingService
@@ -185,32 +184,11 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
 
         cx.close()
 
-class TestCreateInterfaceService(TestBootstrapSubscriberBase):
-
-    def test_createInterfaceService(self):
-        from zope.app.process.bootstrap import createInterfaceService
-
-        createInterfaceService.notify(EventStub(self.db))
-
-        cx = self.db.open()
-        root = cx.root()
-        root_folder = root.get(ZopePublication.root_name, None)
-        self.assert_(IRootFolder.isImplementedBy(root_folder))
-
-        package_name = '/++etc++site/default'
-        package = traverse(root_folder, package_name)
-
-        self.assert_(IInterfaceService.isImplementedBy(
-            traverse(package, 'Interfaces')))
-
-        cx.close()
-
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriberBase))
     suite.addTest(unittest.makeSuite(TestBootstrapInstance))
-    suite.addTest(unittest.makeSuite(TestCreateInterfaceService))
     return suite
 
 

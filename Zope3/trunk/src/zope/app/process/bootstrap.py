@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.19 2004/03/03 10:38:48 philikon Exp $
+$Id: bootstrap.py,v 1.20 2004/03/05 15:55:33 eddala Exp $
 """
 
 from transaction import get_transaction
@@ -32,7 +32,7 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
 from zope.app.services.servicenames import HubIds, PrincipalAnnotation
 from zope.app.services.servicenames import EventPublication, EventSubscription
-from zope.app.services.servicenames import ErrorLogging, Interfaces, Utilities
+from zope.app.services.servicenames import ErrorLogging, Utilities
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
 from zope.app.services.hub import ObjectHub, Registration
@@ -40,7 +40,6 @@ from zope.app.services.event import EventService
 from zope.app.services.error import RootErrorReportingService
 from zope.app.services.utility import LocalUtilityService
 from zope.app.services.principalannotation import PrincipalAnnotationService
-from zope.app.services.interface import LocalInterfaceService
 from zope.app.event import function
 from zope.app.interfaces.services.hub import ISubscriptionControl
 from zope.app.container.interfaces import INameChooser
@@ -204,17 +203,6 @@ class BootstrapInstance(BootstrapSubscriberBase):
                 )
 
 bootstrapInstance = BootstrapInstance()
-
-class CreateInterfaceService(BootstrapSubscriberBase):
-    """A subscriber to the startup event which ensures that a local
-    interface service is available.
-    """
-
-    def doSetup(self):
-        if not self.service_manager.queryLocalService(Interfaces):
-            addConfigureService(self.root_folder, Interfaces, LocalInterfaceService)
-
-createInterfaceService = CreateInterfaceService()
 
 
 def addConfigureService(root_folder, service_type, service_factory, **kw):
