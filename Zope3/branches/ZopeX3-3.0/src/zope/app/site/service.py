@@ -30,7 +30,6 @@ from transaction import get_transaction
 
 import zope.interface
 from zope.component.exceptions import ComponentLookupError
-from zope.proxy import removeAllProxies
 
 import zope.app.registration.interfaces
 from zope.app import zapi
@@ -248,7 +247,7 @@ class SiteManager(
 
     def findModule(self, name):
         # override to pass call up to next service manager
-        mod = super(ServiceManager, removeAllProxies(self)).findModule(name)
+        mod = super(ServiceManager, self).findModule(name)
         if mod is not None:
             return mod
 
