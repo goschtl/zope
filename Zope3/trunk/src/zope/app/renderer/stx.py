@@ -13,16 +13,15 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: stx.py,v 1.2 2003/08/17 06:07:54 philikon Exp $
+$Id: stx.py,v 1.3 2004/02/19 19:56:52 philikon Exp $
 """
 import re
 
+from zope.structuredtext.document import Document
+from zope.structuredtext.html import HTML
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.renderer import IStructuredTextSource, IHTMLRenderer
-
-from StructuredText import HTML
-
 
 class StructuredTextSource(unicode):
     """Represents Structured Text source code""" 
@@ -43,7 +42,8 @@ class StructuredTextToHTMLRenderer(BrowserView):
 
     def render(self, context):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
-        html = HTML(str(self.context))
+        doc = Document()(str(self.context))
+        html = HTML()(doc)
 
         # strip html & body added by some zope versions
         html = re.sub(

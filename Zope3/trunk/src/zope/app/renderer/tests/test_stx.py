@@ -13,19 +13,14 @@
 ##############################################################################
 """Structured Text Tests - StructuredText Source, HTML Renderer
 
-$Id: test_stx.py,v 1.1 2003/07/31 17:59:41 srichter Exp $
+$Id: test_stx.py,v 1.2 2004/02/19 19:56:53 philikon Exp $
 """
 import unittest
 
 from zope.publisher.browser import TestRequest
 
-try:
-    from zope.app.interfaces.renderer import \
-         IStructuredTextSource, IHTMLRenderer
-    from zope.app.renderer.stx import \
-         StructuredTextSource, StructuredTextToHTMLRenderer
-except ImportError:
-    pass
+from zope.app.interfaces.renderer import IStructuredTextSource, IHTMLRenderer
+from zope.app.renderer.stx import StructuredTextSource, StructuredTextToHTMLRenderer
 
 class StructuredTextTest(unittest.TestCase):
 
@@ -63,7 +58,6 @@ class HTMLRendererTest(unittest.TestCase):
                                              'srichter',
                                              '04/12/2003 12:00:00')
         self._renderer.context = StructuredTextSource(self._source+comment)
-
         self.assertEqual(rendered_source_comment, self._renderer.render(None))
         
 
@@ -90,13 +84,8 @@ rendered_source_comment = '''<p>This is source.</p>
     
 def test_suite():
     suite = unittest.TestSuite()
-    try:
-        import StructuredText
-    except ImportError:
-        pass
-    else:
-        suite.addTest(unittest.makeSuite(StructuredTextTest))
-        suite.addTest(unittest.makeSuite(HTMLRendererTest))
+    suite.addTest(unittest.makeSuite(StructuredTextTest))
+    suite.addTest(unittest.makeSuite(HTMLRendererTest))
     return suite
 
 if __name__ == '__main__':
