@@ -182,7 +182,7 @@
           <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames"
                   tal:condition="introspector/getDirectlyProvided">
-              <div tal:define="url python: view.getInterfaceURL(interface)">
+              <div tal:define="url string: /++apidoc++/Class/index.html?path=${interface}">
                 <a href=""
                     tal:attributes="href url"
                     tal:content="interface"
