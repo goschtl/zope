@@ -152,6 +152,12 @@ def init_table():
          'remote': products_remote},
     ])
 
+# Support for the ZEO module (defined in CVSROOT/modules)
+
+add_to_table({'path': "Releases/ZEO",
+              'addrs': ("zodb-checkins@zope.org",),
+              'remote': public_remote})
+
 # Support for the StandaloneZODB module (defined in CVSROOT/modules)
 
 add_to_table({'path': "Releases/StandaloneZODB",
