@@ -39,6 +39,8 @@ class CallableSimpleContent(SimpleItem):
         """ """
         return "Default __call__ called"
 
+InitializeClass(CallableSimpleContent)
+
 class IndexSimpleContent(SimpleItem):
     """A Viewable piece of content"""
     implements(IIndexSimpleContent)
@@ -48,6 +50,8 @@ class IndexSimpleContent(SimpleItem):
     def index_html(self, *args, **kw):
         """ """
         return "Default index_html called"
+
+InitializeClass(IndexSimpleContent)
 
 class FieldSimpleContent(SimpleContent):
     """A Viewable piece of content with fields"""
