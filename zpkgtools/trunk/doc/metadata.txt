@@ -17,10 +17,10 @@ contain different aspects of the relevant metadata.
 
     feature:XML parser
 
-  Lines starting with ``#`` as the first non-white character are
-  ignored.  All other lines are considered a single dependency;
-  leading and trailing whitespace will be ignored.  Dependencies are
-  case-sensitive.
+  Blank lines and lines starting with ``#`` as the first non-white
+  character are ignored.  All other lines are considered a single
+  dependency; leading and trailing whitespace will be ignored.
+  Dependencies are case-sensitive.
 
   Note that dependencies are kept separate from the information in the
   `INSTALL.cfg` file since that's intended to record information about
