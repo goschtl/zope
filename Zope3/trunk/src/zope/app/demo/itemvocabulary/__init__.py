@@ -16,7 +16,7 @@
 Given a context object that implements 'IEnumerableMapping', the vocabulary
 displays all items of that context object. 
 
-$Id: __init__.py,v 1.1 2004/02/15 00:00:05 srichter Exp $
+$Id: __init__.py,v 1.1 2004/02/27 14:50:23 philikon Exp $
 """
 from zope.interface import implements
 from zope.schema.interfaces import \

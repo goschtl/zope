@@ -13,7 +13,7 @@
 ##############################################################################
 """Case-Insensitive Traverser and Folder
 
-$Id: __init__.py,v 1.4 2004/02/24 16:51:10 philikon Exp $
+$Id: __init__.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
 """
 from zope.app import zapi
 from zope.app.folder import Folder

@@ -13,10 +13,10 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin Tests
 
-$Id: tests.py,v 1.1 2004/02/15 03:21:05 srichter Exp $
+$Id: tests.py,v 1.1 2004/02/27 14:50:24 philikon Exp $
 """
 import os
-from zope.products.demo import passwdauth
+from zope.app.demo import passwdauth
 from zope.exceptions import NotFoundError
 from unittest import TestCase, TestSuite, main, makeSuite
 

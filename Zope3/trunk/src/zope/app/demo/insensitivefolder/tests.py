@@ -13,12 +13,11 @@
 ##############################################################################
 """Tests for the case-insensitive Folder.
 
-$Id: tests.py,v 1.3 2004/02/14 03:01:49 srichter Exp $
+$Id: tests.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
 """
 import unittest
 from zope.app.container.tests import test_containertraverser  
-from zope.products.demo.insensitivefolder import \
-     CaseInsensitiveContainerTraverser
+from zope.app.demo.insensitivefolder import CaseInsensitiveContainerTraverser
 
 class Container(test_containertraverser.TestContainer):
 

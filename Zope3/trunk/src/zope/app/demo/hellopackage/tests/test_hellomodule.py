@@ -11,19 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""/etc/passwd Authentication Plugin interfaces
+"""Unit tests for HelloPDF.
 
-$Id: interfaces.py,v 1.1 2004/02/15 03:21:05 srichter Exp $
+$Id: test_hellomodule.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
 """
-from zope.schema import TextLine
-from zope.app.i18n import ZopeMessageIDFactory as _
 
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource
+import unittest
+from zope.interface.verify import verifyObject
 
-class IFileBasedPrincipalSource(IPrincipalSource):
-    """Describes file-based principal sources."""
+class TestHelloModule(unittest.TestCase):
 
-    filename = TextLine(
-        title = _(u'File Name'),
-        description=_(u'File name of the data file.'),
-        default = u'/etc/passwd')
+    def test_interface(self):
+        from zope.app.demo.hellopackage.interfaces import IHello
+        from zope.app.demo.hellopackage.hellomodule import HelloClass
+        verifyObject(IHello, HelloClass())
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestHelloModule))
+    return suite
+
+
+if __name__ == '__main__':
+    unittest.main()

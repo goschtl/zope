@@ -12,6 +12,13 @@
 # 
 ##############################################################################
 """
-
-$Id: __init__.py,v 1.1 2004/01/15 15:01:36 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/02/27 14:50:21 philikon Exp $
 """
+
+from zope.interface import Interface
+
+class IHello(Interface):
+    """Hello
+    """
+    def getHello():
+        """Return hello"""

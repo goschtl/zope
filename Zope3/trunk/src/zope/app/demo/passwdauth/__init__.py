@@ -16,7 +16,7 @@
 This package defines a new authentication plugin, which can use textfiles to
 authenticate users.
 
-$Id: __init__.py,v 1.1 2004/02/15 03:21:05 srichter Exp $
+$Id: __init__.py,v 1.1 2004/02/27 14:50:24 philikon Exp $
 """
 import os
 from persistence import Persistent

@@ -14,6 +14,6 @@ however.
 To enable this, go to your 'products.zcml' in the Zope 3 root and 
 add the line:
 
-<include package="zope.products.demo.hellopackage" />
+<include package="zope.app.demo.hellopackage" />
 
 presuming you installed this package in ZopeProducts.
