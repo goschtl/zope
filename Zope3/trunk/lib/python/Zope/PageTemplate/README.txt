@@ -18,12 +18,11 @@ Page Templates
 
       - TAL (Template Attribute Language)
 
-      - zLOG ( depreciated will be replaced by standard logging
-      module)
-
       - Interface 
 
       - ZTUtils (batching utilities for zpt)
+
+      - The standard logging module (logging.py) from Python 2.3.
 
   Simple Usage
 
