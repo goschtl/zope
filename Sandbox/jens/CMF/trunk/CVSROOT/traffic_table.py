@@ -85,6 +85,9 @@ def init_table():
         {'path': "Products/PresentationTemplates",
          'addrs': ["zpt@mail.zope.org"]},
 
+        {'path': "Packages/Spread",
+         'addrs': ["pythonlabs@zope.com"]},
+
         {'path': "Products/ParsedXML",
          'addrs': ["parsed-xml-dev@mail.zope.org"]},
 
