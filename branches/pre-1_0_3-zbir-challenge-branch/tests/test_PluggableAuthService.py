@@ -98,16 +98,27 @@ class DummyGroupPlugin(DummyPlugin):
 
 class DummyChallenger( DummyPlugin ):
 
+    def __init__(self, id):
+        self.id = id
+
     def challenge(self, request, response):
         # Mark on the faux response that we have seen it:
         response.challenger = self
         return True
 
-class DummyBadChallenger( DummyPlugin ):
+class DummyBadChallenger( DummyChallenger ):
 
     def challenge(self, request, response):
         # We don't play here.
         return False
+
+class DummyReindeerChallenger( DummyChallenger ):
+
+    def challenge(self, request, response):
+        reindeer_games = getattr(response, 'reindeer_games', [])
+        reindeer_games.append(self.id)
+        response.reindeer_games = reindeer_games
+        return True
 
 class FauxRequest:
 
@@ -354,19 +365,11 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( gp, (IGroupsPlugin,) )
         return gp
 
-    def _makeChallengePlugin(self, id):
+    def _makeChallengePlugin(self, id, klass):
         from Products.PluggableAuthService.interfaces.plugins \
              import IChallengePlugin
 
-        cp = DummyChallenger(id)
-        directlyProvides( cp, (IChallengePlugin,) )
-        return cp
-
-    def _makeBadChallengePlugin(self, id):
-        from Products.PluggableAuthService.interfaces.plugins \
-             import IChallengePlugin
-
-        cp = DummyBadChallenger(id)
+        cp = klass(id)
         directlyProvides( cp, (IChallengePlugin,) )
         return cp
 
@@ -1590,7 +1593,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IChallengePlugin
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
-        challenger = self._makeChallengePlugin('challenger')
+        challenger = self._makeChallengePlugin('challenger', DummyChallenger)
         zcuf._setObject( 'challenger', challenger )
         plugins = zcuf._getOb( 'plugins' )
         plugins.activatePlugin( IChallengePlugin, 'challenger' )
@@ -1624,7 +1627,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         root._setObject( 'acl_users', zcuf )
         zcuf = root._getOb('acl_users')
 
-        challenger = self._makeChallengePlugin('challenger')
+        challenger = self._makeChallengePlugin('challenger', DummyChallenger)
         zcuf._setObject( 'challenger', challenger )
         zcuf.plugins.activatePlugin( IChallengePlugin, 'challenger' )
 
@@ -1636,7 +1639,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         folder._setObject('acl_users', inner_zcuf)
         inner_zcuf = folder._getOb('acl_users')
 
-        bad_challenger = self._makeBadChallengePlugin('bad_challenger')
+        bad_challenger = self._makeChallengePlugin('bad_challenger',
+                                                   DummyBadChallenger)
         inner_zcuf._setObject( 'bad_challenger', bad_challenger )
         inner_zcuf.plugins.activatePlugin( IChallengePlugin, 'bad_challenger' )
 
@@ -1651,6 +1655,44 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         # challengers to play. DummyChallenger sets '.challenger' on
         # response
         self.failUnless(isinstance(response.challenger, DummyChallenger))
+
+    def test_challenge_multi_protocols( self ):
+        from Products.PluggableAuthService.interfaces.plugins \
+             import IChallengePlugin
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        dasher = self._makeChallengePlugin('dasher', DummyReindeerChallenger)
+        dasher.protocol = "Reindeer Games Participant"
+        zcuf._setObject( 'dasher', dasher )
+
+        dancer = self._makeChallengePlugin('dancer', DummyReindeerChallenger)
+        dancer.protocol = "Reindeer Games Participant"
+        zcuf._setObject( 'dancer', dancer )
+
+        rudolph = self._makeChallengePlugin('rudolph', DummyReindeerChallenger)
+        rudolph.protocol = ("They wouldn't let poor Rudolph..."
+                            " join in any Reindeer Games")
+        zcuf._setObject( 'rudolph', rudolph )
+
+        plugins = zcuf._getOb( 'plugins' )
+        plugins.activatePlugin( IChallengePlugin, 'dasher' )
+        plugins.activatePlugin( IChallengePlugin, 'dancer' )
+        plugins.activatePlugin( IChallengePlugin, 'rudolph' )
+
+        response = FauxResponse()
+        request = FauxRequest(RESPONSE=response)
+        zcuf.REQUEST = request
+
+        # First call the userfolders before_traverse hook, to set things up:
+        zcuf(self, request)
+        # Call unauthorized to make sure Unauthorized is raised.
+        self.failUnlessRaises( Unauthorized, response.unauthorized)
+        # Since we have one challenger in play, we end up calling
+        # PluggableAuthService._unauthorized(), which allows the
+        # challengers to play. DummyChallenger sets '.challenger' on
+        # response
+        self.assertEqual(response.reindeer_games, ['dasher', 'dancer'])
 
 
 if __name__ == "__main__":
