@@ -148,3 +148,8 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
 # KLM end
+
+
+# testing amos stuff
+AmosFoo Publishers/AmosFoo
+AmosTest &lpZPublisher &AmosFoo
