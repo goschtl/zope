@@ -492,6 +492,14 @@ class TemplateViewFactory:
     def __init__(self, cls, template, permission):
         self.cls, self.template, self.permission = cls, template, permission
 
+        # XXX Trap code that uses 'Permissions' vocabulary instead of
+        #     'Permission Ids'.  This check should go away once the mess
+        #     with permissions is straigthened up.
+        from zope.app.security.permission import Permission
+        if isinstance(permission, Permission):
+            raise TypeError('permission should be a string or CheckerPublic,'
+                            ' not %r' % permission)
+
     def __call__(self, object, request):
         checker = NamesChecker(__call__ = self.permission)
         template = BoundTemplate(self.template, self.cls(object, request))

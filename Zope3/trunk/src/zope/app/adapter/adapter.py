@@ -306,7 +306,7 @@ class IAdapterRegistration(
 
     permission = zope.schema.Choice(
         title=_(u"The permission required for use"),
-        vocabulary="Permissions",
+        vocabulary="Permission Ids",
         readonly=False,
         required=False,
         )

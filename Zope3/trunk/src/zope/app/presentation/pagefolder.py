@@ -73,7 +73,7 @@ class IPageFolderInfo(Interface):
     permission = Choice(
         title=_(u"Permission"),
         description=_(u"The permission required to use the view"),
-        vocabulary="Permissions",
+        vocabulary="Permission Ids",
         required = True,
         )
 
