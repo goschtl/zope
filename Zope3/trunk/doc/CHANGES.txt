@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Created a new granting UI that allows advanced searching of
+        principal sources.
+
       - Implemented the `zope:localService` directive, so that you can use it
         instead of the `zope:content` directive, which we had to use
         before. The new directive automatically makes the service implement
