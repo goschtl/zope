@@ -34,11 +34,11 @@
         />
     <require
         permission="zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages"
+        attributes="getDefaultLanguage getAvailableLanguages getData"
         />
     <require
         permission="zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage"
+        attributes="setDefaultLanguage removeLanguage setData"
         />
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
@@ -62,11 +62,11 @@
         />
     <require
         permission="zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages"
+        attributes="getDefaultLanguage getAvailableLanguages getData"
         />
     <require
         permission="zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage" 
+        attributes="setDefaultLanguage removeLanguage setData"
         />
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"

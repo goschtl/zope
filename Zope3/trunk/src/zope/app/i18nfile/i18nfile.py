@@ -64,38 +64,39 @@ class I18nFile(Persistent):
         return file
 
     def getData(self, language=None):
+        """See interface II18nFile"""
         return self._get(language).data
 
     def setData(self, data, language=None):
+        """See interface II18nFile"""
         self._get_or_add(language).data = data
 
     # See IFile.
     data = property(getData, setData)
 
     def getSize(self, language=None):
-        '''See interface IFile'''
+        """See interface II18nFile"""
         return self._get(language).getSize()
 
     def getDefaultLanguage(self):
-        'See II18nAware'
+        """See II18nAware"""
         return self.defaultLanguage
 
     def setDefaultLanguage(self, language):
-        'See II18nAware'
-        if not self._data.has_key(language):
-            raise ValueError, \
-                  'cannot set nonexistent language (%s) as default' % language
+        """See II18nAware"""
+        if language not in self._data:
+            raise ValueError(
+                  'cannot set nonexistent language (%s) as default' % language)
         self.defaultLanguage = language
 
     def getAvailableLanguages(self):
-        'See II18nAware'
+        """See II18nAware"""
         return self._data.keys()
 
     def removeLanguage(self, language):
-        '''See interface II18nFile'''
-
+        """See interface II18nFile"""
         if language == self.defaultLanguage:
-            raise ValueError, 'cannot remove default language (%s)' % language
-        if self._data.has_key(language):
+            raise ValueError('cannot remove default language (%s)' % language)
+        if language in self._data:
             del self._data[language]
             self._p_changed = True
