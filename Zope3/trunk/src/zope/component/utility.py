@@ -13,12 +13,12 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: utility.py,v 1.3 2003/04/11 13:38:28 philikon Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
 from zope.component.interfaces import IUtilityService
-from zope.component.exceptions import ComponentLookupError
+from zope.component.exceptions import Invalid, ComponentLookupError
 
 class IGlobalUtilityService(IUtilityService):
 
