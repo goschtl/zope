@@ -1,0 +1,263 @@
+Name
+----
+
+**zsync** - Zope filesystem synchronization tool
+
+
+Synopsis
+--------
+
+**zsync** [*general-options*...] *command* [*command-options*...] [*path*]
+
+
+Description
+-----------
+
+The **zsync** command is used to synchronize the representation of a
+Zope 3 based website stored in the object database with a
+directory-tree representation.  The **zsync** command "feels like" the
+**cvs** and **svn** commands, but is different in that there is no
+basic versioning model in **zsync**.
+
+Like the **cvs** and **svn** programs, **zsync** requires a **zsync**
+command and any arguments to that to be given on the command line.
+The additional specific command given controls what operation is
+performed.  The following commands are supported; names given in
+parentheses are aliases supported for convenience:
+
+**checkin** (ci)
+  Add the target material to the object database.
+
+**checkout** (co)
+  Retrieve the serialized representation of a portion of the object
+  database.
+
+**commit**
+  Integrate changes in the local representation objects into the
+  object database.  If there are changes to the same objects in the
+  object database, those changes must be merged into the local
+  representation before the local changes can be committed.
+
+**update** (up)
+  Retrieve updates from the object database.
+
+**diff**
+  Report differences between the local representation and the data
+  from which the modified copy was generated..
+
+**add**
+  Mark an object for addition to the object database.  The change is
+  not made to the object database itself until the next **zsync
+  commit**.
+
+**remove** (rm)
+  Mark an object for removal from the object database.  The change is
+  not made to the object database itself until the next **zsync
+  commit**.
+
+**status** (stat)
+  Show the current status of the target material; whether it has been
+  changed in the local representation, has been removed or added, or
+  is unchanged.
+
+There are general options which apply to all **zsync** commands, and
+specific options which apply to individual commands.  General options
+must be specified between the **zsync** command name and the specific
+command, while options for specific commands must be supplied after
+the name of the specific command.
+
+
+General Options
+~~~~~~~~~~~~~~~
+
+The following general options are supported.  These must be specified
+between the name **zsync** and the name of the specific command being
+run.
+
+-h, --help
+  Display help text
+
+
+**zsync add** Options
+~~~~~~~~~~~~~~~~~~~~~
+
+-f FACTORY, --factory FACTORY
+  Specify the object factory to use for the object being added.
+
+-t TYPE, --type TYPE           
+  The type of the object to be created.  Normally only *FACTORY* needs
+  to be specified.
+
+
+**zsync checkin** Options
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-m MSG, --message MSG
+  Set the message used for the transaction note (similar to the ``-m``
+  option for **cvs commit**).
+
+
+**zsync commit** Options
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+-m MSG, --message MSG
+  Set the message used for the transaction note (similar to the ``-m``
+  option for **cvs commit**).
+
+-r, --raise-on-conflicts
+  Tell **zsync** to raise an exception on conflicts instead of simply
+  reporting a list of paths for which conflicts are detected.
+
+
+**zsync diff** Options
+~~~~~~~~~~~~~~~~~~~~~~
+
+-b
+  Ignore changes in the amount of white space.
+
+-B
+  Ignore changes that only insert or delete blank lines.
+
+--brief
+  Report only that changes exist, not the details of the change.
+
+-c
+  Generate a context diff.
+
+-C NUM, --context NUM
+  Set the number of lines of context information included on each side
+  of changes to *NUM*.
+
+-i
+  Ignore changes in case; consider upper- andlower-case letters
+  equivalent.
+
+-u
+  Generate a unified diff.
+
+-U NUM, --unified NUM
+  Use the unified output format, showing *NUM* (an integer) lines of
+  context, or three if *NUM* is not given.  For proper operation,
+  **patch** typically needs at least two lines of context.
+
+
+**zsync remove** Options
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The **remove** command has no specific options.  It requires at least
+one *path* argument.
+
+
+**zsync status** Options
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The **status** command has no specific options.
+
+
+**zsync update** Options
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The **update** command has no specific options.
+
+
+Files
+-----
+
+When **zsync** is used to checkout a Zope 3 website (or a portion of a
+site), it creates a directory structure on the local filesystem which
+mirrors the containment hierarchy of the object database underlying
+the application server.  The directory structure includes both content
+data and metadata used to support **zsync** operation.
+
+Since content in the object database can be fairly sophisticated
+internally, not all object types may naturally serialize into single
+files.  To accomodate the **zsync** support information and the
+complex data requirements for content objects, every directory that
+contains database objects contains an additional directory named
+``@@Zope/`` that contains the additional information needed.
+
+An ``@@Zope/`` directory contains the following:
+
+``Entries.xml``
+  A file containing supplemental information needed for filesystem
+  synchronization.  This is managed by **zsync**; you should never
+  need to peek inside here.
+
+``Annotations/``
+  A directory that contains annotation data for the objects in the
+  content directory.  This directory contains child directories with
+  the same name as the content objects, and each of those diretories
+  has a file for each annotation; the file names there are the names
+  of the annotations, and the contents of those files are the
+  serializations of the annotation values.
+  This is only present if there are objects in the content directory
+  which have annotations.
+
+``Extra/``
+  Objects which require data beyond what's present in their basic
+  serialized form to restore object state will cause it to be written
+  here.  This directory contains child directories with the same name
+  as the content objects, and each of those diretories has a file for
+  each piece of named additional information.
+  This is only present if there are objects in the content directory
+  which have "extra" data.
+
+  As an example, a File content object may have the MIME content type
+  of the file stored as the ``contentType`` value in the ``Extra/``
+  directory.  If the content object is named ``foo.ext``, the content
+  type information would be stored in the file
+  ``@@Zope/Extra/foo.ext/contentType``.
+
+``Original/``
+  A directory that contains a copy of the unmodified content data.
+  This is only present if there are non-container content objects in
+  the content directory.
+
+
+Reporting Bugs
+--------------
+
+Bugs in **zsync** and the filesystem synchronization support in Zope 3
+should be reported via the `Zope 3 Development Issue Collector`__, an
+online reporting tool that allows you to enter reports directly into
+our bug-tracking system.
+
+.. __: http://collector.zope.org/Zope3-dev
+
+
+See Also
+--------
+
+There are two interesting and directly relevant articles in the `Zope 3
+wiki`:
+
+* The |FSSYNC|_ is the initial proposal for a way to synchronize
+  copies of a Zope-based website between a filesystem-based
+  representation and the database backing the live site.
+
+* Bundles are discussed in |TTWSITE|_; this gives more information on
+  the motivation and goals surrounding this work.
+
+.. |FSSYNC| replace::   Filesystem Synchronization Proposal
+.. |TTWSITE| replace::  Through the Web Site Development
+
+.. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
+.. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
+
+
+Copyright
+---------
+
+Copyright (c) 2003 `Zope Corporation`__ and Contributors.
+All Rights Reserved.
+
+.. __:  http://www.zope.com/
+
+This software is subject to the provisions of the `Zope Public
+License`_, Version 2.0 (ZPL).  A copy of the ZPL should accompany
+this distribution.  THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL
+EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST
+INFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
+
+.. _Zope Public License:  http://www.zope.org/Resources/ZPL
