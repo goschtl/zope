@@ -105,4 +105,9 @@
     view="AddProposal.html"
     />
 
+<browser:icon
+    name="zmi_icon"
+    for="..interfaces.IVProposal"
+    file="proposal.gif" />
+
 </configure>  
