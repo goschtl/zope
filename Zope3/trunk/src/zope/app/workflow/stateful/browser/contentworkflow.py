@@ -38,8 +38,9 @@ class IContentProcessMapping(Interface):
 
     iface = List(
         title=u"Content Interface",
-        description=u"Specifies the interface that characterizes a particular "
-                    u"content type. Select one interface at a time.",
+        description=u"Specifies the interfaces that characterizes a particular "
+                    u"content type. Feel free to select several at "
+                    u"once.", 
         required=True,
         value_type=Choice(vocabulary="Interfaces")        
         )
