@@ -34,7 +34,7 @@
       />
 
   <containerViews
-       for="zope.app.pluggableauth.interfaces.IContainerPrincipalSource"
+       for="zope.app.pluggableauth.interfaces.IBTreePrincipalSource"
        contents="zope.ManageServices"
        add="zope.ManageServices"
        />
