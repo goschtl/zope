@@ -43,7 +43,7 @@
 <!-- ServiceManager -->
 
   <page
-     for="zope.app.interfaces.services.service.IServiceManager"
+     for="zope.app.interfaces.services.service.ISiteManager"
      name="services.html"
      menu="zmi_views" title="Services"
      template="services.pt"
@@ -51,7 +51,7 @@
      permission="zope.ManageServices" />
 
   <page
-     for="zope.app.interfaces.services.service.IServiceManager"
+     for="zope.app.interfaces.services.service.ISiteManager"
      name="serviceActivation.html"
      template="serviceactivation.pt"
      class=".ServiceActivation"
@@ -59,12 +59,12 @@
 
   <icon
       name="zmi_icon"
-      for="zope.app.interfaces.services.service.IServiceManager"
+      for="zope.app.interfaces.services.service.ISiteManager"
       file="service_manager.gif" />
 
   <menuItems
       menu="zmi_actions"
-      for="zope.app.interfaces.services.service.IServiceManager">
+      for="zope.app.interfaces.services.service.ISiteManager">
 
     <menuItem
         title="Visit default package"
@@ -79,23 +79,26 @@
 
   <page
       name="contents.html"
-      for="zope.app.interfaces.services.service.IServiceManager"
+      for="zope.app.interfaces.services.service.ISiteManager"
       menu="zmi_views" title="Contents"
       permission="zope.ManageServices"
       class="zope.app.browser.container.contents.Contents"
       attribute="contents" />
 
-  <!-- Override the add action with a link to add a page folder -->
-  <menuItem
-      menu="zmi_actions"
-      for="zope.app.interfaces.services.service.IServiceManager"
-      title="Add"
-      action=
-      "@@contents.html?type_name=zope.app.services.folder.SiteManagementFolder"
-      permission="zope.ManageServices"/>
+  <view
+      name="+"
+      menu="zmi_actions" title="Add"
+      for="zope.app.interfaces.services.service.ISiteManager"
+      permission="zope.ManageServices"
+      class="zope.app.browser.container.adding.Adding" 
+      >
+
+    <page name="index.html" attribute="index"/>
+    <page name="action.html" attribute="action"/>
+  </view>
 
   <pages
-      for="zope.app.interfaces.services.service.IServiceManager"
+      for="zope.app.interfaces.services.service.ISiteManager"
       permission="zope.ManageServices"
       class="zope.app.browser.container.contents.JustContents">
 
