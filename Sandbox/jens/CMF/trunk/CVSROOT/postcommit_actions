@@ -78,7 +78,7 @@ import traffic_table
 # logging to happen.
 OUTPUT_LOG = "/cvs-repository/cvs-postcommit_actions.log"
 # Email address destination for fatal session errors:
-CVSMASTER = "klm@aldous.digicool.com"
+CVSMASTER = "klm@digicool.com"
 
 MAIL_CMD = "/bin/mail"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
