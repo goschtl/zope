@@ -53,11 +53,11 @@
       for="zope.i18n.interfaces.ITranslationService"
       name="translate.html"/>
 
-  <menuItem
-       menu="add_service"
-       for="zope.app.interfaces.container.IAdding"
-       action="TranslationService"
+  <addMenuItem
+       class=
+         "zope.app.services.translation.translationservice.TranslationService"
        title="Translation Service"
-       description="A Persistent Translation Service for TTW development" />
+       description="A Persistent Translation Service for TTW development"
+       permission="zope.ManageServices" />
 
 </zope:configure>

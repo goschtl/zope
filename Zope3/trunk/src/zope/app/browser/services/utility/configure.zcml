@@ -7,10 +7,11 @@
   <!-- "Add service" menu entry to add a utility service.
        The action attribute matches a factory name defined in
        zope/app/services/utility.zcml. -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service" title="Utility Service"
-      action="zope.app.services.UtilityService"
+  <addMenuItem
+      description=
+        "A Local Utility Service allows you to register Utilities in this site"
+      title="Utility Service"
+      class="zope.app.services.utility.LocalUtilityService"
       permission="zope.ManageServices" />
 
   <!-- ZMI tab named "Utilites" for the utility service -->
