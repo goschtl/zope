@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IconDirective.py,v 1.4 2002/12/10 21:41:25 gotcha Exp $
+$Id: IconDirective.py,v 1.5 2002/12/10 21:45:15 gotcha Exp $
 """
 import os
 import re
