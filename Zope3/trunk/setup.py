@@ -180,8 +180,6 @@ def BTreeExtension(flavor):
     if flavor != "fs":
         kwargs["depends"] = (base_btrees_depends + [KEY_H % _flavors[key],
                                                     VALUE_H % _flavors[value]])
-    if key != "O":
-        kwargs["define_macros"] = [('EXCLUDE_INTSET_SUPPORT', None)]
     return Extension(name, sources, **kwargs)
 
 # All Zope3 extension modules must be listed here.
