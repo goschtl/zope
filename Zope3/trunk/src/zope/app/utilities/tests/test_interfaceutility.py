@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.1 2003/08/06 21:16:48 sidnei Exp $
+$Id: test_interfaceutility.py,v 1.2 2003/08/09 18:12:28 sidnei Exp $
 """
 
 import unittest
@@ -42,6 +42,7 @@ from zope.context import getWrapperContainer
 from zope.app.tests import setup
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
+from zope.interface import Interface
 
 class IBaz(Interface): pass
 
@@ -87,7 +88,7 @@ class Baz:
 class Foo(InterfaceClass, Baz):
 
     def __init__(self, name):
-        InterfaceClass.__init__(self, name)
+        InterfaceClass.__init__(self, name, (Interface,))
         Baz.__init__(self, name)
 
 class Bar(Foo): pass
@@ -112,6 +113,42 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assert_(iface_service != globalInterfaceService)
         self.assertEqual(iface_service.getInterface("bob").__class__, Foo)
         self.assertEqual(iface_service.getInterface('').__class__, Bar)
+
+    def test_localInterfaceitems_filters_accordingly(self):
+        bar = Bar("global")
+        baz = Baz("global baz")
+        foo = Foo("global bob")
+        globalUtilityService.provideUtility(IInterface, foo,
+                                            name="bob")
+        globalUtilityService.provideUtility(IInterface, bar)
+        globalUtilityService.provideUtility(IBaz, baz)
+
+        iface_service = getService(self.rootFolder, Interfaces)
+        self.assert_(iface_service != globalInterfaceService)
+        self.assertEqual(iface_service.items(),
+                         [('bob', foo), ('', bar)])
+        self.assertEqual(iface_service.items(base=IInterface),
+                         [('bob', foo), ('', bar)])
+        self.assertEqual(iface_service.items(base=Interface),
+                         [])
+
+    def test_localInterfaceitems_filters_only_interfaces(self):
+        bar = Bar("global")
+        baz = Baz("global baz")
+        foo = Foo("global bob")
+        globalUtilityService.provideUtility(IInterface, foo,
+                                            name="bob")
+        globalUtilityService.provideUtility(ILocalUtility, bar)
+        globalUtilityService.provideUtility(IBaz, baz)
+
+        iface_service = getService(self.rootFolder, Interfaces)
+        self.assert_(iface_service != globalInterfaceService)
+        self.assertEqual(iface_service.items(base=IInterface),
+                         [('bob', foo)])
+        self.assertEqual(iface_service.items(base=ILocalUtility),
+                         [('', bar)])
+        self.assertEqual(iface_service.items(base=IBaz),
+                         [])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
         globalUtilityService.provideUtility(IInterface, Foo("global"))

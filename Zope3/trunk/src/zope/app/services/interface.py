@@ -16,14 +16,14 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.13 2003/08/08 20:47:47 sidnei Exp $
+$Id: interface.py,v 1.14 2003/08/09 18:09:32 sidnei Exp $
 """
 
 from persistence import Persistent
 from zodb.code.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.interface import Interface
+from zope.interface import Interface, providedBy
 from zope.component import getService
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
@@ -120,6 +120,8 @@ class LocalInterfaceService(object):
             interface = IInterface
         utilities = getService(self, Utilities)
         matching = utilities.getUtilitiesFor(interface)
+        matching = [m for m in matching
+                    if IInterface in providedBy(m[1])]
         if search_string is not None:
             return [match for match in matching
                     if match[0].find(search_string) > -1]
