@@ -2,6 +2,8 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Finish new Message support (Philipp)
+
 - Write tests for the Dublin Core Structured Value support, especially errors
   and createMapping(). See zope.app.dublincore.dcsv.
 
