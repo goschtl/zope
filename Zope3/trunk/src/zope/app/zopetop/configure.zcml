@@ -2,7 +2,9 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
-  <skin interface="zope.app.zopetop.ZopeTop" />
+  <skin 
+      name="ZopeTop"
+      interface="zope.app.zopetop.ZopeTop" />
 
   <page
       for="*"

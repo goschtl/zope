@@ -5,8 +5,7 @@
   <layer name="debug" />
   <skin 
       name="Debug" 
-      layers="debug 
-              zope.app.rotterdam.rotterdam" />
+      layers="debug rotterdam" />
 
   <page
       for="zope.security.interfaces.IUnauthorized"

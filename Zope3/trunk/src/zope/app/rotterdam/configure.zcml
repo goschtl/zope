@@ -2,7 +2,13 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
+  
+  <browser:layer 
+      name="rotterdam"
+      interface="zope.app.rotterdam.rotterdam" />  
+
   <browser:skin 
+      name="Rotterdam"
       interface="zope.app.rotterdam.Rotterdam" />
   
   <browser:resource 
