@@ -150,6 +150,10 @@ def init_table():
         {'path': "Packages/Products/PageTemplates",
          'addrs': ["zpt@mail.zope.org"],
          'remote': None},
+
+        {'path': "Packages/bsddb3Storage",
+         'addrs': ("zodb-checkins@zope.org",),
+         'remote': None},
     ])
 
 # Support for the StandaloneZODB module (defined in CVSROOT/modules)
