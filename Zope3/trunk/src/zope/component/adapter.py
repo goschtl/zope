@@ -115,7 +115,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
         >>> registry.lookup((R2, ), P1, '')
         'c2'
 
-        >>> registrations = list(registry.registrations())
+        >>> registrations = map(repr, registry.registrations())
         >>> registrations.sort()
         >>> for registration in registrations:
         ...    print registration
@@ -144,12 +144,12 @@ class GlobalAdapterService(AdapterService, GlobalService):
         
         >>> registry.subscribe((R1, ), P2, 'c1', 'd1')
         >>> registry.subscribe((R1, ), P2, 'c2', 'd2')
-        >>> subscriptions = list(registry.subscriptions((R2, ), P1))
+        >>> subscriptions = map(str, registry.subscriptions((R2, ), P1))
         >>> subscriptions.sort()
         >>> subscriptions
         ['c1', 'c2']
 
-        >>> registrations = list(registry.registrations())
+        >>> registrations = map(repr, registry.registrations())
         >>> registrations.sort()
         >>> for registration in registrations:
         ...    print registration
@@ -195,17 +195,6 @@ class AdapterRegistration(object):
             self.value, self.doc,
             )
 
-    def __cmp__(self, other):
-        if self.__class__ != other.__class__:
-            return cmp(repr(self.__class__), repr(other.__class__))
-        
-        return cmp(
-            (self.required, self.provided, self.name,
-             self.value, self.doc),
-            (other.required, other.provided, other.name,
-             other.value, other.doc),
-            )
-
 class SubscriptionRegistration(object):
 
     def __init__(self, required, provided, value, doc):
@@ -219,13 +208,4 @@ class SubscriptionRegistration(object):
             self.__class__.__name__,
             tuple([getattr(r, '__name__', None) for r in self.required]),
             self.provided.__name__, self.value, self.doc,
-            )
-
-    def __cmp__(self, other):
-        if self.__class__ != other.__class__:
-            return cmp(repr(self.__class__), repr(other.__class__))
-
-        return cmp(
-            (self.required, self.provided, self.value, self.doc),
-            (other.required, other.provided, other.value, other.doc),
             )

@@ -130,7 +130,7 @@
 
    We can ask for all of the registrations locally:
 
-   >>> registrations = list(L1.registrations())
+   >>> registrations = map(repr, L1.registrations())
    >>> registrations.sort()
    >>> for registration in registrations:
    ...     print registration
@@ -141,7 +141,7 @@
 
    If we ask L2, we'll see the registrations from G, L1, and L2:
    
-   >>> registrations = list(L2.registrations())
+   >>> registrations = map(repr, L2.registrations())
    >>> registrations.sort()
    >>> for registration in registrations:
    ...     print registration
@@ -150,7 +150,7 @@
    Registration('IF1', (), 'IB0', u'', 'A102')
    Registration('IF1', (), 'IB1', u'', 'A112')
 
-   $Id: tests.py,v 1.5 2004/04/07 19:18:57 jim Exp $
+   $Id: tests.py,v 1.6 2004/04/08 14:41:17 jim Exp $
    """
 
 def test_named_adapters():
@@ -771,12 +771,6 @@ class Registration:
             tuple([i.__name__ for i in self.with]),
             self.provided.__name__, self.name, self.factory
             )
-
-    def __cmp__(self, other):
-        if self.__class__ != other.__class__:
-            return cmp(repr(self.__class__), repr(other.__class__))
-
-        return cmp(repr(self), repr(other))
     
 
     def factories(self):
