@@ -10,6 +10,11 @@ interrupt-check-interval 200
   address 8080
 </server>
 
+<server>
+  type FTP
+  address 8021
+</server>
+
 <zodb>
   <filestorage>
     path Data.fs
