@@ -15,7 +15,7 @@
 
 Interfaces relevant for the MailService
 
-$Id: mail.py,v 1.2 2003/04/17 17:45:45 bwarsaw Exp $
+$Id: mail.py,v 1.3 2003/05/21 10:52:53 mgedmin Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -136,3 +136,79 @@ class IMailSentEvent(IMailEvent):
     Note: Subscribing to this event eliminates the need for implementing
     callback functions for the asynchronous delivery.
     """
+
+
+
+class IMaildirFactory(Interface):
+
+    def __call__(dirname, create=False):
+        """Opens a Maildir folder at a given filesystem path.
+
+        If 'create' is True, the folder will be created when it does not
+        exist.  If 'create' is False and the folder does not exist, an
+        exception (OSError) will be raised.
+
+        If path points to a file or an existing directory that is not a
+        valid Maildir folder, an exception is raised regardless of the
+        'create' argument.
+        """
+
+
+class IMaildir(Interface):
+    """Read/write access to Maildir folders.
+
+    See http://www.qmail.org/man/man5/maildir.html for detailed format
+    description.
+    """
+
+    def __iter__():
+        """Returns an iterator over the pathnames of messages in this folder.
+        """
+
+    def newMessage():
+        """Creates a new message in the maildir.
+
+        Returns a file-like object for a new file in the 'tmp' subdirectory
+        of the Maildir.  After writing message contents to it, call the
+        commit() or abort() method on it.
+
+        The returned object implements IMaildirMessageWriter.
+        """
+
+
+class IMaildirMessageWriter(Interface):
+    """A file-like object to a new message in a Maildir."""
+
+    def write(str):
+        """Writes a string to the file.
+
+        There is no return value. Due to buffering, the string may not actually
+        show up in the file until the commit() method is called.
+        """
+
+    def writelines(sequence):
+        """Writes a sequence of strings to the file.
+
+        The sequence can be any iterable object producing strings, typically a
+        list of strings. There is no return value.  'writelines' does not add
+        any line separators.
+        """
+
+    def commit():
+        """Commits the new message using the Maildir protocol.
+
+        First, the message file is flushed, closed, then it is moved from
+        'tmp' into 'new' subdirectory of the maildir.
+
+        Calling commit() more than once is allowed.
+        """
+
+    def abort():
+        """Aborts the new message.
+
+        The message file is closed and removed from the 'tmp' subdirectory
+        of the maildir.
+
+        Calling abort() more than once is allowed.
+        """
+

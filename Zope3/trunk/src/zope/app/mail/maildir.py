@@ -1,0 +1,142 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Read/write access to Maildir folders.
+
+XXX check exception types
+
+$Id: maildir.py,v 1.1 2003/05/21 10:52:52 mgedmin Exp $
+"""
+
+import os
+import stat
+import socket
+import time
+from zope.interface import implements, classProvides
+from zope.app.interfaces.mail import IMaildirFactory, IMaildir
+from zope.app.interfaces.mail import IMaildirMessageWriter
+
+__metaclass__ = type
+
+class Maildir:
+    """See zope.app.interfaces.mail.IMaildir"""
+
+    classProvides(IMaildirFactory)
+    implements(IMaildir)
+
+    def __init__(self, path, create=False):
+        "See zope.app.interfaces.mail.IMaildirFactory"
+        self.path = path
+
+        def isdir(path):
+            return stat.S_ISDIR(os.stat(path)[0])
+        def exists(path):
+            return os.access(path, os.F_OK)
+
+        subdir_cur = os.path.join(path, 'cur')
+        subdir_new = os.path.join(path, 'new')
+        subdir_tmp = os.path.join(path, 'tmp')
+
+        if create and not exists(path):
+            os.mkdir(path)
+            os.mkdir(subdir_cur)
+            os.mkdir(subdir_new)
+            os.mkdir(subdir_tmp)
+            maildir = True
+        else:
+            maildir = (isdir(subdir_cur) and isdir(subdir_new)
+                                         and isdir(subdir_tmp))
+        if not maildir:
+            raise ValueError('%s is not a Maildir folder' % path)
+
+    def __iter__(self):
+        "See zope.app.interfaces.mail.IMaildir"
+        join = os.path.join
+        subdir_cur = join(self.path, 'cur')
+        subdir_new = join(self.path, 'new')
+        new_messages = [join(subdir_new, x) for x in os.listdir(subdir_new)]
+        cur_messages = [join(subdir_cur, x) for x in os.listdir(subdir_cur)]
+        # XXX http://www.qmail.org/man/man5/maildir.html says:
+        #     "It is a good idea for readers to skip all filenames in new
+        #     and cur starting with a dot.  Other than this, readers
+        #     should not attempt to parse filenames."
+        return iter(new_messages + cur_messages)
+
+    def newMessage(self):
+        "See zope.app.interfaces.mail.IMaildir"
+        # XXX http://www.qmail.org/man/man5/maildir.html says, that the first
+        #     step of the delivery process should be a chdir.  Chdirs and
+        #     threading do not mix.  Is that chdir really necessary?
+        join = os.path.join
+        subdir_tmp = join(self.path, 'tmp')
+        subdir_new = join(self.path, 'new')
+        pid = os.getpid()
+        host = socket.gethostname()
+        counter = 0
+        while 1:
+            timestamp = int(time.time())
+            unique = '%d.%d.%s' % (timestamp, pid, host)
+            filename = join(subdir_tmp, unique)
+            try:
+                os.stat(filename)
+            except OSError, e:
+                # XXX How can I distinguish ENOENT from other errors?
+                break
+            else:
+                counter += 1
+                if counter >= 1000:  # XXX hardcoded magic number
+                    raise RuntimeError('Failed to create unique file name in %s,'
+                                       ' are we under a DoS attack?' % subdir_tmp)
+                # XXX maildir.html (see above) says I should sleep for 2
+                # seconds, not 1
+                time.sleep(1)
+        return MaildirMessageWriter(filename, join(subdir_new, unique))
+
+
+class MaildirMessageWriter:
+    """See zope.app.interfaces.mail.IMaildirMessageWriter"""
+
+    implements(IMaildirMessageWriter)
+
+    def __init__(self, filename, new_filename):
+        self._filename = filename
+        self._new_filename = new_filename
+        self._fd = open(filename, 'w')
+        self._closed = False
+        self._aborted = False
+
+    def write(self, data):
+        self._fd.write(data)
+
+    def writelines(self, lines):
+        self._fd.writelines(lines)
+
+    def commit(self):
+        if self._closed and self._aborted:
+            raise AssertionError('Cannot commit, message already aborted')
+        elif not self._closed:
+            self._closed = True
+            self._aborted = False
+            self._fd.close()
+            os.rename(self._filename, self._new_filename)
+            # XXX the same maildir.html says it should be a link, followed by
+            #     unlink.  But Win32 does not necessarily have hardlinks!
+
+    def abort(self):
+        if not self._closed:
+            self._closed = True
+            self._aborted = True
+            self._fd.close()
+            os.unlink(self._filename)
+
+    # XXX should there be a __del__ that does abort()?
