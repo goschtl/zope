@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Apr 14 18:22:20 2004\n"
+"POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
 "PO-Revision-Date: 2003-08-07 19:51-0400\n"
 "Last-Translator: Godefroid Chapelle <gotcha@swing.be>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope3.org>\n"
@@ -1126,7 +1126,7 @@ msgstr ""
 #: src/zope/app/publisher/interfaces/browser.py:87
 #: src/zope/app/security/interfaces/__init__.py:45
 #: src/zope/app/security/interfaces/__init__.py:198
-#: src/zope/app/wiki/interfaces.py:39
+#: src/zope/app/wiki/interfaces.py:39 src/zope/schema/interfaces.py:95
 #: src/zope/app/container/browser/contents.pt:33
 #: src/zope/app/container/browser/index.pt:27
 #: src/zope/app/dublincore/browser/edit.pt:14
@@ -2617,10 +2617,6 @@ msgstr "Formulaire d'édition"
 msgid "Type"
 msgstr "Type"
 
-#: src/zope/app/schema/browser/schema_edit.pt:39
-msgid "Required"
-msgstr ""
-
 #: src/zope/app/schema/browser/schema_edit.pt:40
 msgid "Read-Only"
 msgstr ""
@@ -2738,11 +2734,11 @@ msgid "Edit Enumerated Datetime Field"
 msgstr ""
 
 #: src/zope/app/schema/fieldforms.zcml:274
-msgid "Add Enumerated Date Field"
+msgid "An Enumerated Date Field"
 msgstr ""
 
 #: src/zope/app/schema/fieldforms.zcml:274
-msgid "An Enumerated Date Field"
+msgid "Add Enumerated Date Field"
 msgstr ""
 
 #: src/zope/app/schema/fieldforms.zcml:274
@@ -3155,6 +3151,7 @@ msgstr ""
 
 #: src/zope/app/security/interfaces/__init__.py:51
 #: src/zope/app/security/interfaces/__init__.py:203
+#: src/zope/schema/interfaces.py:102
 #: src/zope/app/dublincore/browser/edit.pt:22
 #: src/zope/app/introspector/introspector.pt:52
 #: src/zope/app/introspector/introspector.pt:155
@@ -4136,13 +4133,13 @@ msgid "Wiki Page"
 msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:14
+msgid "The Wiki Editor can create and edit wikis."
+msgstr ""
+
+#: src/zope/app/wiki/configure.zcml:14
 #, fuzzy
 msgid "Wiki Editor"
 msgstr "Formulaire d'édition"
-
-#: src/zope/app/wiki/configure.zcml:14
-msgid "The Wiki Editor can create and edit wikis."
-msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:156
 msgid "A Wiki Page Comment"
@@ -4636,6 +4633,238 @@ msgstr ""
 #: src/zope/app/zptpage/zptpage.py:131
 msgid "${lines} lines"
 msgstr ""
+
+#: src/zope/exceptions/unauthorized.py:69
+#: src/zope/exceptions/unauthorized.py:72
+msgid "You are not allowed to access ${name} in this context"
+msgstr ""
+
+#: src/zope/exceptions/unauthorized.py:74
+#, fuzzy
+msgid "You are not authorized"
+msgstr "Pas autorisé"
+
+#: src/zope/exceptions/unauthorized.py:84
+msgid "a particular ${object}"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:43
+#, fuzzy
+msgid "Required input is missing."
+msgstr "L'argument 'name' requis manque"
+
+#: src/zope/schema/_bootstrapinterfaces.py:46
+msgid "Object is of wrong type."
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:49
+msgid "Value is too big"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:52
+msgid "Value is too small"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:55
+msgid "Value is too long"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:58
+msgid "Value is too short"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:61
+msgid "Invalid value"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:64
+#, fuzzy
+msgid "Constraint not satisfied"
+msgstr "Contenu modifié"
+
+#: src/zope/schema/_bootstrapinterfaces.py:67
+msgid "Not a container"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:70
+msgid "Not an iterator"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:103
+msgid "A description of the field"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:109
+#: src/zope/app/schema/browser/schema_edit.pt:39
+msgid "Required"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:111
+msgid "Tells whether a field requires its value to exist."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:115
+msgid "Read Only"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:116
+msgid "If true, the field's value cannot be changed."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:121 src/zope/schema/interfaces.py:272
+#: src/zope/schema/interfaces.py:327
+#, fuzzy
+msgid "Default Value"
+msgstr "Langue par défaut"
+
+#: src/zope/schema/interfaces.py:122 src/zope/schema/interfaces.py:273
+#: src/zope/schema/interfaces.py:328
+msgid ""
+"The field default value may be None or a legal\n"
+"                        field value"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:127
+#, fuzzy
+msgid "Missing Value"
+msgstr "Misses"
+
+#: src/zope/schema/interfaces.py:128
+msgid ""
+"If input for this Field is missing, and that's ok,\n"
+"                          then this is the value to use"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:133
+msgid "Field Order"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:134
+msgid ""
+"        The order attribute can be used to determine the order in\n"
+"        which fields in a schema were defined. If one field is created\n"
+"        after another (in the same thread), its order will be\n"
+"        greater.\n"
+"\n"
+"        (Fields in separate threads could have the same order.)\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:215 src/zope/schema/interfaces.py:315
+msgid "Start of the range"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:221 src/zope/schema/interfaces.py:321
+msgid "End of the range (excluding the value itself)"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:231
+msgid "Minimum length"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:232
+msgid ""
+"        Value after whitespace processing cannot have less than\n"
+"        min_length characters (if a string type) or elements (if\n"
+"        another sequence type). If min_length is None, there is\n"
+"        no minimum.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:243
+#, fuzzy
+msgid "Maximum length"
+msgstr "Nombre maximum d'entrées dans le cache"
+
+#: src/zope/schema/interfaces.py:244
+msgid ""
+"        Value after whitespace processing cannot have greater\n"
+"        or equal than max_length characters (if a string type) or \n"
+"        elements (if another sequence type). If max_length is\n"
+"        None, there is no maximum."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:257
+msgid "Allowed Values"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:258
+msgid ""
+"        Only values specified here can be values of this field.\n"
+"        If the list is empty, then there are no further\n"
+"        restictions."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:38
+msgid "Wrong contained type"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:397
+msgid ""
+"Field value items must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:41
+msgid "Schema not fully implemented"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:411
+msgid "The Interface that defines the Fields comprising the Object."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:421
+msgid ""
+"Field keys must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:426
+msgid ""
+"Field values must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:44
+msgid "Schema not provided"
+msgstr ""
+
+#: src/zope/schema/interfaces.py:47
+msgid "The specified URI is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:50
+msgid "The specified id is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:53
+msgid "The specified dotted name is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:96
+msgid "A short summary or label"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:38
+msgid "Foo"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:39
+#, fuzzy
+msgid "Foo description"
+msgstr "Souscrire"
+
+#: src/zope/schema/tests/test_objectfield.py:44
+msgid "Bar"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:45
+#, fuzzy
+msgid "Bar description"
+msgstr "Souscrire"
 
 #, fuzzy
 #~ msgid "Reload"
