@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.4 2002/12/08 22:05:49 gvanrossum Exp $
+$Id: subscribers.py,v 1.5 2002/12/09 22:24:50 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -124,16 +124,16 @@ class Registration(Persistent):
 def findContentObject(context):
     # We want to find the (content) Folder in whose service manager we
     # live.  There are man y way to do this.  Perhaps the simplest is
-    # looking for '++etc++...' in the location.  We could also walk up
-    # the path looking for something that implements IFolder; the
-    # service manager and packages don't implement this.  Or (perhaps
-    # better, because a service manager might be attached to a
-    # non-folder container) assume we're in service space, and walk up
-    # until we find a service manager, and then go up one more step.
-    # Walking up the path could be done by stripping components from
-    # the end of the path one at a time and doing a lookup each time,
-    # or more directly by traversing the context.  Traversing the
-    # context can be done by getting the context and following the
+    # looking for '++etc++Services' in the location.  We could also
+    # walk up the path looking for something that implements IFolder;
+    # the service manager and packages don't implement this.  Or
+    # (perhaps better, because a service manager might be attached to
+    # a non-folder container) assume we're in service space, and walk
+    # up until we find a service manager, and then go up one more
+    # step.  Walking up the path could be done by stripping components
+    # from the end of the path one at a time and doing a lookup each
+    # time, or more directly by traversing the context.  Traversing
+    # the context can be done by getting the context and following the
     # chain back; there's a convenience class, ContainmentIterator to
     # do that.  Use the version of ContainmentIterator from
     # Zope.Proxy, which is aware of the complications caused by
@@ -143,10 +143,10 @@ def findContentObject(context):
     location = getPhysicalPath(context)
     # Location is a tuple of strings, starting with '' (for the root)
     for i in range(len(location)):
-        if location[i].startswith("++etc++"):
+        if location[i] == "++etc++Services":
             location = location[:i]
             break
     else:
-        raise ValueError, "can't find ++etc++ in path"
+        raise ValueError, "can't find '++etc++Services' in path"
     root = getPhysicalRoot(context)
     return traverse(root, location)
