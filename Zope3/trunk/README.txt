@@ -66,7 +66,7 @@ Starting Zope3
 Finding out how to develop new content types:
 
   We aren't as far along with documentation as we'd like to
-  be. Please be patient or help out. Some resources.
+  be. Please be patient or help out. Some resources:
 
   - The developers tutorial at:
 
