@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.42 2004/02/11 07:00:37 jim Exp $
+$Id: adding.py,v 1.43 2004/02/13 22:42:22 srichter Exp $
 """
 __metaclass__ = type
 
@@ -151,9 +151,14 @@ class BasicAdding(BrowserView):
         if not self.contentName:
             self.contentName = id
 
+        # XXX: If the factory wrapped by LocationProxy is already a Proxy,
+        #      then ProxyFactory does not the right thing and the original's
+        #      checker info gets lost. No factory that was registered via ZCML
+        #      and was used via addMenuItem worked here. (SR)
         factory = zapi.getFactory(self, type_name)
-        factory = LocationProxy(factory, self, type_name)
-        factory = zope.security.checker.ProxyFactory(factory)
+        if not type(factory) is zope.security.checker.Proxy:
+            factory = LocationProxy(factory, self, type_name)
+            factory = zope.security.checker.ProxyFactory(factory)
         content = factory()
 
         # Can't store security proxies.
