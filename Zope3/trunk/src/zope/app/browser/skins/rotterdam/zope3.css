@@ -344,6 +344,7 @@ div.row div.label {
     float: left;
     width: 100px;
     text-align: right;
+    margin-right: 0.8em;
 }
 # XXX someone please come and do this properly
 div.row div.field {
