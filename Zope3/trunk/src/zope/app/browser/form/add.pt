@@ -1,4 +1,4 @@
-<html metal:use-macro="views/standard_macros/dialog">
+<html metal:use-macro="views/standard_macros/page">
   <body>
   <div metal:fill-slot="body">
 
@@ -50,8 +50,12 @@
 
       </div>
 
-      <input type="submit"  value="Refresh" />
-      <input type="submit" name="UPDATE_SUBMIT"  value="Save Changes" />
+      <div class="row">
+        <div class="controls">
+          <input type="submit" value="Refresh" />
+          <input type="submit" name="UPDATE_SUBMIT" value="Submit" />
+        </div>
+      </div>
 
     </form>
 
