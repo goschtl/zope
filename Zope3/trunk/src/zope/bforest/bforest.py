@@ -123,13 +123,49 @@ class AbstractBForest(Persistent):
         else:
             return True
     
-    def __cmp__(self, d):
-        # this is probably not the most efficient approach, but I'm not sure
-        # what is, and this is certainly among the simplest.  Don't do 
-        # comparisons with large bforests unless you are willing to pay the
-        # price.  Improvements welcome.
-        return cmp(dict(self), dict(d))
+    def __eq__(self, other):
+        if not isinstance(other, dict):
+            if (isinstance(other, AbstractBForest) and 
+                self._treemodule is not other._treemodule):
+                return False
+            try:
+                other = dict(other)
+            except TypeError:
+                return False
+        return dict(self)==other # :-/
     
+    def __gt__(self, other):
+        if not isinstance(other, dict):
+            try:
+                other = dict(other)
+            except TypeError:
+                return id(self) > id(other)
+        return dict(self) > other
+
+    def __lt__(self, other):
+        if not isinstance(other, dict):
+            try:
+                other = dict(other)
+            except TypeError:
+                return id(self) < id(other)
+        return dict(self) < other
+        
+    def __ge__(self, other):
+        if not isinstance(other, dict):
+            try:
+                other = dict(other)
+            except TypeError:
+                return id(self) >= id(other)
+        return dict(self) >= other
+        
+    def __le__(self, other):
+        if not isinstance(other, dict):
+            try:
+                other = dict(other)
+            except TypeError:
+                return id(self) <= id(other)
+        return dict(self) <= other
+
     def __len__(self):
         return len(self.tree())
     
