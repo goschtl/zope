@@ -34,6 +34,10 @@ Zope Changes
 
       o Create back-links from utilities and services to the tools screens.
 
+  http://dev.zope.org/Zope3/TheBrowserToolDirective
+
+  o Implement tool management screen. We need an overview, add, delete,
+    rename.
     - Write generic get/queryType(object, type) that returns the interface of
       the 'object' that provides 'type'.
       

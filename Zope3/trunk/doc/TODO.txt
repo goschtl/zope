@@ -53,10 +53,6 @@ Things to do for the next release (in no particular order)
 
 - Implement tools:
 
-  http://dev.zope.org/Zope3/TheBrowserToolDirective
-
-  o Implement tool management screen. We need an overview, add, delete,
-    rename.
 
   Mark, Nathan and Stephan are working on this.
 
