@@ -13,7 +13,7 @@
 ##############################################################################
 """Annotations store arbitrary application data under package-unique keys.
 
-$Id: annotation.py,v 1.5 2003/05/01 19:35:21 faassen Exp $
+$Id: annotation.py,v 1.6 2003/08/19 17:53:18 fdrake Exp $
 """
 
 from zope.interface import Interface
@@ -69,7 +69,7 @@ class IAnnotations(IAnnotatable):
         """
 
 class IAttributeAnnotatable(IAnnotatable):
-    """Marker indicating that annotations can be stored on an attribute
+    """Marker indicating that annotations can be stored on an attribute.
     
     This is a marker interface giving permission for an IAnnotations
     adapter to store data in an attribute named __annotations__.
