@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.7 2003/08/20 18:21:09 philikon Exp $
+$Id: browser.py,v 1.8 2003/09/24 17:22:06 sidnei Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -165,3 +165,4 @@ class IGlobalBrowserMenuService(IBrowserMenuService):
     def menuItem(self, menu_id, interface, action, title,
                  description='', filter_string=None, permission=None):
         """Add a menu item to a specific menu."""
+
