@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-  $Id: IOrderedContainer.py,v 1.2 2002/06/10 23:27:55 jim Exp $
+  $Id: IOrderedContainer.py,v 1.3 2002/10/04 17:46:49 jim Exp $
 """
 
 from Interface import Interface
@@ -23,6 +23,8 @@ class IReadOrderedContainer(Interface):
     def getObjectPosition(id):
         """Get the position of the object having the id.
         """
+
+Read = IReadOrderedContainer
     
 class IWriteOrderedContainer(Interface):
 
@@ -51,6 +53,7 @@ class IWriteOrderedContainer(Interface):
         """Move the specified objects (via ids) to the bottom.
         """
 
+Write = IWriteOrderedContainer
 
 class IOrderedContainer(IReadOrderedContainer, IWriteOrderedContainer):
     """This interface adds functionality to containers that will allow
