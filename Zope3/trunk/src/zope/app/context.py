@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.1 2003/06/01 17:22:10 jim Exp $
+$Id: context.py,v 1.2 2003/06/01 17:23:34 jim Exp $
 """
 
 from zope.interface import moduleProvides
@@ -36,72 +36,6 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 
 moduleProvides(IContextWrapper)
 __all__ = tuple(IContextWrapper)
-
-
-class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
-    """Support for interface declarations on decorators
-
-    >>> from zope.context import Wrapper
-    >>> from zope.interface import *
-    >>> class I1(Interface):
-    ...     pass
-    >>> class I2(Interface):
-    ...     pass
-    >>> class I3(Interface):
-    ...     pass
-    >>> class I4(Interface):
-    ...     pass
-
-    >>> class D1(Wrapper):
-    ...   implements(I1)
-
-
-    >>> class D2(Wrapper):
-    ...   implements(I2)
-
-    >>> class X:
-    ...   implements(I3)
-
-    >>> x = X()
-    >>> directlyProvides(x, I4)
-
-    Interfaces of X are ordered with the directly-provided interfaces first
-
-    >>> [interface.__name__ for interface in list(providedBy(x))]
-    ['I4', 'I3']
-
-    When we decorate objects, what order should the interfaces come in?
-    One could argue that decorators are less specific, so they should come last.
-
-    >>> [interface.__name__ for interface in list(providedBy(D1(x)))]
-    ['I4', 'I3', 'I1']
-
-    >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
-    ['I4', 'I3', 'I1', 'I2']
-
-    $Id: context.py,v 1.1 2003/06/01 17:22:10 jim Exp $
-    """
-
-    def __get__(self, inst, cls):
-        if inst is None:
-            return getObjectSpecification(cls)
-        else:
-            provided = providedBy(getProxiedObject(inst))
-
-            # Use type rather than __class__ because inst is a proxy and
-            # will return the proxied object's class.
-            cls = type(inst) 
-            return ObjectSpecification(provided, cls)
-
-class ZopeWrapper(BaseWrapper):
-
-    def __reduce_ex__(self, proto=None):
-        raise PicklingError, "Zope context wrappers cannot be pickled"
-
-    __reduce__ = __reduce_ex__
-
-    __providedBy__ = DecoratorSpecificationDescriptor()
-
 
 def ContextWrapper(_ob, _parent, **kw):
     
