@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.5 2003/03/24 16:33:15 mgedmin Exp $
+$Id: __init__.py,v 1.6 2003/04/02 17:33:39 mgedmin Exp $
 """
 from types import StringTypes
 
@@ -206,6 +206,7 @@ def parseDSN(dsn):
 
     # Get username and password from DSN
     if dsn:
+        # XXX: what if password contains a colon?
         username, password = dsn.split(':')
     else:
         username, password = '', ''
