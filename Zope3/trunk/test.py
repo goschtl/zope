@@ -530,7 +530,7 @@ def process_args(argv=None):
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDgGhLmptTuv",
-                                   ["all", "help", "libdir"])
+                                   ["all", "help", "libdir="])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % sys.argv[0]
@@ -565,6 +565,8 @@ def process_args(argv=None):
                 print "-G argument must be DEBUG_ flag, not", repr(v)
                 sys.exit(1)
             gcflags.append(v)
+        elif k == '--libdir':
+            libdir = v
         elif k == "-L":
             LOOP = 1
         elif k == "-m":
