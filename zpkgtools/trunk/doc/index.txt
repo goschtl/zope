@@ -5,6 +5,9 @@ The Zope Packaging Tools
 Overview
 --------
 
+`Packaging Tool Quick Start <quickstart.html>`_
+  How to get started with |zpkg|_.
+
 `Running the zpkg tool <zpkg.html>`_
   Essentially a man page for |zpkg|_.  This describes command line
   options and configuration of the tool.
