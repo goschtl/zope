@@ -113,6 +113,20 @@ class Test(unittest.TestCase):
         p._p_activate()
         self.assertEqual(p.x, 42)
 
+    def testDeactivate(self):
+        p = self.klass()
+        dm = DM()
+        p._p_oid = 1
+        p._p_deactivate() # this deactive has no effect
+        self.assertEqual(p._p_state, 0)
+        p._p_jar = dm
+        p._p_changed = 0
+        p._p_deactivate()
+        # XXX does this really test the activate method?
+        self.assertEqual(p._p_state, 3)
+        p._p_activate()
+        self.assertEqual(p.x, 42)
+
     def testInterface(self):
         self.assert_(IPersistent.isImplementedByInstancesOf(Persistent),
                      "%s does not implement IPersistent" % Persistent)

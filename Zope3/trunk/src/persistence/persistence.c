@@ -18,7 +18,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.3 2002/12/31 21:12:34 jeremy Exp $\n";
+"$Id: persistence.c,v 1.4 2003/02/24 22:03:52 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -41,15 +41,15 @@ _PyPersist_RegisterDataManager(PyPersistObject *self)
 {
     PyObject *meth, *arg, *result;
 
-    if (self->po_dm == NULL)
+    if (!self->po_dm)
 	return 0;
-    if (s_register == NULL) 
+    if (!s_register)
 	s_register = PyString_InternFromString("register");
     meth = PyObject_GetAttr((PyObject *)self->po_dm, s_register);
     if (meth == NULL)
 	return 0;
     arg = PyTuple_New(1);
-    if (arg == NULL) {
+    if (!arg) {
 	Py_DECREF(meth);
 	return 0;
     }
@@ -218,7 +218,7 @@ persist_activate(PyPersistObject *self)
 static PyObject *
 persist_deactivate(PyPersistObject *self)
 {
-    if (self->po_state == UPTODATE && self->po_dm) {
+    if (self->po_state == UPTODATE && self->po_dm && self->po_oid) {
 	PyObject **pdict = _PyObject_GetDictPtr((PyObject *)self);
 	if (pdict && *pdict) {
 	    Py_DECREF(*pdict);
@@ -280,7 +280,7 @@ persist_set_state(PyPersistObject *self, PyObject *v)
     /* If the object isn't registered with a data manager, setting its
        state is meaningless.
      */
-    if (self->po_dm == NULL || self->po_oid == NULL)
+    if (!self->po_dm || !self->po_oid)
 	return 0;
 
     if (v == Py_None)
