@@ -2,7 +2,6 @@ embedded -a Components/principia Components/ExtensionClass \
   Packages/BoboPOS2 Components/Commercial Components/cPickle \
   Packages/DocumentTemplate Packages/SearchIndex
 
-
 PrincipiaSBlib -d lib Principia/lib pledge.txt
 PrincipiaSB Principia README &PrincipiaSBlib
 
