@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.14 2003/03/30 15:40:57 sidnei Exp $
+Revision information: $Id: contents.py,v 1.15 2003/03/30 17:28:31 sidnei Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -119,7 +119,6 @@ class Contents(BrowserView):
     def pasteObjects(self):
         """Iterate over clipboard contents and perform the
            move/copy operations"""
-        root = getRoot(self.context)
         target = self.context
 
         user = self.request.user

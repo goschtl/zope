@@ -14,10 +14,11 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.8 2003/03/13 18:49:00 alga Exp $
+$Id: test_contents.py,v 1.9 2003/03/30 17:28:32 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.adapter import provideAdapter
 
@@ -26,13 +27,38 @@ from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.container.zopecontainer import ZopeContainerAdapter
+
+from zope.app.traversing import traverse
+from zope.app.traversing import IObjectName
+from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.interfaces.container import IPasteTarget
+from zope.app.interfaces.container import IMoveSource
+from zope.app.interfaces.container import ICopySource
+from zope.app.interfaces.container import IPasteNamesChooser
+
+from zope.app.traversing.adapters import ObjectName
 from zope.app.copypastemove import ObjectMover
+from zope.app.copypastemove import ObjectCopier
+from zope.app.container.copypastemove import PasteTarget
+from zope.app.container.copypastemove import MoveSource
+from zope.app.container.copypastemove import CopySource
+from zope.app.container.copypastemove import PasteNamesChooser
+from zope.app.container.zopecontainer import ZopeContainerAdapter
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
 from zope.interface import Interface
 from zope.proxy.introspection import removeAllProxies
 
+from zope.app.interfaces.copypastemove import IPrincipalClipboard
+from zope.app.copypastemove import PrincipalClipboard
+from zope.component import getAdapter, getService, getServiceManager
+from zope.app.services.principalannotation \
+    import PrincipalAnnotationService
+from zope.app.interfaces.services.principalannotation \
+    import IPrincipalAnnotationService
+from zope.app.interfaces.annotation import IAnnotations
 
 class BaseTestContentsBrowserView(PlacelessSetup):
     """Base class for testing browser contents.
@@ -147,27 +173,76 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         urls = map(lambda x: x['url'], info_list)
         self.assert_('subcontainer' in urls)
 
-    # XXX This test fails due to:
-    # - inadequate setup and
-    # - bugs in the code it's testing.
-    # :(
-    def XXXtestRename(self):
-        container = self._TestView__newContext()
-        fc = self._TestView__newView(container)
-        ids=['document1', 'document2']
-        for id in ids:
-            document = Document()
-            container.setObject(id, document)
-        fc.renameObjects(ids, ['document1_1', 'document2_2'])
-        self.failUnless('document1_1' not in container)
-        self.failIf('document_1 in container')
-
 class IDocument(Interface):
     pass
 
 class Document:
     __implements__ = IDocument
 
+
+class TestCutCopyPaste(PlacefulSetup, TestCase):
+    
+    def setUp(self):
+        PlacefulSetup.setUp(self)
+        PlacefulSetup.buildFolders(self)
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
+        provideAdapter(ITraversable, IZopeContainer, ZopeContainerAdapter)
+        provideAdapter(None, IObjectCopier, ObjectCopier)
+        provideAdapter(None, IObjectMover, ObjectMover)
+        provideAdapter(IContainer, IPasteTarget, PasteTarget)
+        provideAdapter(IContainer, IMoveSource, MoveSource)
+        provideAdapter(IContainer, ICopySource, CopySource)
+        provideAdapter(None, IObjectName, ObjectName)
+        provideAdapter(IContainer, IPasteNamesChooser, PasteNamesChooser)
+
+        provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
+        root_sm = getServiceManager(None)
+        svc = PrincipalAnnotationService()
+        root_sm.defineService("PrincipalAnnotation", \
+            IPrincipalAnnotationService)
+        root_sm.provideService("PrincipalAnnotation", svc)
+
+    def testRename(self):
+        container = traverse(self.rootFolder, 'folder1')
+        fc = self._TestView__newView(container)
+        ids=['document1', 'document2']
+        for id in ids:
+            document = Document()
+            container.setObject(id, document)
+        fc.renameObjects(ids, ['document1_1', 'document2_2'])
+        self.failIf('document1_1' not in container)
+        self.failIf('document1' in container)
+
+    def testCopyPaste(self):
+        container = traverse(self.rootFolder, 'folder1')
+        fc = self._TestView__newView(container)
+        ids=['document1', 'document2']
+        for id in ids:
+            document = Document()
+            container.setObject(id, document)
+        fc.copyObjects(ids)
+        fc.pasteObjects()
+        self.failIf('document1' not in container)
+        self.failIf('document2' not in container)
+        self.failIf('copy_of_document1' not in container)
+        self.failIf('copy_of_document2' not in container)
+
+    def testCutPaste(self):
+        container = traverse(self.rootFolder, 'folder1')
+        fc = self._TestView__newView(container)
+        ids=['document1', 'document2']
+        for id in ids:
+            document = Document()
+            container.setObject(id, document)
+        fc.cutObjects(ids)
+        fc.pasteObjects()
+        self.failIf('document1' not in container)
+        self.failIf('document2' not in container)
+
+    def _TestView__newView(self, container):
+        from zope.app.browser.container.contents import Contents
+        from zope.publisher.browser import TestRequest
+        return Contents(container, TestRequest())
 
 class Test(BaseTestContentsBrowserView, TestCase):
 
@@ -185,7 +260,10 @@ class Test(BaseTestContentsBrowserView, TestCase):
         return Contents(container, TestRequest())
 
 def test_suite():
-    return makeSuite(Test)
+    return TestSuite((
+        makeSuite(Test),
+        makeSuite(TestCutCopyPaste),
+        ))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
