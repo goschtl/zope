@@ -14,7 +14,7 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.11 2003/06/03 14:53:17 stevea Exp $
+$Id: placelesssetup.py,v 1.12 2003/11/21 17:11:36 jim Exp $
 """
 
 from zope.component import getServiceManager
@@ -58,3 +58,6 @@ class PlacelessSetup:
 
         clearEvents()
         eventPublisher.globalSubscribe(EventRecorder)
+
+import zope.testing.cleanup
+zope.testing.cleanup.addCleanUp(clearEvents)
