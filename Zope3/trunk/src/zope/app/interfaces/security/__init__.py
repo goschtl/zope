@@ -11,7 +11,7 @@ class IPrincipal(Interface):
     used to list principals in management interfaces. For example, a
     system in which other meta-data are provided for principals might
     extend IPrincipal and register a view for the extended interface
-    that displays the extended winformation. We'll probably want to
+    that displays the extended information. We'll probably want to
     define a standard view name (e.g.  'inline_summary') for this
     purpose.
     """
