@@ -15,7 +15,7 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.7 2003/08/17 06:07:13 philikon Exp $
+$Id: service.py,v 1.8 2003/09/22 22:37:23 jim Exp $
 """
 import rfc822
 import threading
@@ -26,7 +26,6 @@ from cStringIO import StringIO
 from random import randrange
 from time import strftime
 from socket import gethostname
-from time import sleep
 
 from zope.interface import implements
 from zope.app.interfaces.mail import IDirectMailService, IQueuedMailService
@@ -119,6 +118,11 @@ class QueueProcessorThread(threading.Thread):
     mail:queuedService directive handler.
     """
     log = logging.getLogger("QueueProcessorThread")
+    __stopped = False
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.__event = threading.Event()
 
     def setMaildir(self, maildir):
         """Set the maildir.
@@ -160,6 +164,7 @@ class QueueProcessorThread(threading.Thread):
         return fromaddr, toaddrs, rest
 
     def run(self, forever=True):
+
         while True:
             for filename in self.maildir:
                 try:
@@ -181,8 +186,14 @@ class QueueProcessorThread(threading.Thread):
                                    fromaddr, ", ".join(toaddrs), exc_info=1)
             else:
                 if forever:
-                    sleep(3)
+                    self.__event.wait(3)
+                    if self.__stopped:
+                        return
 
             # A testing plug
             if not forever:
                 break
+
+    def stop(self):
+        self.__stopped = True
+        self.__event.set()
