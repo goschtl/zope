@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemaspec.py,v 1.2 2002/12/12 18:28:03 faassen Exp $
+$Id: test_schemaspec.py,v 1.3 2002/12/12 18:54:20 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -208,7 +208,46 @@ class SchemaSpecTests(TestCase):
         f.close()
         self.assertEquals(source.strip(), s.generateModuleSource().strip())
 
+    def test_prepareSetstate(self):
+        from Zope.App.schemagen.schemaspec import prepareSetstate
+        class DummySchemaClass(object):
+            pass
+        obj = DummySchemaClass()
+        state = { '__schema_version__': 1, 'foo': 'baz' }
+        version = 2
+        d = prepareSetstate(obj, state, version)
+        self.assertEquals({ 1: 1}, d)
+        self.assertEquals(obj.foo, 'baz')
+        self.assertEquals(obj.__schema_version__, 2)
+        
+class ModuleUsageTests(TestCase):
+
+    def executeModule(self, s):
+        source = s.generateModuleSource()
+        g = {}
+        exec source in g
+        del g['__builtins__'] # to ease inspection during debugging
+        return g
+        
+    def test_setstate(self):
+        s = SchemaSpec('IFoo', 'Foo')
+        s.addField('alpha', Text(title=u'Alpha'))
+        s.addField('beta', Text(title=u'Beta', default=u"default"))
+        g = self.executeModule(s)
+        foo = g['Foo']()
+        self.assertEquals(foo.__schema_version__, 2)
+        self.assertEquals(foo.beta, u"default")
+        
+        foo.beta = u"Frog"
+        # this is evil, but we do this for testing
+        foo.__schema_version__ = 1
+        # do the automatical upgrade according to schema
+        foo.__setstate__(foo.__getstate__())
+        self.assertEquals(foo.beta, u"default")
+        self.assertEquals(foo.__schema_version__, 2)
+        
 def test_suite():
     return TestSuite(
         (makeSuite(SchemaSpecTests),
+         makeSuite(ModuleUsageTests),
          ))

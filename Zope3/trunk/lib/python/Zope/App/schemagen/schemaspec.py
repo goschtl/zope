@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: schemaspec.py,v 1.2 2002/12/12 18:28:03 faassen Exp $
+$Id: schemaspec.py,v 1.3 2002/12/12 18:54:20 faassen Exp $
 """
 __metaclass__ = type
 
@@ -120,7 +120,8 @@ class SchemaSpec(Persistent):
         'transformations = %s.prepareSetstate(self, state, %r)' % (
             _helper_module, self._current_version),
         'if transformations is None:',
-        '    return'
+        '    return',
+        'dict = self.__dict__'
         ]
         count = self._current_version - len(self._history)
         for item in self._history:
@@ -227,10 +228,11 @@ class MoveField:
 def prepareSetstate(obj, state, schema_version):
     obj.__dict__.update(state)
     state_version = state['__schema_version__']
-    if current_version == state_version:
+    if schema_version == state_version:
         return None
-    assert state_version < current_version
-    self.__schema_version__ = schema_version
-    for i in range(state_version, current_version):
+    assert state_version < schema_version
+    obj.__schema_version__ = schema_version
+    d = {}
+    for i in range(state_version, schema_version):
         d[i] = 1
     return d

@@ -2,6 +2,7 @@
         transformations = schemaspec.prepareSetstate(self, state, 6)
         if transformations is None:
             return
+        dict = self.__dict__
         if 0 in transformations:
             schemaspec.AddField.update(dict, state, 'alpha')
         if 1 in transformations:

@@ -23,6 +23,7 @@ class FooClass(Persistent):
         transformations = schemaspec.prepareSetstate(self, state, 1)
         if transformations is None:
             return
+        dict = self.__dict__
         if 0 in transformations:
             schemaspec.AddField.update(dict, state, 'alpha')
 
