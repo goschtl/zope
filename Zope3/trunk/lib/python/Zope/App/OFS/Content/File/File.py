@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
+$Id: File.py,v 1.9 2002/12/04 20:49:38 gvanrossum Exp $
 """
 from types import StringType, UnicodeType, NoneType
 
@@ -21,11 +21,10 @@ from Persistence import Persistent
 from Transaction import get_transaction
 
 from Zope.App.OFS.Content.File.FileChunk import FileChunk
-from Zope.App.OFS.Content.File.IFile import IFile
 from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
-from Zope.App.OFS.Content.File.IFile import IFile
+from Zope.App.OFS.Content.File.IFile import IFile, IReadFile
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -174,3 +173,22 @@ class File(Persistent):
 
     size = property(getSize, None, None,
                     """Specifies the size of the file in bytes. Read only.""")
+
+
+# Adapter for ISearchableText
+
+from Zope.App.index.text.interfaces import ISearchableText
+
+class SearchableText:
+
+    __implements__ = ISearchableText
+    __used_for__ = IReadFile
+
+    def __init__(self, file):
+        self.file = file
+
+    def getSearchableText(self):
+        if self.file.contentType == "text/plain":
+            return [unicode(self.file.data)]
+        else:
+            return None

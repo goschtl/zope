@@ -45,6 +45,10 @@
 
 </content>
 
+<adapter factory=".File.SearchableText"
+         provides="Zope.App.index.text.interfaces.ISearchableText"
+         for="Zope.App.OFS.Content.File.IFile.IReadFile" />
+
 <include package=".Views" />
 
 </zopeConfigure>
