@@ -155,6 +155,7 @@
 
   <!-- Additional packages -->
 
+  <include package="zope.app.securitypolicy" />
   <include package="zope.app.tree" />
   <include package="zope.app.apidoc" />
 

@@ -7,9 +7,6 @@
   <include package="zope.products.externaleditor"/>
   -->
 
-  <!-- The default security policy, including roles. -->
-  <include package="zope.products.securitypolicy"/>
-
   <!-- Example:
        <include package="zopeproducts.demo.jobboard" />
   -->
