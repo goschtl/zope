@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: test_modulegen.py,v 1.4 2002/12/12 12:14:52 faassen Exp $
+"""
+$Id: test_modulegen.py,v 1.5 2002/12/12 17:40:26 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -67,7 +64,7 @@ class GenerateModuleSourceTestsBase(TestCase):
         self.assertEquals(foo.__schema_version__, 0)
         for field_name, field in self.fields:
             self.assertEquals(field.default, getattr(foo, field_name))
-        
+
 class GenerateModuleSourceTestsEmpty(GenerateModuleSourceTestsBase):
     fields = []
 
@@ -77,9 +74,40 @@ class GenerateModuleSourceTests1(GenerateModuleSourceTestsBase):
               ('hoi', Float(title=u"Float")),
               ('dag', Int(title=u"Dag", default=42)),]
 
+class ExtraImportsAndMethodsTests(TestCase):
+    fields = [('foo', Text(title=u"Foo")),
+              ('bar', Int(title=u"Bar")),
+              ('hoi', Float(title=u"Float")),
+              ('dag', Int(title=u"Dag", default=42)),]
+    
+    def test_extraMethods(self):
+        extra_methods = """\
+    def forGreatJustice(self):
+        return 'zig!'
+"""
+        source = generateModuleSource('IFoo', self.fields, "Foo",
+                                      extra_methods=extra_methods)
+        g = {}
+        exec source in g
+        del g['__builtins__'] # to ease inspection during debugging
+        foo = g['Foo']()
+        self.assertEquals('zig!', foo.forGreatJustice())
+
+    def test_extraImports(self):
+        # we import ourselves, as then there's no dependencies
+        from Zope.App.schemagen.tests import test_modulegen
+        extra_imports = "from Zope.App.schemagen.tests import test_modulegen"
+        source = generateModuleSource('IFoo', self.fields, "Foo",
+                                      extra_imports=extra_imports)
+        g = {}
+        exec source in g
+        del g['__builtins__'] # to ease inspection during debugging
+        self.assert_(g['test_modulegen'] is test_modulegen)
+        
 def test_suite():
     return TestSuite(
         (makeSuite(GenerateModuleSourceTestsEmpty),
          makeSuite(GenerateModuleSourceTests1),
+         makeSuite(ExtraImportsAndMethodsTests),
          ))
 
