@@ -42,8 +42,8 @@
   <class class=".principalpermission.AnnotationPrincipalPermissionManager">
     <require 
         permission="zope.Security"
-        attributes="grantPermissionToRole denyPermissionToRole
-                    unsetPermissionFromRole" 
+        attributes="grantPermissionToPrincipal denyPermissionToPrincipal
+                    unsetPermissionForPrincipal" 
         />
     <allow interface=".interfaces.IPrincipalPermissionMap" />
   </class>
