@@ -10,10 +10,11 @@
 
 $Id$
 """
-from webdav.NullResource import NullResource
+from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.traversing.interfaces import ITraverser
 from monkey import DebugFlags
 
 class FakeRequest:
@@ -53,6 +54,11 @@ class Viewable:
         except ComponentLookupError:
             pass
         try:
+            kw = dict(path=[name], request=REQUEST)
+            return ITraverser(self).traverse(**kw).__of__(self)
+        except (ComponentLookupError, NotFoundError, AttributeError):
+            pass
+        try:
             return getattr(self, name)
         except AttributeError:
             pass
@@ -60,5 +66,4 @@ class Viewable:
             return self[name]
         except (AttributeError, KeyError):
             pass
-
         return self.__fallback_traverse__(REQUEST, name)
