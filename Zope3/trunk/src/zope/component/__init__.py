@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: __init__.py,v 1.3 2003/02/03 17:43:29 stevea Exp $
 """
 
 from zope.component.interfaces import IComponentArchitecture
@@ -97,22 +97,30 @@ def getSkin(wrapped_object, name, view_type):
 
 # View service
 
-def getView(wrapped_object, name, request):
-    return getService(wrapped_object,
+def getView(wrapped_object, name, request, context=None):
+    if context is None:
+        context = wrapped_object
+    return getService(context,
                       'Views').getView(wrapped_object, name, request)
 
-def queryView(wrapped_object, name, request, default=None):
-    return getService(wrapped_object,
+def queryView(wrapped_object, name, request, default=None, context=None):
+    if context is None:
+        context = wrapped_object
+    return getService(context,
                       'Views').queryView(wrapped_object, name,
                                          request, default)
 
-def getDefaultViewName(wrapped_object, request):
-    return getService(wrapped_object,
+def getDefaultViewName(wrapped_object, request, context=None):
+    if context is None:
+        context = wrapped_object
+    return getService(context,
                       'Views').getDefaultViewName(wrapped_object,
                                                   request)
 
-def queryDefaultViewName(wrapped_object, request, default=None):
-    return getService(wrapped_object,
+def queryDefaultViewName(wrapped_object, request, default=None, context=None):
+    if context is None:
+        context = wrapped_object
+    return getService(context,
                       'Views').queryDefaultViewName(wrapped_object,
                                                     request, default)
 

@@ -54,8 +54,7 @@ from zope.component.tests.placelesssetup import PlacelessSetup
 class Test(PlacelessSetup, unittest.TestCase):
 
     def testAdapter(self):
-        from zope.component \
-             import getAdapter, getService, queryAdapter
+        from zope.component import getAdapter, getService, queryAdapter
         from zope.component.exceptions import ComponentLookupError
 
         # If an object implements the interface you want to adapt to,
@@ -74,12 +73,34 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
+    def testContextArgument(self):
+        # Basically, the same tests as in testAdapter, but with the
+        # 'context' argument given. As this is only testing the global
+        # service, this is pretty much a no-operation.
+        from zope.component import getAdapter, getService, queryAdapter
+        from zope.component.exceptions import ComponentLookupError
+
+        self.assertEquals(getAdapter(ob, I1, context=None), ob)
+        self.assertEquals(getAdapter(ob, I1, context=ob), ob)
+
+        # If an adapter isn't registered for the given object and interface,
+        # and you provide no default, raise ComponentLookupError...
+        self.assertRaises(ComponentLookupError, getAdapter, ob, I2,
+                          context=ob)
+
+        # ...otherwise, you get the default
+        self.assertEquals(queryAdapter(ob, I2, Test, context=ob), Test)
+
+        getService(None, 'Adapters').provideAdapter(I1, I2, Comp)
+        c = getAdapter(ob, I2, context=ob)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, ob)
+
     def testNamedAdapter(self):
 
         self.testAdapter()
 
-        from zope.component \
-             import getAdapter, getService, queryAdapter
+        from zope.component import getAdapter, getService, queryAdapter
         from zope.component.exceptions import ComponentLookupError
 
         # If an object implements the interface you want to adapt to,
@@ -170,6 +191,37 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.assertEquals(queryView( ob, 'foo2', Request(I1), None), None)
 
+    def testViewWithContextArgument(self):
+        # Basically the same as testView, but exercising the context
+        # argument. As this only tests global views, the context
+        # argument is pretty much a no-operation.
+        from zope.component import getView, queryView, getService
+        from zope.component.exceptions import ComponentLookupError
+
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I1), context=ob)
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I2), context=ob)
+        self.assertEquals(queryView(ob, 'foo', Request(I2), Test, context=ob),
+                          Test)
+
+        getService(None, 'Views').provideView(I1, 'foo', I2, [Comp])
+        c = getView(ob, 'foo', Request(I2), context=ob)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, ob)
+
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo2', Request(I1), context=ob)
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo2', Request(I2), context=ob)
+        self.assertEquals(queryView(ob, 'foo2', Request(I2), Test,
+                                    context=ob),
+                          Test)
+
+        self.assertEquals(queryView(ob, 'foo2', Request(I1), None,
+                                    context=ob),
+                          None)
+
     def testDefaultViewName(self):
         from zope.component import getService
         from zope.exceptions import NotFoundError
@@ -184,16 +236,11 @@ class Test(PlacelessSetup, unittest.TestCase):
                           viewService.getDefaultViewName,
                           ob, Request(I1))
 
-
-
-
     # The following tests are copied from
     # Interface.Registry.tests.IAdapterRegistry
 
-
     def __registery(self):
-        from zope.component.adapter \
-             import GlobalAdapterService
+        from zope.component.adapter import GlobalAdapterService
 
         registry = GlobalAdapterService()
 
@@ -203,7 +250,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         registry.provideAdapter(R2, P3, [R2_P3])
 
         return registry
-
 
     def test_getRegisteredMatching_all(self):
         registry = self.__registery()
@@ -309,7 +355,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         expect.sort()
         self.assertEqual(got, expect)
 
-
     def test_getRegisteredMatching_for_and_provided_exact(self):
         registry = self.__registery()
 
@@ -325,10 +370,6 @@ class Test(PlacelessSetup, unittest.TestCase):
             ]
         expect.sort()
         self.assertEqual(got, expect)
-
-
-
-
 
 def test_suite():
     loader = unittest.TestLoader()
