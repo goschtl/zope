@@ -13,11 +13,12 @@
 ##############################################################################
 """Basic Page Template expression types.
 
-$Id: Expressions.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: Expressions.py,v 1.3 2002/11/07 14:27:37 ryzaja Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 import re, sys
+from types import StringTypes
 
 from TALES import ExpressionEngine, CompilerError, RegistrationError
 from TALES import _valid_name, _parse_expr, NAME_RE, Undefined
@@ -59,14 +60,14 @@ class SubPathExpr:
         dp.reverse()
 
     def _eval(self, econtext,
-              list=list, isinstance=isinstance, StringType=type('')):
+              list=list, isinstance=isinstance):
         vars = econtext.vars
         path = self._path
         if self._dp:
             path = list(path) # Copy!
             for i, varname in self._dp:
                 val = vars[varname]
-                if isinstance(val, StringType):
+                if isinstance(val, StringTypes):
                     path[i] = val
                 else:
                     # If the value isn't a string, assume it's a sequence
