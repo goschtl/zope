@@ -161,8 +161,9 @@ class RequestStorage(object):
     'add' needs extra locking.
     """
 
-    _requests = {}
-    _lock = threading.Lock()
+    def __init__(self):
+        self._requests = {}
+        self._lock = threading.Lock()
 
     def add(self, rr):
         """Add a RecordedRequest to the list."""
@@ -212,10 +213,12 @@ class ZODBBasedRequestStorage(object):
           the problem, or remove this class.
     """
 
-    _ram_storage = ZODB.MappingStorage.MappingStorage()
-    _ram_db = ZODB.DB(_ram_storage)
-    _conns = {}
     _key = 'RequestStorage'
+
+    def __init__(self):
+        self._ram_storage = ZODB.MappingStorage.MappingStorage()
+        self._ram_db = ZODB.DB(self._ram_storage)
+        self._conns = {}
 
     def _getData(self):
         """Get the shared data container from the mapping storage."""
