@@ -1,0 +1,154 @@
+import Zope
+
+from unittest import TestSuite, makeSuite, main
+from types import ListType
+from os import remove
+from os.path import join
+
+from AccessControl.Permission import Permission
+from Products.CMFCore.tests.base.testcase import RequestTest
+from test_DirectoryView import _registerDirectory, _prefix
+from Globals import DevelopmentMode
+
+class FSSecurityBase( RequestTest ):
+
+    def _checkSettings(self,object,permissionname,acquire=0,roles=[]):
+        # check the roles and acquire settings for a permission on an
+        # object are as expected
+        happy=0
+        for pstuff in object.ac_inherited_permissions(1):
+            name,value = pstuff[:2]
+            if name==permissionname:
+                p = Permission(name,value,object)
+                groles=p.getRoles(default=[])
+                acquired=isinstance(groles,ListType)
+                expected={}
+                for role in roles:
+                    expected[role]=1
+                got={}
+                for role in groles:
+                    got[role]=1
+                self.assertEqual(expected,got)
+                self.assertEqual(acquire,acquired)
+                happy=1
+        if not happy:
+            raise ValueError,"'%s' not found in permissions: %s" % (permissionname,all_names)
+            
+    def _writeFile(self, filename, stuff):
+        # write some stuff to a file on disk
+        thePath = join(_prefix,filename)
+        f = open(thePath,'w')
+        f.write(stuff)
+        f.close()
+        
+    def _deleteFile(self,filename):
+        # nuke it
+        remove(join(_prefix,filename))
+        
+    def setUp( self ):
+        # initialise skins
+        _registerDirectory(self)
+        # set up ZODB
+        RequestTest.setUp(self)
+        # put object in ZODB
+        root=self.root
+        try: root._delObject('fake_skin')
+        except AttributeError: pass
+        root._setObject( 'fake_skin', self.ob.fake_skin )
+        self.layer = root.fake_skin
+
+    def tearDown( self ):
+        try:
+            self._deleteFile('test3.py.security')
+        except:
+            pass
+        RequestTest.tearDown(self)
+        
+class FSSecurityTests( FSSecurityBase ):
+
+    def test_basicPermissions( self ):
+        """ Test basic FS permissions """
+        # check a normal method is as we'd expect
+        self._checkSettings(self.layer.test1,'View',1,[])
+        # now do some checks on the method with FS permissions
+        self._checkSettings(self.layer.test2,'View',1,['Manager','Owner'])
+        self._checkSettings(self.layer.test2,'Access contents information',0,[])
+
+    def test_invalidPermissionNames( self ):
+        """ Test for an invalid permission name """
+        # baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+        # add .rpm with dodgy permission name
+        self._writeFile('test3.py.security','Access stoopid contents::')
+        # check baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+        
+    def test_invalidRoleNames( self ):
+        """ Test for an invalid role name """
+        # baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+        # add dodgy .rpm
+        self._writeFile('test3.py.security','view::Monkey, Butler, Manager ')
+        # check baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+
+    def test_invalidAcquireNames( self ):
+        """ Test for an invalid spelling of acquire """
+        # baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+        # add dodgy .rpm
+        self._writeFile('test3.py.security','View:aquire:')
+        # check baseline
+        self._checkSettings(self.layer.test3,'View',1,[])
+
+if DevelopmentMode:
+
+    class DebugModeTests( FSSecurityBase ):
+        
+        def test_addPRM( self ):
+            """ Test adding of a .security """
+            # baseline
+            self._checkSettings(self.layer.test3,'View',1,[])
+            # add
+            self._writeFile('test3.py.security','View:acquire:Manager')
+            # test            
+            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+
+        def test_editPRM( self ):
+            """ Test editing a .security """
+            # baseline
+            self._writeFile('test3.py.security','View::Manager,Anonymous')
+            self._checkSettings(self.layer.test3,'View',0,['Manager','Anonymous'])
+            # edit
+            self._writeFile('test3.py.security','View:acquire:Manager')
+            # test            
+            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+
+        def test_delPRM( self ):
+            """ Test deleting of a .security """
+            # baseline
+            self._checkSettings(self.layer.test3,'View',1,[])
+            self._writeFile('test3.py.security','View:acquire:Manager')
+            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+            # delete
+            self._deleteFile('test3.py.security')
+            # test
+            self._checkSettings(self.layer.test3,'View',1,[])
+
+else:
+
+    class DebugModeTests( FSSecurityBase ):
+        pass
+
+def test_suite():
+    return TestSuite((
+        makeSuite(FSSecurityTests),
+        makeSuite(DebugModeTests),        
+        ))
+
+if __name__ == '__main__':
+    main(defaultTest='test_suite')
+
+
+
+
