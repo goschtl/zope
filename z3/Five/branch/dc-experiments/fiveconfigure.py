@@ -117,6 +117,10 @@ def viewable(_context, class_):
         args = (class_,)
         )
 
+def isFiveMethod(m):
+    marker = '__five_method__'
+    return getattr(m, marker, None)
+
 def classViewable(class_):
     # If a class already has this attribute, it means it is either a
     # subclass of api.Viewable or was already processed with this
@@ -125,11 +129,10 @@ def classViewable(class_):
     # a base class. In this case, we suppose that the class probably
     # didn't bother with the base classes attribute anyway.
     if (hasattr(class_, '__five_viewable__') and
-        hasattr(class_, '__dict__') and
-        (not class_.__dict__.has_key('__browser_default__') and
-         not class_.__dict__.has_key('__call__') and
-         not class_.__dict__.has_key('index_html'))):
-        return
+        hasattr(class_, '__dict__')):
+        if (hasattr(class_, '__browser_default__') and
+            isFiveMethod(class_.__browser_default__)):
+            return
 
     if not hasattr(class_, '__dict__'):
         # XXX Should raise an error maybe?
@@ -144,27 +147,19 @@ def classViewable(class_):
         setattr(class_, "__fallback_default__",
                 Viewable.__fallback_default__)
 
-    if class_.__dict__.has_key('index_html'):
-        # if there's an existing index_html already, use that
-        # as the fallback
-        setattr(class_, "fallback_index_html__",
-                class_.index_html)
-    else:
-        setattr(class_, "fallback_index_html__",
-                Viewable.fallback_index_html__)
-
-    if class_.__dict__.has_key('__call__'):
-        # if there's an existing __call__ already, use that
-        # as the fallback
-        setattr(class_, "fallback_call__",
-                class_.__call__)
-    else:
-        setattr(class_, "fallback_call__",
-                Viewable.fallback_call__)
+    if hasattr(class_, '__call__'):
+        # Only touch __call__ if the class is already callable.
+        if class_.__dict__.has_key('__call__'):
+            # if there's an existing __call__ already, use that
+            # as the fallback
+            setattr(class_, "fallback_call__",
+                    class_.__call__)
+        else:
+            setattr(class_, "fallback_call__",
+                    Viewable.fallback_call__)
+        setattr(class_, '__call__', Viewable.__call__)
 
 
     setattr(class_, '__browser_default__', Viewable.__browser_default__)
-    setattr(class_, '__call__', Viewable.__call__)
-    setattr(class_, 'index_html', Viewable.index_html)
     setattr(class_, '__five_viewable__', True)
 

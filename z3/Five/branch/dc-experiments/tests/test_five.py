@@ -225,11 +225,6 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view = self.folder.unrestrictedTraverse('testcall')
         self.assertEquals("Default __call__ called", view())
 
-    def test_existing_index(self):
-        view = self.folder.unrestrictedTraverse('testindex')
-        self.assertEquals("Default index_html called", view())
-
-
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """Test a few publishing features"""
 
