@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.13 2003/02/21 17:52:18 stevea Exp $
+$Id: utility.py,v 1.14 2003/03/05 13:13:40 stevea Exp $
 """
 __metaclass__ = type
 
@@ -50,7 +50,7 @@ def _fieldlist(names, schema):
     return fields
 
 def setUpWidget(view, name, field, value=None, prefix=None,
-                force=0, vname=None):
+                force=False, vname=None, context=None):
     """Set up a single view widget
 
     The widget will be an attribute of the view. If there is already
@@ -63,9 +63,12 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     # Has a (custom) widget already been defined?
     widget = getattr(view, name, None)
 
+    if context is None:
+        context = view.context
+
     if widget is None:
         # There isn't already a widget, create one
-        field = field.bind(view.context)
+        field = field.bind(context)
         if vname is None:
             vname = getDefaultViewName(field, view.request)
         widget = getView(field, vname, view.request)
@@ -76,7 +79,7 @@ def setUpWidget(view, name, field, value=None, prefix=None,
         if IViewFactory.isImplementedBy(widget):
             # This is a view factory, probably a custom widget.
             # Try to make it into a widget.
-            field = field.bind(view.context)
+            field = field.bind(context)
             widget = widget(field, view.request)
             if IWidget.isImplementedBy(widget):
                 # Yee ha! We have a widget now, save it
@@ -91,22 +94,32 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     if prefix:
         widget.setPrefix(prefix)
 
+    # XXX
+    # Only set data if the widget doesn't have any itself already from the
+    # request. This is a problem for something like a checkbox, where it
+    # always claims to have data, becuase when there is no name in the request
+    # for it, its value is False.
+    # This is only a problem when force is False.
+    #
+    # It took me a while to work out what 'force' means in all these methods.
+    # Perhaps it should be renamed 'preserveExistingData', and have the
+    # opposite meaning.
     if value is not None and (force or not widget.haveData()):
         widget.setData(value)
 
 
-def setUpWidgets(view, schema, prefix=None, force=0,
-                 initial={}, names=None):
+def setUpWidgets(view, schema, prefix=None, force=False,
+                 initial={}, names=None, context=None):
     """Set up widgets for the fields defined by a schema
 
     """
     for (name, field) in _fieldlist(names, schema):
         setUpWidget(view, name, field, initial.get(name),
-                    prefix=prefix, force=force)
+                    prefix=prefix, force=force, context=context)
 
 
-def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
-                     names=None):
+def setUpEditWidgets(view, schema, content=None, prefix=None, force=False,
+                     names=None, context=None):
     """Set up widgets for the fields defined by a schema
 
     Initial data is provided by content object attributes.
@@ -114,7 +127,10 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
     attribute, or if the named attribute value is None.
     """
     if content is None:
-        content = view.context
+        if context is None:
+            content = view.context
+        else:
+            content = context
 
     for name, field in _fieldlist(names, schema):
         if field.readonly:
@@ -130,7 +146,7 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
             value = None
 
         setUpWidget(view, name, field, value,
-                    prefix = prefix, force = force, vname = vname)
+                    prefix=prefix, force=force, vname=vname, context=context)
 
 def haveWidgetsData(view, schema, names=None):
     """Check if we have any user-entered data defined by a schema
@@ -144,7 +160,8 @@ def haveWidgetsData(view, schema, names=None):
 
     return False
 
-def getWidgetsData(view, schema, strict=True, names=None, set_missing=True):
+def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
+                   do_not_raise=False):
     """Collect the user-entered data defined by a schema
 
     Data is collected from view widgets. For every field in the
@@ -166,7 +183,12 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True):
     WidgetsError is raised.  If it's not required and it's empty, its
     value will be the appropriate missing value.  Right now this is
     hardcoded as None, but it should be changed so the field can
-    provide it as an empty string."""
+    provide it as an empty string.
+
+    do_not_raise is used if a call to getWidgetsData raises an exception,
+    and you want to make use of the data that *is* available in your
+    error-handler.
+    """
 
     result = {}
     errors = []
@@ -186,7 +208,7 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True):
             elif set_missing:
                 result[name] = None # XXX field.missing_value
 
-    if errors:
+    if errors and not do_not_raise:
         raise WidgetsError(*errors)
 
     return result
