@@ -131,6 +131,15 @@ class IDefinePrincipalDirective(IBasePrincipalDirective):
 class IDefineUnauthenticatedPrincipalDirective(IBasePrincipalDirective):
     """Define a new unauthenticated principal."""
 
+class IDefineUnauthenticatedGroupDirective(IBasePrincipalDirective):
+    """Define the unauthenticated group."""
+
+class IDefineAuthenticatedGroupDirective(IBasePrincipalDirective):
+    """Define the authenticated group."""
+
+class IDefineEverybodyGroupDirective(IBasePrincipalDirective):
+    """Define the everybody group."""
+
 class IRedefinePermission(Interface):
     """Define a permission to replace another permission."""
 

@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Groups for unauthenticated users, authenticated users, and
+        everybody can now be defined in ZCML.
+
       - A handler attribute is now used in subscriber directives for
         event subscribers that don't create objects, which is the case
         for most subscribers.  Using the factory attribute without a

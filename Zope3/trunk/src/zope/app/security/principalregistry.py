@@ -19,9 +19,8 @@ from warnings import warn
 from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
-from zope.app.security.interfaces import ILoginPassword
-from zope.app.security.interfaces import IAuthentication, IPrincipal
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.security.interfaces import IPrincipal, IGroupAwarePrincipal
+from zope.app.security import interfaces
 from zope.app.container.contained import Contained, contained
 from warnings import warn
 
@@ -30,12 +29,12 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(IAuthentication)
+    implements(interfaces.IAuthentication)
 
     # Methods implementing IAuthentication
 
     def authenticate(self, request):
-        a = ILoginPassword(request, None)
+        a = interfaces.ILoginPassword(request, None)
         if a is not None:
             login = a.getLogin()
             if login is not None:
@@ -49,21 +48,22 @@ class PrincipalRegistry(object):
     __defaultid = None
     __defaultObject = None
 
-    def defineDefaultPrincipal(self, principal, title, description=''):
-        id = principal
+    def defineDefaultPrincipal(self, id, title, description='',
+                               principal=None):
         if id in self.__principalsById:
             raise DuplicateId(id)
         self.__defaultid = id
-        p = UnauthenticatedPrincipal(principal, title, description)
-        self.__defaultObject = contained(p, self, id)
-        return p
+        if principal is None:
+            principal = UnauthenticatedPrincipal(id, title, description)
+        self.__defaultObject = contained(principal, self, id)
+        return principal
 
     def unauthenticatedPrincipal(self):
         return self.__defaultObject
 
     def unauthorized(self, id, request):
         if id is None or id is self.__defaultid:
-            a = ILoginPassword(request)
+            a = interfaces.ILoginPassword(request)
             a.needLogin(realm="zope")
 
     def getPrincipal(self, id):
@@ -106,6 +106,13 @@ class PrincipalRegistry(object):
 
         return p
 
+    def registerGroup(self, group):
+        id = group.id
+        if id in self.__principalsById or id == self.__defaultid:
+            raise DuplicateId(id)
+
+        self.__principalsById[group.id] = group
+
     def _clear(self):
         self.__init__()
 
@@ -122,11 +129,16 @@ class PrincipalBase(Contained):
         self.id = id
         self.title = title
         self.description = description
+        self.groups = []
 
+class Group(PrincipalBase):
+
+    def getLogin(self):
+        return '' # to make registry search happy
 
 class Principal(PrincipalBase):
 
-    implements(IPrincipal)
+    implements(IGroupAwarePrincipal)
 
     def __init__(self, id, title, description, login, pw):
         super(Principal, self).__init__(id, title, description)
@@ -142,4 +154,17 @@ class Principal(PrincipalBase):
 
 class UnauthenticatedPrincipal(PrincipalBase):
 
-    implements(IUnauthenticatedPrincipal)
+    implements(interfaces.IUnauthenticatedPrincipal)
+
+class UnauthenticatedGroup(Group):
+
+    implements(interfaces.IUnauthenticatedGroup)
+
+class AuthenticatedGroup(Group):
+
+    implements(interfaces.IAuthenticatedGroup)
+
+class EverybodyGroup(Group):
+
+    implements(interfaces.IEveryoneGroup)
+    

@@ -18,8 +18,10 @@ $Id$
 import unittest
 from pprint import PrettyPrinter
 from zope.interface import Interface, Attribute
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing import doctest
+from zope.configuration import xmlconfig
 
+import zope.app.security
 from zope.security.checker import moduleChecker
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -217,10 +219,23 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     def testRedefinePermission(self):
         self.assertEqual(perms, ['zope.Security'])
 
+def zcml(s):
+    context = xmlconfig.file('meta.zcml', package=zope.app.security)
+    xmlconfig.string(s, context)
+
+def reset():
+    tearDown()
+    setUp()
+
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite(setUp=setUp, tearDown=tearDown),
+        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
         unittest.makeSuite(DirectivesTest),
+        doctest.DocFileSuite(
+            '../globalprincipals.txt',
+            globs={'zcml': zcml, 'reset': reset},
+            setUp=setUp, tearDown=tearDown,
+            )
         ))
 
 if __name__ == '__main__': unittest.main()
