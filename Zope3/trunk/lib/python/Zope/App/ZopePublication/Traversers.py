@@ -13,6 +13,7 @@
 ##############################################################################
 from Zope.Publisher.Exceptions import Unauthorized, NotFound, DebugError
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
+from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
 from Zope.ComponentArchitecture \
      import getView, getDefaultViewName
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -20,7 +21,7 @@ from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 class SimpleComponentTraverser:
     """Browser traverser for simple components that can only traverse to views
     """
-    __implements__ = IBrowserPublisher
+    __implements__ = IBrowserPublisher, IXMLRPCPublisher
 
     def __init__(self, target, request):
         self.target = target
@@ -34,6 +35,7 @@ class SimpleComponentTraverser:
 
     def publishTraverse(self, request, name):
         ob = self.target
+        from Zope.ComponentArchitecture.GlobalViewService import viewService
         try:
             return getView(ob, name, request)
         except ComponentLookupError:

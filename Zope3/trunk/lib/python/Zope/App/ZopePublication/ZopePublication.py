@@ -49,7 +49,7 @@ except NameError:
         def commit(self): pass
 
 
-class ZopePublication(PublicationTraverse, DefaultPublication):
+class ZopePublication(object, PublicationTraverse, DefaultPublication):
     """Base Zope publication specification."""
 
     version_cookie = 'Zope-Version'

@@ -6,5 +6,6 @@
 >
 
   <include package=".Browser" file="browser-meta.zcml" />
+  <include package=".XMLRPC" file="xmlrpc-meta.zcml" />
 
 </zopeConfigure>
