@@ -21,18 +21,21 @@ This functionality can be used in cataloging.
 $Id$
 """
 import random
-
-from BTrees import OIBTree, IOBTree
-from persistent import Persistent
+from BTrees import IOBTree, OIBTree
 from ZODB.interfaces import IConnection
+from persistent import Persistent
+
+from zope.event import notify
+from zope.interface import implements
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.container.contained import Contained
 from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
 from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
-from zope.interface import implements
+from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
 from zope.app import zapi
-from zope.security.proxy import removeSecurityProxy
-from zope.event import notify
+from zope.app.location.interfaces import ILocation
+
 
 
 class UniqueIdUtility(Persistent, Contained):
@@ -58,9 +61,19 @@ class UniqueIdUtility(Persistent, Contained):
     def getObject(self, id):
         return self.refs[id]()
 
+    def queryObject(self, id, default=None):
+        r = self.refs.get(id)
+        if r is not None:
+            return r()
+        return default
+
     def getId(self, ob):
         ref = IReference(ob)
         return self.ids[ref]
+
+    def queryId(self, ob, default=None):
+        ref = IReference(ob)
+        return self.ids.get(ref, default)
 
     def _generateId(self):
         """Generate an id which is not yet taken.
@@ -79,6 +92,7 @@ class UniqueIdUtility(Persistent, Contained):
             self._v_nextid = None
 
     def register(self, ob):
+        # Note that we'll still need to keep this proxy removal.
         ob = removeSecurityProxy(ob)
         ref = IReference(ob)
         if ref in self.ids:
@@ -103,21 +117,21 @@ class ReferenceToPersistent(object):
     implements(IReference)
 
     def __init__(self, object):
-        self.object = object
         if not getattr(object, '_p_oid', None):
             IConnection(object).add(object)
+        self.object = object
 
     def __call__(self):
         return self.object
 
     def __hash__(self):
-        return self.object._p_oid
+        return hash(self.object._p_oid)
 
     def __cmp__(self, other):
         if not isinstance(other, ReferenceToPersistent):
             raise TypeError("Cannot compare ReferenceToPersistent with %r" %
                             (other,))
-        return cmp(self.__hash__(), other.__hash__())
+        return cmp(self.object._p_oid, other.object._p_oid)
 
 
 def connectionOfPersistent(ob):
@@ -152,3 +166,13 @@ def removeUniqueIdSubscriber(event):
         except KeyError:
             pass
 
+def addUniqueIdSubscriber(event):
+    """A subscriber to ObjectAddedEvent
+
+    Registers the object added in all unique id utilities and fires
+    an event for the catalogs.
+    """
+    for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
+        utility.register(event.object)
+
+    notify(UniqueIdAddedEvent(event))

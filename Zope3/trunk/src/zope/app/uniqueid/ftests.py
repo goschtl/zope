@@ -61,7 +61,8 @@ class TestUniqueIdUtility(BrowserTestCase):
         response = self.publish(self.basepath + '/uniqueid/@@index.html',
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
-        self.assert_(response.getBody().find('0 objects') > 0)
+        # The utility registers in itself when it is being added
+        self.assert_(response.getBody().find('1 objects') > 0)
         self.assert_('<a href="/++etc++site">/++etc++site</a>'
                      not in response.getBody())
 
@@ -73,7 +74,7 @@ class TestUniqueIdUtility(BrowserTestCase):
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('2 objects' in body)
+        self.assert_('3 objects' in body)
         self.assert_('<a href="/++etc++site">/++etc++site</a>' in body)
         self.checkForBrokenLinks(body, response.getPath(), basic='mgr:mgrpw')
 
