@@ -121,6 +121,12 @@
        />
 
     <meta:directive
+       name="loadProductsOverrides"
+       schema="zope.interface.Interface"
+       handler=".fiveconfigure.loadProductsOverrides"
+       />
+
+    <meta:directive
        name="implements"
        schema=".fivedirectives.IImplementsDirective"
        handler=".fiveconfigure.implements"
