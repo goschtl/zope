@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.47 2003/08/08 00:14:28 srichter Exp $
+$Id: widget.py,v 1.48 2003/08/12 18:18:02 poster Exp $
 """
 
 __metaclass__ = type
@@ -546,6 +546,17 @@ class DatetimeWidget(TextWidget):
         if value:
             try:
                 return parseDatetimetz(value)
+            except (DateTimeError, ValueError, IndexError), v:
+                raise ConversionError("Invalid datetime data", v)
+
+class DateWidget(TextWidget):
+    "Date entry widget."
+    displayWidth = 20
+
+    def _convert(self, value):
+        if value:
+            try:
+                return parseDatetimetz(value).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
 

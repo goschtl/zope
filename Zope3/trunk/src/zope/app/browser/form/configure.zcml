@@ -72,6 +72,14 @@
   <browser:page
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IDate"
+      name="edit"
+      class="zope.app.browser.form.widget.DateWidget"
+      />
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.IBool"
       name="edit"
       class="zope.app.browser.form.widget.CheckBoxWidget"
