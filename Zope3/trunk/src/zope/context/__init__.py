@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.13 2003/05/27 14:18:29 jim Exp $
+$Id: __init__.py,v 1.14 2003/05/27 22:28:32 jim Exp $
 """
 __metaclass__ = type
 
@@ -48,17 +48,6 @@ def ContextWrapper(_ob, _parent, **kw):
         _ob = Proxy(makeWrapper(_ob, _parent, kw, checker), checker)
     else:
         _ob = makeWrapper(_ob, _parent, kw)
-
-    if type(_ob) in wrapperTypes:
-        #print 'wrapped', _ob
-        if getcontext(_ob) == _parent:
-            dict = getdictcreate(_ob)
-            #print 'avoided rewrapping', dict, kw
-            dict.update(kw)
-            return _ob
-
-
-
 
     return _ob
 
