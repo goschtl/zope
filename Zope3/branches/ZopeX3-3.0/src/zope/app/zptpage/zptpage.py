@@ -62,8 +62,8 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
-        self = removeAllProxies(self)
-        namespace = super(ZPTPage, self).pt_getContext(**_kw)
+        # we need removeAllProxies() to make super work
+        namespace = super(ZPTPage, removeAllProxies(self)).pt_getContext(**_kw)
         namespace['template'] = self
         namespace['request'] = request
         namespace['container'] = namespace['context'] = instance
