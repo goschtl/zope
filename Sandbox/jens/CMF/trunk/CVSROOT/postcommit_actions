@@ -39,8 +39,7 @@ def main(args):
 
     global VERBOSE, SCRIPT
 
-    if VERBOSE:
-        complain("Initial args: %s\n", string.join(args, " "))
+    orig_args = args[:]
 
     if (len(args) < 2
         or (args[1] == "--verbose" and (len(args) != 3))):
@@ -51,6 +50,11 @@ def main(args):
     if args[0] == "--verbose":
         VERBOSE = 1
         del args[0]
+
+    if VERBOSE:
+        complain("Initial args: %s '%s'\n",
+                 string.join(orig_args[:-1], " "),
+                 orig_args[-1])
 
     # The %{sVv} args are passed in as a single token - have to split them.
     args = string.split(args[0])
