@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools to compare parallel trees as written by toFS().
 
-$Id: compare.py,v 1.2 2003/05/14 19:18:15 gvanrossum Exp $
+$Id: compare.py,v 1.3 2003/05/14 22:13:51 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -38,7 +38,12 @@ def checkUptodate(working, current):
     if not isdir(current):
         return []
     if not isdir(working):
-        return ["missing working directory %r" % working]
+        names = os.listdir(current)
+        if names:
+            return ["missing working directory %r" % working]
+        else:
+            # It's okay for an empty directory not to exist
+            return []
     errors = []
     for (left, right, common, lentries, rentries, ldirs, lnondirs,
          rdirs, rnondirs) in treeComparisonWalker(working, current):
