@@ -1,7 +1,7 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <head>
   <title metal:fill-slot="title" i18n:translate="">
-    Translation Service - Translate
+    Sign in
   </title>
 </head>
 <body><div metal:fill-slot="body"> 
@@ -9,9 +9,9 @@
     
     <form action="" method="post">
       <div class="row">
-       <div class="label" i18n:translate="">Login</div>
+       <div class="label" i18n:translate="">User Name</div>
        <div class="field">
-        <input type="text" name="login"/>
+        <input type="text" name="username"/>
        </div>
       </div>
 
@@ -24,7 +24,7 @@
     
     <div class="row">
       <input class="form-element" type="submit" 
-             name="SUBMIT" value="Login" i18n:attributes="value" />
+             name="SUBMIT" value="Log in" i18n:attributes="value login-button" />
     </div>
     
     </form>
