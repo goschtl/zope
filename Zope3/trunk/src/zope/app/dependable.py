@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: dependable.py,v 1.2 2002/12/25 14:12:24 jim Exp $
+$Id: dependable.py,v 1.3 2002/12/30 21:41:41 jeremy Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.interfaces.dependable import IDependable
-from zope.app.interfaces.annotation \
-     import IAnnotations
+from zope.app.interfaces.annotation import IAnnotations
 from zope.component import getAdapter
 
 key = 'zope.app.dependable.Dependents'
@@ -31,7 +30,6 @@ class Dependable:
 
     def __init__(self, context):
         self.context = context
-
 
     def addDependent(self, location):
         "See IDependable"
