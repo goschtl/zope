@@ -810,7 +810,7 @@ statichere PyTypeObject
 SecurityProxyType = {
 	PyObject_HEAD_INIT(NULL)
 	0,
-	"Zope.Security._Proxy._Proxy",
+	"zope.security._proxy._Proxy",
 	sizeof(SecurityProxy),
 	0,
 	proxy_dealloc,				/* tp_dealloc */
