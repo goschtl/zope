@@ -140,7 +140,7 @@
         <description>
           If 'no', hidden input controls are used to maintain state
           between panes in the wizard. Only simple data types can
-          be propogated with this method.
+          be propagated with this method.
 
           Defaults to 'yes'.
         </description>
@@ -255,7 +255,7 @@
         <description>
           If 'no', hidden input controls are used to maintain state
           between panes in the wizard. Only simple data types can
-          be propogated with this method.
+          be propagated with this method.
 
           Defaults to 'yes'.
         </description>
@@ -399,7 +399,7 @@
       <description>
         Define an automatically generated add form
 
-        The addform directive creates and register's a view for
+        The addform directive creates and registers a view for
         adding an object based on a schema.
 
         Adding an object is a bit trickier than editing an object,
@@ -427,6 +427,15 @@
       <attribute name="label" required="no">
         <description>
         A label to be used as the heading for the form.
+        </description>
+        </attribute>
+
+      <attribute name="description" required="no">
+        <description>
+         A longer description of the add form.
+
+          A UI may display this with the item or display it when the
+          user requests more assistance.
         </description>
         </attribute>
 
