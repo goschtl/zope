@@ -1359,7 +1359,7 @@ class datetime(date):
                 microsecond=0, tzinfo=None):
         if isinstance(year, str):
             # Pickle support
-            self = date.__new__(cls, 1, 1, 1)
+            self = date.__new__(cls, year[:4])
             self.__setstate((year, month))
             return self
         _check_tzinfo_arg(tzinfo)
