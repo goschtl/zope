@@ -15,6 +15,8 @@
 
 $Id$
 """
+import transaction
+
 from zope.app import zapi
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
@@ -33,7 +35,7 @@ class Managers(object):
         return self.request.publication.db
 
     def evolve(self):
-        """Perform a requested evolution 
+        """Perform a requested evolution
 
            This method needs to use the component architecture, so
            we'll set it up:
@@ -88,7 +90,7 @@ class Managers(object):
            We'll also increase the generation of app1:
 
              >>> app1.generation = 2
-             
+
            Now we can create our view:
 
              >>> view = Managers(None, request)
@@ -103,7 +105,7 @@ class Managers(object):
              2
 
            The demo evolver just writes the generation to a database key:
-           
+
              >>> from zope.app.generations.demo import key
              >>> conn.root()[key]
              (2,)
@@ -146,7 +148,7 @@ class Managers(object):
              2
              >>> conn.root()[key]
              (2,)
-           
+
            We'd better clean upp:
 
              >>> db.close()
@@ -232,7 +234,7 @@ class Managers(object):
              >>> app1.generation += 1
 
            so we can evolve it.
-             
+
            Now we can create our view:
 
              >>> view = Managers(None, request)
@@ -254,7 +256,7 @@ class Managers(object):
              evolve? evolve-app-foo.app1
              foo.app2
              0 0 0
-             evolve? 
+             evolve?
 
            We'd better clean upp:
 
@@ -273,7 +275,7 @@ class Managers(object):
                 manager = managers.get(key)
                 if manager is None:
                     continue
-                
+
                 result.append({
                     'id': key,
                     'min': manager.minimum_generation,
