@@ -145,10 +145,10 @@ class SimpleVocabularyTests(unittest.TestCase):
 
     def test_nonunique_tokens(self):
         self.assertRaises(
-            AssertionError, vocabulary.SimpleVocabulary.fromValues,
+            ValueError, vocabulary.SimpleVocabulary.fromValues,
             [2, '2'])
         self.assertRaises(
-            AssertionError, vocabulary.SimpleVocabulary.fromItems, 
+            ValueError, vocabulary.SimpleVocabulary.fromItems, 
             [(1, 'one'), ('1', 'another one')])
 
     def test_overriding_createTerm(self):
