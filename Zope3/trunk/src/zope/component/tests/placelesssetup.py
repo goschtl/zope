@@ -17,7 +17,7 @@ $Id$
 """
 from zope.testing.cleanup import CleanUp
 from zope.component import getGlobalServices
-from zope.component.servicenames import Adapters, Utilities, Presentation
+from zope.component.servicenames import Adapters, Utilities
 
 # A mix-in class inheriting from CleanUp that also connects the CA services
 class PlacelessSetup(CleanUp):
@@ -39,12 +39,6 @@ class PlacelessSetup(CleanUp):
         defineService(Adapters, IAdapterService)
         from zope.component.adapter import GlobalAdapterService
         provideService(Adapters, GlobalAdapterService())
-
-        # presentation service
-        from zope.component.interfaces import IPresentationService
-        defineService(Presentation, IPresentationService)
-        from zope.component.presentation import GlobalPresentationService
-        provideService(Presentation, GlobalPresentationService())
 
     def tearDown(self):
         CleanUp.tearDown(self)
