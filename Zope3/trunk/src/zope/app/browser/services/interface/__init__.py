@@ -45,7 +45,9 @@ class Interfaces:
         self.request = request
 
     def getInterfaces(self):
-        L = [(iface.__name__, id, iface.__doc__.split('\n')[0].strip())
+        L = [(iface.__name__, id,
+              getattr(iface, '__doc__', '').split('\n')[0].strip()
+              )
              for id, iface in self.context.items()]
         L.sort()
         return [{"id": id, "name": name, "doc": doc} for name, id, doc in L]
@@ -103,10 +105,10 @@ class Detail:
         from zope.proxy import getProxiedObject
         self.iface = getProxiedObject(iface)
         
-        self.name = self.iface.getName()
+        self.name = self.iface.__name__
         # XXX the doc string needs some formatting for presentation
         # XXX self.doc = self.iface.__doc__
-        self.doc = self.iface.getDoc()
+        self.doc = getattr(self.iface, '__doc__', '')
         self.methods = []
         self.schema = []
 
