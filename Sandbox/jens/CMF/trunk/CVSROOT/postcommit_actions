@@ -453,6 +453,7 @@ def do_special(trigger, action, addrs):
     else:
         subject = "CVS: %s run for %s changes" % (action, trigger)
         send_mail(addrs, output, subject)
+        complain("%s\n%s\n", subject, output)
 
 def send_mail(addrs, text, subject):
     mailcmd = MAIL_CMD
