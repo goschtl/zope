@@ -141,8 +141,8 @@ def initialize(context):
     context.registerClass( LFC.LoginFormChallenger
                          , permission=ManageUsers
                          , constructors=(
-                            DAH.manage_addLoginFormChallengerForm,
-                            DAH.manage_addLoginFormChallenger, )
+                            LFC.manage_addLoginFormChallengerForm,
+                            LFC.addLoginFormChallenger, )
                          , visibility=None
                          , icon='plugins/www/LoginFormChallenger.png'
                          )
