@@ -150,6 +150,7 @@
 /ZODB4/src/logging       /Packages/logging
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
+/StandaloneZConfig/ZConfig     /Packages/ZConfig
 
 /CMF/CMFCalendar                  /Products/CMFCalendar
 /CMF/CMFCore                      /Products/CMFCore
