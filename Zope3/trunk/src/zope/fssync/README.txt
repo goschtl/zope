@@ -63,6 +63,9 @@ BUGS
 TO DO
 -----
 
+* When committing a change, shouldn't the mtime in the DC metadata be
+  updated?
+
 * Unit tests for the fssync core functionality.
 
 * More refactoring and cleanup of the fssync core functionality.
