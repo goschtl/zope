@@ -15,10 +15,9 @@
 
 $Id$
 """
-
 import cgi
 import zope.schema.interfaces
-from zope.schema.interfaces import ISourceQueriables
+from zope.schema.interfaces import ISourceQueriables, ValidationError
 from zope.app import zapi 
 import zope.app.form.interfaces
 import zope.app.form.browser.widget
@@ -208,12 +207,19 @@ class SourceInputWidget(zope.app.form.InputWidget):
     required = property(lambda self: self.context.required)
 
     def getInputValue(self):
-        token = self.request.get(self.name)
+        for name, queryview in self.queryviews:
+            if name+'.apply' in self.request:
+                token = self.request.form.get(name+'.selection')
+                if token is not None:
+                    break
+        else:
+            token = self.request.get(self.name)
+
         field = self.context
 
         if token is None:
             if field.required:
-                raise zope.app.form.interfacesMissingInputError(
+                raise zope.app.form.interfaces.MissingInputError(
                     field.__name__, self.label,
                     )
             return field.missing_value
@@ -237,39 +243,51 @@ class SourceInputWidget(zope.app.form.InputWidget):
         return value
 
     def hasInput(self):
-        return self.name+'.displayed' in self.request.form
+        if self.name in self.request:
+            return True
+        if (not self.context.required and
+            self.name+'.displayed' in self.request):
+            return True
+
+        for name, queryview in self.queryviews:
+            if name+'.apply' in self.request:
+                token = self.request.form.get(name+'.selection')
+                if token is not None:
+                    return True
+
+        return False
 
 class SourceListInputWidget(SourceInputWidget):
 
-    def _value(self):
-        if self._renderedValueSet():
-            value = self._data
-        else:
-            tokens = self.request.form.get(self.name)
-            for name, queryview in self.queryviews:
-                if name+'.apply' in self.request:
-                    newtokens = self.request.form.get(name+'.selection')
-                    if newtokens:
-                        if tokens:
-                            tokens = tokens + newtokens
-                        else:
-                            tokens = newtokens
-            
-            if tokens:
-                remove = self.request.form.get(self.name+'.checked')
-                if remove and (self.name+'.remove' in self.request):
-                    tokens = [token
-                              for token in tokens
-                              if token not in remove
-                              ]
-                value = []
-                for token in tokens:
-                    try:
-                        v = self.terms.getValue(str(token))
-                    except LookupError:
-                        pass # skip invalid tokens (shrug)
+    def _input_value(self):
+        tokens = self.request.form.get(self.name)
+        for name, queryview in self.queryviews:
+            if name+'.apply' in self.request:
+                newtokens = self.request.form.get(name+'.selection')
+                if newtokens:
+                    if tokens:
+                        tokens = tokens + newtokens
                     else:
-                        value.append(v)
+                        tokens = newtokens
+
+        if tokens:
+            remove = self.request.form.get(self.name+'.checked')
+            if remove and (self.name+'.remove' in self.request):
+                tokens = [token
+                          for token in tokens
+                          if token not in remove
+                          ]
+            value = []
+            for token in tokens:
+                try:
+                    v = self.terms.getValue(str(token))
+                except LookupError:
+                    pass # skip invalid tokens (shrug)
+                else:
+                    value.append(v)
+        else:
+            if self.name+'.displayed' in self.request:
+                value = []
             else:
                 value = self.context.missing_value
 
@@ -281,6 +299,14 @@ class SourceListInputWidget(SourceInputWidget):
                     r.append(s)
                     seen[s] = 1
             value = r
+
+        return value
+
+    def _value(self):
+        if self._renderedValueSet():
+            value = self._data
+        else:
+            value = self._input_value()
 
         return value
     
@@ -373,33 +399,18 @@ class SourceListInputWidget(SourceInputWidget):
             )
 
     def getInputValue(self):
-        tokens = self.request.get(self.name)
-        field = self.context
-
-        if not tokens:
-            if field.required:
-                raise zope.app.form.interfacesMissingInputError(
-                    field.__name__, self.label,
-                    )
-            return field.missing_value
-
-        value = []
-        for token in tokens:
-            try:
-                v = self.terms.getValue(str(token))
-            except LookupError:
-                err = zope.schema.interfaces.ValidationError(
-                    "Invalid value id", token)
-                raise WidgetInputError(field.__name__, self.label, err)
-            value.append(v)
+        value = self._input_value()
             
         # Remaining code copied from SimpleInputWidget
 
         # value must be valid per the field constraints
         try:
-            field.validate(value)
+            self.context.validate(value)
         except ValidationError, err:
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 
         return value
+
+    def hasInput(self):
+        return self.name+'.displayed' in self.request.form

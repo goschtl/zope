@@ -149,6 +149,34 @@ button:
   >>> request.form['field.dog.query.string'] = u'o'
   >>> request.form['field.dog.query'] = u'Search'
 
+Because the field is required, a non-selection is not valid. Thus, the widget
+does not have an input value.
+
+  >>> widget.hasInput()
+  False
+
+If the field is not required:
+
+  >>> dog.required = False
+
+then as long as the field is displayed, the widget says it has input.
+
+  >>> widget.hasInput()
+  True
+
+  >>> dog.required = True
+
+If we actually provide some input:
+
+  >>> request.form['field.dog'] = 'foo' 
+
+then we have input:
+
+  >>> widget.hasInput()
+  True
+
+  >>> del request.form['field.dog']
+
 Now if we render the widget, we'll see the search results:
 
   >>> print widget()
@@ -198,6 +226,17 @@ Then we'll show the newly selected value:
       </div> <!-- query -->
     </div> <!-- queries -->
   </div> <!-- value -->
+
+Note that we should have an input value now, since pressing the 'Apply' button
+provides us with input.
+
+  >>> widget.hasInput()
+  True
+
+We should also be able to get the input value:
+
+  >>> widget.getInputValue()
+  'spot'
 
 Now, let's look at a more complicated example.  We'll define a source
 that combines multiple sources:
@@ -341,6 +380,17 @@ and get a selection:
     </div> <!-- queries -->
   </div> <!-- value -->
 
+Note that we should have an input value now, since pressing the 'Apply' button
+provides us with input.
+
+  >>> widget.hasInput()
+  True
+
+and we can get the input value:
+
+  >>> widget.getInputValue()
+  'tabby'
+
 There's a display widget, which doesn't use queriables, since it
 doesn't assign values:
 
@@ -471,6 +521,11 @@ Which then leads to the selections appearing as widget selections:
       </div> <!-- query -->
     </div> <!-- queries -->
   </div> <!-- value -->
+
+We can get the selected values:
+
+  >>> widget.getInputValue()
+  ['tabby', 'tiger', 'tom']
 
 We now see the values we selected.  We also have chackboxes and
 buttons that allow is to remove selections:
