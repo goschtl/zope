@@ -12,6 +12,9 @@
 <browser:resource 
     name="xmltree.js" file="xmltree.js" layer="rotterdam" />
 
+<browser:resource 
+    name="onlinehelp.js" file="onlinehelp.js" layer="rotterdam" />
+    
  <browser:resource
     name="favicon.png" file="favicon.png" layer="rotterdam" />
 
