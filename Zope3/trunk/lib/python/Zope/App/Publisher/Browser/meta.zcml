@@ -3,67 +3,210 @@
   <directives namespace="http://namespaces.zope.org/browser">
 
     <directive 
-       name="view" 
-       attributes="factory name for layer template
-                   permission allowed_interface allowed_attributes"
-       handler="Zope.App.Publisher.Browser.metaConfigure.view" >
+        name="view" 
+        handler="Zope.App.Publisher.Browser.metaConfigure.view"
+    >
+      <attribute
+          name="factory"
+          description="a callable that realizes the view.  The View
+              factory interface is documented in IViewFactory.  View
+              factories are passed two arguments, the context object
+              and the request object." />
+      <attribute
+          name="name" />
+       <attribute
+          name="for"
+          description="the interface this view applies to" />
+       <attribute
+          name="layer" />
+          <!-- "defaults to default" -->
+       <attribute
+          name="template"
+          description="the name of a page template (must end in
+              extension .pt).  If you supply a template, you must
+              also supply a name." />
+       <attribute
+          name="permission" />
+       <attribute
+          name="allowed_interface" />
+          <!-- "must also supply a name or permission" -->
+       <attribute
+          name="allowed_attributes" />
+          <!-- "must also supply a name or permission" -->
        <subdirective name="page" 
-                     attributes="name attribute permission layer" 
-       /> 
+       >
+         <attribute
+             name="name" />
+         <attribute
+             name="attribute" />
+         <attribute
+             name="permission" />
+         <attribute
+             name="layer" />
+       </subdirective>
        <subdirective name="defaultPage" 
-                     attributes="name attribute permission" 
-       /> 
+       >
+         <attribute
+             name="name" />
+         <attribute
+             name="attribute" />
+         <attribute
+             name="permission" />
+       </subdirective>
     </directive>
 
     <directive 
        name="defaultView" 
-       attributes="factory name for layer template
-                   permission allowed_interface allowed_attributes"
-       handler="Zope.App.Publisher.Browser.metaConfigure.defaultView" />
+       handler="Zope.App.Publisher.Browser.metaConfigure.defaultView"
+    >
+      <attribute
+          name="factory" />
+      <attribute
+          name="name" />
+       <attribute
+          name="for" />
+       <attribute
+          name="layer" />
+       <attribute
+          name="template" />
+       <attribute
+          name="permission" />
+       <attribute
+          name="allowed_interface" />
+       <attribute
+          name="allowed_attributes" />
+    </directive>
 
     <directive
         name="resource"
-        attributes="factory name layer file image
-                    permission allowed_interface allowed_attributes"
         handler="Zope.App.Publisher.Browser.metaConfigure.resource">
-       <subdirective name="page" 
-                     attributes="name attribute permission layer" 
-       /> 
+      <attribute
+          name="factory" />
+      <attribute
+          name="name" />
+       <attribute
+          name="layer" />
+       <attribute
+          name="file" />
+       <attribute
+          name="image" />
+       <attribute
+          name="permission" />
+       <attribute
+          name="allowed_interface" />
+       <attribute
+          name="allowed_attributes" />
+       <subdirective name="page"
+       > 
+         <attribute
+             name="name" />
+         <attribute
+             name="attribute" />
+         <attribute
+             name="permission" />
+         <attribute
+             name="layer" />
+       </subdirective>
     </directive>
 
     <directive
         name="i18n-resource"
         attributes="name default_language"
         handler="Zope.App.Publisher.Browser.metaConfigure.I18nResource">
-        <subdirective name="translation"
-                      attributes="language file image" />
+      <attribute
+          name="name" />
+      <attribute
+          name="default_language" />
+      <subdirective name="translation"
+      >
+        <attribute
+            name="language" />
+        <attribute
+            name="file" />
+        <attribute
+            name="image" />
+      </subdirective>
     </directive>
 
-    <directive name="skin" attributes="name layers" 
-        handler="Zope.App.Publisher.Browser.metaConfigure.skin" />
+    <directive
+        name="skin"
+        handler="Zope.App.Publisher.Browser.metaConfigure.skin"
+    >
+      <attribute
+          name="name" />
+      <attribute
+          name="layers" />
+    </directive>
 
-    <directive name="menu" attributes="name title description" 
+    <directive
+        name="menu"
         handler="
-        Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuDirective" />
+            Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuDirective"
+    >
+      <attribute
+          name="name" />
+      <attribute
+          name="title" />
+      <attribute
+          name="description" />
+    </directive>
 
-    <directive name="menuItems" attributes="menu for" 
+    <directive
+        name="menuItems"
+        attributes="menu for" 
         handler="
-       Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemsDirective">
-       <subdirective name="menuItem" 
-                     attributes="action title description filter" 
-       /> 
+        Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemsDirective"
+    >
+      <subdirective
+          name="menuItem" 
+      >
+        <attribute
+            name="action" />
+        <attribute
+            name="title" />
+        <attribute
+            name="description" />
+        <attribute
+            name="filter" />
+       </subdirective> 
     </directive>
 
     <directive 
-       name="menuItem" 
-       attributes="menu for action title description filter" 
-       handler="
-       Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemDirective
-       "
-       />
+        name="menuItem" 
+        handler="
+        Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemDirective"
+    >
+      <attribute
+          name="menu" />
+      <attribute
+          name="for" />
+      <attribute
+          name="action" />
+      <attribute
+          name="title" />
+      <attribute
+          name="description" />
+      <attribute
+          name="filter" />
+    </directive>
 
-    <directive name="icon" attributes="name for file resource alt layer"
-               handler="Zope.App.Publisher.Browser.IconDirective." />
+    <directive
+        name="icon"
+        handler="Zope.App.Publisher.Browser.IconDirective."
+    >
+      <attribute
+          name="name" />
+      <attribute
+          name="for" />
+      <attribute
+          name="file" />
+      <attribute
+          name="resource" />
+      <attribute
+          name="alt" />
+      <attribute
+          name="layer" />
+    </directive>
 
   </directives>
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.5 2002/10/04 18:37:23 jim Exp $
+$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.6 2002/11/08 19:56:31 rdmurray Exp $
 """
 
 from StringIO import StringIO
@@ -25,6 +25,7 @@ from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
+import Zope.Configuration
 
 import Zope.App.Publisher.Browser
 
@@ -38,6 +39,7 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
+        XMLConfig('metameta.zcml', Zope.Configuration)()
         XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
         
     def test(self):

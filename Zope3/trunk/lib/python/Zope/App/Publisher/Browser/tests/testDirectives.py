@@ -14,6 +14,7 @@
 
 import os
 import unittest
+from cStringIO import StringIO
 
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
@@ -23,7 +24,7 @@ from Zope.ComponentArchitecture import getDefaultViewName, getResource
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from cStringIO import StringIO
+import Zope.Configuration
 
 from Zope.ComponentArchitecture.tests.Request import Request
 
@@ -61,6 +62,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
+        XMLConfig('metameta.zcml', Zope.Configuration)()
         XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
 
         from Zope.ComponentArchitecture.GlobalAdapterService \

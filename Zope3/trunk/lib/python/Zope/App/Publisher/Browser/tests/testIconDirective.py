@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.6 2002/10/28 18:41:18 stevea Exp $
+$Id: testIconDirective.py,v 1.7 2002/11/08 19:56:31 rdmurray Exp $
 """
 import os
 from StringIO import StringIO
@@ -30,6 +30,7 @@ from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture import queryView, getView, getResource
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Configuration.Exceptions import ConfigurationError
+import Zope.Configuration
 
 import Zope.App.Publisher.Browser
 
@@ -59,6 +60,7 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
+        XMLConfig('metameta.zcml', Zope.Configuration)()
         XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
         defineCheckers()
 
