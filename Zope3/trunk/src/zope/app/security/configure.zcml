@@ -56,5 +56,9 @@
            provides="zope.app.interfaces.security.ILoginPassword"
            for="zope.publisher.interfaces.ftp.IFTPCredentials" />
 
+  <adapter factory="zope.app.security.principallogging.PrincipalLogging"
+           provides="zope.publisher.interfaces.logginginfo.ILoggingInfo"
+           for="zope.app.interfaces.security.IPrincipal" />
+
 </zopeConfigure>
 
