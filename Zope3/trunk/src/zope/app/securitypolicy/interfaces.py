@@ -22,23 +22,31 @@ class ISecurityMap(Interface):
     """Security map to hold matrix-like relationships."""
 
     def addCell(rowentry, colentry, value):
-        " add a cell "
+        """Add a cell"""
 
     def delCell(rowentry, colentry):
-        " delete a cell "
+        """Delete a cell"""
 
-    # XXX queryCell / getCell ?
-    def getCell(rowentry, colentry, default=None):
-        " return the value of a cell by row, entry "
+    def queryCell(rowentry, colentry, default=None):
+        """Return the value of a cell by row, entry
 
+        Return `default`, if the cell is not found.
+        """
+
+    def getCell(rowentry, colentry):
+        """Return the value of a cell by row, entry
+
+        Raise an error, if the cell is not found.
+        """
+        
     def getRow(rowentry):
-        " return a list of (colentry, value) tuples from a row "
+        """Return a list of (colentry, value) tuples from a row"""
 
     def getCol(colentry):
-        " return a list of (rowentry, value) tuples from a col "
+        """Return a list of (rowentry, value) tuples from a col"""
 
     def getAllCells():
-        " return a list of (rowentry, colentry, value) "
+        """Return a list of (rowentry, colentry, value)"""
 
 class IRole(Interface):
     """A role object."""

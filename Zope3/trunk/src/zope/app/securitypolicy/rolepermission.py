@@ -96,7 +96,7 @@ class AnnotationRolePermissionManager(object):
         '''See interface IRolePermissionMap'''
         rp = self._getRolePermissions()
         if rp:
-            return rp.getCell(permission_id, role_id)
+            return rp.queryCell(permission_id, role_id)
         else:
             return Unset
 
@@ -198,7 +198,7 @@ class RolePermissionManager(SecurityMap):
 
     def getSetting(self, permission_id, role_id):
         '''See interface IRolePermissionMap'''
-        return self.getCell(permission_id, role_id)
+        return self.queryCell(permission_id, role_id)
 
     def getRolesAndPermissions(self):
         '''See interface IRolePermissionMap'''

@@ -76,7 +76,7 @@ class RolePermissionManager:
         '''See interface IRolePermissionMap'''
         rp = self._getRolePermissions()
         if rp:
-            return rp.getCell(permission_id, role_id)
+            return rp.queryCell(permission_id, role_id)
         else:
             return Unset
 

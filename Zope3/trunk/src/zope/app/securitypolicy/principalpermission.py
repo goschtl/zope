@@ -76,7 +76,7 @@ class AnnotationPrincipalPermissionManager:
         ''' See the interface IPrincipalPermissionManager '''
         pp = self._getPrincipalPermissions()
         if pp:
-            return pp.getCell(permission_id, principal_id, default=Unset)
+            return pp.queryCell(permission_id, principal_id, default=Unset)
         return []
 
     def getPrincipalsAndPermissions(self):

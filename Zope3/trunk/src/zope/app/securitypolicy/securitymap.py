@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Generic two-dimensional array type """
+"""Generic two-dimensional array type (in context of security)
 
+$Id$
+"""
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import implements
@@ -33,6 +35,7 @@ class SecurityMap(object):
         return {}
 
     def addCell(self, rowentry, colentry, value):
+        """See ISecurityMap"""
         # setdefault may get expensive if an empty mapping is
         # expensive to create, for PersistentDict for instance.
         row = self._byrow.setdefault(rowentry, self._empty_mapping())
@@ -46,6 +49,7 @@ class SecurityMap(object):
             pass
 
     def delCell(self, rowentry, colentry):
+        """See ISecurityMap"""
         row = self._byrow.get(rowentry)
         if row and (colentry in row):
             del self._byrow[rowentry][colentry]
@@ -55,28 +59,36 @@ class SecurityMap(object):
         except AttributeError:
             pass
 
-    def getCell(self, rowentry, colentry, default=None):
-        " return the value of a cell by row, entry "
+    def queryCell(self, rowentry, colentry, default=None):
+        """See ISecurityMap"""
         row = self._byrow.get(rowentry)
         if row: return row.get(colentry, default)
         else: return default
 
+    def getCell(self, rowentry, colentry):
+        """See ISecurityMap"""
+        marker = object()
+        cell = self.queryCell(rowentry, colentry, marker)
+        if cell is marker:
+            raise KeyError('Not a valid row and column pair.')
+        return cell
+
     def getRow(self, rowentry):
-        " return a list of (colentry, value) tuples from a row "
+        """See ISecurityMap"""
         row = self._byrow.get(rowentry)
         if row:
             return row.items()
         else: return []
 
     def getCol(self, colentry):
-        " return a list of (rowentry, value) tuples from a col "
+        """See ISecurityMap"""
         col = self._bycol.get(colentry)
         if col:
             return col.items()
         else: return []
 
     def getAllCells(self):
-        " return a list of (rowentry, colentry, value) "
+        """See ISecurityMap"""
         try:
             return self._v_cells
         except AttributeError:
