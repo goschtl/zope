@@ -2,7 +2,6 @@
 Motivation for a new Versioning Scheme
 ======================================
 
-
 We start by testing some of the existing infrastructure from zope.app.versioncontrol
 and try to apply the existing versioning to sample data. We take a simple
 folder tree with the following structure as our sample :

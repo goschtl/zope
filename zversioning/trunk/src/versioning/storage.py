@@ -72,14 +72,6 @@ class SimpleHistoryStorage(Folder) :
     """
     
     implements(IHistoryStorage)
-   
-    def getTicket(self, obj) :
-        """ Returns the persistent oid of an object as
-            a ticket that remains stable across time.
-        """
-        if obj._p_oid is None :
-            raise RuntimeError("cannot version uncommited objects")
-        return str(obj._p_oid)
  
     def register(self, obj):
         """ Register an obj for version control.
@@ -88,12 +80,29 @@ class SimpleHistoryStorage(Folder) :
         ticket = self.getTicket(obj)
         self[ticket] = history
         return ticket
-        
+  
+    def getTicket(self, obj) :
+        """ Returns the persistent oid of an object as
+            a ticket that remains stable across time.
+        """
+        if obj._p_oid is None :
+            raise RuntimeError("cannot version uncommited objects")
+        return str(obj._p_oid)
+  
+    def getVersion(self, obj, selector) :
+        """ Returns the version of an object that is specified by selector. """
+        history = self.getVersionHistory(obj)
+        return history[selector]
+       
     def getVersionHistory(self, obj):
         """ Returns a version history given a version history id."""
         ticket = self.getTicket(obj)
         return self[ticket]
-        
+              
+    def getMetadataHistory(self, obj) :
+        """ Returns a version history given a version history id."""
+        NotImplementedError("metadata support not implemented")
+       
     def listVersions(self, obj) :
         """ Returns the versions of an object. The versions are
             returned sorted in the order of appearance. """
@@ -101,14 +110,6 @@ class SimpleHistoryStorage(Folder) :
         list.sort()
         return list
         
-    def getMetadataHistory(self, obj) :
-        """ Returns a version history given a version history id."""
-        NotImplementedError("metadata support not implemented")
-        
-    def getVersion(self, obj, selector) :
-        """ Returns the version of an object that is specified by selector. """
-        history = self.getHistory(obj)
-        return history[selector]
 
 
 class DefaultCheckoutAware(object):
