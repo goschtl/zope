@@ -11,14 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: unauthorized.py,v 1.8 2003/06/30 17:10:18 fdrake Exp $
-"""
+"""Unauthorized Exception definition
 
+$Id: unauthorized.py,v 1.9 2003/08/12 19:14:50 srichter Exp $
+"""
 from types import StringType
 from zope.exceptions import ZopeError
 from zope.exceptions import IZopeError
+from zope.exceptions import ZopeMessageIDFactory as _
 from zope.interface import implements
+
 
 class IUnauthorized(IZopeError):
     pass
@@ -62,14 +64,14 @@ class Unauthorized(ZopeError):
 
     def __str__(self):
         if self.message is not None:
-            return self.message
+            return _(self.message)
         if self.name is not None:
-            return ("You are not allowed to access %s in this context"
-                    % self.name)
+            msg = _("You are not allowed to access ${name} in this context")
+            msg.mapping = {'name': self.name}
         elif self.value is not None:
-            return ("You are not allowed to access %s in this context"
-                    % self.getValueName())
-        return "You are not authorized"
+            msg = _("You are not allowed to access ${name} in this context")
+            msg.mapping = {'name': self.getValueName()}
+        return _("You are not authorized")
 
 
     def getValueName(self):
@@ -79,5 +81,5 @@ class Unauthorized(ZopeError):
             return vname
         c = getattr(v, '__class__', type(v))
         c = getattr(c, '__name__', 'object')
-        return "a particular %s" % c
-
+        msg = _("a particular ${object}")
+        msg.mapping = {'object': c}

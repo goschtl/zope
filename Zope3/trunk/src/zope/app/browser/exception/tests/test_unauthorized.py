@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.8 2003/07/18 14:00:20 alga Exp $
+$Id: test_unauthorized.py,v 1.9 2003/08/12 19:14:56 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -22,6 +22,16 @@ from zope.publisher.browser import TestRequest
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.interface import implements
+from zope.app.browser.exception.unauthorized import Unauthorized
+
+
+class Unauthorized(Unauthorized):
+    """Unusually done by ZCML."""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
 
 class DummyPrincipal:
     implements(IPrincipal)  # this is a lie
@@ -45,7 +55,6 @@ class DummyPrincipalSource:
 class Test(TestCase):
 
     def test(self):
-        from zope.app.browser.exception.unauthorized import Unauthorized
         exception = Exception()
         try:
             raise exception
@@ -65,7 +74,6 @@ class Test(TestCase):
         self.assertEqual(authservice.principal_id, 23)
 
     def testPluggableAuthService(self):
-        from zope.app.browser.exception.unauthorized import Unauthorized
         exception = Exception()
         try:
             raise exception

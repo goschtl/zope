@@ -11,19 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Unautorized Exception View Class
 
-$Id: unauthorized.py,v 1.5 2003/07/18 14:00:22 alga Exp $
+$Id: unauthorized.py,v 1.6 2003/08/12 19:14:53 srichter Exp $
 """
-__metaclass__ = type
 from zope.app.traversing import getParent
 from zope.app.interfaces.security import IAuthenticationService
 
-class Unauthorized:
+__metaclass__ = type
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
+
+class Unauthorized:
 
     def issueChallenge(self):
         # Set the error status to 403 (Forbidden) in the case when we don't

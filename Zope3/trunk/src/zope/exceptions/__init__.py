@@ -16,8 +16,16 @@
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
 
-$Id: __init__.py,v 1.4 2003/02/11 16:00:06 sidnei Exp $
+$Id: __init__.py,v 1.5 2003/08/12 19:14:50 srichter Exp $
 """
+# This module should be independent of I18n, so let's not require it.
+try:
+    from zope.i18n import MessageIDFactory
+except ImportError:
+    ZopeMessageIDFactory = unicode
+else:
+    # Import _ to use to create message ids in the zope domain
+    ZopeMessageIDFactory = MessageIDFactory('zope')
 
 from zope.exceptions._zope_error import ZopeError, IZopeError
 from zope.exceptions.unauthorized import Unauthorized, IUnauthorized

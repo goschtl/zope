@@ -1,11 +1,10 @@
 <html metal:use-macro="context/@@standard_macros/dialog">
 <body>
-
 <div metal:fill-slot="body">
 
-<ul>
-<li tal:repeat="part context" tal:content="part">Error message</li>
-</ul>
+  <ul>
+    <li tal:repeat="part context" tal:content="part">Error message</li>
+  </ul>
 
 </div>
 </body>
