@@ -119,11 +119,25 @@ Publishing
 Component architecture
 ----------------------
 
-  overview about the rationale for it, the purpose of it.
-  allowing reuse, and explicitly declaring the capabilities and intentions
-  for use of objects.
-  Define Component as an object with introspectable interfaces.
+    The component architecture was introduced as a concept to solve a set of
+    difficulties that arose during the development of Zope 2. The identified
+    goals therefore are: Make explicit declarations of the capabilities and
+    intentions an object has. This shall allow easier reuse of code that has
+    not necessarily been produced for Zope and simplify deployment of such
+    components as well. Reducing the amount of tight dependencies between
+    distinct parts of the framework should support a reduced learning curve and
+    let people learn the distinct parts bit by bit. 
+   
 
+X    A component is an python object with introspectable interfaces. This means
+    you can ask an object about the capabilities it has and what it may be used
+    for.
+
+X.a
+
+    An interface is a kind of formal contract that describes the fields,
+    attributes and methods an object needs to support if it announces ...
+    
   explain about interfaces
   1: formal contract of fields, attributes, methods
   2: informal contract in docstrings
