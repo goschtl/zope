@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Zope Application-specific Security code
 
+$Id: __init__.py,v 1.4 2004/02/24 14:12:11 srichter Exp $
+"""
 # Register some standard types
 import _protections
 _protections.protect()

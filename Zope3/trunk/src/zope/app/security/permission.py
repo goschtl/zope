@@ -13,9 +13,8 @@
 ##############################################################################
 """Permissions
 
-$Id: permission.py,v 1.9 2004/01/05 08:06:12 philikon Exp $
+$Id: permission.py,v 1.10 2004/02/24 14:12:11 srichter Exp $
 """
-
 from zope.schema import Enumerated, Field
 from zope.schema.interfaces import ValidationError
 from zope.component import getService
@@ -26,12 +25,13 @@ from zope.interface import implements
 
 
 def checkPermission(context, permission_id):
-
+    """Check whether a given permission exists in the provided context."""
     if not getService(context, Permissions).getPermission(permission_id):
         raise ValueError("Undefined permission id", permission_id)
 
+
 class PermissionField(Enumerated, Field):
-    __doc__ = IPermissionField.__doc__
+    """A field that represents a permission in a schema"""
     implements(IPermissionField)
 
     def _validate(self, value):
