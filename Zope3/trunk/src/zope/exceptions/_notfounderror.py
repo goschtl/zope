@@ -12,10 +12,11 @@
 #
 ##############################################################################
 """
-$Id: _notfounderror.py,v 1.5 2003/02/19 15:25:58 stevea Exp $
+$Id: _notfounderror.py,v 1.6 2003/06/03 15:35:28 stevea Exp $
 """
 from zope.exceptions import ZopeError, IZopeError
 from zope.interface.common.interfaces import IKeyError
+from zope.interface import implements
 
 class INotFoundError(IZopeError, IKeyError):
     pass
@@ -23,5 +24,5 @@ class INotFoundError(IZopeError, IKeyError):
 class NotFoundError(ZopeError, KeyError):
     """A resource could not be found.
     """
-    __implements__ = INotFoundError
+    implements(INotFoundError)
 
