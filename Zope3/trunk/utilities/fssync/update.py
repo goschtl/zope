@@ -16,7 +16,7 @@ import string, os, commands
 
 from common import getZODBPath, createTempfile, getObject
 from common import mapFS, traverseFS, checkConflictData, getApplicationRoot
-from common import isNewObject, getFSRoot, setPrint
+from common import isNewObject, getFSRoot
 
 from zope.app.fssync.syncer import toFS
 
@@ -68,7 +68,7 @@ def updateSettings(fspath, root):
         original_path = string.strip(mapping_paths[sandbox_path][0])
         zopedb_path = string.strip(mapping_paths[sandbox_path][1])
         if checkConflictData(sandbox_path, zopedb_path):
-            setPrint('C %s'%(zopedb_path[1:]))
+            print 'C', zopedb_path[1:]
         else:
             if not isNewObject(sandbox_path):
                 mappings[zopedb_path] = sandbox_path
@@ -98,10 +98,10 @@ def updateSettings(fspath, root):
                 if len(string.strip(diff3_res))>1:
                     diffverify=string.strip(diff3_res[0:5])
                     if diffverify=='====1':
-                        setPrint('M %s'%(zopedb_path[1:]))
+                        print 'M', zopedb_path[1:]
                     elif diffverify=='====2':
                         doUpdate('C', ob, zopedb_path, sandbox_path)
-                        setPrint('M %s'%(zopedb_path[1:]))
+                        print 'M', zopedb_path[1:]
                     elif diffverify=='====3':
                         doUpdate('U', ob, zopedb_path, sandbox_path)
                     elif diffverify=='====':
@@ -113,11 +113,9 @@ def updateSettings(fspath, root):
                                                    , zopedb_temp_file
                                                    , zopedb_path)
                         if diff3_res[-1]=='0':
-                            setPrint('Merging changes in %s' \
-                                     %(zopedb_path[1:]))
+                            print 'Merging changes in', zopedb_path[1:]
                         else:
-                            setPrint('C Merging changes in %s' \
-                                     %(zopedb_path[1:]))
+                            print 'C Merging changes in', zopedb_path[1:]
 
                         f = open(sandbox_path, 'w')
                         f.write(string.strip(diff3_res[:-1]))

@@ -17,7 +17,7 @@ import os, string, commands
 from zope.app.fssync.syncer import fromFS
 from common import getZODBPath, createTempfile, getObject
 from common import getApplicationRoot, traverseFS, checkConflictData
-from common import isNewObject, setPrint
+from common import isNewObject
 from transaction import get_transaction
 
 env = os.environ
@@ -102,7 +102,7 @@ def commit(fspath
                     if isConflict:
                         msg = "%s Conflict, Uptodate checkin failed" \
                               %(zopedb_path)
-                        setPrint(msg)
+                        print msg
                     else:
                         if not (isCommitRequired == isConflict == 0):
                             msg = "%s  <--  %s" \
@@ -110,7 +110,7 @@ def commit(fspath
                             err = doCommit(sandbox_path, root)
                             if err is not None:
                                 return err
-                            setPrint(msg)
+                            print msg
 
                     if os.path.exists(zopedb_temp_file):
                         os.remove(zopedb_temp_file)

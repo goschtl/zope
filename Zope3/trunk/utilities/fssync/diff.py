@@ -12,8 +12,9 @@
 #
 ##############################################################################
 
-from common import getObjectDataTempfile, setPrint
 import os, commands, calendar, string
+
+from common import getObjectDataTempfile
 
 def getdiff(targetfile
             , objpath
@@ -78,7 +79,7 @@ def getdiff(targetfile
                          , temp_file
                          , objectpath
                          , modification_date)
-    setPrint(diff_res)
+    print diff_res
 
     if temp_file:
         os.remove(temp_file)

@@ -229,6 +229,3 @@ def getFSRoot(fspath, next=None):
         return os.path.join(fspath,next)
     else:
         return getFSRoot(os.path.dirname(fspath), os.path.basename(fspath))
-
-def setPrint(output_string):
-    print output_string
