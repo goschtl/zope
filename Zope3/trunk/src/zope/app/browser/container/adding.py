@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.8 2003/04/08 21:44:35 gotcha Exp $
+$Id: adding.py,v 1.9 2003/04/28 20:42:27 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -93,15 +93,13 @@ class Adding(BrowserView):
     def addingInfo(wrapped_self):
         """Return menu data.
 
-        This is sorted with title as primary key, and description
-        as secondary key.
+        This is sorted by title.
         """
         menu_service = getService(wrapped_self.context, "BrowserMenu")
         result = menu_service.getMenu(wrapped_self.menu_id,
                                       wrapped_self,
                                       wrapped_self.request)
-        result.sort(lambda a, b: cmp((a['title'], a['description']),
-                                     (b['title'], b['description'])))
+        result.sort(lambda a, b: cmp(a['title'], b['title']))
         return result
     addingInfo = ContextMethod(addingInfo)
 
