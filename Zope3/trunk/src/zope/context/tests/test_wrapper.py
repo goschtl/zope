@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.20 2003/06/07 13:00:02 stevea Exp $
+$Id: test_wrapper.py,v 1.21 2003/07/13 13:45:26 anthony Exp $
 """
 import unittest
 from zope.proxy import getProxiedObject
@@ -592,6 +592,13 @@ class WrapperTestCase(ProxyTestCase):
         for x in Iterable(self, a):
             b.append(x)
         self.assertEquals(a, b)
+
+    def test_descr_abuse(self):
+        def abuse():
+            def foo(): pass
+            ContextMethod(ContextMethod(foo)).__get__(1)
+	self.assertRaises(TypeError, abuse)
+	    
 
 
 class WrapperSubclass(wrapper.Wrapper):
