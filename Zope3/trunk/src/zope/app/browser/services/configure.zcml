@@ -363,32 +363,7 @@
       permission="zope.ManageServices"
       />
 
-<!-- Persistent Modules -->
-
-  <page 
-      name="edit.html" 
-      for="zodb.code.interfaces.IPersistentModuleManager"
-      menu="zmi_views" title="Edit"
-      class="zope.app.browser.services.module.EditModule"
-      template="edit_module.pt" 
-      permission="zope.ManageServices"
-      />
-
-  <view for="zope.app.interfaces.container.IAdding"
-        name="Module"
-        class="zope.app.browser.services.module.AddModule"
-        permission="zope.ManageServices"
-        >
-      <page name="index.html" template="add_module.pt" />
-      <page name="action.html" attribute="action" />
-  </view>
-
-  <menuItem 
-      menu="add_component" 
-      for="zope.app.interfaces.container.IAdding"
-      action="Module"  
-      title="Module" 
-      />
+<!-- Persistent Modules --> <include package="./module" />
 
 <!-- PageFolder -->
 

@@ -5,10 +5,12 @@
 
 <p>Enter the absolute module name and source code.</p>
 
-<form action="action.html">
-  <input name="name" />
-  <textarea name="source:text" cols="65" rows="25"></textarea>
-  <input type="submit" value="Add module" />
+<form action="edit.html">
+<span tal:replace="view/update"></span>
+<textarea name="source:text" cols="65" rows="25"
+          tal:content="context/source"
+></textarea>
+<input type="submit" value="Edit"/>
 </form>
 
 </div></body></html>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: module.py,v 1.4 2002/12/30 21:28:20 jeremy Exp $
+$Id: __init__.py,v 1.2 2003/06/30 16:22:59 jim Exp $
 """
 
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -21,25 +21,26 @@ from zope.app.services.module import Manager
 from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
 
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+
 class AddModule(BrowserView):
 
-    def action(self, name, source):
-        mgr = Manager()
-        mgr = self.context.add(mgr)
-        mgr.new(name, source)
-        # For better or worse, the name Zope uses to manage a module
-        # can be different than the name Python code uses to import
-        # the module.  Set the title metadata of the Zope module to
-        # the real name.
-        dc = getAdapter(mgr, IZopeDublinCore)
-        dc.title = name
+    def action(self, source):
+        name = self.context.contentName
+        if not name:
+            raise UserError(_(u"module name must be provided"))
+        mgr = Manager(name, source)
+        mgr = self.context.add(mgr)  # local registration
+        mgr.execute()
         self.request.response.redirect(self.context.nextURL())
 
 class EditModule(BrowserView):
 
     def update(self):
         if "source" in self.request:
-            self.context.update(self.request["source"])
-            return u"The source was updated."
+            self.context.source = self.request["source"]
+            self.context.execute()
+            return _(u"The source was updated.")
         else:
             return u""
