@@ -87,12 +87,20 @@ Interfaces themselves are good for a number of reasons:
 
   * They provide API documentation.
 
-  * They help you make explicit the design of your application, hopefully
-    improving it.
+  * They help you make explicit the design of your application,
+    hopefully improving it.
 
-  * If an object declares an interface, that object is considered to
+  * If an object provides an interface, that object is considered to
     be a *component*. This means you can use Zope 3's component
     architecture with these objects.
+
+In order to use Five, you'll have to make your objects provide
+interfaces. Sometimes, you cannot change the code of class (as you are
+not the maintainer), but you still want to make it implement an
+interface. Five provides a ZCML directive to do this::
+
+  <five:implements class="tolkien.Oliphant" 
+      implements="interfaces.IElephant" />
 
 Interfaces in Zope 2 versus Zope 3
 ==================================
@@ -122,10 +130,11 @@ DeprecationWarnings in your Zope log).
 Adapters
 --------
 
-The immediate thing that Five brings to do the table are
-adapters. This section goes through some demo code to explain how
-everything is tied together. ``demo/FiveDemo`` is a demo Product you
-can install and examine that has all the presented here together.
+From a Python programmer's perspective, the immediate thing that Five
+brings to do the table are adapters. This section goes through some
+demo code to explain how everything is tied
+together. ``demo/FiveDemo`` is a demo Product you can install and
+examine that has all the presented here together.
 
 Zope 3 adapters depend on Zope 3 interfaces. To create a Zope 3
 interface you need to subclass it from
@@ -339,4 +348,3 @@ related things; it's
 Zope 2 permission needs in order to access this view. The file
 ``permissions.zcml`` in Five contains a mapping of Zope 2 permissions
 to their Zope 3 names.
-
