@@ -13,17 +13,16 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.7 2003/03/13 17:10:36 gvanrossum Exp $
+$Id: configuration.py,v 1.8 2003/03/21 21:04:12 jim Exp $
 """
 
+from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.container  import IContainerNamesContainer
+from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute
 from zope.schema import Text, TextLine
 from zope.schema.interfaces import ITextLine
-from zope.app.security.permission import PermissionField
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.services.field import ComponentPath
 
 Unregistered = u'Unregistered'
 Registered = u'Registered'
@@ -68,40 +67,61 @@ class IConfiguration(Interface):
         """Text for line 2 of configuration manager summary"""
 
 
-class INamedConfigurationInfo(Interface):
-    """Configuration object that is registered by name
+class INamedConfiguration(IConfiguration):
+    """Configuration object that is registered only by name.
     """
 
     name = TextLine(title=u"Name",
                     description=u"The name that is registered",
-                    required=True, readonly=True, min_length=1)
+                    readonly=True,
+                    # Don't allow empty or missing name:
+                    required=True,
+                    min_length=1,
+                    )
 
     # The label is generally set as a class attribute on the
     # configuration class.
     label = Attribute("Descriptive label of the configuration type "
                       "(for example, Service, Connection)")
 
-class INamedConfiguration(INamedConfigurationInfo, IConfiguration):
-    pass
 
-class INamedComponentConfigurationInfo(INamedConfigurationInfo):
-    """Configuration object that configures a component associated with a name
+class IComponentPath(ITextLine):
+    """A component path
     """
+    # This is juse the interface for the ComponentPath field below.
+    # We'll use this as the basis for looking up an appriate widget.
 
-    permission = PermissionField(
-        title=u"The permission needed to use the component.")
+class ComponentPath(TextLine):
+    """A component path
+
+    Values of the field are absolute unicode path strings that can be
+    traversed to get an object.
+    """
+    __implements__ = IComponentPath
+
+
+class IComponentConfiguration(IConfiguration):
+    """Configuration object that uses a component path and a permission."""
 
     componentPath = ComponentPath(
-        type=IZopeDatabaseAdapter,
         title=u"Component path",
         description=u"The physical path to the component",
         required=True)
 
-class INamedComponentConfiguration(INamedComponentConfigurationInfo,
-                                   INamedConfiguration):
+    permission = PermissionField(
+        title=u"The permission needed to use the component.",
+        required=False,
+        )
+
     def getComponent():
         """Return the component named in the configuration.
         """
+
+
+class INamedComponentConfiguration(INamedConfiguration,
+                                   IComponentConfiguration):
+    """Components registered by name, using componemt path and permission."""
+
 
 class IConfigurationRegistry(Interface):
     """A registry of configurations for a set of parameters
@@ -193,8 +213,8 @@ class IConfigurable(Interface):
         arguments for each of the parameters needed to specify a set
         of configurations.
 
-        The registry must be returned in the context of the context of
-        the configurable.
+        The registry must be returned wrapped in the context of the
+        configurable.
 
         """
 
@@ -213,6 +233,10 @@ class IConfigurable(Interface):
 
         Calling createConfigurationsFor twice for the same configuration
         returns the same registry.
+
+        The registry must be returned wrapped in the context of the
+        configurable.
+
         """
 
 
@@ -287,3 +311,30 @@ class IUseConfiguration(IUseConfigurable):
 
 class IAttributeUseConfigurable(IAttributeAnnotatable, IUseConfigurable):
     """A marker interface."""
+
+
+class IOrderedContainer(Interface):
+    """Containers whose items can be reorderd.
+
+    XXX This is likely to go.
+    """
+
+    def moveTop(names):
+        """Move the objects corresponding to the given names to the top
+        """
+
+    def moveUp(names):
+        """Move the objects corresponding to the given names up
+        """
+
+    def moveBottom(names):
+        """Move the objects corresponding to the given names to the bottom
+        """
+
+    def moveDown(names):
+        """Move the objects corresponding to the given names down
+        """
+
+class IConfigurationManager(IContainerNamesContainer, IOrderedContainer):
+    """Manage Configurations
+    """
