@@ -21,6 +21,7 @@ from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.container.interfaces import IContained
 from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
@@ -115,7 +116,8 @@ class ProcessInstanceContainerAdapter(object):
         # added to any message board yet;
         setitem(self, self.wfdata.__setitem__, key, object)
         # Set the final parent to be the message.
-        object.__parent__ = self.context
+        if IContained.providedBy(object):
+            object.__parent__ = self.context
 
     def __delitem__(self, key):
         "See IZopeWriteContainer"
