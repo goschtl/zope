@@ -263,8 +263,7 @@ class TextAreaWidget(SimpleInputWidget):
             try:
                 value = unicode(value)
             except ValueError, v:
-                raise ConversionError("Invalid integer data", v)
-
+                raise ConversionError("Invalid unicode data", v)
         return value
 
     def _toFormValue(self, value):
