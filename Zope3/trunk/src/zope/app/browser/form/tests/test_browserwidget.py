@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.8 2003/03/25 20:39:46 jim Exp $
+$Id: test_browserwidget.py,v 1.9 2003/03/25 23:20:57 bwarsaw Exp $
 """
 
 from zope.app.browser.form.widget import BrowserWidget
@@ -35,7 +35,7 @@ class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        field = self._FieldFactory(__name__ = 'foo', title = _(u"Foo Title"))
+        field = self._FieldFactory(__name__ = 'foo', title = u"Foo Title")
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
