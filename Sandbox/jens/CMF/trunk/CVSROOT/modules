@@ -44,9 +44,6 @@ zs Components/GreyThing \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
-pcgi Components/pcgi2 pcgi_publisher.py
-
-
 DCOraclePackage -d DCOracle DCOracle/DCOracle
 DCOracleSrc  -d src DCOracle/src
 
@@ -58,7 +55,7 @@ lpAccessControl   -d lib/python/AccessControl Packages/AccessControl
 lpApp             -d lib/python/App Packages/App
 lpBoboPOS         -d lib/python/BoboPOS Packages/BoboPOS
 lpDateTime        -d lib/python/DateTime Packages/DateTime
-lpDocumentTemplate -d lib/Python/DocumentTemplate Packages/DocumentTemplate
+lpDocumentTemplate -d lib/python/DocumentTemplate Packages/DocumentTemplate
 lpHelpSys         -d lib/python/HelpSys Packages/HelpSys
 lpZPublisher      -d lib/python/ZPublisher Packages/ZPublisher
 lpOFS             -d lib/python/OFS Packages/OFS
@@ -80,13 +77,18 @@ lpExternalMethod -d lib/python/Products/ExternalMethod Packages/Products/Externa
 lpZSQLMethods    -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
 lpZGadflyDA      -d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
 
-lExtensionClass -d python/Components/ExtensionClass Components/ExtensionClass
-lBTree -d python/Components/BTree Components/BTree
-lcPickle -d python/Components/cPickle Components/cPickle
-lzlib -d python/Components/zlib Components/zlib
+lExtensionClass -d lib/Components/ExtensionClass Components/ExtensionClass
+lBTree -d lib/Components/BTree Components/BTree
+lcPickle -d lib/Components/cPickle Components/cPickle
+lzlib -d lib/Components/zlib Components/zlib
+
+pcgi -d pcgi Components/pcgi2
 
 utilities ZUtil
 ZopeHTTPServer Components/ZopeHTTPServer
+
+There's a bunch of stuff directly *in* lib/python in the new
+that's not the in the old (including Setup?)
 
 Zope ZSrc &utilities &pcgi &ZopeHTTPServer \
   Components/GreyThing \
