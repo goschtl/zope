@@ -224,6 +224,8 @@ def EditWizardViewFactory(name, schema, permission, layer,
     class_.use_session = use_session
 
     class_.generated_form = ViewPageTemplateFile(default_template)
+    # XXX: needs to be tested
+    class_.__name__ = name
 
     defineChecker(
         class_,

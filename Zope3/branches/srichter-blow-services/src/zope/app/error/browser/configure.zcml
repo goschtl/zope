@@ -38,6 +38,13 @@
      description="Error Reporting Utility for Logging Errors"
      permission="zope.ManageServices" />
 
+  <tool
+      interface="..interfaces.IErrorReportingUtility"
+      title="Error Reporting"
+      description="Component to record all uncaught errors and exceptions."
+      unique="true"
+      />
+
   <icon name="zmi_icon"
       for="zope.app.error.interfaces.IErrorReportingUtility"
       file="error.gif" />

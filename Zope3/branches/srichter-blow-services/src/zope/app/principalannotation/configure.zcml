@@ -21,6 +21,13 @@
      title="Principal Annotation Utility"
      description="Stores Annotations for Principals" />
 
+  <browser:tool
+      interface=".interfaces.IPrincipalAnnotationUtility"
+      title="Principal Annotations"
+      description="Stores annotations for any principal."
+      unique="true"
+      />
+
   <subscriber
       for="zope.app.appsetup.IDatabaseOpenedEvent"
       factory=".bootstrap.bootStrapSubscriber"

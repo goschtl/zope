@@ -73,7 +73,9 @@ def DisplayViewFactory(name, schema, label, permission, layer,
                        fulledit_path=None, fulledit_label=None, menu=u'',
                        usage=u''):
     # XXX What about the __implements__ of the bases?
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
+    # XXX: Needs to test name=name
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases,
+                             name=name)
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
@@ -82,6 +84,7 @@ def DisplayViewFactory(name, schema, label, permission, layer,
         fulledit_label = "Full display"
     class_.fulledit_label = fulledit_label
     class_.generated_form = ViewPageTemplateFile(default_template)
+    # XXX: Cannot work!
     class_.usage = usage or (
         menu and globalBrowserMenuService.getMenuUsage(menu)
         )

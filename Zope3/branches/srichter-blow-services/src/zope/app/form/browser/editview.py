@@ -129,7 +129,8 @@ class EditView(BrowserView):
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
+    # XXX: Need to test name=name
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases, name=name)
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields

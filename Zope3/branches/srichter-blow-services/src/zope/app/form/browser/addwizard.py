@@ -108,13 +108,15 @@ class AddWizardView(EditWizardView):
         self.request.response.redirect(self.context.nextURL())
         return False
 
-
+# XXX: Needs unittest
 def AddWizardViewFactory(
     name, schema, permission, layer, panes, fields,
     template, default_template, bases, for_, content_factory, arguments,
     keyword_arguments, set_before_add, set_after_add, use_session=True):
 
-    class_  = SimpleViewClass(template, used_for = schema, bases = bases)
+    # XXX: name=name Needs to be tested
+    class_  = SimpleViewClass(template, used_for=schema, bases=bases,
+                              name=name)
 
     class_.schema = schema
     class_.panes = panes
@@ -137,5 +139,5 @@ def AddWizardViewFactory(
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapter)
-    s.register((for_, layer), Interface, name, class_)
+    sm = zapi.getGlobalSiteManager()
+    sm.provideAdapter((for_, layer), Interface, name, class_)

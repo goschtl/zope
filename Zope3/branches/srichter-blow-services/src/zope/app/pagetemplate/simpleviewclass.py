@@ -44,14 +44,16 @@ class simple(BrowserView):
     def __call__(self, *args, **kw):
         return self.index(*args, **kw)
 
-def SimpleViewClass(src, offering=None, used_for=None, bases=()):
+# XXX: Test new name argument
+def SimpleViewClass(src, offering=None, used_for=None, bases=(), name=u''):
     if offering is None:
         offering = sys._getframe(1).f_globals
 
     bases += (simple, )
 
     class_ = type("SimpleViewClass from %s" % src, bases,
-                  {'index': ViewPageTemplateFile(src, offering)})
+                  {'index': ViewPageTemplateFile(src, offering),
+                   '__name__': name})
 
     if used_for is not None:
         class_.__used_for__ = used_for
