@@ -106,7 +106,9 @@ class Test(CleanUp, unittest.TestCase):
                  <directive name="protectClass"
                     handler="Zope.Configuration.tests.Directives.protectClass">
                        <subdirective name="subsub">
+                         <subdirective name="subsub">
                            <subdirective name="protect"/>
+                         </subdirective>
                        </subdirective>
                  </directive>
                </directives>
@@ -115,7 +117,9 @@ class Test(CleanUp, unittest.TestCase):
                    name=".Contact" permission="splat" names="update"
                >
                  <test:subsub>
-                   <test:protect permission="beep" names="update" />
+                   <test:subsub>
+                     <test:protect permission="beep" names="update" />
+                   </test:subsub>
                  </test:subsub>
                </test:protectClass>'''
             )))
