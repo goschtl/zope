@@ -13,7 +13,7 @@
 ##############################################################################
 """Support information for qualified Dublin Core metadata.
 
-$Id: dcterms.py,v 1.3 2003/08/21 05:20:40 fdrake Exp $
+$Id: dcterms.py,v 1.4 2003/08/22 13:09:37 fdrake Exp $
 """
 
 from zope.app.dublincore import dcsv
@@ -82,15 +82,10 @@ def check_period(value):
     # checks a Period in DCSV format; see:
     # http://dublincore.org/documents/dcmi-period/
     items = dcsv.decode(value)
-    d = {}
-    for k, v in items:
-        if not k:
-            raise ValueError("missing field label")
+    d = dcsv.createMapping(items)
+    for k in d:
         if k not in _period_fields:
             raise ValueError("unknown field label %r" % k)
-        if k in d:
-            raise ValueError("duplicate field label %r" % k)
-        d[k] = v
     if d.get("scheme", W3CDTF).upper() == W3CDTF:
         if "start" in d:
             check_w3cdtf(d["start"])
