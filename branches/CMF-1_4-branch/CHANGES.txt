@@ -1,3 +1,11 @@
+CMF 1.4beta2
+
+  Bug Fixes
+
+    - type actions: They are now absolute URLs by default.
+      For 'getActionById' and '_getViewFor' they are converted to relative
+      URLs. (Collector #152)
+
 CMF 1.4beta1 (2003/04/28)
 
   New Features
