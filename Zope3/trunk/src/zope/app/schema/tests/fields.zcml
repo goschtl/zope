@@ -8,7 +8,7 @@
     <include package="zope.app.security" file="meta.zcml"/>
     <include package="zope.app.security" file="configure.zcml"/>
     <include package="zope.app.browser" file="usages.zcml" />
-    <include package="zope.app.menu.browser" />
+    <include package="zope.app" file="menus.zcml" />
     <include package="zope.app.schema" file="configure.zcml" />
 
 </configure>
