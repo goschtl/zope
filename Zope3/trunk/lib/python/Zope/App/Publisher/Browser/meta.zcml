@@ -62,7 +62,7 @@
        "
        />
 
-    <directive name="icon" attributes="name for file image alt layer"
+    <directive name="icon" attributes="name for file resource alt layer"
                handler="Zope.App.Publisher.Browser.IconDirective." />
 
   </directives>

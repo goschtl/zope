@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IconDirective.py,v 1.1 2002/06/18 20:33:33 jim Exp $
+$Id: IconDirective.py,v 1.2 2002/06/25 15:26:12 mgedmin Exp $
 """
 import os
 import re
@@ -21,9 +21,10 @@ import re
 from Zope.App.ComponentArchitecture.metaConfigure import handler
 from Zope.Configuration.Action import Action
 from Zope.ComponentArchitecture import getResource
-from Zope.App.Publisher.Browser.metaConfigure import resource
+from Zope.App.Publisher.Browser import metaConfigure
 from Zope.App.Traversing.GetResource import getResource
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
+from Zope.Configuration.Exceptions import ConfigurationError
 
 IName = re.compile('I[A-Z][a-z]')
 
@@ -51,34 +52,44 @@ class IconViewFactory:
     def __call__(self, context, request):
         return IconView(context, request, self.rname, self.alt)
 
-def IconDirective(_context, name, for_, file, layer='default',
-                  alt=None):
+def IconDirective(_context, name, for_, file=None, resource=None,
+                  layer='default', alt=None):
 
     for_ = _context.resolve(for_)
     iname = for_.__name__
 
     if alt is None:
-        alt = iname    
+        alt = iname
         if IName.match(alt):
             alt = alt[1:] # Remove leading 'I'
 
-    rname = '-'.join(for_.__module__.split('.'))
-    rname = "%s-%s-%s" % (rname, iname, name)
+    results = []
+    if file is not None and resource is not None:
+        raise ConfigurationError(
+            "Can't use more than one of file, and resource "
+            "attributes for icon directives"
+            )
+    elif file is not None:
+        resource = '-'.join(for_.__module__.split('.'))
+        resource = "%s-%s-%s" % (resource, iname, name)
+        ext = os.path.splitext(file)[1]
+        if ext:
+            resource += ext
+        results = metaConfigure.resource(_context, image=file,
+                              name=resource, layer=layer)()
+    elif resource is None:
+        raise ConfigurationError(
+            "At least one of the file, and resource "
+            "attributes for resource directives must be specified"
+            )
 
-    ext = os.path.splitext(file)[1]
-    if ext:
-        rname += ext
-    
-    vfactory = IconViewFactory(rname, alt)
+    vfactory = IconViewFactory(resource, alt)
 
-    return resource(_context, image=file, name=rname, layer=layer)() + [
+    return results + [
         Action(
         discriminator = ('view', name, vfactory, layer),
         callable = handler,
         args = ('Views', 'provideView',
                 for_, name, IBrowserPresentation,
-                vfactory, layer)),
-        
+                vfactory, layer))
         ]
-    
-    

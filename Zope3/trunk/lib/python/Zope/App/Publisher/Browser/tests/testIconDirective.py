@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.2 2002/06/20 15:54:58 jim Exp $
+$Id: testIconDirective.py,v 1.3 2002/06/25 15:26:12 mgedmin Exp $
 """
 import os
 from StringIO import StringIO
@@ -29,6 +29,7 @@ from Zope.ComponentArchitecture.tests.TestViews import IC
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture import queryView, getView, getResource
 from Zope.Security.Proxy import ProxyFactory
+from Zope.Configuration.Exceptions import ConfigurationError
 
 import Zope.App.Publisher.Browser
 
@@ -82,9 +83,65 @@ class Test(PlacelessSetup, TestCase):
         resource = removeAllProxies(resource)
         self.assertEqual(resource._testData(), open(path, 'rb').read())
 
+    def testResource(self):
+        self.assertEqual(queryView(ob, 'zmi_icon', request), None)
+
+        import Zope.App.Publisher.Browser.tests as p
+        path = os.path.split(p.__file__)[0]
+        path = os.path.join(path, 'test.gif')
         
-        
-     
+        xmlconfig(StringIO(template % (
+            """
+            <browser:resource name="zmi_icon_res"
+                      image="%s" /> 
+            <browser:icon name="zmi_icon"
+                      for="Zope.ComponentArchitecture.tests.TestViews.IC"
+                      resource="zmi_icon_res" /> 
+            """ % path
+            ))) 
+
+        view = getView(ob, 'zmi_icon', request)
+        rname = "zmi_icon_res"
+        self.assertEqual(
+            view(),
+            '<img src="/@@/%s" alt="IC" width="16" height="16" border="0" />'
+            % rname)
+
+        resource = getResource(ob, rname, request)
+        resource = ProxyFactory(resource)
+
+        self.assertRaises(Forbidden, getattr, resource, '_testData')
+        resource = removeAllProxies(resource)
+        self.assertEqual(resource._testData(), open(path, 'rb').read())
+
+    def testResourceErrors(self):
+        self.assertEqual(queryView(ob, 'zmi_icon', request), None)
+
+        import Zope.App.Publisher.Browser.tests as p
+        path = os.path.split(p.__file__)[0]
+        path = os.path.join(path, 'test.gif')
+
+        config = StringIO(template % (
+            """
+            <browser:resource name="zmi_icon_res"
+                      image="%s" /> 
+            <browser:icon name="zmi_icon"
+                      for="Zope.ComponentArchitecture.tests.TestViews.IC"
+                      file="%s"
+                      resource="zmi_icon_res" /> 
+            """ % (path, path)
+            ))
+        self.assertRaises(ConfigurationError, xmlconfig, config)
+
+        config = StringIO(template % (
+            """
+            <browser:icon name="zmi_icon"
+                      for="Zope.ComponentArchitecture.tests.TestViews.IC"
+                      /> 
+            """
+            ))
+        self.assertRaises(ConfigurationError, xmlconfig, config)
+
 
 def test_suite():
     return TestSuite((
