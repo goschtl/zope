@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.32 2004/01/13 22:28:46 fdrake Exp $
+$Id: syncer.py,v 1.33 2004/01/14 18:32:49 fdrake Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -35,5 +35,5 @@ def getAnnotations(obj):
 
 
 def toFS(obj, name, location):
-    syncer = Syncer(getObjectId, getSynchronizer, getAnnotations)
+    syncer = Syncer(getObjectId, getSerializer, getAnnotations)
     return syncer.toFS(obj, name, location)
