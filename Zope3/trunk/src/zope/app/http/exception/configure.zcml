@@ -1,0 +1,11 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+<defaultView 
+    for="zope.exceptions.IUnauthorized"	
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    name="index.html"
+    permission="zope.Public"
+    factory=".unauthorized.Unauthorized"
+    />
+
+</zopeConfigure>

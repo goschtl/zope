@@ -14,7 +14,7 @@
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
 
-$Id: traversal.py,v 1.1 2003/02/07 15:59:37 jim Exp $
+$Id: traversal.py,v 1.2 2003/03/29 17:03:58 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -47,8 +47,8 @@ class ContainerTraverser:
         if request.getTraversalStack():
             raise NotFoundError(self.context, name, request)
 
-        # This should only happen for a PUT:
-        if request.method != 'PUT':
+        # This should only happen for a PUT or MKCOL:
+        if request.method not in  ['PUT', 'MKCOL']:
             raise NotFoundError(self.context, name, request)
 
         return NullResource(self.context, name)

@@ -49,4 +49,6 @@
   allowed_attributes="DELETE"
   />
 
+<include package=".exception" />
+
 </zopeConfigure>
