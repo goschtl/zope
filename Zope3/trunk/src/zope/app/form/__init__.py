@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.3 2004/03/18 17:01:09 philikon Exp $
+$Id: __init__.py,v 1.4 2004/05/07 19:33:31 garrett Exp $
 """
 import traceback
 from warnings import warn
@@ -38,10 +38,10 @@ class Widget(object):
         self.request = request
         self.name = self._prefix + context.__name__
         
-    title = property(lambda self: self._translate(
+    label = property(lambda self: self._translate(
         self.context.title))
     
-    description = property(lambda self: self._translate(
+    hint = property(lambda self: self._translate(
         self.context.description))
     
     def _translate(self, text):
