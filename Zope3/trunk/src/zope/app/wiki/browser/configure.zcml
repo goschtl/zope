@@ -172,10 +172,12 @@
 
   <!-- Register a browser-specific traverser --> 
 
-  <browser:page
-      name="_traverse" 
+  <view
       for="zope.app.wiki.interfaces.IWikiPage"
-      class="zope.app.wiki.traversal.WikiPageTraverser" 
-      permission="zope.Public" />
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory="zope.app.wiki.traversal.WikiPageTraverser"
+      permission="zope.Public"
+      />
 
 </configure>

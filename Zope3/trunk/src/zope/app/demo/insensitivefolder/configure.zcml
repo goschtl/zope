@@ -4,13 +4,22 @@
     i18n_domain="zope">
 
 
-<!-- Register the Traverser -->
-<browser:page
-    name="_traverse"
-    for=".ICaseInsensitiveFolder"
-    class=".CaseInsensitiveContainerTraverser"
-    permission="zope.Public"
-    />
+  <!-- Register the Traverser -->
+  <view
+      for=".ICaseInsensitiveFolder"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      factory=".CaseInsensitiveContainerTraverser"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      permission="zope.Public"
+      />
+
+  <view
+      for=".ICaseInsensitiveFolder"
+      type="zope.publisher.interfaces.xmlrpc.IXMLRPCRequest"
+      factory=".CaseInsensitiveContainerTraverser"
+      provides="zope.publisher.interfaces.xmlrpc.IXMLRPCPublisher"
+      permission="zope.Public"
+      />
 
 <!-- Case-insensitive Folder Registration -->
 <factory

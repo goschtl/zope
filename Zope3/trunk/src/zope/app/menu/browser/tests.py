@@ -13,25 +13,26 @@
 ##############################################################################
 """Browser Menu Browser Tests
 
-$Id: tests.py,v 1.3 2004/03/15 20:42:06 jim Exp $
+$Id: tests.py,v 1.4 2004/03/17 18:24:25 philikon Exp $
 """
-
 import unittest
 
-from zope.app.tests import ztapi
 from zope.interface import Interface, implements
-
 from zope.component import getServiceManager
-from zope.app.site.tests.placefulsetup import PlacefulSetup
 
-from zope.app.menu.browser import MenuAccessView
-from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserView
-from zope.app.publisher.interfaces.browser import IBrowserMenuService
-from zope.app.publication.traversers import TestTraverser
 from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
+
+from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserView, IBrowserPublisher
+
+from zope.app.tests import ztapi
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+
+from zope.app.publisher.interfaces.browser import IBrowserMenuService
+from zope.app.menu.browser import MenuAccessView
+from zope.app.publication.traversers import TestTraverser
 from zope.app.site.interfaces import ISimpleService
 
 def d(title, action):
@@ -81,7 +82,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineService('BrowserMenu', IBrowserMenuService)
         provideService('BrowserMenu', Service())
         ztapi.browserView(I, 'a3', V)
-        ztapi.browserView(None, '_traverse', TestTraverser)
+        ztapi.browserViewProviding(None, IBrowserPublisher, TestTraverser)
         defineChecker(C, NamesChecker(['a1', 'a2', 'a3', '__call__'],
                                       CheckerPublic,
                                       abad='waaa'))

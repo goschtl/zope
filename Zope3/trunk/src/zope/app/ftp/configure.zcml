@@ -2,8 +2,8 @@
 
   <view 
       for="zope.app.container.interfaces.IReadContainer"
-      name="_traverse"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
+      provides="zope.publisher.interfaces.ftp.IFTPPublisher"
       factory=".FTPView"
       permission="zope.Public"
       allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"

@@ -11,11 +11,11 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.2 2004/03/13 21:03:20 srichter Exp $
+$Id: traversal.py,v 1.3 2004/03/17 18:24:27 philikon Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
-from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.schema.interfaces import IMutableSchema
 
 from zope.exceptions import NotFoundError
@@ -27,8 +27,7 @@ from zope.app.location.interfaces import ILocation
 _marker = object()
 
 class SchemaFieldTraverser:
-
-    implements(IPublishTraverse)
+    implements(IBrowserPublisher)
     __used_for__ = IMutableSchema
 
     def __init__(self, context, request):

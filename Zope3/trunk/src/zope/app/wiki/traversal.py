@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.2 2004/03/13 21:03:25 srichter Exp $
+$Id: traversal.py,v 1.3 2004/03/17 18:24:28 philikon Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -25,7 +25,6 @@ from zope.app.traversing.interfaces import ITraversable
 from zope.app.wiki.interfaces import IWikiPage
 
 class WikiPageTraverser:
-
     implements(IPublishTraverse)
     __used_for__ = IWikiPage
 

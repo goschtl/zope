@@ -9,25 +9,23 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""HTTPP-specific traversers
+"""HTTP-specific traversers
 
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
 
-$Id: traversal.py,v 1.5 2004/03/03 10:38:45 philikon Exp $
+$Id: traversal.py,v 1.6 2004/03/17 18:24:24 philikon Exp $
 """
 __metaclass__ = type
 
-from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces.http import IHTTPPublisher
 from zope.app.container.interfaces import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 
 class ContainerTraverser:
-
-    implements(IPublishTraverse)
-
+    implements(IHTTPPublisher)
     __used_for__ = ISimpleReadContainer
 
     def __init__(self, container, request):
@@ -56,7 +54,6 @@ class ContainerTraverser:
         return NullResource(self.context, name)
 
 class ItemTraverser(ContainerTraverser):
-
     __used_for__ = IItemContainer
 
     def publishTraverse(self, request, name):

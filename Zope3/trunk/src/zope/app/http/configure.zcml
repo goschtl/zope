@@ -6,17 +6,16 @@
 
 <view
   for="zope.app.container.interfaces.ISimpleReadContainer"
-  name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPRequest"
+  provides="zope.publisher.interfaces.IPublishTraverse"
   factory=".traversal.ContainerTraverser"
   permission="zope.Public"
-  allowed_interface="zope.publisher.interfaces.IPublishTraverse"
   />
 
 <view
   for="zope.app.container.interfaces.IItemContainer"
-  name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPRequest"
+  provides="zope.publisher.interfaces.http.IHTTPPublisher"
   factory=".traversal.ItemTraverser"
   permission="zope.Public"
   allowed_interface="zope.publisher.interfaces.IPublishTraverse"
