@@ -6,9 +6,46 @@
   <include package=".grants" file="meta.zcml" />
 
   <meta:directive
-     namespace="http://namespaces.zope.org/zope"
-     name="securityPolicy"
-     schema=".metadirectives.ISecurityPolicyDirective"
-     handler=".metaconfigure.securityPolicy" />
+      name="securityPolicy"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".metadirectives.ISecurityPolicyDirective"
+      handler=".metaconfigure.securityPolicy" 
+      />
 
+  <meta:groupingDirective
+      name="module"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".modulezcml.IModule"
+      handler="zope.configuration.config.GroupingContextDecorator"
+      >
+      Group security declarations about a module
+  </meta:groupingDirective>
+
+  <meta:directive
+      name="allow"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".modulezcml.IAllow"
+      handler=".modulezcml.allow"
+      >
+      Allow access to selected module attributes
+
+      Access is unconditionally allowed to any names provided directly
+      in the attributes attribute or to any names defined by
+      interfaces listed in the interface attribute.
+  </meta:directive>
+
+  <meta:directive
+      name="require"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".modulezcml.IRequire"
+      handler=".modulezcml.require"
+      >
+      Require a permission to access selected module attributes
+
+      The given permission is required to access any names provided
+      directly in the attributes attribute or any names defined by
+      interfaces listed in the interface attribute.  
+
+  </meta:directive>
+ 
 </configure>
