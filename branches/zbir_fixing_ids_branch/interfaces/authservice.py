@@ -31,7 +31,7 @@ class IBasicUser( Interface ):
     def getId():
 
         """ Get the ID of the user.
-        
+
         o The ID can be used, at least from Python, to get the user from
           the user's UserDatabase
         """
@@ -69,7 +69,7 @@ class IUserFolder( Interface ):
 
     """ Specify the interface called out in AccessControl.User.BasicUserFolder
         as the "Public UserFolder object interface":
-        
+
     o N.B: "enumeration" methods ('getUserNames', 'getUsers') are *not*
            part of the contract!  See IEnumerableUserFolder.
     """
@@ -98,100 +98,98 @@ class IUserFolder( Interface ):
         o 'auth' is any credential information already extracted by
           the caller
 
-        o roles is the list of roles the caller 
+        o roles is the list of roles the caller
         """
 
 class IPluggableAuthService( IUserFolder ):
-    
+
     """ The full, default contract for the pluggable authentication service.
     """
-    
+
     def searchUsers(**kw):
-    
-        """ Search for users.  Returns a sequence of dicts, each dict 
-        representing a user matching the query, with the keys 
-        'userid','id', 'login', 'title', and 'principal_type', possibly among 
-        others.  'principal_type' is always 'user'.
-        
+
+        """ Search for users.  Returns a sequence of dicts, each dict
+        representing a user matching the query, with the keys
+        'userid','id', 'login', 'title', and 'principal_type',
+        possibly among others.  'principal_type' is always 'user'.
+
         Possible keywords include the following:
-        
-        o exact_match: boolean; forces an exact match on id (unused if id is not
-          part of query)
-        
+
         o id: user id
-        
+
         o name: user name
-        
-        o max_results: an int (or value castable to int) indicating the maximum
-          number of results the method should return
-        
-        o sort_by: the key in the user dictionary that should be used to sort 
-          the results
-        
+
+        o max_results: an int (or value castable to int) indicating
+          the maximum number of results the method should return
+
+        o sort_by: the key in the user dictionary that should be used
+          to sort the results
+
         o login: user login
         """
 
     def searchGroups(**kw):
-        """ Search for groups.  Returns a sequence of dicts, each dict 
-        representing a group matching the query, with the keys 
-        'groupid','id', 'title', and 'principal_type', possibly among 
+        """ Search for groups.  Returns a sequence of dicts, each dict
+        representing a group matching the query, with the keys
+        'groupid','id', 'title', and 'principal_type', possibly among
         others.  'principal_type' is always 'group'.
-        
+
         Possible keywords include the following:
-        
-        o exact_match: boolean; forces an exact match on id (unused if id is not
-          part of query)
-        
+
         o id: user id
-        
+
         o name: user name
-        
-        o max_results: an int (or value castable to int) indicating the maximum
-          number of results the method should return
-        
-        o sort_by: the key in the user dictionary that should be used to sort 
-          the results
+
+        o max_results: an int (or value castable to int) indicating
+          the maximum number of results the method should return
+
+        o sort_by: the key in the user dictionary that should be used
+          to sort the results
         """
 
     def searchPrincipals(groups_first=False, **kw):
-        """ Search for principals (users, groups, or both).
-        Returns a sequence of dicts, each dict 
-        representing a principal (group or user) matching the query.  groups
-        will be represented with dictionaries as described in searchGroups,
-        and users as described in searchUsers.  Possible keywords include 
-        exact_match, id, name, max_results, sort_by, and login.
+        """ Search for principals (users, groups, or both).  Returns a
+        sequence of dicts, each dict representing a principal (group
+        or user) matching the query.  groups will be represented with
+        dictionaries as described in searchGroups, and users as
+        described in searchUsers.  Possible keywords include id, name,
+        max_results, sort_by, and login.
         """
 
     def updateCredentials(request, response, login, new_password):
         """Central updateCredentials method
 
-        This method is needed for cases where the credentials storage and
-        the credentials extraction is handled by different plugins. Example
-        case would be if the CookieAuthHelper is used as a Challenge and
-        Extraction plugin only to take advantage of the login page feature
-        but the credentials are not stored in the CookieAuthHelper cookie
-        but somewhere else, like in a Session.
+        This method is needed for cases where the credentials storage
+        and the credentials extraction is handled by different
+        plugins. Example case would be if the CookieAuthHelper is used
+        as a Challenge and Extraction plugin only to take advantage of
+        the login page feature but the credentials are not stored in
+        the CookieAuthHelper cookie but somewhere else, like in a
+        Session.
         """
 
     def logout(REQUEST):
         """Publicly accessible method to log out a usera wrapper
-        around resetCredentials that may implement some policy (the default
-        implementation redirects to HTTP_REFERER)
+        around resetCredentials that may implement some policy (the
+        default implementation redirects to HTTP_REFERER)
         """
 
     def resetCredentials(self, request, response):
-        """Reset credentials by informing all active resetCredentials plugins
+        """Reset credentials by informing all active resetCredentials
+        plugins
         """
 
-# The IMutableUserFolder and IEnumerableFolder are not supported out-of-the-box
-# by the pluggable authentication service.  These interfaces describe contracts
-# that other standard Zope user folders implement.
+# The IMutableUserFolder and IEnumerableFolder are not supported
+# out-of-the-box by the pluggable authentication service.  These
+# interfaces describe contracts that other standard Zope user folders
+# implement.
 
 class IMutableUserFolder( Interface ):
 
-    """ Specify the interface called out in AccessControl.User.BasicUserFolder
-        as the "Public UserFolder object interface":
-        
+    """ Specify the interface called out in
+        AccessControl.User.BasicUserFolder as the
+        "Public UserFolder object interface":
+
     o N.B: "enumeration" methods ('getUserNames', 'getUsers') are *not*
            part of the contract!  See IEnumerableUserFolder.
     """
