@@ -13,12 +13,9 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.9 2003/06/01 15:59:30 jim Exp $
+$Id: fssync.py,v 1.10 2003/06/03 22:46:18 jim Exp $
 """
 
-from zope.app.content.file import File
-from zope.app.content.folder import Folder
-from zope.app.content.zpt import ZPTPage
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
 from zope.app.context import ContextWrapper

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.24 2003/06/03 21:43:00 jim Exp $
+$Id: test_eventservice.py,v 1.25 2003/06/03 22:46:22 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -32,7 +32,6 @@ from zope.app.interfaces.event import IObjectRemovedEvent, IObjectAddedEvent
 from zope.app.interfaces.event import ISubscriber
 from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
 from zope.app.interfaces.event import IEvent, ISubscribingAware
-from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import Registered
 from zope.app.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup

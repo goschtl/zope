@@ -13,14 +13,11 @@
 ##############################################################################
 """ContentWorkflow Utility views
  
-$Id: contentworkflow.py,v 1.1 2003/05/08 17:27:17 jack-e Exp $
+$Id: contentworkflow.py,v 1.2 2003/06/03 22:46:18 jim Exp $
 """
 __metaclass__ = type
  
-from zope.component import getServiceManager
 from zope.publisher.browser import BrowserView
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.interfaces.workflow.stateful import IContentWorkflowsUtility
 
 class ContentWorkflowsUtilityView(BrowserView):
  

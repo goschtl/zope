@@ -14,13 +14,11 @@
 """
 Setup for Placeful Worfklow Tests
 Revision information:
-$Id: workflowsetup.py,v 1.3 2003/06/03 21:43:02 jim Exp $
+$Id: workflowsetup.py,v 1.4 2003/06/03 22:46:24 jim Exp $
 """
-from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceConfiguration
 
 from zope.component import getService, getServiceManager
-from zope.app.services.servicenames import Roles, Permissions, Adapters
+from zope.app.services.servicenames import Roles, Permissions
 from zope.app.services.servicenames import Authentication, Workflows
 
 from zope.app.interfaces.security import IAuthenticationService
@@ -29,21 +27,8 @@ from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry import permissionRegistry
 
-from zope.app.interfaces.dependable import IDependable
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.dependable import IDependable
-from zope.app.dependable import Dependable
-from zope.app.interfaces.services.configuration \
-     import IUseConfiguration, IUseConfigurable
-from zope.app.services.configuration import UseConfiguration
-from zope.component.adapter import provideAdapter
-
-from zope.app.interfaces.services.configuration \
-     import Active, Unregistered, Registered
 
 from zope.app.workflow.service import WorkflowService
 

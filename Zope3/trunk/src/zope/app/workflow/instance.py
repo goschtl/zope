@@ -13,12 +13,11 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.4 2003/06/01 15:59:38 jim Exp $
+$Id: instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
 """
 __metaclass__ = type
 
 from types import StringTypes
-from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies

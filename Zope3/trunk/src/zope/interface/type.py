@@ -15,11 +15,11 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.8 2003/05/03 16:36:05 jim Exp $
+$Id: type.py,v 1.9 2003/06/03 22:46:25 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import Interface, providedBy
+from zope.interface import providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interfaces import ITypeRegistry
 

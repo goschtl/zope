@@ -13,12 +13,12 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.1 2003/05/08 17:27:17 jack-e Exp $
+$Id: instance.py,v 1.2 2003/06/03 22:46:17 jim Exp $
 """
 __metaclass__ = type
 
 from zope.schema import getFieldNames
-from zope.component import queryView, queryAdapter,  getAdapter
+from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 

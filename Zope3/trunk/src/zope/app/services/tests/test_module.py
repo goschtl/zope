@@ -14,12 +14,11 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.7 2003/06/03 21:43:00 jim Exp $
+$Id: test_module.py,v 1.8 2003/06/03 22:46:22 jim Exp $
 """
-from unittest import TestCase, TestLoader, TextTestRunner
 
+from unittest import TestCase, TestLoader, TextTestRunner
 from zope.interface import Interface
-from zope.app.services.service import ServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.services.module import Manager

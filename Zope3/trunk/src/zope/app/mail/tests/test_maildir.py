@@ -13,11 +13,10 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.1 2003/05/21 10:52:53 mgedmin Exp $
+$Id: test_maildir.py,v 1.2 2003/06/03 22:46:20 jim Exp $
 """
 
 import unittest
-import sys
 import stat
 
 from zope.interface.verify import verifyObject

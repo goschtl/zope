@@ -25,7 +25,7 @@ from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
 from zope.interface.declarations import directlyProvides, implements
-from zope.schema import MinMaxLen, TextLine
+from zope.schema import MinMaxLen
 
 try:
     basestring  # new in Python 2.3

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.7 2003/03/13 18:49:09 alga Exp $
+$Id: test_securitydirectives.py,v 1.8 2003/06/03 22:46:22 jim Exp $
 """
 
 import unittest
@@ -31,7 +31,7 @@ from zope.configuration.xmlconfig import XMLConfig, xmlconfig
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 import zope.app.security
-from zope.app.security.settings import Allow, Deny
+from zope.app.security.settings import Allow
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry \
         import permissionRegistry as pregistry

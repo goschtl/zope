@@ -14,13 +14,12 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.23 2003/06/03 21:43:00 jim Exp $
+$Id: placefulsetup.py,v 1.24 2003/06/03 22:46:22 jim Exp $
 """
 
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.services.servicenames import HubIds
 from zope.app.content.folder import RootFolder
 from zope.app.context import ContextWrapper
 

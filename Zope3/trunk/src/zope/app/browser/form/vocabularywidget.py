@@ -30,7 +30,6 @@ from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
-from zope.schema.interfaces import IVocabularyTokenized
 from zope.schema.interfaces import ValidationError
 
 

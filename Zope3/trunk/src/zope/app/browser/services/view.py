@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view configuration.
 
-$Id: view.py,v 1.17 2003/06/01 15:59:27 jim Exp $
+$Id: view.py,v 1.18 2003/06/03 22:46:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -32,12 +32,6 @@ from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import \
      Unregistered, Registered, Active
 from zope.app.traversing import getPath, getParent, objectName
-
-# XXX These are not used in this module, but are referenced in configure.zcml.
-#  either configure.zcml should be fixed, or a comment should replace
-#  this one to explain why configure.zcml is importing these two names
-#  from here rather than from where they are defined.
-from zope.app.services.view import ViewConfiguration, PageConfiguration
 
 class IViewSearch(Interface):
 

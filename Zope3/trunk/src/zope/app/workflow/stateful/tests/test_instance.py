@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.4 2003/06/03 14:34:04 stevea Exp $
+$Id: test_instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
 """
 
 import unittest
@@ -30,18 +30,14 @@ from zope.app.security.registries.permissionregistry \
 from zope.app.services.servicenames import Permissions
 from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
-from zope.security.management import system_user
 
 from zope.app.context import ContextWrapper
-from zope.app.traversing import traverse
 
 from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.services.configuration \
-     import Active, Unregistered, Registered
+from zope.app.interfaces.services.configuration import Active
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.workflow.service import WorkflowService
 from zope.app.workflow.service import ProcessDefinitionConfiguration
 from zope.app.interfaces.workflow.stateful \
      import IStatefulProcessInstance
@@ -49,6 +45,7 @@ from zope.app.workflow.stateful.definition \
      import StatefulProcessDefinition, State, Transition
 from zope.app.workflow.stateful.instance \
      import StatefulProcessInstance, StateChangeInfo
+from zope.app import zapi
 
 
 # define and create ProcessDefinition (PD) for tests
@@ -98,7 +95,8 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getConfigurationManager(),
+                      '2').status = Active
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -191,7 +189,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getConfigurationManager(), '2').status = Active
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -280,9 +278,10 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        k = self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getConfigurationManager(),
+                      k).status = Active
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -372,9 +371,10 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        k = self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getConfigurationManager(),
+                      k).status = Active
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service

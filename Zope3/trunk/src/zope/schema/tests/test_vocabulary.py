@@ -14,7 +14,6 @@
 
 """Test of the VocabularyField and related support APIs."""
 
-import sys
 import unittest
 
 from zope.interface.verify import verifyObject

@@ -13,9 +13,6 @@
 ##############################################################################
 
 import unittest
-import sys
-import os
-from cStringIO import StringIO
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.15 2003/06/03 21:43:00 jim Exp $
+$Id: test_auth.py,v 1.16 2003/06/03 22:46:22 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.services.servicenames import Adapters, Authentication
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.tests.eventsetup import EventSetup
-from zope.app.traversing import getPath, traverse
+from zope.app.traversing import traverse
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.interface import implements

@@ -14,11 +14,10 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.9 2003/05/03 16:36:05 jim Exp $
+$Id: interface.py,v 1.10 2003/06/03 22:46:25 jim Exp $
 """
 
 import sys
-from inspect import currentframe
 from types import FunctionType
 
 CO_VARARGS = 4

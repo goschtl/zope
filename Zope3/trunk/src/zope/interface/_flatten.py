@@ -15,11 +15,11 @@
 
 See Adapter class.
 
-$Id: _flatten.py,v 1.5 2003/05/03 16:35:29 jim Exp $
+$Id: _flatten.py,v 1.6 2003/06/03 22:46:25 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import Interface, InterfaceSpecification
+from zope.interface import InterfaceSpecification
 
 def _flatten(implements, include_None=0):
 

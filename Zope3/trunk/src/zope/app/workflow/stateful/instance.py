@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.4 2003/06/01 15:59:39 jim Exp $
+$Id: instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,7 +28,7 @@ from zope.component import getService
 from zope.component import getServiceManager
 
 from zope.proxy import removeAllProxies
-from zope.context import ContextMethod, getWrapperContainer, ContextAware
+from zope.context import ContextMethod, ContextAware
 from zope.app.context import ContextWrapper
 
 from zope.security.management import getSecurityManager
@@ -39,8 +39,6 @@ from zope.security.checker import CheckerPublic
 #from zope.security.checker import CheckerPublic, selectChecker
 #from zope.security.checker import Checker
 #from zope.security.proxy import getChecker, Proxy
-
-from zope.app.security.permission import checkPermission
 
 from zope.tales.engine import Engine
 

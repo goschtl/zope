@@ -11,7 +11,7 @@
 ##############################################################################
 """HTTP method OPTIONS
 
-$Id: options.py,v 1.1 2003/05/20 19:43:27 sidnei Exp $
+$Id: options.py,v 1.2 2003/06/03 22:46:19 jim Exp $
 """
 __metaclass__ = type
 
@@ -20,7 +20,7 @@ _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
            'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'TRACE']
            # XXX 'GET', 'HEAD', 'POST' are always available?
 
-from zope.component import getAdapter, queryView
+from zope.component import queryView
 
 class OPTIONS:
     """OPTIONS handler for all objects

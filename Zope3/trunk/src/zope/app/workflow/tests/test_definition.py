@@ -14,7 +14,6 @@
 
 import unittest
 
-from zope.interface import Interface
 from zope.interface.verify import verifyClass
 
 from zope.app.interfaces.workflow import IProcessDefinition

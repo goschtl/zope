@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.11 2003/06/03 21:43:00 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.12 2003/06/03 22:46:22 jim Exp $
 """
 __metaclass__ = type
 
@@ -30,7 +30,6 @@ from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.interfaces.services.service import ILocalService
 from zope.app.services.cache import CacheConfiguration
 from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.service import ServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.traversing import traverse

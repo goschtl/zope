@@ -12,21 +12,19 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.5 2003/05/22 15:10:59 sidnei Exp $
+$Id: test_propfind.py,v 1.6 2003/06/03 22:46:19 jim Exp $
 """
 __metaclass__ = type
 
 from datetime import datetime
 from unittest import TestCase, TestSuite, main, makeSuite
 from StringIO import StringIO
-from zope.interface import Interface
 from zope.component import getService, getView, getAdapter
 from zope.app.services.servicenames import Adapters, Views
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile
 from zope.app.interfaces.content.zpt import IZPTPage
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.interfaces.http import IHTTPPresentation
@@ -36,7 +34,7 @@ from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.app.dav import propfind
-from zope.app.interfaces.dav import IDAVSource, IDAVSchema
+from zope.app.interfaces.dav import IDAVSchema
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.globaldavschemaservice import provideInterface
 from zope.app.interfaces.dublincore import IZopeDublinCore

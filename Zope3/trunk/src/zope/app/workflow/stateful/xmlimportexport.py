@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.3 2003/05/28 15:46:14 jim Exp $
+$Id: xmlimportexport.py,v 1.4 2003/06/03 22:46:23 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,10 +24,8 @@ from zope.app.interfaces.workflow.stateful \
      import IStatefulProcessDefinition
 from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
 from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
-from zope.component import getAdapter, getServiceManager
+from zope.component import getAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from types import StringTypes
-from zope.context import ContextMethod
 from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
 

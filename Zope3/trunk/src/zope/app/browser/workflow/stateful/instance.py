@@ -13,22 +13,19 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.4 2003/05/28 15:46:03 jim Exp $
+$Id: instance.py,v 1.5 2003/06/03 22:46:18 jim Exp $
 """
 __metaclass__ = type
 
-from zope.schema import getFieldNames
-from zope.component import queryView, queryAdapter, getAdapter, getService
-from zope.app.services.servicenames import Workflows
-from zope.publisher.browser import BrowserView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
-from zope.app.interfaces.workflow import IProcessInstanceContainer
-from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.proxy import removeAllProxies
+from zope.app.interfaces.workflow import IProcessInstanceContainer
+from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.services.servicenames import Workflows
+from zope.component import getAdapter, getService
 from zope.context import getWrapperData
+from zope.proxy import removeAllProxies
+from zope.publisher.browser import BrowserView
  
 class ManagementView(BrowserView):
 

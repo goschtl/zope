@@ -26,7 +26,7 @@ from zope.interface.declarations import implements
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
-from zope.schema.interfaces import IVocabulary, ITerm, IVocabularyQuery
+from zope.schema.interfaces import IVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
 from zope.schema.interfaces import IVocabularyListField
 from zope.schema.interfaces import IIterableVocabularyQuery

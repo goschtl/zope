@@ -14,18 +14,14 @@
 """Implemantation assertion facilities.
 
 Revision information:
-$Id: implements.py,v 1.5 2003/05/03 16:36:05 jim Exp $
+$Id: implements.py,v 1.6 2003/06/03 22:46:25 jim Exp $
 """
 
 from zope.interface.declarations import providedBy, implementedBy
 from zope.interface.declarations import classImplements
 from zope.interface.declarations import InterfaceSpecification
-
-
-from zope.interface import exceptions
 from zope.interface.verify import verifyClass
 from zope.interface.interface import InterfaceClass
-from types import TupleType, ClassType, StringType
 
 getImplements = providedBy
 getImplementsOfInstances = implementedBy

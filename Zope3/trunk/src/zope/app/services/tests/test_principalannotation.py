@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.6 2003/06/03 21:43:00 jim Exp $
+$Id: test_principalannotation.py,v 1.7 2003/06/03 22:46:22 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
     import PlacefulSetup
-from zope.component import getServiceManager, getService
+from zope.component import getServiceManager
 from zope.app.services.principalannotation import \
      PrincipalAnnotationService, AnnotationsForPrincipal
 from zope.app.interfaces.services.principalannotation import \

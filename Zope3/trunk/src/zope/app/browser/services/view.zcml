@@ -40,7 +40,7 @@
   <addform
       schema="zope.app.interfaces.services.view.IPageConfiguration"
       name="PageConfiguration"
-      content_factory=".view.PageConfiguration"
+      content_factory="zope.app.services.view.PageConfiguration"
       keyword_arguments="forInterface class_ viewName permission layer"
       set_before_add="template"
       label="Register a view page"

@@ -13,20 +13,15 @@
 ##############################################################################
 """ProcessDefinition configuration adding view
  
-$Id: definition.py,v 1.2 2003/05/28 15:46:03 jim Exp $
+$Id: definition.py,v 1.3 2003/06/03 22:46:18 jim Exp $
 """
 __metaclass__ = type
 
 from zope.proxy import removeAllProxies
-from zope.component import getServiceManager
 from zope.publisher.browser import BrowserView
 from zope.app.browser.container.adding import Adding
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.interfaces.workflow.stateful import IStatefulProcessDefinition
-
-from zope.app.workflow.stateful.definition import State, Transition
-
 from zope.app.browser.form.submit import Update
+from zope.app.workflow.stateful.definition import State, Transition
 
 
 class StatesContainerAdding(Adding):

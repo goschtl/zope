@@ -15,7 +15,6 @@
 __metaclass__ = type
 
 from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IGlobalProcessDefinitionImportExport
 from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
 from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
 

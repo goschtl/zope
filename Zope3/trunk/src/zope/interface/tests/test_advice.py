@@ -25,14 +25,12 @@ not require) Zope 3 and Twisted.  It provides tools for manipulating UML
 models, object-relational persistence, aspect-oriented programming, and more.
 Visit the PEAK home page at http://peak.telecommunity.com for more information.
 
-$Id: test_advice.py,v 1.1 2003/06/03 19:52:39 pje Exp $
+$Id: test_advice.py,v 1.2 2003/06/03 22:46:26 jim Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from zope.interface.advice import *
 import sys
-from types import InstanceType
-
 
 def ping(log, value):
 

@@ -16,7 +16,6 @@
 
 import unittest
 
-from zope.schema import vocabulary
 from zope.schema.interfaces import ITerm
 from zope.schema.tests import tabcomplete
 

@@ -14,20 +14,19 @@
 """
 
 Revision information:
-$Id: test_service.py,v 1.2 2003/06/03 14:36:13 stevea Exp $
+$Id: test_service.py,v 1.3 2003/06/03 22:46:24 jim Exp $
 """
 
 import unittest
 
-from zope.interface import Interface, implements
+from zope.app import zapi
+from zope.interface import implements
 from zope.interface.verify import verifyClass
 
-from zope.app.traversing import traverse
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.configuration import IUseConfigurable
 
-from zope.app.interfaces.services.configuration \
-     import Active, Unregistered, Registered
+from zope.app.interfaces.services.configuration import Active, Registered
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.interfaces.workflow \
@@ -64,13 +63,15 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
 
         self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getConfigurationManager(),
+                      '2').status = Active
         self.cm.setObject('', ProcessDefinitionConfiguration('definition2',
                                 '/++etc++site/default/pd2'))
-        traverse(self.default.getConfigurationManager(), '3').status = Active
+        zapi.traverse(self.default.getConfigurationManager(),
+                      '3').status = Active
         self.cm.setObject('', ProcessDefinitionConfiguration('definition3',
                                 '/++etc++site/default/pd1'))
-        traverse(self.default.getConfigurationManager(),
+        zapi.traverse(self.default.getConfigurationManager(),
                  '4').status = Registered
         # Now self.service has definition1 and definition2 available
         # and knows about definition3
@@ -80,10 +81,12 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
 
         self.cm1.setObject('', ProcessDefinitionConfiguration('definition1',
                             '/folder1/++etc++site/default/pd3'))
-        traverse(self.default1.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default1.getConfigurationManager(),
+                      '2').status = Active
         self.cm1.setObject('', ProcessDefinitionConfiguration('definition4',
                             '/folder1/++etc++site/default/pd4'))
-        traverse(self.default1.getConfigurationManager(), '3').status = Active
+        zapi.traverse(self.default1.getConfigurationManager(),
+                      '3').status = Active
         # Now self.service1 overrides definition1, adds new definition4
         # available, and inherits definition2 from self.service
 

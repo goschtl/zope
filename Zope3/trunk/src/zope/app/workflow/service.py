@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.3 2003/06/01 15:59:38 jim Exp $
+$Id: service.py,v 1.4 2003/06/03 22:46:23 jim Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.traversing import traverse, getPath
+from zope.app.traversing import getPath
 
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.workflow import IProcessDefinitionConfiguration

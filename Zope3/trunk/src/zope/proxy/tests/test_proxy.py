@@ -13,14 +13,12 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.11 2003/05/28 22:15:27 jim Exp $
+$Id: test_proxy.py,v 1.12 2003/06/03 22:46:27 jim Exp $
 """
 import pickle
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-from zope.proxy.interfaces import IProxyIntrospection
 from zope.proxy import ProxyBase
-from zope import proxy
 
 class Thing:
     pass

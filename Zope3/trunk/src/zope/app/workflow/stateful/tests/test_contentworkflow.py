@@ -14,11 +14,10 @@
 
 """Stateful content workflow utility.
 
-$Id: test_contentworkflow.py,v 1.1 2003/05/08 17:27:20 jack-e Exp $
+$Id: test_contentworkflow.py,v 1.2 2003/06/03 22:46:23 jim Exp $
 """
 import unittest
 
-from zope.interface import Interface
 from zope.interface.verify import verifyClass
 
 from zope.app.interfaces.workflow.stateful import IContentWorkflowsUtility

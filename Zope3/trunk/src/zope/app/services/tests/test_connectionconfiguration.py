@@ -13,16 +13,14 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: test_connectionconfiguration.py,v 1.12 2003/06/03 21:43:00 jim Exp $
+$Id: test_connectionconfiguration.py,v 1.13 2003/06/03 22:46:22 jim Exp $
 """
 __metaclass__ = type
+
 from unittest import TestCase, main, makeSuite
-
 from zope.app.services.connection import ConnectionConfiguration
-
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.services.service import ServiceManager
 from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.interfaces.services.configuration import Active, Unregistered
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter

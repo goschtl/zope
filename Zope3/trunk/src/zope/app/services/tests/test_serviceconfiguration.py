@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.10 2003/06/03 21:43:00 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.11 2003/06/03 22:46:22 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -26,7 +26,6 @@ from zope.component import getServiceManager, getAdapter
 from zope.app.traversing import traverse, getPath
 from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.service import ServiceManager
 from zope.component.service import defineService
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.configuration import Active

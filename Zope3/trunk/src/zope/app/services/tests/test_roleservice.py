@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: test_roleservice.py,v 1.3 2003/06/03 21:43:00 jim Exp $
+$Id: test_roleservice.py,v 1.4 2003/06/03 22:46:22 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.component import getServiceManager, getService
+from zope.component import getServiceManager
 from zope.app.interfaces.security import IRoleService
 from zope.app.security.registries.roleregistry import roleRegistry
 from zope.app.services.role import RoleService
