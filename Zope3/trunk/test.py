@@ -204,8 +204,9 @@ class ImmediateTestResult(unittest._TextTestResult):
             print >>stream, "%6dms" % int(results[i][1] * 1000), results[i][0]
 
     def _print_traceback(self, msg, err, test, errlist):
-        if self.showAll or self.dots:
+        if self.showAll or self.dots or self._progress:
             self.stream.writeln("\n")
+            self._lastWidth = 0
 
         tb = "".join(traceback.format_exception(*err))
         self.stream.writeln(msg)
