@@ -17,6 +17,19 @@ configurations to be saved.
 
 The following command line options are provided:
 
+-a, --application
+  Generate an "application" distribution instead of a typical
+  distutils distribution.  An application does not have a `setup.py`
+  file for distutils, but has a more conventional **configure** /
+  **make** / **make install** build process that creates an
+  application-specific installation tree (for example,
+  `/usr/local/ZopeX3`).
+
+-c, --collection
+  Collect dependencies as well as the resource named on the command
+  line into a "collection" distribution; the dependencies will be
+  installed in addition to the named resource.
+
 -C FILE, --configuraion=FILE
   Load the configuration file `FILE` instead of the default
   configuration file.  `FILE` must exist.
@@ -27,7 +40,7 @@ The following command line options are provided:
 -m MAP, --resource-map=MAP
   Load the resource map `MAP` before loading any map files identified in
   the configuration file.  Maps identified using **-m** take
-  precedence over any identified inthe configuration file.
+  precedence over any identified in the configuration file.
 
 -n NAME, --name=NAME
   Use `NAME` as the unversioned name of the resulting distribution.
@@ -52,6 +65,9 @@ The following command line options are provided:
 
 -v VERSION
   Set the version number of the release to `VERSION`.
+
+--version
+  Print the version number of **zpkg** and exit.
 
 If neither **-C** nor **-f** is specified on the command line, a
 default configuration file is loaded if it exists.  This is
