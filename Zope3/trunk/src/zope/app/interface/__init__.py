@@ -24,7 +24,6 @@ from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
-from zope.proxy import removeAllProxies
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
@@ -120,8 +119,6 @@ def queryType(object, interface):
     'I4'
 
     """
-    object = removeAllProxies(object)
-    
     object_iro = providedBy(object).__iro__
     for iface in object_iro:
         if interface.providedBy(iface):

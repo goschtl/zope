@@ -21,11 +21,11 @@ from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.module.interfaces import IModuleService
 from zope.component import getService, getServiceDefinitions, getServices
-from zope.proxy import removeAllProxies
 from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interface import InterfaceClass
+from zope.security.proxy import removeSecurityProxy
 from zope.app.component.interface import searchInterface, getInterface
 
 class Introspector(object):
@@ -74,7 +74,7 @@ class Introspector(object):
 
     def getClass(self):
         """Returns the class name"""
-        return removeAllProxies(self.currentclass).__name__
+        return self.currentclass.__name__
 
     def getBaseClassNames(self):
         """Returns the names of the classes"""
@@ -86,15 +86,15 @@ class Introspector(object):
 
     def getModule(self):
         """Returns the module name of the class"""
-        return removeAllProxies(self.currentclass).__module__
+        return self.currentclass.__module__
 
     def getDocString(self):
         """Returns the description of the class"""
-        return removeAllProxies(self.currentclass).__doc__
+        return removeSecurityProxy(self.currentclass).__doc__
 
     def getInterfaces(self):
         """Returns interfaces implemented by this class"""
-        return tuple(implementedBy(removeAllProxies(self.currentclass)))
+        return tuple(implementedBy(self.currentclass))
 
     def getInterfaceNames(self, interfaces=None):
         if interfaces is None:
@@ -118,7 +118,7 @@ class Introspector(object):
             namesAndDescriptions.sort()
             for name, desc in namesAndDescriptions:
                 if hasattr(desc, 'getSignatureString'):
-                    methods.append((desc.getName(),
+                    methods.append((desc.__name__,
                                     desc.getSignatureString(),
                                     desc.getDoc()))
                 else:
@@ -132,7 +132,7 @@ class Introspector(object):
     def getExtends(self):
         """Returns all the class extended up to the top most level"""
         bases = self._unpackTuple(
-            removeAllProxies(self.currentclass).__bases__)
+            removeSecurityProxy(self.currentclass).__bases__)
         return bases
 
     def getInterfaceRegistration(self):
@@ -145,7 +145,7 @@ class Introspector(object):
 
     def getDirectlyProvided(self):
         """See `IIntrospector`"""
-        return directlyProvidedBy(removeAllProxies(self.context))
+        return directlyProvidedBy(self.context)
 
     def getDirectlyProvidedNames(self):
         """See `IIntrospector`"""
@@ -161,7 +161,7 @@ class Introspector(object):
         """See `IIntrospector`"""
 
         results = []
-        todo = list(providedBy(removeAllProxies(self.context)))
+        todo = list(providedBy(self.context))
         done = []
         while todo:
             interface = todo.pop()
@@ -198,7 +198,6 @@ class Introspector(object):
 # TODO: This method should go away and only registered interface utilities
 # should be used.
 def interfaceToName(context, interface):
-    interface = removeAllProxies(interface)
     if interface is None:
         return 'None'
     items = searchInterface(context, base=interface)
@@ -210,7 +209,7 @@ def interfaceToName(context, interface):
         # Do not fail badly, instead resort to the standard
         # way of getting the interface name, cause not all interfaces
         # may be registered as utilities.
-        return interface.__module__ + '.' + interface.getName()
+        return interface.__module__ + '.' + interface.__name__
 
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
     return ids[0]
