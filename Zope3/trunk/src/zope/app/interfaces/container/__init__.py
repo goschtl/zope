@@ -82,6 +82,9 @@ class IWriteContainer(Interface):
         Raises a KeyError if the object is not found.
         """
 
+class IItemWriteContainer(IWriteContainer, IItemContainer):
+    """A write container that also supports minimal reads."""
+
 class IContentContainer(IWriteContainer):
     """Containers (like folders) that contain ordinary content"""
 
@@ -187,7 +190,7 @@ class IZopeWriteContainer(IWriteContainer):
         """
 
     def __delitem__(key):
-        """Delete the keyd object from the context of the container.
+        """Delete the keyed object from the context of the container.
 
         Raises a KeyError if the object is not found.
 
@@ -203,6 +206,16 @@ class IZopeWriteContainer(IWriteContainer):
         IObjectRemovedEvent is published. The event object will be the
         container.
         """
+
+class IZopeItemWriteContainer(IZopeWriteContainer, IZopeItemContainer):
+    """An IZopeWriteContainer for writable item containers.
+
+    'setObject' and '__delitem__' of IZopeWriteContainer imply being able
+    to get at an object after it has been added to the container, or
+    before it has been deleted from the container.
+    This interface makes that contract explicit, and also offers to
+    make '__getitem__' context-aware.
+    """
 
 class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
     """Readable and writable content container."""
