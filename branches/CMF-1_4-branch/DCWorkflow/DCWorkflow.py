@@ -229,7 +229,8 @@ class DCWorkflowDefinition (WorkflowUIMixin, Folder):
                         fmt_data._push(info)
                     searchres_len = lambda searchres=searchres: len(searchres)
                     fmt_data._push({'count': searchres_len})
-                    res.append((id, {'name': qdef.actbox_name % fmt_data,
+                    res.append((id, {'id': id,
+                                     'name': qdef.actbox_name % fmt_data,
                                      'url': qdef.actbox_url % fmt_data,
                                      'permissions': (),  # Predetermined.
                                      'category': qdef.actbox_category}))
