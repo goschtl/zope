@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: component.py,v 1.4 2003/06/22 20:18:17 jeremy Exp $
-"""
+"""Locale Component Architecuture interfaces
 
+$Id: component.py,v 1.5 2004/02/24 14:16:59 srichter Exp $
+"""
 from zope.interface import Interface
 from zope.schema import Field
 from zope.schema.interfaces import IEnumerated, IField, ITuple
