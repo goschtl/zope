@@ -343,15 +343,15 @@ div.box div.body {
 }
 
 div.box div.body a div.odd {
-/*    display: list-item;
-    list-style-position: inside; */
+    padding: 0.2em 0;
     background: transparent;
 }
 
 div.box div.body a div.even {
-/*    display: list-item;
-    list-style-position: inside; */
+    padding: 0.2em 0;
     background: #F7F9FA;
+    border-bottom: 1px groove #8CACBB;    
+    border-top: 1px groove #8CACBB;    
 }
 
 #metadata .label {
