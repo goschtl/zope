@@ -121,7 +121,8 @@
   <addMenuItem
       title="Content Workflows Manager"
       description="An utility to manage content and workflow interaction."
-      class="zope.app.workflow.stateful.interfaces.IContentWorkflowsManager"
+      class=
+          "zope.app.workflow.stateful.contentworkflow.ContentWorkflowsManager"
       permission="zope.ManageServices"
       />
 
