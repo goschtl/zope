@@ -12,14 +12,28 @@
 # 
 ##############################################################################
 """
-
-$Id: IDBITypeInfoProvider.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: ISQLCommand.py,v 1.1 2002/07/10 23:37:26 srichter Exp $
 """
 from Interface import Interface
+from Interface.Attribute import Attribute
 
-class IDBITypeInfoProvider(Interface):
-    """This object can get the Type Info for a particular DBI
-    implementation."""
+class ISQLCommand(Interface):
+    """Static SQL commands."""
+    
+    connectionName = Attribute("""The name of the database connection
+    to use in getConnection """)
 
-    def getTypeInfo():
-        """Return an IDBITypeInfo object."""
+    def getConnection():
+        """Get the database connection."""
+
+    def __call__():
+        """Execute an sql query and return a result object if appropriate"""
+
+        
+__doc__ = ISQLCommand.__doc__
+
+
+
+
+
+

@@ -11,29 +11,32 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes her
-
-XXX longer description goes here.
-
-$Id: Util.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
 """
+$Id: Util.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+"""
+from Zope.App.RDB.DatabaseException import DatabaseException
+from Zope.App.RDB.Row import RowClassFactory
+from Zope.App.RDB.ResultSet import ResultSet
 
-import Row
-import ResultSet
-
-def query_for_results(conn, query):
-
+def queryForResults(conn, query):
+    """Convenience function to quickly execute a query."""
+    
     # need to typing
     cursor = conn.cursor()
-    cursor.execute(query)
+
+    try:
+        cursor.execute(query)
+    except Exception, error:
+        raise DatabaseException(str(error))
 
     columns = [c[0] for c in cursor.description]
 
-    row_klass = Row.row_class_factory(columns)
+    row_klass = RowClassFactory(columns)
     
-    return ResultSet(columns,
-                     cursor.fetchall(),
-                     row_klass)
+    return ResultSet(columns, cursor.fetchall(), row_klass)
+
+
+
 
 
 

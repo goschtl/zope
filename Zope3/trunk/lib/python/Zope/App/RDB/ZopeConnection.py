@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeConnection.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ZopeConnection.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
 """
 from IZopeConnection import IZopeConnection
 from IZopeCursor import IZopeCursor
@@ -20,39 +20,46 @@ from ZopeCursor import ZopeCursor
 from ZopeDBTransactionManager import ZopeDBTransactionManager
 from Transaction import get_transaction
 
+
 class ZopeConnection:
 
-    __implements__ = IZopeConnection
+    __implements__ =  IZopeConnection
 
     def __init__(self, conn):
         self.conn = conn
         # flag for txn registration status
         self._txn_registered = 0
 
+    def __getattr__(self, key):
+        # The IDBIConnection interface is hereby implemented
+        return self.__dict__.get(key, getattr(self.conn, key))
+
+    ############################################################
+    # Implementation methods for interface
+    # Zope/App/RDB/IZopeConnection.py
+
     def cursor(self):
-        """Returns an IZopeCursor"""
+        'See Zope.App.RDB.IZopeConnection.IZopeConnection'
         return ZopeCursor(self.conn.cursor(), self)
 
     def registerForTxn(self):
-        
-        if self._txn_registered:
-            return
+        'See Zope.App.RDB.IZopeConnection.IZopeConnection'
+        if not self._txn_registered:
+            tm = ZopeDBTransactionManager(self)
+            t = get_transaction()
+            t.register(tm)
+            self._txn_registered = 1
 
-        tm = ZopeDBTransactionManager(self)
-        t = get_transaction()
-        t.register(tm)
-        self._txn_registered = 1
-        
     def unregisterFromTxn(self):
+        'See Zope.App.RDB.IZopeConnection.IZopeConnection'
         self._txn_registered = 0
-        
-    def __getattr__(self, key):
-        return getattr(self.conn, key)
+
+    ######################################
+    # from: Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider
 
     def getTypeInfo(self):
+        'See Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider'
         # Stubbed for now
-        pass
-
-
-
-
+        
+    #
+    ############################################################

@@ -18,52 +18,50 @@ framework and the db-api connection. Databases which
 want to support sub transactions need to implement their own
 proxy. 
 
-$Id: ZopeDBTransactionManager.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ZopeDBTransactionManager.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
 """
-
 from Transaction.IDataManager import IDataManager
 
 class ZopeDBTransactionManager:
 
     __implements__ =  IDataManager
 
-    ############################################################
-    # Implementation methods for interface
-    # IDataManager.py
-    ###
-    # Subtransactions methods moved.
-    #
-
     def __init__(self, dbconn):
-        """
-        callback is a function invoked when the
-        transaction is finished.
+        """Callback is a function invoked when the transaction is finished.
         """
         self.dbconn = dbconn
         self._vote = 0
 
+    ############################################################
+    # Implementation methods for interface
+    # Zope.Transaction.IDataManager.
+
     def abort(self, *ignored):
         'See Transaction.IDataManager.IDataManager'
-        try: self.dbconn.rollback()
-        finally: self.dbconn.unregisterFromTxn()
+        try:
+            self.dbconn.rollback()
+        finally:
+            self.dbconn.unregisterFromTxn()
+
+    def commit(self, *ignored):
+        'See Transaction.IDataManager.IDataManager'
 
     def tpc_vote(self, *ignored):
         'See Transaction.IDataManager.IDataManager'
         self._vote = 1
         
+    def tpc_begin(self, *ignored):
+        'See Transaction.IDataManager.IDataManager'
+
     def tpc_finish(self, *ignored):
         'See Transaction.IDataManager.IDataManager'
         if self._vote:
-            try: self.dbconn.commit()
-            finally: self.dbconn.unregisterFromTxn()
+            try:
+                self.dbconn.commit()
+            finally:
+                self.dbconn.unregisterFromTxn()
         
     tpc_abort = abort
-
-    def tpc_begin(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
-        
-    def commit(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
     
     #
     ############################################################

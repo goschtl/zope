@@ -11,31 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: Row.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
+"""
+$Id: Row.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
 """
 from Zope.Security import Checker
 
-class row(object):
-
+class Row(object):
+    """Represents a row in a ResultSet"""
+    
     def __init__(self, data):
         for k, v in zip(self.__slots__, data):
             setattr(self, k, v)
 
     def __str__(self):
         return "row class %s"%str(self.__slots__)
-            
-def row_class_factory(columns):
 
+            
+def RowClassFactory(columns):
+    """Creates a Row object"""
     klass_namespace = {}
     
-    klass_namespace['__Security_checker__']=Checker.NamesChecker(columns)
-    klass_namespace['__slots__']=tuple(columns)
+    klass_namespace['__Security_checker__'] = Checker.NamesChecker(columns)
+    klass_namespace['__slots__'] = tuple(columns)
 
-    return type('row class', (row,), klass_namespace)
+    return type('row class', (Row,), klass_namespace)
 
 
 

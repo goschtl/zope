@@ -12,8 +12,9 @@
 # 
 ##############################################################################
 """
-$Id: ZopeCursor.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ZopeCursor.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
 """
+from types import UnicodeType
 from IZopeCursor import IZopeCursor
 
 class ZopeCursor:
@@ -27,6 +28,10 @@ class ZopeCursor:
         """Executes an operation, registering the underlying
         connection with the transaction system.  """
 
+        if isinstance(operation, UnicodeType):
+            operation = operation.encode('UTF-8')
+        if parameters is None:
+            parameters = {}
         self.connection.registerForTxn()
         return self.cursor.execute(operation, parameters)
 

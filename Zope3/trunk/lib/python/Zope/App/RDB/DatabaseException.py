@@ -12,14 +12,16 @@
 # 
 ##############################################################################
 """
-
-$Id: IDBITypeInfoProvider.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: DatabaseException.py,v 1.1 2002/07/10 23:37:26 srichter Exp $
 """
-from Interface import Interface
 
-class IDBITypeInfoProvider(Interface):
-    """This object can get the Type Info for a particular DBI
-    implementation."""
 
-    def getTypeInfo():
-        """Return an IDBITypeInfo object."""
+class DatabaseException(Exception):
+    """Generic Database Error"""
+
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+

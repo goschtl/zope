@@ -12,9 +12,7 @@
 # 
 ##############################################################################
 """
-
-Revision information:
-$Id: IConnectionService.py,v 1.2 2002/06/24 16:13:44 srichter Exp $
+$Id: IConnectionService.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
 """
 from Interface import Interface, Attribute
 

@@ -13,37 +13,118 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
 """
-
-from Zope.Configuration.name import resolve
+from types import StringTypes
 from Persistence import Persistent
 from Zope.App.RDB.IZopeDatabaseAdapter import IZopeDatabaseAdapter
+from Zope.App.RDB.ZopeConnection import ZopeConnection
+
 class ZopeDatabaseAdapter(Persistent):
 
     __implements__ = IZopeDatabaseAdapter
     _v_connection =  None
 
-    def __init__(self, id, title, factory, user, password, host, database):
-        self.id       = id
-        self.title    = title
-        self.factory  = factory
-        self.user     = user
-        self.password = password
-        self.host     = host
-        self.database = database
+    def __init__(self, dsn):
+        self.setDSN(dsn)
         
+    def _connection_factory(self):
+        """This method should be overwritten by all subclasses"""
+        conn_info = _parseDSN(self.dsn)
+        
+    ############################################################
+    # Implementation methods for interface
+    # Zope.App.RDB.IZopeDatabaseAdapter.
+
+    def setDSN(self, dsn):
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        assert dsn.startswith('dbi://'), "The DSN has to start with 'dbi://'"
+        self.dsn = dsn
+
+    def getDSN(self):
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        return self.dsn
+
+    def connect(self):
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        if not self.isConnected():
+            self._v_connection = ZopeConnection(self._connection_factory())
+
+    def disconnect(self):
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        if self.isConnected():
+           self._v_connection.close()
+           self._v_connection = None
+
+    def isConnected(self):
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        return hasattr(self, '_v_connection') and \
+               self._v_connection is not None
+
     def __call__(self):
-
-        if self._v_connection is not None:
-            return self._v_connection
-
-        factory = resolve(self.factory)
-        self._v_connection = factory(user=self.user,
-                                     password=self.password,
-                                     host=self.host,
-                                     database=self.database)
+        'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
+        self.connect()
         return self._v_connection
 
+    #
+    ############################################################
 
 
+
+def parseDSN(dsn):
+    """We could have the following cases:
+
+       dbi://dbname
+       dbi://dbname;param1=value...
+       dbi://user:passwd/dbname
+       dbi://user:passwd/dbname;param1=value...
+       dbi://user:passwd@host:port/dbname
+       dbi://user:passwd@host:port/dbname;param1=value...
+    """
+    assert isinstance(dsn, StringTypes), 'The dsn is not a string.'
+    assert dsn.startswith('dbi://'), 'Invalid DSN; must start with "dbi://"'
+
+    result = {}
+
+    dsn = dsn[6:]
+    # Get parameters (dict) from DSN
+    raw_params = dsn.split(';')
+    dsn = raw_params[0]
+    raw_params = raw_params[1:]
+
+    parameters = {}
+    for string in raw_params:
+        param, value = string.split('=')
+        parameters[param] = value
+
+    result['parameters'] = parameters
+
+    # Get the dbname from the DSN
+    if dsn.find('/') > 0:
+        dsn, dbname = dsn.split('/')
+    else:
+        dbname = dsn
+        dsn = ''
+
+    result['dbname'] = dbname
+
+    # Get host and port from DSN
+    if dsn and dsn.find('@') > 0:
+        dsn, host_port = dsn.split('@')
+        host, port = host_port.split(':')
+    else:
+        host, port = '', ''
+
+    result['host'] = host
+    result['port'] = port
+    
+    # Get username and password from DSN
+    if dsn:
+        username, password = dsn.split(':')
+    else:
+        username, password = '', ''
+
+    result['username'] = username
+    result['password'] = password
+
+    return result

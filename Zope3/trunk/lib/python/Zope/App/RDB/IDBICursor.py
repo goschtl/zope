@@ -12,24 +12,22 @@
 # 
 ##############################################################################
 """
-Revision information:
-$Id: IDBICursor.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: IDBICursor.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
 """
-
 from Interface import Interface
 from Interface.Attribute import Attribute
 
-arraysize=1 # default constant, symbolic
+arraysize = 1 # default constant, symbolic
 
 class IDBICursor(Interface):
     """DB API ICursor interface"""
 
-    description = Attribute("""This read-only attribute is a sequence of 7-item sequences. Each of
-        these sequences contains information describing one result column:
-        (name, type_code, display_size, internal_size, precision, scale,
-        null_ok). This attribute will be None for operations that do not
-        return rows or if the cursor has not had an operation invoked via the
-        executeXXX() method yet.
+    description = Attribute("""This read-only attribute is a sequence of
+        7-item sequences. Each of these sequences contains information
+        describing one result column: (name, type_code, display_size,
+        internal_size, precision, scale, null_ok). This attribute will be None
+        for operations that do not return rows or if the cursor has not had an
+        operation invoked via the executeXXX() method yet.
 
         The type_code can be interpreted by comparing it to the Type Objects
         specified in the section below. """)
@@ -94,17 +92,17 @@ class IDBICursor(Interface):
         """
         
     def fetchone():
-        """Fetch the next row of a query result set, returning a single sequence,
-        or None when no more data is available. [6]
+        """Fetch the next row of a query result set, returning a single
+        sequence, or None when no more data is available. [6]
 
         An Error (or subclass) exception is raised if the previous call to
         executeXXX() did not produce any result set or no call was issued yet.
         """
 
     def fetchmany(size=arraysize):
-        """Fetch the next set of rows of a query result, returning a sequence of
-        sequences (e.g. a list of tuples). An empty sequence is returned when
-        no more rows are available.
+        """Fetch the next set of rows of a query result, returning a sequence
+        of sequences (e.g. a list of tuples). An empty sequence is returned
+        when no more rows are available.
 
         The number of rows to fetch per call is specified by the parameter. If
         it is not given, the cursor's arraysize determines the number of rows
@@ -123,12 +121,10 @@ class IDBICursor(Interface):
         """
 
     def fetchall():
-        """
-        Fetch all (remaining) rows of a query result, returning them as a
+        """ Fetch all (remaining) rows of a query result, returning them as a
         sequence of sequences (e.g. a list of tuples). Note that the cursor's
         arraysize attribute can affect the performance of this operation.
 
         An Error (or subclass) exception is raised if the previous call to
         executeXXX() did not produce any result set or no call was issued yet.
         """
-        

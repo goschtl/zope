@@ -11,20 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: ResultSet.py,v 1.2 2002/07/01 14:40:04 k_vertigo Exp $
 """
+$Id: ResultSet.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+"""
+from Zope.App.RDB.IResultSet import IResultSet
  
 class ResultSet(list):    
-    """
-    Database Result Set. 
+    """Database Result Set. 
 
-    currently we don't do lazy instantation of rows.
+    Currently we don't do lazy instantation of rows.
     """
-    
+
+    __implements__ = IResultSet
     __slots__ = ('names', 'row_klass')
     
     def __init__(self, names, data, row_klass):

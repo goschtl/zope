@@ -1,0 +1,18 @@
+<zopeConfigure
+     xmlns='http://namespaces.zope.org/zope'>
+
+<serviceType id="ConnectionService" interface=".IConnectionService." />
+
+<content class=".ResultSet.">
+  <require
+      permission="Zope.ManageContent"
+      interface=".IResultSet." />
+</content>
+
+<content class=".Row.">
+  <require
+      permission="Zope.ManageContent"
+      attributes="__getattr__" />
+</content>
+
+</zopeConfigure>

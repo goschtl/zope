@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: testRow.py,v 1.1 2002/06/25 15:41:46 k_vertigo Exp $
+$Id: testRow.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
 """
 
-from Zope.App.RDB.Row import row_class_factory
+from Zope.App.RDB.Row import RowClassFactory
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Exceptions import ForbiddenAttribute
 
@@ -31,7 +31,7 @@ class RowTests(TestCase):
         columns = ('food', 'name')
         data = ('pizza', 'john')
         
-        klass = row_class_factory(columns)
+        klass = RowClassFactory(columns)
         ob = klass(data)
         
         self.failUnless(ob.food == 'pizza',
@@ -45,7 +45,7 @@ class RowTests(TestCase):
         columns = ('type', 'speed')
         data = ('airplane', '800km')
         
-        klass = row_class_factory(columns)
+        klass = RowClassFactory(columns)
 
         ob = klass(data)
 

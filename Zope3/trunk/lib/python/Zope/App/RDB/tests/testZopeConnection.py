@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: testZopeConnection.py,v 1.1 2002/06/25 15:41:46 k_vertigo Exp $
+"""
+$Id: testZopeConnection.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -69,7 +66,3 @@ def test_suite():
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
-
-
-
-

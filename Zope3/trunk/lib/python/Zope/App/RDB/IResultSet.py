@@ -11,21 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: IResultSet.py,v 1.3 2002/06/25 15:41:45 k_vertigo Exp $
 """
-
-
+$Id: IResultSet.py,v 1.4 2002/07/10 23:37:26 srichter Exp $
+"""
 from Interface import Interface
+from Interface.Attribute import Attribute
+
 
 class IResultSet(Interface):
-    """ holds results, and allows iteration """
+    """Holds results, and allows iteration."""
+
+    names = Attribute("""A list of the column names of the returned result
+                      set.""")
 
     def __getitem__(index):
-        "return a brain row for index"
+        """Return a brain row for index."""
 
 
 

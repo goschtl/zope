@@ -12,11 +12,8 @@
 # 
 ##############################################################################
 """
-
-Revision information:
-$Id: IDBIConnection.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: IDBIConnection.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
 """
-
 from Interface import Interface
 
 class IDBIConnection(Interface):

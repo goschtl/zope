@@ -1,11 +1,43 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""
+$Id: IZopeDatabaseAdapter.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+"""
 from Interface import Interface
 
 class IZopeDatabaseAdapter(Interface):
-    """ interface for persistent object that returns
-    volatile IConnections.
+    """Interface for persistent object that returns
+    volatile IZopeConnections.
 
     This object is internal to the connection service."""
 
+    def setDSN(dsn):
+        """Set the DSN for the Adapter instance"""
+
+    def getDSN(dsn):
+        """Get the DSN of the Adapter instance"""
+
+    def connect():
+        """Connect to the specified database."""
+
+    def disconnect():
+        """Disconnect from the database."""
+
+    def isConnected():
+        """Check whether the Zope Connection is actually connected to the
+        database."""
+
     def __call__():
-        """return an IZopeConnection object"""
+        """Return an IZopeConnection object"""
 
