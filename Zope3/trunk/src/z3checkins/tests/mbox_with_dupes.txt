@@ -142,7 +142,7 @@ it applies (and it usually should apply!).
          if (set == NULL)
              goto Error;
  
--        /* XXX TODO: If set is a bucket, do a straight resize+memcpy instead.
+-        /* TODO: If set is a bucket, do a straight resize+memcpy instead.
 -        */
 -        if (initSetIteration(&setiter, set, 1, &merge) < 0)
 -            goto Error;

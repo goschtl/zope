@@ -167,7 +167,7 @@ class CheckinMessageParser:
             subject = parts[1]
             directory = subject.split(' - ')[0]
         elif "SVN:" in subject:
-            # XXX: Format specific to the Zope3 mailing list
+            # Format that is specific to the Zope3 mailing list
             # [foo-bar] SVN: foobaz/boo/bar.py log message
             parts = subject.split("SVN: ", 1)
             if len(parts) < 2:

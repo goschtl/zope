@@ -33,7 +33,7 @@ class MessageUpload:
     data_widget = CustomWidgetFactory(FileWidget)
 
     def createAndAdd(self, data):
-        if data.has_key('data'): # XXX should we bark if no data is given?
+        if data.has_key('data'): # TODO should we bark if no data is given?
             msg_raw = data['data']
             parser = zapi.getUtility(IMessageParser)
             if msg_raw.startswith("From "):
@@ -300,7 +300,7 @@ class CheckinMessageView(MessageView):
 
     def body(self):
         """Colorize checkin message body."""
-        # XXX This method is rather bloated and hard to understand.
+        # TODO This method is rather bloated and hard to understand.
         text = self.context.body.replace('\r', '') \
                                 .replace('&', '&amp;') \
                                 .replace('<', '&lt;') \
@@ -322,7 +322,7 @@ class CheckinMessageView(MessageView):
                 log_idx += len('\nLog:\n')
             else:
                 log_idx = text.find('Log message')
-                # XXX: Specific to Zope3 checkins
+                # This section is specific to Zope3 checkins
                 if log_idx != -1:
                     log_idx = text.find('\n', log_idx) + 1
         if log_idx == -1:
