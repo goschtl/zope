@@ -12,7 +12,7 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pDocumentTemplate.py,v 1.2 2002/07/11 00:54:01 srichter Exp $
+$Id: pDocumentTemplate.py,v 1.3 2002/07/17 23:13:30 jeremy Exp $
 """
 
 import sys
@@ -82,7 +82,7 @@ class MultiMapping:
         for d in self.dicts:
             try:
                 return d[key]
-            except KeyError, AttributeError:
+            except (KeyError, AttributeError):
                 pass
         raise KeyError, key
 
