@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.8 2002/10/08 20:42:25 jeremy Exp $
+$Id: SiteDefinition.py,v 1.9 2002/10/08 21:09:40 jeremy Exp $
 """
 
 import sys
@@ -33,6 +33,8 @@ from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
 from Zope.Server import ZLogIntegration
 from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
+
+from Persistence.Module import PersistentModuleImporter
 
 import asyncore, zLOG
 
@@ -136,7 +138,7 @@ class SiteDefinition:
                           server_info['verbose'])
 
     def _initDB(self):
-        """Initialize the ZODB"""
+        """Initialize the ZODB and persistence module importer."""
 
         connection = self._zodb.open()
         root = connection.root()
@@ -153,6 +155,9 @@ class SiteDefinition:
             get_transaction().commit()
 
         connection.close()
+
+        imp = PersistentModuleImporter()
+        imp.install()
 
 
     def __call__(self):
