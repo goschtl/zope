@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.22 2003/01/25 13:09:56 jim Exp $
+$Id: interfacewidget.py,v 1.23 2003/01/25 18:26:23 stevea Exp $
 """
 
 import sys
@@ -137,8 +137,8 @@ class InterfaceWidget(Widget, BrowserView):
         raise NotImplementedError
 
 
-# XXX Note that MultiInterface widgets should be for multi-interface fields
-
+# A MultiInterfaceWidget is for use with an InterfacesField,
+# which is a tuple of interfaces.
 class MultiInterfaceWidget(Widget, BrowserView):
 
     __implements__ = IBrowserWidget
