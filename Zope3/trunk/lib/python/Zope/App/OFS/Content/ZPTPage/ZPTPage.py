@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.10 2002/09/18 15:05:50 jim Exp $
+$Id: ZPTPage.py,v 1.11 2002/10/04 20:03:36 jim Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -65,8 +65,7 @@ class IRenderZPTPage(Interface):
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
     # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IZPTPage, IRenderZPTPage, \
-                     IAnnotatable
+    __implements__ = IFileContent, IZPTPage, IRenderZPTPage
 
     def getSource(self):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''

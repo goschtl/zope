@@ -31,7 +31,7 @@ class IFolder(IContainer, IServiceManagerContainer):
 class Folder(Persistence.Persistent, ServiceManagerContainer):
     """The standard Zope Folder implementation."""
 
-    __implements__ = IFolder, IAnnotatable
+    __implements__ = IFolder
     
     def __init__(self):
         self.data = OOBTree()
