@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.18 2004/03/07 11:50:36 jim Exp $
+$Id: __init__.py,v 1.19 2004/03/07 13:54:13 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -34,50 +34,6 @@ from zope.component import getView, getServiceManager
 from zope.proxy import removeAllProxies
 from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
-
-
-class NameRegistryView(BrowserView):
-
-    indexMacros = index = ViewPageTemplateFile('nameregistry.pt')
-
-    def update(self):
-
-        names = list(self.context.listRegistrationNames())
-        names.sort()
-
-        items = []
-        for name in names:
-            registry = self.context.queryRegistrations(name)
-            view = getView(registry, "ChangeRegistrations", self.request)
-            view.setPrefix(name)
-            view.update()
-            cfg = registry.active()
-            items.append(self._getItem(name, view, cfg))
-
-        return items
-
-    def _getItem(self, name, view, cfg):
-        # hook for subclasses. returns a dict to append to an item
-        return {"name": name,
-                "active": cfg is not None,
-                "inactive": cfg is None,
-                "view": view,
-                }
-
-
-class NameComponentRegistryView(NameRegistryView):
-
-    indexMacros = index = ViewPageTemplateFile('namecomponentregistry.pt')
-
-    def _getItem(self, name, view, cfg):
-        item_dict = NameRegistryView._getItem(self, name, view, cfg)
-        if cfg is not None:
-            ob = traverse(cfg, cfg.componentPath)
-            url = str(getView(ob, 'absolute_url', self.request))
-        else:
-            url = None
-        item_dict['url'] = url
-        return item_dict
 
 
 class RegistrationView(BrowserView):
@@ -115,7 +71,7 @@ class RegistrationView(BrowserView):
         return self.registrations[0]
 
 
-class NameRegistered:
+class Registered:
 
     def __init__(self, context, request):
         self.context = context
@@ -127,23 +83,12 @@ class NameRegistered:
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)
-            description = None
-            summaryMethod = getattr(config, "usageSummary", None)
-            if summaryMethod:
-                description = summaryMethod()
+            description = config.usageSummary()
             url = getView(config, 'absolute_url', self.request)
-            # XXX This assumes the registration implements
-            #     INamedComponentRegistration rather than just
-            #     IComponentRegistration.  ATM there are no
-            #     counterexamples, so this is a sleeper bug;
-            #     but what to do?  Could move the registration
-            #     management up to INamedComponentRegistration,
-            #     or could use path as default for name here.
-            result.append({'name': config.name,
-                           'path': path,
+            result.append({'path': path,
                            'url': url(),
                            'status': config.status,
-                           'description': description or config.name,
+                           'description': description,
                            })
         return result
 

@@ -19,13 +19,6 @@
                    "zope.app.browser.interfaces.form.IFormCollaborationView"
       permission="zope.ManageServices" />
 
-  <page
-      name="index.html" 
-      for="zope.app.interfaces.services.registration.INameComponentRegistry"
-      class=".NameComponentRegistryView"
-      permission="zope.ManageServices"
-      attribute="index" />
-
   <zope:view
       for="zope.app.interfaces.services.registration.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -88,7 +81,7 @@
       for="zope.app.interfaces.services.registration.IRegisterable"
       name="registrations.html"
       template="registered.pt"
-      class=".NameRegistered"
+      class=".Registered"
       permission="zope.ManageServices"
       usage="objectview"
       />
