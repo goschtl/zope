@@ -13,7 +13,7 @@
 ##############################################################################
 # -*- Mode: Python; tab-width: 4 -*-
 
-VERSION_STRING = "$Id: SelectTrigger.py,v 1.4 2002/12/20 22:28:41 jeremy Exp $"
+VERSION_STRING = "$Id: SelectTrigger.py,v 1.5 2002/12/20 22:35:11 jeremy Exp $"
 
 import asyncore
 import asynchat
@@ -128,7 +128,7 @@ else:
     MINPORT = 19950
     NPORTS = 50
 
-    class trigger(asyncore.dispatcher):
+    class Trigger(asyncore.dispatcher):
 
         portoffset = 0
 
