@@ -20,6 +20,7 @@ class DummyContent( PortalContent, Item ):
     A Dummy piece of PortalContent
     """
     meta_type = 'Dummy'
+    url = 'foo_url'
     after_add_called = before_delete_called = 0
 
     def __init__( self, id='dummy', *args, **kw ):
@@ -30,6 +31,7 @@ class DummyContent( PortalContent, Item ):
 
         self.reset()
         self.catalog = kw.get('catalog',0)
+        self.url = kw.get('url',None)
 
     def manage_afterAdd( self, item, container ):
         self.after_add_called = 1
@@ -41,6 +43,9 @@ class DummyContent( PortalContent, Item ):
         if self.catalog:
             PortalContent.manage_beforeDelete( self, item, container )
     
+    def absolute_url(self):
+       return self.url
+
     def reset( self ):
         self.after_add_called = self.before_delete_called = 0
 
@@ -138,3 +143,14 @@ class DummyFolder( Implicit ):
 
     def _getOb( self, id ):
         return self._objects[id]
+
+class DummyMembershipTool:
+    def __init__(self, anon=1):
+        self.anon = anon 
+
+    def isAnonymousUser(self):
+        return self.anon 
+
+    def getAuthenticatedMember(self):
+        return "member"
+  

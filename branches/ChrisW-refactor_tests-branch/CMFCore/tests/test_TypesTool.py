@@ -1,5 +1,4 @@
 import Zope
-import OFS.Folder
 from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.TypesTool import\
@@ -15,7 +14,7 @@ from Products.CMFCore.tests.base.testcase import \
 from Products.CMFCore.tests.base.security import \
      OmnipotentUser, UserWithRoles
 from Products.CMFCore.tests.base.dummy import \
-     DummyMethod, DummyContent, addDummy, DummyTypeInfo,\
+     DummyMethod, addDummy, DummyTypeInfo,\
      DummyFolder, DummyFTI
 
 from AccessControl.SecurityManagement import newSecurityManager
