@@ -60,6 +60,12 @@ LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
 OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
 
+# Ceiling on number of lines per file report (diff or "added"), at which point
+# we go to excerpts from the beginning and end:
+FILE_LINES_LIMIT = 500
+# Number of lines in beginning and end excerpts when FILE_LINES_LIMIT is hit:
+FILE_EXCERPTS_LINES = 50
+
 CUSTOM_TRAFFIC_TABLE = "%s/custom_traffic_table.py" % CVSROOT
 
 import re
@@ -246,8 +252,7 @@ def find_entries(repo=None, all=None):
                 # Retain the catchall entry in case no regular ones qualify.
                 catchall = it
             else:
-                # Check whether the entry path matches *any* of the candidate
-                # containers:
+                # Obtain qualifying candidates:
                 for candidate in containers:
                     if re.match(it['path'], candidate):
                         entries.append(it)
@@ -291,7 +296,7 @@ def do_mail(repo, addrs, subjs,
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
             if new == 'NONE':
-                new_msg = ('=== Removed file %s/%s ===\n'
+                new_msg = ('=== Removed File %s/%s ===\n'
                            % (repo, fn))
             else:
                 new_msg = "\n" + create_diff(repo, fn, old, new)
@@ -309,16 +314,22 @@ def create_diff(repo, file, old, new):
     """ Create a diff comparing old and new versions """
     if old == 'NONE':   # A new file was added
         try:
+            # We have to change to a neutral dir, or cvs will complain about
+            # doing checkouts into the repository - even though the checkout
+            # is to stdout, sigh.
+            origdir = os.getcwd()
+            os.chdir('/tmp')
+
             # "Checkout" to stdout, so we can collect the lines to return.
             co_stdout_cmd = 'cvs -fn co -p %s/%s' % (repo, file)
             handle = os.popen(co_stdout_cmd)
             lines = handle.readlines()
             handle.close()
-            header = ("=== Added File %s/%s ===\n"
+            header = ("=== Added File %s/%s ==="
                       % (repo, file))
-        except IOError, e:
-            return ('*** ERROR reading new file: %s ***\n*** File: %s ***\n'
-                    % (str(e), file))
+
+        finally:
+            os.chdir(origdir)
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f rdiff -r %s -r %s -kk -u %s/%s'
@@ -326,13 +337,24 @@ def create_diff(repo, file, old, new):
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
-        header = ("=== %s/%s %s => %s ===\n"
+        header = ("=== %s/%s %s => %s ==="
                   % (str(repo), str(file), old, new))
 
     if seems_binary(lines):
-        return "%s\n  <Binary-ish file>\n" % header
+        return "%s\n  <Binary-ish file>" % header
     else:
-        lines.insert(0, header)
+        total = len(lines)
+        if total >= FILE_LINES_LIMIT:
+            omitted = total - (2 * FILE_EXCERPTS_LINES)
+            # Limit exceeded, show only exercpts from beginning and end.
+            lines = (lines[:FILE_EXCERPTS_LINES]
+                     + ['\n',
+                        ('[-=- -=- -=- %s lines omitted -=- -=- -=-]\n'
+                         % (total - (2 * FILE_EXCERPTS_LINES))),
+                        '\n']
+                     + lines[-FILE_EXCERPTS_LINES:])
+            header = header + " (%s/%s lines abridged)" % (omitted, total)
+        lines.insert(0, header + "\n")
         return string.join(lines, '')
 
 def do_special(trigger, action, addrs):
