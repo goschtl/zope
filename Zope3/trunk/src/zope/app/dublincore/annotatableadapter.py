@@ -15,7 +15,6 @@
 $Id$
 """
 from persistent.dict import PersistentDict
-from zope.xmlpickle import dumps, loads
 
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
