@@ -16,6 +16,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 import warnings
 import re
 from datetime import datetime, date
