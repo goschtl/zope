@@ -51,7 +51,7 @@ def init_table():
          'verbose': 1},
 
         {'path': "test",
-         'addrs': "klm@zope.com"},
+         'addrs': ["klmtest@zope.org"]},
 
         # Catchall for when *no other entry* matches:
         {'path': None,
