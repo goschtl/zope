@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.12 2003/04/14 19:24:38 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.13 2003/04/14 20:02:31 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -290,7 +290,7 @@ class TextLine(Text):
     def constraint(self, value):
         return '\n' not in value and '\r' not in value
 
-class EnumeratedTextLine(Enumerated, TextLine):
+class EnumeratedTextLine(TextLine):
     """TextLine with a value from a list of allowed values."""
 
 class Password(TextLine):
@@ -313,5 +313,5 @@ class Int(Enumerated, Orderable, Field):
                           DeprecationWarning, stacklevel=2)
         super(Int, self).__init__(*args, **kw)
 
-class EnumeratedInt(Enumerated, Int):
+class EnumeratedInt(Int):
     """A field representing one of a selected set of Integers."""

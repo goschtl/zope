@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.10 2003/04/14 19:24:38 fdrake Exp $
+$Id: _field.py,v 1.11 2003/04/14 20:02:31 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -93,7 +93,7 @@ class Float(Enumerated, Orderable, Field):
                           DeprecationWarning, stacklevel=2)
         super(Float, self).__init__(*args, **kw)
 
-class EnumeratedFloat(Enumerated, Float):
+class EnumeratedFloat(Float):
     __doc__ = IEnumeratedFloat.__doc__
     __implements__ = IEnumeratedFloat
 
@@ -111,7 +111,7 @@ class Datetime(Enumerated, Orderable, Field):
                           DeprecationWarning, stacklevel=2)
         super(Datetime, self).__init__(*args, **kw)
 
-class EnumeratedDatetime(Enumerated, Datetime):
+class EnumeratedDatetime(Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
     __implements__ = IEnumeratedDatetime
 
