@@ -23,6 +23,7 @@ from zope.configuration.fields import GlobalObject, Tokens, Path, \
 from zope.schema import Text, TextLine, Id
 from zope.app.security.fields import Permission
 from zope.app.component.fields import LayerField
+from zope.app.publisher.browser.fields import MenuField
 
 class ICommonInformation(Interface):
     """
@@ -96,7 +97,7 @@ class ICommonFormInformation(ICommonInformation):
         required=False
         )
 
-    menu = TextLine(
+    menu = MenuField(
         title=u"The browser menu to include the form in.",
         description=u"""
         Many views are included in menus. It's convenient to name the
@@ -126,7 +127,7 @@ class ICommonWizardInformation(ICommonInformation):
     Common information for browser wizards
     """
 
-    menu = TextLine(
+    menu = MenuField(
         title=u"The browser menu to include the form in.",
         description=u"""
         Many views are included in menus. It's convenient to name the
