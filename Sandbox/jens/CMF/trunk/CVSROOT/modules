@@ -11,6 +11,7 @@ App              Packages/App
 BoboPOS          Packages/BoboPOS
 DateTime         Packages/DateTime
 DocumentTemplate Packages/DocumentTemplate
+HelpSys          Packages/HelpSys
 ZPublisher       Packages/ZPublisher
 OFS              Packages/OFS
 PrincipiaHelp    Packages/PrincipiaHelp
@@ -30,7 +31,7 @@ ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
 ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
 z Components/GreyThing \
-  &AccessControl &App &BoboPOS &DateTime &DocumentTemplate \
+  &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZPublisher &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
