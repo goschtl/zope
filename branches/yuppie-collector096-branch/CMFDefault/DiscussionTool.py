@@ -34,6 +34,8 @@ class DiscussionNotAllowed( Exception ):
 
 class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
 
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_discussion'
     meta_type = 'Default Discussion Tool'
     _actions = [ActionInformation(id='reply'
@@ -64,13 +66,6 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
     #
     #   'portal_discussion' interface methods
     #
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return available actions via tool.
-        """
-        return self._actions
 
     security.declarePublic( 'overrideDiscussionFor' )
     def overrideDiscussionFor(self, content, allowDiscussion):

@@ -71,6 +71,9 @@ class IndexableObjectWrapper:
 class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
     '''This is a ZCatalog that filters catalog queries.
     '''
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_catalog'
     meta_type = 'CMF Catalog'
     security = ClassSecurityInfo()
@@ -96,14 +99,6 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
     #
     #   Subclass extension interface
     #
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return a list of action information instances 
-        provided via tool
-        """
-        return self._actions
-
     security.declarePublic( 'enumerateIndexes' ) # Subclass can call
     def enumerateIndexes( self ):
         #   Return a list of ( index_name, type ) pairs for the initial

@@ -61,6 +61,8 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     This tool is used to supply skins to a portal.
     '''
 
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_skins'
     meta_type = 'CMF Skins Tool'
     _actions = []
@@ -94,14 +96,6 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     request_varname = 'portal_skin'
     allow_any = 0
     selections = None
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return a list of actions information instances
-        provided by the tool.
-        """
-        return self._actions
 
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
     manage_propertiesForm = DTMLFile('dtml/skinProps', globals())

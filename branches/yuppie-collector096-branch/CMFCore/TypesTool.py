@@ -599,6 +599,9 @@ class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
     """
         Provides a configurable registry of portal content types.
     """
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_types'
     meta_type = 'CMF Types Tool'
     _actions = []
@@ -616,14 +619,6 @@ class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
     #
     security.declareProtected(ManagePortal, 'manage_overview')
     manage_overview = DTMLFile( 'explainTypesTool', _dtmldir )
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return a list of action information instances
-        for actions provided via tool
-        """
-        return self._actions
 
     def all_meta_types(self):
         """Adds TypesTool-specific meta types."""

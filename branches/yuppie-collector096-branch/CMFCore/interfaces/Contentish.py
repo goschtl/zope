@@ -37,18 +37,6 @@ class Contentish(Interface.Base):
         return it as an absolute URL.
         """
 
-    def listActions():
-        """
-        listAction returns a tuple containing dictionaries that describe 
-        a specific "action". An "action" shows up as a link in the PTK
-        toolbox which has a title, a URL, a category (the action can be 
-        applied at the object- or user-level or everywhere) and the 
-        permissions needed to show the action link.
-
-        listActions can be used to provide actions specific to your 
-        content object.
-        """
-
     def SearchableText():
         """
         SearchableText is called to provide the Catalog with textual 

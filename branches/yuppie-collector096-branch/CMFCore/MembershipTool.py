@@ -44,6 +44,9 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     # This tool accesses member data through an acl_users object.
     # It can be replaced with something that accesses member data in
     # a different way.
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'
     _actions = []
@@ -415,10 +418,6 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         if properties is not None:
             member = self.getMemberById(id)
             member.setMemberProperties(properties)
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        return None
 
     security.declarePublic('getHomeFolder')
     def getHomeFolder(self, id=None, verifyPermission=0):

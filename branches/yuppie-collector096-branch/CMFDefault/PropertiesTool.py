@@ -30,6 +30,9 @@ from utils import _dtmldir
 
 
 class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_properties'
     meta_type = 'Default Properties Tool'
     _actions = [ActionInformation(id='configPortal'
@@ -60,13 +63,6 @@ class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
     #
     #   'portal_properties' interface methods
     #
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return actions provided by tool.
-        """
-        return self._actions
-
     security.declareProtected(ManagePortal, 'editProperties')
     def editProperties(self, props):
         '''Change portal settings'''

@@ -34,17 +34,6 @@ class portal_workflow(Base):
         that apply to ob.
         '''
 
-    # security.declarePrivate('listActions')
-    def listActions(info):
-        '''
-        Invoked by the portal_actions tool.  Allows workflows to
-        include actions to be displayed in the actions box.
-        Object actions are supplied by workflows that apply
-        to the object.  Global actions are supplied by all
-        workflows.
-        Returns the actions to be displayed to the user.
-        '''
-
     # security.declarePublic('getActionsFor')
     def getActionsFor(ob):
         '''

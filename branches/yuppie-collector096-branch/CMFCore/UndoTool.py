@@ -28,6 +28,9 @@ from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import ListUndoableChanges
 
 class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_undo'
     meta_type = 'CMF Undo Tool'
     # This tool is used to undo changes.
@@ -55,13 +58,6 @@ class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
     #
     security.declareProtected(ManagePortal, 'manage_overview')
     manage_overview = DTMLFile( 'explainUndoTool', _dtmldir )
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        List actions available through tool
-        """
-        return self._actions
 
     #
     #   'portal_undo' interface methods

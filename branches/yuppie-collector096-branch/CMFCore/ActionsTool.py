@@ -40,6 +40,9 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
         Weave together the various sources of "actions" which are apropos
         to the current user and context.
     """
+
+    __implements__ = ActionProviderBase.__implements__
+
     id = 'portal_actions'
     _actions = [ActionInformation(id='folderContents'
                                 , title='Folder contents'
@@ -116,16 +119,6 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
         if REQUEST is not None:
             return self.manage_actionProviders(self , REQUEST
                           , manage_tabs_message='Providers changed.')
-
-    #
-    #   ActionProvider interface
-    #
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return a list of actions available through the tool.
-        """
-        return self._actions
 
     #
     #   Programmatically manipulate the list of action providers
