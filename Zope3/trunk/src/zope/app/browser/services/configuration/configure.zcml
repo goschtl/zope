@@ -22,8 +22,9 @@
     schema=
     "zope.app.interfaces.services.configuration.INamedComponentConfiguration."
     menu="zmi_views"
-    label="Configuration"
+    label="Service Configuration"
     permission="zope.ManageServices"
+    fields="name componentPath permission status"
     />
 
 <page
