@@ -15,7 +15,7 @@
 
 This vocabulary provides terms for all utilities providing a given interface. 
 
-$Id: vocabulary.py,v 1.1 2004/04/24 23:17:44 srichter Exp $
+$Id: vocabulary.py,v 1.2 2004/04/26 23:58:41 srichter Exp $
 """
 from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface
@@ -180,15 +180,26 @@ class UtilityVocabulary(object):
     [(u'object1', <UtiltiyTerm object1, instance of Object>),
      (u'object2', <UtiltiyTerm object2, instance of Object>),
      (u'object3', <UtiltiyTerm object3, instance of Object>)]
+
+    Sometimes it is desirable to only select the name of a utility. For
+    this purpose a 'nameOnly' argument was added to the constructor, in which
+    case the UtilityTerm's value is not the utility itself but the name of the
+    utility.  
+
+    >>> vocab = UtilityVocabulary(None, IObject, nameOnly=True)
+    >>> pprint.pprint([term.value for term in vocab])
+    [u'object1', u'object2', u'object3']
     """
 
     implements(IVocabulary, IVocabularyTokenized)
 
-    def __init__(self, context, interface):
+    def __init__(self, context, interface, nameOnly=False):
+        if nameOnly is not False:
+            nameOnly = True
         if isinstance(interface, (str, unicode)): 
             interface = zapi.getUtility(context, IInterface, interface)
         utils = zapi.getUtilitiesFor(context, interface)
-        self._terms = dict([(name, UtilityTerm(util, name))
+        self._terms = dict([(name, UtilityTerm(nameOnly and name or util, name))
                             for name, util in utils])
       
     def __contains__(self, value):
