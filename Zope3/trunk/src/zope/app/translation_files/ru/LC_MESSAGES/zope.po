@@ -28,23 +28,23 @@ msgstr ""
 
 #: src/zope/app/adapter/browser/configure.zcml:14
 msgid "Change adapter"
-msgstr ""
+msgstr "Сменить адаптер"
 
 #: src/zope/app/adapter/browser/configure.zcml:22
 msgid "Register an adapter"
-msgstr ""
+msgstr "Зарегистрировать адаптер"
 
 #: src/zope/app/adapter/browser/configure.zcml:22
 msgid "Adapter Registration"
-msgstr ""
+msgstr "Регистрация адаптера"
 
 #: src/zope/app/adapter/browser/configure.zcml:7
 msgid "Adapter Service"
-msgstr ""
+msgstr "Сервис адаптеров"
 
 #: src/zope/app/adapter/browser/configure.zcml:7
 msgid "Allows the registration of Adapters in this site"
-msgstr ""
+msgstr "Допускать регистрацию адаптеров для данного сайта"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:10
 msgid "Server Control"
@@ -88,7 +88,7 @@ msgstr "Кодировка файловой системы"
 
 #: src/zope/app/applicationcontrol/browser/runtimeinfo.pt:3
 msgid "Zope Runtime Information"
-msgstr ""
+msgstr "Информация сервера Zope"
 
 #: src/zope/app/applicationcontrol/browser/runtimeinfo.pt:30
 msgid "Command line"
@@ -138,7 +138,7 @@ msgstr "Остановить сервер"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:3
 msgid "Zope Stub Server Controller"
-msgstr ""
+msgstr "Управление сервером Zope"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:9
 msgid "Shutdown time:"
@@ -174,7 +174,7 @@ msgstr "Обновить"
 
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:3
 msgid "ZGlobal Transaction Service Controller"
-msgstr ""
+msgstr "Управление общим сервисом переводов"
 
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.py:49
 msgid "Message Catalog successfully reloaded."
@@ -194,7 +194,7 @@ msgstr "дней"
 
 #: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:3
 msgid "ZODB Controller"
-msgstr ""
+msgstr "Управление ZODB базой данных"
 
 # Default: "Pack"
 #: src/zope/app/applicationcontrol/browser/zodbcontrol.pt:33
@@ -228,15 +228,15 @@ msgstr "Разрушенный объект"
 
 #: src/zope/app/bundle/browser/__init__.py:112
 msgid "Activated: ${activated}.\n"
-msgstr ""
+msgstr "Активизирован: ${activated}.\n"
 
 #: src/zope/app/bundle/browser/__init__.py:115
 msgid "Registered: ${registered}.\n"
-msgstr ""
+msgstr "Зарегистрирован: ${registered}.\n"
 
 #: src/zope/app/bundle/browser/__init__.py:85
 msgid "unregistered ${count} registrations"
-msgstr ""
+msgstr "Снято регистраций: ${count}"
 
 #: src/zope/app/bundle/browser/bundle.pt:11
 msgid "Services needed by this bundle"
@@ -507,24 +507,24 @@ msgstr "Добавить индекс"
 
 #: src/zope/app/catalog/browser/configure.zcml:55
 msgid "Text Index"
-msgstr ""
+msgstr "Текстовый индекс"
 
 #: src/zope/app/catalog/browser/configure.zcml:67
 msgid "Field Index"
-msgstr ""
+msgstr "Индекс по полям"
 
 #: src/zope/app/catalog/browser/configure.zcml:79
 msgid "Keyword Index"
-msgstr ""
+msgstr "Индекс по ключевым словам"
 
 #: src/zope/app/catalog/browser/configure.zcml:8
 msgid "Catalog"
-msgstr ""
+msgstr "Каталог"
 
 #: src/zope/app/catalog/browser/configure.zcml:8
 #: src/zope/app/catalog/browser/configure.zcml:21
 msgid "A Catalog allows indexing and searching of objects"
-msgstr ""
+msgstr "Каталог позволяет индексировать и искать объекты"
 
 #: src/zope/app/catalog/browser/configure.zcml:96
 msgid "Advanced"
@@ -725,11 +725,11 @@ msgstr ""
 
 #: src/zope/app/dtmlpage/configure.zcml:102
 msgid "A simple, content-based DTML page"
-msgstr ""
+msgstr "DTML страница"
 
 #: src/zope/app/dtmlpage/configure.zcml:29
 msgid "A simple, content-based DTML Page"
-msgstr ""
+msgstr "DTML страница"
 
 #: src/zope/app/dtmlpage/configure.zcml:29
 #: src/zope/app/dtmlpage/configure.zcml:102
@@ -908,19 +908,19 @@ msgstr "Сервис событий."
 
 #: src/zope/app/exception/browser/notfound.pt:10
 msgid "Please note the following:"
-msgstr ""
+msgstr "Возможные ошибки:"
 
 #: src/zope/app/exception/browser/notfound.pt:13
 msgid "You might have miss-spelled the url"
-msgstr ""
+msgstr "Вы могли неверно набрать URL"
 
 #: src/zope/app/exception/browser/notfound.pt:14
 msgid "You might be trying to access a non-existing page"
-msgstr ""
+msgstr "Вы могли запросить страницу которая не существует"
 
 #: src/zope/app/exception/browser/notfound.pt:6
 msgid "The page that you are trying to access is not available"
-msgstr ""
+msgstr "Страница, которую Вы запрашивали, недоступна"
 
 #: src/zope/app/file/browser/configure.zcml:115
 msgid "Add a Image"
@@ -1019,7 +1019,7 @@ msgstr "Папка"
 #: src/zope/app/folder/configure.zcml:26
 #: src/zope/app/folder/browser/configure.zcml:13
 msgid "Minimal folder"
-msgstr ""
+msgstr "Папка"
 
 #: src/zope/app/form/browser/add.pt:22 src/zope/app/form/browser/edit.pt:23
 #: src/zope/app/pythonpage/edit.pt:23
@@ -1503,11 +1503,11 @@ msgstr "Редактировать сообщение"
 
 #: src/zope/app/i18nfile/browser/configure.zcml:39
 msgid "A file that supports multiple locales."
-msgstr ""
+msgstr "Файл содержащий контент для нескольких языков."
 
 #: src/zope/app/i18nfile/browser/configure.zcml:81
 msgid "A multi-locale version of an Image."
-msgstr ""
+msgstr "Изображение содержащее изображения для нескольких языков."
 
 #: src/zope/app/i18nfile/browser/file_edit.pt:39
 #: src/zope/app/i18nfile/browser/image_edit.pt:40
@@ -1964,7 +1964,7 @@ msgstr ""
 #: src/zope/app/onlinehelp/browser/configure.zcml:33
 #: src/zope/app/zopetop/widget_macros.pt:215
 msgid "Help"
-msgstr "Помощь"
+msgstr "Справка"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:7
 msgid "Menu for displaying help actions to be performed with popup"
@@ -2253,7 +2253,7 @@ msgstr "Ошибка синтаксиса."
 
 #: src/zope/app/pythonpage/configure.zcml:12
 msgid "A simple, content-based Python Page"
-msgstr ""
+msgstr "Python-страница"
 
 #: src/zope/app/pythonpage/configure.zcml:12
 #: src/zope/app/pythonpage/configure.zcml:49
@@ -3741,7 +3741,7 @@ msgstr "Добавить SQL Скрипт"
 #: src/zope/app/sqlscript/configure.zcml:32
 #: src/zope/app/sqlscript/browser/configure.zcml:7
 msgid "A content-based script to execute dyanmic SQL."
-msgstr ""
+msgstr "Скрипт для выполнения SQL запросов."
 
 #: src/zope/app/sqlscript/configure.zcml:32
 #: src/zope/app/sqlscript/browser/configure.zcml:7
@@ -3992,21 +3992,21 @@ msgstr ""
 
 #: src/zope/app/wiki/browser/configure.zcml:17
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: src/zope/app/wiki/browser/configure.zcml:17
 msgid "A Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: src/zope/app/wiki/browser/configure.zcml:24
 #: src/zope/app/wiki/browser/configure.zcml:162
 msgid "TOC"
-msgstr ""
+msgstr "Контент"
 
 #: src/zope/app/wiki/browser/configure.zcml:32
 #: src/zope/app/wiki/browser/configure.zcml:169
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #: src/zope/app/wiki/browser/configure.zcml:44
 #: src/zope/app/wiki/browser/configure.zcml:118
@@ -4017,24 +4017,24 @@ msgstr "Подписки"
 
 #: src/zope/app/wiki/browser/configure.zcml:76
 msgid "Change Wiki Page"
-msgstr ""
+msgstr "Изменить страницу Wiki"
 
 #: src/zope/app/wiki/browser/configure.zcml:8
 msgid "Add Wiki"
-msgstr ""
+msgstr "Добавить Wiki"
 
 # Default: "Reparent"
 #: src/zope/app/wiki/browser/parents_page.pt:30
 msgid "reparent-button"
-msgstr ""
+msgstr "Перерисовать"
 
 #: src/zope/app/wiki/browser/parents_page.pt:35
 msgid "Branch"
-msgstr ""
+msgstr "Ветвь"
 
 #: src/zope/app/wiki/browser/skin/template.pt:32
 msgid "Last modified by ${user} on ${date}"
-msgstr ""
+msgstr "Последние изменения: ${user}, ${date}"
 
 #: src/zope/app/wiki/browser/skin/template.pt:64
 msgid "Jump to:"
@@ -4074,7 +4074,7 @@ msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:14
 msgid "Wiki Editor"
-msgstr ""
+msgstr "Редактор Wiki"
 
 #: src/zope/app/wiki/configure.zcml:14
 msgid "The Wiki Editor can create and edit wikis."
@@ -4090,7 +4090,7 @@ msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:19
 msgid "Wiki Administrator"
-msgstr ""
+msgstr "Администратор Wiki"
 
 #: src/zope/app/wiki/configure.zcml:19
 msgid "The Wiki Admin can fully manage wiki pages."
@@ -4106,7 +4106,7 @@ msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:33
 msgid "Comment on Wiki Page"
-msgstr ""
+msgstr "Комментировать страницу Wiki"
 
 #: src/zope/app/wiki/configure.zcml:33
 msgid "Make a comment on Wiki Page"
@@ -4115,19 +4115,19 @@ msgstr ""
 #: src/zope/app/wiki/configure.zcml:42
 #: src/zope/app/wiki/browser/configure.zcml:60
 msgid "Add Wiki Page"
-msgstr ""
+msgstr "Добавить страницу Wiki"
 
 #: src/zope/app/wiki/configure.zcml:51
 msgid "Edit Wiki Page"
-msgstr ""
+msgstr "Редактировать страницу Wiki"
 
 #: src/zope/app/wiki/configure.zcml:60
 msgid "Delete Wiki Page"
-msgstr ""
+msgstr "Удалить страницу Wiki"
 
 #: src/zope/app/wiki/configure.zcml:69
 msgid "Reparent Wiki Page"
-msgstr ""
+msgstr "Перерисовать страницу Wiki"
 
 #: src/zope/app/wiki/configure.zcml:69
 msgid "Reparent a Wiki Page"
@@ -4135,7 +4135,7 @@ msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:9
 msgid "Wiki User"
-msgstr ""
+msgstr "Пользователь Wiki"
 
 #: src/zope/app/wiki/configure.zcml:9
 msgid "Wiki visitors, which can only view and comment on wikis."
@@ -4540,7 +4540,7 @@ msgstr ""
 #: src/zope/app/zptpage/configure.zcml:28
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "A simple, content-based Page Template"
-msgstr ""
+msgstr "Шаблон страницы"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
