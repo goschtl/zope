@@ -15,7 +15,10 @@ import sys
 from types import StringType, ClassType
 from zLOG import LOG, ERROR, INFO
 
+from Zope.ComponentArchitecture import getService
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from ZODB.POSException import ConflictError
+from Zope.ComponentArchitecture import getService
 
 from Zope.Publisher.DefaultPublication import DefaultPublication
 from Zope.Publisher.mapply import mapply
@@ -46,6 +49,8 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 
 # XXX Should this be imported here?
 from Transaction import get_transaction
+
+from Zope.App.ComponentArchitecture.NextService import queryNextService
 
 class RequestContainer:
     # TODO: add security assertion declaring access to REQUEST
@@ -170,11 +175,10 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
     def afterCall(self, request):
         get_transaction().commit()
 
-    def handleException(self, request, exc_info, retry_allowed=1):
+    def handleException(self, object, request, exc_info, retry_allowed=1):
         try:
             # Abort the transaction.
             get_transaction().abort()
-
             # Delegate Unauthorized errors to the authentication service
             # XXX Is this the right way to handle Unauthorized?  We need
             # to understand this better.
@@ -185,6 +189,11 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
                 request.response.handleException(exc_info)
                 return
 
+            try:
+                errService = getService(object,'ErrorReportingService')
+                errService.raising(exc_info, request)
+            except ComponentLookupError:
+                pass
 
             # XXX This is wrong. Should use getRequstView:
             # 

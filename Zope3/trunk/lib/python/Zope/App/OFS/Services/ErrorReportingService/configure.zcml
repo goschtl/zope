@@ -1,7 +1,29 @@
 <zopeConfigure
-     xmlns='http://namespaces.zope.org/zope'>
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:service='http://namespaces.zope.org/service'
+>
+  <serviceType
+      id="ErrorReportingService" 
+      interface=".IErrorReportingService." />
 
-<serviceType id="ErrorReporting"  interface=".IErrorReportingService." />
+  <content class='.ErrorReportingService.'>
+    <require
+        permission="Zope.Public"
+        interface=".IErrorReportingService." />
+    <factory
+        id='ErrorReportingService'
+        permission='Zope.Public' />
+  </content>
 
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding." 
+     action="ErrorReportingService"  title='Error Reporting Service'
+     description='Error Reporting Service for Logging Errors' />
+  
+  <browser:icon name="zmi_icon" 
+		for=".IErrorReportingService." 
+                file="error_service.gif" />
+
+  <include package=".Views" />
 
 </zopeConfigure>

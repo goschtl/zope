@@ -11,7 +11,7 @@
 ##############################################################################
 """
 
-$Id: testPublisherServer.py,v 1.4 2002/06/18 14:47:08 jim Exp $
+$Id: testPublisherServer.py,v 1.5 2002/10/23 16:00:21 jim Exp $
 """
 
 import unittest
@@ -53,12 +53,12 @@ class Conflict (Exception):
 
 class PublicationWithConflict(DefaultPublication):
 
-    def handleException(self, request, exc_info, retry_allowed=1):
+    def handleException(self, object, request, exc_info, retry_allowed=1):
         if exc_info[0] is Conflict and retry_allowed:
             # This simulates a ZODB retry.
             raise Retry(exc_info)
         else:
-            DefaultPublication.handleException(self, request, exc_info,
+            DefaultPublication.handleException(self, object, request, exc_info,
                                                retry_allowed)
 
 
