@@ -22,22 +22,22 @@ import os
 
 class File(object):
     
-    def __init__(self, path):
+    def __init__(self, path, name):
         self.path = path
 
         f = open(path, 'rb')
         data = f.read()
         f.close()
         self.content_type, enc = guess_content_type(path, data)
-        self.__name__ = path[path.rfind('/') + 1:]
-        self.lmt = float(os.stat(path)[8]) or time()
+        self.__name__ = name
+        self.lmt = float(os.path.getmtime(path)) or time()
         self.lmh = rfc1123_date(self.lmt)
 
 class Image(File):
     """Image objects stored in external files."""
 
-    def __init__(self, path):
-        super(Image, self).__init__(path)
+    def __init__(self, path, name):
+        super(Image, self).__init__(path, name)
         if self.content_type in (None, 'application/octet-stream'):
             ext = os.path.splitext(self.path)[1]
             if ext:
