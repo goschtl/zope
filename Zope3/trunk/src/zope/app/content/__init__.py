@@ -12,69 +12,15 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.6 2004/03/05 22:09:00 jim Exp $
+$Id: __init__.py,v 1.7 2004/03/20 22:10:03 nathan Exp $
 """
+
+from zope.app.interface import queryType
 from zope.app.content.interfaces import IContentType
-from zope.interface.declarations import providedBy
 
 def queryContentType(object):
-    """returns object content type
-
-    >>> from zope.interface import Interface, implements, directlyProvides
-    >>> class I(Interface):
-    ...     pass
-    >>> directlyProvides(I, IContentType)
-    >>> class C:
-    ...     implements(I)
-    >>> obj = C()
-    >>> c1_ctype = queryContentType(obj)
-    >>> c1_ctype.__name__
-    'I'
-    >>> class I1(I):
-    ...     pass
-    >>> class I2(I1):
-    ...     pass
-    >>> class I3(Interface):
-    ...     pass
-    >>> class C1:
-    ...     implements(I1)
-    >>> obj1 = C1()
-    >>> c1_ctype = queryContentType(obj1)
-    >>> c1_ctype.__name__
-    'I'
-    >>> class C2:
-    ...     implements(I2)
-    >>> obj2 = C2()
-    >>> c2_ctype = queryContentType(obj2)
-    >>> c2_ctype.__name__
-    'I'
-    >>> class C3:
-    ...     implements(I3)
-    >>> obj3 = C3()
-
-    If Interface doesn't provide IContentType, queryContentType returns None.
-    
-    >>> c3_ctype = queryContentType(obj3)
-    >>> c3_ctype
-    >>> class I4(I):
-    ...     pass
-    >>> directlyProvides(I4, IContentType)
-    >>> class C4:
-    ...     implements(I4)
-    >>> obj4 = C4()
-    >>> c4_ctype = queryContentType(obj4)
-    >>> c4_ctype.__name__
-    'I4'
-
+    """Returns the interface implemented by object which implements IContentType.
     """
-    
-    object_iro = providedBy(object).__iro__
-    for iface in object_iro:
-        if IContentType.providedBy(iface):
-            return iface
-        
-    return None
-    
-
+    return queryType(object, IContentType)
 
 
