@@ -195,6 +195,17 @@ def BTreeExtension(flavor):
                                                     VALUE_H % _flavors[value]])
     return Extension(name, sources, **kwargs)
 
+def BTreeExtension3(flavor):
+    key = flavor[0]
+    value = flavor[1]
+    name = "BTrees._%sBTree" % flavor
+    sources = ["src/BTrees/_%sBTree.c" % flavor]
+    kwargs = {"include_dirs": ['src/persistent']}
+    if flavor != "fs":
+        kwargs["depends"] = (base_btrees_depends + [KEY_H % _flavors[key],
+                                                    VALUE_H % _flavors[value]])
+    return Extension(name, sources, **kwargs)
+
 # All Zope3 extension modules must be listed here.
 ext_modules = [
     BTreeExtension("OO"),
@@ -202,6 +213,39 @@ ext_modules = [
     BTreeExtension("OI"),
     BTreeExtension("II"),
     BTreeExtension("fs"),
+    BTreeExtension3("OO"),
+    BTreeExtension3("IO"),
+    BTreeExtension3("OI"),
+    BTreeExtension3("II"),
+    BTreeExtension3("fs"),
+    Extension(name = 'persistent.cPersistence',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/cPersistence.c',
+                        'src/persistent/ring.c'],
+              depends = ['src/persistent/cPersistence.h',
+                         'src/persistent/ring.h',
+                         'src/persistent/ring.c']
+              ),
+    Extension(name = 'persistent.cPickleCache',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/cPickleCache.c',
+                        'src/persistent/ring.c'],
+              depends = ['src/persistent/cPersistence.h',
+                         'src/persistent/ring.h',
+                         'src/persistent/ring.c']
+              ),
+    Extension(name = 'persistent.TimeStamp',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/TimeStamp.c']
+              ),
+    Extension(name = 'ZODB.coptimizations',
+              include_dirs = ['src/persistent'],
+              sources= ['src/ZODB/coptimizations.c']
+              ),
+    Extension(name = 'ZODB.winlock',
+              include_dirs = ['src/persistent'],
+              sources = ['src/ZODB/winlock.c']
+              ),
     Extension("persistence._persistence",
               ["src/persistence/persistence.c"],
               depends = ["src/persistence/persistence.h",
