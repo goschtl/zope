@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.31 2003/08/28 22:40:25 sidnei Exp $
+$Id: add.py,v 1.32 2003/09/24 01:12:59 garrett Exp $
 """
 import sys
 
@@ -38,6 +38,8 @@ class AddView(EditView):
     Subclasses should provide a schema attribute defining the schema
     to be edited.
     """
+
+    form = ViewPageTemplateFile('add.pt')
 
     def _setUpWidgets(self):
         setUpWidgets(self, self.schema, names=self.fieldNames)
