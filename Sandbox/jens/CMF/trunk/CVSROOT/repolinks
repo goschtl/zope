@@ -28,7 +28,7 @@
 # We'll be encouraging people (primarily developers) to migrate to new
 # checkouts, and eventually be retiring these.
 /Releases/Zope                                  /Zope
-/Releases/StandaloneZODB                        /Zope/StandaloneZODB
+/Releases/StandaloneZODB                        /StandaloneZODB
 /Releases/CMF                                   /CMF
 /Releases/ZEO                                   /ZEO
 
