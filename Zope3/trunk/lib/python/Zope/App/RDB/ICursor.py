@@ -12,10 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: ICursor.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: ICursor.py,v 1.3 2002/10/18 09:54:22 jim Exp $
 """
 
-from Interface import Interface, Attribute
+from Interface import Interface
+from Interface.Attribute import Attribute
 
 class ICursor(Interface):
     """DB API ICursor interface"""
@@ -97,7 +98,7 @@ class ICursor(Interface):
         executeXXX() did not produce any result set or no call was issued yet.
         """
 
-    def fetchmany(size=ICursor.arraysize):
+    def fetchmany(size=arraysize):
         """Fetch the next set of rows of a query result, returning a sequence
         of sequences (e.g. a list of tuples). An empty sequence is returned
         when no more rows are available.
