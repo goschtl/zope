@@ -9,7 +9,7 @@ Distributions will be described using a collection of files that
 contain different aspects of the relevant metadata.
 
 `DEPENDENCIES.cfg`
-  A list of dependencies for this distributoin.  This is currently
+  A list of dependencies for this distribution.  This is currently
   simply a list of imported Python packages that aren't provided with
   the distribution (listed one per line), but additional features may
   be identified by adding lines that use a prefix to denote the type
@@ -180,7 +180,7 @@ expansion is performed.  Path names may not include leading or
 trailing whitespace.  Directories named `CVS`, `RCS`, `SCCS`, or
 `.svn` are ignored, as are files named `.cvsignore`.
 
-Paths can only refer to descendents of the directory containing
+Paths can only refer to descendants of the directory containing
 `SETUP.cfg`, never to that directory itself or anything higher up
 the filesystem hierarchy.
 
