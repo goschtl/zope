@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testStrField.py,v 1.5 2002/11/11 20:24:35 jim Exp $
+$Id: testStrField.py,v 1.6 2002/12/09 16:28:58 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Zope.Schema import Bytes, Line, Text, TextLine, ErrorNames
+from Zope.Schema import Bytes, BytesLine, Text, TextLine, ErrorNames
 from Zope.Schema.Exceptions import ValidationError 
 from testField import FieldTestBase
 
@@ -140,7 +140,7 @@ class SingleLine:
                                     self._convert('hello\nworld'))    
 
 class LineTest(SingleLine, BytesTest):
-    _Field_Factory = Line
+    _Field_Factory = BytesLine
 
 class TextLineTest(SingleLine, TextTest):
     _Field_Factory = TextLine

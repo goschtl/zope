@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.7 2002/12/05 13:27:06 dannu Exp $
+$Id: _Field.py,v 1.8 2002/12/09 16:28:58 jim Exp $
 """
 __metaclass__ = type
 
@@ -56,7 +56,7 @@ class Bytes(MinMaxLen, ValueSet):
     
     _type = str
 
-class Line(Bytes):
+class BytesLine(Bytes):
     """A Text field with no newlines."""
 
     __implements__ = IField.IBytesLine

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.14 2002/12/04 17:57:16 alga Exp $
+$Id: ISQLScript.py,v 1.15 2002/12/09 16:28:58 jim Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -39,7 +39,7 @@ class ISQLScript(ISQLCommand):
         description=u"The Connection Name for the connection to be used.",
         required=False)
 
-    arguments = Zope.Schema.Line(
+    arguments = Zope.Schema.BytesLine(
         title=u"Arguments",
         description=u"A set of attributes that can be used during the DTML "
                     u"rendering process to provide dynamic data.",
