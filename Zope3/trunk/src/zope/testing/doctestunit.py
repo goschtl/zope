@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests. 
 
-$Id: doctestunit.py,v 1.6 2003/11/03 21:37:50 jeremy Exp $
+$Id: doctestunit.py,v 1.7 2004/01/06 19:50:43 jim Exp $
 """
 
 from StringIO import StringIO
@@ -226,7 +226,7 @@ def testsource(module, name):
         ])
     return testsrc
 
-def debug(module, name):
+def debug(module, name, pm=False):
     """Debug a single doctest test doc string
 
     Provide the module (or dotted name of the module) containing the
@@ -240,9 +240,17 @@ def debug(module, name):
     open(srcfilename, 'w').write(testsrc)
     globs = {}
     globs.update(module.__dict__)
+
     try:
-        # Note that %r is vital here.  '%s' instead can, e.g., cause
-        # backslashes to get treated as metacharacters on Windows.
-        pdb.run("execfile(%r)" % srcfilename, globs, globs)
+        if pm:
+            try:
+                execfile(srcfilename, globs, globs)
+            except:
+                print sys.exc_info()[1]
+                pdb.post_mortem(sys.exc_info()[2])
+        else:
+            # Note that %r is vital here.  '%s' instead can, e.g., cause
+            # backslashes to get treated as metacharacters on Windows.
+            pdb.run("execfile(%r)" % srcfilename, globs, globs)
     finally:
         os.remove(srcfilename)
