@@ -17,7 +17,7 @@ $Id: __init__.py,v 1.1 2003/09/16 22:18:56 srichter Exp $
 """
 from zope.interface import implements
 from zope.tales.interfaces import ITALESFunctionNamespace
-from zope.app import zapi
+from zope.security.proxy import removeSecurityProxy
 from interfaces import IFormatTalesAPI
 
 
@@ -30,7 +30,7 @@ class FormatTalesAPI(object):
 
     def setEngine(self, engine):
         """See zope.tales.interfaces.ITALESFunctionNamespace"""
-        self.locale = zapi.removeSecurityProxy(engine.vars['request']).locale
+        self.locale = removeSecurityProxy(engine.vars['request']).locale
 
     def shortDate(self):
         """See book.formatns.interfaces.IFormatTalesAPI"""
