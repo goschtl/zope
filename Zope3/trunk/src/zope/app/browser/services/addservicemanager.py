@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: addservicemanager.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: addservicemanager.py,v 1.3 2003/03/23 22:35:36 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -27,4 +27,4 @@ class AddServiceManager(BrowserView):
             raise ValueError(
                   'This folder already contains a service manager')
         self.context.setServiceManager(sm)
-        self.request.response.redirect("++etc++Services/")
+        self.request.response.redirect("++etc++site/")

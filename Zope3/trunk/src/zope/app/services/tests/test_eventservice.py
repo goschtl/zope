@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.18 2003/03/23 22:03:28 jim Exp $
+$Id: test_eventservice.py,v 1.19 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -832,7 +832,7 @@ class TestEventPublisher(EventSetup, TestCase):
         if not self.folder2.hasServiceManager():
             self.folder2.setServiceManager(ServiceManager())
 
-        sm = traverse(self.rootFolder, 'folder2/++etc++Services')
+        sm = traverse(self.rootFolder, 'folder2/++etc++site')
         default = traverse(sm, 'default')
 
         default.setObject("myEventService", service)
@@ -892,7 +892,7 @@ class TestEventPublisher(EventSetup, TestCase):
             event_type=IObjectAddedEvent
             )
 
-        sm = traverse(self.rootFolder, "folder1/++etc++Services")
+        sm = traverse(self.rootFolder, "folder1/++etc++site")
         configuration = sm.queryConfigurations(EventPublication).active()
         configuration.status = Registered
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
@@ -916,7 +916,7 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.folder2Subscriber.notified, 0)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
-        sm = traverse(self.rootFolder, "folder2/++etc++Services")
+        sm = traverse(self.rootFolder, "folder2/++etc++site")
         configuration = sm.queryConfigurations(EventSubscription).active()
         # make sure it doesn't raise any errors
         configuration.status = Registered

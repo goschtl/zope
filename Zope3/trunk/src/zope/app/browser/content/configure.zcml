@@ -306,7 +306,7 @@
     for="zope.app.interfaces.content.folder.IRootFolder">
 
     <browser:menuItem title="Manage Process"
-              action="++etc++ApplicationController/index.html"
+              action="++etc++process/index.html"
               />
 
   </browser:menuItems>

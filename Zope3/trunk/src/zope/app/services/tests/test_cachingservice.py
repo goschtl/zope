@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.7 2003/03/23 22:03:28 jim Exp $
+$Id: test_cachingservice.py,v 1.8 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -57,7 +57,7 @@ class CachingServiceSetup(EventSetup):
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
 
-        default = traverse(folder, '++etc++Services/default')
+        default = traverse(folder, '++etc++site/default')
         key = default.setObject("myCachingService", CachingService())
         service = traverse(default, key)
 
@@ -75,7 +75,7 @@ class CachingServiceSetup(EventSetup):
         if not cname:
             cname = name
         default = traverse(self.rootFolder,
-                           folder +'/++etc++Services/default')
+                           folder +'/++etc++site/default')
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
         configure = default.getConfigurationManager()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.6 2003/01/02 15:34:09 stevea Exp $
+$Id: xmlobject.py,v 1.7 2003/03/23 22:35:37 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -41,7 +41,7 @@ class ReadContainerXmlObjectView(BrowserView):
         keys = list(container.keys())
 
         # include the service manager
-        keys.append('++etc++Services')
+        keys.append('++etc++site')
 
         for name in keys:
 
@@ -89,7 +89,7 @@ class ReadContainerXmlObjectView(BrowserView):
             keys = list(item.keys())
 
             # include the service manager
-            keys.append('++etc++Services')
+            keys.append('++etc++site')
 
             for name in keys:
                 # Only include items we can traverse to

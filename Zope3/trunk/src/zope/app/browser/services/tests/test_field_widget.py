@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.6 2003/03/18 21:02:20 jim Exp $
+$Id: test_field_widget.py,v 1.7 2003/03/23 22:35:36 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -60,7 +60,7 @@ class BaseTest(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        default = traverse(self.rootFolder, '++etc++Services/default')
+        default = traverse(self.rootFolder, '++etc++site/default')
         default.setObject('c1', C())
         default.setObject('c2', C())
         default.setObject('c3', C())
@@ -81,22 +81,22 @@ class TestComponentPathWidget(BaseTest):
         expected = (
             '<select name="field.X">'
             '<option></option>'
-            '<option>/++etc++Services/default/c1</option>'
-            '<option>/++etc++Services/default/c2</option>'
-            '<option>/++etc++Services/default/c3</option>'
+            '<option>/++etc++site/default/c1</option>'
+            '<option>/++etc++site/default/c2</option>'
+            '<option>/++etc++site/default/c3</option>'
             '</select>'
             )
 
         self.assertEqual(widget(), expected)
 
-        self.request.form['field.X'] = u'/++etc++Services/default/c2'
+        self.request.form['field.X'] = u'/++etc++site/default/c2'
 
         expected = (
             '<select name="field.X">'
             '<option></option>'
-            '<option>/++etc++Services/default/c1</option>'
-            '<option selected>/++etc++Services/default/c2</option>'
-            '<option>/++etc++Services/default/c3</option>'
+            '<option>/++etc++site/default/c1</option>'
+            '<option selected>/++etc++site/default/c2</option>'
+            '<option>/++etc++site/default/c3</option>'
             '</select>'
             )
 
@@ -139,9 +139,9 @@ class TestComponentLocationWidget(BaseTest):
             'path: '
             '<select name="field.X.p">'
             '<option></option>'
-            '<option>/++etc++Services/default/c1</option>'
-            '<option>/++etc++Services/default/c2</option>'
-            '<option>/++etc++Services/default/c3</option>'
+            '<option>/++etc++site/default/c1</option>'
+            '<option>/++etc++site/default/c2</option>'
+            '<option>/++etc++site/default/c3</option>'
             '</select>'
             '<br>'
             'dotted name: '
@@ -153,15 +153,15 @@ class TestComponentLocationWidget(BaseTest):
         self.assertEqual(widget.hidden(), '')
 
         self.request.form['field.X.p'] = (
-                u'/++etc++Services/default/c2')
+                u'/++etc++site/default/c2')
 
         expected = (
             'path: '
             '<select name="field.X.p">'
             '<option></option>'
-            '<option>/++etc++Services/default/c1</option>'
-            '<option selected>/++etc++Services/default/c2</option>'
-            '<option>/++etc++Services/default/c3</option>'
+            '<option>/++etc++site/default/c1</option>'
+            '<option selected>/++etc++site/default/c2</option>'
+            '<option>/++etc++site/default/c3</option>'
             '</select>'
             '<br>'
             'dotted name: '
@@ -172,7 +172,7 @@ class TestComponentLocationWidget(BaseTest):
         self.failUnless(widget.haveData())
         self.assertEqual(widget.hidden(),
                          '<input type="hidden" name="field.X.p" value="'
-                         '/++etc++Services/default/c2'
+                         '/++etc++site/default/c2'
                          '" />'
                          )
 
@@ -191,9 +191,9 @@ class TestComponentLocationWidget(BaseTest):
             'path: '
             '<select name="field.X.p">'
             '<option></option>'
-            '<option>/++etc++Services/default/c1</option>'
-            '<option>/++etc++Services/default/c2</option>'
-            '<option>/++etc++Services/default/c3</option>'
+            '<option>/++etc++site/default/c1</option>'
+            '<option>/++etc++site/default/c2</option>'
+            '<option>/++etc++site/default/c3</option>'
             '</select>'
             '<br>'
             'dotted name: '

@@ -114,11 +114,11 @@ class ReadDirectory:
     def keys(self):
         keys = self.context.keys()
         if self.context.hasServiceManager():
-            return list(keys) + ['++etc++Services']
+            return list(keys) + ['++etc++site']
         return keys
 
     def get(self, key, default=None):
-        if key == '++etc++Services' and self.context.hasServiceManager():
+        if key == '++etc++site' and self.context.hasServiceManager():
             return self.context.getServiceManager()
 
         return self.context.get(key, default)

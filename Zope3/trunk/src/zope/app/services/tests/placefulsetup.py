@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.16 2003/03/23 22:03:28 jim Exp $
+$Id: placefulsetup.py,v 1.17 2003/03/23 22:35:42 jim Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -165,7 +165,7 @@ class PlacefulSetup(PlacelessSetup):
         folder = traverse(self.rootFolder, folder_path)
         if not folder.hasServiceManager():
             folder.setServiceManager(ServiceManager())
-        sm = traverse(folder, '++etc++Services')
+        sm = traverse(folder, '++etc++site')
         default = traverse(sm, 'default')
         service_name = 'anEventService'
         from zope.app.services.event import EventService
@@ -205,7 +205,7 @@ class PlacefulSetup(PlacelessSetup):
 
         defineService(HubIds, IObjectHub)
 
-        sm = traverse(root, '++etc++Services')
+        sm = traverse(root, '++etc++site')
         default = traverse(sm, 'default')
         default.setObject("myEventService", EventService())
         default.setObject("myObjectHub", self.getObjectHub())
@@ -229,4 +229,4 @@ class PlacefulSetup(PlacelessSetup):
 
 def createServiceManager(folder):
     folder.setServiceManager(ServiceManager())
-    return traverse(folder, "++etc++Services")
+    return traverse(folder, "++etc++site")

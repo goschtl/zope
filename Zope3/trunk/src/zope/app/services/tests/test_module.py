@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.4 2003/03/18 21:02:23 jim Exp $
+$Id: test_module.py,v 1.5 2003/03/23 22:35:42 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -56,7 +56,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def test_resolve(self):
         self.rootFolder.setServiceManager(ServiceManager())
-        sm = traverse(self.rootFolder, "++etc++Services")
+        sm = traverse(self.rootFolder, "++etc++site")
         default = traverse(sm, "default")
         default.setObject('m1', Manager())
         manager = traverse(default, "m1")
@@ -82,7 +82,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         
         conn2 = db.open()
         rootFolder2 = conn2.root()['Application']
-        sm2 = traverse(rootFolder2, "++etc++Services")
+        sm2 = traverse(rootFolder2, "++etc++site")
 
         C = sm2.resolve("zope.app.services.tests.sample1.C")
         c = C(42)

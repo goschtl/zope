@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.11 2003/03/19 19:57:29 alga Exp $
+$Id: subscribers.py,v 1.12 2003/03/23 22:35:39 jim Exp $
 """
 __metaclass__ = type
 
@@ -120,7 +120,7 @@ class Registration(Persistent):
 def findContentObject(context):
     # We want to find the (content) Folder in whose service manager we
     # live.  There are man y way to do this.  Perhaps the simplest is
-    # looking for '++etc++Services' in the location.  We could also
+    # looking for '++etc++site' in the location.  We could also
     # walk up the path looking for something that implements IFolder;
     # the service manager and packages don't implement this.  Or
     # (perhaps better, because a service manager might be attached to
@@ -138,10 +138,10 @@ def findContentObject(context):
     # For now, we pick the first approach.
     location = getPath(context)
     
-    index = location.find('/++etc++Services/')
+    index = location.find('/++etc++site/')
     if index != -1:
         location = location[:index]
     else:
-        raise ValueError, "can't find '++etc++Services' in path"
+        raise ValueError, "can't find '++etc++site' in path"
     root = getRoot(context)
     return traverse(root, location)

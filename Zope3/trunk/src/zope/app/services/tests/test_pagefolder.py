@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.2 2003/03/23 22:03:28 jim Exp $
+$Id: test_pagefolder.py,v 1.3 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -37,7 +37,7 @@ class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
     def test_setObject(self):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        default = traverse(self.rootFolder, '++etc++Services/default')
+        default = traverse(self.rootFolder, '++etc++site/default')
         default.setObject('Views', PageFolder())
         views = traverse(default, 'Views')
         views.forInterface = I
@@ -49,7 +49,7 @@ class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
         configure = default.getConfigurationManager()
         configuration = ServiceConfiguration(
             'Views',
-            '/++etc++Services/default/ViewService')
+            '/++etc++site/default/ViewService')
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')
         configuration.status = Active

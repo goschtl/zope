@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.18 2003/03/23 22:03:28 jim Exp $
+$Id: configuration.py,v 1.19 2003/03/23 22:35:41 jim Exp $
 """
 __metaclass__ = type
 
@@ -115,9 +115,14 @@ class ConfigurationRegistry(Persistent):
     def _id(self, ob):
 
         # Get and check relative path
-        prefix = "/++etc++Services/"
         path = getPath(ob)
+        prefix = "/++etc++site/"
         lpackages = path.rfind(prefix)
+        if lpackages < 0:
+            # XXX Backward compatability
+            prefix = "/++etc++Services/"
+            lpackages = path.rfind(prefix)
+
         if lpackages < 0:
             raise ValueError("Configuration object is in an invalid location",
                              path)

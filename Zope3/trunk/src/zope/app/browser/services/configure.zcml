@@ -390,7 +390,7 @@
     >
 
   <menuItem title="Manage Local Services"
-            action="++etc++Services/@@index.html"
+            action="++etc++site/@@SelectedManagementView.html"
             filter="context/hasServiceManager"
             />
 

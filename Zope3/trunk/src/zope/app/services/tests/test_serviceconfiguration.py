@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.7 2003/03/23 22:03:28 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.8 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -82,14 +82,14 @@ class Test(PlacefulSetup, TestCase):
         self.rootFolder.setServiceManager(ServiceManager())
         defineService('test_service', ITestService)
         default = traverse(self.rootFolder,
-                           '++etc++Services/default')
+                           '++etc++site/default')
         self.__default = default
 
         default.setObject('c', TestService())
 
 
         configuration = ServiceConfiguration(
-            'test_service', '/++etc++Services/default/c')
+            'test_service', '/++etc++site/default/c')
 
         self.__c = traverse(default, 'c')
         self.__cm = ZopeContainerAdapter(default.getConfigurationManager())
@@ -156,7 +156,7 @@ class Test(PlacefulSetup, TestCase):
             TypeError,
             ServiceConfiguration,
             'test_service',
-            '/++etc++Services/default/c2',
+            '/++etc++site/default/c2',
             self.__default
             )
 

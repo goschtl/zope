@@ -13,7 +13,7 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: synchronize.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: synchronize.py,v 1.3 2003/03/23 22:35:37 jim Exp $
 """
 import httplib
 import urllib
@@ -37,7 +37,7 @@ class Synchronize(BaseTranslationServiceView):
         super(Synchronize, self).__init__(context, request)
 
         self.sync_url = self.request.cookies.get('sync_url',
-                                'http://localhost:8081/++etc++Services/ts/')
+                                'http://localhost:8081/++etc++site/ts/')
         self.sync_url = urllib.unquote(self.sync_url)
         self.sync_username = self.request.cookies.get('sync_username', 'admin')
         self.sync_password = self.request.cookies.get('sync_password', 'admin')

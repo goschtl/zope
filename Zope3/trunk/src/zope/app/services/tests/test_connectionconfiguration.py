@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: test_connectionconfiguration.py,v 1.5 2003/03/23 22:03:28 jim Exp $
+$Id: test_connectionconfiguration.py,v 1.6 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -95,20 +95,20 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.rootFolder.setServiceManager(ServiceManager())
 
         self.default = traverse(self.rootFolder,
-                           '++etc++Services/default')
+                           '++etc++site/default')
         self.default.setObject('da', TestDA())
         self.da = traverse(self.default, 'da')
 
         self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
         self.cm.setObject('', ConnectionConfiguration('conn_name',
-                            '/++etc++Services/default/da'))
+                            '/++etc++site/default/da'))
         self.config = traverse(self.default.getConfigurationManager(), '1')
 
         self.default.setObject('conn_srv', ConnectionServiceStub())
         self.service = traverse(self.default, 'conn_srv')
 
         self.cm.setObject('', ServiceConfiguration('SQLDatabaseConnections',
-                            '/++etc++Services/default/conn_srv'))
+                            '/++etc++site/default/conn_srv'))
         traverse(self.default.getConfigurationManager(), '2').status = Active
 
     def tearDown(self):

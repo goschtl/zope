@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.12 2003/03/23 22:03:29 jim Exp $
+$Id: bootstrap.py,v 1.13 2003/03/23 22:35:42 jim Exp $
 """
 from transaction import get_transaction
 
@@ -100,7 +100,7 @@ def addService(root_folder, service_type, service_factory, **kw):
     # The code here is complicated by the fact that the registry
     # calls at the end require a fully context-wrapped
     # configuration; hence all the traverse() and traverseName() calls.
-    package_name = '/++etc++Services/default'
+    package_name = '/++etc++site/default'
     package = traverse(root_folder, package_name)
     name = service_type + '-1'
     service = service_factory()
@@ -115,7 +115,7 @@ def addService(root_folder, service_type, service_factory, **kw):
 def configureService(root_folder, service_type, name,
                      initial_status='Active'):
     """Configure a service in the root folder."""
-    package_name = '/++etc++Services/default'
+    package_name = '/++etc++site/default'
     package = traverse(root_folder, package_name)
     configuration_manager = package.getConfigurationManager()
     configuration =  ServiceConfiguration(service_type,

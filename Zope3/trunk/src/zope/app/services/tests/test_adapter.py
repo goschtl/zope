@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.6 2003/03/23 22:03:28 jim Exp $
+$Id: test_adapter.py,v 1.7 2003/03/23 22:35:42 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -113,7 +113,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_queryAdapter_and_getAdapter(self):
         service = self._service
 
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
 
         configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()
@@ -151,7 +151,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         # The same as above, but with a named adapter
         service = self._service
 
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
 
         configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()
@@ -203,7 +203,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
 
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
 
         configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.5 2003/03/23 22:03:28 jim Exp $
+$Id: test_servicemanager.py,v 1.6 2003/03/23 22:35:42 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -55,14 +55,14 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def testGetService(self):
         self.createServiceManager()
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
         default = traverse(sm, 'default')
 
         ts = TestService()
         default.setObject('test_service1', ts)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/default/test_service1')
+            '/++etc++site/default/test_service1')
 
         default.getConfigurationManager().setObject('', configuration)
         traverse(default.getConfigurationManager(), '1').status = Active
@@ -74,21 +74,21 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def test_get(self):
         self.createServiceManager()
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
         default = sm.get('default')
         self.assertEqual(default, sm.Packages['default'])
         self.assertEqual(sm.get('spam'), None)
 
     def testAddService(self):
         self.createServiceManager()
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
         default = traverse(sm, 'default')
 
         ts1 = TestService()
         default.setObject('test_service1', ts1)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/default/test_service1')
+            '/++etc++site/default/test_service1')
         default.getConfigurationManager().setObject('', configuration)
         traverse(default.getConfigurationManager(), '1').status = Active
 
@@ -96,7 +96,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default.setObject('test_service2', ts2)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/default/test_service2')
+            '/++etc++site/default/test_service2')
         default.getConfigurationManager().setObject('', configuration)
         traverse(default.getConfigurationManager(), '2').status = Registered
 
@@ -112,7 +112,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.testGetService() # set up localservice
 
-        sm = traverse(self.rootFolder, '++etc++Services')
+        sm = traverse(self.rootFolder, '++etc++site')
         cm = traverse(sm, 'default').getConfigurationManager()
         traverse(cm, '1').status = Unregistered
 
