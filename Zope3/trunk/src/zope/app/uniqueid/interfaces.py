@@ -7,14 +7,16 @@ from zope.interface import Interface
 
 
 class IReference(Interface):
-    """A reference to an object (like a weak ref)
+    """A reference to an object (similar to a weak reference).
 
-    Have to be orderable.  The references are only equal if they
-    reference the same object.
+    The references are compared by their hashes.
     """
 
     def __call__():
-        """Get the object this reference is linking to"""
+        """Get the object this reference is linking to."""
+
+    def __hash__():
+        """Get a unique identifier of the referenced object."""
 
 
 class IUniqueIdUtilityQuery(Interface):

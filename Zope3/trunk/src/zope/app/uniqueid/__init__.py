@@ -96,11 +96,14 @@ class ReferenceToPersistent:
     def __call__(self):
         return self.object
 
+    def __hash__(self):
+        return self.object._p_oid
+
     def __cmp__(self, other):
         if not isinstance(other, ReferenceToPersistent):
             raise TypeError("Cannot compare ReferenceToPersistent with %r" %
                             (other,))
-        return cmp(self.object._p_oid, other.object._p_oid)
+        return cmp(self.__hash__(), other.__hash__())
 
 
 def connectionOfPersistent(ob):
