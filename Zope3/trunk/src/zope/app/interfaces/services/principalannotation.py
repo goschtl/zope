@@ -26,7 +26,7 @@ class IPrincipalAnnotationService(Interface):
         If there is no IAnnotations it will be created and then returned.
         """
 
-    def getAnnotationsBy(principalId):
+    def getAnnotationsById(principalId):
         """Return object implementing IAnnotations for the given prinicipal id.
 
         If there is no IAnnotations it will be created and then returned.
