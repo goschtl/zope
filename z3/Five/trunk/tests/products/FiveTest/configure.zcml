@@ -150,4 +150,20 @@
     permission="zope2.Public"
     />
 
+  <!-- stuff that we'll override in overrides.zcml -->
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="eagle"
+    name="overridden_view"
+    permission="zope2.Public"
+    />
+
+  <adapter
+    for=".interfaces.IOrigin"
+    provides=".interfaces.IDestination"
+    factory=".classes.OriginalAdapter"
+    />
+
 </configure>

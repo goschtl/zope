@@ -15,5 +15,14 @@ class IAdapted(Interface):
         """A method to adapt.
         """
 
+class IOrigin(Interface):
+    """Something we'll adapt"""
+
+class IDestination(Interface):
+    """The result of an adaption"""
+
+    def method():
+	"""Do something"""
+
 class ISimpleContent(Interface):
     pass

@@ -13,8 +13,8 @@ ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
 from zope.component import getAdapter
-from Products.FiveTest.classes import Adaptable
-from Products.FiveTest.interfaces import IAdapted
+from Products.FiveTest.classes import Adaptable, Origin
+from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
 
 class FiveTestCase(ZopeTestCase.ZopeTestCase):
@@ -39,6 +39,14 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals(
             "Adapted: The method",
             adapted.adaptedMethod())
+
+    def test_overrides(self):
+        origin = Origin()
+        dest = IDestination(origin)
+        self.assertEquals(dest.method(), "Overridden")
+
+        view = self.folder.unrestrictedTraverse('testoid/overridden_view')
+        self.assertEquals(view(), "The mouse has been eaten by the eagle")
 
     def test_attribute_view(self):
         view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
