@@ -144,3 +144,5 @@
 
 /Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
 
+# Zope 3 products
+/ZopeProducts                                  /Products3
