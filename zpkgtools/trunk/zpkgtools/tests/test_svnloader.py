@@ -22,15 +22,42 @@ from zpkgtools import cvsloader
 from zpkgtools import svnloader
 
 
-class SubversionRepositoryBase(unittest.TestCase):
-    """Mix-in test support class that provides a fake Subversion repository.
+class SubversionTestBase(unittest.TestCase):
+    """Base class for the Subversion-related tests.
 
-    :ivar repodir: Directory containing the fake repository.
+    This provides a simple helper method that relies on the setting of
+    some instance variables.  These are most often specified as class
+    attributes.
+
+    :ivar TYPE: The scheme of the Subversion repository to work with.
+
+    :ivar HOSTPART: The host portion of the Subversion URL.  This may
+      be an empty string for file:/// URLs.
+
+    :ivar SVNROOT: The path to the repository on the server host in
+      POSIX notation.  A default dummy value is provided, suitable for
+      non-file:// repository URLs.
 
     """
 
+    SVNROOT = "/path/to/repo"
+
+    def mkurl(self, path):
+        return "%s://%s%s%s" % (self.TYPE, self.HOSTPART, self.SVNROOT, path)
+
+
+class SubversionLocalRepositoryBase(SubversionTestBase):
+    """Mix-in test support class that provides a fake Subversion repository.
+
+    :ivar svnrepodir: Directory containing the fake repository.
+
+    """
+
+    TYPE = "file"
+    HOSTPART = ""
+
     def setUp(self):
-        super(SubversionRepositoryBase, self).setUp()
+        super(SubversionLocalRepositoryBase, self).setUp()
         self.svnrepodir = tempfile.mkdtemp()
         os.mkdir(os.path.join(self.svnrepodir, "conf"))
         os.mkdir(os.path.join(self.svnrepodir, "dav"))
@@ -38,21 +65,69 @@ class SubversionRepositoryBase(unittest.TestCase):
         os.mkdir(os.path.join(self.svnrepodir, "hooks"))
         os.mkdir(os.path.join(self.svnrepodir, "locks"))
         open(os.path.join(self.svnrepodir, "db", "DB_CONFIG"), "w").close()
+        self.SVNROOT = self.svnrepodir.replace(os.sep, "/")
 
     def tearDown(self):
-        super(SubversionRepositoryBase, self).tearDown()
+        super(SubversionLocalRepositoryBase, self).tearDown()
         shutil.rmtree(self.svnrepodir)
 
 
-class SubversionUrlTestCase(unittest.TestCase):
+class SubversionWorkingDirBase(SubversionTestBase):
+    """Mix-in test support class that provides a fake Subversion
+    working directory (checkout).
+
+    :ivar svnworkdir: Directory containing the simulated checkout.
+
+    :ivar svndir: .svn/ directory in the simulated checkout.
+
+    """
+
+    def setUp(self):
+        super(SubversionWorkingDirBase, self).setUp()
+        self.svnworkdir = tempfile.mkdtemp()
+        self.svndir = os.path.join(self.svnworkdir, ".svn")
+        os.mkdir(self.svndir)
+        os.mkdir(os.path.join(self.svndir, "tmp"))
+        self.writeSvnMetafile("format", "4\n")
+        self.writeSvnMetafile("empty-file", "")
+        self.writeSvnMetafile("README.txt", "Yeah, there's a readme file.\n")
+        for dn in ("prop-base", "props", "text-base", "wcprops"):
+            os.mkdir(os.path.join(self.svndir, dn))
+            os.mkdir(os.path.join(self.svndir, "tmp", dn))
+
+    def tearDown(self):
+        super(SubversionWorkingDirBase, self).tearDown()
+        shutil.rmtree(self.svnworkdir)
+
+    def writeSvnMetafile(self, name, text):
+        """Write a file directly in the .svn/ directory."""
+        self.writeFile(os.path.join(".svn", name), text)
+
+    def writeSvnUserfile(self, name, text, **kw):
+        """Write a user file and the simplest Subversion support files.
+
+        This does not add an entry to .svn/entries for the new file.
+        """
+        self.writeFile(name, text)
+        self.writeFile(os.path.join(".svn", "text-base", name + ".svn-base"),
+                       text)
+        self.writeFile(os.path.join(".svn", "prop-base", name + ".svn-base"),
+                       "END\n")
+        self.writeFile(os.path.join(".svn", "props", name + ".svn-work"),
+                       "END\n")
+
+    def writeFile(self, name, text):
+        """Write a file within the simulated checkout."""
+        f = open(os.path.join(self.svnworkdir, name), "w")
+        f.write(text)
+        f.close()
+
+
+class SubversionUrlTestCase(SubversionTestBase):
     """Test handling of svn://host/... URLs."""
 
     TYPE = "svn"
     HOSTPART = "svn.example.com"
-    SVNROOT = "/path/to/repo"
-
-    def mkurl(self, path):
-        return "%s://%s%s%s" % (self.TYPE, self.HOSTPART, self.SVNROOT, path)
 
     def test_parse_round_trip(self):
         def check(path):
@@ -116,25 +191,11 @@ class SubversionSshUrlTestCase(SubversionUrlTestCase):
     """Test handling of svn+ssh://host/... URLs."""
 
     TYPE = "svn+ssh"
-    HOSTPART = "svn.example.com"
 
 
-class SubversionFileUrlTestCase(SubversionRepositoryBase,
+class SubversionFileUrlTestCase(SubversionLocalRepositoryBase,
                                 SubversionUrlTestCase):
     """Test handling of file:///... URLs."""
-
-    # We create a "stub" repository so is_subversion_url() can
-    # determine whether a file: URL points into Subversion.
-    #
-    # XXX Can we assume svnadmin is available locally?  Probably not.
-
-    TYPE = "file"
-    HOSTPART = ""
-
-    def setUp(self):
-        super(SubversionFileUrlTestCase, self).setUp()
-        parts = self.svnrepodir.split(os.sep)
-        self.SVNROOT = "/".join(parts)
 
 
 class SubversionLocalhostFileUrlTestCase(SubversionFileUrlTestCase):
