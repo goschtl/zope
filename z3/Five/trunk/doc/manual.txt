@@ -206,18 +206,9 @@ called ``classes.py`` and the interfaces in a module called
     
   </configure>
 
-The next step is to read ``configure.zcml`` so Zope can find these
-declarations. Do this by placing the following in the ``__init__.py``
-of your Zope product::
-
-  from Products.Five import zcml
-  import Products
-   
-  def initialize(context):
-      zcml.process('configure.zcml', package=Products.FiveDemo)        
- 
-Any class that implements ``INewInterface`` can now be adapted to
-``INewInterface``, like this::
+Five will automatically pickup ``configure.zcml`` when it's placed in
+the product's directory.  Any object that provides ``INewInterface``
+can now be adapted to ``INewInterface``, like this::
 
   from zope.component import getAdapter
   from classes import MyClass
