@@ -12,7 +12,7 @@
 
     <div tal:define="entries context/getLogEntries">
 
-      <em tal:condition="not:entries">
+      <em tal:condition="not:entries" i18n:translate="">
         No exceptions logged.
       </em>
 
