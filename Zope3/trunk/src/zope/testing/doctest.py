@@ -274,6 +274,8 @@ ok
 60 passed and 0 failed.
 
 Test passed.
+
+$Id$
 """
 
 __all__ = [

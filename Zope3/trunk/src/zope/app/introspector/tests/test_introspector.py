@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Introspector Tests.
 
-Revision information:
 $Id$
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.introspector import Introspector
 from zope.app.introspector.interfaces import IIntrospector

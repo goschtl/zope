@@ -12,6 +12,8 @@
 #
 ##############################################################################
 """Command-line tool to perform import analysis.
+
+$Id$
 """
 import optparse
 import os

@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Base Mapping tests
 
-Revision information:
 $Id$
 """
-
 from operator import __getitem__
 
 def testIReadMapping(self, inst, state, absent):
