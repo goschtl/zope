@@ -5,12 +5,12 @@ def build_test_suite(package_name,module_names,required=1):
     """
     Utlitity for building a test suite from a package name
     and a list of modules.
-
+    
     If required is false, then ImportErrors will simply result
     in that module's tests not being added to the returned
     suite.
     """
-
+    
     suite = TestSuite()
     try:
         for name in module_names:
@@ -33,3 +33,4 @@ def has_path( catalog, path ):
         if catalog.getpath( rid ) == path:
             return 1
     return 0
+

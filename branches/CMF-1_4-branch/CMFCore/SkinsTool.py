@@ -74,7 +74,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
     manage_options = ( modifiedOptions() +
                       ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
+                     , 
                      ) + ActionProviderBase.manage_options
                      )
 
@@ -105,7 +105,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     security.declareProtected(ManagePortal, 'manage_skinLayers')
     def manage_skinLayers(self, chosen=(), add_skin=0, del_skin=0,
                           skinname='', skinpath='', REQUEST=None):
-        """ Change the skinLayers """
+        """ Change the skinLayers """                          
         sels = self._getSelections()
         if del_skin:
             for name in chosen:
@@ -121,7 +121,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 # for hysterical reasons
                 if isinstance(val, ListType):
                     val = ','.join([layer.strip() for layer in val])
-
+                                        
                 if sels[key] != val:
                     self.testSkinPath(val)
                     sels[key] = val
@@ -178,7 +178,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
             return DTMLMethod( __name__=name )
 
         return None
-
+    
     # Make the PUT_factory replaceable
     PUT_factory__replaceable__ = REPLACEABLE
 
@@ -273,9 +273,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 cookie = req.cookies.get(self.request_varname, None)
                 if cookie != mskin:
                     resp = req.RESPONSE
-
+                    
                     portalPath = '/' + pu.getPortalObject().absolute_url(1)
-
+                        
                     if not self.cookie_persistence:
                         # *Don't* make the cookie persistent!
                         resp.setCookie( self.request_varname, mskin, path=portalPath )

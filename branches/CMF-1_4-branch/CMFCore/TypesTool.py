@@ -325,7 +325,7 @@ class FactoryTypeInformation (TypeInformation):
 
     product = ''
     factory = ''
-
+ 
     #
     #   Agent methods
     #
@@ -502,7 +502,7 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
     manage_options = ( Folder.manage_options +
                       ActionProviderBase.manage_options +
                       ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
+                     , 
                      ))
 
     #

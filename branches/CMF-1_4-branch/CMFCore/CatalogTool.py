@@ -84,18 +84,18 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
     manage_options = ( ZCatalog.manage_options +
                       ActionProviderBase.manage_options +
                       ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
+                     , 
                      ))
 
     def __init__(self):
         ZCatalog.__init__(self, self.getId())
-
+        
         if not hasattr(self, 'Vocabulary'):
             # As of 2.6, the Catalog no longer adds a vocabulary in itself
             from Products.PluginIndexes.TextIndex.Vocabulary import Vocabulary
             vocabulary = Vocabulary('Vocabulary', 'Vocabulary', globbing=1)
             self._setObject('Vocabulary', vocabulary)
-
+            
         self._initIndexes()
 
     #
@@ -126,7 +126,7 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
                , ('path', 'PathIndex')
                , ('portal_type', 'FieldIndex')
                )
-
+    
     security.declarePublic( 'enumerateColumns' )
     def enumerateColumns( self ):
         #   Return a sequence of schema names to be cached.

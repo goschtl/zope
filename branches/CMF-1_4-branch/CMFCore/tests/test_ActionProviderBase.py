@@ -41,7 +41,7 @@ class DummyAction:
                )
 
 class ActionProviderBaseTests(unittest.TestCase):
-
+    
     def _makeProvider( self, dummy=0 ):
 
         klass = dummy and DummyProvider or ActionProviderBase

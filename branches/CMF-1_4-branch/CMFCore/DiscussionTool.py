@@ -42,7 +42,7 @@ class OldDiscussable(Implicit):
     _isDiscussable = 1
 
     security = ClassSecurityInfo()
-
+    
 
     def __init__( self, content ):
         self.content = content
@@ -122,7 +122,7 @@ class DiscussionTool (UniqueObject, SimpleItem):
     security = ClassSecurityInfo()
 
     manage_options = ( { 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
+                     , 
                      ) + SimpleItem.manage_options
 
     #

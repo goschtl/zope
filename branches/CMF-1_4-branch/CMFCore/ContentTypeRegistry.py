@@ -135,7 +135,7 @@ class ExtensionPredicate( SimpleItem ):
 
     security.declareProtected( ManagePortal, 'getExtensions' )
     def getExtensions(self):
-        """ Get filename extensions.
+        """ Get filename extensions. 
         """
         if self.extensions is None:
             return 'None'
@@ -280,7 +280,7 @@ class NameRegexPredicate( SimpleItem ):
         """
         if self.pattern is None:
             return 0
-
+        
         return self.pattern.match( name )
 
     security.declareProtected( ManagePortal, 'getTypeLabel' )
@@ -344,7 +344,7 @@ class ContentTypeRegistry( SimpleItem ):
         """
         """
         return map( lambda x: x[0], _predicate_types )
-
+    
     security.declareProtected( ManagePortal, 'manage_predicates' )
     manage_predicates = DTMLFile( 'registryPredList', _dtmldir )
 
@@ -450,7 +450,7 @@ class ContentTypeRegistry( SimpleItem ):
         """
             Return a sequence of tuples,
             '( id, ( predicate, typeObjectName ) )'
-            for all predicates in the registry
+            for all predicates in the registry 
         """
         result = []
         for predicate_id in self.predicate_ids:

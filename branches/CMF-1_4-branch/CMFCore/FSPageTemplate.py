@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##########################################################################
 """Customizable page templates that come from the filesystem.
 
@@ -43,7 +43,7 @@ _marker = []  # Create a new marker object.
 
 class FSPageTemplate(FSObject, Script, PageTemplate):
     "Wrapper for Page Template"
-
+     
     meta_type = 'Filesystem Page Template'
 
     _owner = None  # Unowned
@@ -54,7 +54,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             {'label':'Test', 'action':'ZScriptHTML_tryForm'},
             )
             +Cacheable.manage_options
-        )
+        ) 
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -82,9 +82,9 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     def _readFile(self, reparse):
         fp = expandpath(self._filepath)
         file = open(fp, 'r')    # not 'rb', as this is a text file!
-        try:
+        try: 
             data = file.read()
-        finally:
+        finally: 
             file.close()
         if reparse:
             if xml_detect_re.match(data):
@@ -140,7 +140,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 raise RuntimeError, msg
             else:
                 raise
-
+                
     security.declarePrivate( '_ZPT_exec' )
     _ZPT_exec = ZopePageTemplate._exec
 
@@ -153,7 +153,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             response = None
         # Read file first to get a correct content_type default value.
         self._updateFromFS()
-
+        
         if not kw.has_key('args'):
             kw['args'] = args
         bound_names['options'] = kw
@@ -164,7 +164,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 response.setHeader('content-type', self.content_type)
         except AttributeError:
             pass
-
+            
         security=getSecurityManager()
         bound_names['user'] = security.getUser()
 
@@ -175,7 +175,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             keyset = {
                       # Why oh why?
                       # All this code is cut and paste
-                      # here to make sure that we
+                      # here to make sure that we 
                       # dont call _getContext and hence can't cache
                       # Annoying huh?
                       'here': self.aq_parent.getPhysicalPath(),
@@ -195,9 +195,9 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             return result
         finally:
             security.removeContext(self)
-
+        
         return result
-
+ 
     # Copy over more methods
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = ZopePageTemplate.manage_FTPget
@@ -229,3 +229,4 @@ registerFileExtension('zpt', FSPageTemplate)
 registerFileExtension('html', FSPageTemplate)
 registerFileExtension('htm', FSPageTemplate)
 registerMetaType('Page Template', FSPageTemplate)
+

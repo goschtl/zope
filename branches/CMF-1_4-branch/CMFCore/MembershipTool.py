@@ -35,10 +35,10 @@ from interfaces.portal_membership \
         import portal_membership as IMembershipTool
 
 default_member_content = '''Default page for %s
-
+ 
   This is the default document created for you when
   you joined this community.
-
+ 
   To change the content just select "Edit"
   in the Tool Box on the left.
 '''
@@ -63,7 +63,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     manage_options=( ({ 'label' : 'Configuration'
                      , 'action' : 'manage_mapRoles'
                      },) +
-                     ActionProviderBase.manage_options +
+                     ActionProviderBase.manage_options + 
                    ( { 'label' : 'Overview'
                      , 'action' : 'manage_overview'
                      },
@@ -74,13 +74,13 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     #
     security.declareProtected(ManagePortal, 'manage_overview')
     manage_overview = DTMLFile( 'explainMembershipTool', _dtmldir )
-
+ 
     #
     #   'portal_membership' interface methods
     #
     security.declareProtected(ManagePortal, 'manage_mapRoles')
     manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir )
-
+ 
     security.declareProtected(SetOwnPassword, 'setPassword')
     def setPassword(self, password, domains=None):
         '''Allows the authenticated member to set his/her own password.
@@ -122,10 +122,10 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
             u = u.__of__(self.acl_users)
         if (b is nobody and not wrap_anon) or hasattr(b, 'getMemberId'):
             # This user is either not recognized by acl_users or it is
-            # already registered with something that implements the
+            # already registered with something that implements the 
             # member data tool at least partially.
             return u
-
+        
         parent = self.aq_inner.aq_parent
         base = getattr(parent, 'aq_base', None)
         if hasattr(base, 'portal_memberdata'):
@@ -165,7 +165,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     def getPortalRoles(self):
         """
         Return all local roles defined by the portal itself,
-        which means roles that are useful and understood
+        which means roles that are useful and understood 
         by the portal object
         """
         parent = self.aq_inner.aq_parent
@@ -180,7 +180,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     security.declareProtected(ManagePortal, 'setRoleMapping')
     def setRoleMapping(self, portal_role, userfolder_role):
         """
-        set the mapping of roles between roles understood by
+        set the mapping of roles between roles understood by 
         the portal and roles coming from outside user sources
         """
         if not hasattr(self, 'role_map'): self.role_map = PersistentMapping()
@@ -211,7 +211,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         """
         Returns the flag indicating whether the membership tool
         will create a member area if an authenticated user from
-        an underlying user folder logs in first without going
+        an underlying user folder logs in first without going 
         through the join process
         """
         return self.memberareaCreationFlag
@@ -244,23 +244,23 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         """
         parent = self.aq_inner.aq_parent
         members =  getattr(parent, 'Members', None)
-
+        
         user = self.acl_users.getUserById( member_id, None )
         if user is None:
             raise ValueError, 'Member %s does not exist' % member_id
 
         if user is not None:
             user = user.__of__( self.acl_users )
-
+        
         if members is not None and user is not None:
             f_title = "%s's Home" % member_id
             members.manage_addPortalFolder( id=member_id, title=f_title )
             f=getattr(members, member_id)
-
+ 
             f.manage_permission(View,
                                 ['Owner','Manager','Reviewer'], 0)
             f.manage_permission(AccessContentsInformation,
-                                ['Owner','Manager','Reviewer'], 0)
+                                ['Owner','Manager','Reviewer'], 0)  
 
             # Grant Ownership and Owner role to Member
             f.changeOwnership(user)
@@ -342,7 +342,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         '''
         user_folder = self.__getPUS()
         return [ x.getId() for x in user_folder.getUsers() ]
-
+    
     security.declareProtected(ManagePortal, 'listMembers')
     def listMembers(self):
         '''Gets the list of all members.
@@ -428,7 +428,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         doesn't have the View permission on the folder.
         """
         return None
-
+        
     security.declarePublic('getHomeUrl')
     def getHomeUrl(self, id=None, verifyPermission=0):
         """Returns the URL to a member's home folder or None.

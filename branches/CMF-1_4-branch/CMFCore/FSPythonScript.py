@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##############################################################################
 """ Customizable Python scripts that come from the filesystem.
 
@@ -49,7 +49,7 @@ class FSPythonScript (FSObject, Script):
     _proxy_roles = ()
 
     _owner = None  # Unowned
-
+    
     manage_options=(
         (
             {'label':'Customize', 'action':'manage_main'},
@@ -79,7 +79,7 @@ class FSPythonScript (FSObject, Script):
 
     def _readFile(self, reparse):
         """Read the data from the filesystem.
-
+        
         Read the file (indicated by exandpath(self._filepath), and parse the
         data if necessary.
         """
@@ -129,7 +129,7 @@ class FSPythonScript (FSObject, Script):
                 # Got a cached value.
                 return result
 
-
+        
         # Prepare the function.
         f = self._v_f
         if f is None:
@@ -160,7 +160,7 @@ class FSPythonScript (FSObject, Script):
             result = apply(f, args, kw)
             if keyset is not None:
                 # Store the result in the cache.
-                self.ZCacheable_set(result, keywords=keyset)
+                self.ZCacheable_set(result, keywords=keyset)           
             return result
         finally:
             security.removeContext(self)

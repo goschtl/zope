@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##############################################################################
 """ Views of filesystem directories as folders.
 
@@ -113,13 +113,13 @@ class DirectoryInformation:
                 fp = expandpath(self.filepath)
                 mtime = stat(fp)[8]
                 if sys.platform == 'nt':
-                    # some Windows directories don't change mtime
+                    # some Windows directories don't change mtime 
                     # when a file is added to or deleted from them :-(
                     # So keep a list of files as well, and see if that
                     # changes
                     path.walk(fp,_walker,filelist)
                     filelist.sort()
-            except:
+            except: 
                 LOG('DirectoryView',
                     ERROR,
                     'Error checking for directory modification',
@@ -128,16 +128,16 @@ class DirectoryInformation:
             if mtime != self._v_last_read or filelist != self._v_last_filelist:
                 self._v_last_read = mtime
                 self._v_last_filelist = filelist
-
+                
                 return 1
 
             return 0
-
+        
     else:
 
         def _changed(self):
             return 0
-
+        
     def getContents(self, registry):
         changed = self._changed()
         if self.data is None or changed:
@@ -151,7 +151,7 @@ class DirectoryInformation:
                     error=exc_info())
                 self.data = {}
                 self.objects = ()
-
+                    
         return self.data, self.objects
 
     def prepareContents(self, registry, register_subdirs=0):
@@ -207,7 +207,7 @@ class DirectoryInformation:
                     t = registry.getTypeByMetaType(mt)
                 if t is None:
                     t = registry.getTypeByExtension(ext)
-
+                
                 if t is not None:
                     metadata = FSMetadata(e_fp)
                     metadata.read()
@@ -224,14 +224,14 @@ class DirectoryInformation:
                             LOG( 'DirectoryView',
                                  ERROR,
                                  join( exc_lines, '\n' ) )
-
+                            
                             ob = BadFile( name,
                                           e_filepath,
                                           exc_str=join( exc_lines, '\r\n' ),
                                           fullname=entry )
                         finally:
                             tb = None   # Avoid leaking frame!
-
+                            
                     # FS-based security
                     try:
                         permissions = metadata.getSecurity()
@@ -254,11 +254,11 @@ class DirectoryInformation:
                                 ERROR,
                                 'Error setting proxy role',
                                 error=exc_info())
-
+                    
                     ob_id = ob.getId()
                     data[ob_id] = ob
                     objects.append({'id': ob_id, 'meta_type': ob.meta_type})
-
+                    
         return data, tuple(objects)
 
 
@@ -268,7 +268,7 @@ class DirectoryRegistry:
         self._meta_types = {}
         self._object_types = {}
         self._directories = {}
-
+    
     def registerFileExtension(self, ext, klass):
         self._object_types[ext] = klass
 
@@ -321,7 +321,7 @@ class DirectoryRegistry:
         dirs = self._directories.keys()
         dirs.sort()
         return dirs
-
+        
 
 _dirreg = DirectoryRegistry()
 registerDirectory = _dirreg.registerDirectory
@@ -454,7 +454,7 @@ class DirectoryViewSurrogate (Folder):
     security.declarePublic('getId')
     def getId(self):
         return self.id
-
+    
 Globals.InitializeClass(DirectoryViewSurrogate)
 
 
@@ -506,3 +506,4 @@ def manage_listAvailableDirectories(*args):
     '''
     '''
     return list(_dirreg.listDirectories())
+

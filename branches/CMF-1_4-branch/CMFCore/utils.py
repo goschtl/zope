@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##############################################################################
 
 import os
@@ -238,13 +238,13 @@ def _ac_inherited_permissions(ob, all=0):
     for p in perms: d[p[0]] = None
     r = gather_permissions(ob.__class__, [], d)
     if all:
-        if hasattr(ob, '_subobject_permissions'):
-            for p in ob._subobject_permissions():
-                pname=p[0]
-                if not d.has_key(pname):
-                    d[pname]=1
-                    r.append(p)
-        r = list(perms) + r
+       if hasattr(ob, '_subobject_permissions'):
+           for p in ob._subobject_permissions():
+               pname=p[0]
+               if not d.has_key(pname):
+                   d[pname]=1
+                   r.append(p)
+       r = list(perms) + r
     return r
 
 security.declarePrivate('_modifyPermissionMappings')
@@ -535,9 +535,9 @@ def initializeBasesPhase1(base_classes, module):
 def initializeBasesPhase2(zclasses, context):
 
     """ Finishes ZClass base initialization.
-
+    
     o 'zclasses' is the list returned by initializeBasesPhase1().
-
+    
     o 'context' is a ProductContext object.
     """
     for zclass in zclasses:
@@ -582,7 +582,7 @@ class _CMFHtmlWithImages( HTMLWithImages ):
         body parts perfectly rendered.
         """
         for c in doc.getChildNodes():
-            getattr(self, self.element_types[c.getNodeName()])(c, level, output)
+           getattr(self, self.element_types[c.getNodeName()])(c, level, output)
 
 CMFHtmlWithImages = _CMFHtmlWithImages()
 
@@ -645,11 +645,11 @@ def expandpath(p):
     # However, that's an acceptable risk as people don't seem
     # to re-use product names ever (it would create ZODB persistence
     # problems too ;-)
-
+    
     p = os_path.normpath(p)
     if os_path.isabs(p):
         return p
-
+    
     for ppath in ProductsPath:
         abs = os_path.join(ppath, p)
         if os_path.exists(abs):
@@ -669,6 +669,6 @@ def minimalpath(p):
     if index == -1:
         index = p.rfind('products')
         if index == -1:
-            # couldn't normalise
+            # couldn't normalise            
             return p
     return p[index+len('products/'):]

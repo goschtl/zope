@@ -104,7 +104,7 @@ This is the header
   body body body.
 
    o A list item
-
+   
    o And another thing...
 '''
 
@@ -121,7 +121,7 @@ This is the header
   body body body.
 
    o A list item
-
+   
    o And another thing...
 '''
 

@@ -21,7 +21,7 @@ class FSImageTests( RequestTest, FSDVTest):
     def _makeOne( self, id, filename ):
 
         from Products.CMFCore.FSImage import FSImage
-
+        
         return FSImage( id, os.path.join( self.skin_path_name, filename ) )
 
     def _extractFile( self ):
@@ -120,3 +120,4 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
+

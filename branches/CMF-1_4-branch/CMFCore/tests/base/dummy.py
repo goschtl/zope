@@ -15,10 +15,10 @@ class DummyObject(Implicit):
     def __init__(self, id='dummy',**kw):
         self._id = id
         self.__dict__.update( kw )
-
+        
     def __str__(self):
         return self._id
-
+    
     def __call__(self):
         return self._id
 
@@ -27,7 +27,7 @@ class DummyObject(Implicit):
 
     def getIcon( self, relative=0 ):
         return 'Site: %s' % relative
-
+    
     def getId(self):
         return self._id
 
@@ -60,15 +60,15 @@ class DummyContent( PortalContent, Item ):
         self.before_delete_called = 1
         if self.catalog:
             PortalContent.manage_beforeDelete( self, item, container )
-
+    
     def absolute_url(self):
-        return self.url
+       return self.url
 
     def reset( self ):
         self.after_add_called = self.before_delete_called = 0
 
     # Make sure normal Database export/import stuff doesn't trip us up.
-    def _getCopy( self, container ):
+    def _getCopy( self, container ):        
         return DummyContent( self.id, catalog=self.catalog )
 
     def _safe_get(self,attr):
@@ -94,7 +94,7 @@ class DummyContent( PortalContent, Item ):
 
     def modified( self ):
         return self._safe_get('modified_date')
-
+    
     def Type( self ):
         return 'Dummy Content Title'
 
@@ -152,7 +152,7 @@ class DummyFolder( Implicit ):
 
         if fake_product:
             self.manage_addProduct = { 'FooProduct' : DummyFactory( self ) }
-
+    
     def _setOb(self, id, object):
         setattr(self, id, object)
         return self._getOb(id)
@@ -250,16 +250,16 @@ class DummyTool(Implicit,ActionProviderBase):
                )
 
     root = 'DummyTool'
-
+    
     def __init__(self, anon=1):
-        self.anon = anon
+        self.anon = anon 
 
     def isAnonymousUser(self):
-        return self.anon
+        return self.anon 
 
     def getAuthenticatedMember(self):
         return "member"
-
+  
     def __call__( self ):
         return self.root
 

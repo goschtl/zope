@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##############################################################################
 """ Memberdata storage tool interface.
 
@@ -38,11 +38,11 @@ class portal_memberdata(Interface):
     ## getMemberDataContents__roles__ = ()  # Private.
     def getMemberDataContents():
         '''
-        Returns a list containing a dictionary with information
-        about the _members BTree contents: member_count is the
+        Returns a list containing a dictionary with information 
+        about the _members BTree contents: member_count is the 
         total number of member instances stored in the memberdata-
-        tool while orphan_count is the number of member instances
-        that for one reason or another are no longer in the
+        tool while orphan_count is the number of member instances 
+        that for one reason or another are no longer in the 
         underlying acl_users user folder.
         The result is designed to be iterated over in a dtml-in
         '''

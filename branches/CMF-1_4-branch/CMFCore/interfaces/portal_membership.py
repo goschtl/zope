@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-#
+# 
 ##############################################################################
 """ Membership tool interface.
 
@@ -34,7 +34,7 @@ class portal_membership(Interface):
 
         Permission -- SetOwnPassword
         """
-
+            
     #getAuthenticatedMember__roles__ = None  # Allow all.
     def getAuthenticatedMember():
         '''
@@ -70,7 +70,7 @@ class portal_membership(Interface):
         Set verifyPermission to 1 to return None when the user
         doesn't have the View permission on the folder.
         """
-
+        
     # getHomeUrl__roles__ = None # Anonymous permission
     def getHomeUrl(id=None, verifyPermission=0):
         """Returns the URL to a member's home folder or None.
@@ -90,7 +90,7 @@ class portal_membership(Interface):
         replaced with a set of methods for querying pieces of the
         list rather than the entire list at once.
         '''
-
+    
     # permission: 'Manage portal'
     def listMembers():
         '''Gets the list of all members.
@@ -122,7 +122,7 @@ class portal_membership(Interface):
         """
         returns a role name if the portal role is mapped to
         something else or an empty string if it is not
-        """
+        """ 
 
     # getMemberareaCreationFlag__roles__ = ()  # Private
     def getMemberareaCreationFlag():
@@ -131,7 +131,7 @@ class portal_membership(Interface):
         will create a member area if an authenticated user from
         an underlying user folder logs in first without going
         through the join process
-        """
+        """ 
 
     # setMemberareaCreationFlag__roles__ = ()  # Private
     def setMemberareaCreationFlag():
@@ -146,6 +146,6 @@ class portal_membership(Interface):
     def createMemberarea(member_id):
         """
         create a member area, only used if members are sourced
-        from an independent underlying user folder and not just
+        from an independent underlying user folder and not just 
         from the join process
         """

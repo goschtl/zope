@@ -129,7 +129,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
         return filter( lambda typ, container=self:
                           typ.isConstructionAllowed( container )
                      , result )
-
+    
     security.declareProtected(AddPortalFolders, 'manage_addPortalFolder')
     def manage_addPortalFolder(self, id, title='', REQUEST=None):
         """Add a new PortalFolder object with id *id*.
@@ -139,7 +139,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
         if REQUEST is not None:
             return self.folder_contents( # XXX: ick!
                 self, REQUEST, portal_status_message="Folder added")
-
+    
     def _morphSpec(self, spec):
         '''
         spec is a sequence of meta_types, a string containing one meta type,
@@ -159,7 +159,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
                                        % meta_type )
                 new_spec.append(meta_type)
         return new_spec or types
-
+    
     def _filteredItems( self, ids, filt ):
         """
             Apply filter, a mapping, to child objects indicated by 'ids',
@@ -332,7 +332,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
         typeObjectName = registry.findTypeName( name, typ, body )
         if typeObjectName is None:
             return None
-
+        
         self.invokeFactory( typeObjectName, name )
 
         # XXX: this is butt-ugly.
@@ -382,7 +382,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
 
     def _checkId(self, id, allow_dup=0):
         PortalFolder.inheritedAttribute('_checkId')(self, id, allow_dup)
-
+        
         # This method prevents people other than the portal manager
         # from overriding skinned names.
         if not allow_dup:
@@ -431,7 +431,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
                 else:
                     raise 'Unauthorized', permission_name
             #
-            # Old validation for objects that may not have registered
+            # Old validation for objects that may not have registered 
             # themselves in the proper fashion.
             #
             elif method_name is not None:
@@ -492,7 +492,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
             return self.manage_main(self, REQUEST, update_menu=1)
 
 Globals.InitializeClass(PortalFolder)
-
+    
 
 
 class ContentFilter:
@@ -518,28 +518,28 @@ class ContentFilter:
         self.predicates = []
         self.description = []
 
-        if Title is not self.MARKER:
+        if Title is not self.MARKER: 
             self.predicates.append( lambda x, pat=re.compile( Title ):
                                       pat.search( x.Title() ) )
             self.description.append( 'Title: %s' % Title )
 
-        if Creator is not self.MARKER:
+        if Creator is not self.MARKER: 
             self.predicates.append( lambda x, pat=re.compile( Creator ):
                                       pat.search( x.Creator() ) )
             self.description.append( 'Creator: %s' % Creator )
 
-        if Subject and Subject is not self.MARKER:
+        if Subject and Subject is not self.MARKER: 
             self.filterSubject = Subject
             self.predicates.append( self.hasSubject )
             self.description.append( 'Subject: %s'
                                    % string.join( Subject, ', ' ) )
 
-        if Description is not self.MARKER:
+        if Description is not self.MARKER: 
             self.predicates.append( lambda x, pat=re.compile( Description ):
                                       pat.search( x.Description() ) )
             self.description.append( 'Description: %s' % Description )
 
-        if created is not self.MARKER:
+        if created is not self.MARKER: 
             if created_usage == 'range:min':
                 self.predicates.append( lambda x, cd=created:
                                           cd <= x.created() )
@@ -549,7 +549,7 @@ class ContentFilter:
                                           cd >= x.created() )
                 self.description.append( 'Created before: %s' % created )
 
-        if modified is not self.MARKER:
+        if modified is not self.MARKER: 
             if modified_usage == 'range:min':
                 self.predicates.append( lambda x, md=modified:
                                           md <= x.modified() )

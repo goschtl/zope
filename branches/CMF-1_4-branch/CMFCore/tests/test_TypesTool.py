@@ -55,7 +55,7 @@ class TypesToolTests(SecurityTest):
         fti = FTIDATA_DUMMY[0].copy()
         del fti['id']
         self.ttool._setObject( 'Dummy Content', apply( FTI, ('Dummy Content',), fti) )
-
+ 
     def test_processActions( self ):
         """
         Are the correct, permitted methods returned for actions?
@@ -128,17 +128,17 @@ class TypesToolTests(SecurityTest):
                       'Unauthorized raised' )
 
 def test_interface(self):
-    from Products.CMFCore.interfaces.portal_types \
-            import portal_types as ITypesTool
-    from Products.CMFCore.interfaces.portal_actions \
-            import ActionProvider as IActionProvider
+        from Products.CMFCore.interfaces.portal_types \
+                import portal_types as ITypesTool
+        from Products.CMFCore.interfaces.portal_actions \
+                import ActionProvider as IActionProvider
 
-    verifyClass(ITypesTool, TypesTool)
-    verifyClass(IActionProvider, TypesTool)
+        verifyClass(ITypesTool, TypesTool)
+        verifyClass(IActionProvider, TypesTool)
 
 
 class TypeInfoTests(TestCase):
-
+    
     def test_construction( self ):
         ti = self._makeInstance( 'Foo'
                                , description='Description'
@@ -162,9 +162,9 @@ class TypeInfoTests(TestCase):
         t = apply( self._makeInstance, (id,), kw )
         tool._setObject(id,t)
         return tool[id]
-
+              
     def test_allowType( self ):
-        self.tool = TypesTool()
+        self.tool = TypesTool()        
         ti = self._makeAndSetInstance( 'Foo' )
         self.failIf( ti.allowType( 'Foo' ) )
         self.failIf( ti.allowType( 'Bar' ) )
@@ -175,9 +175,9 @@ class TypeInfoTests(TestCase):
         ti = self._makeAndSetInstance( 'Foo3', filter_content_types=0 )
         self.failUnless( ti.allowType( 'Foo3' ) )
 
-
+    
     def test_GlobalHide( self ):
-        self.tool = TypesTool()
+        self.tool = TypesTool()        
         tnf = self._makeAndSetInstance( 'Folder', filter_content_types=0)
         taf = self._makeAndSetInstance( 'Allowing Folder'
                                       , allowed_content_types=( 'Hidden'
@@ -200,7 +200,7 @@ class TypeInfoTests(TestCase):
                                        )
         self.failUnless ( taf2.allowType( 'Hidden' ) )
         self.failUnless ( taf2.allowType( 'Not Hidden') )
-
+        
 
     def test_allowDiscussion( self ):
         ti = self._makeInstance( 'Foo' )
@@ -229,7 +229,7 @@ class TypeInfoTests(TestCase):
         self.failUnless( 'Object Properties' in names )
         self.failIf( 'slot' in names )
         self.failUnless( 'Slot' in names )
-
+        
         visible = [ x.getId() for x in actions if x.getVisibility() ]
         self.failUnless( 'view' in visible )
         self.failUnless( 'edit' in visible )
@@ -248,16 +248,16 @@ class TypeInfoTests(TestCase):
         self.assertEqual( id( ti.getActionById( 'foo', marker ) )
                         , id( marker ) )
         self.assertRaises( ValueError, ti.getActionById, 'foo' )
-
+        
         action = ti.getActionById( 'view' )
         self.assertEqual( action, '' )
-
+        
         action = ti.getActionById( 'edit' )
         self.assertEqual( action, 'foo_edit' )
-
+        
         action = ti.getActionById( 'objectproperties' )
         self.assertEqual( action, 'foo_properties' )
-
+        
         action = ti.getActionById( 'slot' )
         self.assertEqual( action, 'foo_slot' )
 
@@ -349,7 +349,7 @@ class FTIDataTests( TypeInfoTests ):
                 import ContentTypeInformation as ITypeInformation
 
         verifyClass(ITypeInformation, FTI)
-
+        
 
 class STIDataTests( TypeInfoTests ):
 
@@ -379,7 +379,7 @@ class STIDataTests( TypeInfoTests ):
                 import ContentTypeInformation as ITypeInformation
 
         verifyClass(ITypeInformation, STI)
-
+        
 
 class FTIConstructionTests(TestCase):
 
@@ -437,7 +437,7 @@ class FTIConstructionTests_w_Roles(TestCase):
                   , factory='addFoo'
                   )
         folder = DummyFolder( fake_product=1,prefix=prefix )
-
+        
         return ti, folder
 
     def test_isConstructionAllowed_for_Omnipotent( self ):

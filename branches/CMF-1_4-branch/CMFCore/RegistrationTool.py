@@ -56,7 +56,7 @@ class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
 
     manage_options = (ActionProviderBase.manage_options +
                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
+                     , 
                      ) + SimpleItem.manage_options)
 
     #

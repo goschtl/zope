@@ -23,13 +23,13 @@ class TransactionalTest( TestCase ):
         get_transaction().begin()
         self.connection = Zope.DB.open()
         self.root =  self.connection.root()[ 'Application' ]
-
+    
     def tearDown( self ):
         get_transaction().abort()
         self.connection.close()
 
 class RequestTest( TransactionalTest ):
-
+    
     def setUp(self):
         TransactionalTest.setUp(self)
         root = self.root = makerequest(self.root)
@@ -53,7 +53,7 @@ class SecurityTest( TestCase ):
         setSecurityPolicy(self._oldPolicy)
 
 class SecurityRequestTest( SecurityTest ):
-
+    
     def setUp(self):
         SecurityTest.setUp(self)
         self.root = makerequest(self.root)
@@ -84,7 +84,7 @@ class FSDVTest( TestCase ):
         if object is not None:
             ob = self.ob = DummyFolder()
             addDirectoryViews(ob, self._skinname, self.tempname)
-
+    
     def _writeFile(self, filename, stuff):
         # write some stuff to a file on disk
         # make sure the file's modification time has changed
@@ -157,3 +157,4 @@ class FSDVTest( TestCase ):
     def tearDown(self):
         # kill the copy
         rmtree(self.tempname)
+
