@@ -75,6 +75,10 @@ class Loader:
         raise NotImplementedError("is this ever used?")
 
     def load_file(self, url):
+        # XXX This doesn't deal with file: URLs that Subversion uses,
+        # where a portion of the path points to a Subversion
+        # repository, and the rest points into the logical structure
+        # of the repository itself.
         parts = urlparse.urlsplit(url)
         path = urllib.url2pathname(parts[2])
         if not os.path.exists(path):
@@ -101,10 +105,14 @@ class Loader:
         return path
 
     def load_repository(self, url):
-        raise ValueError("repository: URLs must be joined with the"
-                         " appropriate cvs: base URL")
+        raise ValueError("repository: URLs must be joined with an"
+                         " appropriate revision-control base URL")
 
     def unknown_load(self, url):
+        # XXX This could end up being called with an http: or https:
+        # URL for a Subversion repository; it probably won't deal with
+        # that properly.  (It definately won't if it needs to
+        # integrate tag information.)
         parts = urlparse.urlparse(url)
         filename = posixpath.basename(parts[2])
         f = urllib2.urlopen(url)
