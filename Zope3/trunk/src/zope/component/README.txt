@@ -208,12 +208,12 @@ a callable object adapts some interfaces (or classes):
 
 (In Python 2.4, the example can be written:
 
-    @zope.interface.implementer(IJob)
+    >>> @zope.interface.implementer(IJob)
     @zope.component.adapter(IPerson)
     def personJob(person):
         return getattr(person, 'job', None)
 
-which looks a bit nicer.
+which looks a bit nicer.)
 
 In this example, the personJob function simply returns the person's
 `job` attribute if present, or None if it's not present.  An adapter
