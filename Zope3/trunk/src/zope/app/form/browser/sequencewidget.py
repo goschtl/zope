@@ -82,15 +82,15 @@ class SequenceWidget(BrowserWidget, InputWidget):
         if render and num_items > min_length:
             remove_botton_name = 'remove-selected-items-of-seq-' + self.name
             button_label = _('remove-selected-items', "Remove selected items")
-            button_label = translate(self.context, button_label,
-                                     context=self.request, default=button_label)
+            button_label = translate(button_label, context=self.request,
+                                     default=button_label)
             buttons += '<input type="submit" value="%s" name="%s"/>' % (
                 button_label, remove_botton_name)
         if max_length is None or num_items < max_length:
             field = self.context.value_type
             button_label = _('Add %s')
-            button_label = translate(self.context, button_label,
-                                     context=self.request, default=button_label)
+            button_label = translate(button_label, context=self.request,
+                                     default=button_label)
             button_label = button_label % (field.title or field.__name__)
             buttons += '<input type="submit" name="%s.add" value="%s" />' % (
                 self.name, button_label)

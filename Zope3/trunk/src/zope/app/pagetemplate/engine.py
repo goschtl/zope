@@ -82,7 +82,7 @@ class ZopeContext(Context):
         # When running Zope, request is a Proxy, but no mutation is done here,
         # so it is safe to remove all proxies
         request = removeAllProxies(self.request)
-        return translate(self.context, msgid, domain, mapping,
+        return translate(msgid, domain, mapping,
                          context=request, default=default)
 
     evaluateInlineCode = False

@@ -62,8 +62,7 @@ class TranslationHook(object):
     """A mixin class that provides the translation capabilities."""
 
     def translate(self, msgid):
-        return translate(self.context, msgid, context=self.request,
-                         default=msgid)
+        return translate(msgid, context=self.request, default=msgid)
 
 def message(msgid, default):
     """Add a default value to a i18n message id."""
