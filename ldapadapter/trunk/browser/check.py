@@ -13,13 +13,9 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: check.py 26680 2004-07-22 16:31:38Z nicoe $
+$Id:$
 """
 
-from zope.exceptions import NotFoundError
-
-from zope.app import zapi
-from zope.app.size.interfaces import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -45,28 +41,33 @@ class CheckLDAPAdapterView(BrowserView):
         infoDict = {}
         infoDict['host'] = self.context.host
         infoDict['port'] = self.context.port
-        infoDict['baseDN'] = self.context.baseDN
         infoDict['bindDN'] = self.context.bindDN
         infoDict['bindPassword'] = self.context.bindPassword
+        infoDict['useSSL'] = self.context.useSSL and 'Yes' or 'No'
         return infoDict
 
 
     def checkConnection(self):
         """Check connetction to the given LDAP server."""
-        runtest = self.request.get('runtest', None)
-        if runtest == "Run":
-            dn = self.request.get('bindDN')
-            pw = self.request.get('bindPassword')
-            
-            # get the ldapauth source
+        if self.request.get('runDefault', None):
+            dn = self.context.bindDN
+            pw = self.context.bindPassword
             testadapter = ICheckLDAPAdapter(self.context)
-
-            # test the connection to the LDAP server
             self._addInfo("<strong>Test python connection and LDAP server binding</strong>")
             self.report = self.report + testadapter.testConnection(dn, pw)
             self._addInfo("<strong>Tests done</strong>")
             self._addInfo(" ")
     
+            return self.report
+
+        elif self.request.get('runAnonymous', None):
+            dn = ''
+            pw = ''
+            testadapter = ICheckLDAPAdapter(self.context)
+            self._addInfo("<strong>Test python connection and LDAP server binding</strong>")
+            self.report = self.report + testadapter.testConnection(dn, pw)
+            self._addInfo("<strong>Tests done</strong>")
+            self._addInfo(" ")
             return self.report
         else:
             return ""

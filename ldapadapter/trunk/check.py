@@ -13,7 +13,7 @@
 ##############################################################################
 """A plugable authentication module for LDAP.
 
-$Id: check.py 27204 2004-08-21 01:46:57Z nicoe $
+$Id:$
 """
 
 from zope.security.proxy import removeSecurityProxy
@@ -33,21 +33,22 @@ class CheckLDAPAdapter:
     def testConnection(self, bindDN, bindPassword):
         self.report = []
         adapter = removeSecurityProxy(self.context)
-        self.report.append("Start check connection")
+        serverURL = adapter.getServerURL()
+        self.report.append("... start check connection")
         
         try:
             self.report.append("... try connect with:")
+            self.report.append("... serverURL = %s" % serverURL)
             self.report.append("... bindDN = %s" % bindDN)
-            self.report.append("... bindPassword = %s" % bindPassword)
-            
             connection = adapter.connect(bindDN, bindPassword)
-            
-            if connection != None:
-                self.report.append("... <strong>Connecting failed!</strong>")
+
+            if connection:
+                self.report.append("... <strong>connection OK!</strong>")
+                self.report.append("... <strong>%s</strong>" % connection)
             else:
-                self.report.append("... <strong>OK!</strong>")
-            
-            return report
+                self.report.append("... <strong>Connection None</strong>")
+
+            return self.report
 
         except:
             self.report.append("... <strong>Test failed!</strong>")

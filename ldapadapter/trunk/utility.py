@@ -63,8 +63,7 @@ class LDAPAdapter(object):
         self.bindPassword = bindPassword
 
     def connect(self, dn=None, password=None):
-        proto = self.useSSL and 'ldaps' or 'ldap'
-        conn_str = '%s://%s:%s/' % (proto, self.host, self.port)
+        conn_str = self.getServerURL()
         conn = ldap.initialize(conn_str)
         try:
             conn.set_option(OPT_PROTOCOL_VERSION, VERSION3)
@@ -83,13 +82,11 @@ class LDAPAdapter(object):
 
         return LDAPConnection(conn)
 
-    def _getServerURL(self):
+    def getServerURL(self):
         """Returns the server url from the host and port info."""
-        if self.useSSL:
-            protocol = 'ldaps://'
-        else:
-            protocol = 'ldap://'
-        return protocol + self.host +':'+ str(self.port)
+        proto =  self.useSSL and 'ldaps' or 'ldap'
+        return '%s://%s:%s' % (proto, self.host, self.port)
+        
 
     def _setServerURL(self, url):
         """Returns the server url from the host and port info.
@@ -97,8 +94,6 @@ class LDAPAdapter(object):
         """
         port = 389
         url = url.strip()
-        #urlReg = '^ldap://[a-zA-Z0-9\-\.]+:[\d]{1,5}'
-        #if re.match(urlReg, url):
         urlList = url.split(':')
         if len(urlList) >= 2:
             useSSL = urlList[0].endswith('s')
@@ -107,8 +102,6 @@ class LDAPAdapter(object):
                 port = int(urlList[2])
         else:
             LDAPURIParseError(LDAP_uri_parse_error)
-        #else:
-        #    raise LDAPURIParseError(LDAP_uri_parse_error)
          
         self.host = host
         self.port = port
@@ -180,6 +173,6 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
 
     implements(IManageableLDAPAdapter)
 
-    serverURL = property(LDAPAdapter._getServerURL, LDAPAdapter._setServerURL)
+    serverURL = property(LDAPAdapter.getServerURL, LDAPAdapter._setServerURL)
     bindDN = u''
     bindPassword = u''
