@@ -19,6 +19,11 @@
     permission="zope.ManageServices"
     interface="zope.app.services.hub.ISubscriptionControl"
     />
+  
+  <!-- XXX
+       We really need to think through the security aspects of event
+       processing -->
+  <allow attributes="notify" /> 
   <factory
     id="zope.app.services.hub.Registration"
     permission="zope.ManageServices"
