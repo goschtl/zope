@@ -15,18 +15,16 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.6 2003/12/18 09:57:18 pnaveen Exp $
+$Id: test_interfaceutility.py,v 1.7 2004/03/05 15:56:50 eddala Exp $
 """
 
 import unittest
 from zope.app.tests import setup
 from zope.app.services.tests import placefulsetup
-from zope.app.services.interface import LocalInterfaceService
 from zope.app.services import utility
-from zope.app.services.servicenames import Interfaces, Utilities
+from zope.app.services.servicenames import Utilities
 from zope.component.utility import utilityService as globalUtilityService
-from zope.app.component.globalinterfaceservice \
-     import interfaceService as globalInterfaceService
+from zope.app.component.interface import getInterface, searchInterface
 from zope.interface import Interface, implements
 from zope.app.container.contained import Contained
 from zope.component import getService
@@ -97,7 +95,6 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
-        setup.addService(sm, Interfaces, LocalInterfaceService())
         setup.addService(sm, Utilities,
                          utility.LocalUtilityService())
 
@@ -108,35 +105,32 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         globalUtilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
 
-        iface_service = getService(self.rootFolder, Interfaces)
-        self.assert_(iface_service != globalInterfaceService)
-        self.assertEqual(iface_service.getInterface("bob").__class__, Foo)
-        self.assertEqual(iface_service.getInterface("blob").__class__, Bar)
+        self.assertEqual(getInterface(None, "bob").__class__, Foo)
+        self.assertEqual(getInterface(None, "blob").__class__, Bar)
 
     def test_localInterfaceitems_filters_accordingly(self):
         bar = Bar("global")
         baz = Baz("global baz")
         foo = Foo("global bob")
+
         globalUtilityService.provideUtility(IInterface, foo,
                                             name="bob")
         globalUtilityService.provideUtility(IInterface, bar)
         globalUtilityService.provideUtility(IBaz, baz)
 
-        iface_service = getService(self.rootFolder, Interfaces)
-        self.assert_(iface_service != globalInterfaceService)
-
-        ifaces = iface_service.items()
+        ifaces = searchInterface(None)
         self.assert_(len(ifaces), 2)
-        for pair in [('bob', foo), ('', bar)]:
+        for pair in [(foo), (bar)]:
             self.assert_(pair in ifaces)
 
-        ifaces = iface_service.items(base=IInterface)
+        iface_utilities = globalUtilityService.getUtilitiesFor(IInterface)
+        ifaces = [iface for (name, iface) in iface_utilities]
+
         self.assert_(len(ifaces), 2)
-        for pair in [('bob', foo), ('', bar)]:
+        for pair in [(foo), (bar)]:
             self.assert_(pair in ifaces)
 
-        ifaces = iface_service.items(base=Interface)
-        for pair in [('bob', foo), ('', bar)]:
+        for pair in [(foo), (bar)]:
             self.assert_(pair in ifaces)
 
     def test_localInterfaceitems_filters_only_interfaces(self):
@@ -148,14 +142,17 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         globalUtilityService.provideUtility(ILocalUtility, bar)
         globalUtilityService.provideUtility(IBaz, baz)
 
-        iface_service = getService(self.rootFolder, Interfaces)
-        self.assert_(iface_service != globalInterfaceService)
-        self.assertEqual(iface_service.items(base=IInterface),
-                         [('bob', foo)])
-        self.assertEqual(iface_service.items(base=ILocalUtility),
-                         [('', bar)])
-        self.assertEqual(iface_service.items(base=IBaz),
-                         [])
+        iface_utilities = globalUtilityService.getUtilitiesFor(IInterface)
+        ifaces = [iface for (name, iface) in iface_utilities]
+        self.assertEqual(ifaces, [(foo)])
+
+        iface_utilities = globalUtilityService.getUtilitiesFor(ILocalUtility)
+        ifaces = [iface for (name, iface) in iface_utilities]
+        self.assertEqual(ifaces, [(bar)])
+
+        iface_utilities = globalUtilityService.getUtilitiesFor(IBaz)
+        ifaces = [iface for (name, iface) in iface_utilities]
+        self.assertEqual(ifaces, [(baz)])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
         globalUtilityService.provideUtility(IInterface, Foo("global"))
@@ -163,10 +160,8 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         globalUtilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
 
-        iface_service = getService(self.rootFolder, Interfaces)
-        self.assert_(iface_service != globalInterfaceService)
         self.assertRaises(ComponentLookupError,
-                          iface_service.getInterface, "bobesponja")
+                          getInterface, None, "bobesponja")
 
     def test_globalsearchInterface_delegates_to_globalUtility(self):
         foo = Foo("global bob")
@@ -177,9 +172,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         globalUtilityService.provideUtility(IInterface, foo,
                                             name="bob")
 
-        iface_service = getService(None, Interfaces)
-        self.assert_(iface_service == globalInterfaceService)
-        self.assertEqual(iface_service.searchInterface(search_string="bob"),
+        self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
 
     def test_localsearchInterface_delegates_to_globalUtility(self):
@@ -191,9 +184,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         globalUtilityService.provideUtility(IInterface, foo,
                                             name="bob")
 
-        iface_service = getService(self.rootFolder, Interfaces)
-        self.assert_(iface_service != globalInterfaceService)
-        self.assertEqual(iface_service.searchInterface(search_string="bob"),
+        self.assertEqual(searchInterface(None, search_string="bob"),
                          [foo])
 
     def test_queryUtility_delegates_to_global(self):
@@ -206,8 +197,9 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(utility_service.queryUtility(IInterface).foo(),
                          "foo global")
-        self.assertEqual(utility_service.queryUtility(IInterface, name="bob").foo(),
-                         "foo global bob")
+        self.assertEqual(
+            utility_service.queryUtility(IInterface, name="bob").foo(),
+            "foo global bob")
 
     def test_getUtility_delegates_to_global(self):
         globalUtilityService.provideUtility(IInterface, Foo("global"))
@@ -219,8 +211,9 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(utility_service.getUtility(IInterface).foo(),
                          "foo global")
-        self.assertEqual(utility_service.getUtility(IInterface, name="bob").foo(),
-                         "foo global bob")
+        self.assertEqual(
+            utility_service.getUtility(IInterface, name="bob").foo(),
+            "foo global bob")
 
 
     def test_registrationsFor_methods(self):
@@ -283,7 +276,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(r, [(IInterface, "", cr1), (IInterface, "bob", cr2)])
         self.assertEqual(r[0][2].__parent__, utilities)
         self.assertEqual(r[1][2].__parent__, utilities)
-        # Now test that an empty registry doesn't show up
+        # Now tescvt that an empty registry doesn't show up
         for cd in cr1.info(): # Remove everything from cr1
             cd['registration'].status = UnregisteredStatus
         self.assertEqual(bool(cr1), False)

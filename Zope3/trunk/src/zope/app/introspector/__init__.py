@@ -13,20 +13,18 @@
 ##############################################################################
 """Introspector
 
-$Id: __init__.py,v 1.2 2004/03/03 17:06:57 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/05 15:54:39 eddala Exp $
 """
+from zope.interface import Interface
+from zope.app.introspector.interfaces import IIntrospector
+from zope.app.interfaces.services.module import IModuleService
 from zope.component import getService, getAdapter, getServiceDefinitions
 from zope.proxy import removeAllProxies
-
-from zope.interface import Interface, implements, implementedBy
+from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interface import InterfaceClass
-
-from zope.app.interfaces.services.module import IModuleService
-from zope.app.services.servicenames import Interfaces
-
-from zope.app.introspector.interfaces import IIntrospector
+from zope.app.component.interface import searchInterface, getInterface
 
 class Introspector(object):
     """Introspects an object"""
@@ -159,10 +157,10 @@ class Introspector(object):
 
     def getMarkerInterfaces(self):
         """See IIntrospector"""
+
         results = []
         todo = list(providedBy(removeAllProxies(self.context)))
         done = []
-
         while todo:
             interface = todo.pop()
             done.append(interface)
@@ -180,48 +178,35 @@ class Introspector(object):
 
     def getDirectMarkersOf(self, base):
         """Returns empty interfaces directly inheriting from the given one"""
+
         results = []
-        iservice = getService(self.context, Interfaces)
-        for id, interface in iservice.items(base=base):
+        interfaces = searchInterface(self.context, base=base)
+        for interface in interfaces:
             # There are things registered with the interface service
             # that are not interfaces. Yay!
             if not IInterface.isImplementedBy(interface):
                 continue
             if base in interface.__bases__ and not interface.names():
                 results.append(interface)
+
         results.sort()
         return tuple(results)
-
-def nameToInterface(context, name):
-    if name == 'None':
-        return None
-    service = getService(context, Interfaces)
-    iface = service.getInterface(name)
-    return iface
+    
 
 def interfaceToName(context, interface):
     interface = removeAllProxies(interface)
     if interface is None:
         return 'None'
-    defaultName = interface.__module__ + '.' + interface.getName()
-    service = getService(context, Interfaces)
-    items = service.items(base=interface)
-    ids = [id for id, iface in items
+    items = searchInterface(context, base=interface)
+    ids = [('%s.%s' %(iface.__module__, iface.__name__))
+           for iface in items
            if iface == interface]
+    
     if not ids:
         # XXX Do not fail badly, instead resort to the standard
         # way of getting the interface name, cause not all interfaces
         # may be registered.
-        return defaultName
+        return interface.__module__ + '.' + interface.getName()
 
-    if len(ids) == 1:
-        return ids[0]
-
-    # XXX: Band-aid for mal-functioning interface service. Once the interface
-    # service is gone, this method needs to be refactored anyways and the
-    # following two lines should be removed!!!
-    if defaultName in ids:
-        return defaultName
-    
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
-    
+    return ids[0]

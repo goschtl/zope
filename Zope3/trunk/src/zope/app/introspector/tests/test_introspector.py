@@ -12,25 +12,18 @@
 #
 ##############################################################################
 """
-$Id: test_introspector.py,v 1.1 2004/03/01 10:18:21 philikon Exp $
+
+Revision information:
+$Id: test_introspector.py,v 1.2 2004/03/05 15:54:39 eddala Exp $
 """
+
 from unittest import TestCase, TestSuite, main, makeSuite
-
-from zope.interface import Interface, Attribute, implements, directlyProvides
-from zope.interface.verify import verifyObject
-from zope.component.service import serviceManager, defineService
-from zope.testing.cleanup import CleanUp
-
-from zope.app.process.bootstrap import addConfigureService
-from zope.app.services.servicenames import Interfaces
-from zope.app.services.interface import LocalInterfaceService
-from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.component.globalinterfaceservice import provideInterface
-from zope.app.component.globalinterfaceservice import InterfaceService
-from zope.app.interfaces.component import IInterfaceService
-
 from zope.app.introspector import Introspector
 from zope.app.introspector.interfaces import IIntrospector
+from zope.interface import Interface, Attribute, implements, directlyProvides
+from zope.interface.verify import verifyObject
+from zope.app.component.interface import provideInterface
+from zope.app.tests import placelesssetup
 
 class ITestClass(Interface):
     def drool():
@@ -68,23 +61,20 @@ class WeirdClass:
     def namesAndDescriptions(self):
         return "indeed"
 
-class TestIntrospector(CleanUp, TestCase):
+class TestIntrospector(TestCase):
     """Test Introspector."""
 
     def setUp(self):
-        service = InterfaceService()
-        defineService(Interfaces, IInterfaceService)
-        serviceManager.provideService(Interfaces, service)
-        provideInterface = service.provideInterface
-        provideInterface('zope.app.introspector.tests.test_introspector.I', I)
-        provideInterface('zope.app.introspector.tests.test_introspector.I2', I2)
-        provideInterface('zope.app.introspector.tests.test_introspector.I3', I3)
-        provideInterface('zope.app.introspector.tests.test_introspector.I4', I4)
-        provideInterface('zope.app.introspector.tests.test_introspector.M1', M1)
-        provideInterface('zope.app.introspector.tests.test_introspector.M2', M2)
-        provideInterface('zope.app.introspector.tests.test_introspector.M3', M3)
-        provideInterface('zope.app.introspector.tests.test_introspector.M4', M4)
-        provideInterface('zope.app.introspector.tests.test_introspector.ITestClass',
+        placelesssetup.setUp()
+        provideInterface('zope.app.tests.test_introspector.I', I)
+        provideInterface('zope.app.tests.test_introspector.I2', I2)
+        provideInterface('zope.app.tests.test_introspector.I3', I3)
+        provideInterface('zope.app.tests.test_introspector.I4', I4)
+        provideInterface('zope.app.tests.test_introspector.M1', M1)
+        provideInterface('zope.app.tests.test_introspector.M2', M2)
+        provideInterface('zope.app.tests.test_introspector.M3', M3)
+        provideInterface('zope.app.tests.test_introspector.M4', M4)
+        provideInterface('zope.app.tests.test_introspector.ITestClass',
                          ITestClass)
 
     def test_isInterface(self):
@@ -110,7 +100,7 @@ class TestIntrospector(CleanUp, TestCase):
         ints = Introspector(TestClass)
         self.assertEqual(ints.isInterface(), 0)
         request['PATH_INFO'] = (
-            '++module++zope.app.introspector.tests.test_introspector.TestClass')
+            '++module++zope.app.tests.test_introspector.TestClass')
         ints.setRequest(request)
         self.assertEqual(ints.getClass(), 'TestClass')
 
@@ -179,6 +169,9 @@ class TestIntrospector(CleanUp, TestCase):
         self.assertEqual(tuple(ints.getDirectlyProvidedNames()),
                          ('zope.app.introspector.tests.test_introspector.I',
                           'zope.app.introspector.tests.test_introspector.I2'))
+        
+    def tearDown(self):
+        placelesssetup.tearDown()
 
 
 class I4(I3):
@@ -198,20 +191,25 @@ class Content:
     def one(self, a): pass
     def two(self, a, b): pass
 
-class TestMarkerInterfaces(PlacefulSetup, TestCase):
+class TestMarkerInterfaces(TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
-        self.createStandardServices()
-        addConfigureService(self.rootFolder, Interfaces, LocalInterfaceService)
+        placelesssetup.setUp()
         provideInterface('zope.app.introspector.tests.test_introspector.I', I)
-        provideInterface('zope.app.introspector.tests.test_introspector.I2', I2)
-        provideInterface('zope.app.introspector.tests.test_introspector.I3', I3)
-        provideInterface('zope.app.introspector.tests.test_introspector.I4', I4)
-        provideInterface('zope.app.introspector.tests.test_introspector.M1', M1)
-        provideInterface('zope.app.introspector.tests.test_introspector.M2', M2)
-        provideInterface('zope.app.introspector.tests.test_introspector.M3', M3)
-        provideInterface('zope.app.introspector.tests.test_introspector.M4', M4)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.I2', I2)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.I3', I3)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.I4', I4)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.M1', M1)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.M2', M2)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.M3', M3)
+        provideInterface(
+            'zope.app.introspector.tests.test_introspector.M4', M4)
 
     def test_getMarkerInterfaces(self):
         ints = Introspector(Content())
@@ -231,6 +229,10 @@ class TestMarkerInterfaces(PlacefulSetup, TestCase):
     def test_getDirectMarkers(self):
         ints = Introspector(Content())
         self.assertEqual(ints.getDirectMarkersOf(I3), (M3,))
+
+    def tearDown(self):
+        placelesssetup.tearDown()
+        
 
 def test_suite():
     suite = TestSuite()

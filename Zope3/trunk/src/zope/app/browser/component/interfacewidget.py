@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface widgets
 
-$Id: interfacewidget.py,v 1.46 2004/03/02 18:27:36 philikon Exp $
+$Id: interfacewidget.py,v 1.47 2004/03/05 15:48:01 eddala Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
@@ -21,12 +21,12 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.interfaces.form \
      import WidgetInputError, ConversionError, MissingInputError
-from zope.app.introspector import nameToInterface, interfaceToName
-from zope.app.services.servicenames import Interfaces
-from zope.component import getService
+from zope.app.introspector import interfaceToName
 from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import BrowserView
 from xml.sax.saxutils import quoteattr
+from zope.app.component.interface import searchInterfaceIds, nameToInterface
+from zope.app.component.interface import searchInterface
 
 class InterfaceWidget(BrowserWidget, BrowserView):
 
@@ -36,7 +36,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
         if value and value != 'None':
             try:
                 field = self.context
-                return nameToInterface(field.context, value)
+                return nameToInterface(field, value)
             except ComponentLookupError, e:
                 raise ConversionError('unknown interface', e)
         else:
@@ -49,19 +49,19 @@ class InterfaceWidget(BrowserWidget, BrowserView):
         search_string = self.request.form.get(search_name, '')
 
         field = self.context
-        service = getService(field.context, Interfaces)
         base = field.basetype
         include_none = base is None
         if base == Interface:
             base = None
-
-        items = list(service.items(search_string, base=base))
+        items = list(searchInterface(self.context, search_string, base=base))
         if field.constraint is not None:
-            items = [(id, iface)
-                     for id, iface in items
+            items = [iface
+                     for iface in items
                      if field.constraint(iface)
                      ]
-        ids = [id for id, iface in items]
+        ids = [('%s.%s' %(iface.__module__, iface.__name__))
+               for iface in items
+               ]
         ids.sort()
         # Only include None if there is no search string, and include_none
         # is True
@@ -86,7 +86,6 @@ class InterfaceWidget(BrowserWidget, BrowserView):
 
         if selected is not marker:
             selected = interfaceToName(field.context, selected)
-
         return renderInterfaceSelect(
                 ids, selected, search_name, search_string, name)
 
@@ -152,8 +151,6 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
         name = self.name
         name_i = name+'.i'
         name_search_i = name+'.search.i'
-
-        service = getService(field.context, Interfaces)
         base = field.basetype
         include_none = base is None
         if base == Interface:
@@ -225,8 +222,7 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
         rendered_selections = []
         count = 0
         for search, value in selections:
-            items = list(service.items(search, base=base))
-            ids = [id for id, iface in items]
+            ids = list(searchInterfaceIds(self.context, search, base=base))
             ids.sort()
             # Only include None if there is no search string, and include_none
             # is True

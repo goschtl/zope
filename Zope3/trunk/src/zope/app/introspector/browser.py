@@ -13,29 +13,31 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.1 2004/03/01 10:18:20 philikon Exp $
+$Id: browser.py,v 1.2 2004/03/05 15:54:39 eddala Exp $
 """
-from zope.proxy import removeAllProxies
-from zope.interface import directlyProvides, directlyProvidedBy
-from zope.component.exceptions import ComponentLookupError
-
-from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
-from zope.app.services.servicenames import Interfaces
 from zope.app.introspector.interfaces import IIntrospector
+from zope.component import getAdapter
+from zope.app import zapi
+from zope.component.exceptions import ComponentLookupError
+from zope.interface import directlyProvides, directlyProvidedBy
+from zope.proxy import removeAllProxies
+from zope.app.component.interface import getInterface
+from zope.app.services.servicenames import Services
+
 
 class IntrospectorView(BrowserView):
 
     def getIntrospector(self):
-        introspector = zapi.getAdapter(self.context, IIntrospector)
+        introspector = getAdapter(self.context, IIntrospector)
         introspector.setRequest(self.request)
         return introspector
 
     def getInterfaceURL(self, name):
-        interfaces = zapi.getService(self.context, Interfaces)
+        services = zapi.getService(self.context, Services)
         try:
-            interfaces.getInterface(name)
-            url = zapi.getView(interfaces, 'absolute_url', self.request)
+            getInterface(self.context, name)
+            url = zapi.getView(services, 'absolute_url', self.request)
             return "%s/detail.html?id=%s" % (url, name)
         except ComponentLookupError:
             return ""
@@ -44,30 +46,28 @@ class IntrospectorView(BrowserView):
         if 'ADD' in self.request:
             for interface in self.getIntrospector().getMarkerInterfaceNames():
                 if "add_%s" % interface in self.request:
-                    interfaces = zapi.getService(self.context, Interfaces)
-                    interface = interfaces.getInterface(interface)
+                    interface = getInterface(self.context, interface)
                     ob = removeAllProxies(self.context)
                     directlyProvides(ob, directlyProvidedBy(ob), interface)
 
         if 'REMOVE' in self.request:
             for interface in self.getIntrospector().getDirectlyProvidedNames():
                 if "rem_%s" % interface in self.request:
-                    interfaces = zapi.getService(self.context, Interfaces)
-                    interface = interfaces.getInterface(interface)
+                    interface = getInterface(self.context, interface)
                     ob = removeAllProxies(self.context)
                     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
     def getServicesFor(self):
         services = []
-        #sm = zapi.getServiceManager(self.context)
+        #sm = getServiceManager(self.context)
         #for stype, interface in sm.getServiceDefinitions():
         #    try:
-        #        service = zapi.getService(self.context, stype)
+        #        service = getService(self.context, stype)
         #    except ComponentLookupError:
         #        pass
         #    else:
         #        # XXX IConfigureFor appears to have disappeared at some point
-        #        adapter = zapi.queryAdapter(service, IConfigureFor)
+        #        adapter = queryAdapter(service, IConfigureFor)
         #        if (adapter is not None
         #            and adapter.hasRegistrationFor(self.context)):
         #            search_result = service.getRegisteredMatching(

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.29 2004/02/25 23:02:15 faassen Exp $
+$Id: test_interfacewidget.py,v 1.30 2004/03/05 15:48:02 eddala Exp $
 """
 
 __metaclass__ = type
@@ -24,11 +24,11 @@ from zope.app.component.interfacefield import InterfaceField, InterfacesField
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
-from zope.component.service import serviceManager
-from zope.app.services.servicenames import Interfaces
 from zope.app.interfaces.form import ConversionError, WidgetInputError
-from zope.app.tests import setup
-
+from zope.app.tests import placelesssetup
+from zope.app.component.interface import getInterface
+from zope.app.component.interface import provideInterface
+    
 class I(Interface):
     """bah blah
     """
@@ -38,7 +38,7 @@ class I2(Interface):
     """
 
 class I3(Interface):
-    """
+    """ahk
     """
     def one():
         """method one"""
@@ -49,20 +49,19 @@ class I3(Interface):
 class BaseInterfaceWidgetTest(TestCase):
 
     def setUp(self):
-        setup.placefulSetUp()
-        service = serviceManager.getService(Interfaces)
-        service.provideInterface(
+        placelesssetup.setUp()
+        provideInterface(
             'zope.app.browser.component.tests.test_interfacewidget.I', I)
-        service.provideInterface(
+        provideInterface(
             'zope.app.browser.component.tests.test_interfacewidget.I2', I2)
-        service.provideInterface(
+        provideInterface(
             'zope.app.browser.component.tests.test_interfacewidget.I3', I3)
         request = TestRequest()
-
         self.request = request
 
     def tearDown(self):
-        setup.placefulTearDown()
+        placelesssetup.tearDown()
+        
 
 class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
@@ -167,6 +166,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
         )
+        
         self.assertEqual(widget(), out)
 
         request.form["field.TestName.search"] = 'two'
@@ -183,6 +183,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
         )
+
         self.assertEqual(widget(), out)
 
     def testInterfaceWidget_search(self):
@@ -372,17 +373,17 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         field = InterfaceField(__name__='TestName',
                                title=u"This is a test",
                                required=False)
-
         widget = InterfaceWidget(field, request)
 
         out = (
         '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
-
+        
         request.form["field.TestName"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
+
         self.assertEqual(widget.getInputValue(), I2)
         out = (
         '<input type="hidden" name="field.TestName"'
@@ -911,7 +912,7 @@ class TestRenderInterfaceSelect(TestCase):
             renderInterfaceSelect(interfaces, selected, search_name,
                                   search_string, select_name),
             out)
-
+    
 def test_suite():
     return TestSuite((makeSuite(TestInterfaceWidget),
                       makeSuite(TestMultiInterfaceWidget),
