@@ -8,6 +8,9 @@ Post-CMF 1.5.0
 
   Bug Fixes
 
+    - FSDTMLMethod: Small code cleanup to remove duplicate variable
+      definition (http://www.zope.org/Collectors/CMF/291) 
+
     - Portal: Fixed 'setupDefaultProperties'.
       Backwards compatibility was broken and the 'default_charset' argument
       was ignored.
