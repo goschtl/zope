@@ -78,6 +78,7 @@ import re
 import sys
 import traceback
 import unittest
+import linecache
 from os.path import join
 
 from distutils.util import get_platform
@@ -214,6 +215,8 @@ def get_suite(file):
     except ImportError, err:
         # print traceback
         print "Error importing %s\n%s" % (modname, err)
+        print_tb_last()
+        print
         if debug:
             raise
         return None
@@ -343,5 +346,32 @@ def process_args():
         raise
 
 
+
+def print_tb_last():
+    """Print up to 'limit' stack trace entries from the traceback 'tb'.
+
+    If 'limit' is omitted or None, all entries are printed.  If 'file'
+    is omitted or None, the output goes to sys.stderr; otherwise
+    'file' should be an open file or file-like object with a write()
+    method.
+    """
+    tb = sys.exc_info()[2]
+    file = sys.stderr
+    while 1:
+        f = tb.tb_frame
+        lineno = traceback.tb_lineno(tb)
+        tb = tb.tb_next
+        if tb is not None:
+            continue
+
+        co = f.f_code
+        filename = co.co_filename
+        name = co.co_name
+        file.write('  File "%s", line %d, in %s\n' % (filename,lineno,name))
+        line = linecache.getline(filename, lineno)
+        if line: file.write('    %s\n' % line.strip())
+        break
+
 if __name__ == "__main__":
     process_args()
+
