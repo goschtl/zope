@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.6 2003/09/22 15:57:18 tim_one Exp $
+$Id: test_bootstrap.py,v 1.7 2003/09/22 19:45:39 jim Exp $
 """
 
 import unittest
@@ -51,6 +51,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
         self.db = DB(self.storage)
 
     def tearDown(self):
+        PlacefulSetup.tearDown(self)
         self.db.close()
 
     def createRootFolder(self):
