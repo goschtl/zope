@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.17 2003/05/28 15:46:11 jim Exp $
+$Id: auth.py,v 1.18 2003/06/04 16:02:09 stevea Exp $
 """
 
 from persistence import Persistent
@@ -124,6 +124,7 @@ class AuthenticationService(Persistent):
             raise ValueError(key)
         self._usersbyid[key] = object
         self._usersbylogin[object.getLogin()] = object
+        return key
 
     def __delitem__(self, key):
         'See IWriteContainer'
