@@ -46,7 +46,7 @@ ommmitted.
 The job of a configuration handler is to compute one or more
 configuration actions.  Configuration actions are defered function
 calls. The handler doesn't perform the actions. It just computes
-actions, which may be perfoemd later if they are not overridden by
+actions, which may be performed later if they are not overridden by
 other directives.
 
 Out handler is given in the function, ``registerFile``. It takes a context,
