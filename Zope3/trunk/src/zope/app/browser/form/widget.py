@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.67 2004/03/08 23:33:57 srichter Exp $
+$Id: widget.py,v 1.68 2004/03/13 21:37:20 srichter Exp $
 """
 import re, cgi
 import traceback
@@ -29,12 +29,12 @@ from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
-from zope.app.interfaces.form import ConversionError, WidgetInputError
-from zope.app.interfaces.form import MissingInputError
+from zope.app.form.interfaces import ConversionError, WidgetInputError
+from zope.app.form.interfaces import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -50,7 +50,7 @@ class BrowserWidget(Widget, BrowserView):
     a lot of machinery to support translation and views:
         
     >>> setUp() # now we have to set up an error view...
-    >>> from zope.app.interfaces.form import IWidgetInputError
+    >>> from zope.app.form.interfaces import IWidgetInputError
     >>> from zope.app.publisher.browser import BrowserView
     >>> from cgi import escape
     >>> class SnippetErrorView(BrowserView):

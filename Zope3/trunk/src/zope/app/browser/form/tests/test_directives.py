@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.7 2004/03/13 21:03:05 srichter Exp $
+$Id: test_directives.py,v 1.8 2004/03/13 21:37:22 srichter Exp $
 """
 import os
 import unittest
@@ -89,7 +89,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.interfaces.form.IInputWidget"
+              provides="zope.app.form.interfaces.IInputWidget"
               factory="zope.app.browser.form.widget.TextWidget"
               permission="zope.Public"
               />
@@ -116,7 +116,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.interfaces.form.IInputWidget"
+              provides="zope.app.form.interfaces.IInputWidget"
               factory="zope.app.browser.form.widget.TextWidget"
               permission="zope.Public"
               />
@@ -144,7 +144,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.interfaces.form.IInputWidget"
+              provides="zope.app.form.interfaces.IInputWidget"
               factory="zope.app.browser.form.widget.TextWidget"
               permission="zope.Public"
               />
@@ -173,7 +173,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.interfaces.form.IInputWidget"
+              provides="zope.app.form.interfaces.IInputWidget"
               factory="zope.app.browser.form.widget.TextWidget"
               permission="zope.Public"
               />

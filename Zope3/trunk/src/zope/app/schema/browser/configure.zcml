@@ -59,7 +59,7 @@
   <zope:view
       for="zope.app.schema.interfaces.IMutableSchemaField"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IInputWidget"
+      provides="zope.app.form.interfaces.IInputWidget"
       factory="zope.app.browser.component.interfacewidget.InterfaceWidget"
       permission="zope.Public"
       />
@@ -67,7 +67,7 @@
   <zope:view
       for="zope.app.schema.interfaces.IMutableSchemaField"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IDisplayWidget"
+      provides="zope.app.form.interfaces.IDisplayWidget"
       factory="
            zope.app.browser.component.interfacewidget.InterfaceDisplayWidget"
       permission="zope.Public"
@@ -76,7 +76,7 @@
   <zope:view
       for="zope.app.schema.interfaces.IMutableSchemasField"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IInputWidget"
+      provides="zope.app.form.interfaces.IInputWidget"
       factory="zope.app.browser.component.interfacewidget.MultiInterfaceWidget"
       permission="zope.Public"
       />
@@ -84,7 +84,7 @@
   <zope:view
       for="zope.app.schema.interfaces.IMutableSchemasField"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IDisplayWidget"
+      provides="zope.app.form.interfaces.IDisplayWidget"
       factory="
       zope.app.browser.component.interfacewidget.MultiInterfaceDisplayWidget"
       permission="zope.Public"

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.4 2004/03/06 16:50:36 jim Exp $
+$Id: instance.py,v 1.5 2004/03/13 21:37:29 srichter Exp $
 """
 from zope.component import getService
 from zope.proxy import removeAllProxies
@@ -23,7 +23,7 @@ from zope.schema import getFields
 
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.services.servicenames import Workflows

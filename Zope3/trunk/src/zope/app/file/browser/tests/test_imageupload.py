@@ -11,11 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Image Upload Test
 
-XXX longer description goes here.
-
-$Id: test_imageupload.py,v 1.3 2004/03/06 04:17:23 garrett Exp $
+$Id: test_imageupload.py,v 1.4 2004/03/13 21:37:24 srichter Exp $
 """
 
 import os
@@ -24,7 +22,7 @@ import unittest
 from zope.app.tests import ztapi
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.widget import BytesWidget, BytesAreaWidget
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import IField, IBytesLine, IBytes

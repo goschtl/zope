@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_multilistwidget.py,v 1.9 2004/03/06 04:17:19 garrett Exp $
+$Id: test_multilistwidget.py,v 1.10 2004/03/13 21:37:22 srichter Exp $
 """
 import unittest, doctest
 
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.form.widget import MultiListWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.interface.verify import verifyClass

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_filewidget.py,v 1.8 2004/03/06 04:17:19 garrett Exp $
+$Id: test_filewidget.py,v 1.9 2004/03/13 21:37:22 srichter Exp $
 """
 import unittest, doctest
 
 from StringIO import StringIO
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.form.widget import FileWidget
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest

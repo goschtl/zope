@@ -13,15 +13,15 @@
 ##############################################################################
 """Interface widgets
 
-$Id: interfacewidget.py,v 1.48 2004/03/06 04:17:17 garrett Exp $
+$Id: interfacewidget.py,v 1.49 2004/03/13 21:37:18 srichter Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.form import IInputWidget
-from zope.app.interfaces.form import WidgetInputError
-from zope.app.interfaces.form import ConversionError
-from zope.app.interfaces.form import MissingInputError
+from zope.app.form.interfaces import IInputWidget
+from zope.app.form.interfaces import WidgetInputError
+from zope.app.form.interfaces import ConversionError
+from zope.app.form.interfaces import MissingInputError
 from zope.app.introspector import interfaceToName
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError

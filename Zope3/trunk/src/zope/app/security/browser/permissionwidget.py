@@ -13,7 +13,7 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.3 2004/03/08 23:35:32 srichter Exp $
+$Id: permissionwidget.py,v 1.4 2004/03/13 21:37:28 srichter Exp $
 """
 from zope.interface import implements
 from zope.i18n import translate 
@@ -23,7 +23,7 @@ from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.interfaces import IPermission
 from zope.security.checker import CheckerPublic
-import zope.app.interfaces.form
+import zope.app.form.interfaces
 
 
 class BaseWidget:
@@ -51,7 +51,7 @@ class BaseWidget:
 
 class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
 
-    implements(zope.app.interfaces.form.IInputWidget)
+    implements(zope.app.form.interfaces.IInputWidget)
 
     def __call__(self):
         search_name = self.name + ".search"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.1 2004/03/08 12:07:19 srichter Exp $
+$Id: test_permissionwidget.py,v 1.2 2004/03/13 21:37:29 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.security.checker import CheckerPublic
@@ -24,7 +24,7 @@ from zope.publisher.browser import TestRequest
 
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.form import WidgetInputError
+from zope.app.form.interfaces import WidgetInputError
 
 class TestPermissionWidget(PlacelessSetup, TestCase):
 

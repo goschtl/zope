@@ -13,13 +13,13 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.1 2004/03/13 18:01:17 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 21:37:26 srichter Exp $
 """
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.interfaces.form import IBrowserWidget
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.container.interfaces import INameChooser
 
 from zope.app.registration.interfaces import IRegistration
@@ -212,11 +212,11 @@ class ComponentPathWidget(BrowserWidget):
         return ''
 
     def hasInput(self):
-        """See zope.app.interfaces.form.IWidget"""
+        """See zope.app.form.interfaces.IWidget"""
         return 1
 
     def getInputValue(self):
-        """See zope.app.interfaces.form.IWidget"""
+        """See zope.app.form.interfaces.IWidget"""
         field = self.context
         context = field.context
         if IRegistration.providedBy(context):

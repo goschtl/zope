@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.3 2004/03/06 04:17:26 garrett Exp $
+$Id: contentworkflow.py,v 1.4 2004/03/13 21:37:29 srichter Exp $
 """
 from zope.app.introspector import interfaceToName
 from zope.app.component.interface import nameToInterface
@@ -21,7 +21,7 @@ from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.services.servicenames import Workflows
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.component import getService
 from zope.interface import Interface
 from zope.publisher.browser import BrowserView

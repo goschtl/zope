@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.20 2004/03/06 04:17:24 garrett Exp $
+$Id: test_utility.py,v 1.21 2004/03/13 21:37:25 srichter Exp $
 """
 import doctest
 
@@ -34,10 +34,10 @@ from zope.schema.interfaces import IField
 
 from zope.app.form.widget import Widget
 
-from zope.app.interfaces.form import IWidget
-from zope.app.interfaces.form import IInputWidget
-from zope.app.interfaces.form import IDisplayWidget
-from zope.app.interfaces.form import WidgetsError
+from zope.app.form.interfaces import IWidget
+from zope.app.form.interfaces import IInputWidget
+from zope.app.form.interfaces import IDisplayWidget
+from zope.app.form.interfaces import WidgetsError
 
 from zope.app.form.utility import no_value
 from zope.app.form.utility import setUpWidget

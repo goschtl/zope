@@ -2,14 +2,14 @@
 
   <view
       for="zope.app.security.interfaces.IPermissionField"
-      provides="zope.app.interfaces.form.IInputWidget"
+      provides="zope.app.form.interfaces.IInputWidget"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".permissionwidget.SinglePermissionWidget"
       />
 
   <view 
       for="zope.app.security.interfaces.IPermissionField"
-      provides="zope.app.interfaces.form.IDisplayWidget"
+      provides="zope.app.form.interfaces.IDisplayWidget"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".permissionwidget.DisplayWidget"
       />

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.13 2004/03/08 23:33:59 srichter Exp $
+$Id: widget.py,v 1.14 2004/03/13 21:37:17 srichter Exp $
 """
 import traceback
 from warnings import warn
 from zope.app import zapi
-from zope.app.interfaces.form import IWidget
+from zope.app.form.interfaces import IWidget
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
 from zope.i18n import translate

@@ -19,7 +19,7 @@ from xml.sax.saxutils import escape, quoteattr
 from zope.app.browser.form.complexsample import widgetapi
 from zope.app.browser.form.complexsample.widgetapi import _, message
 from zope.app.browser.form.vocabularywidget import ActionHelper
-from zope.app.interfaces.form import WidgetInputError
+from zope.app.form.interfaces import WidgetInputError
 from zope.interface.declarations import implements
 from zope.schema.interfaces import ITokenizedTerm
 

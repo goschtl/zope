@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: __init__.py,v 1.2 2004/03/13 18:01:04 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/13 21:37:18 srichter Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app.adapter.adapter import IAdapterRegistration
 from zope.app.registration.interfaces import IRegistration
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.form.utility import applyWidgetsChanges
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent

@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_textwidget.py,v 1.8 2004/03/06 04:17:19 garrett Exp $
+$Id: test_textwidget.py,v 1.9 2004/03/13 21:37:23 srichter Exp $
 """
 import unittest, doctest
 
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 

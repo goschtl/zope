@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.6 2004/03/06 04:17:19 garrett Exp $
+$Id: test_objectwidget.py,v 1.7 2004/03/13 21:37:22 srichter Exp $
 """
 
 import unittest, doctest
@@ -22,7 +22,7 @@ from zope.interface import Interface, implements
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.form.widget import TextWidget, ObjectWidget
 from zope.interface.verify import verifyClass
 

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.1 2004/03/02 18:27:38 philikon Exp $
+$Id: form.py,v 1.2 2004/03/13 21:37:23 srichter Exp $
 """
 from zope.interface import Interface
-from zope.app.interfaces.form import IWidget
+from zope.app.form.interfaces import IWidget
 
 class IAddFormCustomization(Interface):
     """This interface defined methods of add forms that can be overridden

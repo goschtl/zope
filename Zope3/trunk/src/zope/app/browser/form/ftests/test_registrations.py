@@ -12,8 +12,8 @@ import zope.app.browser.form.vocabularywidget as vocabwidgets
 import zope.app.browser.form.widget as widgets
 from zope.app.browser.form import enumerated
 
-from zope.app.interfaces.form import IDisplayWidget
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IDisplayWidget
+from zope.app.form.interfaces import IInputWidget
 
 
 class ISampleObject(interfaces.IField):

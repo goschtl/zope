@@ -13,11 +13,11 @@
 ##############################################################################
 """WebDAV-specific interfaces
 
-$Id: interfaces.py,v 1.2 2004/03/06 04:17:22 garrett Exp $
+$Id: interfaces.py,v 1.3 2004/03/13 21:37:24 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import Text
-from zope.app.interfaces.form import IWidget
+from zope.app.form.interfaces import IWidget
 
 
 class IDAVNamespace(Interface):

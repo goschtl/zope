@@ -21,7 +21,7 @@ provide a simpler API that derived classes are expected to implement.
 from xml.sax.saxutils import escape, quoteattr
 
 from zope.app.browser.interfaces.form import IBrowserWidget
-from zope.app.interfaces.form import WidgetInputError
+from zope.app.form.interfaces import WidgetInputError
 from zope.i18n.messageid import MessageIDFactory
 
 

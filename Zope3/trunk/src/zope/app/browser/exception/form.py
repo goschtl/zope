@@ -13,10 +13,10 @@
 ##############################################################################
 """Form-related exception views
 
-$Id: form.py,v 1.2 2003/08/16 00:42:45 srichter Exp $
+$Id: form.py,v 1.3 2004/03/13 21:37:19 srichter Exp $
 """
 
-from zope.app.interfaces.form import IWidgetInputError
+from zope.app.form.interfaces import IWidgetInputError
 from cgi import escape
 
 class WidgetInputErrorView:
@@ -30,7 +30,7 @@ class WidgetInputErrorView:
     def snippet(self):
         """Convert a widget input error to an html snippet
 
-        >>> from zope.app.interfaces.form import WidgetInputError
+        >>> from zope.app.form.interfaces import WidgetInputError
         >>> err = WidgetInputError("foo", "Foo", ["Foo input < 1"])
         >>> view = WidgetInputErrorView(err, None)
         >>> view.snippet()

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.27 2004/03/06 04:17:24 garrett Exp $
+$Id: utility.py,v 1.28 2004/03/13 21:37:17 srichter Exp $
 """
 __metaclass__ = type
 
@@ -38,10 +38,10 @@ from warnings import warn
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import ValidationError
 from zope.app import zapi
-from zope.app.interfaces.form import IWidget
-from zope.app.interfaces.form import WidgetsError, MissingInputError
-from zope.app.interfaces.form import InputErrors
-from zope.app.interfaces.form import IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import IWidget
+from zope.app.form.interfaces import WidgetsError, MissingInputError
+from zope.app.form.interfaces import InputErrors
+from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.component.interfaces import IViewFactory
 
 # A marker that indicates 'no value' for any of the utility functions that

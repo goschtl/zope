@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.20 2004/03/06 16:50:14 jim Exp $
+"""$Id: test_editview.py,v 1.21 2004/03/13 21:37:22 srichter Exp $
 """
 import unittest
 
@@ -29,7 +29,7 @@ from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.submit import Update
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 
 class I(Interface):
     foo = TextLine(title=u"Foo")

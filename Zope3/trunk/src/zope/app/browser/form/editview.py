@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.51 2004/03/06 04:17:17 garrett Exp $
+$Id: editview.py,v 1.52 2004/03/13 21:37:20 srichter Exp $
 """
 from datetime import datetime
 
@@ -26,7 +26,7 @@ from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.form import WidgetsError
+from zope.app.form.interfaces import WidgetsError
 from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

@@ -5,7 +5,7 @@
   <zope:view
       for="zope.app.registration.interfaces.IRegistrationStatus"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IInputWidget"
+      provides="zope.app.form.interfaces.IInputWidget"
       factory=".RegistrationStatusWidget"
       permission="zope.ManageServices"
       />
@@ -22,7 +22,7 @@
   <zope:view
       for="zope.app.registration.interfaces.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IInputWidget"
+      provides="zope.app.form.interfaces.IInputWidget"
       factory=".ComponentPathWidget"
       permission="zope.Public"
       />
@@ -30,7 +30,7 @@
   <zope:view
       for="zope.app.registration.interfaces.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.interfaces.form.IDisplayWidget"
+      provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".ComponentPathWidget"
       permission="zope.Public"
       />

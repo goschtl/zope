@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.24 2004/03/06 04:17:17 garrett Exp $
+$Id: editwizard.py,v 1.25 2004/03/13 21:37:20 srichter Exp $
 """
 
 from zope.component import getAdapter
@@ -35,8 +35,7 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 
 from editview import EditView
 from submit import Next, Previous, Update
-from zope.app.interfaces.form import WidgetInputError
-from zope.app.interfaces.form import WidgetsError
+from zope.app.form.interfaces import WidgetInputError, WidgetsError
 from zope.app.form.utility \
         import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
 

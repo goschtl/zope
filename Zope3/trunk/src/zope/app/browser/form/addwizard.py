@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Wizard View Classes
 
-$Id: addwizard.py,v 1.13 2004/03/06 04:17:17 garrett Exp $
+$Id: addwizard.py,v 1.14 2004/03/13 21:37:20 srichter Exp $
 """
 import sys
 
@@ -21,8 +21,7 @@ from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets
-from zope.app.interfaces.form import WidgetsError
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import WidgetsError, IInputWidget
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import getAdapter

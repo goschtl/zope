@@ -26,7 +26,7 @@
       />
 
   <page
-      for="zope.app.interfaces.form.IWidgetInputError"
+      for="zope.app.form.interfaces.IWidgetInputError"
       name="snippet"
       permission="zope.Public"
       class=".form.WidgetInputErrorView"

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.21 2004/03/08 23:33:57 srichter Exp $
+$Id: test_browserwidget.py,v 1.22 2004/03/13 21:37:22 srichter Exp $
 """
 import os
 import unittest
@@ -22,8 +22,8 @@ from zope.interface import Interface, implements
 
 from zope.app.tests import ztapi
 from zope.app.browser.form.widget import BrowserWidget
-from zope.app.interfaces.form import ConversionError
-from zope.app.interfaces.form import WidgetInputError, MissingInputError
+from zope.app.form.interfaces import ConversionError
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.i18n.interfaces import ITranslationDomain
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog

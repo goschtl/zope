@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.2 2004/03/06 04:17:26 garrett Exp $
+$Id: definition.py,v 1.3 2004/03/13 21:37:29 srichter Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from zope.publisher.browser import BrowserView
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.submit import Update
 from zope.app.browser.form.editview import EditView
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.schema import getFields
 

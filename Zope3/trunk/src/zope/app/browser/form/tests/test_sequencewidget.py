@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_sequencewidget.py,v 1.7 2004/03/06 04:17:19 garrett Exp $
+$Id: test_sequencewidget.py,v 1.8 2004/03/13 21:37:23 srichter Exp $
 """
 
 import unittest, doctest
@@ -22,7 +22,7 @@ from zope.app.browser.form.widget import TextWidget
 from zope.schema.interfaces import ITextLine, ValidationError
 from zope.publisher.browser import TestRequest
 from zope.schema import Tuple, List, TextLine
-from zope.app.interfaces.form import IInputWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.browser.form.widget import TupleSequenceWidget
 from zope.app.browser.form.widget import ListSequenceWidget
 from zope.interface.verify import verifyClass

@@ -19,7 +19,7 @@ import unittest
 from zope.app.tests import ztapi
 from zope.app.browser.form.tests import support
 from zope.app.browser.form import vocabularywidget
-from zope.app.interfaces.form import WidgetInputError
+from zope.app.form.interfaces import WidgetInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.interface.declarations import \
