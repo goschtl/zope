@@ -19,7 +19,7 @@ Somewhere over the rainbow
   - (__future__) Added DCWorkflow (through-the-web configurable
     workflows) to the core set of CMF products.
 
-1.2 beta (2001/12/07)
+1.2 beta (2001/12/11)
 
  New features
 
