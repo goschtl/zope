@@ -24,32 +24,32 @@ from zope.i18n import translate
 
 class Widget(object):
     """Mixin class providing functionality common across widget types."""
-    
+
     implements(IWidget)
 
     _prefix = 'field.'
     _data_marker = object()
     _data = _data_marker
-    
+
     visible = True
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
         self.name = self._prefix + context.__name__
-        
+
     label = property(lambda self: self._translate(
         self.context.title))
-    
+
     hint = property(lambda self: self._translate(
         self.context.description))
-    
+
     def _translate(self, text):
         return translate(text, "zope", context=self.request, default=text)
-            
+
     def _renderedValueSet(self):
         """Returns ``True`` if the the widget's rendered value has been set.
-        
+
         This is a convenience method that widgets can use to check whether
         or not `setRenderedValue` was called.
         """
@@ -63,10 +63,10 @@ class Widget(object):
 
     def setRenderedValue(self, value):
         self._data = value
-        
+
 class InputWidget(Widget):
     """Mixin class providing some default input widget methods."""
-    
+
     def hasValidInput(self):
         try:
             self.validate()
