@@ -15,25 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: interfaces.py,v 1.2 2002/12/11 19:07:22 faassen Exp $
+$Id: interfaces.py,v 1.3 2002/12/12 17:43:15 faassen Exp $
 """
 
 from Interface import Interface
 from Interface.Attribute import Attribute
-
-class IModuleGenerator:
-    def generateModuleSource(schema_name, fields, class_name,
-                             schema_history=None):
-        """Generate module source containing an interface and class.
-
-        schema_name the name of the schema to generate, fields is the
-        fields in the schema (in order), class_name the name of the
-        class that implements the schema.  schema_history gives the
-        history of the schema up till now. This will be used
-        eventually in order to create class transformation code so its
-        contents can be updated to a newer version of the schema.
-        """
-
     
 class ITypeRepresentation(Interface):
     """Provide a textual representation of object
@@ -50,3 +36,33 @@ class ITypeRepresentation(Interface):
     def getTypes():
         """Return the sequence of types this representation can represent.
         """
+        
+class ISchemaSpec(Interface):
+        
+    def addField(name, field):
+        """Add a field to schema.
+
+        This should be a null operation for instances of the class
+        implementing the schema; FieldProperty will provide a default
+        for the added field.
+        """
+
+    def removeField(name):
+        """Remove field from schema.
+        """
+
+    def renameField(orig_name, target_name):
+        """Rename field.
+        """
+
+    def insertField(name, field, position):
+        """Insert a field at position.
+        """
+        
+    def moveField(name, position):
+        """Move field to position.
+        """
+    
+    def generateModuleSource(self):
+        pass
+    
