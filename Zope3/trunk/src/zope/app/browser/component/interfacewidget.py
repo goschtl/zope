@@ -13,17 +13,19 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.8 2003/01/07 17:21:57 stevea Exp $
+$Id: interfacewidget.py,v 1.9 2003/01/07 17:56:01 stevea Exp $
 """
 
+import sys
 from zope.interface import Interface
 from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.app.interfaces.forms import WidgetInputError
+from zope.app.interfaces.forms import WidgetInputError, ConversionError
 from zope.app.form.widget import Widget
 from zope.publisher.browser import BrowserView
 from zope.component import getService
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
+from xml.sax.saxutils import quoteattr
 
 class InterfaceWidget(Widget, BrowserView):
     __implements__ = IBrowserWidget
@@ -37,19 +39,19 @@ class InterfaceWidget(Widget, BrowserView):
     def getData(self, optional=0):
         field = self.context
         value = self.request.form.get(self.name, self) # self used as marker
-        if value is self:
+        if value is self or value == '':
             # No user input
             if field.required and not optional:
                 raise MissingInputError(field.__name__, field.title,
                                         'the field is required')
             return field.default
-
         if value == 'None':
             value = None
         else:
             try:
                 value = nameToInterface(field, value)
             except ComponentLookupError:
+                # XXX this code path needs a test!
                 # Convert to conversion error
                 exc = ConversionError(sys.exc_info()[1])
                 raise ConversionError, exc, sys.exc_info()[2]
@@ -79,7 +81,10 @@ class InterfaceWidget(Widget, BrowserView):
         interfaces = list(service.searchInterface(search_string, base=base))
         interfaces.sort()
         interfaces = map(interfaceToName, interfaces)
-        if include_none:
+        # Only include None if there is no search string, and include_none
+        # is True
+        # XXX need test for this
+        if include_none and not search_string:
             interfaces = ['None'] + interfaces
 
         if self._data is None:
@@ -166,6 +171,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
             values = tuple([nameToInterface(field, value) for value in values])
         except ComponentLookupError:
             # Convert to conversion error
+            # XXX this code path needs to be tested!
             exc = ConversionError(sys.exc_info()[1])
             raise ConversionError, exc, sys.exc_info()[2]
 
@@ -259,7 +265,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
             interfaces = list(service.searchInterface(search, base=base))
             interfaces.sort()
             interfaces = map(interfaceToName, interfaces)
-            if include_none:
+            if include_none and not search:
                 interfaces = ['None'] + interfaces
             search_name = '%s.search.i%s' % (name, count)
             rendered_selections.append(
@@ -335,9 +341,9 @@ def renderInterfaceSelect(
                               interface == selected and ' selected' or '',
                               interface)
                            )
-
-    search_field = '<input type="text" name="%s" value="%s">' % (
-        search_name, search_string)
+    # XXX need unit test for use of quoteattr for search string
+    search_field = '<input type="text" name="%s" value=%s>' % (
+        search_name, quoteattr(search_string))
     select_field = '<select name="%s">%s</select>'  % (
         select_name, ''.join(options))
 
