@@ -3,28 +3,45 @@
     i18n_domain="zope"
     >
 
-  <content class=".permissionroles.PermissionRoles">
+  <class class=".permissionroles.PermissionRoles">
     <require permission="zope.Security"
              attributes="roles rolesInfo id title description" />
-  </content>
+  </class>
 
-  <content class=".rolepermission.RolePermissions">
+  <class class=".rolepermission.RolePermissions">
     <require permission="zope.Security"
              attributes="permissions permissionsInfo id title description" />
-  </content>
+  </class>
 
   <adapter factory=".rolepermission.AnnotationRolePermissionManager"
            provides=".interfaces.IRolePermissionManager"
-           for="zope.app.annotation.interfaces.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable"
+           trusted="true" />
+
+  <class class=".rolepermission.AnnotationRolePermissionManager">
+    <require permission="zope.Security"
+             interface=".interfaces.IRolePermissionManager" />
+  </class>       
 
   <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
            provides=".interfaces.IPrincipalRoleManager"
-           for="zope.app.annotation.interfaces.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable" 
+           trusted="true" />
+
+  <class class=".principalrole.AnnotationPrincipalRoleManager">
+    <require permission="zope.Security"
+             interface=".interfaces.IPrincipalRoleManager" />
+  </class>
 
   <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
            provides=".interfaces.IPrincipalPermissionManager"
-           for="zope.app.annotation.interfaces.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable" 
+           trusted="true"/>
 
+  <class class=".principalpermission.AnnotationPrincipalPermissionManager">
+    <require permission="zope.Security"
+             interface=".interfaces.IPrincipalPermissionManager" />
+  </class>
 
   <!-- protect Roles and Permissions -->
   <content class=".role.Role">
