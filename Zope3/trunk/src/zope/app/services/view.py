@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.25 2003/06/23 00:31:31 jim Exp $
+$Id: view.py,v 1.26 2003/06/23 16:20:08 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -23,34 +23,35 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.component.interfaces import IViewService
 from zope.component.exceptions import ComponentLookupError
-from zope.component import getServiceManager
+from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
-from zope.app.context import ContextWrapper
-from zope.context import ContextMethod
 from zope.app.component.nextservice import getNextService
-from zope.component import getSkin
+from zope.app import zapi
 from zope.interface import implements
 
 from zope.security.checker import NamesChecker, ProxyFactory
 
 from zope.proxy import removeAllProxies
-from zope.app.traversing import getRoot, traverse
 from zope.exceptions import NotFoundError
 
 from zope.app.interfaces.services.view import IViewRegistration
 from zope.app.interfaces.services.view import IPageRegistration
+from zope.app.interfaces.services.view import ILocalViewService
 from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.interfaces.services.service import ISimpleService
 
 class ViewService(Persistent):
 
-    implements(IViewService, IRegistry, ISimpleService)
+    implements(IViewService, ILocalViewService, IRegistry, ISimpleService)
 
     def __init__(self):
         self._layers = PersistentDict()
+
+    # All the methods defined here are context methods
+    zapi.ContextAwareDescriptors()
 
     def queryRegistrationsFor(self, registration, default=None):
         "See IRegistry"
@@ -58,8 +59,6 @@ class ViewService(Persistent):
             registration.viewName, registration.layer,
             registration.forInterface, registration.presentationType,
             default)
-
-    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
     def queryRegistrations(self, name, layer,
                             forInterface, presentationType, default=None):
@@ -78,17 +77,13 @@ class ViewService(Persistent):
         if registry is None:
             return default
 
-        return ContextWrapper(registry, self)
-
-    queryRegistrations = ContextMethod(queryRegistrations)
+        return zapi.ContextWrapper(registry, self)
 
     def createRegistrationsFor(self, registration):
         "See IRegistry"
         return self.createRegistrations(
             registration.viewName, registration.layer,
             registration.forInterface, registration.presentationType)
-
-    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
     def createRegistrations(self,
                              viewName, layer, forInterface, presentationType):
@@ -110,9 +105,7 @@ class ViewService(Persistent):
             registry = RegistrationStack()
             adapter_registry.register(forInterface, presentationType, registry)
 
-        return ContextWrapper(registry, self)
-
-    createRegistrations = ContextMethod(createRegistrations)
+        return zapi.ContextWrapper(registry, self)
 
     def getView(self, object, name, request):
         view = self.queryView(object, name, request)
@@ -120,14 +113,12 @@ class ViewService(Persistent):
             raise ComponentLookupError(object, name)
         return view
 
-    getView = ContextMethod(getView)
-
     def queryView(self, object, name, request, default=None):
 
         type = request.getPresentationType()
         skin = request.getPresentationSkin()
 
-        for layername in getSkin(object, skin, type):
+        for layername in zapi.getSkin(object, skin, type):
             layer = self._layers.get(layername)
             if not layer:
                 continue
@@ -139,21 +130,19 @@ class ViewService(Persistent):
             registry = reg.getForObject(
                 object, type,
                 filter = lambda registry:
-                         ContextWrapper(registry, self).active(),
+                         zapi.ContextWrapper(registry, self).active(),
                 )
 
             if registry is None:
                 continue
 
-            registry = ContextWrapper(registry, self)
+            registry = zapi.ContextWrapper(registry, self)
             view = registry.active().getView(object, request)
             return view
 
         views = getNextService(self, 'Views')
 
         return views.queryView(object, name, request, default)
-
-    queryView = ContextMethod(queryView)
 
     def getDefaultViewName(self, object, request):
         "See IViewService"
@@ -166,8 +155,6 @@ class ViewService(Persistent):
 
         return name
 
-    getDefaultViewName = ContextMethod(getDefaultViewName)
-
     def queryDefaultViewName(self, object, request, default=None):
         "See IViewService"
 
@@ -175,14 +162,9 @@ class ViewService(Persistent):
         views = getNextService(self, 'Views')
         return views.queryDefaultViewName(object, request, default)
 
-    queryDefaultViewName = ContextMethod(queryDefaultViewName)
-
-    def getRegisteredMatching(self,
-                              required_interfaces=None,
-                              presentation_type=None,
-                              viewName=None,
-                              layer=None,
-                              ):
+    def getRegisteredMatching(self, required_interfaces=None,
+                              presentation_type=None, viewName=None,
+                              layer=None):
         if layer is None:
             layers = self._layers.keys()
         else:
@@ -202,7 +184,6 @@ class ViewService(Persistent):
 
             for vn in viewNames:
                 registry = names_dict.get(vn)
-
                 if registry is None:
                     continue
 
@@ -213,6 +194,13 @@ class ViewService(Persistent):
                     result.append(match + (layer, vn))
 
         return result
+
+    def getRegistrationsForInterface(self, iface):
+        for t in self.getRegisteredMatching(required_interfaces=[iface]):
+            # XXX getRegisteredMatching ought to return a wrapped object
+            reg = zapi.ContextWrapper(t[2], self) # t[2] is registration stack
+            for info in reg.info():
+                yield info["registration"]
 
 class ViewRegistration(SimpleRegistration):
 
@@ -233,11 +221,11 @@ class ViewRegistration(SimpleRegistration):
         self.permission = permission
 
     def getView(self, object, request):
-        sm = getServiceManager(self)
+        sm = zapi.getServiceManager(self)
         factory = sm.resolve(self.class_)
         return factory(object, request)
 
-    getView = ContextMethod(getView)
+    getView = zapi.ContextMethod(getView)
 
     def usageSummary(self):
         # XXX L10N This should be localizable.
@@ -307,7 +295,7 @@ class PageRegistration(ViewRegistration):
 
         self.validate()
 
-        sm = getServiceManager(self)
+        sm = zapi.getServiceManager(self)
 
         if self.class_:
             class_ = sm.resolve(self.class_)
@@ -317,20 +305,20 @@ class PageRegistration(ViewRegistration):
 
         view = class_(object, request)
 
-        # This is needed because we need to do an unrestricted traverse
-        root = removeAllProxies(getRoot(sm))
+        # This is needed because we need to do an unrestricted zapi.traverse
+        root = removeAllProxies(zapi.getRoot(sm))
 
         if self.attribute:
             template = getattr(view, self.attribute)
         else:
-            template = traverse(root, self.template)
+            template = zapi.traverse(root, self.template)
             template = BoundTemplate(template, view)
 
         checker = NamesChecker(__call__ = self.permission)
 
         return ProxyFactory(template, checker)
 
-    getView = ContextMethod(getView)
+    getView = zapi.ContextMethod(getView)
 
 class DefaultClass:
 

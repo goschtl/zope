@@ -13,30 +13,37 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.17 2003/06/21 21:22:13 jim Exp $
+$Id: test_view.py,v 1.18 2003/06/23 16:20:08 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.iregistry import TestingIRegistry
-from zope.app.services.view import ViewService
+
 from zope.interface import Interface, directlyProvides, implements
-from zope.app.context import ContextWrapper
-from zope.component.exceptions import ComponentLookupError
-from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.service import ServiceManager
-from zope.app.services.view import ViewRegistration
+from zope.interface.verify import verifyObject
+
 from zope.app.content.folder import RootFolder
+from zope.app.context import ContextWrapper
+from zope.app.interfaces.services.view import IZPTTemplate
+from zope.app.services.service import ServiceManager
+from zope.app.services.servicenames import Views
+from zope.app.services.tests.iregistry import TestingIRegistry
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.services.view  \
+     import ViewRegistration, PageRegistration, BoundTemplate, ViewService
+from zope.app.tests import setup
 from zope.app.traversing import traverse
+
+from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
 from zope.component.view import provideView
+from zope.component.interfaces import IViewService
+
+from zope.configuration.exceptions import ConfigurationError
+
+from zope.proxy import removeAllProxies
+
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.interfaces.services.view import IZPTTemplate
-from zope.app.services.view import PageRegistration, BoundTemplate
-from zope.interface.verify import verifyObject
-from zope.component.interfaces import IViewService
-from zope.proxy import removeAllProxies
-from zope.configuration.exceptions import ConfigurationError
 
 class I1(Interface):
     pass
@@ -58,6 +65,7 @@ class Registration:
     presentationType = I2
     viewName = 'test'
     layer = 'default'
+    serviceType = Views
 
     def getView(self, object, request):
         return self.factory(object, request)
@@ -81,8 +89,8 @@ class A:
 class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self, site=True)
-        self._service = ContextWrapper(ViewService(), self.rootFolder)
+        sm = PlacefulSetup.setUp(self, site=True)
+        self._service = setup.addService(sm, Views, ViewService())
 
     def test_implements_IViewService(self):
         from zope.component.interfaces import IViewService
@@ -126,9 +134,8 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
         sm = traverse(self.rootFolder, '++etc++site')
 
         registration_manager = traverse(sm, 'default').getRegistrationManager()
-        registration = Registration()
-        registration_manager.setObject('', registration)
-        registration = traverse(registration_manager, '1')
+        key = registration_manager.setObject('', Registration())
+        registration = traverse(registration_manager, key)
 
         class O:
             implements(I1)
@@ -183,6 +190,14 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
         for args in ((), (I1E, ), (None, I2), (I1E, I2), ):
             r = self._service.getRegisteredMatching(*args)
             self.assertEqual(list(r), [(I1, I2, registry, 'default', 'test')])
+
+    def test_getRegistrationsForInterface(self):
+        self.test_queryView_and_getView()
+        for reg in self._service.getRegistrationsForInterface(I1):
+            self.assertEqual(reg.forInterface, I1)
+
+        for reg in self._service.getRegistrationsForInterface(I1E):
+            self.assertEqual(reg.forInterface, I1)
 
 class PhonyServiceManager(ServiceManager):
 
@@ -276,11 +291,11 @@ class TestPageRegistration(PlacefulSetup, TestCase):
 
 
 def test_suite():
-    return TestSuite((
+    return TestSuite([
         makeSuite(TestViewService),
         makeSuite(TestViewRegistration),
         makeSuite(TestPageRegistration),
-        ))
+        ])
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: view.py,v 1.4 2003/06/21 21:22:10 jim Exp $
+$Id: view.py,v 1.5 2003/06/23 16:20:08 jeremy Exp $
 """
 
 from zope.app.interfaces.services.registration import IRegistration
@@ -23,6 +23,25 @@ from zope.schema import BytesLine, TextLine, Text, Bool
 from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
+
+class ILocalViewService(Interface):
+    """Local view service interface.
+
+    Provides an interface for managing and browsing registered views.
+    """
+
+    def getRegisteredMatching(required_interfaces=None, presentation_type=None,
+                              viewName=None, layer=None):
+        """Return registrations matching keyword arg criteria.
+
+        Return is an iterable 5-tuples containing:
+        - registered required interface
+        - registered provided interface
+        - registration stack
+        - layer
+        - view name
+        """
+
 
 class IAdapterRegistrationInfo(Interface):
 
