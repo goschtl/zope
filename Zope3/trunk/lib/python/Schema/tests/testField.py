@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testField.py,v 1.2 2002/06/25 14:09:56 klawlf Exp $
+$Id: testField.py,v 1.3 2002/06/25 15:14:17 klawlf Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -89,6 +89,64 @@ class StrTestCase(FieldTestCase):
         except ValidationError, e:
             self.fail('Expected no ValidationError, but we got %s.' % e.error_name)
         self.assertRaises(ValidationError, field.validate, '')
+
+    def test_validate_min(self):
+        field = Str(
+            title='Str field',
+            description='',
+            readonly=0,
+            required=0,
+            min_length=3)
+        try:
+           field.validate(None)
+           field.validate('333')
+           field.validate('55555')
+        except ValidationError, e:
+           self.fail('Expected no ValidationError, but we got %s.' % e.error_name)
+
+        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '')
+        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
+        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '1')
+
+    def test_validate_max(self):
+        field = Str(
+            title='Str field',
+            description='',
+            readonly=0,
+            required=0,
+            max_length=5)
+        try:
+           field.validate(None)
+           field.validate('')
+           field.validate('333')
+           field.validate('55555')
+        except ValidationError, e:
+           self.fail('Expected no ValidationError, but we got %s.' % e.error_name)
+
+        self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate, '666666')
+        self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate, '999999999')
+
+    def test_validate_min_max(self):
+        field = Str(
+            title='Str field',
+            description='',
+            readonly=0,
+            required=0,
+            min_length=3,
+            max_length=5)
+        try:
+            field.validate(None)
+            field.validate('333')
+            field.validate('4444')
+            field.validate('55555')
+        except ValidationError, e:
+           self.fail('Expected no ValidationError, but we got %s.' % e.error_name)
+
+        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
+        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
+        self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate, '666666')
+        self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate, '999999999')
+
 
 class BoolTestCase(FieldTestCase):
     def test_validate(self):
@@ -194,6 +252,7 @@ class IntTestCase(FieldTestCase):
         except ValidationError, e:
            self.fail('Expected no ValidationError, but we got %s.' % e.error_name)
 
+        self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -10)
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -1)
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 11)
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 20)

@@ -45,9 +45,10 @@ class Str(Field):
         if self.required and value == '':
             raise ValidationError,ErrorNames.RequiredEmptyString
         length = len(value)
+
         if self.min_length is not None and length < self.min_length:
             raise ValidationError, ErrorNames.TooShort
-        if self.max_length is not None and length >= self.max_length:
+        if self.max_length is not None and length > self.max_length:
             raise ValidationError, ErrorNames.TooLong
 
 class Bool(Field):
