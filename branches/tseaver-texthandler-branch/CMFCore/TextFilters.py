@@ -141,6 +141,9 @@ class ParagraphInserter:
             while graph and graph[-1] == '\n':
                 graph = graph[ :-1 ]
 
+            if not graph:
+                continue
+
             graph = '<p>%s</p>' % graph
             graphs.append( graph )
 
