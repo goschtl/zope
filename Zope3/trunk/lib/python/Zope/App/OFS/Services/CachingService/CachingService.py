@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.5 2002/12/13 20:09:42 gvanrossum Exp $
+$Id: CachingService.py,v 1.6 2002/12/18 17:32:26 stevea Exp $
 """
 from Persistence import Persistent
 from Zope.App.Caching.ICachingService import ICachingService
@@ -33,7 +33,8 @@ class ILocalCachingService(ICachingService, IEventChannel, INameConfigurable):
 
 class CachingService(ProtoServiceEventChannel, NameConfigurable):
 
-    __implements__ = ILocalCachingService, ProtoServiceEventChannel.__implements__
+    __implements__ = (ILocalCachingService,
+                      ProtoServiceEventChannel.__implements__)
 
     _subscribeToServiceInterface = IObjectModifiedEvent
 
@@ -51,7 +52,6 @@ class CachingService(ProtoServiceEventChannel, NameConfigurable):
         if service is not None:
             return service.getCache(name)
         raise KeyError, name
-
     getCache = ContextMethod(getCache)
 
     def queryCache(self, name, default=None):
@@ -60,7 +60,6 @@ class CachingService(ProtoServiceEventChannel, NameConfigurable):
             return self.getCache(name)
         except KeyError:
             return default
-
     queryCache = ContextMethod(queryCache)
 
     def getAvailableCaches(self):
@@ -75,6 +74,5 @@ class CachingService(ProtoServiceEventChannel, NameConfigurable):
             for name in service.getAvailableCaches():
                 caches[name] = 0
         return caches.keys()
-
     getAvailableCaches = ContextMethod(getAvailableCaches)
 
