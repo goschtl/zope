@@ -1,0 +1,36 @@
+Context Decorators
+==================
+
+Issues
+------
+
+* How to decide what permssions to use for new methods introduced in
+  the decorator?
+
+Consider a ZopeContainerDecorator. It has a method 'rename' that does not
+appear in IContainer. What permission should guard 'rename'?
+'rename' depends on 'setObject' in IContainer. Different content components
+protect 'setObject' with different permissions; for example,
+zope.ManageContent or zope.ManageServices.
+So, we can't guard 'rename' with one hard-coded permission.
+
+What could we do instead?
+
+- Reorder proxies, decorator outside the security proxy.
+We could somehow re-order the proxies around an object so that the decorator
+goes on the outside. This is awkward, as it breaks our invariant of putting
+the security proxy always on the outside. There are also efficiency issues
+if the interface-related descriptors are security-proxied.
+
+- What protects rename should be what protects setObject.
+We could declare that rename is to be protected with whatever protects the
+'setObject' operation on the proxied object.
+That makes the zcml more complex, and special for decorators.
+That also makes the checker to use for decorators more complex and special.
+
+- Rename gets proxied by magic in the decorator.
+We could declare that rename is a special "untrusted" method, and cause
+its 'self' argument to be bound to the proxied object in a security proxy,
+instead of the plain proxied object.
+
+
