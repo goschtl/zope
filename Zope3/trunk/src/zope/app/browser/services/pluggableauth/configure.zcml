@@ -11,50 +11,15 @@
        title="Authentication Service"
        description="A Pluggable Authentication uses plug-in principal sources."
        permission="zope.ManageServices"
-  />
+       />
 
-  <page
-       name="contents.html"
+  <containerViews
        for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
-       permission="zope.ManageServices"
-       class="zope.app.browser.container.contents.Contents"
-       menu="zmi_views" title="Principal Sources"
-       attribute="contents" />
-
-   <view
-       name="+"
-       menu="zmi_actions" title="Add Source"
-       for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
-       permission="zope.ManageContent"
-       class="zope.app.browser.services.pluggableauth.PrincipalSourceAdding" >
-
-      <page name="index.html" attribute="index"/>
-      <page name="action.html" attribute="action"/>
-
-  </view>
-
-  <menu
-      id="add_principal_source"
-      title="Menu for adding new PrincipalSource."/>
+       contents="zope.ManageServices"
+       add="zope.ManageServices"
+       />
 
 <!-- Principal Source -->
-
- <!--
-  <menuItem
-      menu="add_principal_source"
-      for="zope.app.interfaces.container.IAdding"
-      action="zope.app.principalsources.BTreePrincipalSource"
-      title="BTree Principal Source"
-      description="BTree Principal Source" />
- -->
-
-  <page
-       name="contents.html"
-       menu="zmi_views" title="Contents"
-       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-       permission="zope.ManageServices"
-       class="zope.app.browser.container.contents.Contents"
-       attribute="contents" />
 
   <browser:addMenuItem
       title="Add Principal Source" 
@@ -62,8 +27,15 @@
       permission="zope.ManageServices"
       />
 
+  <containerViews
+       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
+       contents="zope.ManageServices"
+       add="zope.ManageServices"
+       />
+
+<!-- Principal -->
+
   <browser:addform
-      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
       schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
       label="Add Simple User with details"
       content_factory="zope.app.services.pluggableauth.SimplePrincipal"
@@ -72,7 +44,13 @@
       fields="login password title description"
       name="AddPrincipalForm.html"
       permission="zope.ManageContent"
-      class=".PrincipalAdd"
+      />
+
+  <browser:addMenuItem
+      title="Principal" 
+      class="zope.app.services.pluggableauth.SimplePrincipal"
+      permission="zope.ManageServices"
+      view="AddPrincipalForm.html"
       />
 
   <editform

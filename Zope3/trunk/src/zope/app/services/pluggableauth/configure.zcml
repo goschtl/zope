@@ -41,7 +41,8 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer"
+        interface="zope.app.interfaces.container.IWriteContainer
+                   zope.app.interfaces.container.INameChooser"
         />
     <allow
         interface="zope.app.interfaces.services.pluggableauth.IPrincipalSource"

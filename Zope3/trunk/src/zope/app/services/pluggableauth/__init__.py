@@ -13,12 +13,13 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.12 2004/02/20 22:02:32 fdrake Exp $
+$Id: __init__.py,v 1.13 2004/02/25 12:31:59 jim Exp $
 """
 import random
 import sys
 import time
 import random
+import zope.schema
 
 from persistent import Persistent
 from BTrees.IOBTree import IOBTree
@@ -28,8 +29,13 @@ from zope.component import queryAdapter
 from zope.app.services.servicenames import Authentication
 from zope.component.interfaces import IViewFactory
 from zope.app.container.ordered import OrderedContainer
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.interfaces.container import IOrderedContainer
 from zope.app.interfaces.container import IAddNotifiable
+from zope.app.interfaces.container import INameChooser
+from zope.app.interfaces.container import IContainerNamesContainer
+from zope.app.interfaces.container import IContained
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.services.pluggableauth \
@@ -188,10 +194,31 @@ class PluggableAuthenticationService(OrderedContainer):
 
         del self[id]
 
+class IBTreePrincipalSource(
+    ILoginPasswordPrincipalSource,
+    IContainerPrincipalSource,
+    INameChooser,
+    IContainerNamesContainer,
+    ):
+
+    def __setitem__(name, principal):
+        """Add a principal
+
+        The name must be the same as the principal login
+        """
+
+    __setitem__.precondition  = ItemTypePrecondition(IUserSchemafied)
+
+class IBTreePrincipalSourceContained(IContained):
+
+    __parent__ = zope.schema.Field(
+        constraint = ContainerTypesConstraint(IBTreePrincipalSource),
+        )
+
 class BTreePrincipalSource(Persistent, Contained):
     """An efficient, scalable provider of Authentication Principals."""
 
-    implements(ILoginPasswordPrincipalSource, IContainerPrincipalSource)
+    implements(IBTreePrincipalSource)
 
     def __init__(self):
 
@@ -424,21 +451,48 @@ class BTreePrincipalSource(Persistent, Contained):
         if user.password == password:
             return user
 
-    def chooseName(self, name, object):
-        "See zope.app.interfaces.container.INameChooser"
 
-        store = self._principals_by_number
-        while 1:
-            key = gen_key()
-            if key not in store:
-                return str(key)
-            
+    def checkName(self, name, object):
+        """Check to make sure the name is valid
+
+        Don't allow suplicate names:
+
+        >>> sps = BTreePrincipalSource()
+        >>> prin1 = SimplePrincipal('gandalf', 'shadowfax')
+        >>> sps['gandalf'] = prin1
+        >>> sps.checkName('gandalf', prin1)
+        Traceback (most recent call last):
+        ...
+        LoginNameTaken: gandalf
+
+        """
+        if name in self._numbers_by_login:
+            raise LoginNameTaken(name)
+
+    def chooseName(self, name, object):
+        """Choose a name for the principal
+
+        Always choose the object's existing name:
+
+        >>> sps = BTreePrincipalSource()
+        >>> prin1 = SimplePrincipal('gandalf', 'shadowfax')
+        >>> sps.chooseName(None, prin1)
+        'gandalf'
+
+        """
+        return object.login
+
+class LoginNameTaken(Exception):
+    """A login name is in use
+    """
 
 
 class SimplePrincipal(Persistent, Contained):
     """A no-frills IUserSchemafied implementation."""
 
-    implements(IUserSchemafied)
+    implements(IUserSchemafied, IBTreePrincipalSourceContained)
+
+
 
     def __init__(self, login, password, title='', description=''):
         self.id = ''
