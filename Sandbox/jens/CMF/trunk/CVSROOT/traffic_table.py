@@ -109,7 +109,8 @@ def init_table():
          'addrs': 'zope-ptk@zope.org',
          'remote': None},
 
-        {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
+        {'path': "Packages/Products/XMLDocument",
+         'addrs': zopeaddr,
          'remote': products_remote},
 
         {'path': "Packages/Products/PythonMethod",
@@ -118,6 +119,10 @@ def init_table():
 
         {'path': "Packages/Products/TrackerBase",
          'addrs': ['tracker-dev@zope.org'],
+         'remote': products_remote},
+
+        {'path': "Packages/Products/ImageCache",
+         'addrs': None,
          'remote': products_remote},
     ])
 
