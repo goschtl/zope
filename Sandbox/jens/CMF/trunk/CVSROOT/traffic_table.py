@@ -82,6 +82,10 @@ table = [
      'addrs': 'zopedocs-checkins@zope.org',
      'remote': None},
 
+#    {'path': "Documentation/Guides/Book",
+#     'addrs': 'zope-book@zope.org',
+#     'remote': None},
+
     {'path': "ZopeMozilla",
      'addrs': 'zope-mozilla@zope.org',
      'remote': None},
@@ -93,6 +97,7 @@ table = [
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
      'remote': products_remote},
 
-    {'path': "Packages/Products/TrackerBase", 'addrs': ['klm@digicool.com'],
+    {'path': "Packages/Products/TrackerBase",
+     'addrs': ['tracker-dev@zope.org'],
      'remote': products_remote},
 ]
