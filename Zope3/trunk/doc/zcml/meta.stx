@@ -1,29 +1,61 @@
 The Meta Configuration System
 
   Meta configuration is the configuration of the configuration
-  system.  In the case of zcml, this means using the "bootstrap"
+  system.  In the case of zcml, this means using the "metaconfiguration"
   zcml configuration directives to define the configuration directives
   that will actually be used to configure the system.
 
   The Meta Configuration Directives
 
-    The "bootstrap" directives are 'directives', 'directive', and
+    The metaconfiguration directives are 'directives', 'directive', and
     'subdirective'.  We'll use a shortened version of the
     meta-configuration for the Zope StartUp system to explain the
-    concepts::
+    concepts (note that this may not bear any real relationship
+    to the actual StartUp system configuration)::
 
       <ZopeConfigure xmlns="http://namespaces.zope.org/zope">
       <directives namespace="http://namespaces.zope.org/startup">
         <directive
             name="registerRequestFactory"
-            attributes="name publication request"
-            handler="Zope.StartUp.metaConfigure.registerRequestFactory" />
+            handler="Zope.StartUp.metaConfigure.registerRequestFactory"
+            description="Register a factory component that will produce
+                request objects when requested by the publisher."
+        >
+          <attribute
+              name="name"
+              description="the name used to refer to this factory" />
+          <attribute
+              name="publication"
+              description="resolvable name of the publication component" />
+          <attribute
+              name="request"
+              required="yes"
+              description="resolvable name of the component that implements 
+                  the factory" />
+        </directive>
         <directive
             name="defineSite"
-            attributes="name threads"
             handler="Zope.Startup.metaConfigure.defineSite">
-          <subdirective name="useFileStorage" attributes="file" />
-          <subdirective name="useMappingStorage" />
+            description="Declare a particular server instance"
+        >
+          <attribute
+              name="name"
+              description="text label that identifies the server" />
+          <attribute
+              name="threads"
+              description="the number of threads that will be used to service
+                requests to this server" />
+          <subdirective
+              name="useFileStorage"
+              description="Indicate this server should use a FileStorage" />
+          >
+            <attribute
+                name="file"
+                description="the name of the file to use for the FileStorage" />
+          </subdirective>
+          <subdirective
+              name="useMappingStorage"
+              description="Indicate that this server should use a MappingStorage" />
         </directive>
       </directives>
       </ZopeConfigure>
@@ -41,9 +73,15 @@ The Meta Configuration System
     The first example directive directive defines a directive that
     has no subdirectives.  The 'name' attribute gives the name of
     the directive.  So in this case we are defining the
-    'registerRequestFactory' directive.  Combining the namespace
-    with this name, this means we are defining a directive that
-    would look something like this when used::
+    'registerRequestFactory' directive. 
+
+    The 'description' attribute allows us to provide explanatory
+    text about the directive.  This text will be extracted by tools
+    for display to users of the configuration system.  By convention
+    this text may use any in-line StructuredText markup.
+
+    Combining the namespace with the name, we are defining a directive
+    that would look something like this when used::
 
       <ZopeConfigure
           xmlns="http://namespaces.zope.org/zope"
@@ -52,14 +90,27 @@ The Meta Configuration System
       <startup:registerRequestFactory ....>
       </ZopeConfigure>
 
-    The "attributes" attribute of the directive directive allows
-    us to fill in the "...." in the example above.  It lists the
-    names of the attributes that will be valid for this directive.
-    So this meta-configuration is saying that the registerRequestFactory
-    directive can have attributes named 'name', 'publication', or
-    'request'.
+    Inside the directive directive we have 'attribute' subdirectives.
+    These allow us to name and describe the allowed attributes
+    of the directive we are defining.  This allows us to fill in
+    the "..." in the example above:  the various attribute subdirectives
+    let us know that the registerRequestFactory directive can have
+    attributes named 'name', 'publication', or 'request'.  It also
+    tells us that 'publication' is optional, and describes what the
+    attributes are for.  (Of course, in real code the descriptions
+    would be more meaningful).
 
-    The directive we are defining can thus look something like this
+    The valid values for 'required' are 'yes' and 'no'.  Yes means
+    the attribute must be present or an error will be raised (this
+    is done by the python code that implements the directive).
+    A value of 'no' means that the attribute can always be omitted.
+    If this attribute is not specified when configuring a directive,
+    then either the attribute is optional or it may be part of a
+    set of attributes one of which must be specified.  However,
+    all this is a documentation convention; how the directive
+    actually works is determined by the python code that implements it.
+
+    So, the directive we are defining can look something like this
     when used::
 
       <ZopeConfigure
@@ -71,9 +122,6 @@ The Meta Configuration System
           publication="Zope.App.Publication.VFS.Publication.VFSPublication"
           request="Zope.Publisher.VFS.VFSRequest." />
       </ZopeConfigure>
-
-    Which attributes are optional and which are required is controlled
-    by the python code that implements the directive.
 
     The 'handler' attribute is what defines which python code will
     handle the directive.  It must be a resolvable name following
@@ -308,3 +356,15 @@ The Meta Configuration System
     in an included file specifies a thread count, it will get
     overridden by a site definition in an upper level file because
     of the discriminator conflict resolution.
+    
+  Overriding Directive Definitions
+
+    Although it is not something that is useful in most normal
+    projects, it is possible to override the definition of a
+    directive.  Unlike with configuration actions, where directives
+    in included files are overridden by directives in the including
+    files, metaconfiguration directives take effect as soon as they
+    are encountered.  When you re-specify the definition of a directive,
+    you affect only the attributes of that directive.  Any defined
+    attributes or subdirectives remain defined unless they, too,
+    are overridden.  Currently it is not possible to delete a directive.
