@@ -13,17 +13,17 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: testCachingService.py,v 1.2 2002/10/04 18:37:19 jim Exp $
+$Id: testCachingService.py,v 1.3 2002/12/06 11:01:11 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
+from Interface.Verify import verifyClass, verifyObject
 
 from Zope.App.Caching.ICache import ICache
 from Zope.App.Caching.ICachingService import ICachingService
-from Zope.App.OFS.Services.CachingService.CachingService import CachingService
 
 def sort(list):
     list.sort()
@@ -36,6 +36,8 @@ class CacheStub:
 class TestCachingService(PlacelessSetup, TestCase):
 
     def setUp(self):
+        from Zope.App.OFS.Services.CachingService.CachingService \
+             import CachingService
         PlacelessSetup.setUp(self)
         self.cache1 = CacheStub()
         self.cache2 = CacheStub()
@@ -44,6 +46,12 @@ class TestCachingService(PlacelessSetup, TestCase):
         self.service.setObject('cache2', self.cache2)
         sm.defineService('Caching', ICachingService)
         sm.provideService('Caching', self.service)
+
+    def test_interface(self):
+        from Zope.App.OFS.Services.CachingService.CachingService \
+             import ILocalCachingService
+        verifyObject(ILocalCachingService, self.service)
+        verifyObject(ICachingService, self.service)
 
     def testGetCache(self):
         self.assertEqual(self.cache1,

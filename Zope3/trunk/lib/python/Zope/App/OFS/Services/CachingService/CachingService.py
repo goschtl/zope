@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.1 2002/10/03 11:56:33 mgedmin Exp $
+$Id: CachingService.py,v 1.2 2002/12/06 11:01:11 alga Exp $
 """
 from types import TupleType
 
@@ -23,24 +23,26 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.App.OFS.Container.IContainer import IHomogenousContainer, IContainer
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 
+from Zope.Event.IEventChannel import IEventChannel
+from Zope.Event.EventChannel import EventChannel
+
 from Zope.App.Caching.ICachingService import ICachingService
 from Zope.App.Caching.ICache import ICache
 
+
 class ILocalCachingService(ICachingService, IContainer,
-                              IHomogenousContainer):
+                           IHomogenousContainer,
+                           IEventChannel):
     """TTW manageable caching service"""
 
 
-class CachingService(BTreeContainer):
+class CachingService(BTreeContainer, EventChannel):
 
-    __implements__ =  ILocalCachingService
+    __implements__ = ILocalCachingService
 
-    ############################################################
-    # Implementation methods for interface
-    # Zope.App.OFS.Services.CachingService.ILocalCachingService
-
-    ######################################
-    # from: Zope.App.Caching.ICachingService.ICachingService
+    def __init__(self):
+        BTreeContainer.__init__(self)
+        EventChannel.__init__(self)
 
     def getCache(self, name):
         'See Zope.App.Caching.ICachingService.ICachingService'
@@ -60,11 +62,7 @@ class CachingService(BTreeContainer):
         if service is not None:
             caches.append(service.getAvailableCaches())
         return caches
-
     getAvailableCaches = ContextMethod(getAvailableCaches)
-
-    ######################################
-    # from: Zope.App.OFS.Container.IContainer.IHomogenousContainer
 
     def isAddable(self, interfaces):
         'See Zope.App.OFS.Container.IContainer.IHomogenousContainer'
@@ -73,6 +71,3 @@ class CachingService(BTreeContainer):
         if ICache in interfaces:
             return 1
         return 0
-
-    #
-    ############################################################
