@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.13 2002/09/05 18:55:01 jim Exp $
+$Id: testFormView.py,v 1.14 2002/09/07 16:18:48 jim Exp $
 """
 from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,8 +24,9 @@ from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.App.Forms.Views.Browser.FormView import FormView
 
-from Zope.Schema.IField import IStr
-from Zope.App.Forms.Views.Browser.Widget import TextWidget, FileWidget
+from Zope.Schema.IField import IBytes
+from Zope.App.Forms.Views.Browser.Widget \
+     import TextWidget, IntWidget, FileWidget
 
 import SchemaTestObject
 
@@ -34,12 +35,16 @@ class TestFormView(TestCase, PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)
         viewService = self.getViewService()
-        viewService.provideView(IStr, 'widget', IBrowserView, [TextWidget])
+        viewService.provideView(IBytes, 'widget', IBrowserView, [TextWidget])
         request = SchemaTestObject.TestBrowserRequest(
             {'field_id': '1', 'field_title': 'Test New',
              'field_creator': 'srichter@cbu.edu',
              'field_data': StringIO('Data')})
         self._form = SchemaTestObject.EditFactory(request=request)
+        self.__data = {'id': 1,
+                       'title': 'Test New',
+                       'creator': 'srichter@cbu.edu',
+                       'data': 'Data'}
         
     def getViewService(self):
         return getService(None, 'Views')
@@ -67,7 +72,7 @@ class TestFormView(TestCase, PlacelessSetup):
 
     def testGetWidgetForField(self):
         field = SchemaTestObject.ITestObject.getDescriptionFor('id')
-        widget = TextWidget(field, SchemaTestObject.TestBrowserRequest({}))
+        widget = IntWidget(field, SchemaTestObject.TestBrowserRequest({}))
         result = self._form.getWidgetForField(field)
         self._compareWidgets(widget, result)
 
@@ -79,7 +84,7 @@ class TestFormView(TestCase, PlacelessSetup):
 
     def testGetWidgetForFieldName(self):
         field = SchemaTestObject.ITestObject.getDescriptionFor('id')
-        widget = TextWidget(field, SchemaTestObject.TestBrowserRequest({}))
+        widget = IntWidget(field, SchemaTestObject.TestBrowserRequest({}))
         result = self._form.getWidgetForFieldName('id')
         self._compareWidgets(widget, result)
 
@@ -94,7 +99,7 @@ class TestFormView(TestCase, PlacelessSetup):
     def testRenderField(self):
         field = SchemaTestObject.ITestObject.getDescriptionFor('id')
         self.assertEqual(
-            '<input name="field_id" type="text" value="5" size="20"  />',
+            '<input name="field_id" type="text" value="5" size="10"  />',
             self._form.renderField(field))
 
         field = SchemaTestObject.ITestObject.getDescriptionFor('creator')
@@ -103,43 +108,8 @@ class TestFormView(TestCase, PlacelessSetup):
                          self._form.renderField(field))
 
 
-    def testGetAllRawFieldData(self):
-        data = self._form.getAllRawFieldData()
-        result = {'data': StringIO('Data'), 'id': '1', 'title': 'Test New',
-                  'creator': 'srichter@cbu.edu'}
-        for name, value in data.iteritems():
-            if name == 'data':
-                self.assertEqual(result[name].read(), value.read())
-            else:
-                self.assertEqual(result[name], value)
-
-    def testConvertAllFieldData(self):
-        data = self._form.getAllRawFieldData()
-        data = self._form.convertAllFieldData(data)
-        result = {'data': 'Data', 'id': 1, 'title': 'Test New',
-                  'creator': 'srichter@cbu.edu'}
-        for name, value in data.iteritems():
-            self.assertEqual(result[name], value)
-
-    def testValidateAllFieldData(self):
-        data = self._form.getAllRawFieldData()
-        data = self._form.convertAllFieldData(data)
-        self.assertEqual(None, self._form.validateAllFieldData(data))
-
-
-    def testStoreAllDataInContext(self):
-        data = self._form.getAllRawFieldData()
-        data = self._form.convertAllFieldData(data)
-        self._form.storeAllDataInContext(data)
-        obj = self._form.context
-        for name, value in data.iteritems():
-            self.assertEqual(value, getattr(obj, name))
-
     def testSaveValuesInContext(self):
-        data = self._form.getAllRawFieldData()
-        data = self._form.convertAllFieldData(data)
-        # The StrinIO must be reloaded.
-        self.setUp()
+        data = self.__data
         self._form.saveValuesInContext()
         obj = self._form.context
         for name, value in data.iteritems():

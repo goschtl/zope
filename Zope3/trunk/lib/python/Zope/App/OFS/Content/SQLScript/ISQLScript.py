@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.7 2002/09/05 18:55:02 jim Exp $
+$Id: ISQLScript.py,v 1.8 2002/09/07 16:18:50 jim Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -20,7 +20,7 @@ from Zope.ComponentArchitecture import getService
 from Zope.ContextWrapper import ContextMethod
 import Zope.Schema
 
-class SQLConnectionName(Zope.Schema.Str):
+class SQLConnectionName(Zope.Schema.Bytes):
     """SQL Connection Name"""
 
     def items(self):
@@ -39,13 +39,13 @@ class ISQLScript(ISQLCommand):
         description="The Connection Name for the connection to be used.",
         required=1)
 
-    arguments = Zope.Schema.Str(
+    arguments = Zope.Schema.Bytes(
         title="Arguments",
         description="A set of attributes that can be used during the DTML "
                     "rendering process to provide dynamic data.",
         required=0)
 
-    source = Zope.Schema.Str(
+    source = Zope.Schema.Bytes(
         title="Source",
         description="The source of the page template.",
         required=1)

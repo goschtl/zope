@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: _Field.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -41,13 +41,19 @@ class Field(Attribute):
 
     def validate(self, value):
         try:
-            return self.validator(self).validate(value)
+            self.validator(self).validate(value)
         except StopValidation:
-            return value
+            pass
 
-class Str(Field):
+class Bytes(Field):
     """A field representing a Str."""
-    type = str, unicode
+    type = str
+    min_length = None
+    max_length = None
+
+class Text(Field):
+    """A field representing a Str."""
+    type = unicode
     min_length = None
     max_length = None
 

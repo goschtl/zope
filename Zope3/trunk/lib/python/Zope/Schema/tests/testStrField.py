@@ -12,84 +12,108 @@
 #
 ##############################################################################
 """
-$Id: testStrField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
+$Id: testStrField.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Zope.Schema import Str, ErrorNames
+from Zope.Schema import Bytes, Text, ErrorNames
+from Zope.Schema.Exceptions import ValidationError 
 from testField import FieldTest
 
 class StrTest(FieldTest):
     """Test the Str Field."""
 
     def testValidate(self):
-        field = Str(id='field', title='Str field', description='',
+        field = self._Str(id='field', title='Str field', description='',
                        readonly=0, required=0)
         field.validate(None)
-        field.validate('foo')
-        field.validate('')
+        field.validate(self._convert('foo'))
+        field.validate(self._convert(''))
     
     def testValidateRequired(self):
-        field = Str(id='field', title='Str field', description='',
+        field = self._Str(id='field', title='Str field', description='',
                        readonly=0, required=1)
-        field.validate('foo')
+        field.validate(self._convert('foo'))
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
         self.assertRaisesErrorNames(ErrorNames.RequiredEmptyStr,
-                                    field.validate, '')
+                                    field.validate, self._convert(''))
 
     def testAllowedValues(self):
-        field = Str(id="field", title='Str field', description='',
+        field = self._Str(id="field", title='Str field', description='',
                         readonly=0, required=0, allowed_values=('foo', 'bar'))
         field.validate(None)
-        field.validate('foo')
+        field.validate(self._convert('foo'))
 
         self.assertRaisesErrorNames(ErrorNames.InvalidValue,
-                                    field.validate, 'blah')
+                                    field.validate, self._convert('blah'))
 
     def testValidateMinLength(self):
-        field = Str(id='field', title='Str field', description='',
+        field = self._Str(id='field', title='Str field', description='',
                        readonly=0, required=0, min_length=3)
         field.validate(None)
-        field.validate('333')
-        field.validate('55555')
+        field.validate(self._convert('333'))
+        field.validate(self._convert('55555'))
 
-        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '')
-        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
-        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '1')
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
+                                    field.validate, self._convert(''))
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
+                                    field.validate, self._convert('22'))
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
+                                    field.validate, self._convert('1'))
 
     def testValidateMaxLength(self):
-        field = Str(id='field', title='Str field', description='',
+        field = self._Str(id='field', title='Str field', description='',
                        readonly=0, required=0, max_length=5)
         field.validate(None)
-        field.validate('')
-        field.validate('333')
-        field.validate('55555')
+        field.validate(self._convert(''))
+        field.validate(self._convert('333'))
+        field.validate(self._convert('55555'))
 
         self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate,
-                                    '666666')
+                                    self._convert('666666'))
         self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate,
-                                    '999999999')
+                                    self._convert('999999999'))
 
     def testValidateMinLengthAndMaxLength(self):
-        field = Str(id='field', title='Str field', description='',
+        field = self._Str(id='field', title='Str field', description='',
                        readonly=0, required=0, min_length=3, max_length=5)
 
         field.validate(None)
-        field.validate('333')
-        field.validate('4444')
-        field.validate('55555')
+        field.validate(self._convert('333'))
+        field.validate(self._convert('4444'))
+        field.validate(self._convert('55555'))
         
-        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
-        self.assertRaisesErrorNames(ErrorNames.TooShort, field.validate, '22')
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
+                                    field.validate, self._convert('22'))
+        self.assertRaisesErrorNames(ErrorNames.TooShort,
+                                    field.validate, self._convert('22'))
         self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate,
-                                    '666666')
+                                    self._convert('666666'))
         self.assertRaisesErrorNames(ErrorNames.TooLong, field.validate,
-                                    '999999999')
+                                    self._convert('999999999'))
+
+class BytesTest(StrTest):
+    _Str = Bytes
+    _convert = str
+
+    def testBadStringType(self):
+        field = Bytes()
+        self.assertRaises(ValidationError, field.validate, u'hello')
+        
+
+class TextTest(StrTest):
+    _Str = Text
+    def _convert(self, v):
+        return unicode(v, 'ascii')
+
+    def testBadStringType(self):
+        field = Text()
+        self.assertRaises(ValidationError, field.validate, 'hello')
 
 
 def test_suite():
-    return makeSuite(StrTest)
+    return TestSuite((makeSuite(BytesTest), makeSuite(TextTest)))
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: Exceptions.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 
 class StopValidation(Exception):
@@ -35,14 +35,7 @@ class ValidationError(Exception):
         return cmp(self.error_name, other.error_name)
 
 
-class ConversionError(Exception):
-    """If some conversion fails, this exception is raised."""
-
-    def __init__(self, error_name, original_exception=None):
-        Exception.__init__(self)
-        self.error_name = error_name
-        self.original_exception = original_exception
-
+# XXX YAGNI, this is doomed. ;)
 
 class ErrorContainer(Exception):
     """ """

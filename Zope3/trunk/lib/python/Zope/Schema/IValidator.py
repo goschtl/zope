@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IValidator.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: IValidator.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from Interface import Interface
 
@@ -32,4 +32,7 @@ class IValidator(Interface):
         """Validate the the value.
 
         This should not return anything, only raise an exception in case
-        of an invalid value.""" 
+        of an invalid value.
+
+        The special exception, Zope.Schema.StopValidation may be raised to
+        indicate that no more validation should be performed.""" 

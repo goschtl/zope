@@ -12,12 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: IWidget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: IWidget.py,v 1.2 2002/09/07 16:18:48 jim Exp $
 """
-from Zope.ComponentArchitecture.IContextDependent import IContextDependent
+from Zope.ComponentArchitecture.IView import IView
 from Interface.Attribute import Attribute
 
-class IWidget(IContextDependent):
+class IWidget(IView):
     """Generically describes the behavior of a widget.
 
     The widget defines a list of propertyNames, which describes
@@ -32,3 +32,23 @@ class IWidget(IContextDependent):
 
     def getValue(name):
         """Look up a Widget setting (value) by name."""
+
+    def getData():
+        """Return converted and validated widget data.
+
+        A WidgetInputError is returned in the case of one or more
+        errors encountered, inputing, convrting, or validating the data.
+        """
+
+    def getName():
+        """Return the unique name for the widget.
+
+        This must be unique within a set of widgets.
+        """
+
+    def getTitle():
+        """Return the widget title.
+
+        This is the text that will be used to label the widget.
+        """
+

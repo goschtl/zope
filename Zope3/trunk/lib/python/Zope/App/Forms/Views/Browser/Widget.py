@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.8 2002/09/05 18:55:01 jim Exp $
+$Id: Widget.py,v 1.9 2002/09/07 16:18:48 jim Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from Zope.Schema import Converter
+from Zope.App.Forms import Converter
 from Zope.ComponentArchitecture import getAdapter
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -24,6 +24,7 @@ from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
 from Zope.App.Forms.Converter import \
      NoneToEmptyListConverter, ValueToSingleItemListConverter
 from Zope.App.Forms.Widget import Widget
+from Zope.App.Forms.Converter import StrToIntConverter, StrToFloatConverter
 
 
 class BrowserWidget(Widget, BrowserView):
@@ -42,14 +43,17 @@ class BrowserWidget(Widget, BrowserView):
     extra = ''
 
 
-    def convert(self, value):
+    def _getRawData(self):
+        return self.request.form["field_" + self.getName()] 
+
+    def _convert(self, value):
         return self.converter.convert(value)
 
     def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = self.getValue('type'),
-                             name = self.context.getName(),
+                             name = self.getName(),
                              value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -58,7 +62,7 @@ class BrowserWidget(Widget, BrowserView):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = 'hidden',
-                             name = self.context.getName(),
+                             name = self.getName(),
                              value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -121,6 +125,23 @@ class TextWidget(BrowserWidget):
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
 
+class BytesWidget(TextWidget):
+
+    def _convert(self, value):
+        if type(value) is unicode:
+            value = value.encode('ascii')
+
+        return value
+
+class IntWidget(TextWidget):
+    displayWidth = 10
+
+    converter = StrToIntConverter()
+
+class FloatWidget(TextWidget):
+    displayWidth = 10
+
+    converter = StrToFloatConverter()
 
 class TextAreaWidget(BrowserWidget):
     """Textarea widget."""

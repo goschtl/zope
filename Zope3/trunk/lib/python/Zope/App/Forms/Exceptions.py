@@ -11,17 +11,28 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-$Id: IConverter.py,v 1.2 2002/09/07 16:18:48 jim Exp $
-"""
-from Interface import Interface
+"""Validation Exceptions
 
-class IConverter(Interface):
-    """A converter can convert a value from one type to another."""
+$Id: Exceptions.py,v 1.1 2002/09/07 16:18:48 jim Exp $
+"""
 
-    def convert(value):
-        """Call an IConverter with a value, and it will try to convert to
-        another value and return the result. If conversion cannot take
-        place, the convertor will raise a ConversionError.
-        """
+
+class WidgetInputError(Exception):
+    """There were one or more user input errors 
+    """
+
+    def __init__(self, widget_name, widget_title, errors):
+        self.widget_name = widget_name
+        self.widget_title = widget_title
+        self.errors = errors
     
+    
+class ConversionError(WidgetInputError):
+    """If some conversion fails, this exception is raised.
+    """
+
+    def __init__(self, error_name, original_exception=None):
+        Exception.__init__(self)
+        self.error_name = error_name
+        self.original_exception = original_exception
+

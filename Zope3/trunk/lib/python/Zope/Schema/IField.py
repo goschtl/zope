@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: IField.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from Interface import Interface
 import _Field as Field
@@ -24,13 +24,13 @@ class IField(Interface):
     IBool, requiredness settings may make no difference.
     """
 
-    title = Field.Str(
+    title = Field.Text(
         title="Title",
         description="Title.",
         default=""
         )
     
-    description = Field.Str(
+    description = Field.Text(
         title="Description",
         description="Description.",
         default="",
@@ -46,6 +46,11 @@ class IField(Interface):
         description="Required.",
         default=1)
 
+    def validate(value):
+        """Validate that the given value is a valid field entry.
+
+        Returns nothing but raises an error if the value is invalid.
+        """
 
 class ISingleValueField(IField):
     """This field consists always only of one value and it not a homogeneous
@@ -71,13 +76,39 @@ class IBool(ISingleValueField):
         default=0)
 
 
-class IStr(ISingleValueField):
-    """Describes the footprint of a Str variable."""
+class IBytes(ISingleValueField):
+    """Describes the footprint of a Bytes variable."""
 
-    default = Field.Str(
+    default = Field.Bytes(
         title="Default",
         description="Default.",
         default="")
+    
+    min_length = Field.Int(
+        title="Minimum length",
+        description=("Value after whitespace processing cannot have less than "
+                     "min_length characters. If min_length is None, there is "
+                     "no minimum."),
+        required=0,
+        min=0, # needs to be a positive number
+        default=0)
+
+    max_length = Field.Int(
+        title="Maximum length",
+        description=("Value after whitespace processing cannot have greater "
+                     "or equal than max_length characters. If max_length is "
+                     "None, there is no maximum."),
+        required=0,
+        min=0, # needs to be a positive number
+        default=None)
+
+class IText(ISingleValueField):
+    """Describes the footprint of a Str variable."""
+
+    default = Field.Text(
+        title="Default",
+        description="Default.",
+        default=u"")
     
     min_length = Field.Int(
         title="Minimum length",

@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.8 2002/09/05 18:55:03 jim Exp $
+$Id: SQLScriptEdit.py,v 1.9 2002/09/07 16:18:50 jim Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget
 from Zope.App.Forms.Widget import CustomWidget
 from Zope.App.Forms.Views.Browser.FormView import FormView
-from Zope.Schema.Converter import StrToIntConverter
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 
 class SQLScriptEdit(FormView):
@@ -30,10 +29,9 @@ class SQLScriptEdit(FormView):
                                                 height=3, width=40),
                       'source': CustomWidget(Widget.TextAreaWidget,
                                              height=10, width=80),
-                      'maxCache': CustomWidget(Widget.TextWidget,
-                                         converter=StrToIntConverter()),
-                      'cacheTime': CustomWidget(Widget.TextWidget,
-                                         converter=StrToIntConverter()) }
+                      'maxCache': Widget.IntWidget,
+                      'cacheTime': Widget.IntWidget,
+                      }
     fields_order = ('connectionName', 'arguments', 'source',
                     'maxCache', 'cacheTime')
 

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Validator.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: Validator.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -196,6 +196,7 @@ class StrValidator(SimpleValidator):
     validators = SimpleValidator.validators + [StrRequiredValidator,
                                                MinimumLengthValidator,
                                                MaximumLengthValidator]
+
 
 class BoolValidator(SimpleValidator):
     """Completely validates a Bool Field."""

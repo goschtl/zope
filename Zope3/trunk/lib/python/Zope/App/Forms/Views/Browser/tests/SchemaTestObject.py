@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.8 2002/09/05 18:55:01 jim Exp $
+$Id: SchemaTestObject.py,v 1.9 2002/09/07 16:18:48 jim Exp $
 """
 from Interface import Interface
 import Zope.Schema
-from Zope.Schema.Converter import StrToIntConverter
+from Zope.App.Forms.Converter import StrToIntConverter
 
 from Zope.Publisher.HTTP.tests.TestRequest import TestRequest
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
@@ -38,7 +38,7 @@ class TestBrowserRequest(TestRequest):
         return IBrowserView
 
 
-class Email(Zope.Schema.Str):
+class Email(Zope.Schema.Bytes):
     """A simple customized field."""
     pass
 
@@ -50,11 +50,11 @@ class ITestObject(Interface):
         title="Id",
         required=1)
     
-    title = Zope.Schema.Str(
+    title = Zope.Schema.Bytes(
         title="Title",
         required=0)
     
-    data = Zope.Schema.Str(
+    data = Zope.Schema.Bytes(
         title="Data",
         description="Data stored by the object",
         required=0)
@@ -81,8 +81,7 @@ class Edit(FormView):
     """A simple Edit View"""
     form = ViewPageTemplateFile('testEditForm.pt')
     schema = ITestObject
-    custom_widgets = {'id': CustomWidget(Widget.TextWidget,
-                                         converter=StrToIntConverter()),
+    custom_widgets = {'id': Widget.IntWidget,
                       'creator': CustomWidget(Widget.TextWidget,
                                               displayWidth=30),
                       'data': CustomWidget(Widget.FileWidget)}

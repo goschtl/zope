@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.1 2002/09/05 18:55:03 jim Exp $
+$Id: _Schema.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from Interface import Interface
 import Validator
@@ -75,10 +75,15 @@ def wire():
     implements(Bool, IBool, 0)
     Bool.validator = Validator.BoolValidator
 
-    from IField import IStr
-    from _Field import Str
-    implements(Str, IStr, 0)
-    Str.validator = Validator.StrValidator
+    from IField import IBytes
+    from _Field import Bytes
+    implements(Bytes, IBytes, 0)
+    Bytes.validator = Validator.StrValidator
+
+    from IField import IText
+    from _Field import Text
+    implements(Text, IText, 0)
+    Text.validator = Validator.StrValidator
 
     from IField import IInt
     from _Field import Int

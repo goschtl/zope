@@ -7,21 +7,27 @@
   <!-- Form Widget View Directives -->
   <browser:view
       permission="Zope.View"
-      for="Zope.Schema.IField.IStr"
+      for="Zope.Schema.IField.IText"
       name="widget"
       factory=".Widget.TextWidget." />
+
+  <browser:view
+      permission="Zope.View"
+      for="Zope.Schema.IField.IBytes"
+      name="widget"
+      factory=".Widget.BytesWidget." />
 
   <browser:view
       permission="Zope.View"
       for="Zope.Schema.IField.IInt"
       name="widget"
-      factory=".Widget.TextWidget." />
+      factory=".Widget.IntWidget." />
 
   <browser:view
       permission="Zope.View"
       for="Zope.Schema.IField.IFloat"
       name="widget"
-      factory=".Widget.TextWidget." />
+      factory=".Widget.FloatWidget." />
 
   <browser:view
       permission="Zope.View"

@@ -12,29 +12,29 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.1 2002/09/05 18:55:04 jim Exp $
+$Id: testSchema.py,v 1.2 2002/09/07 16:18:51 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll
 from Interface import Interface
-from Zope.Schema import Str, ErrorNames
+from Zope.Schema import Bytes, ErrorNames
 from Zope.Schema import validateMapping, validateMappingAll, getFields
 
 class ISchemaTest(Interface):
-    title = Str(
+    title = Bytes(
         title="Title",
         description="Title",
         default="",
         required=1)
     
-    description = Str(
+    description = Bytes(
         title="Description",
         description="Description",
         default="",
         required=1)
 
-    spam = Str(
+    spam = Bytes(
         title="Spam",
         description="Spam",
         default="",

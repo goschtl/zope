@@ -12,11 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.11 2002/09/05 18:55:01 jim Exp $
+$Id: FormView.py,v 1.12 2002/09/07 16:18:48 jim Exp $
 """
 from Zope.Schema.IField import IField
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
-     ConversionError, ValidationErrorsAll, ConversionErrorsAll
+     ValidationErrorsAll, ConversionErrorsAll
+from Zope.App.Forms.Exceptions import ConversionError
 from Zope.Schema import getFields, validateMappingAll
 #from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getView
@@ -73,49 +74,16 @@ class FormView(BrowserView):
             value = getattr(self.context, field.getName())
         return widget.render(value)
 
-    def getAllRawFieldData(self):
-        """Returns field data retrieved from request."""
-        request = self.request
-        data = {}
-        for field in self.getFields():
-            name = field.getName()
-            raw_data = request.form.get('field_' + name)
-            data[name] = raw_data
-        return data
-
-    def convertAllFieldData(self, raw_data):
-        """Convert the raw data into valid objects."""
-        result = {}
-        errors = []
-        for name, value in raw_data.iteritems():
-            widget = self.getWidgetForFieldName(name)
-            try:
-                result[name] = widget.convert(value)
-            except ConversionError, error:
-                errors.append((name, error))
-
-        if errors:
-            raise ConversionErrorsAll, errors
-
-        return result
-            
-    def validateAllFieldData(self, data):
-        """Validate all the data."""
-        validateMappingAll(self.schema, data)
-
-    def storeAllDataInContext(self, data):
-        """Store the data back into the context object."""
-        context = removeAllProxies(self.context)
-        for name, value in data.iteritems():
-            if value != getattr(context, name):
-                setattr(context, name, value)
-
     def saveValuesInContext(self):
         'See Zope.App.Forms.Views.Browser.IForm.IWriteForm'
-        data = self.getAllRawFieldData()
-        data = self.convertAllFieldData(data)
-        self.validateAllFieldData(data)
-        self.storeAllDataInContext(data)
+
+        context = removeAllProxies(self.context)
+        for field in self.getFields():            
+            widget = self.getWidgetForField(field)
+            name = field.getName()
+            value = widget.getData()
+            if value != getattr(context, name):
+                setattr(context, name, value)
 
     def action(self):
         'See Zope.App.Forms.Views.Browser.IForm.IWriteForm'

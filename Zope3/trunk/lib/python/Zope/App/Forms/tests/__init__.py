@@ -11,18 +11,3 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-$Id: IConverter.py,v 1.1 2002/09/05 18:55:03 jim Exp $
-"""
-from Interface import Interface
-
-class IConverter(Interface):
-    """A converter can convert a value from one type to another."""
-
-    def convert(value):
-        """Call an IConverter with a value, and it will try to convert to
-        another value and return the result. If conversion cannot take
-        place, the convertor will raise a ConversionError. (or a
-        ValidationError in case of Converters using Schemas inside?)
-        """
-    
