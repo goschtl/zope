@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.5 2003/07/10 09:27:37 alga Exp $
+$Id: __init__.py,v 1.6 2003/08/08 23:23:19 srichter Exp $
 """
 
 from __future__ import generators
@@ -447,7 +447,6 @@ class SimplePrincipal(Persistent):
     implements(IUserSchemafied)
 
     def __init__(self, login, password, title='', description=''):
-
         self.id = ''
         self.login = login
         self.password = password
