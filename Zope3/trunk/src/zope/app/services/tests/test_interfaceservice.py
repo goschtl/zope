@@ -35,7 +35,7 @@ class Test(IInterfaceServiceTests, unittest.TestCase):
 
     def tearDown(self):
         setup.placefulTearDown()
-        
+
     def getServices(self):
         rootFolder = setup.buildSampleFolderTree()
         mgr = setup.createServiceManager(rootFolder)

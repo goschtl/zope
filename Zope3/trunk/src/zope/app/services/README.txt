@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.9 $
+:Version: $Revision: 1.10 $
 
 This package includes implementations of several local services.
 It also contains infrastructure for implementing local services.
@@ -79,7 +79,7 @@ There are two kinds of registrations:
 
 - Local-object registrations register objects in site-management
   folders, such as service instances, utility instances, database
-  connections, caches, and templates.  
+  connections, caches, and templates.
 
   Local objects are named using a path.
 
@@ -89,17 +89,17 @@ There are two kinds of registrations:
 
   Local-object registrations can also be browsed and edited in the
   registration manager for the folder containing the registered
-  components. 
+  components.
 
 - Module-global registrations register objects stored in
   modules. Objects in modules aren't managable directly, so we can't
   manage their registrations through them.  (The state of an object
   stored in a module must be represented solely by the module source.)
-  
+
   Module-global objects are named using dotted names.
 
   Module-global registrations are added, browsed and edited in
-  registration mananagers.  
+  registration mananagers.
 
 Implementation of services that support registration is substantially
 more difficult that implementation of non-registry services.

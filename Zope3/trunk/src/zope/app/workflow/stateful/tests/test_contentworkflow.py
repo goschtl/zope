@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.5 2003/08/03 22:06:28 philikon Exp $
+$Id: test_contentworkflow.py,v 1.6 2003/08/04 23:12:55 sidnei Exp $
 """
 import unittest
 
@@ -124,13 +124,13 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
         self.assertEqual(
             manager.getProcessDefinitionNamesForObject(TestObject3()),
             ())
-        
+
     def test_register(self):
         manager = self.getManager()
-        manager._registry = {}        
+        manager._registry = {}
         manager.register(IFace1, 'default')
         self.assertEqual(manager._registry, {IFace1: ('default',)})
-        
+
     def test_unregister(self):
         manager = self.getManager()
         manager.unregister(IFace1, 'default')
