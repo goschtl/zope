@@ -1,6 +1,18 @@
 Five Changes
 ============
 
+Trunk
+-----
+
+* Five now supports the browser:menu, menuItem and menuItems directives.
+
+* A new Five-specific directive has been added: five:pagesFromDirectory.
+  This adds one page for each .pt file in a directory to the specified
+  interface. This is useful for Five integration with CMF and other
+  systems that have Page Templates macroes that need to be shared
+  between Zope2 and Five.
+
+
 Five 0.2b
 ---------
 
