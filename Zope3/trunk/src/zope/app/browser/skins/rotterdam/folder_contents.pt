@@ -5,11 +5,12 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-<div metal:define-macro="contents">
+<div metal:define-macro="contents" 
+     tal:define="container_contents view/listContentInfo"
+     >
 
       <table id="sortable" class="listing" summary="Content listing"
              tal:condition="request/type_name|nothing"
-             tal:define="container_contents view/listContentInfo"
              >
     
         <thead> 
@@ -83,7 +84,6 @@
 
   <form name="containerContentsForm" method="get" action="." 
         tal:condition="not:request/type_name|nothing"
-        tal:define="container_contents view/listContentInfo"
         >
 
 
