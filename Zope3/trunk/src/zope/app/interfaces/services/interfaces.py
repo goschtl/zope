@@ -13,11 +13,12 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: interfaces.py,v 1.3 2003/01/06 18:39:37 stevea Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.component.interfacefield import InterfaceField
+from zope.app.component.interfacefield import InterfacesField
 from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
 from zope.app.services.field import ComponentLocation
@@ -29,8 +30,8 @@ class IAdapterConfigurationInfo(Interface):
         title = u"For interface",
         description = u"The interface of the objects being adapted",
         readonly = True,
-        required = False,  # XXX the UI should be explicit about allowing
-        )                  #     no selection.
+        basetype = None
+        )
 
     providedInterface = InterfaceField(
         title = u"Provided interface",
@@ -61,6 +62,7 @@ class IViewConfigurationInfo(Interface):
         description = u"The interface of the objects being viewed",
         readonly = True,
         required = True,
+        basetype = None
         )
 
     presentationType = InterfaceField(
@@ -68,7 +70,7 @@ class IViewConfigurationInfo(Interface):
         description = u"The presentation type of a view",
         readonly = True,
         required = True,
-        type = IPresentation,
+        basetype = IPresentation,
         )
 
     factoryName = BytesLine(

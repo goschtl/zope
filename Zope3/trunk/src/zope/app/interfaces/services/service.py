@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.3 2002/12/30 14:03:14 stevea Exp $
+$Id: service.py,v 1.4 2003/01/06 18:39:37 stevea Exp $
 """
 __metaclass__ = type
 
@@ -141,7 +141,7 @@ class IViewPackageInfo(Interface):
         title = u"Presentation type",
         description = u"The presentation type of a view",
         required = True,
-        type = IPresentation,
+        basetype = IPresentation,
         default = IBrowserPresentation,
         )
 

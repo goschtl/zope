@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.4 2003/01/06 14:49:12 stevea Exp $
+$Id: interfacewidget.py,v 1.5 2003/01/06 18:39:28 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -21,40 +21,112 @@ from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.forms import WidgetInputError
 from zope.app.form.widget import Widget
 from zope.publisher.browser import BrowserView
-from zope.app.browser.form.widget import BrowserWidget, DisplayWidget
 from zope.component import getService
-from zope.exceptions import NotFoundError
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 
-class BaseSingleWidget:
 
-    def _convert(self, name):
-        return nameToInterface(self.context.context, name)
+class InterfaceWidget(Widget, BrowserView):
+    __implements__ = IBrowserWidget
 
-    def _unconvert(self, interface):
-        return interfaceToName(interface)
+    def haveData(self):
+        if self.name in self.request.form:
+            v = self.request.form[self.name]
+            return v and nameToInterface(self.context, v)
+        return False
+   
+    def getData(self, optional=0):
+        field = self.context
+        value = self.request.form.get(self.name, self) # self used as marker
+        if value is self:
+            # No user input
+            if field.required and not optional:
+                raise MissingInputError(field.__name__, field.title,
+                                        'the field is required')
+            return field.default
 
-class InterfaceWidget(BaseSingleWidget, BrowserWidget):
+        if value == 'None':
+            value = None
+        else:
+            try:
+                value = nameToInterface(field, value)
+            except ComponentLookupError:
+                # Convert to conversion error
+                exc = ConversionError(sys.exc_info()[1])
+                raise ConversionError, exc, sys.exc_info()[2]
 
+        if not optional:
+            try:
+                field.validate(value)
+            except ValidationError, v:
+                raise WidgetInputError(self.context.__name__,
+                                       self.title, str(v))
+
+        return value
+        
     def __call__(self):
         name = self.name
         search_name = name + ".search"
         search_string = self.request.form.get(search_name, '')
 
+        value = self.request.form.get(self.name, self) # self used as marker
+        
         field = self.context
         service = getService(field.context, "Interfaces")
-        base = field.type
+        base = field.basetype
+        include_none = base is None
         if base == Interface:
             base = None
         interfaces = list(service.searchInterface(search_string, base=base))
         interfaces.sort()
-        interfaces = map(self._unconvert, interfaces)
+        interfaces = map(interfaceToName, interfaces)
+        if include_none:
+            interfaces = ['None'] + interfaces
 
-        selected = self._showData()
+        if self._data is None:
+            selected = self.getData(1)
+        else:
+            selected = self._data
+
+        # if nothing selected in the form...
+        if value is self:
+            selected = None
+        else:
+            selected = interfaceToName(selected)
 
         return renderInterfaceSelect(
                 interfaces, selected, search_name, search_string, name)
+
+    def hidden(self):
+        'See IBrowserWidget'
+        if self._data is None:
+            data = self.getData(1)
+        else:
+            data = self._data
+        if data is None:
+            data = 'None'
+        return ('<input type="hidden" name="%s" value="%s" />'
+                        % (self.name, interfaceToName(data))
+                        )
+       
+    def label(self):
+        return '<label for="%s">%s</label>' % (
+            self.name,
+            self.title,
+            )
+
+    def row(self):
+        return "<td>%s</td><td>%s</td>" % (self.label(), self())
+
+    # --- deprecated methods of IBrowserWidget
+
+    def renderHidden(self, value):
+        'See IBrowserWidget'
+        raise NotImplementedError
+
+    def render(self, value):
+        'See IBrowserWidget'
+        raise NotImplementedError
 
 
 class MultiInterfaceWidget(Widget, BrowserView):
@@ -68,9 +140,11 @@ class MultiInterfaceWidget(Widget, BrowserView):
     #  
     def haveData(self):
         name_i = self.name+'.i'
+        field = self.context
         for k,v in self.request.form.iteritems():
             if k.startswith(name_i):
-                if nameToInterface(v) is not None:
+                # XXX write test for this code path
+                if v and nameToInterface(field, v):
                     return True
         return False
 
@@ -114,7 +188,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
         name_search_i = name+'.search.i'
         
         service = getService(field.context, "Interfaces")
-        base = field.value_type
+        base = field.basetype
+        include_none = base is None
         if base == Interface:
             base = None
 
@@ -185,6 +260,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
             interfaces = list(service.searchInterface(search, base=base))
             interfaces.sort()
             interfaces = map(interfaceToName, interfaces)
+            if include_none:
+                interfaces = ['None'] + interfaces
             search_name = '%s.search.i%s' % (name, count)
             rendered_selections.append(
                 renderInterfaceSelect(interfaces, value, search_name,
@@ -228,8 +305,13 @@ class MultiInterfaceWidget(Widget, BrowserView):
         raise NotImplementedError
 
             
-class InterfaceDisplayWidget(BaseSingleWidget, DisplayWidget):
-    pass
+class InterfaceDisplayWidget(InterfaceWidget):
+    def __call__(self):
+        if self._data is None:
+            data = self.getData(1)
+        else:
+            data = self._data
+        return interfaceToName(data)
 
 class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
     def __call__(self):
@@ -241,13 +323,19 @@ class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
 
 def renderInterfaceSelect(
         interfaces, selected, search_name, search_string, select_name):
+    """all of the args are strings"""
     options = ['<option value="">---select interface---</option>']
     for interface in interfaces:
-        options.append('<option value="%s"%s>%s</option>'
-                       % (interface,
-                          interface == selected and ' selected' or '',
-                          interface)
-                       )
+        if interface == 'None':
+            options.append('<option value="None"%s>Anything</option>'
+                           % (interface == selected and ' selected' or '')
+                           )
+        else:
+            options.append('<option value="%s"%s>%s</option>'
+                           % (interface,
+                              interface == selected and ' selected' or '',
+                              interface)
+                           )
 
     search_field = '<input type="text" name="%s" value="%s">' % (
         search_name, search_string)
@@ -258,12 +346,12 @@ def renderInterfaceSelect(
     return HTML
 
 def nameToInterface(context, name):
-    if not name:
+    if name is 'None':
         return None
     service = getService(context, "Interfaces")
     return service.getInterface(name)
 
 def interfaceToName(interface):
     if interface is None:
-        return None
+        return 'None'
     return interface.__module__ + '.' + interface.__name__

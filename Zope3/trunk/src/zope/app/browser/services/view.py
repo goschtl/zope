@@ -21,7 +21,7 @@
 
   ViewConfigrationAdd
 
-$Id: view.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
+$Id: view.py,v 1.4 2003/01/06 18:39:31 stevea Exp $
 """
 __metaclass__ = type
 
@@ -51,7 +51,7 @@ class IViewSearch(Interface):
                                   )
     presentationType = InterfaceField(title=u"Provided interface",
                                       required=False,
-                                      type=IPresentation
+                                      basetype=IPresentation
                                       )
 
     viewName = TextLine(title=u'View name',

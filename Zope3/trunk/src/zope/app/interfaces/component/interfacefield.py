@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacefield.py,v 1.3 2002/12/30 18:43:07 stevea Exp $
+$Id: interfacefield.py,v 1.4 2003/01/06 18:39:36 stevea Exp $
 """
 
 from zope.schema import Field
@@ -23,16 +23,18 @@ from zope.interface import Interface
 class IInterfaceField(IValueSet):
     u"""A type of Field that has an Interfaces as its value."""
 
-    type = Field(title=u"Base type",
-                 description=u"All values must extend (or be) this type",
+    basetype = Field(title=u"Base type",
+                 description=u"All values must extend (or be) this type,"
+                              " unless it is None which means 'anything'.",
                  default=Interface,
                  )
 
 class IInterfacesField(ITuple):
     u"""A type of Field that is has a tuple of Interfaces as its value."""
 
-    value_types = Field(
+    basetype = Field(
             title=u"Base type",
-            description=u"All values must extend or be these types",
-            default=(Interface,),
+            description=u"All values must extend or be this type,"
+                         " unless it is None, which means 'anything'.",
+            default=Interface,
             )
