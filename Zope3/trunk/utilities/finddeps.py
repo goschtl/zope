@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.4 2004/03/11 17:07:25 fdrake Exp $
+$Id: finddeps.py,v 1.5 2004/03/11 17:17:07 fdrake Exp $
 """
 import sys
 import getopt
@@ -119,7 +119,7 @@ def getDependenciesOfPythonFile(path):
 
 def getDependenciesOfZCMLFile(path):
     """Get dependencies from ZCML file."""
-    localModule = os.path.split(path)[0].replace(ZOPESRC+'/', '')
+    localModule = os.path.dirname(path).replace(ZOPESRC+'/', '')
     localModule = localModule.replace('/', '.')
     deps = []
     lineno = 0
@@ -162,7 +162,7 @@ def filterStandardModules(deps):
         # built-ins (like sys) do not have a file associated
         if not hasattr(module, '__file__'):
             continue
-        dir = os.path.split(module.__file__)[0]
+        dir = os.path.dirname(module.__file__)
         if dir.startswith(ZOPESRC) and dep.path not in ('zope', 'zope.app'):
             filteredDeps.append(dep)
     return filteredDeps
