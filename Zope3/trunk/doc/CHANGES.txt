@@ -309,6 +309,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #353 (applySkin does not work in functional doctests).
+
       - Fixed issue #293 (SequenceWidget and CustomWidgetFactory).
 
       - TextWidgets set the value attribute to "value" when the field

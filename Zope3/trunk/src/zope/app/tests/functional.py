@@ -596,17 +596,13 @@ class HTTPCaller(CookieHandler):
                     request_cls = factory(StringIO(), StringIO(), {}).__class__
                     publication_cls = SOAPPublication
                 else:
-                    request_cls = type(BrowserRequest.__name__,
-                                       (BrowserRequest,),
-                                       {})
-                    zope.interface.classImplements(request_cls, _getDefaultSkin())
+                    request_cls = BrowserRequest
                     publication_cls = BrowserPublication
             elif (method == 'POST' and is_xml):
                 request_cls = XMLRPCRequest
                 publication_cls = XMLRPCPublication
             else:
-                request_cls = type(BrowserRequest.__name__, (BrowserRequest,), {})
-                zope.interface.classImplements(request_cls, _getDefaultSkin())
+                request_cls = BrowserRequest
                 publication_cls = BrowserPublication
             
         else:
@@ -617,6 +613,9 @@ class HTTPCaller(CookieHandler):
             path, instream, outstream,
             environment=environment,
             request=request_cls, publication=publication_cls)
+        if request_cls is BrowserRequest:
+            # Only browser requests have skins
+            zope.interface.directlyProvides(request, _getDefaultSkin())
         request.response.setHeaderOutput(header_output)
         response = DocResponseWrapper(
             request.response, outstream, path, header_output)

@@ -21,6 +21,7 @@ import unittest
 import transaction
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
 from zope.app.tests.functional import FunctionalDocFileSuite
+from zope.app.tests.functional import FunctionalTestCase
 
 class CookieFunctionalTest(BrowserTestCase):
 
@@ -121,10 +122,21 @@ class CookieFunctionalTest(BrowserTestCase):
         self.assertEquals(response.getBody().strip(), 'aid=aval;bid=bval')
 
 
+class SkinsAndHTTPCaller(FunctionalTestCase):
+
+    def test_skins(self):
+        # Regression test for http://zope.org/Collectors/Zope3-dev/353
+        from zope.app.tests.functional import HTTPCaller
+        http = HTTPCaller()
+        response = http("GET /++skin++Basic HTTP/1.1\n\n")
+        self.assert_("zopetopBasic.css" in str(response))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SampleFunctionalTest))
     suite.addTest(unittest.makeSuite(CookieFunctionalTest))
+    suite.addTest(unittest.makeSuite(SkinsAndHTTPCaller))
     suite.addTest(FunctionalDocFileSuite('doctest.txt'))
     return suite
 
