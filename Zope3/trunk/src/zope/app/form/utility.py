@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.8 2003/01/28 04:06:53 rdmurray Exp $
+$Id: utility.py,v 1.9 2003/01/28 04:48:08 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -42,6 +42,10 @@ from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.interfaces.form import InputErrors
 from zope.component.interfaces import IViewFactory
 
+def _fieldlist(names, schema):
+    if not names: fields = getFieldsInOrder(schema)
+    else: fields = [ (name, schema[name]) for name in names ]
+    return fields
 
 def setUpWidget(view, name, field, value=None, prefix=None,
                 force=0, vname=None):
@@ -95,9 +99,7 @@ def setUpWidgets(view, schema, prefix=None, force=0,
     """Set up widgets for the fields defined by a schema
 
     """
-    if not names: fields = getFieldsInOrder(schema)
-    else: fields = [ (name, schema[name]) for name in names ]
-    for (name, field) in fields:
+    for (name, field) in _fieldlist(names, schema):
         setUpWidget(view, name, field, initial.get(name),
                     prefix=prefix, force=force)
 
@@ -113,10 +115,7 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
     if content is None:
         content = view.context
 
-    if not names: fields = getFieldsInOrder(schema)
-    else: fields = [ (name, schema[name]) for name in names ]
-
-    for name, field in fields:
+    for name, field in _fieldlist(names, schema):
         if field.readonly:
             vname = 'display'
         else:
@@ -133,20 +132,15 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
                     prefix = prefix, force = force, vname = vname)
 
 def haveWidgetsData(view, schema, names=None):
-    """Collect the user-entered data defined by a schema
+    """Check if we have any user-entered data defined by a schema
 
-    Data is collected from view widgets. For every field in the
-    schema, we look for a view of the same name and get it's data.
-
-    The data are returned in a mapping from field name to value.
+    Returns true if any schema field related widget has data
+    that was entered by the user.
     """
-
-    for name in (names or schema):
-        field = schema[name]
-        if IField.isImplementedBy(field):
-            # OK, we really got a field
-            if  getattr(view, name).haveData():
-                return True
+    
+    for name, field in _fieldlist(names, schema):
+        if  getattr(view, name).haveData():
+            return True
 
     return False
 
@@ -167,19 +161,16 @@ def getWidgetsData(view, schema, required=1, names=None):
     result = {}
     errors = []
 
-    for name in (names or schema):
-        field = schema[name]
-        if IField.isImplementedBy(field):
-            # OK, we really got a field
-            widget = getattr(view, name)
-            if widget.haveData():
-                try:
-                    result[name] = widget.getData()
-                except InputErrors, v:
-                    errors.append(v)
-            elif required and field.required:
-                raise MissingInputError(
-                    widget.name, widget.title, name)
+    for name, field in _fieldlist(names, schema):
+        widget = getattr(view, name)
+        if widget.haveData():
+            try:
+                result[name] = widget.getData()
+            except InputErrors, v:
+                errors.append(v)
+        elif required and field.required:
+            raise MissingInputError(
+                widget.name, widget.title, name)
 
     if errors:
         raise WidgetsError(*errors)

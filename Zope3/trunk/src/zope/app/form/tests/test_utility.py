@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.6 2003/01/28 04:06:54 rdmurray Exp $
+$Id: test_utility.py,v 1.7 2003/01/28 04:48:09 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -360,6 +360,19 @@ class Test(PlacelessSetup, TestCase):
                          {'title': u'ft',
                           'description': u'fd'})
 
+    def test_getWidgetsData_w_names(self):
+        c = C()
+        request = TestRequest()
+        request.form['field.title'] = u'ft'
+        request.form['field.description'] = u'fd'
+        view = BrowserView(c, request)
+        setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
+        self.assertEqual(getWidgetsData(view, I, names=['title']),
+                         {'title': u'ft'})
+        self.assertRaises(KeyError, getWidgetsData, view, I, names=['bar'])
+        self.assertRaises(AttributeError, getWidgetsData, view, I,
+                          names=['foo'])
+
     def test_haveWidgetsData(self):
         c = C()
         request = TestRequest()
@@ -369,6 +382,20 @@ class Test(PlacelessSetup, TestCase):
 
         request.form['field.description'] = u'fd'
         self.failUnless(haveWidgetsData(view, I))
+
+    def test_haveWidgetsData_w_names(self):
+        c = C()
+        request = TestRequest()
+        view = BrowserView(c, request)
+        setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
+        self.failIf(haveWidgetsData(view, I))
+
+        request.form['field.description'] = u'fd'
+        self.failUnless(haveWidgetsData(view, I))
+        self.failIf(haveWidgetsData(view, I, names=['title']))
+        self.assertRaises(KeyError, haveWidgetsData, view, I, names=['bar'])
+        self.assertRaises(AttributeError, haveWidgetsData, view, I,
+                          names=['foo'])
 
     def test_getWidgetsData_w_default(self):
         c = C()
