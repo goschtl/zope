@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_config.py,v 1.2 2003/07/29 19:56:45 jim Exp $
+$Id: test_config.py,v 1.3 2003/07/29 20:39:40 jim Exp $
 """
 
 import unittest
@@ -245,6 +245,19 @@ def test_trailing_dot_in_resolve():
     ...
     ValueError: The given name is blank
     """
+
+def test_bad_import():
+    """Dotted names are no longer allowed to end in dots
+
+    >>> c = config.ConfigurationContext()
+
+    >>> c.resolve('zope.configuration.tests.victim.x')
+    Traceback (most recent call last):
+    ...
+    ConfigurationError: Couldn't import zope.configuration.tests.victim,""" \
+                                       """ No module named bad_to_the_bone
+    """
+    
 
 
 def test_suite():

@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.3 2003/07/29 19:56:42 jim Exp $
+$Id: config.py,v 1.4 2003/07/29 20:39:37 jim Exp $
 """
 
 from keyword import iskeyword
@@ -150,12 +150,20 @@ class ConfigurationContext(object):
         # Import the module
         if not mname:
             # Just got a single name. Must me a module
-            return __import__(oname, *_import_chickens)
+            mname = oname
+            oname = ''
         
         try:
             mod = __import__(mname, *_import_chickens)
-        except ImportError:
-            raise ConfigurationError("Couldn't import %s" % mname)
+        except ImportError, v:
+            raise ConfigurationError, (
+                "Couldn't import %s, %s" % (mname, v)
+                ), sys.exc_info()[2]
+
+        if not oname:
+            # see not mname case above
+            return mod
+        
 
         try:
             return getattr(mod, oname)
