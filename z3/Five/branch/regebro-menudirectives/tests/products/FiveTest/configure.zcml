@@ -318,18 +318,21 @@
   <browser:menuItems
       for=".interfaces.ISimpleContent"
       menu="testmenu">
+      
       <menuItem
           title="Test Menu Item 2"
           action="parakeet.html"
           description="This is a test menu item"
           permission="zope2.Public"
-      />
+          />
+      
       <menuItem
           title="Test Menu Item 3"
           action="falcon.html"
           description="This is a test menu item"
           permission="zope2.Public"
-      />
+          />
+          
   </browser:menuItems>
     
   <!-- subscribe to all events -->
