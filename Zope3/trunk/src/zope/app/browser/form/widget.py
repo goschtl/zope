@@ -13,9 +13,8 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.52 2003/08/17 06:05:44 philikon Exp $
+$Id: widget.py,v 1.53 2003/09/16 21:58:20 srichter Exp $
 """
-
 __metaclass__ = type
 
 import re, cgi
