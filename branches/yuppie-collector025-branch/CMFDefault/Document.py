@@ -46,7 +46,7 @@ They may also contain HTML, or "plain" text.
   , 'aliases'        : {'(Default)':'document_view',
                         'view':'document_view',
                         'gethtml':'source_html'}
-  , 'actions'        : ( { 'id'            : 'view' 
+  , 'actions'        : ( { 'id'            : 'view'
                          , 'name'          : 'View'
                          , 'action': 'string:${object_url}/document_view'
                          , 'permissions'   : (View,)
@@ -338,7 +338,6 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             self.text_format = 'plain'
         else:
             self.text_format = 'structured-text'
-    setFormat = WorkflowAction(setFormat)
 
     ## FTP handlers
     security.declareProtected(ModifyPortalContent, 'PUT')
