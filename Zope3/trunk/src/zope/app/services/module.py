@@ -13,105 +13,73 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.11 2003/06/26 19:11:49 fdrake Exp $
+$Id: module.py,v 1.12 2003/06/30 16:25:22 jim Exp $
 """
 
 from persistence import Persistent
-from zodb.code.module import PersistentModuleManager
-from zodb.code.interfaces import IPersistentModuleManager
+from zodb.code.module import PersistentModule, compileModule
 from zodb.code.interfaces import IPersistentModuleImportRegistry
 from zodb.code.interfaces import IPersistentModuleUpdateRegistry
 
-from zope.component import getServiceManager
-from zope.context import ContextMethod
-
 from zope.interface import implements
 
+from zope.app import zapi
 from zope.app.event import function
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.file import IFileFactory
-from zope.app.interfaces.container import IDeleteNotifiable
-from zope.app.context import ContextWrapper
+from zope.app.interfaces.services.module import IModuleManager
 
-
-class Registry(Persistent):
-
-    # This is a wrapper around the module service, which is actually
-    # the service manager.  The service manager is found via context,
-    # but the PersistentModuleManager doesn't know about context.  To
-    # make it behave contextually, this Registry class collaborates
-    # with the Manager class below to delegate to the registry found
-    # via context.
-
-    implements(IPersistentModuleImportRegistry,
-               IPersistentModuleUpdateRegistry)
-
-    def __init__(self):
-        self._v_module_service = None
-
-    def setModuleService(self, ms):
-        # This method is called by methods of Manager below
-        self._v_module_service = ms
-
-    # The next three methods are called by the persistent module manager
-
-    def findModule(self, name):
-        return self._v_module_service.findModule(name)
-
-    def setModule(self, name, module):
-        return self._v_module_service.setModule(name, module)
-
-    def delModule(self, name):
-        return self._v_module_service.delModule(name)
-
-    def __getstate__(self):
-        # So pickling this object doesn't include the module service
-        return {}
 
 class Manager(Persistent):
 
-    implements(IPersistentModuleManager, IDeleteNotifiable)
+    implements(IModuleManager, IAttributeAnnotatable)
 
-    # The registry for the manager is the ServiceManager.
-    # The association between this manager and the registry
-    # is static, but the static association can't be stored
-    # explicitly in Zope.
+    zapi.ContextAwareDescriptors()
 
-    # XXX There is no locking, but every call to setModuleService()
-    # for a particular instance should have the same manager argument.
+    def __init__(self, name, source):
+        self.name = name
+        self._source = None
+        self.source = source
 
-    # XXX It would be nice if the lookup via getServiceManager()
-    # occurred less often.  Best would be to do it only when the
-    # object is unpickled.
+    def __setstate__(self, state):
+        manager = state.get('_manager')
+        if manager is None:
+            return Persistent.__setstate__(self, state)
 
-    def __init__(self):
-        self._registry = Registry()
-        self._manager = PersistentModuleManager(self._registry)
+        # We need to conver an old-style manager
+        self._module = manager._module
+        self.name = manager.name
+        self._source = manager.source
+        self._recompile = False
 
-    def new(self, name, source):
-        self._registry.setModuleService(getServiceManager(self))
-        self._manager.new(name, source)
+    def execute(self):
+        try:
+            mod = self._module
+        except AttributeError:
+            mod = self._module = PersistentModule(self.name)
+        folder = zapi.getWrapperContainer(self)
+        compileModule(mod, folder, self.source)
+        self._recompile = False
 
-    def update(self, source):
-        self._registry.setModuleService(getServiceManager(self))
-        self._manager.update(source)
+    def getModule(self):
+        if self._recompile:
+            self.execute()
+        return self._module
 
-    def remove(self):
-        self._registry.setModuleService(getServiceManager(self))
-        self._manager.remove()
+    def _get_source(self):
+        return self._source
+    def _set_source(self, source):
+        if self._source != source:
+            self._source = source
+            self._recompile = True
+    source = property(_get_source, _set_source)
 
-    new = ContextMethod(new)
-    update = ContextMethod(update)
-    remove = ContextMethod(remove)
 
-    name = property(lambda self: self._manager.name)
-    source = property(lambda self: self._manager.source)
-
-    def beforeDeleteHook(self, obj, container):
-        obj.remove()
-    beforeDeleteHook = ContextMethod(beforeDeleteHook)
-
+# Hack to allow unpickling of old Managers to get far enough for __setstate__
+# to do it's magic:
+Registry = Manager
 
 class ModuleAdapter(ObjectEntryAdapter):
 
@@ -137,13 +105,14 @@ class ModuleFactory(object):
     def __call__(self, name, content_type, data):
         assert name.endswith(".py")
         name = name[:-3]
-        m = Manager()
-        m = ContextWrapper(m, self.context)
-        m.new(name, data)
+        m = Manager(name, data)
+        m = zapi.ContextWrapper(m, self.context)
+        m.execute()
         return m
 
 
-# Installer function that can be called from ZCML:
+# Installer function that can be called from ZCML.
+# This installs an import hook necessary to support persistent modules.
 
 def installPersistentModuleImporter(event):
     from zodb.code.module import PersistentModuleImporter

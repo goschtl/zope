@@ -14,10 +14,11 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.9 2003/06/07 05:32:01 stevea Exp $
+$Id: test_module.py,v 1.10 2003/06/30 16:25:23 jim Exp $
 """
 
-from unittest import TestCase, TestLoader, TextTestRunner
+import unittest
+
 from zope.interface import Interface, implements
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
@@ -34,50 +35,73 @@ class TestService:
 
     implements(ITestService)
 
-class ServiceManagerTests(PlacefulSetup, TestCase):
+
+NAME = 'zope.app.services.tests.sample1'
+
+called = 0
+
+SOURCE = """\
+class C:
+    def __init__(self, v):
+        self.ini = v
+
+x = 1
+from zope.app.services.tests import test_module
+
+test_module.called += 1
+"""
+
+class LocalModuleTests(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
+        self.sm = traverse(self.rootFolder, "++etc++site")
+        default = traverse(self.sm, "default")
+        old_called = called
+        default.setObject(NAME, Manager(NAME, SOURCE))
+        self.manager = traverse(default, NAME)
+        self.assertEqual(called, old_called)
+        self.manager.execute()
+        self.assertEqual(called, old_called + 1)
 
-    def test_resolve(self):
-        sm = traverse(self.rootFolder, "++etc++site")
-        default = traverse(sm, "default")
-        default.setObject('m1', Manager())
-        manager = traverse(default, "m1")
-        manager.new('zope.app.services.tests.sample1',
-                    "class C:\n"
-                    "    def __init__(self, v):\n"
-                    "        self.ini = v\n"
-                    "\n"
-                    "x=1\n"
-                    )
-
+    def test_module_persistence(self):
         db = DB(MappingStorage())
         conn = db.open()
         root = conn.root()
         root['Application'] = self.rootFolder
         get_transaction().commit()
+        default = traverse(self.rootFolder, "++etc++site/default")
+        m = default.findModule(NAME)
 
-        C = sm.resolve("zope.app.services.tests.sample1.C")
-        c = C(42)
+        c = m.C(42)
         self.assertEqual(c.ini, 42)
-        x = sm.resolve("zope.app.services.tests.sample1.x")
-        self.assertEqual(x, 1)
-        
+        self.assertEqual(m.x, 1)
+
+        # This tests that the module can be seen from a different
+        # connection; an earlier version had a bug that requires this
+        # regression check.
         conn2 = db.open()
         rootFolder2 = conn2.root()['Application']
-        sm2 = traverse(rootFolder2, "++etc++site")
+        default = traverse(rootFolder2, "++etc++site/default")
+        m = default.findModule(NAME)
 
-        C = sm2.resolve("zope.app.services.tests.sample1.C")
-        c = C(42)
+        c = m.C(42)
         self.assertEqual(c.ini, 42)
-        x = sm2.resolve("zope.app.services.tests.sample1.x")
-        self.assertEqual(x, 1)
+        self.assertEqual(m.x, 1)
+
+    def test_recompile(self):
+        old_called = called
+        self.manager.source += "\n"
+        self.assertEqual(called, old_called)
+        m = self.manager.getModule()
+        self.assertEqual(called, old_called+1)
+        m = self.manager.getModule()
+        self.assertEqual(called, old_called+1)
+        
 
 
 def test_suite():
-    loader=TestLoader()
-    return loader.loadTestsFromTestCase(ServiceManagerTests)
+    return unittest.makeSuite(LocalModuleTests)
 
 if __name__=='__main__':
-    TextTestRunner().run(test_suite())
+    unittest.main(defaultTest="test_suite")
