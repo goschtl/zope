@@ -23,6 +23,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.size.interfaces import ISized
 
 from book.messageboard.interfaces import IMessage
+from book.messageboard.interfaces import IMessageContained, IMessageContainer
 
 _ = MessageIDFactory('messageboard')
 
@@ -50,7 +51,7 @@ class Message(BTreeContainer):
     >>> message.body
     u'Message Body'
     """
-    implements(IMessage)
+    implements(IMessage, IMessageContained, IMessageContainer)
 
     # See book.messageboard.interfaces.IMessage
     title = u''

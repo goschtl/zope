@@ -18,13 +18,14 @@ Interfaces for the Zope 3 based Message Board Package
 $Id$
 """
 from zope.i18n import MessageIDFactory
+from zope.interface import Interface
 from zope.interface import classImplements
 from zope.schema import Text, TextLine, Field, Tuple
 from zope.schema.interfaces import IText
 
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IContained, IContainer
 from zope.app.file.interfaces import IFile
 
 from fields import HTML
@@ -32,11 +33,8 @@ from fields import HTML
 _ = MessageIDFactory('messageboard')
 
 
-class IMessage(IContainer):
-    """A message object. It can contain its own responses."""
-
-    def __setitem__(name, object):
-        """Add a IMessage object."""
+class IMessage(Interface):
+    """A message object."""
 
     title = TextLine(
         title=_("Title/Subject"),
@@ -72,10 +70,21 @@ class IMessageBoard(IContainer):
         required=False)
 
 
-IMessage['__setitem__'].setTaggedValue('precondition',
-                                       ItemTypePrecondition(IMessage, IFile))
-IMessage.setTaggedValue('__parent__', Field(
-    constraint=ContainerTypesConstraint(IMessageBoard, IMessage)))
+class IMessageContained(IContained):
+    """Interface that specifies the type of objects that can contain
+    messages."""
+    __parent__ = Field(
+        constraint = ContainerTypesConstraint(IMessageBoard, IMessage))
+
+
+class IMessageContainer(IContainer):
+    """We also want to make the message object a container that can contain
+    responses (other messages) and attachments (files and images)."""
+
+    def __setitem__(name, object):
+        """Add a IMessage object."""
+
+    __setitem__.precondition = ItemTypePrecondition(IMessage, IFile)
 
 
 class IHTML(IText):
