@@ -28,4 +28,45 @@ class VProposal(persistent.Persistent):
         
     title=property(getTitle,setTitle)        
 
+    def setUseCase(self, usecase):
+        """Set proposal usecase."""
+        #if usecase == 'foo': usecase = "bar" #a simple precondition  
+        self.__dict__['usecase'] = usecase
+
+    def getUseCase(self):
+        """Get proposal usecase."""
+        return self.__dict__['usecase']
         
+    usecase=property(getUseCase,setUseCase)        
+
+    def setConcept(self, concept):
+        """Set proposal concept."""  
+        self.__dict__['concept'] = concept
+
+    def getConcept(self):
+        """Get proposal concept."""
+        return self.__dict__['concept']
+        
+    concept=property(getConcept,setConcept)
+    
+    def setTodo(self, todo):
+        """Set proposal todo."""  
+        self.__dict__['todo'] = todo
+
+    def getTodo(self):
+        """Get proposal todo."""
+        return self.__dict__['todo']
+        
+    todo=property(getTodo,setTodo)        
+
+    def setIssues(self, issues):
+        """Set proposal issues."""  
+        self.__dict__['issues'] = issues
+
+    def getIssues(self):
+        """Get proposal issues."""
+        return self.__dict__['issues']
+        
+    issues=property(getIssues,setIssues)        
+    
+
