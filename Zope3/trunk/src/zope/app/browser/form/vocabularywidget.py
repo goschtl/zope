@@ -139,7 +139,11 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         if self.haveData():
             value = self._showData()
         else:
-            value = self.context.get(self.context.context)
+            field = self.context
+            try:
+                value = field.get(field.context)
+            except AttributeError:
+                value = field.default
         return self.render(value)
 
     def render(self, value):

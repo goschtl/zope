@@ -162,7 +162,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyEditWidget"
-      name="field-edit"
+      name="field-edit-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
       
@@ -170,7 +170,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyDisplayWidget"
-      name="field-display"
+      name="field-display-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
       
