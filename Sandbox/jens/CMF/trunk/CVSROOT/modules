@@ -16,7 +16,8 @@ Zope Releases/Zope \
      &libpyShared &libpySkinnableAndLocalizable &libpySkins \
      &libpyStructuredText &libpyTesting &libpyTreeDisplay &libpyZClasses \
      &libpyZDom &libpyZLogger &libpyZODB &libpyZPublisher &libpyZope \
-     &libpywebdav \
+     &libpywebdav &libpyPersistence &libpyThreadedAsync \
+     &libpyzdaemon &libpyzLOG \
      \
      &libpyprodExternalMethod &libpyprodMailHost &libpyprodMIMETools \
      &libpyprodOFSP &libpyprodPluginIndexes &libpyprodPythonScripts \
@@ -135,8 +136,16 @@ libpyZope                    -d lib/python/Zope \
                                 Packages/Zope
 libpywebdav                  -d lib/python/webdav \
                                 Packages/webdav
+libpyPersistence             -d lib/python/Persistence \
+                                Packages/Persistence
+libpyThreadedAsync           -d lib/python/ThreadedAsync \
+                                Packages/ThreadedAsync
+libpyzdaemon                 -d lib/python/zdaemon \
+                                Packages/zdaemon
+libpyzLOG                    -d lib/python/zLOG \
+                                Packages/zLOG
 
-# Packages to be placed in SOFTWARE_HOME/lib/python/Products
+# Products to be placed in SOFTWARE_HOME/lib/python/Products
 libpyprodExternalMethod         -d lib/python/Products/ExternalMethod \
                                    Products/ExternalMethod
 libpyprodMailHost               -d lib/python/Products/MailHost \
