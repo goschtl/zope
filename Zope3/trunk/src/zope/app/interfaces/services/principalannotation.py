@@ -20,11 +20,17 @@ from zope.interface import Interface
 class IPrincipalAnnotationService(Interface):
     """Stores IAnnotations for IPrinicipals."""
 
-    def getAnnotation(principal):
+    def getAnnotations(principal):
         """Return object implementing IAnnotations for the given IPrinicipal.
 
         If there is no IAnnotations it will be created and then returned.
         """
 
-    def hasAnnotation(principal):
+    def getAnnotationsBy(principalId):
+        """Return object implementing IAnnotations for the given prinicipal id.
+
+        If there is no IAnnotations it will be created and then returned.
+        """
+
+    def hasAnnotations(principal):
         """Return boolean indicating if given IPrincipal has IAnnotations."""
