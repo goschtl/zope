@@ -139,17 +139,14 @@
 /ZODB3/logging           /Packages/logging
 
 /ZODB4/log.ini,v         /Zope3/log.ini,v
-/ZODB4/ZODB		 /Packages3/ZODB
-/ZODB4/ZEO		 /Packages3/ZEO
-/ZODB4/Interface	 /Packages3/Interface
-/ZODB4/Persistence	 /Packages3/Persistence
+/ZODB4/src/zodb		 /Zope3/src/zodb
+/ZODB4/src/zope/interface /Zope3/src/zope/interface
+/ZODB4/src/persistence	 /Zope3/src/persistence
+/ZODB4/src/transaction	 /Zope3/src/transaction
 /ZODB4/ThreadedAsync     /Packages/ThreadedAsync
-#/ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zdaemon           /Packages3/zdaemon
-/ZODB4/zLOG		 /Packages3/zLOG
 /ZODB4/ZConfig		 /Packages/ZConfig
 /ZODB4/logging           /Packages/logging
-/ZODB4/BDBStorage        /Packages3/bsddb3Storage/bsddb3Storage
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 
