@@ -715,6 +715,7 @@ def process_args(argv=None):
             level = int(v)
         elif k == "--all":
             level = 0
+            os.environ["COMPLAIN_IF_TESTS_MISSED"]='1'
         elif k in ("-b", "--build"):
             build = True
         elif k == "-B":
