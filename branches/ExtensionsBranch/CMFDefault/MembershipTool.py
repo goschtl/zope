@@ -158,7 +158,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
         if info.isAnonymous:
             user_actions = (
                 {'name': 'Log in',
-                 'url': portal_url + '/login_form'.pt,
+                 'url': portal_url + '/login_form.pt',
                  'permissions': [],
                  'category': 'user'},
                 {'name': 'Join',
