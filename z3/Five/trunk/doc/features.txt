@@ -29,8 +29,8 @@ ZCML (``meta.zcml``, ``configure.zcml``) of all installed Zope 2
 products, if available.
 
 Another special directive, ``five:loadProductsOverrides`` is available
-to load any overriding ZCML (``override.zcml``) in these products. In
-the ``override.zcml`` you can override existing views or adapters, in
+to load any overriding ZCML (``overrides.zcml``) in these products. In
+the ``overrides.zcml`` you can override existing views or adapters, in
 this or in other products.
 
 Adapters

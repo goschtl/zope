@@ -99,7 +99,7 @@ files, then processes all ``configure.zcml`` files.
 loadProductsOverrides
 ---------------------
 
-Loads overriding ZCML in all products (``override.zcml``).
+Loads overriding ZCML in all products (``overrides.zcml``).
 
 viewable
 --------
