@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.19 2003/11/21 17:10:44 jim Exp $
+$Id: introspector.py,v 1.20 2004/02/10 05:21:29 anthony Exp $
 """
 from zope.interface import Interface
 
@@ -24,6 +24,7 @@ from zope.proxy import removeAllProxies
 from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
+from zope.interface.interface import InterfaceClass
 from zope.app.services.servicenames import Interfaces
 
 class Introspector:
@@ -181,6 +182,10 @@ class Introspector:
         results = []
         iservice = getService(self.context, Interfaces)
         for id, interface in iservice.items(base=base):
+            # There are things registered with the interface service
+            # that are not interfaces. Yay!
+            if not IInterface.isImplementedBy(interface):
+                continue
             if base in interface.__bases__ and not interface.names():
                 results.append(interface)
         results.sort()
