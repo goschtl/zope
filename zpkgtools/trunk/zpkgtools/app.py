@@ -103,7 +103,7 @@ class Application:
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         self.generate_setup_cfg(self.destination, pkginfo)
-        self.generate_package_setup()
+        self.generate_package_setup(self.destination, self.resource_name)
 
     def build_collection_distribution(self):
         # Build the destination directory:
@@ -141,7 +141,8 @@ class Application:
                 i = name.rfind(".")
                 deps.add("package:" + name[:i])
             remaining |= (deps - self.handled_resources)
-        self.generate_collection_setup(packages, collections)
+        self.generate_collection_setup(self.destination, self.resource_name,
+                                       packages, collections)
 
     def add_component(self, type, name, source):
         """Add a single component to a collection.
@@ -209,6 +210,7 @@ class Application:
         # load package information and generate setup.cfg
         pkginfo = package.loadPackageInfo(name, pkgdest, name)
         self.generate_setup_cfg(destination, pkginfo)
+        self.generate_package_setup(destination, name)
 
     def load_metadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.cfg")
@@ -229,14 +231,31 @@ class Application:
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
-    def generate_package_setup(self):
-        """Generate the setup.py file for a package distribution."""
-        self.generate_setup_py("Package")
+    def generate_package_setup(self, destination, name):
+        """Generate the setup.py file for a package distribution.
 
-    def generate_collection_setup(self, packages, collections):
+        :Parameters:
+          - `destination`: Directory to write the setup.py into.
+          - `name`: Name of the collection.
+
+        """
+        setup_py = os.path.join(destination, "setup.py")
+        self.ip.add_output(setup_py)
+        f = open(setup_py, "w")
+        print >>f, SETUP_HEADER
+        print >>f, "context = zpkgtools.setup.PackageContext("
+        print >>f, "    %r, %r, __file__)" % (name, self.options.version)
+        print >>f
+        print >>f, "context.setup()"
+        f.close()
+
+    def generate_collection_setup(self, destination, name,
+                                  packages, collections):
         """Generate the setup.py file for a collection distribution.
 
         :Parameters:
+          - `destination`: Directory to write the setup.py into.
+          - `name`: Name of the collection.
           - `packages`: List of packages that are included.
           - `collections`: List of collections that are included.
 
@@ -244,7 +263,26 @@ class Application:
         of ``self.destination``; the directory name should match the
         component name in these lists.
         """
-        self.generate_setup_py("Collection")
+        setup_py = os.path.join(destination, "setup.py")
+        self.ip.add_output(setup_py)
+        f = open(setup_py, "w")
+        print >>f, SETUP_HEADER
+        print >>f, "context = zpkgtools.setup.CollectionContext("
+        print >>f, "    %r, %r, __file__," % (name, self.options.version)
+        if collections:
+            f.write("    collections=[%r" % collections[0])
+            for n in collections[1:]:
+                f.write(",\n                 %r" % n)
+            f.write("],\n")
+        if packages:
+            f.write("    packages=[%r" % packages[0])
+            for n in packages[1:]:
+                f.write(",\n              %r" % n)
+            f.write("],\n")
+        print >>f, "    )"
+        print >>f
+        print >>f, "context.setup()"
+        f.close()
 
     def generate_setup_cfg(self, destination, pkginfo):
         """Write a setup.cfg file for a distribution component.
@@ -274,19 +312,6 @@ class Application:
         f.write("compile = 1\n")
         # generate .pyo files using "python -O"
         f.write("optimize = 1\n")
-        f.close()
-
-    def generate_setup_py(self, typename):
-        setup_py = os.path.join(self.destination, "setup.py")
-        self.ip.add_output(setup_py)
-        type = self.resource_type
-        f = open(setup_py, "w")
-        print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.%sContext(" % typename
-        print >>f, "    %r, %r, __file__)" % (self.resource_name,
-                                              self.options.version)
-        print >>f
-        print >>f, "context.setup()"
         f.close()
 
     def include_support_code(self):

@@ -41,6 +41,8 @@ class SetupContext:
         self.scripts = []
         self.platforms = None
         self.classifiers = None
+        self.load_metadata(
+            os.path.join(self._working_dir, pkgname, PUBLICATION_CONF))
 
     def setup(self):
         kwargs = self.__dict__.copy()
@@ -76,6 +78,7 @@ class SetupContext:
         pkginfo = package.loadPackageInfo(name, directory, reldir)
         self.scripts.extend(pkginfo.script)
         self.ext_modules.extend(pkginfo.extensions)
+        self.add_package_dir(name, reldir)
 
         # scan the files in the directory:
         files = os.listdir(directory)
@@ -91,7 +94,6 @@ class SetupContext:
                     if os.path.isfile(os.path.join(path, PUBLICATION_CONF)):
                         continue
                     pkgname = "%s.%s" % (name, fn)
-                    self.packages.append(pkgname)
                     self.scan_package(
                         pkgname, path, posixpath.join(reldir, fn))
                 else:
@@ -130,6 +132,7 @@ class SetupContext:
                 self.add_package_file(pkgname, posixpath.join(reldir, fn))
 
     def add_package_dir(self, pkgname, reldir):
+        self.packages.append(pkgname)
         if pkgname.replace(".", posixpath.sep) != reldir:
             self.package_dir[pkgname] = reldir
 
@@ -142,17 +145,24 @@ class PackageContext(SetupContext):
 
     def __init__(self, pkgname, version, setup_file):
         SetupContext.__init__(self, pkgname, version, setup_file)
-        self.packages.append(pkgname)
-        self.load_metadata(
-            os.path.join(self._working_dir, pkgname, PUBLICATION_CONF))
-        self.add_package_dir(pkgname, pkgname)
         self.scan_package(pkgname, os.path.join(self._working_dir, pkgname),
                           pkgname)
 
 
 class CollectionContext(SetupContext):
 
-    def __init__(self, pkgname, version, setup_file):
+    def __init__(self, pkgname, version, setup_file,
+                 packages=(), collections=()):
         SetupContext.__init__(self, pkgname, version, setup_file)
-        self.load_metadata(os.path.join(self._working_dir,
-                                        PUBLICATION_CONF))
+        for name in packages:
+            pkgdir = os.path.join(self._working_dir, name, name)
+            reldir = posixpath.join(name, name)
+            self.scan_package(name, pkgdir, reldir)
+        for name in collections:
+            pkgdir = os.path.join(self._working_dir, name, name)
+            self.scan_collection(name, pkgdir)
+
+    def scan_collection(self, name, directory):
+        # load the collection metadata
+        pkginfo = package.loadCollectionInfo(directory)
+        self.scripts.extend(pkginfo.script)
