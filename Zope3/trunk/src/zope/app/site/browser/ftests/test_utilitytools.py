@@ -53,7 +53,7 @@ class TestUtilityTool(BrowserTestCase):
         response = self.publish(
             path+'/action.html', basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
@@ -77,7 +77,7 @@ class TestUtilityTool(BrowserTestCase):
             path + '/action.html',
             basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
@@ -101,7 +101,7 @@ class TestUtilityTool(BrowserTestCase):
             path + '/action.html',
             basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
@@ -127,7 +127,7 @@ class TestUtilityTool(BrowserTestCase):
             path + '/action.html',
             basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
@@ -154,7 +154,7 @@ class TestUtilityTool(BrowserTestCase):
             path + '/action.html',
             basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})

@@ -59,7 +59,7 @@ class Test(BrowserTestCase):
             self.basepath + '/contents.html',
             basic='mgr:mgrpw',
             form={'type_name':
-                  'zope.app.browser.add.'
+                  'BrowserAdd__'
                   'zope.app.workflow.stateful.definition.'
                   'StatefulProcessDefinition',
                   'new_value': 'pd' })

@@ -23,7 +23,7 @@ objects.  Before creating a catalog, you must create a uniqueid tool:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/AddUtility
   ... 
-  ... type_name=zope.app.browser.add.zope.app.uniqueid.UniqueIdUtility&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.uniqueid.UniqueIdUtility&id=&add=+Add+""")
   HTTP/1.1 303 ...
 
 And register it:
@@ -89,7 +89,7 @@ Once we have a unique-id tool, you can add a catalog:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/AddUtility
   ... 
-  ... type_name=zope.app.browser.add.zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
   HTTP/1.1 303 ...
 
 and register it:

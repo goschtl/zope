@@ -41,7 +41,7 @@ class TestUniqueIdUtility(BrowserTestCase):
         addUtility(sm, 'uniqueid', IUniqueIdUtility, UniqueIdUtility())
         commit()
 
-        type_name = 'zope.app.browser.add.zope.app.uniqueid.UniqueIdUtility'
+        type_name = 'BrowserAdd__zope.app.uniqueid.UniqueIdUtility'
 
         response = self.publish(
             self.basepath + '/contents.html',
