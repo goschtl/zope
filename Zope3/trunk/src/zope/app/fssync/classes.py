@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.5 2003/05/28 15:46:08 jim Exp $
+$Id: classes.py,v 1.6 2003/06/05 20:57:06 gvanrossum Exp $
 """
 
 import os
@@ -118,7 +118,8 @@ class Default(ObjectEntryAdapter):
         return dumps(self.context)
 
     def setBody(self, body):
-        pass
+        "See IObjectFile"
+        raise NotImplementedError
 
     def factory(self):
         "See IObjectEntry"
