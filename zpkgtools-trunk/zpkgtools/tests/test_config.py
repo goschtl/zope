@@ -16,6 +16,7 @@
 import os
 import unittest
 
+from zpkgtools import cfgparser
 from zpkgtools import config
 
 
@@ -41,11 +42,13 @@ class ConfigTestCase(unittest.TestCase):
     def test_constructor_bad_config_setting(self):
         # unknown option:
         path = os.path.join(here, "zpkg-error-1.conf")
-        self.assertRaises(ValueError, config.Configuration, path)
+        self.assertRaises(cfgparser.ConfigurationError,
+                          config.Configuration, path)
 
         # repository-map without path
         path = os.path.join(here, "zpkg-error-2.conf")
-        self.assertRaises(ValueError, config.Configuration, path)
+        self.assertRaises(cfgparser.ConfigurationError,
+                          config.Configuration, path)
 
     def test_constructor_no_such_file(self):
         path = os.path.join(here, "no-such-file")
