@@ -208,19 +208,21 @@
 
     <div id="context_information">
 
-    <div id="helpers">
+      <div id="helpers">
 
-      <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
+        <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
 
-        <h3>Tip</h3>
+          <h3>Tip</h3>
 
-        <div class="body">
+          <div class="body">
 
-          <div class="content odd">
+            <div class="content odd">
 
-            <metal:block define-slot="pagetip" tal:replace="pagetip">
-              A short tip goes here              
-            </metal:block>
+              <metal:block define-slot="pagetip" tal:replace="pagetip">
+                A short tip goes here              
+              </metal:block>
+
+            </div>
 
           </div>
 
@@ -228,30 +230,31 @@
 
       </div>
 
-    </div>
 
+      <div id="inspectors">
 
-    <div id="inspectors">
+        <div class="box" id="metadata" 
+             tal:define="view context/@@MetaDataBox|nothing"
+             tal:condition="view"
+             >
 
-      <div class="box" id="metadata">
+          <h3>Metadata</h3>
 
-        <h3>Metadata</h3>
+          <div class="body" tal:content="structure view">
 
-        <div class="body">
+            <div class="content odd">
+              testing testing
+            </div>
 
-          <div class="content odd">
-            testing testing
-          </div>
+            <div class="content even">
+              and some more
+            </div>
 
-          <div class="content even">
-            and some more
           </div>
 
         </div>
 
       </div>
-
-    </div>
 
     </div>
 
