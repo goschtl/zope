@@ -2,30 +2,38 @@ CMF 1.4.1 (unreleased)
 
   Bug Fixes
 
+    - Initialize class security correctly on ActionProviderBase
+      (Collector #186).
+
     - Filesystem-based scripts should open their files in text mode, not
       binary (Collector #185).
 
-    - skins (CMFDefault): Fixed permission name and html in roster.
+    - Remove ownership from filesystem-based skin methods, which
+      can't be trojaned, and therefore need not pay the performance
+      penalty of ownership checking.
 
-    - type actions: Made sure oldstyle fti data is always converted.
-      Actions are now completely migrated during TypeInformation creation.
+    - CMFDefault/skins: Fix permission name and html in roster.
 
-    - utils (CMFCore): Fixed buglet in 'minimalpath()'.
-      Didn't work correctly with a second 'Products' in the path.
+    - CMFCore/TypesTool.py: : Make sure oldstyle FactoryTypeInformation
+      data is always converted.  Actions are now completely migrated during
+      TypeInformation creation.
 
-    - Skinnable: Fix acquisition wrapping so that getPhysicalPath is not
-      spoofed during funny traversals.
+    - CMFCore/utils.py: Fix buglet in 'minimalpath()', which caused
+      proudct lookup to fail when a second 'Products' directory was
+      in the path.
 
-    - ScriptableTypeInformation: Fixed ownership of constructor scripts.
-      (Collector #165)
+    - CMFCore/Skinnable.py: Fix acquisition wrapping so that getPhysicalPath
+      is not spoofed during funny traversals.
 
-    - zpt skins (CMFDefault): Fixed some minor template issues.
-      (Collector #156 and other)
+    - CMFCore/TypesTool.py:  Fix ownership of constructor scripts used by
+      ScriptableTypeInformation (Collector #165).
 
-    - zpt skins (CMFDefault and CMFCalendar): Fixed stylesheets.
-      (Collector #164)
+    - CMFDefault/skins: Fix some minor template issues in ZPT skins
+      (Collector #156 and other).
 
-    - MembershipTool (CMFCore and CMFDefault): Made sure 'createMemberarea()'
+    - CMFDefault and CMFCalendar skins: Fix stylesheets (Collector #164).
+
+    - CMFCore and CMFDefault MembershipTool: Make sure 'createMemberarea()'
       always grants the right Ownership and Owner role for new member folders.
       This doesn't fix existing member folders with wrong Owner roles.
       If you use a customized MembershipTool, make sure your createMemberarea
