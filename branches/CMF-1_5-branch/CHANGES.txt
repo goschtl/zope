@@ -19,6 +19,10 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - FSObject: Ensure that a cache manager association on a Filesystem-based
+      object in the Skins Tool gets applied to the customized object in the
+      ZODB upon customization. (http://www.zope.org/Collectors/CMF/304)
+
     - TypesTool: Changed the way available factory_type_informations are
       presented on the dropdown list when adding a new type from a 
       filesystem FTI to the Types Tool. The new representation includes
