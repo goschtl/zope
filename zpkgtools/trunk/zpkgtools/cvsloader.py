@@ -22,15 +22,17 @@ import tempfile
 import urllib
 import urlparse
 
+from zpkgtools import Error
 
-class CvsLoadingError(Exception):
+
+class CvsLoadingError(Error):
     """Raised when there was some error loading from CVS."""
 
     def __init__(self, cvsurl, exitcode):
         self.cvsurl = cvsurl
         self.exitcode = exitcode
-        Exception.__init__(self, ("could not load from %s (cvs exit code %d)"
-                                  % (cvsurl.getUrl(), exitcode)))
+        Error.__init__(self, ("could not load from %s (cvs exit code %d)"
+                              % (cvsurl.getUrl(), exitcode)))
 
 
 _cvs_url_match = re.compile(

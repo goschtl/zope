@@ -21,6 +21,8 @@ import shutil
 import urllib
 import urllib2
 
+from zpkgtools import Error
+
 from zpkgtools import cvsloader
 
 
@@ -29,7 +31,7 @@ EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
 EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]"]
 
 
-class InclusionError(Exception):
+class InclusionError(Error):
     pass
 
 

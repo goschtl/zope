@@ -12,3 +12,7 @@
 #
 ##############################################################################
 """Zope packaging utilities."""
+
+
+class Error(Exception):
+    """Base class for exceptions raised by zpkgtools."""
