@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.6 2003/07/12 02:47:17 richard Exp $
+$Id: dublincore.py,v 1.7 2003/07/17 19:07:38 fdrake Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -297,7 +297,7 @@ class IDCExtended(Interface):
         )
 
 class ICMFDublinCore(Interface):
-    """This interface duplicates the CMF dublinc core interface.
+    """This interface duplicates the CMF dublin core interface.
     """
 
     def Title():
