@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditConfiguration.py,v 1.3 2002/12/01 10:28:22 jim Exp $
+$Id: EditConfiguration.py,v 1.4 2002/12/06 14:16:31 gvanrossum Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -35,20 +35,31 @@ class EditConfiguration(BrowserView):
 
         
         """
-        if 'keys' in self.request:
-            k = self.request['keys']
-
         if 'add_submit' in self.request:
             self.request.response.redirect('+')
-        elif 'remove_submit' in self.request:
+            return ''
+
+        if 'keys' in self.request:
+            k = self.request['keys']
+        else:
+            k = []
+
+        msg = 'You must select at least one item to use this action'
+
+        if 'remove_submit' in self.request:
+            if not k: return msg
             self.remove_objects(k)
         elif 'top_submit' in self.request:
+            if not k: return msg
             self.context.moveTop(k)
         elif 'bottom_submit' in self.request:
+            if not k: return msg
             self.context.moveBottom(k)
         elif 'up_submit' in self.request:
+            if not k: return msg
             self.context.moveUp(k)
         elif 'down_submit' in self.request:
+            if not k: return msg
             self.context.moveDown(k)
 
         return ''
