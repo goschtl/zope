@@ -21,6 +21,7 @@ from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.traversing.api import getParents, getParent, traverse
 from zope.interface import Interface
+from zope.security.interfaces import Unauthorized, Forbidden
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr
 
@@ -54,6 +55,15 @@ class ReadContainerXmlObjectView(BrowserView):
             result = icon.url()
         return result
 
+    def getLengthOf(self, item):
+        res = -1
+        if IReadContainer.providedBy(item):
+            try:
+                res = len(item)
+            except (Unauthorized, Forbidden):
+                pass
+        return res
+
     def children_utility(self, container):
         """Return an XML document that contains the children of an object."""
         result = []
@@ -71,10 +81,11 @@ class ReadContainerXmlObjectView(BrowserView):
                 continue
 
             iconUrl = self.getIconUrl(item)
-            if IReadContainer.providedBy(item):
+            item_len = self.getLengthOf(item)
+            if item_len >= 0:
                 result.append(xmlEscape(
                     '<collection name=%s length=%s icon_url=%s/>',
-                    name, len(item), iconUrl))
+                    name, item_len, iconUrl))
             else:
                 result.append(xmlEscape(
                     '<item name=%s icon_url=%s/>',
@@ -118,21 +129,23 @@ class ReadContainerXmlObjectView(BrowserView):
             for name in keys:
                 # Only include items we can traverse to
                 subItem = traverse(item, name, None)
-                if IReadContainer.providedBy(subItem):
-                    iconUrl = self.getIconUrl(subItem)
+                iconUrl = self.getIconUrl(subItem)
+                subitem_len = self.getLengthOf(subItem)
+                if subitem_len >= 0:
                     # the test below seems to be browken with the ++etc++site case
                     if subItem == oldItem:
                         subItems.append(xmlEscapeWithCData(
                             '<collection name=%s length=%s '
                             'icon_url=%s>%s</collection>', 
-                            name, len(subItem), iconUrl, result))
+                            name, subitem_len, iconUrl, result))
                     else:
                         subItems.append(xmlEscape(
                             '<collection name=%s length=%s '
                             'icon_url=%s/>',
-                            name, len(subItem), iconUrl))
+                            name, subitem_len, iconUrl))
                 else:
-                    subItems.append(xmlEscape('<item name=%s />', name))
+                    subItems.append(xmlEscape(
+                        '<item name=%s icon_url=%s />', name, iconUrl))
 
             result = ' '.join(subItems)
             oldItem = item
