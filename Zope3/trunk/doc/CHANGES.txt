@@ -536,6 +536,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #387: apidoc and Cookie
+
       - Fixed issue #334: Failing RuntimeInfo tests
 
       - Fix: Pagelet directive was inoring the permission. Pagelets which
