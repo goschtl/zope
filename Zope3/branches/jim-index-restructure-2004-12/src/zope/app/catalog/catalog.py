@@ -27,7 +27,7 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
-from BTrees.IIBTree import weightedIntersection
+from BTrees.IFBTree import weightedIntersection
 
 class ResultSet:
     """Lazily accessed set of objects."""
@@ -69,14 +69,14 @@ class Catalog(BTreeContainer):
 
     def updateIndex(self, index):
         uidutil = zapi.getUtility(IIntIds)
-        for uid, ref in uidutil.items():
-            obj = ref()
+        for uid in uidutil:
+            obj = uidutil.getObject(uid)
             index.index_doc(uid, obj)
 
     def updateIndexes(self):
         uidutil = zapi.getUtility(IIntIds)
-        for uid, ref in uidutil.items():
-            obj = ref()
+        for uid in uidutil:
+            obj = uidutil.getObject(uid)
             for index in self.values():
                 index.index_doc(uid, obj)
 

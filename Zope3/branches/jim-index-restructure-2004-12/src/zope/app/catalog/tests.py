@@ -21,13 +21,13 @@ $Id$
 import unittest
 import doctest
 
-import BTrees.IIBTree
+import BTrees.IFBTree
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.tests import ztapi, setup
-from zope.app.tests.placelesssetup import PlacelessSetup
-from BTrees.IIBTree import IISet
+import zope.app.tests.placelesssetup
+from BTrees.IFBTree import IFSet
 from zope.app.intid.interfaces import IIntIds
 
 from zope.index.interfaces import IInjection, IIndexSearch
@@ -83,8 +83,8 @@ class IntIdsStub:
     def queryId(self, ob, default=None):
         return self.ids.get(ob, default)
 
-    def items(self):
-        return [(id, ReferenceStub(obj)) for id, obj in self.objs.items()]
+    def __iter__(self):
+        return self.objs.iterkeys()
 
 
 class StubIndex:
@@ -110,7 +110,7 @@ class StubIndex:
             fieldname = getattr(obj, self._field_name, '')
             if fieldname == term:
                 results.append(docid)
-        return IISet(results)
+        return IFSet(results)
 
 
 class stoopid:
@@ -118,7 +118,7 @@ class stoopid:
         self.__dict__ = kw
 
 
-class Test(PlacelessSetup, unittest.TestCase):
+class Test(zope.app.tests.placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_catalog_add_del_indexes(self):
         catalog = Catalog()
@@ -292,11 +292,16 @@ class TestEventSubscribers(unittest.TestCase):
 
 
 def test_suite():
-    from zope.testing.doctestunit import DocTestSuite
+    from zope.testing import doctest
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
-    suite.addTest(DocTestSuite('zope.app.catalog.attribute'))
+    suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
+    suite.addTest(doctest.DocFileSuite(
+        'README.txt',
+        setUp=zope.app.tests.placelesssetup.setUp,
+        tearDown=zope.app.tests.placelesssetup.tearDown,
+        ))
     return suite
 
 
