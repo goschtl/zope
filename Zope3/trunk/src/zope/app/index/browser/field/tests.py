@@ -13,9 +13,8 @@
 ##############################################################################
 """Unit test for field index browser views
 
-$Id: tests.py,v 1.1 2004/03/02 14:40:05 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/11 09:19:27 srichter Exp $
 """
-
 import unittest
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
@@ -24,7 +23,7 @@ from zope.exceptions import NotFoundError
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.services.servicenames import HubIds
-from zope.app.interfaces.services.hub import IObjectHub
+from zope.app.hub.interfaces import IObjectHub
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.index.browser.field.control import ControlView
 

@@ -12,14 +12,11 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_hubevent.py,v 1.4 2003/05/01 19:35:35 faassen Exp $
+$Id: test_hubevent.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
 """
-
 import unittest
 
-from zope.app.services.hub import \
+from zope.app.hub import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent, ObjectMovedHubEvent, \
      ObjectRemovedHubEvent

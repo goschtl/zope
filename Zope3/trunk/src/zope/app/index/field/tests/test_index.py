@@ -13,9 +13,8 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.6 2004/03/02 14:40:09 philikon Exp $
+$Id: test_index.py,v 1.7 2004/03/11 09:19:29 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import Interface, Attribute, implements
@@ -26,9 +25,9 @@ from zope.app.traversing import traverse
 from zope.component import getService
 from zope.app.tests import ztapi
 from zope.app.services.servicenames import HubIds
-from zope.app.interfaces.services.hub import \
+from zope.app.hub.interfaces import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
-from zope.app.services.hub import ObjectRegisteredHubEvent
+from zope.app.hub import ObjectRegisteredHubEvent
 from zope.app.index.field.index import FieldIndex
 from zope.app.index.interfaces.field import IUIFieldIndex
 

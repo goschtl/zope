@@ -13,9 +13,8 @@
 ##############################################################################
 """This is a keyword index which can be subscribed to an event service.
 
-$Id: index.py,v 1.5 2004/03/02 14:40:11 philikon Exp $
+$Id: index.py,v 1.6 2004/03/11 09:19:30 srichter Exp $
 """
-
 from zope.index.keyword.index import KeywordIndex 
 from zope.interface import implements
 

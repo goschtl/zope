@@ -14,9 +14,8 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.10 2004/03/05 15:56:18 eddala Exp $
+$Id: placelesssetup.py,v 1.11 2004/03/11 09:19:37 srichter Exp $
 """
-
 from zope.app.tests import ztapi
 from zope.component.tests.placelesssetup \
     import PlacelessSetup as CAPlacelessSetup

@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.14 2004/03/11 08:14:08 srichter Exp $
+$Id: test_bootstrap.py,v 1.15 2004/03/11 09:19:34 srichter Exp $
 """
 import unittest
 from transaction import get_transaction
@@ -26,7 +26,7 @@ from zope.app.errorservice.interfaces import IErrorReportingService
 from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.app.event.interfaces import IEventService
-from zope.app.interfaces.services.hub import IObjectHub
+from zope.app.hub.interfaces import IObjectHub
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.errorservice import ErrorReportingService

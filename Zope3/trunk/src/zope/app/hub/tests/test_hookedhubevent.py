@@ -12,16 +12,15 @@
 #
 ##############################################################################
 """
-$Id: test_hookedhubevent.py,v 1.7 2004/03/11 08:14:12 srichter Exp $
+$Id: test_hookedhubevent.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
 """
-
 # in this version of these tests, we are no longer using a fake
 # ObjectHub, which makes these tests less pure...but still useful
 # as a test for both the events and the object hub for now.
 
 import unittest
-from zope.app.services.tests.objecthubsetup import ObjectHubSetup
-from zope.app.services.hub import \
+from zope.app.hub.tests.objecthubsetup import ObjectHubSetup
+from zope.app.hub import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent, ObjectMovedHubEvent, ObjectRemovedHubEvent
 from zope.app.traversing import getPath

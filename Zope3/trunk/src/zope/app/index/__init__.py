@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.9 2004/03/06 17:48:51 jim Exp $
+$Id: __init__.py,v 1.10 2004/03/11 09:19:26 srichter Exp $
 """
-
 from zope.interface import implements
 from zope.app.index.interfaces import IInterfaceIndexer
 from zope.app.event.interfaces import ISubscriber
 
-from zope.app.interfaces.services.hub import \
+from zope.app.hub.interfaces import \
      IObjectRegisteredHubEvent, \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent

@@ -16,15 +16,14 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.3 2004/03/02 18:50:56 philikon Exp $
+$Id: tests.py,v 1.4 2004/03/11 09:19:23 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import implements
 from zope.app.index.interfaces.field import IUIFieldCatalogIndex
 from zope.app.event.interfaces import ISubscriber
-from zope.app.interfaces.services.hub import IObjectHub
+from zope.app.hub.interfaces import IObjectHub
 from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.index.interfaces import ISimpleQuery
 
@@ -36,7 +35,7 @@ from BTrees.IIBTree import IISet
 
 from zope.app.index.tests.test_objectretrievingprocessor import FakeObjectHub
 
-import zope.app.services.hub as Hub
+import zope.app.hub as Hub
 
 regEvt = Hub.ObjectRegisteredHubEvent
 unregEvt = Hub.ObjectUnregisteredHubEvent

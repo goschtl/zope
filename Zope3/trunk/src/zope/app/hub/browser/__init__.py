@@ -13,11 +13,10 @@
 ##############################################################################
 """Define view component for object hub.
 
-$Id: hub.py,v 1.5 2003/10/31 23:11:14 garrett Exp $
+$Id: __init__.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
 """
 from zope.exceptions import NotFoundError
-
-from zope.app.interfaces.services.hub import IObjectHub
+from zope.app.hub.interfaces import IObjectHub
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
@@ -26,7 +25,6 @@ class Control:
 
     # XXX: Another dead chicken. Guys, this view could do soo much, like aehm,
     # display the cataloged objects with a nice filter function?
-
 
     def objects(self):
         """Returns a sequence of objects registered with the hub.

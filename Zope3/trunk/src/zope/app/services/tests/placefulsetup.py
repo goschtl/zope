@@ -13,7 +13,7 @@
 ##############################################################################
 """Base Mix-in class for Placeful Setups 
 
-$Id: placefulsetup.py,v 1.29 2004/02/24 16:51:16 philikon Exp $
+$Id: placefulsetup.py,v 1.30 2004/03/11 09:19:35 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.tests import setup
@@ -77,7 +77,7 @@ class PlacefulSetup(PlacelessSetup):
 
     # The following is a hook that some base classes might want to override.
     def getObjectHub(self):
-        from zope.app.services.hub import ObjectHub
+        from zope.app.hub import ObjectHub
         return ObjectHub()
 
     def createStandardServices(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.34 2004/03/11 08:14:10 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/11 09:19:24 srichter Exp $
 """
 __metaclass__ = type
 
@@ -35,12 +35,13 @@ from zope.app.event.interfaces import IObjectEvent
 from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
-from zope.app.interfaces.services.hub import IObjectHub, ObjectHubError
-from zope.app.interfaces.services.hub import IObjectRegisteredHubEvent
-from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
-from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
-from zope.app.interfaces.services.hub import IObjectMovedHubEvent
-from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
+from zope.app.hub.interfaces import IObjectHub, ObjectHubError
+from zope.app.hub.interfaces import IObjectRegisteredHubEvent
+from zope.app.hub.interfaces import IObjectUnregisteredHubEvent
+from zope.app.hub.interfaces import IObjectModifiedHubEvent
+from zope.app.hub.interfaces import IObjectMovedHubEvent
+from zope.app.hub.interfaces import IObjectRemovedHubEvent
+from zope.app.hub.interfaces import ISubscriptionControl
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.folder.interfaces import IFolder
@@ -51,7 +52,6 @@ from zope.app.services.servicenames import HubIds
 
 from zope.app.traversing \
      import getPath, canonicalPath, traverse, traverseName, getRoot
-from zope.app.interfaces.services.hub import ISubscriptionControl
 from persistent import Persistent
 from zope.app.container.contained import Contained
 

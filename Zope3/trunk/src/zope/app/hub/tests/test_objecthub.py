@@ -13,13 +13,12 @@
 ##############################################################################
 """testObjectHub
 
-$Id: test_objecthub.py,v 1.18 2004/03/03 10:38:53 philikon Exp $
+$Id: test_objecthub.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
 """
-
 import unittest
 from zope.app.tests import ztapi
 from zope.app import zapi
-from zope.app.services.tests.objecthubsetup import ObjectHubSetup
+from zope.app.hub.tests.objecthubsetup import ObjectHubSetup
 
 from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
@@ -30,17 +29,17 @@ from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
 from zope.app.container.contained import ObjectMovedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent, ObjectCreatedEvent
 
-from zope.app.interfaces.services.hub import ObjectHubError
-from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
-from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
-from zope.app.interfaces.services.hub import IObjectMovedHubEvent
-from zope.app.interfaces.services.hub import IObjectRegisteredHubEvent
-from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
+from zope.app.hub.interfaces import ObjectHubError
+from zope.app.hub.interfaces import IObjectRemovedHubEvent
+from zope.app.hub.interfaces import IObjectModifiedHubEvent
+from zope.app.hub.interfaces import IObjectMovedHubEvent
+from zope.app.hub.interfaces import IObjectRegisteredHubEvent
+from zope.app.hub.interfaces import IObjectUnregisteredHubEvent
 
-from zope.app.services.hub import ObjectModifiedHubEvent, ObjectRemovedHubEvent
-from zope.app.services.hub import ObjectMovedHubEvent, ObjectRegisteredHubEvent
-from zope.app.services.hub import ObjectUnregisteredHubEvent
-from zope.app.services.hub import canonicalSlash, userPath
+from zope.app.hub import ObjectModifiedHubEvent, ObjectRemovedHubEvent
+from zope.app.hub import ObjectMovedHubEvent, ObjectRegisteredHubEvent
+from zope.app.hub import ObjectUnregisteredHubEvent
+from zope.app.hub import canonicalSlash, userPath
 
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.location import Location

@@ -11,9 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_objectretrievingprocessor.py,v 1.11 2004/03/02 14:40:12 philikon Exp $
+$Id: test_objectretrievingprocessor.py,v 1.12 2004/03/11 09:19:31 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.interface.verify import verifyObject
@@ -23,7 +22,7 @@ from zope.app.services.servicenames import HubIds
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.interfaces.services.query import IQueryProcessor
-from zope.app.interfaces.services.hub import IObjectHub
+from zope.app.hub.interfaces import IObjectHub
 
 from zope.app.index.interfaces.interfaces import \
      IRankedObjectIterator, IRankedObjectRecord
@@ -51,21 +50,10 @@ class FakeObjectHub:
     def getObject(self, id):
         return self.data[id]
 
-#############################################################################
-# If your tests change any global registries, then uncomment the
-# following import and include CleanUp as a base class of your
-# test. It provides a setUp and tearDown that clear global data that
-# has registered with the test cleanup framework.  Don't use this
-# tests outside the Zope package.
-
-# from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-
-#############################################################################
 
 class Test(PlacelessSetup, TestCase):
 
-    ############################################################
-    # Interface-driven tests:
+    # Interface-driven tests
 
     def test_IVerify(self):
         verifyObject(IRankedObjectRecord, RankedObjectRecord(None, None))

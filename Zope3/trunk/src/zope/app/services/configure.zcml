@@ -14,21 +14,6 @@
       />
 </content>
 
-<content class="zope.app.services.hub.Registration">
-  <require
-    permission="zope.ManageServices"
-    interface="zope.app.services.hub.ISubscriptionControl"
-    />
-  
-  <!-- XXX
-       We really need to think through the security aspects of event
-       processing -->
-  <allow attributes="notify" /> 
-  <factory
-    id="zope.app.services.hub.Registration"
-    />
-</content>
-
 <adapter
   for="zope.app.interfaces.services.registration.IRegisterable"
   provides="zope.app.interfaces.services.registration.IRegistered"
@@ -151,27 +136,6 @@
     <factory
         id="IPrincipalAnnotationService"
         />
-    </content>
-
-<!-- Object Hub -->
-
-  <serviceType
-      id="HubIds"
-      interface="zope.app.interfaces.services.hub.IObjectHub" />
-
-  <content class="zope.app.services.hub.ObjectHub">
-    <factory
-        id="HubIds" />
-    <require
-        permission="zope.View"
-        attributes="notify getHubId getLocation getObject
-                    register unregister numRegistrations
-                    getRegistrations" />
-    <require
-        permission="zope.ManageServices"
-        attributes="bound unbound subscribe unsubscribe subscribeOnBind
-                    unsubscribedFrom subscribedTo unregisterMissingObjects
-                    iterRegistrations" />
     </content>
 
 
