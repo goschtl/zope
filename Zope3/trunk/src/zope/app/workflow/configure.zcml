@@ -88,13 +88,6 @@
       for="zope.app.annotation.interfaces.IAnnotatable"
       />
 
-  <!-- Workflow Import/Export Utility -->
-  <utility
-      component=".globalimportexport.globalImportExport" 
-      provides="zope.app.workflow.interfaces.IProcessDefinitionImportExport"
-      permission="zope.workflow.ManageProcessDefinitions" 
-      />
-
   <include package=".stateful" />
 
   <include package=".browser" />
