@@ -3,7 +3,10 @@
   i18n_domain="api_doc">
 
   <class class=".APIDocumentation">
-    <allow interface="zope.app.interfaces.container.IReadContainer" />
+    <require
+        interface="zope.app.interfaces.container.IReadContainer"
+        permission="zope.ManageApplication"
+        />
   </class>
 
   <traversalNamespace
