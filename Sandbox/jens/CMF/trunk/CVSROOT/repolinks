@@ -167,7 +167,7 @@
 /Zope27/lib/python/DateTime                       /Packages/DateTime
 /Zope27/lib/python/DocumentTemplate               /Packages/DocumentTemplate
 /Zope27/lib/python/HelpSys                        /Packages/HelpSys
-/Zope27/lib/python/Interface                      /Packages/Interface
+/Zope27/lib/python/Interface                      /Packages3/Interface
 /Zope27/lib/python/Locales                        /Packages/Locales
 /Zope27/lib/python/OFS                            /Packages/OFS
 /Zope27/lib/python/RestrictedPython               /Packages/RestrictedPython
