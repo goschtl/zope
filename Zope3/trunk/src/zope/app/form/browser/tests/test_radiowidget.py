@@ -15,22 +15,15 @@
 
 $Id$
 """
-import os
 import unittest, doctest
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.publisher.browser import TestRequest
 from zope.schema import Choice
 
-from zope.i18n.interfaces import ITranslationDomain
-from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
-from zope.i18n.translationdomain import TranslationDomain
-
-from zope.app.tests import ztapi
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
-import zope.app.form.browser.tests
 
 class RadioWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the radio widget.

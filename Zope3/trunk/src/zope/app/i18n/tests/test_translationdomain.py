@@ -27,7 +27,7 @@ from zope.i18n.translationdomain \
      import TranslationDomain as GlobalTranslationDomain
 from zope.app.i18n.translationdomain import TranslationDomain
 from zope.app.tests import setup, ztapi
-from zope.i18n.interfaces import IUserPreferredLanguages, ITranslationDomain
+from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.tests.test_itranslationdomain import TestITranslationDomain
 from zope.interface import implements, classImplements
 from zope.interface.verify import verifyObject
