@@ -13,52 +13,44 @@
    >Logged in as <span tal:replace="request/user/getTitle"
    >dtremea</span></span>
 
-<table metal:define-macro="services_bar" border="0" cellspacing="0" cellpadding="0">
-  <tr tal:on-error="string: No services available">
-    <td>&nbsp;
-      <img src="service_manager.gif" alt="Sort" 
-      tal:attributes="src context/++resource++service_manager.gif"/>
-    </td>
-    <td>
-      <a href="./++etc++Services/"
-      tal:condition="context/hasServiceManager">Services</a>
-      <a href="@@addServiceManager.html" 
-      tal:condition="not: context/hasServiceManager">Allow Services</a>
-    </td>     
-    <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src context/++resource++spacer2.gif"/>
-    </td>
-    <td><img src="user_accounts.gif" width="22" height="28"
-      tal:attributes="src context/++resource++user_accounts.gif"/>
-    </td>
-    <td nowrap="nowrap">User Accounts
-    </td>
-    <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src context/++resource++spacer2.gif"/>
-    </td>
-    <td><img src="control_panels.gif" width="24" height="28"
-      tal:attributes="src context/++resource++control_panels.gif"/>
-    </td>
-    <td nowrap="nowrap">Control Panels
-    </td>
-    <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src context/++resource++spacer2.gif"/>
-    </td>
-    <td><img src="system_security.gif" width="23" height="28"
-      tal:attributes="src context/++resource++system_security.gif"/>
-    </td>
-    <td nowrap="nowrap">System Security
-    </td>
-    <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src context/++resource++spacer2.gif"/>
-    </td>
-    <td><img src="add_more.gif" width="26" height="28"
-      tal:attributes="src context/++resource++add_more.gif"/>
-    </td>
-    <td nowrap="nowrap">Add More
-    </td>
-  </tr>
+
+<table metal:define-macro="services_box" align="center" class="box"
+       width="150">
+    <thead>
+      <tr> 
+        <th align="center">Services</th>
+	<th class="empty">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+	<td colspan="2" nowrap="nowrap">
+
+    <span tal:condition="not: context/hasServiceManager">
+    <a href="@@addServiceManager.html">Allow Services</a>
+    <br />
+    </span>
+    <img src="user_accounts.gif" width="22" height="28"
+      tal:attributes="src context/++resource++user_accounts.gif" />
+    User Accounts
+    <br />
+    <img src="control_panels.gif" width="24" height="28"
+      tal:attributes="src context/++resource++control_panels.gif" />
+    Control Panels
+    <br />
+    <img src="system_security.gif" width="23" height="28"
+      tal:attributes="src context/++resource++system_security.gif" />
+    System Security
+    <br />
+    <img src="add_more.gif" width="26" height="28"
+      tal:attributes="src context/++resource++add_more.gif" />
+    Add More
+
+	</td>
+      </tr>
+    </tbody>
 </table>
+
 
 <table metal:define-macro="explorer_box" align="center" class="box" width="150">
   <thead>
@@ -100,7 +92,7 @@
   <table metal:define-macro="views_box" align="center" class="box" width="150">
     <thead>
       <tr> 
-	  <th align="center">Views</th>
+        <th align="center">Views</th>
 	<th class="empty">&nbsp;</th>
       </tr>
       </thead>
@@ -115,6 +107,74 @@
       </tr>
       </tbody>
     </table>
+
+  <table metal:define-macro="search_box" align="center" class="box"
+         width="150">
+    <thead>
+      <tr> 
+        <th align="center">Search</th>
+	<th class="empty">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+	<td colspan="2" nowrap="nowrap">
+          <form name="search">
+          <input type="text" size="15" style="width: 85%;"
+          /><input type="submit" value="Go" style="width: 15%;" />
+          </form>
+	</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table metal:define-macro="metadata_box" align="center" class="box"
+         width="150">
+    <thead>
+      <tr> 
+        <th align="center">Metadata</th>
+	<th class="empty">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+	<td colspan="2" nowrap="nowrap">
+
+    <form name="metadata">
+    <table border="0" cellspacing="0" cellpadding="0">
+      <tr>
+
+        <td>Title</td>
+        <td><input type="edit" size="10" name="title:string"
+                   value=""></td>
+      </tr>
+      <tr>
+        <td>Creator</td>
+        <td>mowgli</td>
+      </tr>
+
+      <tr>
+        <td>Last Modified</td>
+        <td>09-06</td>
+      </tr>
+      <tr>
+        <td>Keywords</td>
+        <td>Many</td>
+
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" name="save" value="Save Changes">
+        </td>
+      </tr>
+    </table>
+    </form>
+
+	</td>
+      </tr>
+    </tbody>
+  </table>
+
 
 <table metal:define-macro="content_header_bar" width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr> 

@@ -31,6 +31,14 @@
                 template="www/dialog_macros.pt"
                 layer="templates" />
 
+  <browser:resource name="pdlib.js" 
+               	file="www/pdlib.js"
+		layer="templates" />
+
+  <browser:resource name="zopetop_scripts.js" 
+               	file="www/zopetop_scripts.js"
+		layer="templates" />
+
   <browser:resource name="zopetopBasic.css" 
                	file="www/zopetopBasic.css"
 		layer="css" />
@@ -49,10 +57,10 @@
   <browser:resource name="zope3logo.jpg" 
 		file="www/zope3logo.jpg"
 		layer="images" />
-  <browser:resource name="bg_top.jpg" 
+  <browser:resource name="bg_top.jpg"
 		file="www/bg_top.jpg"
 		layer="images" />
-  <browser:resource name="bg_bar.jpg" 
+  <browser:resource name="bg_bar.jpg"
 		file="www/bg_bar.jpg"
 		layer="images" />
   <browser:resource name="closed_folder.gif" 
