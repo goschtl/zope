@@ -158,10 +158,32 @@ Topics
       o 'usage/addingdialog' is used during the process of adding a
       new item.
 
-    Those values must be registere through the <browser:usage name="usagevalue"
-    /> ZCML directive. The <browser:menu>, <browser:pages>, <browser:page>, 
-    <browser:editform>, <broser:addform> all share the usage attribute.
-    The usage attribute gets then one of the registered usage values.
+    Those values must be registered through the 
+    <browser:usage name="usagevalue" /> ZCML directive. 
+    
+    The following directives share the usage attribute :
+
+     o browser:menu
+     
+     o browser:view
+     
+     o browser:pages
+     
+     o browser:page
+     
+     o browser:editform
+     
+     o browser:subeditform
+     
+     o browser:editwizard
+     
+     o browser:addform
+
+     o browser:addwizard
+     
+     o browser:schemadisplay
+   
+    The usage attribute can only be set as one of the registered usage values.
 
     As an example, the 'template.pt' master template in the
     'rotterdam' skin has the following block::
