@@ -13,31 +13,18 @@
 ##############################################################################
 """Zope Application-specific Security Interfaces
 
-$Id: __init__.py,v 1.13 2004/02/24 14:23:06 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/08 12:07:34 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema.interfaces import IEnumerated, IField
-
-class IRegisteredObject(Interface):
-    """General interface for security-related objects that are registered in a
-    service."""
-
-    def getId():
-        """Get the id of the registered object."""
-
-    def getTitle():
-        """Get the human readable title of the registered object.
-        Must be a string, but it may be empty.
-        """
-
-    def getDescription():
-        """Get the human readable description of the registered object.
-        Must be a string, but it may be empty.
-        """
-
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.schema import Text, TextLine
 
 class IPrincipal(Interface):
-    """Provide information about principals.
+    """Principals are security artifacts that execute actions in a security
+    environment.
+
+    The most common examples of principals include user and group objects.
 
     It is likely that IPrincipal objects will have associated views
     used to list principals in management interfaces. For example, a
@@ -48,18 +35,30 @@ class IPrincipal(Interface):
     purpose.
     """
 
-    def getId():
-        """Return a unique id string for the principal."""
+    id = TextLine(
+        title=_("Id"),
+        description=_("The unique identification of the principal."),
+        required=True,
+        readonly=True)
+
+    title = TextLine(
+        title=_("Title"),
+        description=_("The title of the principal. "
+                      "This is usually used in the UI."),
+        required=False)
+
+    description = Text(
+        title=_("Description"),
+        description=_("A detailed description of the principal."),
+        required=False)
+
+    # XXX: These are deprecated!
 
     def getTitle():
-        """Return a label for the principal
-
-        The label will be used in interfaces to allow users to make
-        security assertions about principals.
-        """
+        """Return title."""
 
     def getDescription():
-        """Return a description of the principal."""
+        """Return description."""
 
 
 class IUnauthenticatedPrincipal(IPrincipal):
@@ -186,41 +185,25 @@ class ILoginPassword(Interface):
         The realm argument is the name of the principal registry.
         """
 
-class IPermission(IRegisteredObject):
+class IPermission(Interface):
     """A permission object."""
 
-class IPermissionService(Interface):
+    id = TextLine(
+        title=_("Id"),
+        description=_("Id as which this permission will be known and used."),
+        readonly=True,
+        required=True)
 
-    """Manage information about permissions
+    title = TextLine(
+        title=_("Title"),
+        description=_("Provides a title for the permission."),
+        required=True)
 
-     'IPermissionService' objects are used to implement
-     permission-definition services. Because they implement services,
-     they are expected to collaborate with services in other
-     contexts. Client code doesn't search a context and call multiple
-     services. Instead, client code will call the most specific
-     service in a place and rely on the service to delegate to other
-     services as necessary.
+    description = Text(
+        title=_("Description"),
+        description=_("Provides a description for the permission."),
+        required=False)
 
-     The interface doesn't include methods for data
-     management. Services may use external data and not allow
-     management in Zope. Similarly, the data to be managed may vary
-     with different implementations of a service.
-     """
-
-    def getPermission(permission_id):
-        """Get permission information
-
-        Return an 'IPermission' object for the
-        given permission id.  Return None if there is no permission defined
-        """
-
-    def getPermissions():
-        """Get the defined permissions
-
-        Return a sequence of the permissions
-        (IPermission objects) defined in the place containing the
-        service.
-        """
 
 class IPermissionField(IEnumerated, IField):
     """Fields with Permissions as values"""
