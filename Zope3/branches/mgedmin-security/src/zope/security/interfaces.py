@@ -187,7 +187,7 @@ class INameBasedChecker(IChecker):
         """
 
 
-class ISecurityPolicy(Interface):
+class ISecurityPolicy(Interface):   # XXX: will change
 
     def checkPermission(permission, object, context):
         """Return whether security context allows permission on object.

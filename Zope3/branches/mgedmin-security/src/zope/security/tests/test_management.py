@@ -32,9 +32,11 @@ class Test(CleanUp, unittest.TestCase):
         from zope.security.interfaces import ISecurityManagement
         from zope.security.interfaces \
             import ISecurityManagementSetup
+        from zope.security.interfaces import IInteractionManagement
 
         verifyObject(ISecurityManagementSetup, management)
         verifyObject(ISecurityManagement, management)
+        verifyObject(IInteractionManagement, management)
 
     def test_ISecurityManagementSetup(self):
 
