@@ -27,15 +27,12 @@ with a dot.
 $Id: pyskel.py 26446 2004-07-13 16:11:36Z philikon $
 """
 import sys, os, re
+from types import ModuleType
 
 SOFTWARE_HOME = "<<SOFTWARE_HOME>>"
 INSTANCE_HOME = "<<INSTANCE_HOME>>"
 
 sys.path.insert(0, os.getcwd())
-
-from types import ModuleType
-from zope.interface.interface import Method
-from zope.interface import Attribute
 
 class_re = re.compile(r'\s*class\s+([a-zA-Z_][a-zA-Z0-9_]*)')
 def_re = re.compile(r'\s*def\s+([a-zA-Z_][a-zA-Z0-9_]*)')
@@ -43,6 +40,10 @@ attr_re = re.compile(r'\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*Attribute')
 
 
 def rskel(iface, top, print_iface=1):
+
+    from zope.interface.interface import Method
+    from zope.interface import Attribute
+
     name = "%s.%s" % (iface.__module__, iface.__name__)
 
     file = resolve(iface.__module__).__file__
