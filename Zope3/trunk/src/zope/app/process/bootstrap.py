@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.8 2003/09/02 20:46:48 jim Exp $
+$Id: bootstrap.py,v 1.9 2003/09/21 17:32:34 jim Exp $
 """
 
 from zope.app import zapi
@@ -26,7 +26,7 @@ from zope.interface import implements
 from zope.app.interfaces.event import ISubscriber
 from zope.app.traversing import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.content.folder import RootFolder
+from zope.app.content.folder import rootFolder
 from zope.app.services.servicenames import HubIds, PrincipalAnnotation
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.servicenames import ErrorLogging, Interfaces
@@ -69,13 +69,13 @@ class BootstrapSubscriberBase:
 
         if self.root_folder is None:
             self.root_created = True
-            self.root_folder = RootFolder()
+            self.root_folder = rootFolder()
             root[ZopePublication.root_name] = self.root_folder
 
         try:
-            self.service_manager = traverse(self.root_folder, '/++etc++site')
+            self.service_manager = traverse(self.root_folder, '++etc++site')
         except ComponentLookupError:
-            self.service_manager = ServiceManager()
+            self.service_manager = ServiceManager(self.root_folder)
             self.root_folder.setSiteManager(self.service_manager)
 
         self.doSetup()
@@ -90,14 +90,15 @@ class BootstrapSubscriberBase:
         Return the name added, if we added an object, otherwise None.
         """
         package = getServiceManagerDefault(self.root_folder)
-        valid_objects = [ obj for obj in package 
-                          if object_type.isImplementedBy(obj) ]
+        valid_objects = [ name
+                          for name in package 
+                          if object_type.isImplementedBy(package[name]) ]
         if valid_objects:
             return None
         name = object_name + '-1'
         obj = object_factory()
         obj = removeAllProxies(obj)
-        package.setObject(name, obj)
+        package[name] = obj
         return name
 
     def ensureService(self, service_type, service_factory, **kw):
@@ -193,7 +194,7 @@ def addService(root_folder, service_type, service_factory, **kw):
     name = service_type + '-1'
     service = service_factory()
     service = removeAllProxies(service)
-    package.setObject(name, service)
+    package[name] = service
 
     # Set additional attributes on the service
     for k, v in kw.iteritems():
@@ -207,7 +208,7 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
     registration =  ServiceRegistration(service_type,
                                         name,
                                         registration_manager)
-    key = registration_manager.setObject("", registration)
+    key = registration_manager.addRegistration(registration)
     registration = traverseName(registration_manager, key)
     registration.status = initial_status
 

@@ -13,14 +13,14 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.3 2003/09/02 20:46:48 jim Exp $
+$Id: test_bootstrap.py,v 1.4 2003/09/21 17:32:35 jim Exp $
 """
 
 import unittest
 from transaction import get_transaction
 from zodb.db import DB
 from zodb.storage.memory import MemoryFullStorage
-from zope.app.content.folder import RootFolder
+from zope.app.content.folder import rootFolder
 from zope.app.interfaces.content.folder import IRootFolder
 from zope.app.interfaces.services.error import IErrorReportingService
 from zope.app.interfaces.services.principalannotation \
@@ -53,7 +53,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
     def createRootFolder(self):
         cx = self.db.open()
         root = cx.root()
-        self.root_folder = RootFolder()
+        self.root_folder = rootFolder()
         root[ZopePublication.root_name] = self.root_folder
         get_transaction().commit()
         cx.close()
@@ -61,9 +61,9 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
     def createRFAndSM(self):
         cx = self.db.open()
         root = cx.root()
-        self.root_folder = RootFolder()
+        self.root_folder = rootFolder()
         root[ZopePublication.root_name] = self.root_folder
-        self.service_manager = ServiceManager()
+        self.service_manager = ServiceManager(self.root_folder)
         self.root_folder.setSiteManager(self.service_manager)
         get_transaction().commit()
         cx.close()
