@@ -161,8 +161,7 @@ sazZEO -d ZEO Packages/ZEO
 sazExtensionClass -d ExtensionClass Zope2/lib/Components/ExtensionClass
 sazLib -d Lib Zope2/lib/python Persistence.py ThreadedAsync.py zLOG.py \
        zdaemon.py
-sazBTree -d BTree Zope2/lib/Components/BTree intSet.h
-sazBTrees -d BTrees Zope2/lib/python/BTrees &sazBTree
+sazBTrees -d BTrees Zope2/lib/python/BTrees
 
 StandaloneZODB Releases/StandaloneZODB \
 	       &sazZODB &sazZEO &sazExtensionClass &sazLib &sazBTrees
