@@ -239,7 +239,7 @@ def main(args):
     for entry in entries:
         wasVerbose = VERBOSE
         VERBOSE = entry.get('verbose', VERBOSE)
-        path, addrs = entry['path'], entry['addrs']
+        selector_path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
         if remote:
             receiverid = remote.get('receiverid', IDENTITY_ACCT)
@@ -247,11 +247,11 @@ def main(args):
             receiverid = None
 
         if addrs and not only_sync:
-            do_mail(path, remote, repo, addrs, subjs, msgfilenm=msgfilenm,
+            do_mail(remote, repo, addrs, subjs, msgfilenm=msgfilenm,
                     doing_directory=doing_directory, no_files=no_files)
 
         if remote:
-            do_sync(path, repo, remote, receiverid, subjs, excludes,
+            do_sync(selector_path, repo, remote, receiverid, subjs, excludes,
                     recurse=RECURSE, 
                     doing_directory=doing_directory, no_files=no_files)
 
@@ -353,7 +353,7 @@ def find_entries(repo=None, all=None):
 
     return entries
 
-def do_mail(name, remote, repo, addrs, subjs,
+def do_mail(remote, repo, addrs, subjs,
             msgfilenm, doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table.
 
@@ -361,7 +361,7 @@ def do_mail(name, remote, repo, addrs, subjs,
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
-    subject = "CVS: %s " % name
+    subject = "CVS: %s " % repo
 
     diff_msg = ''
 
@@ -369,26 +369,22 @@ def do_mail(name, remote, repo, addrs, subjs,
         l = remote['leading_path']
         if (len(l) > 1) and (l[-1] != '/'): l = l + '/'
         if (len(l) > 1) and (l[0] == '/'): l = l[1:]
-        subject = subject + "(" + l + os.path.split(name)[-1] + ")"
+        subject = subject + "(" + l + os.path.split(repo)[-1] + ")"
 
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
         if subjs[2] == 'New':
-            new_msg = ('--- Added directory %s in package %s ---\n'
-                       % (repo, name))
+            new_msg = ('--- Added directory %s ---\n' % repo)
             diff_msg = diff_msg + new_msg + '\n'
     else:
         subject = subject + "-"
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
             if new == 'NONE':
-                new_msg = ('--- Removed file %s from package %s --\n'
-                           % (fn, name))
+                new_msg = ('--- Removed file %s/%s --\n'
+                           % (repo, fn))
             else:
-                diff_msg = (diff_msg
-                            + ('[debug - name:%s, repo:%s, fn:%s\n'
-                               % (name, repo, fn)))
-                new_msg = create_diff(name, repo, fn, old, new)
+                new_msg = "\n" + create_diff(repo, fn, old, new)
 
             diff_msg = diff_msg + new_msg + '\n'
 
@@ -425,7 +421,7 @@ def do_mail(name, remote, repo, addrs, subjs,
     if result:
         note_failure("*** Mail failed with error %s...", result)
 
-def create_diff(name, repo, file, old, new):
+def create_diff(repo, file, old, new):
     """ Create a diff comparing old and new versions """
     if old == 'NONE':   # A new file was added
         try:
@@ -434,9 +430,8 @@ def create_diff(name, repo, file, old, new):
             handle = os.popen(co_stdout_cmd)
             lines = handle.readlines()
             handle.close()
-            insert_str = ('--- Added File ' + str(file)
-                          + ' in package ' + str(name)
-                          + ' ---\n')
+            insert_str = ("--- Added File %s/%s ---\n"
+                          % (repo, file))
             lines.insert(0, insert_str)
         except IOError, e:
             lines = ['***** ERROR reading new file: ',
@@ -455,6 +450,8 @@ def create_diff(name, repo, file, old, new):
 
     return string.join(lines, '')
 
+### XXX 'path' is selector_path, not very useful.  I think we should be using
+###     'repo'. 
 def do_sync(path, repo, remote, receiverid, subjs=None,
             excludes=None, recurse=0, doing_directory=0, no_files=0):
     """Syncronize repository to mirror.
