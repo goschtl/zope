@@ -1,4 +1,4 @@
-CMF 1.5.0rc1 (unreleased)
+CMF 1.5.0 (2004/10/21)
 
   New Features
 
@@ -14,11 +14,10 @@ CMF 1.5.0rc1 (unreleased)
       Values are now converted to unicode, using 'default_charset'.
       (http://collector.zope.org/CMF/261)
 
-    - DublinCore: Added 'setCreators' method.
-      Note that notifyModified() also modifies creators. If the current user
+    - DublinCore: Added 'setCreators' method.  Note that 
+      'notifyModified' also modifies creators. If the current user
       should not be added to creators, make sure notifyModified() is not
-      called after setCreators().
-      (http://collector.zope.org/CMF/61)
+      called after setCreators().  (http://collector.zope.org/CMF/61)
 
     - ZPT skin: Fixed '*metadata_edit_form'.
       Setting "Enable Discussion?" to 'Off' was broken.
@@ -32,9 +31,9 @@ CMF 1.5.0rc1 (unreleased)
     - TypesTool: Removed again the "add properties from the ZMI" feature.
       That feature existed only in 1.5.0beta2.
 
-    - ActionProviderBase: Modified exceptions raised by getActionInfo().
-      Now Unauthorized is raised if at least one Action was found but the user
-      is not allowed to access any of them.
+    - ActionProviderBase: Modified exceptions raised by 'getActionInfo'.
+      Now Unauthorized is raised if at least one Action was found but
+      the user is not allowed to access any of them.
 
     - RegistrationTool: Generated passwords no longer contain 'OQ0Il1'.
 
@@ -133,9 +132,9 @@ CMF 1.5.0beta2 (2004/09/27)
       They now catch CopyErrors.
 
     - DirectoryView: Readded expandpath() for backwards compatibility.
-      Some products still import expandpath from DirectoryView because it was
-      once defined there. Note that importing expandpath from DirectoryView is
-      deprecated and doesn't work with CMF HEAD / 1.6.
+      Some products still import expandpath from DirectoryView because
+      it was once defined there. Note that importing expandpath from
+      DirectoryView is deprecated and doesn't work with CMF HEAD / 1.6.
 
     - RegistrationTool: An optional password can now be passed to
       registeredNotify() (Issue #277).
@@ -223,8 +222,9 @@ CMF 1.5.0beta (2004/08/12)
       (http://collector.zope.org/CMF/176)
 
     - CMFSetup: Refactored rolemap.
-      Converted the roles attribute to role sub-elements. Fixed an acquisition
-      bug that caused incomplete exports. Updated default profile.
+      Converted the roles attribute to role sub-elements. Fixed an
+      acquisition bug that caused incomplete exports. Updated default
+      profile.
 
     - CMFWiki: Prevent deprecation notice for the deprecated
       CMFWikiPermissions module by replacing its usage in CMFWiki.__init__
@@ -269,7 +269,8 @@ CMF 1.5.0beta (2004/08/12)
       (http://collector.zope.org/CMF/226)
 
     - CMFDefault.Document, CMFDefault.Link, and CMFCalendar.Event:
-      WebDAV PUT() caused improper splitting of 'Contributors' metadata header.
+      WebDAV PUT() caused improper splitting of 'Contributors' metadata
+      header.
 
     - CMFCore.PortalFolder: Fixed missing import of BadRequest exception.
 
@@ -280,8 +281,9 @@ CMF 1.5.0beta (2004/08/12)
       sub-elements.
 
     - ActionInformation: Some attribute cleanup.
-      Enforced usage of 'Title' instead of 'Name', 'URL' or 'URL (Expression)'
-      instead of 'Action'. Enforced boolean type of 'Visible'.
+      Enforced usage of 'Title' instead of 'Name', 'URL' or
+      'URL (Expression)' instead of 'Action'. Enforced boolean type of
+      'Visible'.
 
     - DiscussionTool: Fixed two acquisition bugs.
       (Collector #119 and #201)
@@ -322,10 +324,11 @@ CMF 1.5.0alpha (2004/07/09)
 
     - Topic objects now support syndication (Collector #203).
 
-    - PortalFolder and zpt skin: PortalFolder now inherits from OrderedFolder.
+    - PortalFolder and zpt skin: PortalFolder now inherits from
+      OrderedFolder.
 
-      o Added buttons to 'folder_contents' that allow to set a default sorting
-        for each PortalFolder or to order the sub-objects by hand.
+      o Added buttons to 'folder_contents' that allow to set a default
+        sorting for each PortalFolder or to order the sub-objects by hand.
 
       o Modified 'index_html' to show sub-objects in the selected order. The
         old 'index_html' is still available as 'index_html_categorized'.
@@ -344,21 +347,24 @@ CMF 1.5.0alpha (2004/07/09)
     - DynamicType: Added 'getActionInfo' method.
       This is a shortcut to getActionInfo() of the related TypeInformation.
 
-    - DublinCore: setModificationDate is now guarded by 'ModifyPortalContent'.
+    - DublinCore: setModificationDate is now guarded by
+      'ModifyPortalContent'.
 
     - zpt skin: Reimplemented 'folder_contents' and related controllers.
-      Uses a dispatcher script that calls the right validators and controllers
-      if a form button is pushed. The result looks almost the same as before.
+      Uses a dispatcher script that calls the right validators and
+      controllers if a form button is pushed. The result looks almost
+      the same as before.
 
     - PortalFolder and SkinnedFolder: Added 'new' and 'rename_items' Actions.
       Used for redirects they are invisible by default.
 
     - CMFCore exceptions: Added some Exceptions.
-      AccessControl.Unauthorized is a subclass of zExceptions.Unauthorized, so
-      for best results use 'AccessControl_Unauthorized' to raise Unauthorized
-      and 'zExceptions_Unauthorized' to catch them all. 'CopyError' and
-      'ResourceLockedError' are now also available for TTW code.
-      'EditingConflict' is a new CMF class replacing the old string exception.
+      AccessControl.Unauthorized is a subclass of zExceptions.Unauthorized,
+      so for best results use 'AccessControl_Unauthorized' to raise
+      Unauthorized and 'zExceptions_Unauthorized' to catch them all.
+      'CopyError' and 'ResourceLockedError' are now also available for
+      TTW code.  'EditingConflict' is a new CMF class replacing the old
+      string exception.
 
     - Callable Opaque Items, CMFCatalogAware: Added an interface
       'ICallableOpaqueItemWithHooks'. CMF now calls the manage_after*
@@ -454,8 +460,8 @@ CMF 1.5.0alpha (2004/07/09)
 
       o deleteLocalRoles() now has a 'recursive' argument.
 
-      o deleteMembers() deletes members including member data, member area and
-        Local Roles.
+      o deleteMembers() deletes members including member data, member area
+        and Local Roles.
 
     - CMFCore MembershipTool: Changed interface.
 
@@ -472,13 +478,14 @@ CMF 1.5.0alpha (2004/07/09)
       available for import by Scripts.
 
     - CMFCore and CMFDefault MembershipTool: Changed permissions.
-      'createMemberarea()' for someone else and 'getRoster()' including hidden
-      members are now protected by 'Manage users'. 'getMemberById()',
+      'createMemberarea()' for someone else and 'getRoster()' including
+      hidden members are now protected by 'Manage users'. 'getMemberById()',
       listMemberIds() and listMembers() as well.
 
     - Document and NewsItem: Un-hardwired 'manage_FTPget()' for 'text/html'.
-      Added 'source_html.dtml' and 'source_html.pt'. 'manage_FTPget()' now has
-      a 'gethtml' hook and uses 'source_html' by default. (Collector #168)
+      Added 'source_html.dtml' and 'source_html.pt'. 'manage_FTPget()' now
+      has a 'gethtml' hook and uses 'source_html' by default.
+      (Collector #168)
 
     - TypeInformation: Added Method Aliases.
 
@@ -487,7 +494,8 @@ CMF 1.5.0alpha (2004/07/09)
 
       o factory_type_information now has a key 'aliases' to configure Method
         Aliases in a product. This key is required, but may be empty: If it
-        doesn't exist, TypeInformation will try to update by guessing aliases.
+        doesn't exist, TypeInformation will try to update by guessing
+        aliases.
 
       o DynamicType manipulates 'TraversalRequestNameStack' depending on
         Method Aliases. '(Default)' and 'view' aliases bypass __call__() and
@@ -524,8 +532,8 @@ CMF 1.5.0alpha (2004/07/09)
     - CatalogTool: Marked the 'meta_type' index as deprecated.
 
     - PortalFolder: Marked the 'spec' argument as deprecated.
-      Use the 'filter' argument with 'portal_type' instead for contentItems(),
-      contentIds(), contentValues() and listFolderContents().
+      Use the 'filter' argument with 'portal_type' instead for
+      contentItems(), contentIds(), contentValues() and listFolderContents().
 
     - PortalFolder: Fixed portal_type acquisition bug in ContentFilter.
 
@@ -587,7 +595,7 @@ CMF 1.5.0alpha (2004/07/09)
     - Skin scripts: Made except statements safer by being more specific. Hope
       this still catches all relevant errors.
 
-    - Removed some pre 'Zope 2.4.3 with PageTemplates' backwards compatibility
-      cruft. A later platform is required since CMF 1.3.
+    - Removed some pre 'Zope 2.4.3 with PageTemplates' backwards
+      compatibility cruft. A later platform is required since CMF 1.3.
 
     - Collector #153: CookieCrumbler didn't preserve query strings.
