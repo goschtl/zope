@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: component.py,v 1.2 2003/05/20 15:46:39 sidnei Exp $
+$Id: component.py,v 1.3 2003/05/20 19:43:28 sidnei Exp $
 """
 
 from zope.interface import Interface
@@ -77,6 +77,21 @@ class IGlobalDAVSchemaService(IDAVSchemaService):
         """Register an interface with a given id
 
         The id is the URI for the namespace.
+        """
+
+    def availableNamespaces():
+        """Returns a list of available namespaces we know about"""
+
+    def getNamespace(interface):
+        """Find what namespace is associated with an interface.
+
+        A ComponentLookupError is raised if the interface is not found.
+        """
+
+    def queryNamespace(interface, default=None):
+        """Find what namespace is associated with an interface.
+
+        The default value is returned if the interface is not found.
         """
 
 class IInterfaceField(IEnumerated, IField):

@@ -2,6 +2,25 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:dav='http://namespaces.zope.org/zope/dav'>
 
+
+<!-- not finished yet
+<view for="*"
+ 	name="PROPFIND"
+	type="zope.publisher.interfaces.http.IHTTPPresentation"
+	factory=".propfind.PROPFIND"
+	permission="zope.ManageContent"
+	allowed_attributes="PROPFIND setDepth getDepth"
+/>
+
+<adapter
+     provides="zope.app.interfaces.dav.IDAVSchema"
+     for="*"
+     permission="zope.Public"
+     factory=".adapter.DAVSchemaAdapter"
+     />
+
+-->
+
 <serviceType
     id='DAVSchema'
     interface='zope.app.interfaces.component.IDAVSchemaService' />

@@ -83,6 +83,15 @@ class Test(CleanUp, TestCase):
         r.sort()
         self.assertEqual(r, [I2, I3])
 
+        r = list(service.availableNamespaces())
+        r.sort()
+        self.assertEqual(r, ['http://www.foo.bag/boxschema/', \
+                             'http://www.foo.bar/boxschema/', \
+                             'http://www.foo.baz/boxschema/'])
+
+        ns = service.queryNamespace(I3, '')
+        self.assertEqual(ns, 'http://www.foo.baz/boxschema/')
+
 def test_suite():
     return TestSuite((makeSuite(Test),))
 

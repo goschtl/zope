@@ -4,7 +4,7 @@
   <allow interface="zope.app.interfaces.http.INullResource" />
 </content>
 
-<view 
+<view
   for="zope.app.interfaces.container.ISimpleReadContainer"
   name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPPresentation"
@@ -13,7 +13,7 @@
   allowed_interface="zope.publisher.interfaces.IPublishTraverse"
   />
 
-<view 
+<view
   for="zope.app.interfaces.container.IItemContainer"
   name="_traverse"
   type="zope.publisher.interfaces.http.IHTTPPresentation"
@@ -22,7 +22,7 @@
   allowed_interface="zope.publisher.interfaces.IPublishTraverse"
   />
 
-<view 
+<view
   for="zope.app.interfaces.http.INullResource"
   name="PUT"
   type="zope.publisher.interfaces.http.IHTTPPresentation"
@@ -31,7 +31,7 @@
   allowed_attributes="PUT"
   />
 
-<view 
+<view
   for="*"
   name="PUT"
   type="zope.publisher.interfaces.http.IHTTPPresentation"
@@ -40,13 +40,22 @@
   allowed_attributes="PUT"
   />
 
-<view 
+<view
   for="*"
   name="DELETE"
   type="zope.publisher.interfaces.http.IHTTPPresentation"
   factory=".delete.DELETE"
   permission="zope.Public"
   allowed_attributes="DELETE"
+  />
+
+<view
+  for="*"
+  name="OPTIONS"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".options.OPTIONS"
+  permission="zope.ManageContent"
+  allowed_attributes="OPTIONS"
   />
 
 <include package=".exception" />

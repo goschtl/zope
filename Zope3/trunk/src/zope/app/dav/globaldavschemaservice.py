@@ -12,20 +12,50 @@
 #
 ##############################################################################
 """
-$Id: globaldavschemaservice.py,v 1.1 2003/05/20 15:46:38 sidnei Exp $
+$Id: globaldavschemaservice.py,v 1.2 2003/05/20 19:43:27 sidnei Exp $
 """
 
+from zope.component.exceptions import ComponentLookupError
 from zope.app.component.globalinterfaceservice import InterfaceService
 from zope.app.interfaces.component import IGlobalDAVSchemaService
 
 class DAVSchemaService(InterfaceService):
     __implements__ = IGlobalDAVSchemaService
 
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+        backref = {}
+        for k, v in data:
+            backref[v] = k
+        self.__backref = backref
+        super(DAVSchemaService, self).__init__(data)
+
+    def provideInterface(self, id, interface):
+        if not id:
+            id = "%s.%s" % (interface.__module__, interface.__name__)
+        self.__backref[interface] = id
+        super(DAVSchemaService, self).provideInterface(id, interface)
+
+    def availableNamespaces(self):
+        return super(DAVSchemaService, self).searchInterfaceIds('')
+
+    def getNamespace(self, interface):
+        ns = self.__backref.get(interface, None)
+        if ns is None:
+            raise ComponentLookupError(interface)
+
+    def queryNamespace(self, interface, default=None):
+        return self.__backref.get(interface, default)
+
 davSchemaService = DAVSchemaService()
 provideInterface = davSchemaService.provideInterface
 getInterface = davSchemaService.getInterface
 queryInterface = davSchemaService.queryInterface
 searchInterface = davSchemaService.searchInterface
+availableNamespaces = davSchemaService.availableNamespaces
+getNamespace = davSchemaService.getNamespace
+queryNamespace = davSchemaService.queryNamespace
 
 _clear = davSchemaService._clear
 
