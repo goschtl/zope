@@ -145,7 +145,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             self.text = self.cooked_text = text
         elif text_format == 'plain':
             self.text = text
-            self.cooked_text = html_quote(text).replace('\n','<br>')
+            self.cooked_text = html_quote(text).replace('\n','<br />')
         else:
             self.cooked_text = format_stx(text=text, level=level)
             self.text = text
