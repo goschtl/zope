@@ -13,8 +13,8 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
+"Project-Id-Version: Development/Revision: 25900/Branch: ZopeX3-3.0\n"
+"POT-Creation-Date: Fri Jun 18 17:59:59 2004\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -45,7 +45,6 @@ msgstr ""
 #: src/zope/app/adapter/adapter.py:296
 #: src/zope/app/site/interfaces.py:162
 #: src/zope/app/site/browser/tool.pt:40
-#: src/zope/app/schema/browser/schema_edit.pt:36
 #: src/zope/app/workflow/browser/instancecontainer_index.pt:19
 #: src/zope/app/workflow/browser/instancecontainer_main.pt:18
 #: src/zope/app/container/browser/contents.pt:32
@@ -896,7 +895,6 @@ msgid "Contents"
 msgstr ""
 
 #: src/zope/app/container/browser/metaconfigure.py:71
-#: src/zope/app/schema/browser/configure.zcml:15
 #: src/zope/app/container/browser/configure.zcml:5
 #: src/zope/app/registration/browser/configure.zcml:42
 #: src/zope/app/site/browser/configure.zcml:27
@@ -1217,13 +1215,13 @@ msgstr ""
 msgid "The content type identifies the type of data."
 msgstr ""
 
-#: src/zope/app/file/interfaces.py:32
+#: src/zope/app/file/interfaces.py:33
 #: src/zope/app/i18nfile/browser/file_edit.pt:78
 #: src/zope/app/i18nfile/browser/image_edit.pt:79
 msgid "Data"
 msgstr ""
 
-#: src/zope/app/file/interfaces.py:33
+#: src/zope/app/file/interfaces.py:34
 msgid "The actual content of the object."
 msgstr ""
 
@@ -1253,21 +1251,18 @@ msgstr ""
 
 #: src/zope/app/form/browser/add.py:61
 #: src/zope/app/form/browser/editview.py:106
-#: src/zope/app/schema/browser/__init__.py:53
-#: src/zope/app/schema/browser/__init__.py:64
-#: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
 msgstr ""
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "off"
 msgstr ""
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "on"
 msgstr ""
 
@@ -1338,7 +1333,6 @@ msgstr ""
 #: src/zope/app/site/browser/interfacebrowse.pt:11
 #: src/zope/app/menu/browser/menu_contents.pt:31
 #: src/zope/app/dublincore/browser/edit.pt:14
-#: src/zope/app/schema/browser/schema_edit.pt:38
 #: src/zope/app/container/browser/contents.pt:33
 #: src/zope/app/container/browser/index.pt:27
 msgid "Title"
@@ -1609,7 +1603,6 @@ msgid "Translation Domain - Translate"
 msgstr ""
 
 #: src/zope/app/i18n/browser/translate.pt:34
-#: src/zope/app/module/browser/edit_module.pt:15
 # Default: "Edit"
 msgid "edit-button"
 msgstr ""
@@ -1896,7 +1889,6 @@ msgid "Add Browser Menu Item"
 msgstr ""
 
 #: src/zope/app/menu/browser/menu_contents.pt:25
-#: src/zope/app/schema/browser/schema_edit.pt:30
 #: src/zope/app/container/browser/contents.pt:26
 #: src/zope/app/container/browser/index.pt:18
 msgid "Content listing"
@@ -2011,44 +2003,6 @@ msgstr ""
 
 #: src/zope/app/menus.zcml:9
 msgid "Menu for displaying actions to be performed"
-msgstr ""
-
-#: src/zope/app/module/browser/__init__.py:33
-msgid "module name must be provided"
-msgstr ""
-
-#: src/zope/app/module/browser/__init__.py:46
-msgid "The source was updated."
-msgstr ""
-
-#: src/zope/app/module/browser/add_module.pt:12
-# Default: "Add module"
-msgid "add-module-button"
-msgstr ""
-
-#: src/zope/app/module/browser/add_module.pt:3
-msgid "Add a Module"
-msgstr ""
-
-#: src/zope/app/module/browser/add_module.pt:8
-#: src/zope/app/module/browser/edit_module.pt:8
-msgid "Enter the module source code."
-msgstr ""
-
-#: src/zope/app/module/browser/browse_module.pt:3
-msgid "View Module Names"
-msgstr ""
-
-#: src/zope/app/module/browser/configure.zcml:24
-msgid "Browse"
-msgstr ""
-
-#: src/zope/app/module/browser/configure.zcml:33
-msgid "Module"
-msgstr ""
-
-#: src/zope/app/module/browser/edit_module.pt:3
-msgid "Edit a Module"
 msgstr ""
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:30
@@ -2188,13 +2142,6 @@ msgid "Edit User Information"
 msgstr ""
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:54
-#: src/zope/app/schema/fieldforms.zcml:21
-#: src/zope/app/schema/fieldforms.zcml:47
-#: src/zope/app/schema/fieldforms.zcml:73
-#: src/zope/app/schema/fieldforms.zcml:99
-#: src/zope/app/schema/fieldforms.zcml:125
-#: src/zope/app/schema/fieldforms.zcml:151
-#: src/zope/app/module/browser/configure.zcml:6
 #: src/zope/app/utility/browser/configure.zcml:85
 #: src/zope/app/file/browser/configure.zcml:29
 #: src/zope/app/i18nfile/browser/configure.zcml:31
@@ -2215,11 +2162,11 @@ msgid "Edit"
 msgstr ""
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:7
-msgid "A Pluggable Authentication uses plug-in principal sources."
+msgid "Authentication Service"
 msgstr ""
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:7
-msgid "Authentication Service"
+msgid "A Pluggable Authentication uses plug-in principal sources."
 msgstr ""
 
 #: src/zope/app/pluggableauth/interfaces.py:30
@@ -2764,257 +2711,6 @@ msgstr ""
 msgid "Powered by Zope"
 msgstr ""
 
-#: src/zope/app/schema/browser/__init__.py:52
-msgid "Must select a field to delete"
-msgstr ""
-
-#: src/zope/app/schema/browser/__init__.py:63
-msgid "Invalid field name: %s"
-msgstr ""
-
-#: src/zope/app/schema/browser/__init__.py:69
-msgid "Invalid position: %s"
-msgstr ""
-
-#: src/zope/app/schema/browser/configure.zcml:11
-msgid "Menu of Fields to be added to a schema."
-msgstr ""
-
-#: src/zope/app/schema/browser/configure.zcml:28
-msgid "New Mutable Schema Registration"
-msgstr ""
-
-#: src/zope/app/schema/browser/configure.zcml:5
-msgid "These are schemas that live in the ZODB and are modifiable."
-msgstr ""
-
-#: src/zope/app/schema/browser/configure.zcml:5
-msgid "Persistent, Local Schemas"
-msgstr ""
-
-#: src/zope/app/schema/browser/configure.zcml:52
-msgid "Edit Schema"
-msgstr ""
-
-#: src/zope/app/schema/browser/schema_edit.pt:40
-msgid "Read-Only"
-msgstr ""
-
-#: src/zope/app/schema/browser/schema_edit.pt:68
-# Default: "Delete"
-msgid "delete-field-button"
-msgstr ""
-
-#: src/zope/app/schema/browser/schema_edit.pt:9
-msgid "Schema Name: ${schema_name}"
-msgstr ""
-
-#: src/zope/app/schema/configure.zcml:5
-#: src/zope/app/schema/browser/configure.zcml:40
-msgid "Mutable Schema"
-msgstr ""
-
-#: src/zope/app/schema/configure.zcml:5
-#: src/zope/app/schema/browser/configure.zcml:40
-msgid "A Persistent Schema that can be edited through the web"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:111
-msgid "A Float Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:111
-msgid "Add Float Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:125
-msgid "Edit Float Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:137
-msgid "Add Datetime Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:137
-msgid "A Datetime Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:151
-msgid "Edit Datetime Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:21
-msgid "Edit Text Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:33
-msgid "TextLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:33
-msgid "A TextLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:33
-msgid "Add TextLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:47
-msgid "Edit TextLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:59
-msgid "Add Boolean Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:59
-msgid "A Boolean Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:7
-msgid "A Text Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:7
-msgid "Add Text Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:73
-msgid "Edit Boolean Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:85
-msgid "Add Integer Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:85
-msgid "An Integer Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:99
-msgid "Edit Integer Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:102
-#: src/zope/app/schema/fields.zcml:102
-msgid "BytesLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:114
-#: src/zope/app/schema/fields.zcml:114
-#: src/zope/app/schema/fieldforms.zcml:7
-msgid "Text Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:128
-#: src/zope/app/schema/fields.zcml:128
-msgid "Text Line Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:140
-#: src/zope/app/schema/fields.zcml:140
-#: src/zope/app/schema/fieldforms.zcml:59
-msgid "Boolean Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:151
-#: src/zope/app/schema/fields.zcml:151
-#: src/zope/app/schema/fieldforms.zcml:85
-msgid "Integer Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:163
-#: src/zope/app/schema/fields.zcml:163
-#: src/zope/app/schema/fieldforms.zcml:111
-msgid "Float Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:175
-#: src/zope/app/schema/fields.zcml:175
-msgid "Tuple Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:186
-#: src/zope/app/schema/fields.zcml:186
-msgid "List Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:197
-#: src/zope/app/schema/fields.zcml:197
-msgid "Set Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:208
-#: src/zope/app/schema/fields.zcml:208
-msgid "Password Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:220
-#: src/zope/app/schema/fields.zcml:220
-msgid "Dict Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:232
-#: src/zope/app/schema/fields.zcml:232
-#: src/zope/app/schema/fieldforms.zcml:137
-msgid "Datetime Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:244
-#: src/zope/app/schema/fields.zcml:244
-msgid "SourceText Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:256
-#: src/zope/app/schema/fields.zcml:256
-msgid "Object Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:269
-#: src/zope/app/schema/fields.zcml:269
-msgid "URI Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:281
-#: src/zope/app/schema/fields.zcml:281
-msgid "Id Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:293
-#: src/zope/app/schema/fields.zcml:293
-msgid "Interface Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:38
-#: src/zope/app/schema/fields.zcml:38
-msgid "Container Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:49
-#: src/zope/app/schema/fields.zcml:49
-msgid "Iterable Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:5
-#: src/zope/app/schema/fields.zcml:5
-msgid "Basic Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:60
-#: src/zope/app/schema/fields.zcml:60
-msgid "Orderable Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:75
-#: src/zope/app/schema/fields.zcml:75
-msgid "MinMaxLen Field"
-msgstr ""
-
-#: src/zope/app/schema/fields.zcml:90
-#: src/zope/app/schema/fields.zcml:90
-msgid "Bytes Field"
-msgstr ""
-
 #: src/zope/app/schemacontent/browser/configure.zcml:106
 msgid "Schema-based Content Component Instance"
 msgstr ""
@@ -3285,6 +2981,10 @@ msgstr ""
 msgid "Roles"
 msgstr ""
 
+#: src/zope/app/securitypolicy/browser/manage_access.pt:89
+msgid "Save Changes"
+msgstr ""
+
 #: src/zope/app/securitypolicy/browser/manage_permissionform.pt:24
 msgid "Helpful message."
 msgstr ""
@@ -3460,7 +3160,6 @@ msgid "Add Service"
 msgstr ""
 
 #: src/zope/app/site/browser/__init__.py:145
-#: src/zope/app/schema/browser/schema_add.pt:8
 msgid "Add Utility"
 msgstr ""
 
@@ -3621,7 +3320,6 @@ msgstr ""
 
 #: src/zope/app/site/browser/interfacedetail.pt:47
 #: src/zope/app/sqlscript/browser/test.pt:15
-#: src/zope/app/schema/browser/schema_edit.pt:37
 msgid "Type"
 msgstr ""
 
@@ -3820,9 +3518,8 @@ msgid "deactivate-button"
 msgstr ""
 
 #: src/zope/app/site/browser/tool.pt:96
-#: src/zope/app/schema/browser/schema_add.pt:39
-#: src/zope/app/workflow/stateful/browser/add.pt:65
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:55
+#: src/zope/app/workflow/stateful/browser/add.pt:65
 #: src/zope/app/workflow/stateful/browser/addstate.pt:20
 #: src/zope/app/i18n/browser/translate.pt:48
 #: src/zope/app/container/browser/add.pt:38
@@ -4534,6 +4231,11 @@ msgstr ""
 msgid "Available Mappings"
 msgstr ""
 
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
+msgid "Process Definition <-> Content Type Registry"
+msgstr ""
+
 #: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:48
 # Default: "Switch View"
 msgid "switch-view-button"
@@ -4560,11 +4262,6 @@ msgstr ""
 #: src/zope/app/workflow/stateful/browser/definition_edit.pt:26
 # Default: "Set Schema"
 msgid "set-schema-button"
-msgstr ""
-
-#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
-#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
-msgid "Process Definition <-> Content Type Registry"
 msgstr ""
 
 #: src/zope/app/workflow/stateful/browser/definition_index.pt:13
@@ -4740,6 +4437,10 @@ msgstr ""
 msgid "Root Folder"
 msgstr ""
 
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "Templated Page"
+msgstr ""
+
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
 msgstr ""
@@ -4762,14 +4463,12 @@ msgid "Many Zope 3 developers consider inline code blocks something very bad, si
 msgstr ""
 
 #: src/zope/app/zptpage/browser/inlinecode.pt:49
-#: src/zope/app/schema/browser/schema_edit.pt:20
 #: src/zope/app/pythonpage/edit.pt:23
 #: src/zope/app/form/browser/add.pt:22
 #: src/zope/app/form/browser/edit.pt:23
 msgid "There are ${num_errors} input errors."
 msgstr ""
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
 msgid "ZPT Page"
 msgstr ""
@@ -4869,7 +4568,6 @@ msgid "A description of the field"
 msgstr ""
 
 #: src/zope/schema/interfaces.py:114
-#: src/zope/app/schema/browser/schema_edit.pt:39
 msgid "Required"
 msgstr ""
 

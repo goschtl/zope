@@ -87,7 +87,7 @@
         <td colspan="5" align="left">
           <div class="form-element">
             <input class="form-element" type="submit" name="SUBMIT" 
-                   value="Save Changes" />
+                   value="Save Changes" i18n:attributes="value" />
           </div>
         </td>
       </tr>
