@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: undo.py,v 1.9 2003/08/17 06:05:23 philikon Exp $
+$Id: undo.py,v 1.10 2004/01/16 12:16:37 philikon Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
@@ -23,7 +23,7 @@ from datetime import datetime
 
 
 def undoSetup(event):
-    # setup undo fnctionality
+    # setup undo functionality
     svc = getService(None, Utilities)
     svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
 
