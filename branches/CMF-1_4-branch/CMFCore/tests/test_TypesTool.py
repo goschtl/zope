@@ -12,6 +12,8 @@ except ImportError:
     # for Zope versions before 2.6.0
     from Interface import verify_class_implementation as verifyClass
 
+from types import DictType
+
 from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
@@ -21,6 +23,7 @@ from webdav.NullResource import NullResource
 from Products.PythonScripts.PythonScript import PythonScript
 from Products.PythonScripts.standard import url_quote
 
+from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import ScriptableTypeInformation as STI
 from Products.CMFCore.TypesTool import TypesTool
@@ -31,27 +34,15 @@ from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.security import UserWithRoles
 from Products.CMFCore.tests.base.dummy import DummyFactory
 from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.dummy import DummyFTI
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
+from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
+from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13
+from Products.CMFCore.tests.base.tidata import FTIDATA_CMF13_FOLDER
+from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 from Products.CMFCore.tests.base.testcase import SecurityTest
-
-STI_SCRIPT = """\
-## Script (Python) "addBaz"
-##bind container=container
-##bind context=context
-##bind namespace=
-##bind script=script
-##bind subpath=traverse_subpath
-##parameters=container, id
-##title=
-##
-product = container.manage_addProduct['FooProduct']
-product.addFoo(id)
-item = getattr(container, id)
-return item
-"""
 
 
 class TypesToolTests(SecurityTest):
@@ -61,7 +52,9 @@ class TypesToolTests(SecurityTest):
         self.site = DummySite('site').__of__(self.root)
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         self.ttool = self.site._setObject( 'portal_types', TypesTool() )
-        self.ttool._setObject( 'Dummy Content', DummyFTI ) 
+        fti = FTIDATA_DUMMY[0].copy()
+        del fti['id']
+        self.ttool._setObject( 'Dummy Content', apply( FTI, ('Dummy Content',), fti) )
  
     def test_processActions( self ):
         """
@@ -216,39 +209,11 @@ class TypeInfoTests(TestCase):
         ti = self._makeInstance( 'Foo', allow_discussion=1 )
         self.failUnless( ti.allowDiscussion() )
 
-    ACTION_LIST = \
-    ( { 'id'            : 'view'
-      , 'name'          : 'View'
-      , 'action'        : 'string:'
-      , 'permissions'   : ( 'View', )
-      , 'category'      : 'object'
-      , 'visible'       : 1
-      }
-    , { 'name'          : 'Edit'                # Note: No ID passed
-      , 'action'        : 'string:${object_url}/foo_edit'
-      , 'permissions'   : ( 'Modify', )
-      , 'category'      : 'object'
-      , 'visible'       : 1
-      }
-    , { 'name'          : 'Object Properties'   # Note: No ID passed
-      , 'action'        : 'string:foo_properties'
-      , 'permissions'   : ( 'Modify', )
-      , 'category'      : 'object'
-      , 'visible'       : 1
-      }
-    , { 'id'            : 'slot'
-      , 'action'        : 'string:foo_slot'
-      , 'category'      : 'object'
-      , 'visible'       : 0
-      }
-    )
-
     def test_listActions( self ):
         ti = self._makeInstance( 'Foo' )
         self.failIf( ti.listActions() )
 
-        ti = self._makeInstance( 'Foo', actions=self.ACTION_LIST )
-
+        ti = self._makeInstanceByFTIData(FTIDATA_ACTIONS)
         actions = ti.listActions()
         self.failUnless( actions )
 
@@ -279,7 +244,7 @@ class TypeInfoTests(TestCase):
                         , id( marker ) )
         self.assertRaises( ValueError, ti.getActionById, 'view' )
 
-        ti = self._makeInstance( 'Foo', actions=self.ACTION_LIST )
+        ti = self._makeInstanceByFTIData(FTIDATA_ACTIONS)
         self.assertEqual( id( ti.getActionById( 'foo', marker ) )
                         , id( marker ) )
         self.assertRaises( ValueError, ti.getActionById, 'foo' )
@@ -296,43 +261,76 @@ class TypeInfoTests(TestCase):
         action = ti.getActionById( 'slot' )
         self.assertEqual( action, 'foo_slot' )
 
-    def test__convertActions_from_dict( self ):
-
-        from Products.CMFCore.ActionInformation import ActionInformation
-
-        ti = self._makeInstance( 'Foo' )
-        ti._actions = ( { 'id' : 'bar'
-                        , 'name' : 'Bar'
-                        , 'action' : 'bar_action'
-                        , 'permissions' : ( 'Bar permission', )
-                        , 'category' : 'baz'
-                        , 'visible' : 0
-                        }
-                      ,
-                      )
-
-        actions = ti.listActions()
-        self.assertEqual( len( actions ), 1 )
-
-        action = actions[0]
-
-        self.failUnless( isinstance( action, ActionInformation ) )
-        self.assertEqual( action.getId(), 'bar' )
-        self.assertEqual( action.Title(), 'Bar' )
-        self.assertEqual( action.getActionExpression(),
-                          'string:${object_url}/bar_action' )
-        self.assertEqual( action.getCondition(), '' )
-        self.assertEqual( action.getPermissions(), ( 'Bar permission', ) )
-        self.assertEqual( action.getCategory(), 'baz' )
-        self.assertEqual( action.getVisibility(), 0 )
+    def _checkContentTI(self, ti):
+        wanted_actions_text0 = 'string:${object_url}/dummy_view'
+        wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
+        wanted_actions_text2 = 'string:${object_url}/metadata_edit_form'
 
         self.failUnless( isinstance( ti._actions[0], ActionInformation ) )
+        self.assertEqual( len( ti._actions ), 3 )
+        self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
+        self.assertEqual(ti._actions[1].action.text, wanted_actions_text1)
+        self.assertEqual(ti._actions[2].action.text, wanted_actions_text2)
+
+        action0 = ti._actions[0]
+        self.assertEqual( action0.getId(), 'view' )
+        self.assertEqual( action0.Title(), 'View' )
+        self.assertEqual( action0.getActionExpression(), wanted_actions_text0 )
+        self.assertEqual( action0.getCondition(), '' )
+        self.assertEqual( action0.getPermissions(), ( 'View', ) )
+        self.assertEqual( action0.getCategory(), 'object' )
+        self.assertEqual( action0.getVisibility(), 1 )
+
+    def _checkFolderTI(self, ti):
+        wanted_actions_text0 = 'string:${object_url}'
+        wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
+        wanted_actions_text2 = 'string:${object_url}/folder_localrole_form'
+
+        self.failUnless( isinstance( ti._actions[0], ActionInformation ) )
+        self.assertEqual( len( ti._actions ), 3 )
+        self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
+        self.assertEqual(ti._actions[1].action.text, wanted_actions_text1)
+        self.assertEqual(ti._actions[2].action.text, wanted_actions_text2)
+
+    def test_CMF13_content_migration(self):
+
+        # use old FTI Data
+        ti = self._makeInstanceByFTIData(FTIDATA_CMF13)
+        self._checkContentTI(ti)
+
+        # simulate old FTI
+        ti._actions = FTIDATA_CMF13[0]['actions']
+        self.failUnless( isinstance( ti._actions[0], DictType ) )
+
+        # migrate FTI
+        ti.listActions()
+        self._checkContentTI(ti)
+
+    def test_CMF13_folder_migration(self):
+
+        # use old FTI Data
+        ti = self._makeInstanceByFTIData(FTIDATA_CMF13_FOLDER)
+        self._checkFolderTI(ti)
+
+        # simulate old FTI
+        ti._actions = FTIDATA_CMF13_FOLDER[0]['actions']
+        self.failUnless( isinstance( ti._actions[0], DictType ) )
+
+        # migrate FTI
+        ti.listActions()
+        self._checkFolderTI(ti)
 
 
 class FTIDataTests( TypeInfoTests ):
 
     def _makeInstance( self, id, **kw ):
         return apply( FTI, ( id, ), kw )
+
+    def _makeInstanceByFTIData(self, ftidata):
+        fti = ftidata[0].copy()
+        id = fti['id']
+        del fti['id']
+        return apply( FTI, ( id, ), fti )
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -357,6 +355,12 @@ class STIDataTests( TypeInfoTests ):
 
     def _makeInstance( self, id, **kw ):
         return apply( STI, ( id, ), kw )
+
+    def _makeInstanceByFTIData(self, ftidata):
+        fti = ftidata[0].copy()
+        id = fti['id']
+        del fti['id']
+        return apply( STI, ( id, ), fti )
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
