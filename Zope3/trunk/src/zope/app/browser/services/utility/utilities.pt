@@ -27,12 +27,8 @@
         <a href="."
            tal:condition="config/url"
            tal:attributes=
-	       "href string:${config/url}/@@SelectedManagementView.html"
-           >
-          <span tal:replace="config/interface" />
-          <span tal:condition="config/name" i18n:translate="">
-            named <span tal:replace="config/name" i18n:name="utility_name" />
-          </span>
+	       "href string:${config/url}/@@SelectedManagementView.html" >
+          <span tal:replace="string:${config/name}:${config/interface}" />
         </a>
 
         <span tal:condition="not:config/url">
