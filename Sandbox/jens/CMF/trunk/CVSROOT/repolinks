@@ -112,6 +112,7 @@
 /ZODB3/ThreadedAsync     /Packages/ThreadedAsync
 /ZODB3/zdaemon           /Packages/zdaemon
 /ZODB3/zLOG              /Packages/zLOG
+/ZODB3/Doc/ZEO		 /Packages/ZEO/docs
 
 /ZODB4/ZODB		 /Packages3/ZODB
 /ZODB4/ZEO		 /Packages3/ZEO
