@@ -14,9 +14,10 @@
 """An implementation of things that can be registered in a Registry."""
 
 from zope.app.interfaces.security import IRegisteredObject
+from zope.interface import implements
 
 class RegisteredObject(object):
-    __implements__ = IRegisteredObject
+    implements(IRegisteredObject)
 
     def __init__(self, id, title, description):
         self._id = id

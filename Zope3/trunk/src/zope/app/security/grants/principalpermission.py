@@ -15,6 +15,7 @@
 
 from zope.component import getAdapter
 
+from zope.interface import implements
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipalPermissionManager
 
@@ -29,7 +30,7 @@ annotation_key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 class AnnotationPrincipalPermissionManager:
     """Mappings between principals and permissions."""
 
-    __implements__ = IPrincipalPermissionManager
+    implements(IPrincipalPermissionManager)
 
     def __init__(self, context):
         self._context = context
@@ -105,7 +106,7 @@ class AnnotationPrincipalPermissionManager:
 class PrincipalPermissionManager(SecurityMap):
     """Mappings between principals and permissions."""
 
-    __implements__ = IPrincipalPermissionManager
+    implements(IPrincipalPermissionManager)
 
     def grantPermissionToPrincipal(self, permission_id, principal_id,
                                    check=True):
@@ -114,7 +115,7 @@ class PrincipalPermissionManager(SecurityMap):
         if check:
             checkPermission(None, permission_id)
             checkPrincipal(None, principal_id)
-        
+
         self.addCell(permission_id, principal_id, Allow)
 
     def denyPermissionToPrincipal(self, permission_id, principal_id,

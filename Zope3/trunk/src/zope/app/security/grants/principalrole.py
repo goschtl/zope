@@ -14,6 +14,7 @@
 """Mappings between principals and roles, stored in an object locally."""
 
 from zope.component import getAdapter
+from zope.interface import implements
 
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipalRoleManager
@@ -31,7 +32,7 @@ annotation_key = 'zope.app.security.AnnotationPrincipalRoleManager'
 class AnnotationPrincipalRoleManager:
     """Mappings between principals and roles."""
 
-    __implements__ = IPrincipalRoleManager
+    implements(IPrincipalRoleManager)
 
     def __init__(self, context):
         self._context = context
@@ -99,7 +100,7 @@ class AnnotationPrincipalRoleManager:
 class PrincipalRoleManager(SecurityMap):
     """Mappings between principals and roles."""
 
-    __implements__ = (IPrincipalRoleManager, IPrincipalRoleMap)
+    implements(IPrincipalRoleManager, IPrincipalRoleMap)
 
     def assignRoleToPrincipal(self, role_id, principal_id, check=True):
         ''' See the interface IPrincipalRoleManager '''

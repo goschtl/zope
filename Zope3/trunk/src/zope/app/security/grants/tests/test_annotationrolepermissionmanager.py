@@ -24,11 +24,12 @@ from zope.app.security.registries.roleregistry import roleRegistry
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.settings import Allow, Deny
 from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.interface import implements
 
 import unittest
 
 class Manageable:
-    __implements__ = IAttributeAnnotatable
+    implements(IAttributeAnnotatable)
 
 class Test(PlacefulSetup, unittest.TestCase):
 

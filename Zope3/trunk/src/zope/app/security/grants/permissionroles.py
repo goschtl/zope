@@ -13,17 +13,18 @@
 ##############################################################################
 """
 
-$Id: permissionroles.py,v 1.3 2003/05/01 19:35:32 faassen Exp $
+$Id: permissionroles.py,v 1.4 2003/06/07 05:46:03 stevea Exp $
 """
 
 from zope.component import getAdapter
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.interfaces.security import IPermission
 from zope.app.security.settings import Unset
+from zope.interface import implements
 
 class PermissionRoles:
 
-    __implements__ = IPermission
+    implements(IPermission)
 
     def __init__(self, permission, context, roles):
         self._permission = permission

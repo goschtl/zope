@@ -14,17 +14,17 @@
 import unittest
 
 from zope.app.security.registries.principalregistry import PrincipalRegistry
-from zope.app.security.registries.principalregistry \
-     import DuplicateLogin, DuplicateId
+from zope.app.security.registries.principalregistry import DuplicateLogin
+from zope.app.security.registries.principalregistry import DuplicateId
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.tests.placefulsetup \
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.servicenames import Adapters
+from zope.interface import implements
 
 class Request:
 
-    __implements__ = IHTTPCredentials
+    implements(IHTTPCredentials)
 
     def __init__(self, lpw):
         self.__lpw = lpw

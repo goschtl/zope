@@ -24,15 +24,15 @@ from zope.app.interfaces.security import IPermissionService
 from zope.security.checker import CheckerPublic
 from zope.app.security.exceptions import UndefinedPermissionError
 from zope.app.interfaces.services.service import ISimpleService
-
+from zope.interface import implements
 
 
 class Permission(RegisteredObject):
-    __implements__ = IPermission
+    implements(IPermission)
 
 
 class PermissionRegistry(Registry):
-    __implements__ = IPermissionService, ISimpleService
+    implements(IPermissionService, ISimpleService)
 
     def __init__(self, prefix=PREFIX):
         Registry.__init__(self, Permission)

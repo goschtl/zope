@@ -26,11 +26,11 @@ from zope.app.security.registries.principalregistry \
 from zope.app.security.grants.principalrole \
         import AnnotationPrincipalRoleManager
 from zope.app.security.settings import Allow, Deny
-from zope.app.services.tests.placefulsetup \
-     import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.interface import implements
 
 class Manageable:
-    __implements__ = IAttributeAnnotatable
+    implements(IAttributeAnnotatable)
 
 class Test(PlacefulSetup, unittest.TestCase):
 

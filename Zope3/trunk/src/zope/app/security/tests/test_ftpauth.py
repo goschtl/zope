@@ -12,17 +12,18 @@
 #
 ##############################################################################
 """
-$Id: test_ftpauth.py,v 1.1 2003/02/03 15:08:46 jim Exp $
+$Id: test_ftpauth.py,v 1.2 2003/06/07 05:46:06 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.interfaces.ftp import IFTPCredentials
 from zope.app.security.ftpauth import FTPAuth
+from zope.interface import implements
 
 class FTPCredentials:
     __doc__ = IFTPCredentials.__doc__
 
-    __implements__ =  IFTPCredentials
+    implements(IFTPCredentials)
 
     def __init__(self, credentials):
         self.credentials = credentials

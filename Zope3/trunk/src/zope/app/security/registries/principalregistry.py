@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.8 2003/06/02 16:55:48 jim Exp $
+$Id: principalregistry.py,v 1.9 2003/06/07 05:46:05 stevea Exp $
 """
 __metaclass__ = type
 
@@ -23,13 +23,14 @@ from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.app.interfaces.security import IUnauthenticatedPrincipal
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
 
 class PrincipalRegistry:
 
-    __implements__ = IAuthenticationService, ISimpleService
+    implements(IAuthenticationService, ISimpleService)
 
     # Methods implementing IAuthenticationService
 
@@ -136,7 +137,7 @@ class PrincipalBase:
 
 class Principal(PrincipalBase):
 
-    __implements__ = IPrincipal
+    implements(IPrincipal)
 
     def __init__(self, id, title, description, login, pw):
         super(Principal, self).__init__(id, title, description)
@@ -152,4 +153,4 @@ class Principal(PrincipalBase):
 
 class UnauthenticatedPrincipal(PrincipalBase):
 
-    __implements__ = IUnauthenticatedPrincipal
+    implements(IUnauthenticatedPrincipal)

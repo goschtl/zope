@@ -15,11 +15,12 @@
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
+from zope.interface import implements
 from zope.app.interfaces.security.grants.securitymap import ISecurityMap
 
 class SecurityMap(object):
 
-    __implements__ = ISecurityMap
+    implements(ISecurityMap)
 
     def __init__(self):
         self._clear()
@@ -77,7 +78,7 @@ class SecurityMap(object):
 
 class PersistentSecurityMap(SecurityMap, Persistent):
 
-    __implements__ = ISecurityMap
+    implements(ISecurityMap)
 
     def _clear(self):
         self._byrow = PersistentDict()

@@ -20,6 +20,7 @@ from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 from zope.app.security.protectclass import protectName, protectLikeUnto
 from zope.app.security.protectclass import protectSetAttribute
+from zope.interface import implements
 
 NOTSET = []
 
@@ -38,7 +39,7 @@ class Test(CleanUp, unittest.TestCase):
             def m2(self):
                 return "m2"
         class C(B):
-            __implements__ = I
+            implements(I)
             def m3(self):
                 return "m3"
             def m4(self):

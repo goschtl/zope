@@ -14,12 +14,13 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.12 2003/06/02 16:55:49 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.13 2003/06/07 05:46:06 stevea Exp $
 """
 
 import unittest
 
 from zope.component.service import serviceManager as services
+from zope.interface import implements
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
@@ -49,8 +50,7 @@ from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.services.tests.placefulsetup\
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.security.zopepolicy import permissionsOfPrincipal
 
 class Context:
@@ -133,7 +133,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         # ... and assign roles to principals
         principalRoleManager.assignRoleToPrincipal(self.peon, self.jim.getId())
-        principalRoleManager.assignRoleToPrincipal(self.manager, self.tim.getId())
+        principalRoleManager.assignRoleToPrincipal(self.manager,
+                                                   self.tim.getId())
 
         self.policy = self._makePolicy()
 
@@ -313,7 +314,7 @@ class ITest(IAttributeAnnotatable):
     pass
 
 class TestClass:
-    __implements__ = ITest
+    implements(ITest)
 
     def __init__(self):
         self._roles       = { 'test' : {} }

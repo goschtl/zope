@@ -13,9 +13,10 @@
 ##############################################################################
 """
 
-$Id: rolepermission.py,v 1.2 2003/05/28 15:46:10 jim Exp $
+$Id: rolepermission.py,v 1.3 2003/06/07 05:46:03 stevea Exp $
 """
 from zope.component import getAdapter
+from zope.interface import implements
 
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IRolePermissionMap
@@ -35,7 +36,7 @@ class AnnotationRolePermissionManager:
     provide adapter that manages role permission data in an object attribute
     """
 
-    __implements__ = IRolePermissionManager, IRolePermissionMap
+    implements(IRolePermissionManager, IRolePermissionMap)
 
     def __init__(self, context):
         self._context = context
@@ -117,7 +118,7 @@ class AnnotationRolePermissionManager:
 
 class RolePermissions:
 
-    __implements__ = IRole
+    implements(IRole)
 
     def __init__(self, role, context, permissions):
         self._role = role
@@ -149,7 +150,7 @@ class RolePermissions:
 class RolePermissionManager(SecurityMap):
     """Mappings between roles and permissions."""
 
-    __implements__ = IRolePermissionManager
+    implements(IRolePermissionManager)
 
     def grantPermissionToRole(self, permission_id, role_id, check=True):
         '''See interface IRolePermissionMap'''
