@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+    - Implemented 'apidoc' tool for online browsing of the Zope 3 framework
+      API and configuration. The documentation can be accessed via a new
+      namespace '++apidoc++'::
+
+        http://localhost:8080/++apidoc++/
+
     - Copy/Move now checks constraints and preconditions, instead of just
       expecting the source's and target's class to be the same.
 
@@ -21,6 +27,11 @@ Zope Changes
 
     Bug fixes
     
+    - Reimplemented 'getRegisteredMatching()' of the Presentation Service,
+      since it was not functioning at all.
+
+    - Fixed Utility Service 'getRegisteredMatching()' method.
+
     - Validation of object field fixed (zope.schema.Object). Validate only 
       attributes of the schema that are implemented as fields.
 
