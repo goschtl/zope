@@ -90,13 +90,13 @@ def init_table():
          'addrs': ["cmf-checkins@zope.org"]},
 
         {'path': "Packages/TAL",
-         'addrs': ["zpt-checkins@zope.org"]},
+         'addrs': ["zpt-cvs@zope.org"]},
         {'path': "Products/PageTemplates",
-         'addrs': ["zpt-checkins@zope.org"]},
+         'addrs': ["zpt-cvs@zope.org"]},
         {'path': "Packages/ZTUtils",
-         'addrs': ["zpt-checkins@zope.org"]},
+         'addrs': ["zpt-cvs@zope.org"]},
         {'path': "Products/PresentationTemplates",
-         'addrs': ["zpt-checkins@zope.org"]},
+         'addrs': ["zpt-cvs@zope.org"]},
 
         {'path': "Packages/Spread",
          'addrs': ["pythonlabs@zope.com"]},
