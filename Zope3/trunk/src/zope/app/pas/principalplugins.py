@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 from zope.event import notify
 from zope.interface import implements
 
-from zope.app.security.interfaces import IPrincipal
+from zope.security.interfaces import IGroupAwarePrincipal
 
 from zope.app.pas import interfaces
 
@@ -39,12 +39,13 @@ class Principal:
     >>> p.id
     'foo'
     """
-    implements(IPrincipal)
+    implements(IGroupAwarePrincipal)
 
     title = description = u''
     
     def __init__(self, id):
         self.id = id
+        self.groups = []
 
     def __repr__(self):
         return 'Principal(%r)' %self.id
