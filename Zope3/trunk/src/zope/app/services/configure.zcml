@@ -250,6 +250,7 @@
     </content>
 
   <content class="zope.app.services.folder.SiteManagementFolder">
+    <factory permission="zope.ManageServices" />
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
