@@ -15,7 +15,7 @@ import sys
 
 __doc__="""Fix BoboPOS time stamps
 
-If a system has a problem with it's clock setting, it may cause
+If a system has a problem with its clock setting, it may cause
 database records to be written with time stamps in the future.  This
 causes problems when the clock is fixed or when the data are moved to
 a system that doesn't have a broken clock.

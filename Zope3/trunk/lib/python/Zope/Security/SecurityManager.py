@@ -95,7 +95,7 @@ class SecurityManager:
     def pushExecutable( self, anExecutableObject ):
         """
             Push an ExecutableObject onto the manager's stack, and
-            activate it's custom security policy, if any.
+            activate its custom security policy, if any.
         """
         stack=self._context.stack
 

@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.14 2002/09/22 18:47:07 rdmurray Exp $
+$Id: meta.py,v 1.15 2002/10/03 19:44:26 efge Exp $
 """
 
 
@@ -296,7 +296,7 @@ class Subdirective:
     """This is the meta-meta-directive"""
     # 
     # Unlike other directives, it doesn't return any actions, but
-    # takes action right away, since it's actions are needed to process other
+    # takes action right away, since its actions are needed to process other
     # directives.
     # 
     # For this reason, this isn't a good directive example.

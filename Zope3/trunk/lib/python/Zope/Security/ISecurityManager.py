@@ -48,7 +48,7 @@ class ISecurityManager( Interface ):
     def pushExecutable( anExecutableObject ):
         """
             Push an ExecutableObject onto the manager's stack, and
-            activate it's custom security policy, if any.
+            activate its custom security policy, if any.
         """
 
     def popExecutable( anExecutableObject ):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Transaction management
 
-$Id: _defaultTransaction.py,v 1.5 2002/07/24 23:02:53 jeremy Exp $
+$Id: _defaultTransaction.py,v 1.6 2002/10/03 19:44:24 efge Exp $
 """
 import sys
 
@@ -216,7 +216,7 @@ class Transaction:
         #   or aborted.
         #
         # - For each object that is committed
-        #   we call tpc_begin on it's jar at least once
+        #   we call tpc_begin on its jar at least once
         #
         # - For every jar for which we've called tpc_begin on,
         #   we either call tpc_abort or tpc_finish. It is OK

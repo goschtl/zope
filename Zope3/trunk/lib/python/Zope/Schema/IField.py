@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.4 2002/09/18 15:05:51 jim Exp $
+$Id: IField.py,v 1.5 2002/10/03 19:44:26 efge Exp $
 """
 from Interface import Interface
 
@@ -74,7 +74,7 @@ class IField(Interface):
         description=u"""\
         The order attribute can be used to determine the order in
         which fields in a schema were defined. If one field is created
-        after another (in the same thread), it's order will be
+        after another (in the same thread), its order will be
         greater.
 
         (Fields in separate threads could have the same order.)
