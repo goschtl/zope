@@ -37,6 +37,13 @@
       allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
+  <browser:page
+      for="*"
+      template="five_template.pt"
+      name="five_template"
+      permission="zope.Public"
+      />
+
   <view
       for="*"
       factory=".browser.AbsoluteURL"
