@@ -28,8 +28,7 @@ from zope.app.file.interfaces import IFileContent
 from interfaces import IDTMLPage, IRenderDTMLPage
 
 class DTMLPage(Persistent, Contained):
-    #XXX Putting IFileContent at the end gives an error!
-    implements(IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable)
+    implements(IDTMLPage, IRenderDTMLPage, IFileContent, IAnnotatable)
 
     def __init__(self, source=''):
         self.setSource(source)
