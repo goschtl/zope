@@ -1,1 +1,45 @@
 The view directive
+
+See lib/python/Zope/App/Publisher/Browser/browser-meta.zcml
+
+Implemented in Zope.App.Publisher.Browser.metaConfigure.view
+
+Attributes
+
+  * name
+  
+  * factory
+  
+  * for, the interface this view applies to
+  
+  * layer, defaults to 'default'
+  
+  * template, the name a page template (must end in extension .pt).
+    If you supply a template, you must also supply a name.
+  
+  * permission, a permission id
+  
+  * allowed_interface, must also supply a name or permission
+  
+  * allowed_attributes, must also supply a name or permission
+  
+Subdirectives
+
+  * page
+  
+    * name
+    
+    * attribute
+    
+    * permission
+  
+  * defaultPage
+  
+    * name
+    
+    * attribute
+    
+    * permission
+
+    
+    
