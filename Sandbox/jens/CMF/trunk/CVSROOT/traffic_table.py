@@ -141,7 +141,7 @@ def init_table():
 
         {'path': "Packages/TAL",
          'addrs': ["zpt@mail.zope.org"],
-         'remote': None},
+         'remote': public_remote},
 
         {'path': "Packages/Products/PresentationTemplates",
          'addrs': ["zpt@mail.zope.org"],
@@ -149,7 +149,7 @@ def init_table():
 
         {'path': "Packages/Products/PageTemplates",
          'addrs': ["zpt@mail.zope.org"],
-         'remote': None},
+         'remote': products_remote},
 
         {'path': "Packages/bsddb3Storage",
          'addrs': ("zodb-checkins@zope.org",),
