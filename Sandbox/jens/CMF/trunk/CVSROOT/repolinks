@@ -125,7 +125,6 @@
 
 /Zope3/lib/python/Zope/App                     /Packages/ZopeApp
 /Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
-/Zope3/lib/python/Zope/DateTime                /Packages/DateTime
 /Zope3/lib/python/Zope/DocumentTemplate        /Packages/DocumentTemplate
 /Zope3/lib/python/Zope/Publisher               /Packages/Publisher
 /Zope3/lib/python/Zope/RestrictedPython        /Packages/RestrictedPython
@@ -141,6 +140,7 @@
 /Zope3/lib/python/ZopeLegacy/AccessControl     /Packages/AccessControl
 /Zope3/lib/python/ZopeLegacy/App               /Packages/App
 /Zope3/lib/python/ZopeLegacy/BTree             /Zope/lib/Components/BTree
+/Zope3/lib/python/ZopeLegacy/DateTime          /Packages/DateTime
 /Zope3/lib/python/ZopeLegacy/ExtensionClass    /Cruft/ExtensionClass
 /Zope3/lib/python/ZopeLegacy/HelpSys           /Packages/HelpSys
 /Zope3/lib/python/ZopeLegacy/OFS               /Packages/OFS
