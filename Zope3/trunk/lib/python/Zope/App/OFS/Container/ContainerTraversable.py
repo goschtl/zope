@@ -13,9 +13,8 @@
 ##############################################################################
 """
 Revision:
-$Id: ContainerTraversable.py,v 1.2 2002/06/10 23:27:55 jim Exp $
+$Id: ContainerTraversable.py,v 1.3 2002/12/17 19:08:58 stevea Exp $
 """
-
 
 from Zope.App.Traversing.ITraversable import ITraversable
 from Zope.App.Traversing.Exceptions import UnexpectedParameters
