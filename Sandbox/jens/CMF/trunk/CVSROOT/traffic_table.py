@@ -154,6 +154,11 @@ def init_table():
         {'path': "Projects/python-site",
          'addrs': ["pythonlabs@digicool.com"],
          'remote': None},
+
+        {'path': "Packages/Products/CMFDemo",
+         'addrs': ["karl@digicool.com", "adam@digicool.com"],
+         'remote': products_remote},
+        
     ])
 
 # Support for the ZEO module (defined in CVSROOT/modules)
