@@ -1,6 +1,9 @@
-CMF 1.4.2 (unreleased)
+CMF 1.4.2 (2003/10/27)
 
   Bug Fixes
+
+    - CMFDefault RegistrationTool:  enforced using the member's e-mail
+      address, rather than the one passed in from the request.
 
     - CMFCore MembershipTool: Fixed 'getCandidateLocalRoles()'.
       Didn't work without having 'Member' role. (Collector #148 and #169)
