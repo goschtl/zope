@@ -11,7 +11,7 @@ Add the following section to your zope.conf:
 
   <server>
     type RecordingHTTP
-    port 8081
+    address 8081
   </server>
 
 Now go to http://localhost:8081/ and do whatever needs to be recorded.  When
