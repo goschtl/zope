@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: attributeannotations.py,v 1.6 2003/06/03 15:33:55 stevea Exp $
+$Id: attributeannotations.py,v 1.7 2003/09/21 17:30:01 jim Exp $
 """
 
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations
 from zope.proxy import removeAllProxies
-from zope.app.context import ContextWrapper
 from zope.interface import implements
+from zope.app.interfaces.location import ILocation
 
 class AttributeAnnotations:
     """
@@ -39,17 +39,28 @@ class AttributeAnnotations:
         self.unwrapped_obj = removeAllProxies(obj)
 
     def __getitem__(self, key):
-        annotations = getattr(self.unwrapped_obj, '__annotations__', {})
-        return ContextWrapper(annotations[key], self.wrapped_obj)
+        annotations = getattr(self.unwrapped_obj, '__annotations__', None)
+        if annotations is None:
+            raise KeyError, key
+        return annotations[key]
+
+    def __setitem__(self, key, value):
+        if ILocation.isImplementedBy(value):
+            value.__parent__ = self.unwrapped_obj
+
+        try:
+            annotations = self.unwrapped_obj.__annotations__
+        except AttributeError:
+            annotations = self.unwrapped_obj.__annotations__ = OOBTree()
+
+        annotations[key] = value
 
     def get(self, key, default=None):
         try:
-            value = self.unwrapped_obj.__annotations__.get(key, default)
+            return self.unwrapped_obj.__annotations__.get(key, default)
         except AttributeError:
             # I guess default shouldn't be wrapped.
             return default
-        else:
-            return ContextWrapper(value, self.wrapped_obj)
 
     def __getattr__(self, name):
         # this method is for getting methods and attributes of the
@@ -62,4 +73,5 @@ class AttributeAnnotations:
                 attr = getattr(annotations, name)
             else:
                 raise
-        return ContextWrapper(attr, self.wrapped_obj)
+            
+        return attr
