@@ -33,12 +33,10 @@ import datetime
 import weakref
 import zope.interface.interface
 import zope.interface.interfaces
+import zope.interface.declarations
 
 from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IDeclaration
-from zope.interface.declarations import ProvidesClass
-from zope.interface.declarations import Implements
-from zope.interface.declarations import Declaration
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityPolicy, queryInteraction
@@ -542,7 +540,8 @@ _always_available [:] = ['__lt__', '__le__', '__eq__',
 
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
 _typeChecker = NamesChecker(
-    ['__str__', '__name__', '__module__', '__bases__', '__mro__'])
+    ['__str__', '__name__', '__module__', '__bases__', '__mro__',
+     '__implemented__'])
 _namedChecker = NamesChecker(['__name__'])
 
 _iteratorChecker = NamesChecker(['next', '__iter__'])
@@ -644,9 +643,10 @@ _default_checkers = {
         ),
     zope.interface.interface.Method: InterfaceChecker(
                                         zope.interface.interfaces.IMethod),
-    ProvidesClass: _Declaration_checker,
-    Implements: _Declaration_checker,
-    Declaration: _Declaration_checker,
+    zope.interface.declarations.ProvidesClass: _Declaration_checker,
+    zope.interface.declarations.ClassProvides: _Declaration_checker,
+    zope.interface.declarations.Implements: _Declaration_checker,
+    zope.interface.declarations.Declaration: _Declaration_checker,
 }
 
 def _clear():
