@@ -92,3 +92,20 @@ Things to do for the next release (in no particular order)
   Maybe we do. Maybe i18n *is* that fundamental. 
 
 - Write a README.txt for zope.i18nmessageid.
+
+- http://dev.zope.org/Zope3InstanceAndTypeBasedSubscriptions
+
+- http://dev.zope.org/Zope3/LifeCycleEvents
+
+- http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
+
+- http://dev.zope.org/Zope3/Use303RedirectsByDefault
+
+- http://dev.zope.org/Zope3/ZCMLEnhancements
+
+  At least the permission redefinition. 
+
+- Permission rationalization
+
+  Absent deep thinking, then create a set of fine-grained permission
+  and a default permission redefinition that makes them course grained
