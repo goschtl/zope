@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.6 $
+:Version: $Revision: 1.7 $
 
 .. contents::
 
@@ -69,10 +69,12 @@ service above it, in the file ``utility.py``::
           return next.queryUtility(interface, default, name)
       queryUtility = ContextMethod(queryUtility)
 
-The local service subclasses two classes:
+The local service subclasses one class:
 
 ``Persistent``
   Provides support for transparent persistent in the ZODB.
+
+It also uses ``ContextMethod``:
 
 ``ContextMethod``
   Causes the method's self to be bound to the context-wrapped instance.
