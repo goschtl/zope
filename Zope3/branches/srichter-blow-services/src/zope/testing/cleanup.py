@@ -52,7 +52,14 @@ class CleanUp(object):
 
     def cleanUp(self):
         """Clean up global data."""
-        for func, args, kw in _cleanups:
-            func(*args, **kw)
+        cleanUp()
 
     setUp = tearDown = cleanUp
+
+
+def cleanUp():
+    """Clean up global data."""
+    for func, args, kw in _cleanups:
+        func(*args, **kw)
+
+setUp = tearDown = cleanUp
