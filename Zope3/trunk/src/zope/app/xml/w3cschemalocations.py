@@ -14,7 +14,7 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.4 2003/04/30 20:13:23 jim Exp $
+$Id: w3cschemalocations.py,v 1.5 2003/06/20 13:59:38 philikon Exp $
 """
 from zope.interface import directlyProvides
 from xml.parsers.expat import ParserCreate, ExpatError
@@ -27,7 +27,7 @@ def setInstanceInterfacesForXMLText(xmltext):
     """
     schema_uris = getW3CXMLSchemaLocations(xmltext.source)
     schema_interfaces = getInterfacesForXMLSchemaLocations(schema_uris)
-    setInstanceInterfaces(xmltext, schema_interfaces)
+    directlyProvides(xmltext, *schema_interfaces)
 
 def getInterfacesForXMLSchemaLocations(schema_uris):
     """
@@ -39,9 +39,6 @@ def getInterfacesForXMLSchemaLocations(schema_uris):
         if interface is not None:
             result.append(interface)
     return result
-
-def setInstanceInterfaces(ob, interfaces):
-    directlyProvides(ob, *interfaces)
 
 def getW3CXMLSchemaLocations(xml):
     """Give list of URIs of the schema an XML document promises to implement.
