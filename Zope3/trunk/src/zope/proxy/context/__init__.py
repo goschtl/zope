@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.2 2002/12/25 14:15:16 jim Exp $
+$Id: __init__.py,v 1.3 2003/01/25 15:32:50 jim Exp $
 """
 
 from zope.security.proxy import Proxy, getChecker, getObject
@@ -165,6 +165,9 @@ class ContextMethod:
                 )
         return method
 
+class ContextAware:
+    """Marker class indicating that all descriptors should be bound in context
+    """
 
 class ContextProperty(property):
     """A property that provides a context wrapper to its getter and setter
@@ -208,8 +211,11 @@ class SimpleMethodWrapper(_Wrapper):
         class_ = obj.__class__
         class_value = getattr(class_, name, None)
         if hasattr(class_value, '__get__'):
-            if getattr(class_value,
-                       '__Zope_ContextWrapper_contextful_get__', False):
+            if (isinstance(obj, ContextAware)
+                or
+                getattr(class_value,
+                       '__Zope_ContextWrapper_contextful_get__', False)
+                ):
                 return class_value.__get__(self, class_)
 
         return _Wrapper.__getattribute__(self, name)
@@ -220,8 +226,11 @@ class SimpleMethodWrapper(_Wrapper):
         class_ = obj.__class__
         class_value = getattr(class_, name, None)
         if hasattr(class_value, '__set__'):
-            if getattr(class_value,
-                       '__Zope_ContextWrapper_contextful_set__', False):
+            if (isinstance(obj, ContextAware)
+                or
+                getattr(class_value,
+                       '__Zope_ContextWrapper_contextful_set__', False)
+                ):
                 class_value.__set__(self, value)
                 return
         setattr(obj, name, value)
