@@ -262,4 +262,6 @@
 <!-- Local Interface Service -->
   <zope:include package=".interface" />
 
+  <zope:include file="error.zcml" />
+
 </zope:configure>
