@@ -21,7 +21,7 @@ class IPrincipalAnnotationService(Interface):
     """Stores IAnnotations for IPrinicipals."""
 
     def getAnnotation(principal):
-        """Return object implementing IAnnotations for the givin IPrinicipal.
+        """Return object implementing IAnnotations for the given IPrinicipal.
 
         If there is no IAnnotations it will be created and then returned.
         """
