@@ -15,6 +15,7 @@ ZopeTestCase.installProduct('Five')
 from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
+from Products.Five.resource import Resource
 
 class FiveTestCase(ZopeTestCase.ZopeTestCase):
 
@@ -122,6 +123,52 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 ## </ul>
 ## """
 ##         self.assertEquals(expected, view())
+
+    def test_template_resource(self):
+        resource = self.folder.unrestrictedTraverse('testoid/++resource++cockatiel.html')
+        self.assert_(isinstance(resource, Resource))
+        expected = """\
+<p>Have you ever seen a cockatiel?</p>
+<p>maybe</p>
+"""
+        self.assertEquals(expected, resource())
+
+    def test_file_resource(self):
+        resource = self.folder.unrestrictedTraverse('testoid/++resource++style.css')
+        self.assert_(isinstance(resource, Resource))
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++style.css'
+        self.assertEquals(expected, resource())
+
+    def test_image_resource(self):
+        resource = self.folder.unrestrictedTraverse('testoid/++resource++pattern.png')
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++pattern.png'
+        self.assert_(isinstance(resource, Resource))
+        self.assertEquals(expected, resource())
+
+    def test_breadcrumbs(self):
+        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
+        expected = (
+            {'url': 'http://nohost', 'name': ''},
+            {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
+            {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
+        self.assertEquals(expected, view.breadcrumbs())
+
+    def test_standard_macros(self):
+        view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
+        self.assertRaises(KeyError, view.__getitem__, 'non-existing-macro')
+        self.failUnless(view['birdmacro'])
+        self.failUnless(view['dogmacro'])
+        # Test aliases
+        self.failUnless(view['flying'])
+        self.failUnless(view['walking'])
+        self.assertEquals(view['flying'], view['birdmacro'])
+        self.assertEquals(view['walking'], view['dogmacro'])
+        # Test traversal
+        base = 'testoid/@@fivetest_macros/%s'
+        for macro in ('birdmacro', 'dogmacro',
+                      'flying', 'walking'):
+            view = self.folder.unrestrictedTraverse(base % macro)
+        self.failUnless(view)
 
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """Test a few publishing features"""
