@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.10 2003/10/20 18:41:15 fdrake Exp $
+$Id: bootstrap.py,v 1.11 2004/02/07 06:51:13 anthony Exp $
 """
 
 from zope.app import zapi
@@ -108,8 +108,14 @@ class BootstrapSubscriberBase:
         Returns the name added or None if nothing was added.
         """
         if not self.service_manager.queryLocalService(service_type):
-            return addConfigureService(self.root_folder, service_type,
-                                       service_factory, **kw)
+            # The site-manager may have chosen to disable one of the
+            # core services. Their loss. The alternative is that when
+            # they restart, they get a new service of the one that 
+            # they chose to disable. 
+            reg = self.service_manager.queryRegistrations(service_type)
+            if reg is None:
+                return addConfigureService(self.root_folder, service_type,
+                                           service_factory, **kw)
         else:
             return None
 
