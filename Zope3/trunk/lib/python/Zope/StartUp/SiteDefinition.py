@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.7 2002/10/08 20:41:35 jeremy Exp $
+$Id: SiteDefinition.py,v 1.8 2002/10/08 20:42:25 jeremy Exp $
 """
 
 import sys
@@ -29,10 +29,7 @@ from ServerTypeRegistry import getServerType
 from Zope.ComponentArchitecture import getService
 from Zope.App.Undo.ZODBUndoManager import ZODBUndoManager
 from Zope.App.Undo.IUndoManager import IUndoManager
-
-
 from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
-import asyncore, zLOG
 from Zope.Server import ZLogIntegration
 from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
