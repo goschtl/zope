@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ManagementViewSelector.py,v 1.1 2002/10/01 12:58:03 jim Exp $
+$Id: ManagementViewSelector.py,v 1.2 2002/10/03 12:25:14 jim Exp $
 """
 
 __metaclass__ = type
@@ -41,7 +41,9 @@ class ManagementViewSelector(BrowserView):
             request.response.redirect(item['action'])
             return ''
 
-        raise Unauthorized()    
+        request.response.redirect('.') # Redirect to content/
+        
+        
 
 __doc__ = ManagementViewSelector.__doc__ + __doc__
 
