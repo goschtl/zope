@@ -17,7 +17,7 @@ An implementation of a generic TALES engine
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-__version__ = '$Revision: 1.3 $'[11:-2]
+__version__ = '$Revision: 1.4 $'[11:-2]
 
 import re
 import sys
@@ -217,8 +217,7 @@ class Context:
             expression = self._engine.compile(expression)
         __traceback_supplement__ = (
             TALESTracebackSupplement, self, expression)
-        v = expression(self)
-        return v
+        return expression(self)
 
     evaluateValue = evaluate
 
