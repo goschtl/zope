@@ -5,7 +5,7 @@ to be mirrored.
 
 Each 'table' entry is a tuple containing:
 
- - a string name for the entry - often the repository dir
+ - the path to the repository dir, relative to the CVSROOT
 
  - inclusions - a regular expression identifying the checkins that qualify
    for treatment; it's matched against the repository path of the checkin,
