@@ -157,7 +157,39 @@
       name="widget-query-multi-helper"
       factory=".vocabularywidget.IterableVocabularyQueryMultiView"
       />
+      
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyEditWidget"
+      name="field-edit"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+      
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyDisplayWidget"
+      name="field-display"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+      
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyMultiEditWidget"
+      name="field-multi-edit"
+      for="zope.schema.interfaces.IVocabulary"
+      />
 
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      factory=".vocabularywidget.VocabularyMultiDisplayWidget"
+      name="field-multi-display"
+      for="zope.schema.interfaces.IVocabulary"
+      />
+      
   <!-- Default simple display view -->
   <browser:page
       permission="zope.Public"
