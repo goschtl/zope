@@ -361,7 +361,7 @@ class UtilityToolAdding(ComponentAdding):
         registration = UtilityRegistration(self.contentName,
                                            self._addFilterInterface,
                                            zapi.getPath(util))
-        reg_view = AddRegistration(content, self.request)
+        reg_view = AddRegistration(util, self.request)
         reg_view.add(registration)
         
         return util
