@@ -59,6 +59,8 @@ Zope Changes
         now only exist in the browser namespace; the "defaultSkin"
         directive was moved to the browser namespace.
 
+      - Updating of all doc strings to ReStructuredText begun
+
     Bug Fixes
 
       - Fixed issue 228.
@@ -82,7 +84,8 @@ Zope Changes
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
-      Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene
+      Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene,
+      Phil Ruggera
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

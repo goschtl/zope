@@ -11,10 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Filesystem synchroniation support for zope.app.module.
+"""Filesystem synchroniation support for `zope.app.module`.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping

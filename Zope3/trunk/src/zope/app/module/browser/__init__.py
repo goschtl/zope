@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.module import Manager
 from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent

@@ -18,6 +18,7 @@ currently implements it.  This should change.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.schema import ASCII, BytesLine
@@ -53,5 +54,5 @@ class IModuleService(Interface):
         If the name ends with a trailing dot, the last name segment
         may be repeated.
 
-        If the dotted name cannot be resolved, an ImportError is raised.
+        If the dotted name cannot be resolved, an ``ImportError`` is raised.
         """

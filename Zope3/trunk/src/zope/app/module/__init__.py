@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
 from zodbcode.module import PersistentModule, compileModule
 from zope.interface import implements
