@@ -39,6 +39,14 @@
     defaultVerbose="true" />
 
   <startup:registerServerType 
+    name = "PostmortemDebuggingHTTP"
+    factory = "zope.server.http.publisherhttpserver.PMDBHTTPServer"
+    requestFactory="HTTPRequestFactory"
+    logFactory = "zope.server.http.commonhitlogger.CommonHitLogger"
+    defaultPort="8013"
+    defaultVerbose="true" />
+
+  <startup:registerServerType 
     name = "Browser"
     factory = "zope.server.http.publisherhttpserver.PublisherHTTPServer"
     requestFactory="BrowserRequestFactory"
