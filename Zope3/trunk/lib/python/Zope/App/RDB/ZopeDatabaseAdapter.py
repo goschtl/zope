@@ -2,18 +2,18 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.8 2002/11/08 12:46:58 stevea Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.9 2002/11/18 11:33:05 mgedmin Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
@@ -32,11 +32,11 @@ class ZopeDatabaseAdapter(Persistent):
 
     def __init__(self, dsn):
         self.setDSN(dsn)
-        
+
     def _connection_factory(self):
         """This method should be overwritten by all subclasses"""
         conn_info = parseDSN(self.dsn)
-        
+
     ############################################################
     # Implementation methods for interface
     # Zope.App.RDB.IZopeDatabaseAdapter.
@@ -94,7 +94,9 @@ def identity(x):
     return x
 
 def parseDSN(dsn):
-    """We could have the following cases:
+    """Parses a database connection string.
+
+    We could have the following cases:
 
        dbi://dbname
        dbi://dbname;param1=value...
@@ -102,6 +104,15 @@ def parseDSN(dsn):
        dbi://user:passwd/dbname;param1=value...
        dbi://user:passwd@host:port/dbname
        dbi://user:passwd@host:port/dbname;param1=value...
+
+    Return value is a mapping with the following keys:
+
+       username     username (if given) or an empty string
+       password     password (if given) or an empty string
+       host         host (if given) or an empty string
+       port         port (if given) or an empty string
+       dbname       database name
+       parameters   a mapping of additional parameters to their values
     """
     assert isinstance(dsn, StringTypes), 'The dsn is not a string.'
     assert dsn.startswith('dbi://'), 'Invalid DSN; must start with "dbi://"'
@@ -136,7 +147,7 @@ def parseDSN(dsn):
 
     result['host'] = host
     result['port'] = port
-    
+
     # Get username and password from DSN
     if dsn:
         username, password = dsn.split(':')
@@ -147,9 +158,3 @@ def parseDSN(dsn):
     result['password'] = password
 
     return result
-
-
-
-
-
-
