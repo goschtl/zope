@@ -11,25 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Helpers for caching."""
+"""Helpers for caching.
 
-from zope.component import getAdapter, getService, ComponentLookupError
+$Id: caching.py,v 1.6 2003/09/16 21:59:17 srichter Exp $
+"""
+from zope.app import zapi
 from zope.app.interfaces.cache import ICacheable
-from zope.app.traversing import getPath
-
+from zope.app.services.servicenames import Caching
+from zope.component import ComponentLookupError
 
 def getCacheForObj(obj):
     """Returns the cache associated with obj or None."""
-    adapter = getAdapter(obj, ICacheable)
+    adapter = zapi.getAdapter(obj, ICacheable)
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None
-    service = getService(obj, "Caching")
+    service = zapi.getService(obj, Caching)
     return service.getCache(cache_id)
 
 def getLocationForCache(obj):
     """Returns the location to be used for caching the object or None."""
     try:
-        return getPath(obj)
+        return zapi.getPath(obj)
     except (ComponentLookupError, TypeError):
         return None
