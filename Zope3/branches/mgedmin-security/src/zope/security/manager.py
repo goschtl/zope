@@ -29,6 +29,9 @@ def _clear():
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 
+def getSecurityPolicy():
+    """Get the system default security policy."""
+    return _defaultPolicy
 
 def setSecurityPolicy(aSecurityPolicy):
     """Set the system default security policy.

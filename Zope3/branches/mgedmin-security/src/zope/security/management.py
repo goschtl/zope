@@ -24,6 +24,7 @@ from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import ISecurityManagementSetup
 from zope.security.manager import SecurityManager
 from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
+from zope.security.manager import getSecurityPolicy as _getSecurityPolicy
 from zope.security.context import SecurityContext
 
 moduleProvides(ISecurityManagement, ISecurityManagementSetup)
@@ -83,7 +84,7 @@ def getSecurityManager():
 
 def getSecurityPolicy():
     """Get the system default security policy."""
-    raise NotImplementedError # XXX
+    return _getSecurityPolicy()
 
 def setSecurityPolicy(aSecurityPolicy):
     """Set the system default security policy, and return the previous
