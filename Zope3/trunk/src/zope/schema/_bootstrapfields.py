@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.7 2003/03/25 11:47:56 tseaver Exp $
+$Id: _bootstrapfields.py,v 1.8 2003/04/09 15:51:56 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -25,8 +25,8 @@ from zope.schema import errornames
 
 class ValidatedProperty:
 
-    def __init__(self, name, check = None):
-        self.__info  = name, check
+    def __init__(self, name, check=None):
+        self.__info = name, check
 
     def __set__(self, inst, value):
         name, check = self.__info
@@ -41,8 +41,15 @@ class Field(Attribute):
 
     # Type restrictions, if any
     _type = None
-    order = 0
     context = None
+
+    # Note that the "order" field has a dual existance:
+    # 1. The class variable Field.order is used as a source for the
+    #    monotonically increasing values used to provide...
+    # 2. The instance variable self.order which provides a
+    #    monotonically increasing value that tracks the creation order
+    #    of Field (including Field subclass) instances.
+    order = 0
 
     constraint = None
     default = ValidatedProperty('default')
@@ -53,11 +60,10 @@ class Field(Attribute):
                  ):
         """Pass in field values as keyword parameters."""
 
-
         if not __doc__:
             if title:
                 if description:
-                    __doc__ =  "%s\n\n%s" % (title, description)
+                    __doc__ = "%s\n\n%s" % (title, description)
                 else:
                     __doc__ = title
             elif description:
@@ -72,7 +78,7 @@ class Field(Attribute):
             self.constraint = constraint
         self.default = default
 
-        # Keep track of the order of field definition
+        # Keep track of the order of field definitions
         Field.order += 1
         self.order = Field.order
 
@@ -259,7 +265,7 @@ class TextLine(Text):
 
 class Password(TextLine):
     """A text field containing a text used as a password."""
-    
+
 class Bool(Field):
     """A field representing a Bool."""
     _type = type(True)
