@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view.
 
-$Id: fssync.py,v 1.1 2003/05/08 01:08:42 gvanrossum Exp $
+$Id: fssync.py,v 1.2 2003/05/08 15:32:21 gvanrossum Exp $
 """
 
 import os
@@ -39,8 +39,8 @@ class ZipFile(BrowserView):
 
     def show(self):
         """Return the zipfile response."""
-        zipfilename = writeZipFile(self.context,
-                                   self.request.get("pruneOriginals"))
+        writeOriginals = isset(self.request.get("writeOriginals"))
+        zipfilename = writeZipFile(self.context, writeOriginals)
         f = open(zipfilename, "rb")
         data = f.read()
         f.close()
@@ -52,44 +52,56 @@ class ZipFile(BrowserView):
         response.setHeader("Content-Length", len(data))
         return data
 
-def writeZipFile(obj, pruneOriginals=None):
+def isset(s):
+    """Helper to decide whether a string meant True or False."""
+    if not s:
+        return False
+    s = s.strip()
+    if not s:
+        return False
+    s = s.lower()
+    istrue = isfalse = False
+    for match in "true", "yes", "on", "1":
+        if match.startswith(s):
+            istrue = True
+            break
+    for match in "false", "no", "off", "0":
+        if match.startswith(s):
+            isfalse = True
+            break
+    if istrue and not isfalse:
+        return True
+    if isfalse and not istrue:
+        return False
+    raise ValueError, "invalid flag (%r)" % s
+
+def writeZipFile(obj, writeOriginals=False):
     """Helper to render the object tree to the filesystem and zip it.
 
     Return the name of the zipfile.
     """
     dirname = tempfile.mktemp()
     os.mkdir(dirname)
-    # XXX toFS prints to stdout; it shouldn't
-    toFS(obj, objectName(obj) or "root", dirname)
-    if pruneOriginals:
-        os.path.walk(dirname, pruneOriginalsCallback, None)
-    zipfilename = tempfile.mktemp(".zip")
-    # XXX This is Unix specific and requires that you have the zip
-    # program installed; should use the zipfile module instead
-    cmd = "(cd %s; zip -q -r %s .) 2>&1" % (dirname, zipfilename)
-    pipe = os.popen(cmd, "r")
-    output = pipe.read()
-    sts = pipe.close()
-    if sts:
+    try:
+        # XXX toFS prints to stdout; it shouldn't
+        toFS(obj, objectName(obj) or "root", dirname,
+             writeOriginals=writeOriginals)
+        zipfilename = tempfile.mktemp(".zip")
+        # XXX This is Unix specific and requires that you have the zip
+        # program installed; should use the zipfile module instead
+        cmd = "(cd %s; zip -q -r %s .) 2>&1" % (dirname, zipfilename)
+        pipe = os.popen(cmd, "r")
+        output = pipe.read()
+        sts = pipe.close()
+        if not sts:
+            return zipfilename
+        try:
+            os.remove(zipfilename)
+        except os.error:
+            pass
         raise RuntimeError("zip status %#x; output:\n%s" % (sts, output))
-    shutil.rmtree(dirname)
-    return zipfilename
-
-normcase = os.path.normcase
-ZOPEDIR = normcase("@@Zope")
-ORIGINAL = normcase("Original")
-
-def pruneOriginalsCallback(arg, dirname, fnames):
-    """Callback for os.path.walk() to remove 'Originals' directories."""
-    # XXX toFS should be changed to omit the 'Original' directories,
-    # then this function  wouldn't be needed
-    base = normcase(os.path.basename(dirname))
-    if base == ZOPEDIR:
-        originals = filter(lambda n: normcase(n) == ORIGINAL, fnames)
-        if originals:
-            filter(fnames.remove, originals)
-            fullname = os.path.join(dirname, ORIGINAL)
-            shutil.rmtree(fullname)
+    finally:
+        shutil.rmtree(dirname)
 
 # XXX Still to do: the reverse operation, fromFS.  This should
 # probably be an HTML form with the zipfile as an uploaded file
