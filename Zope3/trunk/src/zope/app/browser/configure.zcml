@@ -162,6 +162,12 @@
      <page name="undo.html" attribute="action" />
      </view>
 
+  <menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo"
+      action="@@undoForm.html"
+      />
 <!-- URLs and names -->
 
 <page
