@@ -17,7 +17,6 @@ to the public repository."""
 
 MAIL_CMD = "/bin/mail"
 RSYNC_CMD = "/usr/bin/rsync"
-RSYNC_IN_BACKGROUND = 0                 # Set this when done debugging.
 
 # XXX IDENTITY_FILE must be readable by the process of anyone doing a
 #     checkin that uses the rsync mechanism.  Ideally, that would be by
@@ -27,6 +26,7 @@ IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/home/dccvs/cvsidentity"
 
 
+RSYNC_IN_BACKGROUND = 0                 # Set this when done debugging.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
@@ -41,12 +41,13 @@ sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE, RSYNC_IN_BACKGROUND
 
     orig_args = args[:]
 
     SCRIPT = args[0]
-    opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun", "recurse"])
+    opts, args = getopt.getopt(args[1:], "",
+                               ["verbose", "dryrun", "recurse", "bg"])
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -59,6 +60,9 @@ def main(args):
         elif opt == "--recurse":
             RECURSE = 1
             complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
+        elif opt == "--bg":
+            RSYNC_IN_BACKGROUND = 1
+            complain("%s: BACKGROUNDING RSYNC mode...\n", SCRIPT)
         else:
             complain("Unrecognize option '%s'\n", opt)
             raise SystemExit, 1
@@ -101,7 +105,7 @@ def do_mail(name, repo, addrs, subjs):
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
     # The message contents are on stdin, just _yearning_ to be sent...-)
-    subject = "CVS: %s %s" % (repo, fnames)
+    subject = "CVS checkin: %s %s" % (repo, fnames)
     os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
                                         (DRYRUN and "echo ") or "",
                                         MAIL_CMD,
@@ -160,6 +164,8 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
+    if not fnames:
+        fnames = ["."]
     os.system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
                                     (DRYRUN and "echo ") or "",
                                     string.join(fnames, " ")))
