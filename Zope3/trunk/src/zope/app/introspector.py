@@ -16,15 +16,15 @@ from zope.interface import Interface
 
 from zope.app.interfaces.introspector import IIntrospector
 from zope.app.interfaces.services.module import IModuleService
-from zope.component import getServiceManager, getAdapter, \
-     getServiceDefinitions
+from zope.component import getServiceManager, getAdapter, getServiceDefinitions
 from zope.proxy import removeAllProxies
+from zope.interface import implements, implementedBy
 
 
 class Introspector:
     """Introspects an object"""
 
-    __implements__ = IIntrospector
+    implements(IIntrospector)
 
     def __init__(self, context):
         self.context = context
@@ -91,12 +91,7 @@ class Introspector:
 
     def getInterfaces(self):
         """Returns interfaces implemented by this class"""
-        interfaces = removeAllProxies(self.currentclass).__implements__
-        if type(interfaces) != tuple:
-            interfaces = (interfaces,)
-        else:
-            interfaces = self._unpackTuple(interfaces)
-        return interfaces
+        return tuple(implementedBy(removeAllProxies(self.currentclass)))
 
     def getInterfaceNames(self):
         names = []

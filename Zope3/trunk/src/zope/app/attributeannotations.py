@@ -13,21 +13,21 @@
 ##############################################################################
 """
 
-$Id: attributeannotations.py,v 1.5 2003/06/01 15:59:25 jim Exp $
+$Id: attributeannotations.py,v 1.6 2003/06/03 15:33:55 stevea Exp $
 """
 
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations
 from zope.proxy import removeAllProxies
 from zope.app.context import ContextWrapper
+from zope.interface import implements
 
 class AttributeAnnotations:
     """
     Store annotations in the __annotations__ attribute on a
     IAttributeAnnotatable object.
     """
-
-    __implements__ = IAnnotations
+    implements(IAnnotations)
 
     def __init__(self, obj):
         # We could remove all proxies from obj at this point, but
