@@ -473,7 +473,6 @@ class PathInit(object):
         self.cwd = os.getcwd()
         sys.path.insert(0, os.path.join(self.cwd, self.libdir))
         # Hack again for external products.
-        global functional
         kind = functional and "FUNCTIONAL" or "UNIT"
         if libdir:
             extra = os.path.join(self.org_cwd, libdir)
@@ -504,7 +503,6 @@ class TestFileFinder(object):
         self._plen = len(prefix)
         if not prefix.endswith(os.sep):
             self._plen += 1
-        global functional
         if functional:
             self.dirname = "ftests"
         else:
@@ -790,7 +788,8 @@ def runner(files, test_filter, debug):
 
     if DEBUG:
         print "Ran %s tests in debug mode" % run_debug(suite, VERBOSE)
-        return
+        numbad = len(result.failures) + len(result.errors)
+        return numbad
 
     r = runner.run(suite)
     if TIMESFN:
@@ -799,6 +798,8 @@ def runner(files, test_filter, debug):
             print "Wrote timing data to", TIMESFN
     if TIMETESTS:
         r.print_times(sys.stdout, TIMETESTS)
+    numbad = len(result.failures) + len(result.errors)
+    return numbad
 
 def remove_stale_bytecode(arg, dirname, names):
     names = map(os.path.normcase, names)
@@ -834,6 +835,7 @@ def main(module_filter, test_filter, libdir):
         from zope.app.tests.functional import FunctionalTestSetup
         FunctionalTestSetup(config_file)
 
+    numbad = 0
     if GUI:
         gui_runner(files, test_filter)
     elif LOOP:
@@ -847,11 +849,11 @@ def main(module_filter, test_filter, libdir):
             print
             print "Run %s:" % i
             i += 1;
-            runner(files, test_filter, DEBUG)
+            numbad = runner(files, test_filter, DEBUG)
             gc.collect()
             if gc.garbage:
                 print "GARBAGE:", len(gc.garbage), gc.garbage
-                return
+                return numbad
 
             if REFCOUNT:
                 prev = rc
@@ -859,9 +861,10 @@ def main(module_filter, test_filter, libdir):
                 print "totalrefcount=%-8d change=%-6d" % (rc, rc - prev)
                 track.update()
     else:
-        runner(files, test_filter, DEBUG)
+        numbad = runner(files, test_filter, DEBUG)
 
     os.chdir(pathinit.org_cwd)
+    return numbad
 
 
 def configure_logging():
@@ -1122,6 +1125,7 @@ def process_args(argv=None):
         k.append(True)
 
     global functional
+    numbad = 0
     for functional in k:
 
         if VERBOSE:
@@ -1169,6 +1173,7 @@ def process_args(argv=None):
                                      ignoremods=ignoremods,
                                      trace=False, count=True)
 
+                # we don't get the result from main() from runctx()
                 tracer.runctx("main(MODULE_FILTERS, TEST_FILTERS, LIBDIR)",
                               globals=globals(), locals=vars())
                 r = tracer.results()
@@ -1183,11 +1188,14 @@ def process_args(argv=None):
             else:
                 bad = main(MODULE_FILTERS, TEST_FILTERS, LIBDIR)
                 if bad:
-                    sys.exit(1)
+                    numbad += bad
         except ImportError, err:
             print err
             print sys.path
             raise
+
+    if numbad:
+        sys.exit(1)
 
 
 def test_suite():
