@@ -27,7 +27,7 @@ import tempfile
 import zope.interface
 
 def locationCopy(loc):
-    """Return a copy of an object, and anything in it
+    r"""Return a copy of an object, and anything in it
 
     If object in the location refer to objects outside of the
     location, then the copies of the objects in the location refer to
