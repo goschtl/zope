@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.2 2003/03/23 17:13:41 jim Exp $
+$Id: __init__.py,v 1.3 2003/04/09 16:06:33 jack-e Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -214,7 +214,8 @@ class ComponentPathWidget(BrowserWidget):
         context = field.context 
         if IComponentConfiguration.isImplementedBy(context):
             # It's a configuration object. Just get the corresponsing attr
-            path = getattr(context, self.__name__)
+            # XXX this code has no unittests !!!
+            path = getattr(context, field.__name__)
         else:
             # It must be a component that is about to be configured.
             path = getPath(context)
