@@ -18,7 +18,7 @@ Page Templates and ZCML.
 This tool will extract all findable message strings from all
 internationalizable files in your Zope 3 product. It only extracts
 message ids of the specified domain. It defaults to the 'zope' domain
-and the zope.app package.
+and the zope package.
 
 Note: The Python Code extraction tool does not support domain
       registration, so that all message strings are returned for
@@ -37,7 +37,7 @@ Options:
         Specifies a directory, relative to the package in which to put the
         output translation template.
 
-$Id: i18nextract.py,v 1.4 2004/04/01 18:09:35 sidnei Exp $
+$Id: i18nextract.py,v 1.5 2004/04/15 13:54:30 hdima Exp $
 """
 
 import os, sys, getopt
@@ -51,10 +51,9 @@ def usage(code, msg=''):
 
 def app_dir():
     try:
-        import zope.app
+        import zope
     except ImportError:
-        # Couldn't import zope.app, need to add something to the Python
-        # path
+        # Couldn't import zope, need to add something to the Python path
 
         # Get the path of the src
         path = os.path.abspath(os.getcwd())
@@ -63,12 +62,12 @@ def app_dir():
         sys.path.insert(0, path)
 
         try:
-            import zope.app
+            import zope
         except ImportError:
             usage(1, "Make sure the script has been executed "
                      "inside Zope 3 source tree.")
 
-    return os.path.dirname(zope.app.__file__)
+    return os.path.dirname(zope.__file__)
 
 def main(argv=sys.argv):
     try:
@@ -120,8 +119,10 @@ def main(argv=sys.argv):
 
     print "base path: %r\nsearch path: %r\ndomain: %r\noutput file: %r" \
         % (base_dir, path, domain, output_file)
+
     from zope.app.translation_files.extract import POTMaker, \
          py_strings, tal_strings, zcml_strings
+
     maker = POTMaker(output_file, path)
     maker.add(py_strings(path, domain), base_dir)
     if not python_only:
