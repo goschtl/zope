@@ -232,7 +232,8 @@ setting.
   setting, this is normally only needed for header files.
 
   Headers provided by other packages should not be identified using
-  **depends-on**.
+  **depends-on**, but the package that provides the needed header
+  should be listed in `DEPENDENCIES.cfg`.
 
 **language**
   The source language of the extension; this may be needed to control
