@@ -93,8 +93,11 @@ class DocTestTestCase(unittest.TestCase):
 
 class DocTestFileTestCase(DocTestTestCase):
 
+    def id(self):
+        return '_'.join(self._dt_name.split('.'))
+
     def __repr__(self):
-        return self._dt_name
+        return self._dt_filename 
     __str__ = __repr__
 
     def format_failure(self, err):
