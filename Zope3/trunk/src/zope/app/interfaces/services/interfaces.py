@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.10 2003/02/06 15:35:03 alga Exp $
+$Id: interfaces.py,v 1.11 2003/02/07 09:27:49 mgedmin Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -114,9 +114,9 @@ class IViewConfigurationInfo(Interface):
 class IViewConfiguration(IConfiguration, IViewConfigurationInfo):
 
     def getView(object, request):
-        """Return an adapter for the object
+        """Return a view for the object
 
-        The adapter is computed by passing the object to the
+        The view is computed by passing the object to the
         registered factory.
         """
 
