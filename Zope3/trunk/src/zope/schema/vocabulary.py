@@ -17,7 +17,7 @@
 from zope.schema import Field
 from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
-from zope.schema.interfaces import IAbstractVocabulary, IVocabularyRegistry
+from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
 
 try:
