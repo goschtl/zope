@@ -16,7 +16,7 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.component.bbb.service import IService
+import zope.deprecation
 
 from zope.app import zapi
 from zope.app.component.interfaces.registration import IRegistrationManager
@@ -27,9 +27,14 @@ from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.component.interfaces.registration import ActiveStatus
 from zope.app.component.interfaces.registration import InactiveStatus 
+from zope.app.zopeappgenerations import getRootFolder
+
+# Imports that are only available via backward-compatibility
+zope.deprecation.__show__.off()
+from zope.component.bbb.service import IService
 from zope.app.site.interfaces import ISite, IServiceRegistration
 from zope.app.utility import UtilityRegistration
-from zope.app.zopeappgenerations import getRootFolder
+zope.deprecation.__show__.on()
 
 from zope.app.generations.utility import findObjectsProviding
 

@@ -17,22 +17,26 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.interface
-from zope.deprecation import deprecated
+import zope.deprecation
 
 from zope.app.component.site import LocalSiteManager, UtilityRegistration
 from zope.app.component.interfaces.registration import \
      IRegisterableContainerContaining as IRegisterableContainerContainer
 
+zope.deprecation.__show__.off()
 from interfaces import IServiceRegistration
+zope.deprecation.__show__.on()
 
-deprecated(('SiteManager', 'UtilityRegistration'),
-           'This class has been moved to zope.app.component.site. '
-           'The reference will be gone in X3.3.')
+zope.deprecation.deprecated(
+    ('SiteManager', 'UtilityRegistration'),
+    'This class has been moved to zope.app.component.site. '
+    'The reference will be gone in X3.3.')
 
-deprecated('IRegisterableContainerContainer',
-           'This interface has been moved to zope.app.component.interfaces '
-           'and been renamed to IRegisterableContainerContaining. '
-           'The reference will be gone in X3.3.')
+zope.deprecation.deprecated(
+    'IRegisterableContainerContainer',
+    'This interface has been moved to zope.app.component.interfaces '
+    'and been renamed to IRegisterableContainerContaining. '
+    'The reference will be gone in X3.3.')
 
 ServiceManager = LocalSiteManager
 SiteManager = LocalSiteManager
@@ -40,6 +44,7 @@ SiteManager = LocalSiteManager
 class ServiceRegistration(UtilityRegistration):
     zope.interface.implements(IServiceRegistration)
 
-deprecated(('ServiceManager', 'ServiceRegistration'),
-           'The concept of services has been removed. Use utilities instead. '
-           'The reference will be gone in X3.3.')
+zope.deprecation.deprecated(
+    ('ServiceManager', 'ServiceRegistration'),
+    'The concept of services has been removed. Use utilities instead. '
+    'The reference will be gone in X3.3.')

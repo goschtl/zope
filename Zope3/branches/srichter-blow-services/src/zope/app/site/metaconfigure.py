@@ -16,12 +16,13 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.deprecation import deprecated
+import zope.deprecation
 from zope.interface import classImplements
 from zope.app.component.contentdirective import ContentDirective
 
-from interfaces import ISimpleService
-
+zope.deprecation.__show__.off()
+from zope.app.site.interfaces import ISimpleService
+zope.deprecation.__show__.on()
 
 class LocalServiceDirective(ContentDirective):
 
@@ -30,6 +31,7 @@ class LocalServiceDirective(ContentDirective):
             classImplements(class_, ISimpleService)
         super(LocalServiceDirective, self).__init__(_context, class_)
 
-deprecated('LocalServiceDirective',
-           'The concept of services has been removed. Use utilities instead. '
-           'The reference will be gone in X3.3.')
+zope.deprecation.deprecated(
+    'LocalServiceDirective',
+    'The concept of services has been removed. Use utilities instead. '
+    'The reference will be gone in X3.3.')

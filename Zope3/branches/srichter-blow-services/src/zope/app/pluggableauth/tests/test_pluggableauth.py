@@ -159,12 +159,13 @@ class PrincipalAuthenticationViewTest(Setup):
 
 
 def test_suite():
-    t1 = makeSuite(AuthUtilityTest)
-    t2 = DocTestSuite('zope.app.pluggableauth',
-                      setUp=setUp, tearDown=tearDown)
-    t3 = makeSuite(BTreePrincipalSourceTest)
-    t4 = makeSuite(PrincipalAuthenticationViewTest)
-    return TestSuite((t1, t2, t3, t4))
+    return TestSuite((
+        makeSuite(AuthUtilityTest),
+        DocTestSuite('zope.app.pluggableauth',
+                     setUp=setUp, tearDown=tearDown),
+        makeSuite(BTreePrincipalSourceTest),
+        makeSuite(PrincipalAuthenticationViewTest)
+        ))
 
 
 if __name__=='__main__':
