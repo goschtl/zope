@@ -36,8 +36,10 @@ addCleanup::
 
 
 Revision information:
-$Id: cleanup.py,v 1.2 2002/12/25 14:15:34 jim Exp $
+$Id: cleanup.py,v 1.3 2004/01/10 11:01:15 philikon Exp $
 """
+
+__metaclass__ = type
 
 _cleanups = []
 
