@@ -449,10 +449,51 @@ class CvsLoaderTestCase(unittest.TestCase):
                          ":pserver:user@cvs.example.org:/cvsroot")
 
 
+class DummyLoader:
+
+    cleanup_called = False
+
+    def cleanup(self):
+        self.cleanup_called += 1
+
+
+class FileProxyTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.loader = DummyLoader()
+        self.mode = "rU"
+        self.fp = cvsloader.FileProxy(__file__, self.mode, self.loader)
+
+    def test_close(self):
+        self.fp.close()
+        self.assertEqual(self.loader.cleanup_called, 1)
+        self.assert_(self.fp.closed)
+        self.fp.close()
+        self.assertEqual(self.loader.cleanup_called, 1)
+        self.assert_(self.fp.closed)
+
+    def test_softspace(self):
+        self.failIf(self.fp.softspace)
+        self.fp.softspace = 1
+        self.assertEqual(self.fp.softspace, 1)
+        self.fp.softspace = 2
+        self.assertEqual(self.fp.softspace, 2)
+        self.assertRaises(TypeError, setattr, self.fp, "softspace", "12")
+        # XXX a little white box, to make sure softspace is passed to
+        # the underlying file object:
+        self.assertEqual(self.fp._file.softspace, 2)
+
+    def test_read(self):
+        text = self.fp.read()
+        expected = open(__file__, self.mode).read()
+        self.assertEqual(text, expected)
+
+
 def test_suite():
     suite = unittest.makeSuite(UrlUtilitiesTestCase)
     suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
     suite.addTest(unittest.makeSuite(CvsLoaderTestCase))
+    suite.addTest(unittest.makeSuite(FileProxyTestCase))
     return suite
 
 if __name__ == "__main__":
