@@ -20,9 +20,6 @@
 
   </browser:view> 
 
-  <browser:menu id="add_connection"
-                title="Add an RDBMS Connection"/>
-
   <browser:view 
      name="+"
      permission="Zope.ManageServices" 
