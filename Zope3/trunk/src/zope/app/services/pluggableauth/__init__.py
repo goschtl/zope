@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.13 2004/02/25 12:31:59 jim Exp $
+$Id: __init__.py,v 1.14 2004/03/02 13:41:48 philikon Exp $
 """
 import random
 import sys
@@ -24,18 +24,27 @@ import zope.schema
 from persistent import Persistent
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
+
 from zope.interface import implements
 from zope.component import queryAdapter
-from zope.app.services.servicenames import Authentication
 from zope.component.interfaces import IViewFactory
-from zope.app.container.ordered import OrderedContainer
-from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.container.constraints import ContainerTypesConstraint
+from zope.exceptions import NotFoundError
+
+from zope.app import zapi
+from zope.app.location import locate
+from zope.app.traversing import getPath
+
 from zope.app.interfaces.container import IOrderedContainer
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.container import INameChooser
 from zope.app.interfaces.container import IContainerNamesContainer
 from zope.app.interfaces.container import IContained
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.constraints import ContainerTypesConstraint
+from zope.app.container.contained import Contained, setitem, uncontained
+from zope.app.container.ordered import OrderedContainer
+
+from zope.app.services.servicenames import Authentication
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.services.pluggableauth \
@@ -44,16 +53,11 @@ from zope.app.interfaces.services.pluggableauth import \
      IPrincipalSource, ILoginPasswordPrincipalSource, IContainerPrincipalSource
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
-from zope.app import zapi
-from zope.app.location import locate
-from zope.app.traversing import getPath
-from zope.exceptions import NotFoundError
-from zope.app.container.contained import Contained, setitem, uncontained
 
 def gen_key():
     """Return a random int (1, MAXINT), suitable for use as a BTree key."""
 
-    return random.randint(0,sys.maxint-1)
+    return random.randint(0, sys.maxint-1)
 
 class PluggableAuthenticationService(OrderedContainer):
 
@@ -492,8 +496,6 @@ class SimplePrincipal(Persistent, Contained):
 
     implements(IUserSchemafied, IBTreePrincipalSourceContained)
 
-
-
     def __init__(self, login, password, title='', description=''):
         self.id = ''
         self.login = login
@@ -525,12 +527,11 @@ class SimplePrincipal(Persistent, Contained):
         >>> pal = SimplePrincipal('gandalf', 'shadowfax', 'The Grey Wizard',
         ...                       'Cool old man with neato fireworks. '
         ...                       'Has a nice beard.')
-        >>> int(pal.validate('shdaowfax'))
-        0
-        >>> int(pal.validate('shadowfax'))
-        1
+        >>> pal.validate('shdaowfax')
+        False
+        >>> pal.validate('shadowfax')
+        True
         """
-
         return test_password == self.password
 
 class PrincipalAuthenticationView:
