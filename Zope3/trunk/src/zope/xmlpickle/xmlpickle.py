@@ -13,12 +13,12 @@
 ##############################################################################
 """Pickle-based serialization of Python objects to and from XML.
 
-$Id: xmlpickle.py,v 1.2 2002/12/25 14:15:35 jim Exp $
+$Id: xmlpickle.py,v 1.3 2003/05/01 11:00:05 jim Exp $
 """
 
 from xml.parsers import expat
 from cStringIO import StringIO
-from cPickle import loads as pickle_loads
+from cPickle import loads as _standard_pickle_loads
 from pickle import \
      Pickler as _StandardPickler, \
      MARK as _MARK, \
@@ -29,7 +29,7 @@ from pickle import \
 
 from zope.xmlpickle import ppml
 
-class _Pickler(_StandardPickler):
+class _PicklerThatSortsDictItems(_StandardPickler):
     dispatch = {}
     dispatch.update(_StandardPickler.dispatch)
 
@@ -68,23 +68,28 @@ class _Pickler(_StandardPickler):
 
     dispatch[dict] = save_dict
 
-def _dumps(object, bin = 0):
+def _dumpsUsing_PicklerThatSortsDictItems(object, bin = 0):
     file = StringIO()
-    _Pickler(file, bin).dump(object)
+    _PicklerThatSortsDictItems(file, bin).dump(object)
     return file.getvalue()
 
-def dumps(ob):
-    """Serialize an object to XML
+def p2xml(p):
+    """Convert a standard Python pickle to xml
     """
-    p = _dumps(ob, 1)
     u = ppml.ToXMLUnpickler(StringIO(p))
     xmlob = u.load()
     r = ['<?xml version="1.0" encoding="utf-8" ?>\n']
     xmlob.output(r.append)
     return ''.join(r)
+    
+def dumps(ob):
+    """Serialize an object to XML
+    """
+    p = _dumpsUsing_PicklerThatSortsDictItems(ob, 1)
+    return p2xml(p)
 
-def loads(xml):
-    """Create an object from serialized XML
+def xml2p(xml):
+    """Convert xml to a standard Python pickle
     """
     handler = ppml.xmlPickler()
     parser = expat.ParserCreate()
@@ -94,5 +99,11 @@ def loads(xml):
     parser.Parse(xml)
     pickle = handler.get_value()
     pickle = str(pickle)
-    ob = pickle_loads(pickle)
+    return pickle
+
+def loads(xml):
+    """Create an object from serialized XML
+    """
+    pickle = xml2p(xml)
+    ob = _standard_pickle_loads(pickle)
     return ob
