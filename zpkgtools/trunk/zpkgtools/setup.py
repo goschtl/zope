@@ -13,6 +13,7 @@
 ##############################################################################
 """Generator for distutils setup.py files."""
 
+import errno
 import logging
 import os
 import posixpath
@@ -51,7 +52,11 @@ class SetupContext:
                 del kwargs[name]
         if "--debug" in sys.argv:
             import pprint
-            pprint.pprint(kwargs)
+            try:
+                pprint.pprint(kwargs)
+            except IOError, e:
+                if e.errno != errno.EPIPE:
+                    raise
         else:
             root_logger = logging.getLogger()
             if not root_logger.handlers:
