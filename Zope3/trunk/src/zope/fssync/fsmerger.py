@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.2 2003/05/15 15:32:23 gvanrossum Exp $
+$Id: fsmerger.py,v 1.3 2003/05/28 18:32:45 gvanrossum Exp $
 """
 
 import os
@@ -74,12 +74,12 @@ class FSMerger(object):
 
     def merge_dirs(self, localdir, remotedir):
         """Merge remote directory into local directory."""
-        lnames = self.metadata.getnames(localdir)
-        rnames = self.metadata.getnames(remotedir)
+        lentrynames = self.metadata.getnames(localdir)
+        rentrynames = self.metadata.getnames(remotedir)
         lentry = self.metadata.getentry(localdir)
         rentry = self.metadata.getentry(remotedir)
 
-        if not lnames and not rnames:
+        if not lentrynames and not rentrynames:
 
             if not lentry:
                 if not rentry:
@@ -88,6 +88,7 @@ class FSMerger(object):
                 else:
                     if not exists(localdir):
                         fsutil.ensuredir(localdir)
+                        lentry.update(rentry)
                         self.reportdir("N", localdir)
                     else:
                         self.reportdir("*", localdir)
@@ -123,17 +124,23 @@ class FSMerger(object):
             lnames = dict([(normcase(name), name)
                            for name in os.listdir(localdir)])
         else:
-            if lentry.get("flag") != "removed" and (rentry or rnames):
+            if lentry.get("flag") != "removed" and (rentry or rentrynames):
                 fsutil.ensuredir(localdir)
                 lentry.update(rentry)
                 self.reportdir("N", localdir)
             lnames = {}
+
+        for name in lentrynames:
+            lnames[normcase(name)] = name
 
         if exists(remotedir):
             rnames = dict([(normcase(name), name)
                            for name in os.listdir(remotedir)])
         else:
             rnames = {}
+
+        for name in rentrynames:
+            rnames[normcase(name)] = name
 
         names = {}
         names.update(lnames)
