@@ -342,7 +342,8 @@ class PathInit:
         if functional:
             config_file = 'ftesting.zcml'
             if not self.inplace:
-                # We chdired into build, so ftesting.zcml is in the parent directory
+                # We chdired into build, so ftesting.zcml is in the
+                # parent directory
                 config_file = os.path.join('..', 'ftesting.zcml')
             print "Parsing %s" % config_file
             from zope.testing.functional import FunctionalTestSetup
@@ -376,6 +377,16 @@ class TestFileFinder:
                 return
             print "not a package", dir
             return
+
+        # Put matching files in matches.  If matches is non-empty,
+        # then make sure that the package is importable.
+        matches = []
+        for file in files:
+            if file.startswith('test') and os.path.splitext(file)[-1] == '.py':
+                path = os.path.join(dir, file)
+                if match(rx, path):
+                    matches.append(path)
+
         # ignore tests when the package can't be imported, possibly due to
         # dependency failures.
         pkg = dir[self._plen:].replace(os.sep, '.')
@@ -387,12 +398,8 @@ class TestFileFinder:
             if VERBOSE:
                 print "skipping %s because: %s" % (pkg, e)
             return
-
-        for file in files:
-            if file.startswith('test') and os.path.splitext(file)[-1] == '.py':
-                path = os.path.join(dir, file)
-                if match(rx, path):
-                    self.files.append(path)
+        else:
+            self.files.extend(matches)
 
     def module_from_path(self, path):
         """Return the Python package name indicated by the filesystem path."""
