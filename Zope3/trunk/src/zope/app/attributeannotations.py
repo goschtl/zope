@@ -11,23 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Attribute Annotations implementation 
 
-$Id: attributeannotations.py,v 1.7 2003/09/21 17:30:01 jim Exp $
+$Id: attributeannotations.py,v 1.8 2004/02/13 22:24:08 srichter Exp $
 """
-
 from zodb.btrees.OOBTree import OOBTree
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
 from zope.proxy import removeAllProxies
 from zope.interface import implements
 from zope.app.interfaces.location import ILocation
 
 class AttributeAnnotations:
-    """
-    Store annotations in the __annotations__ attribute on a
-    IAttributeAnnotatable object.
+    """Store annotations in the __annotations__ attribute on a
+       'IAttributeAnnotatable' object.
     """
     implements(IAnnotations)
+    __used_for__ = IAttributeAnnotatable
 
     def __init__(self, obj):
         # We could remove all proxies from obj at this point, but
@@ -39,12 +38,14 @@ class AttributeAnnotations:
         self.unwrapped_obj = removeAllProxies(obj)
 
     def __getitem__(self, key):
+        """See zope.app.interfaces.annotation.IAnnotations"""
         annotations = getattr(self.unwrapped_obj, '__annotations__', None)
         if annotations is None:
             raise KeyError, key
         return annotations[key]
 
     def __setitem__(self, key, value):
+        """See zope.app.interfaces.annotation.IAnnotations"""
         if ILocation.isImplementedBy(value):
             value.__parent__ = self.unwrapped_obj
 
@@ -55,7 +56,15 @@ class AttributeAnnotations:
 
         annotations[key] = value
 
+    def __delitem__(self, key):
+        """See zope.app.interfaces.annotation.IAnnotations"""
+        try:
+            del self.unwrapped_obj.__annotations__[key]
+        except AttributeError:
+            raise KeyError, key
+
     def get(self, key, default=None):
+        """See zope.app.interfaces.annotation.IAnnotations"""
         try:
             return self.unwrapped_obj.__annotations__.get(key, default)
         except AttributeError:

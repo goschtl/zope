@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Tests the 'AttributeAnnotations' adapter.
 
-Revision information:
-$Id: test_attributeannotations.py,v 1.4 2003/06/04 11:13:49 stevea Exp $
+$Id: test_attributeannotations.py,v 1.5 2004/02/13 22:24:09 srichter Exp $
 """
-
-from unittest import TestCase, main, makeSuite
+from unittest import main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-from zope.app.tests.annotations import Annotations
+from zope.app.tests.annotations import IAnnotationsTest
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.interface import implements
@@ -27,17 +25,15 @@ from zope.interface import implements
 class Dummy:
     implements(IAttributeAnnotatable)
 
-class Test(CleanUp, Annotations, TestCase):
+class AttributeAnnotationsTest(IAnnotationsTest, CleanUp):
 
     def setUp(self):
         self.annotations = AttributeAnnotations(Dummy())
-        #super(Test,self).setUp()
-        Annotations.setUp(self)
-        CleanUp.setUp(self)
+        super(AttributeAnnotationsTest, self).setUp()
 
 
 def test_suite():
-    return makeSuite(Test)
+    return makeSuite(AttributeAnnotationsTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

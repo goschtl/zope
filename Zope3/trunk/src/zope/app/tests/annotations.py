@@ -11,19 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""General Annotations Tests
 
-Revision information:
-$Id: annotations.py,v 1.2 2002/12/25 14:13:26 jim Exp $
-"""
+All objects implementing 'IAnnotations' should pass these tests. They might be
+used as base tests for real implementations.
 
+$Id: annotations.py,v 1.3 2004/02/13 22:24:09 srichter Exp $
+"""
+import unittest
 from zope.interface.verify import verifyObject
 from zope.app.interfaces.annotation import IAnnotations
 
-class Annotations:
-    """
-    Test the IAnnotations interface.  Expects the IAnnotations
-    to be in self.annotations
+class IAnnotationsTest(unittest.TestCase):
+    """Test the IAnnotations interface.
+
+    The test case class expects the 'IAnnotations' to be in
+    'self.annotations'.
     """
 
     def setUp(self):
