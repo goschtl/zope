@@ -349,9 +349,6 @@
   permission="zope.ManageContent"
   />
 
-<!-- Local Interface Service -->
-<include file="interface.zcml" />
-
 <!-- Local Module Support -->
 <include file="module.zcml" />
 

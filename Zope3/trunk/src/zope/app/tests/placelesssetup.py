@@ -14,14 +14,12 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.9 2004/02/17 18:43:45 mgedmin Exp $
+$Id: placelesssetup.py,v 1.10 2004/03/05 15:56:18 eddala Exp $
 """
 
 from zope.app.tests import ztapi
 from zope.component.tests.placelesssetup \
     import PlacelessSetup as CAPlacelessSetup
-from zope.app.component.tests.placelesssetup \
-    import PlacelessSetup as ACAPlacelessSetup
 from zope.app.event.tests.placelesssetup \
     import PlacelessSetup as EventPlacelessSetup
 from zope.app.i18n.tests.placelesssetup \
@@ -32,7 +30,6 @@ from zope.app.security._protections import protect
 from zope.app.browser.absoluteurl import AbsoluteURL
 
 class PlacelessSetup(CAPlacelessSetup,
-                     ACAPlacelessSetup,
                      EventPlacelessSetup,
                      I18nPlacelessSetup,
                      ContainerPlacelessSetup
@@ -41,7 +38,6 @@ class PlacelessSetup(CAPlacelessSetup,
     def setUp(self):
         CAPlacelessSetup.setUp(self)
         ContainerPlacelessSetup.setUp(self)
-        ACAPlacelessSetup.setUp(self)
         EventPlacelessSetup.setUp(self)
         I18nPlacelessSetup.setUp(self)
         # Register app-specific security declarations
