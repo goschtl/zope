@@ -8,16 +8,16 @@
     </a>
   </h5>
 
-  <table>
-  <tr metal:fill-slot="extra_top">
-      <td>Component Path</td>
-      <td>
+  <div>
+  <div metal:fill-slot="extra_top" class="row">
+      <div class="label">Component Path</div>
+      <div class="field">
        <a href="."
           tal:content="view/componentPath"
           tal:attributes="href view/componentURL"
           >Foo</a>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </div>
 
 </div>
