@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.30 2003/07/15 16:08:47 Zen Exp $
+$Id: interfacewidget.py,v 1.31 2003/07/30 17:01:36 srichter Exp $
 """
 
 import sys
@@ -87,8 +87,8 @@ class InterfaceWidget(BrowserWidget, BrowserView):
                           for i in interfaces
                           if field.constraint(i)
                          ]
-        interfaces.sort()
         interfaces = map(interfaceToName, interfaces)
+        interfaces.sort()
         # Only include None if there is no search string, and include_none
         # is True
         if include_none and not search_string:
