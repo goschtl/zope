@@ -108,8 +108,6 @@
   <include package="zope.app.workflow" />
   <include package="zope.app.xml" />
 
-  <include package="zope.app.interfaces" />
-
   <!-- Views -->
   <include package="zope.app.browser" />
   <include package="zope.app.ftp" />
