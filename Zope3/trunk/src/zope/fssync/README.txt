@@ -8,6 +8,13 @@ For background and the original description by Jim Fulton, see:
 This version is based loosely on a prototype written by Jim Fulton and
 Deb Hazarika.  It is now maintained by Guido van Rossum.
 
+Possibly also relevant background:
+
+  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
+
+The "bundles" mentioned there are likely candidates for filesystem
+synchronization.
+
 
 User stories
 ------------
