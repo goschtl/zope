@@ -25,7 +25,6 @@ class PropertySetDef:
     def __init__(self):
         '''See interface IPropertySetDef'''
         self.fields = {}
-        self.namelist = []
 
     def has_field(self, name):
         '''See interface IPropertySetDef'''
@@ -36,7 +35,6 @@ class PropertySetDef:
         if name in self.fields:
             raise DuplicationError(name)
         self.fields[name] = field
-        self.namelist.append(name)
 
     def getField(self, name):
         '''See interface IPropertySetDef'''
@@ -44,15 +42,15 @@ class PropertySetDef:
 
     def fieldNames(self):
         '''See interface IPropertySetDef'''
-        return self.namelist
+        return self.fields.keys()
 
     def __len__(self):
         '''See interface IPropertySetDef'''
-        return len(self.namelist)
+        return len(self.fields)
 
     def __iter__(self):
         '''See interface IPropertySetDef'''
-        return iter([ self.fields[x] for x in self.namelist ])
+        return self.fields.itervalues()
 
     #
     ############################################################
