@@ -2,6 +2,14 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Local event subscriptions
+
+- Finish/cleanup XML-RPC (?)
+
+- Redo object hub (?)
+
+- Catalogs (?)
+
 - Finish cache framework:
 
   http://dev.zope.org/Zope3/Zope.App.Caching
@@ -11,11 +19,11 @@ Things to do After the next release (in no particular order)
 
 - Reimplement roles as utilities
 
-- Local roles
+- Local role definitions
 
 - Reimplement permissions as utilities
 
-- Local permissions
+- Local permission definitions
 
 - Untrusted modules.  Also implement a way of specifying policies for
   trusted and untrusted modules.  At a minimum:

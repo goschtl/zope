@@ -21,6 +21,8 @@ Things to do for the next release (in no particular order)
 
   o Subscribe directly, rather than by path
 
+  Note that, for now, we won't support local subscriptions.
+
 - Change the way components are looked up locally:
 
   http://dev.zope.org/Zope3/FixedDefaultComponentLookup
@@ -35,10 +37,6 @@ Things to do for the next release (in no particular order)
 
 - Fix up presentation-component franeworks to use presentation
   components registered by interface.
-
-- Redo object hub (?)
-
-- Catalogs (?)
 
 - Minor refactoring of adapter service to make it fast to find 
   all names for adapters from/to a given interface
@@ -88,13 +86,9 @@ Things to do for the next release (in no particular order)
 
   - Mail
 
-  - HubIDs
-
 - Implement tools:
 
   http://dev.zope.org/Zope3/TheBrowserToolDirective
-
-- Finish/cleanup XML-RPC (?)
 
 - Rework undo
 
@@ -124,9 +118,4 @@ Things to do for the next release (in no particular order)
 
   See http://collector.zope.org/Zope3-dev/109
   This requires a hook in the ZODB that Zope can override.
-
-- UI
-
-  * Rename "common tasks" to "Add". Eventually (after next release)
-    replace with a pull-down add menu
 
