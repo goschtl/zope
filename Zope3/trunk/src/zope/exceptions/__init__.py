@@ -18,6 +18,8 @@ application-specific packages.
 
 $Id$
 """
+
+# XXX catching import errors is almost always evil
 # This module should be independent of I18n, so let's not require it.
 try:
     from zope.i18n import MessageIDFactory
