@@ -103,8 +103,7 @@ class Application:
             self.ip.createDistributionTree(pkgdest, spec)
         except cvsloader.CvsLoadingError, e:
             self.error(str(e))
-        for relpath, src in dist.includes.iteritems():
-            self.ip.addSingleInclude(relpath, src, self.destination)
+        self.ip.addIncludes(self.destination, dist)
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         setup_cfg = os.path.join(self.destination, "setup.cfg")
@@ -235,8 +234,7 @@ class Application:
             self.add_collection_component(name, destination, spec)
 
         if distribution:
-            for relpath, src in dist.includes.iteritems():
-                self.ip.addSingleInclude(relpath, src, self.destination)
+            self.ip.addIncludes(self.destination, dist)
 
         self.create_manifest(destination)
         deps_file = os.path.join(source, "DEPENDENCIES.cfg")
