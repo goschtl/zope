@@ -129,7 +129,8 @@ class EditView(BrowserView):
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
+
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases, name=name)
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
@@ -149,5 +150,5 @@ def EditViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapters)
-    s.register((for_, layer), Interface, name, class_)
+    s = zapi.getGlobalSiteManager()
+    s.provideAdapter((for_, layer), Interface, name, class_)

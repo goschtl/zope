@@ -25,16 +25,15 @@ class IExternallyEditable(Interface):
     For an object to be externally editable there
     are three requirements:
 
-    1. It needs to declare that it implements this interface
-       to signal the presentation service that a External Edit
-       action should be available.
+    1. It needs to declare that it implements this interface to signal the
+       site manager that a External Edit action should be available.
 
     2. It needs to have an adapter for the interface
        ``zope.app.filerepresentation.interfaces.IReadFile``.
 
-    3. It needs to have a ``PUT`` view which receive the content
-       back from the External Editor client and update the
-       object, optimally using an adapter to the interface
+    3. It needs to have a ``PUT`` view which receive the content back from the
+       External Editor client and update the object, optimally using an
+       adapter to the interface
        ``zope.app.filerepresentation.interfaces.IWriteFile`` (but not
        necessarily).
     """

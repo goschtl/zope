@@ -19,9 +19,9 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 import transaction
-from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
-from zope.app.tests.functional import FunctionalDocFileSuite
-from zope.app.tests.functional import FunctionalTestCase
+from zope.app.testing.functional import SampleFunctionalTest, BrowserTestCase
+from zope.app.testing.functional import FunctionalDocFileSuite
+from zope.app.testing.functional import FunctionalTestCase
 
 class CookieFunctionalTest(BrowserTestCase):
 
@@ -126,7 +126,7 @@ class SkinsAndHTTPCaller(FunctionalTestCase):
 
     def test_skins(self):
         # Regression test for http://zope.org/Collectors/Zope3-dev/353
-        from zope.app.tests.functional import HTTPCaller
+        from zope.app.testing.functional import HTTPCaller
         http = HTTPCaller()
         response = http("GET /++skin++Basic HTTP/1.1\n\n")
         self.assert_("zopetopBasic.css" in str(response))

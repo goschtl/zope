@@ -10,7 +10,7 @@ When you change your application's data structures, for example,
 you change the semantic meaning of an existing field in a class, you will
 have a problem with databases that were created before your change.  For a
 more thorough discussion and possible solutions, see
-http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/DatabaseGenerations
+http://dev.zope.org/Zope3/DatabaseGenerations
 
 We will be using the component architecture, and we will need a database and a
 connection:
@@ -18,7 +18,7 @@ connection:
     >>> import cgi
     >>> from pprint import pprint
     >>> from zope.interface import implements
-    >>> from zope.app.tests import placelesssetup, ztapi
+    >>> from zope.app.testing import placelesssetup, ztapi
     >>> placelesssetup.setUp()
 
     >>> from ZODB.tests.util import DB

@@ -17,9 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# TODO: register utility as adapter for IAnnotations on utility activation
-# this depends on existence of LocalAdapterService, so once that's done
-# implement this.
+# TODO: register utility as adapter for IAnnotations on utility activation.
 
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -30,7 +28,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.contained import Contained
 from zope.app.location import Location
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.utility.utility import queryNextUtility
+from zope.app.component import queryNextUtility
 
 class PrincipalAnnotationUtility(Persistent, Contained):
     """Stores `IAnnotations` for `IPrinicipals`.

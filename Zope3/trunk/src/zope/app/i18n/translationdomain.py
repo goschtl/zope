@@ -29,10 +29,8 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.app.container.contained import Contained
-from zope.app.component.localservice import getNextService
-from zope.component.servicenames import Utilities
-from zope.app.utility import UtilityRegistration
-
+from zope.app.component.site import UtilityRegistration
+from zope.app.component import queryNextUtility
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
@@ -66,7 +64,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
     def translate(self, msgid, mapping=None, context=None,
                   target_language=None, default=None):
-        """See interface `ITranslationService`"""
+        """See interface `ITranslationDomain`"""
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages()
             # Let's negotiate the language to translate to. :)
@@ -84,8 +82,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         else:
             # If nothing found, delegate to a translation server higher up the
             # tree.
-            utils = getNextService(self, Utilities)
-            domain = utils.queryUtility(ITranslationDomain, self.domain)
+            domain = queryNextUtility(ITranslationDomain, self.domain)
             if domain is not None:
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)
@@ -120,7 +117,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getMessage(self, msgid, language):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         for name in self._catalogs.get(language, []):
             try:
                 return self[name].getFullMessage(msgid)
@@ -129,7 +126,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         return None
 
     def getAllLanguages(self):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         languages = {}
         for key in self._catalogs.keys():
             languages[key] = None
@@ -137,12 +134,12 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getAvailableLanguages(self):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         return list(self._catalogs.keys())
 
 
     def addMessage(self, msgid, msg, language, mod_time=None):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         if not self._catalogs.has_key(language):
             if language not in self.getAllLanguages():
                 self.addLanguage(language)
@@ -153,28 +150,28 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def updateMessage(self, msgid, msg, language, mod_time=None):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         catalog_name = self._catalogs[language][0]
         catalog = self[catalog_name]
         catalog.setMessage(msgid, msg, mod_time)
 
 
     def deleteMessage(self, msgid, language):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         catalog_name = self._catalogs[language][0]
         catalog = self[catalog_name]
         catalog.deleteMessage(msgid)
 
 
     def addLanguage(self, language):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         catalog = zapi.createObject(None, u'zope.app.MessageCatalog',
                                     language)
         self[language] = catalog
 
 
     def deleteLanguage(self, language):
-        'See `IWriteTranslationService`'
+        'See `IWriteTranslationDomain`'
         # Delete all catalogs from the data storage
         for name in self._catalogs[language]:
             if self.has_key(name):
@@ -184,7 +181,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getMessagesMapping(self, languages, foreign_messages):
-        'See `ISyncTranslationService`'
+        'See `ISyncTranslationDomain`'
         mapping = {}
         # Get all relevant local messages
         local_messages = []
@@ -206,7 +203,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def synchronize(self, messages_mapping):
-        'See `ISyncTranslationService`'
+        'See `ISyncTranslationDomain`'
 
         for value in messages_mapping.values():
             fmsg = value[0]
@@ -241,7 +238,7 @@ def setDomainOnActivation(domain, event):
     >>> domain1.domain
     '<domain not activated>'
 
-    >>> from zope.app.registration import registration
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationActivatedEvent(
     ...     Registration(domain1, 'domain1'))
 
@@ -269,7 +266,7 @@ def unsetDomainOnDeactivation(domain, event):
     >>> domain1 = TranslationDomain()
     >>> domain1.domain = 'domain1'
 
-    >>> from zope.app.registration import registration
+    >>> from zope.app.component import registration
     >>> event = registration.RegistrationDeactivatedEvent(
     ...     Registration(domain1, 'domain1'))
 

@@ -26,7 +26,7 @@ from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.cache.interfaces import ICache
 from zope.app.cache.interfaces.ram import IRAMCache
 from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 class Locatable(object):
 

@@ -16,8 +16,7 @@
 <body>
 <div metal:fill-slot="body">
   <tal:block
-      tal:define="global introspector view/getIntrospector;
-                  global services view/getServicesFor">
+      tal:define="global introspector view/getIntrospector">
 
     <div tal:condition="python:introspector.isInterface()">
 
@@ -97,20 +96,6 @@
           </td>
         </tr>
 
-        <!-- this section is currently not available
-        <tr>
-          <th class="introspector">
-            <tal:span i18n:translate="">Services</tal:span>:
-          </th>
-          <td>
-            <div tal:repeat="servicedic services">
-              <span tal:define="dic repeat/servicedic/item">
-                <a tal:content="python:dic.keys()[0]"/>
-              </span>
-            </div>
-          </td>
-        </tr>
-        -->
       </table>
     </div>
 

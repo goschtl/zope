@@ -23,7 +23,6 @@ from zope.app import zapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.app.component.interface import getInterface
-from zope.app.servicenames import Services
 
 
 class IntrospectorView(BrowserView):
@@ -34,10 +33,10 @@ class IntrospectorView(BrowserView):
         return introspector
 
     def getInterfaceURL(self, name):
-        services = zapi.getService(Services, self.context)
+        sm = zapi.getSiteManager(self.context)
         try:
             getInterface(self.context, name)
-            url = zapi.getView(services, 'absolute_url', self.request)
+            url = zapi.absoluteURL(sm, self.request)
         except ComponentLookupError:
             return ""
         return "%s/interfacedetail.html?id=%s" % (url, name)
@@ -57,7 +56,3 @@ class IntrospectorView(BrowserView):
                     interface = getInterface(ob, interface)
                     directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
-    def getServicesFor(self):
-        # TODO: Needs implementation. However, the API doc tool does this
-        # already. 
-        return []

@@ -2,6 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
+
   <adapter
       for="zope.app.security.interfaces.IAuthentication
            zope.publisher.interfaces.browser.IBrowserRequest"
@@ -14,6 +15,13 @@
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ITerms"
       factory="zope.app.security.browser.principalterms.PrincipalTerms"
+      />
+
+  <browser:tool
+      interface="..interfaces.IAuthenticationUtility"
+      title="Authentication"
+      description="Authenticates Principals."
+      unique="true"
       />
 
   <browser:page

@@ -26,7 +26,6 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.publisher.browser import BrowserView
-from zope.app.servicenames import Utilities
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
@@ -123,8 +122,7 @@ class ManagementView(BrowserView):
 
 
     def _getProcessDefinition(self, processInstance):
-        utils = zapi.getService(Utilities)
-        return utils.getUtility(IProcessDefinition,
+        return zapi.getUtility(IProcessDefinition,
                                 processInstance.processDefinitionName)
 
 

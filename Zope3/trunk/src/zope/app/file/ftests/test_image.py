@@ -18,11 +18,8 @@ $Id$
 import unittest
 import cgi
 from cStringIO import StringIO
-from transaction import get_transaction
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.publisher.browser import FileUpload
-
-from zope.app.file.image import Image
 
 zptlogo = (
     'GIF89a\x10\x00\x10\x00\xd5\x00\x00\xff\xff\xff\xff\xff\xfe\xfc\xfd\xfd'

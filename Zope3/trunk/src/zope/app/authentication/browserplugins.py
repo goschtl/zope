@@ -168,7 +168,7 @@ class FormChallenger(Persistent, Contained):
 
         First we need a request and a response.
 
-        >>> from zope.app.tests.setup import placefulSetUp
+        >>> from zope.app.testing.setup import placefulSetUp
         >>> site = placefulSetUp(True)
 
 

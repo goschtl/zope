@@ -97,7 +97,7 @@ class SQLScriptAdd(object):
     def nextURL(self):
         """
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.app.tests.placelesssetup import setUp, tearDown
+        >>> from zope.app.testing.placelesssetup import setUp, tearDown
         >>> setUp()
         >>> rqst = TestRequest()
         >>> class Base(object):
@@ -127,7 +127,7 @@ class SQLScriptAdd(object):
             name = self.context.contentName
             container = self.context.context
             obj = container[name]
-            url = zapi.getView(obj, 'absolute_url', self.request)()
+            url = zapi.absoluteURL(obj, self.request)
             url = '%s/test.html' % url
             return url
         else:

@@ -23,12 +23,11 @@ from zope.configuration import xmlconfig
 
 import zope.app.security
 from zope.security.checker import moduleChecker
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import setUp, tearDown, PlacelessSetup
 from zope.app.security import metaconfigure
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.app.security import fields
 

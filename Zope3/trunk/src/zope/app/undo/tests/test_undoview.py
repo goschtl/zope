@@ -21,8 +21,8 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 
-from zope.app.tests import ztapi
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.testing import ztapi
+from zope.app.component.testing import PlacefulSetup
 from zope.app.undo.interfaces import IUndoManager
 from zope.app.undo.browser import UndoView
 from zope.app.security.principalregistry import principalRegistry

@@ -18,11 +18,12 @@ $Id$
 import unittest
 
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing.placelesssetup import setUp, tearDown
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.copypastemove',setUp=setUp, tearDown=tearDown),
+        DocTestSuite('zope.app.copypastemove',
+                     setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__=='__main__':

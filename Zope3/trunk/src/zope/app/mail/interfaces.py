@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Mail service interfaces
+"""Mailer interfaces
 
 Email sending from Zope 3 applications works as follows:
 

@@ -25,8 +25,7 @@ import BTrees.IFBTree
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
-from zope.app.tests import ztapi, setup
-import zope.app.tests.placelesssetup
+from zope.app.testing import ztapi, setup, placelesssetup
 from BTrees.IFBTree import IFSet
 from zope.app.intid.interfaces import IIntIds
 
@@ -34,10 +33,6 @@ from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
 from zope.app import zapi
-
-from zope.app.utility import LocalUtilityService
-from zope.app.servicenames import Utilities
-
 
 class ReferenceStub:
     def __init__(self, obj):
@@ -118,7 +113,7 @@ class stoopid:
         self.__dict__ = kw
 
 
-class Test(zope.app.tests.placelesssetup.PlacelessSetup, unittest.TestCase):
+class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_catalog_add_del_indexes(self):
         catalog = Catalog()
@@ -229,10 +224,8 @@ class TestEventSubscribers(unittest.TestCase):
 
     def setUp(self):
         self.root = setup.placefulSetUp(True)
-        sm = zapi.getServices(self.root)
-        setup.addService(sm, Utilities, LocalUtilityService())
-        self.utility = setup.addUtility(
-            sm, '', IIntIds, IntIdsStub())
+        sm = self.root.getSiteManager()
+        self.utility = setup.addUtility(sm, '', IIntIds, IntIdsStub())
         self.cat = setup.addUtility(sm, '', ICatalog, CatalogStub())
 
     def tearDown(self):
@@ -299,8 +292,8 @@ def test_suite():
     suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
-        setUp=zope.app.tests.placelesssetup.setUp,
-        tearDown=zope.app.tests.placelesssetup.tearDown,
+        setUp=placelesssetup.setUp,
+        tearDown=placelesssetup.tearDown,
         ))
     return suite
 

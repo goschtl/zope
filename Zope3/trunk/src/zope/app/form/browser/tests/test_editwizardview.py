@@ -21,8 +21,8 @@ from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
 from zope.security.checker import InterfaceChecker, ProxyFactory
 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.form.browser.editwizard import EditWizardView
 from zope.app.form.browser import TextWidget

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Service for storing `IAnnotations` for principals.
+"""Utility for storing `IAnnotations` for principals.
 
 $Id$
 """

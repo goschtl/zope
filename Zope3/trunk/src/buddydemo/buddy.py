@@ -38,7 +38,7 @@ class BuddyCityState:
     sake of the example, we'll install one, but first,
     we have to set up the component architecture:
 
-      >>> from zope.app.tests import placelesssetup, ztapi
+      >>> from zope.app.testing import placelesssetup, ztapi
       >>> placelesssetup.setUp()
 
     and then we can provide the utility:

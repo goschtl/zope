@@ -160,12 +160,12 @@ def evolve(db, how=EVOLVE):
     We also need to set up the component system, since we'll be
     registering utilities:
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
 
     Now, we'll create and register some handlers:
 
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> app1 = FauxApp('app1', 0, 1)
       >>> ztapi.provideUtility(ISchemaManager, app1, name='app1')
       >>> app2 = FauxApp('app2', 5, 11)

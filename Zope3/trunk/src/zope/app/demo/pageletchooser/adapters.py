@@ -13,18 +13,13 @@
 ##############################################################################
 """PageletChooser Demo
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
-from persistent.dict import PersistentDict
 
 from zope.interface import implements
 from zope.interface import directlyProvides
-
-from zope.app import zapi
-
-from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.pageletchooser.interfaces import IAnnotatableMappingAdapter
 from zope.app.pageletchooser.interfaces import IPageletNameManager
@@ -44,7 +39,7 @@ class MyPageletNameAccessor(AnnotatableMappingAdapter):
 
         >>> from zope.interface import directlyProvides
         >>> from zope.interface import Interface
-        >>> from zope.app.tests import placelesssetup, ztapi
+        >>> from zope.app.testing import placelesssetup, ztapi
         >>> from zope.app.annotation.interfaces import IAnnotations
         >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
         >>> from zope.app.annotation.attribute import AttributeAnnotations

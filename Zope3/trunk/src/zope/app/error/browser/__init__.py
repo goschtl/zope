@@ -43,7 +43,7 @@ class ErrorRedirect(BrowserView):
         # to handle redirection to the site error logger instead
         try:
             err = zapi.getUtility(IErrorReportingUtility)
-            url = str(zapi.getView(err, 'absolute_url', self.request))
+            url = zapi.absoluteURL(err, self.request)
             url = url + "/@@SelectedManagementView.html"
         except TypeError:
             # siterooturl = self.request.getApplicationURL()

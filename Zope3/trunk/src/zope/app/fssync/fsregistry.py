@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization registry.
 
-This acts as a global (placeless) service.
+This acts as a global (placeless) utility.
 
 $Id$
 """
@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.exceptions import DuplicationError, NotFoundError
 from zope.interface import implements
-from zope.app.fssync.interfaces import IGlobalFSSyncService
+from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 
 class FSRegistry(object):
     """Registry Wrapper class.
@@ -29,7 +29,7 @@ class FSRegistry(object):
     This is a maping from Class -> Serializer Factory Method.
     """
 
-    implements(IGlobalFSSyncService)
+    implements(IGlobalFSSyncUtility)
 
     def __init__(self):
         self._class_factory_reg = {}
@@ -63,7 +63,7 @@ class FSRegistry(object):
     _clear = __init__
 
 
-# The FS registry serializer service instance
+# The FS registry serializer utility instance
 fsRegistry = FSRegistry()
 provideSynchronizer = fsRegistry.provideSynchronizer
 getSynchronizer = fsRegistry.getSynchronizer

@@ -15,7 +15,6 @@ $Id$
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
-from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 from zope.app.traversing.interfaces import TraversalError
@@ -43,7 +42,7 @@ class WikiPageTraverser:
         if page is None or \
            not zapi.getName(self.context) in IWikiPageHierarchy(page).parents:
 
-            view = queryView(self.context, name, request)
+            view = zapi.queryMultiAdapter((self.context, request), name=name)
             if view is not None:
                 return view
 
@@ -54,7 +53,7 @@ class WikiPageTraverser:
 
     def browserDefault(self, request):
         c = self.context
-        view_name = getDefaultViewName(c, request)
+        view_name = zapi.getDefaultViewName(c, request)
         view_uri = "@@%s" % view_name
         return c, (view_uri,)
 

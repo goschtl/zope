@@ -17,8 +17,8 @@ $Id$
 """
 import unittest
 from zope.interface import implements, Interface, Attribute
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.tests import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects, \
      ITreeStateEncoder

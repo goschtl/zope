@@ -61,7 +61,7 @@ We provide an `ITerms` view for the source:
   ...     def getValue(self, token):
   ...         return token.decode('base64')
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> import zope.app.form.browser.interfaces
   >>> ztapi.provideAdapter((SourceList, IBrowserRequest),

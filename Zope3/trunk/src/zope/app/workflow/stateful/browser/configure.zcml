@@ -160,7 +160,7 @@
       factory=".filteradapter.FilterAdapter"
       provides=".interfaces.IContentFilterAdapter"
       for="zope.app.annotation.interfaces.IAttributeAnnotatable"
-      permission="zope.View" /> <!-- XXX is this permission right? -->
+      permission="zope.View" /> <!-- TODO: is this permission right? -->
 
   <!--include file="testobject.zcml"/-->
 

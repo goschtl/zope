@@ -23,7 +23,7 @@ from zope.schema import TextLine
 
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 class IDummyState(Interface):
     """A really dummy state"""

@@ -25,7 +25,7 @@ create an authentication utility to demonstrate how this works:
 
 Now we need to install the authentication utility:
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IAuthentication, AuthUtility())
 
 We need a principal source so that we can create a view from it.

@@ -22,13 +22,12 @@ $Id: placelesssetup.py,v 1.3 2003/07/28 20:38:38 srichter Exp $
 from datetime import datetime
 
 from zope.component.interfaces import IFactory
-from zope.component.service import defineService, serviceManager
 from zope.interface import classImplements, implements
 from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup as SetupBase
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser
@@ -105,10 +104,7 @@ class PlacelessSetup(SetupBase):
         registry.register('Releases', ReleaseVocabulary)
         registry.register('Users', UserVocabulary)
 
-        defineService(zapi.servicenames.Authentication,
-                      IAuthentication)
-        serviceManager.provideService(zapi.servicenames.Authentication,
-                                      principalRegistry)
+        ztapi.provideUtility(IAuthentication, principalRegistry)
 
         principalRegistry.definePrincipal(u'zope.srichter',
                                           u'Stephan Richter', u'',

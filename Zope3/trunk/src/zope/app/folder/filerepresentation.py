@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.site.interfaces import ISite
+from zope.app.component.interfaces import ISite
 
 
 class RootDirectoryFactory(object):

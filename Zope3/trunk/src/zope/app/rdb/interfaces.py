@@ -306,26 +306,6 @@ class IDBICursor(Interface):
         """
 
 
-class IConnectionService(Interface):
-
-    def getConnection(name):
-        """Returns a connection object by name."""
-
-    def queryConnection(name, default):
-        """Returns a connection object by name or default."""
-
-    def getAvailableConnections():
-        """Returns the connection names available from this connection
-        service."""
-
-
-class IGlobalConnectionService(IConnectionService):
-    """A global connection service"""
-
-    def provideConnection(name, adapter, dsn):
-        """ Register a connection instance for site-wide use """
-
-
 class IDBIConnection(Interface):
     """A DB-API based Interface """
 
@@ -375,9 +355,7 @@ class ISQLCommand(Interface):
 
 class IZopeDatabaseAdapter(IDBITypeInfo):
     """Interface for persistent object that returns
-    volatile IZopeConnections.
-
-    This object is internal to the connection service."""
+    volatile IZopeConnections."""
 
     def isConnected():
         """Check whether the Zope Connection is actually connected to the

@@ -18,20 +18,17 @@ Bob.  Initially, attempts to log in as Bob fail:
 To allow Bob to log in, we'll start by adding a principal folder:
 
 
-(The following request is a bit weird.  It is part of the current
- tools UI.  It arranges for a tools site-management folder to be
- created.  We really need to rethink how we manage TTW utilities.)
-
   >>> print http(r"""
-  ... GET /++etc++site/AddISearchableAuthenticationPluginTool HTTP/1.1
+  ... POST /++etc++site/SiteManagement/index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageISearchableAuthenticationPluginTool.html
-  ... """)
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... activeTool=ISearchableAuthenticationPlugin""")
   HTTP/1.1 200 Ok
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html%3D HTTP/1.1
+  ... POST /++etc++site/SiteManagement/AddPrincipalFolder.html= HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 434
   ... Content-Type: multipart/form-data; boundary=---------------------------190685539214643056941988788830
@@ -52,8 +49,6 @@ To allow Bob to log in, we'll start by adding a principal folder:
   ... -----------------------------190685539214643056941988788830--
   ... """)
   HTTP/1.1 303 See Other
-  ...
-  Location: ../@@manageISearchableAuthenticationPluginTool.html
   ...
 
 We specify a prefix, `users.`.  This is used to make sure that ids
@@ -138,13 +133,17 @@ register a pluggable authentication utility:
   ... 
   ... 
   ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface"
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.security.interfaces.IAuthentication
   ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
+  ... -----------------------------1649392783947785437368129046
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.permission"
   ... 

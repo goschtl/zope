@@ -18,8 +18,10 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.app import zapi
 from zope.event import notify
+
+from zope.app import zapi
+from zope.app.module import resolve
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
@@ -215,7 +217,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         self._checkAndFireAuto(clean_pd)
 
     def getProcessDefinition(self):
-        """Get the ProcessDefinition object from WorkflowService."""
+        """Get the ProcessDefinition object from Workflow Utility."""
         return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
 
     def _getContext(self):
@@ -273,8 +275,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            sm = zapi.getServices(self)
-            script = sm.resolve(script)
+            # XXX: not tested!
+            script = resolve(script)
         return script(contexts)
 
     def _outgoingTransitions(self, clean_pd):

@@ -56,13 +56,9 @@ def _fieldlist(names, schema):
     
     
 def _createWidget(context, field, viewType, request):
-    """Creates a widget given a `context`, `field`, and `viewType`.
-    
-    Uses ``zapi.getViewProviding`` to lookup a view for the field and the
-    viewType.
-    """    
+    """Creates a widget given a `context`, `field`, and `viewType`."""    
     field = field.bind(context)
-    return zapi.getViewProviding(field, viewType, request)        
+    return zapi.getMultiAdapter((field, request), viewType)
 
 def _widgetHasStickyValue(widget):
     """Returns ``True`` if the widget has a sticky value.

@@ -20,7 +20,6 @@ from zope.app.introspector import interfaceToName
 from zope.app.component.interface import nameToInterface
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
-from zope.app.servicenames import Utilities
 from zope.app.form.interfaces import IInputWidget
 from zope.interface import Interface
 from zope.app.publisher.browser import BrowserView

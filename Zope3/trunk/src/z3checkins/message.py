@@ -1,16 +1,42 @@
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """
 The z3checkins product.
 
 $Id$
 """
-
 import email
 import email.Utils
-from datetime import datetime
-
+import mailbox
+import time
+from datetime import datetime, tzinfo, timedelta
 from persistent import Persistent
-from zope.app.container.contained import Contained
+from StringIO import StringIO
+
+from zope.exceptions import DuplicationError
 from zope.interface import implements
+from zope.proxy import removeAllProxies
+
+from zope.app import zapi
+from zope.app.container.contained import Contained
+from zope.app.container.interfaces import IReadContainer
+from zope.app.datetimeutils import parseDatetimetz, DateTimeError
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.form import CustomWidgetFactory
+from zope.app.form.browser import FileWidget
+from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.publisher.browser import BrowserView
 
 from z3checkins.interfaces import IMessage, ICheckinMessage, IMessageContained
 from z3checkins.interfaces import IBookmark, IMessageParser, FormatError
@@ -216,5 +242,4 @@ def find_body_start(full_text):
     else:
         pos2 += 4
     return min(pos1, pos2)
-
 

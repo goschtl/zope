@@ -19,12 +19,11 @@ import unittest
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
+from zope.app.testing import ztapi
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
@@ -42,9 +41,6 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        ztapi.provideAdapter(
-            IAttributeAnnotatable, IAnnotations,
-            AttributeAnnotations)
 
     def _make_principal(self, id=None, title=None):
         p = principalRegistry.definePrincipal(

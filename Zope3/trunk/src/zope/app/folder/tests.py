@@ -20,18 +20,17 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.folder.interfaces import IFolder
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.component.tests.test_servicemanagercontainer \
-     import BaseTestServiceManagerContainer
+from zope.app.component.testing import PlacefulSetup
+from zope.app.component.tests.test_site import BaseTestSiteManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
 
 
-class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
+class Test(BaseTestIContainer, BaseTestSiteManagerContainer, TestCase):
 
     def makeTestObject(self):
         from zope.app.folder import Folder
@@ -56,7 +55,7 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
 
 def test_suite():
     from zope.testing.doctestunit import DocTestSuite
-    from zope.app.tests.placelesssetup import setUp, tearDown
+    from zope.app.testing.placelesssetup import setUp, tearDown
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),

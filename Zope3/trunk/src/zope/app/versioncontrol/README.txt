@@ -65,7 +65,7 @@ contain their own location information.
   ...     def getPath(self):
   ...         return '/' + self.__name__
 
-  >>> from zope.app.tests import ztapi
+  >>> from zope.app.testing import ztapi
   >>> ztapi.provideAdapter(zope.app.annotation.interfaces.IAttributeAnnotatable,
   ...                      zope.app.annotation.interfaces.IAnnotations,
   ...                      zope.app.annotation.attribute.AttributeAnnotations)

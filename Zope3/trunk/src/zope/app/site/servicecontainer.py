@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,47 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ServiceManagerContainer implementation.
+"""Service Manager Container
 
-$Id$
+$Id: servicecontainer.py 25177 2004-06-02 13:17:31Z jim $
 """
+__docformat__ = "reStructuredText"
+from zope.deprecation import deprecated
 
-import zope.interface
+from zope.app.component.site import SiteManagerContainer
 
-from transaction import get_transaction
-from zope.app.container.contained import Contained
-from zope.app.site.interfaces import IPossibleSite, ISite
-from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IServiceService
-from zope.interface import implements
+ServiceManagerContainer = SiteManagerContainer
 
-class ServiceManagerContainer(Contained):
-    """Implement access to the service manager (++etc++site).
-
-    This is a mix-in that implements the IPossibleSite
-    interface; for example, it is used by the Folder implementation.
-    """
-    zope.interface.implements(IPossibleSite)
-
-    __sm = None
-
-    def getSiteManager(self):
-        if self.__sm is not None:
-            return self.__sm
-        else:
-            raise ComponentLookupError('no site manager defined')
-
-    def setSiteManager(self, sm):
-        if ISite.providedBy(self):
-            raise TypeError("Already a site")
-
-        if IServiceService.providedBy(sm):
-            self.__sm = sm
-            sm.__name__ = '++etc++site'
-            sm.__parent__ = self
-        else:
-            raise ValueError('setSiteManager requires an IServiceService')
-
-        zope.interface.directlyProvides(
-            self, ISite,
-            zope.interface.directlyProvidedBy(self))
+deprecated('ServiceManagerContainer',
+           'This class has been moved to zope.app.component.site '
+           'and been renamed to SiteManagerContainer. '
+           'The reference will be gone in X3.3.')

@@ -33,11 +33,9 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.i18n.interfaces import ISyncTranslationDomain
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain
-from zope.app.servicenames import Utilities
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.tests import setup, ztapi
-from zope.app.utility import LocalUtilityService
-from zope.app.utility.interfaces import ILocalUtility 
+from zope.app.component.testing import PlacefulSetup
+from zope.app.testing import setup, ztapi
+from zope.app.component.interfaces import ILocalUtility 
 
 
 class Environment(object):
@@ -197,7 +195,6 @@ class TestTranslationDomain(TestITranslationDomain,
         self.sm = PlacefulSetup.setUp(self, site=True)
         TestITranslationDomain.setUp(self)
 
-        setup.addService(self.sm, Utilities, LocalUtilityService())
         setup.addUtility(self.sm, 'default', ITranslationDomain, self._domain)
         
         ztapi.provideUtility(IFactory, Factory(MessageCatalog),
@@ -234,23 +231,21 @@ class TestTranslationDomainInAction(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        sm = zapi.getGlobalServices()
+        sm = zapi.getGlobalSiteManager()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
 
         # Create global translation domain and add the catalog.
         domain = GlobalTranslationDomain('default')
         domain.addCatalog(de_catalog)
-        utils = sm.getService(Utilities)
-        utils.provideUtility(ITranslationDomain, domain, 'default')
+        sm.provideUtility(ITranslationDomain, domain, 'default')
 
         # Create Domain in root folder
-        mgr = setup.createServiceManager(self.rootFolder)
+        mgr = setup.createSiteManager(self.rootFolder)
         self.trans = setup.addDomain(mgr, Translation, TranslationDomain())
 
         # Create Domain in folder1
-        mgr = setup.createServiceManager(
-            zapi.traverse(self.rootFolder, 'folder1'))
+        mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
         td = TranslationDomain()
         td.domain = 'default'
         de_catalog = MessageCatalog('de', 'default')

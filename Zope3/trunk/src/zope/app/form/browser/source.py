@@ -167,8 +167,8 @@ class SourceInputWidget(zope.app.form.InputWidget):
     def error(self):
         if self._error:
             # XXX This code path is untested.
-            return zapi.getViewProviding(self._error, IWidgetInputErrorView,
-                                         self.request).snippet()
+            return zapi.getMultiAdapter((self._error, self.request),
+                                        IWidgetInputErrorView).snippet()
         return ""
     
     def __call__(self):

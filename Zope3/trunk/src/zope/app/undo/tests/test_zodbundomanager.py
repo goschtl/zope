@@ -20,8 +20,8 @@ from unittest import TestCase, main, makeSuite
 from transaction import get_transaction
 
 from zope.testing.cleanup import CleanUp 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.undo import ZODBUndoManager
 from zope.app.undo.interfaces import UndoError

@@ -1,7 +1,7 @@
 <html metal:use-macro="context/@@standard_macros/view">
 <head>
   <title metal:fill-slot="title" i18n:translate="">
-    Translation Service - Synchronize
+    Translation Domain - Synchronize
   </title>
 
   <style metal:fill-slot="style_slot" type="text/css">

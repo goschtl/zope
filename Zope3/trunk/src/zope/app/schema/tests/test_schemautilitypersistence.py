@@ -21,7 +21,7 @@ from persistent.tests.persistenttestbase import PersistentTest, DM
 from zope.app.schema.wrapper import Struct
 from zope.app.schema.schema import SchemaUtility
 from zope.schema import Text, getFieldsInOrder
-from zope.app.tests import setup
+from zope.app.testing import setup
 
 class PSchema(SchemaUtility):
 

@@ -13,35 +13,22 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id$
+$Id: folder.py 25177 2004-06-02 13:17:31Z jim $
 """
-from zope.interface import implements
+from zope.deprecation import deprecated
 from zope.app.container.btree import BTreeContainer
-from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.registration.registration import RegisterableContainer
-from zope.app.traversing.api import getPath
-from zope.app.container.contained import setitem
 
-from zope.app.site.interfaces import ISiteManagementFolders
-from zope.app.site.interfaces import ISiteManagementFolder
-from zope.app.site.interfaces import IComponentManager
+from zope.app.component.site import SiteManagementFolder
+from zope.app.component.site import SMFolderFactory
 
-class SiteManagementFolder(RegisterableContainer, BTreeContainer):
-    implements(ISiteManagementFolder)
+deprecated(('SiteManagementFolder', 'SMFolderFactory'),
+           'This class has moved to zope.app.component.site. '
+           'The reference will be gone in X3.3.')
 
-class SMFolderFactory(object):
-    implements(IDirectoryFactory)
-
-    def __init__(self, context):
-        self.context = context
-
-    def __call__(self, name):
-        return SiteManagementFolder()
-
+# I really hope that noone is using this.
 class SiteManagementFolders(BTreeContainer):
-    pass 
+    pass
 
-import sys
-
-sys.modules['zope.app.services.package'
-            ] = sys.modules['zope.app.site.folder']
+deprecated('SiteManagementFolders',
+           'This class has been deprecated. It was not used anyways. '
+           'The reference will be gone in X3.3.')

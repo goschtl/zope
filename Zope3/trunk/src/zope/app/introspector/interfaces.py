@@ -59,11 +59,9 @@ class IIntrospector(Interface):
     def getExtends():
         """Returns all the class extended up to the top most level"""
 
-    def getInterfaceRegistration():
-        """Returns details for a interface configuration"""
-
     def getMarkerInterfaces():
         """Returns a list of marker interfaces available for this object"""
 
     def getMarkerInterfaceNames():
-        """Returns a list of names of marker interfaces available for this object"""
+        """Returns a list of names of marker interfaces available for this
+        object"""

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication service.
+"""Pluggable Authentication Utility.
 
 $Id$
 """
@@ -55,14 +55,14 @@ class IPrincipalSource(Interface):
         found.
 
         Note that the id has three parts, separated by tabs.  The
-        first two part are an authentication service id and a
+        first two part are an authentication utility id and a
         principal source id.  The pricipal source will typically need
         to remove the two leading parts from the id when doing it's
         own internal lookup.
 
-        Note that the authentication service nearest to the requested
-        resource is called. It is up to authentication service
-        implementations to collaborate with services higher in the
+        Note that the authentication utility nearest to the requested
+        resource is called. It is up to authentication utility
+        implementations to collaborate with utilities higher in the
         object hierarchy.
         """
 
@@ -74,8 +74,8 @@ class IPrincipalSource(Interface):
         """
 
 
-class IPluggableAuthenticationService(IAuthentication, IContainer):
-    """An `AuthenticationService` that can contain multiple pricipal sources.
+class IPluggableAuthentication(IAuthentication, IContainer):
+    """An `Authentication` utility that can contain multiple pricipal sources.
     """
 
     def __setitem__(id, principal_source):
@@ -113,8 +113,8 @@ class IContainerPrincipalSource(IContainer):
 
 class IContainedPrincipalSource(IPrincipalSource, IContained):
     """This is a marker interface for principal sources that can be directly
-    added to an authentication service. It ensures that principal source can
-    **only** be added to pluggable authentication services."""
+    added to an authentication utility. It ensures that principal source can
+    **only** be added to pluggable authentication utilities."""
 
     __parent__= Field(
-        constraint = ContainerTypesConstraint(IPluggableAuthenticationService))
+        constraint = ContainerTypesConstraint(IPluggableAuthentication))

@@ -353,7 +353,8 @@ def implementedByFallback(cls):
         spec = Implements(*[implementedBy(c) for c in bases])
         spec.inherit = cls
 
-    spec.__name__ = getattr(cls, '__module__', '?') + '.' + cls.__name__
+    spec.__name__ = (getattr(cls, '__module__', '?') or '?') + \
+                    '.' + cls.__name__
 
     try:
         cls.__implemented__ = spec

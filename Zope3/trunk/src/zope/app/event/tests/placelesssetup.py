@@ -15,11 +15,10 @@
 
 $Id$
 """
+
 from zope.app.event.interfaces import IObjectEvent
 from zope.app.event.objectevent import objectEventNotify
-from zope.interface import implements
-from zope.component import getGlobalServices
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 events = []
 

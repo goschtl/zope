@@ -29,10 +29,10 @@ def connectionhandler(_context, name, component, dsn):
 def provideConnection(name, connection):
     """ Registers a database connection
     
-     Uses the Utility Service for registering
+    Uses the global site manager for registering the connection
     """
-    utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
-    utilities.provideUtility(IZopeDatabaseAdapter, connection, name)
+    gsm = zapi.getGlobalSiteManager()
+    gsm.provideUtility(IZopeDatabaseAdapter, connection, name)
 
 
     

@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.tests import setup
+from zope.app.testing import setup
 
 def test_suite():
     return DocTestSuite('zope.app.interface.vocabulary',

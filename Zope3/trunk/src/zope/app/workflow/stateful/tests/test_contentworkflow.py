@@ -26,9 +26,9 @@ from zope.app.container.contained import Contained
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.utility import UtilityRegistration
-from zope.app.utility.interfaces import ILocalUtility
-from zope.app.registration.interfaces import ActiveStatus
+from zope.app.component.site import UtilityRegistration
+from zope.app.component.interfaces import ILocalUtility
+from zope.app.component.interfaces.registration import ActiveStatus
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
@@ -40,7 +40,7 @@ from zope.app.workflow.stateful.contentworkflow \
      import NewObjectProcessInstanceCreator
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 
-from zope.app.tests import ztapi, setup
+from zope.app.testing import ztapi, setup
 
 # define and create dummy ProcessDefinition (PD) for tests
 class DummyProcessDefinition(Contained):

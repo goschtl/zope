@@ -18,14 +18,13 @@ $Id$
 import unittest
 from zope.interface import implements
 
-from zope.app.tests import ztapi, setup
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.caching import getCacheForObject
 from zope.app.cache.annotationcacheable import AnnotationCacheable
+from zope.app.testing import ztapi, placelesssetup
 
 class ObjectStub(object):
     implements(IAttributeAnnotatable)
@@ -33,7 +32,7 @@ class ObjectStub(object):
 class CacheStub(object):
     implements(ICache)
 
-class Test(PlacelessSetup, unittest.TestCase):
+class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()

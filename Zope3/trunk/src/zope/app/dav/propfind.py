@@ -66,8 +66,7 @@ class PROPFIND(object):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = str(zapi.getView(self.context, 'absolute_url', 
-                                        self.request))
+        resource_url = zapi.absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
@@ -101,7 +100,7 @@ class PROPFIND(object):
             return
         subdepth = (depth == '1') and '0' or 'infinity'
         for id, obj in self.context.items():
-            pfind = zapi.queryView(obj, 'PROPFIND', self.request, None)
+            pfind = zapi.queryMultiAdapter((obj, self.request), name='PROPFIND')
             if pfind is None:
                 continue
             pfind.setDepth(subdepth)

@@ -26,7 +26,7 @@ from zope.schema.interfaces import ValidationError
 from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.form import Widget, InputWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.form.interfaces import InputErrors
@@ -103,8 +103,8 @@ class BrowserWidget(Widget, BrowserView):
 
     def error(self):
         if self._error:
-            return zapi.getViewProviding(self._error, IWidgetInputErrorView,
-                                         self.request).snippet()
+            return zapi.getMultiAdapter((self._error, self.request),
+                                        IWidgetInputErrorView).snippet()
         return ""
 
     def hidden(self):
@@ -486,14 +486,14 @@ def renderElement(tag, **kw):
 
 
 def setUp():
-    import zope.app.tests.placelesssetup
+    import zope.app.testing.placelesssetup
     global setUp
-    setUp = zope.app.tests.placelesssetup.setUp
+    setUp = zope.app.testing.placelesssetup.setUp
     setUp()
 
 
 def tearDown():
-    import zope.app.tests.placelesssetup
+    import zope.app.testing.placelesssetup
     global tearDown
-    tearDown = zope.app.tests.placelesssetup.tearDown
+    tearDown = zope.app.testing.placelesssetup.tearDown
     tearDown()

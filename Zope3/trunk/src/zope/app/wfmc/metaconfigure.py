@@ -1,28 +1,28 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """WFMC metaconfigure
 
 $Id: $
 """
-
-import zope.interface
-import zope.schema
-import zope.configuration.fields
-import zope.component
-
-from zope.app import zapi
+__docformat__ = "reStructuredText"
 from zope import wfmc
 from zope.wfmc import xpdl
+from zope.app.component.metaconfigure import utility
 
-def createUtility(file, process, id):
+def defineXpdl(_context, file, process, id):
     package = xpdl.read(open(file))
     definition = package[process]
     definition.id = id
 
-    zapi.getGlobalService('Utilities').provideUtility(
-            wfmc.interfaces.IProcessDefinition, definition, id)
-
-def defineXpdl(_context, file, process, id):
-    _context.action(
-        discriminator=('intranet:xpdl', id),
-        callable=createUtility, 
-        args=(file, process, id),
-        )
+    utility(_context, wfmc.interfaces.IProcessDefinition, definition, name=id)

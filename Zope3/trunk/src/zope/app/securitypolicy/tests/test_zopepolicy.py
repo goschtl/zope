@@ -19,7 +19,7 @@ $Id$
 import unittest
 from zope.testing.doctestunit import DocFileSuite
 from zope.app import zapi
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations

@@ -11,19 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for Global Wiki Source Type Service.
+"""Tests for Renderer Vocabulary.
 
 $Id$
 """
 import unittest
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.renderer import SourceFactory
 from zope.app.renderer.interfaces import ISource
 from zope.app.renderer.vocabulary import SourceTypeVocabulary
 from zope.component.interfaces import IFactory
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
 

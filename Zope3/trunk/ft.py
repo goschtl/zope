@@ -18,7 +18,7 @@ XXX longer description goes here.
 $Id$
 """
 import unittest
-from zope.app.tests.functional import FunctionalTestCase
+from zope.app.testing.functional import FunctionalTestCase
 
 __docformat__ = "reStructuredText"
 
@@ -61,7 +61,7 @@ class TestSomething(FunctionalTestCase):
         #
         # There are helper methods in FunctionalTestCase and BrowserTestCase
         # for accessing the ZODB and emulating publication requests.  See the
-        # docstrings in zope.app.tests.functional module.
+        # docstrings in zope.app.testing.functional module.
         pass
 
 

@@ -15,23 +15,28 @@
 
 $Id$
 """
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest 
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.annotation.interfaces import IAnnotations
+from zope.app.component.testing import PlacefulSetup
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.annotation.interfaces import IAnnotations
+from zope.app.testing import ztapi
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-from zope.app.pluggableauth.tests.authsetup import AuthSetup
 
 
-class PrincipalClipboardTest(AuthSetup, TestCase):
+class PrincipalStub(object):
+
+    def __init__(self, id):
+        self.id = id
+
+
+class PrincipalClipboardTest(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        AuthSetup.setUp(self)
         self.buildFolders()
 
         ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
@@ -40,7 +45,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
                              PrincipalAnnotationUtility())
 
     def testAddItems(self):
-        user = self._auth['one']['srichter']
+        user = PrincipalStub('srichter')
 
         annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
@@ -56,7 +61,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
         self.failUnless(clipboard.getContents() == expected)
 
     def testSetContents(self):
-        user = self._auth['one']['srichter']
+        user = PrincipalStub('srichter')
 
         annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
@@ -72,7 +77,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
         self.failUnless(clipboard.getContents() == expected)
 
     def testClearContents(self):
-        user = self._auth['one']['srichter']
+        user = PrincipalStub('srichter')
 
         annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
         annotations = annotationutil.getAnnotations(user)
@@ -81,9 +86,10 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
         self.failUnless(clipboard.getContents() == ())
 
 def test_suite():
-    t1 = makeSuite(PrincipalClipboardTest)
-    return TestSuite((t1,))
+    return unittest.TestSuite((
+        unittest.makeSuite(PrincipalClipboardTest),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
 

@@ -15,20 +15,18 @@
 
 $Id$
 """
-from unittest import TestCase, TestSuite, makeSuite
+import unittest
+import zope.interface
+from zope.publisher.browser import TestRequest
+
 from zope.app.presentation.zpt import ZPTTemplate, ZPTFactory
 from zope.app.presentation.zpt import ReadFile, WriteFile
-from zope.publisher.browser import TestRequest
 from zope.app.publisher.browser import BrowserView
 
 # All this just to get zapi.getPath() work :(
-from zope.app.tests import ztapi
-from zope.interface import directlyProvides
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.testing import ztapi, setup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.traversing.adapters import RootPhysicallyLocatable
 from zope.app.container.contained import contained
 
 
@@ -36,7 +34,7 @@ class Data(object):
     pass
 
 
-class Test(TestCase):
+class ZPTTemplateTest(unittest.TestCase):
 
     # TODO: We need tests for the template class itself and for the
     # SearchableText adapter.
@@ -70,14 +68,17 @@ class Test(TestCase):
         self.assertEqual(template.source, source)
 
 
-class TestDebugFlags(PlacelessSetup, TestCase):
+class TestDebugFlags(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        ztapi.provideAdapter(
-              None, IPhysicallyLocatable, LocationPhysicallyLocatable)
-        ztapi.provideAdapter(
-              IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+        setup.setUpTraversal()
+
+    def pageInContext(self, page):
+        root = Data()
+        zope.interface.directlyProvides(root, IContainmentRoot)
+        folder = contained(Data(), root, name='folder')
+        return contained(page, folder, name='zpt')
 
     def test_source_file(self):
         template = ZPTTemplate()
@@ -85,12 +86,6 @@ class TestDebugFlags(PlacelessSetup, TestCase):
 
         template = self.pageInContext(template)
         self.assertEquals(template.pt_source_file(), '/folder/zpt')
-
-    def pageInContext(self, page):
-        root = Data()
-        directlyProvides(root, IContainmentRoot)
-        folder = contained(Data(), root, name='folder')
-        return contained(page, folder, name='zpt')
 
     def test_debug_flags(self):
         template = self.pageInContext(ZPTTemplate())
@@ -114,7 +109,10 @@ class TestDebugFlags(PlacelessSetup, TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        makeSuite(TestDebugFlags),
+    return unittest.TestSuite((
+        unittest.makeSuite(ZPTTemplateTest),
+        unittest.makeSuite(TestDebugFlags),
         ))
+
+if __name__=='__main__':
+    unittest.main(defaultTest='test_suite')

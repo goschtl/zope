@@ -20,8 +20,8 @@ from zope.testing.doctestunit import DocTestSuite
 
 from zope.interface import Interface, implements
 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -65,8 +65,7 @@ class RobotDirectory(object):
 
 def test_DAVSchemaAdapter():
     """Before we can start off, we need to provide a few basic components.
-    Let's setup the necessary services and a minimum of the location
-    machinery:
+    Let's setup a minimum of the location machinery:
 
     >>> setUp()
     >>> ztapi.provideAdapter(ILocation, IPhysicallyLocatable,

@@ -35,7 +35,7 @@
       name="chooseablepageletnames"
       factory=".vocabulary.PageletNamesVocabulary"
       layer="zope.publisher.interfaces.browser.IBrowserRequest"
-      view="zope.component.interfaces.IView"
+      view="zope.component.bbb.interfaces.IView"
       slot="zope.app.pageletchooser.interfaces.IChooseablePagelets"
       />
 

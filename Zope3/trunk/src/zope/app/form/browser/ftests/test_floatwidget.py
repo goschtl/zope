@@ -28,7 +28,7 @@ from zope.schema import Float, Choice
 
 from zope.app.traversing.api import traverse
 
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 
 class IFloatTest(Interface):

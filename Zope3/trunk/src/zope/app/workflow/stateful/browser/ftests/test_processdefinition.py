@@ -19,7 +19,7 @@ import unittest
 import re
 
 from zope.app import zapi
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 
 xml=u"""<?xml version="1.0"?>

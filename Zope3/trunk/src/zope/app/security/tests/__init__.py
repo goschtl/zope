@@ -22,8 +22,6 @@ from zope.app.security.interfaces import IPermission
 def addCheckerPublic():
     """Add the CheckerPublic permission as 'zope.Public'"""
 
-    utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
-
     perm = Permission('zope.Public', 'Public',
             """Special permission used for resources that are always public
 
@@ -31,4 +29,5 @@ def addCheckerPublic():
             it allows security computation to be bypassed.
             """
             )
-    utilityService.provideUtility(IPermission, perm, perm.id)
+    gsm = zapi.getGlobalSiteManager()
+    gsm.provideUtility(IPermission, perm, perm.id)

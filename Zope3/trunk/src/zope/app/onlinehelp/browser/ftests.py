@@ -21,7 +21,7 @@ import unittest
 
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.file import File
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.onlinehelp.tests.test_onlinehelp import testdir
 from zope.app.onlinehelp import help
 

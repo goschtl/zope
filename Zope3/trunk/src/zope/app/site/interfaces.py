@@ -13,17 +13,28 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id$
+$Id: interfaces.py 27514 2004-09-13 15:54:05Z fdrake $
 """
-from zope.interface import Interface, Attribute
 import zope.schema
-from zope.component.interfaces import IServiceService
-from zope.app.container.interfaces import IContainer
-from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.registration import interfaces as registration
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.deprecation import deprecated
+from zope.interface import Interface
 
+from zope.app.component.interfaces import registration
+from zope.app.container.interfaces import IContainer
+from zope.app.component.interfaces import IPossibleSite, ISite
+from zope.app.component.interfaces import ILocalSiteManager
+from zope.app.component.interfaces import ISiteManagementFolder
+
+deprecated(('IPossibleSite', 'ISite'),
+           'This interface has been moved to zope.app.component.interfaces. '
+           'The reference will be gone in X3.3.')
+
+ISiteManager = ILocalSiteManager
+
+deprecated('ISiteManager',
+           'This interface has been moved to zope.app.component.interfaces '
+           'and been renamed ISiteManager. '
+           'The reference will be gone in X3.3.')
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -34,13 +45,16 @@ class ILocalService(registration.IRegisterable):
     IRegistered).  Implementing ILocalService implies this.
     """
 
-
-class ISimpleService(ILocalService, registration.IAttributeRegisterable):
+class ISimpleService(ILocalService):
     """Most local services should implement this instead of ILocalService.
 
     It implies a specific way of implementing IRegisterable,
     by subclassing IAttributeRegisterable.
     """
+
+deprecated(('ILocalService', 'ISimpleService'),
+           'The concept of services has been removed. Use utilities instead. '
+           'The reference will be gone in X3.3.')
 
 class IComponentManager(Interface):
 
@@ -58,24 +72,9 @@ class IComponentManager(Interface):
 
         """
 
-
-class IPossibleSite(Interface):
-    """An object that could be a site
-    """
-
-    def setSiteManager(sm):
-        """Sets the service manager for this object.
-        """
-
-    def getSiteManager():
-        """Returns the service manager contained in this object.
-
-        If there isn't a service manager, raise a component lookup.
-        """
-
-class ISite(IPossibleSite):
-    """Marker interface to indicate that we have a site
-    """
+deprecated('IComponentManager',
+           'This interface has been removed. It was horrible anyways. '
+           'The reference will be gone in X3.3.')
 
 class IBindingAware(Interface):
 
@@ -93,58 +92,9 @@ class IBindingAware(Interface):
         this object from performing the named service.
         """
 
-
-class ISiteManager(IServiceService, IComponentManager,
-                   registration.IRegistry):
-    """Service Managers act as containers for Services.
-
-    If a Service Manager is asked for a service, it checks for those it
-    contains before using a context-based lookup to find another service
-    manager to delegate to.  If no other service manager is found they defer
-    to the ComponentArchitecture ServiceManager which contains file based
-    services.
-    """
-
-    def queryRegistrations(name, default=None):
-        """Return an IRegistrationRegistry for the registration name.
-
-        queryRegistrationsFor(cfg, default) is equivalent to
-        queryRegistrations(cfg.name, default)
-        """
-
-    def createRegistrationsFor(registration):
-        """Create and return an IRegistrationRegistry for the registration
-        name.
-
-        createRegistrationsFor(cfg, default) is equivalent to
-        createRegistrations(cfg.name, default)
-        """
-
-    def listRegistrationNames():
-        """Return a list of all registered registration names.
-        """
-
-    def queryActiveComponent(name, default=None):
-        """Finds the registration registry for a given name, checks if it has
-        an active registration, and if so, returns its component.  Otherwise
-        returns default.
-        """
-
-    def queryLocalService(service_type, default=None):
-        """Return a local service, if there is one
-
-        A local service is one configured in the local service manager.
-        """
-
-    def addSubsite(subsite):
-        """Add a subsite of the site
-
-        Local sites are connected in a tree. Each site knows about
-        its containing sites and its subsites.
-        """
-
-    next = Attribute('The site that this site is a subsite of.')
-
+deprecated('IBindingAware',
+           'Now that services are gone, we do not need the binding support. '
+           'The reference will be gone in X3.3.')
 
 class IServiceRegistration(registration.IComponentRegistration):
     """Service Registration
@@ -157,27 +107,17 @@ class IServiceRegistration(registration.IComponentRegistration):
     """
 
     name = zope.schema.TextLine(
-        title=_("Name"),
-        description=_("The name that is registered"),
+        title=u"Name",
+        description=u"The name that is registered",
         readonly=True,
         # Don't allow empty or missing name:
         required=True,
         min_length=1,
         )
 
-
-class ISiteManagementFolder(
-    registration.IRegisterableContainer,
-    IContainer,
-    ):
-    """Component and component registration containers."""
-
-    __parent__ = zope.schema.Field(
-        constraint = ContainerTypesConstraint(
-            ISiteManager,
-            registration.IRegisterableContainer,
-            ),
-        )
+deprecated('IServiceRegistration',
+           'The concept of services has been removed. Use utilities instead. '
+           'The reference will be gone in X3.3.')
 
 class ISiteManagementFolders(IContainer, IComponentManager):
     """A collection of ISiteManagementFolder objects.
@@ -186,3 +126,7 @@ class ISiteManagementFolders(IContainer, IComponentManager):
     well as package query and lookup.
     
     """
+
+deprecated('ISiteManagementFolders',
+           'This interface has been removed. It was unused. '
+           'The reference will be gone in X3.3.')

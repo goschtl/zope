@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.site.interfaces import IPossibleSite
+from zope.app.component.interfaces import IPossibleSite
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 class IFolder(IContainer, IContentContainer, IPossibleSite,

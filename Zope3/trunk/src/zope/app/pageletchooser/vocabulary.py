@@ -13,7 +13,7 @@
 ##############################################################################
 """PageletChooser vocabulary
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -47,7 +47,6 @@ class PageletNamesVocabulary(SimpleVocabulary):
 
     Imports:
     
-        >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.interfaces.browser import IBrowserRequest
@@ -60,13 +59,12 @@ class PageletNamesVocabulary(SimpleVocabulary):
 
     Setup:
 
-        >>> from zope.app.tests import setup, ztapi
+        >>> from zope.app.testing import setup, ztapi
         >>> setup.placefulSetUp()
 
     Register interfaces used for pagelet and vocabulary:
 
         >>> from zope.app.component.interface import provideInterface
-        >>> utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
         >>> provideInterface('', IBrowserRequest, None)
         >>> provideInterface('', IView, None)
         >>> provideInterface('', IChooseablePagelets, None)
@@ -76,28 +74,28 @@ class PageletNamesVocabulary(SimpleVocabulary):
         >>> name = 'testpagelet'
         >>> pagelet_factory = TestPagelet
         >>> defineChecker(pagelet_factory, testChecker)
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IBrowserRequest, IView, IPageletSlot)
         ...        , IPagelet, name, pagelet_factory)
 
     Register vocabulary:
         
         >>> from zope.app.pagelet.tests import TestContext
-        >>> name="chooseablepageletnames"
-        >>> factory=".vocabulary.PageletNamesVocabulary"
-        >>> layer="zope.publisher.interfaces.browser.IBrowserRequest"
-        >>> view="zope.component.interfaces.IView"
-        >>> slot="zope.app.pageletchooser.interfaces.IChooseablePagelets"
+        >>> name='chooseablepageletnames'
+        >>> factory='.vocabulary.PageletNamesVocabulary'
+        >>> layer='zope.publisher.interfaces.browser.IBrowserRequest'
+        >>> view='zope.component.bbb.interfaces.IView'
+        >>> slot='zope.app.pageletchooser.interfaces.IChooseablePagelets'
         >>> obj = TestContext()
         >>> vocab = PageletNamesVocabulary(obj, layer, view, slot)
 
     Test vocabulary:
 
-        >>> "testpagelet" in vocab
+        >>> 'testpagelet' in vocab
         True
 
-        >>> "nothing" in vocab
+        >>> 'nothing' in vocab
         False
 
         >>> setup.placefulTearDown()

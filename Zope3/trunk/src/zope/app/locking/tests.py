@@ -63,7 +63,7 @@ def setUp(test):
     dict['__name__'] = name    
     sys.modules[name] = FakeModule(dict)
 
-    from zope.app.tests import ztapi
+    from zope.app.testing import ztapi
     from zope.interface import Interface
     from zope.app.locking.interfaces import ILockable, ILockTracker
     from zope.app.locking.adapter import LockingAdapterFactory
@@ -95,4 +95,3 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-

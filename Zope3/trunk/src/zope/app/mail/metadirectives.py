@@ -23,12 +23,12 @@ from zope.schema import TextLine, ASCII, BytesLine, Int
 from zope.app.security.fields import Permission
 
 class IDeliveryDirective(Interface):
-    """This abstract directive describes a generic mail service
+    """This abstract directive describes a generic mail delivery utility
     registration."""
     
     name = TextLine(
         title=u"Name",
-        description=u'Specifies the Delivery name of the mail service. '\
+        description=u'Specifies the Delivery name of the mail utility. '\
                     u'The default is "Mail".',
         default=u"Mail",
         required=False)
@@ -45,7 +45,7 @@ class IDeliveryDirective(Interface):
 
 
 class IQueuedDeliveryDirective(IDeliveryDirective):
-    """This directive creates and registers a global queued mail service. It
+    """This directive creates and registers a global queued mail utility. It
     should be only called once during startup."""
 
     queuePath = Path(
@@ -55,12 +55,12 @@ class IQueuedDeliveryDirective(IDeliveryDirective):
 
 
 class IDirectDeliveryDirective(IDeliveryDirective):
-    """This directive creates and registers a global direct mail service. It
+    """This directive creates and registers a global direct mail utility. It
     should be only called once during startup."""
 
 
 class IMailerDirective(Interface):
-    """A generic directive registering a mailer for the mail service."""
+    """A generic directive registering a mailer for the mail utility."""
 
     name = TextLine(
         title=u"Name",

@@ -20,7 +20,6 @@ from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
-from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -218,8 +217,7 @@ class PythonPage(Contained, Persistent):
         kw['script'] = self
         kw['context'] = zapi.getParent(self)
 
-        service = zapi.getService(Utilities)
-        interpreter = service.queryUtility(IInterpreter, 'text/server-python')
+        interpreter = zapi.queryUtility(IInterpreter, 'text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)
 
 def _print_usrc(match):

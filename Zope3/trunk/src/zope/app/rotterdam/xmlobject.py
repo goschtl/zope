@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Service manager interfaces
+"""Support classes for XML-based tree
 
 $Id$
 """
@@ -50,7 +50,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def getIconUrl(self, item):
         result = ''
-        icon = zapi.queryView(item, 'zmi_icon', self.request)
+        icon = zapi.queryMultiAdapter((item, self.request), name='zmi_icon')
         if icon:
             result = icon.url()
         return result
@@ -70,7 +70,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
         keys = list(container.keys())
 
-        # include the service manager
+        # include the site manager
         keys.append('++etc++site')
 
         for name in keys:
@@ -123,7 +123,7 @@ class ReadContainerXmlObjectView(BrowserView):
             else:
                 keys = []
 
-            # include the service manager
+            # include the site manager
             keys.append('++etc++site')
 
             for name in keys:
@@ -170,9 +170,8 @@ class XmlObjectView(BrowserView):
         parent = getParent(self.context)
         while parent is not None:
                 if IReadContainer.providedBy(parent):
-                    view = zapi.queryView(parent,
-                                          'singleBranchTree.xml',
-                                          self.request)
+                    view = zapi.queryMultiAdapter(
+                        (parent, self.request), name='singleBranchTree.xml')
                     return view()
                 else:
                     parent = getParent(parent)

@@ -17,15 +17,14 @@ $Id$
 """
 import unittest
 
-from zope.app.tests import ztapi
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing import ztapi, functional
 from zope.app.generations.generations import SchemaManager, generations_key
 from zope.app.generations.interfaces import ISchemaManager
 
-class TestDatabaseSchema(BrowserTestCase):
+class TestDatabaseSchema(functional.BrowserTestCase):
 
     def test(self):
-        BrowserTestCase.setUp(self)
+        functional.BrowserTestCase.setUp(self)
         
         root = self.getRootFolder()._p_jar.root()
         appkey = 'zope.app.generations.demo'

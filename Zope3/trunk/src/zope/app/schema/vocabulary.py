@@ -42,12 +42,12 @@ class ZopeVocabularyRegistry(object):
         return factory(context)
 
 def _clear():
-    """Re-initialize the vocabulary service."""
+    """Re-initialize the vocabulary registry."""
     # This should normally only be needed by the testing framework,
     # but is also used for module initialization.
-    global vocabularyService
+    global vocabularyRegistry
     vocabulary._clear()
-    vocabularyService = vocabulary.getVocabularyRegistry()
+    vocabularyRegistry = vocabulary.getVocabularyRegistry()
     vocabulary._clear()
     vocabulary.setVocabularyRegistry(ZopeVocabularyRegistry())
 

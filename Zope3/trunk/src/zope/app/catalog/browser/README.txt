@@ -17,11 +17,11 @@ Catalogs use a unique-id tool to assign short (integer) ids to
 objects.  Before creating a catalog, you must create a intid tool:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
+  ... POST /++etc++site/default/@@+/action.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 78
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
+  ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
   ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
   HTTP/1.1 303 ...
@@ -30,38 +30,48 @@ And register it:
 
   >>> print http(r"""
   ... POST /++etc++site/default/IntIds/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 864
-  ... Content-Type: multipart/form-data; boundary=---------------------------68417209514430962931254091825
-  ... Referer: http://localhost:8081/++etc++site/default/IntIds/addRegistration.html
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/++etc++site/default/IntIds/
+  ... Content-Type: multipart/form-data; boundary=----------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... 
-  ... -----------------------------68417209514430962931254091825
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="field.name"
   ... 
   ... 
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.interface"
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.intid.interfaces.IIntIds
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
-  ... -----------------------------68417209514430962931254091825
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="field.permission"
   ... 
-  ... zope.Public
-  ... -----------------------------68417209514430962931254091825
+  ... 
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="field.permission-empty-marker"
   ... 
   ... 1
-  ... -----------------------------68417209514430962931254091825
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------68417209514430962931254091825--
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ--
   ... """)
-  HTTP/1.1 303 ...
+  HTTP/1.1 303 See Other
+  ...
+  Location: @@SelectedManagementView.html
+  ...
 
 
 Moving short-id management outside of catalogs make it possible to
@@ -83,50 +93,56 @@ TODO: Filters?
 Once we have a unique-id tool, you can add a catalog:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
+  ... POST /++etc++site/default/@@+/action.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 77
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
+  ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
   ... type_name=BrowserAdd__zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
   HTTP/1.1 303 ...
 
 and register it:
 
-
   >>> print http(r"""
   ... POST /++etc++site/default/Catalog/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 855
-  ... Content-Type: multipart/form-data; boundary=---------------------------17974048709381505781405189947
-  ... Referer: http://localhost:8081/++etc++site/default/Catalog/addRegistration.html
+  ... Referer: http://localhost:8081/++etc++site/default/Catalog/
+  ... Content-Type: multipart/form-data; boundary=----------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... 
-  ... -----------------------------17974048709381505781405189947
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="field.name"
   ... 
   ... 
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.interface"
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.catalog.interfaces.ICatalog
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
-  ... -----------------------------17974048709381505781405189947
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="field.permission"
   ... 
   ... zope.Public
-  ... -----------------------------17974048709381505781405189947
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="field.permission-empty-marker"
   ... 
   ... 1
-  ... -----------------------------17974048709381505781405189947
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------17974048709381505781405189947--
+  ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa--
   ... """)
   HTTP/1.1 303 ...
 

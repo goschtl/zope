@@ -15,15 +15,13 @@
 
 $Id$
 """
-
 import unittest
 import re
 from transaction import commit
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.setup import addUtility
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing import ztapi, setup
+from zope.app.testing.functional import BrowserTestCase
 
 
 class TestIntIds(BrowserTestCase):
@@ -38,7 +36,7 @@ class TestIntIds(BrowserTestCase):
         root = self.getRootFolder()
 
         sm = zapi.traverse(root, '/++etc++site')
-        addUtility(sm, 'intid', IIntIds, IntIds())
+        setup.addUtility(sm, 'intid', IIntIds, IntIds())
         commit()
 
         type_name = 'BrowserAdd__zope.app.intid.IntIds'

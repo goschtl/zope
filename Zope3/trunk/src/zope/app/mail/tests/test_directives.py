@@ -26,12 +26,11 @@ from zope.configuration import xmlconfig
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.component.metaconfigure import managerHandler, provideInterface
 from zope.app.mail.interfaces import \
      IMailDelivery, IMailer, ISMTPMailer, ISendmailMailer
 from zope.app.mail.delivery import QueueProcessorThread
 from zope.app.mail import delivery
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 import zope.app.mail.tests
 
 

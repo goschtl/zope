@@ -20,21 +20,20 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import Interface, implements, directlyProvides
+from zope.interface import Interface,  directlyProvides
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.publisher.http import status_reasons
 
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.traversing.api import traverse
 from zope.app.container.interfaces import IReadContainer
 from zope.publisher.browser import TestRequest
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
@@ -50,8 +49,6 @@ from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
 from unitfixtures import File, Folder, FooZPT
-
-import zope.app.location
 
 
 def _createRequest(body=None, headers=None, skip_headers=None):
@@ -111,12 +108,12 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                              ZDCAnnotatableAdapter)
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
-        utils = zapi.getGlobalService('Utilities')
+        sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)
-        utils.provideUtility(IDAVNamespace, IZopeDublinCore,
-                             'http://www.purl.org/dc/1.1')
+        sm.provideUtility(IDAVNamespace, IZopeDublinCore,
+                          'http://www.purl.org/dc/1.1')
 
     def test_contenttype1(self):
         file = self.file
@@ -226,7 +223,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ''' % req
         request = _createRequest(body=body, headers={
             'Content-type': 'text/xml', 'Depth': depth})
-        resource_url = str(zapi.getView(obj, 'absolute_url', request))
+        resource_url = zapi.absoluteURL(obj, request)
         if IReadContainer.providedBy(obj):
             resource_url += '/'
         if resp is None:

@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 def test_suite():
-    from zope.app.tests import functional
+    from zope.app.testing import functional
     return unittest.TestSuite((
         functional.FunctionalDocFileSuite('principalfolder.txt'),
         functional.FunctionalDocFileSuite('groupfolder.txt'),
@@ -29,4 +29,3 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-

@@ -23,7 +23,6 @@ from pickle import dumps
 from persistent import Persistent
 
 from zope.interface import implements
-from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.cache.interfaces.ram import IRAMCache
 

@@ -11,7 +11,12 @@
 ##############################################################################
 """Local utility service implementation.
 
-$Id$
+$Id: __init__.py 25177 2004-06-02 13:17:31Z jim $
 """
+import zope.deprecation
 
-from utility import UtilityRegistration, LocalUtilityService
+zope.deprecation.__show__.off()
+from utility import LocalUtilityService
+zope.deprecation.__show__.on()
+
+from zope.app.component.site import UtilityRegistration

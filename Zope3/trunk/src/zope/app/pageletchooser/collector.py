@@ -13,7 +13,7 @@
 ##############################################################################
 """PageletChooser collector
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -39,7 +39,6 @@ class MacroChooser(MacroCollector):
 
     Imports:
     
-        >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.publisher.browser import TestRequest
         >>> from zope.publisher.interfaces.browser import IBrowserRequest
@@ -58,12 +57,12 @@ class MacroChooser(MacroCollector):
         >>> name = 'testpagelet'
         >>> factory = TestPagelet
 
-    Register the pagelet class as a factory on the adapter service:
+    Register the pagelet class as a factory on the site manager:
 
-        >>> from zope.app.tests import placelesssetup, ztapi
+        >>> from zope.app.testing import placelesssetup, ztapi
         >>> placelesssetup.setUp()
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IBrowserRequest, IView, IPageletSlot)
         ...        , IPagelet, name, factory)
 

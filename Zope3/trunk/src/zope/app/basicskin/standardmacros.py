@@ -18,14 +18,13 @@ The macros are drawn from various different page templates.
 $Id$
 """
 __docformat__ = 'restructuredtext'
+import zope.interface
 
-from zope.interface import implements
-from zope.interface.common.mapping import IItemMapping
-from zope.component import getView
+from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 
 class Macros(object):
-    implements(IItemMapping)
+    zope.interface.implements(zope.interface.common.mapping.IItemMapping)
 
     macro_pages = ()    
     aliases = {
@@ -39,7 +38,7 @@ class Macros(object):
         context = self.context
         request = self.request
         for name in self.macro_pages:
-            page = getView(context, name, request)
+            page = zapi.getMultiAdapter((context, request), name=name)
             try:
                 v = page[key]
             except KeyError:

@@ -4,6 +4,7 @@
 <include package="zope.modulealias" file="meta.zcml" />
 
 <include package="zope.app.component" file="meta.zcml" />
+<include package="zope.app.component.browser" file="meta.zcml" />
 <include package="zope.app.publisher" file="meta.zcml" />
 <include package="zope.app.security" file="meta.zcml" />
 <include package="zope.app.form.browser" file="meta.zcml" />
@@ -11,8 +12,9 @@
 <include package="zope.app.pagetemplate" file="meta.zcml" />
 <include package="zope.app.schema" file="meta.zcml" />
 <include package="zope.app.container.browser" file="meta.zcml" />
-<include package="zope.app.utility" file="meta.zcml" />
+
+<!-- BBB: Goes away in 3.3 -->
 <include package="zope.app.site" file="meta.zcml" />
-<include package="zope.app.site.browser" file="meta.zcml" />
+
 
 </configure>

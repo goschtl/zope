@@ -40,7 +40,7 @@ class Managers(object):
            This method needs to use the component architecture, so
            we'll set it up:
 
-             >>> from zope.app.tests.placelesssetup import setUp, tearDown
+             >>> from zope.app.testing.placelesssetup import setUp, tearDown
              >>> setUp()
 
            We also need a test request:
@@ -62,7 +62,7 @@ class Managers(object):
            using the demo package:
 
              >>> from zope.app.generations.generations import SchemaManager
-             >>> from zope.app.tests import ztapi
+             >>> from zope.app.testing import ztapi
              >>> app1 = SchemaManager(0, 1, 'zope.app.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app1, 'foo.app1')
              >>> app2 = SchemaManager(0, 0, 'zope.app.generations.demo')
@@ -188,7 +188,7 @@ class Managers(object):
            This method needs to use the component architecture, so
            we'll set it up:
 
-             >>> from zope.app.tests.placelesssetup import setUp, tearDown
+             >>> from zope.app.testing.placelesssetup import setUp, tearDown
              >>> setUp()
 
            We also need a test request:
@@ -210,7 +210,7 @@ class Managers(object):
            using the demo package:
 
              >>> from zope.app.generations.generations import SchemaManager
-             >>> from zope.app.tests import ztapi
+             >>> from zope.app.testing import ztapi
              >>> app1 = SchemaManager(0, 1, 'zope.app.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app1, 'foo.app1')
              >>> app2 = SchemaManager(0, 0, 'zope.app.generations.demo')

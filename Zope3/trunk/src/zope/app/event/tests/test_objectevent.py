@@ -16,9 +16,7 @@
 $Id$
 """
 import unittest
-import doctest
 
-from zope.interface import implements
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.event.objectevent import ObjectContentModifiedEvent
@@ -27,8 +25,8 @@ from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.container.interfaces import IContained, IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectEvent
 from zope.app.container.sample import SampleContainer
-from zope.app.tests.placelesssetup import setUp, tearDown
-from zope.app.tests import ztapi
+from zope.app.testing.placelesssetup import setUp, tearDown
+from zope.app.testing import ztapi
 
 class TestObjectModifiedEvent(unittest.TestCase):
 

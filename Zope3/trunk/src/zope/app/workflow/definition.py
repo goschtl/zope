@@ -25,7 +25,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 from zope.app import zapi
 from zope.app.container.contained import Contained, setitem, uncontained
-from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 
@@ -110,11 +109,11 @@ class ProcessDefinitionVocabulary(object):
     implements(IVocabularyTokenized)
 
     def __init__(self, context):
-        self.utilities = zapi.getService(Utilities, context)
+        self.sm = zapi.getSiteManager(context)
 
     def __names(self):
-        return [name for name, util in self.utilities.getUtilitiesFor(
-                                            IProcessDefinition)]
+        return [name
+                for name, util in self.sm.getUtilitiesFor(IProcessDefinition)]
 
     def __contains__(self, value):
         """See zope.schema.interfaces.IVocabulary"""

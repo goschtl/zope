@@ -41,10 +41,11 @@ class IRendererDirective(Interface):
                     u"view on the source.",
         required=True)
 
+# XXX: Does not seem to be tested
 def renderer(_context, sourceType, for_, factory):
     _context.action(
         discriminator = ('view', sourceType, u'', for_, 'default'),
         callable = handler,
-        args = (zapi.servicenames.Adapter, 'register',
+        args = ('provideAdapter',
                 (sourceType,), for_, u'', factory, 'default')
         )

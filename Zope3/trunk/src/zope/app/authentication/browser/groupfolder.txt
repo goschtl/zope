@@ -15,23 +15,20 @@ Let's walk through an example.
 
 First, we'll create a principal folder:
 
-  (The first request is a bit weird.  It is part of the current
-   tools UI.  It arranges for a tools site-management folder to be
-   created.  We really need to rethink how we manage TTW utilities.)
-
   >>> print http(r"""
-  ... GET /++etc++site/AddISearchableAuthenticationPluginTool HTTP/1.1
+  ... POST /++etc++site/SiteManagement/index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageISearchableAuthenticationPluginTool.html
-  ... """)
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... activeTool=ISearchableAuthenticationPlugin""")
   HTTP/1.1 200 Ok
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html%3D HTTP/1.1
+  ... POST /++etc++site/SiteManagement/AddPrincipalFolder.html=users HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: multipart/form-data; boundary=---------------------------190685539214643056941988788830
-  ... Referer: http://localhost:8081/++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html=
+  ... Referer: http://localhost:8081/++etc++site/SiteManagement/AddPrincipalFolder.html=
   ... 
   ... -----------------------------190685539214643056941988788830
   ... Content-Disposition: form-data; name="field.prefix"
@@ -48,8 +45,6 @@ First, we'll create a principal folder:
   ... -----------------------------190685539214643056941988788830--
   ... """)
   HTTP/1.1 303 See Other
-  ...
-  Location: ../@@manageISearchableAuthenticationPluginTool.html
   ...
 
 Next we'l add some users:
@@ -309,7 +304,16 @@ Next we'l add some users:
 Next, we'll add out groups folder:
 
   >>> print http(r"""
-  ... POST /++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html%3D HTTP/1.1
+  ... POST /++etc++site/SiteManagement/index.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... activeTool=IPrincipalSearchPlugin""")
+  HTTP/1.1 200 Ok
+  ...
+
+  >>> print http(r"""
+  ... POST /++etc++site/SiteManagement/AddGroupFolder.html= HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: multipart/form-data; boundary=---------------------------18984415031531709165482618952
   ... 
@@ -328,8 +332,6 @@ Next, we'll add out groups folder:
   ... -----------------------------18984415031531709165482618952--
   ... """)
   HTTP/1.1 303 See Other
-  ...
-  Location: ../@@manageIPrincipalSearchPluginTool.html
   ...
 
 Now, before we can define any groups, we have to add and register a
@@ -356,17 +358,21 @@ pluggable authentication utility:
   ... 
   ... 
   ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface"
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.security.interfaces.IAuthentication
   ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.permission"
   ... 
   ... 
+  ... -----------------------------1649392783947785437368129046
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.permission-empty-marker"
   ... 

@@ -21,7 +21,7 @@ import sys, os
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(here, 'src'))
 
-import zope.app.tests.test
+import zope.app.testing.test
 
 if __name__ == '__main__':
-    zope.app.tests.test.process_args()
+    zope.app.testing.test.process_args()

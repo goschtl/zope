@@ -18,12 +18,10 @@ $Id$
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
-from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.security.interfaces import IAuthentication, IPrincipal
-from zope.app.container.contained import contained
 from zope.app.exception.browser.unauthorized import Unauthorized
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 class Unauthorized(Unauthorized):
     """Unusually done by ZCML."""
@@ -77,7 +75,7 @@ class Test(PlacelessSetup, TestCase):
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
 
-        # Make sure the auth service was called
+        # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
 
@@ -96,7 +94,7 @@ class Test(PlacelessSetup, TestCase):
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
 
-        # Make sure the auth service was called
+        # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
 

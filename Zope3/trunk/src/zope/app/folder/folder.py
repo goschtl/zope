@@ -21,14 +21,13 @@ from BTrees.OOBTree import OOBTree
 from interfaces import IFolder, IRootFolder
 from persistent import Persistent
 from zope.app.container.contained import Contained, setitem, uncontained
-from zope.app.site.interfaces import ISite
-from zope.app.site.servicecontainer import ServiceManagerContainer
+from zope.app.component.interfaces import ISite
+from zope.app.component.site import SiteManagerContainer
 from zope.exceptions import DuplicationError
 from zope.interface import implements, directlyProvides
 
-class Folder(Persistent, ServiceManagerContainer, Contained):
-    """The standard Zope Folder implementation.
-    """
+class Folder(Persistent, SiteManagerContainer, Contained):
+    """The standard Zope Folder implementation."""
 
     implements(IFolder)
 
@@ -112,8 +111,8 @@ def rootFolder():
 class FolderSublocations(object):
     """Get the sublocations of a folder
 
-    The subobjects of a folder include it's contents and it's service
-    manager if it is a site.
+    The subobjects of a folder include it's contents and it's site manager if
+    it is a site.
 
       >>> folder = Folder()
       >>> folder['ob1'] = Contained()
@@ -127,8 +126,8 @@ class FolderSublocations(object):
       []
 
       >>> sm = Contained()
-      >>> from zope.component.interfaces import IServiceService
-      >>> directlyProvides(sm, IServiceService)
+      >>> from zope.component.interfaces import ISiteManager
+      >>> directlyProvides(sm, ISiteManager)
       >>> folder.setSiteManager(sm)
       >>> directlyProvides(folder, ISite)
       >>> subs = list(FolderSublocations(folder).sublocations())

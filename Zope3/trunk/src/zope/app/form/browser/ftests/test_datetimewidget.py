@@ -30,7 +30,7 @@ from zope.schema import Datetime, Choice
 from support import *
 from zope.app.traversing.api import traverse
 
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 
 class IDatetimeTest(Interface):

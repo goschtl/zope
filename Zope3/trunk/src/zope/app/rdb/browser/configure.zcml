@@ -11,7 +11,7 @@
 
 <!-- ZopeDatabaseAdapter default views -->
 
-  <!-- XXX need an index.html that gives the source and is the def view -->
+  <!-- TODO: need an index.html that gives the source and is the def view -->
 
   <view
       name="+"
@@ -45,18 +45,6 @@
   <defaultView 
       for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
       name="editForm.html" />
-
-  <addform
-      label="Add Database Connection Registration"
-      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
-      name="addRegistration.html"
-      schema="zope.app.utility.interfaces.IUtilityRegistration"
-      class="zope.app.utility.browser.AddRegistration"
-      permission="zope.ManageServices"
-      content_factory="zope.app.utility.UtilityRegistration"
-      arguments="name interface componentPath"
-      set_after_add="status"
-      fields="name interface componentPath permission status" />
 
   <zope:include file="gadflyda.zcml" />
 

@@ -162,9 +162,9 @@ class AdapterNamespaces(object):
 
     To demonstrate this, we need to register an adapter:
 
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> def adapter1(ob):
       ...     return 1
       >>> ztapi.provideAdapter(None, IPathAdapter, adapter1, 'a1')
@@ -249,7 +249,7 @@ class ZopeEngine(ExpressionEngine):
     security proxies as well::
 
       >>> from zope.app.container.sample import SampleContainer
-      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> from zope.security.checker import NamesChecker, defineChecker
 
       >>> class Container(SampleContainer):

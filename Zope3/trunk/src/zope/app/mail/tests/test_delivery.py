@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""MailService Implementation
+"""Mail Delivery Tests
 
 Simple implementation of the MailDelivery, Mailers and MailEvents.
 

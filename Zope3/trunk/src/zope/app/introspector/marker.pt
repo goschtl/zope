@@ -17,7 +17,6 @@
 <div metal:fill-slot="body">
   <tal:block
       tal:define ="global introspector view/getIntrospector;
-                   global services view/getServicesFor;
                    global status view/update">
 
   <form action="" tal:attributes="action request/URL" method="post">

@@ -217,7 +217,7 @@ def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_,
                     menu=u'', use_session=False):
     # XXX What about the __implements__ of the bases?
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases, name=name)
     class_.schema = schema
     class_.panes = panes
     class_.fieldNames = fields
@@ -233,7 +233,8 @@ def EditWizardViewFactory(name, schema, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapter)
-    s.register((for_, layer), Interface, name, class_)
+    # XXX: untested
+    sm = zapi.getGlobalSiteManager()
+    sm.provideAdapter((for_, layer), Interface, name, class_)
 
 

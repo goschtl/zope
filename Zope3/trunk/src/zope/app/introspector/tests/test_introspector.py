@@ -21,7 +21,7 @@ from zope.app.introspector.interfaces import IIntrospector
 from zope.interface import Interface, Attribute, implements, directlyProvides
 from zope.interface.verify import verifyObject
 from zope.app.component.interface import provideInterface
-from zope.app.tests import placelesssetup
+from zope.app.testing import placelesssetup
 
 class ITestClass(Interface):
     def drool():
@@ -86,6 +86,12 @@ class TestIntrospector(TestCase):
         self.assertEqual(ints.isInterface(), 0)
 
         verifyObject(IIntrospector, ints)
+
+    def test_setRequest(self):
+        ints = Introspector(Interface)
+        request = {'PATH_INFO': '++module++zope.app.introspector.Introspector'}
+        ints.setRequest(request)
+        self.assertEqual(ints.currentclass, Introspector)
 
     def test_getClass(self):
         ints = Introspector(TestClass())

@@ -15,11 +15,10 @@
 
 $Id$
 """
-
 import unittest
 
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
 class TestAnnotations(dict):

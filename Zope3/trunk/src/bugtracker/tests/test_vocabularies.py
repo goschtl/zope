@@ -17,14 +17,13 @@ $Id: test_vocabularies.py,v 1.3 2003/07/28 17:13:48 srichter Exp $
 """
 import unittest
 
-from zope.component.service import defineService, serviceManager
 from zope.interface import classImplements, implements
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.container.contained import contained, Contained
@@ -195,9 +194,7 @@ class UserVocabularyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        defineService(zapi.servicenames.Authentication, IAuthentication)
-        serviceManager.provideService(zapi.servicenames.Authentication,
-                                      principalRegistry)
+        ztapi.provideUtility(IAuthentication, principalRegistry)
         principalRegistry.definePrincipal(
             '0', 'title0', 'desc0', 'zero', 'pass0')
         principalRegistry.definePrincipal(

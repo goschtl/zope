@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-from zope.component import getView
+from zope.app import zapi
 from zope.app.pagetemplate.engine import TrustedAppPT
 
 class ViewPageTemplateFile(TrustedAppPT, PageTemplateFile):
@@ -61,7 +61,7 @@ class ViewMapper(object):
         self.request = request
 
     def __getitem__(self, name):
-        return getView(self.ob, name, self.request)
+        return zapi.getMultiAdapter((self.ob, self.request), name=name)
 
 
 class BoundPageTemplate(object):

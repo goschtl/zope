@@ -17,12 +17,14 @@ $Id$
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
+from zope.app.publisher.browser import IDefaultViewNameAPI 
 from zope.app.traversing.interfaces import ITraversalAPI
 from zope.app.traversing.browser.interfaces import IAbsoluteURLAPI
 
 class IZAPI(
     IComponentArchitecture,
     ITraversalAPI, IAbsoluteURLAPI,
+    IDefaultViewNameAPI
     ):
     """Convenience API for use with Zope applications.
     """
@@ -68,8 +70,6 @@ class IZAPI(
         which would return IImage.
         """
         
-    servicenames = Attribute("Service Names")
-
     def isinstance(object, cls):
         """Test whether an object is an instance of the given type
 
@@ -82,6 +82,9 @@ class IZAPI(
         """
 
     def principals():
-        """Return the authentication service (someday utility)
+        """Return the authentication utility
         """
         
+    # BBB: Deprecated. Gone in X3.3.
+    servicenames = Attribute("Service Names")
+

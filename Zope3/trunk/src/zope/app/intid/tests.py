@@ -19,15 +19,12 @@ import unittest
 from zope.interface.verify import verifyObject
 from persistent import Persistent
 from persistent.interfaces import IPersistent
-from zope.app.tests import setup, ztapi
+from zope.app.testing import setup, ztapi
 from zope.app import zapi
 from zope.interface import implements
 from ZODB.interfaces import IConnection
 from zope.app.location.interfaces import ILocation
 from zope.app.component.hooks import setSite
-from zope.app.utility import LocalUtilityService
-from zope.app.servicenames import Utilities
-
 
 class P(Persistent):
     implements(ILocation)
@@ -153,20 +150,16 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         ReferenceSetupMixin.setUp(self)
 
-        sm = zapi.getServices(self.root)
-        setup.addService(sm, Utilities, LocalUtilityService())
-        self.utility = setup.addUtility(sm, '1',
-                                        IIntIds, IntIds())
+        sm = zapi.getSiteManager(self.root)
+        self.utility = setup.addUtility(sm, '1', IIntIds, IntIds())
 
         self.root['folder1'] = Folder()
         self.root._p_jar = ConnectionStub()
         self.root['folder1']['folder1_1'] = self.folder1_1 = Folder()
         self.root['folder1']['folder1_1']['folder1_1_1'] = Folder()
 
-        sm1_1 = setup.createServiceManager(self.folder1_1)
-        setup.addService(sm1_1, Utilities, LocalUtilityService())
-        self.utility1 = setup.addUtility(sm1_1, '2', IIntIds,
-                                         IntIds())
+        sm1_1 = setup.createSiteManager(self.folder1_1)
+        self.utility1 = setup.addUtility(sm1_1, '2', IIntIds, IntIds())
 
     def test_removeIntIdSubscriber(self):
         from zope.app.intid import removeIntIdSubscriber

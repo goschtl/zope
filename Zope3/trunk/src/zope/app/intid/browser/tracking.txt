@@ -4,29 +4,60 @@ Tracking Object Additions, Deletions, and Moves
 Unique ID utilities track object add moves.  Let's look at an
 example. First, we'll create a unique Id utility:
 
-  (The first request is a bit weird.  It is part of the current
-   tools UI.  It arranges for a tools site-management folder to be
-   created.  We really need to rethink how we manage TTW utilities.)
-
   >>> print http(r"""
-  ... GET /++etc++site/AddIIntIdsTool HTTP/1.1
+  ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageIIntIdsTool.html
-  ... """)
-  HTTP/1.1 200 Ok
+  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ...
-
-  >>> print http(r"""
-  ... POST /++etc++site/AddIIntIdsTool/action.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 69
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/AddIIntIdsTool
-  ... 
-  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.intid.IntIds&new_value=""")
   HTTP/1.1 303 See Other
   ...
-  Location: ../@@manageIIntIdsTool.html
+  Location: http://localhost/++etc++site/default/IntIds/@@registration.html
+  ...
+
+  >>> print http(r"""
+  ... POST /++etc++site/default/IntIds/addRegistration.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/++etc++site/default/IntIds/
+  ... Content-Type: multipart/form-data; boundary=----------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... 
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.name"
+  ... 
+  ... IntIds
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.provided"
+  ... 
+  ... zope.app.intid.interfaces.IIntIds
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
+  ... 
+  ... 1
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.permission"
+  ... 
+  ... 
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... 
+  ... 1
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+  Location: @@SelectedManagementView.html
   ...
 
 Now, we'll add a few folders:
@@ -75,9 +106,9 @@ Now, if we look at the index page for the unique id utility, we'll see
 the objects we added:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
+  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
   HTTP/1.1 200 Ok
   ...4 objects...
@@ -102,9 +133,9 @@ If we move the top object:
 We'll see that reflected in the utility:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
+  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
   HTTP/1.1 200 Ok
   ...4 objects...
@@ -129,9 +160,9 @@ And if we delete the top object:
 all of the objects will go away:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/tools/@@contents.html
+  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
   HTTP/1.1 200 Ok
   ...0 objects...

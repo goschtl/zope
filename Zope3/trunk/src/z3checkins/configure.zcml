@@ -70,7 +70,7 @@
 
 <!-- Generic views for date/time formatting -->
 
-  <!-- XXX: there should be an interface that datetime.datetime implements -->
+  <!-- TODO: there should be an interface that datetime.datetime implements -->
 
   <view
     for="*"

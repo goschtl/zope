@@ -36,7 +36,7 @@ from zope.app.form.browser.itemswidgets import MultiSelectWidget
 from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.tests.support import VerifyResults
-from zope.app.tests.placelesssetup import PlacelessSetup 
+from zope.app.testing.placelesssetup import PlacelessSetup 
 
 vocab = SimpleVocabulary(
     [SimpleTerm(value, token, title) for value, token, title in (

@@ -22,7 +22,7 @@ from zope.exceptions import NotFoundError, DuplicationError
 from zope.component import adapts
 from zope.event import notify
 
-from zope.app import zapi
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.sample import SampleContainer
 from zope.app.event.objectevent import ObjectCopiedEvent
@@ -436,7 +436,7 @@ class ContainerItemRenamer(object):
     This adapter uses IObjectMover to move an item within the same container
     to a different name. We need to first setup an adapter for IObjectMover:
 
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> from zope.app.container.interfaces import IContained
       >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
 
@@ -504,7 +504,7 @@ class OrderedContainerItemRenamer(ContainerItemRenamer):
     To illustrate, we need to setup an IObjectMover, which is used in the
     renaming:
 
-      >>> from zope.app.tests import ztapi
+      >>> from zope.app.testing import ztapi
       >>> from zope.app.container.interfaces import IContained
       >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
 

@@ -19,7 +19,7 @@ import unittest
 from xml.sax.saxutils import escape
 from StringIO import StringIO
 
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.file.file import File
 from zope.app.file.image import Image
 from zope.app.file.tests.test_image import zptlogo

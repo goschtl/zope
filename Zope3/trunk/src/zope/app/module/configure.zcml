@@ -1,18 +1,28 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class=".Manager">
+  <localUtility class=".manager.ModuleManager">
     <require
         permission="zope.ManageCode"
         interface=".interfaces.IModuleManager"
         set_schema=".interfaces.IModuleManager"
         />
-  </content>
+  </localUtility>
+
+  <subscriber
+     for="..component.interfaces.registration.IRegistrationActivatedEvent"
+     handler=".manager.setNameOnActivation"
+     />
+
+  <subscriber
+     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
+     handler=".manager.unsetNameOnDeactivation"
+     />
 
   <adapter
-      for="zope.app.site.interfaces.ISiteManagementFolder"
+      for="zope.app.component.interfaces.ISiteManagementFolder"
       provides="zope.app.filerepresentation.interfaces.IFileFactory"
       name=".py"
-      factory=".ModuleFactory"
+      factory=".manager.ModuleFactory"
       permission="zope.ManageContent"
       />
 

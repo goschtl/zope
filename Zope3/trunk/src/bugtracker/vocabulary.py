@@ -191,7 +191,7 @@ class UserVocabulary(object):
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        self.auth = zapi.getService(zapi.servicenames.Authentication)
+        self.auth = zapi.principals()
     
     def __contains__(self, value):
         ids = map(lambda p: p.id, self.auth.getPrincipals(''))

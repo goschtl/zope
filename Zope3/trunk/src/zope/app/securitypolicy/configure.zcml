@@ -70,13 +70,13 @@
 
   <subscriber
      for=".interfaces.IRole
-          ..registration.interfaces.IRegistrationActivatedEvent"
+         ..component.interfaces.registration.IRegistrationActivatedEvent"
      handler=".role.setIdOnActivation"
      />
 
   <subscriber
      for=".interfaces.IRole
-          ..registration.interfaces.IRegistrationDeactivatedEvent"
+          ..component.interfaces.registration.IRegistrationDeactivatedEvent"
      handler=".role.unsetIdOnDeactivation"
      />
 

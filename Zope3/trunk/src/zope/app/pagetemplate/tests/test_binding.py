@@ -20,20 +20,14 @@ import unittest
 from zope.app.pagetemplate.tests.testpackage.content \
      import Content, PTComponent
 
-# Wow, this is a lot of work. :(
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.traversing.interfaces import ITraverser
-from zope.app.traversing.interfaces import ITraversable
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi, setup, placelesssetup
 
 
-class BindingTestCase(PlacelessSetup, unittest.TestCase):
+class BindingTestCase(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(BindingTestCase, self).setUp()
-        ztapi.provideAdapter(None, ITraverser, Traverser)
-        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+        setup.setUpTraversal()
 
     def test_binding(self):
         from zope.publisher.browser import TestRequest

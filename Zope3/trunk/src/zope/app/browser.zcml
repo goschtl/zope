@@ -10,10 +10,8 @@
   <include package="zope.app.security.browser" />
 
   <include package="zope.app.container.browser" />
-  <include package="zope.app.registration.browser" />
   <include package="zope.app.form.browser" />
-  <include package="zope.app.utility.browser" />
 
-  <include package="zope.app.site.browser" />
+  <include package="zope.app.component.browser" />
 
 </configure>

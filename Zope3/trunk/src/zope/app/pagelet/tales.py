@@ -52,7 +52,6 @@ class TALESPageletsExpression(StringExpr):
     
     Imports:
     
-        >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
@@ -67,13 +66,13 @@ class TALESPageletsExpression(StringExpr):
 
     Register pagelet:
 
-        >>> from zope.app.tests import setup, ztapi
+        >>> from zope.app.testing import setup, ztapi
         >>> setup.placefulSetUp()
         >>> name = 'testpagelet'
         >>> pagelet_factory = TestPagelet
         >>> defineChecker(pagelet_factory, testChecker)
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IPagelet, name, pagelet_factory)
 
@@ -86,7 +85,7 @@ class TALESPageletsExpression(StringExpr):
         
         >>> from zope.app.pagelet.collector import MacrosCollector
         >>> collector_factory = MacrosCollector
-        >>> adaptersrv.register(
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacrosCollector, '', collector_factory)
 
@@ -126,7 +125,7 @@ class TALESPageletsExpression(StringExpr):
 
     Register zope.app.interface as a utility and try again:
 
-        >>> utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
+        >>> gsm = zapi.getGlobalSiteManager()
         >>> provideInterface('', Interface, None)
         >>> try:
         ...     html = no_slot_iface_index(view, request)
@@ -192,13 +191,13 @@ class TALESPageletExpression(StringExpr):
 
     Register pagelet:
 
-        >>> from zope.app.tests import setup, ztapi
+        >>> from zope.app.testing import setup, ztapi
         >>> setup.placefulSetUp()
         >>> name = 'testpagelet'
         >>> pagelet_factory = TestPagelet
         >>> defineChecker(pagelet_factory, testChecker)
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IPagelet, name, pagelet_factory)
 
@@ -211,7 +210,7 @@ class TALESPageletExpression(StringExpr):
         
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
-        >>> adaptersrv.register(
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacroCollector, '', collector_factory)
 
@@ -251,7 +250,6 @@ class TALESPageletExpression(StringExpr):
 
     Register zope.app.interface as a utility and try again:
 
-        >>> utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
         >>> provideInterface('', Interface, None)
         >>> try:
         ...     html = no_slot_iface_index(view, request)
@@ -329,12 +327,12 @@ class TALESPageDataExpression(StringExpr):
 
     Register pagedata class:
 
-        >>> from zope.app.tests import setup, ztapi
+        >>> from zope.app.testing import setup, ztapi
         >>> setup.placefulSetUp()
         >>> factory = TestClass
         >>> defineChecker(factory, testChecker)
-        >>> adaptersrv = zope.component.getService('Adapters')
-        >>> adaptersrv.register(
+        >>> gsm = zapi.getGlobalSiteManager()
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView)
         ...        , IPageData, '', factory)
 
@@ -347,7 +345,7 @@ class TALESPageDataExpression(StringExpr):
         
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
-        >>> adaptersrv.register(
+        >>> gsm.provideAdapter(
         ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacroCollector, '', collector_factory)
 

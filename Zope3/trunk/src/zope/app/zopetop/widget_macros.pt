@@ -50,8 +50,8 @@
       </div>
     </div>
 
-    <div class="box" metal:define-macro="services_box">
-      <h5 i18n:translate="">Services</h5>
+    <div class="box" metal:define-macro="rools_box">
+      <h5 i18n:translate="">Tools</h5>
       <div class="body">
         <div class="content even">
           <img src="user_accounts.gif" width="22" height="28"

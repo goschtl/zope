@@ -126,7 +126,7 @@ class ViewWikiPage:
     def render(self):
         """Render the wiki page source."""
         source = zapi.createObject(None, self.context.type, self.context.source)
-        view = zapi.getView(removeAllProxies(source), '', self.request)
+        view = zapi.getMultiAdapter((removeAllProxies(source), self.request))
         html = view.render()
         html = self.renderWikiLinks(html)
         return html
@@ -136,7 +136,8 @@ class ViewWikiPage:
         for name, comment in self.context.items():
             dc = DublinCoreViews(comment, self.request)
             source = zapi.createObject(None, comment.type, comment.source)
-            view = zapi.getView(removeAllProxies(source), '', self.request)
+            view = zapi.getMultiAdapter(
+                (removeAllProxies(source), self.request))
             result.append({
                 'name': name,
                 'title': comment.title,

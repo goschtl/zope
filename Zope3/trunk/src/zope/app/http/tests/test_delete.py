@@ -19,7 +19,7 @@ from unittest import TestCase, TestSuite, makeSuite
 import zope.app.http.delete
 from zope.publisher.browser import TestRequest
 from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import contained
 

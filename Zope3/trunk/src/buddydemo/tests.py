@@ -58,7 +58,7 @@ def test_BuddyRename():
     Our rename view is going to generate an event. Because
     of that, we need to setup an event service:
 
-      >>> from zope.app.tests import placelesssetup
+      >>> from zope.app.testing import placelesssetup
       >>> placelesssetup.setUp()
       
     We should be able to create a BuddyRename on this

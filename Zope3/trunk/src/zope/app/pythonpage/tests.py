@@ -23,9 +23,8 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
 from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.traversing.adapters import RootPhysicallyLocatable
-from zope.component.servicenames import Utilities
 from zope.interface import implements
 from zope.testing.doctestunit import DocTestSuite
 
@@ -38,9 +37,8 @@ class Root(Contained):
 
 def setUp(test):
     placelesssetup.setUp()
-    service = zapi.getGlobalService(Utilities)
-    service.provideUtility(IInterpreter, PythonInterpreter,
-                             'text/server-python')
+    sm = zapi.getGlobalSiteManager()
+    sm.provideUtility(IInterpreter, PythonInterpreter, 'text/server-python')
 
     ztapi.provideAdapter(None, IPhysicallyLocatable,
                          LocationPhysicallyLocatable)

@@ -2,20 +2,20 @@
    xmlns="http://namespaces.zope.org/browser"
    xmlns:zope="http://namespaces.zope.org/zope">
 
-<!-- Pluggable Authentication Service -->
+<!-- Pluggable Authentication -->
 
   <!-- BBB: Deactivated as a deprecation measure. -->
   <!--addMenuItem
-       class="zope.app.pluggableauth.PluggableAuthenticationService"
-       title="Authentication Service"
+       class="zope.app.pluggableauth.PluggableAuthentication"
+       title="Authentication"
        description="A Pluggable Authentication uses plug-in principal sources."
-       permission="zope.ManageServices"
+       permission="zope.ManageSite"
        /-->
 
   <containerViews
-       for="zope.app.pluggableauth.interfaces.IPluggableAuthenticationService"
-       contents="zope.ManageServices"
-       add="zope.ManageServices"
+       for="zope.app.pluggableauth.interfaces.IPluggableAuthentication"
+       contents="zope.ManageSite"
+       add="zope.ManageSite"
        />
 
 <!-- Principal Source -->
@@ -23,13 +23,13 @@
   <addMenuItem
       title="Add Principal Source" 
       class="zope.app.pluggableauth.BTreePrincipalSource"	
-      permission="zope.ManageServices"
+      permission="zope.ManageSite"
       />
 
   <containerViews
        for="zope.app.pluggableauth.interfaces.IContainerPrincipalSource"
-       contents="zope.ManageServices"
-       add="zope.ManageServices"
+       contents="zope.ManageSite"
+       add="zope.ManageSite"
        />
 
 <!-- Principal -->
@@ -48,7 +48,7 @@
   <addMenuItem
       title="Principal" 
       class="zope.app.pluggableauth.SimplePrincipal"
-      permission="zope.ManageServices"
+      permission="zope.ManageSite"
       view="AddPrincipalForm.html"
       />
 

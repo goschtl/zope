@@ -16,11 +16,11 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.testing import PlacefulSetup
 from zope.testing.cleanup import CleanUp
 
 from zope.interface import Interface, implements
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore

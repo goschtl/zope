@@ -22,18 +22,17 @@ from zope.interface import directlyProvides
 from zope.interface.verify import verifyClass
 from zope.security.interfaces import Forbidden
 
-from zope.app.tests import ztapi
-from zope.component import getView
+from zope.app import zapi
+from zope.app.testing import ztapi
 from zope.publisher.browser import TestRequest
 from zope.app.publisher.browser import BrowserView
 
 # Wow, this is a lot of work. :(
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.tests import ztapi
 from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
 from zope.app.location.traversing import LocationPhysicallyLocatable
@@ -228,7 +227,7 @@ class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
         page.setSource(html, content_type='text/plain')
         request = TestRequest()
 
-        view = getView(page, 'source.html', request)
+        view = zapi.getMultiAdapter((page, request), name='source.html')
 
         self.assertEqual(str(view), html)
         self.assertEqual(view(), html)

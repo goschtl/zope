@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import unittest
 from zope.testing import doctest
-from zope.app.tests.setup import placefulSetUp, placefulTearDown
+from zope.app.testing.setup import placefulSetUp, placefulTearDown
 
 
 def schemaSearchSetUp(self):

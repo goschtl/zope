@@ -19,7 +19,6 @@ __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 
-from zope.security.proxy import ProxyFactory
 from zope.documenttemplate.untrusted import UntrustedHTML
 from zope.interface import implements
 

@@ -108,7 +108,7 @@
       permission="zope.Public"
       factory=".adapter.DAVSchemaAdapter" />
 
-  <!-- XXX: This interface needs to be split up so we can apply seperate 
+  <!-- TODO: This interface needs to be split up so we can apply seperate 
        permissions for reading and writing -->
   <adapter
       factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"

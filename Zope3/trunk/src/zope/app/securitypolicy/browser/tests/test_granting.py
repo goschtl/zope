@@ -18,7 +18,7 @@ $Id: tests.py 27985 2004-10-12 08:00:42Z srichter $
 __docformat__ = "reStructuredText"
 import unittest
 from zope.testing import doctest
-from zope.app.tests import placelesssetup
+from zope.app.testing import placelesssetup
 
 def test_suite():
     return unittest.TestSuite((

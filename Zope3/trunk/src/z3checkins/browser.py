@@ -3,15 +3,15 @@ Browser views for z3checkins.
 
 $Id$
 """
-
 import re
 import mailbox
 from StringIO import StringIO
 
-from zope.component import getUtility, getView
 from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies
+
+from zope.app import zapi
 from zope.app.datetimeutils import parseDatetimetz, DateTimeError
 from zope.app.publisher.browser import BrowserView
 from zope.app.form import CustomWidgetFactory
@@ -35,7 +35,7 @@ class MessageUpload:
     def createAndAdd(self, data):
         if data.has_key('data'): # XXX should we bark if no data is given?
             msg_raw = data['data']
-            parser = getUtility(IMessageParser)
+            parser = zapi.getUtility(IMessageParser)
             if msg_raw.startswith("From "):
                 # detected an mbox file
                 mbox = StringIO(msg_raw)
@@ -165,7 +165,7 @@ class ContainerView:
                 previous_message = item.log_message
             else:
                 same_as_previous = None
-            view = getView(item, 'html', self.request)
+            view = zapi.getMultiAdapter((item, self.request), name='html')
             output = view(same_as_previous=same_as_previous)
             html.append(output)
         return "".join(html)

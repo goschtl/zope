@@ -18,7 +18,7 @@ $Id$
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
-from zope.app.tests.functional import HTTPTestCase
+from zope.app.testing.functional import HTTPTestCase
 
 from zope.app.folder import Folder
 from zope.app.annotation.interfaces import IAttributeAnnotatable

@@ -18,15 +18,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.app.introspector.interfaces import IIntrospector
-from zope.app.module.interfaces import IModuleService
-from zope.component import getService, getServiceDefinitions, getServices
 from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interface import InterfaceClass
 from zope.security.proxy import removeSecurityProxy
+
+from zope.app import zapi
 from zope.app.component.interface import searchInterface, getInterface
+from zope.app.introspector.interfaces import IIntrospector
+from zope.app.module import resolve
 
 class Introspector(object):
     """Introspects an object"""
@@ -54,9 +55,7 @@ class Introspector(object):
         if path.find('++module++') != -1:
             if (self.context == Interface and
                 name != 'Interface._Interface.Interface'):
-                servicemanager = getServices()
-                adapter = IModuleService(servicemanager)
-                self.currentclass = adapter.resolve(name)
+                self.currentclass = resolve(name)
                 self.context = self.currentclass
             else:
                 self.currentclass = self.context
@@ -135,14 +134,6 @@ class Introspector(object):
             removeSecurityProxy(self.currentclass).__bases__)
         return bases
 
-    def getInterfaceRegistration(self):
-        """Returns details for a interface configuration"""
-        service = []
-        for name, interface in getServiceDefinitions(self.context):
-            if self.context.extends(interface):
-                service.append(str(name))
-        return service
-
     def getDirectlyProvided(self):
         """See `IIntrospector`"""
         return directlyProvidedBy(removeSecurityProxy(self.context))
@@ -184,8 +175,8 @@ class Introspector(object):
         results = []
         interfaces = searchInterface(self.context, base=base)
         for interface in interfaces:
-            # There are things registered with the interface service
-            # that are not interfaces. Yay!
+            # There are things registered with the site manager
+            # that are not interfaces. Duh!
             if not IInterface.providedBy(interface):
                 continue
             if base in interface.__bases__ and not interface.names():

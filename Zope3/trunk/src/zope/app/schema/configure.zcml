@@ -20,8 +20,8 @@
   <content class=".schema.SchemaRegistration">
     <require
       permission="zope.ManageServices"
-      interface="zope.app.utility.interfaces.IUtilityRegistration"
-      set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
+      interface="zope.app.component.interfaces.IUtilityRegistration"
+      set_schema="zope.app.component.interfaces.IUtilityRegistration" />
   </content>
 
   <include file="fields.zcml" />

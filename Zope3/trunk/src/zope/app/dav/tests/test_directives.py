@@ -21,8 +21,7 @@ from zope.configuration import xmlconfig
 from zope.interface import Interface
 
 from zope.app import zapi
-from zope.app.servicenames import Utilities
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.dav.interfaces import IDAVNamespace
 import zope.app.dav.tests
 
@@ -34,10 +33,10 @@ class ISchema(Interface):
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideInterface(self):
-        utils = zapi.getGlobalService(Utilities)
-        self.assertEqual(utils.queryUtility(IDAVNamespace, ns), None)
+        sm = zapi.getGlobalSiteManager()
+        self.assertEqual(sm.queryUtility(IDAVNamespace, ns), None)
         self.context = xmlconfig.file("dav.zcml", zope.app.dav.tests)
-        self.assertEqual(utils.queryUtility(IDAVNamespace, ns), ISchema)
+        self.assertEqual(sm.queryUtility(IDAVNamespace, ns), ISchema)
 
 def test_suite():
     return unittest.TestSuite((

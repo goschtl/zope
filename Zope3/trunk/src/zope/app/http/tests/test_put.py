@@ -21,7 +21,7 @@ import zope.app.http.put
 from zope.publisher.browser import TestRequest
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
 class File(object):

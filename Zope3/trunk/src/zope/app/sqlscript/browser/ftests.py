@@ -16,7 +16,7 @@
 $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 from zope.app.sqlscript.sqlscript import SQLScript
 from xml.sax.saxutils import escape
 

@@ -36,7 +36,7 @@ class CaseInsensitiveContainerTraverser(ContainerTraverser):
         """See zope.publisher.interfaces.browser.IBrowserPublisher"""
         subob = self._guessTraverse(name) 
         if subob is None:
-            view = zapi.queryView(self.context, name, request)
+            view = zapi.queryMultiAdapter((self.context, request), name=name)
             if view is not None:
                 return view
 

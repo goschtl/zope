@@ -40,8 +40,6 @@ from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
 from zope.app.rdb.interfaces import ISQLCommand
 from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
-from zope.app.rdb.interfaces import IGlobalConnectionService
-
 
 
 def sqlquote(x):

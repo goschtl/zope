@@ -76,7 +76,7 @@ class OnlineHelpTopicView(TopicTreeView):
         source = zapi.createObject(None,
                                    self.context.type,
                                    self.context.source)
-        view = zapi.getView(source, '', self.request)
+        view = zapi.getMultiAdapter((source, self.request))
         html = view.render()
         return html
 
@@ -94,7 +94,7 @@ class ContextHelpView(TopicTreeView):
         source = zapi.createObject(None,
                                    topic.type,
                                    topic.source)
-        view = zapi.getView(source, '', self.request)
+        view = zapi.getMultiAdapter((source, self.request))
         html = view.render()
         return html
 

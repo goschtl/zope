@@ -24,7 +24,7 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.form.browser import TextWidget, ObjectWidget
 from zope.app.form.browser import TupleSequenceWidget, ListSequenceWidget
 from zope.app.form.browser import SequenceWidget

@@ -12,6 +12,10 @@ Zope Changes
 
       - New schema field: Timedelta.
 
+      - Implemented some initial deprecation framework, see
+        `zope.deprecation`. It allows one to deprecate methods and properties
+        in classes as well as any name in a module.
+
       - The browser:containerViews directive provides an optional layer
         attribute.
 
@@ -218,7 +222,13 @@ Zope Changes
         doctest count a test for every example that is preceeded by
         prose. (Although a doctest will never count less than 1 test.)
 
-      - Removal of Services.
+      - Moved reusable test setups/APIs from `zope.app.tests` to
+        `zope.app.testing`. No reusable testing code should be in a `tests`
+        package or module.
+
+      - Removal of Services. You can now access the adapter and utiliy
+        registry directly via the site manager's `adapters` and `utilities`
+        attribute, respecitvely.
 
         + Converted Error Reporting Service to a utility. Added database
           evolution code to convert all service instances to utilities.
@@ -229,6 +239,38 @@ Zope Changes
         + Converted Principal Annotation Service to be a utility. Added
           database evolution code to convert all service instances to
           utilities.
+        
+        + Converted FSSync Service to be a utility.
+
+        + Created the concept of a global site manager. The adapter and
+          utility registry, formerly the adapter and utility service, are now
+          managed by the site manager.
+
+        + The `zope.app.utility` package has been merged into
+          `zope.app.component`. The utility registration class is in
+          `site.py`. The utility vocabulary is in `vocabulary.py`.
+
+        + The `zope.app.site` package has been merged into
+          `zope.app.component`. The site code can be found in `site.py`.
+
+        + Fixed persistent modules code. Persistent modules are now simply
+          utilities providing `IModuleManager`. The local site manager also
+          does not know any thing about persistent modules anymore.
+
+        + Updated `zope.app.pluggableauth`, so that it will work as an
+          authentication utility.
+
+        + Restructured `zope.app.persentation` (a.k.a page folders) to the new
+          component API.
+
+      - Simplified the registration framework by only supporting two states:
+        active and inactive. This allowed us to get rid of the registration
+        stack and the complexity it introduced to the site management.
+
+      - Removed all presentation-related APIs from `zope.component`. This
+        included the removal of presentation-related interfaces and the
+        deprecation of all view-related API functions. One should use the
+        adapter API functions instead.
 
       - The `pluggableauth` package has been deprecated. The `authentication`
         module provides a much more modular approach with many more

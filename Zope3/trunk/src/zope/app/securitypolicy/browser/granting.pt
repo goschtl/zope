@@ -4,7 +4,9 @@
   <h2 i18n:translate="">Granting Roles and Permissions to Principals</h2>
   <p tal:define="status view/status"
      tal:condition="status"
-     tal:content="status" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     tal:content="status" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
   <form action="" method="POST">
 
@@ -34,7 +36,9 @@
                            tal:content="widget/label">The Label</label>
                   </div>
                 </td>
-								<tal:block tal:content="structure widget">roles widget</tal:block>
+                <tal:block tal:content="structure widget">
+                  roles widget
+                </tal:block>
               </tr>
               <tr>
                 <td colspan="2"><a href="#top" i18n:translate="">^ top</a></td>
@@ -57,7 +61,9 @@
                            tal:content="widget/label">The Label</label>
                   </div>
                 </td>
-								<tal:block tal:content="structure widget">permission widget</tal:block>
+                <tal:block tal:content="structure widget">
+                  permission widget
+                </tal:block>
               </tr>
               <tr>
                 <td colspan="2"><a href="#top" i18n:translate="">^ top</a></td>

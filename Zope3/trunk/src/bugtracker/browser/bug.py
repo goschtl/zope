@@ -74,7 +74,8 @@ class BugBaseView(object):
         if ttype is not None:
             source = zapi.createObject(None, self.context.description.ttype,
                                        self.context.description)
-            view = zapi.getView(removeAllProxies(source), '', self.request)
+            view = zapi.getMultiAdapter(
+                (removeAllProxies(source), self.request))
             html = view.render()
         else:
             html = self.context.description

@@ -35,31 +35,35 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 # For choices, we want to make the widget a view of the field and vocabulary.
 
 def ChoiceDisplayWidget(field, request):
-    return zapi.getMultiView((field, field.vocabulary), request, IDisplayWidget)
+    return zapi.getMultiAdapter((field, field.vocabulary, request),
+                                IDisplayWidget)
 
 def ChoiceInputWidget(field, request):
-    return zapi.getMultiView((field, field.vocabulary), request, IInputWidget)
+    return zapi.getMultiAdapter((field, field.vocabulary, request),
+                                IInputWidget)
 
 # for collections, we want to make the widget a view of the field and the
 # value_type.  If the value_type is None we may fall over.  We may
 # not be able to do any better than that.
 
 def CollectionDisplayWidget(field, request):
-    return zapi.getMultiView((field, field.value_type), request, IDisplayWidget)
+    return zapi.getMultiAdapter((field, field.value_type, request),
+                                IDisplayWidget)
 
 def CollectionInputWidget(field, request):
-    return zapi.getMultiView((field, field.value_type), request, IInputWidget)
+    return zapi.getMultiAdapter((field, field.value_type, request),
+                                IInputWidget)
 
 # for collections of choices, we want to make the widget a view of the field,
 # the value type, and the vocabulary.
 
 def ChoiceCollectionDisplayWidget(field, value_type, request):
-    return zapi.getMultiView(
-        (field, value_type.vocabulary), request, IDisplayWidget)
+    return zapi.getMultiAdapter((field, value_type.vocabulary, request),
+                                IDisplayWidget)
 
 def ChoiceCollectionInputWidget(field, value_type, request):
-    return zapi.getMultiView(
-        (field, value_type.vocabulary), request, IInputWidget)
+    return zapi.getMultiAdapter((field, value_type.vocabulary, request),
+                                IInputWidget)
 
 class TranslationHook(object):
     """A mixin class that provides the translation capabilities."""

@@ -8,7 +8,7 @@ Request/Response Functional Tests
 ---------------------------------
 
 You can create Functional tests as doctests.  Typically, this is done
-by using a script such as src/zope/app/tests/dochttp.py to convert
+by using a script such as src/zope/app/testing/dochttp.py to convert
 tcpwatch recorded output to a doctest, which is then edited to provide
 explanation and to remove uninyeresting details.  That is how this
 file was created.
@@ -63,7 +63,7 @@ we got redirected:
   HTTP/1.1 303 See Other
   Content-Length: 0
   Content-Type: text/plain;charset=utf-8
-  Location: @@tasks.html
+  Location: @@contents.html
   <BLANKLINE>
 
 Note that, in this case, we got a 303 response.  A 303 response is the
@@ -78,13 +78,13 @@ HTTP 1.0, we'd get a 302 response:
   HTTP/1.0 302 Moved Temporarily
   Content-Length: 0
   Content-Type: text/plain;charset=utf-8
-  Location: @@tasks.html
+  Location: @@contents.html
   <BLANKLINE>
 
-Lets visit the page we were rediected to:
+Lets visit the page we were redirected to:
 
   >>> print http(r"""
-  ... GET /++etc++site/@@tasks.html HTTP/1.1
+  ... GET /++etc++site/@@contents.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/
   ... """)

@@ -1,8 +1,27 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Observable tests
+
+$Id$
+"""
+__docformat__ = "reStructuredText"
+
 import unittest
 from persistent import Persistent
 from zope.interface import implements
 from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.tests.functional import FunctionalDocFileSuite
+from zope.app.testing.functional import FunctionalDocFileSuite
 
 def chickenModified(event):
      print "buh-PAH! I was modified."

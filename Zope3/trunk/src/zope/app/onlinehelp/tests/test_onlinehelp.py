@@ -20,8 +20,7 @@ import unittest
 
 from zope.interface import Interface, implements
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.tests import ztapi
-from zope.app.tests import placelesssetup
+from zope.app.testing import ztapi, placelesssetup
 from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable,\
      ITraverser
 from zope.app.traversing.adapters import Traverser, DefaultTraversable

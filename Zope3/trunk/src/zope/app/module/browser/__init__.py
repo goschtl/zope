@@ -17,41 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.module import Manager
-from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.publisher.browser import BrowserView
 from zope.proxy import removeAllProxies
-from zope.app.exception.interfaces import UserError
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+class ViewModule(object):
 
-
-class AddModule(BrowserView):
-
-    def action(self, source):
-        name = self.context.contentName
-        if not name:
-            raise UserError(_(u"module name must be provided"))
-        mgr = Manager(name, source)
-        mgr = self.context.add(mgr)  # local registration
-        mgr.execute()
-        self.request.response.redirect(self.context.nextURL())
-        notify(ObjectCreatedEvent(mgr))
-
-class EditModule(BrowserView):
-
-    def update(self):
-        if "source" in self.request:
-            self.context.source = self.request["source"]
-            self.context.execute()
-            return _(u"The source was updated.")
-        else:
-            return u""
-
-class ViewModule(BrowserView):
-
-    def getModuleName(self):
+    def getModuleObjects(self):
         module = removeAllProxies(self.context.getModule())
         remove_keys = ['__name__', '__builtins__', '_p_serial']
 
@@ -63,9 +33,12 @@ class ViewModule(BrowserView):
              if id not in remove_keys]
         L.sort()
 
-        l_dict = [{"name": name, "doc": doc, "objtype": objtype} for name, doc, objtype in L]
+        l_dict = [{"name": name, "doc": doc, "objtype": objtype}
+                  for name, doc, objtype in L]
 
         for dic in l_dict:
-                if dic['objtype'].find('Class') != -1: dic['objtype'] = 'Class'
-                if dic['objtype'].find('Function') != -1: dic['objtype'] = 'Function'
+                if dic['objtype'].find('Class') != -1:
+                    dic['objtype'] = 'Class'
+                if dic['objtype'].find('Function') != -1:
+                    dic['objtype'] = 'Function'
         return l_dict

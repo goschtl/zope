@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id$
+"""Edit View Tests
+
+$Id$
 """
 import unittest
 
@@ -21,8 +23,8 @@ from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
 from zope.component.exceptions import ComponentLookupError
 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
 
 from zope.app.form.browser import TextWidget

@@ -127,7 +127,7 @@ def pagelet(_context, name, slot, permission, for_=Interface,
     _context.action(
         discriminator = ('pagelet', for_, layer, view, slot, name),
         callable = handler,
-        args = (zapi.servicenames.Adapters, 'register',
+        args = ('provideAdapter',
                 (for_, layer, view, slot), IPagelet, name, new_class
                 , _context.info),)
 

@@ -21,7 +21,7 @@ from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldNamesInOrder, getFieldsInOrder
 from zope.security.checker import getChecker, _defaultChecker, ProxyFactory
 from zope.app.schema.schema import SchemaUtility
-from zope.app.tests import setup
+from zope.app.testing import setup
 from zope.app import zapi
 import zope.app.schema.tests
 

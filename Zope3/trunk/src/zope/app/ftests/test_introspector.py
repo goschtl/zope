@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import unittest
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 
 class TestIntrospector(BrowserTestCase):

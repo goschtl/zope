@@ -58,8 +58,8 @@ def setIdOnActivation(permission, event):
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id
     u'<permission not activated>'
-
-    >>> from zope.app.registration import registration
+    
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationActivatedEvent(
     ...     Registration(perm1, 'perm1'))
 
@@ -87,7 +87,7 @@ def unsetIdOnDeactivation(permission, event):
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id = 'perm1'
 
-    >>> from zope.app.registration import registration
+    >>> from zope.app.component import registration 
     >>> event = registration.RegistrationDeactivatedEvent(
     ...     Registration(perm1, 'perm1'))
 
@@ -104,10 +104,10 @@ def unsetIdOnDeactivation(permission, event):
 def checkPermission(context, permission_id):
     """Check whether a given permission exists in the provided context.
 
-    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> from zope.app.testing.placelesssetup import setUp, tearDown
     >>> setUp()
 
-    >>> from zope.app.tests.ztapi import provideUtility
+    >>> from zope.app.testing.ztapi import provideUtility
     >>> provideUtility(IPermission, Permission('x'), 'x')
 
     >>> checkPermission(None, 'x')
@@ -126,10 +126,10 @@ def checkPermission(context, permission_id):
 def allPermissions(context=None):
     """Get the ids of all defined permissions
 
-    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> from zope.app.testing.placelesssetup import setUp, tearDown
     >>> setUp()
 
-    >>> from zope.app.tests.ztapi import provideUtility
+    >>> from zope.app.testing.ztapi import provideUtility
     >>> provideUtility(IPermission, Permission('x'), 'x')
     >>> provideUtility(IPermission, Permission('y'), 'y')
 

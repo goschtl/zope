@@ -22,7 +22,6 @@ from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.container.interfaces import IContained
-from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 
@@ -53,8 +52,8 @@ class ProcessInstance(Contained):
 def createProcessInstance(context, name):
     """Helper function to create a process instance from a process definition
     name."""
-    utils = zapi.getService(Utilities, context)
-    pd = utils.getUtility(IProcessDefinition, name)
+    sm = zapi.getSiteManager(context)
+    pd = sm.queryUtility(IProcessDefinition, name)
     return pd.createProcessInstance(name)
 
 

@@ -16,9 +16,9 @@
 $Id$
 """
 import unittest
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing import functional
 
-class RolePermissionsTest(BrowserTestCase):
+class RolePermissionsTest(functional.BrowserTestCase):
 
     def testAllRolePermissionsForm(self):
         response = self.publish(
@@ -28,7 +28,7 @@ class RolePermissionsTest(BrowserTestCase):
         body = response.getBody()
         self.assert_('Permissions' in body)
         self.assert_('Manage Content' in body)
-        self.assert_('Manage Services' in body)
+        self.assert_('Manage Site' in body)
         self.assert_('Roles' in body)
         self.assert_('Site Manager' in body)
         self.assert_('Site Member' in body)
@@ -85,10 +85,9 @@ _result = '''\
 '''
 
 def test_suite():
-    import zope.app.tests.functional
     return unittest.TestSuite((
         unittest.makeSuite(RolePermissionsTest),
-        zope.app.tests.functional.FunctionalDocFileSuite('granting_ftest.txt'),
+        functional.FunctionalDocFileSuite('granting_ftest.txt'),
         ))
 
 if __name__ == '__main__':

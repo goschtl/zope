@@ -160,7 +160,7 @@ Imports:
   
 Setup:
   
-  >>> adaptersrv = zope.component.getService('Adapters')
+  >>> gsm = zapi.getGlobalSiteManager()
   
 Register slot interface:
 
@@ -189,14 +189,14 @@ Setup a test pagelet:
   >>> name = 'testpagelet'
   >>> pagelet_factory = TestPagelet
   >>> defineChecker(pagelet_factory, testChecker)
-  >>> adaptersrv.register(
+  >>> gsm.provideAdapter(
   ...        (Interface, IBrowserRequest, IView, IPageletSlot)
   ...        , IPagelet, name, pagelet_factory)
 
 Register pagelet collector as a adapter:
   
   >>> collector_factory = MacrosCollector
-  >>> adaptersrv.register(
+  >>> gsm.provideAdapter(
   ...        (Interface, IBrowserRequest, IView, IPageletSlot)
   ...        , IMacrosCollector, '', collector_factory)
 
@@ -210,7 +210,7 @@ Setup a view page template called 'index':
 
   >>> from zope.app.pagelet.tests import testfiles
   >>> import os.path
-  >>> path = os.path.join(os.path.dirname(__file__), 'tests', 'testfiles')
+  >>> path = os.path.dirname(testfiles.__file__)
   >>> index = ViewPageTemplateFile('index_pagelets.pt', path)
 
 Call the 'index' (view) on the browser view instance the sample pagelet

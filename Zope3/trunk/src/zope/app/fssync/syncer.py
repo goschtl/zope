@@ -17,19 +17,20 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import getService
+from zope.app import zapi
 from zope.fssync.server.syncer import Syncer
 
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.traversing.api import getPath
 
+from interfaces import IGlobalFSSyncUtility
 
 def getObjectId(obj):
     return str(getPath(obj))
 
 def getSerializer(obj):
-    syncService = getService('FSRegistryService')
-    return syncService.getSynchronizer(obj)
+    syncUtility = zapi.getUtility(IGlobalFSSyncUtility)
+    return syncUtility.getSynchronizer(obj)
 
 def getAnnotations(obj):
     return IAnnotations(obj, None)

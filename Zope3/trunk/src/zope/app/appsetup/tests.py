@@ -19,21 +19,18 @@ import unittest
 from transaction import get_transaction
 from ZODB.tests.util import DB
 
+from zope.app.component.testing import PlacefulSetup
 from zope.app.error.error import ErrorReportingUtility
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.servicenames import Utilities
-from zope.app.site.service import ServiceManager
-from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.component.site import LocalSiteManager
 from zope.app.traversing.api import traverse
-from zope.app.utility.utility import LocalUtilityService
 
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
-from zope.app.appsetup.bootstrap import addService, configureService, \
-     ensureService, getInformationFromEvent, getServiceManager, ensureObject,\
-     ensureUtility
+from zope.app.appsetup.bootstrap import getInformationFromEvent, \
+     ensureObject, ensureUtility
 
 class EventStub(object):
 
@@ -41,7 +38,7 @@ class EventStub(object):
         self.database = db
 
 #
-# XXX some methods from the boostap modue are not tested
+# TODO: some methods from the boostap modue are not tested
 #
 
 class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
@@ -67,8 +64,8 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         root = cx.root()
         self.root_folder = rootFolder()
         root[ZopePublication.root_name] = self.root_folder
-        self.service_manager = ServiceManager(self.root_folder)
-        self.root_folder.setSiteManager(self.service_manager)
+        self.site_manager = LocalSiteManager(self.root_folder)
+        self.root_folder.setSiteManager(self.site_manager)
         get_transaction().commit()
         cx.close()
 
@@ -86,16 +83,12 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
     def test_ensureUtility(self):
         self.createRFAndSM()
-        self.createRootFolder()
 
         db, connection ,root, root_folder = getInformationFromEvent(
             EventStub(self.db))
 
-        # XXX check EventSub
+        # TODO: check EventSub
         root_folder = self.root_folder
-        service_manager = getServiceManager(root_folder)
-        ensureService(service_manager, root_folder, Utilities,
-                      LocalUtilityService)
         for i in range(2):
             cx = self.db.open()
             name = ensureUtility(root_folder, IErrorReportingUtility,

@@ -45,7 +45,8 @@ class CacheableView(BrowserView):
     def current_cache_url(self):
         "Returns the current cache provider's URL."
         cache = getCacheForObject(self.context)
-        absolute_url = zapi.getView(cache, 'absolute_url', self.request)
+        absolute_url = zapi.getMultiView((cache, self.request),
+                                         name='absolute_url')
         try:
             return absolute_url()
         except TypeError:
