@@ -3,7 +3,8 @@
 """Apply actions dictated by traffic_table.py to checkins as they occur.
 
 Normal operation is to fork into the background with stderr and stdout
-redirected to append to the file named by the OUTPUT_LOG config var.
+redirected to append to the file named by the OUTPUT_LOG config var (or be
+the forked version, which is reinvoked with the --wait option).
 
 Options:
 
@@ -27,15 +28,15 @@ multiple space-delimited parts:
     - The old version number, then
     - the new one, like so
 
-    filename,1.1,1.2
+##     filename,1.1,1.2
 
-(See the CVS Gnu INFO file for loginfo for more format-string details.)
+## (See the CVS Gnu INFO file for loginfo for more format-string details.)
 
-Currently the actions are:
+## Currently the actions are:
 
- - doing a g+w chmod of the subject files
- - emailing checkin messages to designated recipients
- - doing an rsync of the repository to the public repository host.
+##  - doing a g+w chmod of the subject files
+##  - emailing checkin messages to designated recipients
+##  - doing an rsync of the repository to the public repository host.
 
 ... as dictated in the traffic_table.py module."""
 
@@ -109,7 +110,7 @@ def main(args):
     got = find_entries(repo)
 
     if not WAIT:
-        detach()
+        detach(orig_args)
 
     do_chmod(subjs)
 
@@ -120,8 +121,20 @@ def main(args):
         if remote:
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
 
+def detach(args):
+    """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
+    doctored_args = [args[0]]
+    doctored_args.append("--wait")
+    for i in args[1:]:
+        doctored_args.append('"%s"' % i)
+    cmd = (("( exec 1> %s 2>&1; " + string.join(doctored_args, " ") +  " &)")
+           % OUTPUT_LOG)
+    print "Am doing:", cmd        # DEBUG
+    os.system(cmd)
+    os._exit(0)
+    
 logf = None
-def detach():
+def old_detach():
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
 
     global logf
@@ -167,7 +180,7 @@ def do_mail(name, repo, addrs, subjs):
     subject = "CVS checkin: %s -" % name
     for fn, old, new in subjs:
         subject = subject + " %s:%s" % (fn, new)
-    directed_system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+    os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
                                               (DRYRUN and "echo ") or "",
                                               MAIL_CMD,
                                               (VERBOSE and "-v") or "",
@@ -208,7 +221,7 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
 
-    directed_system("%s%s%s %s/%s/ %s:%s"
+    os.system("%s%s%s %s/%s/ %s:%s"
                     % ((VERBOSE and "set -x; ") or "",
                        (DRYRUN and "echo ") or "",
                        cmd,
@@ -219,7 +232,7 @@ def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
     if not fnames:
         fnames = ["."]
-    directed_system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
+    os.system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
                                           (DRYRUN and "echo ") or "",
                                           string.join(fnames, " ")))
 
