@@ -7,12 +7,14 @@
     <meta:directive
         name="permission"
         schema="zope.app.security.metadirectives.IDefinePermissionDirective"
-        handler="zope.app.security.metaconfigure.definePermission" />
+        handler="zope.app.security.metaconfigure.definePermission"
+        />
 
     <meta:directive
         name="redefinePermission"
         schema="zope.app.security.metadirectives.IRedefinePermission"
-        handler="zope.app.security.metaconfigure.redefinePermission" />
+        handler="zope.app.security.metaconfigure.redefinePermission"
+        />
 
     <meta:directive
         name="interface"
