@@ -26,14 +26,14 @@ Running the unit tests
 ----------------------
 
 There are unit tests of the zpkgtools package in the zpkgtools.tests
-package.  This can most easily be run by running the *runtests.py*
-script::
+package.  This can most easily be run by running the *tests.py* script
+found in the same directory as this README.txt file::
 
-  $ python2.3 zpkgtools/tests/runtests.py
+  $ python2.3 tests.py
   ......................................................................
   ......................................................................
-  .......
+  ........................................
   ----------------------------------------------------------------------
-  Ran 147 tests in 1.057s
+  Ran 180 tests in 0.931s
 
   OK
