@@ -36,20 +36,28 @@ class DummyDataManager:
     def deleteData(self, sid):
         del self.data[sid]
 
-
 class FakeRequest:
 
     def __init__(self):
         self.sets = 0
         self.cookies = {}
+        # This class implements methods of the response too.
         self.response = self
 
     def setCookie(self, k, v, **kw):
+        # This is actually a method on the response.
         self.sets += 1
         self.cookies[k] = v
         if (not abs(parse_http_date(kw["expires"]) - int(time.time()) - 1800)
             < 3):
             raise AssertionError
+
+    def getCookie(self, name, default=None):
+        # This is actually a method on the reponse.
+        value = self.cookies.get(name)
+        if value is None:
+            return default
+        return {'value':value}
 
 
 class SessionServiceTestCaseMixin(PlacefulSetup):

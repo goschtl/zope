@@ -63,7 +63,14 @@ class CookieSessionService(Persistent):
     def getRequestId(self, request):
         """Return the sessionId encoded in request or None if it's
         non-existent."""
-        sid = request.cookies.get(self.namespace)
+        # If there is an id set on the response, use that but don't trust it.
+        # We need to check the response in case there has already been a new
+        # session created during the course of this request.
+        response_cookie = request.response.getCookie(self.namespace)
+        if response_cookie:
+            sid = response_cookie['value']
+        else:
+            sid = request.cookies.get(self.namespace)
         if sid is None or len(sid) != 54:
             return None
         s, mac = sid[:27], sid[27:]
