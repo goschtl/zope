@@ -41,14 +41,7 @@ class Dependency(object):
 
     def isSubPackageOf(self, dep):
         """Return True if this dependency's path is a sub-package of dep."""
-        path = self.path.split('.')
-        deppath = dep.path.split('.')
-        for i in range(len(path)):
-            if i >= len(deppath):
-                return True
-            if path[i] != deppath[i]:
-                break
-        return False
+        return self.path.startswith(dep.path + ".")
 
     def __cmp__(self, other):
         """Compare dependecies by module name."""
