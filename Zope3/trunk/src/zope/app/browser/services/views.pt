@@ -44,6 +44,7 @@
     </tbody>
   </table>
 
+  <input type="submit" name="Activate" value="Activate" />
   <input type="submit" name="Deactivate" value="Deactivate" />
   <input type="submit" name="Delete" value="Delete" />
   <input type="submit" name="Refresh" value="Refresh" />

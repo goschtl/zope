@@ -21,7 +21,7 @@
 
   PageConfigurationView -- calls validation on PageConfiguration.
 
-$Id: view.py,v 1.11 2003/05/01 14:40:24 gvanrossum Exp $
+$Id: view.py,v 1.12 2003/05/01 14:46:26 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -39,7 +39,8 @@ from zope.app.component.interfacefield import InterfaceField
 from zope.app.form.utility import setUpWidgets
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.configuration import Unregistered, Registered
+from zope.app.interfaces.services.configuration \
+     import Unregistered, Registered, Active
 from zope.app.traversing import traverse, getPath, getParent, objectName
 
 # XXX These are not used in this module, but are referenced in configure.zcml.
@@ -81,12 +82,15 @@ class ViewServiceView(BrowserView):
         In that case, issue a message.
         """
         todo = self.request.get("selected")
+        doActivate = self.request.get("Activate")
         doDeactivate = self.request.get("Deactivate")
         doDelete = self.request.get("Delete")
         if not todo:
-            if doDeactivate or doDelete:
+            if doActivate or doDeactivate or doDelete:
                 return "Please select at least one checkbox"
             return None
+        if doActivate:
+            return self._activate(todo)
         if doDeactivate:
             return self._deactivate(todo)
         if doDelete:
@@ -108,6 +112,26 @@ class ViewServiceView(BrowserView):
                                                    layerName)
         # We only want exact matches on 'forInterface'
         return [info for info in infos if info[0] == forInterface]
+
+    def _activate(self, todo):
+        done = []
+        for key in todo:
+            infos = self._getInfosFromKey(key)
+            for info in infos:
+                (forInterface, presentationType,
+                 registry, layer, viewName) = info
+                registry = ContextWrapper(registry, self.context)
+                obj = registry.active()
+                if obj is None:
+                    assert registry
+                    # Activate the first registered configuration
+                    obj = registry.info()[0]['configuration']
+                    obj.status = Active
+                    done.append(key)
+        if done:
+            return "Activated: " + ", ".join(done)
+        else:
+            return "None of the checked utilities were inactive"
 
     def _deactivate(self, todo):
         done = []
