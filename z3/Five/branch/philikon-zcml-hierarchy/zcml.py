@@ -21,7 +21,6 @@ def initialize(execute=True):
     global _initialized, _global_context
     if _initialized:
         return _global_context
-    _global_context = xmlconfig.file('five.zcml', package=Products.Five)
     _initialized = True
     return _global_context
 
