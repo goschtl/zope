@@ -40,6 +40,7 @@
 /Releases/CMF                                   /CMF
 /Releases/ZEO                                   /ZEO
 
+/Zope/doc/ZEO					/ZEO/docs
 /Zope/ZServer                                   /Packages/ZServer
 /Zope/lib/Components/ExtensionClass             /Cruft/ExtensionClass
 /Zope/lib/python/AccessControl                  /Packages/AccessControl
