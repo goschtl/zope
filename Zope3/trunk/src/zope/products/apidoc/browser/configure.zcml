@@ -4,9 +4,6 @@
 
   <resource name="apidoc.css" file="apidoc.css" />
 
-  <resource name="pl_small.gif" file="pl_small.gif" />
-  <resource name="mi_small.gif" file="mi_small.gif" />
-
   <page
       for="*"
       name="apidoc_macros"
