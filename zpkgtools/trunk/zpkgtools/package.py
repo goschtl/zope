@@ -72,7 +72,7 @@ from StringIO import StringIO
 from zpkgtools import cfgparser
 
 
-PACKAGE_CONF = "INSTALL.cfg"
+PACKAGE_CONF = "SETUP.cfg"
 
 # SCHEMA is defined at the end of the module to allow referenced
 # functions to be defined first.

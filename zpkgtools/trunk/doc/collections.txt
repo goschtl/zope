@@ -114,7 +114,7 @@ a collection distribution:
 
 - We're not currently loading any sort of "package information" for
   collections, but this is a software issue, not a design problem.
-  The information file will be called `INSTALL.cfg`.
+  The information file will be called `SETUP.cfg`.
 
 
 .. include:: links.rst

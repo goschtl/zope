@@ -23,7 +23,7 @@ contain different aspects of the relevant metadata.
   Dependencies are case-sensitive.
 
   Note that dependencies are kept separate from the information in the
-  `INSTALL.cfg` file since that's intended to record information about
+  `SETUP.cfg` file since that's intended to record information about
   what the distribution contains, while dependencies serve as
   constraints on any software included in the distribution.
 
@@ -35,11 +35,6 @@ contain different aspects of the relevant metadata.
   to include files in the component itself (even if the component
   isn't a collection; this name is used since it usually will be a
   collection).
-
-`INSTALL.cfg`
-  This file contains information on building extension modules.
-  Information about scripts and documentation files will also be
-  included in this file.
 
 `PUBLICATION.cfg`
   General metadata related to a distribution.  This includes
@@ -58,10 +53,15 @@ contain different aspects of the relevant metadata.
   install** build process that creates an application-specific
   installation tree (for example, `/usr/local/Zope3`).
 
+`SETUP.cfg`
+  This file contains information on building extension modules.
+  Information about scripts and documentation files will also be
+  included in this file.
+
 Embedded Package Definitions
 ----------------------------
 
-Distribution components can include a `INSTALL.cfg` that contains
+Distribution components can include a `SETUP.cfg` that contains
 information about special files in the component (such as
 documentation and scripts), and what extensions need to be built.
 This file is a ZConfig-like configuration file that can contain the
@@ -82,14 +82,14 @@ trailing whitespace.  Directories named `CVS`, `RCS`, `SCCS`, or
 `.svn` are ignored, as are files named `.cvsignore`.
 
 Paths can only refer to descendents of the directory containing
-`INSTALL.cfg`, never to that directory itself or anything higher up
+`SETUP.cfg`, never to that directory itself or anything higher up
 the filesystem hierarchy.
 
 Support for Compiled Extensions
 -------------------------------
 
 Compiled extensions are described using **<extension>** sections in
-the `INSTALL.cfg` file.  The name of the section should be the name of
+the `SETUP.cfg` file.  The name of the section should be the name of
 the extension module within the Python package.  For example, the
 extension ``persistent.cPersistence`` would be represented using a
 section of the form::

@@ -364,7 +364,7 @@ class Application:
           - `destination`: Directory the setup.cfg file should be
             written to.
           - `pkginfo`: Package information loaded from a package's
-            INSTALL.cfg file.
+            SETUP.cfg file.
 
         The generated setup.cfg will contain some settings applied for
         all packages, and the list of documentation files from the
