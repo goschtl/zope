@@ -11,134 +11,52 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-
-Revision information:
-$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
-"""
-
-from zope.app.interfaces.services.service import IServiceManagerContainer
-from zope.component.interfaces import IServiceService
-from zope.component.exceptions import ComponentLookupError
-
-_marker = object()
-
-class ServiceManagerContainer:
-
-    __implements__ =  IServiceManagerContainer
-
-    def hasServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-        return hasattr(self, '_ServiceManagerContainer__sm')
-
-    def getServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-
-        try:
-            return self.__sm
-        except AttributeError:
-            raise ComponentLookupError('no service manager defined')
-
-    def queryServiceManager(self, default=None):
-        '''See interface IReadServiceManagerContainer'''
-
-        return getattr(self, '_ServiceManagerContainer__sm', default)
-
-    def setServiceManager(self, sm):
-        '''See interface IWriteServiceManagerContainer'''
-
-        if IServiceService.isImplementedBy(sm):
-            self.__sm = sm
-        else:
-            raise ValueError('setServiceManager requires an IServiceService')
-
-    #
-    ############################################################
+"""Service manager implementation
 
 
+A service manager has a number of roles:
 
-"""
-$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
-"""
+  - A service service
 
-from zope.app.interfaces.services.service import IServiceConfiguration
-from zope.app.interfaces.services.service import IBindingAware
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.services.configuration import NamedComponentConfiguration
-from zope.proxy.context import ContextMethod
-from zope.component import getServiceManager
+  - A place to do TTW development or to manage database-based code
 
-class ServiceConfiguration(NamedComponentConfiguration):
+  - A registry for persistent modules.  The Zope import hook uses the
+    ServiceManager to search for modules.
 
-    __doc__ = IServiceConfiguration.__doc__
-
-    __implements__ = (IServiceConfiguration,
-                      NamedComponentConfiguration.__implements__)
-
-    status = ConfigurationStatusProperty('Services')
-
-    label = "Service"
-
-    def __init__(self, *args, **kw):
-        super(ServiceConfiguration, self).__init__(*args, **kw)
-
-    def getInterface(self):
-        service_manager = getServiceManager(self)
-        return service_manager.getInterfaceFor(self.name)
-
-    getInterface = ContextMethod(getInterface)
-
-    def activated(self):
-        service = self.getComponent()
-        if IBindingAware.isImplementedBy(service):
-            service.bound(self.name)
-
-    activated = ContextMethod(activated)
-
-    def deactivated(self):
-        service = self.getComponent()
-        if IBindingAware.isImplementedBy(service):
-            service.unbound(self.name)
-
-    deactivated = ContextMethod(deactivated)
-
-__doc__ = ServiceConfiguration.__doc__  + __doc__
-
-
-
-
-"""XXX I need a summary line.
-
-In addition, a ServiceManager acts as a registry for persistent
-modules.  The Zope import hook uses the ServiceManager to search for
-modules.
-
-$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
+$Id: service.py,v 1.4 2002/12/30 12:50:27 jim Exp $
 """
 
 import sys
 
-from zope.app.component.nextservice \
-     import getNextServiceManager, getNextService
-from zope.component.exceptions import ComponentLookupError
+from zodb.code.module import PersistentModule
+from zodb.code.module import PersistentModuleRegistry
 
-from zope.app.interfaces.container import IReadContainer
+from zope.component import getServiceManager
+from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import IServiceService
+
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import ContextWrapper
 from zope.proxy.introspection import removeAllProxies
 
-from zope.app.services.package import Packages
-from zope.app.interfaces.services.service import IServiceManager
+from zope.app.component.nextservice import getNextService
+from zope.app.component.nextservice import getNextServiceManager
 
-from zope.app.services.configuration import NameComponentConfigurable
-
-from zodb.code.module import PersistentModuleRegistry
-from zodb.code.module import PersistentModule
+from zope.app.interfaces.container import IReadContainer
+from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.service import INameResolver
+from zope.app.interfaces.services.service import IServiceConfiguration
+from zope.app.interfaces.services.service import IServiceManager
+from zope.app.interfaces.services.service import IServiceManagerContainer
+
+from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.services.configuration import NamedComponentConfiguration
+
+from zope.app.services.package import Packages
 
 ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
-
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
@@ -247,6 +165,23 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
         return self.get(key) is not None
 
+    # Enumeration methods. We'll only expose Packages for now:
+    def keys(self):
+        return ['Packages']
+
+    def values(self):
+        return map(self.get, self.keys())
+
+    values = ContextMethod(values)
+
+    def items(self):
+        return [(key, self.get(key)) for key in self.keys()]
+
+    items = ContextMethod(items)
+
+    def __len__(self):
+        return 1
+
     def findModule(wrapped_self, name):
         # override to pass call up to next service manager
         mod = super(ServiceManager,
@@ -306,3 +241,67 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
                     return a
             mod += '.' + last
     resolve = ContextMethod(resolve)
+
+class ServiceConfiguration(NamedComponentConfiguration):
+
+    __doc__ = IServiceConfiguration.__doc__
+
+    __implements__ = (IServiceConfiguration,
+                      NamedComponentConfiguration.__implements__)
+
+    status = ConfigurationStatusProperty('Services')
+
+    label = "Service"
+
+    def __init__(self, *args, **kw):
+        super(ServiceConfiguration, self).__init__(*args, **kw)
+
+    def getInterface(self):
+        service_manager = getServiceManager(self)
+        return service_manager.getInterfaceFor(self.name)
+
+    getInterface = ContextMethod(getInterface)
+
+    def activated(self):
+        service = self.getComponent()
+        if IBindingAware.isImplementedBy(service):
+            service.bound(self.name)
+
+    activated = ContextMethod(activated)
+
+    def deactivated(self):
+        service = self.getComponent()
+        if IBindingAware.isImplementedBy(service):
+            service.unbound(self.name)
+
+    deactivated = ContextMethod(deactivated)
+
+class ServiceManagerContainer:
+
+    __implements__ =  IServiceManagerContainer
+
+    def hasServiceManager(self):
+        '''See interface IReadServiceManagerContainer'''
+        return hasattr(self, '_ServiceManagerContainer__sm')
+
+    def getServiceManager(self):
+        '''See interface IReadServiceManagerContainer'''
+
+        try:
+            return self.__sm
+        except AttributeError:
+            raise ComponentLookupError('no service manager defined')
+
+    def queryServiceManager(self, default=None):
+        '''See interface IReadServiceManagerContainer'''
+
+        return getattr(self, '_ServiceManagerContainer__sm', default)
+
+    def setServiceManager(self, sm):
+        '''See interface IWriteServiceManagerContainer'''
+
+        if IServiceService.isImplementedBy(sm):
+            self.__sm = sm
+        else:
+            raise ValueError('setServiceManager requires an IServiceService')
+
