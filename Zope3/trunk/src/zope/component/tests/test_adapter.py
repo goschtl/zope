@@ -49,9 +49,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         got = list(registry.getRegisteredMatching())
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -60,12 +60,12 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            for_interfaces = (R1, )
+            required = (R1, )
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -74,13 +74,13 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            for_interfaces = (R12, R2)
+            required = (R12, R2)
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -89,14 +89,14 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P1, )
+            provided = (P1, )
             ))
 
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -105,13 +105,13 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P3, )
+            provided = (P3, )
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -120,14 +120,14 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            for_interfaces = (R4, R12),
-            provided_interfaces = (P1, ),
+            required = (R4, R12),
+            provided = (P1, ),
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -136,14 +136,14 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            for_interfaces = (R4, R12),
-            provided_interfaces = (P3, ),
+            required = (R4, R12),
+            provided = (P3, ),
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -152,17 +152,30 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         registry = self.getRegistry()
 
         got = list(registry.getRegisteredMatching(
-            for_interfaces = (R2, ),
-            provided_interfaces = (P3, ),
+            required = (R2, ),
+            provided = (P3, ),
             ))
         got.sort()
         expect = [
-            ('', None, P3, [default_P3]),
-            ('', Interface, P3, [any_P3]),
-            ('', R2, P3, [R2_P3]),
+            (Interface, P3, (), u'', [any_P3]),
+            (R2, P3, (), u'', [R2_P3]),
+            (None, P3, (), u'', [default_P3]),
             ]
         expect.sort()
         self.assertEqual(got, expect)
+
+    def test_pickling(self):
+        from zope.component.tests.test_service import testServiceManager
+        from zope.component.interfaces import IAdapterService
+        testServiceManager.defineService('Adapters', IAdapterService)
+        adapters = GlobalAdapterService()
+        testServiceManager.provideService('Adapters', adapters)
+        import pickle
+
+        as = pickle.loads(pickle.dumps(adapters))
+        self.assert_(as is adapters)
+
+        testServiceManager._clear()
 
 def test_suite():
     return unittest.makeSuite(GlobalAdapterServiceTests)
