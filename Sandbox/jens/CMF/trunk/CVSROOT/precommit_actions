@@ -17,4 +17,6 @@ FILES="$@"
 
 pwd
 set -x
+ls -l $FILES
 /bin/chmod g+w $FILES
+ls -l $FILES
