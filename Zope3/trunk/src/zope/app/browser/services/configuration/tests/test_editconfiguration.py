@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.3 2003/06/05 12:03:13 stevea Exp $
+$Id: test_editconfiguration.py,v 1.4 2003/06/05 12:41:54 stevea Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,6 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.configuration import EditConfiguration
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent
 from zope.app.interfaces.services.configuration import Active
@@ -31,19 +30,20 @@ from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.app.context import ContextWrapper
 
 class Container(dict):
-    __implements__ = IContainer, IContainmentRoot
+    implements(IContainer, IContainmentRoot)
 
 class I(Interface):
     pass
 
 class C:
-    __implements__ = I
+    implements(I)
     status = Active
 
 
@@ -54,7 +54,7 @@ class Test(PlacefulSetup, TestCase):
         c2 = C()
         c7 = C()
         d = Container({'1': c1, '2': c2, '7': c7})
-
+        d = ContextWrapper(d, None)
         view = EditConfiguration(d, TestRequest())
         view.remove_objects(['2', '7'])
         self.assertEqual(d, {'1': c1})

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.10 2003/05/27 14:18:06 jim Exp $
+$Id: adding.py,v 1.11 2003/06/05 12:41:53 stevea Exp $
 """
 __metaclass__ = type
 
@@ -33,10 +33,11 @@ from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse
 
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.interface import implements
 
 class Adding(BrowserView):
 
-    __implements__ =  IAdding, IPublishTraverse
+    implements(IAdding, IPublishTraverse)
 
     menu_id = "add_content"
 
@@ -106,7 +107,7 @@ class Adding(BrowserView):
     def action(self, type_name='', id=''):
         if not type_name:
             raise UserError(_(u"You must select the type of object to add."))
-        
+
         if type_name.startswith('@@'):
             type_name = type_name[2:]
 

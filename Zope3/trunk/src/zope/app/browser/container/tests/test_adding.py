@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.5 2003/06/05 12:03:13 stevea Exp $
+$Id: test_adding.py,v 1.6 2003/06/05 12:41:54 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -29,10 +29,9 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
 
-from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
 from zope.interface import implements
-
+from zope.app.context import ContextWrapper
 
 class Container:
 
@@ -60,6 +59,8 @@ class Test(PlacelessSetup, TestCase):
 
     def test(self):
         container = Container()
+        # ensure container provides IZopeContainer
+        container = ContextWrapper(container, None)
         request = TestRequest()
         adding = Adding(container, request)
         provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
