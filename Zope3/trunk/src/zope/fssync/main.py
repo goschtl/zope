@@ -16,16 +16,18 @@
 
 Command line syntax summary:
 
-fssync [global_options] checkout [options] URL [TARGETDIR]
-fssync [global_options] update [options] [TARGET ...]
-fssync [global_options] commit [options] [TARGET ...]
-fssync [global_options] diff [options] [TARGET ...]
-fssync [global_options] status [options] [TARGET ...]
+fssync [global_options] checkout [local_options] URL [TARGETDIR]
+fssync [global_options] update [local_options] [TARGET ...]
+fssync [global_options] commit [local_options] [TARGET ...]
+fssync [global_options] diff [local_options] [TARGET ...]
+fssync [global_options] add [local_options] TARGET ...
+fssync [global_options] remove [local_options] TARGET ...
 
 For now, the only global option is -h/--help; there are no local
-options yet.
+options yet except for diff, which supports a small subset of the
+options of GNU diff.
 
-$Id: main.py,v 1.6 2003/05/13 20:28:01 gvanrossum Exp $
+$Id: main.py,v 1.7 2003/05/13 21:02:21 gvanrossum Exp $
 """
 
 import os
