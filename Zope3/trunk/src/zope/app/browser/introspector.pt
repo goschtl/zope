@@ -114,7 +114,7 @@ th.introspector {
         <th class="introspector">Bases:</th>
         <td>
             <div tal:repeat="base introspector/getBaseClassNames">
-	       <span tal:replace="repeat/base/item" />
+              <span tal:replace="repeat/base/item" />
                <!--
                 <a href=""
                     tal:attributes="href
@@ -140,11 +140,11 @@ th.introspector {
         <th class="introspector">Interfaces from Class:</th>
         <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
-	       <div tal:define="url python: view.getInterfaceURL(interface)">
+              <div tal:define="url python: view.getInterfaceURL(interface)">
                   <a href=""
                      tal:attributes="href url"
                      tal:content="interface"
-		     tal:condition="url">Interface</a>
+                     tal:condition="url">Interface</a>
                   <span tal:condition="python: not url"
                         tal:content="interface" />
                </div>
@@ -156,11 +156,11 @@ th.introspector {
         <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames"
                  tal:condition="introspector/getDirectlyProvided">
-	       <div tal:define="url python: view.getInterfaceURL(interface)">
+              <div tal:define="url python: view.getInterfaceURL(interface)">
                   <a href=""
                      tal:attributes="href url"
                      tal:content="interface"
-		     tal:condition="url">Interface</a>
+                     tal:condition="url">Interface</a>
                   <span tal:condition="python: not url"
                         tal:content="interface" />
                </div>

@@ -86,7 +86,7 @@
                tal:omit-tag="">content of topicTree</div>
           <br />
         </div>
-          
+
       </div>
 
     </div>
@@ -179,7 +179,7 @@
               </div>
             </div>
 
-	    <!-- Do not remove! This box will show the contextually related 
+            <!-- Do not remove! This box will show the contextually related 
                  help topics! -->
             <div class="box" id="help"
                 tal:define="results view/@@find_help_topics|nothing"

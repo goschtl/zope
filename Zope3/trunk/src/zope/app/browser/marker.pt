@@ -36,7 +36,7 @@ th.introspector {
         <th class="introspector">Bases:</th>
         <td>
             <div tal:repeat="base introspector/getBaseClassNames">
-	       <span tal:replace="repeat/base/item" />
+              <span tal:replace="repeat/base/item" />
                <!--
                 <a href=""
                     tal:attributes="href
@@ -61,27 +61,27 @@ th.introspector {
     <tr>
         <th class="introspector">Interfaces from Class:</th>
         <td>
-            <div tal:repeat="interface introspector/getInterfaceNames">
-	       <div tal:define="url python: view.getInterfaceURL(interface)">
-                  <a href=""
-                     tal:attributes="href url"
-                     tal:content="interface"
-		     tal:condition="url">Interface</a>
-                  <span tal:condition="python: not url"
-                        tal:content="interface" />
-               </div>
+          <div tal:repeat="interface introspector/getInterfaceNames">
+            <div tal:define="url python: view.getInterfaceURL(interface)">
+              <a href=""
+                 tal:attributes="href url"
+                 tal:content="interface"
+                 tal:condition="url">Interface</a>
+              <span tal:condition="python: not url"
+                    tal:content="interface" />
             </div>
+          </div>
         </td>
     </tr>
     <tr tal:condition="introspector/getDirectlyProvided">
         <th class="introspector">Interfaces from Object:</th>
         <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames">
-	       <div tal:define="url python: view.getInterfaceURL(interface)">
+              <div tal:define="url python: view.getInterfaceURL(interface)">
                   <a href=""
                      tal:attributes="href url"
                      tal:content="interface"
-		     tal:condition="url">Interface</a>
+                     tal:condition="url">Interface</a>
                   <span tal:condition="python: not url"
                         tal:content="interface" />
                </div>
@@ -93,7 +93,7 @@ th.introspector {
         <th class="introspector">Remove Interfaces:</th>
         <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames">
-	      <label><input type="checkbox"
+              <label><input type="checkbox"
                             tal:attributes="name string:rem_${interface}"/>
                      <span tal:replace="interface" />
               </label>
@@ -106,7 +106,7 @@ th.introspector {
         <th class="introspector">Add Interfaces:</th>
         <td>
             <div tal:repeat="interface introspector/getMarkerInterfaceNames">
-	      <label><input type="checkbox"
+              <label><input type="checkbox"
                             tal:attributes="name string:add_${interface}"/>
                      <span tal:replace="interface" />
               </label>
