@@ -13,9 +13,8 @@
 ##############################################################################
 """Customization of zope.i18n for the Zope application server
 
-$Id: __init__.py,v 1.3 2003/03/25 18:47:13 jim Exp $
+$Id: __init__.py,v 1.4 2003/08/12 19:13:50 srichter Exp $
 """
-
 from zope.i18n import MessageIDFactory
 
 # Import _ to use to create message ids in the zope domain
