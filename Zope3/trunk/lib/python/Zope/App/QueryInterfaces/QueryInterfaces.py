@@ -11,12 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
+"""Standard interfaces for using the query service.
 
-XXX longer description goes here.
+The query service provides a set of interfaces for articulating queries. You
+can create complex queries by implementing multiple interfaces like
+IBatchedQuery and ITextIndexQuery to ask the TextIndex for a batched query.
+The lookup for the query processor will try to find an appropriate adapter to
+the index.
 
-$Id: QueryInterfaces.py,v 1.1 2002/12/03 16:28:27 ctheune Exp $
+$Id: QueryInterfaces.py,v 1.2 2002/12/04 10:42:27 ctheune Exp $
 """
+
+from Interface import Interface
+from Interface.Attribute import Attribute
 
 class IQueryDescription(Interface):
     """An interface the describes the input or output of a
@@ -37,6 +44,13 @@ class IBatchedQuery(Interface):
 
     startPosition = Attribute("The first element of the batch.")
     batchSize = Attribute("The size of the batch.")
+
+class IBatchedTextIndexQuery(IBatchedQuery, ITextIndexQuery):
+    pass
+
+class IBatchedResult(IBatchedQuery):
+
+    totalSize = Attribute("The total size of the result set if known.")
     
 class IHubIdSet(IQueryDescription):
     """Contains an IISet or IOSet of HubIds.
@@ -58,17 +72,17 @@ class IInstrumentalQuery(Interface):
 
     instrumentalQuery = Attribute("Contains the instrumental query.")
 
+
 class IRankedObjectIterator(Interface):
     """Provides an iterable presentation of ranked results
-       of a ranked query.
+       of a ranked query. Each item is implementing an IRankedObjectRecord.
     """
-
-    class IRecord(Interface):
-        """One item returned by the iterator."""
-
-        rank = Attribute("A float between 0 and 1 inclusive.")
-        object = Attribute("The object.")
 
     def __iter__():
         """Iterates over the results."""
 
+class IRankedObjectRecord(Interface):
+    """One item returned by the iterator."""
+
+    rank = Attribute("A float between 0 and 1 inclusive.")
+    object = Attribute("The object.")
