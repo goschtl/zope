@@ -23,6 +23,8 @@ from zope.interface import Interface, implements
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import IRegisterable
+from zope.app.registration.interfaces import IRegistered
 from zope.app.dependable.interfaces import DependencyError
 from zope.app.registration.registration import \
      SimpleRegistration, ComponentRegistration
@@ -31,16 +33,19 @@ from zope.app.dependable.interfaces import IDependable
 from zope.app.traversing.api import traverse
 from zope.security.proxy import Proxy
 from zope.app.container.contained import Contained
-from zope.app.container.contained import ObjectRemovedEvent
+from zope.app.container.contained import ObjectRemovedEvent, ObjectMovedEvent
 from zope.app.tests import ztapi
 from zope.app.registration.interfaces import IRegistration
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.registration.registration import \
     SimpleRegistrationRemoveSubscriber, \
     ComponentRegistrationRemoveSubscriber, \
-    ComponentRegistrationAddSubscriber
+    ComponentRegistrationAddSubscriber, \
+    RegisterableMoveSubscriber
+from zope.app.registration.registration import Registered
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 import zope.interface
+from zope.app.annotation.interfaces import IAnnotations
 
 class ITestComponent(Interface):
     pass
@@ -72,16 +77,22 @@ class DummyRegistration(ComponentStub):
 
     def __init__(self):
         self.status = UnregisteredStatus
-        
+
     def getPath(self):
         return 'dummy!'
 
     def getComponent(self):
         return self
-    
+
+
+class DummyRegisterable(Contained, dict):
+
+    implements(IRegisterable, IAnnotations)
+
+
 class TestSimpleRegistrationEvents(TestCase):
 
-    def test_RemoveSubscriber(self):    
+    def test_RemoveSubscriber(self):
         reg = DummyRegistration()
         reg.status = ActiveStatus
 
@@ -111,7 +122,7 @@ class TestSimpleRegistrationEvents(TestCase):
         SimpleRegistrationRemoveSubscriber(reg, event)
 
         self.assertEquals(reg.status, UnregisteredStatus)
-        
+
 class TestSimpleRegistration(TestCase):
 
     def setUp(self):
@@ -159,7 +170,7 @@ class TestComponentRegistrationEvents:
     def test_addNotify(self):
         """
         First we create a dummy registration
-        
+
           >>> reg = DummyRegistration()
 
         Now call notification
@@ -171,11 +182,11 @@ class TestComponentRegistrationEvents:
           >>> reg.dependents()
           ('dummy!',)
         """
-        
+
     def test_removeNotify_dependents(self):
         """
         First we create a dummy registration
-        
+
           >>> reg = DummyRegistration()
 
         Now call notification
@@ -195,8 +206,62 @@ class TestComponentRegistrationEvents:
 
           >>> reg.dependents()
           ()
-        
+
         """
+
+class TestRegisterableEvents:
+    """Tests handling of registered component rename.
+
+    >>> PlacefulSetup().setUp()
+
+    We'll first add a registerable component to the root folder:
+
+        >>> rootFolder = PlacefulSetup().rootFolder
+        >>> component = DummyRegisterable()
+        >>> rootFolder['foo'] = component
+
+    and create a registration for it:
+
+        >>> reg = ComponentRegistration("foo")
+        >>> rootFolder['reg'] = reg
+        >>> ztapi.provideAdapter(IRegisterable, IRegistered, Registered)
+        >>> IRegistered(component).addUsage('reg')
+
+    The registration is initially configured with the component path:
+
+        >>> reg.componentPath
+        'foo'
+
+    The RegisterableMoveSubscriber subscriber is for IRegisterable and
+    IObjectMovedEvent. When we invoke it with the appropriate 'rename' event
+    (i.e. oldParent is the same as newParent):
+
+        >>> event = ObjectMovedEvent(component,
+        ...     oldParent=rootFolder,
+        ...     oldName='foo',
+        ...     newParent=rootFolder,
+        ...     newName='bar')
+        >>> RegisterableMoveSubscriber(component, event)
+
+    the registration component path is updated accordingly:
+
+        >>> reg.componentPath
+        'bar'
+
+    However, if we invoke RegisterableMoveSubscriber with a 'move' event (i.e.
+    oldParent is different from newParent):
+
+        >>> event = ObjectMovedEvent(component,
+        ...     oldParent=rootFolder,
+        ...     oldName='foo',
+        ...     newParent=object(),
+        ...     newName='foo')
+        >>> RegisterableMoveSubscriber(component, event)
+        Traceback (most recent call last):
+        DependencyError: Can't move a registered component from its container.
+
+    >>> PlacefulSetup().tearDown()
+    """
 
 def test_suite():
     import sys

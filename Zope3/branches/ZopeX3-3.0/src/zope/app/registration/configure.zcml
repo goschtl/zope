@@ -57,4 +57,10 @@
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
+  <subscriber
+    factory=".registration.RegisterableMoveSubscriber"
+    for=".interfaces.IRegisterable
+         zope.app.container.interfaces.IObjectMovedEvent"
+    />
+
 </configure>

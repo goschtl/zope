@@ -204,7 +204,7 @@ class RegistrationStack(Persistent, Contained):
          False
 
        And register and activate r2:
-       
+
          >>> stack.register(r2)
          >>> stack.activate(r2)
          >>> stack.active()
@@ -219,7 +219,7 @@ class RegistrationStack(Persistent, Contained):
          >>> stack.active()
 
        Because there wasn't an active registration before we made r2
-       active. 
+       active.
        """
 
 #     The invariants for _data are as follows:
@@ -462,7 +462,7 @@ class NotifyingRegistrationStack(RegistrationStack):
          >>> stack.activate(r2)
 
        The parent will be notified of the activation and the
-       deactivation: 
+       deactivation:
 
          >>> parent.active
          r2
@@ -487,7 +487,7 @@ class NotifyingRegistrationStack(RegistrationStack):
          r1
 
        And register and activate r2:
-       
+
          >>> stack.register(r2)
          >>> stack.activate(r2)
          >>> parent.active
@@ -504,7 +504,7 @@ class NotifyingRegistrationStack(RegistrationStack):
          r2
 
        Because there wasn't an active registration before we made r2
-       active. 
+       active.
        """
 
     def _activate(self, registration):
@@ -646,6 +646,19 @@ def ComponentRegistrationAddSubscriber(component_registration, event):
     if adapter is not None:
         adapter.addUsage(objectpath)
 
+def RegisterableMoveSubscriber(registerable, event):
+    """Updates componentPath for registrations on component rename."""
+    if event.oldParent is not None and event.newParent is not None:
+        if event.oldParent is event.newParent:
+            registered = interfaces.IRegistered(registerable)
+            if registered is not None:
+                for reg in registered.registrations():
+                    if interfaces.IComponentRegistration.providedBy(reg):
+                        reg.componentPath = event.newName
+        else:
+            raise DependencyError(
+                "Can't move a registered component from its container.")
+
 from zope.app.dependable import PathSetAnnotation
 
 class Registered(PathSetAnnotation):
@@ -669,7 +682,7 @@ class Registered(PathSetAnnotation):
     def registrations(self):
         return [zapi.traverse(self.context, path)
                 for path in self.getPaths()]
-            
+
 class RegistrationManager(Persistent, Contained):
     """Registration manager
 
