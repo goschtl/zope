@@ -31,7 +31,7 @@
   <td class="list-item"
       tal:attributes="colspan python:maxdepth+2">
     <a href=""
-       tal:attributes="href root/context/@@absolute_url"
+       tal:attributes="href string:${root/context/@@absolute_url}/@@SelectedManagementView.html"
        tal:content="root/getId() | string:[top]"></a>
   </td>
 </tr>
@@ -62,7 +62,7 @@
   <td colspan="1" class="list-item"
       tal:attributes="colspan python:maxdepth - dict['depth'] + 1">
     <a href=""
-       tal:attributes="href node/context/@@absolute_url"
+       tal:attributes="href string:${node/context/@@absolute_url}/@@SelectedManagementView.html"
        tal:content="node/context/__name__">
       node/id
     </a>
