@@ -15,6 +15,9 @@ After 1.3
     - Removed crufty 'isDesktop' stuff from 'folder_factories' methods.
 
     - Fixed HTML-invalidating call to 'filterCookie' in 'folder_contents'.
+    
+    - Fixed unclosed 'tr' element  in ZPT version of 'folder_edit_form'
+      (Collector #57).
 
 CMF 1.3
 
@@ -50,6 +53,13 @@ CMF 1.3
       CMFDefault.utils:  formatRFC822Headers, parseHeadersBody,
         semi_split, comma_split, seq_strip, tuplize, bodyfinder,
         html_headcheck.
+
+    - Added two utility functions, 'isHTMLSafe' and 'scrubHTML', to
+      CMFDefault utils;  these modules check for / remove undesirable
+      tags from textual content.
+
+    - Made public functions of 'CMFCore.utils' and 'CMFDefault.utils'
+      available for scripting.
 
     - Allowed Portal Folders to be discussable.
 
