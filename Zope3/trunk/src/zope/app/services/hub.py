@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.20 2003/08/07 15:32:41 garrett Exp $
+$Id: hub.py,v 1.21 2003/09/21 17:32:52 jim Exp $
 """
 
 from __future__ import generators
@@ -22,6 +22,7 @@ __metaclass__ = type
 
 import random
 
+from zope.app import zapi
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 
@@ -29,13 +30,14 @@ from zope.app.traversing import getPath, canonicalPath
 
 from zope.component import getAdapter, getService
 from zope.exceptions import NotFoundError
-from zope.context import ContextMethod
 from zope.proxy import removeAllProxies
 from zope.app.services.servicenames import EventSubscription
 
 from zope.app.interfaces.traversing import ITraverser
-from zope.app.interfaces.event import IObjectRemovedEvent, IObjectEvent
-from zope.app.interfaces.event import IObjectMovedEvent, IObjectCreatedEvent
+from zope.app.interfaces.event import IObjectEvent
+from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.interfaces.container import IObjectMovedEvent
+from zope.app.interfaces.event import IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.hub import IObjectHub, ObjectHubError
 from zope.app.services.event import ServiceSubscriberEventChannel
@@ -48,16 +50,17 @@ from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements
 from zope.app.interfaces.event import ISubscriber
-from zope.app.interfaces.event import IObjectAddedEvent
+from zope.app.interfaces.container import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.services.servicenames import HubIds
-from zope.app.event.objectevent import ObjectAddedEvent
+from zope.app.container.contained import ObjectAddedEvent
 
 from zope.app.traversing import traverse, traverseName, getPath, getRoot
 from zope.app.interfaces.services.hub import ObjectHubError
 from zope.app.interfaces.services.hub import ISubscriptionControl
 from persistence import Persistent
+from zope.app.container.contained import Contained
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""
@@ -176,11 +179,14 @@ def randid():
     else:
         return abs
 
-def canonicalSlash(path):
+def canonicalSlash(parent, name=None):
     # Return a canonical path, with a slash appended
-    return canonicalPath(path) + u'/'
+    path = canonicalPath(parent) + u'/'
+    if name:
+        path += name + u'/'
+    return path
 
-class ObjectHub(ServiceSubscriberEventChannel):
+class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
     # this implementation makes the decision to not interact with any
     # object hubs above it: it is a world unto itself, as far as it is
@@ -197,19 +203,43 @@ class ObjectHub(ServiceSubscriberEventChannel):
         # unicode pathslash --> int
         self.__path_to_hubid = OIBTree()
 
-    def notify(wrapped_self, event):
+    def notify(self, event):
         '''See interface ISubscriber'''
-        clean_self = removeAllProxies(wrapped_self)
-        clean_self._notify(wrapped_self, event)
+        self._notify(self, event)
+
+        # XXX all of these "if"s are BS.  We should subscribe to the
+        # different kinds of events independently.
+
+        
         if IObjectEvent.isImplementedBy(event):
             # generate NotificationHubEvents only if object is known
             # ie registered
+              
             if IObjectMovedEvent.isImplementedBy(event):
-                pathslash = canonicalSlash(event.fromLocation)
-                hubid = clean_self.__path_to_hubid.get(pathslash)
-                if hubid is not None:
-                    new_pathslash = canonicalSlash(event.location)
-                    path_to_hubid = clean_self.__path_to_hubid
+                if not (event.oldParent and event.oldName):
+                    # add event, not interested
+                    return
+
+                # We have a move or remove. See if we know anything about it:
+                pathslash = canonicalSlash(event.oldParent, event.oldName)
+                hubid = self.__path_to_hubid.get(pathslash)
+                if hubid is None:
+                    # Nope
+                    return
+
+                if not (event.newParent and event.newName):
+                    # Removed event
+                    del self.__hubid_to_path[hubid]
+                    del self.__path_to_hubid[pathslash]
+                    # send out IObjectRemovedHubEvent to plugins
+                    event = ObjectRemovedHubEvent(
+                        event.object, hubid, pathslash[:-1], event.object)
+                    self._notify(self, event)
+                else:
+                    # Move
+                    new_pathslash = canonicalSlash(
+                        event.newParent, event.newName)
+                    path_to_hubid = self.__path_to_hubid
                     if path_to_hubid.has_key(new_pathslash):
                         raise ObjectHubError(
                             'Cannot move to location %s, '
@@ -218,34 +248,22 @@ class ObjectHub(ServiceSubscriberEventChannel):
                     hubid = path_to_hubid[pathslash]
                     del path_to_hubid[pathslash]
                     path_to_hubid[new_pathslash] = hubid
-                    clean_self.__hubid_to_path[hubid] = new_pathslash
+                    self.__hubid_to_path[hubid] = new_pathslash
                     # send out IObjectMovedHubEvent to plugins
                     event = ObjectMovedHubEvent(
-                        wrapped_self, hubid, pathslash[:-1],
+                        self, hubid, pathslash[:-1],
                         new_pathslash[:-1], event.object)
-                    clean_self._notify(wrapped_self, event)
-            elif IObjectCreatedEvent.isImplementedBy(event):
-                # a newly created object that has not been added to a
-                # container yet has no location. So, we're not interested in
-                # it.
-                pass
-            else:
-                pathslash = canonicalSlash(event.location)
-                hubid = clean_self.__path_to_hubid.get(pathslash)
-                if hubid is not None:
-                    if IObjectModifiedEvent.isImplementedBy(event):
-                        # send out IObjectModifiedHubEvent to plugins
-                        event = ObjectModifiedHubEvent(
-                            wrapped_self, hubid, pathslash[:-1], event.object)
-                        clean_self._notify(wrapped_self, event)
-                    elif IObjectRemovedEvent.isImplementedBy(event):
-                        del clean_self.__hubid_to_path[hubid]
-                        del clean_self.__path_to_hubid[pathslash]
-                        # send out IObjectRemovedHubEvent to plugins
-                        event = ObjectRemovedHubEvent(
-                            event.object, hubid, pathslash[:-1], event.object)
-                        clean_self._notify(wrapped_self, event)
-    notify = ContextMethod(notify)
+                    self._notify(self, event)
+
+            elif IObjectModifiedEvent.isImplementedBy(event):
+                # send out IObjectModifiedHubEvent to plugins
+                pathslash = canonicalSlash(zapi.getPath(event.object))
+                hubid = self.__path_to_hubid.get(pathslash)
+                if hubid is None:
+                    return
+                event = ObjectModifiedHubEvent(
+                    self, hubid, pathslash[:-1], event.object)
+                self._notify(self, event)
 
     def getHubId(self, path_or_object):
         '''See interface ILocalObjectHub'''
@@ -268,17 +286,16 @@ class ObjectHub(ServiceSubscriberEventChannel):
         except KeyError:
             raise NotFoundError(hubid)
 
-    def getObject(wrapped_self, hubid):
+    def getObject(self, hubid):
         '''See interface IObjectHub'''
-        path = wrapped_self.getPath(hubid)
-        adapter = getAdapter(wrapped_self, ITraverser)
-        wrapped_self._verifyPath(path, adapter)
+        path = self.getPath(hubid)
+        adapter = getAdapter(self, ITraverser)
+        self._verifyPath(path, adapter)
         return adapter.traverse(path)
-    getObject = ContextMethod(getObject)
 
-    def register(wrapped_self, path_or_object):
+    def register(self, path_or_object):
         '''See interface ILocalObjectHub'''
-        clean_self = removeAllProxies(wrapped_self)
+
         # XXX Need a new unit test for this; previously we tested
         #     whether it's wrapped, which is wrong because the root
         #     isn't wrapped (and it certainly makes sense to want to
@@ -292,33 +309,31 @@ class ObjectHub(ServiceSubscriberEventChannel):
 
         pathslash = canonicalSlash(path)
 
-        path_to_hubid = clean_self.__path_to_hubid
+        path_to_hubid = self.__path_to_hubid
         if path_to_hubid.has_key(pathslash):
             raise ObjectHubError('path %s already in object hub' % path)
-        hubid = clean_self._generateHubId(pathslash)
+        hubid = self._generateHubId(pathslash)
         path_to_hubid[pathslash] = hubid
 
         # send out IObjectRegisteredHubEvent to plugins
         event = ObjectRegisteredHubEvent(
-            wrapped_self, hubid, pathslash[:-1], obj)
-        clean_self._notify(wrapped_self, event)
+            self, hubid, pathslash[:-1], obj)
+        self._notify(self, event)
         return hubid
-    register = ContextMethod(register)
 
-    def unregister(wrapped_self, path_or_object_or_hubid):
+    def unregister(self, path_or_object_or_hubid):
         '''See interface ILocalObjectHub'''
-        clean_self = removeAllProxies(wrapped_self)
         if isinstance(path_or_object_or_hubid, (unicode, str)):
             path = canonicalPath(path_or_object_or_hubid)
         elif isinstance(path_or_object_or_hubid, int):
-            path = clean_self.getPath(path_or_object_or_hubid)
+            path = self.getPath(path_or_object_or_hubid)
         else:
             path = getPath(path_or_object_or_hubid)
 
         pathslash = canonicalSlash(path)
 
-        path_to_hubid = clean_self.__path_to_hubid
-        hubid_to_path = clean_self.__hubid_to_path
+        path_to_hubid = self.__path_to_hubid
+        hubid_to_path = self.__hubid_to_path
         try:
             hubid = path_to_hubid[pathslash]
         except KeyError:
@@ -329,9 +344,8 @@ class ObjectHub(ServiceSubscriberEventChannel):
 
             # send out IObjectUnregisteredHubEvent to plugins
             event = ObjectUnregisteredHubEvent(
-                wrapped_self, hubid, pathslash[:-1])
-            clean_self._notify(wrapped_self, event)
-    unregister = ContextMethod(unregister)
+                self, hubid, pathslash[:-1])
+            self._notify(self, event)
 
     def numRegistrations(self):
         """See interface IObjectHub"""
@@ -359,12 +373,11 @@ class ObjectHub(ServiceSubscriberEventChannel):
                 min=pathslash, max=pathslash[:-1]+u'0', excludemax=True):
                 yield pathslash[:-1], hubId
 
-    def iterObjectRegistrations(wrapped_self):
+    def iterObjectRegistrations(self):
         """See interface IHubEventChannel"""
-        traverser = getAdapter(wrapped_self, ITraverser)
-        for path, hubId in wrapped_self.iterRegistrations():
-            yield (path, hubId, wrapped_self._safeTraverse(path, traverser))
-    iterObjectRegistrations = ContextMethod(iterObjectRegistrations)
+        traverser = getAdapter(self, ITraverser)
+        for path, hubId in self.iterRegistrations():
+            yield (path, hubId, self._safeTraverse(path, traverser))
 
     ############################################################
 
@@ -379,15 +392,14 @@ class ObjectHub(ServiceSubscriberEventChannel):
         return index
 
 
-    def _verifyPath(wrapped_self, path, traverser=None):
+    def _verifyPath(self, path, traverser=None):
         if traverser is None:
-            traverser = getAdapter(wrapped_self, ITraverser)
+            traverser = getAdapter(self, ITraverser)
         try:
             traverser.traverse(path)
         except NotFoundError, e:
-            wrapped_self.unregister(path)
+            self.unregister(path)
             raise e
-    _verifyPath = ContextMethod(_verifyPath)
 
 
     def _safeTraverse(self, path, traverser):
@@ -396,17 +408,16 @@ class ObjectHub(ServiceSubscriberEventChannel):
         except NotFoundError:
             return None
 
-    def unregisterMissingObjects(wrapped_self):
+    def unregisterMissingObjects(self):
         # XXX temporary method for clearing missing objects - remove when
         # proper unregistration mechanisms are added.
         missing = []
-        for object in wrapped_self.iterObjectRegistrations():
+        for object in self.iterObjectRegistrations():
             if object[2] is None:
                 missing.append(object[0])
         for path in missing:
-            wrapped_self.unregister(path)
+            self.unregister(path)
         return len(missing)
-    unregisterMissingObjects = ContextMethod(unregisterMissingObjects)
 
 
 """A simple-minded registration object.
@@ -427,11 +438,11 @@ very much ObjectHub-specific for now.
 """
 
 
-class Registration(Persistent):
+class Registration(Persistent, Contained):
 
     implements(ISubscriptionControl, ISubscriber)
 
-    def notify(wrapped_self, event):
+    def notify(self, event):
         """An event occured. Perhaps register this object with the hub."""
 
         # XXX quick hack to make sure we *only* register on add events
@@ -440,41 +451,37 @@ class Registration(Persistent):
         # have it correct now.
 
         if event.__class__ is ObjectAddedEvent:
-            hub = getService(wrapped_self, HubIds)
-            wrapped_self._registerObject(event.location, hub)
-    notify = ContextMethod(notify)
+            hub = getService(self, HubIds)
+            self._registerObject(event.object, hub)
 
     currentlySubscribed = False # Default subscription state
 
-    def subscribe(wrapped_self):
-        if wrapped_self.currentlySubscribed:
+    def subscribe(self):
+        if self.currentlySubscribed:
             raise RuntimeError, "already subscribed; please unsubscribe first"
         # we subscribe to the HubIds service so that we're
         # guaranteed to get exactly the events *that* service receives.
-        events = getService(wrapped_self, EventSubscription)
-        events.subscribe(wrapped_self, IObjectAddedEvent)
-        wrapped_self.currentlySubscribed = True
-    subscribe = ContextMethod(subscribe)
+        events = getService(self, EventSubscription)
+        events.subscribe(self, IObjectAddedEvent)
+        self.currentlySubscribed = True
 
-    def unsubscribe(wrapped_self):
-        if not wrapped_self.currentlySubscribed:
+    def unsubscribe(self):
+        if not self.currentlySubscribed:
             raise RuntimeError, "not subscribed; please subscribe first"
-        events = getService(wrapped_self, EventSubscription)
-        events.unsubscribe(wrapped_self, IObjectAddedEvent)
-        wrapped_self.currentlySubscribed = False
-    unsubscribe = ContextMethod(unsubscribe)
+        events = getService(self, EventSubscription)
+        events.unsubscribe(self, IObjectAddedEvent)
+        self.currentlySubscribed = False
 
     def isSubscribed(self):
         return self.currentlySubscribed
 
-    def registerExisting(wrapped_self):
-        object = findContentObject(wrapped_self)
-        hub = getService(wrapped_self, HubIds)
-        wrapped_self._registerTree(object, hub)
-    registerExisting = ContextMethod(registerExisting)
+    def registerExisting(self):
+        object = findContentObject(self)
+        hub = getService(self, HubIds)
+        self._registerTree(object, hub)
 
-    def _registerTree(wrapped_self, object, hub):
-        wrapped_self._registerObject(object, hub)
+    def _registerTree(self, object, hub):
+        self._registerObject(object, hub)
         # XXX Policy decision: only traverse into folders
         if not IFolder.isImplementedBy(object):
             return
@@ -483,17 +490,15 @@ class Registration(Persistent):
         traversable = getAdapter(object, ITraversable)
         for name in names:
             sub_object = traverseName(object, name, traversable=traversable)
-            wrapped_self._registerTree(sub_object, hub)
-    _registerTree = ContextMethod(_registerTree)
+            self._registerTree(sub_object, hub)
 
-    def _registerObject(wrapped_self, location, hub):
+    def _registerObject(self, location, hub):
         # XXX Policy decision: register absolutely everything
         try:
             hub.register(location)
         except ObjectHubError:
             # Already registered
             pass
-    _registerObject = ContextMethod(_registerObject)
 
 def findContentObject(context):
     # We want to find the (content) Folder in whose service manager we
