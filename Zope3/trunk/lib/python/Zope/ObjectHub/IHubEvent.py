@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IHubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
+$Id: IHubEvent.py,v 1.2 2002/09/03 20:16:50 jim Exp $
 """
 from Zope.Event.IEvent import IEvent
 
@@ -35,8 +35,8 @@ class IHubEvent(IEvent):
    
 
 class IRegistrationHubEvent(IHubEvent):
-    """Some work could be done on registration or deregistration of an object."""
-
+    """Some work could be done on registration or deregistration of an object.
+    """
 
 class IObjectRegisteredHubEvent(IRegistrationHubEvent):
     """An ruid has been freshly created and mapped against an object."""
@@ -46,29 +46,22 @@ class IObjectUnregisteredHubEvent(IRegistrationHubEvent):
     """We are no longer interested in this object."""
 
 
-class INotificationHubEvent(IHubEvent):
-    """Some work has be done on a registrated object."""
-
-
-class IObjectAddedHubEvent(INotificationHubEvent):
+class IObjectAddedHubEvent(IObjectRegisteredHubEvent):
     """An ruid has been freshly created and mapped against an object.
        Also, implies the object has been newly added."""
     
     
-class IObjectModifiedHubEvent(INotificationHubEvent):
+class IObjectModifiedHubEvent(IHubEvent):
     """An object with an ruid has been modified."""
     
     
-class IObjectMovedHubEvent(INotificationHubEvent):
+class IObjectMovedHubEvent(IHubEvent):
     """An object with an ruid has had its context changed. Typically, this
        means that it has been moved."""
 
-   
-class IObjectRemovedHubEvent(INotificationHubEvent):
+    def getFromLocation():
+        """Returns the location before the move
+        """
+
+class IObjectRemovedHubEvent(IHubEvent):
     """An object with an ruid has been removed."""
-
-    def getLocation():
-        """Returns the object's location before it was removed."""
-
-    def getObject():
-        """Returns the object, or None if the object is unavailable."""
