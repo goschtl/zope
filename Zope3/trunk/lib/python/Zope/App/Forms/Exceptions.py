@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: Exceptions.py,v 1.4 2002/11/11 20:26:26 jim Exp $
 """
 
 
@@ -27,6 +27,9 @@ class WidgetInputError(Exception):
         self.widget_title = widget_title
         self.errors = errors
 
+class MissingInputError(WidgetInputError):
+    """Required data was not supplied
+    """
 
 class ConversionError(WidgetInputError):
     """If some conversion fails, this exception is raised.
