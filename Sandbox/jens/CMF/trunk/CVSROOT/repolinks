@@ -52,6 +52,7 @@
 /Zope/lib/python/SkinnableAndLocalizable    /Packages/SkinnableAndLocalizable
 /Zope/lib/python/Skins                          /Packages/Skins
 /Zope/lib/python/StructuredText                 /Packages/StructuredText
+/Zope/lib/python/TAL                            /Packages/TAL
 /Zope/lib/python/Testing                        /Packages/Testing
 /Zope/lib/python/TreeDisplay                    /Packages/TreeDisplay
 /Zope/lib/python/ZClasses                       /Packages/ZClasses
@@ -65,10 +66,12 @@
 /Zope/lib/python/ThreadedAsync                  /Packages/ThreadedAsync
 /Zope/lib/python/zdaemon                        /Packages/zdaemon
 /Zope/lib/python/zLOG                           /Packages/zLOG
+/Zope/lib/python/ZTUtils                        /Packages/ZTUtils
 /Zope/lib/python/Products/ExternalMethod        /Products/ExternalMethod
 /Zope/lib/python/Products/MailHost              /Products/MailHost
 /Zope/lib/python/Products/MIMETools             /Products/MIMETools
 /Zope/lib/python/Products/OFSP                  /Products/OFSP
+/Zope/lib/python/Products/PageTemplates         /Products/PageTemplates
 /Zope/lib/python/Products/PluginIndexes         /Products/PluginIndexes
 /Zope/lib/python/Products/PythonScripts         /Products/PythonScripts
 /Zope/lib/python/Products/STXDocument           /Products/STXDocument
