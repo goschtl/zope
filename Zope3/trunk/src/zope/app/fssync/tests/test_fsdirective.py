@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsdirective.py,v 1.1 2003/05/08 16:56:12 gvanrossum Exp $
+$Id: test_fsdirective.py,v 1.2 2003/07/28 22:21:36 jim Exp $
 """
 
 from cStringIO import StringIO
@@ -59,7 +59,7 @@ class Test(PlacelessSetup, TestCase):
         xmlconfig(StringIO(template % (
              """
              <fssync:adapter
-             class_="zope.app.fssync.tests.sampleclass.C2"
+             class="zope.app.fssync.tests.sampleclass.C2"
              factory="zope.app.fssync.tests.sampleclass.CDirAdapter"
              />
              """
@@ -82,7 +82,7 @@ class Test(PlacelessSetup, TestCase):
         xmlconfig(StringIO(template % (
              """
              <fssync:adapter
-             class_="zope.app.fssync.tests.sampleclass.C1"
+             class="zope.app.fssync.tests.sampleclass.C1"
              factory="zope.app.fssync.tests.sampleclass.CDirAdapter"
              />
              """
@@ -91,7 +91,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertRaises(DuplicationError, xmlconfig, StringIO(template % (
              """
              <fssync:adapter
-             class_="zope.app.fssync.tests.sampleclass.C1"
+             class="zope.app.fssync.tests.sampleclass.C1"
              factory="zope.app.fssync.tests.sampleclass.CFileAdapter"
              />
              """

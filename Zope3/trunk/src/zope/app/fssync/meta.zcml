@@ -4,7 +4,7 @@
 
     <directive
       name="adapter"
-      attributes="class_ factory"
+      attributes="class factory"
       handler=".fsdirective.registerFSRegistry"
       />
 
