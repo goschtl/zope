@@ -6,7 +6,7 @@
       for="zope.app.interfaces.container.IContentContainer"
       name="+"
       menu="zmi_actions" title="Add"
-      class="zope.app.browser.container.adding.Adding"
+      class="zope.app.browser.container.adding.ContentAdding"
       permission="zope.ManageContent"
       allowed_attributes="addingInfo">
 
