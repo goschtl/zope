@@ -165,7 +165,6 @@ ext_modules = [
               depends = ["lib/python/Persistence/cPersistence.h",
                          "lib/python/Persistence/cPersistenceAPI.h",]),
     Extension("ZODB._TimeStamp", ["lib/python/ZODB/TimeStamp.c"]),
-    Extension("ZODB.winlock", ["lib/python/ZODB/winlock.c"]),
     Extension("BDBStorage._helper", ["lib/python/BDBStorage/_helper.c"]),
     Extension("Zope.ContextWrapper.wrapper",
               ["lib/python/Zope/ContextWrapper/wrapper.c"],
@@ -179,6 +178,9 @@ ext_modules = [
               include_dirs = ["lib/python"],
               depends = ["lib/python/Zope/Proxy/proxy.h"]),
     ]
+
+if sys.platform == "win32":
+    ext_modules += [Extension("ZODB.winlock", ["lib/python/ZODB/winlock.c"])]
 
 doclines = __doc__.split("\n")
 
