@@ -2,8 +2,6 @@
 TODO
 ====
 
-- make five:viewable support being called several times
-
 - allow Zope2 boilerplate context.registerClass be configured thru zcml
 
 - implement/register missing zope.app directives:
@@ -11,8 +9,6 @@ TODO
   * browser:defaultView (need extra machinery in Viewable)
 
   * ...
-
-- support existing __bobo_traverse__ methods
 
 - secure page templates
 

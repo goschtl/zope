@@ -11,6 +11,12 @@ class SimpleContentView(BrowserView):
         """Docstring"""
         return "The mouse has been eaten by the eagle"
 
+class FancyContentView(BrowserView):
+    """Fancy, fancy stuff"""
+
+    def view(self):
+        return "Fancy, fancy"
+
 class CallableNoDocstring:
 
     def __call__(self):

@@ -27,33 +27,38 @@ class FakeRequest:
 class Viewable:
     """A mixin to make an object viewable using the Zope 3 system.
     """
-    def __bobo_traverse__(self, REQUEST, name):
-        try:
-            if not IBrowserRequest.providedBy(REQUEST):
-                REQUEST = FakeRequest()
-            try:
-                return getView(self, name, REQUEST).__of__(self)
-            except ComponentLookupError:
-                pass
-            try:
-                return getattr(self, name)
-            except AttributeError:
-                pass
-            try:
-                return self[name]
-            except (AttributeError, KeyError):
-                pass
-            # XXX not sure this is very useful
-            #method = REQUEST.get('REQUEST_METHOD', 'GET')
-            #if not method in ('GET', 'POST'):
-            #    return NullResource(self, name, REQUEST).__of__(self)
+    __five_viewable__ = True
 
-            # Waaa. See Application.py
-            try:
-                REQUEST.RESPONSE.notFoundError("%s " % name)
-            except AttributeError:
-                raise KeyError, name
-        except:
-            import traceback
-            traceback.print_exc()
-            raise
+    def __fallback_traverse__(self, REQUEST, name):
+        """Method hook for fallback traversal
+
+        This method is called by __bobo_traverse___ when Zope3-style
+        view lookup fails.  By default, we do what Zope 2 would do,
+        raise a NotFound error."""
+        try:
+            REQUEST.RESPONSE.notFoundError("%s " % name)
+        except AttributeError:
+            raise KeyError, name
+
+    def __bobo_traverse__(self, REQUEST, name):
+        """Hook for Zope 2 traversal
+
+        This method is called by Zope 2's ZPublisher upon traversal.
+        It allows us to trick it into publishing Zope 3-style views.
+        """
+        if not IBrowserRequest.providedBy(REQUEST):
+            REQUEST = FakeRequest()
+        try:
+            return getView(self, name, REQUEST).__of__(self)
+        except ComponentLookupError:
+            pass
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            pass
+        try:
+            return self[name]
+        except (AttributeError, KeyError):
+            pass
+
+        return self.__fallback_traverse__(REQUEST, name)

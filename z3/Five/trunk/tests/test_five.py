@@ -138,6 +138,22 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
             response = self.publish('/test_folder_1_/testoid/%s' % view_name)
             self.assertEquals("No docstring", response.getBody())
 
+    def test_fallback_raises_notfound(self):
+        response = self.publish('/test_folder_1_/testoid/doesntexist')
+        self.assertEquals(404, response.getStatus())
+
+    def test_existing_bobo_traverse(self):
+        self.folder.manage_addProduct['FiveTest'].manage_addFancyContent(
+            'fancy')
+
+        # check if z3-based view lookup works
+        response = self.publish('/test_folder_1_/fancy/fancy')
+        self.assertEquals("Fancy, fancy", response.getBody())
+
+        # check if the old bobo_traverse method can still kick in
+        response = self.publish('/test_folder_1_/fancy/something-else')
+        self.assertEquals('something-else', response.getBody())
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FiveTestCase))

@@ -65,9 +65,21 @@ def implements(_context, class_, interface):
             )
 
 def classViewable(class_):
+    # if a class already has this attribute, it means it is either a
+    # subclass of api.Viewable or was already processed with this
+    # directive; in either case, do nothing...
+    if hasattr(class_, '__five_viewable__'):
+        return
+
     if hasattr(class_, '__bobo_traverse__'):
-        raise TypeError("__bobo_traverse already__ exists on %s" % class_)
+        # if there's an existing bobo_traverse hook already, use that
+        # as the traversal fallback method
+        setattr(class_, "__fallback_traverse__", class_.__bobo_traverse__)
+    else:
+        setattr(class_, "__fallback_traverse__", Viewable.__fallback_traverse__)
+
     setattr(class_, '__bobo_traverse__', Viewable.__bobo_traverse__)
+    setattr(class_, '__five_viewable__', True)
 
 def viewable(_context, class_):
     _context.action(

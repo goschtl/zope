@@ -26,3 +26,6 @@ class IDestination(Interface):
 
 class ISimpleContent(Interface):
     pass
+
+class IFancyContent(Interface):
+    pass

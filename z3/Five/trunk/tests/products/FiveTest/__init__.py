@@ -1,5 +1,6 @@
 import Products
 import simplecontent
+import fancycontent
 
 def initialize(context):
 
@@ -8,3 +9,8 @@ def initialize(context):
         constructors = (simplecontent.manage_addSimpleContentForm,
                         simplecontent.manage_addSimpleContent),
         )
+
+    context.registerClass(
+	fancycontent.FancyContent,
+	constructors = (fancycontent.manage_addFancyContent,)
+	)
