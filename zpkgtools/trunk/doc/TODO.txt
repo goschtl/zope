@@ -57,6 +57,10 @@ Things that need to be done
     repositories.  Very low priority since we're using svn: and svn+ssh:
     for svn.zope.org.
 
+  - Implement tarball generation directly in Python to avoid
+    dependence on external applications (because that's
+    platform-specific).
+
   - Support different types of generated archives; bzipped tarballs,
     gzipped tarballs and ZIP archives should both be easily generated.
     Perhaps a configuration option should specify which are produced
