@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.9 2003/03/03 23:16:14 gvanrossum Exp $
+$Id: placefulsetup.py,v 1.10 2003/03/08 00:51:46 seanb Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
-from zope.app.services.servicenames import HubIds, Events, Subscription
+from zope.app.services.servicenames import HubIds, EventDispatch, EventSubscription
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -160,7 +160,7 @@ class PlacefulSetup(PlacelessSetup):
 
     def createEventService(self, folder_path):
         """Create an event service in 'folder', and configure it for
-        Events and Subscription services."""
+        EventDispatch and EventSubscription services."""
         folder = traverse(self.rootFolder, folder_path)
         if not folder.hasServiceManager():
             folder.setServiceManager(ServiceManager())
@@ -171,12 +171,12 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject(service_name, EventService())
 
         path = "%s/%s" % (getPhysicalPathString(default), service_name)
-        configuration = ServiceConfiguration(Events, path, self.rootFolder)
+        configuration = ServiceConfiguration(EventDispatch, path, self.rootFolder)
         default['configure'].setObject(
                 "%sEventsDir" % service_name, configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration(Subscription, path,
+        configuration = ServiceConfiguration(EventSubscription, path,
                                              self.rootFolder)
         default['configure'].setObject(
                 "%sSubscriptionServiceDir" % service_name, configuration)
@@ -197,9 +197,9 @@ class PlacefulSetup(PlacelessSetup):
         from zope.app.interfaces.services.hub import IObjectHub
         from zope.app.interfaces.services.event import ISubscriptionService
         from zope.app.services.event import EventService
-        defineService(Subscription, ISubscriptionService)
+        defineService(EventSubscription, ISubscriptionService)
 
-        # Events service already defined by
+        # EventDispatch service already defined by
         # zope.app.events.tests.PlacelessSetup
 
         defineService(HubIds, IObjectHub)
@@ -210,11 +210,11 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myObjectHub", self.getObjectHub())
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration(Events, path, self.rootFolder)
+        configuration = ServiceConfiguration(EventDispatch, path, self.rootFolder)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration(Subscription, path,
+        configuration = ServiceConfiguration(EventSubscription, path,
                                              self.rootFolder)
         default['configure'].setObject(
                 "mySubscriptionServiceDir", configuration)

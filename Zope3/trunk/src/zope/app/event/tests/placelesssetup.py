@@ -14,11 +14,11 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.7 2003/02/12 02:17:22 seanb Exp $
+$Id: placelesssetup.py,v 1.8 2003/03/08 00:51:41 seanb Exp $
 """
 
 from zope.component import getServiceManager
-from zope.app.services.servicenames import Events
+from zope.app.services.servicenames import EventDispatch
 from zope.app.interfaces.event import IPublisher, ISubscriber
 from zope.app.event.globalservice import eventPublisher
 from zope.interface import Interface
@@ -50,8 +50,8 @@ class PlacelessSetup:
         defineService = sm.defineService
         provideService = sm.provideService
 
-        defineService(Events, IPublisher)
-        provideService(Events, eventPublisher)
+        defineService(EventDispatch, IPublisher)
+        provideService(EventDispatch, eventPublisher)
 
         del events[:]
         eventPublisher.globalSubscribe(EventRecorder)

@@ -14,15 +14,15 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.1 2003/02/12 02:17:34 seanb Exp $
+$Id: servicenames.py,v 1.2 2003/03/08 00:51:43 seanb Exp $
 """
 
 from zope.component.servicenames import *
 
 HubIds = 'HubIds'
-Events = 'Events'
-Subscription = 'Subscription'
-ErrorReports = 'ErrorReportingService'
+EventDispatch = 'Events'
+EventSubscription = 'Subscription'
+ErrorLogging = 'ErrorReportingService'
 Roles = 'Roles'
 Permissions = 'Permissions'
 Authentication = 'Authentication'

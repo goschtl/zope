@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.15 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: event.py,v 1.16 2003/03/08 00:51:43 seanb Exp $
 """
 
 from __future__ import generators
@@ -28,7 +28,7 @@ from zope.app.interfaces.services.service import IBindingAware
 
 from zope.component import getAdapter, queryAdapter, getService, queryService
 from zope.component import ComponentLookupError
-from zope.app.services.servicenames import HubIds, Events, Subscription
+from zope.app.services.servicenames import HubIds, EventDispatch, EventSubscription
 from zope.app.component.nextservice import getNextService, queryNextService
 
 from zope.proxy.context import ContextMethod, ContextSuper
@@ -38,7 +38,7 @@ from zope.app.event.subs import Subscribable, SubscriptionTracker
 
 
 def getSubscriptionService(context):
-    return getService(context, Subscription)
+    return getService(context, EventSubscription)
 
 def subscribe(subscriber, event_type=IEvent, filter=None, context=None):
     if context is None and not isinstance(subscriber, (int, str, unicode)):
@@ -146,7 +146,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         # the name of the service that this object is providing, or
         # None if unbound
 
-    _subscribeToServiceName = Subscription
+    _subscribeToServiceName = EventSubscription
     _subscribeToServiceInterface = IEvent
     _subscribeToServiceFilter = None
 
@@ -329,7 +329,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         try:
             clean_self._notify(wrapped_self, event)
             if clean_self.isPromotableEvent(event):
-                getNextService(wrapped_self, Events).publish(event)
+                getNextService(wrapped_self, EventDispatch).publish(event)
         finally:
             publishedEvents.remove(event)
     publish = ContextMethod(publish)
@@ -344,15 +344,15 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     def bound(wrapped_self, name):
         "See IBindingAware"
-        # An event service is bound as Subscription and as Events.
+        # An event service is bound as EventSubscription and as EventDispatch.
         # We only want to subscribe to the next event service when we're bound
-        # as Subscription
-        if name == Subscription:
+        # as EventSubscription
+        if name == EventSubscription:
             clean_self = removeAllProxies(wrapped_self)
             clean_self._serviceName = name  # for ServiceSubscribable
             if clean_self.subscribeOnBind:
                 try:
-                    es = getNextService(wrapped_self, Subscription)
+                    es = getNextService(wrapped_self, EventSubscription)
                 except ComponentLookupError:
                     pass
                 else:
@@ -361,10 +361,10 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     def unbound(wrapped_self, name):
         "See IBindingAware"
-        # An event service is bound as Subscription and as Events.
+        # An event service is bound as EventSubscription and as EventDispatch.
         # We only want to unsubscribe from the next event service when
-        # we're unbound as Subscription
-        if name == Subscription:
+        # we're unbound as EventSubscription
+        if name == EventSubscription:
             clean_self = removeAllProxies(wrapped_self)
             clean_self._v_unbinding = True
             try:
@@ -406,13 +406,13 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             if ISubscriptionService.isImplementedBy(
                 removeAllProxies(clean_subscribable)):
                 try:
-                    context = getService(wrapped_self, Subscription)
+                    context = getService(wrapped_self, EventSubscription)
                     # we do this instead of getNextService because the order
                     # of unbinding and notification of unbinding is not
                     # guaranteed
                     while removeAllProxies(context) in (
                         clean_subscribable, clean_self): 
-                        context = getNextService(context, Subscription)
+                        context = getNextService(context, EventSubscription)
                 except ComponentLookupError:
                     pass
                 else:
