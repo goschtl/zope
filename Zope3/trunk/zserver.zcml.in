@@ -11,12 +11,16 @@
 
     <!-- You can choose between several storages.
 
-         At the moment only two storages are supported:
+         At the moment only three storages are supported:
              FileStorage - Saves data in a specified file
-             MappingStorage - Saves data in a dictionary. No saving. -->
+             MappingStorage - Saves data in a dictionary. No saving.
+	     BDBFullStorage - Save data in BerkeleyDB tables
+	     -->
 
     <startup:useFileStorage file = "Data.fs" />
     <!--startup:useMappingStorage /-->
+    <!--startup:useBDBFullStorage name="full" frequency="900"
+				  classicpack="96" /-->
 
 
     <!-- Setup the log file and level.
