@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.5 2003/08/04 14:54:19 philikon Exp $
+$Id: metadirectives.py,v 1.6 2003/08/05 15:23:17 philikon Exp $
 """
 
 from zope.interface import Interface
@@ -85,12 +85,6 @@ class ICommonFormInformation(ICommonInformation):
     Common information for browser forms
     """
 
-    title = MessageID(
-        title=u"Title",
-        description=u"The browser menu label for the form.",
-        required=False
-        )
-
     label = MessageID(
         title=u"Label",
         description=u"A label to be used as the heading for the form.",
@@ -103,6 +97,12 @@ class ICommonFormInformation(ICommonInformation):
         Many views are included in menus. It's convenient to name the
         menu in the page directive, rather than having to give a
         separate menuItem directive.""",
+        required=False
+        )
+
+    title = MessageID(
+        title=u"Menu title",
+        description=u"The browser menu label for the form.",
         required=False
         )
 
@@ -130,7 +130,13 @@ class ICommonWizardInformation(ICommonInformation):
         required=False
         )
 
-    description = Text(
+    title = MessageID(
+        title=u"Menu title",
+        description=u"The browser menu label for the form.",
+        required=False
+        )
+
+    description = MessageID(
         title=u"A longer description of the add form.",
         description=u"""
         A UI may display this with the item or display it when the
@@ -248,7 +254,6 @@ class IEditFormDirective(ICommonFormInformation):
     an object based on a schema.
     """
 
-#XXX this is sooo not used
 class ISubeditFormDirective(ICommonInformation):
     """
     Define a subedit form
@@ -260,11 +265,15 @@ class ISubeditFormDirective(ICommonInformation):
         required=False
         )
 
-    #XXX what's this?
-    fulledit = Text()
+    fulledit_path = TextLine(
+        title=u"Path (relative URL) to the full edit form",
+        required=False
+        )
 
-    #XXX what's this?
-    fulledit_label = Text()
+    fulledit_label = MessageID(
+        title=u"Label of the full edit form",
+        required=False
+        )
 
 class IAddFormDirective(ICommonFormInformation, ICommonAddInformation):
     """

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.1 2003/08/04 14:52:45 philikon Exp $
+$Id: metaconfigure.py,v 1.2 2003/08/05 15:23:17 philikon Exp $
 """
 
 __metaclass__ = type
@@ -235,14 +235,14 @@ class SubeditFormDirective(BaseFormDirective):
     default_template = 'subedit.pt'
 
     # default subedit form directive
-    fulledit = None
+    fulledit_path = None
     fulledit_label = None
 
     def __call__(self):
         self._context.action(
             discriminator = self._discriminator(),
             callable = EditViewFactory,
-            args = self._args()+(self.fulledit, self.fulledit_label),
+            args = self._args()+(self.fulledit_path, self.fulledit_label),
             )
 
 class AddWizardDirective(BaseWizardDirective, AddFormDirective):
