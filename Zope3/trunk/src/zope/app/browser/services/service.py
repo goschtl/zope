@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.18 2003/04/17 10:17:22 mgedmin Exp $
+$Id: service.py,v 1.19 2003/04/24 17:22:12 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -123,7 +123,7 @@ class AddServiceConfiguration(BrowserView):
             else:
                 sc.status = Registered
 
-        self.request.response.redirect("@@useConfiguration.html")
+        self.request.response.redirect("@@SelectedManagementView.html")
 
 
 class ServiceSummary(BrowserView):
