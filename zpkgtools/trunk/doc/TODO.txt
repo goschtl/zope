@@ -7,16 +7,6 @@ Things that need to be done
 
 - Package assembler script to build sumo/combined distro (mostly done)
 
-  - We should have some way to wildcard an entire hierarchy of packages
-    in resource maps.  Something like::
-
-      zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
-
-    would make the resource map for Zope 3 much more concise.
-    I've started writing tests and an implementation, and Jim checked
-    in an alternate implementation (with different semantics), but the
-    issue needs to be re-visited.
-
   - There should be a way to specify a Download-URL when building a
     package; using the distutils "register" command would then cause
     that field to be provided via PyPI.
