@@ -1,22 +1,15 @@
-import os, sys
-import glob
 
+import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
+from Products.Five.tests.fivetest import *
+
 from AccessControl import getSecurityManager
-from Testing import ZopeTestCase
-from Testing.ZopeTestCase.functional import Functional
 from AccessControl import Unauthorized
 
-# we need to install FiveTest *before* Five as Five processes zcml
-# in all the products it can find.
-ZopeTestCase.installProduct('FiveTest')
-ZopeTestCase.installProduct('Five')
-ZopeTestCase.installProduct('PythonScripts')
-
-from Products import FiveTest
+import glob
+from Products.Five.tests.products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
 dir_resource_names = [os.path.basename(r)
                       for r in (glob.glob('%s/*.png' % _prefix) +
@@ -26,7 +19,10 @@ dir_resource_names = [os.path.basename(r)
 
 ViewManagementScreens = 'View management screens'
 
-class RestrictedPythonTest(ZopeTestCase.ZopeTestCase):
+from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
+
+
+class RestrictedPythonTest(FiveTestCase):
     """
     Test whether code is really restricted
 
@@ -36,8 +32,8 @@ class RestrictedPythonTest(ZopeTestCase.ZopeTestCase):
     def addPS(self, id, params='', body=''):
         # clean up any 'ps' that's already here..
         try:
-            self.folder._getOb('ps')
-            self.folder.manage_delObjects(['ps'])
+            self.folder._getOb(id)
+            self.folder.manage_delObjects([id])
         except AttributeError:
             pass # it's okay, no 'ps' exists yet
         factory = self.folder.manage_addProduct['PythonScripts']
@@ -60,6 +56,7 @@ class RestrictedPythonTest(ZopeTestCase.ZopeTestCase):
         else:
             self.fail("Authorized but shouldn't be")
 
+
 view_names = [
     'eagle.txt',
     'falcon.html',
@@ -79,11 +76,11 @@ resource_names = [
     'pattern.png'
     ]
 
-class SecurityTestCase(RestrictedPythonTest):
+
+class SecurityTest(RestrictedPythonTest):
 
     def afterSetUp(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'testoid', 'Testoid')
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -131,6 +128,7 @@ class SecurityTestCase(RestrictedPythonTest):
                 'context.restrictedTraverse("%s")' % path)
 
     def test_public_permission(self):
+        self.logout()
         for view_name in public_view_names:
             self.check(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
@@ -140,12 +138,12 @@ class SecurityTestCase(RestrictedPythonTest):
         self.check(
             'context.restrictedTraverse("testoid/eagle.method").eagle()')
 
-class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
+
+class PublishTest(Functional, FiveTestCase):
     """A functional test for security actually involving the publisher.
     """
     def afterSetUp(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'testoid', 'Testoid')
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -156,7 +154,6 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
                                     basic='viewer:secret')
             # we expect that we get a 401 Unauthorized
             self.assertEqual(response.getStatus(), 401)
-
 
     def test_permission(self):
         for view_name in view_names:
@@ -170,10 +167,12 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
             response = self.publish('/test_folder_1_/testoid/%s' % view_name)
             self.assertEqual(response.getStatus(), 200)
 
+
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SecurityTestCase))
-    suite.addTest(unittest.makeSuite(PublishTestCase))
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(SecurityTest))
+    suite.addTest(makeSuite(PublishTest))
     return suite
 
 if __name__ == '__main__':

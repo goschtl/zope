@@ -1,38 +1,36 @@
 # test events triggered by Five
 
 import os, sys
-    
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
+from Products.Five.tests.fivetest import *
 
-from Testing import ZopeTestCase
-
-# we need to install FiveTest *before* Five as Five
-# looks up zcml files in the products it can find.
-ZopeTestCase.installProduct('FiveTest')
-ZopeTestCase.installProduct('Five')
-
-from Products.FiveTest.subscriber import clear
-from Products.FiveTest.subscriber import objectEventCatcher,\
-     objectAddedEventCatcher, objectMovedEventCatcher,\
+from Products.Five.tests.products.FiveTest.subscriber import clear
+from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher, \
+     objectAddedEventCatcher, objectMovedEventCatcher, \
      objectCopiedEventCatcher, objectRemovedEventCatcher
-        
-class EventTestCase(ZopeTestCase.ZopeTestCase):
+
+from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
+from Products.Five.tests.products.FiveTest.helpers import manage_addNoVerifyPasteFolder
+
+
+class EventTest(FiveTestCase):
 
     def afterSetUp(self):
+        manage_addNoVerifyPasteFolder(self.folder, 'npvf')
+        self.folder = self.folder.npvf
+
         uf = self.folder.acl_users
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
         self.login('manager')
         self.setPermissions(
-            ZopeTestCase.standard_permissions + ['Copy or Move'], 'Manager')
+            standard_permissions + ['Copy or Move'], 'Manager')
         # clear all events
         clear()
 
     def test_added_event(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'foo', 'Foo')
+        manage_addSimpleContent(self.folder, 'foo', 'Foo')
         foo = self.folder.foo
         events = objectEventCatcher.getEvents()
         self.assertEquals(1, len(events))
@@ -46,8 +44,7 @@ class EventTestCase(ZopeTestCase.ZopeTestCase):
                           events[0].newParent.getPhysicalPath())
 
     def test_moved_event(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'foo', 'Foo')
+        manage_addSimpleContent(self.folder, 'foo', 'Foo')
         # somehow we need to at least commit a subtransaction to make
         # renaming succeed
         get_transaction().commit(1)
@@ -74,15 +71,14 @@ class EventTestCase(ZopeTestCase.ZopeTestCase):
                           events[2].oldParent.getPhysicalPath())
         self.assertEquals(self.folder.getPhysicalPath(),
                           events[2].oldParent.getPhysicalPath())
-        
+
     def test_moved_event2(self):
         # move from one folder to another
-        self.folder.manage_addFolder('folder1', 'Folder1')
+        manage_addNoVerifyPasteFolder(self.folder, 'folder1', 'Folder1')
         folder1 = self.folder.folder1
-        self.folder.manage_addFolder('folder2', 'Folder2')
+        manage_addNoVerifyPasteFolder(self.folder, 'folder2', 'Folder2')
         folder2 = self.folder.folder2
-        folder1.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'foo', 'Foo')
+        manage_addSimpleContent(folder1, 'foo', 'Foo')
         foo = folder1.foo
         # need to trigger subtransaction before copy/paste can work
         get_transaction().commit(1)
@@ -111,11 +107,11 @@ class EventTestCase(ZopeTestCase.ZopeTestCase):
                           events[2].newName)
 
     def test_copied_event(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'foo', 'Foo')
-        foo = self.folder.foo
-        self.folder.manage_addFolder('folder1')
+        manage_addSimpleContent(self.folder, 'foo', 'Foo')
+        manage_addNoVerifyPasteFolder(self.folder, 'folder1')
         folder1 = self.folder.folder1
+        # need to trigger subtransaction before copy/paste can work
+        get_transaction().commit(1)
         cb = self.folder.manage_copyObjects(['foo'])
         folder1.manage_pasteObjects(cb)
         foo_copy = folder1.foo
@@ -128,22 +124,20 @@ class EventTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals(foo_copy.getPhysicalPath(),
                           events[1].object.getPhysicalPath())
 
-        
     def test_removed_event(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'foo', 'Foo')
+        manage_addSimpleContent(self.folder, 'foo', 'Foo')
         self.folder.manage_delObjects(['foo'])
         events = objectRemovedEventCatcher.getEvents()
         self.assertEquals(1, len(events))
-        self.assertEquals('foo',
-                          events[0].object.id)
-        
+        self.assertEquals('foo', events[0].object.id)
+
+
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EventTestCase))
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(EventTest))
     return suite
 
 if __name__ == '__main__':
     framework()
-
 

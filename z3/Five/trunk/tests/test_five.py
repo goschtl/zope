@@ -1,20 +1,15 @@
-import os, sys
 
+import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
+
+from Products.Five.tests.fivetest import *
 
 import re
 import glob
 import unittest
-from Testing import ZopeTestCase
-from Testing.ZopeTestCase.functional import Functional
-
-# we need to install FiveTest *before* Five as Five
-# looks up zcml files in the products it can find.
-ZopeTestCase.installProduct('FiveTest')
-ZopeTestCase.installProduct('Five')
-
 import zope
+
 from zope.interface import directlyProvides, Interface, implements
 from zope.component import getViewProviding
 from zope.schema import Choice, TextLine
@@ -22,15 +17,20 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.traversing.interfaces import IContainmentRoot
 
-from Products.FiveTest.classes import Adaptable, Origin
-from Products.FiveTest.interfaces import IAdapted, IDestination
-from Products.FiveTest.browser import SimpleContentView
+from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
+from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
+from Products.Five.tests.products.FiveTest.browser import SimpleContentView
 from Products.Five.resource import Resource, PageTemplateResource
 from Products.Five.traversable import FakeRequest
 from Products.Five.fiveconfigure import classDefaultViewable
 from OFS.Traversable import Traversable
 
-from Products import FiveTest
+from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
+from Products.Five.tests.products.FiveTest.simplecontent import manage_addCallableSimpleContent
+from Products.Five.tests.products.FiveTest.simplecontent import manage_addIndexSimpleContent
+from Products.Five.tests.products.FiveTest.fancycontent import manage_addFancyContent
+
+from Products.Five.tests.products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
 dir_resource_names = [os.path.basename(r)
                       for r in (glob.glob('%s/*.png' % _prefix) +
@@ -42,15 +42,13 @@ def normalize_html(s):
     s = re.sub(r"[ \t\n]+", "", s)
     return s
 
-class FiveTestCase(ZopeTestCase.ZopeTestCase):
+
+class FiveTest(FiveTestCase):
 
     def afterSetUp(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'testoid', 'Testoid')
-        self.folder.manage_addProduct['FiveTest'].manage_addCallableSimpleContent(
-            'testcall', 'TestCall')
-        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
-            'testindex', 'TestIndex')
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
+        manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
         uf = self.folder.acl_users
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
         self.login('manager')
@@ -175,6 +173,15 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+    def test_zpt_security(self):
+        self.logout()
+        view = self.folder.unrestrictedTraverse('testoid/security.html')
+        expected = """\
+<div>NoneType</div>
+<div>smtpd</div>
+"""
+        self.assertEquals(expected, view())
+
     def test_template_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++cockatiel.html')
         self.assert_(isinstance(resource, Resource))
@@ -224,13 +231,13 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         request.setServerURL(
             protocol='http', hostname='foo.bar.com', port='80')
         request.setVirtualRoot('')
-            
+
         view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
         expected = (
             {'url': 'http://foo.bar.com', 'name': 'test_folder_1_'},
             {'url': 'http://foo.bar.com/testoid', 'name': 'testoid'})
         self.assertEquals(expected, view.breadcrumbs())
-        
+
     def test_containement_root_breadcrumbs(self):
         # Should stop breadcrumbs from crumbing
         directlyProvides(self.folder, IContainmentRoot)
@@ -278,16 +285,14 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
     #     view = self.folder.unrestrictedTraverse('testcall')
     #     self.assertEquals("Default __call__ called", view())
 
-class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
+
+class PublishTest(Functional, FiveTestCase):
     """Test a few publishing features"""
 
     def afterSetUp(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
-            'testoid', 'Testoid')
-        self.folder.manage_addProduct['FiveTest'].manage_addCallableSimpleContent(
-            'testcall', 'TestCall')
-        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
-            'testindex', 'TestIndex')
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
+        manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -306,8 +311,7 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.assertEquals(404, response.getStatus())
 
     def test_existing_bobo_traverse(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addFancyContent(
-            'fancy')
+        manage_addFancyContent(self.folder, 'fancy', '')
 
         # check if the old bobo_traverse method can still kick in
         response = self.publish('/test_folder_1_/fancy/something-else')
@@ -346,7 +350,8 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.assert_('page 1' in response.getBody())
         response = self.publish('/test_folder_1_/testoid/dirpage2')
         self.assert_('page 2' in response.getBody())
-        
+
+
 class IRecurse(Interface):
     pass
 
@@ -376,14 +381,15 @@ class RecursionTest(unittest.TestCase):
         self.assertEquals(self.ob.view(), 'foo')
         self.assertEquals(self.ob(), 'foo')
 
+
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      globalBrowserMenuService
 
-class MenuTestCase(ZopeTestCase.ZopeTestCase):
+class MenuTest(FiveTestCase):
+
     def afterSetUp(self):
-        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
-            'test', 'Test')
-        
+        manage_addIndexSimpleContent(self.folder, 'test', 'Test')
+
     def test_menu(self):
         request = FakeRequest()
         # XXX not sure why we need this..
@@ -398,13 +404,15 @@ class MenuTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals('seagull.html', menu[0]['action'])
         self.assertEquals('Test Menu Item 2', menu[1]['title'])
         self.assertEquals('parakeet.html', menu[1]['action'])
-        
+
+
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RecursionTest))
-    suite.addTest(unittest.makeSuite(FiveTestCase))
-    suite.addTest(unittest.makeSuite(PublishTestCase))
-    suite.addTest(unittest.makeSuite(MenuTestCase))
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(RecursionTest))
+    suite.addTest(makeSuite(FiveTest))
+    suite.addTest(makeSuite(PublishTest))
+    suite.addTest(makeSuite(MenuTest))
     return suite
 
 if __name__ == '__main__':

@@ -41,7 +41,7 @@
        This is mainly used to load Zope2 skin templates so they can be used
        in five skins and layers. -->
   <five:pagesFromDirectory
-      module="Products.FiveTest"
+      module="Products.Five.tests.products.FiveTest"
       directory="pages"
       />
 
@@ -191,6 +191,15 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- template security -->
+
+  <browser:page
+      for=".interfaces.ISimpleContent"
+      template="security.pt"
+      name="security.html"
+      permission="zope2.View"
+      />
+
   <!-- macro page -->
   <browser:page
       for=".interfaces.ISimpleContent"
@@ -316,7 +325,7 @@
          
   </browser:editform>
       
-  <five:traversable class="OFS.ObjectManager.ObjectManager" />
+  <five:traversable class=".helpers.FiveTraversableFolder" />
   
   <browser:addform
      schema=".interfaces.IFieldSimpleContent"
@@ -382,7 +391,6 @@
   <browser:menuItems
       for=".interfaces.ISimpleContent"
       menu="testmenu">
-
 
       <menuItem
           title="Test Menu Item 2"
@@ -457,7 +465,7 @@
      factory="zope.schema.tests.test_vocabulary.SampleVocabulary"
      />
 
-  <!-- testing that products meta.zcml is taken care of. -->
+  <!-- testing that products meta.zcml statements are picked up. -->
   <five:parrot
       class=".metaconfigure.NorwegianBlue"
       name="Polly"
