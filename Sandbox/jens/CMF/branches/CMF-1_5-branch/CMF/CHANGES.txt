@@ -35,6 +35,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFCore.tests.test_PortalFolder:  fixed testing bug copied forward
+      from OFS.tests.testCopySupport.
+
     - CMFDefault.RegistrationTool: Allow '+' in e-mail addresses.
       (http://collector.zope.org/CMF/322)
 
