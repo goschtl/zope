@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.28 2004/03/31 23:26:25 jim Exp $
+$Id: __init__.py,v 1.29 2004/04/11 18:16:40 jim Exp $
 """
 import sys
 import warnings
@@ -175,9 +175,16 @@ def getFactoryInterfaces(context, name):
 
 def getFactoriesFor(context, interface):
     utils =  getService(context, 'Utilities')
-    return [(name, factory)
-            for iface, name, factory in utils.getRegisteredMatching(IFactory)
-            if interface in tuple(factory.getInterfaces())]
+    for (name, factory) in utils.getUtilitiesFor(IFactory):
+        interfaces = factory.getInterfaces()
+        try:
+            if interfaces.isOrExtends(interface):
+                yield name, factory
+        except AttributeError:
+            for iface in interfaces:
+                if iface.isOrExtends(interface):
+                    yield name, factory
+                    break
 
 def getFactory(context, name):
     warnings.warn(
