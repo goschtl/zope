@@ -57,8 +57,7 @@ class TypesToolTests(SecurityTest):
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         self.ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
-        del fti['id']
-        self.ttool._setObject( 'Dummy Content', FTI('Dummy Content', **fti) )
+        self.ttool._setObject( 'Dummy Content', FTI(**fti) )
  
     def test_processActions( self ):
         """
@@ -217,7 +216,7 @@ class TypeInfoTests(TestCase):
         ti = self._makeInstance( 'Foo' )
         self.failIf( ti.listActions() )
 
-        ti = self._makeInstanceByFTIData(FTIDATA_ACTIONS)
+        ti = self._makeInstance( **FTIDATA_ACTIONS[0] )
         actions = ti.listActions()
         self.failUnless( actions )
 
@@ -248,7 +247,7 @@ class TypeInfoTests(TestCase):
                         , id( marker ) )
         self.assertRaises( ValueError, ti.getActionById, 'view' )
 
-        ti = self._makeInstanceByFTIData(FTIDATA_ACTIONS)
+        ti = self._makeInstance( **FTIDATA_ACTIONS[0] )
         self.assertEqual( id( ti.getActionById( 'foo', marker ) )
                         , id( marker ) )
         self.assertRaises( ValueError, ti.getActionById, 'foo' )
@@ -266,7 +265,7 @@ class TypeInfoTests(TestCase):
         self.assertEqual( action, 'foo_slot' )
 
     def test_MethodAliases_methods(self):
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF15)
+        ti = self._makeInstance( **FTIDATA_CMF15[0] )
         self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
         self.assertEqual( ti.getMethodPath('view'), ('dummy_view',) )
         self.assertEqual( ti.getMethodPath('view.html'), ('dummy_view',) )
@@ -315,7 +314,7 @@ class TypeInfoTests(TestCase):
     def test_CMF13_content_migration(self):
 
         # use old FTI Data
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF13)
+        ti = self._makeInstance( **FTIDATA_CMF13[0] )
         self._checkContentTI(ti)
 
         # simulate old FTI
@@ -331,7 +330,7 @@ class TypeInfoTests(TestCase):
     def test_CMF13_folder_migration(self):
 
         # use old FTI Data
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF13_FOLDER)
+        ti = self._makeInstance( **FTIDATA_CMF13_FOLDER[0] )
         self._checkFolderTI(ti)
 
         # simulate old FTI
@@ -347,7 +346,7 @@ class TypeInfoTests(TestCase):
     def test_CMF14_content_migration(self):
 
         # use old FTI Data
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF14)
+        ti = self._makeInstance( **FTIDATA_CMF14[0] )
         self._checkContentTI(ti)
 
         # simulate old FTI
@@ -361,7 +360,7 @@ class TypeInfoTests(TestCase):
     def test_CMF14_folder_migration(self):
 
         # use old FTI Data
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF14_FOLDER)
+        ti = self._makeInstance( **FTIDATA_CMF14_FOLDER[0] )
         self._checkFolderTI(ti)
 
         # simulate old FTI
@@ -376,7 +375,7 @@ class TypeInfoTests(TestCase):
         wanted = { 'view':('dummy_view',), 'mkdir':('dummy_mkdir',) }
 
         # use old FTI Data
-        ti = self._makeInstanceByFTIData(FTIDATA_CMF14_SPECIAL)
+        ti = self._makeInstance( **FTIDATA_CMF14_SPECIAL[0] )
         self.assertEqual(ti._aliases, wanted)
 
         # simulate old FTI
@@ -392,12 +391,6 @@ class FTIDataTests( TypeInfoTests ):
 
     def _makeInstance(self, id, **kw):
         return FTI(id, **kw)
-
-    def _makeInstanceByFTIData(self, ftidata):
-        fti = ftidata[0].copy()
-        id = fti['id']
-        del fti['id']
-        return FTI(id, **fti)
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -422,12 +415,6 @@ class STIDataTests( TypeInfoTests ):
 
     def _makeInstance(self, id, **kw):
         return STI(id, **kw)
-
-    def _makeInstanceByFTIData(self, ftidata):
-        fti = ftidata[0].copy()
-        id = fti['id']
-        del fti['id']
-        return STI(id, **fti)
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
