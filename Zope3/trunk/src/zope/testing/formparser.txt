@@ -8,7 +8,7 @@ The `zope.testing.formparser` module can be used for this purpose.
 
 The scanner is implemented using the `FormParser` class.  The
 constructor arguments are the page data containing the form and
-(optionally) the URL from which the page was retrieved::
+(optionally) the URL from which the page was retrieved:
 
   >>> import zope.testing.formparser
 
@@ -49,7 +49,7 @@ constructor arguments are the page data containing the form and
   >>> forms.form1 is forms[1]
   False
 
-More often, the `parse()` convenience function is all that's needed::
+More often, the `parse()` convenience function is all that's needed:
 
   >>> forms = zope.testing.formparser.parse(
   ...     page_text, "http://cgi.example.com/somewhere/form.html")
@@ -62,7 +62,7 @@ More often, the `parse()` convenience function is all that's needed::
   False
 
 Once we have the form we're interested in, we can check form
-attributes and individual field values::
+attributes and individual field values:
 
   >>> form = forms.form1
   >>> form.enctype
@@ -99,7 +99,7 @@ constructor.
   >>> forms[1]["action"].src
   'http://www.example.com/base/else.png'
 
-The ``<textarea>`` element provides some additional attributes::
+The ``<textarea>`` element provides some additional attributes:
 
   >>> ta = forms[1]["sometext"]
   >>> print ta.rows
@@ -109,7 +109,7 @@ The ``<textarea>`` element provides some additional attributes::
   >>> ta.value
   'Some text.'
 
-The ``<select>`` element provides access to the options as well::
+The ``<select>`` element provides access to the options as well:
 
   >>> select = form["pick-two"]
   >>> select.multiple

@@ -24,7 +24,7 @@ following approach:
   obtained, then the source itself is assumed to be queriable.
 
 - For each queriable found, a
-  `zope.app.form.browser.interfaces.ISourceQueryView' view is looked
+  `zope.app.form.browser.interfaces.ISourceQueryView` view is looked
   up.  This view is used to obtain the HTML for displaying a query
   form.  The view is also used to obtain search results.
 

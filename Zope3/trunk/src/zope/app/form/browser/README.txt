@@ -2,6 +2,8 @@
 Browser Widgets
 ===============
 
+.. contents::
+
 This directory contains widgets: views on bound schema fields.  Many of these
 are straightforward.  For instance, see the `TextWidget` in textwidgets.py,
 which is a subclass of BrowserWidget in widget.py.  It is registered as an
@@ -22,7 +24,7 @@ The widget then receives the field and the request as arguments to the factory
 Some widgets in Zope 3 extend this pattern.  This extension is configurable:
 simply do not load the zope/app/form/browser/configure.zcml file if you do not
 wish to participate in the extension.  The widget registration is extended for
-`Choice` fields and for the collection fields.
+`Choice` fields and for the `collection` fields.
 
 Default Choice Field Widget Registration and Lookup
 ===================================================
@@ -48,19 +50,19 @@ arguments.
 Some `Choice` widgets may also need to provide a query interface,
 particularly if the vocabulary is too big to iterate over.  The vocabulary
 may provide a query which implements an interface appropriate for that
-vocabulary.  You then can register a query view--a view registered for the
-query interface and the field interface--that implements
+vocabulary.  You then can register a query view -- a view registered for the
+query interface and the field interface -- that implements
 `zope.app.forms.browser.interfaces.IVocabularyQueryView`.
 
 Default Collection Field Widget Registration and Lookup
 =======================================================
 
-The default configured lookup for collection fields--List, Tuple, and Set, for
-instance--begins with the usual lookup for a browser widget view for the
+The default configured lookup for collection fields -- List, Tuple, and Set, for
+instance -- begins with the usual lookup for a browser widget view for the
 field object.  This widget defers its display to the result of another lookup:
 a browser widget view registered for the field and the field's `value_type`
 (the type of the contained values).  This allows registrations for collection
-widgets that differ on the basis of the members--a widget for entering a list
+widgets that differ on the basis of the members -- a widget for entering a list
 of text strings might differ significantly from a widget for entering a list of
 dates...or even a list of choices, as discussed below.
 

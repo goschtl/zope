@@ -2,6 +2,8 @@
 Zope 3 Schemas
 ==============
 
+.. contents::
+
 
 Introduction
 ------------
@@ -34,9 +36,9 @@ package.
 Simple Usage
 ------------
 
-::
 
-    $ python
+
+    
     >>> class Bookmark:
     ...     def __init__(self, url):
     ...         self.url = url
@@ -68,7 +70,7 @@ So interfaces and schemas refer to different aspects of an object
 
 A Schema starts out like an interface but defines certain Fields to
 which an object's attributes must conform.  Let's look at a stripped
-down example from the programmer's tutorial (chapter two)::
+down example from the programmer's tutorial::
 
     from zope.interface import Interface
     from zope.schema import Text, TextLine
@@ -203,46 +205,6 @@ Widgets:
   indicates that the object should be updated with the field's 'missing'
   value.
 
-
-Issues to be solved
--------------------
-
-
-These issues were written up at the `Rotterdam Sprint`_ (12/4/2002).
-
-.. _Rotterdam Sprint: http://dev.zope.org/Zope3/InfraeSprintathon
-
-I18n
-****
-
-How i18n interferes with Schemas is not thought out.  In a non-English
-context we probably want to have titles and descriptions easily
-translatable.  The best idea so far is to use an attribute name
-together with its surrounding namespace (Interface-name etc.)  as the
-message id used for looking up translations.
-
-Example::
-
-    class book(Interface):
-        author = ITextLine()
-
-To get to the And in view, while the widget or widget's messages are
-constructed::
-
-    TranslatorService.getMessage('book.author.title', 'DE_DE')
-
-Integration with Interfaces
-***************************
-
-How closely are Interfaces and Schema related?  Should they be
-refactored into one package? Are Schemas Zope-specific?
-
-Clarify and clean up use cases
-******************************
-
-Some use cases are not easy to understand.  A lot of them look like
-features rather than use cases.  The list of schema use cases needs to
-be cleaned up and be (sometimes) more detailed.
 
 
 References

@@ -41,7 +41,7 @@ the directive.  There are four kinds of directives:
   are typically functions that take a context and zero or more
   keyword arguments and return a sequence of configuration actions.
 
-  To learn how to create simple directives, see tests/test_simple.py.
+  To learn how to create simple directives, see `tests/test_simple.py`.
 
 
 - Grouping directives collect information to be used by nested
@@ -55,7 +55,7 @@ the directive.  There are four kinds of directives:
   Other directives can be nested in grouping directives.
 
   To learn how to implement nested directives, look at the
-  documentation in tests/test_nested.py.
+  documentation in `tests/test_nested.py`.
 
 - Complex directives are directives that have subdirectives.  
   Subdirectives have handlers that are simply methods of complex

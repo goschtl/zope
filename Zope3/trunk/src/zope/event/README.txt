@@ -16,14 +16,12 @@ subscriptions by manipulating this list.  For the examples here, we'll
 save the current contents away and empty the list. We'll restore the
 contents when we're done with our examples.
 
-::
-
   >>> import zope.event
   >>> old_subscribers = zope.event.subscribers[:]
   >>> del zope.event.subscribers[:]
 
 The package provides a `notify` function, which is used to
-notify subscribers that something has happened::
+notify subscribers that something has happened:
 
   >>> class MyEvent:
   ...     pass
@@ -32,18 +30,18 @@ notify subscribers that something has happened::
   >>> zope.event.notify(event)
 
 The notify function is called with a single object, which we call an
-event.  Any object will do::
+event.  Any object will do:
 
   >>> zope.event.notify(None)
   >>> zope.event.notify(42)
 
 An extremely trivial subscription mechanism is provided. Subscribers
-are simply callback functions::
+are simply callback functions:
 
   >>> def f(event):
   ...     print 'got:', event
 
-that are put into the subscriptions list::
+that are put into the subscriptions list:
 
   >>> zope.event.subscribers.append(f)
 
@@ -59,7 +57,7 @@ that are put into the subscriptions list::
   got: 42
   also got: 42
 
-To unsubscribe, simply remove a subscriber from the list::
+To unsubscribe, simply remove a subscriber from the list:
 
   >>> zope.event.subscribers.remove(f)
   >>> zope.event.notify(42)
@@ -70,6 +68,6 @@ subscription mechanisms that build on this simple mechanism. The
 frameworks will install subscribers that then dispatch to other
 subscribers based on event types or data.
 
-We're done, so we'll restore the subscribers::
+We're done, so we'll restore the subscribers:
 
   >>> zope.event.subscribers[:] = old_subscribers
