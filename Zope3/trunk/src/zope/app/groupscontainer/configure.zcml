@@ -4,29 +4,64 @@
     i18n_domain="groupscontainer"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     >
-    
-  <browser:tool
-      interface=".interfaces.IGroupsFolder"
-      title="Groups Folder"
-      description="Groups Folder"
-      />
-
-  <localUtility class=".groupsfolder.GroupsFolder">
-    <implements
-        interface=".interfaces.IGroupsFolder" />
-    <implements
-        interface="zope.app.annotation.IAttributeAnnotatable" />
+      
+<content class=".group.Group">
     <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IContainer" />
-  </localUtility>
+        permission="zope.ManageContent"
+        interface=".interfaces.IGroup"
+        set_schema=".interfaces.IGroup"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.groupscontainer.interfaces.IGroupContained"
+        />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+</content>
+    
+<browser:addMenuItem
+    title="Group"
+    description="A principals group"
+    class=".group.Group"
+    permission="zope.ManageServices"
+    />
+  
+<browser:editform
+    schema=".interfaces.IGroup"
+    label="Change group information"
+    name="edit.html"
+    menu="zmi_views" title="Edit"
+    permission="zope.ManageContent"
+    />
+    
+<subscriber
+    factory="zope.app.groupscontainer.group.setGroupsForPrincipal"
+    for="zope.app.pas.interfaces.IAuthenticatedPrincipalCreated"
+    />
+  
+<browser:tool
+    interface=".interfaces.IGroupsFolder"
+    title="Groups Folder"
+    description="Groups Folder"
+    />
 
-  <browser:addMenuItem
-      title="Groups Folder"
-      description="A Groups folder"
-      class=".groupsfolder.GroupsFolder"
+<localUtility class=".groupsfolder.GroupsFolder">
+  <implements
+      interface=".interfaces.IGroupsFolder" />
+  <implements
+      interface="zope.app.annotation.IAttributeAnnotatable" />
+  <require
       permission="zope.ManageServices"
-      />
+      interface="zope.app.container.interfaces.IContainer" />
+</localUtility>
+
+<browser:addMenuItem
+    title="Groups Folder"
+    description="A Groups folder"
+    class=".groupsfolder.GroupsFolder"
+    permission="zope.ManageServices"
+    />
       
 <browser:containerViews
      for=".interfaces.IGroupsFolder"

@@ -80,9 +80,3 @@ def setGroupsForPrincipal(event):
     for name, groupfolder in groupfolders:
         groups = groupfolder.getGroupsForPrincipal(principal.id)
         principal.groups.extend(groups)
-
-    
-    
-    
-        
-
