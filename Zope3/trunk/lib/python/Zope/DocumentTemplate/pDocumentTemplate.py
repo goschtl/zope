@@ -12,7 +12,7 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pDocumentTemplate.py,v 1.3 2002/07/17 23:13:30 jeremy Exp $
+$Id: pDocumentTemplate.py,v 1.4 2002/09/18 15:02:31 jim Exp $
 """
 
 import sys
@@ -202,7 +202,7 @@ def render_blocks(blocks, md):
                                 cond = md[cond]
                                 cache[n] = cond
                             except KeyError, v:
-                                v = str(v)
+                                v = v[0]
                                 if n != v:
                                     raise KeyError, v, sys.exc_traceback
                                 cond=None

@@ -55,7 +55,7 @@
     with the appropriate boolean operator, as indicated by use of an
     'and' or 'or' tag, otherwise, no text is inserted.
 
-$Id: DT_SQLTest.py,v 1.2 2002/07/17 22:59:15 jeremy Exp $
+$Id: DT_SQLTest.py,v 1.3 2002/09/18 15:04:47 jim Exp $
 """
 import sys
 from Zope.DocumentTemplate.DT_Util import ParseError, parse_params, name_param
@@ -107,7 +107,7 @@ class SQLTest:
         try:
             v = md[name]
         except KeyError, key:
-            if str(key) == name and self.optional:
+            if key[0] == name and self.optional:
                 return ''
             raise KeyError, key, sys.exc_info()[2]
             
