@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.18 2003/07/13 06:47:28 richard Exp $
+$Id: _field.py,v 1.19 2003/07/28 22:22:14 jim Exp $
 """
 __metaclass__ = type
 
 import warnings
+import re
 
 from zope.interface import classImplements, implements
 from zope.interface.interfaces import IInterface
@@ -33,6 +34,8 @@ from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword, IObject
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
+from zope.schema.interfaces import IURI, IId
+from zope.schema.interfaces import IFromUnicode
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen, Enumerated
@@ -67,9 +70,25 @@ class SourceText(Text):
 
 class Bytes(Enumerated, MinMaxLen, Field):
     __doc__ = IBytes.__doc__
-    implements(IBytes)
+    implements(IBytes, IFromUnicode)
 
     _type = str
+
+    def fromUnicode(self, u):
+        """
+        >>> b = Bytes(constraint=lambda v: 'x' in v)
+
+        >>> b.fromUnicode(u" foo x.y.z bat")
+        ' foo x.y.z bat'
+        >>> b.fromUnicode(u" foo y.z bat")
+        Traceback (most recent call last):
+        ...
+        ValidationError: (u'Constraint not satisfied', ' foo y.z bat')
+        
+        """
+        v = str(u)
+        self.validate(v)
+        return v
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""
@@ -83,7 +102,7 @@ class BytesLine(Bytes):
 
 class Float(Enumerated, Orderable, Field):
     __doc__ = IFloat.__doc__
-    implements(IFloat)
+    implements(IFloat, IFromUnicode)
     _type = float
 
     def __init__(self, *args, **kw):
@@ -94,6 +113,20 @@ class Float(Enumerated, Orderable, Field):
                           " use Enumerated%s instead" % (clsname, clsname),
                           DeprecationWarning, stacklevel=2)
         super(Float, self).__init__(*args, **kw)
+
+    def fromUnicode(self, u):
+        """
+        >>> f = Float()
+        >>> f.fromUnicode("1.25")
+        1.25
+        >>> f.fromUnicode("1.25.6")
+        Traceback (most recent call last):
+        ...
+        ValueError: invalid literal for float(): 1.25.6
+        """
+        v = float(u)
+        self.validate(v)
+        return v
 
 class EnumeratedFloat(Float):
     __doc__ = IEnumeratedFloat.__doc__
@@ -245,3 +278,103 @@ class Dict(MinMaxLen, Iterable, Field):
 
         finally:
             errors = None
+
+
+_isuri = re.compile(
+    r"[a-zA-z0-9+.-]+://" # scheme
+    r"\S+$"               # non space (should be pickier)
+    ).match
+class URI(BytesLine):
+    """URI schema field
+    """
+
+    implements(IURI, IFromUnicode)
+
+    def _validate(self, value):
+        """
+        >>> uri = URI(__name__='test')
+        >>> uri.validate("http://www.python.org/foo/bar")
+        >>> uri.validate("www.python.org/foo/bar")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('Invalid uri', 'www.python.org/foo/bar')
+        """
+    
+        super(URI, self)._validate(value)
+        if _isuri(value):
+            return
+
+        raise ValidationError("Invalid uri", value)
+
+    def fromUnicode(self, value):
+        """
+        >>> uri = URI(__name__='test')
+        >>> uri.fromUnicode("http://www.python.org/foo/bar")
+        'http://www.python.org/foo/bar'
+        >>> uri.fromUnicode("          http://www.python.org/foo/bar")
+        'http://www.python.org/foo/bar'
+        >>> uri.fromUnicode("      \\n    http://www.python.org/foo/bar\\n")
+        'http://www.python.org/foo/bar'
+        >>> uri.fromUnicode("http://www.python.org/ foo/bar")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('Invalid uri', 'http://www.python.org/ foo/bar')
+        """
+        v = str(value.strip())
+        self.validate(v)
+        return v
+
+_isdotted = re.compile(
+    r"([a-zA-Z][a-zA-z0-9_]*)"
+    r"([.][a-zA-Z][a-zA-z0-9_]*)+"
+    r"$" # use the whole line
+    ).match
+class Id(BytesLine):
+    """Id field
+
+    Values of id fields must be either uris or dotted names.
+    """
+
+    implements(IId, IFromUnicode)
+
+    def _validate(self, value):
+        """
+        >>> id = Id(__name__='test')
+        >>> id.validate("http://www.python.org/foo/bar")
+        >>> id.validate("zope.app.content")
+        >>> id.validate("zope.app.content/a")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('Invalid id', 'zope.app.content/a')
+        >>> id.validate("http://zope.app.content x y")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('Invalid id', 'http://zope.app.content x y')
+        """
+        super(Id, self)._validate(value)
+        if _isuri(value):
+            return
+        if _isdotted(value):
+            return
+
+        raise ValidationError("Invalid id", value)
+
+    def fromUnicode(self, value):
+        """
+        >>> id = Id(__name__='test')
+        >>> id.fromUnicode("http://www.python.org/foo/bar")
+        'http://www.python.org/foo/bar'
+        >>> id.fromUnicode("http://www.python.org/ foo/bar")
+        Traceback (most recent call last):
+        ...
+        ValidationError: ('Invalid id', 'http://www.python.org/ foo/bar')
+        >>> id.fromUnicode("      \\n x.y.z \\n")
+        'x.y.z'
+
+        """
+        v = str(value.strip())
+        self.validate(v)
+        return v
+
+    
+        
