@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.15 2003/02/20 14:56:42 stevea Exp $
+$Id: widget.py,v 1.16 2003/02/20 15:36:34 stevea Exp $
 """
 
 __metaclass__ = type
@@ -650,10 +650,24 @@ def renderTag(tag, **kw):
     attr_list = []
 
     # special case handling for cssClass
+    cssClass = ''
     if 'cssClass' in kw:
-        if kw['cssClass'] != "":
-            attr_list.append('class="%s"' % kw['cssClass'])
+        if kw['cssClass']:
+            cssClass = kw['cssClass']
         del kw['cssClass']
+
+    # If the 'type' attribute is given, append this plus '_type' as a
+    # css class. This allows us to do subselector stuff in css without
+    # necessarily having a browser that supports css subselectors.
+    # This is important if you want to style radio inputs differently than
+    # text inputs.
+    cssWidgetType = kw.get('type')
+    if cssWidgetType:
+        cssWidgetType += '_type'
+    else:
+        cssWidgetType = ''
+    if cssWidgetType or cssClass:
+        attr_list.append('class="%s"' % ' '.join((cssClass, cssWidgetType)))
 
     if 'style' in kw:
         if kw['style'] != '':
