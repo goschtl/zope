@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Jun  2 12:14:03 2004\n"
+"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
 "PO-Revision-Date: 2003-08-07 18:51-0300\n"
 "Last-Translator: Sidnei da Silva <sidnei@plone.org>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -907,7 +907,7 @@ msgstr "Você não especificou nenhum id para recortar."
 msgid "You didn't specify any ids to rename."
 msgstr "Você não especificou nenhum id para renomear."
 
-#: src/zope/app/container/browser/metaconfigure.py:62
+#: src/zope/app/container/browser/metaconfigure.py:63
 #: src/zope/app/folder/browser/configure.zcml:20
 #: src/zope/app/site/browser/configure.zcml:19
 #: src/zope/app/bundle/browser/configure.zcml:11
@@ -916,7 +916,7 @@ msgstr "Você não especificou nenhum id para renomear."
 msgid "Contents"
 msgstr "Conteúdo"
 
-#: src/zope/app/container/browser/metaconfigure.py:70
+#: src/zope/app/container/browser/metaconfigure.py:71
 #: src/zope/app/schema/browser/configure.zcml:15
 #: src/zope/app/container/browser/configure.zcml:5
 #: src/zope/app/registration/browser/configure.zcml:42
@@ -1031,7 +1031,7 @@ msgstr ""
 msgid "Creator"
 msgstr ""
 
-#: src/zope/app/dublincore/browser/metadataedit.py:39
+#: src/zope/app/dublincore/browser/metadataedit.py:38
 msgid "Changed data ${datetime}"
 msgstr ""
 
@@ -1360,7 +1360,7 @@ msgstr ""
 #: src/zope/app/publisher/interfaces/browser.py:87
 #: src/zope/app/security/interfaces/__init__.py:44
 #: src/zope/app/security/interfaces/__init__.py:197
-#: src/zope/app/wiki/interfaces.py:38 src/zope/schema/interfaces.py:100
+#: src/zope/app/wiki/interfaces.py:39 src/zope/schema/interfaces.py:100
 #: src/zope/schema/interfaces.py:484
 #: src/zope/app/site/browser/interfacebrowse.pt:11
 #: src/zope/app/menu/browser/menu_contents.pt:31
@@ -1706,7 +1706,7 @@ msgid "Add new language"
 msgstr ""
 
 #: src/zope/app/i18nfile/browser/file_edit.pt:87
-#: src/zope/app/i18nfile/browser/image_edit.pt:101
+#: src/zope/app/i18nfile/browser/image_edit.pt:94
 #: src/zope/app/cache/browser/cacheableedit.pt:45
 #: src/zope/app/cache/browser/ramedit.pt:51
 #: src/zope/app/dublincore/browser/edit.pt:33
@@ -1717,9 +1717,16 @@ msgstr ""
 msgid "save-changes-button"
 msgstr "Salvar Modificações"
 
+#: src/zope/app/i18nfile/browser/i18nfile.py:45
 #: src/zope/app/i18nfile/browser/i18nimage.py:27
 msgid "Edit Form"
 msgstr ""
+
+#: src/zope/app/i18nfile/browser/i18nfile.py:46
+#, fuzzy
+msgid ""
+"This edit form allows you to make changes to the properties of this file."
+msgstr "Este formulário permite associar um cache a este objeto."
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
 msgid ""
@@ -1727,7 +1734,6 @@ msgid ""
 msgstr ""
 
 #: src/zope/app/i18nfile/browser/image_edit.pt:85
-#: src/zope/app/i18nfile/browser/image_edit.pt:92
 msgid "Dimensions"
 msgstr ""
 
@@ -2136,8 +2142,8 @@ msgstr ""
 msgid "Help Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:64 src/zope/app/wiki/interfaces.py:44
-#: src/zope/app/wiki/interfaces.py:70
+#: src/zope/app/onlinehelp/interfaces.py:64 src/zope/app/wiki/interfaces.py:45
+#: src/zope/app/wiki/interfaces.py:71
 msgid "Source Text"
 msgstr ""
 
@@ -2153,13 +2159,13 @@ msgstr ""
 msgid "The Path to the Definition of a Help Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:77 src/zope/app/wiki/interfaces.py:50
-#: src/zope/app/wiki/interfaces.py:76
+#: src/zope/app/onlinehelp/interfaces.py:77 src/zope/app/wiki/interfaces.py:51
+#: src/zope/app/wiki/interfaces.py:77
 msgid "Source Type"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:78 src/zope/app/wiki/interfaces.py:51
-#: src/zope/app/wiki/interfaces.py:77
+#: src/zope/app/onlinehelp/interfaces.py:78 src/zope/app/wiki/interfaces.py:52
+#: src/zope/app/wiki/interfaces.py:78
 msgid "Type of the source text, e.g. structured text"
 msgstr ""
 
@@ -4008,7 +4014,7 @@ msgstr ""
 msgid "The SQL command to be run."
 msgstr ""
 
-#: src/zope/app/traversing/browser/absoluteurl.py:27
+#: src/zope/app/traversing/browser/absoluteurl.py:28
 #, fuzzy
 msgid ""
 "There isn't enough context to get URL information. This is probably due to a "
@@ -4410,32 +4416,40 @@ msgstr ""
 msgid "Minimal Wiki Page Container implementation "
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:39
+#: src/zope/app/wiki/interfaces.py:150
+msgid "Previous Source Text"
+msgstr ""
+
+#: src/zope/app/wiki/interfaces.py:151
+msgid "Previous source text of the Wiki Page."
+msgstr ""
+
+#: src/zope/app/wiki/interfaces.py:40
 #, fuzzy
 msgid "Comment Title"
 msgstr "Linha de comando:"
 
-#: src/zope/app/wiki/interfaces.py:45
+#: src/zope/app/wiki/interfaces.py:46
 msgid "Renderable source text of the comment."
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:71
+#: src/zope/app/wiki/interfaces.py:72
 msgid "Renderable source text of the Wiki Page."
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:95
+#: src/zope/app/wiki/interfaces.py:96
 msgid "Wiki Page Parents"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:96
+#: src/zope/app/wiki/interfaces.py:97
 msgid "Parents of a Wiki"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:97
+#: src/zope/app/wiki/interfaces.py:98
 msgid "Parent Name"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:98
+#: src/zope/app/wiki/interfaces.py:99
 msgid "Name of the parent wiki page."
 msgstr ""
 
@@ -4510,20 +4524,8 @@ msgstr "Adicionar Conteúdo"
 msgid "Add State"
 msgstr ""
 
-#: src/zope/app/workflow/stateful/browser/addtransition.pt:19
-msgid "Source State"
-msgstr ""
-
-#: src/zope/app/workflow/stateful/browser/addtransition.pt:29
-msgid "Destination State"
-msgstr ""
-
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:3
 msgid "Add Transition"
-msgstr ""
-
-#: src/zope/app/workflow/stateful/browser/addtransition.pt:39
-msgid "Condition"
 msgstr ""
 
 #: src/zope/app/workflow/stateful/browser/configure.zcml:101
@@ -4685,6 +4687,67 @@ msgstr ""
 
 #: src/zope/app/workflow/stateful/browser/instance_manage.pt:62
 msgid "Workflow-relevant Data"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:100
+msgid "Name of the source state."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:105
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:29
+msgid "Destination State"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:106
+msgid "Name of the destination state."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:111
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:39
+msgid "Condition"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:112
+msgid ""
+"The condition that is evaluated to decide if the\n"
+"                        transition can be fired or not."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:117
+msgid "Script"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:118
+msgid ""
+"The script that is evaluated to decide if the\n"
+"                        transition can be fired or not."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:123
+msgid "The permission needed to fire the Transition."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:130
+msgid "Trigger Mode"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:131
+msgid "How the Transition is triggered (Automatic/Manual)"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:147
+msgid "Workflow-Relevant Data Schema"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:148
+msgid ""
+"Specifies the schema that characterizes the workflow relevant data of a "
+"process instance, found in pd.data."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/interfaces.py:99
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:19
+msgid "Source State"
 msgstr ""
 
 #: src/zope/app/zopetop/widget_macros.pt:13
