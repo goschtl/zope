@@ -158,15 +158,15 @@ class CollectionContext(SetupContext):
     def __init__(self, pkgname, version, setup_file,
                  packages=(), collections=()):
         SetupContext.__init__(self, pkgname, version, setup_file)
+        reldir = posixpath.join(name, name)
         for name in packages:
             pkgdir = os.path.join(self._working_dir, name, name)
-            reldir = posixpath.join(name, name)
             self.scan_package(name, pkgdir, reldir)
         for name in collections:
             pkgdir = os.path.join(self._working_dir, name, name)
-            self.scan_collection(name, pkgdir)
+            self.scan_collection(name, pkgdir, reldir)
 
-    def scan_collection(self, name, directory):
+    def scan_collection(self, name, directory, reldir):
         # load the collection metadata
-        pkginfo = package.loadCollectionInfo(directory)
+        pkginfo = package.loadCollectionInfo(directory, reldir)
         self.scripts.extend(pkginfo.script)

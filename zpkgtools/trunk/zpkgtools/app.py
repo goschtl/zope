@@ -319,7 +319,7 @@ class Component:
         if self.is_python_package():
             return package.loadPackageInfo(self.name, destdir, self.name)
         else:
-            return package.loadCollectionInfo(destdir)
+            return package.loadCollectionInfo(destdir, self.name)
 
     def get_publication_info(self):
         if self.pubinfo is None:

@@ -99,16 +99,19 @@ def loadPackageInfo(pkgname, directory, reldir):
     return pkginfo
 
 
-def loadCollectionInfo(directory):
+def loadCollectionInfo(directory, reldir):
     """Load package information for a collection.
 
     :return: Package information object.
 
     :Parameters:
       - `directory`: Directory containing the collection's files.
+      - `reldir`: Relative directory path with which file names from
+        the information file will be joined.  This should be in POSIX
+        notation.  It will not be used to locate files.
 
     """
-    pkginfo = read_package_info(directory)
+    pkginfo = read_package_info(directory, reldir)
     if pkginfo.extension:
         raise ValueError("extensions cannot be defined in collections")
     pkginfo.extensions = []

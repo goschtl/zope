@@ -113,14 +113,14 @@ class PackageInfoTestCase(unittest.TestCase):
 
     def test_collection_empty_pkginfo(self):
         self.write_config("# empty configuration file\n")
-        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        pkginfo = package.loadCollectionInfo(self.tmpdir, None)
         eq = self.assertEqual
         eq(pkginfo.extensions, [])
         eq(pkginfo.documentation, [])
         eq(pkginfo.script, [])
 
     def test_collection_missing_pkginfo(self):
-        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        pkginfo = package.loadCollectionInfo(self.tmpdir, None)
         eq = self.assertEqual
         eq(pkginfo.extensions, [])
         eq(pkginfo.documentation, [])
@@ -135,7 +135,7 @@ class PackageInfoTestCase(unittest.TestCase):
         os.mkdir(os.path.join(self.tmpdir, "bin"))
         self.write_file(os.path.join("bin", "runme.py"),
                         "#!/bin/sh\nexit\n")
-        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        pkginfo = package.loadCollectionInfo(self.tmpdir, None)
         eq = self.assertEqual
         eq(len(pkginfo.extensions), 0)
         eq(pkginfo.documentation, ["doc/README.txt"])
@@ -145,7 +145,8 @@ class PackageInfoTestCase(unittest.TestCase):
         self.write_config("<extension foo>\n"
                           "  source  foo.c\n"
                           "</extension>\n")
-        self.assertRaises(ValueError, package.loadCollectionInfo, self.tmpdir)
+        self.assertRaises(ValueError, package.loadCollectionInfo,
+                          self.tmpdir, None)
 
 
 def test_suite():
