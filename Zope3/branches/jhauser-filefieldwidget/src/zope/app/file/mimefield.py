@@ -27,6 +27,10 @@ from zope.schema._bootstrapfields import TextLine
 from zope.schema._field import Bytes
 from zope.app.file.file import File
 
+# import for the FileDataWidget
+from zope.app.form.browser import FileWidget
+from zope.app.form.browser.widget import renderElement
+
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory("zope")
 
@@ -57,111 +61,41 @@ class IFileData(IMime):
                         description=_(u"The Filename of the uploaded file"),
                         required=False)
     
-# The field implementation                       
-class FileData(Bytes, File):
-    """A field implementation for uploaded files. 
+# The field implementation, does currently assume to handle file-like data
+class FileData(Bytes):
+    u"""A field implementation for uploaded files. """
 
-    Let's test the constructor:
+    implements(IFileData)
 
-    >>> file = FileData()
-    >>> file.contentType
-    ''
-    >>> file.data
-    ''
+    def set(self, obj, value):
+        """
+        Do a two phase save, first create an empty file object, make it persistent
+        than read the data into it in chunks, to reduce memory consumption.
 
-    >>> file = FileData('Foobar')
-    >>> file.contentType
-    ''
-    >>> file.data
-    'Foobar'
+        'value' is a FileUpload object.
+        """
+        if self.readonly:
+            raise TypeError("Can't set values on read-only fields "
+                            "(name=%s, class=%s.%s)"
+                            % (self.__name__,
+                               obj.__class__.__module__,
+                               obj.__class__.__name__))
+        # now create an empty file object and store it at the persistent object
+        setattr(obj, self.__name__, FileDataValue())
+        file = getattr(obj, self.__name__)
+        # now do the upload in chunks
+        file.data = value 
+        filename = self._extractFilename(value)
+        file.filename = filename
 
-    >>> file = FileData('Foobar', 'text/plain')
-    >>> file.contentType
-    'text/plain'
-    >>> file.data
-    'Foobar'
-
-    >>> file = FileData(data='Foobar', contentType='text/plain')
-    >>> file.contentType
-    'text/plain'
-    >>> file.data
-    'Foobar'
-
-
-    Let's test the mutators:
-
-    >>> file = FileData()
-    >>> file.contentType = 'text/plain'
-    >>> file.contentType
-    'text/plain'
-
-    >>> file.data = 'Foobar'
-    >>> file.data
-    'Foobar'
-
-    >>> file.data = None
-    Traceback (most recent call last):
-    ...
-    TypeError: Cannot set None data on a file.
-
-
-    Let's test large data input:
-
-    >>> file = FileData()
-
-    Insert as string:
-
-    >>> file.data = 'Foobar'*60000
-    >>> file.getSize()
-    360000
-    >>> file.data == 'Foobar'*60000
-    True
-
-    Insert data as FileChunk:
-    >>> from zope.app.file.file import FileChunk
-    >>> fc = FileChunk('Foobar'*4000)
-    >>> file.data = fc
-    >>> file.getSize()
-    24000
-    >>> file.data == 'Foobar'*4000
-    True
-
-    Insert data from file object:
-
-    >>> import cStringIO
-    >>> sio = cStringIO.StringIO()
-    >>> sio.write('Foobar'*100000)
-    >>> sio.seek(0)
-    >>> file.data = sio
-    >>> file.getSize()
-    600000
-    >>> file.data == 'Foobar'*100000
-    True
-
-    Test handling of filename
-
-    >>> file.filename == ''
-    True
-    
-    Last, but not least, verify the interface:
-
-    >>> from zope.interface.verify import verifyClass
-    >>> IFile.implementedBy(FileData)
-    True
-    >>> verifyClass(IFile, FileData)
-    True
-    """
-
-    implements(IFileData, IFile)
-
-    def _setdata(self, data):
-        File._setdata(data)
-        print 'setting data', type(data)
-        self.filename = self._extractFilename(data)
-        self.contentType = self._extractContentType(data)
+    def _validate(self, value):
+        # just test for the seek method of FileUpload instances.
+        if value and not getattr(value, 'seek',''):
+            raise WrongType(value, self._type)
 
     def _extractContentType(self, data):
         u"""Extract the content type for the given data"""
+        # XXX Need to call some function here
         return 'application/octet-stream'
     
     def _extractFilename(self, data):
@@ -176,4 +110,62 @@ class FileData(Bytes, File):
             return fid
         else:
             return ''
+
+class FileDataWidget(FileWidget):
+    u"""a simple file upload widget"""
+
+    type = 'file'
+
+    def __call__(self):
+        # XXX set the width to 40 to be sure to recognize this widget
+        displayMaxWidth = self.displayMaxWidth or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 maxlength=40,
+                                 extra=self.extra)
+        else:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 extra=self.extra)
+
+    def _toFieldValue(self, input):
+        if input == '':
+            return self.context.missing_value
+        try:
+            seek = input.seek
+            read = input.read
+        except AttributeError, e:
+            raise ConversionError('Form input is not a file object', e)
+        else:
+            if getattr(input, 'filename', ''):
+                return input
+            else:
+                return self.context.missing_value
+
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getInputValue()
+        # need to test for value, as an empty field is not an error, but
+        # the current file should not be replaced.
+        if value and (field.query(content, self) != value):
+            field.set(content, value)
+            return True
+        else:
+            return False
+
+class FileDataValue(File):
+    u"""Inherit a normal file content object."""
+
+    def __init__(self, *args):
+        super(File, self).__init__(*args)
+        self.filename = ''
 
