@@ -116,6 +116,12 @@
 
     </meta:complexDirective>
 
+    <meta:directive
+        name="resource"
+        schema="zope.app.publisher.browser.metadirectives.IResourceDirective"
+        handler=".browserconfigure.resource"
+        />
+
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
