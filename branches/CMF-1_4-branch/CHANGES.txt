@@ -1,4 +1,4 @@
-CMF 1.4.1 (unreleased)
+CMF 1.4.1 (2003/09/08)
 
   Bug Fixes
 
@@ -11,6 +11,9 @@ CMF 1.4.1 (unreleased)
     - Remove ownership from filesystem-based skin methods, which
       can't be trojaned, and therefore need not pay the performance
       penalty of ownership checking.
+
+    - CMFCore/MembershipTool.py:  include traceback in log messages
+      for errors during 'wrapUser'.
 
     - CMFDefault/skins: Fix permission name and html in roster.
 
@@ -32,6 +35,9 @@ CMF 1.4.1 (unreleased)
       (Collector #156 and other).
 
     - CMFDefault and CMFCalendar skins: Fix stylesheets (Collector #164).
+
+    - CMFCalendar:  fix bug in month-spanning events (patch from Helge
+      Tesdal).
 
     - CMFCore and CMFDefault MembershipTool: Make sure 'createMemberarea()'
       always grants the right Ownership and Owner role for new member folders.
