@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.4 2003/01/09 14:13:18 jim Exp $
+$Id: interfaces.py,v 1.5 2003/03/25 11:47:56 tseaver Exp $
 """
 from zope.interface import Interface
 
@@ -262,6 +262,9 @@ class IText(IMinMaxLen, IValueSet, IIterable):
 
 class ITextLine(IText):
     u"""a Field containing a unicode string without newlines."""
+
+class IPassword(ITextLine):
+    u"""a Field containing a unicode string without newlines that is a password."""
 
 class IInt(IMinMax, IValueSet):
     u"""a Field containing an Integer Value."""

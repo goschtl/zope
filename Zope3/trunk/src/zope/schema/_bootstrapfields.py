@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.6 2003/02/28 14:23:23 stevea Exp $
+$Id: _bootstrapfields.py,v 1.7 2003/03/25 11:47:56 tseaver Exp $
 """
 __metaclass__ = type
 
@@ -251,13 +251,15 @@ class Text(MinMaxLen, ValueSet):
 
 
 class TextLine(Text):
-    """A Text field with no newlines."""
+    """A text field with no newlines."""
 
     def constraint(self, value):
         # XXX we should probably use a more general definition of newlines
         return '\n' not in value
 
-
+class Password(TextLine):
+    """A text field containing a text used as a password."""
+    
 class Bool(Field):
     """A field representing a Bool."""
     _type = type(True)

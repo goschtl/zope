@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.5 2003/01/25 04:05:45 rdmurray Exp $
+$Id: _field.py,v 1.6 2003/03/25 11:47:56 tseaver Exp $
 """
 __metaclass__ = type
 
@@ -25,10 +25,11 @@ from zope.schema.interfaces import IField, IContainer, IIterable, IOrderable
 from zope.schema.interfaces import IMinMaxLen, IValueSet, IText, ITextLine
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
+from zope.schema.interfaces import IPassword
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen, ValueSet
-from zope.schema._bootstrapfields import Text, TextLine, Bool, Int
+from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
 from zope.schema.fieldproperty import FieldProperty
 from datetime import datetime
 
@@ -52,6 +53,7 @@ implements(ValueSet, IValueSet)
 
 implements(Text, IText)
 implements(TextLine, ITextLine)
+implements(Password, IPassword)
 implements(Bool, IBool)
 implements(Int, IInt)
 
