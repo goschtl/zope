@@ -26,8 +26,7 @@ from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
-from security import getSecurityInfo
-from metaconfigure import protectClass, initializeClass
+from security import getSecurityInfo, protectClass, initializeClass
 
 def handler(serviceName, methodName, *args, **kwargs):
     # specifically ask for a global service

@@ -23,15 +23,10 @@ from zope.app.security.interfaces import IPermission
 from types import ModuleType
 from zope.interface import classImplements
 from zope.configuration.exceptions import ConfigurationError
-from zope.component import getUtility
 from zope.app.security.interfaces import IPermission
 
-# Zope 2 stuff
-from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
-
-CheckerPublic = 'zope.Public'
-CheckerPrivate = 'zope.Private'
+from security import CheckerPublic, CheckerPrivate
+from security import protectName, initializeClass
 
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(serviceName), methodName)
@@ -207,47 +202,3 @@ class ContentDirective:
             callable = initializeClass,
             args = (self.__class,)
             )
-
-def initializeClass(klass):
-    InitializeClass(klass)
-
-def _getSecurity(klass):
-    # a Zope 2 class can contain some attribute that is an instance
-    # of ClassSecurityInfo. Zope 2 scans through things looking for
-    # an attribute that has the name __security_info__ first
-    info = vars(klass)
-    for k, v in info.items():
-        if hasattr(v, '__security_info__'):
-            return v
-    # we stuff the name ourselves as __security__, not security, as this
-    # could theoretically lead to name clashes, and doesn't matter for
-    # zope 2 anyway.
-    security = ClassSecurityInfo()
-    setattr(klass, '__security__', security)
-    return security
-
-def protectName(klass, name, permission_id):
-    security = _getSecurity(klass)
-    # Zope 2 uses string, not unicode yet
-    name = str(name)
-    if permission_id == CheckerPublic:
-        security.declarePublic(name)
-    elif permission_id == CheckerPrivate:
-        security.declarePrivate(name)
-    else:
-        permission = getUtility(IPermission, name=permission_id)
-        # Zope 2 uses string, not unicode yet
-        perm = str(permission.title)
-        security.declareProtected(perm, name)
-
-def protectClass(klass, permission_id):
-    security = _getSecurity(klass)
-    if permission_id == CheckerPublic:
-        security.declareObjectPublic()
-    elif permission_id == CheckerPrivate:
-        security.declareObjectPrivate()
-    else:
-        permission = getUtility(IPermission, name=permission_id)
-        # Zope 2 uses string, not unicode yet
-        perm = str(permission.title)
-        security.declareObjectProtected(perm)
