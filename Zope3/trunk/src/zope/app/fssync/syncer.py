@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.17 2003/05/15 21:24:52 gvanrossum Exp $
+$Id: syncer.py,v 1.18 2003/05/15 21:27:43 gvanrossum Exp $
 """
 
 import os
@@ -236,7 +236,7 @@ def fromFS(container, name, location):
     # See if this is an existing object
     if name not in container:
         # Not there; we need to create a new object
-        assert entry.get("flag") == "added"
+        assert entry.get("flag") == "added", name
         newOb = _create(container, name, factory, path)
 
     else:
