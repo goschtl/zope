@@ -128,6 +128,7 @@
 /ZODB4/ZEO		 /Packages3/ZEO
 /ZODB4/Interface	 /Packages3/Interface
 /ZODB4/Persistence	 /Packages3/Persistence
+/ZODB4/ThreadedAsync     /Packages/ThreadedAsync
 /ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zLOG		 /Packages3/zLOG
 /ZODB4/ZConfig		 /Packages/ZConfig
