@@ -11,6 +11,10 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - FSPageTemplate: Refine the XML content type detection so that
+      addtional data such as encoding is preserved
+      (http://www.zope.org/Collectors/CMF/228)
+
     - ActionInformation: If a path expression ending in an object that
       gets called using __render_with_namespace__ (such as DTML objects
       and Scripts (Python)) is used a KeyError for "here" would be thrown
