@@ -78,9 +78,8 @@ Add new content:<br>
                  >foo</a> 
             </td>
             <td><span tal:content="item/title|default">&nbsp;</span></td>
-            <td><span tal:define="size item/size/size; label item/size/label;"
-                      tal:attributes="size size"
-                      tal:content="label">&nbsp;</span></td>
+            <td><span tal:attributes="size item/size/sizeForSorting"
+                      tal:content="item/size/sizeForDisplay">&nbsp;</span></td>
             <td><span tal:define="created item/created|default"
                       tal:content="created">&nbsp;</span></td>
             <td><span tal:define="modified item/modified|default"

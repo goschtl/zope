@@ -13,15 +13,14 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.3 2002/12/27 13:40:25 stevea Exp $
+Revision information: $Id: contents.py,v 1.4 2002/12/27 15:22:50 stevea Exp $
 """
-from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.container import IZopeContainer
+from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.interfaces.size import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-from zope.component import queryView, getView, queryAdapter,  getAdapter
-from zope.proxy.context import ContextWrapper
+from zope.component import queryView, queryAdapter,  getAdapter
 from zope.publisher.browser import BrowserView
 
 
@@ -48,9 +47,7 @@ class Contents(BrowserView):
             title = dc.title
             if title:
                 info['title'] = title
-
-            magnitude, label = getSize(obj)
-            info['size'] = {'size':magnitude, 'label':label}
+            
             created = dc.created
             if created is not None:
                 info['created'] = formatTime(created)
@@ -59,6 +56,9 @@ class Contents(BrowserView):
             if modified is not None:
                 info['modified'] = formatTime(modified)
 
+        sized_adapter = queryAdapter(obj, ISized)
+        if sized_adapter is not None:
+            info['size'] = sized_adapter
         return info
 
 
@@ -95,23 +95,3 @@ def formatTime(in_date):
     if hasattr(in_date, 'strftime'):
         return in_date.strftime(format)
     return undefined
-
-#SteveA recommneded that getSize return
-#a tuple (magnitude, (size, text_label))
-#this way we can sort things intelligibly
-#that don't have sizes.
-
-def getSize(obj):
-    try:
-        size=int(obj.getSize())
-    except (AttributeError, ValueError):
-        return (0, u'N/A')
-
-    result = u''
-    if size < 1024:
-        result = "1 KB"
-    elif size > 1048576:
-        result = "%0.02f MB" % (size / 1048576.0)
-    else:
-        result = "%d KB" % (size / 1024.0)
-    return (size, result)

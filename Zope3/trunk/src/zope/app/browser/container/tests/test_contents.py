@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: test_contents.py,v 1.3 2002/12/27 15:22:51 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -77,8 +77,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
         from datetime import datetime
         from zope.app.interfaces.dublincore import IZopeDublinCore
-        from zope.app.browser.container.contents \
-            import formatTime, getSize
+        from zope.app.browser.container.contents import formatTime
         class FauxDCAdapter:
             __implements__ = IZopeDublinCore
 
@@ -89,8 +88,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
             created = datetime(2001, 1, 1, 1, 1, 1)
             modified = datetime(2002, 2, 2, 2, 2, 2)
 
-        from zope.component.adapter \
-             import provideAdapter
+        from zope.component.adapter import provideAdapter
         provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
 
         fc = self._TestView__newView( container )
@@ -100,24 +98,8 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
-        size,label=info['size']['size'],info['size']['label']
-        self.assertEqual((size,label), getSize(FauxDCAdapter.size))
         self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
         self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
-
-    def testObjectSize(self):
-        from zope.app.browser.container.contents import getSize
-        class SizeableObject:
-            def __init__(self, size=0):
-                self.size=size
-            def getSize(self):
-                return self.size
-        self.assertEqual(getSize(SizeableObject(0)), (0, u'1 KB') )
-        self.assertEqual(getSize(SizeableObject(2048)), (2048, u'2 KB') )
-        self.assertEqual(getSize(SizeableObject(2000000)),(2000000,u'1.91 MB'))
-        self.assertEqual(getSize(SizeableObject('bob')), (0,u'N/A'))
-        self.assertEqual(getSize('dobbs'), (0,u'N/A'))
-
 
     def testRemove( self ):
         container = self._TestView__newContext()

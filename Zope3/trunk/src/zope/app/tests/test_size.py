@@ -1,0 +1,69 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+import unittest
+
+from zope.app.size import DefaultSized
+from zope.app.interfaces.size import ISized
+
+class DummyObject:
+
+    def __init__(self, size):
+        self._size = size
+
+    def getSize(self):
+        return self._size
+
+class Test(unittest.TestCase):
+
+    def testSizeWithBytes(self):
+        from zope.app.size import DefaultSized
+        obj = DummyObject(1023)
+        sized = DefaultSized(obj)
+        self.assertEqual(sized.sizeForSorting(), ('bytes', 1023))
+        self.assertEqual(sized.sizeForDisplay(), u'1 KB')
+
+    def testSizeWithNone(self):
+        from zope.app.size import DefaultSized
+        obj = DummyObject(None)
+        sized = DefaultSized(obj)
+        self.assertEqual(sized.sizeForSorting(), (None, None))
+        self.assertEqual(sized.sizeForDisplay(), u'n/a')
+
+    def testSizeNotAvailable(self):
+        from zope.app.size import DefaultSized
+        sized = DefaultSized(object())
+        self.assertEqual(sized.sizeForSorting(), (None, None))
+        self.assertEqual(sized.sizeForDisplay(), u'n/a')
+   
+    def testVariousSizes(self):
+        from zope.app.size import DefaultSized
+        
+        sized = DefaultSized(DummyObject(0))
+        self.assertEqual(sized.sizeForSorting(), ('bytes', 0))
+        self.assertEqual(sized.sizeForDisplay(), u'1 KB')
+        
+        sized = DefaultSized(DummyObject(2048))
+        self.assertEqual(sized.sizeForSorting(), ('bytes', 2048))
+        self.assertEqual(sized.sizeForDisplay(), u'2 KB')
+        
+        sized = DefaultSized(DummyObject(2000000))
+        self.assertEqual(sized.sizeForSorting(), ('bytes', 2000000))
+        self.assertEqual(sized.sizeForDisplay(), u'1.91 MB')
+    
+def test_suite():
+    loader = unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Test)
+
+if __name__=='__main__':
+    unittest.TextTestRunner().run(test_suite())
