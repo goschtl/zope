@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu Aug  7 16:04:15 2003\n"
+"POT-Creation-Date: Thu Aug  7 16:57:18 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: Zope 3 0.1\n"
-#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
+#: /home/philipp/dev/Zope3/site.zcml:8
 msgid "Site Manager"
 msgstr ""
 
-#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:9
+#: /home/philipp/dev/Zope3/site.zcml:9
 msgid "Site Member"
 msgstr ""
 
@@ -219,11 +219,11 @@ msgid "You can configure the RAM Cache here."
 msgstr ""
 
 #: zope/app/browser/cache/ramedit.pt:51
-#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/content/i18n_edit.pt:87
 #: zope/app/browser/content/i18nimageedit.pt:101
 #: zope/app/browser/content/imageedit.pt:17
 #: zope/app/browser/dublincore/edit.pt:33
+#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/security/grants/manage_permissionform.pt:86
 #: zope/app/browser/security/grants/manage_roleform.pt:63
 #: zope/app/browser/services/error.pt:46
@@ -231,8 +231,8 @@ msgid "save-changes-button"
 msgstr ""
 
 #: zope/app/browser/cache/ramedit.pt:53
-#: zope/app/browser/services/bundle.pt:120
 #: zope/app/browser/services/add_svc_config.pt:35
+#: zope/app/browser/services/bundle.pt:120
 msgid "reset-button"
 msgstr ""
 
@@ -631,11 +631,11 @@ msgstr ""
 #: zope/app/browser/services/views.pt:49
 #: zope/app/browser/services/views.pt:72
 #: zope/app/browser/services/utility/utilities.pt:50
-#: zope/app/browser/services/registration/editregistration.pt:48
-#: zope/app/browser/catalog/advanced.pt:51
+#: zope/app/browser/services/registration/editregistration.pt:49
 #: zope/app/browser/workflow/stateful/instance_manage.pt:77
 #: zope/app/browser/workflow/stateful/definition_edit.pt:21
 #: zope/app/browser/workflow/stateful/definition_edit.pt:50
+#: zope/app/browser/catalog/advanced.pt:51
 msgid "refresh-button"
 msgstr ""
 
@@ -660,8 +660,8 @@ msgstr ""
 #: zope/app/browser/form/edit.pt:53
 #: zope/app/browser/form/addwizard.pt:62
 #: zope/app/browser/form/editwizard.pt:53
-#: zope/app/browser/services/serviceactivation.pt:54
 #: zope/app/browser/services/add_svc_config.pt:37
+#: zope/app/browser/services/serviceactivation.pt:54
 #: zope/app/browser/workflow/stateful/instance_manage.pt:79
 msgid "submit-button"
 msgstr ""
@@ -1027,8 +1027,8 @@ msgid "Add Interfaces:"
 msgstr ""
 
 #: zope/app/browser/marker.pt:115
-#: zope/app/browser/rdb/rdbadd.pt:27
 #: zope/app/browser/container/add.pt:39
+#: zope/app/browser/rdb/rdbadd.pt:27
 #: zope/app/browser/services/adduser.pt:56
 #: zope/app/browser/services/translation/translate.pt:78
 #: zope/app/browser/services/translation/translate.pt:84
@@ -1475,8 +1475,8 @@ msgstr ""
 #: zope/app/browser/services/caches.pt:11
 #: zope/app/browser/services/connections.pt:11
 #: zope/app/browser/services/services.pt:15
-#: zope/app/browser/services/views.pt:11
 #: zope/app/browser/services/bundle.pt:49
+#: zope/app/browser/services/views.pt:11
 #: zope/app/browser/services/utility/utilities.pt:11
 msgid "(click to clear message)"
 msgstr ""
@@ -1513,9 +1513,9 @@ msgstr ""
 #: zope/app/browser/services/connections.pt:50
 #: zope/app/browser/services/services.pt:62
 #: zope/app/browser/services/views.pt:46
-#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/services/translation/translate.pt:37
 #: zope/app/browser/services/translation/translate.pt:67
+#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/workflow/instancecontainer_main.pt:47
 msgid "delete-button"
 msgstr ""
@@ -1643,22 +1643,22 @@ msgstr ""
 msgid "Role Service"
 msgstr ""
 
-#: zope/app/browser/services/configureCache.pt:19
-#: zope/app/browser/services/configureConnection.pt:19
-#: zope/app/browser/services/configureView.pt:18
-#: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:42
-#: zope/app/browser/services/registration/nameregistry.pt:44
-#: zope/app/browser/services/translation/synchronize.pt:142
-msgid "update-button"
-msgstr ""
-
 #: zope/app/browser/services/configureCache.pt:7
 msgid "Cache registrations for ${cache_name}"
 msgstr ""
 
 #: zope/app/browser/services/configureConnection.pt:7
 msgid "Connection registrations for ${connection_name}"
+msgstr ""
+
+#: zope/app/browser/services/configureView.pt:18
+#: zope/app/browser/services/configureConnection.pt:19
+#: zope/app/browser/services/configureCache.pt:19
+#: zope/app/browser/services/translation/synchronize.pt:142
+#: zope/app/browser/services/utility/configureutility.pt:29
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
+#: zope/app/browser/services/registration/nameregistry.pt:44
+msgid "update-button"
 msgstr ""
 
 #: zope/app/browser/services/configureView.pt:6
@@ -1962,19 +1962,23 @@ msgstr ""
 msgid "View Registration Manager"
 msgstr ""
 
-#: zope/app/browser/services/registration/editregistration.pt:55
+#: zope/app/browser/services/registration/editregistration.pt:37
+msgid "(disabled)"
+msgstr ""
+
+#: zope/app/browser/services/registration/editregistration.pt:56
 msgid "top-button"
 msgstr ""
 
-#: zope/app/browser/services/registration/editregistration.pt:57
+#: zope/app/browser/services/registration/editregistration.pt:58
 msgid "up-button"
 msgstr ""
 
-#: zope/app/browser/services/registration/editregistration.pt:59
+#: zope/app/browser/services/registration/editregistration.pt:60
 msgid "down-button"
 msgstr ""
 
-#: zope/app/browser/services/registration/editregistration.pt:61
+#: zope/app/browser/services/registration/editregistration.pt:62
 msgid "bottom-button"
 msgstr ""
 
@@ -2520,11 +2524,11 @@ msgid "by ${username}"
 msgstr ""
 
 #: zope/app/browser/workflow/configure.zcml:15
-msgid "A workflow service"
+msgid "'Workflow Service"
 msgstr ""
 
 #: zope/app/browser/workflow/configure.zcml:15
-msgid "'Workflow Service"
+msgid "A workflow service"
 msgstr ""
 
 #: zope/app/browser/workflow/configure.zcml:46
@@ -3251,31 +3255,36 @@ msgid "View Folder"
 msgstr ""
 
 #: zope/app/services/view.py:250
-#: zope/app/services/view.py:289
+#: zope/app/services/view.py:295
 msgid "(Anything)"
 msgstr ""
 
 #: zope/app/services/view.py:253
-#: zope/app/services/view.py:268
+msgid "${view_name} ${ptype} View for {iface_name}"
+msgstr ""
+
+#: zope/app/services/view.py:255
+msgid "${view_name} ${ptype} View for {iface_name} in layer ${layer}"
+msgstr ""
+
+#: zope/app/services/view.py:266
+msgid "Registered by ZCML"
+msgstr ""
+
+#: zope/app/services/view.py:274
 #: zope/app/security/configure.zcml:10
 msgid "View"
 msgstr ""
 
-#: zope/app/services/view.py:253
-#: zope/app/services/view.py:293
-msgid "for"
+#: zope/app/services/view.py:300
+msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr ""
 
-#: zope/app/services/view.py:255
-#: zope/app/services/view.py:295
-msgid "in layer"
+#: zope/app/services/view.py:302
+msgid "${view_name} for ${pname} {what} {iface_name} in layer ${layer}"
 msgstr ""
 
-#: zope/app/services/view.py:260
-msgid "Registered by ZCML"
-msgstr ""
-
-#: zope/app/services/view.py:305
+#: zope/app/services/view.py:319
 msgid "Page"
 msgstr ""
 
@@ -3349,6 +3358,18 @@ msgstr ""
 
 #: zope/app/translation_files/pygettext.py:541
 msgid "a unicode string"
+msgstr ""
+
+#: zope/app/utilities/configure.zcml:8
+#: zope/app/utilities/configure.zcml:31
+#: zope/app/utilities/configure.zcml:41
+msgid "Persistent Schema Utility"
+msgstr ""
+
+#: zope/app/utilities/configure.zcml:8
+#: zope/app/utilities/configure.zcml:31
+#: zope/app/utilities/configure.zcml:41
+msgid "A Persistent Schema that can be edited through the web"
 msgstr ""
 
 #: zope/app/workflow/configure.zcml:13
