@@ -29,7 +29,6 @@ class FakeModule:
 
 def setUp(test, name='README.txt'):
     dict = test.globs
-    dict.clear()
     dict['__name__'] = name    
     sys.modules[name] = FakeModule(dict)
 
