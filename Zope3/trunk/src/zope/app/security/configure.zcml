@@ -5,7 +5,7 @@
 
   <permission
       id="zope.Public"
-      title="[view-permission] Public"
+      title="[public-permission] Public"
       description="Special permission indicating unconditional access.
                    Public resources are always accessable."
       />
