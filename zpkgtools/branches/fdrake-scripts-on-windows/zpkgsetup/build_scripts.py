@@ -18,10 +18,34 @@ have one on Windows.
 
 $Id$
 """
-from distutils.command.build_scripts import build_scripts as _build_scripts
+import os
+import sys
+
+from stat import ST_MODE
+
+from distutils import log
+from distutils import sysconfig
+from distutils.command import build_scripts as _build_scripts
+from distutils.dep_util import newer
+from distutils.util import convert_path
 
 
-class build_scripts(_build_scripts):
+class build_scripts(_build_scripts.build_scripts):
+
+    # The copy_scripts() method is copied in it's entirety from the
+    # stock build_scripts command since it isn't broken down into
+    # useful bits to better support subclassing.  The only changes are
+    # the addition of the "if" statement that causes the ".py"
+    # extension to be added on Windows if it is not already present,
+    # the on_windows attribute, and a fix to a reference to the
+    # first_line_re defined in the module of the base class.
+    #
+    # The on_windows attribute can be re-initialized on command
+    # instances to support testing of this class without regard to the
+    # host platform.  It is the only determinant of the behavior to
+    # use when scripts are built.
+
+    on_windows = sys.platform[:3].lower() == "win"
 
     def copy_scripts (self):
         """Copy each script listed in 'self.scripts'; if it's marked as a
@@ -35,9 +59,8 @@ class build_scripts(_build_scripts):
             adjust = 0
             script = convert_path(script)
             outfile = os.path.join(self.build_dir, os.path.basename(script))
-            # This if statement is all we add to the underlying base class.
-            if (sys.platform[:3].lower() == "win"
-                and not outfile.endswith(".py")):
+            # This is what was added.
+            if (self.on_windows and not outfile.lower().endswith(".py")):
                 outfile += ".py"
             outfiles.append(outfile)
 
@@ -60,7 +83,7 @@ class build_scripts(_build_scripts):
                     self.warn("%s is an empty file (skipping)" % script)
                     continue
 
-                match = first_line_re.match(first_line)
+                match = _build_scripts.first_line_re.match(first_line)
                 if match:
                     adjust = 1
                     post_interp = match.group(1) or ''
