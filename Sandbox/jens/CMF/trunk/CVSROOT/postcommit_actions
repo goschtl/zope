@@ -397,6 +397,8 @@ def send_mail(addrs, text, subject):
     fullname = email = ''
     if user:
         fullname, email = get_user_ldap_info(user)
+        if '.' in fullname or ',' in fullname:
+            fullname = '"' + fullname + '"'
     else:
         user = "*unknown*"
     if not fullname:
