@@ -45,22 +45,6 @@ class IZAPI(
         the message shown the user.
         """
 
-    def add(container, name, object):
-        """Add an object to a container
-
-        This helper function takes care of getting an adapter that
-        publishes necessary errors and calling necessary hooks.
-        
-        """
-
-    def remove(container, name):
-        """Remove an object from a container
-
-        This helper function takes care of getting an adapter that
-        publishes necessary errors and calling necessary hooks.
-        
-        """
-
     def queryType(object, type):
         """Returns the interface implemented by object that provides type.
 
@@ -75,10 +59,6 @@ class IZAPI(
 
         This function is useful because it works even if the instance
         is security proxied.
-        """
-
-    def site():
-        """Return the current (thread-local) site
         """
 
     def principals():
