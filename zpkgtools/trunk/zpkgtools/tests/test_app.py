@@ -137,6 +137,40 @@ class CommandLineTestCase(unittest.TestCase):
         options = self.parse_args(["--configure", "somepath.conf"])
         self.assertEqual(options.configfile, "somepath.conf")
 
+    def test_set_version_from_revision_tag(self):
+        options = self.parse_args(["-r", "my-package-1_0"])
+        self.assertEqual(options.version, "1.0")
+
+    def test_set_package_revision_overrides_revision_tag(self):
+        options = self.parse_args(["-r", "my-package-1_0", "-v1.0"])
+        self.assertEqual(options.version, "1.0")
+
+    def test_version_from_tagname(self):
+        # Test only the version_from_tagname() function
+        convert = app.version_from_tagname
+        eq = self.assertEqual
+        eq(convert("my-package-1_0"), "1.0")
+        eq(convert("my-package-1_0_42"), "1.0.42")
+        eq(convert("my-package-1_0_42_24"), "1.0.42.24")
+        eq(convert("my-package-1_0_42alpha42"), "1.0.42alpha42")
+        eq(convert("my-package-1_0beta"), "1.0beta")
+        eq(convert("my-package-1_0a666"), "1.0a666")
+        eq(convert("my-package-1_0b777"), "1.0b777")
+        eq(convert("my-package-1_0c888"), "1.0c888")
+        #
+        # Check that unparsable tags return None
+        #
+        # Too many plain numeric segments
+        eq(convert("my-package-1_0_42_24_39"), None)
+        # Too many numeric segments after alphabetic segment
+        eq(convert("my-package-1_0_42_alpha_24_35"), None)
+        # Too few leading numeric seqments
+        eq(convert("my-package-1"), None)
+        eq(convert("my-package-1a"), None)
+        eq(convert("my-package-1a0"), None)
+        # Too many trailing numeric seqments
+        eq(convert("mypkg-1_2_3alpha4_5"), None)
+
 
 class ApplicationSupportTestCase(unittest.TestCase):
 

@@ -16,6 +16,7 @@
 import logging
 import optparse
 import os
+import re
 import sets
 import shutil
 import sys
@@ -520,6 +521,21 @@ import zpkgtools.setup
 """
 
 
+def version_from_tagname(tagname):
+    """Compute a version number based on a revision control tag.
+
+    :param tagname: The name of the tag to convert.
+    :return: A version number for a release.
+    """
+    parts = tagname.split("-")
+    version = parts[-1].replace("_", ".")
+    m = re.match(r"\d+\.\d+(?:\.\d+(?:\.\d+)?)?(?:[a-z]+\d*)?$", version)
+    if m is None:
+        return None
+    else:
+        return version
+
+
 def parse_args(argv):
     """Parse the command line, return an options object and the
     identifier of the resource to be packaged.
@@ -564,14 +580,17 @@ def parse_args(argv):
         help="include copies of the zpkgtools support code (the default)")
     parser.add_option(
         "-v", dest="version",
-        help="version label for the new distribution",
-        default="0.0.0")
+        help="version label for the new distribution")
     options, args = parser.parse_args(argv[1:])
     if len(args) != 1:
         parser.error("wrong number of arguments")
     options.program = prog
     options.args = args
     options.resource = args[0]
+    if options.revision_tag and not options.version:
+        options.version = version_from_tagname(options.revision_tag)
+    if not options.version:
+        options.version = "0.0.0"
     return options
 
 
