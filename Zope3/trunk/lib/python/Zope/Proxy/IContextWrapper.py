@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IContextWrapper.py,v 1.6 2002/11/28 14:36:29 stevea Exp $
+$Id: IContextWrapper.py,v 1.7 2002/11/28 14:39:24 stevea Exp $
 """
 from Interface import Interface
 
@@ -52,7 +52,8 @@ class IContextWrapper(Interface):
         """
         
     def isWrapper(ob):
-        """Returns truth iff the object is wrapped in a context wrapper
+        """If the object is wrapped in a context wrapper, returns truth,
+        otherwise returns false.
         """
 
     def ContainmentIterator(ob):
