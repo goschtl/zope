@@ -13,12 +13,13 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_utilityservice.py,v 1.9 2004/01/29 17:36:50 srichter Exp $
+$Id: test_utilityservice.py,v 1.10 2004/04/11 18:16:43 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.component import \
-     getUtility, getUtilitiesFor, getService, queryUtility, getServiceManager
+     getUtility, getUtilitiesFor, getService, queryUtility, \
+     getServiceManager, getUtilitiesFor
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
@@ -29,10 +30,12 @@ class IDummyUtility(Interface):
     pass
 
 class DummyUtility:
+    __name__ = 'DummyUtility'
     implements(IDummyUtility)
 
 class DummyUtility2:
     implements(IDummyUtility)
+    __name__ = 'DummyUtility2'
 
     def __len__(self):
         return 0
@@ -41,6 +44,7 @@ dummyUtility = DummyUtility()
 dummyUtility2 = DummyUtility2()
 
 class Test(TestCase, CleanUp):
+
     def setUp(self):
         CleanUp.setUp(self)
         sm=getServiceManager(None)
@@ -48,8 +52,8 @@ class Test(TestCase, CleanUp):
         provideService=sm.provideService
         from zope.component.interfaces import IUtilityService
         defineService('Utilities',IUtilityService)
-        from zope.component.utility import utilityService
-        provideService('Utilities', utilityService)
+        from zope.component.utility import GlobalUtilityService
+        provideService('Utilities', GlobalUtilityService())
 
     def testGetUtility(self):
         us = getService(None, Utilities)
@@ -68,9 +72,17 @@ class Test(TestCase, CleanUp):
     def testgetUtilitiesFor(self):
         us = getService(None, Utilities)
         us.provideUtility(IDummyUtility, dummyUtility)
-        conns = getUtilitiesFor(None, IDummyUtility)
-        self.assertEqual(getUtilitiesFor(None, IDummyUtility),
+        self.assertEqual(list(getUtilitiesFor(None, IDummyUtility)),
                          [('',dummyUtility)])
+        self.assertEqual(list(us.getUtilitiesFor(IDummyUtility)),
+                         [('',dummyUtility)])
+
+    def testregistrations(self):
+        us = getService(None, Utilities)
+        us.provideUtility(IDummyUtility, dummyUtility)
+        self.assertEqual(
+            map(str, us.registrations()),
+            ["UtilityRegistration('IDummyUtility', '', 'DummyUtility', '')"])
         
     def testRegisteredMatching(self):
         us = getService(None, Utilities)

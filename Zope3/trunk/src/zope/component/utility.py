@@ -13,15 +13,15 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.9 2004/03/10 11:34:01 srichter Exp $
+$Id: utility.py,v 1.10 2004/04/11 18:16:43 jim Exp $
 """
 
-from zope.interface.implementor import ImplementorRegistry
-from zope.interface import implements
-from zope.component.interfaces import IUtilityService
 from zope.component.exceptions import Invalid, ComponentLookupError
+from zope.component.interfaces import IUtilityService, IComponentRegistry
+from zope.interface.adapter import AdapterRegistry
+from zope.interface import implements
 
-class IGlobalUtilityService(IUtilityService):
+class IGlobalUtilityService(IUtilityService, IComponentRegistry):
 
     def provideUtility(providedInterface, component, name=''):
         """Provide a utility
@@ -29,26 +29,27 @@ class IGlobalUtilityService(IUtilityService):
         A utility is a component that provides an interface.
         """
 
-class GlobalUtilityService:
+class GlobalUtilityService(AdapterRegistry):
 
     implements(IGlobalUtilityService)
 
     def __init__(self):
-        self.__utilities = {}
+        AdapterRegistry.__init__(self)
+        self._registrations = {}
 
-    def provideUtility(self, providedInterface, component, name=''):
-        """See IGlobalUtilityService interface"""
-
+    def provideUtility(self, providedInterface, component, name='', info=''):
+    
         if not providedInterface.providedBy(component):
             raise Invalid("The registered component doesn't implement "
                           "the promised interface.")
 
-        registry = self.__utilities.get(name)
-        if registry is None:
-            registry = ImplementorRegistry()
-            self.__utilities[name] = registry
+        self.register((), providedInterface, name, component)
 
-        registry.register(providedInterface, component)
+        self._registrations[(providedInterface, name)] = UtilityRegistration(
+            providedInterface, name, component, info)
+
+    def registrations(self):
+        return self._registrations.itervalues()
 
     def getUtility(self, interface, name=''):
         """See IUtilityService interface"""
@@ -60,48 +61,38 @@ class GlobalUtilityService:
     def queryUtility(self, interface, default=None, name=''):
         """See IUtilityService interface"""
 
-        registry = self.__utilities.get(name)
-        if registry is None:
-            return default
+        return self.lookup((), interface, name, default)
 
-        c = registry.get(interface)
-        if c is not None:
-            return c
-
-        return default
+    def getUtilitiesFor(self, interface):
+        return AdapterRegistry.lookupAll(self, (), interface)
 
     def getRegisteredMatching(self, interface=None, name=None):
-        L = []
-        for reg_name in self.__utilities:
-            for iface, c in self.__utilities[reg_name].getRegisteredMatching():
-                if c is None:
-                    continue
-                if interface and not iface is interface:
-                    continue
-                if name is not None and reg_name.find(name) < 0:
-                    continue
-                L.append((iface, reg_name, c))
-        return L
+        # doomed method
+        lameresult = []
+        for registration in self.registrations():
+            if (interface is not None
+                and interface is not registration.provided):
+                continue
+            if (name is not None
+                and registration.name.find(name) < 0):
+                continue
+            lameresult.append((registration.provided, registration.name,
+                               registration.value))
+        return lameresult
+        
 
-    def getUtilitiesFor(self, interface=None):
-        utilities = {}
-        for name in self.__utilities:
-            for iface, util in self.__utilities[name].getRegisteredMatching():
-                if util is None:
-                    continue
-                if interface and not iface.extends(interface, 0):
-                    continue
-                utilities[(name, util)] = None
+class UtilityRegistration(object):
 
-        return utilities.keys()
+    def __init__(self, provided, name, value, doc):
+        self.provided = provided
+        self.name = name
+        self.value = value
+        self.doc = doc
 
-    _clear = __init__
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r)' % (
+            self.__class__.__name__,
+            self.provided.__name__, self.name,
+            getattr(self.value, '__name__', self.value), self.doc,
+            )
 
-# the global utility service instance (see component.zcml )
-utilityService = GlobalUtilityService()
-_clear         = utilityService._clear
-
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(_clear)
-del addCleanUp
