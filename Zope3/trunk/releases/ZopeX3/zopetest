@@ -27,7 +27,7 @@ else:
     lib = os.path.join(here, "lib", "python")
 sys.path.append(lib)
 
-ftesting = os.path.join(here, "skel", "etc", "ftesting.zcml")
+ftesting = os.path.join(here, "zopeskel", "etc", "ftesting.zcml")
 
 import zope.app.tests.test
 
