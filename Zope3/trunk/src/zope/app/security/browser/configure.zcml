@@ -2,20 +2,6 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <view
-      for="zope.app.security.interfaces.IPermissionField"
-      provides="zope.app.form.interfaces.IInputWidget"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      factory=".permissionwidget.SinglePermissionWidget"
-      />
-
-  <view 
-      for="zope.app.security.interfaces.IPermissionField"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      factory=".permissionwidget.DisplayWidget"
-      />
-
   <browser:page
       name="login.html"
       for="*"

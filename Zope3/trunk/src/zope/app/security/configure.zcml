@@ -6,10 +6,14 @@
   <permission
       id="zope.Public"
       title="[view-permission] Public"
-      description="Special permission indicating unconditional access
-Public resources are always accessable.
-"
+      description="Special permission indicating unconditional access.
+                   Public resources are always accessable."
       />
+
+  <vocabulary 
+      name="Permissions"
+      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      interface="zope.app.security.interfaces.IPermission" />
 
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />

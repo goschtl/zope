@@ -13,10 +13,9 @@
 ##############################################################################
 """Zope Application-specific Security Interfaces
 
-$Id: __init__.py,v 1.1 2004/03/08 12:07:34 srichter Exp $
+$Id: __init__.py,v 1.2 2004/04/24 23:20:04 srichter Exp $
 """
 from zope.interface import Interface
-from zope.schema.interfaces import IEnumerated, IField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import Text, TextLine
 
@@ -203,8 +202,4 @@ class IPermission(Interface):
         title=_("Description"),
         description=_("Provides a description for the permission."),
         required=False)
-
-
-class IPermissionField(IEnumerated, IField):
-    """Fields with Permissions as values"""
 
