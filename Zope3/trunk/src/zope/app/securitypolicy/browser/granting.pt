@@ -4,18 +4,17 @@
 
 <h2 i18n:translate="">Granting Roles and Permissions to Principals</h2>
 
-<p tal:define="status view/status" 
-   tal:condition="status" 
-   tal:content="status" 
-   i18n:translate="" />
+<p tal:define="status view/status"
+   tal:condition="status"
+   tal:content="status" />
 
 <form action="" method="POST">
-<p>Select a principal:</p>
+<p i18n:translate="">Select a principal:</p>
 <div tal:content="structure view/principal_widget">...</div>
 
 <div tal:condition="view/principal">
 
-  <h2>Grants for the selected principal</h2>
+  <h2 i18n:translate="">Grants for the selected principal</h2>
 
   <input type="submit" name="GRANT_SUBMIT" value="Change" 
          i18n:attributes="value grant-submit" />
