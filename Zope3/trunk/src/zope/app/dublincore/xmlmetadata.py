@@ -15,14 +15,14 @@
 
 XXX longer description goes here.
 
-$Id: xmlmetadata.py,v 1.1 2003/08/20 21:25:15 fdrake Exp $
+$Id: xmlmetadata.py,v 1.2 2003/08/22 13:03:19 fdrake Exp $
 """
 
 import xml.sax
 import xml.sax.handler
 
 from cStringIO import StringIO
-from xml.sax.saxutils import quoteattr
+from xml.sax.saxutils import escape, quoteattr
 
 from zope.app.dublincore import dcterms
 
@@ -48,20 +48,30 @@ def dumpString(mapping):
         if prev != group:
             sio.write("\n")
             prev = group
-        if name in name_to_element:
-            element, t = name_to_element[name]
+        if name in dcterms.name_to_element:
+            element, t = dcterms.name_to_element[name]
             if not type:
                 type = t
             if type:
                 type = " xsi:type=" + quoteattr(type)
             for value in values:
                 sio.write("  <%s%s>\n    %s\n  </%s>\n"
-                          % (element, type, value, element))
+                          % (element, type, _encode_string(value), element))
         else:
             raise RuntimeError("could not serialize %r metadata element"
                                % name)
     sio.write("</metadata>\n")
     return sio.getvalue()
+
+try:
+    unicode
+except NameError:
+    _encode_string = escape
+else:
+    def _encode_string(s):
+        if isinstance(s, unicode):
+            s = s.encode('utf-8')
+        return escape(s)
 
 
 def parse(source, error_handler=None):
