@@ -30,7 +30,8 @@
       name="xmltree.js" 
       file="xmltree.js" 
       layer="zope.app.rotterdam.rotterdam" />
-  
+
+  <!-- depricated file, methods moved to zope3.js -->
   <browser:resource 
       name="onlinehelp.js" 
       file="onlinehelp.js" 

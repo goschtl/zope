@@ -32,11 +32,6 @@
             tal:attributes="src string:${context/++resource++zope3.js}" >
     </script>
 
-    <!-- Popup script for the OnlineHelp -->
-    <script type="text/javascript" src="onlinehelp.js"
-            tal:attributes="src string:${context/++resource++onlinehelp.js}" >
-    </script>
-
     <metal:tree use-macro="context/@@standard_macros/navigation_tree_js" />
 
     <link rel="icon" type="image/png"
@@ -87,18 +82,6 @@
           </div>
         </div>
       </tal:block>
-
-      <!-- Tree of the help topics that appears on the help namespace -->
-      <div class="box" id="help" metal:define-slot="online_help"
-           tal:condition="not:python:request.getURL().find('++help++')==-1">
-        <h4 i18n:translate="">Online Help - TOC</h4>
-        <div class="body">
-          <div tal:content="structure view/getTopicTree|nothing"
-               tal:omit-tag="">content of topicTree</div>
-          <br />
-        </div>
-
-      </div>
 
     </div>
     </metal:slot>
@@ -151,8 +134,8 @@
           <a href="#"
                tal:define="url string:'${view/__name__}/${help_info/action}';
                            name string:'OnlineHelp';
-                           settings string:'height=400
-                                           ,width=700
+                           settings string:'height=500
+                                           ,width=950
                                            ,resizable=1
                                            ,scrollbars=yes
                                            ,location=no
