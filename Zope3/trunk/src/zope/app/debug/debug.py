@@ -35,6 +35,12 @@ class Debugger(object):
             config(config_file)
         self.db = database(db)
 
+    def fromDatabase(cls, db):
+        inst = cls.__new__(cls)
+        inst.db = db
+        return inst
+    fromDatabase = classmethod(fromDatabase)
+
     def root(self):
         """Get the top-level application object
 

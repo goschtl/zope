@@ -1,4 +1,4 @@
-#!<<PYTHON>>
+#!/usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -12,20 +12,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Script to run the Zope Application Server in the foreground.
+"""Script to run the Zope Application Server from the Python prompt.
 
 $Id$
 """
 import os
 import sys
 
+os.environ["PYTHONINSPECT"] = "true"
 
-SOFTWARE_HOME = "<<SOFTWARE_HOME>>"
-INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zdaemon.conf")
+SCRIPT_NAME = os.path.abspath(__file__)
+INSTANCE_HOME = os.path.dirname(os.path.dirname(SCRIPT_NAME))
+del SCRIPT_NAME
+SOFTWARE_HOME = os.path.join(INSTANCE_HOME, "src")
+
+if SOFTWARE_HOME not in sys.path:
+    sys.path.insert(0, SOFTWARE_HOME)
+
+CONFIG_FILE = os.path.join(INSTANCE_HOME, "zope.conf")
+if not os.path.exists(CONFIG_FILE):
+    CONFIG_FILE += ".in"
 
 
-def run():
+def startup():
     # This removes the script directory from sys.path, which we do
     # since there are no modules here.
     #
@@ -34,10 +43,17 @@ def run():
     sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
                    SOFTWARE_HOME] + basepath
 
-    import zope.app.server.controller
-    zope.app.server.controller.INSTANCE_HOME = INSTANCE_HOME
-    zope.app.server.controller.main(["-C", CONFIG_FILE] + sys.argv[1:])
+    from zope.app.server.main import debug
+    db = debug(["-C", CONFIG_FILE] + sys.argv[1:])
+    if "PYTHONSTARTUP" in os.environ:
+        execfile(os.environ["PYTHONSTARTUP"])
+    return db
 
 
 if __name__ == '__main__':
-    run()
+    db = startup()
+    del startup
+    from zope.app.debug import Debugger
+    debugger = Debugger.fromDatabase(db)
+    del db
+    del Debugger
