@@ -290,17 +290,14 @@ class InclusionProcessor:
     # rather than being implicit.
 
     def add_manifest(self, destination):
-        manifest = []
         prefix = os.path.join(destination, "")
-        self.manifests.append((prefix, manifest))
-        return manifest
+        self.manifests.append((prefix, []))
 
     def drop_manifest(self, destination):
         prefix = os.path.join(destination, "")
         for i in range(len(self.manifests)):
             if self.manifests[i][0] == prefix:
-                del self.manifests[i]
-                return
+                return self.manifests.pop(i)[1]
         raise ValueError("no manifest for %s" % destination)
 
     def addSingleInclude(self, relpath, source, destination):
