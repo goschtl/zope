@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.16 2003/09/24 20:43:13 fdrake Exp $
+$Id: registration.py,v 1.17 2003/10/16 16:25:36 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -41,9 +41,7 @@ class RegistrationStatusProperty(object):
             return self
 
         registration = inst
-
-        sm = zapi.getServiceManager(registration)
-        service = sm.queryLocalService(registration.serviceType)
+        service = self._get_service(registration)
         registry = service and service.queryRegistrationsFor(registration)
 
         if registry:
@@ -57,10 +55,7 @@ class RegistrationStatusProperty(object):
 
     def __set__(self, inst, value):
         registration = inst
-
-        sm = zapi.getServiceManager(registration)
-        service = sm.queryLocalService(registration.serviceType)
-
+        service = self._get_service(registration)
         registry = service and service.queryRegistrationsFor(registration)
 
         if value == interfaces.UnregisteredStatus:
@@ -88,6 +83,12 @@ class RegistrationStatusProperty(object):
                 if not registry.registered(registration):
                     registry.register(registration)
                 registry.activate(registration)
+
+    def _get_service(self, registration):
+        # how we get the service is factored out so subclasses can
+        # approach this differently
+        sm = zapi.getServiceManager(registration)
+        return sm.queryLocalService(registration.serviceType)
 
 
 class RegistrationStack(Persistent, Contained):
