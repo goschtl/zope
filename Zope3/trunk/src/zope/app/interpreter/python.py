@@ -13,12 +13,12 @@
 ##############################################################################
 """Python Code Interpreter
 
-$Id: python.py,v 1.5 2004/02/25 22:58:29 srichter Exp $
+$Id: python.py,v 1.6 2004/03/02 15:49:02 srichter Exp $
 """
 import StringIO
 import sys
 
-from zope.app.interfaces.interpreter import IInterpreter
+from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import implements
 from zope.security.interpreter import RestrictedInterpreter
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """Test the workflow ZCML namespace directives.
 
-$Id: test_pythoninterpreter.py,v 1.3 2004/02/25 22:58:30 srichter Exp $
+$Id: test_pythoninterpreter.py,v 1.4 2004/03/02 15:49:03 srichter Exp $
 """
 import unittest
 
-from zope.app.interfaces.interpreter import IInterpreter
+from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
 from zope.exceptions import ForbiddenAttribute
 from zope.interface.verify import verifyObject
