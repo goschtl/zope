@@ -35,9 +35,9 @@ class Viewable:
             return self, ('fallback_call__',)
         # XXX Should never get this far. But if it does?
 
-    def fallback_call__(self, *args, **kw):
-        """By default, return self"""
-        return self
+    # def fallback_call__(self, *args, **kw):
+    #    """By default, return self"""
+    #    return self
 
     # we have a default view, tell zpublisher to go there
     def __browser_default__(self, request):
@@ -57,39 +57,39 @@ class Viewable:
     # this is technically not needed because ZPublisher finds our
     # attribute through __browser_default__; but we also want to be
     # able to call pages from python modules, PythonScripts or ZPT
-    def __call__(self, *args, **kw):
-        """ """
-        request = kw.get('REQUEST')
-        if not IBrowserRequest.providedBy(request):
-            request = getattr(self, 'REQUEST', None)
-            if not IBrowserRequest.providedBy(request):
-                request = FakeRequest()
-        obj, path = self.__browser_default__(request)
-        if path and not simpleRecursion():
-            meth = obj.unrestrictedTraverse(path)
-            if meth is not None:
-                return meth(*args, **kw)
-        return self.fallback_call__(*args, **kw)
-    __call__.__five_method__ = True
+    # def __call__(self, *args, **kw):
+    #    """ """
+    #    request = kw.get('REQUEST')
+    #    if not IBrowserRequest.providedBy(request):
+    #        request = getattr(self, 'REQUEST', None)
+    #        if not IBrowserRequest.providedBy(request):
+    #            request = FakeRequest()
+    #    obj, path = self.__browser_default__(request)
+    #    if path and not simpleRecursion():
+    #        meth = obj.unrestrictedTraverse(path)
+    #        if meth is not None:
+    #            return meth(*args, **kw)
+    #    return self.fallback_call__(*args, **kw)
+    # __call__.__five_method__ = True
 
-def simpleRecursion():
-    # This tests for simple recursion, which can easily happen
-    # in CMF, like the following:
-    # - Object has a method named 'view'
-    # - 'view' method calls '__call__'
-    # - five:viewable overrides call to use '__browser_default__'
-    #   to find a default view and call it
-    # - defaultView is set to 'view'
-    # Bang. Infinite recursion.
-    stack = inspect.stack()
-    try:
-        if len(stack) < 4:
-            return False
-        if stack[2][1:4] == stack[4][1:4]:
-            return True
-    finally:
-        del stack
-    return False
+# def simpleRecursion():
+#     # This tests for simple recursion, which can easily happen
+#     # in CMF, like the following:
+#     # - Object has a method named 'view'
+#     # - 'view' method calls '__call__'
+#     # - five:viewable overrides call to use '__browser_default__'
+#     #   to find a default view and call it
+#     # - defaultView is set to 'view'
+#     # Bang. Infinite recursion.
+#     stack = inspect.stack()
+#     try:
+#         if len(stack) < 4:
+#             return False
+#         if stack[2][1:4] == stack[4][1:4]:
+#             return True
+#     finally:
+#         del stack
+#     return False
 
 class BrowserDefault(object):
 

@@ -129,16 +129,18 @@ def classViewable(class_):
         setattr(class_, '__fallback_default__',
                 Viewable.__fallback_default__.im_func)
 
-    if hasattr(class_, '__call__'):
-        # Only touch __call__ if the class is already callable.
-        if not isFiveMethod(class_.__call__):
-            # if there's an existing __call__ already, use that
-            # as the fallback
-            setattr(class_, 'fallback_call__', class_.__call__)
-        if not hasattr(class_, 'fallback_call__'):
-            setattr(class_, 'fallback_call__',
-                    Viewable.fallback_call__.im_func)
-        setattr(class_, '__call__', Viewable.__call__.im_func)
+    # Disable __call__ overriding for now. It causes much more trouble
+    # than it fixes. :(
+    # if hasattr(class_, '__call__'):
+    #    # Only touch __call__ if the class is already callable.
+    #    if not isFiveMethod(class_.__call__):
+    #        # if there's an existing __call__ already, use that
+    #        # as the fallback
+    #        setattr(class_, 'fallback_call__', class_.__call__)
+    #    if not hasattr(class_, 'fallback_call__'):
+    #        setattr(class_, 'fallback_call__',
+    #                Viewable.fallback_call__.im_func)
+    #    setattr(class_, '__call__', Viewable.__call__.im_func)
 
     setattr(class_, '__browser_default__', Viewable.__browser_default__.im_func)
     setattr(class_, '__five_viewable__', True)

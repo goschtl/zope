@@ -252,9 +252,11 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view2 = getViewProviding(salutation, IInputWidget, request)
         self.assertEquals(view2.__class__, zope.app.form.browser.itemswidgets.DropdownWidget)
 
-    def test_existing_call(self):
-        view = self.folder.unrestrictedTraverse('testcall')
-        self.assertEquals("Default __call__ called", view())
+    # Disabled __call__ overriding for now. Causes more trouble
+    # than it fixes.
+    # def test_existing_call(self):
+    #     view = self.folder.unrestrictedTraverse('testcall')
+    #     self.assertEquals("Default __call__ called", view())
 
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """Test a few publishing features"""
@@ -301,9 +303,11 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         response = self.publish(url, basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
 
-    def test_existing_call(self):
-        response = self.publish('/test_folder_1_/testcall')
-        self.assertEquals("Default __call__ called", response.getBody())
+    # Disabled __call__ overriding for now. Causes more trouble
+    # than it fixes.
+    # def test_existing_call(self):
+    #     response = self.publish('/test_folder_1_/testcall')
+    #     self.assertEquals("Default __call__ called", response.getBody())
 
     def test_existing_index(self):
         response = self.publish('/test_folder_1_/testindex')
