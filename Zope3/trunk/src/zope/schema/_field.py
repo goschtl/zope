@@ -14,40 +14,41 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.32 2004/04/11 10:35:04 srichter Exp $
+$Id: _field.py,v 1.33 2004/04/24 23:20:46 srichter Exp $
 """
-__metaclass__ = type
-
 import warnings
 import re
+from datetime import datetime, date
 
-from zope.interface import classImplements, implements
-from zope.interface.interfaces import IInterface
-from zope.interface.interfaces import IMethod
+from zope.interface import classImplements, implements, directlyProvides
+from zope.interface.interfaces import IInterface, IMethod
 
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBytes, IASCII, IBytesLine
-from zope.schema.interfaces import IBool, IInt, IFloat
-from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
-from zope.schema.interfaces import IPassword, IObject, IDate, IEnumeratedDate
-from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
-from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
+from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
+from zope.schema.interfaces import IChoice, IChoiceSequence
+from zope.schema.interfaces import ISequence, ITuple, IList, ISet, IDict
+from zope.schema.interfaces import IPassword, IObject, IDate
 from zope.schema.interfaces import IURI, IId, IFromUnicode
+from zope.schema.interfaces import IVocabulary
 
 from zope.schema.interfaces import ValidationError, InvalidValue
-from zope.schema.interfaces import WrongType, WrongContainedType
+from zope.schema.interfaces import WrongType, WrongContainedType, NotUnique
 from zope.schema.interfaces import SchemaNotProvided, SchemaNotFullyImplemented
 from zope.schema.interfaces import InvalidURI, InvalidId, InvalidDottedName
+from zope.schema.interfaces import ConstraintNotSatisfied
+from zope.schema.interfaces import Unbound
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
-from zope.schema._bootstrapfields import MinMaxLen, Enumerated
+from zope.schema._bootstrapfields import MinMaxLen
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
-from zope.schema._bootstrapfields import EnumeratedTextLine, EnumeratedInt
+from zope.schema._bootstrapfields import MinMaxLen, ValidatedProperty
 from zope.schema.fieldproperty import FieldProperty
-from datetime import datetime, date
+from zope.schema.vocabulary import getVocabularyRegistry
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 # Fix up bootstrap field types
 Field.title       = FieldProperty(IField['title'])
@@ -65,8 +66,6 @@ classImplements(TextLine, ITextLine)
 classImplements(Password, IPassword)
 classImplements(Bool, IBool)
 classImplements(Int, IInt)
-classImplements(EnumeratedInt, IEnumeratedInt)
-classImplements(EnumeratedTextLine, IEnumeratedTextLine)
 
 class SourceText(Text):
     __doc__ = ISourceText.__doc__
@@ -157,10 +156,6 @@ class Float(Orderable, Field):
         self.validate(v)
         return v
 
-class EnumeratedFloat(Enumerated, Float):
-    __doc__ = IEnumeratedFloat.__doc__
-    implements(IEnumeratedFloat)
-
 class Datetime(Orderable, Field):
     __doc__ = IDatetime.__doc__
     implements(IDatetime)
@@ -169,18 +164,87 @@ class Datetime(Orderable, Field):
     def __init__(self, *args, **kw):
         super(Datetime, self).__init__(*args, **kw)
 
-class EnumeratedDatetime(Enumerated, Datetime):
-    __doc__ = IEnumeratedDatetime.__doc__
-    implements(IEnumeratedDatetime)
-
 class Date(Orderable, Field):
     __doc__ = IDate.__doc__
     implements(IDate)
     _type = date
 
-class EnumeratedDate(Enumerated, Date):
-    __doc__ = IEnumeratedDate.__doc__
-    implements(IEnumeratedDate)
+class Choice(Field):
+    """Choice fields can have a value found in a constant or dynamic set of
+    values given by the field definition.
+    """
+    implements(IChoice)
+
+    def __init__(self, values=None, vocabulary=None, **kw):
+        """Initialize object."""
+        assert not (values is None and vocabulary is None), \
+               "You must specify either values or vocabulary."
+        assert values is None or vocabulary is None, \
+               "You cannot specify both, values and vocabulary."
+        
+        self.vocabulary = None
+        self.vocabularyName = None
+
+        if values is not None:
+            terms = [SimpleTerm(value) for value in values]
+            self.vocabulary = SimpleVocabulary(terms)
+        elif isinstance(vocabulary, (unicode, str)):
+            self.vocabularyName = vocabulary
+        else:
+            assert IVocabulary.providedBy(vocabulary)
+            self.vocabulary = vocabulary
+
+        # Before a default value is checked, it is validated. However, a
+        # vocabulary is usually not complete when these fields are
+        # initialized. Therefore signalize to the validation method to ignore
+        # default value checks during initialization.
+        self._init_field = True
+        super(Choice, self).__init__(**kw)
+        self._init_field = False
+
+    def bind(self, object):
+        """See zope.schema._bootstrapinterfaces.IField."""
+        clone = super(Choice, self).bind(object)
+        # get registered vocabulary if needed:
+        if clone.vocabulary is None and self.vocabularyName is not None:
+            vr = getVocabularyRegistry()
+            clone.vocabulary = vr.get(object, self.vocabularyName)
+        return clone
+
+    def fromUnicode(self, str):
+        """
+        >>> from vocabulary import SimpleVocabulary
+        >>> t = Choice(
+        ...     vocabulary=SimpleVocabulary.fromValues([u'foo',u'bar']))
+        >>> t.fromUnicode(u"baz")
+        Traceback (most recent call last):
+        ...
+        ConstraintNotSatisfied: baz
+        >>> t.fromUnicode(u"foo")
+        u'foo'
+        """
+        self.validate(str)
+        return str
+        
+    def _validate(self, value):
+        # Pass all validations during initialization
+        if self._init_field:
+            return
+
+        super(Choice, self)._validate(value)
+
+        vocabulary = self.vocabulary
+        
+        if vocabulary is None:
+            vr = getVocabularyRegistry()
+            try:
+                vocabulary = vr.get(None, self.vocabularyName)
+            except VocabularyRegistryError:
+                raise ValueError("can't validate value without vocabulary")
+
+        if value not in vocabulary:
+            raise ConstraintNotSatisfied, value
+
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
@@ -215,18 +279,39 @@ def _validate_sequence(value_type, value, errors=None):
 
     return errors
 
+def _validate_uniqueness(value):
+    temp_values = []
+    for item in value:
+        if item in temp_values:
+            raise NotUnique, item
+
+        temp_values.append(item)
+
 
 class Sequence(MinMaxLen, Iterable, Field):
     __doc__ = ISequence.__doc__
     implements(ISequence)
     value_type = None
 
-    def __init__(self, value_type=None, **kw):
+    def __init__(self, value_type=None, unique=False, **kw):
         super(Sequence, self).__init__(**kw)
         # whine if value_type is not a field
         if value_type is not None and not IField.providedBy(value_type):
             raise ValueError, "'value_type' must be field instance."
         self.value_type = value_type
+        # When a choice is used for the sequence, signalize this through an
+        # interface, so that special views can be provided. 
+        if IChoice.providedBy(value_type):
+            directlyProvides(self, IChoiceSequence)
+        self.unique = unique
+
+    def bind(self, object):
+        """See zope.schema._bootstrapinterfaces.IField."""
+        clone = super(Sequence, self).bind(object)
+        # We need to bin the choice as well, so the vocabulary is generated.
+        if IChoiceSequence.providedBy(self):
+           clone.value_type = clone.value_type.bind(object) 
+        return clone
 
     def _validate(self, value):
         super(Sequence, self)._validate(value)
@@ -234,16 +319,22 @@ class Sequence(MinMaxLen, Iterable, Field):
         if errors:
             raise WrongContainedType, errors
 
+        if self.unique:
+            _validate_uniqueness(value)
+
 class Tuple(Sequence):
     """A field representing a Tuple."""
     implements(ITuple)
     _type = tuple
 
-
 class List(Sequence):
     """A field representing a List."""
     implements(IList)
     _type = list
+
+class Set(Sequence):
+    """A field representing a set."""
+    implements(ISet)
 
 
 def _validate_fields(schema, value, errors=None):
