@@ -18,7 +18,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.4 2003/02/24 22:03:52 jeremy Exp $\n";
+"$Id: persistence.c,v 1.5 2003/03/05 18:55:49 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -318,7 +318,7 @@ persist_set_state(PyPersistObject *self, PyObject *v)
 	/* Mark a changed object as up-to-date, but do nothing if it's
 	   already up-to-date or ghostified.
 	 */
-	if (self->po_state > 0) /* changed or sticky */
+	if (self->po_state == CHANGED || self->po_state == STICKY)
 	    self->po_state = UPTODATE;
     } else if (newstate == CHANGED_DELETE) {
 	/* Force the object to UPTODATE state to guarantee that
