@@ -15,54 +15,62 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.10 2002/09/18 04:45:14 rdmurray Exp $
+$Id: meta.py,v 1.11 2002/09/18 18:52:40 rdmurray Exp $
 """
 
 
 from INonEmptyDirective import INonEmptyDirective
 from ISubdirectiveHandler import ISubdirectiveHandler
 
-#_directives is a registry that holds information on zcml directives
-#and subdirectives.  It is filled by the 'directives', 'directive' and
-#'subdirective' directives that are provided as the bootstrap
-#directives by the _clear function of this module.
-#
-#The top level of the registry is a dictionary keyed by two element
-#tuples.  Each key tuple consists of a namespace designator (such as
-#http://namespaces.zope.org/zope) and a directive name.  Thus, the
-#key that accesses the 'directive' directive is::
-#
-#    (http://namespaces.zope.org/zope', 'directive')
-#
-#The value of a directive entry is a two element tuple consisting
-#of a callable and a (possibly empty) subdirective registry.  The
-#callable is the object to be called to process the directive and
-#its parameters.  The callable must be either an IEmptyDirective (in
-#which case the subdirective registry should be empty), or an
-#INonEmptyDirective (in which case there should be one or more entries
-#in the subdirective registry).
-#
-#A subdirective registry is also keyed by (ns, name) tuples.  Handler
-#methods for subdirectives are looked up on the ISubdirectiveHandler
-#object that is returned by the INonEmptyDirective that handles
-#the directive to which the subdirective registry belongs.
-#INonEmptyDirective objects are thus most often classes.
-#
-#The value of an entry in the subdirective registry is a tuple of
-#two elements.  The first element is a subdirective registry, and
-#the second is the name to be looked up to find the callable that
-#will handle the processing of the subdirective.  That callable
-#should implement either IEmtpyDirective or INonEmptyDirective.  The
-#accompanying sub-subdirective registry should be empty or not,
-#accordingly.
-
-_directives = {}
-
 class InvalidDirective(Exception):
-    "An invalid directive was used"
+    """An invalid directive was used"""
 
 class BrokenDirective(Exception):
-    "A directive is implemented incorrectly"
+    """A directive is implemented incorrectly"""
+
+class InvalidDirectiveDefinition(Exception):
+    """The definition of a directive is incomplete or incorrect"""
+
+
+#
+# Registry data structure and manipulation functions.
+#
+
+# _directives is a registry that holds information on zcml directives
+# and subdirectives.  It is filled by the 'directives', 'directive' and
+# 'subdirective' directives that are provided as the bootstrap
+# directives by the _clear function of this module.
+#
+# The top level of the registry is a dictionary keyed by two element
+# tuples.  Each key tuple consists of a namespace designator (such as
+# http://namespaces.zope.org/zope) and a directive name.  Thus, the
+# key that accesses the 'directive' directive is::
+#
+#     (http://namespaces.zope.org/zope', 'directive')
+#
+# The value of a directive entry is a two element tuple consisting
+# of a callable and a (possibly empty) subdirective registry.  The
+# callable is the object to be called to process the directive and
+# its parameters.  The callable must be either an IEmptyDirective (in
+# which case the subdirective registry should be empty), or an
+# INonEmptyDirective (in which case there should be one or more entries
+# in the subdirective registry).
+#
+# A subdirective registry is also keyed by (ns, name) tuples.  Handler
+# methods for subdirectives are looked up on the ISubdirectiveHandler
+# object that is returned by the INonEmptyDirective that handles
+# the directive to which the subdirective registry belongs.
+# INonEmptyDirective objects are thus most often classes.
+#
+# The value of an entry in the subdirective registry is a tuple of
+# two elements.  The first element is a subdirective registry, and
+# the second is the name to be looked up to find the callable that
+# will handle the processing of the subdirective.  That callable
+# should implement either IEmtpyDirective or INonEmptyDirective.  The
+# accompanying sub-subdirective registry should be empty or not,
+# accordingly.
+
+_directives = {}
 
 def register(name, callable):
     """Register a top-level directive
@@ -114,19 +122,44 @@ def registersub(directives, name, handler_method=None):
     directives[name] = subdirs, handler_method
     return subdirs
 
-
+#
+# Parser handler methods.  These methods are called by the code that
+# parses configuration data to process the directives and subdirectives.
+# 'begin' is called to start processing a directive.  Its return
+# value should be saved.  When the directive is closed (which will
+# be right away for IEmptyDirectives), that saved return value is
+# passed to end, which will return a list of actions to append to
+# the action list.  Nested subdirectives are processed similarly,
+# except that 'sub' is called to start them rather than begin, and
+# the first argument passed to sub should be the tuple returned
+# by begin (or sub) for the enclosing (sub)directive (it will be
+# an ISubdirectiveHandler, subdirectiveregistry pair).  The
+# end result will be a list of actions.  See IEmptyDirective for a
+# description of the actions data structure.
+#
 
 def _exe(callable, subs, context, kw):
+    """Helper function to turn an IxxxDirective into a (callable, subs) tuple
+    """
+
+    # We've either got an IEmptyDirective or an INonEmptyDirective here.
+    # For the former, we're going to get back a list of actions when
+    # we call it.  For the latter, we're going to get back an
+    # ISubdirectiveHandler.  We need to return something that end
+    # can call the first element of to get a list of actions.
+    # ISubdirectiveHandler qualifies, but we'll have to manufacture
+    # one if we got a list of actions.  When we return the
+    # ISubdirectiveHandler, the parsing code calling begin/sub is
+    # going to pass the tuple along to sub in order to process the
+    # subdirectives.
+
     r = callable(context, **kw)
 
     if subs or INonEmptyDirective.isImplementedBy(callable):
         return r, subs
     else:
         return (
-            # We already have our list of actions, but we're expected to
-            # provide a callable that returns one. 
             (lambda: r),
-
             subs,
             )
 
@@ -210,9 +243,9 @@ def end(base):
     The argument is a return value from begin or sub.  Its first
     element is called to get a sequence of actions.
 
-    The actions are normalized to a 4-element tuple with a
-    descriminator, a callable, positional arguments, and keyword
-    arguments. 
+    The return value is a list of actions that are normalized to a
+    4-element tuple with a descriminator, a callable, positional
+    arguments, and keyword arguments.
     """
 
     actions = base[0]()
@@ -225,7 +258,19 @@ def end(base):
         ractions.append(action)
     return ractions
 
+
+#
+# The code below provides the implementation for the directives,
+# directive, and subdirective handlers.  These will be called
+# via begin and sub when the code parsing a (meta) configuration
+# file encounters these directives.  The association between
+# the directive names and the particular callables is set up
+# in _clear.
+#
+
 class DirectiveNamespace:
+
+    __class_implements__ = INonEmptyDirective
 
     def __init__(self, _context, namespace):
         self._namespace = namespace
@@ -244,8 +289,6 @@ def Directive(_context, namespace, name, handler, attributes=''):
     return Subdirective(subs, namespace=namespace)
 
 Directive.__implements__ = INonEmptyDirective
-
-class InvaliDirectiveDefinition(Exception): pass
 
 class Subdirective:
     """This is the meta-meta-directive"""
@@ -266,9 +309,8 @@ class Subdirective:
                      namespace=None, handler_method=None):
         namespace = namespace or self._namespace
         if not namespace:
-            raise InvaliDirectiveDefinition(name)
-        #if not handler_method:
-        #    handler_method = name
+            raise InvalidDirectiveDefinition(name)
+        #If handler_method is None, registersub will use name.
         subs = registersub(self._subs, (namespace, name), handler_method)
         return Subdirective(subs)
 
