@@ -84,7 +84,7 @@ class CopyModifyMergeRepository(object):
     )
 
     def __init__(self):
-        self.histories = zapi.getUtility(IHistoryStorage)
+        self.histories = zapi.getUtility(interfaces.IHistoryStorage)
         
     def applyVersionControl(self, obj):
         """Put the passed object under version control.
