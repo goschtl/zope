@@ -6,7 +6,6 @@
 
     To add a service, click on the Add Service link at the
     top of this page.
-
     "
     />
 
@@ -34,8 +33,7 @@
               <td>
                 <a href="(link to the active service)"
                    tal:condition="reg/url"
-                   tal:attributes= "href
-                     string:${reg/url}/@@SelectedManagementView.html"
+                   tal:attributes= "href reg/url"
                    tal:content="reg/name">
                   Foobar (the service type)
                 </a>
