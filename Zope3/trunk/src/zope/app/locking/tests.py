@@ -19,6 +19,7 @@ $Id:$
 
 import sys, unittest
 from zope.component.tests.placelesssetup import PlacelessSetup
+import zope.event
 from zope.testing import doctest
 from transaction import abort
 
@@ -84,7 +85,7 @@ def tearDown(test):
         db.close()
     ps.tearDown()
     del test._storage
-
+    zope.event.subscribers.pop()
 
 def test_suite():
     return doctest.DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown,
