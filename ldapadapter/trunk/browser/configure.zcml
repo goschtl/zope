@@ -25,7 +25,7 @@
         />
 
     <addMenuItem
-        class="ldapadapter.ManageableLDAPAdapter"
+        class="ldapadapter.utility.ManageableLDAPAdapter"
         title="LDAP Adapter"
         description="A LDAP adapter"
         permission="zope.ManageServices"

@@ -5,7 +5,7 @@
     i18n_domain="ldapadapter"
     >
 
-    <content class="ldapadapter.ManageableLDAPAdapter">
+    <content class="ldapadapter.utility.ManageableLDAPAdapter">
 
         <factory
             id="ldapadapter.utility.ManageableLDAPAdapter" />
