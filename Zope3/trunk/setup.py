@@ -176,7 +176,7 @@ base_btrees_depends = [
     "src/BTrees/sorters.c",
     ]
 
-_flavors = {"O": "object", "I": "int"}
+_flavors = {"O": "object", "I": "int", "F": "float"}
 
 KEY_H = "src/BTrees/%skeymacros.h"
 VALUE_H = "src/BTrees/%svaluemacros.h"
@@ -199,6 +199,7 @@ ext_modules = [
     BTreeExtension("IO"),
     BTreeExtension("OI"),
     BTreeExtension("II"),
+    BTreeExtension("IF"),
     BTreeExtension("fs"),
     Extension(name = 'persistent.cPersistence',
               include_dirs = ['src/persistent'],
