@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.42 2004/03/19 12:00:08 jim Exp $
+$Id: interfaces.py,v 1.43 2004/04/11 10:35:12 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -27,6 +27,30 @@ _ = MessageIDFactory("zope")
 # to find these interfaces here.
 from zope.schema._bootstrapinterfaces import StopValidation, ValidationError
 from zope.schema._bootstrapinterfaces import IFromUnicode
+from zope.schema._bootstrapinterfaces import RequiredMissing, WrongType
+from zope.schema._bootstrapinterfaces import ConstraintNotSatisfied
+from zope.schema._bootstrapinterfaces import NotAContainer, NotAnIterator
+from zope.schema._bootstrapinterfaces import TooSmall, TooBig
+from zope.schema._bootstrapinterfaces import TooShort, TooLong
+from zope.schema._bootstrapinterfaces import InvalidValue
+
+class WrongContainedType(ValidationError):
+    __doc__ = _("""Wrong contained type""")
+
+class SchemaNotFullyImplemented(ValidationError):
+    __doc__ = _("""Schema not fully implemented""")
+
+class SchemaNotProvided(ValidationError):
+    __doc__ = _("""Schema not provided""")
+
+class InvalidURI(ValidationError):
+    __doc__ = _("""The specified URI is not valid.""")
+
+class InvalidId(ValidationError):
+    __doc__ = _("""The specified id is not valid.""")
+
+class InvalidDottedName(ValidationError):
+    __doc__ = _("""The specified dotted name is not valid.""")
 
 
 class IField(Interface):
