@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.10 2003/05/28 13:16:09 stevea Exp $
+$Id: interfaces.py,v 1.11 2003/05/28 15:47:48 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -38,18 +38,6 @@ class IWrapperFuncs(Interface):
           def Wrapper(*args, **data):
 
         Where args is either (object,) or (object, context).
-        """
-
-    def getobject(obj):
-        """Return the wrapped object.
-
-        If obj is not a wrapper object, return obj.
-        """
-
-    def getbaseobject(obj):
-        """Return the innermost wrapped object.
-
-        If obj is not a wrapper, return obj.
         """
 
     def getinnerwrapper(obj):
