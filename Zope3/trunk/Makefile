@@ -1,4 +1,4 @@
-PYTHON=python
+PYTHON=python2.2
 TESTOPTS=
 
 all:
