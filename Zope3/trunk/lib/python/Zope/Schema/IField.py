@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.6 2002/10/04 18:24:55 jim Exp $
+$Id: IField.py,v 1.7 2002/10/10 21:21:34 jeremy Exp $
 """
 from Interface import Interface
 
@@ -176,8 +176,11 @@ class IDatetime(IEnumeratable, IOrderable):
 def _fields(values):
     for value in values:
         if not IField.isImplementedBy(value):
-            return 0
-    return 1
+            import pdb
+            pdb.set_trace()
+            IField.isImplementedBy(value)
+            return False
+    return True
 
 class ISequence(ISized, IIteratable):
     u"""Describes fields that can hold a sequence values
