@@ -128,8 +128,10 @@ class VocabularyWidgetTestBase(PlacelessSetup,
     # fieldClass -- class for the vocabulary field (VocabularyField or
     #               VocabularyMultiField)
 
-    def makeField(self, vocabulary, value=_marker):
+    def makeField(self, vocabulary=None, value=_marker):
         """Create and return a bound vocabulary field."""
+        if vocabulary is None:
+            vocabulary = self.sampleVocabulary
         field = self.fieldClass(vocabulary=vocabulary, __name__="f",
                                 required=False)
         content = SampleContent()
@@ -245,20 +247,20 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         ["splat", "foobar"])
 
     def test_display(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "display", self.makeRequest())
         w.setData(bound.context.f)
         self.assertEqual(w(), "splat")
 
     def test_display_with_form_value(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "display", request)
         self.assert_(w.haveData())
         self.assertEqual(w(), "foobar")
 
     def test_edit(self, extraChecks=[]):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         self.assert_(not w.haveData())
@@ -284,7 +286,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
             ])
 
     def test_edit_with_form_value(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "edit", request)
         self.assert_(w.haveData())
@@ -295,7 +297,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         # This tests that emptying a value via the form when there's a
         # non-empty value for the field on the content object will
         # report haveData() properly.
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         bound.context.f = "splat"
         w = getView(bound, "edit", self.makeRequest(
             'field.f-empty-marker='))
@@ -326,7 +328,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         ["splat", "foobar", "frob"])
 
     def test_display_without_value(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         del bound.context.f
         w = getView(bound, "display", self.makeRequest())
         self.assert_(not w.haveData())
@@ -338,7 +340,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
             ])
 
     def test_display_with_value(self):
-        bound = self.makeField(self.sampleVocabulary, ["foobar", "frob"])
+        bound = self.makeField(value=["foobar", "frob"])
         w = getView(bound, "display", self.makeRequest())
         w.setData(bound.context.f)
         self.assert_(not w.haveData())
@@ -359,7 +361,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
             ])
 
     def test_display_with_form_data(self):
-        bound = self.makeField(self.sampleVocabulary, ["foobar", "frob"])
+        bound = self.makeField(value=["foobar", "frob"])
         request = self.makeRequest('field.f:list=splat')
         w = getView(bound, "display", request)
         self.assert_(w.haveData())
@@ -377,7 +379,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         self.assert_(s.find("frob") < 0)
 
     def test_edit(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
         self.assert_(not w.haveData())
         self.verifyResult(w(), [
@@ -408,7 +410,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         self.assert_(s3.find('selected') < 0)
 
     def test_edit_with_form_value(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         request = self.makeRequest('field.f:list=foobar&field.f:list=splat')
         w = getView(bound, "edit", request)
         self.assert_(w.haveData())
@@ -429,7 +431,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         ["splat", "foobar", "frob"])
 
     def test_get_query_helper(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         request = self.makeRequest()
         w = getView(bound, "edit", request)
         self.assert_(isinstance(w.query, MyVocabularyQuery))
@@ -437,7 +439,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.assertEqual(w.queryview.getLabel(), self.queryViewLabel)
 
     def test_query_input_section(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         checks = [
@@ -447,7 +449,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.verifyResult(w(), checks + ['class="queryinput"'])
 
     def test_query_output_section_without_results(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         checks = [
@@ -457,7 +459,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.verifyResultMissing(w(), checks + ['class="queryresults"'])
 
     def test_query_output_section_with_results(self):
-        bound = self.makeField(self.sampleVocabulary)
+        bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest("field.f-query=foo"))
         w.setData(bound.context.f)
         checks = [
