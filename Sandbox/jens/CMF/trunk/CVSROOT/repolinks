@@ -144,6 +144,7 @@
 /ZODB4/src/persistence	 /Zope3/src/persistence
 /ZODB4/src/transaction	 /Zope3/src/transaction
 /ZODB4/src/zope/interface /Zope3/src/zope/interface
+/ZODB4/src/zope/testing  /Zope3/src/zope/testing
 /ZODB4/src/ThreadedAsync /Packages/ThreadedAsync
 /ZODB4/src/zdaemon       /Packages3/zdaemon
 /ZODB4/src/ZConfig	 /Packages/ZConfig
