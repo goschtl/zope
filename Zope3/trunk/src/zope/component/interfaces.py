@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.8 2003/06/24 15:29:51 jeremy Exp $
+$Id: interfaces.py,v 1.9 2003/07/12 01:22:13 richard Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -181,26 +181,32 @@ class IComponentArchitecture(Interface):
 
     # View service
 
-    def getView(wrapped_object, name, request):
+    def getView(object, name, request, context=None):
         """Get a named view for a given object.
 
         The request must implement IPresentationRequest: it provides
         the view type and the skin name.  The nearest one to the
         object is found. If a matching view cannot be found, raises
         ComponentLookupError.
+        
+        If context is not specified, attempts to use wrapping around
+        object to specify a context.
 
         """
 
-    def queryView(wrapped_object, name, request, default=None):
+    def queryView(object, name, request, default=None, context=None):
         """Look for a named view for a given object.
 
         The request must implement IPresentationRequest: it provides the view
         type and the skin name.  The nearest one to the object is
         found. If a matching view cannot be found, returns default.
 
+        If context is not specified, attempts to use wrapping around
+        object to specify a context.
+
         """
 
-    def getDefaultViewName(wrapped_object, request):
+    def getDefaultViewName(object, request, context=None):
         """Get the name of the default view for the object and request.
 
         The request must implement IPresentationRequest, and provides the
@@ -208,15 +214,21 @@ class IComponentArchitecture(Interface):
         If a matching default view name cannot be found, raises
         NotFoundError.
 
+        If context is not specified, attempts to use wrapping around
+        object to specify a context.
+
         """
 
-    def queryDefaultViewName(wrapped_object, request, default=None):
+    def queryDefaultViewName(object, request, default=None, context=None):
         """Look for the name of the default view for the object and request.
 
         The request must implement IPresentationRequest, and provides the
         desired view type.  The nearest one to the object is found.
         If a matching default view name cannot be found, returns the
         default.
+
+        If context is not specified, attempts to use wrapping around
+        object to specify a context.
 
         """
 

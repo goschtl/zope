@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.11 2003/05/23 22:16:49 jim Exp $
+$Id: __init__.py,v 1.12 2003/07/12 01:22:13 richard Exp $
 """
 
 import sys
@@ -140,32 +140,27 @@ def getSkin(wrapped_object, name, view_type):
 
 # View service
 
-def getView(wrapped_object, name, request, context=None):
+def getView(object, name, request, context=None):
     if context is None:
-        context = wrapped_object
-    return getService(context,
-                      'Views').getView(wrapped_object, name, request)
+        context = object
+    return getService(context, 'Views').getView(object, name, request)
 
-def queryView(wrapped_object, name, request, default=None, context=None):
+def queryView(object, name, request, default=None, context=None):
     if context is None:
-        context = wrapped_object
+        context = object
     return getService(context,
-                      'Views').queryView(wrapped_object, name,
-                                         request, default)
+                      'Views').queryView(object, name, request, default)
 
-def getDefaultViewName(wrapped_object, request, context=None):
+def getDefaultViewName(object, request, context=None):
     if context is None:
-        context = wrapped_object
-    return getService(context,
-                      'Views').getDefaultViewName(wrapped_object,
-                                                  request)
+        context = object
+    return getService(context, 'Views').getDefaultViewName(object, request)
 
-def queryDefaultViewName(wrapped_object, request, default=None, context=None):
+def queryDefaultViewName(object, request, default=None, context=None):
     if context is None:
-        context = wrapped_object
+        context = object
     return getService(context,
-                      'Views').queryDefaultViewName(wrapped_object,
-                                                    request, default)
+                      'Views').queryDefaultViewName(object, request, default)
 
 # Resource service
 
