@@ -281,9 +281,11 @@ class Component:
         self.dependencies = None
         self.destination = None
         self.pubinfo = None
-        self.source = self.ip.loader.load_mutable_copy(self.url)
+        self.source = self.ip.loader.load(self.url)
         specs = include.load(self.source, url=self.url)
-        self.ip.addIncludes(self.source, specs.loads)
+        if specs.loads:
+            self.source = self.ip.loader.load_mutable_copy(self.url)
+            self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
         self.collection = specs.collection
