@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - The `Attribute` and `Method` class of the `zope.interface` have now a
+        new public `interface` attribute that stores the interface they are
+        defined in.  
+
       - If the adapter factory returns `None` as adapter instance, the default
         is returned instead of `None`. For benefits and the discussions see
         http://mail.zope.org/pipermail/interface-dev/2004-September/000070.html

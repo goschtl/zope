@@ -24,6 +24,12 @@ from zope.interface import Interface, directlyProvides, Attribute
 
 class InterfaceTests(unittest.TestCase):
 
+    def testInterfaceSetOnAttributes(self):
+        self.assertEqual(FooInterface['foobar'].interface,
+                         FooInterface)
+        self.assertEqual(FooInterface['aMethod'].interface,
+                         FooInterface)
+
     def testClassImplements(self):
         self.assert_(IC.implementedBy(C))
 

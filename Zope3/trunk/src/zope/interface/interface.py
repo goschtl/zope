@@ -433,21 +433,23 @@ class InterfaceClass(Element, Specification):
             for key, val in tagged_data.items():
                 self.setTaggedValue(key, val)
 
-        for b in bases:
-            if not isinstance(b, InterfaceClass):
+        for base in bases:
+            if not isinstance(base, InterfaceClass):
                 raise TypeError, 'Expected base interfaces'
 
         Specification.__init__(self, bases)
 
-        for k, v in attrs.items():
-            if isinstance(v, Attribute):
-                v.interface = name
-                if not v.__name__:
-                    v.__name__ = k
-            elif isinstance(v, FunctionType):
-                attrs[k] = fromFunction(v, name, name=k)
+        # Make sure that all recorded attributes (and methods) are of type
+        # `Attribute` and `Method`
+        for name, attr in attrs.items():
+            if isinstance(attr, Attribute):
+                attr.interface = self
+                if not attr.__name__:
+                    attr.__name__ = name
+            elif isinstance(attr, FunctionType):
+                attrs[name] = fromFunction(attr, self, name=name)
             else:
-                raise InvalidInterface("Concrete attribute, %s" % k)
+                raise InvalidInterface("Concrete attribute, %s" %name)
 
         self.__attrs = attrs
 
@@ -822,7 +824,10 @@ class Attribute(Element):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implemented__ = IAttribute
+    # implements(IAttribute)
+
+    interface = None
+
 
 class Method(Attribute):
     """Method interfaces
@@ -834,9 +839,7 @@ class Method(Attribute):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implemented__ = IMethod
-
-    interface=''
+    # implements(IMethod)
 
     def __call__(self, *args, **kw):
         raise BrokenImplementation(self.interface, self.__name__)
@@ -869,47 +872,55 @@ class Method(Attribute):
         return sig
 
 
-def fromFunction(func, interface='', imlevel=0, name=None):
+def fromFunction(func, interface=None, imlevel=0, name=None):
     name = name or func.__name__
-    m=Method(name, func.__doc__)
-    defaults=func.func_defaults or ()
-    c=func.func_code
-    na=c.co_argcount-imlevel
-    names=c.co_varnames[imlevel:]
-    d={}
-    nr=na-len(defaults)
+    method = Method(name, func.__doc__)
+    defaults = func.func_defaults or ()
+    code = func.func_code
+    # Number of positional arguments
+    na = code.co_argcount-imlevel
+    names = code.co_varnames[imlevel:]
+    opt = {}
+    # Number of required arguments
+    nr = na-len(defaults)
     if nr < 0:
         defaults=defaults[-nr:]
-        nr=0
+        nr = 0
 
+    # Determine the optional arguments.
     for i in range(len(defaults)):
-        d[names[i+nr]]=defaults[i]
+        opt[names[i+nr]] = defaults[i]
 
-    m.positional=names[:na]
-    m.required=names[:nr]
-    m.optional=d
+    method.positional = names[:na]
+    method.required = names[:nr]
+    method.optional = opt
 
     argno = na
-    if c.co_flags & CO_VARARGS:
-        m.varargs = names[argno]
+
+    # Determine the function's variable argument's name (i.e. *args)
+    if code.co_flags & CO_VARARGS:
+        method.varargs = names[argno]
         argno = argno + 1
     else:
-        m.varargs = None
-    if c.co_flags & CO_VARKEYWORDS:
-        m.kwargs = names[argno]
+        method.varargs = None
+
+    # Determine the function's keyword argument's name (i.e. **kw)
+    if code.co_flags & CO_VARKEYWORDS:
+        method.kwargs = names[argno]
     else:
-        m.kwargs = None
+        method.kwargs = None
 
-    m.interface=interface
+    method.interface = interface
 
-    for k, v in func.__dict__.items():
-        m.setTaggedValue(k, v)
+    for key, value in func.__dict__.items():
+        method.setTaggedValue(key, value)
 
-    return m
+    return method
 
-def fromMethod(meth, interface=''):
+
+def fromMethod(meth, interface=None, name=None):
     func = meth.im_func
-    return fromFunction(func, interface, imlevel=1)
+    return fromFunction(func, interface, imlevel=1, name=name)
 
 
 # Now we can create the interesting interfaces and wire them up:

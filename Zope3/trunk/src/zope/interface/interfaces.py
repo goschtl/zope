@@ -48,6 +48,10 @@ class IElement(Interface):
 class IAttribute(IElement):
     """Attribute descriptors"""
 
+    interface = Attribute('interface',
+                          'Stores the interface instance in which the '
+                          'attribute is located.')
+
 
 class IMethod(IAttribute):
     """Method attributes
