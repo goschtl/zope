@@ -209,6 +209,20 @@ Issues
     * Is there a helpful rule that's less general than "security
       proxies" always go on the outside?
 
+      + I think this has to do with how intrinsic something is.
+        
+        A descriptor from a class implementation should have full
+        access to the implementation.  If adapters could be registered
+        for classes, rather than interfaces, then the adapter could
+        have full access to the implementation.  An adapter from a
+        __conform__ should have access to the interface.
+
+        Adapters registered for an interface should only have access
+        to the interface.
+
+        This reveals, I think that class-based adapter registration is 
+        qualitatively different than interface-based registration.
+
   - What protects rename should be what protects setObject.
     We could declare that rename is to be protected with whatever protects the
     'setObject' operation on the proxied object.
