@@ -13,11 +13,20 @@
 ##############################################################################
 """Adding components for components and configuration
 
-$Id: service.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: service.py,v 1.3 2002/12/31 13:14:31 stevea Exp $
 """
 
 from zope.app.browser.container.adding import Adding as ContentAdding
+from zope.component import getView, getAdapter
+from zope.proxy.context import ContextWrapper
+from zope.app.interfaces.container import IZopeContainer
+from zope.component import getServiceManager
+from zope.publisher.browser import BrowserView
+from zope.app.services.service import ServiceConfiguration
+from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
 
+__metaclass__ = type
 
 class ComponentAdding(ContentAdding):
     """Adding component for components
@@ -41,16 +50,6 @@ class ConfigurationAdding(ContentAdding):
     """
 
     menu_id = "add_configuration"
-
-
-"""
-$Id: service.py,v 1.2 2002/12/25 14:12:36 jim Exp $
-"""
-
-from zope.publisher.browser import BrowserView
-from zope.component import getView, getAdapter
-from zope.proxy.context import ContextWrapper
-from zope.app.interfaces.container import IZopeContainer
 
 class EditConfiguration(BrowserView):
     """Adding component for service containers
@@ -113,25 +112,6 @@ class EditConfiguration(BrowserView):
             view.setPrefix('config'+str(name))
             r.append({'key': name, 'view': view})
         return r
-
-__doc__ = EditConfiguration.__doc__ + __doc__
-
-
-
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: service.py,v 1.2 2002/12/25 14:12:36 jim Exp $
-"""
-__metaclass__ = type
-
-from zope.component import getServiceManager
-from zope.publisher.browser import BrowserView
-from zope.app.services.service \
-     import ServiceConfiguration
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
 
 class AddServiceConfiguration(BrowserView):
 
