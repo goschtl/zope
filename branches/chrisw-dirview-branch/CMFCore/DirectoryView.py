@@ -348,9 +348,6 @@ class DirectoryRegistry:
 
     def getDirectoryInfo(self, filepath):
         # Can return None.
-        # XXX: 2002/08/12  This "fix" is unacceptable;  it breaks existing
-        #      functionality (e.g., PRODUCTS_PATH), and adds a new requirement
-        #      (that 'p' include 'Products').  Reverting head to 1.26.
         return self._directories.get(minimalpath(filepath), None)
 
     def listDirectories(self):
