@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileChunk.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: FileChunk.py,v 1.3 2002/06/25 10:45:21 mgedmin Exp $
 """
 import Persistence
 
@@ -40,10 +40,10 @@ class FileChunk(Persistence.Persistent):
         if next is None:
             return self._data
 
-        result = [self.data]
+        result = [self._data]
         while next is not None:
             self = next
-            r.append(self._data)
+            result.append(self._data)
             next = self.next
         
-        return ''.join(r)
+        return ''.join(result)
