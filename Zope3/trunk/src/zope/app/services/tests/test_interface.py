@@ -63,6 +63,10 @@ class PersistentInterfaceTest(unittest.TestCase):
         self.registry.newModule("imodule", code)
         get_transaction().commit()
         imodule = self.registry.findModule("imodule")
+
+        # test for a pickling bug
+        self.assertEqual(imodule.Foo.__implements__, imodule.IFoo)
+        
         self.assert_(imodule.IFoo.isImplementedBy(imodule.aFoo))
         # the conversion should not affect Interface
         self.assert_(imodule.Interface is Interface)
