@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 import os, re, warnings
 from zope import schema
 from zope.schema.interfaces import IFromUnicode
@@ -79,6 +80,7 @@ class GlobalObject(schema.Field):
     Examples:
 
     First, we need to set up a stub name resolver:
+
     >>> d = {'x': 1, 'y': 42, 'z': 'zope'}
     >>> class fakeresolver(dict):
     ...     def resolve(self, n):

@@ -11,16 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Schemas for the 'help' ZCML namespace 
+"""Schemas for the ``help`` ZCML namespace 
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope.configuration.fields import GlobalObject, Path, MessageID, Tokens
 from zope.interface import Interface
 from zope.schema import BytesLine, TextLine
 
 class IRegisterDirective(Interface):
-    """Register directive for onlien help topics."""
+    """Register an online topic.
+
+    Optionally you can register a topic for a component and view.
+    """
 
     id = BytesLine(
         title=u"Topic Id",
@@ -57,7 +61,7 @@ class IRegisterDirective(Interface):
 
     resources = Tokens(
         title=u"A list of resources.",
-        description=u"""
+        description=u"""\
         A list of resources which shall be user for the Help Topic.
         The resources must be located in the same directory as
         the Help Topic definition.

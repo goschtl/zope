@@ -17,7 +17,7 @@ See README.txt.
 
 $Id$
 """
-
+__docformat__ = 'restructuredtext'
 import os.path
 import sys
 import sets

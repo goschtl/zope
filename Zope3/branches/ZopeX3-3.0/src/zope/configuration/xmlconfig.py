@@ -19,6 +19,7 @@ test_includeOverrides in tests/text_xmlconfig.py
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 import errno
 import os
 import sys
@@ -288,6 +289,12 @@ def openInOrPlain(filename):
     return fp
 
 class IInclude(Interface):
+    """The ``zope:include`` directive
+
+    This directive allows you to include another ZCML file in the
+    configuration. This enables you to write configuration files in each
+    package and then link them together.
+    """
 
     file = schema.BytesLine(
         title=u"Configuration file name",
@@ -305,13 +312,13 @@ class IInclude(Interface):
         containing the including configuration file.  The pattern can
         include:
 
-        ``*`` matches 0 or more characters
-
-        ``?`` matches a single character
-
-        [*seq*] matches any character in seq 
-
-        [!*seq*] matches any character not in seq 
+        - ``*`` matches 0 or more characters
+        
+        - ``?`` matches a single character
+        
+        - ``[<seq>]`` matches any character in seq 
+        
+        - ``[!<seq>]`` matches any character not in seq 
 
         The file names are included in sorted order, where sorting is
         without regard to case.
