@@ -5,6 +5,12 @@ Tests
 
   - Write tests for diff module
 
+  - Write tests for Comment title
+
+  - Convert unit tests to doc tests
+
+  - Add functional tests
+
 
 Rendering/Views
 
@@ -29,3 +35,5 @@ Other Features
   - Activating diff support for edited Wiki Pages. The main issue right now
     is to get to the old version of the text. so that we can execute the
     Differ.
+
+  - Update POT and translations

@@ -78,6 +78,11 @@
 
   <!-- Content declarations -->
 
+  <interface 
+      interface=".interfaces.IWiki" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
  <content class=".wiki.Wiki">
 
     <implements interface="zope.app.interfaces.container.IContentContainer" />
@@ -86,7 +91,7 @@
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
     <factory
-        id="Wiki"
+        id="zope.wiki.Wiki"
         permission="zope.ManageContent"
         description="Minimal Wiki Page Container implementation " />
 
@@ -107,19 +112,24 @@
       for=".interfaces.IWiki" />
 
 
+  <!-- Wiki Page Content Type -->
+
+  <interface 
+      interface=".interfaces.IWikiPage" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
   <content class=".wikipage.WikiPage">
 
     <implements
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
     <factory
-        id="WikiPage"
+        id="zope.wiki.WikiPage"
         permission="zope.app.wiki.AddWikiPage"
         title="Wiki Page"
         description="A Wiki Page" />
 
-    <!-- XXX: I am not sure whether this is safe. We probably have to split
-         the interface from the schema. -->
     <allow interface=".interfaces.IWikiPage" />
 
     <require
@@ -133,6 +143,33 @@
       provides=".interfaces.IWikiPageHierarchy"
       for=".interfaces.IWikiPage" />
 
+  <!-- Wiki Comments support -->
+
+  <interface 
+      interface=".interfaces.IComment" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
+  <content class=".wikipage.Comment">
+
+    <implements
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <factory
+        id="zope.wiki.Comment"
+        permission="zope.app.wiki.CommentWikiPage"
+        title="Wiki Page Comment"
+        description="A Wiki Page Comment" />
+
+    <allow interface=".interfaces.IComment" />
+
+    <require
+        permission="zope.app.wiki.CommentWikiPage"
+        set_schema=".interfaces.IComment" />
+
+  </content>  
+
+
   <!-- Mail Subscriptions support -->
   <adapter
       factory=".wikipage.MailSubscriptions"
@@ -143,12 +180,6 @@
       factory=".traversal.WikiPageTraversable"
       provides="zope.app.interfaces.traversing.ITraversable"
       for=".interfaces.IWikiPage" />
-
-
-  <adapter 
-      factory="zope.app.wiki.wikipage.SearchableText"
-      provides="zope.app.interfaces.index.text.ISearchableText"
-      for="zope.app.wiki.interfaces.IWikiPage" />
 
 
   <!-- WikiPage FTP configurations -->
@@ -165,26 +196,6 @@
      factory=".wikipage.WikiPageWriteFile"
      permission="zope.app.wiki.EditWikiPage"
      />
-
-  <!-- Wiki Index registration -->
-
-  <content class=".index.WikiTextIndex">
-
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.index.text.IUITextIndex"
-        attributes="query"
-        />
-
-    <factory
-        id="zope.app.wiki.index.WikiTextIndex"
-        permission="zope.ManageServices"
-        />
-    <implements
-        interface="zope.app.interfaces.services.query.IQueryProcessable"
-        />
-
-  </content>
 
   <!-- Register event listener for change mails -->
   <event:subscribe

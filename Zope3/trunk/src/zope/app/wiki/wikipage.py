@@ -13,23 +13,24 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.1 2004/02/27 11:06:58 philikon Exp $
+$Id: wikipage.py,v 1.2 2004/03/02 14:25:00 srichter Exp $
 """
 import smtplib
 from persistent import Persistent
 
 from zope.interface import implements
-from zope.component import getAdapter
-from zope.app.traversing import getParent, getName
 
-from zope.app.interfaces.index.text import ISearchableText
+from zope.app import zapi
+from zope.app.container.btree import BTreeContainer
+from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectMovedEvent
 
-from zope.app.wiki.interfaces import IWiki, IWikiPage
+from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
+from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
 from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
 __metaclass__ = type
@@ -38,33 +39,20 @@ HierarchyKey = 'http://www.zope.org/zwiki#1.0/PageHierarchy/parents'
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 
 
-class WikiPage(Persistent):
-    __doc__ = IWikiPage.__doc__
+class WikiPage(BTreeContainer):
+    """A persistent Wiki Page implementation."""
 
-    implements(IWikiPage)
+    implements(IWikiPage, IWikiContained)
+
+    # See zope.app.interfaces.container.IContained
+    __parent__ = __name__ = None
 
     # See zope.app.wiki.interfaces.IWikiPage
     source = u''
     
     # See zope.app.wiki.interfaces.IWikiPage
-    type = u'reStructured Text (reST)'
+    type = u'zope.source.rest'
 
-    def __init__(self):
-        self.__comments = 1
-
-    def append(self, source):
-        "See zope.app.wiki.interfaces.IWikiPage"
-        self.source += source
-
-    def comment(self, comment):
-        "See zope.app.wiki.interfaces.IWikiPage"
-        self.__comments += 1
-        self.append(comment)
-
-    def getCommentCounter(self):
-        "See zope.app.wiki.interfaces.IWikiPage"
-        return self.__comments
-        
 
 class WikiPageHierarchyAdapter:
     __doc__ = IWikiPageHierarchy.__doc__
@@ -74,7 +62,7 @@ class WikiPageHierarchyAdapter:
 
     def __init__(self, context):
         self.context = context
-        self._annotations = getAdapter(context, IAnnotations)
+        self._annotations = zapi.getAdapter(context, IAnnotations)
         if not self._annotations.get(HierarchyKey):
             self._annotations[HierarchyKey] = ()
 
@@ -95,18 +83,18 @@ class WikiPageHierarchyAdapter:
         # XXX: Allow for multpile parents
         if not self.getParents():
             return [self.context]
-        wiki = getParent(self.context)
+        wiki = zapi.getParent(self.context)
         name = self.getParents()[0]
-        hier = getAdapter(wiki[name], IWikiPageHierarchy)
+        hier = zapi.getAdapter(wiki[name], IWikiPageHierarchy)
         return hier.path() + [self.context]
 
     def findChildren(self, recursive=True):
         "See zope.app.wiki.interfaces.IWikiPageHierarchy"
-        wiki = getParent(self.context)
-        contextName = getName(self.context)
+        wiki = zapi.getParent(self.context)
+        contextName = zapi.name(self.context)
         children = []
         for pageName in wiki:
-            hier = getAdapter(wiki[pageName], IWikiPageHierarchy)
+            hier = zapi.getAdapter(wiki[pageName], IWikiPageHierarchy)
             if contextName in hier.getParents():
                 if recursive:
                     subs = hier.findChildren()
@@ -114,6 +102,34 @@ class WikiPageHierarchyAdapter:
                     subs = ()
                 children.append((wiki[pageName], subs))
         return tuple(children)
+
+
+# Simple comments implementation
+
+class Comment(Persistent):
+    """A simple persistent comment implementation."""
+    implements(IComment, IWikiPageContained)
+    
+    # See zope.app.interfaces.container.IContained
+    __parent__ = __name__ = None
+
+    # See zope.app.wiki.interfaces.IComment
+    source = u''
+    
+    # See zope.app.wiki.interfaces.IComment
+    type = u'zope.source.rest'
+
+
+    # See zope.app.wiki.interfaces.IComment
+    def _getTitle(self):
+        dc = zapi.getAdapter(self, ICMFDublinCore)
+        return dc.title
+
+    def _setTitle(self, title):
+        dc = zapi.getAdapter(self, ICMFDublinCore)
+        dc.title = title
+
+    title = property(_getTitle, _setTitle)
 
 
 # Adapters for file-system style access
@@ -150,22 +166,6 @@ class WikiPageWriteFile:
         self.context.source = unicode(data)
 
 
-# Adapter for ISearchableText
-
-class SearchableText:
-    """This adapter provides an API that allows the Wiki Pages to be indexed
-    by the Text Index.""" 
-
-    implements(ISearchableText)
-    __used_for__ = IWikiPage
-
-    def __init__(self, page):
-        self.page = page
-
-    def getSearchableText(self):
-        return [unicode(self.page.source)]
-
-
 # Component to fullfill mail subscriptions
 
 class MailSubscriptions:
@@ -177,7 +177,7 @@ class MailSubscriptions:
 
     def __init__(self, context):
         self.context = context
-        self._annotations = getAdapter(context, IAnnotations)
+        self._annotations = zapi.getAdapter(context, IAnnotations)
         if not self._annotations.get(SubscriberKey):
             self._annotations[SubscriberKey] = ()
 
@@ -227,7 +227,7 @@ class WikiMailer:
                 self.handleRemoved(event.object)
 
     def handleAdded(self, object):
-        subject = 'Added: '+getName(object)
+        subject = 'Added: '+zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = object.source
         self.mail(emails, subject, body)        
@@ -235,13 +235,13 @@ class WikiMailer:
     def handleModified(self, object):
         # XXX: Should have some nice diff code here.
         # from diff import textdiff
-        subject = 'Modified: '+getName(object)
+        subject = 'Modified: '+zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = object.source
         self.mail(emails, subject, body)
 
     def handleRemoved(self, object):
-        subject = 'Removed: '+getName(object)
+        subject = 'Removed: '+zapi.name(object)
         emails = self.getAllSubscribers(object)
         body = subject
         self.mail(emails, subject, body)
@@ -249,9 +249,9 @@ class WikiMailer:
     def getAllSubscribers(self, object):
         """Retrieves all email subscribers by looking into the local Wiki Page
            and into the Wiki for the global subscriptions."""
-        emails = tuple(getAdapter(object,
+        emails = tuple(zapi.getAdapter(object,
                                   IMailSubscriptions).getSubscriptions())
-        emails += tuple(getAdapter(getParent(object),
+        emails += tuple(zapi.getAdapter(zapi.getParent(object),
                                    IMailSubscriptions).getSubscriptions())
         return emails
 

@@ -14,18 +14,6 @@
 
         <div class="row">
             <div class="field">
-              <h1><input type="checkbox" name="textindex:int" value="1"
-                    checked=""/>
-	        Create Wiki Text Index
-              </h1>
-	      This is strongly recommended. Without the text index you cannot
-              search your objects properly. Of course, you can always add 
-	      an index later as well. 
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="field">
               <h1><input type="checkbox" name="frontpage:int" value="1"
                      checked=""/>
 	        Create "Front Page" Wiki Page
@@ -36,14 +24,14 @@
             </div>
         </div>
 
-      	<div class="row">
-      	  <div class="controls">
-      	    <input type="submit" value="Refresh" 
-                i18n:attributes="value refresh-button" />
-      	    <input type="submit" name="UPDATE_SUBMIT" value="Submit" 
-      		i18n:attributes="value submit-button" />
-      	  </div>
-      	</div>
+        <div class="row">
+          <div class="controls"><hr />
+            <input type="submit" value="Refresh"
+                   i18n:attributes="value refresh-button">
+            <input type="submit" name="UPDATE_SUBMIT" value=" Add "
+                   tal:replace="structure context/renderAddButton|default"/>
+          </div>
+        </div>
 
       </form>
 

@@ -13,18 +13,21 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.2 2004/03/01 15:02:54 philikon Exp $
+$Id: wikipage.py,v 1.3 2004/03/02 14:25:03 srichter Exp $
 """
 import re
 from urllib import quote, unquote
 from datetime import datetime
 
+from zope.proxy import removeAllProxies
+from zope.publisher.browser import BrowserView 
+
 from zope.app import zapi
 from zope.app.browser.form.submit import Update
-from zope.app.browser.form.vocabularywidget import VocabularyFieldEditWidget
 from zope.app.browser.form.widget import ListWidget
 from zope.app.form.widget import CustomWidgetFactory
 from zope.app.dublincore.interfaces import ICMFDublinCore
+from zope.app.renderer.vocabulary import SourceTypeEditWidget
 from zope.app.traversing import getParent, getPath, getName
 from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
@@ -47,18 +50,7 @@ interwikilink = r'!?((?P<local>%s):(?P<remote>%s))' % \
                 (localwikilink, urlchars+urlendchar)
 
 
-class GenericWikiPageViews:
-    """Some generic Wiki page views."""
-    
-    def breadcrumbs(self):
-        """Get the path of this page."""
-        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
-        path = hier.path()
-        html = []
-        for page in path:
-            html.append('<a href="../%s">%s</a>' %(getName(page),
-                                                   getName(page)))
-        return ' / '.join(html)
+class DublinCoreViews(BrowserView):
 
     def author(self):
         """Get user who last modified the Wiki Page."""
@@ -74,8 +66,22 @@ class GenericWikiPageViews:
             date = zapi.getAdapter(self.context, ICMFDublinCore).created
         if date is None:
             return ''
-        formatter = self.request.locale.getDateTimeFormatter('medium')
+        formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
         return formatter.format(date)
+
+
+class GenericWikiPageViews(DublinCoreViews):
+    """Some generic Wiki page views."""
+    
+    def breadcrumbs(self):
+        """Get the path of this page."""
+        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
+        path = hier.path()
+        html = []
+        for page in path:
+            html.append('<a href="../%s">%s</a>' %(getName(page),
+                                                   getName(page)))
+        return ' / '.join(html)
 
     def jumpTo(self, jumpto):
         """Try to get quickly to another Wiki page"""
@@ -92,7 +98,7 @@ class GenericWikiPageViews:
 
 class AddWikiPage(object):
 
-    type_widget = CustomWidgetFactory(VocabularyFieldEditWidget, size=1)
+    type_widget = CustomWidgetFactory(SourceTypeEditWidget)
 
     def nextURL(self):
         return '../'+self.context.contentName
@@ -100,7 +106,7 @@ class AddWikiPage(object):
 
 class EditWikiPage(object):
 
-    type_widget = CustomWidgetFactory(VocabularyFieldEditWidget, size=1)
+    type_widget = CustomWidgetFactory(SourceTypeEditWidget)
 
     def update(self):
         status = super(EditWikiPage, self).update()
@@ -125,13 +131,27 @@ class ViewWikiPage:
 
     def render(self):
         """Render the wiki page source."""
-        types = zapi.getService(self.context, "SourceTypeRegistry")
-        source = types.zapi.createObject(self.context.type,
-                                    self.context.source)
-        view = zapi.getView(source, '', self.request)
-        html = view.render(self.context)
+        source = zapi.createObject(self, self.context.type, self.context.source)
+        view = zapi.getView(removeAllProxies(source), '', self.request)
+        html = view.render()
         html = self.renderWikiLinks(html)
         return html
+
+    def comments(self):
+        result = []
+        for name, comment in self.context.items():
+            dc = DublinCoreViews(comment, self.request)
+            source = zapi.createObject(self, comment.type, comment.source)
+            view = zapi.getView(removeAllProxies(source), '', self.request)
+            result.append({
+                'name': name,
+                'title': comment.title,
+                'author': dc.author(),
+                'modified': dc.modified(),
+                'text': view.render()
+                })
+
+        return result
 
     def _protectLine(self, match):
         return re.sub(wikilink, r'!\1', match.group(1))
@@ -199,7 +219,7 @@ class ViewWikiPage:
 
         # otherwise, provide a "?" creation link
         else:
-            return '%s<a href="../+/AddWikiPage=%s">?</a>' %(
+            return '%s<a href="../+/AddWikiPage.html=%s">?</a>' %(
                 morig, quote(m))
 
 
@@ -275,27 +295,19 @@ class EditWikiParents:
         return self._branchHTML(children)
 
 
-class WikiPageComment:
+class AddComment(object):
 
-    def comment(self, comment):
-        types = zapi.getService(self.context, "SourceTypeRegistry")
-        source = types.zapi.createObject(self.context.type, self.context.source)
-        comment = source.createComment(
-            comment,
-            self.context.getCommentCounter(),
-            self.request.user.getTitle(),
-            datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
-        self.context.comment(comment)
-        return self.request.response.redirect('.')
+    type_widget = CustomWidgetFactory(SourceTypeEditWidget)
 
-    def source(self):
-        return '> ' + self.context.source.replace('\n', '\n> ')
+    def nextURL(self):
+        return '../'
 
 
 class MailSubscriptions:
 
     def subscriptions(self):
-        return zapi.getAdapter(self.context, IMailSubscriptions).getSubscriptions()
+        return zapi.getAdapter(self.context,
+                               IMailSubscriptions).getSubscriptions()
 
     def change(self):
         if 'ADD' in self.request:

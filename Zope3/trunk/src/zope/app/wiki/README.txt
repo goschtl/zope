@@ -12,6 +12,8 @@ Rendering
 
   - Plain Text
 
+  - Structured Text
+
   - reStructured Text (reST)
 
 

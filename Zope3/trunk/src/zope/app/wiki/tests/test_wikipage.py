@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipage.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_wikipage.py,v 1.2 2004/03/02 14:25:03 srichter Exp $
 """
 import unittest
 
@@ -37,31 +37,11 @@ class Test(unittest.TestCase):
 
     def test_type(self):
         page = self.makeTestObject()
-        self.assertEqual('reStructured Text (reST)', page.type)
+        self.assertEqual('zope.source.rest', page.type)
         page.type = 'foo'
         self.assertEqual('foo', page.type)
 
-    def test_append(self):
-        page = self.makeTestObject()
-        page.source = 'the source'
-        page.append(', more source')
-        self.assertEqual('the source, more source', page.source)
 
-    def test_comment(self):
-        page = self.makeTestObject()
-        page.source = 'the source'
-        self.assertEqual(1, page.__dict__['_WikiPage__comments'])
-        page.comment('\n\nthis is a comment')
-        self.assertEqual("the source\n\nthis is a comment", page.source)
-        self.assertEqual(2, page.__dict__['_WikiPage__comments'])
-
-    def test_getCommentCounter(self):
-        page = self.makeTestObject()
-        self.assertEqual(1, page.getCommentCounter())
-        page.comment('comment')
-        self.assertEqual(2, page.getCommentCounter())
-        
-        
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test),

@@ -13,27 +13,38 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipagesearchtext.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_comments.py,v 1.1 2004/03/02 14:25:03 srichter Exp $
 """
 import unittest
 
-from zope.app.wiki.wikipage import WikiPage
-from zope.app.wiki.wikipage import SearchableText
+from zope.app.wiki.wikipage import Comment
+from zope.app.wiki.interfaces import IComment
 
-class SearchableTextTest(unittest.TestCase):
+class TestComment(unittest.TestCase):
 
     def setUp(self):
-        self._page = WikiPage()
-        self._page.source = u'This is the source'
-        self._text = SearchableText(self._page)
+        self.comment = Comment()
 
-    def test_getSearchableText(self): 
-        self.assertEqual([self._page.source], self._text.getSearchableText())
+    def test_Interface(self):
+        self.failUnless(IComment.isImplementedBy(self.comment))
+
+    def test_source(self):
+        self.assertEqual('', self.comment.source)
+        self.comment.source = 'foo'
+        self.assertEqual('foo', self.comment.source)
+
+    def test_type(self):
+        self.assertEqual('zope.source.rest', self.comment.type)
+        self.comment.type = 'foo'
+        self.assertEqual('foo', self.comment.type)
+
+
+    # XXX: Test title
 
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(SearchableTextTest),
+        unittest.makeSuite(TestComment),
         ))
 
 if __name__ == '__main__':

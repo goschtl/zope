@@ -10,6 +10,22 @@
         This is the rendered Wiki
       </div>
 
+      <div tal:define="comments view/comments"
+           tal:condition="comments">
+
+        <hr size="1" width="100%" noshade="" />
+        
+        <div tal:repeat="info comments" style="padding-bottom: 1em;">
+          <h4 tal:content="info/title">Title</h4>
+          <i>
+            Posted by <span tal:replace="info/author" />
+            on <span tal:replace="info/modified" />.
+          </i>
+          <div tal:replace="structure info/text" />
+        </div>
+      
+      </div>
+
     </div>
   </body>
 </html>

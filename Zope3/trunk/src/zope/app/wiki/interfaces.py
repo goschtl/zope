@@ -15,25 +15,57 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.1 2004/02/27 11:06:58 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/02 14:25:00 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText
 from zope.schema.vocabulary import VocabularyField
 
-#from zope.app.interfaces.container import IContentContainer
 from zope.schema import Field
 from zope.app.interfaces.container import IContained
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IContainer, IContentContainer
 from zope.app.i18n import ZopeMessageIDFactory as _ 
 
-class IWikiPage(Interface):
+class IComment(Interface):
+    """A simple Wiki Page comment.
+
+    This interface specifies only the actual comment. Meta-data will be
+    managed via annotations and the Dublin Core as usual.
+    """
+
+    title = TextLine(
+        title=_(u"Title"),
+        description=_(u"Comment Title"),
+        default=u"",
+        required=True)
+
+    source = SourceText(
+        title=_(u"Source Text"),
+        description=_(u"Renderable source text of the comment."),
+        default=u"",
+        required=True)
+
+    type = VocabularyField(
+        title=_(u"Source Type"),
+        description=_(u"Type of the source text, e.g. structured text"),
+        default=u"zope.source.rest",
+        required = True,
+        vocabulary = "SourceTypes")
+
+
+class IWikiPage(IContainer, IContentContainer):
     """A single Wiki Page content object.
 
     The Wiki page is a simple content object that stores the content
-    (source) and the source type of the wiki page."""
+    (source) and the source type of the wiki page.
+    """
+
+    def __setitem__(name, object):
+        """Add a comment object."""
+
+    __setitem__.precondition = ItemTypePrecondition(IComment)
 
     source = SourceText(
         title=_(u"Source Text"),
@@ -44,20 +76,18 @@ class IWikiPage(Interface):
     type = VocabularyField(
         title=_(u"Source Type"),
         description=_(u"Type of the source text, e.g. structured text"),
-        default=u"reStructured Text (reST)",
+        default=u"zope.source.rest",
         required = True,
         vocabulary = "SourceTypes")
-
-    def append(source):
-        """Append some text to the existing source text."""
-
-    def comment(source, user):
-        """Comment on the current Wiki; add comment to source."""
-
-    def getCommentCounter():
-        """Returns the amount of written comments for this wiki page."""
         
 
+class IWikiPageContained(IContained):
+    """Objects that can be contained by Wiki Pages should implement this
+    interface."""
+    __parent__ = Field(
+        constraint = ContainerTypesConstraint(IWikiPage))
+
+    
 class IWikiPageHierarchy(Interface):
     """This interface supports the virtual hierarchical structure of the Wiki
     Pages."""
@@ -97,15 +127,18 @@ class IWikiPageHierarchy(Interface):
         """
     
 class IWiki(IContainer):
+    """A simple container that manages Wikis inside itself."""
+
     def __setitem__(name, object):
-        """Add a poll"""
+        """Add a wiki page object."""
+
     __setitem__.precondition = ItemTypePrecondition(IWikiPage)
 
 
 class IWikiContained(IContained):
+    """Objects that contain Wikis should implement this interface."""
     __parent__ = Field(
         constraint = ContainerTypesConstraint(IWiki))
-
 
 
 class IMailSubscriptions(Interface):

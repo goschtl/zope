@@ -14,18 +14,18 @@
         <input type="submit" value="Query" />
       </form>
 
+      <h3>Search Results</h3>
       <div tal:condition="request/queryText|nothing" tal:omit-tag="">
         <div tal:define="result view/query" tal:omit-tag="">
           <div tal:condition="not:result/total">
-            No hits.  Please try another query.
+            No hits. Please try another query.
           </div>
 
           <div tal:condition="result/total">
-            <div tal:repeat="info result/results">
+            <div tal:repeat="name result/results">
                <a href="location"
-                  tal:attributes="href info/name"
-                  tal:content="info/name">FrontPage</a>;
-               (Score: <span tal:replace="info/scoreLabel" />)
+                  tal:attributes="href name"
+                  tal:content="name">FrontPage</a>
             </div>
           </div>
 

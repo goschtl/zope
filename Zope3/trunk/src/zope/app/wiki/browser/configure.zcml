@@ -1,38 +1,25 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+   i18n_domain="zope">
 
   <include package=".skin" />
 
-  <browser:menu
-       id="add_wiki"
-       title="Menu of objects to be added to wikis."/>
-
-  <!-- Custom adding view.  -->
-  <browser:view
-      for="zope.app.wiki.interfaces.IWiki"
-      name="+"
-      class=".wiki.WikiAdding"
-      permission="zope.app.wiki.AddWikiPage"
-      allowed_attributes="addingInfo"
-      menu="zmi_actions"
-      title="Add"
-      >
-      <browser:page name="index.html"  template="add.pt" />
-      <browser:page name="action.html" attribute="action" />
-  </browser:view>
-
   <browser:addform
       label="Add Wiki"
-      name="AddWiki"
+      name="AddWiki.html"
       schema="zope.app.wiki.interfaces.IWiki"
       content_factory="zope.app.wiki.wiki.Wiki"
-      permission="zope.ManageContent"
+      permission="zope.app.wiki.AddWikiPage"
       class=".wiki.AddWiki"
-      template="wiki_add.pt"
-      menu="add_content" title="Wiki"/>
+      template="wiki_add.pt" />
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wiki.Wiki"
+      title="Wiki"
+      description="A Wiki"
+      permission="zope.ManageContent"
+      view="AddWiki.html" />
 
   <browser:page
       name="toc.html"
@@ -40,7 +27,7 @@
       class=".wiki.TableOfContents"
       template="wiki_toc.pt"
       permission="zope.app.wiki.ViewWikiPage"
-      menu="zmi_views" title="TOC"/>
+      menu="zmi_views" title="TOC" />
 
   <browser:page
       name="search.html" 
@@ -48,7 +35,7 @@
       class=".wiki.WikiSearch"
       template="wiki_search.pt"
       permission="zope.app.wiki.ViewWikiPage"
-      menu="zmi_views" title="Search"/>
+      menu="zmi_views" title="Search" />
 
   <browser:pages
       for="zope.app.wiki.interfaces.IWiki"
@@ -61,26 +48,30 @@
 
   <browser:defaultView
       name="toc.html"
-      for="zope.app.wiki.interfaces.IWiki"/>
+      for="zope.app.wiki.interfaces.IWiki" />
 
   <browser:icon
       name="zmi_icon"
       for="zope.app.wiki.interfaces.IWiki"
-      file="wiki_icon.gif"
-      />
+      file="wiki_icon.gif" />
 
   <!-- WikiPage browser configuration -->
 
   <browser:addform
       label="Add Wiki Page"
-      name="AddWikiPage"
+      name="AddWikiPage.html"
       schema="zope.app.wiki.interfaces.IWikiPage"
       content_factory="zope.app.wiki.wikipage.WikiPage"
       permission="zope.app.wiki.AddWikiPage"
       fields="source type"
-      class=".wikipage.AddWikiPage"
-      menu="add_wiki"
-      title="Wiki Page"/>
+      class=".wikipage.AddWikiPage" />
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wikipage.WikiPage"
+      title="Wiki Page"
+      description="A Wiki Page"
+      permission="zope.app.wiki.AddWikiPage"
+      view="AddWikiPage.html" />
 
   <browser:editform
       schema="zope.app.wiki.interfaces.IWikiPage"
@@ -122,15 +113,6 @@
 
   <browser:pages
       for="zope.app.wiki.interfaces.IWikiPage"
-      class=".wikipage.WikiPageComment"
-      permission="zope.app.wiki.CommentWikiPage">
-      <browser:page name="commentForm.html" template="comment_page.pt"
-          menu="zmi_views" title="Add Comment" />
-      <browser:page name="addComment.html" attribute="comment" />
-  </browser:pages>
-
-  <browser:pages
-      for="zope.app.wiki.interfaces.IWikiPage"
       class=".wikipage.MailSubscriptions"
       permission="zope.app.wiki.EditWikiPage">
       <browser:page name="subscriptions.html" template="subscriptions.pt"
@@ -145,20 +127,36 @@
   <browser:icon
       name="zmi_icon"
       for="zope.app.wiki.interfaces.IWikiPage"
-      file="wikipage_icon.gif"
-      />
+      file="wikipage_icon.gif" />
+
+  <!-- Comment browser configuration -->
+
+  <browser:addform
+      label="Comment"
+      name="AddComment.html"
+      schema="zope.app.wiki.interfaces.IComment"
+      content_factory="zope.app.wiki.wikipage.Comment"
+      permission="zope.app.wiki.AddWikiPage"
+      fields="title source type"
+      class=".wikipage.AddComment"/>
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wikipage.Comment"
+      title="Comment"
+      description="A Comment"
+      permission="zope.app.wiki.AddWikiPage"
+      view="AddComment.html" />
 
   <!-- Make a special WikiPage menu -->
 
   <browser:menu 
        id="wikipage_actions" 
-       title="Menu for Wiki Page related actions."
-       />
+       title="Menu for Wiki Page related actions." />
 
   <browser:menuItems menu="wikipage_actions" 
       for="zope.app.wiki.interfaces.IWikiPage">
     <browser:menuItem title="View" action="@@view.html"/>
-    <browser:menuItem title="Comment" action="@@commentForm.html"/>
+    <browser:menuItem title="Comment" action="./+/AddComment.html="/>
     <browser:menuItem title="Edit" action="@@edit.html"/>
     <browser:menuItem title="Parents" action="@@parents.html"/>
     <browser:menuItem title="TOC" action="@@toc.html"/>
@@ -179,15 +177,5 @@
       for="zope.app.wiki.interfaces.IWikiPage"
       class="zope.app.wiki.traversal.WikiPageTraverser" 
       permission="zope.Public" />
-
-  <!-- Register WikiTextIndex as component -->
-
-  <browser:menuItem
-    menu="add_component"
-    for="zope.app.interfaces.container.IAdding"
-    action="zope.app.wiki.index.WikiTextIndex"
-    title="Wiki Text Index"
-    description="A Wiki-specific full-text index"
-    />
 
 </configure>
