@@ -16,7 +16,7 @@
 XXX There is no module service yet; instead, the service manager
 currently implements it.  This should change.
 
-$Id: module.py,v 1.5 2003/12/18 10:29:48 nmurthy Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 17:00:54 srichter Exp $
 """
 
 from zope.interface import Interface

@@ -13,10 +13,9 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.6 2003/12/29 16:45:04 sidnei Exp $
+$Id: __init__.py,v 1.1 2004/03/10 17:00:54 srichter Exp $
 """
-
-from zope.app.services.module import Manager
+from zope.app.module import Manager
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.publisher.browser import BrowserView

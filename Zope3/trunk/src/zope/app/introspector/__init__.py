@@ -13,11 +13,11 @@
 ##############################################################################
 """Introspector
 
-$Id: __init__.py,v 1.5 2004/03/06 16:50:26 jim Exp $
+$Id: __init__.py,v 1.6 2004/03/10 17:00:53 srichter Exp $
 """
 from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
-from zope.app.interfaces.services.module import IModuleService
+from zope.app.module.interfaces import IModuleService
 from zope.component import getService, getServiceDefinitions
 from zope.proxy import removeAllProxies
 from zope.interface import implements, implementedBy

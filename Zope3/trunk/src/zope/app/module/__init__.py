@@ -13,19 +13,19 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.23 2004/02/20 22:02:24 fdrake Exp $
+$Id: __init__.py,v 1.1 2004/03/10 17:00:54 srichter Exp $
 """
-
 from persistent import Persistent
 from zodbcode.module import PersistentModule, compileModule
+from zope.interface import implements
+from zope.security.proxy import trustedRemoveSecurityProxy
+
 from zope.app.event import function
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.file import IFileFactory
-from zope.app.interfaces.services.module import IModuleManager
+from zope.app.module.interfaces import IModuleManager
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.fssync.server.interfaces import IObjectFile
-from zope.interface import implements
-from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.container.contained import Contained
 
 class Manager(Persistent, Contained):

@@ -11,18 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Peristent Module tests
 
-Revision information:
-$Id: test_module.py,v 1.13 2004/02/20 16:57:32 fdrake Exp $
+$Id: test_module.py,v 1.1 2004/03/10 17:00:55 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import Interface, implements
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.services.module import Manager
+from zope.app.module import Manager
 from ZODB.tests.util import DB
 from transaction import get_transaction
 
@@ -45,7 +43,7 @@ class C:
         self.ini = v
 
 x = 1
-from zope.app.services.tests import test_module
+from zope.app.module.tests import test_module
 
 test_module.called += 1
 """

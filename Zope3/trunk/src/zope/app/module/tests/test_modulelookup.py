@@ -16,13 +16,12 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.5 2004/01/13 14:27:56 fdrake Exp $
+$Id: test_modulelookup.py,v 1.1 2004/03/10 17:00:55 srichter Exp $
 """
-
 from zope.testing.doctestunit import DocTestSuite
 
 from zope.app.services.registration import RegistrationManagerContainer
-from zope.app.interfaces.services.module import IModuleManager
+from zope.app.module.interfaces import IModuleManager
 from zope.interface import implements
 from zope.app.container.contained import Contained, setitem
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -67,9 +66,9 @@ def test_findMoule():
     ...
     ImportError: m5
 
-    >>> import zope.app.services.tests.test_modulelookup
-    >>> m = folder.findModule('zope.app.services.tests.test_modulelookup')
-    >>> int(m is zope.app.services.tests.test_modulelookup)
+    >>> import zope.app.module.tests.test_modulelookup
+    >>> m = folder.findModule('zope.app.module.tests.test_modulelookup')
+    >>> int(m is zope.app.module.tests.test_modulelookup)
     1
     
     """
@@ -77,10 +76,10 @@ def test_findMoule():
 def test_resolve():
     """
     >>> folder = MyFolder()
-    >>> import zope.app.services.tests.test_modulelookup
+    >>> import zope.app.module.tests.test_modulelookup
     >>> f = folder.resolve(
-    ...    'zope.app.services.tests.test_modulelookup.test_resolve')
-    >>> int(f is zope.app.services.tests.test_modulelookup.test_resolve)
+    ...    'zope.app.module.tests.test_modulelookup.test_resolve')
+    >>> int(f is zope.app.module.tests.test_modulelookup.test_resolve)
     1
     """
 

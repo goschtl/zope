@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.29 2004/03/07 13:54:18 jim Exp $
+$Id: registration.py,v 1.30 2004/03/10 17:00:55 srichter Exp $
 """
 __metaclass__ = type
 
@@ -25,7 +25,7 @@ from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services import registration as interfaces
-from zope.app.interfaces.services.module import IModuleManager
+from zope.app.module.interfaces import IModuleManager
 from zope.exceptions import DuplicationError
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile

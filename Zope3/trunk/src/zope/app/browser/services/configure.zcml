@@ -117,9 +117,6 @@
       menu="zmi_views" title="Registrations" />
 -->
 
-<!-- Persistent Modules --> 
-  <zope:include package=".module" />
-
 <!-- PageFolder --> 
   <zope:include file="pagefolder.zcml" />
 

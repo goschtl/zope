@@ -253,7 +253,4 @@
   permission="zope.ManageContent"
   />
 
-<!-- Local Module Support -->
-<include file="module.zcml" />
-
 </configure>
