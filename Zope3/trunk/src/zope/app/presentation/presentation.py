@@ -87,8 +87,8 @@ class LocalPresentationService(
             return r
         return self.delegate.queryLayer(name)
 
-    def queryView(self, object, name, request,
-                  providing=Interface, default=None):
+    def queryView(self, object, name, request, default=None,
+                  providing=Interface):
         """Look for a named view for a given object and request
 
         The request must implement IPresentationRequest.
@@ -113,8 +113,7 @@ class LocalPresentationService(
                 return r
         return default
 
-    def queryResource(self, name, request, providing=Interface,
-                      default=None):
+    def queryResource(self, name, request, default=None, providing=Interface):
         """Look up a named resource for a given request
         
         The request must implement IPresentationRequest.

@@ -552,7 +552,7 @@ class IViewFactory(Interface):
 class IPresentationService(Interface):
     """A service to manage Presentation components."""
 
-    def queryResource(name, request, providing=Interface, default=None):
+    def queryResource(name, request, default=None, providing=Interface):
         """Look up a named resource for a given request
 
         The request must implement IPresentationRequest.
@@ -560,7 +560,7 @@ class IPresentationService(Interface):
         The default will be returned if the component can't be found.
         """
 
-    def queryView(object, name, request, providing=Interface, default=None):
+    def queryView(object, name, request, default=None, providing=Interface):
         """Look for a named view for a given object and request
 
         The request must implement IPresentationRequest.
