@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from urllib import quote
 
 from zope.i18n.negotiator import negotiator
@@ -65,7 +67,7 @@ class I18nImageData(ImageData):
 
 
     def tag(self, height=None, width=None, **args):
-        """See ImageData.tag."""
+        """See `ImageData.tag.`"""
 
         language = None
         if self.request is not None and \

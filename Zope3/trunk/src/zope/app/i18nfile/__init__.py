@@ -15,5 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from i18nfile import I18nFile
 from i18nimage import I18nImage

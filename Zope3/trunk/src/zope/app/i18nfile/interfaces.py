@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.i18n.interfaces import II18nAware
 from zope.app.file.interfaces import IFile, IImage
 

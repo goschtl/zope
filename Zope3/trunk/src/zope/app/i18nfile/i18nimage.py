@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.app.file.image import Image, getImageInfo
 from zope.app.i18nfile.i18nfile import I18nFile
@@ -32,7 +34,7 @@ class I18nImage(I18nFile):
         return Image(data)
 
     def setData(self, data, language=None):
-        '''See interface II18nFile'''
+        '''See interface `II18nFile`'''
         super(I18nImage, self).setData(data, language)
 
         if language is None or language == self.getDefaultLanguage():
@@ -44,5 +46,5 @@ class I18nImage(I18nFile):
                 self.contentType = contentType
 
     def getImageSize(self, language=None):
-        '''See interface II18nImage'''
+        '''See interface `II18nImage`'''
         return self._get(language).getImageSize()

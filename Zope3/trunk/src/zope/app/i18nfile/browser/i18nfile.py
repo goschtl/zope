@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from urllib import quote
 from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
