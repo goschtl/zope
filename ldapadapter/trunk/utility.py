@@ -16,6 +16,7 @@
 $Id$
 """
 
+import re
 import ldap
 from ldap import OPT_PROTOCOL_VERSION
 from ldap import VERSION3
@@ -79,26 +80,37 @@ class LDAPAdapter(object):
 
     def _getServerURL(self):
         """Returns the server url from the host and port info."""
-        return self.host +':'+ self.port
+        if self.useSSL:
+            protocol = 'ldaps://'
+        else:
+            protocol = 'ldap://'
+        return protocol + self.host +':'+ str(self.port)
 
     def _setServerURL(self, url):
         """Returns the server url from the host and port info.
         ldap[s]://host:port
         """
         url = url.strip()
-        urlReg = '^ldap://[a-zA-Z\-\.]+:[\d]{1,5}'
+        urlReg = '^ldap://[a-zA-Z0-9\-\.]+:[\d]{1,5}'
         if re.match(urlReg, url):
             urlList = url.split(':')
             if len(urlList) >= 2:
-                self.useSSL = urlList[0].endswith('s')
-                self.host = urlList[1][:3]
+                useSSL = urlList[0].endswith('s')
+                host = urlList[1][2:]
                 if len(urlList) == 3:
-                    self.port = urlList[2]
-                self.url = url
+                    port = int(urlList[2])
             else:
+                # raise ERROR
                 print "to small url"
+                return None
+        else:
+            # raise ERROR
+            print "ERROR"
+            return None
          
-
+        self.host = host
+        self.port = port
+        self.useSSL = useSSL
 
 
 class LDAPConnection(object):
