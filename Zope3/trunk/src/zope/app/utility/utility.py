@@ -118,5 +118,4 @@ class UtilityRegistration(ComponentRegistration):
         # ComponentRegistration calls this when you specify a
         # permission; it needs the interface to create a security
         # proxy for the interface with the given permission.
-        # XXX Smells like a dead chicken to me.
         return self.interface
