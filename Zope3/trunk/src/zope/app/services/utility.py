@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.17 2003/09/21 17:31:12 jim Exp $
+$Id: utility.py,v 1.18 2004/02/09 01:10:16 anthony Exp $
 """
 from zope.interface import implements
 from persistence.dict import PersistentDict
@@ -154,9 +154,12 @@ class UtilityRegistration(ComponentRegistration):
 
     def usageSummary(self):
         # Override IRegistration.usageSummary()
-        s = "%s utility" % self.interface.getName()
+        component = self.getComponent()
+        s = self.getInterface().getName()
         if self.name:
-            s += " named %s" % self.name
+            s += " registered as '%s'" % self.name
+        s += ", implemented by %s"%component.__class__.__name__
+        s += " '%s'"%self.componentPath
         return s
 
     def getInterface(self):
