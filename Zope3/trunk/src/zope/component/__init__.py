@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.19 2004/03/05 22:09:25 jim Exp $
+$Id: __init__.py,v 1.20 2004/03/06 00:38:47 jim Exp $
 """
 import sys
 import warnings
@@ -119,6 +119,18 @@ def queryNamedAdapter(object, interface, name, default=None, context=None):
     return adapters.queryNamedAdapter(object, interface, name, default)
 
 queryNamedAdapter = hookable(queryNamedAdapter)
+
+def interfaceAdapterHook(iface, ob):
+    try:
+        adapters = getService(ob, Adapters)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return None
+
+    return adapters.queryNamedAdapter(ob, iface, '')
+
+from zope.interface.interface import adapter_hooks
+adapter_hooks.append(interfaceAdapterHook)
 
 def queryMultiAdapter(objects, interface, context, name=u'', default=None):
     try:

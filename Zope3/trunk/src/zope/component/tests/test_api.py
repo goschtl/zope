@@ -109,6 +109,12 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
+    def testInterfaceCall(self):
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
+        c = I2(ob)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, ob)
+
     def testContextArgument(self):
         # Basically, the same tests as in testAdapter, but with the
         # 'context' argument given. As this is only testing the global
@@ -372,8 +378,19 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getDefaultViewName,
                           ob, Request(I1))
 
+
+class TestNoSetup(unittest.TestCase):
+
+    def testNotBrokenWhenNoService(self):
+        self.assertRaises(TypeError, I2, ob)
+
+
+
 def test_suite():
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        unittest.makeSuite(TestNoSetup),
+        ))
 
 if __name__ == "__main__":
     unittest.TextTestRunner().run(test_suite())
