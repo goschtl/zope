@@ -1,6 +1,6 @@
-PYTHON=/opt/python2.3/bin/python
+PYTHON=python2.2
 TESTFLAGS=-p -v
-TESTOPTS=-q
+TESTOPTS=
 SETUPFLAGS=
 
 # XXX What should the default be?
