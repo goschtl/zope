@@ -3,58 +3,60 @@ from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
+from Products.CMFCore.tests.base.testcase import _prefix
 
 from Globals import DevelopmentMode
 
 from os import remove, mkdir, rmdir
 from os.path import join
 
-class DirectoryViewTests1( FSDVTest ):
+class DirectoryViewPathTests( TestCase ):
+    """
+    These test that, no matter what is stored in their dirpath,
+    FSDV's will do their best to find an appropriate skin
+    and only do nothing in difficult cases (such as where
+    people have chosen to use PRODUCTS_PATH )
+    """
 
     def setUp(self):
-        FSDVTest.setUp(self)
-        self._registerDirectory()
+        from Products.CMFCore.DirectoryView import registerDirectory
+        from Products.CMFCore.DirectoryView import addDirectoryViews
+        registerDirectory('fake_skins', _prefix)
         self.ob = DummyFolder()
+        addDirectoryViews(self.ob, 'fake_skins', _prefix)        
         
-    def test_registerDirectory( self ):
-        """ Test registerDirectory  """
-        pass
-    
-    #
-    # XXX: 2002/08/12: These tests "smell funny";  they are perhaps too
-    #       "white box"?  #   (and two of them fail on Linux, as well;
-    #       you are hardwiring assumptions about the shape of
-    #       SOFTWARE_HOME/INSTANCE_HOME).
-    #
-##     def test_getDirectoryInfo1( self ):
-##         """ windows INSTANCE_HOME  """
-##         from Products.CMFCore.DirectoryView import addDirectoryViews
-##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
-##         self.ob.fake_skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')        
-##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+    def test_getDirectoryInfo1( self ):
+        """ windows INSTANCE_HOME  """
+        self.ob.fake_skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')        
+        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-##     def test_getDirectoryInfo2( self ):
-##         """ windows SOFTWARE_HOME  """
-##         from Products.CMFCore.DirectoryView import addDirectoryViews
-##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
-##         self.ob.fake_skin.manage_properties(r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')        
-##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+    def test_getDirectoryInfo2( self ):
+        """ windows SOFTWARE_HOME  """
+        self.ob.fake_skin.manage_properties(r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')        
+        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-##     def test_getDirectoryInfo3( self ):
-##         """ *nix INSTANCE_HOME  """
-##         from Products.CMFCore.DirectoryView import addDirectoryViews
-##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
-##         self.ob.fake_skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')        
-##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+    def test_getDirectoryInfo3( self ):
+        """ *nix INSTANCE_HOME  """
+        self.ob.fake_skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')        
+        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-##     def test_getDirectoryInfo4( self ):
-##         """ *nix SOFTWARE_HOME  """
-##         from Products.CMFCore.DirectoryView import addDirectoryViews
-##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
-##         self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
-##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+    def test_getDirectoryInfo4( self ):
+        """ *nix SOFTWARE_HOME  """
+        self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
+        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-class DirectoryViewTests2( FSDVTest ):
+    def test_getDirectoryInfo5( self ):
+        """ *nix SOFTWARE_HOME  """
+        self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
+        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+
+    def test_getDirectoryInfo5( self ):
+        """ Somewhere we won't be able to find  """
+        from tempfile import mktemp        
+        self.ob.fake_skin.manage_properties(mktemp()+'/CMFCore/tests/fake_skins/fake_skin')
+        self.assertEqual(self.ob.fake_skin.objectIds(),[])
+        
+class DirectoryViewTests( FSDVTest ):
 
     def setUp( self ):
         FSDVTest.setUp(self)
@@ -62,6 +64,7 @@ class DirectoryViewTests2( FSDVTest ):
 
     def test_addDirectoryViews( self ):
         """ Test addDirectoryViews  """
+        # also test registration of driectory views doesn't barf
         pass
 
     def test_DirectoryViewExists( self ):
@@ -166,8 +169,8 @@ else:
 
 def test_suite():
     return TestSuite((
-        makeSuite(DirectoryViewTests1),
-        makeSuite(DirectoryViewTests2),
+        makeSuite(DirectoryViewPathTests),
+        makeSuite(DirectoryViewTests),
         makeSuite(DebugModeTests),
         ))
 

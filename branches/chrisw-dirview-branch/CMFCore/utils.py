@@ -627,21 +627,15 @@ def expandpath(p):
 
 security.declarePublic('minimalpath')
 def minimalpath(p):
-    # Trims INSTANCE_HOME or SOFTWARE_HOME from a path.
-    #
-    # XXX: 2002/08/12  This "fix" is unacceptable;  it breaks existing
-    #      functionality (e.g., PRODUCTS_PATH), and adds a new requirement
-    #      (that 'p' include 'Products').  Reverting head to 1.26.
-    p = os_path.abspath(p)
-    abs = normalize(p)
-    l = len(normINSTANCE_HOME)
-    if abs[:l] != normINSTANCE_HOME:
-        l = len(normSOFTWARE_HOME)
-        if abs[:l] != normSOFTWARE_HOME:
-            # Can't minimize.
-            return p
-    p = p[l:]
-##     p = p[p.find('Products'):]
+    # This trims down to a 'Products' root if it can.
+    # otherwise, it returns what it was given.
+    # In either case, the path is normalized.
+    p = normalize(p)
+    index = p.find('Products')
+    if index == -1:
+        index = p.find('products')
+    if index != -1:
+        p = p[index:]
     while p[:1] in separators:
         p = p[1:]
     return p
