@@ -5,6 +5,15 @@
 
   <browser:skin name="Debug" layers="debug rotterdam default" />
 
+  <browser:page
+      for="zope.exceptions.IUnauthorized"
+      name="index.html"
+      permission="zope.Public"
+      template="unauthorized.pt"
+      class="zope.app.browser.exception.unauthorized.Unauthorized"
+      layer="debug"
+      />
+
   <browser:page 
       name="index.html"
       template="error_debug.pt"
