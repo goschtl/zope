@@ -26,12 +26,16 @@ Quick Start
 
     * cd Zope3
 
-    * make
+    * python setup.py build_ext -i
+
+      (On Unix, typing "make" will do the same thing.)
 
     * Copy principals.zcml.in to principals.zcml, and add a manager
       entry to it based on the examples in sample_principals.zcml.
 
     * python z3.py
+
+      (On Unix, typing "make run" will do the same thing.)
 
   You should shortly see logging messages indicating Zope3 is listening on
   port 8080.  At that point you can connect to Zope3 by directing
