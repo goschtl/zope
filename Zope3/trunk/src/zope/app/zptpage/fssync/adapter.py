@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.interface import implements
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile
@@ -31,5 +30,7 @@ class ZPTPageAdapter(ObjectEntryAdapter):
     def setBody(self, data):
         # Convert the data to Unicode, since that's what ZPTPage wants;
         # it's normally read from a file so it'll be bytes.
-        # XXX This will die if it's not ASCII.  Guess encoding???
-        self.context.setSource(unicode(data))
+
+        # Sometimes we cannot communicate an encoding. Zope's default is UTF-8,
+        # so use it.
+        self.context.setSource(data.decode('UTF-8'))
