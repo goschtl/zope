@@ -12,7 +12,7 @@ They are used to extend processing by providing processing plug
 points. 
 
 The package has a list of subscribers.  Application code can manage
-subscriptiosn by manipulating this list.  For the examples here, we'll
+subscriptions by manipulating this list.  For the examples here, we'll
 save the current contents away and empty the list. We'll restore the
 contents when we're done with out examples.
 
@@ -29,7 +29,7 @@ notify subscribers that something has happened:
   >>> event = MyEvent()
   >>> zope.event.notify(event)
 
-The notify function is caled with a single object, which we call an
+The notify function is called with a single object, which we call an
 event.  Any object will do:
 
   >>> zope.event.notify(None)
@@ -63,11 +63,11 @@ To unsubscribe, simply remove a subscriber from the list:
   >>> zope.event.notify(42)
   also got: 42
 
-Generally, application framworks will provide more sophisticated
+Generally, application frameworks will provide more sophisticated
 subscription mechanisms that build on this simple mechanism. The
 frameworks will install subscribers that then dispatch to other
 subscribers based on event types or data.
 
-We're done, so we'll restoe the subscribers:
+We're done, so we'll restore the subscribers:
 
   >>> zope.event.subscribers[:] = old_subscribers
