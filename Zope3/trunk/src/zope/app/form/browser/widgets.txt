@@ -14,7 +14,7 @@ Simple stuff.
 Our Poll product holds an editable list of the PollOption instances. This
 is shown in the ``poll.py`` source below::
 
-    from persistence import Persistent
+    from persistent import Persistent
     from interfaces import IPoll, IPollOption
     from zope.interface import implements, classImplements
 

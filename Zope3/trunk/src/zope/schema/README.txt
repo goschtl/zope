@@ -92,7 +92,7 @@ values that are US postal codes.
 
 Now we want a class that adheres to the IContact Schema::
 
-    class Contact(persistence.Persistent):
+    class Contact(persistent.Persistent):
         implements(IContact)
 
         def __init__(self, first, last, email, address, pc):
