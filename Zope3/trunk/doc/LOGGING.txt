@@ -1,17 +1,7 @@
 Zope Logging
 
- Zope2 now comes with a Logging facility called ZLogger.  ZLogger is
- an extensible logging system.  Currently, ZLogger will log either to a 
- file or to syslog.  (Syslog logging works even on windows, because
- it talks directly to the syslog server using UDP, instead of the
- POSIX syslog calls).
-
- Logging is controlled by setting environment variables.  This is done
- most easily by providing the settings on the z2.py command line.  For
- example::
-
-  $ python2.1 z2.py ZSYSLOG_SERVER="syslog.mydomain.com:514" \
-     STUPID_LOG_FILE="var/Zope.log"
+ Logging is done through the zLOG package (which may be replaced by a
+ PEP 282-based logging module in Python 2.3 once it's ready).
 
  Currently, the following environment variables can be set:
 
@@ -112,9 +102,3 @@ one of your Loggers in the 'logger' tuple::
  loggers = (stupidFileLogger.stupidFileLogger(), 
             syslogLogger.syslogLogger(),
             LumberJack.LumberJack(),)
-
-
-
-
-
-
