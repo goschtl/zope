@@ -1,4 +1,29 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Interfaces for folders.
+
+$Id: interfaces.py 27514 2004-09-13 15:54:05Z fdrake $
+"""
+from zope.interface import Interface
 from zope.app.component.interfaces import registration
+from zope.app.container.interfaces import IContainer
+
+from zope.app.component.interfaces import IPossibleSite, ISite
+from zope.app.component.interfaces import ILocalSiteManager
+from zope.app.component.interfaces import ISiteManagementFolder
+
+ISiteManager = ILocalSiteManager
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -13,4 +38,44 @@ class ISimpleService(ILocalService):
 
     It implies a specific way of implementing IRegisterable,
     by subclassing IAttributeRegisterable.
+    """
+
+class IComponentManager(Interface):
+
+    def queryComponent(type=None, filter=None, all=0):
+        """Return all components that match the given type and filter
+
+        The objects are returned a sequence of mapping objects with keys:
+
+        path -- The component path
+
+        component -- The component
+
+        all -- A flag indicating whether all component managers in
+               this place should be queried, or just the local one.
+
+        """
+
+class IBindingAware(Interface):
+
+    def bound(name):
+        """Inform a service component that it is providing a service
+
+        Called when an immediately-containing service manager binds
+        this object to perform the named service.
+        """
+
+    def unbound(name):
+        """Inform a service component that it is no longer providing a service
+
+        Called when an immediately-containing service manager unbinds
+        this object from performing the named service.
+        """
+
+class ISiteManagementFolders(IContainer, IComponentManager):
+    """A collection of ISiteManagementFolder objects.
+
+    An ISiteManagementFolders object supports simple containment as
+    well as package query and lookup.
+    
     """
