@@ -15,8 +15,6 @@
 
 $Id$
 """
-
 Adapters = 'Adapters'
 Utilities = 'Utilities'
-Presentation = 'Presentation'
 Services = 'Services'
