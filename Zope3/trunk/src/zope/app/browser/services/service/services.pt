@@ -67,9 +67,6 @@
 
       </form>
 
-      <p><a href="default/AddService" i18n:translate="">
-        Add a service to this service manager</a></p>
-
     </div>
   </div>
 
