@@ -23,6 +23,7 @@ import zpkgtools
 
 from zpkgtools import config
 from zpkgtools import cvsloader
+from zpkgtools import dependencies
 from zpkgtools import include
 from zpkgtools import locationmap
 from zpkgtools import package
