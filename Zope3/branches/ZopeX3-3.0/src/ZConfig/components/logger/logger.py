@@ -87,21 +87,6 @@ class EventLogFactory(LoggerFactoryBase):
     name = None
 
 
-class AccessLogFactory(LoggerFactoryBase):
-    """Logger factory that returns the access logger."""
-
-    name = "accesslog"
-
-    def create(self):
-        logger = LoggerFactoryBase.create(self)
-        logger.setLevel(logging.INFO)
-        logger.propagate = False
-        formatter = logging.Formatter()
-        for handler in logger.handlers:
-            handler.setFormatter(formatter)
-        return logger
-
-
 class LoggerFactory(LoggerFactoryBase):
     """Logger factory that returns the named logger."""
 
