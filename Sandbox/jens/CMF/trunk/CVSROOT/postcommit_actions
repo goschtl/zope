@@ -278,11 +278,11 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     except TypeError:
         repodir = remote['repodir']
 
-    cmd = ("%s%s%s %s/%s/ %s:%s" % ((VERBOSE and "set -x; ") or "",
+    cmd = ("%s%s%s %s/%s/ %s:%s/%s/" % ((VERBOSE and "set -x; ") or "",
                                     (DRYRUN and "echo ") or "",
                                     cmd,
                                     os.environ["CVSROOT"], repo,
-                                    remote['host'], repodir))
+                                    remote['host'], repodir, repo))
     if VERBOSE:
         complain("Doing rsync cmd:\n\t%s\n", cmd)
 
