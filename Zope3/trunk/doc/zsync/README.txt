@@ -108,6 +108,11 @@ To Do
 - Documentation for the **zsync** and **zbundle** command line tools
   (in progress)
 
+- Make it possible for simple values (such as strings and integers)
+  for extra and annotation data to be updated from a serialization
+  without requiring that an XML pickle be used as the serialization
+  format.
+
 - Explicit import/export facilities, similar to the functionality
   found in Zope 2
 
