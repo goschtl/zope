@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.1 2003/05/27 19:41:53 gvanrossum Exp $
+$Id: test_committer.py,v 1.2 2003/05/28 13:51:49 gvanrossum Exp $
 """
 
 import os
@@ -28,6 +28,7 @@ from zope.testing.cleanup import CleanUp
 
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil
+from zope.fssync.tests.mockmetadata import MockMetadata
 
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory
@@ -98,8 +99,8 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
 
         # Instance initialization
         self.tempfiles = []
-        self.com = Committer()
-        self.metadata = self.com.metadata
+        self.metadata = MockMetadata() 
+        self.com = Committer(self.metadata)
         self.getentry = self.metadata.getentry
         self.getnames = self.metadata.getnames
 
