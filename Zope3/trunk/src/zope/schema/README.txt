@@ -41,8 +41,8 @@ Simple Usage
     ...     def __init__(self, url):
     ...         self.url = url
     ...
-    >>> from Zope.Schema import TextLine, validateMapping
-    >>> from Interface import Interface
+    >>> from zope.schema import TextLine, validateMapping
+    >>> from zope.interface import Interface
     >>> class IBookmark(Interface):
     ...     url = TextLine(title=u'url of the bookmark')
     ...
@@ -70,8 +70,8 @@ A Schema starts out like an interface but defines certain Fields to
 which an object's attributes must conform.  Let's look at a stripped
 down example from the programmer's tutorial (chapter two)::
 
-    from Interface import Interface
-    from Zope.Schema import Interface, Text, TextLine
+    from zope.interface import Interface
+    from zope.schema import Text, TextLine
 
     class IContact(Interface):
         """Provides access to basic contact information."""
@@ -92,8 +92,8 @@ values that are US postal codes.
 
 Now we want a class that adheres to the IContact Schema::
 
-    class Contact(Persistence.Persistent):
-        __implements__ = IContact
+    class Contact(persistence.Persistent):
+        implements(IContact)
 
         def __init__(self, first, last, email, address, pc):
             self.first = first
@@ -105,8 +105,8 @@ Now we want a class that adheres to the IContact Schema::
 Now you can see if an instance of ``Contact`` actually implements the
 schema::
 
-    from Zope.App.Schema import validateMapping
-    someone = contact('Tim','Roberts', 'tim@roberts', '','')
+    from zope.app.schema import validateMapping
+    someone = Contact('Tim','Roberts', 'tim@roberts', '','')
     validateMapping(IContact, someone.__dict__)
 
 
@@ -180,19 +180,7 @@ Integration with Interfaces
 ***************************
 
 How closely are Interfaces and Schema related?  Should they be
-refactored into one package?  Currently the Interface package is
-outside the Zope namespace and Schema is at Zope.Schema.  Should this
-stay this way?  Are Schemas Zope-Specific?
-
-Shouldn't the ``implements()`` function on the interface package be
-named ``setImplements()`` as opposed to ``getImplements()``?  This way
-if you write::
-
-    setImplements(cls, interface)
-
-it is obvious what you mean (as opposed to ``implements(cls,
-interface)`` which could mean *asking* if ``cls`` implements the
-interface.
+refactored into one package? Are Schemas Zope-Specific?
 
 Clarify and clean up use cases
 ******************************
