@@ -189,14 +189,4 @@ class EditContentComponentInstanceView(EditView):
         self.label = 'Edit %s' %context.__name__
         super(EditContentComponentInstanceView, self).__init__(context,
                                                                request)
-        # XXX We have a proxied SimplyViewClass here. 
-        # We have no permission for to edit the fields
-        # from the given schema. 
-        # We need the permission to set the fields back
-        # from the SimplyViewClass instance to the context
-        
-        # I see no way for set this in the configure.zcml
-        # because we don't know the schema or the fields.
-        # And in the schema is just the attribute
-        # generated_form allowed for to save. ???
 
