@@ -22,6 +22,7 @@ from zope.testing.doctestunit import DocTestSuite
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite('zope.app.generations.generations'),
+        DocTestSuite('zope.app.generations.utility'),
         ))
 
 if __name__ == '__main__':
