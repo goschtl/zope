@@ -160,7 +160,7 @@ class IWidgetInputErrorView(Interface):
 
 
 class ITerms(Interface):
-    
+
     def getTerm(value):
         """Return an ITitledTokenizedTerm object for the given value
         
@@ -174,7 +174,7 @@ class ITerms(Interface):
         """
 
 class ISourceQueryView(Interface):
-    """View support for querying non-iterable vocabularies
+    """View support for querying non-iterable sources
     """
         
     def render(name):
