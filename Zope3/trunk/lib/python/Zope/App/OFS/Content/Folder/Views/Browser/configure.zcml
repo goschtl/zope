@@ -38,14 +38,28 @@
 <browser:view
     for=".Folder.IFolder."
     permission="Zope.ManageContent" 
-    factory=".Views.Browser.FolderContents.">
+    factory="Zope.App.OFS.Container.Views.Browser.Contents.">
 
   <browser:page name="index.html" attribute="index" permission="Zope.View" />
   <browser:page name="contents.html" attribute="contents" />
   <browser:page name="manage" attribute="contents" />
-  <browser:page name="addServiceManager.html" attribute="addServiceManager" />
   <browser:page name="removeObjects.html" attribute="removeObjects" />
 
 </browser:view>
+
+<!-- ApplicationController navigation -->
+
+
+<browser:menuItems menu="zmi_actions"
+  for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder."
+  >
+
+  <browser:menuItem title="Process Manager"
+            action="++etc++ApplicationController/index.html"
+            />
+
+</browser:menuItems>
+
+
 
 </zopeConfigure>
