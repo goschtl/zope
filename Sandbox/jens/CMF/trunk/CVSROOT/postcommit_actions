@@ -87,14 +87,14 @@ def main(args):
             # In parent - all done with that.
             os._exit(0)
 
+    do_chmod(subjs)
+
     for entry in got:
         (nm, expr, addrs, remote) = entry
         if addrs:
             do_mail(nm, repo, addrs, subjs)
         if remote:
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
-
-    do_chmod(subjs)
 
 def find_entries(repo):
     """Return all traffic_table entries that trigger for repo."""
@@ -110,9 +110,9 @@ def do_mail(name, repo, addrs, subjs):
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
-    subject = "CVS checkin: %s -"
-    for nm, old, new in subjs:
-        subject = subject + " %s:%s" % (nm, new)
+    subject = "CVS checkin: %s -" % name
+    for fn, old, new in subjs:
+        subject = subject + " %s:%s" % (fn, new)
     os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
                                         (DRYRUN and "echo ") or "",
                                         MAIL_CMD,
