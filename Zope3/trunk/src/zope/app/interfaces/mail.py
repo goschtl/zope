@@ -11,11 +11,49 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""MailService Interfaces
+"""Mail service interfaces
 
-Interfaces relevant for the MailService
+Email sending from Zope 3 applications works as follows:
 
-$Id: mail.py,v 1.3 2003/05/21 10:52:53 mgedmin Exp $
+- A Zope 3 application locates a mail service (IMailService) and feeds a
+  message to it.  It gets back a unique message ID so it can keep track of the
+  message by subscribing to IMailEvent events.
+
+- The mail service registers with the transaction system to make sure the
+  message is only sent when the transaction commits successfully.  (Among
+  other things this avoids duplicate messages on ConflictErrors.)
+
+- If the mail service is a IQueuedMailService, it puts the message into a
+  queue (a Maildir mailbox in the file system).  A separate process or thread
+  (IMailQueueProcessor) watches the queue and delivers messages
+  asynchronously.  Since the queue is located in the file system, it survives
+  Zope restarts or crashes and the mail is not lost.  The queue processor
+  can implement batching to keep the server load low.
+
+- If the mail service is a IDirectMailService, it delivers messages
+  synchronously during the transaction commit.  This is not a very good idea,
+  as it makes the user wait.  Note that transaction commits must not fail,
+  but that is not a problem, because mail delivery problems dispatch an
+  event instead of raising an exception.
+
+  XXX and there's the problem -- sending events causes unknown code to be
+  executed during the transaction commit phase.  There should be a way to
+  start a new transaction for event processing after this one is commited.
+
+- An IMailQueueProcessor or IDirectMailService actually delivers the messages
+  by using a mailer (IMailer) component that encapsulates the delivery
+  process.  There are currently two mailers:
+
+    - ISMTPMailer sends all messages to a relay host using SMTP
+
+    - ISendmailMailer sends messages by calling an external process (usually
+      /usr/lib/sendmail on Unix systems).
+
+- If mail delivery succeeds, an IMailSentEvent is dispatched by the mailer.
+  If mail delivery fails, no exceptions are raised, but an IMailErrorEvent is
+  dispatched by the mailer.
+
+$Id: mail.py,v 1.4 2003/06/23 15:45:39 alga Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -26,11 +64,89 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 class IMailService(Interface):
-    """A mail service allows someone to send an email to a group of people.
+    """A mail service allows someone to send an email to a group of people."""
 
-    Note: This interface is purposefully held very simple, so that it is easy
-    to provide a basic mail service implementation.
+    def send(fromaddr, toaddrs, message):
+        """Sends an email message.
+
+        'fromaddr' is the sender address (byte string),
+
+        'toaddrs' is a sequence of recipient addresses (byte strings).
+
+        'message' is a byte string that contains both headers and body
+        formatted according to RFC 2822.  If it does not contain a Message-Id
+        header, it will be generated and added automatically.
+
+        Returns the message ID.
+
+        You can subscribe to IMailEvent events for notification about problems
+        or successful delivery.
+
+        Messages are actually sent during transaction commit.
+        """
+
+
+class IDirectMailService(IMailService):
+    """A mail service that delivers messages synchronously during transaction
+    commit.
+
+    Not useful for production use, but simpler to set up and use.
     """
+
+    mailer = Attribute("IMailer that is used for message delivery")
+
+
+class IQueuedMailService(IMailService):
+    """A mail service that puts all messages into a queue in the filesystem.
+
+    Messages will be delivered asynchronously by a separate component.
+    """
+
+    queuePath = zope.schema.TextLine(
+        title=_(u"Queue path"),
+        description=_(u"Pathname of the directory used to queue mail."))
+
+
+class IMailQueueProcessor(Interface):
+    """A mail queue processor that delivers queueud messages asynchronously.
+    """
+
+    queuePath = zope.schema.TextLine(
+        title=_(u"Queue Path"),
+        description=_(u"Pathname of the directory used to queue mail."))
+
+    pollingInterval = zope.schema.Int(
+        title=_(u"Polling Interval"),
+        description=_(u"How often the queue is checked for new messages"
+                       " (in milliseconds)"),
+        default=5000)
+
+    mailer = Attribute("IMailer that is used for message delivery")
+
+
+class IMailer(Interface):
+    """Mailer handles syncrhonous mail delivery."""
+
+    def send(fromaddr, toaddrs, message):
+        """Sends an email message.
+
+        'fromaddr' is the sender address (unicode string),
+
+        'toaddrs' is a sequence of recipient addresses (unicode strings).
+
+        'message' contains both headers and body formatted according to RFC
+        2822.  It should contain at least Date, From, To, and Message-Id
+        headers.
+
+        Messages are sent immediatelly.
+
+        Dispatches an IMailSentEvent on successful delivery, otherwise an
+        IMailErrorEvent.
+        """
+
+
+class ISMTPMailer(IMailer):
+    """A mailer that delivers mail to a relay host via SMTP."""
 
     hostname = zope.schema.TextLine(
         title=_(u"Hostname"),
@@ -49,93 +165,35 @@ class IMailService(Interface):
         title=_(u"Password"),
         description=_(u"Password used for optional SMTP authentication."))
 
-    def send(fromaddr, toaddrs, message):
-        """Send a message to the tos (list of email unicode strings) with a
-        sender specified in from (unicode string).
-        """
 
+class ISendmailMailer(IMailer):
+    """A mailer that delivers mail by calling an external process."""
 
-# XXX: Needs better name: AsyncMailService, MailerMailService, ...
-class IAsyncMailService(IMailService):
-    """This mail service handles mail delivery using so called Mailer objects.
-
-    The policies for sending the mail are encoded in the Mailer object.  Also,
-    it is recommended that the mailer is called in a different thread, so that
-    the request is not blocked.
-    """
-
-    def createMailer(name):
-        """Create a Mailer object which class was registered under the passed
-        name."""
-
-    def getMailerNames():
-        """Return a list of the names of all registered mailers."""
-
-    def getDefaultMailerName():
-        """Return the name of the default Mailer.  None, means there is no
-        default mailer class defined.
-        """
-
-    def send(fromaddr, toaddrs, message, mailer=None):
-        """This interface extends the send method by an optional mailer
-        attribute.  If the mailer is None, an object from the default mailer
-        class is created and used.
-        """
-
-
-class IMailer(Interface):
-    """This is a generic Mailer interface.
-
-    Mailers implement mailing policies, such as batching, scheduling and so
-    on.
-    """
-
-    def send(fromaddr, toaddrs, message, hostname, port, username, password):
-        """Send a message.  How and when the mailer is going to send
-        out the mail is purely up to the mailer's policy.
-        """
-
-
-class IBatchMailer(IMailer):
-    """The Batch Mailer allows for sending emails in batches, so that the
-    server load will not be too high.
-    """
-
-    batchSize = zope.schema.Int(
-        title=_(u"Batch Size"),
-        description=_(u"Amount of E-mails sent in one batch."),
-        min=1)
-
-    batchDelay = zope.schema.Int(
-        title=_(u"Batch Delay"),
-        description=_(u"Delay time in milliseconds between batches."),
-        min=100)
-
-
-class IScheduleMailer(IMailer):
-    """This mailer allows you to specify a specific date/time to send the
-    mails.
-    """
-
-    sendAt = zope.schema.Datetime(
-        title=_(u"Send at"),
-        description=_(u"Date/time the message should be send."))
+    command = zope.schema.BytesLine(
+        title=_(u"Command"),
+        description=_(u"Command used to send email."),
+        default="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s")
 
 
 class IMailEvent(IEvent):
-    """Generic Mailer event that can be sent from the mailer or the mail
-    service.
-    """
+    """Generic mail event."""
 
-    mailer = Attribute("Mailer object that is used to send the mail.")
+    messageId = Attribute("Message id according to RFC 2822")
 
 
 class IMailSentEvent(IMailEvent):
-    """Event that is fired when all the mail in the mailer was sent.
+    """Event that is fired when a message is succesfully sent.
 
-    Note: Subscribing to this event eliminates the need for implementing
-    callback functions for the asynchronous delivery.
+    This does not mean that all the recipients have received it, it only
+    means that the message left this system successfully.  It is possible
+    that a bounce message will arrive later from some remote mail server.
     """
+
+
+class IMailErrorEvent(IMailEvent):
+    """Event that is fired when a message cannot be delivered."""
+
+    errorMessage = Attribute("Error message")
 
 
 
@@ -211,4 +269,3 @@ class IMaildirMessageWriter(Interface):
 
         Calling abort() more than once is allowed.
         """
-

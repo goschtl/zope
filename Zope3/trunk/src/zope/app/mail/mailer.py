@@ -11,62 +11,52 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""MailService Implementation
 
-Simple implementation of the MailService, Mailers and MailEvents.
+"""These are classes which abstract different channels an email
+message could be sent out by.
 
-$Id: mailer.py,v 1.4 2003/06/06 19:29:03 stevea Exp $
+$Id: mailer.py,v 1.5 2003/06/23 15:45:39 alga Exp $
 """
+
+from zope.interface import implements
+from zope.app.interfaces.mail import ISendmailMailer, ISMTPMailer
+from os import popen
 from smtplib import SMTP
 
-from zope.app.interfaces.mail import IMailer, IBatchMailer
-from zope.app.event import publish
-from zope.app.mail.event import MailSentEvent
-from zope.interface import implements
+__metaclass__ = type
 
+class SendmailMailer:
 
-class SimpleMailer:
-    __doc__ = IMailer.__doc__
+    implements(ISendmailMailer)
 
-    implements(IMailer)
+    # A hook for unit tests
+    popen = popen
 
-    def send(self, fromaddr, toaddrs, message,
-             hostname, port, username, password):
-        "See zope.app.interfaces.services.mail.IMailer"
-        server = SMTP(hostname, port)
-        server.set_debuglevel(0)
-        if username is not None and password is not None:
-            server.login(username, password)
-        server.sendmail(fromaddr, toaddrs, message)
-        server.quit()
-        publish(self, MailSentEvent(self))
+    def __init__(self, command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s"):
+        self.command = command
 
+    def send(self, fromaddr, toaddrs, message):
+        command = self.command % {'from': fromaddr, 'to': " ".join(toaddrs)}
+        f = self.popen(command, "w")
+        f.write(message)
+        f.close()
 
-class BatchMailer:
-    __doc__ = IBatchMailer.__doc__
+class SMTPMailer:
 
-    implements(IBatchMailer)
+    implements(ISMTPMailer)
 
-    # See zope.app.interfaces.mail.IBatchMailer
-    batchDelay = 5000
+    smtp = SMTP
 
-    # See zope.app.interfaces.mail.IBatchMailer
-    batchSize = 5
+    def __init__(self, hostname='localhost', port=25,
+                 username=None, password=None):
+        self.hostname = hostname
+        self.port = port
+        self.username = username
+        self.password = password
 
-    def send(self, fromaddr, toaddrs, message,
-             hostname, port, username, password):
-        "See zope.app.interfaces.mail.IMailer"
-        server = SMTP(hostname, port)
-        server.set_debuglevel(0)
-        if username is not None and password is not None:
-            server.login(username, password)
-        recv = list(toaddrs)
-        batch = []
-        while recv:
-            while len(batch) < self.batchSize and recv:
-                batch.append(recv.pop())
-            server.sendmail(fromaddr, batch, message)
-            batch = []
-            time.sleep(self.batchDelay/1000.0)
-        server.quit()
-        publish(self, MailSentEvent(self))
+    def send(self, fromaddr, toaddrs, message):
+        connection = self.smtp(self.hostname, str(self.port))
+        if self.username is not None and self.password is not None:
+            connection.login(self.username, self.password)
+        connection.sendmail(fromaddr, toaddrs, message)
+        connection.quit()

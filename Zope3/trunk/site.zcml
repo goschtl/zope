@@ -18,6 +18,7 @@
 <grant permission="zope.ManageServices"    role="Manager" />
 <grant permission="zope.ManageApplication" role="Manager" />
 <grant permission="zope.ManageBindings"    role="Manager" />
+<grant permission="zope.SendMail"    role="Manager" />
 
 <!-- Grant Manager all necessary Permissions for using Workflows -->
 <grant permission="zope.workflow.ManageProcessDefinitions" role="Manager" />

@@ -1,93 +1,123 @@
 <zopeConfigure xmlns="http://namespaces.zope.org/zope">
-  
+
   <directives namespace="http://namespaces.zope.org/mail">
 
-    <directive name="mailservice" handler=".metaconfigure.mailservice">
+    <directive name="queuedService" handler=".metaconfigure.queuedService">
 
       <description>
-        This directive creates and registers a global mail service. It should
-        be only called once during startup. 
+        This directive creates and registers a global queued mail service. It
+        should be only called once during startup. 
       </description>
 
       <attribute name="name" required="no">
         <description>
-	  Specifies the Service name of the mail service. The default is
+          Specifies the Service name of the mail service. The default is
           "Mail".
         </description>
       </attribute>
 
       <attribute name="permission" required="yes">
         <description>
-	  Defines the permission that is required to use this object.
+          Defines the permission that is required to use this object.
         </description>
       </attribute>
 
-      <attribute name="class" required="yes">
+      <attribute name="queuePath" required="yes">
         <description>
-	  Class of the Mail Service.
+          Defines the path for the queue directory.
         </description>
       </attribute>
 
-      <attribute name="hostname" required="no">
+      <attribute name="mailer" required="yes">
         <description>
-	  Name of the server that is used to send the mail. Default is set to
-	  'localhost'.
-        </description>
-      </attribute>
-
-      <attribute name="port" required="no">
-        <description>
-	  Port on the server that is used to send the mail. Default is set to
-	  to the standard port '25'.
-        </description>
-      </attribute>
-
-      <attribute name="username" required="no">
-        <description>
-	  Some SMTP servers support authentication. If no username is given,
-          then the Mail Service will not try to use authentication.
-        </description>
-      </attribute>
-
-      <attribute name="password" required="no">
-        <description>
-	  Password that is used for authentication. Makes only sense in
-	  combination with username. 
+          The id of the mailer used by this service.
         </description>
       </attribute>
 
     </directive>
 
-    <directive name="mailer" handler=".metaconfigure.mailer">
+    <directive name="directService" handler=".metaconfigure.directService">
 
       <description>
-        Registers a new mailer class wiht the global translation service.
+        This directive creates and registers a global direct mail service. It
+        should be only called once during startup. 
       </description>
 
-      <attribute name="name" required="yes">
+      <attribute name="name" required="no">
         <description>
-	  Name of the mailer class under which it is registered in the global
-          mail service.
+          Specifies the Service name of the mail service. The default is
+          "Mail".
         </description>
       </attribute>
 
-      <attribute name="class" required="yes">
+      <attribute name="permission" required="yes">
         <description>
-	  The class representing this object.
+          Defines the permission that is required to use this object.
         </description>
       </attribute>
 
-      <attribute name="serviceType" required="no">
+      <attribute name="mailer" required="yes">
         <description>
-	  Specifies the service type for which the mailer should be
-          registered. The default is "Mail".
+          Defines the mailer to be used for sending mail.
         </description>
       </attribute>
 
-      <attribute name="default" required="no">
+    </directive>
+
+    <directive name="sendmailMailer" handler=".metaconfigure.sendmailMailer">
+
+      <description>
+        Registers a new Sendmail mailer.
+      </description>
+
+      <attribute name="id" required="yes">
         <description>
-	  Specifies whether this mailer is the default mailer. The default
-	  value for the 'default' attribute is "False".
+          Id of the mailer.
+        </description>
+      </attribute>
+
+      <attribute name="command" required="no">
+        <description>
+        A template command for sending out mail, containing %(from)s
+        and %(to)s for respective addresses.
+        </description>
+      </attribute>
+
+    </directive>
+
+    <directive name="smtpMailer" handler=".metaconfigure.smtpMailer">
+
+      <description>
+        Registers a new SMTP mailer.
+      </description>
+
+      <attribute name="id" required="yes">
+        <description>
+          Name of the mailer.
+        </description>
+      </attribute>
+
+      <attribute name="hostname" required="no">
+        <description>
+        Hostname of the SMTP host.
+        </description>
+      </attribute>
+
+      <attribute name="port" required="no">
+        <description>
+        Port of the SMTP server.
+        </description>
+      </attribute>
+
+      <attribute name="username" required="no">
+        <description>
+        A username for SMTP AUTH.
+        </description>
+      </attribute>
+
+      <attribute name="password" required="no">
+        <description>
+        A password for SMTP AUTH.
         </description>
       </attribute>
 

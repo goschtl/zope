@@ -1,21 +1,25 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:service="http://namespaces.zope.org/service"
    xmlns:mail="http://namespaces.zope.org/mail"
    >
 
-<serviceType id="Mail" 
-	     interface="zope.app.interfaces.mail.IMailService" />
+  <serviceType id="Mail"
+	       interface="zope.app.interfaces.mail.IMailService" />
 
-<mail:mailservice name="Mail"
-    hostname="localhost" port="25"
-    class=".service.AsyncMailService" 
-    permission="zope.Public"/>
+  <permission id="zope.SendMail" 
+              title="Send out mail with arbitrary from and to addresses" />
 
-<mail:mailer name="SimpleMailer" class=".mailer.SimpleMailer" 
-             serviceType="Mail" default="True" /> 
+  <mail:sendmailMailer name="sendmail" />
 
-<mail:mailer name="BatchMailer" class=".mailer.BatchMailer" 
-             serviceType="Mail" /> 
+  <mail:smtpMailer name="smtp" hostname="localhost" port="25" />
+
+  <!--
+    To send mail, uncomment the following directive and be sure to
+    create the queue directory.
+
+  <mail:queuedService permission="zope.SendMail"
+                      queuePath="./queue"
+                      mailer="smtp" />
+   -->
 
 </zopeConfigure>
