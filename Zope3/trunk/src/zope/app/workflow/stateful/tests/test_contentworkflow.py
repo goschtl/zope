@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.14 2004/03/11 12:38:24 srichter Exp $
+$Id: test_contentworkflow.py,v 1.15 2004/03/13 18:01:25 srichter Exp $
 """
 import unittest
 
@@ -30,7 +30,7 @@ from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriptionService
 from zope.app.event.localservice import EventService
 from zope.app.services.servicenames import EventSubscription
 from zope.app.utility import UtilityRegistration
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import ActiveStatus
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable

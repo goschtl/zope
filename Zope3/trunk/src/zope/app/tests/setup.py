@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.18 2004/03/13 15:21:36 srichter Exp $
+$Id: setup.py,v 1.19 2004/03/13 18:01:23 srichter Exp $
 """
 
 import zope.component
@@ -70,9 +70,9 @@ def setUpTraversal():
 
 #------------------------------------------------------------------------
 # Use registration
-from zope.app.interfaces.services.registration import IAttributeRegisterable
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.services.registration import Registered
+from zope.app.registration.interfaces import IAttributeRegisterable
+from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.registration import Registered
 def setUpRegistered():
     ztapi.provideAdapter(IAttributeRegisterable, IRegistered,
                          Registered)
@@ -137,7 +137,7 @@ def createServiceManager(folder):
     return zapi.traverse(folder, "++etc++site")
 
 from zope.app.site.service import ServiceRegistration
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import ActiveStatus
 
 def addService(servicemanager, name, service, suffix=''):
     """Add a service to a service manager

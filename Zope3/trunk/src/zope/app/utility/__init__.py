@@ -14,18 +14,18 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: __init__.py,v 1.2 2004/03/13 15:21:39 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/13 18:01:23 srichter Exp $
 """
 from zope.interface import implements
 from persistent.dict import PersistentDict
 from persistent import Persistent
 from zope.app.component.nextservice import getNextService
-from zope.app.interfaces.services.registration import IRegistry
+from zope.app.registration.interfaces import IRegistry
 from zope.app.site.interfaces import ISimpleService
 from zope.app.utility.interfaces import \
      IUtilityRegistration, ILocalUtilityService
 from zope.app.services.servicenames import Utilities
-from zope.app.services.registration import \
+from zope.app.registration.registration import \
      RegistrationStack, ComponentRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
@@ -98,13 +98,13 @@ class LocalUtilityService(Persistent, Contained):
         return L
 
     def queryRegistrationsFor(self, registration, default=None):
-        """zope.app.interfaces.services.registration.IRegistry"""
+        """zope.app.registration.interfaces.IRegistry"""
         return self.queryRegistrations(registration.name,
                                         registration.interface,
                                         default)
 
     def queryRegistrations(self, name, interface, default=None):
-        """zope.app.interfaces.services.registration.IRegistry"""
+        """zope.app.registration.interfaces.IRegistry"""
         utilities = self._utilities.get(name)
         if utilities is None:
             return default
@@ -115,7 +115,7 @@ class LocalUtilityService(Persistent, Contained):
         return stack
 
     def createRegistrationsFor(self, registration):
-        """zope.app.interfaces.services.registration.IRegistry"""
+        """zope.app.registration.interfaces.IRegistry"""
         return self.createRegistrations(registration.name,
                                          registration.interface)
 

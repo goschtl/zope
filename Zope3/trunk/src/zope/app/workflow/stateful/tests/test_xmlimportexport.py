@@ -13,7 +13,7 @@
 ##############################################################################
 """XML import/export tests
 
-$Id: test_xmlimportexport.py,v 1.13 2004/03/13 15:21:42 srichter Exp $
+$Id: test_xmlimportexport.py,v 1.14 2004/03/13 18:01:25 srichter Exp $
 """
 import unittest
 from StringIO import StringIO
@@ -25,7 +25,7 @@ from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPermission
-from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.registration.interfaces import IRegisterable
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.security.permission import Permission

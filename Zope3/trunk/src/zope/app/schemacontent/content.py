@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.4 2004/03/13 15:21:31 srichter Exp $
+$Id: content.py,v 1.5 2004/03/13 18:01:19 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -22,7 +22,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.container.interfaces import IAdding
 from zope.app.menu.interfaces import ILocalBrowserMenu, ILocalBrowserMenuService
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.container.contained import Contained
 from zope.app.menu import \
      LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem

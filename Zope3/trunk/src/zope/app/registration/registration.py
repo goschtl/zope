@@ -13,10 +13,8 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.30 2004/03/10 17:00:55 srichter Exp $
+$Id: registration.py,v 1.1 2004/03/13 18:01:16 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
@@ -24,7 +22,6 @@ from zope.app.container.interfaces import IAddNotifiable, IRemoveNotifiable
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dependable import IDependable, DependencyError
-from zope.app.interfaces.services import registration as interfaces
 from zope.app.module.interfaces import IModuleManager
 from zope.exceptions import DuplicationError
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
@@ -34,6 +31,7 @@ from zope.proxy import removeAllProxies, getProxiedObject
 from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.xmlpickle import dumps, loads
+import interfaces
 
 
 class RegistrationStatusProperty(object):
@@ -448,7 +446,7 @@ class Registered(PathSetAnnotation):
     implements(interfaces.IRegistered)
 
     # We want to use this key:
-    #   key = "zope.app.services.registration.Registered"
+    #   key = "zope.app.registration.Registered"
     # But we have existing annotations with the following key, so we'll keep
     # it. :(
     key = "zope.app.services.configuration.UseConfiguration"
@@ -736,6 +734,6 @@ ConfigurationRegistry = RegistrationStack
 ConfigurationManager = RegistrationManager
 import sys
 sys.modules['zope.app.services.registrationmanager'
-            ] = sys.modules['zope.app.services.registration']
+            ] = sys.modules['zope.app.registration']
 sys.modules['zope.app.services.configuration'
-            ] = sys.modules['zope.app.services.registration']
+            ] = sys.modules['zope.app.registration']

@@ -13,13 +13,12 @@
 ##############################################################################
 """Registration Widget Tests
 
-$Id: test_registrationstatuswidget.py,v 1.4 2003/11/27 13:59:14 philikon Exp $
+$Id: test_registrationstatuswidget.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.services.registration import RegistrationStatus
-from zope.app.browser.services.registration import RegistrationStatusWidget
+from zope.app.registration.interfaces import RegistrationStatus
+from zope.app.registration.browser import RegistrationStatusWidget
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 

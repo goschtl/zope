@@ -11,8 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Registration Stack
 
-from zope.app.services.registration import RegistrationStatusProperty
+$Id: registrationstack.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+"""
+from zope.app.registration.registration import RegistrationStatusProperty
 from zope.app.container.contained import Contained
 
 __metaclass__ = type

@@ -13,16 +13,11 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.16 2004/03/05 22:08:55 jim Exp $
+$Id: field.py,v 1.17 2004/03/13 18:01:05 srichter Exp $
 """
-
 from zope.app import zapi
 from zope.app.browser.form.widget import BrowserWidget
-from zope.app.interfaces.services.registration \
-     import IRegistrationManagerContainer
-
-__metaclass__ = type
-
+from zope.app.registration.interfaces import IRegistrationManagerContainer
 
 class ComponentPathWidget(BrowserWidget):
 

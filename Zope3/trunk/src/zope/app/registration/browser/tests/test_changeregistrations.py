@@ -11,18 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Registration Change Tests
 
-XXX longer description goes here.
-
-$Id: test_changeregistrations.py,v 1.2 2004/01/14 22:55:20 chrism Exp $
+$Id: test_changeregistrations.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.services.tests.registrationstack \
+from zope.app.registration.tests.registrationstack \
      import TestingRegistrationStack
-from zope.app.browser.services.registration import ChangeRegistrations
+from zope.app.registration.browser import ChangeRegistrations
 
 class Test(TestCase):
 

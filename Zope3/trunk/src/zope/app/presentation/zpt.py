@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
+$Id: zpt.py,v 1.2 2004/03/13 18:01:15 srichter Exp $
 """
 import re
 
@@ -22,7 +22,7 @@ from zope.interface import Interface, implements
 from zope.schema import Text, BytesLine, Bool
 
 from zope.app.container.contained import Contained
-from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.registration.interfaces import IRegisterable
 from zope.app.index.interfaces.text import ISearchableText
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.fssync.server.interfaces import IObjectFile

@@ -13,12 +13,11 @@
 ##############################################################################
 """Registration Stack tests
 
-$Id: test_registrationstack.py,v 1.5 2004/03/13 15:21:35 srichter Exp $
+$Id: test_registrationstack.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.services.registration import RegistrationStack
+from zope.app.registration.registration import RegistrationStack
 from zope.app.traversing import traverse
 
 class Registration:

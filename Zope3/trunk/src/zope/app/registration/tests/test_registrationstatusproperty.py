@@ -11,21 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""REgistration Status Property Tests
+"""Registration Status Property Tests
 
-$Id: test_registrationstatusproperty.py,v 1.5 2004/03/13 15:21:35 srichter Exp $
+$Id: test_registrationstatusproperty.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.services.tests.registrationstack import TestingRegistration
-from zope.app.services.tests.registrationstack import TestingRegistrationStack
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.tests.registrationstack import TestingRegistration
+from zope.app.registration.tests.registrationstack import \
+     TestingRegistrationStack
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import NoLocalServiceError
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.services.registration import NoLocalServiceError
 from zope.interface import implements
 from zope.app.container.contained import contained
 

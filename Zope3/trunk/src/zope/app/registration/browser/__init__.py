@@ -13,9 +13,8 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.19 2004/03/07 13:54:13 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/13 18:01:17 srichter Exp $
 """
-
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -23,11 +22,11 @@ from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.interfaces.form import IInputWidget
 from zope.app.container.interfaces import INameChooser
 
-from zope.app.interfaces.services.registration import IRegistration
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import IRegistration
+from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getName, traverse
 from zope.component import getView, getServiceManager

@@ -13,14 +13,12 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_componentpathwidget.py,v 1.5 2003/11/27 13:59:14 philikon Exp $
+$Id: test_componentpathwidget.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-__metaclass__ = type
-
 import unittest
 from zope.app.tests import ztapi
-from zope.app.browser.services.registration import ComponentPathWidget
-from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.registration.browser import ComponentPathWidget
+from zope.app.registration.interfaces import IComponentRegistration
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.services.field import ComponentPath
@@ -32,13 +30,13 @@ from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.app.container.contained import Contained
 
-class Component:
+class Component(object):
     implements(Interface)
 
-class SiteManagementFolder:
+class SiteManagementFolder(object):
     foo = Component()
 
-class RegistrationManager:
+class RegistrationManager(object):
     pass
 
 class Registration(Contained):

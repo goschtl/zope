@@ -10,7 +10,7 @@
 
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.registration.IRegistry"
+        interface="zope.app.registration.interfaces.IRegistry"
         attributes="menu menuItem" />
   </content>
 

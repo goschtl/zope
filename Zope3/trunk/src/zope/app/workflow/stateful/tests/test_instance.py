@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.15 2004/03/11 12:38:24 srichter Exp $
+$Id: test_instance.py,v 1.16 2004/03/13 18:01:25 srichter Exp $
 """
 import unittest
 
@@ -29,10 +29,10 @@ from zope.app.security.permission import Permission
 from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
 
-from zope.app.interfaces.services.registration import IRegisterable
-from zope.app.interfaces.services.registration import IRegistered
+from zope.app.registration.interfaces import IRegisterable
+from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition

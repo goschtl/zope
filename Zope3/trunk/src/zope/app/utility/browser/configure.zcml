@@ -2,6 +2,19 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
+<!-- "Add Utility" menu -->
+
+  <view
+    name="AddUtility"
+     for="zope.app.site.interfaces.ISiteManagementFolder"
+     permission="zope.ManageServices"
+     class="zope.app.site.browser.UtilityAdding">
+
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+
+  </view>    
+
 <!-- Browser directives for the utility service -->
 
   <!-- "Add service" menu entry to add a utility service.

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: interfaces.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 18:01:21 srichter Exp $
 """
 from zope.interface import Interface
 import zope.schema
@@ -21,7 +21,7 @@ from zope.component.interfaces import IServiceService
 from zope.app.container.interfaces import IContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.interfaces.services import registration
+from zope.app.registration import interfaces as registration
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 

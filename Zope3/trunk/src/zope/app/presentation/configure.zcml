@@ -10,7 +10,7 @@
   <factory />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.registration.IRegistry"
+      interface="zope.app.registration.interfaces.IRegistry"
       attributes="getRegisteredMatching"
       />
 </content>
@@ -19,7 +19,7 @@
   <require
       permission="zope.ManageServices"
       interface=".presentation.IViewRegistration"
-      set_schema="zope.app.interfaces.services.registration.IRegistration"
+      set_schema="zope.app.registration.interfaces.IRegistration"
       />
   <require
       permission="zope.ManageServices"

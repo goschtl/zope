@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.21 2004/03/07 13:54:17 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/13 18:01:16 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -424,4 +424,4 @@ class NoRegistrationManagerError(Exception):
 IUseConfigurable = IRegisterable
 import sys
 sys.modules['zope.app.interfaces.services.configuration'
-            ] = sys.modules['zope.app.interfaces.services.registration']
+            ] = sys.modules['zope.app.registration.interfaces']

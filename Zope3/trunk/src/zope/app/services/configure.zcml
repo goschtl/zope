@@ -4,46 +4,6 @@
     i18n_domain="zope"
     >
 
-<!-- Registration registries -->
-
-<content class="zope.app.services.registration.RegistrationStack">
-  <require
-      permission="zope.ManageServices"
-      interface=
-      "zope.app.interfaces.services.registration.IRegistrationStack"
-      />
-</content>
-
-<adapter
-  for="zope.app.interfaces.services.registration.IRegisterable"
-  provides="zope.app.interfaces.services.registration.IRegistered"
-  factory="zope.app.services.registration.Registered"
-  />
-
-<!-- Registration Manager -->
-
-  <content class="zope.app.services.registration.RegistrationManager">
-    <factory
-        id = "zope.app.services.RegistrationManager"
-        title = "Registration Manager" />
-    <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="
-        zope.app.container.interfaces.IWriteContainer
-        zope.app.interfaces.services.registration.IOrderedContainer
-        zope.app.container.interfaces.IRemoveNotifiable
-        zope.app.container.interfaces.INameChooser
-        " 
-        />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-        />
-  </content>
-
-
 <!-- Principal annotations (user data) service -->
 
   <serviceType
@@ -66,12 +26,5 @@
         />
     </content>
 
-
-<!-- Filesystem synchronization support -->
-
-<fssync:adapter
-    class=".registration.RegistrationManager"
-    factory="zope.fssync.server.entryadapter.DirectoryAdapter"
-    />
 
 </configure>

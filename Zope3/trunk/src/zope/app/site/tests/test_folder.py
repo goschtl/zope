@@ -13,10 +13,10 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
+$Id: test_folder.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
 """
 import unittest
-from zope.app.services.tests.test_registrationmanager \
+from zope.app.registration.tests.test_registrationmanager \
      import RegistrationManagerContainerTests
 
 

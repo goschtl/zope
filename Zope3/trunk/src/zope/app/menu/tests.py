@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: tests.py,v 1.2 2004/03/11 12:38:13 srichter Exp $
+$Id: tests.py,v 1.3 2004/03/13 18:01:13 srichter Exp $
 """
 import unittest
 
@@ -22,7 +22,7 @@ from interfaces import ILocalBrowserMenuService, ILocalBrowserMenu
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      globalBrowserMenuService

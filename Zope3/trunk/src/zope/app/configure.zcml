@@ -60,6 +60,10 @@
   <!-- WebDAV Support -->
   <include package="zope.app.dav" />
 
+
+  <!-- Local Component Registration -->
+  <include package="zope.app.registration" />  
+
   <!-- Services -->
   <include package="zope.app.errorservice" />  
   <include package="zope.app.hub" />  
@@ -129,6 +133,7 @@
   <!-- Browser Configurations -->
 
   <include package="zope.app.event.browser" />
+  <include package="zope.app.registration.browser" />  
   <include package="zope.app.site.browser" />  
 
 </configure>

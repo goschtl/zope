@@ -13,24 +13,24 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.2 2004/03/13 15:21:06 srichter Exp $
+$Id: adapter.py,v 1.3 2004/03/13 18:01:03 srichter Exp $
 """
 __metaclass__ = type
 
 from persistent.dict import PersistentDict
 from persistent import Persistent
 from zope.app import zapi
-from zope.app.services.registration import NotifyingRegistrationStack
+from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.interface.adapter import adapterImplied, Default
 from zope.interface.adapter import Surrogate, AdapterRegistry
 import sys
 import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
-import zope.app.interfaces.services.registration
+import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.security.permission
-import zope.app.services.registration
+import zope.app.registration
 import zope.component.interfaces
 import zope.interface
 import zope.schema
@@ -65,7 +65,7 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
     """
 
     zope.interface.implements(
-        zope.app.interfaces.services.registration.IRegistry,
+        zope.app.registration.interfaces.IRegistry,
         )
     
     _surrogateClass = LocalSurrogate
@@ -228,7 +228,7 @@ class LocalAdapterService(LocalAdapterRegistry, LocalAdapterBasedService):
 
 
 class IAdapterRegistration(
-    zope.app.interfaces.services.registration.IRegistration):
+    zope.app.registration.interfaces.IRegistration):
 
     required = zope.app.component.interfacefield.InterfaceField(
         title = u"For interface",
@@ -266,7 +266,8 @@ class IAdapterRegistration(
         "A sequence of factories to be called to construct the component"
         )
 
-class AdapterRegistration(zope.app.services.registration.SimpleRegistration):
+class AdapterRegistration(
+    zope.app.registration.registration.SimpleRegistration):
 
     zope.interface.implements(IAdapterRegistration)
 

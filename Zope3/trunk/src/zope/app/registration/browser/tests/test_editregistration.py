@@ -11,20 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Registration Editing Tests
 
-XXX longer description goes here.
-
-$Id: test_editregistration.py,v 1.7 2004/03/13 15:21:09 srichter Exp $
+$Id: test_editregistration.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.services.registration import EditRegistration
+from zope.app.registration.browser import EditRegistration
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.interface import Interface, implements

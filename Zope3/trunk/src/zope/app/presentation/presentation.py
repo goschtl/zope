@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.5 2004/03/13 15:21:26 srichter Exp $
+$Id: presentation.py,v 1.6 2004/03/13 18:01:15 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -24,7 +24,7 @@ from zope.security.checker import NamesChecker, ProxyFactory
 import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
-import zope.app.interfaces.services.registration
+import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter
 import zope.app.services.field
@@ -38,7 +38,7 @@ import zope.publisher.interfaces.browser
 import zope.schema
 from zope.app.container.interfaces import IAddNotifiable
 from zope.app.interfaces.dependable import IDependable, DependencyError
-from zope.app.interfaces.services.registration import IRegistered
+from zope.app.registration.interfaces import IRegistered
 
 # XXX How do we define skins and layers here?
 # For now, we will leave skin and layer definition to services above,
@@ -51,7 +51,7 @@ class LocalPresentationService(
     zope.interface.implements(
         zope.component.interfaces.IPresentationService,
         zope.app.site.interfaces.ISimpleService,
-        zope.app.interfaces.services.registration.IRegistry,
+        zope.app.registration.interfaces.IRegistry,
         zope.app.interface.interfaces.IInterfaceBasedRegistry,
         )
 
@@ -244,10 +244,10 @@ class GlobalViewRegistration:
     """Registrations representing global view service thingies."""
 
     zope.interface.implements(
-        zope.app.interfaces.services.registration.IRegistration)
+        zope.app.registration.interfaces.IRegistration)
 
     serviceType = zapi.servicenames.Presentation
-    status = zope.app.interfaces.services.registration.ActiveStatus
+    status = zope.app.registration.interfaces.ActiveStatus
 
     def __init__(self, req, ptype, factories, layer, viewName):
         self.required = req
@@ -315,7 +315,7 @@ class IViewRegistration(zope.app.adapter.IAdapterRegistration):
         default = "default",
         )
 
-class ViewRegistration(zope.app.services.registration.SimpleRegistration):
+class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
 
     zope.interface.implements(IViewRegistration)
 
@@ -372,7 +372,7 @@ class IPageRegistration(IViewRegistration):
         required = False,
         )
 
-    template = zope.app.interfaces.services.registration.ComponentPath(
+    template = zope.app.registration.interfaces.ComponentPath(
         title = u"Page template",
         required = False,
         )

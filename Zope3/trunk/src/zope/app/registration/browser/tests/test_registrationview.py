@@ -13,18 +13,17 @@
 ##############################################################################
 """Tests for the RegistrationView view class.
 
-$Id: test_registrationview.py,v 1.2 2004/02/25 23:02:19 faassen Exp $
+$Id: test_registrationview.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
 
-from zope.app.browser.services.registration import RegistrationView
+from zope.app.registration.browser import RegistrationView
 
 
 def test():

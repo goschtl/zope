@@ -36,7 +36,7 @@
 
 <fssync:adapter
     class=".UtilityRegistration"
-    factory="zope.app.services.registration.ComponentRegistrationAdapter"
+    factory="zope.app.registration.registration.ComponentRegistrationAdapter"
     />
 
 </configure>

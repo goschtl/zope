@@ -13,16 +13,16 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.1 2004/03/13 15:21:52 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import INameChooser
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
 from zope.app.site.interfaces import ILocalService
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.site.service import ServiceRegistration

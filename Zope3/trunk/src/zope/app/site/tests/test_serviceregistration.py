@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Registration tests.
 
-$Id: test_serviceregistration.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
+$Id: test_serviceregistration.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -26,9 +26,9 @@ from zope.app.site.service import ServiceRegistration
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.component.service import defineService
 from zope.app.site.interfaces import IBindingAware
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import IRegistered
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import IRegistered
 from zope.app.site.interfaces import ISimpleService
 
 from zope.app.interfaces.dependable import IDependable, DependencyError

@@ -25,7 +25,7 @@
       for="zope.app.presentation.zpt.IZPTTemplate"
       schema="zope.app.presentation.IPageRegistration"
       name="addRegistration.html"
-      class="zope.app.browser.services.registration.AddComponentRegistration"
+      class="zope.app.registration.browser.AddComponentRegistration"
       content_factory="zope.app.presentation.PageRegistration"
       keyword_arguments="required factoryName name permission 
                          layer attribute"

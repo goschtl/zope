@@ -13,21 +13,20 @@
 ##############################################################################
 """Service Manager Tests
 
-$Id: test_servicemanager.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
+$Id: test_servicemanager.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.interface import Interface, implements
-from zope.app.site.service import ServiceManager
-from zope.app.site.service import ServiceRegistration
+from zope.app.site.service import ServiceManager, ServiceRegistration
 from zope.component import getService, getServiceManager
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import RegisteredStatus
 from zope.component.service import serviceManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 

@@ -12,11 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.4 2003/12/18 09:57:15 pnaveen Exp $
+$Id: test_registered.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.registration import Registered
+from zope.app.registration.registration import Registered
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -40,7 +39,7 @@ class TestRegistered(PlacelessSetup, TestCase):
 
     def testVerifyInterface(self):
         from zope.interface.verify import verifyObject
-        from zope.app.interfaces.services.registration import IRegistered
+        from zope.app.registration.interfaces import IRegistered
         obj = Registered(C())
         verifyObject(IRegistered, obj)
 

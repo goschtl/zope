@@ -48,7 +48,7 @@
         permission="zope.ManageServices"
         interface=".interfaces.IServiceRegistration"
         set_attributes="serviceType componentPath permission"
-        set_schema="zope.app.interfaces.services.registration.IRegistration"
+        set_schema="zope.app.registration.interfaces.IRegistration"
         />
     <require
         permission="zope.ManageServices"
@@ -105,7 +105,7 @@
   
   <fssync:adapter
       class=".service.ServiceRegistration"
-      factory="zope.app.services.registration.ComponentRegistrationAdapter"
+      factory="zope.app.registration.registration.ComponentRegistrationAdapter"
       />
   
   <adapter 

@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
+$Id: service.py,v 1.2 2004/03/13 18:01:21 srichter Exp $
 """
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
@@ -37,19 +37,19 @@ from zope.app.event.function import Subscriber
 from zope.app import zapi
 from interfaces import IBindingAware, ILocalService, IServiceRegistration
 from interfaces import IPossibleSite, ISite, ISiteManager
-from zope.app.interfaces.services.registration import IRegistry
+from zope.app.registration.interfaces import IRegistry
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.location import inside
 from zope.app.site.folder import SiteManagementFolder
-from zope.app.services.registration import ComponentRegistration
-from zope.app.services.registration import RegistrationStack
+from zope.app.registration.registration import \
+     ComponentRegistration, RegistrationStack
 from zope.app.traversing import getPath
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
 from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
 from zope.proxy import removeAllProxies
 import sys
-import zope.app.interfaces.services.registration
+import zope.app.registration.interfaces
 import zope.interface
 
 
@@ -59,7 +59,7 @@ class IRegistrationManagerContainerContainer(zope.interface.Interface):
         """Add a site-management folder
         """
     __setitem__.precondition = ItemTypePrecondition(
-       zope.app.interfaces.services.registration.IRegistrationManagerContainer)
+       zope.app.registration.interfaces.IRegistrationManagerContainer)
 
 
 class SiteManager(

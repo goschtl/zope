@@ -13,13 +13,13 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
+$Id: folder.py,v 1.2 2004/03/13 18:01:21 srichter Exp $
 """
 from zope.interface import implements
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.file import IDirectoryFactory
-from zope.app.services.registration import RegistrationManagerContainer
+from zope.app.registration.registration import RegistrationManagerContainer
 from zope.app.traversing import getPath
 from zope.app.container.contained import setitem
 

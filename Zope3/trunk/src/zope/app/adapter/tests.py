@@ -173,7 +173,7 @@
    >>> a.args == (f2, )
    True
 
-   $Id: tests.py,v 1.2 2004/03/13 15:21:07 srichter Exp $
+   $Id: tests.py,v 1.3 2004/03/13 18:01:03 srichter Exp $
    """
 
 def test_named_adapters():
@@ -890,7 +890,7 @@ import zope.interface
 from ZODB.tests.util import DB
 from transaction import get_transaction
 from zope.app import zapi
-from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.registration.interfaces import RegisteredStatus
 
 class IF0(zope.interface.Interface):
     pass

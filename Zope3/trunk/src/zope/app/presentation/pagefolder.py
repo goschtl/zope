@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.1 2004/03/11 10:18:36 srichter Exp $
+$Id: pagefolder.py,v 1.2 2004/03/13 18:01:15 srichter Exp $
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field
@@ -25,16 +25,15 @@ from zope.app.security.permission import PermissionField
 
 from zope.app.container.btree import BTreeContainer
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import IRegistrationManager
-from zope.app.interfaces.services.registration \
-     import IRegistrationManagerContainer
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import IRegistrationManager
+from zope.app.registration.interfaces import IRegistrationManagerContainer
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import IRegisterable
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.presentation import PageRegistration
-from zope.app.services.registration import RegistrationManagerContainer
+from zope.app.registration.registration import RegistrationManagerContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zpt import IZPTTemplate
 from zope.app.traversing import getPath
@@ -44,8 +43,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.container.interfaces import IContainer
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.fssync.server.interfaces import IObjectDirectory
-from zope.app.interfaces.services.registration import \
-       IRegistrationManagerContainer
+from zope.app.registration.interfaces import IRegistrationManagerContainer
 
 class IPageFolderInfo(Interface):
     """Default registration information for page folders

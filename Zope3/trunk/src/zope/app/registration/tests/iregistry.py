@@ -11,13 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Sample IRegistry Implementation
 
-XXX longer description goes here.
-
-$Id: iregistry.py,v 1.3 2003/11/21 17:09:43 jim Exp $
+$Id: iregistry.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
 """
-from zope.app.interfaces.services.registration import IRegistry
+from zope.app.registration.interfaces import IRegistry
 from zope.interface.verify import verifyObject
 from zope.app.location import inside
 

@@ -2,9 +2,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-<!-- General registration views --> 
-   <zope:include package=".registration" />
-
 <!-- Component Location widget -->
 
 <!-- XXX we are phasing these widgets out -->
@@ -25,22 +22,6 @@
       permission="zope.ManageServices"
       />
 
-<!-- Generic page for objects that keep track of their registrations -->
-
-<!--
-
- This page has been replaced (or should be) replaced by the
- Registration page specific to each Service
-
-  <page
-      for="zope.app.interfaces.services.registration.IRegisterable"
-      name="registrations.html"
-      template="registration/registered.pt"
-      class=".registration.NameRegistered"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Registrations" />
--->
-
 <!-- Principal annotations (user data) service -->
 
   <addMenuItem
@@ -48,18 +29,5 @@
      permission="zope.ManageServices"
      title="Principal Annotation Service"
      description="Stores Annotations for Principals" />
-
-<!-- "Add Utility" menu -->
-
-  <view
-    name="AddUtility"
-     for="zope.app.site.interfaces.ISiteManagementFolder"
-     permission="zope.ManageServices"
-     class="zope.app.site.browser.UtilityAdding">
-
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
-
-  </view>    
 
 </zope:configure>

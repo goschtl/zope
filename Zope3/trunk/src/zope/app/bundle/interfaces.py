@@ -13,11 +13,10 @@
 ##############################################################################
 """Interfaces for bundles.
 
-$Id: interfaces.py,v 1.1 2004/03/10 13:11:13 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 18:01:09 srichter Exp $
 """
 from zope.app.container.interfaces import IContainer
-from zope.app.interfaces.services.registration \
-     import IRegistrationManagerContainer
+from zope.app.registration.interfaces import IRegistrationManagerContainer
 
 class IBundle(IContainer, IRegistrationManagerContainer):
     """Component and component registration containers."""

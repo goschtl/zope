@@ -13,13 +13,13 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: interfaces.py,v 1.1 2004/03/11 22:05:01 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 18:01:23 srichter Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.app.interfaces.services.registration import IRegisterable
-from zope.app.interfaces.services.registration import ComponentPath
+from zope.app.registration.interfaces import IComponentRegistration
+from zope.app.registration.interfaces import IRegisterable
+from zope.app.registration.interfaces import ComponentPath
 from zope.component.interfaces import IUtilityService
 from zope.schema import TextLine
 

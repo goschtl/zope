@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_interfaceutility.py,v 1.3 2004/03/13 15:21:31 srichter Exp $
+$Id: test_interfaceutility.py,v 1.4 2004/03/13 18:01:19 srichter Exp $
 """
 import unittest
 from zope.app.tests import setup
@@ -27,12 +27,12 @@ from zope.app.container.contained import Contained
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.registration import IRegistrationStack
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.registration.interfaces import IRegistrationStack
+from zope.app.registration.interfaces import UnregisteredStatus
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import IRegistered
 from zope.app.utility.interfaces import ILocalUtility
-from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.dependable import IDependable
 from zope.app.tests import setup
 from zope.interface.interface import InterfaceClass
@@ -55,16 +55,16 @@ class Baz:
         return 'foo ' + self.name
 
     def addUsage(self, location):
-        "See zope.app.interfaces.services.registration.IRegistered"
+        "See zope.app.registration.interfaces.IRegistered"
         if location not in self._usages:
             self._usages.append(location)
 
     def removeUsage(self, location):
-        "See zope.app.interfaces.services.registration.IRegistered"
+        "See zope.app.registration.interfaces.IRegistered"
         self._usages.remove(location)
 
     def usages(self):
-        "See zope.app.interfaces.services.registration.IRegistered"
+        "See zope.app.registration.interfaces.IRegistered"
         return self._usages
 
     def addDependent(self, location):

@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.1 $
+:Version: $Revision: 1.2 $
 
 .. contents::
 
@@ -148,7 +148,7 @@ overall data structure looks like::
   { utility_name -> { interface -> stack } }
 
 We also need to implement
-``zope.app.interfaces.services.registration.IRegistry``.  This defines
+``zope.app.registration.interfaces.IRegistry``.  This defines
 two methods, ``queryRegistrationsFor`` and ``createRegistrationsFor``.
 The ``queryRegistrationsFor`` method takes a registration object and
 returns the corresponding registration stack.  The registration
@@ -194,9 +194,9 @@ The registration objects provide access to the component through the
 To create the registration class, we'll start by defining a
 registration schema in ``zope/app/interfaces/services/utility.py``.
 The schema should extend
-``zope.app.interfaces.services.registration.IRegistration``.  There's
+``zope.app.registration.interfaces.IRegistration``.  There's
 a more specific interface,
-``zope.app.interfaces.services.registration.IComponentRegistration``
+``zope.app.registration.interfaces.IComponentRegistration``
 that is much closer to what we need. [2]_ We extend this interface as
 IUtilityRegistration, which adds a name field (which is required but
 may be empty -- note the subtle difference, because the empty string
@@ -279,7 +279,7 @@ because their default implementations only work when the add form is a
 view on an `IAdding` view.  That is the normal way to use add forms, but
 here we don't do that; this particular add form is a view on a local
 utility component.  Our ``AddRegistration`` class subclasses
-``zope.app.browser.services.registration.AddComponentRegistration``,
+``zope.app.registration.browser.AddComponentRegistration``,
 which provides the implementations of ``add`` and ``nextURL`` that we
 need. The ``add`` method defined in ``AddComponentRegistration`` finds
 the congiguration manager in the current folder and adds the new

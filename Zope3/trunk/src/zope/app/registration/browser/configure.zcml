@@ -3,7 +3,7 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <zope:view
-      for="zope.app.interfaces.services.registration.IRegistrationStatus"
+      for="zope.app.registration.interfaces.IRegistrationStatus"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.interfaces.form.IInputWidget"
       factory=".RegistrationStatusWidget"
@@ -11,7 +11,7 @@
       />
 
   <page
-      for="zope.app.interfaces.services.registration.IRegistrationStack"
+      for="zope.app.registration.interfaces.IRegistrationStack"
       name="ChangeRegistrations"
       template="changeregistrations.pt"
       class=".ChangeRegistrations"
@@ -20,7 +20,7 @@
       permission="zope.ManageServices" />
 
   <zope:view
-      for="zope.app.interfaces.services.registration.IComponentPath"
+      for="zope.app.registration.interfaces.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.interfaces.form.IInputWidget"
       factory=".ComponentPathWidget"
@@ -28,7 +28,7 @@
       />
 
   <zope:view
-      for="zope.app.interfaces.services.registration.IComponentPath"
+      for="zope.app.registration.interfaces.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.interfaces.form.IDisplayWidget"
       factory=".ComponentPathWidget"
@@ -39,7 +39,7 @@
 
   <page
      name="index.html" 
-     for="zope.app.interfaces.services.registration.IRegistrationManager"
+     for="zope.app.registration.interfaces.IRegistrationManager"
      menu="zmi_views" title="Registration"
      permission="zope.ManageServices"
      class=".EditRegistration"
@@ -48,7 +48,7 @@
 <!-- For now, we'll allow CMs to be added, but we won't include them
      in the add_component menu. -->
   <view
-       for="zope.app.interfaces.services.registration.IRegistrationManager"
+       for="zope.app.registration.interfaces.IRegistrationManager"
        name="+"
        menu="zmi_actions" title="Add"
        permission="zope.ManageServices"
@@ -61,24 +61,24 @@
 
   <page
       for="
-      zope.app.interfaces.services.registration.INoRegistrationManagerError"
+      zope.app.registration.interfaces.INoRegistrationManagerError"
       name="index.html"
       permission="zope.Public"
-      template="../../exception/user.pt"
+      template="../../browser/exception/user.pt"
       class="zope.app.browser.exception.user.UserErrorView" />
 
   <page
-      for="zope.app.interfaces.services.registration.INoLocalServiceError"
+      for="zope.app.registration.interfaces.INoLocalServiceError"
       name="index.html"
       permission="zope.Public"
-      template="../../exception/user.pt"
+      template="../../browser/exception/user.pt"
       class="zope.app.browser.exception.user.UserErrorView" />
 
 
 <!-- Generic page for objects that keep track of their registrations -->
 
   <page
-      for="zope.app.interfaces.services.registration.IRegisterable"
+      for="zope.app.registration.interfaces.IRegisterable"
       name="registrations.html"
       template="registered.pt"
       class=".Registered"
@@ -87,7 +87,7 @@
       />
 
   <page
-      for="zope.app.interfaces.services.registration.IRegisterable"
+      for="zope.app.registration.interfaces.IRegisterable"
       name="registration.html"
       template="registration.pt"
       class=".RegistrationView"
