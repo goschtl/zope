@@ -109,7 +109,7 @@ Test harness.
     of "name" ...).  With no -v, unittest is silent until the end of the run,
     except when errors occur.
 
-    When -p is also specified, the meaning of -v is sligtly changed.  With
+    When -p is also specified, the meaning of -v is slightly different.  With
     -p and no -v only the percent indicator is displayed.  With -p and -v
     the test name of the current test is shown to the right of the percent
     indicator.  With -p and -vv the test name is not truncated to fit into
