@@ -30,19 +30,19 @@
             <div class="label">Extra top</div>
             <div class="label"><input type="text" style="width:100%" /></div>
         </div>
-        
+
         <div metal:use-macro="context/@@form_macros/widget_rows" />
-                
+
         <div class="separator"></div>
-        
+
         <div class="row"
             metal:define-slot="extra_bottom" tal:replace="nothing">
           <div class="label">Extra bottom</div>
           <div class="field"><input type="text" style="width:100%" /></div>
         </div>
-        
+
         <div class="separator"></div>
-        
+
       </div>
       <br/><br/>
       <div class="row">
@@ -52,13 +52,13 @@
           <input type='submit' value='Add' name='UPDATE_SUBMIT'
                  i18n:attributes='value add-button' />
           <span tal:condition="context/nameAllowed|nothing" tal:omit-tag="">
-               &nbsp;&nbsp;<b i18n:translate="">Object Name</b>&nbsp;&nbsp;    
+               &nbsp;&nbsp;<b i18n:translate="">Object Name</b>&nbsp;&nbsp;
               <input type='text' name='add_input_name'
-                     tal:attributes="value context/contentName" /> 
-          </span> 	             
+                     tal:attributes="value context/contentName" />
+          </span>
         </div>
       </div>
-     
+
       <div class="row" metal:define-slot="extra_buttons" tal:replace="nothing">
       </div>
 
