@@ -6,6 +6,6 @@
 >
 <!-- add include directives for products here -->
 <!-- Example:
-<include package='ZopeProducts.JobBoardEx' file='JobList.zcml' />
+<include package='ZopeProducts.JobBoardEx' />
 -->
 </zopeConfigure>
