@@ -75,8 +75,6 @@ Bug Fixes
 
 * 340: Adding a big file eats a lot of memory / memory leak? 
 
-* 343: Services API not backward compatible
-
 * 344: PAU registration error
 
 * 345: Using response.write should not involve unicode conversion
