@@ -13,7 +13,7 @@
 ##############################################################################
 """Stubs for Zope RDB unit tests.
 
-$Id: Stubs.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Stubs.py,v 1.2 2002/08/12 15:07:30 alga Exp $
 """
 
 class ConnectionStub:
@@ -40,5 +40,9 @@ class CursorStub:
     def execute(*args, **kw):
         pass
 
-
+class TypeInfoStub:
+    paramstyle = 'pyformat'
+    threadsafety = 0
+    def getConverter(self, type):
+        return lambda x: x
     

@@ -12,9 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: IDBITypeInfo.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: IDBITypeInfo.py,v 1.3 2002/08/12 15:07:30 alga Exp $
 """
-from Interface import Interface, Attribute
+from Interface import Interface
+from Interface.Attribute import Attribute
 
 class IDBITypeInfo(Interface):
     """Database adapter specific information"""
@@ -46,13 +47,5 @@ class IDBITypeInfo(Interface):
         variables or other external sources that are beyond your control.
         """)
 
-    def getConverter():
-        """Return the field type converter."""
-
-
-class IFieldTypeConverter(Interface):
-    """Helper object to convert the low-level database output to a meaningful
-    type."""
-
-    def __getitem__(key):
+    def getConverter(type):
         """Return a converter function for field type matching key"""

@@ -13,7 +13,7 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.5 2002/08/08 16:55:27 srichter Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.6 2002/08/12 15:07:30 alga Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
@@ -53,7 +53,8 @@ class ZopeDatabaseAdapter(Persistent):
     def connect(self):
         'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
         if not self.isConnected():
-            self._v_connection = ZopeConnection(self._connection_factory())
+            self._v_connection = ZopeConnection(self._connection_factory(),
+                                                self)
 
     def disconnect(self):
         'See Zope.App.RDB.IZopeDatabaseAdapter.IZopeDatabaseAdapter'
@@ -74,7 +75,20 @@ class ZopeDatabaseAdapter(Persistent):
     #
     ############################################################
 
+    ############################################################
+    # Implementation methods for interface
+    # Zope.App.RDB.IDBITypeInfo.IDBITypeInfo
 
+    # Pessimistic defaults
+    paramstyle = 'pyformat'
+    threadsafety = 0
+
+    def getConverter(type):
+        'See Zope.App.RDB.IDBITypeInfo.IDBITypeInfo'
+        return lambda x: x
+
+    #
+    ############################################################
 
 def parseDSN(dsn):
     """We could have the following cases:
@@ -133,3 +147,9 @@ def parseDSN(dsn):
     result['password'] = password
 
     return result
+
+
+
+
+
+

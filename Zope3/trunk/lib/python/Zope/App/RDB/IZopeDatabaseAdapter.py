@@ -12,11 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: IZopeDatabaseAdapter.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+$Id: IZopeDatabaseAdapter.py,v 1.4 2002/08/12 15:07:30 alga Exp $
 """
-from Interface import Interface
+from Zope.App.RDB.IDBITypeInfo import IDBITypeInfo
 
-class IZopeDatabaseAdapter(Interface):
+
+class IZopeDatabaseAdapter(IDBITypeInfo):
     """Interface for persistent object that returns
     volatile IZopeConnections.
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testZopeConnection.py,v 1.4 2002/07/24 23:17:04 jeremy Exp $
+$Id: testZopeConnection.py,v 1.5 2002/08/12 15:07:30 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from Stubs import *
 class ZopeConnectionTests(TestCase):
 
     def test_cursor(self):
-        zc = ZopeConnection(ConnectionStub())
+        zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         cursor = zc.cursor()
         
         self.failUnless(IZopeCursor.isImplementedBy(cursor),
@@ -34,7 +34,7 @@ class ZopeConnectionTests(TestCase):
         t = get_transaction()
         t.begin()
 
-        zc = ZopeConnection(ConnectionStub())
+        zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         cursor = zc.cursor()
         cursor.execute('select * from blah')
 
@@ -42,7 +42,7 @@ class ZopeConnectionTests(TestCase):
         self.assertEqual(len(t._resources), 1)
 
     def test_getattr(self):
-        zc = ZopeConnection(ConnectionStub())
+        zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         cursor = zc.cursor()
 
         self.assertEqual(zc.answer(), 42)

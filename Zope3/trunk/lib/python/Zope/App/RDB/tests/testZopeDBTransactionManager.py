@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testZopeDBTransactionManager.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
+$Id: testZopeDBTransactionManager.py,v 1.4 2002/08/12 15:07:30 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ class TxnMgrTest(IDataManagerTests, TestCase):
 
     def setUp(self):
         self.conn = ConnectionStub()
-        zc = ZopeConnection(self.conn)
+        zc = ZopeConnection(self.conn, TypeInfoStub())
         self.datamgr = ZopeDBTransactionManager(zc)
         zc.registerForTxn()
         self.txn_factory = get_transaction

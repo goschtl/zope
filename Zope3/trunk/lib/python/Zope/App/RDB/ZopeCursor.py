@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeCursor.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: ZopeCursor.py,v 1.3 2002/08/12 15:07:30 alga Exp $
 """
 from types import UnicodeType
 from IZopeCursor import IZopeCursor
@@ -37,3 +37,25 @@ class ZopeCursor:
 
     def __getattr__(self, key):
         return getattr(self.cursor, key)
+
+    def fetchone(self):
+        results = self.cursor.fetchone()
+        return self._convertTypes(results)
+
+    def fetchmany(self, *args, **kw):
+        results = self.cursor.fetchmany(*args, **kw)
+        return self._convertTypes(results)
+
+    def fetchall(self):
+        results = self.cursor.fetchall()
+        return self._convertTypes(results)
+
+    def _convertTypes(self, results):
+        "Perform type conversion on query results"
+        getConverter = self.connection.getTypeInfo().getConverter
+        converters = [getConverter(col_info[1])
+                      for col_info in self.cursor.description]
+        def convertRow(row):
+            return map(lambda converter, value: converter(value),
+                       converters, row)
+        return map(convertRow, results)

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeConnection.py,v 1.4 2002/08/10 15:58:53 alga Exp $
+$Id: ZopeConnection.py,v 1.5 2002/08/12 15:07:30 alga Exp $
 """
 from IZopeConnection import IZopeConnection
 from IZopeCursor import IZopeCursor
@@ -25,9 +25,10 @@ class ZopeConnection:
 
     __implements__ =  IZopeConnection
 
-    def __init__(self, conn):
+    def __init__(self, conn, typeinfo):
         self.conn = conn
         self._txn_registered = False
+        self._type_info = typeinfo
 
     def __getattr__(self, key):
         # The IDBIConnection interface is hereby implemented
@@ -53,7 +54,7 @@ class ZopeConnection:
 
     def getTypeInfo(self):
         'See Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider'
-        # Stubbed for now
+        return self._type_info
         
     #
     ############################################################
