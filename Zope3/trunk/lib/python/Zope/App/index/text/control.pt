@@ -21,9 +21,11 @@
 
     <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
         <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+        Successfully subscribed.
     </span>
     <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
         <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+        Successfully unsubscribed.
     </span>
 
     <div>
@@ -43,6 +45,8 @@
            Subscription state: OFF
            <input type="submit" value="Subscribe" name="callSubscribe" />
        </span>
+       <input type="hidden" name="queryText" value=""
+              tal:attributes="value request/queryText|nothing" />
     </form>
 
     <form method="GET">
@@ -53,13 +57,27 @@
 
     <div tal:condition="request/queryText|nothing" tal:omit-tag="">
         <span tal:define="
-            result_tuple python:context.query(request['queryText']);
+            result_tuple python:context.query(request['queryText'],0,100);
             total python:result_tuple[1];
-            result_list python:result_tuple[0]" tal:omit-tag="">
+            result_list python:result_tuple[0]"
+            tal:omit-tag=""
+            tal:on-error="string:invalid query"
+            >
         Search results: <span tal:replace="total" />
             <div tal:repeat="match_tuple result_list">
-                 Hubid: <span tal:replace="python:match_tuple[0]" />
-                 Score: <span tal:replace="python:match_tuple[1]" />
+              <span tal:define="
+                    hubid    python:match_tuple[0];
+                    score    python:match_tuple[1];
+                    location python:context.hubid2location(hubid);
+                    title    python:context.hubid2title(hubid) or '(no title)';
+                    ">
+                 Location:
+                 <a href="location"
+                    tal:attributes="href location"
+                    tal:content="location">location</a>
+                 Title: <span tal:replace="title" />
+                 Score: <span tal:replace="score" />
+              </span>
             </div>
         </span>
     </div>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: interfaces.py,v 1.4 2002/12/05 09:52:07 bcsaller Exp $
+$Id: interfaces.py,v 1.5 2002/12/06 14:49:11 gvanrossum Exp $
 """
 
 from Interface import Interface
@@ -46,3 +46,18 @@ class IUITextIndex(IStatistics):
 
     def isSubscribed():
         """Return whether we are currently subscribed."""
+
+    # XXX The following are blatant view helpers.  Need refactoring.
+
+    def hubid2location(hubid):
+        """Return a location string given a hubid."""
+
+    def hubid2object(hubid):
+        """Return an object given a hubid."""
+
+    def hubid2title(hubid):
+        """Return the Dublin Core title of the object from the hubid.
+
+        Return '' if there is no object or if it isn't adaptable to
+        IZopeDublinCore.
+        """
