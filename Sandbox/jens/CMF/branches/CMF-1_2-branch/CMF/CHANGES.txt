@@ -17,6 +17,9 @@
 
  Bugs Fixed
 
+  - Fixed a bug in Favorites.getObject to use restrictedTraverse on the portal
+    object.
+
   - Fixed setting the Link.format to URL_FORMAT so the initially returned
     metadata headers would return 'text/url' properly.  Added unittests.
 
