@@ -13,7 +13,7 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: timeannotators.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
+$Id: timeannotators.py,v 1.5 2003/10/23 19:04:09 garrett Exp $
 """
 __metaclass__ = type
 
@@ -23,18 +23,35 @@ from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.event import ISubscriber
 from zope.interface import implements
 
-class DCTimeAnnotatorClass:
+class DCTimeAnnotatorBase:
     """Update Dublin-Core time property
     """
     implements(ISubscriber)
 
-    def __init__(self, property):
-        self.property = property
-
     def notify(self, event):
         dc = queryAdapter(event.object, IZopeDublinCore)
         if dc is not None:
-            setattr(dc, self.property, datetime.utcnow())
+            self.annotate(dc)
 
-ModifiedAnnotator = DCTimeAnnotatorClass('modified')
-CreatedAnnotator = DCTimeAnnotatorClass('created')
+    def annotate(self, dc):
+        raise RuntimeError, 'annotate not implemented'
+
+
+class ModifiedAnnotatorClass(DCTimeAnnotatorBase):
+    """Updates DC modified when an object is modified."""
+
+    def annotate(self, dc):
+        dc.modified = datetime.utcnow()
+
+
+class CreatedAnnotatorClass(DCTimeAnnotatorBase):
+    """Sets DC created and modified when an object is created."""
+
+    def annotate(self, dc):
+        now = datetime.utcnow()
+        dc.created = now
+        dc.modified = now
+
+
+ModifiedAnnotator = ModifiedAnnotatorClass()
+CreatedAnnotator = CreatedAnnotatorClass()
