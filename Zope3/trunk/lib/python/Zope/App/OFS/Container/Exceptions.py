@@ -11,24 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-    Define adder component for folders.
+"""Define adder component for folders.
+
+$Id: Exceptions.py,v 1.3 2002/12/20 22:19:28 jeremy Exp $
 """
 
 class DuplicateIDError(KeyError):
     pass
 
 class ContainerError(Exception):
-    """An error of a container with one of its components
-    """
+    """An error of a container with one of its components."""
     
 class UnaddableError(ContainerError):
-    """an object cannot be added to a container"""
+    """An object cannot be added to a container."""
     
     def __init__(self, container, obj, message=""):
-        self.container=container
-        self.obj=obj
-        self.message=message and ": %s" % message
+        self.container = container
+        self.obj = obj
+        self.message = message and ": %s" % message
     
     def __str__(self):
-        return "%(obj)s cannot be added to %(container)s%(message)s" % self.__dict__
+        return ("%(obj)s cannot be added "
+                "to %(container)s%(message)s" % self.__dict__)
