@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.3 2003/05/08 19:52:10 gvanrossum Exp $
+$Id: fssync.py,v 1.4 2003/05/08 19:53:55 gvanrossum Exp $
 """
 
 import os
