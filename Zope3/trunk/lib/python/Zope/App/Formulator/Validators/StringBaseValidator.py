@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: StringBaseValidator.py,v 1.2 2002/06/10 23:27:48 jim Exp $
+$Id: StringBaseValidator.py,v 1.3 2002/06/24 15:38:30 mgedmin Exp $
 """
 
 from Zope.App.Formulator.Validator import Validator
-from types import StringType
+from types import StringTypes
 
   
 class StringBaseValidator(Validator):
@@ -35,7 +35,7 @@ class StringBaseValidator(Validator):
         
     def validate(self, field, value):
         """ """
-        if not isinstance(value, StringType):
+        if not isinstance(value, StringTypes):
             self.raiseError('illegalValue', field)
         value = value.strip()
         if field.getValue('isRequired') and value == "":
