@@ -98,6 +98,7 @@ class BuilderApplication(Application):
         This method does everything needed to knit a distribution
         together; it should be refactored substantially.
         """
+        dep_sources = {} 
         top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
         if self.options.build_type in ("application", "collection"):
@@ -111,8 +112,8 @@ class BuilderApplication(Application):
                 handled.add(resource)
                 if resource not in self.locations:
                     # it's an external dependency, so we do nothing for now
-                    self.logger.warn("ignoring resource %r (no source)"
-                                     % resource)
+                    self.logger.warn("ignoring resource %r (no source) from %s"
+                                     % (resource, dep_sources.get(resource)))
                     continue
                 #
                 location = self.locations[resource]
@@ -123,6 +124,8 @@ class BuilderApplication(Application):
                     os.mkdir(depsdir)
                     first = False
                 deps = component.get_dependencies()
+                for d in deps - handled:
+                    dep_sources[d] = resource
                 remaining |= (deps - handled)
                 fullname = ("%s-%s-%s"
                             % (resource, top.name, self.options.version))
