@@ -22,6 +22,7 @@ from Zope.ComponentArchitecture import getView, queryView, queryResource
 from Zope.ComponentArchitecture import getDefaultViewName, getResource
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.Proxy import ProxyFactory
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from cStringIO import StringIO
 
 from Zope.ComponentArchitecture.tests.Request import Request
@@ -341,12 +342,15 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         view = getView(ob, 'test', request)
+        view = removeAllProxies(view)
         self.assertEqual(view.browserDefault(request)[1], (u'index.html', ))
 
 
         v = view.publishTraverse(request, 'index.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'V1 here')
         v = view.publishTraverse(request, 'action.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'done')
 
         v = view.publishTraverse(request, '42')
@@ -371,14 +375,18 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         view = getView(ob, 'test', request)
+        view = removeAllProxies(view)
         self.assertEqual(view.browserDefault(request)[1], (u'index.html', ))
 
 
         v = view.publishTraverse(request, 'index.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'V1 here')
         v = view.publishTraverse(request, 'action.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'done')
         v = view.publishTraverse(request, 'test.html')
+        v = removeAllProxies(v)
         self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
     def testNamedViewPageViewsWithDefault(self):
@@ -401,14 +409,18 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         view = getView(ob, 'test', request)
+        view = removeAllProxies(view)
         self.assertEqual(view.browserDefault(request)[1], (u'test.html', ))
 
 
         v = view.publishTraverse(request, 'index.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'V1 here')
         v = view.publishTraverse(request, 'action.html')
+        v = removeAllProxies(v)
         self.assertEqual(v(), 'done')
         v = view.publishTraverse(request, 'test.html')
+        v = removeAllProxies(v)
         self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
     def testProtectedPageViews(self):
@@ -438,15 +450,57 @@ class Test(PlacelessSetup, unittest.TestCase):
             """
             ))
 
+        # XXX this seems to be no longer needed
         # Need to "log someone in" to turn on checks
-        from Zope.Security.SecurityManagement import newSecurityManager
-        newSecurityManager('someuser')
+        #from Zope.Security.SecurityManagement import newSecurityManager
+        #newSecurityManager('someuser')
 
         v = getView(ob, 'index.html', request)
         self.assertRaises(Exception, v)
         v = getView(ob, 'action.html', request)
         self.assertEqual(v(), 'done')
 
+    def testProtectedNamedViewPageViews(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+
+        xmlconfig(StringIO(template %
+            """
+            <directives namespace="http://namespaces.zope.org/zope">
+              <directive name="permission"
+                 attributes="id title description"
+                 handler="
+             Zope.App.Security.Registries.metaConfigure.definePermission" />
+            </directives>
+
+            <permission id="XXX" title="xxx" />
+
+            <browser:view
+                  name="test"
+                  factory="Zope.ComponentArchitecture.tests.TestViews.V1"
+                  for="Zope.ComponentArchitecture.tests.TestViews.IC" 
+                  permission="Zope.Public">
+
+                <browser:page name="index.html" attribute="index" /> 
+                <browser:page name="action.html" attribute="action"
+                              permission="XXX" /> 
+            </browser:view>
+            """
+            ))
+
+        # XXX this seems to be no longer needed
+        # Need to "log someone in" to turn on checks
+        #from Zope.Security.SecurityManagement import newSecurityManager
+        #newSecurityManager('someuser')
+
+        view = getView(ob, 'test', request)
+        self.assertEqual(view.browserDefault(request)[1], (u'index.html', ))
+ 
+        v = view.publishTraverse(request, 'index.html')
+        self.assertEqual(v(), 'V1 here')
+        v = view.publishTraverse(request, 'action.html')
+        self.assertRaises(Exception, v)
+    
     def testSkinnedPageView(self):
         self.assertEqual(queryView(ob, 'test', request), None)
 
@@ -505,6 +559,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
         v = getResource(ob, 'index.html', request)
+        v = removeAllProxies(v)
         self.assertEqual(v._testData(), open(path, 'rb').read())
 
 
@@ -580,9 +635,10 @@ class Test(PlacelessSetup, unittest.TestCase):
             """ % path
             ))
 
+        # XXX This seems to be no longer needed
         # Need to "log someone in" to turn on checks
-        from Zope.Security.SecurityManagement import newSecurityManager
-        newSecurityManager('someuser')
+        #from Zope.Security.SecurityManagement import newSecurityManager
+        #newSecurityManager('someuser')
         
         v = getView(ob, 'xxx.html', request)
         v = ProxyFactory(v)

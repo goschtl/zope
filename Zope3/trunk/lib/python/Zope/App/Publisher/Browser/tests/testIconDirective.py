@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.5 2002/10/04 18:37:23 jim Exp $
+$Id: testIconDirective.py,v 1.6 2002/10/28 18:41:18 stevea Exp $
 """
 import os
 from StringIO import StringIO
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from Zope.Exceptions import Forbidden
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
@@ -48,11 +48,19 @@ class Ob:
 
 ob = Ob()
 
+def defineCheckers():
+    # define the appropriate checker for a FileResource for these tests
+    from Zope.App.Security.protectClass import protectName
+    from Zope.App.Publisher.Browser.FileResource import FileResource
+    protectName(FileResource, '__call__', 'Zope.Public')
+
+
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
+        defineCheckers()
 
     def test(self):
         self.assertEqual(queryView(ob, 'zmi_icon', request), None)
@@ -67,7 +75,7 @@ class Test(PlacelessSetup, TestCase):
                       for="Zope.ComponentArchitecture.tests.TestViews.IC"
                       file="%s" /> 
             """ % path
-            ))) 
+            )))
 
         view = getView(ob, 'zmi_icon', request)
         rname = 'Zope-ComponentArchitecture-tests-TestViews-IC-zmi_icon.gif'
@@ -77,7 +85,9 @@ class Test(PlacelessSetup, TestCase):
             % rname)
 
         resource = getResource(ob, rname, request)
-        resource = ProxyFactory(resource)
+        
+        # Resources come ready-wrapped from the factory
+        #resource = ProxyFactory(resource)
 
         self.assertRaises(Forbidden, getattr, resource, '_testData')
         resource = removeAllProxies(resource)
@@ -98,8 +108,8 @@ class Test(PlacelessSetup, TestCase):
                       for="Zope.ComponentArchitecture.tests.TestViews.IC"
                       resource="zmi_icon_res" /> 
             """ % path
-            ))) 
-
+            )))
+ 
         view = getView(ob, 'zmi_icon', request)
         rname = "zmi_icon_res"
         self.assertEqual(
@@ -108,7 +118,9 @@ class Test(PlacelessSetup, TestCase):
             % rname)
 
         resource = getResource(ob, rname, request)
-        resource = ProxyFactory(resource)
+
+        # Resources come ready-wrapped from the factory
+        #resource = ProxyFactory(resource)
 
         self.assertRaises(Forbidden, getattr, resource, '_testData')
         resource = removeAllProxies(resource)

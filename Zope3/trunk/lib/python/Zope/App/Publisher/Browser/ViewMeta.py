@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.5 2002/10/22 19:17:23 stevea Exp $
+$Id: ViewMeta.py,v 1.6 2002/10/28 18:41:18 stevea Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -102,6 +102,12 @@ class view(resource):
             if self.__default is None:
                 self.__default = name
 
+            # Call super(view, self).page() in order to get the side
+            # effects. (At the time of writing, this is to increment
+            # self.pages by one.)
+            # Throw away the result, as all the pages are accessed by
+            # traversing the PageTraverser subclass.
+            super(view, self).page(_context, name, attribute)
             return ()
 
         factory = self.factory
@@ -199,7 +205,7 @@ class view(resource):
             # needs to be rewrapped
             view.__Security_checker__ = checker
 
-            return view
+            return Proxy(view, checker)
 
         factory[-1] =  proxyView
 
@@ -224,20 +230,23 @@ class view(resource):
                      (klass.__implements__, PageTraverser.__implements__),
                      }
         for name in self.__pages:
-            attribute, permission, template = self.__pages[name] 
+            attribute, permission, template = self.__pages[name]
+
+            # We need to set the default permission on pages if the pages
+            # don't already have a permission explicitly set
+            permission = permission or self.permission
             if permission == 'Zope.Public':
                 permission = CheckerPublic
 
-            if attribute:
-                require[attribute] = permission
-            else:
+            if not attribute:
                 attribute = name
-                require[attribute] = permission
+
+            require[attribute] = permission
 
             if template:
                 klassdict[attribute] = ViewPageTemplateFile(template)
 
-            klassdict['_PageTraverser__pages'][name] = attribute
+            klassdict['_PageTraverser__pages'][name] = attribute, permission
 
         klass = type(klass.__name__,
                      (klass, PageTraverser, object),
@@ -245,6 +254,12 @@ class view(resource):
         factory[-1] = klass
         self.factory = factory
 
+        permission_for_browser_publisher = self.permission
+        if permission_for_browser_publisher == 'Zope.Public':
+            permission_for_browser_publisher = CheckerPublic
+        for name in IBrowserPublisher.names(all=1):
+            require[name] = permission_for_browser_publisher
+       
         return super(view, self).__call__(require=require)
 
 
@@ -253,7 +268,10 @@ class PageTraverser:
     __implements__ = IBrowserPublisher
 
     def publishTraverse(self, request, name):
-        return getattr(self, self._PageTraverser__pages[name])
+        attribute, permission = self._PageTraverser__pages[name]
+        return Proxy(getattr(self, attribute),
+                     NamesChecker(__call__=permission)
+                     )
 
     def browserDefault(self, request):
         return self, (self._PageTraverser__default, )

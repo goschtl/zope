@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testFileResource.py,v 1.5 2002/10/04 18:37:23 jim Exp $
+$Id: testFileResource.py,v 1.6 2002/10/28 18:41:18 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,6 +26,7 @@ from Zope.Exceptions import NotFoundError
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalResourceService import provideResource
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
 
@@ -39,7 +40,6 @@ import Zope.App.Publisher.Browser.tests as p
 
 test_directory = os.path.split(p.__file__)[0]
 
-
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
@@ -50,7 +50,7 @@ class Test(PlacelessSetup, TestCase):
 
         path = os.path.join(test_directory, 'test.txt')
         resource = FileResourceFactory(path)(TestRequest())
-
+        resource = removeAllProxies(resource)
         self.assertRaises(NotFoundError,
                           resource.publishTraverse,
                           resource.request,
@@ -61,7 +61,7 @@ class Test(PlacelessSetup, TestCase):
         path = os.path.join(test_directory, 'test.txt')
 
         resource = FileResourceFactory(path)(TestRequest())
-
+        resource = removeAllProxies(resource)
         self.assertEqual(resource.GET(), open(path, 'rb').read())
 
         response = resource.request.response
@@ -71,6 +71,7 @@ class Test(PlacelessSetup, TestCase):
 
         path = os.path.join(test_directory, 'test.txt')
         resource = FileResourceFactory(path)(TestRequest())
+        resource = removeAllProxies(resource)
 
         self.assertEqual(resource.HEAD(), '')
 
@@ -82,6 +83,7 @@ class Test(PlacelessSetup, TestCase):
         path = os.path.join(test_directory, 'test.gif')
 
         resource = ImageResourceFactory(path)(TestRequest())
+        resource = removeAllProxies(resource)
 
         self.assertEqual(resource.GET(), open(path, 'rb').read())
 
@@ -92,6 +94,7 @@ class Test(PlacelessSetup, TestCase):
 
         path = os.path.join(test_directory, 'test.gif')
         resource = ImageResourceFactory(path)(TestRequest())
+        resource = removeAllProxies(resource)
 
         self.assertEqual(resource.HEAD(), '')
 

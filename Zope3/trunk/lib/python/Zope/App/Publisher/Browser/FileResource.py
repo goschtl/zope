@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.6 2002/07/17 23:18:05 jeremy Exp $
+$Id: FileResource.py,v 1.7 2002/10/28 18:41:18 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -26,6 +26,8 @@ from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.App.Publisher.FileResource import File, Image
 from Zope.App.Publisher.Browser.Resource import Resource
 from Zope.Misc.DateTimeParse import time as timeFromDateTimeString
+
+from Zope.Security.Proxy import ProxyFactory
 
 class FileResource(BrowserView, Resource):
 
@@ -119,7 +121,7 @@ class FileResourceFactory:
         self.__file = File(path)
 
     def __call__(self, request):
-        return FileResource(self.__file, request)
+        return ProxyFactory(FileResource(self.__file, request))
 
 class ImageResourceFactory:
 
@@ -127,4 +129,4 @@ class ImageResourceFactory:
         self.__file = Image(path)
 
     def __call__(self, request):
-        return FileResource(self.__file, request)
+        return ProxyFactory(FileResource(self.__file, request))
