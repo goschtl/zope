@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Interface tests
 
+$Id: test_implements.py,v 1.3 2003/01/07 12:14:56 srichter Exp $
+"""
 from zope.interface import Interface
 from zope.interface.implements import implements
 from zope.interface.exceptions import DoesNotImplement, BrokenImplementation

@@ -14,7 +14,7 @@
 """Implemantation assertion facilities.
 
 Revision information:
-$Id: implements.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: implements.py,v 1.3 2003/01/07 12:14:53 srichter Exp $
 """
 
 from zope.interface import exceptions
@@ -122,16 +122,19 @@ def instancesOfObjectImplements(klass, getInterface=None):
     return r
 
 def _flatten(i, append):
-    append(i)
-    bases = i.getBases()
-    if bases:
-        for b in bases:
-            _flatten(b, append)
+    if isinstance(i, (list, tuple)):
+        for iface in i:
+            _flatten(iface, append)
+    else:
+        append(i)
+        bases = i.getBases()
+        if bases:
+            for b in bases:
+                _flatten(b, append)
 
 def flattenInterfaces(interfaces, remove_duplicates=1):
     res = []
-    for i in interfaces:
-        _flatten(i, res.append)
+    _flatten(interfaces, res.append)
     if remove_duplicates:
         # Remove duplicates in reverse.
         # Similar to Python 2.2's method resolution order.
