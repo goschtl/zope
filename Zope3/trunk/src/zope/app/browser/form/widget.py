@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
+$Id: widget.py,v 1.4 2002/12/30 20:46:22 alga Exp $
 """
 
 __metaclass__ = type
@@ -55,7 +55,6 @@ class BrowserWidget(Widget, BrowserView):
         if value is self:
             # No user input
             if field.required and not optional:
-                # XXX this code path is not tested
                 raise MissingInputError(field.__name__, field.title,
                                         'the field is required')
             return field.default
