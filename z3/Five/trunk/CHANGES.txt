@@ -36,6 +36,9 @@ Trunk
 
 * Support for browser:editform. You can now use schemas for editing.
 
+* Support for add forms using '+'. You can now browse to
+  'container/+/addsomething.html' to get to a schema-driven add form.
+
 * Fixed a traversal bug which caused Zope to give the wrong error when
   a page could not be found (missing docstring instead of not found).
 
