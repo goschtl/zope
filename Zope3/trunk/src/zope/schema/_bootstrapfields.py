@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation
 from zope.schema._bootstrapinterfaces import IFromUnicode
