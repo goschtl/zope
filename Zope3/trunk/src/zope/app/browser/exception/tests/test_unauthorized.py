@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.1 2003/02/05 11:34:55 stevea Exp $
+$Id: test_unauthorized.py,v 1.2 2003/03/06 22:41:38 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.publisher.base import TestRequest
+from zope.publisher.browser import TestRequest
 from zope.proxy.context import ContextWrapper
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 
@@ -52,16 +52,13 @@ class Test(TestCase):
         request.user = ContextWrapper(DummyPrincipal(23), authservice)
         u = Unauthorized(exception, request)
         u.issueChallenge()
+
+        # Make sure the response status was set
+        self.assertEqual(request.response.getStatus(), 403)
+
+        # Make sure the auth service was called
         self.failUnless(authservice.request is request)
         self.assertEqual(authservice.principal_id, 23)
-        self.assertEqual(' '.join(u.traceback.split()),
-            '<p>Traceback (innermost last): '
-            '<ul> '
-            '<li> Module zope.app.browser.exception.tests.test_unauthorized, '
-            'line 47, in test</li> '
-            '</ul>Exception '
-            '</p>'
-            )
 
 def test_suite():
     return makeSuite(Test)

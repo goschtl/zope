@@ -1,8 +1,13 @@
-<html>
+<tal:Make_sure_we_process_the_authorization_chalenge_first
+  condition="view/issueChallenge"
+/><html metal:use-macro="context/@@standard_macros/dialog">
 <body>
-<tal:tag condition="view/issueChallenge" />
+
+<div metal:fill-slot="body">
+
 <h1>Unauthorized</h1>
-<p>You're not allowed in here. Here's a traceback.</p>
-<tal:tag replace="structure view/traceback" />
+<p>You're not allowed in here.</p>
+
+</div>
 </body>
 </html>

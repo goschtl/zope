@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: unauthorized.py,v 1.1 2003/02/05 11:34:53 stevea Exp $
+$Id: unauthorized.py,v 1.2 2003/03/06 22:41:37 jim Exp $
 """
 __metaclass__ = type
 import sys
@@ -27,15 +27,9 @@ class Unauthorized:
         self.context = context
         self.request = request
 
-        t, v, tb = sys.exc_info()
-        try:
-            self.traceback = ''.join(format_exception(t, v, tb, as_html=1))
-        finally:
-            tb = None
-
     def issueChallenge(self):
+        self.request.response.setStatus(403)
         principal = self.request.user
         prinreg = getParent(principal)
         assert IAuthenticationService.isImplementedBy(prinreg)
         prinreg.unauthorized(principal.getId(), self.request)
-
