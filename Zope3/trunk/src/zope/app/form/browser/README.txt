@@ -46,7 +46,7 @@ arguments, choice widgets receive the field, vocabulary, and request as
 arguments.
 
 Some Choice widgets may also need to provide a query interface, particularly if
-the number of items in the vocabuary are too big to iterate.  The vocabulary
+the number of items in the vocabulary are too big to iterate.  The vocabulary
 may provide a query which implements an interface appropriate for that
 vocabulary.  You then can register a query view--a view registered for the
 query interface and the field interface--that implements
