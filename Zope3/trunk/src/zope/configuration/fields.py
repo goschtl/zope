@@ -9,16 +9,72 @@
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.4 2003/07/31 14:56:47 jim Exp $
+$Id: fields.py,v 1.5 2003/08/01 19:46:03 srichter Exp $
 """
-
-import os
+import os, re
 from zope import schema
 from zope.schema.interfaces import IFromUnicode
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import implements
+
+PYIDENTIFIER_REGEX = u'\A[a-zA-Z_]+[a-zA-Z0-9_]*\Z'
+pyidentifierPattern = re.compile(PYIDENTIFIER_REGEX)
+# This regex is originally from 4Suite/Ft/Lib/Uri.py
+URI_REGEX = r"\A(?:(?:[a-zA-Z][0-9a-zA-Z+\-\.]*:)?" \
+            r"/{0,2}[0-9a-zA-Z;/?:@&=+$\.\-_!~*'()%]+)?\Z"
+uriPattern = re.compile(URI_REGEX)
+
+class PythonIdentifier(schema.TextLine):
+    r"""This field describes a python identifier, i.e. a variable name.
+
+    Let's look at an example:
+
+    >>> class FauxContext:
+    ...     pass
+    >>> context = FauxContext()
+    >>> field = PythonIdentifier().bind(context)
+
+    Let's test the fromUnicode method:
+
+    >>> field.fromUnicode(u'foo')
+    u'foo'
+    >>> field.fromUnicode(u'foo3')
+    u'foo3'
+    >>> field.fromUnicode(u'_foo3')
+    u'_foo3'
+
+    Now let's see whether validation works alright
+
+    >>> for value in (u'foo', u'foo3', u'foo_', u'_foo3', u'foo_3', u'foo3_'):
+    ...     field._validate(value)
+    >>>
+    >>> from zope import schema
+    >>> 
+    >>> for value in (u'3foo', u'foo:', u'\\', u''):
+    ...     try:
+    ...         field._validate(value)
+    ...     except schema.ValidationError:
+    ...         print 'Validation Error'
+    Validation Error
+    Validation Error
+    Validation Error
+    Validation Error
+
+    """
+
+    implements(IFromUnicode)
+
+    def fromUnicode(self, u):
+        return u.strip()
+        
+    def _validate(self, value):
+        super(PythonIdentifier, self)._validate(value)
+        if pyidentifierPattern.match(value) is None:
+            raise schema.ValidationError(value)
 
 class GlobalObject(schema.Field):
     """An object that can be accesses as a module global
@@ -194,6 +250,46 @@ class Path(schema.Text):
             return os.path.normpath(u)
         
         return self.context.path(u)
+
+class URI(schema.TextLine):
+    r"""This field describes URIs, and validates the input accordingly.
+
+    Let's look at an example:
+
+    >>> class FauxContext:
+    ...     pass
+    >>> context = FauxContext()
+    >>> field = URI().bind(context)
+
+    Let's test the fromUnicode method:
+
+    >>> field.fromUnicode(u'http://www.zope3.org')
+    u'http://www.zope3.org'
+
+    Now let's see whether validation works alright
+
+    >>> res = field._validate(u'http://www.zope3.org')
+    >>> res # Result should be None
+    >>>
+    >>> from zope import schema
+    >>> try:
+    ...     res = field._validate(u'http:/\\www.zope3.org')
+    ... except schema.ValidationError:
+    ...     print 'Validation Error'
+    Validation Error
+
+    """
+
+    implements(IFromUnicode)
+
+    def fromUnicode(self, u):
+        return u.strip()
+        
+    def _validate(self, value):
+        super(URI, self)._validate(value)
+        if uriPattern.match(value) is None:
+            raise schema.ValidationError(value)
+
 
 class Bool(schema.Bool):
     """A boolean value
