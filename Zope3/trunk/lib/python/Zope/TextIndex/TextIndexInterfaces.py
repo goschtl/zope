@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for a text index.
 
-$Id: TextIndexInterfaces.py,v 1.1 2002/12/03 16:25:54 gvanrossum Exp $
+$Id: TextIndexInterfaces.py,v 1.2 2002/12/04 10:25:41 gvanrossum Exp $
 """
 
 from Interface import Interface
@@ -43,12 +43,12 @@ class IInjection(Interface):
 
 class IQuerying(Interface):
 
-    def query(querytext, start, count):
+    def query(querytext, start=0, count=None):
         """Execute a query.
 
         querytext: unicode, the query expression
         start: the first result to return (0-based)
-        count: the maximum number of results to return
+        count: the maximum number of results to return (default: all)
         return: ([(docid, rank), ...], total)
 
         The return value is a triple:

@@ -15,7 +15,7 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: TextIndexWrapper.py,v 1.1 2002/12/03 16:45:23 gvanrossum Exp $
+$Id: TextIndexWrapper.py,v 1.2 2002/12/04 10:25:41 gvanrossum Exp $
 """
 
 from Persistence import Persistent
@@ -55,12 +55,14 @@ class TextIndexWrapper(Persistent):
 
     # Methods implementing IQuerying
 
-    def query(self, querytext, start, count):
+    def query(self, querytext, start=0, count=None):
         parser = QueryParser(self.lexicon)
         tree = parser.parseQuery(querytext)
         results = tree.executeQuery(self.index)
-        if results is None:
+        if not results:
             return [], 0
+        if count is None:
+            count = max(0, len(results) - start)
         chooser = NBest(start + count)
         chooser.addmany(results.items())
         batch = chooser.getbest()
