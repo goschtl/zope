@@ -1,0 +1,4 @@
+""" PluginRegistry interface declarations
+
+$Id$
+"""
