@@ -93,7 +93,7 @@ class SimpleHistoryStorage(Folder) :
     
     def __init__(self) :
         super(SimpleHistoryStorage, self).__init__()
-        self.unique_ids = zapi.getUtility(IUniqueIdUtility)
+        #self.unique_ids = zapi.getUtility(IUniqueIdUtility)
         
  
     def register(self, obj):
