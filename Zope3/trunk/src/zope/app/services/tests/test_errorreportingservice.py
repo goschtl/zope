@@ -14,13 +14,12 @@
 """
 
 Revision information:
-$Id: test_errorreportingservice.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_errorreportingservice.py,v 1.3 2003/06/22 14:01:44 jim Exp $
 """
-import sys
 
+import sys
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.services.errorr \
-     import ErrorReportingService
+from zope.app.services.error import ErrorReportingService
 from zope.testing.cleanup import CleanUp
 from zope.exceptions.exceptionformatter import format_exception
 

@@ -390,16 +390,23 @@
 
   <serviceType
       id="ErrorLogging"
-      interface="zope.app.interfaces.services.error.IErrorReportingService" />
+      interface="zope.app.interfaces.services.error.IErrorReportingService" 
+      />
 
-  <content class='zope.app.services.errorr.ErrorReportingService'>
+  <content class='zope.app.services.error.ErrorReportingService'>
     <require
         permission="zope.Public"
         interface="zope.app.interfaces.services.error.IErrorReportingService"
         />
+    <require
+        permission="zope.ManageServices"
+        interface="
+          zope.app.interfaces.services.error.ILocalErrorReportingService"
+        />
     <factory
         id='ErrorLogging'
-        permission='zope.Public' />
+        permission='zope.Public' 
+        />
     </content>
 
 <!-- Object Hub -->

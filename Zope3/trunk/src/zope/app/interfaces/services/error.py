@@ -14,27 +14,35 @@
 """
 
 Revision information:
-$Id: error.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: error.py,v 1.3 2003/06/22 14:01:43 jim Exp $
 """
 from zope.interface import Interface
 
 class IErrorReportingService(Interface):
-    """Error Reporting Service Interface.
+    """Error Reporting Service
     """
 
     def raising(info, request=None):
         """Logs an exception.
         """
 
+class ILocalErrorReportingService(Interface):
+    """Local Error Reporting Service
+
+    Included management functions
+    """
+
     def getProperties():
         """Gets the properties as dictionary.
-           keep_entries, copy_to_logfile, ignored_exceptions
+
+        keep_entries, copy_to_logfile, ignored_exceptions
         """
 
     def setProperties(keep_entries, copy_to_zlog=0, ignored_exceptions=(),
                       RESPONSE=None):
-        """Sets the properties. keep_entries, copy_to_logfile,
-        ignored_exceptions
+        """Sets the properties
+
+        keep_entries, copy_to_logfile, ignored_exceptions
         """
 
     def getLogEntries():

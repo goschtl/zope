@@ -11,23 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Revision information:
+"""Error reporting service
 
-$Id: errorr.py,v 1.10 2003/06/07 05:31:58 stevea Exp $
+This is a port of the Zope 2 error reporting object
+
+$Id: error.py,v 1.1 2003/06/22 14:01:44 jim Exp $
 """
 
-import time
+from persistence import Persistent
 from random import random
 from thread import allocate_lock
-from persistence import Persistent
 from types import StringTypes
-import logging
-from zope.exceptions.exceptionformatter import format_exception
-from zope.context import ContextMethod
 from zope.app.interfaces.services.error import IErrorReportingService
+from zope.app.interfaces.services.error import ILocalErrorReportingService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.context import ContextMethod
+from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
+import logging
+import time
 
 
 #Restrict the rate at which errors are sent to the Event Log
@@ -50,7 +52,10 @@ cleanup_lock = allocate_lock()
 class ErrorReportingService(Persistent):
     """Error Reporting Service
     """
-    implements(IErrorReportingService, ISimpleService)
+    implements(IErrorReportingService,
+               ILocalErrorReportingService,
+               ISimpleService,
+               )
 
     keep_entries = 20
     copy_to_zlog = 0
@@ -225,3 +230,10 @@ _clear = _cleanup_temp_log
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 del addCleanUp
+
+
+
+# XXX Pickle backward compatability
+import sys
+sys.modules['zope.app.services.errorr'
+            ] = sys.modules['zope.app.services.error']
