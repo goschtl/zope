@@ -11,14 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""This is a text index which can be subscribed to an event service.
+"""This is a field index which can be subscribed to an event service.
 
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.1 2003/03/26 16:00:14 andreasjung Exp $
+$Id: index.py,v 1.2 2003/03/26 16:25:18 andreasjung Exp $
 """
 
 from zope.component import getService, queryAdapter
