@@ -500,7 +500,7 @@ class BuilderApplication(Application):
         cmdline = ("tar", "cjf", self.target_file, self.target_name)
         runlog.report_command(" ".join(cmdline))
         try:
-            rc = os.spawnlp(os.P_WAIT, "tar", *cmdline)
+            rc = os.spawnlp(os.P_WAIT, cmdline[0], *cmdline)
         finally:
             os.chdir(pwd)
         runlog.report_exit_code(rc)

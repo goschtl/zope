@@ -239,7 +239,7 @@ class CvsLoader:
 
         runlog.report_command(" ".join(cmdline))
         try:
-            rc = os.spawnlp(os.P_WAIT, "cvs", *cmdline)
+            rc = os.spawnlp(os.P_WAIT, cmdline[0], *cmdline)
         finally:
             os.chdir(pwd)
         runlog.report_exit_code(rc)
