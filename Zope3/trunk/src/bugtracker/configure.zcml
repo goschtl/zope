@@ -3,6 +3,7 @@
    xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
    xmlns:mail="http://namespaces.zope.org/mail"
    xmlns:i18n="http://namespaces.zope.org/i18n"
+   xmlns:apidoc="http://namespaces.zope.org/apidoc"
    i18n_domain="bugtracker"
    >
 
@@ -383,5 +384,8 @@
 
   <!-- Translations -->
   <i18n:registerTranslations directory="locales" />
+
+  <!-- Register application with API Doc Tool -->
+  <apidoc:rootModule module="bugtracker" />
 
 </configure>

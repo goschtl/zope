@@ -30,35 +30,35 @@ class BugBaseViewTest(PlacelessSetup, unittest.TestCase):
         self.view.request = TestRequest(environ={'HTTP_ACCEPT_LANGUAGE': 'en'})
 
     def test_created(self):
-        self.assertEqual(self.view.created(), '3/3/03 3:00 AM')
+        self.assertEqual(self.view.created, '3/3/03 3:00 AM')
 
     def test_modified(self):
-        self.assertEqual(self.view.modified(), '3/3/03 4:00 AM')
+        self.assertEqual(self.view.modified, '3/3/03 4:00 AM')
 
     def test_description(self):
-        self.assertEqual(self.view.description(), 'This is Bug 1.')
+        self.assertEqual(self.view.description, 'This is Bug 1.')
 
     def test_status(self):
-        self.assertEqual(self.view.status().value, 'new')
-        self.assertEqual(self.view.status().title, 'New')
+        self.assertEqual(self.view.status.value, 'new')
+        self.assertEqual(self.view.status.title, 'New')
 
     def test_type(self):
-        self.assertEqual(self.view.type().value, 'bug')
-        self.assertEqual(self.view.type().title, 'Bug')
+        self.assertEqual(self.view.type.value, 'bug')
+        self.assertEqual(self.view.type.title, 'Bug')
 
     def test_priority(self):
-        self.assertEqual(self.view.priority().value, 'normal')
-        self.assertEqual(self.view.priority().title, 'Normal')
+        self.assertEqual(self.view.priority.value, 'normal')
+        self.assertEqual(self.view.priority.title, 'Normal')
 
     def test_release(self):
-        self.assertEqual(self.view.release().value, 'None')
-        self.assertEqual(self.view.release().title, '(not specified)')
+        self.assertEqual(self.view.release.value, 'None')
+        self.assertEqual(self.view.release.title, '(not specified)')
 
     def test_owners(self):
-        self.assertEqual(self.view.owners()[0]['login'], 'jim')
-        self.assertEqual(self.view.owners()[0]['title'], 'Jim Fulton')
-        self.assertEqual(self.view.owners()[1]['login'], 'stevea')
-        self.assertEqual(self.view.owners()[1]['title'], 'Steve Alexander')
+        self.assertEqual(self.view.owners[0]['login'], 'jim')
+        self.assertEqual(self.view.owners[0]['title'], 'Jim Fulton')
+        self.assertEqual(self.view.owners[1]['login'], 'stevea')
+        self.assertEqual(self.view.owners[1]['title'], 'Steve Alexander')
 
 
 class OverviewTest(PlacelessSetup, unittest.TestCase):

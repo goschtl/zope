@@ -59,13 +59,13 @@ class ManagableVocabularyBaseTest(PlacelessSetup):
         tracker = BugTracker()
         contained(tracker, Root(), name="tracker")
         vocab = self.getVocabularyClass()(tracker)
-        vocab.context.__annotations__ = {}
+        vocab.annotations.obj.__annotations__ = {}
         data = {'1': SimpleTerm('1', u'one'),
                 '2': SimpleTerm('2', u'two'),
                 '3': SimpleTerm('3', u'three'),
                 '4': SimpleTerm('4', u'four')}
-        vocab.context.__annotations__[vocab.key] = data
-        vocab.context.__annotations__[vocab.key+'/default'] = '1'
+        vocab.annotations.obj.__annotations__[vocab.key] = data
+        vocab.annotations.obj.__annotations__[vocab.key+'/default'] = '1'
         return vocab
 
     def test_contains(self):
@@ -261,13 +261,13 @@ class ManagableVocabularyBaseTest(PlacelessSetup, unittest.TestCase):
         tracker = BugTracker()
         contained(tracker, Root(), name="tracker")
         vocab = SampleVocabulary(tracker)
-        vocab.context.__annotations__ = {}
+        vocab.annotations.obj.__annotations__ = {}
         data = {'1': SimpleTerm('1', u'one'),
                 '2': SimpleTerm('2', u'two'),
                 '3': SimpleTerm('3', u'three'),
                 '4': SimpleTerm('4', u'four')}
-        vocab.context.__annotations__[vocab.key] = data
-        vocab.context.__annotations__[vocab.key+'/default'] = '1'
+        vocab.annotations.obj.__annotations__[vocab.key] = data
+        vocab.annotations.obj.__annotations__[vocab.key+'/default'] = '1'
         self.tracker = tracker
 
     def getObject(self):
