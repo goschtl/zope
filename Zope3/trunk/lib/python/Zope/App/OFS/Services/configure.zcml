@@ -1,4 +1,13 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+<content class=".Configuration.ConfigurationRegistry">
+   <require permission="Zope.ManageServices"
+            interface=".ConfigurationInterfaces.IConfigurationRegistry"
+            />
+</content>
 
 <include package=".ServiceManager" />
 <include package=".AuthenticationService" />
@@ -9,5 +18,6 @@
 <include package=".CachingService" />
 <include package=".ObjectHub" />
 <include package=".ErrorReportingService" />
+<include package=".Browser" />
 
 </zopeConfigure>

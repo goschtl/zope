@@ -1,0 +1,24 @@
+<zope:zopeConfigure
+   xmlns:zope='http://namespaces.zope.org/zope'
+   xmlns="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Services"
+   >
+
+<view
+    for=".ConfigurationInterfaces.IConfigurationStatus"
+    name="widget"
+    factory=".Browser.ConfigurationStatusWidget."
+    allowed_interface="Zope.App.Forms.Views.Browser.IBrowserWidget."
+    permission="Zope.ManageServices"
+    />
+
+<view
+    for=".ConfigurationInterfaces.IConfigurationRegistry"
+    name="ChangeConfigurations"
+    template="Browser/ChangeConfigurations.pt"
+    class=".Browser.ChangeConfigurations."
+    allowed_interface="Zope.App.Forms.Browser.IFormCollaborationView."
+    permission="Zope.ManageServices"
+    />
+
+</zope:zopeConfigure>
