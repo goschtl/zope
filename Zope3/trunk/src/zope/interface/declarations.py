@@ -846,7 +846,75 @@ def directlyProvides(object, *interfaces):
         object.__provides__ = ClassProvides(object, cls, *interfaces)
     else:
         object.__provides__ = Provides(cls, *interfaces)
+        
+    
+def alsoProvides(object, *interfaces):
+    """Declare interfaces declared directly for an object
 
+      The arguments after the object are one or more interfaces or
+      interface specifications (IDeclaration objects).
+
+      The interfaces given (including the interfaces in the
+      specifications) are added to the interfaces previously
+      declared for the object.
+      
+      Consider the following example::
+
+        >>> from zope.interface import Interface
+        >>> class I1(Interface): pass
+        ...
+        >>> class I2(Interface): pass
+        ...
+        >>> class IA1(Interface): pass
+        ...
+        >>> class IA2(Interface): pass
+        ...
+        >>> class IB(Interface): pass
+        ...
+        >>> class IC(Interface): pass
+        ...
+        >>> class A(object): implements(IA1, IA2)
+        ...
+        >>> class B(object): implements(IB)
+        ...
+
+        >>> class C(A, B):
+        ...    implements(IC)
+
+        >>> ob = C()
+        >>> directlyProvides(ob, I1)
+        >>> int(I1 in providedBy(ob))
+        1
+        >>> int(I2 in providedBy(ob))
+        0
+        >>> int(IA1 in providedBy(ob))
+        1
+        >>> int(IA2 in providedBy(ob))
+        1
+        >>> int(IB in providedBy(ob))
+        1
+        >>> int(IC in providedBy(ob))
+        1
+        
+        >>> alsoProvides(ob, I2)
+        >>> int(I1 in providedBy(ob))
+        1
+        >>> int(I2 in providedBy(ob))
+        1
+        >>> int(IA1 in providedBy(ob))
+        1
+        >>> int(IA2 in providedBy(ob))
+        1
+        >>> int(IB in providedBy(ob))
+        1
+        >>> int(IC in providedBy(ob))
+        1
+        
+      The object, ``ob`` provides ``I1``, ``I2``, and whatever interfaces
+      instances have been declared for instances of ``C``. Notice that the
+      alsoProvides just extends the provided interfaces.
+    """
+    directlyProvides(object, directlyProvidedBy(object), *interfaces)
 
 class ClassProvidesBasePy(object):
 
