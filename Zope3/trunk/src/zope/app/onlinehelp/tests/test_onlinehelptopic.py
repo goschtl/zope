@@ -13,13 +13,12 @@
 ##############################################################################
 """Test OnlineHelpTopic
 
-$Id: test_onlinehelptopic.py,v 1.2 2003/06/24 09:56:10 rogerineichen Exp $
+$Id: test_onlinehelptopic.py,v 1.3 2004/02/27 16:15:26 philikon Exp $
 """
 import os
 from unittest import TestCase, TestSuite, makeSuite
 from zope.interface.verify import verifyObject
-from zope.app.onlinehelp import OnlineHelpTopic
-from zope.app.interfaces.onlinehelp import IOnlineHelpTopic
+from zope.app.onlinehelp import OnlineHelpTopic, IOnlineHelpTopic
 
 def testdir():
     import zope.app.onlinehelp.tests

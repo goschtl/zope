@@ -7,12 +7,12 @@
   <content class="zope.app.onlinehelp.OnlineHelpTopic">
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.onlinehelp.IOnlineHelpTopic" />
+        interface="zope.app.onlinehelp.interfaces.IOnlineHelpTopic" />
   </content>
 
   <!-- Setup OnlineHelp as Service -->
   <serviceType id="OnlineHelp" 
-               interface="zope.app.interfaces.onlinehelp.IOnlineHelp" />
+               interface="zope.app.onlinehelp.interfaces.IOnlineHelp" />
 
   <service serviceType="OnlineHelp"
       permission="zope.Public"
@@ -34,5 +34,10 @@
       id = "onlinehelp"
       title = "Online help system"
       doc_path = "./README.txt" />
+
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
     
 </configure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.17 2003/11/21 17:10:16 jim Exp $
+$Id: __init__.py,v 1.1 2004/02/27 16:15:25 philikon Exp $
 """
 from zope.interface import providedBy
 

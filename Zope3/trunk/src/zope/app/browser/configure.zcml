@@ -21,7 +21,6 @@
   <include package=".rdb" />
   <include package=".workflow" />
   <include package=".catalog" />
-  <include file="onlinehelp.zcml" />
   <include file="introspector.zcml" />
   <include file="traversal.zcml" />
   <include file="undo.zcml" />

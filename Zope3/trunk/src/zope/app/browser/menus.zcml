@@ -13,11 +13,6 @@
       usage="activitydialog" />
 
   <menu
-      id="help_actions"
-      title="Menu for displaying help actions to be performed with popup"
-      usage="activitydialog" />
-
-  <menu
       id="add_cache"
       title="Menu of caches to be added"
       usage="addingdialog" />

@@ -6,7 +6,6 @@
   <include package=".rotterdam" />
   <include package=".zopetop" />
   <include package=".debug" />
-  <include package=".onlinehelp" />
 
   <defaultSkin name="Rotterdam" />
 
