@@ -91,6 +91,12 @@ def protectName(klass, name, permission_id):
     """Protect the attribute 'name' on 'klass' using the given
        permission"""
     security = _getSecurity(klass)
+    # XXX: Sometimes, the object CheckerPublic is used instead of the
+    # string zope.Public. I haven't ben able to figure out why, or if
+    # it is correct, or a bug. So this is a workaround.
+    if permission_id is CheckerPublic:
+        security.declarePublic(name)
+        return
     # Zope 2 uses string, not unicode yet
     name = str(name)
     if permission_id == CheckerPublicId:
