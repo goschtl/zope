@@ -1,18 +1,33 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/page" i18n:domain="zope">
 <body>
   <div metal:fill-slot="body" >
-    <form method="POST" action="@@renameObjects.html">
-    <div tal:repeat="id request/ids">
-        <span>Name: <tal:block replace="id"/> </span>
-        <span>
-          New name:
-          <input type="hidden" name="ids:list" value=""
-                 tal:attributes="value id" />
-          <input type="text" name="newids:list" value="" 
-                 tal:attributes="value id" />
-        </span>
-    </div>
-    <input type="submit" name="rename" value="rename" />
+      <form method="POST" action="@@renameObjects.html">
+          <table 
+              summary="Rename object(s)" 
+              i18n:attributes="summary"
+              />
+              <thead>
+                  <tr>
+                      <th i18n:translate="">Current name</th>
+                      <th i18n:translate="">New name</th>
+                  </tr>
+               </thead>
+               <tbody>
+                   <tr tal:repeat="id request/ids">
+                       <td tal:content="id" />
+                       <td>
+                           <input 
+                               type="hidden" name="ids:list" value=""
+                               tal:attributes="value id" />
+                           <input 
+                               type="text" name="newids:list" value="" 
+                               tal:attributes="value id" />
+                       </td>
+                   </tr>
+               </tbody>
+           <table>             
+
+    <input type="submit" name="rename" value="rename" i18n:attributes="value" />
     </form>
   </div>
 </body>
