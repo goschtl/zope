@@ -21,7 +21,10 @@ class RequestTest( TransactionalTest ):
     
     def setUp(self):
         TransactionalTest.setUp(self)
-        self.root = makerequest(self.root)
+        root = self.root
+        root = makerequest(root)
+        self.REQUEST  = root.REQUEST
+        self.RESPONSE = root.REQUEST.RESPONSE
 
 class SecurityTest( TestCase ):
 
