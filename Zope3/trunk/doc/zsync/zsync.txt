@@ -294,9 +294,9 @@ Synopsis
 Description
 +++++++++++
 
-When used with specifying *command*, this displays general help on
+When used without specifying *command*, this displays general help on
 using **zsync**.  When *command* is given, information about each
-command list is presented.
+command listed is presented.
 
 
 The **zsync login** Command
