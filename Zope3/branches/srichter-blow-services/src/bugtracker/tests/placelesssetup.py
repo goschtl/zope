@@ -26,8 +26,8 @@ from zope.interface import classImplements, implements
 from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup as SetupBase
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup as SetupBase
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser

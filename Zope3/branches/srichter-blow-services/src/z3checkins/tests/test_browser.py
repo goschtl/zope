@@ -12,8 +12,8 @@ from datetime import datetime
 from zope.publisher.browser import TestRequest
 from zope.interface import Interface, implements
 from zope.exceptions import DuplicationError
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 from z3checkins.interfaces import ICheckinMessage, IBookmark, IMessageParser
 from z3checkins.tests.test_message import MessageStub, open_test_data

@@ -87,6 +87,12 @@ class TestIntrospector(TestCase):
 
         verifyObject(IIntrospector, ints)
 
+    def test_setRequest(self):
+        ints = Introspector(Interface)
+        request = {'PATH_INFO': '++module++zope.app.introspector.Introspector'}
+        ints.setRequest(request)
+        self.assertEqual(ints.currentclass, Introspector)
+
     def test_getClass(self):
         ints = Introspector(TestClass())
         request = {}

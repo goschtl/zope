@@ -217,15 +217,13 @@ def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_,
                     menu=u'', use_session=False):
     # XXX What about the __implements__ of the bases?
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases, name=name)
     class_.schema = schema
     class_.panes = panes
     class_.fieldNames = fields
     class_.use_session = use_session
 
     class_.generated_form = ViewPageTemplateFile(default_template)
-    # XXX: needs to be tested
-    class_.__name__ = name
 
     defineChecker(
         class_,

@@ -8,7 +8,7 @@ Request/Response Functional Tests
 ---------------------------------
 
 You can create Functional tests as doctests.  Typically, this is done
-by using a script such as src/zope/app/tests/dochttp.py to convert
+by using a script such as src/zope/app/testing/dochttp.py to convert
 tcpwatch recorded output to a doctest, which is then edited to provide
 explanation and to remove uninyeresting details.  That is how this
 file was created.

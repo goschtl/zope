@@ -19,7 +19,6 @@ $Id$
 """
 from interfaces import IZAPI
 from zope.interface import moduleProvides
-from zope.deprecation import deprecated
 
 from zope.security.proxy import isinstance
 
@@ -43,6 +42,7 @@ def principals():
     return getUtility(IAuthentication)
 
 # BBB: Gone in 3.3.
+from zope.deprecation import deprecated
 from zope.app import servicenames
 
 deprecated('servicenames',

@@ -18,8 +18,10 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
-from zope.app import zapi
 from zope.event import notify
+
+from zope.app import zapi
+from zope.app.module import resolve
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
@@ -273,9 +275,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            sm = zapi.getSiteManager(self)
-            # XXX: Code broken; not test
-            script = sm.resolve(script)
+            # XXX: not tested!
+            script = resolve(script)
         return script(contexts)
 
     def _outgoingTransitions(self, clean_pd):

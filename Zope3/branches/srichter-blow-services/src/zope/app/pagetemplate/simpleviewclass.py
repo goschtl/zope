@@ -37,14 +37,13 @@ class simple(BrowserView):
 
         raise NotFound(self, name, request)
 
-    # XXX: we need some unittests for this !!!
     def __getitem__(self, name):
         return self.index.macros[name]
 
     def __call__(self, *args, **kw):
         return self.index(*args, **kw)
 
-# XXX: Test new name argument
+
 def SimpleViewClass(src, offering=None, used_for=None, bases=(), name=u''):
     if offering is None:
         offering = sys._getframe(1).f_globals

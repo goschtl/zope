@@ -19,8 +19,8 @@ import unittest
 
 from zope.event import subscribers
 from zope.interface import classImplements, implements 
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.event.objectevent import ObjectModifiedEvent

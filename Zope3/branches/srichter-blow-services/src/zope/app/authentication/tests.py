@@ -25,9 +25,9 @@ from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 
 from zope.app import zapi
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.tests.setup import placefulSetUp, placefulTearDown
+from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
         ISessionPkgData, ISessionData

@@ -152,7 +152,7 @@ the title to a repr of the event info:
   >>> def add_info(event):
   ...     event.principal.title = `event.info`
 
-  >>> from zope.app.tests.ztapi import subscribe
+  >>> from zope.app.testing.ztapi import subscribe
   >>> subscribe([interfaces.IPrincipalCreated], None, add_info)
 
 Now, if we authenticate a principal, its title will be set:
@@ -319,7 +319,7 @@ Our pluggable-authentication utility will not find a principal with
 the ID '123'. Therefore it will delegate to the next utility. To make
 sure that it's delegated, we put in place a fake utility.
 
-  >>> from zope.app.utility.utility import testingNextUtility
+  >>> from zope.app.component.testing import testingNextUtility
   >>> from zope.app.security.interfaces import IAuthentication
 
   >>> class FakeAuthUtility:

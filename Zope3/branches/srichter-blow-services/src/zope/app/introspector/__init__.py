@@ -27,6 +27,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 from zope.app.component.interface import searchInterface, getInterface
 from zope.app.introspector.interfaces import IIntrospector
+from zope.app.module import resolve
 
 class Introspector(object):
     """Introspects an object"""
@@ -54,9 +55,7 @@ class Introspector(object):
         if path.find('++module++') != -1:
             if (self.context == Interface and
                 name != 'Interface._Interface.Interface'):
-                sm = zapi.getSiteManager()
-                # XXX: Needs fixing and tests
-                self.currentclass = adapter.resolve(name)
+                self.currentclass = resolve(name)
                 self.context = self.currentclass
             else:
                 self.currentclass = self.context
@@ -134,11 +133,6 @@ class Introspector(object):
         bases = self._unpackTuple(
             removeSecurityProxy(self.currentclass).__bases__)
         return bases
-
-    def getInterfaceRegistration(self):
-        """Returns details for a interface configuration"""
-        # XXX: Used to return a list of service names; empty now
-        return []
 
     def getDirectlyProvided(self):
         """See `IIntrospector`"""

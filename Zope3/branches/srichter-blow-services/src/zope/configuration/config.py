@@ -190,7 +190,9 @@ class ConfigurationContext(object):
 
         try:
             zope.deprecation.__show__.off()
-            return getattr(mod, oname)
+            obj = getattr(mod, oname)
+            zope.deprecation.__show__.on()
+            return obj
         except AttributeError:
             zope.deprecation.__show__.on()
             # No such name, maybe it's a module that we still need to import
@@ -215,8 +217,6 @@ class ConfigurationContext(object):
 
                 raise ConfigurationError("Module %s has no global %s"
                                          % (mname, oname))
-        else:
-            zope.deprecation.__show__.on()
 
     def path(self, filename):
         """

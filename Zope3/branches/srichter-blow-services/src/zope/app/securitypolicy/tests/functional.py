@@ -17,7 +17,7 @@ $Id$
 """
 
 from zope import interface
-from zope.app.tests import functional
+from zope.app.testing import functional
 
 class ManagerSetup:
     interface.implements(functional.IManagerSetup)

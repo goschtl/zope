@@ -73,7 +73,6 @@ def DisplayViewFactory(name, schema, label, permission, layer,
                        fulledit_path=None, fulledit_label=None, menu=u'',
                        usage=u''):
     # XXX What about the __implements__ of the bases?
-    # XXX: Needs to test name=name
     class_ = SimpleViewClass(template, used_for=schema, bases=bases,
                              name=name)
     class_.schema = schema

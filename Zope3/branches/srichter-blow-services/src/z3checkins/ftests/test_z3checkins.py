@@ -7,7 +7,7 @@ $Id: test_z3checkins.py,v 1.9 2004/05/15 13:23:59 gintautasm Exp $
 
 import unittest
 import os
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase
 
 
 class TestCheckins(BrowserTestCase):

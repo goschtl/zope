@@ -5,14 +5,16 @@
 # BBB: backward-comptibility; 12/18/2004
 
 import sys
-#from zope.deprecation.deprecation import DeprecatedModule 
+from zope.deprecation.deprecation import DeprecationProxy
 import zope.app
 
 def deprecate(module):
-    return module
-#    return DeprecatedModule(module,
-#                            'Test setup code moved from zope.app.tests to '
-#                            'zope.app.testing. This will go away in Zope 3.3.')
+    depmodule = DeprecationProxy(module)
+    depmodule.deprecate(module.__dict__.keys(),
+                        'The testing support code moved from zope.app.tests '
+                        'to zope.app.testing. This reference go away in Zope '
+                        'X3.3.')
+    return depmodule
 
 
 from zope.app.testing import placelesssetup

@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.interface import implements, classImplements
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.traversing.interfaces import IPhysicallyLocatable

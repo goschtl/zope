@@ -25,8 +25,8 @@ from zope.testing import module, doctest
 import zope.app.annotation.interfaces
 import zope.app.annotation.attribute
 import zope.app.wfmc
-from zope.app.tests import placelesssetup
-from zope.app.tests import ztapi
+from zope.app.testing import placelesssetup
+from zope.app.testing import ztapi
 
 def zcml(s):
     context = xmlconfig.file('meta.zcml', package=zope.app.wfmc)

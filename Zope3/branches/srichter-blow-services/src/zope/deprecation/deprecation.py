@@ -66,7 +66,9 @@ class DeprecationProxy(zope.proxy.ProxyBase):
     def __getattribute__(self, name):
         if name != '_deprecated' and name in self._deprecated:
             if zope.deprecation.__show__():
-                warnings.warn(self._deprecated[name], DeprecationWarning, 2)
+                warnings.warn(
+                    name + ': ' + self._deprecated[name],
+                    DeprecationWarning, 2)
 
         return super(DeprecationProxy, self).__getattribute__(name)
 

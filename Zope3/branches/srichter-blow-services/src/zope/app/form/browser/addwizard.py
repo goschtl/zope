@@ -114,7 +114,6 @@ def AddWizardViewFactory(
     template, default_template, bases, for_, content_factory, arguments,
     keyword_arguments, set_before_add, set_after_add, use_session=True):
 
-    # XXX: name=name Needs to be tested
     class_  = SimpleViewClass(template, used_for=schema, bases=bases,
                               name=name)
 

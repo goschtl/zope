@@ -17,14 +17,15 @@ $Id$
 """
 import unittest
 
+from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.app.pagetemplate.tests.simpletestview import SimpleTestView
+from zope.publisher.browser import TestRequest
+
 class data(object): pass
 
 class SimpleViewTestCase(unittest.TestCase):
 
     def test_simple(self):
-        from zope.app.pagetemplate.tests.simpletestview import SimpleTestView
-        from zope.publisher.browser import TestRequest
-
         ob = data()
         request = TestRequest()
         view = SimpleTestView(ob, request)
@@ -36,10 +37,18 @@ class SimpleViewTestCase(unittest.TestCase):
                          '    <p>hello world</p>\n'
                          '  </body>\n</html>\n')
 
-    def test_WBases(self):
-        from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-        from zope.publisher.browser import TestRequest
+    def test_name(self):
+        View = SimpleViewClass('testsimpleviewclass.pt', name='test.html')
+        view = View(None, None)
+        self.assertEqual(view.__name__, 'test.html')
 
+    def test_getitem(self):
+        View = SimpleViewClass('testsimpleviewclass.pt', name='test.html')
+        view = View(None, None)
+        self.assert_(view['test'] is not None)
+        self.assertRaises(KeyError, view.__getitem__, 'foo')
+
+    def test_WBases(self):
         class C(object): pass
 
         SimpleTestView = SimpleViewClass('testsimpleviewclass.pt', bases=(C, ))

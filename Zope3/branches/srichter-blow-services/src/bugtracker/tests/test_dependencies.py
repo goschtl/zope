@@ -20,7 +20,7 @@ import unittest
 from zope.interface import classImplements
 from zope.component.tests.placelesssetup import PlacelessSetup
 
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.location.interfaces import ILocation

@@ -24,7 +24,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.tests import placelesssetup, ztapi
+from zope.app.testing import placelesssetup, ztapi
 
 from zwiki.interfaces import IComment
 

@@ -70,9 +70,6 @@ class IZAPI(
         which would return IImage.
         """
         
-    # XXX: Deprecate
-    servicenames = Attribute("Service Names")
-
     def isinstance(object, cls):
         """Test whether an object is an instance of the given type
 
@@ -88,3 +85,6 @@ class IZAPI(
         """Return the authentication utility
         """
         
+    # BBB: Deprecated. Gone in X3.3.
+    servicenames = Attribute("Service Names")
+

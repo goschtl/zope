@@ -140,7 +140,6 @@ def AddViewFactory(name, schema, label, permission, layer,
                    keyword_arguments, set_before_add, set_after_add,
                    menu=u''):
 
-    # XXX: Needs to be tested
     class_  = SimpleViewClass(
         template, used_for=schema, bases=bases, name=name)
 

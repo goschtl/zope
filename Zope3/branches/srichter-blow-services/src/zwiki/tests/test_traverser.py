@@ -27,8 +27,8 @@ from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.location.interfaces import ILocation
 from zope.app.location.traversing import LocationPhysicallyLocatable
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import ztapi
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
