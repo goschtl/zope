@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+    - Implemented 'registrations()' method for all adapter and presentation
+      services. This method is particularly aimed for people building
+      informational GUIs and documentation. Examples of its use are in the
+      'apidoc' package.
+
+      The change was motivated by the desirable removal of the 
+      'getRegisteredMatching()' method, which has been done now.
+
     - 'Content-Type' header now updates with charset information if
       necessary.
 
@@ -37,6 +45,7 @@ Zope Changes
 
     - You can run Zope 3 using zdaemon now. Thanks to Chris McDonough for his
       help there. Just use 'make runners' and start with 'bin/zopectl start'.   
+
     - http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
 
       - Added ZCML to create subscription adapters by creating a new
