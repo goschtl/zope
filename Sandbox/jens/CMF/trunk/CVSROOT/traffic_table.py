@@ -65,5 +65,5 @@ table = [
     {'path': "Packages/Products/ExternalMethod", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZSQLMethods", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZGadflyDA", 'addrs': zopeaddr},
+    {'path': "Packages/Products/etcUserFolder", 'addrs': zopeaddr},
 ]
-
