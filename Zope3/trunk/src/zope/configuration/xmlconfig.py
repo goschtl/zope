@@ -276,6 +276,13 @@ def openInOrPlain(filename):
     >>> f.name[-11:]
     'foo.zcml.in'
 
+    Make sure other IOErrors are re-raised:
+
+    >>> f = openInOrPlain('.')
+    Traceback (most recent call last):
+    ...
+    IOError: [Errno 21] Is a directory
+
     """
     try:
         fp = open(filename)
@@ -286,6 +293,8 @@ def openInOrPlain(filename):
                 fp = open(fn)
             else:
                 raise
+        else:
+            raise
     return fp
 
 class IInclude(Interface):
