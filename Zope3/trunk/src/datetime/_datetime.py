@@ -286,6 +286,34 @@ def _check_tzinfo_arg(tz):
     if tz is not None and not isinstance(tz, tzinfo):
         raise TypeError("tzinfo argument must be None or of a tzinfo subclass")
 
+
+# Notes on comparison:  In general, datetime module comparison operators raise
+# TypeError when they don't know how to do a comparison themself.  If they
+# returned NotImplemented instead, comparison could (silently) fall back to
+# the default compare-objects-by-comparing-their-memory-addresses strategy,
+# and that's not helpful.  There are two exceptions:
+#
+# 1. For date and datetime, if the other object has a "timetuple" attr,
+#    NotImplemented is returned.  This is a hook to allow other kinds of
+#    datetime-like objects a chance to intercept the comparison.
+#
+# 2. Else __eq__ and __ne__ return False and True, respectively.  This is
+#    so opertaions like
+#
+#        x == y
+#        x != y
+#        x in sequence
+#        x not in sequence
+#        dict[x] = y
+#
+#    don't raise annoying TypeErrors just because a datetime object
+#    is part of a heterogeneous collection.  If there's no known way to
+#    compare X to a datetime, saying they're not equal is reasonable.
+
+def _cmperror(x, y):
+    raise TypeError("can't compare '%s' to '%s'" % (
+                    type(x).__name__, type(y).__name__))
+
 # This is a start at a struct tm workalike.  Goals:
 #
 # + Works the same way across platforms.
@@ -596,10 +624,46 @@ class timedelta(object):
 
     __floordiv__ = __div__
 
-    def __cmp__(self, other):
-        if not isinstance(other, timedelta):
-            raise TypeError, ("can't compare timedelta to %s instance" %
-                              type(other).__name__)
+    # Comparisons.
+
+    def __eq__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) == 0
+        else:
+            return False
+
+    def __ne__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) != 0
+        else:
+            return True
+
+    def __le__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) <= 0
+        else:
+            _cmperror(self, other)
+
+    def __lt__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) < 0
+        else:
+            _cmperror(self, other)
+
+    def __ge__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) >= 0
+        else:
+            _cmperror(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, timedelta):
+            return self.__cmp(other) > 0
+        else:
+            _cmperror(self, other)
+
+    def __cmp(self, other):
+        assert isinstance(other, timedelta)
         return cmp(self.__getstate(), other.__getstate())
 
     def __hash__(self):
@@ -763,17 +827,61 @@ class date(object):
         _check_date_fields(year, month, day)
         return date(year, month, day)
 
-    def __cmp__(self, other):
-        "Three-way comparison."
+    # Comparisons.
+
+    def __eq__(self, other):
         if isinstance(other, date):
-            y, m, d = self.__year, self.__month, self.__day
-            y2, m2, d2 = other.__year, other.__month, other.__day
-            return cmp((y, m, d), (y2, m2, d2))
+            return self.__cmp(other) == 0
         elif hasattr(other, "timetuple"):
             return NotImplemented
         else:
-            raise TypeError, ("can't compare date to %s instance" %
-                              type(other).__name__)
+            return False
+
+    def __ne__(self, other):
+        if isinstance(other, date):
+            return self.__cmp(other) != 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            return True
+
+    def __le__(self, other):
+        if isinstance(other, date):
+            return self.__cmp(other) <= 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __lt__(self, other):
+        if isinstance(other, date):
+            return self.__cmp(other) < 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __ge__(self, other):
+        if isinstance(other, date):
+            return self.__cmp(other) >= 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, date):
+            return self.__cmp(other) > 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __cmp(self, other):
+        assert isinstance(other, date)
+        y, m, d = self.__year, self.__month, self.__day
+        y2, m2, d2 = other.__year, other.__month, other.__day
+        return cmp((y, m, d), (y2, m2, d2))
 
     def __hash__(self):
         "Hash."
@@ -1003,12 +1111,46 @@ class time(object):
 
     # Standard conversions, __hash__ (and helpers)
 
-    def __cmp__(self, other):
-        """Three-way comparison."""
-        if not isinstance(other, time):
-            # XXX Buggy in 2.2.2.
-            raise TypeError("can't compare '%s' to '%s'" % (
-                            type(self).__name__, type(other).__name__))
+    # Comparisons.
+
+    def __eq__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) == 0
+        else:
+            return False
+
+    def __ne__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) != 0
+        else:
+            return True
+
+    def __le__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) <= 0
+        else:
+            _cmperror(self, other)
+
+    def __lt__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) < 0
+        else:
+            _cmperror(self, other)
+
+    def __ge__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) >= 0
+        else:
+            _cmperror(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, time):
+            return self.__cmp(other) > 0
+        else:
+            _cmperror(self, other)
+
+    def __cmp(self, other):
+        assert isinstance(other, time)
         mytz = self._tzinfo
         ottz = other._tzinfo
         myoff = otoff = None
@@ -1477,14 +1619,58 @@ class datetime(date):
         offset = _check_utc_offset("dst", offset)
         return offset
 
-    def __cmp__(self, other):
-        if not isinstance(other, datetime):
-            if hasattr(other, "timetuple"):
-                return NotImplemented
-            else:
-                # XXX Buggy in 2.2.2.
-                raise TypeError("can't compare '%s' to '%s'" % (
-                                type(self).__name__, type(other).__name__))
+    # Comparisons.
+
+    def __eq__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) == 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            return False
+
+    def __ne__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) != 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            return True
+
+    def __le__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) <= 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __lt__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) < 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __ge__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) >= 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __gt__(self, other):
+        if isinstance(other, datetime):
+            return self.__cmp(other) > 0
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
+        else:
+            _cmperror(self, other)
+
+    def __cmp(self, other):
+        assert isinstance(other, datetime)
         mytz = self._tzinfo
         ottz = other._tzinfo
         myoff = otoff = None
