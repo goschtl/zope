@@ -24,5 +24,6 @@ def defineXpdl(_context, file, process, id):
     package = xpdl.read(open(file))
     definition = package[process]
     definition.id = id
+    definition._start # get the process initialized
 
     utility(_context, wfmc.interfaces.IProcessDefinition, definition, name=id)
