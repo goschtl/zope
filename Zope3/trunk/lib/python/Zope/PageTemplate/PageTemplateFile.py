@@ -18,7 +18,7 @@ Zope object encapsulating a Page Template from the filesystem.
 
 __metatype__ = type
 
-__version__ = '$Revision: 1.3 $'[11:-2]
+__version__ = '$Revision: 1.4 $'[11:-2]
 
 import os, sys
 from zLOG import LOG, ERROR, INFO
@@ -49,7 +49,7 @@ class PageTemplateFile(PageTemplate):
             mtime = os.path.getmtime(self.filename)
         except OSError:
             mtime = 0
-        if getattr(self, '_v_program', 0) and mtime == self._v_last_read:
+        if self._v_program is not None and mtime == self._v_last_read:
             return
         self.pt_edit(open(self.filename), None)
         self._cook()
