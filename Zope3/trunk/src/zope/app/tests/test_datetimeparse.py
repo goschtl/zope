@@ -89,10 +89,10 @@ class Test(unittest.TestCase):
         self.assertEqual(_tzoffset('EET', None), 2*60*60)
 
     def testParseDatetimetz(self):
-        from datetime import datetimetz
+        from datetime import datetime
         from zope.app.datetimeutils import parseDatetimetz, tzinfo
         self.assertEqual(parseDatetimetz('1999-12-31T01:02:03.037-00:30'),
-                         datetimetz(1999, 12, 31, 1, 2, 3, 37000, tzinfo(-30)))
+                         datetime(1999, 12, 31, 1, 2, 3, 37000, tzinfo(-30)))
 
 def test_suite():
     loader=unittest.TestLoader()

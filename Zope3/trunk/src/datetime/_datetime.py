@@ -849,167 +849,11 @@ class date(object):
         yhi, ylo, self.__month, self.__day = map(ord, string)
         self.__year = yhi * 256 + ylo
 
+_date_class = date  # so functions w/ args named "date" can get at the class
+
 date.min = date(1, 1, 1)
 date.max = date(9999, 12, 31)
 date.resolution = timedelta(days=1)
-
-
-class time(object):
-    """Concrete time type.
-
-    Constructors:
-
-    __init__()
-
-    Operators:
-
-    __repr__, __str__
-    __cmp__, __hash__
-
-    Methods:
-
-    strftime()
-    isoformat()
-
-    Properties (readonly):
-    hour, minute, second, microsecond
-    """
-
-    def __init__(self, hour=0, minute=0, second=0, microsecond=0):
-        """Constructor.
-
-        Arguments:
-
-        hour, minute (required)
-        second, microsecond (default to zero)
-        """
-        _check_time_fields(hour, minute, second, microsecond)
-        self.__hour = hour
-        self.__minute = minute
-        self.__second = second
-        self.__microsecond = microsecond
-
-    # Read-only field accessors
-    hour = property(lambda self: self.__hour, doc="hour (0-23)")
-    minute = property(lambda self: self.__minute, doc="minute (0-59)")
-    second = property(lambda self: self.__second, doc="second (0-59)")
-    microsecond = property(lambda self: self.__microsecond,
-                           doc="microsecond (0-999999)")
-
-    # Standard conversions, __cmp__, __hash__ (and helpers)
-
-    def __cmp__(self, other):
-        """Three-way comparison."""
-        if not isinstance(other, time):
-            # XXX Buggy in 2.2.2.
-            raise TypeError("can't compare '%s' to '%s'" % (
-                            type(self).__name__, type(other).__name__))
-        mytz = myoff = None
-        if isinstance(self, timetz):
-            mytz = self._tzinfo
-        ottz = otoff = None
-        if isinstance(other, timetz):
-            ottz = other._tzinfo
-
-        if mytz is ottz:
-            base_compare = True
-        else:
-            if isinstance(self, timetz):
-                myoff = self._utcoffset()
-            if isinstance(other, timetz):
-                otoff = other._utcoffset()
-            base_compare = myoff == otoff
-
-        if base_compare:
-            return cmp((self.__hour, self.__minute, self.__second,
-                        self.__microsecond),
-                       (other.__hour, other.__minute, other.__second,
-                        other.__microsecond))
-        if myoff is None or otoff is None:
-            # XXX Buggy in 2.2.2.
-            raise TypeError("cannot compare naive and aware times")
-        myhhmm = self.__hour * 60 + self.__minute - myoff
-        othhmm = other.__hour * 60 + other.__minute - otoff
-        return cmp((myhhmm, self.__second, self.__microsecond),
-                   (othhmm, other.__second, other.__microsecond))
-
-    def __hash__(self):
-        """Hash."""
-        # Force use of time.__getstate__().  If self is of a subclass
-        # type, we want the hash of its projection onto time, not the
-        # hash of all the extra stuff it may contain.
-        return hash(time.__getstate__(self))
-
-    # Conversions to string
-
-    def __repr__(self):
-        """Convert to formal string, for repr()."""
-        if self.__microsecond != 0:
-            s = ", %d, %d" % (self.__second, self.__microsecond)
-        elif self.__second != 0:
-            s = ", %d" % self.__second
-        else:
-            s = ""
-        return "%s(%d, %d%s)" % ('datetime.' + self.__class__.__name__,
-                                 self.__hour, self.__minute, s)
-
-    def isoformat(self):
-        """Return the time formatted according to ISO.
-
-        This is 'HH:MM:SS.mmmmmm', or 'HH:MM:SS' if self.microsecond == 0.
-        """
-        return _format_time(self.__hour, self.__minute, self.__second,
-                            self.__microsecond)
-
-    __str__ = isoformat
-
-    def strftime(self, fmt):
-        """Format using strftime().  The date part of the timestamp passed
-        to underlying strftime should not be used.
-        """
-        # The year must be >= 1900 else Python's strftime implementation
-        # can raise a bogus exception.
-        timetuple = (1900, 0, 0,
-                     self.__hour, self.__minute, self.__second,
-                     0, 0, -1)
-        return _wrap_strftime(self, fmt, timetuple)
-
-    def replace(self, hour=None, minute=None, second=None, microsecond=None):
-        """Return a new time with new values for the specified fields."""
-        if hour is None:
-            hour = self.hour
-        if minute is None:
-            minute = self.minute
-        if second is None:
-            second = self.second
-        if microsecond is None:
-            microsecond = self.microsecond
-        _check_time_fields(hour, minute, second, microsecond)
-        return time(hour, minute, second, microsecond)
-
-    def __nonzero__(self):
-        return (self.__hour != 0 or
-                self.__minute != 0 or
-                self.__second != 0 or
-                self.__microsecond != 0)
-
-    # Pickle support.
-
-    def __getstate__(self):
-        us2, us3 = divmod(self.__microsecond, 256)
-        us1, us2 = divmod(us2, 256)
-        return ("%c" * 6) % (self.__hour, self.__minute, self.__second,
-                             us1, us2, us3)
-
-    def __setstate__(self, string):
-        assert len(string) == 6
-        self.__hour, self.__minute, self.__second, us1, us2, us3 = \
-                                                            map(ord, string)
-        self.__microsecond = (((us1 << 8) | us2) << 8) | us3
-
-time.min = time(0, 0, 0)
-time.max = time(23, 59, 59, 999999)
-time.resolution = timedelta(microseconds=1)
 
 class tzinfo(object):
     """Abstract base class for time zone info classes.
@@ -1040,7 +884,7 @@ class tzinfo(object):
     def __reduce__(self):
         return type(self), (), self.__dict__
 
-class timetz(time):
+class time(object):
     """Time with time zone.
 
     Constructors:
@@ -1074,24 +918,61 @@ class timetz(time):
         tzinfo (default to None)
         """
         _check_tzinfo_arg(tzinfo)
-        super(timetz, self).__init__(hour, minute, second, microsecond)
+        _check_time_fields(hour, minute, second, microsecond)
+        self.__hour = hour
+        self.__minute = minute
+        self.__second = second
+        self.__microsecond = microsecond
         self._tzinfo = tzinfo
 
     # Read-only field accessors
+    hour = property(lambda self: self.__hour, doc="hour (0-23)")
+    minute = property(lambda self: self.__minute, doc="minute (0-59)")
+    second = property(lambda self: self.__second, doc="second (0-59)")
+    microsecond = property(lambda self: self.__microsecond,
+                           doc="microsecond (0-999999)")
     tzinfo = property(lambda self: self._tzinfo, doc="timezone info object")
 
     # Standard conversions, __hash__ (and helpers)
+
+    def __cmp__(self, other):
+        """Three-way comparison."""
+        if not isinstance(other, time):
+            # XXX Buggy in 2.2.2.
+            raise TypeError("can't compare '%s' to '%s'" % (
+                            type(self).__name__, type(other).__name__))
+        mytz = self._tzinfo
+        ottz = other._tzinfo
+        myoff = otoff = None
+
+        if mytz is ottz:
+            base_compare = True
+        else:
+            myoff = self._utcoffset()
+            otoff = other._utcoffset()
+            base_compare = myoff == otoff
+
+        if base_compare:
+            return cmp((self.__hour, self.__minute, self.__second,
+                        self.__microsecond),
+                       (other.__hour, other.__minute, other.__second,
+                        other.__microsecond))
+        if myoff is None or otoff is None:
+            # XXX Buggy in 2.2.2.
+            raise TypeError("cannot compare naive and aware times")
+        myhhmm = self.__hour * 60 + self.__minute - myoff
+        othhmm = other.__hour * 60 + other.__minute - otoff
+        return cmp((myhhmm, self.__second, self.__microsecond),
+                   (othhmm, other.__second, other.__microsecond))
 
     def __hash__(self):
         """Hash."""
         tzoff = self._utcoffset()
         if not tzoff: # zero or None
-            return super(timetz, self).__hash__()
+            return hash(self.__getstate__()[0])
         h, m = divmod(self.hour * 60 + self.minute - tzoff, 60)
         if 0 <= h < 24:
             return hash(time(h, m, self.second, self.microsecond))
-        # Unfortunately it is not possible to construct a new time object
-        # and use super().__hash__(), since hour is out-of-bounds.
         return hash((h, m, self.second, self.microsecond))
 
     # Conversion to string
@@ -1112,7 +993,14 @@ class timetz(time):
 
     def __repr__(self):
         """Convert to formal string, for repr()."""
-        s = super(timetz, self).__repr__()
+        if self.__microsecond != 0:
+            s = ", %d, %d" % (self.__second, self.__microsecond)
+        elif self.__second != 0:
+            s = ", %d" % self.__second
+        else:
+            s = ""
+        s= "%s(%d, %d%s)" % ('datetime.' + self.__class__.__name__,
+                             self.__hour, self.__minute, s)
         if self._tzinfo is not None:
             assert s[-1:] == ")"
             s = s[:-1] + ", tzinfo=%r" % self._tzinfo + ")"
@@ -1124,12 +1012,25 @@ class timetz(time):
         This is 'HH:MM:SS.mmmmmm+zz:zz', or 'HH:MM:SS+zz:zz' if
         self.microsecond == 0.
         """
-        s = super(timetz, self).isoformat()
+        s = _format_time(self.__hour, self.__minute, self.__second,
+                         self.__microsecond)
         tz = self._tzstr()
-        if tz: s += tz
+        if tz:
+            s += tz
         return s
 
     __str__ = isoformat
+
+    def strftime(self, fmt):
+        """Format using strftime().  The date part of the timestamp passed
+        to underlying strftime should not be used.
+        """
+        # The year must be >= 1900 else Python's strftime implementation
+        # can raise a bogus exception.
+        timetuple = (1900, 0, 0,
+                     self.__hour, self.__minute, self.__second,
+                     0, 0, -1)
+        return _wrap_strftime(self, fmt, timetuple)
 
     # Timezone functions
 
@@ -1176,7 +1077,7 @@ class timetz(time):
 
     def replace(self, hour=None, minute=None, second=None, microsecond=None,
                 tzinfo=True):
-        """Return a new timetz with new values for the specified fields."""
+        """Return a new time with new values for the specified fields."""
         if hour is None:
             hour = self.hour
         if minute is None:
@@ -1189,7 +1090,7 @@ class timetz(time):
             tzinfo = self.tzinfo
         _check_time_fields(hour, minute, second, microsecond)
         _check_tzinfo_arg(tzinfo)
-        return timetz(hour, minute, second, microsecond, tzinfo)
+        return time(hour, minute, second, microsecond, tzinfo)
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _dst(self):
@@ -1206,7 +1107,10 @@ class timetz(time):
     # Pickle support.
 
     def __getstate__(self):
-        basestate = time.__getstate__(self)
+        us2, us3 = divmod(self.__microsecond, 256)
+        us1, us2 = divmod(us2, 256)
+        basestate = ("%c" * 6) % (self.__hour, self.__minute, self.__second,
+                                  us1, us2, us3)
         if self._tzinfo is None:
             return (basestate,)
         else:
@@ -1214,61 +1118,36 @@ class timetz(time):
 
     def __setstate__(self, state):
         if not isinstance(state, tuple):
-            raise TypeError("timetz.__setstate__() requires a tuple arg")
+            raise TypeError("time.__setstate__() requires a tuple arg")
         if not 1 <= len(state) <= 2:
-            raise TypeError("timetz.__setstate__() requires a 1-tuple or "
+            raise TypeError("time.__setstate__() requires a 1-tuple or "
                             "2-tuple argument")
-        time.__setstate__(self, state[0])
+        string = state[0]
+        assert len(string) == 6
+        self.__hour, self.__minute, self.__second, us1, us2, us3 = \
+                                                            map(ord, string)
+        self.__microsecond = (((us1 << 8) | us2) << 8) | us3
         if len(state) == 1:
             self._tzinfo = None
         else:
             self._tzinfo = state[1]
 
-timetz.min = timetz(0, 0, 0)
-timetz.max = timetz(23, 59, 59, 999999)
-timetz.resolution = timedelta(microseconds=1)
+_time_class = time  # so functions w/ args named "time" can get at the class
 
+time.min = time(0, 0, 0)
+time.max = time(23, 59, 59, 999999)
+time.resolution = timedelta(microseconds=1)
 
 class datetime(date):
-    """Concrete date/time type, inheriting from date.
 
-    Constructors:
-
-    __init__()
-    now(), utcnow()
-    fromtimestamp(), utcfromtimestamp()
-    fromordinal()
-
-    Operators:
-
-    __repr__, __str__
-    __cmp__, __hash__
-    __add__, __radd__, __sub__ (add/radd only with timedelta arg)
-
-    Methods:
-
-    timetuple()
-    toordinal()
-    weekday()
-    isoweekday(), isocalendar(), isoformat()
-    ctime()
-    strftime()
-
-    Properties (readonly):
-    year, month, day, hour, minute, second, microsecond
-    """
+    # XXX needs docstrings
+    # See http://www.zope.org/Members/fdrake/DateTimeWiki/TimeZoneInfo
 
     def __init__(self, year, month, day, hour=0, minute=0, second=0,
-                 microsecond=0):
-        """Constructor.
-
-        Arguments:
-
-        year, month, day (required, base 1)
-        hour, minute, second, microsecond (default to zero)
-        """
-        super(datetime, self).__init__(year, month, day)
+                 microsecond=0, tzinfo=None):
+        _check_tzinfo_arg(tzinfo)
         _check_time_fields(hour, minute, second, microsecond)
+        date.__init__(self, year, month, day)
         # XXX This duplicates __year, __month, __day for convenience :-(
         self.__year = year
         self.__month = month
@@ -1277,88 +1156,7 @@ class datetime(date):
         self.__minute = minute
         self.__second = second
         self.__microsecond = microsecond
-
-    # Additional constructors
-
-    def fromtimestamp(cls, t):
-        "Construct a datetime from a POSIX timestamp (like time.time())."
-        y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
-        us = int(round((t % 1.0) * 1000000))
-        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
-        return cls(y, m, d, hh, mm, ss, us)
-    fromtimestamp = classmethod(fromtimestamp)
-
-    # XXX This is supposed to do better than we *can* do by using time.time(),
-    # XXX if the platform supports a more accurate way.  The C implementation
-    # XXX uses gettimeofday on platforms that have it, but that isn't
-    # XXX available from Python.  So now() may return different results
-    # XXX across the implementations.
-    def now(cls):
-        "Construct a datetime from time.time()."
-        t = _time.time()
-        return cls.fromtimestamp(t)
-    now = classmethod(now)
-
-    def utcfromtimestamp(cls, t):
-        "Construct a UTC datetime from a POSIX timestamp (like time.time())."
-        y, m, d, hh, mm, ss, weekday, jday, dst = _time.gmtime(t)
-        us = int((t % 1.0) * 1000000)
-        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
-        return cls(y, m, d, hh, mm, ss, us)
-    utcfromtimestamp = classmethod(utcfromtimestamp)
-
-    def utcnow(cls):
-        "Construct a UTC datetime from time.time()."
-        t = _time.time()
-        return cls.utcfromtimestamp(t)
-    utcnow = classmethod(utcnow)
-
-    def combine(cls, date, time):
-        "Construct a datetime from a given date and a given time."
-        import datetime
-        if not isinstance(date, datetime.date):
-            raise TypeError("combine's first argument must be a date")
-        if not isinstance(time, datetime.time):
-            raise TypeError("combine's second argument must be a time")
-        return cls(date.year, date.month, date.day,
-                   time.hour, time.minute, time.second, time.microsecond)
-    combine = classmethod(combine)
-
-    def replace(self, year=None, month=None, day=None, hour=None,
-                minute=None, second=None, microsecond=None):
-        """Return a new datetime with new values for the specified fields."""
-        if year is None:
-            year = self.year
-        if month is None:
-            month = self.month
-        if day is None:
-            day = self.day
-        if hour is None:
-            hour = self.hour
-        if minute is None:
-            minute = self.minute
-        if second is None:
-            second = self.second
-        if microsecond is None:
-            microsecond = self.microsecond
-        _check_date_fields(year, month, day)
-        _check_time_fields(hour, minute, second, microsecond)
-        return datetime(year, month, day, hour, minute, second, microsecond)
-
-    # Conversions to string.
-
-    def __repr__(self):
-        "Convert to formal string, for repr()."
-        L = [self.__year, self.__month, self.__day, # These are never zero
-             self.__hour, self.__minute, self.__second, self.__microsecond]
-        while L[-1] == 0:
-            del L[-1]
-        s = ", ".join(map(str, L))
-        return "%s(%s)" % ('datetime.' + self.__class__.__name__, s)
-
-    def __str__(self):
-        "Convert to string, for str()."
-        return self.isoformat(sep=' ')
+        self._tzinfo = tzinfo
 
     # Read-only field accessors
     hour = property(lambda self: self.__hour, doc="hour (0-23)")
@@ -1366,188 +1164,10 @@ class datetime(date):
     second = property(lambda self: self.__second, doc="second (0-59)")
     microsecond = property(lambda self: self.__microsecond,
                            doc="microsecond (0-999999)")
-
-    # Standard conversions, __cmp__, __hash__ (and helpers)
-
-    def timetuple(self):
-        "Return local time tuple compatible with time.localtime()."
-        return _build_struct_time(self.__year, self.__month, self.__day,
-                                  self.__hour, self.__minute, self.__second,
-                                  -1)
-
-    def date(self):
-        "Return the date part."
-        return date(self.__year, self.__month, self.__day)
-
-    def time(self):
-        "Return the time part."
-        return time(self.__hour, self.__minute, self.__second,
-                    self.__microsecond)
-
-    def astimezone(self, tz):
-        _check_tzinfo_arg(tz)
-        temp = datetimetz.combine(self.date(), self.time())
-        return temp.replace(tzinfo=tz)
-
-    def __cmp__(self, other):
-        import datetime
-        if not isinstance(other, datetime.datetime):
-            # XXX Buggy in 2.2.2.
-            raise TypeError("can't compare '%s' to '%s'" % (
-                            type(self).__name__, type(other).__name__))
-        mytz = myoff = None
-        if isinstance(self, datetimetz):
-            mytz = self._tzinfo
-        ottz = otoff = None
-        if isinstance(other, datetimetz):
-            ottz = other._tzinfo
-
-        if mytz is ottz:
-            base_compare = True
-        else:
-            if isinstance(self, datetimetz):
-                myoff = self._utcoffset()
-            if isinstance(other, datetimetz):
-                otoff = other._utcoffset()
-            base_compare = myoff == otoff
-
-        if base_compare:
-            return cmp((self.__year, self.__month, self.__day,
-                        self.__hour, self.__minute, self.__second,
-                        self.__microsecond),
-                       (other.__year, other.__month, other.__day,
-                        other.__hour, other.__minute, other.__second,
-                        other.__microsecond))
-        if myoff is None or otoff is None:
-            # XXX Buggy in 2.2.2.
-            raise TypeError("cannot compare naive and aware datetimes")
-        # XXX What follows could be done more efficiently...
-        diff = (datetime.datetime.__sub__(self, other) +
-                timedelta(minutes=otoff-myoff))
-        if diff.days < 0:
-            return -1
-        if diff == timedelta():
-            return 0
-        return 1
-
-    def __hash__(self):
-        "Hash."
-        import datetime
-        # Force use of datetime.__getstate__().  If self is of a subclass
-        # type, we want the hash of its projection onto datetime, not the
-        # hash of all the extra stuff it may contain.
-        return hash(datetime.datetime.__getstate__(self))
-
-    # Formatting methods
-
-    # XXX These shouldn't depend on time.localtime(), because that
-    # clips the usable dates to [1970 .. 2038).  At least ctime() is
-    # easily done without using strftime() -- that's better too because
-    # strftime("%c", ...) is locale specific.
-
-    # XXX An additional question is whether ctime() should renormalize
-    # to local time, or display the time as entered (which may be
-    # confusing since it doesn't show the timezone).
-
-    def ctime(self):
-        "Format a la ctime()."
-        t = tmxxx(self.__year, self.__month, self.__day, self.__hour,
-                  self.__minute, self.__second)
-        return t.ctime()
-
-    # Computations
-
-    def __add__(self, other):
-        "Add a datetime to a timedelta."
-        if isinstance(other, timedelta):
-            t = tmxxx(self.__year,
-                      self.__month,
-                      self.__day + other.days,
-                      self.__hour,
-                      self.__minute,
-                      self.__second + other.seconds,
-                      self.__microsecond + other.microseconds)
-            self._checkOverflow(t.year)
-            result = self.__class__(t.year, t.month, t.day,
-                                    t.hour, t.minute, t.second,
-                                    t.microsecond)
-            return result
-        raise TypeError
-        # XXX Should be 'return NotImplemented', but there's a bug in 2.2...
-
-    __radd__ = __add__
-
-    def __sub__(self, other):
-        """Subtract two datetimes, or a datetime and a timedelta.
-
-        An int/long/float argument is also allowed, interpreted as seconds.
-        """
-        if isinstance(other, timedelta):
-            return self + -other
-        if isinstance(other, datetime):
-            days1 = self.toordinal()
-            days2 = other.toordinal()
-            secs1 = (self.__second + self.__minute * 60 + self.__hour * 3600)
-            secs2 = (other.__second +
-                     (other.__minute) * 60 +
-                     other.__hour * 3600)
-            return timedelta(days1 - days2,
-                             secs1 - secs2,
-                             self.__microsecond - other.__microsecond)
-        return NotImplemented
-
-    # ISO formats including time
-
-    def isoformat(self, sep='T'):
-        """Return the time formatted according to ISO.
-
-        This is 'YYYY-MM-DD HH:MM:SS.mmmmmm', or 'YYYY-MM-DD HH:MM:SS' if
-        self.microsecond == 0.
-
-        Optional argument sep specifies the separator between date and
-        time, default 'T'.
-        """
-        return ("%04d-%02d-%02d%c" % (self.__year, self.__month, self.__day,
-                                      sep) +
-                _format_time(self.__hour, self.__minute, self.__second,
-                             self.__microsecond))
-
-    # Pickle support.
-
-    def __getstate__(self):
-        yhi, ylo = divmod(self.__year, 256)
-        us2, us3 = divmod(self.__microsecond, 256)
-        us1, us2 = divmod(us2, 256)
-        return ("%c" * 10) % (yhi, ylo, self.__month, self.__day, self.__hour,
-                              self.__minute, self.__second, us1, us2, us3)
-
-    def __setstate__(self, string):
-        assert len(string) == 10
-        (yhi, ylo, self.__month, self.__day, self.__hour,
-         self.__minute, self.__second, us1, us2, us3) = map(ord, string)
-        self.__year = yhi * 256 + ylo
-        self.__microsecond = (((us1 << 8) | us2) << 8) | us3
-
-datetime.min = datetime(1, 1, 1)
-datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999)
-datetime.resolution = timedelta(microseconds=1)
-
-class datetimetz(datetime):
-
-    # XXX needs docstrings
-    # See http://www.zope.org/Members/fdrake/DateTimeWiki/TimeZoneInfo
-
-    def __init__(self, year, month, day, hour=0, minute=0, second=0,
-                 microsecond=0, tzinfo=None):
-        _check_tzinfo_arg(tzinfo)
-        super(datetimetz, self).__init__(year, month, day,
-                                         hour, minute, second, microsecond)
-        self._tzinfo = tzinfo
-
     tzinfo = property(lambda self: self._tzinfo, doc="timezone info object")
 
     def fromtimestamp(cls, t, tzinfo=None):
-        """Construct a datetimetz from a POSIX timestamp (like time.time()).
+        """Construct a datetime from a POSIX timestamp (like time.time()).
 
         A timezone info object may be passed in as well.
         """
@@ -1557,17 +1177,40 @@ class datetimetz(datetime):
         return cls(y, m, d, hh, mm, ss, us, tzinfo)
     fromtimestamp = classmethod(fromtimestamp)
 
+    def utcfromtimestamp(cls, t):
+        "Construct a UTC datetime from a POSIX timestamp (like time.time())."
+        y, m, d, hh, mm, ss, weekday, jday, dst = _time.gmtime(t)
+        us = int((t % 1.0) * 1000000)
+        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
+        return cls(y, m, d, hh, mm, ss, us)
+    utcfromtimestamp = classmethod(utcfromtimestamp)
+
+    # XXX This is supposed to do better than we *can* do by using time.time(),
+    # XXX if the platform supports a more accurate way.  The C implementation
+    # XXX uses gettimeofday on platforms that have it, but that isn't
+    # XXX available from Python.  So now() may return different results
+    # XXX across the implementations.
     def now(cls, tzinfo=None):
         "Construct a datetime from time.time() and optional time zone info."
         t = _time.time()
         return cls.fromtimestamp(t, tzinfo)
     now = classmethod(now)
 
+    def utcnow(cls):
+        "Construct a UTC datetime from time.time()."
+        t = _time.time()
+        return cls.utcfromtimestamp(t)
+    utcnow = classmethod(utcnow)
+
     def combine(cls, date, time):
         "Construct a datetime from a given date and a given time."
+        if not isinstance(date, _date_class):
+            raise TypeError("date argument must be a date instance")
+        if not isinstance(time, _time_class):
+            raise TypeError("time argument must be a time instance")
         return cls(date.year, date.month, date.day,
                    time.hour, time.minute, time.second, time.microsecond,
-                   getattr(time, 'tzinfo', None))
+                   time.tzinfo)
     combine = classmethod(combine)
 
     def timetuple(self):
@@ -1592,14 +1235,22 @@ class datetimetz(datetime):
             hh, mm = tm.hour, tm.minute
         return _build_struct_time(y, m, d, hh, mm, ss, 0)
 
+    def date(self):
+        "Return the date part."
+        return date(self.__year, self.__month, self.__day)
+
+    def time(self):
+        "Return the time part, with tzinfo None."
+        return time(self.hour, self.minute, self.second, self.microsecond)
+
     def timetz(self):
-        "Return the time part."
-        return timetz(self.hour, self.minute, self.second, self.microsecond,
-                      self._tzinfo)
+        "Return the time part, with same tzinfo."
+        return time(self.hour, self.minute, self.second, self.microsecond,
+                    self._tzinfo)
 
     def replace(self, year=None, month=None, day=None, hour=None,
                 minute=None, second=None, microsecond=None, tzinfo=True):
-        """Return a new datetimetz with new values for the specified fields."""
+        """Return a new datetime with new values for the specified fields."""
         if year is None:
             year = self.year
         if month is None:
@@ -1619,7 +1270,7 @@ class datetimetz(datetime):
         _check_date_fields(year, month, day)
         _check_time_fields(hour, minute, second, microsecond)
         _check_tzinfo_arg(tzinfo)
-        return datetimetz(year, month, day, hour, minute, second,
+        return datetime(year, month, day, hour, minute, second,
                           microsecond, tzinfo)
 
     def _inconsistent_dst(self):
@@ -1677,8 +1328,30 @@ class datetimetz(datetime):
             pass
         return other
 
+    # Ways to produce a string.
+
+    def ctime(self):
+        "Format a la ctime()."
+        t = tmxxx(self.__year, self.__month, self.__day, self.__hour,
+                  self.__minute, self.__second)
+        return t.ctime()
+
     def isoformat(self, sep='T'):
-        s = super(datetimetz, self).isoformat(sep)
+        """Return the time formatted according to ISO.
+
+        This is 'YYYY-MM-DD HH:MM:SS.mmmmmm', or 'YYYY-MM-DD HH:MM:SS' if
+        self.microsecond == 0.
+
+        If self.tzinfo is not None, the UTC offset is also attached, giving
+        'YYYY-MM-DD HH:MM:SS.mmmmmm+HH:MM' or 'YYYY-MM-DD HH:MM:SS+HH:MM'.
+
+        Optional argument sep specifies the separator between date and
+        time, default 'T'.
+        """
+        s = ("%04d-%02d-%02d%c" % (self.__year, self.__month, self.__day,
+                                  sep) +
+                _format_time(self.__hour, self.__minute, self.__second,
+                             self.__microsecond))
         off = self._utcoffset()
         if off is not None:
             if off < 0:
@@ -1691,11 +1364,21 @@ class datetimetz(datetime):
         return s
 
     def __repr__(self):
-        s = super(datetimetz, self).__repr__()
+        "Convert to formal string, for repr()."
+        L = [self.__year, self.__month, self.__day, # These are never zero
+             self.__hour, self.__minute, self.__second, self.__microsecond]
+        while L[-1] == 0:
+            del L[-1]
+        s = ", ".join(map(str, L))
+        s = "%s(%s)" % ('datetime.' + self.__class__.__name__, s)
         if self._tzinfo is not None:
             assert s[-1:] == ")"
             s = s[:-1] + ", tzinfo=%r" % self._tzinfo + ")"
         return s
+
+    def __str__(self):
+        "Convert to string, for str()."
+        return self.isoformat(sep=' ')
 
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
@@ -1744,49 +1427,98 @@ class datetimetz(datetime):
         offset = _check_utc_offset("dst", offset)
         return offset
 
+    def __cmp__(self, other):
+        if not isinstance(other, datetime):
+            # XXX Buggy in 2.2.2.
+            raise TypeError("can't compare '%s' to '%s'" % (
+                            type(self).__name__, type(other).__name__))
+        mytz = self._tzinfo
+        ottz = other._tzinfo
+        myoff = otoff = None
+
+        if mytz is ottz:
+            base_compare = True
+        else:
+            if mytz is not None:
+                myoff = self._utcoffset()
+            if ottz is not None:
+                otoff = other._utcoffset()
+            base_compare = myoff == otoff
+
+        if base_compare:
+            return cmp((self.__year, self.__month, self.__day,
+                        self.__hour, self.__minute, self.__second,
+                        self.__microsecond),
+                       (other.__year, other.__month, other.__day,
+                        other.__hour, other.__minute, other.__second,
+                        other.__microsecond))
+        if myoff is None or otoff is None:
+            # XXX Buggy in 2.2.2.
+            raise TypeError("cannot compare naive and aware datetimes")
+        # XXX What follows could be done more efficiently...
+        diff = self - other     # this will take offsets into account
+        if diff.days < 0:
+            return -1
+        return diff and 1 or 0
+
     def __add__(self, other):
-        result = super(datetimetz, self).__add__(other)
-        assert isinstance(result, datetimetz)
-        result._tzinfo = self._tzinfo
+        "Add a datetime and a timedelta."
+        if not isinstance(other, timedelta):
+            return NotImplemented
+        t = tmxxx(self.__year,
+                  self.__month,
+                  self.__day + other.days,
+                  self.__hour,
+                  self.__minute,
+                  self.__second + other.seconds,
+                  self.__microsecond + other.microseconds)
+        self._checkOverflow(t.year)
+        result = self.__class__(t.year, t.month, t.day,
+                                t.hour, t.minute, t.second,
+                                t.microsecond, tzinfo=self._tzinfo)
         return result
 
     __radd__ = __add__
 
     def __sub__(self, other):
-        supersub = super(datetimetz, self).__sub__
+        "Subtract two datetimes, or a datetime and a timedelta."
         if not isinstance(other, datetime):
-            # This manages to attach self.tzinfo to the result via a
-            # devious route:  self - timedelta is changed to
-            # self + (-timedelta) by datetime.__sub__, and the latter is
-            # handled by datetimetz.__add__.
-            return supersub(other)
-        mytz = self._tzinfo
-        ottz = None
-        if isinstance(other, datetimetz):
-            ottz = other._tzinfo
-        if mytz is ottz:
-            return supersub(other)
+            if isinstance(other, timedelta):
+                return self + -other
+            return NotImplemented
 
+        days1 = self.toordinal()
+        days2 = other.toordinal()
+        secs1 = self.__second + self.__minute * 60 + self.__hour * 3600
+        secs2 = other.__second + other.__minute * 60 + other.__hour * 3600
+        base = timedelta(days1 - days2,
+                         secs1 - secs2,
+                         self.__microsecond - other.__microsecond)
+        if self._tzinfo is other._tzinfo:
+            return base
         myoff = self._utcoffset()
-        otoff = None
-        if isinstance(other, datetimetz):
-            otoff = other._utcoffset()
+        otoff = other._utcoffset()
         if myoff == otoff:
-            return supersub(other)
+            return base
         if myoff is None or otoff is None:
             raise TypeError, "cannot mix naive and timezone-aware time"
-        return supersub(other) + timedelta(minutes=otoff-myoff)
+        return base + timedelta(minutes = otoff-myoff)
 
     def __hash__(self):
         tzoff = self._utcoffset()
         if tzoff is None:
-            return super(datetimetz, self).__hash__()
+            return hash(self.__getstate__()[0])
         days = _ymd2ord(self.year, self.month, self.day)
         seconds = self.hour * 3600 + (self.minute - tzoff) * 60 + self.second
         return hash(timedelta(days, seconds, self.microsecond))
 
     def __getstate__(self):
-        basestate = datetime.__getstate__(self)
+        yhi, ylo = divmod(self.__year, 256)
+        us2, us3 = divmod(self.__microsecond, 256)
+        us1, us2 = divmod(us2, 256)
+        basestate = ("%c" * 10) % (yhi, ylo, self.__month, self.__day,
+                                   self.__hour, self.__minute, self.__second,
+                                   us1, us2, us3)
         if self._tzinfo is None:
             return (basestate,)
         else:
@@ -1794,20 +1526,25 @@ class datetimetz(datetime):
 
     def __setstate__(self, state):
         if not isinstance(state, tuple):
-            raise TypeError("datetimetz.__setstate__() requires a tuple arg")
+            raise TypeError("datetime.__setstate__() requires a tuple arg")
         if not 1 <= len(state) <= 2:
-            raise TypeError("datetimetz.__setstate__() requires a 1-tuple or "
+            raise TypeError("datetime.__setstate__() requires a 1-tuple or "
                             "2-tuple argument")
-        datetime.__setstate__(self, state[0])
+        string = state[0]
+        assert len(string) == 10
+        (yhi, ylo, self.__month, self.__day, self.__hour,
+         self.__minute, self.__second, us1, us2, us3) = map(ord, string)
+        self.__year = yhi * 256 + ylo
+        self.__microsecond = (((us1 << 8) | us2) << 8) | us3
         if len(state) == 1:
             self._tzinfo = None
         else:
             self._tzinfo = state[1]
 
 
-datetimetz.min = datetimetz(1, 1, 1)
-datetimetz.max = datetimetz(9999, 12, 31, 23, 59, 59, 999999)
-datetimetz.resolution = timedelta(microseconds=1)
+datetime.min = datetime(1, 1, 1)
+datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999)
+datetime.resolution = timedelta(microseconds=1)
 
 
 def _isoweek1monday(year):
@@ -1836,24 +1573,6 @@ def _date_unpickler(state):
     self.__setstate__(state)
     return self
 
-def _datetime_pickler(dt):
-    state = dt.__getstate__()
-    return _datetime_unpickler, (state,)
-
-def _datetime_unpickler(state):
-    self = datetime(1, 1, 1)
-    self.__setstate__(state)
-    return self
-
-def _time_pickler(t):
-    state = t.__getstate__()
-    return _time_unpickler, (state,)
-
-def _time_unpickler(state):
-    self = time()
-    self.__setstate__(state)
-    return self
-
 def _tzinfo_pickler(tz):
     return _tzinfo_unpickler, ()
 
@@ -1861,36 +1580,34 @@ def _tzinfo_unpickler():
     self = tzinfo()
     return self
 
-def _timetz_pickler(tz):
+def _time_pickler(tz):
     state = tz.__getstate__()
-    return _timetz_unpickler, (state,)
+    return _time_unpickler, (state,)
 
-def _timetz_unpickler(state):
-    self = timetz()
+def _time_unpickler(state):
+    self = time()
     self.__setstate__(state)
     return self
 
-def _datetimetz_pickler(dtz):
+def _datetime_pickler(dtz):
     state = dtz.__getstate__()
-    return _datetimetz_unpickler, (state,)
+    return _datetime_unpickler, (state,)
 
-def _datetimetz_unpickler(state):
-    self = datetimetz(1, 1, 1)
+def _datetime_unpickler(state):
+    self = datetime(1, 1, 1)
     self.__setstate__(state)
     return self
 
 # Register pickle/unpickle functions.
 from copy_reg import pickle
 pickle(date, _date_pickler, _date_unpickler)
-pickle(datetime, _datetime_pickler, _datetime_unpickler)
-pickle(time, _time_pickler, _time_unpickler)
 pickle(tzinfo, _tzinfo_pickler, _tzinfo_unpickler)
-pickle(timetz, _timetz_pickler, _timetz_unpickler)
-pickle(datetimetz, _datetimetz_pickler, _datetimetz_unpickler)
+pickle(time, _time_pickler, _time_unpickler)
+pickle(datetime, _datetime_pickler, _datetime_unpickler)
 del pickle
 
 """
-Some time zone algebra.  For a datetimetz x, let
+Some time zone algebra.  For a datetime x, let
     x.n = x stripped of its timezone -- its naive time.
     x.o = x.utcoffset(), and assuming that doesn't raise an exception or
           return None
@@ -1920,7 +1637,7 @@ Now we can explain x.astimezone(tz).  Let's assume it's an interesting case
 (meaning that the various tzinfo methods exist, and don't blow up or return
 None when called).
 
-The function wants to return a datetimetz y with timezone tz, equivalent to x.
+The function wants to return a datetime y with timezone tz, equivalent to x.
 
 By #3, we want
 

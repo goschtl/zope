@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: typereg.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: typereg.py,v 1.3 2003/01/08 20:18:29 tim_one Exp $
 """
 
 from zope.interface.implements import visitImplements
@@ -69,14 +69,12 @@ class DatetimeRepresentation:
 
     def getTypes():
         import datetime
-        # XXX not supporting tz or timedelta yet
+        # XXX not supporting timedelta yet
         return [
             datetime.date,
             datetime.datetime,
-          # datetime.datetimetz,
             datetime.time,
           #  datetime.timedelta,
-          # datetime.timetz
         ]
     getTypes = staticmethod(getTypes)
 

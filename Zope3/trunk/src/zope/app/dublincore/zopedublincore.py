@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: zopedublincore.py,v 1.2 2002/12/25 14:12:50 jim Exp $
+$Id: zopedublincore.py,v 1.3 2003/01/08 20:18:28 tim_one Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.datetimeutils import parseDatetimetz
-from datetime import datetimetz
 from datetime import datetime
 
 class SimpleProperty:
@@ -67,7 +66,7 @@ class DateProperty(ScalarProperty):
 
     def __set__(self, inst, value):
         if not isinstance(value, datetime):
-            raise TypeError("Element must be %s", datetimetz)
+            raise TypeError("Element must be %s", datetime)
 
         value = unicode(value.isoformat('T'), 'ascii')
 

@@ -7,6 +7,5 @@
 
 from datetime._datetime import MINYEAR, MAXYEAR
 from datetime._datetime import timedelta
-from datetime._datetime import time, timetz
-from datetime._datetime import date, datetime, datetimetz
+from datetime._datetime import time, date, datetime
 from datetime._datetime import tzinfo
