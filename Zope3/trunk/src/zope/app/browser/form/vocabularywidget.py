@@ -502,10 +502,10 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         try:
             self.query_index = int(get(self.query_index_name, 0))
         except ValueError:
-            self.query_index = 0
+            self.query_index = None
         else:
             if self.query_index < 0:
-                self.query_index = 0
+                self.query_index = None
         QS = get(self.query_selections_name, [])
         if not isinstance(QS, list):
             QS = [QS]
@@ -514,7 +514,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
             try:
                 term = self.vocabulary.getTermByToken(token)
             except LookupError:
-                raise ValidationError
+                raise ValidationError, "token %r not in vocabulary" % token
             else:
                 self.query_selections.append(term.value)
 
@@ -523,7 +523,10 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         return ""
 
     def getResults(self):
-        return self.vocabulary
+        if self.query_index is not None:
+            return self.vocabulary
+        else:
+            return None
 
     def renderQueryResults(self, results, value):
         # display query results batch
@@ -552,17 +555,16 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         except StopIteration:
             have_more = False
         self.query_selections = QS
-        L = ["<div class='results'>\n",
+        return ''.join(
+            ["<div class='results'>\n",
              self.makeSelectionList(items, self.query_selections_name),
              "\n",
              self.renderAction(ADD_DONE), "\n",
              self.renderAction(ADD_MORE, not have_more), "\n",
-             self.renderAction(MORE, not have_more), "\n"]
-        if qi:
-            L.append("<input type='hidden' name='%s' value='%d' />\n"
-                     % (self.query_index_name, qi))
-        L.append("</div>")
-        return ''.join(L)
+             self.renderAction(MORE, not have_more), "\n"
+             "<input type='hidden' name='%s' value='%d' />\n"
+             % (self.query_index_name, qi),
+             "</div>"])
 
     def performQueryAction(self, value):
         if self.action == ADD_DONE:
