@@ -218,6 +218,25 @@ class TypesToolTests( TestCase ):
         fs = tool.foo_sub
         self.failUnless(isinstance(fs, DummyTypeInfo), fs.__class__)
         
+    def test_GlobalHide(self):
+        """
+        Test, for FTIs and STIs, that if 'global hide'
+        flag is set, they don't show up in listTypeInfo
+        and if it's not, they do
+        """
+        tool = self.root.portal_types
+        FTI = FactoryTypeInformation
+        STI = ScriptableTypeInformation
+        tool._setObject('Dummy1',
+                        FTI( 'Dummy1',global_hide=1 ))
+        tool._setObject('Dummy2',
+                        FTI( 'Dummy2',global_hide=0 ))
+        tool._setObject('Dummy3',
+                        STI( 'Dummy3',global_hide=1 ))
+        tool._setObject('Dummy4',
+                        STI( 'Dummy4',global_hide=0 ))
+        self.assertEqual(map(lambda o: o.id, tool.listTypeInfo()),
+                         ['Dummy','Dummy2','Dummy4'])
 
 class TypeInfoTests( TestCase ):
     
@@ -343,7 +362,7 @@ class TypeInfoTests( TestCase ):
         
         action = ti.getActionById( 'slot' )
         self.assertEqual( action, 'foo_slot' )
-
+        
 
 class FTIDataTests( TypeInfoTests ):
 
@@ -571,7 +590,6 @@ class FTIConstructionTests_w_Roles( TestCase ):
         ti.constructInstance( folder, 'dust' )
         majyk_dust = folder._getOb( 'majyk_dust' )
         self.assertEqual( majyk_dust.id, 'majyk_dust' )
-
 
 
 def test_suite():

@@ -91,6 +91,8 @@ class TypeInformation (SimpleItemWithProperties):
          'label':'Initial view name'},
         {'id':'filter_content_types', 'type': 'boolean', 'mode':'w',
          'label':'Filter content types?'},
+        {'id':'global_hide', 'type': 'boolean', 'mode':'w',
+         'label':'Not implicitly allowed?'},
         {'id':'allowed_content_types'
          , 'type': 'multiple selection'
          , 'mode':'w'
@@ -110,6 +112,7 @@ class TypeInformation (SimpleItemWithProperties):
     filter_content_types = 1
     allowed_content_types = ()
     allow_discussion = 0
+    global_hide = 0
     _actions = ()
 
     def __init__(self, id, **kw):
@@ -204,6 +207,13 @@ class TypeInformation (SimpleItemWithProperties):
         """
         # Private because this returns the actual structure.
         return self._actions
+
+    security.declarePublic('globalHide')
+    def globalHide(self):
+        """
+        Should this type be implicitly addable anywhere?
+        """
+        return self.global_hide
 
     security.declarePublic('getActionById')
     def getActionById( self, id, default=_marker ):
@@ -678,6 +688,8 @@ class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
             if container is not None:
                 if not t.isConstructionAllowed(container):
                     continue
+            if t.globalHide():
+                continue
             rval.append(t)
         return rval
 
