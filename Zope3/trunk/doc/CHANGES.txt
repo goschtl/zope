@@ -13,14 +13,6 @@ Zope Changes
     - Renamed the "Common Tasks" box in the default skin to "Add:",
       since this is really just a list of things to be added.
 
-    Bug fixes
-
-    Restructuring
-
-  Zope X3.0.0 Milestone 5
-
-    New features
-
     - Implemented 'apidoc' tool for online browsing of the Zope 3 framework
       API and configuration. The documentation can be accessed via a new
       namespace '++apidoc++'::
@@ -32,6 +24,21 @@ Zope Changes
       tree state in cookies, a browser layer that replaces the tree
       navigation with a cookie-based stateful tree and a skin using that
       layer based on Rotterdam.
+
+    Bug fixes
+
+    Restructuring
+
+    - Rearranged the package hierarchy below zope.app.
+
+      o Moved content types, including their interfaces and browser
+        views, to their individual packages below zope.app.
+
+      o ... more to come here ...
+
+  Zope X3.0.0 Milestone 5
+
+    New features
 
     - Copy/Move now checks constraints and preconditions, instead of just
       expecting the source's and target's class to be the same.
@@ -53,13 +60,6 @@ Zope Changes
       attributes of the schema that are implemented as fields.
 
     Restructuring
-
-    - Rearranged the package hierarchy below zope.app.
-
-      o Moved content types, including their interfaces and browser
-        views, to their individual packages below zope.app.
-
-      o ... more to come here ...
 
     - Moved the i18n message string extraction utility to the
       'utilities' directory
