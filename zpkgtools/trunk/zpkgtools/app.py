@@ -41,7 +41,10 @@ class Application:
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
         tempfile.tempdir = self.tmpdir
-        self.loader = cvsloader.CvsLoader()
+        if options.revision_tag:
+            self.loader = cvsloader.CvsLoader(tag=options.revision_tag)
+        else:
+            self.loader = cvsloader.CvsLoader()
         cf = config.Configuration()
         cf.location_maps.extend(options.location_maps)
         path = options.configfile
@@ -149,12 +152,19 @@ class Application:
         f.close()
 
     def include_support_code(self):
+        old_loader = self.loader
+        if self.options.revision_tag:
+            # we really don't want the tagged version of the support code
+            self.loader = cvsloader.CvsLoader()
         self.include_support_package(
             "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
                           ":Packages/zpkgtools/zpkgtools"))
         self.include_support_package(
             "setuptools", ("cvs://cvs.python.sourceforge.net/cvsroot/python"
                            ":python/nondist/sandbox/setuptools/setuptools"))
+        if self.options.revision_tag:
+            self.loader.cleanup()
+        self.loader = old_loader
 
     def include_support_package(self, name, fallback):
         destination = os.path.join(self.destination, name)
