@@ -23,49 +23,39 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.41 2004/03/06 22:07:25 jim Exp $
+$Id: service.py,v 1.42 2004/03/07 13:54:18 jim Exp $
 """
-
-import sys
 
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
-
-import zope.interface
-
-from zope.component import getServiceManager
-from zope.component.exceptions import ComponentLookupError
-from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
-from zope.proxy import removeAllProxies
-
-import zope.app.interfaces.services.registration
-from zope.app import zapi
-
-from zope.app.event.function import Subscriber
-from zope.app.interfaces.services.service import IPossibleSite
-
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
-
-from zope.app.container.constraints import ItemTypePrecondition
-
-from zope.app.container.interfaces import IContainer
-from zope.app.interfaces.services.service import IBindingAware
-from zope.app.interfaces.services.service import IServiceRegistration
-from zope.app.interfaces.services.service import ISiteManager
-
-from zope.app.services.registration import NameComponentRegistry
-from zope.app.services.registration import ComponentRegistration
-from zope.app.services.folder import SiteManagementFolder
-from zope.app.interfaces.services.service import ILocalService
-
-from zope.app.traversing import getPath
-from zope.app.container.contained import Contained
 from zope.app.container.btree import BTreeContainer
-
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.contained import Contained
+from zope.app.container.interfaces import IContainer
+from zope.app.event.function import Subscriber
+from zope.app import zapi
+from zope.app.interfaces.services.service import IBindingAware
+from zope.app.interfaces.services.service import ILocalService
+from zope.app.interfaces.services.service import IPossibleSite
+from zope.app.interfaces.services.service import IServiceRegistration
 from zope.app.interfaces.services.service import ISite
+from zope.app.interfaces.services.service import ISiteManager
+from zope.app.interfaces.services.registration import IRegistry
+from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.location import inside
+from zope.app.services.folder import SiteManagementFolder
+from zope.app.services.registration import ComponentRegistration
+from zope.app.services.registration import RegistrationStack
+from zope.app.traversing import getPath
+from zope.component.exceptions import ComponentLookupError
+from zope.component import getServiceManager
+from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
+from zope.proxy import removeAllProxies
+import sys
+import zope.app.interfaces.services.registration
+import zope.interface
 
 
 class IRegistrationManagerContainerContainer(zope.interface.Interface):
@@ -74,25 +64,26 @@ class IRegistrationManagerContainerContainer(zope.interface.Interface):
         """Add a site-management folder
         """
     __setitem__.precondition = ItemTypePrecondition(
-        zope.app.interfaces.services.registration.IRegistrationManagerContainer)
+       zope.app.interfaces.services.registration.IRegistrationManagerContainer)
+
 
 class SiteManager(
     BTreeContainer,
     PersistentModuleRegistry,
-    NameComponentRegistry,
     ):
 
     zope.interface.implements(
         ISiteManager,
         IRegistrationManagerContainerContainer,
+        IRegistry,
         )
 
     def __init__(self, site):
+        self._bindings = {}
         self.__parent__ = site
         self.__name__ = '++etc++site'
         BTreeContainer.__init__(self)
         PersistentModuleRegistry.__init__(self)
-        NameComponentRegistry.__init__(self)
         self.subSites = ()
         self._setNext(site)
         self['default'] = SiteManagementFolder()
@@ -129,6 +120,39 @@ class SiteManager(
 
         subsites.append(sub)
         self.subSites = tuple(subsites)
+
+    def queryRegistrationsFor(self, cfg, default=None):
+        """See IRegistry"""
+        return self.queryRegistrations(cfg.name, default)
+
+    def queryRegistrations(self, name, default=None):
+        """See INameRegistry"""
+        return self._bindings.get(name, default)
+
+    def createRegistrationsFor(self, cfg):
+        """See IRegistry"""
+        return self.createRegistrations(cfg.name)
+
+    def createRegistrations(self, name):
+        try:
+            registry = self._bindings[name]
+        except KeyError:
+            registry = RegistrationStack(self)
+            self._bindings[name] = registry
+            self._p_changed = 1
+        return registry
+
+    def listRegistrationNames(self):
+        return filter(self._bindings.get,
+                      self._bindings.keys())
+
+    def queryActiveComponent(self, name, default=None):
+        registry = self.queryRegistrations(name)
+        if registry:
+            registration = registry.active()
+            if registration is not None:
+                return registration.getComponent()
+        return default
 
     def getServiceDefinitions(wrapped_self):
         """See IServiceService
@@ -318,7 +342,7 @@ ServiceConfiguration = ServiceRegistration
 
 _smattrs = (
     '_modules',                         # PersistentModuleRegistry
-    '_bindings',                        # NameComponentRegistry
+    '_bindings',
 )
 
 class ServiceManagerAdapter(DirectoryAdapter):

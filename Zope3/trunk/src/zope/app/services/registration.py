@@ -13,29 +13,27 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.28 2004/03/06 22:20:47 jim Exp $
+$Id: registration.py,v 1.29 2004/03/07 13:54:18 jim Exp $
 """
 __metaclass__ = type
 
-from zope.app import zapi
-
 from persistent import Persistent
-from zope.interface import implements
-from zope.fssync.server.interfaces import IObjectFile
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.proxy import removeAllProxies, getProxiedObject
-from zope.security.checker import InterfaceChecker, CheckerPublic
-from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
-from zope.exceptions import DuplicationError
-from zope.xmlpickle import dumps, loads
-
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
-from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.container.interfaces import IAddNotifiable, IRemoveNotifiable
+from zope.app import zapi
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services import registration as interfaces
 from zope.app.interfaces.services.module import IModuleManager
+from zope.exceptions import DuplicationError
+from zope.fssync.server.entryadapter import ObjectEntryAdapter
+from zope.fssync.server.interfaces import IObjectFile
+from zope.interface import implements
+from zope.proxy import removeAllProxies, getProxiedObject
+from zope.security.checker import InterfaceChecker, CheckerPublic
+from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.xmlpickle import dumps, loads
 
 
 class RegistrationStatusProperty(object):
@@ -436,52 +434,6 @@ class ComponentRegistration(SimpleRegistration):
         adapter = interfaces.IRegistered(component, None)
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(self))
-
-
-class NameComponentRegistry:
-    """Mixin for implementing INameComponentRegistry
-    """
-    implements(interfaces.INameComponentRegistry)
-
-    def __init__(self, *args, **kw):
-        self._bindings = {}
-        super(NameComponentRegistry, self).__init__(*args, **kw)
-
-    def queryRegistrationsFor(self, cfg, default=None):
-        """See IRegistry"""
-        return self.queryRegistrations(cfg.name, default)
-
-    def queryRegistrations(self, name, default=None):
-        """See INameRegistry"""
-        return self._bindings.get(name, default)
-
-    def createRegistrationsFor(self, cfg):
-        """See IRegistry"""
-        return self.createRegistrations(cfg.name)
-
-    def createRegistrations(self, name):
-        """See INameRegistry"""
-        try:
-            registry = self._bindings[name]
-        except KeyError:
-            registry = RegistrationStack(self)
-            self._bindings[name] = registry
-            self._p_changed = 1
-        return registry
-
-    def listRegistrationNames(self):
-        """See INameRegistry"""
-        return filter(self._bindings.get,
-                      self._bindings.keys())
-
-    def queryActiveComponent(self, name, default=None):
-        """See INameComponentRegistry"""
-        registry = self.queryRegistrations(name)
-        if registry:
-            registration = registry.active()
-            if registration is not None:
-                return registration.getComponent()
-        return default
 
 
 from zope.app.dependable import PathSetAnnotation

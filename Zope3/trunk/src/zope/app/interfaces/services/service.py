@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.19 2004/03/06 22:07:25 jim Exp $
+$Id: service.py,v 1.20 2004/03/07 13:54:17 jim Exp $
 """
 __metaclass__ = type
 
@@ -94,7 +94,7 @@ class IBindingAware(Interface):
 
 
 class ISiteManager(IServiceService, IComponentManager,
-                   registration.INameComponentRegistry):
+                   registration.IRegistry):
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
@@ -103,6 +103,32 @@ class ISiteManager(IServiceService, IComponentManager,
     to the ComponentArchitecture ServiceManager which contains file based
     services.
     """
+
+    def queryRegistrations(name, default=None):
+        """Return an IRegistrationRegistry for the registration name.
+
+        queryRegistrationsFor(cfg, default) is equivalent to
+        queryRegistrations(cfg.name, default)
+        """
+
+    def createRegistrationsFor(registration):
+        """Create and return an IRegistrationRegistry for the registration
+        name.
+
+        createRegistrationsFor(cfg, default) is equivalent to
+        createRegistrations(cfg.name, default)
+        """
+
+    def listRegistrationNames():
+        """Return a list of all registered registration names.
+        """
+
+
+    def queryActiveComponent(name, default=None):
+        """Finds the registration registry for a given name, checks if it has
+        an active registration, and if so, returns its component.  Otherwise
+        returns default.
+        """
 
     def queryLocalService(service_type, default=None):
         """Return a local service, if there is one
