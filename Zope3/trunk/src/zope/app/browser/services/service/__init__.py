@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.14 2004/02/09 01:25:29 anthony Exp $
+$Id: __init__.py,v 1.15 2004/02/09 03:54:06 bjdean Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -446,7 +446,7 @@ class MakeSite(BrowserView):
         302
 
         >>> request.response.getHeader('location')
-        '++etc++site/'
+        '++etc++site/@@SelectedManagementView.html'
 
         If we try to do it again, we'll fail:
 
@@ -466,4 +466,4 @@ class MakeSite(BrowserView):
         bare = removeAllProxies(self.context)
         sm = SiteManager(bare)
         self.context.setSiteManager(sm)
-        self.request.response.redirect("++etc++site/")
+        self.request.response.redirect("++etc++site/@@SelectedManagementView.html")
