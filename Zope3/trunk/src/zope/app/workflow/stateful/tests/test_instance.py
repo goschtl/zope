@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.3 2003/06/01 15:59:39 jim Exp $
+$Id: test_instance.py,v 1.4 2003/06/03 14:34:04 stevea Exp $
 """
 
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
@@ -35,10 +35,7 @@ from zope.security.management import system_user
 from zope.app.context import ContextWrapper
 from zope.app.traversing import traverse
 
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-
-from zope.app.interfaces.services.configuration \
-     import IUseConfigurable
+from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.configuration \
      import Active, Unregistered, Registered
@@ -54,13 +51,9 @@ from zope.app.workflow.stateful.instance \
      import StatefulProcessInstance, StateChangeInfo
 
 
-
-
 # define and create ProcessDefinition (PD) for tests
 class TestProcessDefinition(StatefulProcessDefinition):
-    __implements__ = IAttributeAnnotatable, IUseConfigurable, \
-                     StatefulProcessDefinition.__implements__
-
+    implements(IAttributeAnnotatable, IUseConfigurable)
 
 
 class ITestDataSchema(Interface):
@@ -75,7 +68,6 @@ def sort(l):
     return l
 
 
-
 class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
     def setUp(self):
@@ -88,7 +80,7 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pd.states.setObject('private', State())
         pd.states.setObject('published', State())
         pd.states.setObject('pending', State())
-        
+
         pd.transitions.setObject('show',
                                  Transition('INITIAL', 'private'))
         pd.transitions.setObject('publish_direct',
@@ -114,10 +106,8 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
-
     def testInterface(self):
         verifyClass(IStatefulProcessInstance, StatefulProcessInstance)
-
 
     def testRelevantData(self):
         pi = self.pi
@@ -133,15 +123,14 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.assertEqual(data.text, 'another text')
         self.assertEqual(data.value, 10)
-        
 
     def testSimpleTranstitions(self):
         pi = self.pi
         pd = self.pd
-        
+
         self.assertEqual(pi.status, pd.getInitialStateName())
         self.assertEqual(pi.getOutgoingTransitions(), ['show'])
-        
+
         pi.fireTransition('show')
         self.assertEqual(pi.status, 'private')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
@@ -167,9 +156,6 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(pi.status, 'private')
 
 
-
-
-
 class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
     def setUp(self):
@@ -181,7 +167,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.states.setObject('state1', State())
         pd.states.setObject('state2', State())
-        
+
         pd.transitions.setObject('initial_state1',
                                  Transition('INITIAL', 'state1',
                                             condition='data/value'))
@@ -213,14 +199,12 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
-
-
     def testConditionalTranstitions(self):
         pi = self.pi
         pd = self.pd
 
         data = pi.data
-        
+
         self.assertEqual(pi.status, pd.getInitialStateName())
         self.assertEqual(data.text, 'no text')
         self.assertEqual(data.value, 1)
@@ -233,7 +217,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(pi.getOutgoingTransitions(), ['state1_initial'])
 
         data.text = 'some text'
-        
+
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['state1_initial', 'state1_state2'])
 
@@ -251,15 +235,11 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         data.value = 0
 
         self.assertEqual(pi.getOutgoingTransitions(), ['initial_state2'])
-        
+
         pi.fireTransition('initial_state2')
         self.assertEqual(pi.status, 'state2')
         self.assertEqual(pi.getOutgoingTransitions(),
                          ['state2_initial', 'state2_state1'])
-
-
-
-
 
 
 def transition_script1(contexts):
@@ -279,7 +259,7 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.states.setObject('state1', State())
         pd.states.setObject('state2', State())
-        
+
         pd.transitions.setObject('initial_state1',
                                  Transition('INITIAL', 'state1',
                                             script=lambda c: c['data'].value))
@@ -310,14 +290,12 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
-
-
     def testConditionalTranstitions(self):
         pi = self.pi
         pd = self.pd
 
         data = pi.data
-        
+
         self.assertEqual(pi.status, pd.getInitialStateName())
         self.assertEqual(data.text, 'no text')
         self.assertEqual(data.value, 1)
@@ -330,7 +308,7 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(pi.getOutgoingTransitions(), ['state1_initial'])
 
         data.text = 'some text'
-        
+
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['state1_initial', 'state1_state2'])
 
@@ -348,13 +326,11 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         data.value = 0
 
         self.assertEqual(pi.getOutgoingTransitions(), ['initial_state2'])
-        
+
         pi.fireTransition('initial_state2')
         self.assertEqual(pi.status, 'state2')
         self.assertEqual(pi.getOutgoingTransitions(),
                          ['state2_initial', 'state2_state1'])
-
-
 
 
 class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
@@ -375,7 +351,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.states.setObject('state1', State())
         pd.states.setObject('state2', State())
-        
+
         pd.transitions.setObject('initial_state1',
                                  Transition('INITIAL', 'state1',
                                             permission=CheckerPublic))
@@ -406,8 +382,6 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
-
-
     def testPermissionedTranstitions(self):
         pi = self.pi
         pd = self.pd
@@ -420,7 +394,6 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pi.fireTransition('initial_state1')
         self.assertEqual(pi.status, 'state1')
         self.assertEqual(pi.getOutgoingTransitions(), ['state1_state2'])
-
 
 
 class DummyTransition:
@@ -436,9 +409,6 @@ class TestStateChangeInfo(unittest.TestCase):
         sci = StateChangeInfo(t)
         self.assertEqual(sci.old_state, 1)
         self.assertEqual(sci.new_state, 2)
-        
-
-
 
 
 def test_suite():
