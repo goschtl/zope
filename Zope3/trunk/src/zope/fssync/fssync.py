@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.24 2003/05/20 19:09:15 gvanrossum Exp $
+$Id: fssync.py,v 1.25 2003/05/25 06:10:03 gvanrossum Exp $
 """
 
 import os
@@ -27,7 +27,6 @@ import urllib
 import filecmp
 import htmllib
 import httplib
-import commands
 import tempfile
 import urlparse
 import formatter
@@ -378,8 +377,8 @@ class FSSync(object):
             return
         print "Index:", target
         sys.stdout.flush()
-        os.system("diff %s %s %s" %
-                  (diffopts, commands.mkarg(orig), commands.mkarg(target)))
+        cmd = ("diff %s %s %s" % (diffopts, quote(orig), quote(target)))
+        os.system(cmd)
 
     def dirdiff(self, target, mode=1, diffopts=""):
         assert isdir(target)
@@ -495,3 +494,23 @@ class FSSync(object):
         extra = fsutil.getextra(target)
         if isdir(extra):
             self.status(extra, True)
+
+def quote(s):
+    """Helper to put quotes around arguments passed to shell if necessary."""
+    if os.name == "posix":
+        meta = "\\\"'*?[&|()<>`#$; \t\n"
+    else:
+        meta = " "
+    needquotes = False
+    for c in meta:
+        if c in s:
+            needquotes = True
+            break
+    if needquotes:
+        if os.name == "posix":
+            # use ' to quote, replace ' by '"'"'
+            s = "'" + s.replace("'", "'\"'\"'") + "'"
+        else:
+            # (Windows) use " to quote, replace " by ""
+            s = '"' + s.replace('"', '""') + '"'
+    return s
