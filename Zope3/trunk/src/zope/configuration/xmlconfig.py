@@ -357,19 +357,18 @@ def include(_context, file=None, package=None, files=None):
         paths = [context.path(file)]
     
     for path in paths:
-        context.checkDuplicate(path)
+        if context.processFile(path):
+            f = openInOrPlain(path)
+            logger.debug("include %s" % f.name)
 
-        f = openInOrPlain(path)
-        logger.debug("include %s" % f.name)
+            context.basepath = os.path.split(path)[0]
+            context.includepath = _context.includepath + (f.name, )
+            _context.stack.append(config.GroupingStackItem(context))
 
-        context.basepath = os.path.split(path)[0]
-        context.includepath = _context.includepath + (f.name, )
-        _context.stack.append(config.GroupingStackItem(context))
-
-        processxmlfile(f, context)
-        f.close()
-        assert _context.stack[-1].context is context
-        _context.stack.pop()
+            processxmlfile(f, context)
+            f.close()
+            assert _context.stack[-1].context is context
+            _context.stack.pop()
 
 def includeOverrides(_context, file, package=None):
     """Include zcml file containing overrides

@@ -291,6 +291,40 @@ class ConfigurationContext(object):
             raise ConfigurationError('%r included more than once' % path)
         self._seen_files.add(path)
 
+    def processFile(self, filename):
+        """Check whether a file needs to be processed
+
+        Return True if processing is needed and False otherwise. If
+        the file needs to be processed, it will be marked as
+        processed, assuming that the caller will procces the file if
+        it needs to be procssed.
+
+        >>> c = ConfigurationContext()
+        >>> c.processFile('/foo.zcml')
+        True
+        >>> c.processFile('/foo.zcml')
+        False
+
+        You may use different ways to refer to the same file:
+
+        >>> import zope.configuration
+        >>> c.package = zope.configuration
+        >>> import os
+        >>> d = os.path.split(zope.configuration.__file__)[0]
+        >>> c.processFile('bar.zcml')
+        True
+        >>> c.processFile('bar.zcml')
+        False
+
+        """ #' <-- bow to font-lock
+        path = self.path(filename)
+        if path in self._seen_files:
+            return False
+        self._seen_files.add(path)
+        return True
+
+
+
     def action(self, discriminator, callable=None, args=(), kw={}):
         """Add an action with the given discriminator, callable and arguments
 

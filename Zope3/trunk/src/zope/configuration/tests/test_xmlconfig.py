@@ -229,16 +229,18 @@ def test_include_by_package():
     >>> [clean_path(p) for p in data.includepath]
     ['tests/samplepackage/configure.zcml']
 
-    Including the same file more than once produces an error:
-
-    >>> try:
-    ...   xmlconfig.include(context, 'configure.zcml', package)
-    ... except xmlconfig.ConfigurationError, e:
-    ...   'OK'
-    ...
-    'OK'
 
     """
+
+# Not any more
+##     Including the same file more than once produces an error:
+
+##     >>> try:
+##     ...   xmlconfig.include(context, 'configure.zcml', package)
+##     ... except xmlconfig.ConfigurationError, e:
+##     ...   'OK'
+##     ...
+##     'OK'
 
 def test_include_by_file():
     """
