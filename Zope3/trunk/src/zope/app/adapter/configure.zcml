@@ -22,10 +22,6 @@
       interface=".adapter.IAdapterRegistration"
       set_schema=".adapter.IAdapterRegistration"
       />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.container.interfaces.IRemoveNotifiable"
-      />
 </content>
 
 <modulealias module="zope.app.adapter.adapter"

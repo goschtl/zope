@@ -55,14 +55,6 @@
         set_attributes="serviceType componentPath permission"
         set_schema="zope.app.registration.interfaces.IRegistration"
         />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IAddNotifiable"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IRemoveNotifiable"
-        />
 
   </content>
 

@@ -12,11 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.2 2004/03/23 15:15:06 mmceahern Exp $
+$Id: test_registrationmanager.py,v 1.3 2004/03/23 16:37:20 nathan Exp $
 """
 from unittest import TestSuite, TestCase, main, makeSuite
 from doctest import DocTestSuite
-from zope.app.container.interfaces import IRemoveNotifiable
 from zope.app.registration.interfaces import IRegistrationManager
 from zope.app.registration.registration import RegistrationManager
 from zope.app.registration.registration import RegistrationManagerRemoveSubscriber
@@ -27,16 +26,6 @@ from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
 from zope.interface import implements
 from zope.app.container.contained import ObjectRemovedEvent
-
-class Undeletable:
-
-    __name__ = __parent__ = None
-    
-    implements(IRemoveNotifiable)
-
-    def removeNotify(self, event):
-        self.was_called = 1
-
 
 class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     """Testing for Registration Manager """

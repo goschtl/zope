@@ -21,10 +21,6 @@
       interface=".presentation.IViewRegistration"
       set_schema="zope.app.registration.interfaces.IRegistration"
       />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.container.interfaces.IRemoveNotifiable"
-      />
 </content>
 
 <content class=".presentation.PageRegistration">
@@ -32,10 +28,6 @@
       permission="zope.ManageServices"
       interface=".presentation.IPageRegistration"
       set_schema=".presentation.IPageRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.container.interfaces.IRemoveNotifiable"
       />
 </content>
 

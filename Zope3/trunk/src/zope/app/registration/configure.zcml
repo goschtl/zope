@@ -44,7 +44,6 @@
         interface="
         zope.app.container.interfaces.IWriteContainer
         .interfaces.IOrderedContainer
-        zope.app.container.interfaces.IRemoveNotifiable
         zope.app.container.interfaces.INameChooser
         " 
         />

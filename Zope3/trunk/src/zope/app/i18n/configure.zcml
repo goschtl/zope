@@ -43,9 +43,7 @@
 <content class=".translationdomain.DomainRegistration">
   <require
     permission="zope.ManageServices"
-    interface="zope.app.utility.interfaces.IUtilityRegistration
-               zope.app.container.interfaces.IAddNotifiable
-               zope.app.container.interfaces.IRemoveNotifiable"
+    interface="zope.app.utility.interfaces.IUtilityRegistration"
     set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
 </content>
 
