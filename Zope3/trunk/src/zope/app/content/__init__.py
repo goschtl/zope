@@ -21,7 +21,7 @@ from zope.app.content.interfaces import IContentType
 
 def queryContentType(object):
     """Returns the interface implemented by object which implements
-    ``IContentType``."""
+    `IContentType`."""
     return queryType(object, IContentType)
 
 
