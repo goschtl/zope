@@ -120,6 +120,16 @@ class DummyReindeerChallenger( DummyChallenger ):
         response.reindeer_games = reindeer_games
         return True
 
+class DummyCounterChallenger( DummyChallenger ):
+
+    def __init__(self, id):
+        self.id = id
+        self.count = 0
+
+    def challenge(self, request, response):
+        self.count += 1
+        return True
+
 class FauxRequest:
 
     def __init__( self, steps=(), **kw ):
@@ -1697,6 +1707,27 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         # will play
         self.assertEqual(response.reindeer_games, ['dasher', 'dancer'])
 
+    def test_dont_call_challenge_twice(self):
+        from Products.PluggableAuthService.interfaces.plugins \
+             import IChallengePlugin
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        counter = self._makeChallengePlugin('counter', DummyCounterChallenger)
+        zcuf._setObject( 'counter', counter )
+
+        plugins = zcuf._getOb( 'plugins' )
+        plugins.activatePlugin( IChallengePlugin, 'counter' )
+
+        response = FauxResponse()
+        request = FauxRequest(RESPONSE=response)
+        zcuf.REQUEST = request
+
+        zcuf(self, request)
+
+        self.failUnlessRaises( Unauthorized, response.unauthorized)
+
+        self.assertEqual(counter.count, 1)
 
 if __name__ == "__main__":
     unittest.main()
