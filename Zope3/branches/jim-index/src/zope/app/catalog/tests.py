@@ -22,18 +22,26 @@ import unittest
 import doctest
 
 from zope.interface import implements
-from zope.app.index.interfaces.field import IUIFieldCatalogIndex
-from zope.index.interfaces import IInjection, ISimpleQuery
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
+from zope.interface.verify import verifyObject
 from zope.app.site.interfaces import ISite
 from zope.app import zapi
 from zope.app.tests import ztapi
-
-from zope.app.catalog.catalog import Catalog
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component import getGlobalServices
 from BTrees.IIBTree import IISet
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
 
+from zope.index.interfaces import IInjection, ISimpleQuery
+from zope.app.catalog.interfaces import ICatalog
+from zope.app.catalog.catalog import Catalog
+from zope.app.index.interfaces.field import IUIFieldCatalogIndex
+
+
+class ReferenceStub:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __call__(self):
+        return self.obj
 
 class UniqueIdUtilityStub:
     """A stub for UniqueIdUtility."""
@@ -68,7 +76,7 @@ class UniqueIdUtilityStub:
         return self.ids[ob]
 
     def items(self):
-        return [(id, lambda: obj) for id, obj in self.objs.items()]
+        return [(id, ReferenceStub(obj)) for id, obj in self.objs.items()]
 
 
 class StubIndex:
@@ -77,20 +85,30 @@ class StubIndex:
     def __init__(self, field_name, interface=None):
         self._field_name = field_name
         self.interface = interface
-        self._notifies = []
         self.doc = {}
 
-    def index_doc(self, docid, texts):
-        self.doc[docid] = texts
+    def index_doc(self, docid, obj):
+        self.doc[docid] = obj
 
     def unindex_doc(self, docid):
-        raise
+        del self.doc[docid]
 
     def query(self, term, start=0, count=None):
-        """TODO"""
-###        termdict = self._getterms()
-###        res = termdict.get(term, [])
-###        return IISet(res)
+        results = []
+        for docid in self.doc:
+            obj = self.doc[docid]
+            fieldname = getattr(obj, self._field_name, '')
+            if fieldname == term:
+                results.append(docid)
+        return IISet(results)
+
+#        d = {}
+#        for docid in self.doc:
+#            obj = self.doc[docid]
+#            term = getattr(obj, self._field_name, '')
+#            d.setdefault(term, []).append(docid)
+#        return IISet(d.get(term, []))
+
 
 class stoopid:
     def __init__(self, **kw):
@@ -101,6 +119,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_catalog_add_del_indexes(self):
         catalog = Catalog()
+        verifyObject(ICatalog, catalog)
         index = StubIndex('author', None)
         catalog['author'] = index
         self.assertEqual(catalog.keys(), ['author'])
@@ -112,30 +131,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         del catalog['author']
         self.assertEqual(catalog.keys(), ['title'])
 
-    def test_catalog_notification_passing(self):
-        catalog = Catalog()
-        catalog['author'] = StubIndex('author', None)
-        catalog['title'] = StubIndex('title', None)
-        catalog.notify(regEvt(None, None, 'reg1', 1))
-        catalog.notify(regEvt(None, None, 'reg2', 2))
-        catalog.notify(regEvt(None, None, 'reg3', 3))
-        catalog.notify(unregEvt(None, None, 'unreg4', 4))
-        catalog.notify(unregEvt(None, None, 'unreg5', 5))
-        catalog.notify(modEvt(None, None, 'mod6', 6))
-        for index in catalog.values():
-            checkNotifies = index._notifies
-            self.assertEqual(len(checkNotifies), 6)
-            notifLocs = [ x.location for x in checkNotifies ]
-            self.assertEqual(notifLocs, ['reg1', 'reg2', 'reg3', 
-                                         'unreg4', 'unreg5','mod6' ])
-            self.assertEqual(notifLocs, ['reg1', 'reg2', 'reg3', 
-                                         'unreg4', 'unreg5','mod6' ])
-        catalog.clearIndexes()
-        for index in catalog.values():
-            checkNotifies = index._notifies
-            self.assertEqual(len(checkNotifies), 0)
-
-    def _frob_uniqueidutil(self, ints=1, apes=1):
+    def _frob_uniqueidutil(self, ints=True, apes=True):
         uidutil = UniqueIdUtilityStub()
         ztapi.provideUtility(IUniqueIdUtility, uidutil)
         # whack some objects in our little objecthub
@@ -160,13 +156,13 @@ class Test(PlacelessSetup, unittest.TestCase):
         catalog['title'] = StubIndex('author', None)
         catalog.updateIndexes()
         for index in catalog.values():
-            checkNotifies = index._notifies
+            checkNotifies = index.doc
             self.assertEqual(len(checkNotifies), 18)
-            notifLocs = [ x.location for x in checkNotifies ]
-            notifLocs.sort()
-            expected = [ "/%s"%(i+1) for i in range(18) ]
-            expected.sort()
-            self.assertEqual(notifLocs, expected)
+###            notifLocs = [ x.location for x in checkNotifies ]
+###            notifLocs.sort()
+###            expected = [ "/%s"%(i+1) for i in range(18) ]
+###            expected.sort()
+###            self.assertEqual(notifLocs, expected)
 
     def test_basicsearch(self):
         "test the simple searchresults interface"
@@ -176,12 +172,12 @@ class Test(PlacelessSetup, unittest.TestCase):
         catalog['name'] = StubIndex('name', None)
         catalog.updateIndexes()
         res = catalog.searchResults(simiantype='monkey')
-        names = [ x.name for x in res ]
+        names = [x.name for x in res]
         names.sort()
         self.assertEqual(len(names), 3)
         self.assertEqual(names, ['bobo', 'bubbles', 'ginger'])
         res = catalog.searchResults(name='bobo')
-        names = [ x.simiantype for x in res ]
+        names = [x.simiantype for x in res]
         names.sort()
         self.assertEqual(len(names), 2)
         self.assertEqual(names, ['bonobo', 'monkey'])
@@ -193,8 +189,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(len(res), 0)
         res = catalog.searchResults(simiantype='ape', name='mwumi')
         self.assertEqual(len(res), 0)
-        self.assertRaises(ValueError, catalog.searchResults, 
-                            simiantype='monkey', hat='beret')
+        self.assertRaises(ValueError, catalog.searchResults,
+                          simiantype='monkey', hat='beret')
         res = list(res)
 
 def test_suite():

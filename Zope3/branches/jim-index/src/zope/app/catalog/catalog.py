@@ -27,14 +27,12 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.container.interfaces import IContainer
 
-### import zope.app.hub.interfaces as IHub
-### import zope.app.hub as Hub
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.container.sample import SampleContainer
 from zope.app.catalog.interfaces import ICatalog
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
 
 class ResultSet:
-    "Lazily accessed set of objects"
+    """Lazily accessed set of objects."""
 
     def __init__(self, uids, uidutil):
         self.uids = uids
@@ -57,17 +55,22 @@ class CatalogBase(Persistent, SampleContainer):
         for index in self.values():
             index.clear()
 
+    def index_doc(self, docid, texts):
+        """Register the data in indexes of this catalog."""
+        for index in self.values():
+            index.index_doc(docid, texts)
+
+    def unindex_doc(self, docid):
+        """Unregister the data from indexes of this catalog."""
+        for index in self.values():
+            index.unindex_doc(docid)
+
     def updateIndexes(self):
         uidutil = getUtility(IUniqueIdUtility)
         for uid, ref in uidutil.items():
             obj = ref()
-            ### evt = eventF(uidutil, uid, location, wrapped_object)
             for index in self.values():
-                ### index.notify(evt)
                 index.index_doc(uid, obj)
-
-    def updateObject(self, obj):
-        raise
 
     def searchResults(self, **searchterms):
         from BTrees.IIBTree import intersection
@@ -75,7 +78,7 @@ class CatalogBase(Persistent, SampleContainer):
         for key, value in searchterms.items():
             index = self.get(key)
             if not index:
-                raise ValueError, "no such index %s"%(key)
+                raise ValueError, "no such index %s" % (key, )
             index = ISimpleQuery(index)
             results = index.query(value)
             # Hm. As a result of calling getAdapter, I get back
@@ -87,21 +90,21 @@ class CatalogBase(Persistent, SampleContainer):
             else:
                 pendingResults = intersection(pendingResults, results)
             if not pendingResults:
-                # nothing left, short-circuit
-                break
-        # Next we turn the IISet of hubids into a generator of objects
+                break # nothing left, short-circuit
+        # Next we turn the IISet of docids into a generator of objects
         uidutil = getUtility(IUniqueIdUtility)
         results = ResultSet(pendingResults, uidutil)
         return results
 
+
 class CatalogUtility(CatalogBase):
-    "A Catalog in service-space"
+    """A catalog in service-space."""
     # Utilities will default to implementing the most specific
     # interface. This piece of delightfulness is needed because
     # the interface resolution order machinery implements (no
     # pun intended) the old-style Python resolution order machinery.
     implements(ILocalUtility)
 
+
 class Catalog(CatalogBase):
-    "A content-space Catalog"
-    pass
+    """A catalog in content-space."""

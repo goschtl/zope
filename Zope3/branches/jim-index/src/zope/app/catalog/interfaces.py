@@ -16,15 +16,16 @@
 $Id$
 """
 from zope.interface import Interface
+from zope.index.interfaces import IInjection
 
 class ICatalogQuery(Interface):
-    "Provides Catalog Queries"
+    """Provides Catalog Queries."""
 
     def searchResults(**kw):
-        "search on the given indexes"
+        """Search on the given indexes."""
 
 
-class ICatalogEdit(Interface):
+class ICatalogEdit(IInjection):
     """Allows one to manipulate the Catalog information."""
 
     def clearIndexes():
@@ -32,9 +33,6 @@ class ICatalogEdit(Interface):
 
     def updateIndexes():
         """Reindex all objects."""
-
-    def updateObject(obj):
-        """Reindex the object in all indexes."""
 
 
 class ICatalog(ICatalogQuery, ICatalogEdit): 
