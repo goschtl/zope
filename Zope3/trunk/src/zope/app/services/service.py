@@ -23,11 +23,12 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.30 2003/09/21 17:33:00 jim Exp $
+$Id: service.py,v 1.31 2003/11/21 17:09:55 jim Exp $
 """
 
 import sys
 
+from zope.app import zapi
 from zodb.code.module import PersistentModuleRegistry
 
 from zope.interface import implements
@@ -54,7 +55,11 @@ from zope.app.traversing import getPath
 from zope.app.container.contained import Contained
 from zope.app.container.btree import BTreeContainer
 
-class ServiceManager(BTreeContainer,
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.interfaces.services.service import ISite
+from zope.app.location import inside
+
+class SiteManager(BTreeContainer,
                      PersistentModuleRegistry,
                      NameComponentRegistry,
                      ):
@@ -67,7 +72,42 @@ class ServiceManager(BTreeContainer,
         BTreeContainer.__init__(self)
         PersistentModuleRegistry.__init__(self)
         NameComponentRegistry.__init__(self)
+        self.subSites = ()
+        self._setNext(site)
         self['default'] = SiteManagementFolder()
+
+    def _setNext(self, site):
+        """Find set the next service manager
+        """
+
+        while 1:
+            if IContainmentRoot.isImplementedBy(site):
+                # we're the root site, use the global sm
+                self.next = zapi.getServiceManager(None)
+                return
+            site = site.__parent__
+            if site is None:
+                raise TypeError("Not enough context information")
+            if ISite.isImplementedBy(site):
+                self.next = site.getSiteManager()
+                self.next.addSubsite(self)
+                return
+
+    def addSubsite(self, sub):
+
+        subsite = sub.__parent__
+
+        # Update any sites that are now in the subsite:
+        subsites = []
+        for s in self.subSites:
+            if inside(s, subsite):
+                s.next = sub
+                sub.addSubsite(s)
+            else:
+                subsites.append(s)
+
+        subsites.append(sub)
+        self.subSites = tuple(subsites)
 
     def getServiceDefinitions(wrapped_self):
         "See IServiceService"
@@ -201,6 +241,7 @@ class ServiceManager(BTreeContainer,
 
         return mod
 
+ServiceManager = SiteManager # Backward compat
 
 class ServiceRegistration(NamedComponentRegistration):
 
@@ -262,3 +303,53 @@ class ServiceManagerAdapter(DirectoryAdapter):
     def extra(self):
         obj = removeAllProxies(self.context)
         return AttrMapping(obj, _smattrs)
+
+#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+
+
+
+from zope.app.event.function import Subscriber
+from transaction import get_transaction
+from zope.component.exceptions import ComponentLookupError
+from zope.app.interfaces.services.service import IPossibleSite
+
+def fixup(event):
+    database = event.database
+    connection = database.open()
+    app = connection.root().get('Application')
+    if app is None:
+        # no old site
+        return
+
+    try:
+        sm = app.getSiteManager()
+    except ComponentLookupError:
+        # no old site
+        return
+
+    if hasattr(sm, 'next'):
+        # already done
+        return
+    
+    print "Fixing up sites that don't have next pointers"
+    fixfolder(app)
+    get_transaction().commit()
+    connection.close()
+    
+fixup = Subscriber(fixup)
+
+def fixfolder(folder):
+    try:
+        sm = folder.getSiteManager()
+    except ComponentLookupError:
+        pass # nothing to do
+    else:
+        sm._setNext(folder)
+        sm.subSites = ()
+        for name in ('Views', 'Adapters'):
+            if name in sm._bindings:
+                del sm._bindings[name]
+
+    for item in folder.values():
+        if IPossibleSite.isImplementedBy(item):
+            fixfolder(item)

@@ -14,10 +14,13 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.16 2003/09/21 17:33:25 jim Exp $
+$Id: test_servicemanager.py,v 1.17 2003/11/21 17:09:55 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
+
+from zope.app import zapi
+from zope.app.tests import setup
 from zope.interface import Interface, implements
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
@@ -210,6 +213,29 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(sm2.resolve("XXX.ZZZ.ZZZ"), 42)
         self.assertEqual(sm2.resolve("XXX.ZZZ."), 42)
         self.assertEqual(sm2.resolve("XXX.ZZZ.x"), "root m2")
+
+    def test_site_manager_connections(self):
+        root = self.rootFolder
+        mr = root.getSiteManager()
+        m1 = setup.createServiceManager(zapi.traverse(root, 'folder1')) 
+        m2 = setup.createServiceManager(zapi.traverse(root, 'folder2'))
+        m111 = setup.createServiceManager(
+            zapi.traverse(root, 'folder1/folder1_1/folder1_1_1'))
+        self.assertEqual(m1.next, mr)
+        self.assertEqual(m2.next, mr)
+        self.assertEqual(m111.next, m1)
+        self.assertEqual(mr.subSites, (m1, m2))
+        self.assertEqual(m1.subSites, (m111, ))
+
+        # Now insert a site and make sure everything is still right:
+        m11 = setup.createServiceManager(
+            zapi.traverse(root, 'folder1/folder1_1'))
+        self.assertEqual(m11.next, m1)
+        self.assertEqual(m111.next, m11)
+        self.assertEqual(m1.subSites, (m11, ))
+        self.assertEqual(m11.subSites, (m111, ))
+
+        
 
 
 def test_suite():
