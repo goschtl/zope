@@ -16,6 +16,22 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- attribute page -->
+  <browser:pages
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    permission="zope.ViewManagementScreens"
+    >
+    <browser:page
+      name="eagle-page.txt"
+      attribute="eagle"
+      />
+    <browser:page
+      name="mouse-page.txt"
+      attribute="mouse"
+      />
+  </browser:pages>
+
   <!-- template/class page -->
   <browser:page
     for=".interfaces.ISimpleContent"

@@ -7,3 +7,6 @@ class SimpleContentView(BrowserView):
         """Docstring"""
         return "The eagle has landed"
 
+    def mouse(self):
+	"""Docstring"""
+	return "The mouse has been eaten by the eagle"""

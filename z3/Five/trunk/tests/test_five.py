@@ -42,6 +42,15 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         self.assert_(isinstance(view, SimpleContentView))
         self.assertEquals('The eagle has landed', view())
 
+    def test_pages_view(self):
+        view = self.folder.unrestrictedTraverse('testoid/eagle-page.txt')
+        self.assert_(isinstance(view, SimpleContentView))
+        self.assertEquals('The eagle has landed', view())
+
+        view = self.folder.unrestrictedTraverse('testoid/mouse-page.txt')
+        self.assert_(isinstance(view, SimpleContentView))
+        self.assertEquals('The mouse has been eaten by the eagle', view())
+
     def test_template_view(self):
         view = self.folder.unrestrictedTraverse('testoid/falcon.html')
         self.assert_(isinstance(view, SimpleContentView))

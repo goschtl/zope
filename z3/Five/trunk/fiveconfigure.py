@@ -108,6 +108,31 @@ def page(_context, name, permission, for_,
         args = (new_class,)
         )
 
+# verbatim from Zope3/src/zope/app/publisher/browser/viewmeta.py
+class pages:
+
+    def __init__(self, _context, for_, permission,
+                 layer='default', class_=None,
+                 allowed_interface=None, allowed_attributes=None,
+                 ):
+        self.opts = dict(for_=for_, permission=permission,
+                         layer=layer, class_=class_,
+                         allowed_interface=allowed_interface,
+                         allowed_attributes=allowed_attributes,
+                         )
+
+    def page(self, _context, name, attribute='__call__', template=None,
+             menu=None, title=None):
+        return page(_context,
+                    name=name,
+                    attribute=attribute,
+                    template=template,
+                    menu=menu, title=title,
+                    **(self.opts))
+
+    def __call__(self):
+        return ()
+
 def _handle_for(_context, for_):
     if for_ is not None:
         _context.action(

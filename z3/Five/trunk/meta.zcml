@@ -90,6 +90,19 @@
         handler=".fiveconfigure.page"
         />
 
+    <meta:complexDirective
+        name="pages"
+        schema="zope.app.publisher.browser.metadirectives.IPagesDirective"
+        handler=".fiveconfigure.pages"
+        >
+
+      <meta:subdirective
+          name="page"
+          schema="zope.app.publisher.browser.metadirectives.IPagesPageSubdirective"
+          />
+
+    </meta:complexDirective>
+
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
