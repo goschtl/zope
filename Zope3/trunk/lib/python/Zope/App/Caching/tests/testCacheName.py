@@ -15,7 +15,7 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: testCacheName.py,v 1.2 2002/11/13 20:34:03 gvanrossum Exp $
+$Id: testCacheName.py,v 1.3 2002/11/30 18:30:17 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
      import PlacefulSetup
-from Zope.App.OFS.Services.ServiceManager.tests.TestingServiceManager \
+from Zope.App.OFS.Services.tests.TestingServiceManager \
      import TestingServiceManager
 
 from Zope.App.Caching.ICacheable import CacheName
