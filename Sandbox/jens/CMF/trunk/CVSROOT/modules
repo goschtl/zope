@@ -36,6 +36,10 @@ ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
 ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
+ZODB		  -d ZODB Packages/ZODB
+zsZope            -d Zope Packages/Zope
+
+ZopeZODB3	  -d ZopeZODB3 Components/ZopeZODB3
 
 waaaGreyThing -l Components/GreyThing
 
@@ -46,7 +50,9 @@ zsb &waaaGreyThing \
   &ZPublisher &OFS &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
   &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
-  &ZSQLMethods &ZGadflyDA
+  &ZSQLMethods &ZGadflyDA \
+  &ZODB &ZopeZODB3 &zsZope
+
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
@@ -54,7 +60,8 @@ zs Components/GreyThing \
   &ZPublisher &OFS &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
   &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
-  &ZSQLMethods &ZGadflyDA
+  &ZSQLMethods &ZGadflyDA \
+  &ZODB &ZopeZODB3 &zsZope
 
 DCOraclePackage -d DCOracle DCOracle/DCOracle
 DCOracleSrc  -d src DCOracle/src
@@ -94,6 +101,9 @@ lpZSQLMethods     -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMetho
 lpZGadflyDA       -d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
 lpMIMETools       -d lib/python/Products/MIMETools Packages/Products/MIMETools
 
+lpZODB		  -d lib/python/ZODB Packages/ZODB
+lpZopeZODB3	  -d lib/python/ZopeZODB3 Components/ZopeZODB3
+lpZope		  -d lib/python/Zope Packages/Zope
 
 lExtensionClass  -d lib/Components/ExtensionClass Components/ExtensionClass
 lBTree  -d lib/Components/BTree Components/BTree
@@ -122,6 +132,7 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA \
+  &lpZODB &lpZope &lpZopeZODB3 \
   &ZServer &lpMIMETools 
 
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
@@ -133,6 +144,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpZODB &lpZope &lpZopeZODB3 \
   &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
 # KLM end
