@@ -1,0 +1,81 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+<!-- View service -->
+
+  <page
+     for = "zope.component.interfaces.IViewService"
+     name = "index.html"
+     template = "views.pt"
+     permission="zope.ManageServices" 
+     class="zope.app.browser.services.view.ViewServiceView"
+     menu="zmi_views" title="Views"
+     />
+
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_service"
+      action="zope.app.services.ViewService"
+      title="View Service"
+      />
+
+<!-- View pages -->
+
+  <editform
+    schema="zope.app.interfaces.services.view.IPageConfiguration"
+    name="index.html"
+    class=".view.PageConfigurationView"
+    menu="zmi_views"
+    label="Change page"
+    permission="zope.ManageServices"
+    />
+
+  <addform
+      schema="zope.app.interfaces.services.view.IPageConfiguration"
+      name="PageConfiguration"
+      content_factory=".view.PageConfiguration"
+      keyword_arguments="forInterface class_ viewName permission layer"
+      set_before_add="template"
+      label="Register a view page"
+      permission="zope.ManageServices"
+      fields="forInterface viewName
+              template class_ layer permission status"
+      />
+
+<!-- XXX Jim says view configuration doesn't work and aren't well thought out.
+     So I'm commenting it out for now.
+
+  <defaultView
+    for="zope.app.interfaces.services.view.IViewConfiguration"
+    name="edit.html" />
+
+  <editform
+    schema="zope.app.interfaces.services.view.IViewConfiguration"
+    name="edit.html"
+    menu="zmi_views"
+    label="Change view"
+    permission="zope.ManageServices"
+    />
+
+  <addform
+      schema="zope.app.interfaces.services.view.IViewConfiguration"
+      name="ViewConfiguration"
+      content_factory=".view.ViewConfiguration"
+      keyword_arguments="forInterface presentationType class_
+                           viewName permission"
+      set_before_add="layer"
+      label="Register a view" 
+      permission="zope.ManageServices" 
+      fields="forInterface viewName presentationType
+              class_ layer permission status"
+      />
+
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_configuration"
+      action="ViewConfiguration"
+      title="View"
+      />
+
+-->
+
+</zopeConfigure>

@@ -1,0 +1,71 @@
+<html metal:use-macro="context/@@standard_macros/page">
+
+<div metal:fill-slot="body"
+     tal:define="message view/update; configs view/configInfo"
+     >
+
+<h2>Pages registered in this views service:</h2>
+
+      <div class="message" tal:condition="message">
+         <span tal:replace="message">view/update message here</span>
+         <br><br><i><a href="">(click to clear message)</a></i>
+      </div>
+
+<p tal:condition="not:configs">None</p>
+
+<form method="POST" action="index.html" tal:condition="configs">
+
+  <table>
+    <tbody>
+      <tr tal:repeat="config configs">
+        <td>
+          <input type="checkbox" name="selected:list"
+                 tal:attributes="value config/key" />
+          <br>
+        </td>
+        <td>
+          <a tal:condition="config/url" tal:attributes="href config/url">
+            <span tal:content="config/viewName" /> for
+            <span tal:content="config/forInterface" />
+          </a>
+          <span tal:condition="not:config/url">
+            <span tal:content="config/viewName" /> for
+            <span tal:content="config/forInterface" />
+          </span>
+          <br>
+          layer=<span tal:content="config/layer" />,
+          type=<span tal:content="config/shortType" />
+          <!--
+          <a href="." tal:attributes="href config/configurl">
+            (change registration)</a>
+          -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <input type="submit" name="Deactivate" value="Deactivate" />
+  <input type="submit" name="Delete" value="Delete" />
+  <input type="submit" name="Refresh" value="Refresh" />
+
+</form>
+
+<p><a href="../RegistrationManager/@@+/PageConfiguration=">
+Add a page to this view service</a></p>
+
+<h3>Search filter:</h3>
+
+<form action="." method="GET">
+    <div class="row" tal:content="structure view/forInterface/row" />
+    <div class="row" tal:content="structure view/presentationType/row" />
+    <div class="row">
+    <div class="controls"> 
+         <input type="submit" value="Refresh">
+         <input type="submit" value="Search" name="SEARCH">
+     </div>
+    </div>
+</form>
+
+</div>
+
+</html>
