@@ -1,7 +1,8 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:startup="http://namespaces.zope.org/startup"
-   xmlns:event="http://namespaces.zope.org/event">
+   xmlns:event="http://namespaces.zope.org/event"
+   >
 
   <startup:registerRequestFactory 
       name="HTTPRequestFactory"

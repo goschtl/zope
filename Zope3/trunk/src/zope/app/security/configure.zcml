@@ -9,11 +9,13 @@
 
   <permission 
       id="zope.View"
-      title="[view-permission] View" />
+      title="[view-permission] View" 
+      />
 
   <permission 
       id="zope.Security"
-      title="[change-security-settings-permission] Change security settings" />
+      title="[change-security-settings-permission] Change security settings" 
+      />
 
   <permission 
       id="zope.ManageContent" 
@@ -21,42 +23,55 @@
 
   <permission 
       id="zope.ManageBindings" 
-      title="[manage-service-bindings-permission] Manage Service Bindings" />
+      title="[manage-service-bindings-permission] Manage Service Bindings" 
+      />
 
   <permission 
       id="zope.ManageCode" 
       title="[manage-code-permission] Manage Code"
-      description="Manage executable code, including Python, SQL, ZPT, etc." />
+      description="Manage executable code, including Python, SQL, ZPT, etc."
+      />
 
   <permission 
       id="zope.ManageServices" 
-      title="[manage-services-permission] Manage Services" />
+      title="[manage-services-permission] Manage Services" 
+      />
+
+  <permission 
+      id="zope.ManagePrincipals" 
+      title="[manage-principal-permission] Manage Principals" 
+      />
 
   <permission 
       id="zope.ManageApplication" 
       title="[manage-application-permission] Manage Application"
       description="Manage the Zope Application, such as Restart/Shutdown or 
-                   packing the ZODB." />
+                   packing the ZODB." 
+      />
 
   <include package=".grants" />
 
   <securityPolicy 
-      component="zope.app.security.zopepolicy.zopeSecurityPolicy" />
+      component="zope.app.security.zopepolicy.zopeSecurityPolicy" 
+      />
 
   <adapter 
       factory="zope.app.security.basicauthadapter.BasicAuthAdapter"
       provides="zope.app.interfaces.security.ILoginPassword"
-      for="zope.publisher.interfaces.http.IHTTPCredentials" />
+      for="zope.publisher.interfaces.http.IHTTPCredentials" 
+      />
 
   <adapter 
       factory="zope.app.security.ftpauth.FTPAuth"
       provides="zope.app.interfaces.security.ILoginPassword"
-      for="zope.publisher.interfaces.ftp.IFTPCredentials" />
+      for="zope.publisher.interfaces.ftp.IFTPCredentials" 
+      />
 
   <adapter 
       factory="zope.app.security.principallogging.PrincipalLogging"
       provides="zope.publisher.interfaces.logginginfo.ILoggingInfo"
-      for="zope.app.interfaces.security.IPrincipal" />
+      for="zope.app.interfaces.security.IPrincipal" 
+      />
 
 </configure>
 
