@@ -61,6 +61,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 228.
+
       - Fixed issue 248.  Path expressions in page templates that
         contain empty segments now cause an error to be raised when
         the expression is compiled rather than when it is evaluated.
