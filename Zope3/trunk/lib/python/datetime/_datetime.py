@@ -220,12 +220,17 @@ def _call_tzinfo_method(self, tzinfo, methname):
 def _check_utc_offset(name, offset):
     if offset is None:
         return
-    if not isinstance(offset, (int, long)):
-        raise TypeError("%s() must return None, int or long, not %s" %
-                        (name, type(offset)))
+    if not isinstance(offset, (int, long, timedelta)):
+        raise TypeError("tzinfo.%s() must return None, integer "
+                        "or timedelta, not '%s'" % (name, type(offset)))
     if -1440 < offset < 1440:
         return
     raise ValueError("%s()=%d, must be in -1439..1439" % (name, offset))
+
+def _check_tzname(name):
+    if name is not None and not isinstance(name, str):
+        raise TypeError("tzinfo.tzname() must return None or string, "
+                        "not '%s'" % type(name))
 
 # This is a start at a struct tm workalike.  Goals:
 #
@@ -1080,6 +1085,7 @@ class timetz(time):
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
         name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        _check_tzname(name)
         return name
 
     def dst(self):
@@ -1483,6 +1489,7 @@ class datetimetz(datetime):
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
         name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        _check_tzname(name)
         return name
 
     def dst(self):
