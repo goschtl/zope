@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.7 2002/12/11 13:57:31 jim Exp $
+$Id: Utility.py,v 1.8 2002/12/19 19:50:00 jim Exp $
 """
 __metaclass__ = type
 
@@ -131,8 +131,15 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
                 vname = 'display'
             else:
                 vname = 'edit'
+
+            try:
+                value = getattr(content, name)
+            except AttributeError, v:
+                if v.__class__ != AttributeError:
+                    raise
+                value = None
                 
-            setUpWidget(view, name, field, getattr(content, name, None),
+            setUpWidget(view, name, field, value,
                         prefix = prefix, force = force, vname = vname)
 
 def haveWidgetsData(view, schema, names=None):
