@@ -199,7 +199,7 @@ class Tests(object):
         >>> field = fields.List(value_type=fields.Choice(vocabulary=vocab))
         >>> field = field.bind(sample)
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, MultiSelectWidget)
+        >>> isinstance(widget, OrderedMultiSelectWidget)
         True
     """
 
