@@ -24,12 +24,11 @@
     <page name="showTextTBEntry.html" template="texttbentry.pt"/>
   </pages>
 
-  <menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="ErrorLogging"
+  <addMenuItem
+     class="zope.app.services.error.ErrorReportingService"
      title="Error Logging Service"
-     description="Error Reporting Service for Logging Errors" />
+     description="Error Reporting Service for Logging Errors"
+     permission="zope.ManageServices" />
 
   <icon name="zmi_icon"
       for="zope.app.interfaces.services.error.IErrorReportingService"
@@ -48,10 +47,10 @@
       class="zope.app.browser.services.event.Control"
       template="eventcontrol.pt" />
 
-  <menuItem
-      menu="add_service" 
-      for="zope.app.interfaces.container.IAdding"
-      action="Events"  title="Event Service"
+  <addMenuItem
+      class="zope.app.services.event.EventService"  
+      permission="zope.ManageServices" 
+      title="Event Service"
       description=
       "An event service. One of these in the root is usually enough" />
 
@@ -180,10 +179,9 @@
 
 <!-- Principal annotations (user data) service -->
 
-  <menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="IPrincipalAnnotationService"
+  <addMenuItem
+     class="zope.app.services.principalannotation.PrincipalAnnotationService"
+     permission="zope.ManageServices"
      title="Principal Annotation Service"
      description="Stores Annotations for Principals" />
 
@@ -198,10 +196,9 @@
     class="zope.app.browser.services.hub.Control"
     template="hubcontrol.pt" />
 
-  <menuItem
-      menu="add_service"
-      for="zope.app.interfaces.container.IAdding"
-      action="HubIds"
+  <addMenuItem
+      class="zope.app.services.hub.ObjectHub"
+      permission="zope.ManageServices"
       title="HubIds Service"
       description="An object hub, for cataloging, unique object ids, and
                    more: use sparingly" />
