@@ -10,5 +10,5 @@
 
 $Id$
 """
-from browser import BrowserView
+from browser import BrowserView, StandardMacros
 from viewable import Viewable
