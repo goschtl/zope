@@ -52,10 +52,9 @@ class BrowserId(str):
 class CookieBrowserIdManager(Persistent):
     """Session service implemented using cookies."""
 
-    implements(
-            IBrowserIdManager, ICookieBrowserIdManager, IContained,
-            ILocalUtility, IAttributeAnnotatable
-            )
+    implements(IBrowserIdManager, ICookieBrowserIdManager,
+               ILocalUtility, IAttributeAnnotatable,
+               )
 
     __parent__ = __name__ = None
 
@@ -133,10 +132,8 @@ class CookieBrowserIdManager(Persistent):
 class PersistentSessionDataContainer(Persistent, IterableUserDict):
     ''' A SessionDataContainer that stores data in the ZODB '''
     __parent__ = __name__ = None
-    implements(
-            ISessionDataContainer, IContained,
-            ILocalUtility, IAttributeAnnotatable,
-            )
+
+    implements(ISessionDataContainer, ILocalUtility, IAttributeAnnotatable)
 
     def __init__(self):
         self.data = OOBTree()

@@ -134,7 +134,7 @@ class CatalogUtility(CatalogBase):
     # interface. This piece of delightfulness is needed because
     # the interface resolution order machinery implements (no
     # pun intended) the old-style Python resolution order machinery.
-    implementsOnly(implementedBy(CatalogBase), ILocalUtility)
+    implements(ILocalUtility)
 
 class Catalog(CatalogBase): 
     "A content-space Catalog"
