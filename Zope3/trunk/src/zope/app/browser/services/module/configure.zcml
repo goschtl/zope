@@ -23,6 +23,15 @@
       <page name="index.html" template="add_module.pt" />
       <page name="action.html" attribute="action" />
   </view>
+  
+  <page
+        name="browse.html"
+        for="zope.app.interfaces.services.module.IModuleManager"
+        menu="zmi_views" title="Browse"
+        permission="zope.ManageServices"
+        class="zope.app.browser.services.module.ViewModule"
+        template="browse_module.pt"
+        /> 
 
   <menuItem 
       menu="add_component" 

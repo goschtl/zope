@@ -13,13 +13,14 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.4 2003/08/21 21:57:41 fdrake Exp $
+$Id: __init__.py,v 1.5 2003/12/17 09:15:41 nmurthy Exp $
 """
 
 from zope.app.services.module import Manager
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.publisher.browser import BrowserView
+from zope.proxy import removeAllProxies
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -45,3 +46,25 @@ class EditModule(BrowserView):
             return _(u"The source was updated.")
         else:
             return u""
+
+class ViewModule(BrowserView):
+       
+    def getModuleName(self):
+        module = removeAllProxies(self.context.getModule())
+        remove_keys = ['__name__', '__builtins__', '_p_serial']
+ 
+        L = [(getattr(obj, '__name__', id),
+              getattr(obj, '__doc__', ''),
+              type(obj).__name__
+              )
+             for id, obj in module.__dict__.items()
+             if id not in remove_keys]
+        L.sort()
+
+        l_dict = [{"name": name, "doc": doc, "objtype": objtype} for name, doc, objtype in L]
+
+        for dic in l_dict:
+                if dic['objtype'].find('Class') != -1: dic['objtype'] = 'Class'
+                if dic['objtype'].find('Function') != -1: dic['objtype'] = 'Function'
+        return l_dict
+        
