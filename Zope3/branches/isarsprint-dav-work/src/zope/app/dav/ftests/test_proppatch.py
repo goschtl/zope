@@ -65,6 +65,31 @@ class TestPROPPATCH(DAVTestCase):
         self._assertOPropsEqual(pt, 
             {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
         
+    def test_remove_dctitle(self):
+        self.addPage('/pt', u'<span />')
+        pt = traverse(self.getRootFolder(), '/pt')
+        adapted = IZopeDublinCore(pt)
+        adapted.title = u'Test'
+        transaction.commit()
+        # DC Title is a required field with no default, so a 409 is expected
+        expect = self._makePropstat(('http://purl.org/dc/1.1',),
+                                    '<title xmlns="a0"/>', 409)
+        self.verifyPropOK(path='/pt', 
+            namespaces=(('DC', 'http://purl.org/dc/1.1'),),
+            rm=('<DC:title/>',), expect=expect)
+        
+    def test_set_dctitle(self):
+        self.addPage('/pt', u'<span />')
+        pt = traverse(self.getRootFolder(), '/pt')
+        adapted = IZopeDublinCore(pt)
+        transaction.commit()
+        expect = self._makePropstat(('http://purl.org/dc/1.1',),
+                                    '<title xmlns="a0"/>')
+        self.verifyPropOK(path='/pt', 
+            namespaces=(('DC', 'http://purl.org/dc/1.1'),),
+            set=('<DC:title>Test Title</DC:title>',), expect=expect)
+        self.assertEqual(IZopeDublinCore(pt).title, u'Test Title')
+        
     def _assertOPropsEqual(self, obj, expect):
         oprops = IDAVOpaqueNamespaces(obj)
         namespacesA = list(oprops.keys())
