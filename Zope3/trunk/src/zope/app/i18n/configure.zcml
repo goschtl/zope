@@ -1,15 +1,11 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:service="http://namespaces.zope.org/service"
-   xmlns:gts="http://namespaces.zope.org/gts"
    package="zope.i18n"
    >
 
 <!-- Setup language negotiation -->
-<serviceType id="LanguageNegotiation" 
-             interface="zope.i18n.interfaces.INegotiator" />
-
-<service serviceType="LanguageNegotiation" 
+<utility 
+    provides="zope.i18n.interfaces.INegotiator"
     component="zope.i18n.negotiator.negotiator" />
 
 <adapter factory="zope.publisher.browser.BrowserLanguages"
