@@ -46,6 +46,7 @@ def _filtered_listdir(path):
                listdir(path))
     return n
 
+# This walker is only used on the Win32 version of _changed
 def _walker (listdir, dirname, names):
     names[:]=filter(_filter,names)
     listdir.extend(names)
@@ -141,7 +142,7 @@ class DirectoryInformation:
                     LOG('DirectoryView',
                         ERROR,
                         'Error reading permission from .security file',
-                        error=sys.exc_info())
+                        error=exc_info())
                 prm[permission]=(acquire,roles)
             return prm
 
@@ -154,18 +155,16 @@ class DirectoryInformation:
                 fp = expandpath(self.filepath)
                 mtime = stat(fp)[8]
                 # some Windows directories don't change mtime 
-                # when a file in them changes :-(
+                # when a file is added to or deleted from them :-(
                 # So keep a list of files as well, and see if that
                 # changes
                 path.walk(fp,_walker,filelist)
                 filelist.sort()
             except: 
-                from zLOG import LOG, ERROR
-                import sys
                 LOG('DirectoryView',
                     ERROR,
                     'Error checking for directory modification',
-                    error=sys.exc_info())
+                    error=exc_info())
                 
             if mtime != self._v_last_read or filelist != self._v_last_filelist:
                 self._v_last_read = mtime
@@ -284,12 +283,18 @@ class DirectoryInformation:
                         finally:
                             tb = None   # Avoid leaking frame!
                             
-                    # FS-based security                    
-                    permissions = self._readSecurity(e_fp + '.security')
-                    if permissions is not None:
-                        for name in permissions.keys():
-                            acquire,roles = permissions[name]
-                            ob.manage_permission(name,roles,acquire)
+                    # FS-based security
+                    try:
+                        permissions = self._readSecurity(e_fp + '.security')
+                        if permissions is not None:
+                            for name in permissions.keys():
+                                acquire,roles = permissions[name]
+                                ob.manage_permission(name,roles,acquire)
+                    except:
+                        LOG('DirectoryView',
+                            ERROR,
+                            'Error setting permission from .security file information',
+                            error=exc_info())
 
                     ob_id = ob.getId()
                     data[ob_id] = ob
