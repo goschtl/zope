@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
 
   <!-- Menu entry for "add cache" menu -->
@@ -36,4 +38,4 @@
     <page name="InvalidateCache.html" attribute="invalidate" />
   </pages>
 
-</configure>
+</zope:configure>
