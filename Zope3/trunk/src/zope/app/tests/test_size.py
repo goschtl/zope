@@ -42,13 +42,13 @@ class Test(unittest.TestCase):
         obj = DummyObject(None)
         sized = DefaultSized(obj)
         self.assertEqual(sized.sizeForSorting(), (None, None))
-        self.assertEqual(sized.sizeForDisplay(), u'n/a')
+        self.assertEqual(sized.sizeForDisplay(), u'not-available')
 
     def testSizeNotAvailable(self):
         from zope.app.size import DefaultSized
         sized = DefaultSized(object())
         self.assertEqual(sized.sizeForSorting(), (None, None))
-        self.assertEqual(sized.sizeForDisplay(), u'n/a')
+        self.assertEqual(sized.sizeForDisplay(), u'not-available')
 
     def testVariousSizes(self):
         from zope.app.size import DefaultSized

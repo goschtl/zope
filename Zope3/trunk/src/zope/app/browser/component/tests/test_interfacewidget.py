@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.25 2003/08/16 00:42:38 srichter Exp $
+$Id: test_interfacewidget.py,v 1.26 2003/08/20 18:37:59 philikon Exp $
 """
 
 __metaclass__ = type
@@ -241,7 +241,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '">'
-        'Anything'
+        'any-interface'
         '</option>'
 
         '<option value="'
@@ -281,7 +281,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '" selected>'
-        'Anything'
+        'any-interface'
         '</option>'
 
         '<option value="'
@@ -591,7 +591,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '">'
-        'Anything'
+        'any-interface'
         '</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I'
@@ -621,7 +621,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '">'
-        'Anything'
+        'any-interface'
         '</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I'
@@ -659,7 +659,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '">'
-        'Anything'
+        'any-interface'
         '</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I'
@@ -689,7 +689,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '" selected>'
-        'Anything'
+        'any-interface'
         '</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I'
@@ -727,7 +727,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="'
         'None'
         '">'
-        'Anything'
+        'any-interface'
         '</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I'
