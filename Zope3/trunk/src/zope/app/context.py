@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.9 2003/06/11 08:56:22 stevea Exp $
+$Id: context.py,v 1.10 2003/06/20 06:59:08 stevea Exp $
 """
 
 from pickle import PicklingError
@@ -164,6 +164,14 @@ def ContextWrapper(_ob, _parent, **kw):
             _ob = Wrapper(_ob, _parent, **kw)
 
     if checker is not None:
+        # XXX Problem here is if the wrapper requires a different checker
+        # Let's make a combined checker using the checker we have.
+        # This is similar to what the DecoratedSecurityCheckerDescriptor
+        # does. (See above.)
+        # This behaviour needs a test.
+        wrapper_checker = selectChecker(_ob)
+        if wrapper_checker is not None:
+            checker = CombinedChecker(wrapper_checker, checker)
         _ob = Proxy(_ob, checker)
 
     return _ob
