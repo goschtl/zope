@@ -14,15 +14,15 @@
      />
 
 <page
-     name="contents.html" 
+     name="contents.html"
      for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
-     permission="zope.ManageServices" 
+     permission="zope.ManageServices"
      class="zope.app.browser.container.contents.Contents"
      attribute="contents"
      />
 
 <view
-     name="+"  
+     name="+"
      menu="zmi_actions" title="Add Source"
      for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
      permission="zope.ManageContent"
@@ -47,16 +47,16 @@
     />
 
 <page
-     name="contents.html" 
+     name="contents.html"
      menu="zmi_views" title="Contents"
      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-     permission="zope.ManageServices" 
+     permission="zope.ManageServices"
      class="zope.app.browser.container.contents.Contents"
      attribute="contents"
      />
 
 <view
-    name="+"  
+    name="+"
     for="zope.app.services.pluggableauth.IContainerPrincipalSource"
     permission="zope.ManageContent"
     class="zope.app.browser.container.adding.Adding"/>
@@ -68,21 +68,21 @@
     />
 
 <addform
-    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied" 
-    label="Add Simple User with details" 
-    content_factory="zope.app.services.pluggableauth.SimplePrincipal" 
-    arguments="login password title description" 
+    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+    label="Add Simple User with details"
+    content_factory="zope.app.services.pluggableauth.SimplePrincipal"
+    arguments="login password title description"
     fields="login password title description"
-    name="AddPrincipalForm" 
-    permission="zope.ManageContent" /> 
+    name="AddPrincipalForm"
+    permission="zope.ManageContent" />
 
-<editform 
-    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied" 
-    label="Edit User Information"     
+<editform
+    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+    label="Edit User Information"
     fields="login password title description"
-    name="edit.html"        
-    menu="zmi_views" title="Edit" 
-    permission="zope.ManageContent" /> 
+    name="edit.html"
+    menu="zmi_views" title="Edit"
+    permission="zope.ManageContent" />
 
 <!-- Principals -->
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.4 2003/07/03 21:45:30 srichter Exp $
+$Id: __init__.py,v 1.5 2003/07/10 09:27:37 alga Exp $
 """
 
 from __future__ import generators
@@ -133,7 +133,7 @@ class PluggableAuthenticationService(OrderedContainer):
         """
 
         next = None
-        
+
         try:
             auth_svc_earmark, principal_src_id, principal_id = id.split('\t',2)
         except (TypeError, ValueError, AttributeError):
@@ -143,7 +143,7 @@ class PluggableAuthenticationService(OrderedContainer):
         if auth_svc_earmark != self.earmark:
             # this is not our reference because its earmark doesnt match ours
             next = queryNextService(self, Authentication, None)
-        
+
         if next is not None:
             return next.getPrincipal(id)
 
@@ -184,7 +184,7 @@ class PluggableAuthenticationService(OrderedContainer):
         if not IPrincipalSource.isImplementedBy(principal_source):
             raise TypeError("Source must implement IPrincipalSource")
         self.setObject(id, principal_source)
-        
+
     def removePrincipalSource(self, id):
         """ See IPluggableAuthenticationService.
 
@@ -201,7 +201,7 @@ class PluggableAuthenticationService(OrderedContainer):
         >>> pas.keys()
         ['simple', 'simpler']
         """
-            
+
         del self[id]
 
 class BTreePrincipalSource(Persistent):
@@ -229,7 +229,7 @@ class BTreePrincipalSource(Persistent):
         >>> del sps['fred']
         >>> int(sps.get('fred') == prin)
         0
-        
+
         """
         number = self._numbers_by_login[key]
 
@@ -455,7 +455,12 @@ class SimplePrincipal(Persistent):
         self.description = description
 
     def getId(self):
-        """ See IPrincipal. """
+        """ See IPrincipal.
+
+        This method returns just a simple id, PrincipalWrapper is
+        used to get the full id as used by the
+        PluggableAuthenticationService.
+        """
         return self.id
 
     def getTitle(self):
@@ -469,7 +474,7 @@ class SimplePrincipal(Persistent):
     def getLogin(self):
         """ See IReadUser. """
         return self.login
-    
+
     def validate(self, test_password):
         """ See IReadUser.
 
@@ -486,11 +491,11 @@ class SimplePrincipal(Persistent):
 
 class PrincipalAuthenticationView:
     implements(IViewFactory)
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        
+
     def authenticate(self):
         # XXX we only handle requests which have basic auth credentials
         # in them currently (ILoginPassword-based requests)
@@ -505,15 +510,15 @@ class PrincipalAuthenticationView:
         p = self.context.authenticate(login, password)
         return p
 
-    
+
 class PrincipalWrapper(Wrapper):
     """ A wrapper for a principal as returned from the authentication
     service.  This wrapper returns the principal id which includes
     identification of the auth service and the principal store id in
     addition to the principal id."""
-    
+
     def getId(self):
         """ Return the id as passed in to the wrapper """
         return getWrapperData(self)['id']
 
-    
+
