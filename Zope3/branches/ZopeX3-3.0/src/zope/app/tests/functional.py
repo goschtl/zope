@@ -18,6 +18,8 @@ There should be a file 'ftesting.zcml' in the current directory.
 $Id$
 """
 import logging
+import re
+import rfc822
 import sys
 import traceback
 import unittest
@@ -25,25 +27,29 @@ import unittest
 from StringIO import StringIO
 from Cookie import SimpleCookie
 
-from transaction import get_transaction
+from transaction import abort, commit
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
+import zope.interface
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
+from zope.publisher.xmlrpc import XMLRPCRequest
 from zope.security.interfaces import Forbidden, Unauthorized
 from zope.security.management import endInteraction
+import zope.server.interfaces
+from zope.testing import doctest
 
 from zope.app.debug import Debugger
+from zope.app.publication.http import HTTPPublication
+from zope.app.publication.browser import BrowserPublication
+from zope.app.publication.xmlrpc import XMLRPCPublication
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
 import zope.app.tests.setup
 from zope.app.component.hooks import setSite, getSite
 
-
-class HTTPTaskStub(StringIO):
-    pass
-
+HTTPTaskStub = StringIO
 
 class ResponseWrapper(object):
     """A wrapper that adds several introspective methods to a response."""
@@ -72,7 +78,6 @@ class ResponseWrapper(object):
 
     def __getattr__(self, attr):
         return getattr(self._response, attr)
-
 
 class FunctionalTestSetup(object):
     """Keeps shared state across several functional test cases."""
@@ -118,7 +123,7 @@ class FunctionalTestSetup(object):
 
     def tearDown(self):
         """Cleans up after a functional test case."""
-        get_transaction().abort()
+        abort()
         if self.connection:
             self.connection.close()
             self.connection = None
@@ -146,6 +151,7 @@ class FunctionalTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Cleans up after a functional test case."""
+
         FunctionalTestSetup().tearDown()
         super(FunctionalTestCase, self).tearDown()
 
@@ -154,10 +160,10 @@ class FunctionalTestCase(unittest.TestCase):
         return FunctionalTestSetup().getRootFolder()
 
     def commit(self):
-        get_transaction().commit()
+        commit()
 
     def abort(self):
-        get_transaction().abort()
+        abort()
 
 class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
@@ -169,6 +175,7 @@ class BrowserTestCase(FunctionalTestCase):
 
     def tearDown(self):
         del self.cookies
+
         self.setSite(None)
         super(BrowserTestCase, self).tearDown()
 
@@ -373,6 +380,134 @@ class HTTPTestCase(FunctionalTestCase):
         publish(request, handle_errors=handle_errors)
         return response
 
+
+class HTTPHeaderOutput:
+
+    zope.interface.implements(zope.server.interfaces.IHeaderOutput)
+
+    def __init__(self, protocol, omit):
+        self.headers = {}
+        self.headersl = []
+        self.protocol = protocol
+        self.omit = omit
+    
+    def setResponseStatus(self, status, reason):
+        self.status, self.reason = status, reason
+
+    def setResponseHeaders(self, mapping):
+        self.headers.update(dict(
+            [('-'.join([s.capitalize() for s in name.split('-')]), v)
+             for name, v in mapping.items()
+             if name.lower() not in self.omit]
+        ))
+
+    def appendResponseHeaders(self, lst):
+        headers = [split_header(header) for header in lst]
+        self.headersl.extend(
+            [('-'.join([s.capitalize() for s in name.split('-')]), v)
+             for name, v in headers
+             if name.lower() not in self.omit]
+        )
+
+    def __str__(self):
+        out = ["%s: %s" % header for header in self.headers.items()]
+        out.extend(["%s: %s" % header for header in self.headersl])
+        out.sort()
+        out.insert(0, "%s %s %s" % (self.protocol, self.status, self.reason))
+        return '\n'.join(out)
+
+class DocResponseWrapper(ResponseWrapper):
+    """Response Wrapper for use in doc tests
+    """
+
+    def __init__(self, response, outstream, path, header_output):
+        ResponseWrapper.__init__(self, response, outstream, path)
+        self.header_output = header_output
+
+    def __str__(self):
+        body = self.getOutput()
+        if body:
+            return "%s\n\n%s" % (self.header_output, body)
+        return "%s\n" % (self.header_output)
+
+def http(request_string):
+    """Execute an HTTP request string via the publisher
+
+    This is used for HTTP doc tests.
+    """
+    # Commit work done by previous python code.
+    commit()
+
+    # Discard leading white space to make call layout simpler
+    request_string = request_string.lstrip()
+
+    # split off and parse the command line
+    l = request_string.find('\n')
+    command_line = request_string[:l].rstrip()
+    request_string = request_string[l+1:]
+    method, path, protocol = command_line.split()
+    
+
+    instream = StringIO(request_string)
+    environment = {"HTTP_HOST": 'localhost',
+                   "HTTP_REFERER": 'localhost',
+                   "REQUEST_METHOD": method,
+                   "SERVER_PROTOCOL": protocol,
+                   }
+
+    headers = [split_header(header)
+               for header in rfc822.Message(instream).headers]
+    for name, value in headers:
+        name = 'HTTP_' + ('_'.join(name.upper().split('-')))
+        environment[name] = value.rstrip()
+
+    outstream = HTTPTaskStub()
+
+
+    old_site = getSite()
+    setSite(None)
+    app = FunctionalTestSetup().getApplication()
+    header_output = HTTPHeaderOutput(
+        protocol, ('x-content-type-warning', 'x-powered-by'))
+
+    if method in ('GET', 'POST', 'HEAD'):
+        if (method == 'POST' and
+            environment.get('CONTENT_TYPE', '').startswith('text/xml')
+            ):
+            request_cls = XMLRPCRequest
+            publication_cls = XMLRPCPublication
+        else:
+            request_cls = BrowserRequest
+            publication_cls = BrowserPublication
+    else:
+        request_cls = HTTPRequest
+        publication_cls = HTTPPublication
+    
+    request = app._request(path, instream, outstream,
+                           environment=environment,
+                           request=request_cls, publication=publication_cls)
+    request.response.setHeaderOutput(header_output)
+    response = DocResponseWrapper(request.response, outstream, path,
+                                  header_output)
+    
+    publish(request)
+    setSite(old_site)
+
+    # sync Python connection:
+    getRootFolder()._p_jar.sync()
+    
+    return response
+
+headerre = re.compile('(\S+): (.+)$')
+def split_header(header):
+    return headerre.match(header).group(1, 2)
+
+def getRootFolder():
+    return FunctionalTestSetup().getRootFolder()
+
+def sync():
+    getRootFolder()._p_jar.sync()
+
 #
 # Sample functional test case
 #
@@ -402,6 +537,32 @@ def sample_test_suite():
     suite.addTest(unittest.makeSuite(SampleFunctionalTest))
     return suite
 
+def FunctionalDocFileSuite(*paths, **kw):
+    globs = kw.setdefault('globs', {})
+    globs['http'] = http
+    globs['getRootFolder'] = getRootFolder
+    globs['sync'] = sync
+
+    kw['package'] = doctest._normalize_module(kw.get('package'))
+
+    kwsetUp = kw.get('setUp')
+    def setUp():
+        FunctionalTestSetup().setUp()
+        
+        if kwsetUp is not None:
+            kwsetUp()
+    kw['setUp'] = setUp
+
+    kwtearDown = kw.get('tearDown')
+    def tearDown():
+        if kwtearDown is not None:
+            kwtearDown()
+        FunctionalTestSetup().tearDown()
+    kw['tearDown'] = tearDown
+
+    kw['optionflags'] = doctest.ELLIPSIS | doctest.CONTEXT_DIFF
+
+    return doctest.DocFileSuite(*paths, **kw)
 
 if __name__ == '__main__':
     unittest.main()

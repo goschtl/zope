@@ -18,6 +18,7 @@ $Id: functional.py 26214 2004-07-08 19:00:07Z srichter $
 
 import unittest
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
+from zope.app.tests.functional import FunctionalDocFileSuite
 
 class CookieFunctionalTest(BrowserTestCase):
 
@@ -118,6 +119,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SampleFunctionalTest))
     suite.addTest(unittest.makeSuite(CookieFunctionalTest))
+    suite.addTest(FunctionalDocFileSuite('doctest.txt'))
     return suite
 
 
