@@ -133,6 +133,10 @@ Zope Changes
         available via 'zope.app.zapi'. I also added the 'getFactoriesFor()'
         function to zapi, since it was only available from the service before. 
 
+      o Removed the Caching Service; Caches were already utilities, so it was
+        easy to rip it out. Updated the views, so that the only example usage, 
+        the SQL Script, can make use of caches.
+
     - The IPrincipal now uses 'id', 'title' and 'description instead of
       'getId()', 'getTitle()', and 'getDescription()'. For
       backwards-compatiblity 'getTitle()' and 'getDescription()' are available

@@ -13,21 +13,19 @@
 ##############################################################################
 """Helpers for caching.
 
-$Id: caching.py,v 1.8 2004/03/06 16:50:16 jim Exp $
+$Id: caching.py,v 1.9 2004/03/10 19:41:00 srichter Exp $
 """
 from zope.app import zapi
-from zope.app.cache.interfaces import ICacheable
-from zope.app.services.servicenames import Caching
+from zope.app.cache.interfaces import ICacheable, ICache
 from zope.component import ComponentLookupError
 
-def getCacheForObj(obj):
+def getCacheForObject(obj):
     """Returns the cache associated with obj or None."""
     adapter = ICacheable(obj)
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None
-    service = zapi.getService(obj, Caching)
-    return service.getCache(cache_id)
+    return zapi.getUtility(obj, ICache, cache_id)
 
 def getLocationForCache(obj):
     """Returns the location to be used for caching the object or None."""

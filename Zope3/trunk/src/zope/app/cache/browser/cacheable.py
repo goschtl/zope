@@ -13,10 +13,10 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.2 2004/03/06 16:50:17 jim Exp $
+$Id: cacheable.py,v 1.3 2004/03/10 19:41:00 srichter Exp $
 """
 from zope.app import zapi
-from zope.app.cache.caching import getCacheForObj, getLocationForCache
+from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -50,7 +50,7 @@ class CacheableView(BrowserView):
     def invalidate(self):
         "Invalidate the current cached value."
 
-        cache = getCacheForObj(self.context)
+        cache = getCacheForObject(self.context)
         location = getLocationForCache(self.context)
         if cache and location:
             cache.invalidate(location)
@@ -62,7 +62,7 @@ class CacheableView(BrowserView):
     def action(self):
         "Change the cacheId"
         try:
-            cacheId = self.cacheId.getData()
+            cacheId = self.cacheId_widget.getInputValue()
         except WidgetInputError, e:
             #return self.form(errors=e.errors)
             return repr(e.errors)

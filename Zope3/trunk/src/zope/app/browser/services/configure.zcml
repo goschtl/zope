@@ -8,9 +8,6 @@
 <!-- General registration views --> 
    <zope:include package=".registration" />
 
-<!-- CachingService --> 
-  <zope:include file="cache.zcml" />
-
 <!-- Event Service -->
 
   <page

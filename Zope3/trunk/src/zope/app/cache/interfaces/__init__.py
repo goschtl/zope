@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.3 2004/03/02 18:50:55 philikon Exp $
+$Id: __init__.py,v 1.4 2004/03/10 19:41:01 srichter Exp $
 """
 from zope.component.exceptions import ComponentLookupError  
 from zope.interface import Interface
@@ -21,20 +21,17 @@ from zope.schema import TextLine
 
 from zope.app import zapi
 from zope.app.event.interfaces import ISubscriber
-from zope.app.services.servicenames import Caching
 
+# XXX: EEEEEEEEK, should be done using a vocabulary and the vocabulary field. :(
 class CacheName(TextLine):
     """Cache Name"""
 
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped.
         """
-        try:
-            service = zapi.getService(self.context, Caching)
-        except ComponentLookupError, err:
-            return ['']
-        else:
-            return [''] + list(service.getAvailableCaches())
+        names = [name \
+                 for name, util in zapi.getUtilitiesFor(self.context, ICache)]
+        return names + ['']
 
     allowed_values = property(__allowed)
 
@@ -52,19 +49,6 @@ class ICacheable(Interface):
 
     def setCacheId(id):
         """Sets the associated cache manager ID."""
-
-
-class ICachingService(Interface):
-
-    def getCache(name):
-        """Returns a cache object by name."""
-
-    def queryCache(name, default):
-        """Return a cache object by name or default."""
-
-    def getAvailableCaches():
-        """Returns a list of names of cache objects known to this caching
-        service."""
 
 
 class ICache(ISubscriber):

@@ -36,7 +36,7 @@
         <tr>
           <th class="EditAttributeName" i18n:translate="">Cache name</th>
           <td class="EditAttributeValue"
-              tal:content="structure view/cacheId">
+              tal:content="structure view/cacheId_widget">
             <input size="20" />
           </td>
         </tr>

@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: sqlscript.py,v 1.4 2004/03/02 18:06:11 philikon Exp $
+$Id: sqlscript.py,v 1.5 2004/03/10 19:41:08 srichter Exp $
 """
-
 import re
 from types import StringTypes
 
@@ -27,7 +26,7 @@ from zope.interface.common.mapping import IEnumerableMapping
 from zope.app import zapi
 from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
-from zope.app.cache.caching import getCacheForObj, getLocationForCache
+from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.file.interfaces import IFileContent
 
@@ -90,7 +89,7 @@ class SQLScript(Persistent, Contained):
 
     def _setConnectionName(self, name):
         self._connectionName = name
-        cache = getCacheForObj(self)
+        cache = getCacheForObject(self)
         location = getLocationForCache(self)
 
         if cache and location:
@@ -139,7 +138,7 @@ class SQLScript(Persistent, Contained):
                 self.connectionName))
 
         query = apply(self.template, (), arg_values)
-        cache = getCacheForObj(self)
+        cache = getCacheForObject(self)
         location = getLocationForCache(self)
         if cache and location:
             _marker = object()

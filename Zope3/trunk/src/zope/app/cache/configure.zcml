@@ -1,10 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <serviceType 
-      id="Caching"
-      interface="zope.app.cache.interfaces.ICachingService"
-      />
-
   <adapter 
       for="zope.app.interfaces.annotation.IAnnotatable"
       provides="zope.app.cache.interfaces.ICacheable"

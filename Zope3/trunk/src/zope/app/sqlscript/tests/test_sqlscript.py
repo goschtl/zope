@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.4 2004/03/02 13:48:30 philikon Exp $
+$Id: test_sqlscript.py,v 1.5 2004/03/10 19:41:09 srichter Exp $
 """
 import unittest
 from zope.interface import implements, classImplements
@@ -32,7 +32,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 
-from zope.app.cache.interfaces import ICacheable, ICachingService
+from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.services.service import ISimpleService
@@ -91,7 +91,7 @@ class ConnectionServiceStub:
 
 
 class CacheStub:
-
+    implements(ICache)
     def __init__(self):
         self.cache = {}
 
@@ -109,16 +109,6 @@ class CacheStub:
             keywords = tuple(keywords)
         return self.cache.get((obj, keywords), default)
 
-
-class CachingServiceStub:
-
-    implements(ICachingService, ISimpleService)
-
-    def __init__(self):
-        self.caches = {}
-
-    def getCache(self, name):
-        return self.caches[name]
 
 class LocatableStub:
 
@@ -143,18 +133,12 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
         ztapi.provideUtility(IZopeDatabaseAdapter, self.connectionUtilityStub,
                              'my_connection')
         
-        self.caching_service = CachingServiceStub()
-        sm.defineService('Caching', ICachingService)
-        sm.provideService('Caching', self.caching_service)
-        ztapi.provideAdapter(
-            IAttributeAnnotatable, IAnnotations,
-            AttributeAnnotations)
-        ztapi.provideAdapter(
-            ISQLScript, IPhysicallyLocatable,
-            LocatableStub)
-        ztapi.provideAdapter(
-            IAnnotatable, ICacheable,
-            AnnotationCacheable)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
+        ztapi.provideAdapter(ISQLScript, IPhysicallyLocatable,
+                             LocatableStub)
+        ztapi.provideAdapter(IAnnotatable, ICacheable,
+                             AnnotationCacheable)
 
     def tearDown(self):
         pass
@@ -219,7 +203,7 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(result[0].counter, 2)
         # caching: and check that the counter stays still
         AnnotationCacheable(script).setCacheId('dumbcache')
-        self.caching_service.caches['dumbcache'] = CacheStub()
+        ztapi.provideUtility(ICache, CacheStub(), 'dumbcache')
         result = script(id=1)
         self.assertEqual(result[0].counter, 3)
         result = script(id=1)

@@ -13,25 +13,24 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.13 2004/03/01 10:57:36 philikon Exp $
+$Id: test_annotationcacheable.py,v 1.14 2004/03/10 19:41:02 srichter Exp $
 """
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
+from zope.interface import implements
+
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.cache.annotationcacheable import AnnotationCacheable
-from zope.app.cache.interfaces import ICachingService
-from zope.component.service import serviceManager as sm
-from zope.app.interfaces.services.service import ISimpleService
-from zope.interface import implements
+from zope.app.cache.interfaces import ICache
 
 class ObjectStub:
     implements(IAttributeAnnotatable)
 
 
 class CacheStub:
+    implements(ICache)
     def __init__(self):
         self.invalidated = []
 
@@ -39,25 +38,11 @@ class CacheStub:
         self.invalidated.append(obj)
 
 
-class CachingServiceStub:
-    implements(ICachingService, ISimpleService)
-
-    def __init__(self):
-        self.caches = {}
-
-    def getCache(self, name):
-        return self.caches[name]
-
-
-class TestAnnotationCacheable(PlacelessSetup, TestCase):
+class TestAnnotationCacheable(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(TestAnnotationCacheable, self).setUp()
-        ztapi.provideAdapter(
-            IAttributeAnnotatable, IAnnotations,
-            AttributeAnnotations)
-        self.service = CachingServiceStub()
-        sm.defineService('Caching', ICachingService)
-        sm.provideService('Caching', self.service)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
 
     def testNormal(self):
         ob = ObjectStub()
@@ -72,8 +57,10 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
     def testInvalidate(self):
         # Test that setting a different cache ID invalidates the old cached
         # value
-        self.service.caches['cache1'] = cache1 = CacheStub()
-        self.service.caches['cache2'] = cache2 = CacheStub()
+        cache1 = CacheStub()
+        ztapi.provideUtility(ICache, cache1, "cache1")
+        cache2 = CacheStub()
+        ztapi.provideUtility(ICache, cache2, "cache2")
         ob = ObjectStub()
         adapter = AnnotationCacheable(ob)
         adapter.setCacheId('cache1')
@@ -88,10 +75,9 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
 
 
 def test_suite():
-    suite = TestSuite()
-    suite.addTest(makeSuite(TestAnnotationCacheable))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestAnnotationCacheable))
     return suite
 
-
 if __name__ == '__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

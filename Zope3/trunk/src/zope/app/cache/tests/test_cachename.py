@@ -15,27 +15,20 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.8 2004/03/01 10:57:36 philikon Exp $
+$Id: test_cachename.py,v 1.9 2004/03/10 19:41:02 srichter Exp $
 """
 import unittest
 from zope.interface import implements
 
-from zope.app.cache.interfaces import CacheName
-from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
-from zope.app.interfaces.services.service import ILocalService
+from zope.app.cache.interfaces import CacheName, ICache
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.services.utility import LocalUtilityService
 
-__metaclass__ = type
-
-class CachingServiceStub:
-
+class CacheStub(object):
     __name__ = __parent__ = None
-
-    implements(ILocalService, IAttributeAnnotatable)
-
-    def getAvailableCaches(self):
-        return 'foo', 'bar', 'baz'
+    implements(ICache, IAttributeAnnotatable)
 
     # IAttributeAnnotatable is implemented so that there will be an
     # IDependable adapter available.
@@ -45,7 +38,10 @@ class CacheNameTest(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self, folders=True)
         sm = self.makeSite()
-        setup.addService(sm, 'Caching', CachingServiceStub())
+        setup.addService(sm, 'Utilities', LocalUtilityService())
+        setup.addUtility(sm, 'bar', ICache, CacheStub())
+        setup.addUtility(sm, 'baz', ICache, CacheStub())
+        setup.addUtility(sm, 'foo', ICache, CacheStub())
 
     def test(self):
         field = CacheName().bind(self.rootFolder)

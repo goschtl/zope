@@ -13,14 +13,13 @@
 ##############################################################################
 """An adapter of annotatable objects.
 
-$Id: annotationcacheable.py,v 1.6 2004/03/06 16:50:16 jim Exp $
+$Id: annotationcacheable.py,v 1.7 2004/03/10 19:41:00 srichter Exp $
 """
 from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.cache.interfaces import ICacheable
-from zope.app.services.servicenames import Caching
+from zope.app.cache.interfaces import ICacheable, ICache
 
 annotation_key = 'zope.app.cache.CacheManager'
 
@@ -40,8 +39,7 @@ class AnnotationCacheable:
         # Remove object from old cache
         old_cache_id = self.getCacheId()
         if old_cache_id and old_cache_id != id:
-            service = zapi.getService(self._context, Caching)
-            cache = service.getCache(old_cache_id)
+            cache = zapi.getUtility(self._context, ICache, old_cache_id)
             cache.invalidate(self._context)
         annotations = IAnnotations(self._context)
         annotations[annotation_key] = id

@@ -1,12 +1,11 @@
 <zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
    >
 
   <addMenuItem
       title="RAM Cache"
-      description="A RAM cache is a volatile (in memory) cache for speeding up things"
+      description="A RAM cache is a volatile (in memory) cache"
       class="zope.app.cache.ram.RAMCache"
       permission="zope.ManageServices"
       />

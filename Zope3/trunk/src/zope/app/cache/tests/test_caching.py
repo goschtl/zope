@@ -13,70 +13,48 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.14 2004/03/06 16:50:17 jim Exp $
+$Id: test_caching.py,v 1.15 2004/03/10 19:41:02 srichter Exp $
 """
-
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.component import getService
+import unittest
 from zope.interface import implements
-from zope.component.service import serviceManager as sm
 
-from zope.app.tests import ztapi
-from zope.app.cache.interfaces import ICacheable, ICachingService
-from zope.app.cache.caching import getCacheForObj
-from zope.app.cache.annotationcacheable import AnnotationCacheable
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.tests import ztapi, setup
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.cache.interfaces import ICacheable, ICache
+from zope.app.cache.caching import getCacheForObject
+from zope.app.cache.annotationcacheable import AnnotationCacheable
 
 class ObjectStub:
     implements(IAttributeAnnotatable)
 
 class CacheStub:
-    pass
+    implements(ICache)
 
-class CachingServiceStub:
-
-    implements(ICachingService, ISimpleService)
-
-    def __init__(self):
-        self.caches = {}
-
-    def getCache(self, name):
-        return self.caches[name]
-
-class Test(PlacelessSetup, TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        ztapi.provideAdapter(
-            IAttributeAnnotatable, IAnnotations,
-            AttributeAnnotations)
-        ztapi.provideAdapter(
-            IAnnotatable, ICacheable,
-            AnnotationCacheable)
-        self.service = CachingServiceStub()
-        sm.defineService('Caching', ICachingService)
-        sm.provideService('Caching', self.service)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
+        ztapi.provideAdapter(IAnnotatable, ICacheable,
+                             AnnotationCacheable)
+        self._cache = CacheStub()
+        ztapi.provideUtility(ICache, self._cache, "my_cache")
 
     def testGetCacheForObj(self):
-        self.service.caches['my_cache'] = my_cache = CacheStub()
-
         obj = ObjectStub()
-        self.assertEquals(getCacheForObj(obj), None)
-
+        self.assertEquals(getCacheForObject(obj), None)
         ICacheable(obj).setCacheId("my_cache")
-
-        self.assertEquals(getCacheForObj(obj), my_cache)
+        self.assertEquals(getCacheForObject(obj), self._cache)
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
         ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
