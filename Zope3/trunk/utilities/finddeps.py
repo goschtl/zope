@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.8 2004/03/11 19:43:59 fdrake Exp $
+$Id: finddeps.py,v 1.9 2004/03/11 20:23:35 fdrake Exp $
 """
 import sys
 import getopt
@@ -151,7 +151,17 @@ def getDependenciesOfZCMLFile(path):
 
 
 def filterStandardModules(deps):
-    """Try to remove modules from the standard Python library."""
+    """Try to remove modules from the standard Python library.
+
+    Modules are considered part of the standard library if their
+    __file__ is located in the tree rooted at the parent of the
+    site-packages directory, but not in the sub-tree in site-packages.
+    """
+    from distutils import sysconfig
+    site_packages = sysconfig.get_python_lib()
+    standard_lib = os.path.dirname(site_packages)
+    site_packages = os.path.join(site_packages, "")
+    standard_lib = os.path.join(standard_lib, "")
     filteredDeps = []
     for dep in deps:
         try:
@@ -161,9 +171,10 @@ def filterStandardModules(deps):
         # built-ins (like sys) do not have a file associated
         if not hasattr(module, '__file__'):
             continue
-        dir = os.path.dirname(module.__file__)
-        if dir.startswith(ZOPESRC):
-            filteredDeps.append(dep)
+        starts = module.__file__.startswith
+        if starts(standard_lib) and not starts(site_packages):
+            continue
+        filteredDeps.append(dep)
     return filteredDeps
 
 
