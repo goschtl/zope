@@ -2,6 +2,8 @@ After CMF 1.4.4 (unreleased)
 
   Bug Fixes
 
+    - FSImage didn't recognize '.bmp' files (Collector #245).
+
     - Further hardening of member property, 'email', to prevent trickier
       header injection into system-generated e-mails (Collector #243 redux).
 
