@@ -208,6 +208,10 @@ To Do
 Working With Bundles
 --------------------
 
+(The examples in this section assume you are using the **zsync login**
+command to store authentication tokens; see the **zsync**
+documentation for more information on authentication.)
+
 - Bundles aren't quite as easy to use as they are supposed to be as
   described in the |TTWSITE|_ Wiki page referenced above, but you can
   do some basic bundle-ish things.  All these need is a little better
@@ -217,40 +221,36 @@ Working With Bundles
   zope.ManageServices permission, which usually requires being logged
   in with the manager role.
 
-- Bundle status.  There is not yet an explicit notion of "bundle-ness"
-  for site management folders.  Any site management folder can be
-  treated as a bundle.  Exception: the Bundle view works for the
-  default folder but the form included in the view refuses to change
-  it.  This is a safety measure: the bundle form can do a lot of
-  damage, e.g. it can disable all services at once.  By convention, I
-  propose that bundles have a folder name of the form
-  <name>-<version>, where <version> is two or more decimal numbers
-  separated by dots and <name> is unconstrained.
+- Bundle status.  Bundles are distinct objects, but are very similar
+  to site manangement folders.
 
-- Creating a bundle.  There is no specific command to create a bundle.
-  Instead, you create a new site management folder by going to the
-  Contents view of the site (e.g. ``/++etc++site/@@contents.html``)
-  and clicking on **Add** in the actions menu.  A box will appear in
-  which you should type the name and version of your bundle.  Then in
-  that bundle you should create the things that you want to go into
-  the bundle, e.g. modules, templates, services, utilities, etc.
+- Creating a bundle.  There is no specific command in the Zope user
+  interface to create a bundle.  Instead, you create a new site
+  management folder by going to the Contents view of the site
+  (e.g. ``/++etc++site/@@contents.html``) and clicking on **Add** in
+  the actions menu.  A box will appear in which you should type the
+  name of a site management folder that you later create a bundle
+  from.  Then in that folder you should create the things that you
+  want to go into the bundle, e.g. modules, templates, utilities, etc.
 
 - Creating a bundle from an existing folder.  If you have some
-  existing work done in the default folder or another non-bundle
-  folder, you can save your work to the filesystem using the **zsync
-  checkout** command, and then check it in under a different name using
-  the **zsync checkin** command.  Example; replace u:p with your manager
-  username and password::
+  existing work done in a folder, you can save your work to the
+  filesystem using the **zsync checkout** command, create a bundle
+  based on that folder using the **zbundle create** command, and
+  commit it back to the Zope server using the **zsync commit**
+  command.
+  For example::
 
-    $ zsync checkout http://u:p@localhost:8080/++etc++site/default
+    $ zsync checkout http://username@localhost:8080/
     <lots of output>
     All done.
-    $ zsync checkin http://u:p@localhost:8080/++etc++site/bundle-1.0 default
+    $ cd ++etc++site/
+    $ zbundle create bundle-1.0 workarea
+    $ zsync commit -m 'My new bundle.'
 
   Now go back to your web browser and check out the contents of
-  ``/++etc++site/``; a new folder bundle-1.0 should exist, containing
-  a copy of the default folder.  You should delete unnecessary things;
-  especially the standard service definitions are not needed.
+  ``/++etc++site/``; a new bundle, bundle-1.0, should exist,
+  containing a copy of the workarea folder.
 
 - Exporting a bundle.  First deactivate the bundle by using the
   **Deactivate bundle** button on the Bundle tab (see below).  Then
@@ -260,7 +260,7 @@ Working With Bundles
 
   ::
 
-    $ zsync checkout http://u:p@localhost:8080/++etc++site/bundle-1.0
+    $ zsync checkout http://username@localhost:8080/++etc++site/bundle-1.0
     <lots of output>
     All done.
     $ tar tf - bundle-1.0 @@Zope | gzip >bundle-1.0.tgz
