@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.2 2003/01/27 18:16:20 stevea Exp $
+$Id: globalservice.py,v 1.3 2003/01/27 18:39:48 stevea Exp $
 """
 
 __metaclass__ = type
@@ -235,7 +235,15 @@ def globalNotifyOrPublish(self, event):
         for subscriber, filter in subscriptions:
             if filter is not None and not filter(event):
                 continue
-            getAdapter(subscriber, ISubscriber).notify(event)
+            # getAdapter(subscriber, ISubscriber).notify(event)
+            # XXX This has affected more than it should have done.
+            #     I'll put the proper code back when I've cleaned everything
+            #     up.
+            adapter = queryAdapter(subscriber, ISubscriber)
+            if adapter is not None:
+               adapter.notify(event)
+            else:
+               subscriber.notify(event)
 
 
 class GlobalEventChannel(GlobalSubscribable):
