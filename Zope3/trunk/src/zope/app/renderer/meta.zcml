@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
@@ -14,4 +14,4 @@
      schema=".metaconfigure.IRendererDirective"
      handler=".metaconfigure.renderer" />
 
-</zopeConfigure>
+</configure>
