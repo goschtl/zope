@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.5 2003/07/01 19:03:59 fdrake Exp $
+$Id: __init__.py,v 1.6 2003/07/01 19:20:45 fdrake Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -23,7 +23,6 @@ from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.traversing import getPath, getParent, getName
 from zope.app import zapi
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
@@ -77,11 +76,11 @@ class Utilities(BrowserView):
             if doActivate or doDeactivate or doDelete:
                 return "Please select at least one checkbox"
             return None
-        sm = zapi.getServiceManager(self.context)
+        folder = zapi.getParent(self.context)
         todo = []
         for key in selected:
             name, ifacename = key.split(":", 1)
-            iface = sm.resolve(ifacename)
+            iface = folder.resolve(ifacename)
             todo.append((key, name, iface))
         if doActivate:
             return self._activate(todo)
@@ -146,18 +145,18 @@ class Utilities(BrowserView):
                 if first:
                     done.append(conf.usageSummary())
                     first = False
-                path = getPath(obj)
+                path = zapi.getPath(obj)
                 services[path] = obj
                 conf.status = UnregisteredStatus
-                parent = getParent(conf)
-                name = getName(conf)
+                parent = zapi.getParent(conf)
+                name = zapi.getName(conf)
                 container = zapi.getAdapter(parent, IZopeContainer)
                 del container[name]
 
         # 2) Delete the service objects
         for path, obj in services.items():
-            parent = getParent(obj)
-            name = getName(obj)
+            parent = zapi.getParent(obj)
+            name = zapi.getName(obj)
             container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
