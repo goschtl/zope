@@ -66,6 +66,3 @@ the directive.  There are four kinds of directives:
 
   Subdirectives, like complex directives only exist to support old
   directive handlers. They will probably be deprecated in the future.
-
-Directives are defined for an interface, which is
-IConfigurationContext by default.
