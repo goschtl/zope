@@ -1,35 +1,37 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns="http://namespaces.zope.org/zope">
 
-<!-- This file is the equivalent of site.zcml used for functional testing -->
+  <!-- This file is the equivalent of site.zcml used for functional testing -->
 
-<include package="zope.app" />
+  <include package="zope.app" />
 
-<role id="Manager" title="Site Manager" />
-<role id="Member" title="Site Member" />
+  <role id="Manager" title="Site Manager" />
+  <role id="Member" title="Site Member" />
 
-<!-- Remove the following directive if you don't want public access -->
-<grant permission="zope.View" role="Anonymous" />
+  <!-- Remove the following directive if you don't want public access -->
+  <grant permission="zope.View" role="Anonymous" />
 
-<grant permission="zope.View"              role="Manager" />
-<grant permission="zope.ManageContent"     role="Manager" />
-<grant permission="zope.Security"          role="Manager" />
-<grant permission="zope.ManageCode"        role="Manager" />
-<grant permission="zope.ManageServices"    role="Manager" />
-<grant permission="zope.ManageApplication" role="Manager" />
-<grant permission="zope.ManageBindings"    role="Manager" />
+  <grant permission="zope.View"              role="Manager" />
+  <grant permission="zope.ManageContent"     role="Manager" />
+  <grant permission="zope.Security"          role="Manager" />
+  <grant permission="zope.ManageCode"        role="Manager" />
+  <grant permission="zope.ManageServices"    role="Manager" />
+  <grant permission="zope.ManageApplication" role="Manager" />
+  <grant permission="zope.ManageBindings"    role="Manager" />
 
-<include file="products.zcml" />
+  <include file="products.zcml" />
 
-<!-- Principals -->
+  <!-- Principals -->
 
-<unauthenticatedPrincipal id="anybody"
-                          title="Unauthenticated User" />
+  <unauthenticatedPrincipal 
+      id="anybody"
+      title="Unauthenticated User" />
 
-<principal id='mgr'
-           title="Manager"
-           login='mgr'
-           password='mgrpw' />
+  <principal 
+      id="mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw" />
 
-<grant role="Manager" principal="mgr" />
+  <grant role="Manager" principal="mgr" />
 
-</zopeConfigure>
+</configure>
