@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.11 2002/12/12 20:05:51 jack-e Exp $
+$Id: LocalEventService.py,v 1.12 2002/12/12 20:27:39 jack-e Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -22,7 +22,6 @@ from Zope.Event.IEvent import IEvent
 from Zope.Event.IEventService import IEventService
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.App.Traversing.ITraverser import ITraverser
-from Zope.App.Traversing import traverse
 from Zope.ComponentArchitecture import getAdapter, getService
 from Zope.App.ComponentArchitecture.NextService import getNextService
 from Zope.ContextWrapper import ContextMethod
@@ -30,8 +29,7 @@ from Zope.Exceptions import NotFoundError
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
-
-
+from PathSubscriber import PathSubscriber
 from ProtoServiceEventChannel import ProtoServiceEventChannel
 
 class LocalEventService(ProtoServiceEventChannel):
@@ -60,12 +58,10 @@ class LocalEventService(ProtoServiceEventChannel):
         subscriptionses = clean_self._registry.getAllForObject(event)
 
         for subscriptions in subscriptionses:
-            # for subscriber_path, filter in subscriptions:
-            for subscriber_path,filter in subscriptions:
+            for subscriber,filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
-                # XXX resolve subscriber_path
-                traverse(wrapped_self, subscriber_path).notify(event)
+                ContextWrapper(subscriber, wrapped_self).notify(event)
 
         publishedEvents = getattr(clean_self, "_v_publishedEvents", None)
         if publishedEvents is None:
@@ -85,12 +81,10 @@ class LocalEventService(ProtoServiceEventChannel):
             subscriptionses = clean_self._registry.getAllForObject(event)
 
             for subscriptions in subscriptionses:
-                # for subscriber_path, filter in subscriptions:
-                for subscriber_path, filter in subscriptions:
+                for subscriber,filter in subscriptions:
                     if filter is not None and not filter(event):
                         continue
-                    # XXX resolve subscriber_path
-                    traverse(wrapped_self, subscriber_path).notify(event)
+                    ContextWrapper(subscriber, wrapped_self).notify(event)
     notify = ContextMethod(notify)
     
     def bound(wrapped_self, name):
@@ -104,8 +98,7 @@ class LocalEventService(ProtoServiceEventChannel):
                 # global event service we're going to have to
                 # set something special up--something that subscribes
                 # every startup...
-                # XXX just pass wrapped_self
-                es.subscribe(wrapped_self)
+                es.subscribe(PathSubscriber(wrapped_self))
     bound = ContextMethod(bound)
     
     # _unbound = ProtoServiceEventChannel.unbound # see comment below
@@ -127,34 +120,29 @@ class LocalEventService(ProtoServiceEventChannel):
         #
         # so we're doing a copy and paste from ProtoServiceEventChannel:
         # start copy/paste
-        # XXX subscriber = wrapped_self
+        subscriber = PathSubscriber(wrapped_self)
         for subscription in clean_self._subscriptions:
             subscribable = getAdapter(
                 wrapped_self, ITraverser).traverse(subscription[0])
-            subscribable.unsubscribe(wrapped_self)
+            subscribable.unsubscribe(subscriber)
         clean_self._subscriptions = ()
         clean_self._serviceName = None
         # end copy/paste
         
-        # ambigous name subscriber -> (subscriber_path, filter, )
         for subscriber in clean_self._subscribers:
             clean_self.__unsubscribeAllFromSelf(wrapped_self, subscriber[0])
         # unset flag
         clean_self._v_unbinding = None
     unbound = ContextMethod(unbound)
     
-    # XXX gets subscriber_path as last argument
-    def __unsubscribeAllFromSelf(clean_self, wrapped_self, subscriber_path):
+    def __unsubscribeAllFromSelf(clean_self, wrapped_self, subscriber):
         """this is *not* an interface function, and should not be used
         outside of this class"""
-        
-        # XXX resolve subscriber from path first
-        subscriber = traverse(wrapped_self, subscriber_path)
+        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         for subscriber_index in range(len(clean_self._subscribers)):
             sub = clean_self._subscribers[subscriber_index]
-            # XXX subscriber_path
-            if sub[0] == subscriber_path:
+            if sub[0] == subscriber:
                 ev_set = sub[1]
                 break
         else:
@@ -166,10 +154,9 @@ class LocalEventService(ProtoServiceEventChannel):
             subs=subscriptions[:]
             subscriptions[:] = []
             for sub in subs:
-                # XXX subscriber_path
-                if sub[0] == subscriber_path: # deleted (not added back)
+                if sub[0] == subscriber: # deleted (not added back)
                     if do_alert:
-                        subscriber.unsubscribedFrom(
+                        wrapped_subscriber.unsubscribedFrom(
                             wrapped_self, ev_type or IEvent, sub[1])
                         # IEvent switch is to make optimization transparent
                 else: # kept (added back)
@@ -202,8 +189,6 @@ class LocalEventService(ProtoServiceEventChannel):
                 # service...
                 # that leaves replacing top level event services an
                 # interesting question, however
-                
-                # XXX just pass wrapped_self
-                context.subscribe(wrapped_self)
+                context.subscribe(PathSubscriber(wrapped_self))
     unsubscribedFrom = ContextMethod(unsubscribedFrom)
 

@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: LocalEventChannel.py,v 1.7 2002/12/12 20:05:51 jack-e Exp $
+$Id: LocalEventChannel.py,v 1.8 2002/12/12 20:27:39 jack-e Exp $
 """
 
 from LocalSubscribable import LocalSubscribable
 from Zope.Event.IEventChannel import IEventChannel
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from Zope.App.Traversing import traverse
+from Zope.Proxy.ContextWrapper import ContextWrapper
 
 class LocalEventChannel(LocalSubscribable):
     
@@ -38,10 +38,8 @@ class LocalEventChannel(LocalSubscribable):
         # subscriptionses = clean_self._registry.getAllForObject(event)
 
         for subscriptions in subscriptionses:
-            # for subscriber_path, filter in subscriptions:
-            for subscriber_path, filter in subscriptions:
+            for subscriber,filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
-                # XXX resolve subscriber_path
-                traverse(wrapped_self, subscriber_path).notify(event)
+                ContextWrapper(subscriber, wrapped_self).notify(event)
     notify = ContextMethod(notify)
