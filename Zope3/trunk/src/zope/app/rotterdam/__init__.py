@@ -16,10 +16,10 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.interface import Interface
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-class rotterdam(Interface):
+class rotterdam(IBrowserRequest):
     """The `rotterdam` layer."""
 
 class Rotterdam(rotterdam, IDefaultBrowserLayer):
