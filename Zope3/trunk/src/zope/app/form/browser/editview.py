@@ -30,8 +30,6 @@ from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import WidgetsError
-from zope.app.location.interfaces import ILocation
-from zope.app.location import LocationProxy
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.publisher.browser import BrowserView
@@ -65,12 +63,7 @@ class EditView(BrowserView):
         self._setUpWidgets()
 
     def _setUpWidgets(self):
-        adapted = self.schema(self.context)
-        if adapted is not self.context:
-            if not ILocation.providedBy(adapted):
-                adapted = LocationProxy(adapted)
-            adapted.__parent__ = self.context
-        self.adapted = adapted
+        self.adapted = self.schema(self.context)
         setUpEditWidgets(self, self.schema, source=self.adapted, 
                          names=self.fieldNames)
 

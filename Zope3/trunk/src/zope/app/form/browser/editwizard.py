@@ -24,10 +24,6 @@ from zope.app import zapi
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.location.interfaces import ILocation
-from zope.app.location import LocationProxy
-
-
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -62,19 +58,14 @@ class WizardStorage(dict):
 class EditWizardView(EditView):
 
     def _setUpWidgets(self):
-        adapted = self.schema(self.context)
-        if adapted is not self.context:
-            if not ILocation.providedBy(adapted):
-                adapted = LocationProxy(adapted)
-            adapted.__parent__ = self.context
-        self.adapted = adapted
+        self.adapted = self.schema(self.context)
 
         if self.use_session:
             # Need session for File upload fields
             raise NotImplementedError, \
                 'Cannot be implemented until we have an ISessionDataManager'
         else:
-            self.storage = WizardStorage(self.fieldNames, adapted)
+            self.storage = WizardStorage(self.fieldNames, self.adapted)
 
         # Add all our widgets as attributes on this view
         setUpWidgets(self, self.schema, IInputWidget, initial=self.storage,

@@ -23,8 +23,6 @@ from zope.schema import getFieldNamesInOrder
 from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
-from zope.app.location import LocationProxy
 from zope.app.publisher.browser import BrowserView
 
 from zope.app.form.utility import setUpDisplayWidgets
@@ -50,13 +48,8 @@ class DisplayView(BrowserView):
         self._setUpWidgets()
 
     def _setUpWidgets(self):
-        adapted = self.schema(self.context)
-        if adapted is not self.context:
-            if not ILocation.providedBy(adapted):
-                adapted = LocationProxy(adapted)
-            adapted.__parent__ = self.context
-        self.adapted = adapted
-        setUpDisplayWidgets(self, self.schema, source=adapted,
+        self.adapted = self.schema(self.context)
+        setUpDisplayWidgets(self, self.schema, source=self.adapted,
                             names=self.fieldNames)
 
     def setPrefix(self, prefix):
