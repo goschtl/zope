@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.4 2003/12/17 10:06:51 jim Exp $
+$Id: presentation.py,v 1.5 2004/01/29 17:36:49 srichter Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -69,7 +69,7 @@ class IDefaultViewName(zope.interface.Interface):
     """
 
 class GlobalPresentationService(GlobalService):
-    """Global presentation service
+    r"""Global presentation service
 
        The global presentation service provides management of views, and
        resources arranged in skins, where skins are ordered collections
@@ -195,6 +195,25 @@ class GlobalPresentationService(GlobalService):
        True
        >>> v.context is c
        True
+
+       Let's now test 'getRegisteredMatching()'. This function returns a
+       dictionary with the keys being the layers.
+       
+       >>> match = s.getRegisteredMatching(request=IRequest)
+       >>> match.keys()
+       ['custom']
+       >>> match['custom'][0] == \
+       ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
+       True
+
+       >>> match = s.getRegisteredMatching(IContact, IRequest)
+       >>> match['custom'][0] == \
+       ...     (IContact, ITraverse, (IRequest,), u'', [Traverser])
+       True
+
+       >>> s.getRegisteredMatching(request=IRequest, layers=['default']) == {}
+       True
+
        """
 
     zope.interface.implements(IPresentationService, IGlobalPresentationService)
@@ -400,6 +419,40 @@ class GlobalPresentationService(GlobalService):
                 return r
         return default
 
+
+    def getRegisteredMatching(self,
+                              object=None,
+                              request=None,
+                              name=None,
+                              providing=zope.interface.Interface,
+                              layers=None):
+        """Search for registered presentation components
+
+        'object' is usually an interface, but can also be a class, since one
+        can also create a view for a particular class/implementation.
+
+        'layers' is expected to be none or a list of existing layer names. If
+        you specified a layer that is not known, a 'KeyError' will be raised.
+
+        There is probably no need to ever change 'providing' to something
+        else.
+        """
+        assert request is not None
+        
+        results = {}
+        
+        if layers is None:
+            layers = self._layers.keys()
+
+        for layername in layers:
+            layer = self._layers[layername]
+            views = tuple(layer.getRegisteredMatching(object, providing,
+                                                      name, (request,)))
+            if views:
+                results[layername] = views
+                
+        return results
+
     ############################################################
     #
     # The following methods are provided for convenience and for
@@ -445,13 +498,6 @@ class GlobalPresentationService(GlobalService):
             factory = [factory]
         return self.provideAdapter(request_type, factory, name, layer=layer,
                                    providing=providing)
-
-    def getRegisteredMatching(self, layers=None, **kw):
-        if layers is None:
-            layers = self._layers.keys()
-            layers.sort()
-        for layername in layers:
-            layer = self._layers[layername]
 
 
 def GL(presentation_service, layer_name):

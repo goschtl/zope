@@ -13,7 +13,7 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.6 2003/08/16 00:44:40 srichter Exp $
+$Id: utility.py,v 1.7 2004/01/29 17:36:49 srichter Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
@@ -74,7 +74,7 @@ class GlobalUtilityService:
         L = []
         for reg_name in self.__utilities:
             for iface, c in self.__utilities[reg_name].getRegisteredMatching():
-                if not c:
+                if c is None:
                     continue
                 if interface and not iface is interface:
                     continue
@@ -87,7 +87,7 @@ class GlobalUtilityService:
         utilities = {}
         for name in self.__utilities:
             for iface, util in self.__utilities[name].getRegisteredMatching():
-                if not util:
+                if util is None:
                     continue
                 if interface and not iface.extends(interface, 0) and \
                        util is not interface:

@@ -11,11 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""test utility service
+"""Utility service tests
 
-XXX longer description goes here.
-
-$Id: test_utilityservice.py,v 1.8 2003/12/19 16:53:21 mchandra Exp $
+$Id: test_utilityservice.py,v 1.9 2004/01/29 17:36:50 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -27,13 +25,20 @@ from zope.interface import Interface, implements
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
-class IDummyService(Interface):
+class IDummyUtility(Interface):
     pass
 
-class DummyService:
-    implements(IDummyService)
+class DummyUtility:
+    implements(IDummyUtility)
 
-dummyService = DummyService()
+class DummyUtility2:
+    implements(IDummyUtility)
+
+    def __len__(self):
+        return 0
+
+dummyUtility = DummyUtility()
+dummyUtility2 = DummyUtility2()
 
 class Test(TestCase, CleanUp):
     def setUp(self):
@@ -49,40 +54,48 @@ class Test(TestCase, CleanUp):
     def testGetUtility(self):
         us = getService(None, Utilities)
         self.assertRaises(
-            ComponentLookupError, getUtility, None, IDummyService)
-        us.provideUtility(IDummyService, dummyService)
-        self.assertEqual(getUtility(None, IDummyService), dummyService)
+            ComponentLookupError, getUtility, None, IDummyUtility)
+        us.provideUtility(IDummyUtility, dummyUtility)
+        self.assertEqual(getUtility(None, IDummyUtility), dummyUtility)
 
     def testQueryUtility(self):
         us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyService), None)
-        self.assertEqual(queryUtility(None, IDummyService, self), self)
-        us.provideUtility(IDummyService, dummyService)
-        self.assertEqual(queryUtility(None, IDummyService), dummyService)
+        self.assertEqual(queryUtility(None, IDummyUtility), None)
+        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
+        us.provideUtility(IDummyUtility, dummyUtility)
+        self.assertEqual(queryUtility(None, IDummyUtility), dummyUtility)
 
     def testgetUtilitiesFor(self):
         us = getService(None, Utilities)
-        us.provideUtility(IDummyService, dummyService)
-        conns = getUtilitiesFor(None, IDummyService)
-        self.assertEqual(getUtilitiesFor(None, IDummyService),
-                         [('',dummyService)])
+        us.provideUtility(IDummyUtility, dummyUtility)
+        conns = getUtilitiesFor(None, IDummyUtility)
+        self.assertEqual(getUtilitiesFor(None, IDummyUtility),
+                         [('',dummyUtility)])
         
     def testRegisteredMatching(self):
         us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyService), None)
-        self.assertEqual(queryUtility(None, IDummyService, self), self)
-        us.provideUtility(IDummyService, dummyService)
-        self.assertEqual(us.getRegisteredMatching(IDummyService),
-                         [(IDummyService, '', dummyService)])
+        self.assertEqual(queryUtility(None, IDummyUtility), None)
+        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
+        us.provideUtility(IDummyUtility, dummyUtility)
+        self.assertEqual(us.getRegisteredMatching(IDummyUtility),
+                         [(IDummyUtility, '', dummyUtility)])
 
     def testRegisteredMatchingWithName(self):
         us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyService), None)
-        self.assertEqual(queryUtility(None, IDummyService, self), self)
-        us.provideUtility(IDummyService, dummyService, 'a dummy service')
-        self.assertEqual(us.getRegisteredMatching(IDummyService, 'dummy'),
-                         [(IDummyService, 'a dummy service', dummyService)])
-        self.assertEqual(us.getRegisteredMatching(IDummyService, 'stupid'),
+        self.assertEqual(queryUtility(None, IDummyUtility), None)
+        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
+        us.provideUtility(IDummyUtility, dummyUtility, 'dummy')
+        us.provideUtility(IDummyUtility, dummyUtility2, 'another')
+        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'dummy'),
+                         [(IDummyUtility, 'dummy', dummyUtility)])
+        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'another'),
+                         [(IDummyUtility, 'another', dummyUtility2)])
+        res = us.getRegisteredMatching(IDummyUtility)
+        res.sort()
+        self.assertEqual(res,
+                         [(IDummyUtility, 'another', dummyUtility2),
+                          (IDummyUtility, 'dummy',   dummyUtility )])
+        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'stupid'),
                          [])
 
 def test_suite():
