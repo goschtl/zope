@@ -47,9 +47,9 @@ multiple space-delimited parts:
 
 Currently the actions are:
 
- - doing a g+w chmod of the subject files
- - emailing checkin messages to designated recipients
- - doing an rsync of the repository to the public repository host.
+ - do a g+w chmod of the subject files
+ - email checkin messages to designated recipients
+ - do an rsync of the repository to the public repository host.
 
 ... with settings for the latter two configured in the traffic_table.py
 module."""
@@ -66,10 +66,13 @@ ERROR_LOG = "/var/tmp/cvs-postcommit_actions.errors"
 MAIL_CMD = "/bin/mail"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 
-# XXX IDENTITY_FILE must be readable by the process of anyone doing a
-#     checkin that uses the rsync mechanism.  Ideally, that would be by
-#     virtue of a particular group membership - world readable opens up the 
-#     rsync privilege to everyone on the system.
+# IDENTITY_FILE must be readable by anyone doing a checkin that uses the
+# rsync mechanism.  It's better to have it group readable, and everyone
+# that needs in the group - world readable opens up the rsync privilege to
+# everyone on the system.
+# XXX It may make sense to have a fallback to individual people's identity
+#     files when no central one exists.
+
 IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/cvs-repository/cvsidentity"
 
