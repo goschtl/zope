@@ -41,7 +41,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.17 2004/04/07 17:47:36 fdrake Exp $
+$Id: finddeps.py,v 1.18 2004/04/07 19:41:05 fdrake Exp $
 """
 import sys
 import getopt
@@ -56,7 +56,7 @@ ZOPESRC = os.path.dirname(os.path.dirname(zope.__file__))
 ZOPESRCPREFIX = os.path.join(ZOPESRC, "")
 
 # Matching expression for python files.
-pythonfile = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*\.py$')
+pythonfile = re.compile(r'[a-zA-Z_][a-zA-Z0-9_]*\.py$')
 zcmlfile = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*\.zcml$')
 
 # Matching expressions of dotted paths in XML
