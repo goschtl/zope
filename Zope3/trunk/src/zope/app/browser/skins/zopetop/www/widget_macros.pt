@@ -27,7 +27,7 @@
 
 <div class="box" id="commonTasks" 
        tal:define="view context/@@commonTasks|nothing"
-       tal:condition="view"
+       tal:condition="view/strip|nothing"
        metal:define-macro="commontasks_box">
 
   <h5>Common Tasks</h5>
@@ -156,7 +156,7 @@
 
   <div class="box"
        tal:define="view context/@@MetaDataBox|nothing"
-       tal:condition="view"
+       tal:condition="view/strip|nothing"
        metal:define-macro="metadata_box">
 
   <h5>Metadata</h5>
