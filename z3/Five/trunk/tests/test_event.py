@@ -123,7 +123,12 @@ class EventTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals(1, len(events))
         self.assertEquals(foo_copy.getPhysicalPath(),
                           events[0].object.getPhysicalPath())
+        events = objectAddedEventCatcher.getEvents()
+        self.assertEquals(2, len(events))
+        self.assertEquals(foo_copy.getPhysicalPath(),
+                          events[1].object.getPhysicalPath())
 
+        
     def test_removed_event(self):
         self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'foo', 'Foo')
