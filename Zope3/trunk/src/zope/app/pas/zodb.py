@@ -109,7 +109,7 @@ class PersistentPrincipalStorage(Persistent, Contained):
         >>> pps[1] = ('foo', 'bar')
 
         Never expose the password!
-        
+
         >>> pps[1]
         ('foo', None)
         """
@@ -128,7 +128,7 @@ class PersistentPrincipalStorage(Persistent, Contained):
         >>> pps[1] = ('foo', 'bar')
 
         Never expose the password!
-        
+
         >>> pps.get(1)
         ('foo', None)
         """
@@ -192,7 +192,7 @@ class PersistentPrincipalStorage(Persistent, Contained):
         """See zope.app.pas.interfaces.IAuthenticationPlugin
 
         Create an authentication plugin and add a principal to it.
-        
+
         >>> pps = PersistentPrincipalStorage()
         >>> pps[1] = ('foo', 'bar')
 
@@ -215,7 +215,7 @@ class PersistentPrincipalStorage(Persistent, Contained):
         """
         if not isinstance(credentials, dict):
             return None
-        
+
         if not ('login' in credentials and 'password' in credentials):
             return None
 
