@@ -96,7 +96,7 @@ class LDAPURI(URI):
         raise InvalidLDAPURI, value
 
     def fromUnicode(self, value):
-        """
+        r"""
         >>> from ldapadapter.field import LDAPURI
         >>> uri = LDAPURI(__name__='test')
         >>> uri.fromUnicode("ldap://www.python.org:389")
@@ -105,12 +105,13 @@ class LDAPURI(URI):
         'ldaps://www.python.org:389'
         >>> uri.fromUnicode("          ldap://www.python.org:389")
         'ldap://www.python.org:389'
-        >>> uri.fromUnicode("      \\n    ldap://www.python.org:389\\n")
+        >>> uri.fromUnicode("      \n    ldap://www.python.org:389\n")
         'ldap://www.python.org:389'
         >>> uri.fromUnicode("ldap://www.pyt hon.org:389")
         Traceback (most recent call last):
         ...
         InvalidLDAPURI: ldap://www.pyt hon.org:389
+
         """
         v = str(value.strip())
         self.validate(v)
