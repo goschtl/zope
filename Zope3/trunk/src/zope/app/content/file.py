@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.8 2003/05/01 19:35:10 faassen Exp $
+$Id: file.py,v 1.9 2003/05/19 21:25:07 jim Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -22,13 +22,13 @@ from persistence import Persistent
 from transaction import get_transaction
 
 from zope.publisher.browser import FileUpload
-from zope.app.interfaces.content.file import IFile, IReadFile
+from zope.app.interfaces.content.file import IFile, IReadFile, IFileContent
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
 class File(Persistent):
-    __implements__ = IFile
+    __implements__ = IFileContent, IFile
 
     def __init__(self, data='', contentType=''):
         self.data = data
