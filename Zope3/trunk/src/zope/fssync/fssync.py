@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.30 2003/06/04 21:48:28 gvanrossum Exp $
+$Id: fssync.py,v 1.31 2003/06/05 21:05:49 gvanrossum Exp $
 """
 
 import os
@@ -160,7 +160,8 @@ class Network(object):
             f.close()
 
     def httpreq(self, path, view, datasource=None,
-                content_type="application/x-snarf"):
+                content_type="application/x-snarf",
+                expected_type="application/x-snarf"):
         """Issue an HTTP or HTTPS request.
 
         The request parameters are taken from the root url, except
@@ -221,7 +222,7 @@ class Network(object):
             raise Error("HTTP error %s (%s); error document:\n%s",
                         response.status, response.reason,
                         self.slurptext(response.fp, response.msg))
-        elif response.msg["Content-type"] != "application/x-snarf":
+        elif expected_type and response.msg["Content-type"] != expected_type:
             raise Error(self.slurptext(response.fp, response.msg))
         else:
             return response.fp, response.msg
@@ -315,7 +316,7 @@ class FSSync(object):
                     for name in names:
                         method(join(target, name), *more)
 
-    def commit(self, target, note="fssync"):
+    def commit(self, target, note="fssync_commit"):
         entry = self.metadata.getentry(target)
         if not entry:
             raise Error("nothing known about", target)
@@ -329,6 +330,33 @@ class FSSync(object):
             self.merge_snarffile(fp, head, tail)
         finally:
             fp.close()
+
+    def checkin(self, target, note="fssync_checkin"):
+        rootpath = self.network.rootpath
+        if not rootpath:
+            raise Error("root url not set")
+        if rootpath == "/":
+            raise Error("root url should name an inferior object")
+        i = rootpath.rfind("/")
+        path, name = rootpath[:i], rootpath[i+1:]
+        if not path:
+            path = "/"
+        if not name:
+            raise Error("root url should not end in '/'")
+        entry = self.metadata.getentry(target)
+        if not entry:
+            raise Error("nothing known about", target)
+        qnote = urllib.quote(note)
+        qname = urllib.quote(name)
+        head, tail = split(realpath(target))
+        qsrc = urllib.quote(tail)
+        view = "@@checkin.snarf?note=%s&name=%s&src=%s" % (qnote, qname, qsrc)
+        data = DataSource(head, tail)
+        fp, headers = self.network.httpreq(path, view, data,
+                                           expected_type=None)
+        message = self.network.slurptext(fp, headers)
+        if message:
+            print message
 
     def update(self, target):
         entry = self.metadata.getentry(target)

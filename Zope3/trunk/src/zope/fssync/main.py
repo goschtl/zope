@@ -23,12 +23,13 @@ fssync [global_options] diff [local_options] [TARGET ...]
 fssync [global_options] status [local_options] [TARGET ...]
 fssync [global_options] add [local_options] TARGET ...
 fssync [global_options] remove [local_options] TARGET ...
+fssync [global_options] checkin [local_options] URL [TARGETDIR]
 
 ``fssync -h'' prints the global help (this message)
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.16 2003/05/29 18:23:34 gvanrossum Exp $
+$Id: main.py,v 1.17 2003/06/05 21:05:49 gvanrossum Exp $
 """
 
 import os
@@ -38,7 +39,7 @@ import getopt
 from os.path import dirname, join, realpath
 
 # Find the zope root directory.
-# XXX This assumes this script is <root>/src/zope/fssync/sync.py
+# XXX This assumes this script is <root>/src/zope/fssync/main.py
 scriptfile = sys.argv[0]
 scriptdir = realpath(dirname(scriptfile))
 rootdir = dirname(dirname(dirname(scriptdir)))
@@ -171,7 +172,7 @@ def commit(opts, args):
     The -m option specifies a message to label the transaction.
     The default message is 'fssync'.
     """
-    message = "fssync"
+    message = "fssync_commit"
     for o, a in opts:
         if o in ("-m", "--message"):
             message = a
@@ -258,6 +259,37 @@ def status(opts, args):
     fs = FSSync()
     fs.multiple(args, fs.status)
 
+def checkin(opts, args):
+    """checkin [-m message] URL [TARGETDIR]
+
+    URL should be of the form ``http://user:password@host:port/path''.
+    Only http and https are supported (and https only where Python has
+    been built to support SSL).  This should identify a Zope 3 server;
+    user:password should have management privileges; /path should be
+    the traversal path to a non-existing object, not including views
+    or skins.
+
+    TARGETDIR should be a directory; it defaults to the current
+    directory.  The object tree rooted at TARGETDIR is copied to
+    /path.  subdirectory of TARGETDIR whose name is the last component
+    of /path.
+    """
+    message = "fssync_checkin"
+    for o, a in opts:
+        if o in ("-m", "--message"):
+            message = a
+    if not args:
+        raise Usage("checkin requires a URL argument")
+    rooturl = args[0]
+    if len(args) > 1:
+        target = args[1]
+        if len(args) > 2:
+            raise Usage("checkin requires at most one TARGETDIR argument")
+    else:
+        target = os.curdir
+    fs = FSSync(rooturl=rooturl)
+    fs.checkin(target, message)
+
 command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
@@ -269,6 +301,8 @@ command_table = {
     "r":        ("", [], remove),
     "diff":     ("bBcC:iuU:", ["brief", "context=", "unified="], diff),
     "status":   ("", [], status),
+    "checkin":  ("m:", ["message="], checkin),
+    "ci":       ("m:", ["message="], checkin),
     }
 
 if __name__ == "__main__":

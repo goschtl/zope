@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.18 2003/06/05 16:38:37 gvanrossum Exp $
+$Id: fssync.py,v 1.19 2003/06/05 21:05:49 gvanrossum Exp $
 """
 
 import os
@@ -58,23 +58,40 @@ class SnarfFile(BrowserView):
             if os.path.isdir(dirname):
                 shutil.rmtree(dirname)
 
+class NewMetadata(Metadata):
+    """Subclass of Metadata that sets the 'added' flag in all entries."""
+
+    def getentry(self, file):
+        entry = Metadata.getentry(self, file)
+        if entry:
+            entry["flag"] = "added"
+        return entry
+
 class SnarfCommit(BrowserView):
 
-    """View for committing changes.
+    """View for committing and checking in changes.
 
-    This should be a POST request whose data is a snarf archive;
-    it returns an updated snarf archive, or a text document with errors.
+    The input to commit() should be a POST request whose data is a
+    snarf archive.  It returns an updated snarf archive, or a text
+    document with errors.
+
+    The alternate entry point checkin() is for checking in a new
+    archive.  It is similar to commit() but creates a brand new tree
+    and doesn't return anything.
     """
+
+    # XXX Maybe split into two classes with a common base instead?
 
     def commit(self):
         self.check_content_type()
-        self.get_transaction()
+        self.set_transaction()
+        self.parse_args()
         self.set_note()
         try:
             self.make_tempdir()
+            self.set_commit_arguments()
+            self.make_commit_metadata()
             self.unsnarf_body()
-            self.set_arguments()
-            self.make_metadata()
             self.call_checker()
             if self.errors:
                 return self.send_errors()
@@ -85,25 +102,78 @@ class SnarfCommit(BrowserView):
         finally:
             self.remove_tempdir()
 
+    def checkin(self):
+        self.check_content_type()
+        self.set_transaction()
+        self.parse_args()
+        self.set_note()
+        try:
+            self.make_tempdir()
+            self.set_checkin_arguments()
+            self.make_checkin_metadata()
+            self.unsnarf_body()
+            self.call_committer()
+            return ""
+        finally:
+            self.remove_tempdir()
+
     def check_content_type(self):
         if not self.request.getHeader("Content-Type") == "application/x-snarf":
             raise ValueError("Content-Type is not application/x-snarf")
 
-    def get_transaction(self):
+    def set_transaction(self):
         self.txn = get_transaction()
 
+    def parse_args(self):
+        # The query string in the URL didn't get parsed, because we're
+        # getting a POST request with an unrecognized content-type
+        qs = self.request._environ.get("QUERY_STRING")
+        if qs:
+            self.args = cgi.parse_qs(qs)
+        else:
+            self.args = {}
+
+    def get_arg(self, key):
+        value = self.request.get(key)
+        if value is None:
+            values = self.args.get(key)
+            if values is not None:
+                value = " ".join(values)
+        return value
+
     def set_note(self):
-        note = self.request.get("note")
-        if not note:
-            # XXX Hack because cgi doesn't parse the query string
-            qs = self.request._environ.get("QUERY_STRING")
-            if qs:
-                d = cgi.parse_qs(qs)
-                notes = d.get("note")
-                if notes:
-                    note = " ".join(notes)
+        note = self.get_arg("note")
         if note:
             self.txn.note(note)
+
+    def set_commit_arguments(self):
+        # Compute self.{name, container, fspath} for commit()
+        self.name = objectName(self.context)
+        self.container = getParent(self.context)
+        if self.container is None and self.name == "":
+            # Hack to get loading the root to work
+            self.container = getRoot(self.context)
+            self.fspath = os.path.join(self.tempdir, "root")
+        else:
+            self.fspath = os.path.join(self.tempdir, self.name)
+
+    def set_checkin_arguments(self):
+        # Compute self.{name, container, fspath} for checkin()
+        name = self.get_arg("name")
+        if not name:
+            raise ValueError("required argument 'name' missing")
+        src = self.get_arg("src")
+        if not src:
+            src = name
+        self.container = self.context
+        self.name = name
+        self.fspath = os.path.join(self.tempdir, src)
+
+    def make_commit_metadata(self):
+        self.metadata = Metadata()
+
+    def make_checkin_metadata(self):
+        self.metadata = NewMetadata()
 
     tempdir = None
 
@@ -120,20 +190,6 @@ class SnarfCommit(BrowserView):
         fp.seek(0)
         uns = Unsnarfer(fp)
         uns.unsnarf(self.tempdir)
-
-    def set_arguments(self):
-        # Set self.{name, container, fspath} based on self.context
-        self.name = objectName(self.context)
-        self.container = getParent(self.context)
-        if self.container is None and self.name == "":
-            # Hack to get loading the root to work
-            self.container = getRoot(self.context)
-            self.fspath = os.path.join(self.tempdir, "root")
-        else:
-            self.fspath = os.path.join(self.tempdir, self.name)
-
-    def make_metadata(self):
-        self.metadata = Metadata()
 
     def call_checker(self):
         c = Checker(self.metadata)
