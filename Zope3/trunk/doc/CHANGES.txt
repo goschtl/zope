@@ -13,6 +13,12 @@ Zope Changes
     support.   Zope 3.0 will provide support for Zope 2 content and
     products, probably using conversion utilities of some sort. 
 
+    - Configuration of the application server using a ZConfig-syntax
+      configuration file with a simple schema.  This replaces
+      zserver.zcml.
+
+    - New schema field types for vocabularies.  See
+      schema/vocabularies.txt for detailed documentation.
 
 
   ------------------------------------------------------------------
