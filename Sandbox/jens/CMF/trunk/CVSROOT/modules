@@ -42,6 +42,7 @@ zsb Components/GreyThing \
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
+  &ZClasses &webdav \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
