@@ -57,7 +57,6 @@ def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
-        DocTestSuite('zope.app.folder.fssync'),
         ))    
 
 if __name__=='__main__':

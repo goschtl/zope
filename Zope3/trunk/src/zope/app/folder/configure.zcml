@@ -1,6 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:fssync='http://namespaces.zope.org/fssync'
     i18n_domain="zope"
     >
 
@@ -32,9 +31,6 @@
         />
   </content>
 
-
-  <!-- fssync directives -->
-
   <adapter
       for=".interfaces.IFolder"
       provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
@@ -45,13 +41,8 @@
   <adapter
       for=".interfaces.IFolder"
       provides="zope.app.filerepresentation.interfaces.IReadDirectory"
-      factory=".fssync.ReadDirectory"
+      factory=".filerepresentation.ReadDirectory"
       permission="zope.View"
-      />
-
-  <fssync:adapter
-      class=".folder.Folder"
-      factory=".fssync.FolderAdapter"
       />
 
 

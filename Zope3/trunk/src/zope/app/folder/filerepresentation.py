@@ -11,17 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Filesystem synchronization support.
+"""Filesystem representation support.
 
 $Id$
 """
 
-from zope.fssync.server.entryadapter import DirectoryAdapter
 from zope.app.site.interfaces import ISite
 
-__metaclass__ = type
 
-class RootDirectoryFactory:
+class RootDirectoryFactory(object):
 
     def __init__(self, context):
         pass
@@ -29,7 +27,8 @@ class RootDirectoryFactory:
     def __call__(self, name):
         return Folder()
 
-class ReadDirectory:
+
+class ReadDirectory(object):
     """Adapter to provide a file-system rendition of folders
     """
 
@@ -72,44 +71,3 @@ class ReadDirectory:
 
     def __contains__(self, key):
         return self.get(key) is not None
-
-class FolderAdapter(DirectoryAdapter):
-    """Adapter to provide an fssync interpretation of folders
-    """
-
-    def contents(self):
-        """Compute a folder listing.
-
-        A folder listing is a list of the items in the folder.  It is
-        a combination of the folder contents and the site-manager, if
-        a folder is a site.
-
-        The adapter will take any mapping:
-
-        >>> adapter = FolderAdapter({'x': 1, 'y': 2})
-        >>> contents = adapter.contents()
-        >>> contents.sort()
-        >>> contents
-        [('x', 1), ('y', 2)]
-
-        If a folder is a site, then we'll get ++etc++site included:
-
-        >>> import zope.interface
-        >>> class Site(dict):
-        ...     zope.interface.implements(ISite)
-        ...
-        ...     def getSiteManager(self):
-        ...         return 'site goes here :)'
-        
-        >>> adapter = FolderAdapter(Site({'x': 1, 'y': 2}))
-        >>> contents = adapter.contents()
-        >>> contents.sort()
-        >>> contents
-        [('++etc++site', 'site goes here :)'), ('x', 1), ('y', 2)]
-
-        """
-        result = super(FolderAdapter, self).contents()
-        if ISite.providedBy(self.context):
-            sm = self.context.getSiteManager()
-            result.append(('++etc++site', sm))
-        return result
