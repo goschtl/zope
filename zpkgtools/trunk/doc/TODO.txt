@@ -3,7 +3,7 @@ Things that need to be done
 ===========================
 
 - Need name + acronym to describe what gets built, not normal words
-  (Jim sez).
+  (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
 - Need to add support for Subversion checkouts.
 
@@ -57,6 +57,11 @@ Things that need to be done
   define these boundaries is in flux at the moment.
 
 - Package assembler script to build sumo/combined distro (in progress)
+
+- Find a way to use ZConfig itself instead of the half-way
+  re-implementation in zpkgtools.cfgparser; it's a real pain having to
+  give up %defines and some of the nicer aspects of schemas (or having
+  to re-implement them).
 
 - CVS retriever (mostly done; need to deal with unspecified type and
   user for remote repositories)
