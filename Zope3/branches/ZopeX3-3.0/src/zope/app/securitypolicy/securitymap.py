@@ -141,7 +141,7 @@ class AnnotationSecurityMap(SecurityMap):
     def _changed(self):
         map = self.map
         if isinstance(map, PersistentSecurityMap):
-            map._p_changed
+            map._p_changed = 1
         else:
             map = PersistentSecurityMap()
             map._byrow = self._byrow

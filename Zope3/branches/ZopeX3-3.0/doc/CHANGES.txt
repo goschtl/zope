@@ -25,7 +25,8 @@ Zope Changes
       - Factory IDs have to be real IDs now, i.e. either a dotted
         name or a URI.
 
-    Restructuring
+      - Small but important fix to security map. It was not marking objects
+        with modified permissions as changed, due to a missing assignment.
 
     Much thanks to everyone who contributed to this release:
 
