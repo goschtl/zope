@@ -1,14 +1,14 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/page" i18n:domain="zope">
   <body>
   <div metal:fill-slot="body">
 
-    <p>This edit form allows you to associate a cache with this object.</p>
+    <p i18n:translate="">This edit form allows you to associate a cache with this object.</p>
 
-    <p tal:condition="not: view/current_cache_id">
+    <p tal:condition="not: view/current_cache_id" i18n:translate="">
       Currently there is no cache associated with the object.
     </p>
     
-    <p tal:condition="view/current_cache_id">
+    <p tal:condition="view/current_cache_id" i18n:translate="">
       Currently the object uses
       <a tal:omit-tag="not:view/current_cache_url"
          tal:attributes="href view/current_cache_url"
@@ -17,7 +17,7 @@
 
     <div tal:condition="python: options.has_key('errors') and
                                 options['errors']">
-      <span style="font-weight: bold">Errors:</span>
+      <span style="font-weight: bold" i18n:translate="">Errors:</span>
       <div tal:repeat="error options/errors | nothing">
         <span tal:replace="python: error[0].title" />:
         <span tal:replace="python: error[1].error_name" />
@@ -31,7 +31,7 @@
 
       <table class="EditTable">
         <tr>
-          <th class="EditAttributeName">Cache name</th>
+          <th class="EditAttributeName" i18n:translate="">Cache name</th>
           <td class="EditAttributeValue"
               tal:content="structure view/cacheId">
             <input size="20" />
@@ -40,12 +40,12 @@
       </table>
 
       <input type="submit" name="ChangeCaching.html:method" 
-             value="Save Changes" />
+             value="Save Changes" i18n:attributes="value" />
       <input type="submit" name="InvalidateCache.html:method"
-             value="Invalidate Cached Value" />
+             value="Invalidate Cached Value" i18n:attributes="value" />
 
     </form>
-    <div tal:replace="options/message|nothing" />
+    <div tal:content="options/message|nothing" i18n:translate="" />
 
   </div>
   </body>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.4 2003/01/23 09:53:26 ryzaja Exp $
+$Id: cacheable.py,v 1.5 2003/04/08 20:58:02 gotcha Exp $
 """
 
 from zope.component import getService, getAdapter
@@ -30,6 +30,9 @@ from zope.app.interfaces.cache.cache import ICacheable
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
+from zope.i18n.messageid import MessageIDFactory
+
+_ = MessageIDFactory("zope")
 
 class CacheableView(BrowserView):
 
@@ -60,9 +63,9 @@ class CacheableView(BrowserView):
         location = getLocationForCache(self.context)
         if cache and location:
             cache.invalidate(location)
-            return self.form(message="Invalidated.")
+            return self.form(message=_(u"Invalidated."))
         else:
-            return self.form(message="No cache associated with object.")
+            return self.form(message=_(u"No cache associated with object."))
 
     def action(self):
         "Change the cacheId"
@@ -73,4 +76,4 @@ class CacheableView(BrowserView):
             return repr(e.errors)
         else:
             self.cacheable.setCacheId(cacheId)
-            return self.form(message="Saved changes.")
+            return self.form(message=_(u"Saved changes."))
