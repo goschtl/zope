@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.7 2003/02/12 02:17:06 seanb Exp $
+$Id: control.py,v 1.8 2003/03/21 15:29:06 alga Exp $
 """
 
 from __future__ import generators
@@ -26,7 +26,7 @@ from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.browser import BrowserView
 
-from zope.app.traversing import locationAsUnicode
+from zope.app.traversing import canonicalPath
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.index.text import IQueryView
 
@@ -80,7 +80,7 @@ class ControlView(BrowserView):
             yield self._cookInfo(hubid, score)
 
     def _cookInfo(self, hubid, score):
-        location = locationAsUnicode(self.hub.getLocation(hubid))
+        location = canonicalPath(self.hub.getLocation(hubid))
         scoreLabel = "%.1f%%" % (100.0 * score)
         result = {
             'location': location,

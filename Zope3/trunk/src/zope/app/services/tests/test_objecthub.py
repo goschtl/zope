@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.6 2003/03/19 18:05:04 stevea Exp $
+$Id: test_objecthub.py,v 1.7 2003/03/21 15:29:09 alga Exp $
 """
 
 import unittest, sys
@@ -40,8 +40,7 @@ from zope.app.services.hub \
 from zope.exceptions import NotFoundError
 from types import StringTypes
 
-from zope.app.traversing import traverse
-from zope.app.traversing import locationAsUnicode as canonicalPath
+from zope.app.traversing import traverse, canonicalPath
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.

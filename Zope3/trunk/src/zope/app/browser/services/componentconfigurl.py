@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: componentconfigurl.py,v 1.3 2002/12/31 13:16:15 stevea Exp $
+$Id: componentconfigurl.py,v 1.4 2003/03/21 15:29:06 alga Exp $
 """
 
 from zope.component import getView
-from zope.app.traversing import traverse, locationAsUnicode
+from zope.app.traversing import traverse, canonicalPath
 
 __metaclass__ = type
 
@@ -26,7 +26,7 @@ class ComponentConfigURL:
     """
 
     def componentPath(self):
-        return locationAsUnicode(self.context.componentPath)
+        return canonicalPath(self.context.componentPath)
 
     def componentURL(self):
         ob = traverse(self.context, self.context.componentPath)

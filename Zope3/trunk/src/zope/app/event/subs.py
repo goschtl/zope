@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.11 2003/03/19 19:57:27 alga Exp $
+$Id: subs.py,v 1.12 2003/03/21 15:29:07 alga Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -28,7 +28,7 @@ from zope.proxy.context import ContextMethod
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.traversing import getPath
-from zope.app.traversing import locationAsUnicode, traverse
+from zope.app.traversing import canonicalPath, traverse
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
@@ -504,13 +504,13 @@ def getWaysToSubscribe(context, reference, allways=True):
                     # the location the object is supposed to be at.
                     path = hub.getLocation(hubId)
                     # XXX remove this next line when objecthub is refactored
-                    path = locationAsUnicode(path)
+                    path = canonicalPath(path)
                 except NotFoundError:
                     path = getPath(wrappedobj)
             cleanobj = removeAllProxies(wrappedobj)
     elif isinstance(clean_reference, StringTypes):
         reftype = unicode
-        path = locationAsUnicode(clean_reference)
+        path = canonicalPath(clean_reference)
         try:
             wrappedobj = traverse(context, path)
         except NotFoundError:

@@ -11,14 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_subscribers.py,v 1.4 2003/03/20 10:58:32 stevea Exp $
+$Id: test_subscribers.py,v 1.5 2003/03/21 15:29:07 alga Exp $
 """
 
 from unittest import makeSuite, main, TestCase
 
 from zope.app.index.subscribers import Registration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse, locationAsUnicode as canonicalPath
+from zope.app.traversing import traverse, canonicalPath
 from zope.app.event.objectevent import ObjectAddedEvent
 from zope.component import getService
 from zope.app.services.servicenames import EventPublication, HubIds

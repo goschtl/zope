@@ -14,15 +14,14 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.8 2003/03/19 18:05:04 stevea Exp $
+$Id: objecthubsetup.py,v 1.9 2003/03/21 15:29:09 alga Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component import getServiceManager, getService
 from zope.app.services.servicenames import HubIds
 from zope.app.services.service import ServiceConfiguration
-from zope.app.traversing import traverse
-from zope.app.traversing import locationAsUnicode as canonicalPath
+from zope.app.traversing import traverse, canonicalPath
 
 from zope.app.services.hub import ObjectHub
 from zope.app.interfaces.event import IObjectAddedEvent

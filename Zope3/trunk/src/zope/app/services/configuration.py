@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.14 2003/03/19 19:57:30 alga Exp $
+$Id: configuration.py,v 1.15 2003/03/21 15:29:09 alga Exp $
 """
 __metaclass__ = type
 
@@ -44,7 +44,7 @@ from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
 
 from zope.app.traversing \
-     import getRoot, getPath, traverse, locationAsUnicode
+     import getRoot, getPath, traverse, canonicalPath
 
 
 class ConfigurationStatusProperty:
@@ -332,7 +332,7 @@ class NamedComponentConfiguration(NamedConfiguration):
         super(NamedComponentConfiguration, self).__init__(name)
 
     def implementationSummary(self):
-        return locationAsUnicode(self.componentPath)
+        return canonicalPath(self.componentPath)
 
     def getComponent(wrapped_self):
         service_manager = getServiceManager(wrapped_self)

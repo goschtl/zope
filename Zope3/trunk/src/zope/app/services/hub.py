@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.8 2003/03/19 19:57:30 alga Exp $
+$Id: hub.py,v 1.9 2003/03/21 15:29:09 alga Exp $
 """
 
 from __future__ import generators
@@ -25,9 +25,7 @@ import random
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 
-#from zope.app.traversing import getPath, canonicalPath
-from zope.app.traversing import getPath
-from zope.app.traversing import locationAsUnicode as canonicalPath
+from zope.app.traversing import getPath, canonicalPath
 
 from zope.component import getAdapter
 from zope.exceptions import NotFoundError
