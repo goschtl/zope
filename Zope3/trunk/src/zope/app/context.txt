@@ -281,3 +281,25 @@ Issues
   into context-aware descriptors through deriving new classes.
   Such unpredictability and implicitness is bad.
 
+* Using ContextDescriptors from a decorator
+
+  Context decorators usually have methods that look like this:
+
+    def setObject(self, name, obj):
+        name = getProxiedObject(self).setObject(name, object)
+        # send events
+        # call hooks
+        return name
+
+  A problem with this is that getProxiedObject(self) will usually return
+  an unwrapped object. So, even if setObject on the proxied object is a
+  ContextDescriptor, it will not be called with 'self' rebound to the
+  wrapper instance.
+
+  The way around this is to write a special getProxiedObject that is the
+  moral equivalent to 'super', and does the right thing for context-aware
+  descriptors.
+
+  For now, though, a ContextDescriptor of an object must not be called from
+  its decorator.
+
