@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.21 2003/03/06 16:20:11 stevea Exp $
+$Id: widget.py,v 1.22 2003/03/20 15:05:44 mgedmin Exp $
 """
 
 __metaclass__ = type
@@ -145,23 +145,17 @@ class CheckBoxWidget(BrowserWidget):
 
     def __call__(self):
         data = self._showData()
-
         if data:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 checked = None,
-                                 cssClass = self.getValue('cssClass'),
-                                 extra = self.getValue('extra'))
+            kw = {'checked': None}
         else:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.name,
-                                 id = self.name,
-                                 cssClass = self.getValue('cssClass'),
-                                 size = self.getValue('displayWidth'),
-                                 extra = self.getValue('extra'))
+            kw = {}
+        return renderElement(self.getValue('tag'),
+                             type = self.getValue('type'),
+                             name = self.name,
+                             id = self.name,
+                             cssClass = self.getValue('cssClass'),
+                             extra = self.getValue('extra'),
+                             **kw)
 
     def _convert(self, value):
         return value == 'on'
