@@ -29,9 +29,9 @@ Zope Releases/Zope \
 ####################
 # StandaloneZODB:
 
-StandaloneZODB Releases/StandaloneZODB  &sazodbLib \
-	       &sazodbZODB &sazodbZEO &sazodbExtensionClass &sazBTrees \
-               &sazbsddb3Storage
+StandaloneZODB Releases/StandaloneZODB &sazodbZODB &sazodbZEO \
+	       &sazodbExtensionClass &sazBTrees &sazbsddb3Storage \
+	       &sazPersistence &sazThreadedAsync &sazzdaemon &sazzLOG
 
 ####################
 # CMF:
@@ -55,15 +55,15 @@ zrZEO -d ZEO Packages/ZEO
 ####################
 # StandaloneZODB:
 
-sazodbLib -d Lib Releases/Zope/lib/python \
-                 Persistence.py ThreadedAsync.py zLOG.py zdaemon.py
-
 sazodbZODB              -d ZODB                 Packages/ZODB
 sazodbZEO               -d ZEO                  Packages/ZEO
 sazodbExtensionClass    -d ExtensionClass       Cruft/ExtensionClass
 sazBTrees               -d BTrees               Packages/BTrees
 sazbsddb3Storage        -d bsddb3Storage        Packages/bsddb3Storage
-
+sazPersistence             -d Persistence       Packages/Persistence
+sazThreadedAsync           -d ThreadedAsync     Packages/ThreadedAsync
+sazzdaemon                 -d zdaemon           Packages/zdaemon
+sazzLOG                    -d zLOG              Packages/zLOG
 
 ####################
 # CMF:
