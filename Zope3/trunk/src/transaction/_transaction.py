@@ -375,7 +375,9 @@ class Transaction(object):
             else:
                 L = list(self._resources)
 
-        L.sort(rm_cmp)
+        # XXX: I commented this line out, since data managers do not support
+        #      sortKey() and this makes no sense to me. (SR)  
+        #L.sort(rm_cmp)
         return L
 
     def abort(self, subtransaction=False):
