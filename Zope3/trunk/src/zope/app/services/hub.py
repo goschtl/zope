@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.18 2003/07/12 09:37:14 jim Exp $
+$Id: hub.py,v 1.19 2003/07/13 07:18:23 anthony Exp $
 """
 
 from __future__ import generators
@@ -34,7 +34,6 @@ from zope.proxy import removeAllProxies
 from zope.app.services.servicenames import EventSubscription
 
 from zope.app.interfaces.traversing import ITraverser
-from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectEvent
 from zope.app.interfaces.event import IObjectMovedEvent, IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -185,7 +184,7 @@ class ObjectHub(ServiceSubscriberEventChannel):
     # concerned, and if it doesn't know how to do something, it won't
     # ask anything else to try.  Everything else is YAGNI for now.
 
-    implements(IObjectHub, ISimpleService, IAddNotifiable, IDeleteNotifiable)
+    implements(IObjectHub, ISimpleService)
 
     def __init__(self):
         ServiceSubscriberEventChannel.__init__(self)
@@ -194,18 +193,6 @@ class ObjectHub(ServiceSubscriberEventChannel):
         self.__hubid_to_path = IOBTree()
         # unicode pathslash --> int
         self.__path_to_hubid = OIBTree()
-
-    def afterAddHook(self, hub, container):
-        '''See interface IAddNotifiable'''
-        events = getService(hub, EventSubscription)
-        events.subscribe(hub, IObjectModifiedEvent)
-        events.subscribe(hub, IObjectRemovedEvent)
-
-    def beforeDeleteHook(self, hub, container):
-        '''See interface IDeleteNotifiable'''
-        events = getService(hub, EventSubscription)
-        events.unsubscribe(hub, IObjectModifiedEvent)
-        events.unsubscribe(hub, IObjectRemovedEvent)
 
     def notify(wrapped_self, event):
         '''See interface ISubscriber'''
