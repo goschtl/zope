@@ -15,19 +15,13 @@
 
 The macros are drawn from various different page templates.
 
-$Id: StandardMacros.py,v 1.1 2002/10/23 15:02:29 sidnei Exp $
+$Id: StandardMacros.py,v 1.2 2002/10/31 13:19:17 stevea Exp $
 """
-from Zope.App.ZMI.ZMIViewUtility import ZMIViewUtility
-from Zope.App.PageTemplate.ViewPageTemplateFile import ViewPageTemplateFile
-from Zope.App.ZMI.StandardMacros import Macros
+from Zope.App.ZMI.StandardMacros import StandardMacros as ZMIMacros
 
-class StandardMacros(ZMIViewUtility, Macros):
+class StandardMacros(ZMIMacros):
 
-    __implements__ = ZMIViewUtility.__implements__
+    __implements__ = ZMIMacros.__implements__
 
-    macro_pages = (
-            ViewPageTemplateFile('www/view_macros.pt'), 
-            ViewPageTemplateFile('www/widget_macros.pt'),
-            ViewPageTemplateFile('www/dialog_macros.pt')
-            )
+    macro_pages = ('view_macros', 'widget_macros', 'dialog_macros')
 

@@ -9,10 +9,27 @@
 
   <browser:skin name="ZopeTop" layers="templates images css default" />
 
-  <browser:view name="standard_macros"
+  <browser:view
+      name="standard_macros"
+      permission="Zope.View"
+      factory=".StandardMacros."
+      allowed_interface="Zope.App.ZMI.StandardMacros.IStandardMacros"
+      layer="templates" />
+
+  <browser:view name="view_macros"
                 permission="Zope.View"
-                factory=".StandardMacros."
-		layer="templates" />
+                template="www/view_macros.pt"
+                layer="templates" />
+
+  <browser:view name="widget_macros"
+                permission="Zope.View"
+                template="www/widget_macros.pt" 
+                layer="templates" />
+
+  <browser:view name="dialog_macros"
+                permission="Zope.View"
+                template="www/dialog_macros.pt"
+                layer="templates" />
 
   <browser:resource name="zopetopBasic.css" 
                	file="www/zopetopBasic.css"
