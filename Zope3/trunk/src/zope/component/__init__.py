@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.10 2003/05/23 17:52:12 jim Exp $
+$Id: __init__.py,v 1.11 2003/05/23 22:16:49 jim Exp $
 """
 
 import sys
@@ -33,37 +33,7 @@ except ImportError:
         return ob
 
 moduleProvides(IComponentArchitecture)
-
-__all__ = (
-    "queryServiceManager", 
-    "getServiceManager", 
-    "getService", 
-    "queryService", 
-    "getServiceDefinitions", 
-    "getUtility", 
-    "queryUtility", 
-    "getAdapter", 
-    "queryAdapter", 
-    "getNamedAdapter", 
-    "queryNamedAdapter", 
-    "createObject", 
-    "getFactory", 
-    "queryFactory", 
-    "getFactoryInterfaces", 
-    "getSkin", 
-    "getView", 
-    "queryView", 
-    "getDefaultViewName", 
-    "queryDefaultViewName", 
-    "getResource", 
-    "queryResource",
-    )
-
-def queryServiceManager(context, default=None):
-    try:
-        return getServiceManager(context)
-    except ComponentLookupError:
-        return default
+__all__ = tuple(IComponentArchitecture)
 
 def getServiceManager(context):
     return serviceManager
@@ -73,9 +43,7 @@ def getService(context, name):
     return getServiceManager(context).getService(name)
 
 def queryService(context, name, default=None):
-    sm = queryServiceManager(context)
-    if sm is None:
-        return default
+    sm = getServiceManager(context)
     return sm.queryService(name, default)
 
 def getServiceDefinitions(context):
