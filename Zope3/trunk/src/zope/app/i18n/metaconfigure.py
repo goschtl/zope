@@ -16,10 +16,12 @@
 $Id: metaconfigure.py,v 1.5 2004/03/31 14:18:13 gintautasm Exp $
 """
 import os
+
 from zope.app.component.metaconfigure import utility
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
 from zope.i18n.translationdomain import TranslationDomain
 from zope.i18n.interfaces import ITranslationDomain
+
 
 def registerTranslations(_context, directory):
     path = os.path.normpath(directory)
@@ -27,7 +29,7 @@ def registerTranslations(_context, directory):
 
     # Gettext has the domain-specific catalogs inside the language directory,
     # which is exactly the opposite as we need it. So create a dictionary that
-    # reverses the nesting. 
+    # reverses the nesting.
     for language in os.listdir(path):
         lc_messages_path = os.path.join(path, language, 'LC_MESSAGES')
         if os.path.isdir(lc_messages_path):
@@ -45,4 +47,3 @@ def registerTranslations(_context, directory):
         for lang, file in langs.items():
             domain.addCatalog(GettextMessageCatalog(lang, name, file))
         utility(_context, ITranslationDomain, domain, name=name)
-                              
