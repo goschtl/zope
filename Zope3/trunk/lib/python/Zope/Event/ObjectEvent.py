@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.7 2002/12/05 12:54:32 bcsaller Exp $
+$Id: ObjectEvent.py,v 1.8 2002/12/05 13:44:13 stevea Exp $
 """
 
 __metaclass__ = type
@@ -22,20 +22,30 @@ __metaclass__ = type
 from IObjectEvent import IObjectEvent, IObjectCreatedEvent
 from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
-from IObjectEvent import IObjectContentModifiedEvent, \
-                         IObjectAnnotationsModifiedEvent
+from IObjectEvent \
+    import IObjectContentModifiedEvent, IObjectAnnotationsModifiedEvent
+
+# XXX: this is a dependency on Zope.App.... so we need to move
+#      these event definitions into there.
+from Zope.App.Traversing import getPhysicalPath
+
+_marker = object()
 
 class ObjectEvent:
     """Something has happened to an object"""
 
     __implements__ = IObjectEvent
 
-    object = None
-    location = None
+    def _getLocation(self):
+        if self.__location is not _marker:
+            return self.__location
+        return getPhysicalPath(self.object)
 
-    def __init__(self, object, location=None):
+    location = property(_getLocation)
+
+    def __init__(self, object, location=_marker):
         self.object = object
-        self.location = location
+        self.__location = location
 
 class ObjectAddedEvent(ObjectEvent):
     """An object has been added to a container"""

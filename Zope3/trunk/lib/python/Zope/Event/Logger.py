@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: Logger.py,v 1.3 2002/10/03 20:53:22 jim Exp $
+$Id: Logger.py,v 1.4 2002/12/05 13:44:13 stevea Exp $
 """
 
 from ISubscriber import ISubscriber
@@ -32,9 +32,10 @@ class Logger:
     def notify(self, event):
         c = event.__class__
         detail = StringIO()
-        data = event.__dict__.items()
-        data.sort()
-        pprint (data, detail)
+        #data = event.__dict__.items()
+        #data.sort()
+        #pprint(data, detail)
+        print >>detail, 'XXX detail temporarily disabled'
         LOG('Event.Logger',
             self.severity,
             c.__module__+'.'+c.__name__,

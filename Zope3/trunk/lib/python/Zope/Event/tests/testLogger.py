@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testLogger.py,v 1.5 2002/12/01 10:32:29 jim Exp $
+$Id: testLogger.py,v 1.6 2002/12/05 13:44:11 stevea Exp $
 """
 
 import unittest, sys
@@ -65,16 +65,16 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
     def testLogger(self):
         "Test the logger logs appropriately"
         # check the dopey logger
-        self.assertEqual(self.logger.result,
-                         [
-            (
-            'Event.Logger',
-            BLATHER,
-            'Zope.Event.ObjectEvent.ObjectAddedEvent',
-            "[('location', 'foo'), ('object', None)]\n",
-            None,
+        self.assertEqual(
+            self.logger.result,
+            [('Event.Logger',
+              BLATHER,
+              'Zope.Event.ObjectEvent.ObjectAddedEvent',
+              #"[('location', 'foo'), ('object', None)]\n",
+              'XXX detail temporarily disabled\n',
+              None,
+            )]
             )
-            ])
 
 class TestLogger2(TestLogger1):
 
@@ -89,7 +89,8 @@ class TestLogger2(TestLogger1):
             'Event.Logger',
             PANIC,
             'Zope.Event.ObjectEvent.ObjectAddedEvent',
-            "[('location', 'foo'), ('object', None)]\n",
+            #"[('location', 'foo'), ('object', None)]\n",
+            'XXX detail temporarily disabled\n',
             None,
             )
             ])
