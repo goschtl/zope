@@ -132,6 +132,7 @@
 /ZODB4/zLOG		 /Packages3/zLOG
 /ZODB4/ZConfig		 /Packages/ZConfig
 /ZODB4/logging           /Packages/logging
+/ZODB4/bsddb3Storage     /Packages3/bsddb3Storage
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 
