@@ -13,11 +13,13 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: module.py,v 1.3 2002/12/30 21:09:04 jeremy Exp $
+$Id: module.py,v 1.4 2002/12/30 21:28:20 jeremy Exp $
 """
 
-from zope.publisher.browser import BrowserView
+from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.services.module import Manager
+from zope.component import getAdapter
+from zope.publisher.browser import BrowserView
 
 class AddModule(BrowserView):
 
@@ -25,6 +27,12 @@ class AddModule(BrowserView):
         mgr = Manager()
         mgr = self.context.add(mgr)
         mgr.new(name, source)
+        # For better or worse, the name Zope uses to manage a module
+        # can be different than the name Python code uses to import
+        # the module.  Set the title metadata of the Zope module to
+        # the real name.
+        dc = getAdapter(mgr, IZopeDublinCore)
+        dc.title = name
         self.request.response.redirect(self.context.nextURL())
 
 class EditModule(BrowserView):
