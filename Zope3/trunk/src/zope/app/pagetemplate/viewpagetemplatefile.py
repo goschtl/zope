@@ -14,7 +14,7 @@
 """
 See ViewPageTemplateFile
 
-$Id: viewpagetemplatefile.py,v 1.10 2004/02/11 01:14:02 jim Exp $
+$Id: viewpagetemplatefile.py,v 1.11 2004/03/29 05:12:38 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -26,12 +26,11 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
     """Page Templates used as methods of views defined as Python classes.
     """
 
-    def __init__(self, filename, _prefix=None, usage=u'', content_type=None):
+    def __init__(self, filename, _prefix=None, content_type=None):
         _prefix = self.get_path_from_prefix(_prefix)
         super(ViewPageTemplateFile, self).__init__(filename, _prefix)
         if content_type is not None:
             self.content_type = content_type
-        self.usage = usage
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
@@ -42,13 +41,7 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
         namespace['views'] = ViewMapper(context, request)
         return namespace
 
-    def __call__(self, instance, template_usage=u'', *args, **keywords):
-        # parameter template_usage needed such as the publisher machinery
-        # can find it and extract it from the request
-        
-        if not template_usage:
-            template_usage = self.usage or getattr(instance, 'usage', u'')
-        keywords["template_usage"] = template_usage
+    def __call__(self, instance, *args, **keywords):
         namespace = self.pt_getContext(
             request=instance.request,
             instance=instance, args=args, options=keywords)
@@ -71,8 +64,8 @@ class BoundPageTemplate:
         object.__setattr__(self, 'im_func', pt)
         object.__setattr__(self, 'im_self', ob)
 
-    def __call__(self, template_usage=u'', **kw):
-        return self.im_func(self.im_self, template_usage, **kw)
+    def __call__(self, **kw):
+        return self.im_func(self.im_self, **kw)
 
     def __getattr__(self, name):
         return getattr(self.im_func, name)

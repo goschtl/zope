@@ -13,7 +13,7 @@
 ##############################################################################
 """View ZPT Tests
 
-$Id: test_viewzpt.py,v 1.13 2004/03/15 20:42:07 jim Exp $
+$Id: test_viewzpt.py,v 1.14 2004/03/29 05:12:38 srichter Exp $
 """
 import unittest
 
@@ -85,28 +85,6 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.failUnless(the_view is views[the_view_name])
 
 
-class TestViewZPTUsage(PlacefulSetup, unittest.TestCase):
-
-    def setUp(self):
-        super(TestViewZPTUsage, self).setUp()
-        self.context = C1()
-        self.request = None
-
-    def testInitWithUsage(self):
-        self.t = ViewPageTemplateFile('testusage.pt', usage=u"test")
-        result = self.t(self)
-        self.assertEquals(result, "<html><body>test</body></html>\n")
-        result = self.t(self, template_usage=u"other")
-        self.assertEquals(result, "<html><body>other</body></html>\n")
-
-    def testInitWithoutUsage(self):
-        self.t = ViewPageTemplateFile('testusage.pt')
-        result = self.t(self)
-        self.assertEquals(result, "<html><body></body></html>\n")
-        result = self.t(self, template_usage=u"other")
-        self.assertEquals(result, "<html><body>other</body></html>\n")
-
-
 class TestViewZPTContentType(unittest.TestCase):
 
     def testInitWithoutType(self):
@@ -133,7 +111,6 @@ class TestViewZPTContentType(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestViewZPT))
-    suite.addTest(unittest.makeSuite(TestViewZPTUsage))
     suite.addTest(unittest.makeSuite(TestViewZPTContentType))
     return suite
 

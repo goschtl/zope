@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Simple View Class
 
-$Id: simpleviewclass.py,v 1.10 2003/09/21 17:32:33 jim Exp $
+$Id: simpleviewclass.py,v 1.11 2004/03/29 05:12:38 srichter Exp $
 """
-
 import sys
 from zope.app.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
@@ -40,17 +39,17 @@ class simple(BrowserView):
     def __getitem__(self, name):
         return self.index.macros[name]
 
-    def __call__(self, template_usage=u'', *args, **kw):
-        return self.index(template_usage, *args, **kw)
+    def __call__(self, *args, **kw):
+        return self.index(*args, **kw)
 
-def SimpleViewClass(src, offering=None, used_for=None, bases=(), usage=u''):
+def SimpleViewClass(src, offering=None, used_for=None, bases=()):
     if offering is None:
         offering = sys._getframe(1).f_globals
 
     bases += (simple, )
 
     class_ = type("SimpleViewClass from %s" % src, bases,
-                  {'index': ViewPageTemplateFile(src, offering, usage)})
+                  {'index': ViewPageTemplateFile(src, offering)})
 
     if used_for is not None:
         class_.__used_for__ = used_for
