@@ -15,7 +15,7 @@
 
 import unittest
 
-from zope.app.browser.services.utility import registered
+from zope.app.browser.services.utility import Utilities
 from zope.app.tests import placelesssetup
 from zope.component.view import provideView
 from zope.interface import Interface, implements
@@ -87,7 +87,7 @@ class RegisteredTest(placelesssetup.PlacelessSetup, unittest.TestCase):
                     StubAbsoluteURL)
         utilityservice = StubLocalUtilityService()
         request = TestRequest()
-        utilities = registered.Utilities(utilityservice, request)
+        utilities = Utilities(utilityservice, request)
         ifname1 = __name__ + ".IFoo"
         ifname2 = __name__ + ".IBar"
         def confurl(ifname, name):

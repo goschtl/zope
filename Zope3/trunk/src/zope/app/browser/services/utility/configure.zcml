@@ -18,7 +18,7 @@
       menu="zmi_views" title="Utilities"
       name="utilities.html"
       template="utilities.pt"
-      class=".registered.Utilities"
+      class=".Utilities"
       permission="zope.ManageServices"
       />
 
@@ -38,7 +38,7 @@
       for="zope.app.interfaces.services.utility.ILocalUtilityService"
       name="configureutility.html"
       template="configureutility.pt"
-      class=".registered.ConfigureUtility"
+      class=".ConfigureUtility"
       permission="zope.ManageServices"
       />
 
@@ -51,7 +51,7 @@
       for="zope.app.interfaces.services.utility.ILocalUtility"
       name="addRegistration.html"
       schema="zope.app.interfaces.services.utility.IUtilityRegistration"
-      class=".registered.AddRegistration"
+      class=".AddRegistration"
       permission="zope.ManageServices"
       content_factory="zope.app.services.utility.UtilityRegistration"
       arguments="name interface componentPath"
