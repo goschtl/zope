@@ -32,6 +32,10 @@ system for us all.
 Download 
 --------
 
+2004-09-24 -- Five 0.2b is released. Download it here:
+
+http://codespeak.net/z3/five/release/Five-0.2b.tgz
+
 2004-07-30 -- We have released Five 0.1! Download it here:
 
 http://codespeak.net/z3/five/release/Five-0.1.tgz
