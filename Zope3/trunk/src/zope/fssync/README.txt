@@ -67,9 +67,6 @@ TO DO
 
 * more refactoring and cleanup of the fssync core functionality
 
-* allow adding files of different types based on the file suffix or an
-  explicit -t argument
-
 * more diff options:
   -2 diffs between local and remote
   -3 diffs between original and remote
@@ -78,12 +75,6 @@ TO DO
 
 * something akin to cvs -n update, which shows what update would do
   without actually doing it
-
-* allow checking out the root
-
-* allow checking out /++etc++site
-
-* add a log message to the commit command
 
 * commit shouldn't commit new versions of unchanged objects to ZODB
 
