@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.7 $"[11:-2]
+__version__ = "$Revision: 1.8 $"[11:-2]
 
 import linecache
 import unittest
@@ -563,9 +563,9 @@ class TkTestRunner(BaseGUITestRunner):
                                     self.launchEditor(f, l))
 
     def launchEditor(self, file, line):
-        editor = (os.environ['PYUNIT_EDITOR'] or
-                  os.environ['EDITOR_REMOTE'] or
-                  os.environ['EDITOR'])
+        editor = (os.environ.get('PYUNIT_EDITOR', None) or
+                  os.environ.get('EDITOR_REMOTE', None) or
+                  os.environ.get('EDITOR', None))
         if editor:
             os.system("%s +%s %s" % (editor, line, file))
 
