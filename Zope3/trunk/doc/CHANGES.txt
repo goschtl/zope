@@ -192,6 +192,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed browser:defaultView metaconfigure: for_ passes a GlobalObject
+        and not a Token of GlobalObjects.
+
       - Changed negotiator import with "INegotiator" utility lookup in
         default global "TranslationDomain". This makes it possible to
         use local INegotiator utilities with the standard translation
