@@ -22,7 +22,7 @@ from zope.exceptions import NotFoundError
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.index.interfaces import ISimpleQuery
 
-from zope.app.zapi import getService
+from zope.app.zapi import getUtility, getPath
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.container.interfaces import IContainer
@@ -48,86 +48,26 @@ class ResultSet:
             obj = self.uidutil.getObject(uid)
             yield obj
 
-### class CatalogBaseAddSubscriber:
-### 
-###     implements(ISubscriber)
-### 
-###     def __init__(self, catalog, event):
-###         self.catalog = catalog
-### 
-###     def notify(self, event):
-###         """Receive notification of add events."""
-###         self.catalog.subscribeEvents(update=False)
-### 
-### class CatalogBaseRemoveSubscriber:
-### 
-###     implements(ISubscriber)
-### 
-###     def __init__(self, catalog, event):
-###         self.catalog = catalog
-### 
-###     def notify(self, event):
-###         """Receive notification of remove events."""
-###         if self.catalog.getSubscribed():
-###             self.catalog.unsubscribeEvents()
 
 class CatalogBase(Persistent, SampleContainer):
 
     implements(ICatalog, IContainer, IAttributeAnnotatable)
-
-###     implements(ISubscriber)
-###    _subscribed = False
-
-    def _newContainerData(self):
-        return PersistentDict()
-
-    def getSubscribed(self):
-        return self._subscribed
 
     def clearIndexes(self):
         for index in self.values():
             index.clear()
 
     def updateIndexes(self):
-        eventF = Hub.ObjectRegisteredHubEvent
-        objectHub = getService(HubIds)
-        allobj = objectHub.iterObjectRegistrations()
-        for location, hubid, wrapped_object in allobj:
-            evt = eventF(objectHub, hubid, location, wrapped_object)
+        uidutil = getUtility(IUniqueIdUtility)
+        for uid, ref in uidutil.items():
+            obj = ref()
+            ### evt = eventF(uidutil, uid, location, wrapped_object)
             for index in self.values():
-                index.notify(evt)
+                ### index.notify(evt)
+                index.index_doc(uid, obj)
 
-    def subscribeEvents(self, update=True):
-        if self._subscribed:
-            raise ValueError, "Already subscribed"
-        self._subscribed = True
-        objectHub = getService(HubIds)
-        objectHub.subscribe(self, IHub.IRegistrationHubEvent)
-        objectHub.subscribe(self, IHub.IObjectModifiedHubEvent)
-        if update:
-            self.updateIndexes()
-
-    def unsubscribeEvents(self):
-        if not self._subscribed:
-            raise ValueError, "Already unsubscribed"
-        self._subscribed = False
-        objectHub = getService(HubIds)
-        try:
-            objectHub.unsubscribe(self, IHub.IRegistrationHubEvent)
-            objectHub.unsubscribe(self, IHub.IObjectModifiedHubEvent)
-        except NotFoundError:
-            # we're not subscribed. bah.
-            pass
-
-    def notify(self, event):
-        "objecthub is my friend!"
-
-        indexes = self.values()
-        for index in indexes:
-            try:
-                index.notify(event)
-            except: # XXX bare excepts are not my friend! Please fix.
-                pass
+    def updateObject(self, obj):
+        raise
 
     def searchResults(self, **searchterms):
         from BTrees.IIBTree import intersection
@@ -150,8 +90,6 @@ class CatalogBase(Persistent, SampleContainer):
                 # nothing left, short-circuit
                 break
         # Next we turn the IISet of hubids into a generator of objects
-###        objectHub = getService(HubIds)
-###        results = ResultSet(pendingResults, objectHub)
         uidutil = getUtility(IUniqueIdUtility)
         results = ResultSet(pendingResults, uidutil)
         return results

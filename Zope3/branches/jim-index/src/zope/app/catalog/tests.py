@@ -23,36 +23,23 @@ import doctest
 
 from zope.interface import implements
 from zope.app.index.interfaces.field import IUIFieldCatalogIndex
-### from zope.app.event.interfaces import ISubscriber
-### from zope.app.hub.interfaces import IObjectHub
 from zope.app.catalog.interfaces.index import ICatalogIndex
-from zope.index.interfaces import ISimpleQuery
+from zope.index.interfaces import IInjection, ISimpleQuery
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.site.interfaces import ISite
 from zope.app import zapi
+from zope.app.tests import ztapi
 
 from zope.app.catalog.catalog import Catalog
-### from zope.app.catalog.catalog import CatalogBaseAddSubscriber
-### from zope.app.catalog.catalog import CatalogBaseRemoveSubscriber
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getGlobalServices
-### from zope.app.servicenames import HubIds
 from BTrees.IIBTree import IISet
 
-#XXX XXX XXX these will need to be changed XXX XXX XXX
-### regEvt = Hub.ObjectRegisteredHubEvent
-### unregEvt = Hub.ObjectUnregisteredHubEvent
-### modEvt = Hub.ObjectModifiedHubEvent
-
-#class CFakeObjectHub(FakeObjectHub):
-#    def iterObjectRegistrations(self):
-#        def gen(things):
-#            for hubid, obj in things:
-#                loc = "/%s"%hubid
-#                yield loc,hubid,obj
-#        return gen(self.data.items())
 
 class UniqueIdUtilityStub:
     """A stub for UniqueIdUtility."""
+    implements(IUniqueIdUtility)
+
     def __init__(self):
         self.ids = {}
         self.objs = {}
@@ -64,7 +51,7 @@ class UniqueIdUtilityStub:
 
     def register(self, ob):
         if ob not in self.ids:
-            uid = self._generateId(self)
+            uid = self._generateId()
             self.ids[ob] = uid
             self.objs[uid] = ob
         else:
@@ -81,92 +68,35 @@ class UniqueIdUtilityStub:
     def getId(self, ob):
         return self.ids[ob]
 
+    def items(self):
+        return [(id, lambda: obj) for id, obj in self.objs.items()]
+
 
 class StubIndex:
-    implements(ISimpleQuery, ICatalogIndex, IUIFieldCatalogIndex)
-    ### implements (ISubscriber)
+    implements(ISimpleQuery, IInjection)
 
     def __init__(self, field_name, interface=None):
         self._field_name = field_name
         self.interface = interface
         self._notifies = []
+        self.doc = {}
 
-    def notify(self, event):
-        self._notifies.append(event)
+    def index_doc(self, docid, texts):
+        self.doc[docid] = texts
 
-    def clear(self):
-        self._notifies = []
-
-    def _getterms(self):
-        d = {}
-        for e in self._notifies:
-            ob = e.object
-            term = getattr(e.object ,self._field_name, '')
-###            d.setdefault(term, []).append(e.hubid)
-            d.setdefault(term, []).append(e.uid)
-        return d
+    def unindex_doc(self, docid):
+        raise
 
     def query(self, term, start=0, count=None):
-        termdict = self._getterms()
-        res = termdict.get(term, [])
-        return IISet(res)
+        """TODO"""
+###        termdict = self._getterms()
+###        res = termdict.get(term, [])
+###        return IISet(res)
 
 class stoopid:
     def __init__(self, **kw):
         self.__dict__ = kw
 
-class DummyCatalog:
-
-    def __init__(self):
-        self.subscribed = False
-
-    def subscribeEvents(self, update=False):
-        self.subscribed = True
-
-    def getSubscribed(self):
-        return self.subscribed
-
-    def unsubscribeEvents(self):
-        self.subscribed = False
-
-class TestEventAdapters:
-    def test_addNotify(self):
-        """
-        First we create a dummy catalog and an adapter for it.
-
-        >>> catalog = DummyCatalog()
-        >>> adapter = CatalogBaseAddSubscriber(catalog, None)
-
-        Now call notification
-        >>> adapter.notify(None)
-
-        Check to make sure the adapter added the path
-        >>> catalog.getSubscribed()
-        True
-        """
-
-    def test_deleteNotify(self):
-        """
-        First we create a dummy catalog and an adapter for it.
-
-        >>> catalog = DummyCatalog()
-        >>> adapter = CatalogBaseAddSubscriber(catalog, None)
-
-        Now call notification
-        >>> adapter.notify(None)
-
-        Check to make sure the adapter subscribed
-        >>> catalog.getSubscribed()
-        True
-
-        Now create a removal adapter and notify it
-        >>> adapter = CatalogBaseRemoveSubscriber(catalog, None)
-        >>> adapter.notify(None)
-
-        Check to make sure the adapter unsubscribed
-        >>> catalog.getSubscribed()
-        False
-        """
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -206,28 +136,26 @@ class Test(PlacelessSetup, unittest.TestCase):
             checkNotifies = index._notifies
             self.assertEqual(len(checkNotifies), 0)
 
-    def _frob_objecthub(self, ints=1, apes=1):
-        hub = CFakeObjectHub()
-        service_manager = getGlobalServices()
-###        service_manager.defineService(HubIds, IObjectHub)
-###        service_manager.provideService(HubIds, hub)
+    def _frob_uniqueidutil(self, ints=1, apes=1):
+        uidutil = UniqueIdUtilityStub()
+        ztapi.provideUtility(IUniqueIdUtility, uidutil)
         # whack some objects in our little objecthub
         if ints:
             for i in range(10):
-                hub.register("<object %s>"%i)
+                uidutil.register("<object %s>"%i)
         if apes:
-            hub.register(stoopid(simiantype='monkey', name='bobo'))
-            hub.register(stoopid(simiantype='monkey', name='bubbles'))
-            hub.register(stoopid(simiantype='monkey', name='ginger'))
-            hub.register(stoopid(simiantype='bonobo', name='ziczac'))
-            hub.register(stoopid(simiantype='bonobo', name='bobo'))
-            hub.register(stoopid(simiantype='punyhuman', name='anthony'))
-            hub.register(stoopid(simiantype='punyhuman', name='andy'))
-            hub.register(stoopid(simiantype='punyhuman', name='kev'))
+            uidutil.register(stoopid(simiantype='monkey', name='bobo'))
+            uidutil.register(stoopid(simiantype='monkey', name='bubbles'))
+            uidutil.register(stoopid(simiantype='monkey', name='ginger'))
+            uidutil.register(stoopid(simiantype='bonobo', name='ziczac'))
+            uidutil.register(stoopid(simiantype='bonobo', name='bobo'))
+            uidutil.register(stoopid(simiantype='punyhuman', name='anthony'))
+            uidutil.register(stoopid(simiantype='punyhuman', name='andy'))
+            uidutil.register(stoopid(simiantype='punyhuman', name='kev'))
 
     def test_updateindexes(self):
         "test a full refresh"
-        self._frob_objecthub()
+        self._frob_uniqueidutil()
         catalog = Catalog()
         catalog['author'] = StubIndex('author', None)
         catalog['title'] = StubIndex('author', None)
@@ -243,7 +171,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_basicsearch(self):
         "test the simple searchresults interface"
-        self._frob_objecthub(ints=0)
+        self._frob_uniqueidutil(ints=0)
         catalog = Catalog()
         catalog['simiantype'] = StubIndex('simiantype', None)
         catalog['name'] = StubIndex('name', None)
@@ -274,7 +202,7 @@ def test_suite():
     import sys
     return unittest.TestSuite((
         unittest.makeSuite(Test),
-        doctest.DocTestSuite(sys.modules[__name__]),
+###        doctest.DocTestSuite(sys.modules[__name__]),
         ))
 
 if __name__ == "__main__":
