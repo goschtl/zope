@@ -1,6 +1,8 @@
 precommit_actions
 postcommit_actions
 traffic_table.py
+adjustlinks.py
+repolinks
 writers
 passwd
 update_audit
