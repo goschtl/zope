@@ -13,13 +13,12 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.4 2004/03/13 22:02:11 srichter Exp $
+$Id: tests.py,v 1.5 2004/04/11 18:16:29 jim Exp $
 """
 import unittest
 from zope.app.tests import setup
 from zope.app.site.tests import placefulsetup
-from zope.app import utility
-from zope.component.utility import utilityService as globalUtilityService
+from zope.app import utility, zapi
 from zope.interface import Interface, implements
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
@@ -89,12 +88,13 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                          utility.LocalUtilityService())
 
     def test_queryUtility_delegates_to_global(self):
-        globalUtilityService.provideUtility(IFoo, Foo("global"))
-        globalUtilityService.provideUtility(IFoo, Foo("global bob"),
+        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService.provideUtility(IFoo, Foo("global"))
+        utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
         utility_service = getService(self.rootFolder, "Utilities")
-        self.assert_(utility_service != globalUtilityService)
+        self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.queryUtility(IFoo).foo(),
                          "foo global")
@@ -110,12 +110,13 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(utility_service.queryUtility(IFoo, name="rob"), None)
 
     def test_getUtility_delegates_to_global(self):
-        globalUtilityService.provideUtility(IFoo, Foo("global"))
-        globalUtilityService.provideUtility(IFoo, Foo("global bob"),
+        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService.provideUtility(IFoo, Foo("global"))
+        utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
         utility_service = getService(self.rootFolder, "Utilities")
-        self.assert_(utility_service != globalUtilityService)
+        self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.getUtility(IFoo).foo(),
                          "foo global")
@@ -152,8 +153,9 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
 
     def test_local_utilities(self):
-        globalUtilityService.provideUtility(IFoo, Foo("global"))
-        globalUtilityService.provideUtility(IFoo, Foo("global bob"),
+        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService.provideUtility(IFoo, Foo("global"))
+        utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
         utilities = getService(self.rootFolder, "Utilities")
