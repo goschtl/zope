@@ -96,6 +96,9 @@ current directory.
 Defining a New Resource
 -----------------------
 
+The Basics
+~~~~~~~~~~
+
 The next step in using |zpkg|_ is to define new resources that can be
 used in constructing distributions.  Most resources are Python
 packages, so we'll start with a simple package.  It will contain some
@@ -159,6 +162,64 @@ the support needed to include additional data files inside the
 package; that's what it does with all files in Python packages by
 default.  Non-Python files inside your package are included as package
 data by default by |zpkg|_.
+
+Support for use as a primary resource
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The resource we've provided so far is usable as a resource that can be
+used in a collection, but it isn't sufficient to be packaged by
+itself.  For that, at least a small bit of additional metadata is
+required.
+
+The additional metadata required is called "publication metadata" and
+is stored in the file *PUBLICATION.cfg* in the top directory of the
+resource being described.  For Python packages, this is the directory
+that contains the *__init__.py* file.  The *PUBLICATION.cfg* file has
+the same format as the *PKG-INFO* file generated in a distribution by
+distutils.  Most fields are optional, and fields with version-specific
+information will be ignored.  (In particular, the **Version** field is
+ignored.)  These fields are used to provide general publication
+metadata to distutils; such metadata is used to respond to
+command-line queries and to register the package in the `Python
+Package Index <http://www.python.org/pypi/>`_.
+
+The following metadata fields should be provided:
+
+**Name**
+  The short name of the package, such as "Zope X3" or "ZConfig".
+
+**Summary**
+  Single line description of the package.
+
+**Home-page**
+  URL for more information about the package.
+
+**License**
+  Commonly recognized short name of the license, if there is one ("ZPL
+  2", "LGPL"), or a URL for the full text of the license if it's less
+  well known.
+
+**Author**, **Author-email**
+  The name and contact email address for the author of the package.
+  For packages developed by a collective, the "author" may be a
+  description of the group ("Zope Corporation and Contributors") and
+  the email address may be for a mailing list.
+
+**Maintainer**, **Maintainer-email**
+  The name and contact email address for the maintainer of the
+  package.  This should only be provided if it differs from the author
+  information.
+
+The format of the file is simply a series of RFC 2822 headers, with
+the header names matching the field names.  For example::
+
+  Name: Zope X3
+  Summary: Zope 3 Application Server
+  Home-page: http://dev.zope.org/Zope3/
+  Author: Zope Corporation and Contributors
+  Author-email: zope3-dev@zope.org
+  License: ZPL 2
+
 
 
 .. include:: links.rst
