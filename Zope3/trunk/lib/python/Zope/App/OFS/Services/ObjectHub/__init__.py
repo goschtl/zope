@@ -29,8 +29,8 @@ def normalizeToHubIds(context, *args):
         arg = args[ix]
         if isinstance(arg, int):
             pass
-        elif isinstance(arg, str):
-            args[ix] = obHub.lookupHubId(locationAsUnicode(arg))
+        elif isinstance(arg, (str, tuple)):
+            args[ix] = obHub.getHubId(locationAsUnicode(arg))
         elif isWrapper(arg):
             args[ix] = getPhysicalPathString(arg)
     return args
