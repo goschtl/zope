@@ -38,58 +38,8 @@ from zope.schema import vocabulary
 class ISampleVocabulary(IVocabularyTokenized, IVocabulary):
     """Specialized interface so we can hook views onto a vocabulary."""
 
-class SampleTerm(object):
-    """Trivial ITerm implementation."""
-    implements(ITokenizedTerm)
 
-    def __init__(self, value):
-        self.value = value
-        self.token = value
-
-
-class BasicVocabulary(object):
-    """Simple vocabulary that uses terms from a passed-in list of values."""
-    implements(IVocabularyTokenized, IVocabulary)
-
-    def __init__(self, values):
-        self._values = values
-
-    def __contains__(self, value):
-        return value in self._values
-
-    def __iter__(self):
-        return BasicIterator(self._values)
-
-    def __len__(self):
-        return len(self._values)
-
-    def getQuery(self):
-        return None
-
-    def getTerm(self, value):
-        if value in self._values:
-            return SampleTerm(value)
-        raise LookupError("%r not a vocabulary member" % value)
-
-    def getTermByToken(self, token):
-        # XXX tokens are currently the same as the values:
-        if token in self._values:
-            return SampleTerm(token)
-        raise LookupError("token %r not found in vocabulary" % token)
-
-class BasicIterator(object):
-    """Iterator that produces ITerm objects from vocabulary data."""
-
-    def __init__(self, values):
-        self._next = iter(values).next
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        return SampleTerm(self._next())
-
-class SampleVocabulary(BasicVocabulary):
+class SampleVocabulary(vocabulary.SimpleVocabulary):
     """Vocabulary used to test vocabulary-based specialization of widgets."""
     implements(ISampleVocabulary)
 
@@ -109,7 +59,7 @@ class SampleContent:
     """Stub content object used by makeField()."""
 
 
-class QueryVocabulary(BasicVocabulary):
+class QueryVocabulary(vocabulary.SimpleVocabulary):
     """Vocabulary that offer simple query support."""
 
     def getQuery(self):
@@ -280,7 +230,7 @@ class SelectionTestBase(VocabularyWidgetTestBase):
     """Base class for the general widget tests (without query support)."""
 
     def test_vocabulary_specialization(self):
-        bound = self.makeField(SampleVocabulary(["frobnication"]))
+        bound = self.makeField(SampleVocabulary.fromValues(["frobnication"]))
         w = getView(bound, "display", self.makeRequest())
         self.assertEqual(w(), "foo")
 
@@ -291,21 +241,24 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
     defaultFieldValue = "splat"
     fieldClass = vocabulary.VocabularyField
 
+    sampleVocabulary = vocabulary.SimpleVocabulary.fromValues(
+        ["splat", "foobar"])
+
     def test_display(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "display", self.makeRequest())
         w.setData(bound.context.f)
         self.assertEqual(w(), "splat")
 
     def test_display_with_form_value(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
+        bound = self.makeField(self.sampleVocabulary)
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "display", request)
         self.assert_(w.haveData())
         self.assertEqual(w(), "foobar")
 
     def test_edit(self, extraChecks=[]):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         self.assert_(not w.haveData())
@@ -331,7 +284,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
             ])
 
     def test_edit_with_form_value(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
+        bound = self.makeField(self.sampleVocabulary)
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "edit", request)
         self.assert_(w.haveData())
@@ -342,7 +295,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         # This tests that emptying a value via the form when there's a
         # non-empty value for the field on the content object will
         # report haveData() properly.
-        bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
+        bound = self.makeField(self.sampleVocabulary)
         bound.context.f = "splat"
         w = getView(bound, "edit", self.makeRequest(
             'field.f-empty-marker='))
@@ -369,9 +322,11 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
 
     defaultFieldValue = ["splat"]
     fieldClass = vocabulary.VocabularyListField
+    sampleVocabulary = vocabulary.SimpleVocabulary.fromValues(
+        ["splat", "foobar", "frob"])
 
     def test_display_without_value(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]))
+        bound = self.makeField(self.sampleVocabulary)
         del bound.context.f
         w = getView(bound, "display", self.makeRequest())
         self.assert_(not w.haveData())
@@ -383,8 +338,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
             ])
 
     def test_display_with_value(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]),
-                               ["foobar", "frob"])
+        bound = self.makeField(self.sampleVocabulary, ["foobar", "frob"])
         w = getView(bound, "display", self.makeRequest())
         w.setData(bound.context.f)
         self.assert_(not w.haveData())
@@ -405,8 +359,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
             ])
 
     def test_display_with_form_data(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]),
-                               ["foobar", "frob"])
+        bound = self.makeField(self.sampleVocabulary, ["foobar", "frob"])
         request = self.makeRequest('field.f:list=splat')
         w = getView(bound, "display", request)
         self.assert_(w.haveData())
@@ -424,7 +377,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         self.assert_(s.find("frob") < 0)
 
     def test_edit(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]))
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "edit", self.makeRequest())
         self.assert_(not w.haveData())
         self.verifyResult(w(), [
@@ -455,7 +408,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         self.assert_(s3.find('selected') < 0)
 
     def test_edit_with_form_value(self):
-        bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]))
+        bound = self.makeField(self.sampleVocabulary)
         request = self.makeRequest('field.f:list=foobar&field.f:list=splat')
         w = getView(bound, "edit", request)
         self.assert_(w.haveData())
@@ -472,10 +425,11 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
     mechanics.
     """
 
-    queryableVocabulary = QueryVocabulary(["splat", "foobar", "frob"])
+    sampleVocabulary = QueryVocabulary.fromValues(
+        ["splat", "foobar", "frob"])
 
     def test_get_query_helper(self):
-        bound = self.makeField(self.queryableVocabulary)
+        bound = self.makeField(self.sampleVocabulary)
         request = self.makeRequest()
         w = getView(bound, "edit", request)
         self.assert_(isinstance(w.query, MyVocabularyQuery))
@@ -483,7 +437,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.assertEqual(w.queryview.getLabel(), self.queryViewLabel)
 
     def test_query_input_section(self):
-        bound = self.makeField(self.queryableVocabulary)
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         checks = [
@@ -493,7 +447,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.verifyResult(w(), checks + ['class="queryinput"'])
 
     def test_query_output_section_without_results(self):
-        bound = self.makeField(self.queryableVocabulary)
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         checks = [
@@ -503,7 +457,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         self.verifyResultMissing(w(), checks + ['class="queryresults"'])
 
     def test_query_output_section_with_results(self):
-        bound = self.makeField(self.queryableVocabulary)
+        bound = self.makeField(self.sampleVocabulary)
         w = getView(bound, "edit", self.makeRequest("field.f-query=foo"))
         w.setData(bound.context.f)
         checks = [
