@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:help="http://namespaces.zope.org/help"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope">
+
+  <!-- register skintools sub packages. Perhaps we have to 
+       include each packages directly in the package-includes 
+       as a single package.
+       -->
+       
+  <!-- slot boxes -->
+  <include package="zope.app.skintools.addbox" />
+  <include package="zope.app.skintools.tooltipbox" />
+  <include package="zope.app.skintools.zmicookietreebox" />
+
+  <!-- menu actions -->
+  <include package="zope.app.skintools.helpaction" />
+  <include package="zope.app.skintools.toolbar" />
+
+  <configure zcml:condition="have onlinehelp">
+    <help:register
+        parent="styleguide/skin"
+        id="skintools"
+        title="Skintools"
+        doc_path="README.txt"
+        class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+        />
+  </configure>
+
+</configure>
