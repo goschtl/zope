@@ -13,9 +13,8 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.6 2004/04/17 14:33:47 srichter Exp $
+$Id: __init__.py,v 1.7 2004/04/24 23:17:44 srichter Exp $
 """
-from zope.app.component.browser.interfacewidget import InterfaceWidget
 from zope.app.registration.browser import AddComponentRegistration
 from zope.app.form import CustomWidgetFactory
 from zope.app.registration.interfaces import ActiveStatus
@@ -27,22 +26,6 @@ from zope.proxy import removeAllProxies
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.introspector import interfaceToName
 
-class UtilityInterfaceWidget(InterfaceWidget):
-    """Custom widget to select an interface from the component's interfaces.
-    """
-
-    def __call__(self):
-        field = self.context
-        component = field.context
-        result = ['\n<select name="%s">' % self.name]
-        for interface in providedBy(component).flattened():
-            interface = trustedRemoveSecurityProxy(interface)
-            result.append('  <option value="%s.%s">%s</option>' %
-                          (interface.__module__, interface.getName(),
-                           interface.getName()))
-        result.append('</select>')
-        return '\n'.join(result)
-
 
 class AddRegistration(AddComponentRegistration):
     """View for adding a utility registration.
@@ -53,8 +36,6 @@ class AddRegistration(AddComponentRegistration):
     This is a view on a local utility, configured by an <addform>
     directive.
     """
-    interface_widget = CustomWidgetFactory(UtilityInterfaceWidget)
-
     def add(self, registration):
         reg = super(AddRegistration, self).add(registration)
         reg.status = ActiveStatus
