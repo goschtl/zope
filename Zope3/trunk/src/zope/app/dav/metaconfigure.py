@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.component.metaconfigure import utility
 from zope.interface import directlyProvides
 from interfaces import IDAVNamespace

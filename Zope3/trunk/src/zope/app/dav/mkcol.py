@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory

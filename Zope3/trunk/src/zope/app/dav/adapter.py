@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.dom import minidom
 
 from zope.interface import implements

@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.interfaces import ITextDAVWidget
