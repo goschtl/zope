@@ -45,11 +45,3 @@ def checkPermission(context, permission_id):
         return
     if not queryUtility(IPermission, permission_id, context=context):
         raise ValueError("Undefined permission id", permission_id)
-
-class Permission(object):
-    implements(IPermission)
-
-    def __init__(self, id, title="", description=""):
-        self.id = id
-        self.title = title
-        self.description = description
