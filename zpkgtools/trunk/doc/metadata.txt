@@ -176,6 +176,12 @@ following settings, repeated as necessary:
   The name of a file or directory containing documentation. This is
   used to support RPM generation.
 
+**header**
+  Identifies C and C++ header files that are provided by the package
+  as part of it's API.  This is used to allow sharing of headers by C
+  extensions within a distribution but in different packages; there's
+  not a general way to do this with distutils.
+
 **script**
   Only files may be identified using this.  These files are included
   in the distribution and will be installed as executable scripts for
@@ -234,9 +240,8 @@ setting.
   recompiled.  Since the source files are identified by the **source**
   setting, this is normally only needed for header files.
 
-  XXX This is the one place I've seen a need to point outside the
-  current package.  In ZODB, the BTrees extension modules need to pick
-  up `../persistent/cPersistence.h`.
+  Headers provided by other packages should not be identified using
+  **depends-on**.
 
 **language**
   The source language of the extension; this may be needed to control
