@@ -13,7 +13,7 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.4 2002/07/17 23:16:20 jeremy Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
@@ -30,7 +30,7 @@ class ZopeDatabaseAdapter(Persistent):
         
     def _connection_factory(self):
         """This method should be overwritten by all subclasses"""
-        conn_info = _parseDSN(self.dsn)
+        conn_info = parseDSN(self.dsn)
         
     ############################################################
     # Implementation methods for interface
