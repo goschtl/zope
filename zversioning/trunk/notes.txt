@@ -22,3 +22,83 @@ Our default policy what is considered part of versioned object is:
     included.
     
     
+    
+    
+What we did at the IsarSprint
+-----------------------------
+
+Versioning means different things to different people and there is no common optimal 
+solution for all the problems that are related to the history of evolving data.
+Therefore we wanted to provide a flexible framework that is pluggable in its
+most important parts and reduces the problem of different versioning schemes
+to a reusable patterns. 
+
+After setting up a wiki at http://zope.org/Members/vbachs/Z3Versioning
+we started by defining the use cases we wanted to address:
+
+    Versioning in a groupware with web-based clients and standalone clients
+	CMS Uses Cases: Compound Document
+	Simple Content Versioning
+	Versioning of Proposals
+	
+	see also: http://zope.org/Members/vbachs/UseCases
+
+We spend a long time to discuss the things we wanted to be pluggable and which
+components were essential. The result of this discussion can be found
+in versioning.interfaces
+
+The overall pattern behind these set of interfaces is roughly as follows:
+
+    1.  Versioning can only be applied to a set of objects
+        if the objects have been registered and have been accepted
+        by the versioning system (or more precisely the version history storage).
+        
+    2.  Creating a version means that the original object is copied into
+        a storage that defines the evolving history of this object by means
+        of a succession of replicated data.
+            
+        What excactly is meant by a copy is a matter of the use case and not
+        prescribed by the framework. Some storages may be able to store metadata,
+        others only content data, sometimes one wants complete replicas, sometimes
+        only some important aspects of an object to be versioned etc.
+        
+        A few simple examples can be found in policies.py. 
+        
+    3.  Reverting to a version means that the saved state of an object is somehow
+        reconstructed in the present context. For some contexts a substitution
+        of the original with a saved copy is sufficient, sometimes references
+        to the originl objects must remain intact. These different variants
+        are also defined in policies.py
+        
+Within this overall pattern the following components are pluggable :
+
+    1.  IHistoriesStorage. This is the main persistent storage that is used
+        to ensure that the changing versions can be accessed later on. 
+        We use the abstract term ticket to describe the fact that different
+        storages use quite different reference schemes, e.g. global unique ids,
+        paths and revision numbers like SVN, python references in the ZODB etc.
+        to retrieve and access parts of the history of an object.
+        
+        In the long run we want to be able to plug in
+        other versioning systems like Subversion or relational databases as
+        other backends.
+        
+        
+    2.  IVersionableAspects. A plugin for the replication process that determines
+        what is versioned and how it stored. This is implemented as multiadapter
+        from IVersionable to IHistoriesStorage because only the combination
+        of both is able to determine what is stored in which way.
+    
+   
+    3.  INameChooser. A plugin for different labelling schemes, e.g. version 1, 
+        version 2, ... vs. v1.0, v1.1, v.1.1.1 etc.
+    
+    
+    4.  ICheckoutAware. A plugin that adds the ability to mark items as checked out
+        to data storages that do not provide this functionality themselves.
+        
+For these main components we coded very simplistic and basic implementations,
+that need a lot of additional refinement.
+
+
+    
