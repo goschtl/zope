@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.6 2003/05/28 22:22:37 gvanrossum Exp $
+$Id: test_network.py,v 1.7 2003/05/29 18:38:46 gvanrossum Exp $
 """
 
 import os
@@ -49,7 +49,7 @@ class DummyServer(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        svr = socket.socket()
+        svr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         svr.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         svr.bind((HOST, PORT))
         svr.listen(1)
