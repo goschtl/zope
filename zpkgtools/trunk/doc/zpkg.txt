@@ -146,7 +146,7 @@ attempt to generate a version number from the revision tag.  For this
 to be successful, the revision tag must follow a convention used
 within Zope Corporation.
 
-Release tags which follow this convention all have the form::
+Release tags which follow this convention all have the form:
 
   *name*-*encoded-version*
 
