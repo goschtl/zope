@@ -94,7 +94,7 @@ def load(f, base=None, mapping=None):
                         "repository: URLs are not supported"
                         " without a cvs: base URL",
                         lineno)
-                cvsurl = cvsurl.join(cvsbase)
+                cvsurl = cvsbase.join(cvsurl)
             url = cvsurl.getUrl()
 
         # We only want to add it once, so that loading several

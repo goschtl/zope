@@ -159,6 +159,20 @@ class CvsUrl:
             url = "%s:%s" % (url, self.tag)
         return url
 
+    def join(self, relurl):
+        assert isinstance(relurl, RepositoryUrl)
+        cvsurl = copy.copy(self)
+        if relurl.path:
+            path = posixpath.normpath(relurl.path)
+            if path[:1] == "/":
+                newpath = path[1:]
+            else:
+                newpath = posixpath.join(cvsurl.path, relurl.path)
+            cvsurl.path = posixpath.normpath(newpath)
+        if relurl.tag:
+            cvsurl.tag = relurl.tag
+        return cvsurl
+
 
 class RepositoryUrl:
     def __init__(self, path, tag=None):
@@ -170,21 +184,6 @@ class RepositoryUrl:
         if self.tag:
             url = "%s:%s" % (url, self.tag)
         return url
-
-    def join(self, cvsurl):
-        cvsurl = copy.copy(cvsurl)
-        if self.path:
-            path = posixpath.normpath(self.path)
-            if path[:1] == "/":
-                newpath = path[1:]
-            else:
-                newpath = posixpath.join(cvsurl.path, self.path)
-        else:
-            newpath = cvsurl.path
-        cvsurl.path = posixpath.normpath(newpath)
-        if self.tag:
-            cvsurl.tag = self.tag
-        return cvsurl
 
 
 class CvsLoader:
@@ -213,7 +212,7 @@ class CvsLoader:
                     "load() requires a cvs or repository URL; received %r"
                     % url)
         if isinstance(url, RepositoryUrl):
-            cvsurl = url.join(self.cvsurl)
+            cvsurl = self.cvsurl.join(url)
         elif isinstance(url, CvsUrl):
             cvsurl = copy.copy(url)
         else:
@@ -279,7 +278,7 @@ class CvsLoader:
 
     def isFileResource(self, cvsurl):
         if isinstance(cvsurl, RepositoryUrl):
-            cvsurl = cvsurl.join(self.cvsurl)
+            cvsurl = self.cvsurl.join(cvsurl)
         if not cvsurl.path:
             # The whole repository is always a directory
             return False
