@@ -108,3 +108,7 @@ Caching
     "mutator plugin" (and thus does not invalidate cached data) unless the 
     plugin developer forces some nasty cross-plugin dependencies.
 
+    The PluggableAuthService has two "sample implementations" for plugin
+    caching. Both the DynamicGroupsPlugin and the ZODBUserManager are 
+    cache-enabled.
+
