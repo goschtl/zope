@@ -25,7 +25,7 @@ with the module, by calling defineProxyType, however, it
 short-circuits the definitions for two types, which, hopefully will be
 the only two types that need to get registered. ;)
 
-$Id: ProxyIntrospection.py,v 1.3 2002/07/18 18:05:46 jeremy Exp $
+$Id: ProxyIntrospection.py,v 1.4 2002/12/13 23:06:46 jeremy Exp $
 """
 from IProxyIntrospection import IProxyIntrospection
 
@@ -44,7 +44,7 @@ class ProxyRegistry:
         self._proxy_types[Proxy] = getObject
 
         # register context wrappers
-        from Zope.ContextWrapper import Wrapper, wrapperTypes, getobject
+        from Zope.ContextWrapper import wrapperTypes, getobject
         for wrapper_type in wrapperTypes:
             self._proxy_types[wrapper_type] = getobject
         
