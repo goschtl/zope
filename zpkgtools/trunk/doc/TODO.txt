@@ -91,7 +91,9 @@ Things that need to be done
   http://www.python.org/sf/935117 for more info.)
 
   (We're currently dealing with them by saying "use **--home** when
-  installing".  This may be sufficient.)
+  installing" on Unix.  This may be sufficient since this isn't an
+  issue for Windows systems (which never separate $prefix and
+  $exec_prefix).)
 
 - Fix up finddeps.py to stop searching at defined boundaries.  How to
   define these boundaries is in flux at the moment.
