@@ -5,13 +5,8 @@
   <require
       permission="zope.ManageServices"
       interface="zope.app.interfaces.index.field.IUIFieldIndex"
-      attributes="query"
       />
 
-  <factory
-      id="zope.app.index.field.FieldIndex"
-      permission="zope.ManageServices"
-      />
   <implements
       interface="zope.app.interfaces.services.query.IQueryProcessable"
       />
