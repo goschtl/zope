@@ -47,15 +47,6 @@ files is optional if the information in that file is not needed.
   required to create a distribution for which the component is the
   primary component.
 
-  One additional field is defined for this file: ``Installation-type``.
-  This field can be set to ``application`` for collection
-  distribution to indicate that the distribution is not a normal
-  collection that should have a `setup.py` file for distutils, but
-  should have a more conventional **configure** / **make** / **make
-  install** build process that creates an application-specific
-  installation tree (for example, `/usr/local/Zope3`).  The value of
-  this field is compared in a case-insensitive manner.
-
 `SETUP.cfg`
   This file contains information on building extension modules.
   Information about scripts and documentation files will also be
