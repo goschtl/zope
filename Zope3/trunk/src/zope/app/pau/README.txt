@@ -123,8 +123,8 @@ utility to use our plugins. Let's fix that:
   Principal('42', '')
 
 In addition to getting a principal, an `IPAUPrincipalCreated` event will
-have been generated.  We'll use an the testing event logging API to
-see that this is the case:
+have been generated.  We'll use the testing event logging API to see that 
+this is the case:
 
   >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
 
@@ -478,7 +478,7 @@ Issuing challenges during authentication
 
 During authentication, extraction and authentication plugins can raise
 an 'Unauthorized' exception to indicate that a challenge should be
-issued immediately. They might do this if the recognize partial
+issued immediately. They might do this if they recognize partial
 credentials that pertain to them.
 
 PAU prefixes

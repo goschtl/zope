@@ -82,7 +82,8 @@ But CheckerPublic permission id always have a permission:
   True
 
 We make grants and denials on objects by adaping them to various
-granting interfaces:
+granting interfaces.  The objects returned from the adaptation are 
+object-specific manager objects:
 
   >>> from zope.app.securitypolicy import interfaces
   >>> roleper  = interfaces.IRolePermissionManager(ob)
@@ -95,7 +96,7 @@ extensively. We could invalidate the cache as we make grants, but the
 adapters for making grants will automatically invalidate the cache of
 the current interaction.  They use the security-management apis to do
 this. To take advantage of the cache invalidation, we'll need to let
-the security-management system manage out interactions.  First, we'll
+the security-management system manage our interactions.  First, we'll
 set our security policy as the default:
 
   >>> import zope.security.management
