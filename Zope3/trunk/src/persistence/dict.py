@@ -13,15 +13,15 @@
 ##############################################################################
 """Python implementation of persistent container type
 
-$Id: dict.py,v 1.2 2002/12/25 14:12:13 jim Exp $
+$Id: dict.py,v 1.3 2003/01/26 12:02:46 stevea Exp $
 """
 
 import persistence
-from UserDict import UserDict
+from UserDict import IterableUserDict
 
 __metaclass__ = type
 
-class PersistentDict(persistence.Persistent, UserDict):
+class PersistentDict(persistence.Persistent, IterableUserDict):
     """A persistent wrapper for mapping objects.
 
     This class allows wrapping of mapping objects so that object
@@ -29,20 +29,20 @@ class PersistentDict(persistence.Persistent, UserDict):
     subclassed.
     """
 
-    # UserDict provides all of the mapping behavior.  The
+    # IterableUserDict provides all of the mapping behavior.  The
     # PersistentDict class is responsible marking the persistent
     # state as changed when a method actually changes the state.  At
     # the mapping API evolves, we may need to add more methods here.
 
-    __super_delitem = UserDict.__delitem__
-    __super_setitem = UserDict.__setitem__
-    __super_clear = UserDict.clear
-    __super_update = UserDict.update
-    __super_setdefault = UserDict.setdefault
-    __super_popitem = UserDict.popitem
+    __super_delitem = IterableUserDict.__delitem__
+    __super_setitem = IterableUserDict.__setitem__
+    __super_clear = IterableUserDict.clear
+    __super_update = IterableUserDict.update
+    __super_setdefault = IterableUserDict.setdefault
+    __super_popitem = IterableUserDict.popitem
 
     __super_p_init = persistence.Persistent.__init__
-    __super_init = UserDict.__init__
+    __super_init = IterableUserDict.__init__
 
     def __init__(self, dict=None):
         self.__super_init(dict)
