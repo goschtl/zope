@@ -20,9 +20,8 @@ XXX (SR) Yes the code is used for the inline Python support. As far as I can
 tell the security works well, as I had to make all sorts of security
 declarations to make it work. 
 
-$Id: interpreter.py,v 1.4 2004/02/05 22:18:47 srichter Exp $
+$Id: interpreter.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
 """
-
 from zope.security.builtins import RestrictedBuiltins
 
 class RestrictedInterpreter:
@@ -32,6 +31,8 @@ class RestrictedInterpreter:
         self.locals = {}
 
     def ri_exec(self, code):
-        # XXX What is the type of code?
+        """Execute Python code in a restricted environment.
+
+        The value of code can be either source or binary code."""
         self.globals['__builtins__'] = RestrictedBuiltins
         exec code in self.globals, self.locals

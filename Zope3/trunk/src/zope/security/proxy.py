@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Helper functions for Proxies.
 
-$Id: proxy.py,v 1.8 2003/05/28 17:19:24 jim Exp $
+$Id: proxy.py,v 1.9 2004/02/20 20:42:12 srichter Exp $
 """
-
 from zope.proxy import getProxiedObject
 from zope.security._proxy import getChecker
 from zope.security._proxy import _Proxy as Proxy
@@ -31,7 +30,7 @@ def trustedRemoveSecurityProxy(object):
     trusted and the proxy can always be recreated by calling the
     proxy factory and getting back a proxy with the same checker.
 
-    XXX More thought needs to be given to assuring this contact.
+    XXX More thought needs to be given to assuring this contract.
     """
     if ((type(object) is Proxy) and
         isinstance(getChecker(object), TrustedCheckerBase)

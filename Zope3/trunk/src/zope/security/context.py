@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Default ISecurityContext implementation."""
+"""Default 'ISecurityContext' implementation.
 
+$Id: context.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
+"""
 from zope.security.interfaces import ISecurityContext
 from zope.interface import implements
 

@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Restricted Builtins Tests
 
-Revision information:
-$Id: test_builtins.py,v 1.2 2003/05/01 19:35:47 faassen Exp $
+$Id: test_builtins.py,v 1.3 2004/02/20 20:42:12 srichter Exp $
 """
 
 from unittest import makeSuite, TestCase, main

@@ -13,10 +13,8 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.2 2004/01/14 22:55:32 chrism Exp $
+$Id: zopepolicy.py,v 1.3 2004/02/20 20:44:23 srichter Exp $
 """
-__version__='$Revision: 1.2 $'[11:-2]
-
 from zope.component import queryAdapter
 from zope.app.location import LocationIterator
 

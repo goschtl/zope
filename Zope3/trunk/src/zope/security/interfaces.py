@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.7 2003/06/05 11:45:03 mgedmin Exp $
+$Id: interfaces.py,v 1.8 2004/02/20 20:42:12 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute
 
 class ISecurityManagementSetup(Interface):

@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Protection of builtin objects.
 
-Revision information:
-$Id: builtins.py,v 1.1 2002/12/31 03:35:13 jim Exp $
+$Id: builtins.py,v 1.2 2004/02/20 20:42:12 srichter Exp $
 """
 import sys
 

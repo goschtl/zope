@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Default ISecurityManagement implementation
+"""Default 'ISecurityManagement' implementation
 
-$Id: management.py,v 1.4 2003/06/02 14:31:48 stevea Exp $
+$Id: management.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
 """
-
 # Special system user that has all permissions
 # zope.security.manager needs it
 system_user = object()
