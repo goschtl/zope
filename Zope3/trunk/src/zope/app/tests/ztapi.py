@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.4 2003/12/17 10:06:51 jim Exp $
+$Id: ztapi.py,v 1.5 2004/03/06 02:46:20 garrett Exp $
 """
 from zope.app import zapi
 import zope.interface
@@ -27,6 +27,10 @@ def browserView(for_, name, factory, layer='default',
     s = zapi.getService(None, Presentation)
     return s.provideView(for_, name, IBrowserRequest, factory, layer,
                          providing=providing)
+
+def browserViewProviding(for_, factory, providing, layer='default'):
+    """Define a view providing a particular interface."""
+    return browserView(for_, '', factory, layer, providing)
 
 def browserResource(name, factory, layer='default',
                     providing=zope.interface.Interface):
