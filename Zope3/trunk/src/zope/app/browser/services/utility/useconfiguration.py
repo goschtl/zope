@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.3 2003/04/03 22:05:32 fdrake Exp $
+$Id: useconfiguration.py,v 1.4 2003/04/08 19:32:21 fdrake Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -88,6 +88,9 @@ class AddConfiguration(AddComponentConfiguration):
 
 
 class Utilities(BrowserView):
+
+    # self.context is the local utility service
+
     def getConfigs(self):
         L = []
         for iface, name, cr in self.context.getRegisteredMatching():
