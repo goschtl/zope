@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.8 2004/04/02 17:07:59 tim_one Exp $
+$Id: __init__.py,v 1.9 2004/04/09 14:06:23 hdima Exp $
 """
 import re
 from persistent import Persistent
@@ -25,9 +25,8 @@ from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-triple_quotes_start = re.compile('^[ \t]*("""|\'\'\')', re.MULTILINE)
-single_triple_quotes_end = re.compile("'''")
-double_triple_quotes_end = re.compile('"""')
+triple_quotes_start = re.compile('^[ \t]*([uU]?[rR]?)("""|\'\'\')',
+                                 re.MULTILINE)
 
 class IPythonPage(Interface):
     """Python Page
@@ -81,6 +80,12 @@ class PythonPage(Contained, Persistent):
       >>> pp.setSource(u"'''<html>...</html>'''")
       >>> pp(request)
       u'<html>...</html>\n'
+
+      Make sure that strings with prefixes work.
+
+      >>> pp.setSource(ur"ur'''test\r'''")
+      >>> pp(request)
+      u'test\\r\n'
 
       Make sure that Windows (\r\n) line ends also work.
 
@@ -147,52 +152,65 @@ class PythonPage(Contained, Persistent):
         This method can raise a syntax error, if the source is not valid.
         """
         self.__source = source
+        # Make sure the code and the source are synchronized
+        if hasattr(self, '_v_compiled'):
+            del self._v_compiled
+        if hasattr(self, '_PythonPage__prepared_source'):
+            del self.__prepared_source
 
+        self.__prepared_source = self.prepareSource(source)
+
+        # Compile objects cannot be pickled
+        self._v_compiled = compile(self.__prepared_source,
+                                   self.__filename(), 'exec')
+
+    def prepareSource(self, source):
+        """Prepare source."""
         source = source.encode('utf-8')
         # compile() don't accept '\r' altogether
         source = source.replace("\r\n", "\n")
         source = source.replace("\r", "\n")
+
         start = 0
-        match = triple_quotes_start.search(source, start)
-        while match:
-            open = match.group()
-            source = source[:match.end()-3] + 'print u' + \
-                     source[match.end()-3:]
-            start = match.end() + 7
+        length = len(source)
+        while start < length:
+            match = triple_quotes_start.search(source, start)
+            if match is None:
+                break
+
+            if "r" in match.group(1).lower():
+                prt = "print ur"
+            else:
+                prt = "print u"
+            source = source[:match.start(1)] + prt + source[match.start(2):]
+            start = match.start(1) + len(prt) + 3
 
             # Now let's find the end of the quote
-            if match.group().endswith('"""'):
-                end = double_triple_quotes_end.search(source, start)
-            else:
-                end = single_triple_quotes_end.search(source, start)
+            end = source.find(match.group(2), start)
 
-            if end is None:
-                lineno = len(source[:start].split('\n'))
-                offset = len(match.group())
-                raise SyntaxError(
-                    'No matching closing quotes found.',
+            if end < 0:
+                lineno = source.count("\n", 0, start) + 1
+                offset = match.end() - match.start()
+                raise SyntaxError('No matching closing quotes found.',
                     (self.__filename(), lineno, offset, match.group()))
 
-            start = end.end()
-            match = triple_quotes_start.search(source, start)
+            start = end + 3
 
-        self.__prepared_source = source
-
-        # Compile objects cannot be pickled
-        self._v_compiled = compile(self.__prepared_source, self.__filename(),
-                                   'exec')
+        return source
 
     def getSource(self):
         """Get the original source code."""
         return self.__source
 
-    # See IPage
+    # See IPythonPage
     source = property(getSource, setSource)
 
 
     def __call__(self, request, **kw):
         """See IPythonPage"""
 
+        if not hasattr(self, '_PythonPage__prepared_source'):
+            self.__prepared_source = self.prepareSource(self.__source)
         # Compile objects cannot be pickled
         if not hasattr(self, '_v_compiled'):
             self._v_compiled = compile(self.__prepared_source,
