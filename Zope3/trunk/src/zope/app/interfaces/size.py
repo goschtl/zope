@@ -14,17 +14,16 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: size.py,v 1.1 2002/12/27 15:22:52 stevea Exp $
+$Id: size.py,v 1.2 2002/12/27 20:33:50 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
 
 # basic units:
-#   'bytes'
-#   'number'  (for example, number of subobjects for a folder)
-#   None  (for unsized things)
-#
-# We can use the sizeForSorting to get us sizes all in bytes for example.
+#   'byte'
+#   'item'  for example, number of subobjects for a folder
+#   None    for unsized things
+#   'line'  for source-code like things
 
 class ISized(Interface):
 

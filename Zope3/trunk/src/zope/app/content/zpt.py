@@ -12,16 +12,13 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: zpt.py,v 1.3 2002/12/27 20:33:49 stevea Exp $
 """
 
 import re
 
 from persistence import Persistent
 
-import zope.schema
-
-from zope.interface import Interface, Attribute
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import getWrapperContainer
 from zope.security.proxy import ProxyFactory
@@ -29,44 +26,10 @@ from zope.security.proxy import ProxyFactory
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.interfaces.index.text.interfaces import ISearchableText
+from zope.app.interfaces.size import ISized
+from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
 
-
-class IZPTPage(Interface):
-    """ZPT Pages are a persistent implementation of Page Templates.
-
-       Note: I introduced some new methods whose functionality is
-             actually already covered by some other methods but I
-             want to start enforcing a common coding standard.
-    """
-
-    def setSource(text, content_type='text/html'):
-        """Save the source of the page template.
-
-        'text' must be Unicode.
-        """
-
-    def getSource():
-        """Get the source of the page template."""
-
-    source = zope.schema.Text(
-        title=u"Source",
-        description=u"""The source of the page template.""",
-        required=True)
-
-
-class IRenderZPTPage(Interface):
-
-    content_type = Attribute('Content type of generated output')
-
-    def render(request, *args, **kw):
-        """Render the page template.
-
-        The first argument is bound to the top-level 'request'
-        variable. The positional arguments are bound to the 'args'
-        variable and the keyword arguments are bound to the 'options'
-        variable.
-        """
-
+__metaclass__ = type
 
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
@@ -131,3 +94,21 @@ class SearchableText:
             text = tag.sub('', text)
 
         return [text]
+
+class Sized:
+
+    __implements__ = ISized
+
+    def __init__(self, page):
+        self.num_lines = len(page.getSource().splitlines())
+
+    def sizeForSorting(self):
+        'See ISized'
+        return ('line', self.num_lines)
+
+    def sizeForDisplay(self):
+        'See ISized'
+        if self.num_lines == 1:
+            return '1 line'
+        return '%s lines' % self.num_lines
+

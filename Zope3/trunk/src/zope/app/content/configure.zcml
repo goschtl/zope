@@ -138,12 +138,12 @@
 
   <require
       permission="zope.ManageContent"
-      interface="zope.app.content.zpt.IZPTPage"
+      interface="zope.app.interfaces.content.zpt.IZPTPage"
       set_attributes="source" />
 
   <require
       permission="zope.View"
-      interface="zope.app.content.zpt.IRenderZPTPage" />
+      interface="zope.app.interfaces.content.zpt.IRenderZPTPage" />
 
   <implements
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
@@ -152,8 +152,11 @@
 
 <adapter factory="zope.app.content.zpt.SearchableText"
          provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
-         for="zope.app.content.zpt.IZPTPage" />
+         for="zope.app.interfaces.content.zpt.IZPTPage" />
 
+<adapter factory="zope.app.content.zpt.Sized"
+         provides="zope.app.interfaces.size.ISized"
+         for="zope.app.interfaces.content.zpt.IZPTPage" />
 
 <content class="zope.app.content.dtmlpage.DTMLPage">
 
