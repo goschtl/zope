@@ -9,7 +9,7 @@
 
   <!-- Note that we need to do this early, as later startup
        subscribers may break without fixups -->
- 
+
   <include package="zope.app.component" />
 
   <include package=".generations" file="subscriber.zcml" />
@@ -22,7 +22,7 @@
   <include package="zope.app.annotation" />
   <include package="zope.app.dependable" />
   <include package="zope.app.content" />
-  
+
   <include file="menus.zcml" />
 
   <include package="zope.app.copypastemove" />
@@ -34,7 +34,7 @@
   <include package="zope.app.traversing" />
   <include package="zope.app.pagetemplate" />
   <include package=".generations" />
-  
+
   <!-- Views -->
   <include package="zope.app.http" />
 
@@ -45,18 +45,19 @@
 
 
   <!-- Local Component Registration -->
-  <include package="zope.app.registration" />  
+  <include package="zope.app.registration" />
 
   <!-- Services -->
-  <include package="zope.app.errorservice" />  
-  <include package="zope.app.pluggableauth" />  
-  <include package="zope.app.site" />  
+  <include package="zope.app.errorservice" />
+  <include package="zope.app.pluggableauth" />
+  <include package="zope.app.site" />
   <include package="zope.app.adapter" />
-  <include package="zope.app.utility" />  
-  <include package="zope.app.principalannotation" />  
+  <include package="zope.app.utility" />
+  <include package="zope.app.principalannotation" />
 
   <!-- Utilities -->
   <include package="zope.app.schema" />
+  <include package="zope.app.uniqueid" />
 
   <!-- Misc. Service Manager objects -->
   <include package="zope.app.module" />
@@ -67,7 +68,7 @@
 
   <!-- Database boostrapping -->
   <include package=".appsetup" />
-  
+
 
   <!-- Skins -->
 

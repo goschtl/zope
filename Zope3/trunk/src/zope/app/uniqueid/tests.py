@@ -66,6 +66,7 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         u = UniqueIdUtility()
         obj = P()
         obj._p_jar = ConnectionStub()
+
         uid = u.register(obj)
         self.assert_(u.getObject(uid) is obj)
         self.assertEquals(u.getId(obj), uid)
@@ -76,6 +77,38 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         u.unregister(obj)
         self.assertRaises(KeyError, u.getObject, uid)
         self.assertRaises(KeyError, u.getId, obj)
+
+    def test_len_items(self):
+        from zope.app.uniqueid import UniqueIdUtility
+        from zope.app.uniqueid import ReferenceToPersistent
+        u = UniqueIdUtility()
+        obj = P()
+        obj._p_jar = ConnectionStub()
+
+        self.assertEquals(len(u), 0)
+        self.assertEquals(u.items(), [])
+
+        uid = u.register(obj)
+        ref = ReferenceToPersistent(obj)
+        self.assertEquals(len(u), 1)
+        self.assertEquals(u.items(), [(uid, ref)])
+
+        obj2 = P()
+        obj2.__parent__ = obj
+
+        uid2 = u.register(obj2)
+        ref2 = ReferenceToPersistent(obj2)
+        self.assertEquals(len(u), 2)
+        result = u.items()
+        expected = [(uid, ref), (uid2, ref2)]
+        result.sort()
+        expected.sort()
+        self.assertEquals(result, expected)
+        
+        u.unregister(obj)
+        u.unregister(obj2)
+        self.assertEquals(len(u), 0)
+        self.assertEquals(u.items(), [])
 
 
 class TestReferenceToPersistent(ReferenceSetupMixin, unittest.TestCase):

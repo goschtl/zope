@@ -27,7 +27,8 @@ from zope.interface import implements
 from ZODB.interfaces import IConnection
 from BTrees import OIBTree, IOBTree
 from zope.app import zapi
-
+from zope.app.location.interfaces import ILocation
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 class UniqueIdUtility:
     """This utility provides a two way mapping between objects and
@@ -35,11 +36,20 @@ class UniqueIdUtility:
 
     IReferences to objects are stored in the indexes.
     """
-    implements(IUniqueIdUtility)
+    implements(IUniqueIdUtility, ILocation)
+
+    __parent__ = None
+    __name__ = None
 
     def __init__(self):
         self.ids = OIBTree.OIBTree()
         self.refs = IOBTree.IOBTree()
+
+    def __len__(self):
+        return len(self.ids)
+
+    def items(self):
+        return list(self.refs.items())
 
     def getObject(self, id):
         return self.refs[id]()
@@ -51,10 +61,11 @@ class UniqueIdUtility:
     def _generateId(self):
         while True:
             uid = random.randint(0, 2**31)
-            if uid not in self.ids:
+            if uid not in self.refs:
                 return uid
 
     def register(self, ob):
+        ob = trustedRemoveSecurityProxy(ob)
         ref = zapi.getAdapter(ob, IReference)
         if ref in self.ids:
             return self.ids[ref]
@@ -104,5 +115,5 @@ def connectionOfPersistent(ob):
     while not getattr(cur, '_p_jar', None):
         cur = getattr(cur, '__parent__', None)
         if cur is None:
-            raise ValueError('Can not get connection of %r', (ob,))
+            raise ValueError('Can not get connection of %r' % (ob,))
     return cur._p_jar

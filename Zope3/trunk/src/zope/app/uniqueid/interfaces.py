@@ -42,7 +42,18 @@ class IUniqueIdUtilitySet(Interface):
         ValueError is raised if ob is not registered previously.
         """
 
-class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery):
+class IUniqueIdUtilityManage(Interface):
+    """Some methods used by the view"""
+
+    def __len__():
+        """Returns the number of objects indexed"""
+
+    def items():
+        """Returns a list of (id, object) pairs"""
+
+
+class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
+                       IUniqueIdUtilityManage):
     """A utility that assigns unique ids to the objects
 
     Allows to query object by id and id by object.
