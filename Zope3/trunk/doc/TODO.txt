@@ -8,8 +8,6 @@ Things to do for the next release (sorted by importance)
 
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
 
-- http://dev.zope.org/Zope3/CleanupOfSchemaAndWidgets
-
 - http://dev.zope.org/Zope3/SupportingConstraintMaintainingSubscriptions
 
   This is needed for a number of other tasks.  Nathan Yergler is
@@ -31,10 +29,6 @@ Things to do for the next release (sorted by importance)
   specifically, handling events on containers.  
 
   See: http://dev.zope.org/Zope3/LocationRelatedEvents
-
-- Redo the way names input in add forms.
-
-  See: http://dev.zope.org/Zope3/AddingNameControl
 
 - Persistent interfaces cannot be provided as providedBy or implementedBy
   interfaces anymore. This functionality was broken during some interface and

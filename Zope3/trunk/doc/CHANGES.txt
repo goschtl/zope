@@ -248,6 +248,14 @@ Zope Changes
 
     Restructuring
 
+    - Restructured widget base classes.
+
+    - Changed widget title and description to label and hint, respectively.
+
+    - Redid the way names input in add forms.
+
+      See: http://dev.zope.org/Zope3/AddingNameControl
+
     - Removed __doc__ keyword argument from Field constructor. Moved __name__
       behind title and description. However, values should always be inserted
       as keywords, since a lot of mixins to the field base class do not honor
@@ -453,7 +461,7 @@ Zope Changes
       Baxter, Kevin Littlejohn, Stuart Bishop, Christian Theune, Adam Summers,
       Stephan Richter, Chris McDonough, Garrett Smith, Roger Ineichen, Gary
       Poster, Martijn Faassen, Dominik Huber, Bjorn Tillenius, Nathan Yergler,
-      Dmitry Vasiliev, Michael Bernstein, Eckart Hertzler
+      Dmitry Vasiliev, Michael Bernstein, Eckart Hertzler, Suresh Babu Eddala
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
