@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IWidget.py,v 1.2 2002/09/07 16:18:48 jim Exp $
+$Id: IWidget.py,v 1.3 2002/10/09 13:26:06 mgedmin Exp $
 """
 from Zope.ComponentArchitecture.IView import IView
 from Interface.Attribute import Attribute
@@ -37,7 +37,7 @@ class IWidget(IView):
         """Return converted and validated widget data.
 
         A WidgetInputError is returned in the case of one or more
-        errors encountered, inputing, convrting, or validating the data.
+        errors encountered, inputting, converting, or validating the data.
         """
 
     def getName():
