@@ -2,6 +2,12 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - DublinCore: Added 'setCreators' method.
+      Note that notifyModified() also modifies creators. If the current user
+      should not be added to creators, make sure notifyModified() is not
+      called after setCreators().
+      (http://collector.zope.org/CMF/61)
+
     - ZPT skin: Fixed '*metadata_edit_form'.
       Setting "Enable Discussion?" to 'Off' was broken.
 
