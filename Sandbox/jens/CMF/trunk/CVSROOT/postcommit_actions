@@ -322,11 +322,11 @@ def do_mail(repo, addrs, subjs,
 def create_diff(repo, file, old, new):
     """ Create a diff comparing old and new versions """
     if old == 'NONE':   # A new file was added
+        # We have to change to a neutral dir, or cvs will complain about
+        # doing checkouts into the repository - even though the checkout
+        # is to stdout, sigh.
+        origdir = os.getcwd()
         try:
-            # We have to change to a neutral dir, or cvs will complain about
-            # doing checkouts into the repository - even though the checkout
-            # is to stdout, sigh.
-            origdir = os.getcwd()
             os.chdir('/tmp')
 
             revclause = ''
