@@ -239,7 +239,7 @@ class IVersion(IContained) :
 
     principal = Attribute("The read only actor of the store action.")
     
-    label = Attribute("Short read only string encoding version information. 
+    label = Attribute("Short read only string encoding version information. "
                       "Use this as selector to load a particular version.")
     
     name = Attribute("User readable read only string encoding version "
