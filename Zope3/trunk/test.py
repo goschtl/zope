@@ -464,8 +464,6 @@ def check_test_dir():
             test_dir = d
         else:
             raise ValueError("%s does not exist!" % test_dir)
-
-    print "test_dir", test_dir
     
 
 def find_tests(rx):
