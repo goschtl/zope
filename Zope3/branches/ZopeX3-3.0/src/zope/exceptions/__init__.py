@@ -18,14 +18,6 @@ application-specific packages.
 
 $Id$
 """
-# This module should be independent of I18n, so let's not require it.
-try:
-    from zope.i18n import MessageIDFactory
-except ImportError:
-    ZopeMessageIDFactory = unicode
-else:
-    # Import _ to use to create message ids in the zope domain
-    ZopeMessageIDFactory = MessageIDFactory('zope')
 
 from zope.exceptions._zope_error import ZopeError, IZopeError
 from zope.exceptions.unauthorized import Unauthorized, IUnauthorized
