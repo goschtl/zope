@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: field.py,v 1.3 2003/04/10 09:05:12 faassen Exp $
+$Id: field.py,v 1.4 2003/04/10 20:39:43 fdrake Exp $
 """
 from zope.schema.interfaces import IBytes
 from zope.schema import Bool
@@ -26,6 +26,3 @@ class IXML(IBytes):
     check_wellformedness = Bool(
         title=u"Check for wellformedness",
         default=True)
-    
-    
-
