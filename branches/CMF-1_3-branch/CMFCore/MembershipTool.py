@@ -206,7 +206,6 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         an underlying user folder logs in first without going 
         through the join process
         """
-        import pdb; pdb.set_trace()
         return self.memberareaCreationFlag
 
     security.declareProtected(ManagePortal, 'setMemberareaCreationFlag')
@@ -217,7 +216,6 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         an underlying user folder logs in first without going
         through the join process
         """
-        import pdb; pdb.set_trace()
         if not hasattr(self, 'memberareaCreationFlag'):
             self.memberareaCreationFlag = 0
 
