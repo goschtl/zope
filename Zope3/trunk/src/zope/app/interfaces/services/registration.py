@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.12 2003/10/16 19:38:42 fdrake Exp $
+$Id: registration.py,v 1.13 2003/10/17 15:49:19 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -449,7 +449,7 @@ class IRegistrationManagerContainer(IContainer):
         Find a registration manager.  Clients can get the
         registration manager without knowing it's name. Normally,
         folders have one registration manager. If there is more than
-        one, this method willl return one; which one is undefined.
+        one, this method will return one; which one is undefined.
 
         An error is raised if no registration manager can be found.
         """
