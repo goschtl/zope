@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the FSMerger class.
 
-$Id: test_fsmerger.py,v 1.1 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.2 2003/05/15 11:38:39 gvanrossum Exp $
 """
 
 import os
@@ -87,12 +87,41 @@ class TestFSMerger(unittest.TestCase):
             elif isfile(fn):
                 os.remove(fn)
 
-    def adddir(self):
+    def addtempdir(self):
         # Create and register a temporary directory
         dir = tempfile.mktemp()
         self.tempnames.append(dir)
         os.mkdir(dir)
         return dir
+
+    def addtempfile(self, data):
+        # Create and register a temporary file
+        filename = tempfile.mktemp()
+        self.tempnames.append(filename)
+        f = open(filename, "w")
+        try:
+            f.write(data)
+        finally:
+            f.close()
+        return filename
+
+    diff3ok = None
+
+    def check_for_diff3(self):
+        if self.diff3ok is None:
+            self.__class__.diff3ok = self.diff3_check()
+        return self.diff3ok
+
+    def diff3_check(self):
+        if not hasattr(os, "popen"):
+            return False
+        f1 = self.addtempfile("a")
+        f2 = self.addtempfile("b")
+        f3 = self.addtempfile("b")
+        pipe = os.popen("diff3 -m -E %s %s %s" % (f1, f2, f3), "r")
+        output = pipe.read()
+        sts = pipe.close()
+        return output == "b" and not sts
 
     def ensuredir(self, dir):
         # Ensure that a given directory exists
@@ -248,8 +277,8 @@ class TestFSMerger(unittest.TestCase):
         reports = []
         m = FSMerger(self.metadata, reports.append)
 
-        localtopdir = self.adddir()
-        remotetopdir = self.adddir()
+        localtopdir = self.addtempdir()
+        remotetopdir = self.addtempdir()
         localdir = join(localtopdir, "local")
         remotedir = join(remotetopdir, "remote")
         os.mkdir(localdir)
@@ -295,6 +324,8 @@ class TestFSMerger(unittest.TestCase):
                        ["U %l"], "b", "b", "b", self.entry, self.entry)
 
     def test_merge_diff3(self):
+        if not self.check_for_diff3():
+            return
         self.mergetest("foo", "a\nl\n", "a\n", "r\na\n",
                        self.entry, self.entry,
                        ["M %l"], "r\na\nl\n", "r\na\n", "r\na\n",
@@ -305,6 +336,8 @@ class TestFSMerger(unittest.TestCase):
                        ["U %l"], "ab", "ab", "ab", self.entry, self.entry)
 
     def test_merge_conflict(self):
+        if not self.check_for_diff3():
+            return
         conflict = "<<<<<<< %l\nl\n=======\nr\n>>>>>>> %r\n"
         self.mergetest("foo", "l\n", "a\n", "r\n", self.entry, self.entry,
                        ["C %l"], conflict, "r\n", "r\n",
@@ -316,6 +349,8 @@ class TestFSMerger(unittest.TestCase):
         return e
 
     def test_new_directory(self):
+        if not self.check_for_diff3():
+            return
         self.mergetest("foo", None, None, {"x": "x"}, None, self.entry,
                        ["N %l/", "U %l/x"],
                        {"x": "x"}, {"x": "x"}, {"x": "x"},
