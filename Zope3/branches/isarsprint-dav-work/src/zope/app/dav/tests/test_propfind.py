@@ -463,122 +463,44 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
-        <href>http://127.0.0.1/folder/</href>
+        <href>%(resource_url)s</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/1</href>
+        <href>%(resource_url)s1</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/2</href>
+        <href>%(resource_url)s2</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/</href>
+        <href>%(resource_url)ssub1/</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
-        </multistatus>'''
+        </multistatus>''' % {
+            'resource_url': resource_url,
+            'props_xml': props_xml}
 
 
         pfind = propfind.PROPFIND(folder, request)
@@ -617,238 +539,80 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
-        <href>http://127.0.0.1/folder/</href>
+        <href>%(resource_url)s</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/1</href>
+        <href>%(resource_url)s1</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/2</href>
+        <href>%(resource_url)s2</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/</href>
+        <href>%(resource_url)ssub1/</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/1</href>
+        <href>%(resource_url)ssub1/1</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/2</href>
+        <href>%(resource_url)ssub1/2</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/sub1/</href>
+        <href>%(resource_url)ssub1/sub1/</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
         <response>
-        <href>http://127.0.0.1/folder/sub1/sub1/last</href>
+        <href>%(resource_url)ssub1/sub1/last</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0"/>
-        <description xmlns="a0"/>
-        <created xmlns="a0"/>
-        <modified xmlns="a0"/>
-        <effective xmlns="a0"/>
-        <expires xmlns="a0"/>
-        <creators xmlns="a0"/>
-        <subjects xmlns="a0"/>
-        <publisher xmlns="a0"/>
-        <contributors xmlns="a0"/>
-        <creationdate/>
-        <displayname/>
-        <source/>
-        <getcontentlanguage/>
-        <getcontentlength/>
-        <getcontenttype/>
-        <getetag/>
-        <getlastmodified/>
-        <resourcetype/>
-        <lockdiscovery/>
-        <supportedlock/>
+        %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
-        </multistatus>'''
+        </multistatus>''' % {
+            'resource_url': resource_url,
+            'props_xml': props_xml}
 
         pfind = propfind.PROPFIND(folder, request)
 
