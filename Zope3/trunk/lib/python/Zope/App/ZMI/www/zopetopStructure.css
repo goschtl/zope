@@ -18,7 +18,7 @@
 
  KNOWN BUG: The selected tab cannot have image backdrop. FIXME
 
- $Id: zopetopStructure.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+ $Id: zopetopStructure.css,v 1.3 2002/07/13 00:52:48 sidnei Exp $
 */
 
 div.top {
@@ -43,7 +43,6 @@ div.searchBox {
     margin: 3em 0em 0em 0em;
     padding: 0em 2em 0em 0em;
     text-align: right;
-    text-transform: lowercase;
 }
 
 input.searchGadget {
@@ -71,7 +70,6 @@ div.tabs a {
     font-weight: normal;
     margin-right: 0.5em;
     padding: 0em 2em;
-    text-transform: lowercase;
 }
 
 div.tabs a.selected {
@@ -99,7 +97,6 @@ div.personalBar {
     color: Black;
     padding-right: 3em;
     text-align: right;
-    text-transform: lowercase;
 }
 
 div.personalBar a{
@@ -115,12 +112,10 @@ div.pathBar {
     border-bottom-width: 1px;
     padding-left: 2em;
     padding-right: 2em;
-    text-transform: lowercase;
 }
 
 .breadcrumbs {
     float: left;
-    text-transform: lowercase;
 }
 
 .addFavorite {
@@ -130,7 +125,6 @@ div.pathBar {
 .clock {
     /* The portal time indicator */
     float: right;
-    text-transform: lowercase;
     white-space: nowrap;
 }
 
@@ -173,7 +167,6 @@ div.contentTabs a {
     font-weight: normal;
     margin-right: 0.5em;
     padding: 0em 2em;
-    text-transform: lowercase;
 }
 
 div.contentTabs a.selected {
@@ -195,7 +188,6 @@ div.contentBar {
     border-right: 1px solid #74AE0B;
     color: #578308;
     text-align: right;
-    text-transform: lowercase;
 }
 
 div.document {
@@ -231,6 +223,17 @@ div.message a {
     text-decoration: underline;
 }
 
+.darker {
+	background: #7B7AC6;
+}
+
+.hilite {
+    background: #DFDEFF;
+}
+
+.background {
+    background: #CCCCFF;
+}
 
 .description {
 /* The summary text describing the document */

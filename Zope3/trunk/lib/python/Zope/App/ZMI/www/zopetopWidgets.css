@@ -17,16 +17,15 @@
  TODO: table.listing, 
        table.box
 
- $Id: zopetopWidgets.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+ $Id: zopetopWidgets.css,v 1.3 2002/07/13 00:52:48 sidnei Exp $
 */
 
 input.standalone {
-    background: #DEE7EC url(linkOpaque.gif) left no-repeat;
+    background: #A1A1F1 url(linkOpaque.gif) left no-repeat;
     color: Black;
     cursor: pointer;
     font-weight: normal;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
 }
 
 input.context {
@@ -35,7 +34,6 @@ input.context {
     cursor: pointer;
     font-weight: normal;
     padding: 1px 1px 1px 15px;
-    text-transform: lowercase;
 }
 
 input.noborder {
@@ -53,7 +51,7 @@ div.row {
 }
 
 .group {
-    border: 1px solid #8cacbb;
+    border: 1px solid #7B7AC6;
     margin: 2em 0em 1em 0em;
     width: 94%;
     padding: 1em 0em;
@@ -102,8 +100,8 @@ span.info {
 }
 
 span.card {
-    background: #DEE7EC;
-    border-color: #8CACBB;
+    background: #A1A1F1;
+    border-color: #7B7AC6;
     border-width: 1px;
     border-style: solid;
     float: left;
@@ -116,20 +114,19 @@ span.card {
 table.listing {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
     border-collapse: collapse;
-    border-left: 1px solid #336699;
-    border-bottom: 1px solid #336699;
+    border-left: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
     margin: 1em 0em 1em 0em;
 }
 
 table.listing th {
-    background: #CCCCCC;
-    border-top: 1px solid #336699;
-    border-bottom: 1px solid #336699;
-    border-right: 1px solid #336699;
-    color: Black;
+    background: #A1A1F1;
+    border-top: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    border-right: 1px solid #7B7AC6;
+    color: #000000;
     font-weight: normal;
     padding: 0em 1em 0em 1em;
-    text-transform: lowercase;
 }
 
 table.listing tr.odd {
@@ -142,8 +139,8 @@ table.listing tr.even {
 }
 
 table.listing td {
-    border-right: 1px solid #336699;
-    padding: 0em 1em;
+    border-right: 1px solid #7B7AC6;
+    padding: 2px 1em 2px 1em;
 }
 
 table.listing a:hover {
@@ -158,28 +155,27 @@ table.box {
 /* The Plone Box(tm) (Navigation, Related etc) */
     background: transparent;
     border-collapse: collapse;
-    border-bottom: 1px solid #8CACBB;
-    border-left: 1px solid #8CACBB;
-    margin: 0;
-    margin-bottom: 2em;
+    border-bottom: 1px solid #7B7AC6;
+    border-left: 1px solid #7B7AC6;
+    margin: 0px;
+    margin-bottom: 1px;
 }
 
 table.box th {
-    background: #DEE7EC;
-    border-top: 1px solid #8CACBB;
-    border-bottom: 1px solid #8CACBB;
-    border-right: 1px solid #8CACBB;
+    background: #A1A1F1;
+    border-top: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    border-right: 1px solid #7B7AC6;
     color: Black;
     font-weight: normal;
-    padding: 0em 1em;
+    padding: 0px 1px;
     text-align: left;
-    text-transform: lowercase;
 }
 
 table.box th.empty {
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid #8CACBB;
+    border-bottom: 1px solid #7B7AC6;
 }
 
 table.box tr.odd {
@@ -192,8 +188,8 @@ table.box tr.even {
 }
 
 table.box td {
-    border-right: 1px solid #8CACBB;
-    padding: 1em;
+    border-right: 1px solid #7B7AC6;
+    padding: 0px 4px 0px 2px;
 }
 
 table.box img{
@@ -211,7 +207,7 @@ table.box a {
 table.box a.comment {
 /* special link for comments - default behavior is to display the discussion
    icon next to the link */
-    background-image: url(http://www.x3ng.com.br:8080/ZopeOrg/discussionitem_icon.gif); 
+    background-image: url(discussionitem_icon.gif); 
     background-repeat: no-repeat;
     background-position: 0px -2px;
     padding: 0em 0em 0.5em 2em;
@@ -260,23 +256,22 @@ div.box {
     width: 20em;
     background: transparent;
     border-collapse: collapse;
-    border: 1px solid #8CACBB;
+    border: 1px solid #7B7AC6;
 }
 
 div.box div.heading {
-    background: #DEE7EC;
-    border-bottom: 1px solid #8CACBB;
+    background: #A1A1F1;
+    border-bottom: 1px solid #7B7AC6;
     color: Black;
     font-weight: normal;
     padding: 0em 0em 0em 1em;
     text-align: left;
-    text-transform: lowercase;
 }
 
 div.box a.close {
     float: right;
     text-transform: none;
-    border-left: 1px solid #8CACBB;
+    border-left: 1px solid #7B7AC6;
     padding: 0em 0.2em;
 }
 
@@ -316,13 +311,12 @@ div.spacer {
 
 
 div.listingBar {
-    background: #DEE7EC;
-    border-color: #8CACBB;
+    background: #A1A1F1;
+    border-color: #7B7AC6;
     border-style: solid;
     border-width: 1px;
     padding: 0em 1em;
     text-align: right;
-    text-transform: lowercase;
     height: 1em;
     clear: both;
 }

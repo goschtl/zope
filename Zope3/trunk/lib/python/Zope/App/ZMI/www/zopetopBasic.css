@@ -14,24 +14,25 @@
  
  These are the basic CSS declarations.
 
- $Id: zopetopBasic.css,v 1.3 2002/07/12 13:29:34 sidnei Exp $
+ $Id: zopetopBasic.css,v 1.4 2002/07/13 00:52:48 sidnei Exp $
 */
 
 
 body {
-    font: 11px Tahoma, Helvetica, Arial, sans-serif;
-    background: White;
-    color: Black;
+    font: 0.8em Tahoma, Helvetica, Arial, sans-serif;
+    color: #000066;
     margin: 5;
     padding: 5;
-
 }
 
-
 a {
-        text-decoration: none;
-    color: #336699;
+    text-decoration: none;
+    color: #000066;
     background-color: transparent;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 table {
@@ -56,12 +57,12 @@ p a {
 }
 
 p a:visited {
-        color: Purple;
+    color: Purple;
     background-color: transparent;
 }
 
 p a:active {
-        color: Red;
+    color: Red;
     background-color: transparent;
 }
 
@@ -79,34 +80,36 @@ hr {
 }
 
 
-h1, h2, h3, h4, h5, h6 {        /* Style for the headlines */
-    color: Black;
-    font: 1em Tahoma, Helvetica, Arial, sans-serif;
-    margin-top: 0;
+h1, h2, h3, h4, h5, h6 {
+	color: Black;
+	margin-top: 0;
+	font-family: Tahoma, Helvetica, Arial, sans-serif;
+
+
 }
 
 h1 {
-    font-size: 1.1em;
+    font-size: 1.8em;
 }
 
 h2 {
-    font-size: 1em;
+    font-size: 1.6em;
 }
 
 h3 {
-    font-size: 0.95em;
+    font-size: 1.4em;
 }
 
 h4 {
-    font-size: 0.9em;
+    font-size: 1.2em;
 }
 
 h5 {
-    font-size: 0.85em;
+    font-size: 1.1em;
 }
 
 h6 {
-    font-size: 0.80em;
+    font-size: 1.0em;
 }
 
 ul { 
@@ -147,16 +150,18 @@ textarea {
 }
 
 input {
-/* Small cosmetic fix which makes input gadgets look nicer. */
-    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
+/* Small cosmetic fix which makes input gadgets look nicer.  */
+    font: 1em Tahoma, Helvetica, Arial, sans-serif;
+/*    border: 1px solid #8cacbb;   */
     color: Black;
-    margin: 0em 0em 1em 0em;
+/*    background-color: white; */
+    margin: 1px 1px 1px 1px;
 }
 
 select {
-    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
-    border: 1px solid #8cacbb;  
-    margin: 0em 0em 1em 0em;
+    font: 1em Tahoma, Helvetica, Arial, sans-serif;
+/*    border: 1px solid #8cacbb;  */
+    margin: 1px 1px 1px 1px;
 }
 
 abbr, acronym, .explain {
@@ -167,16 +172,14 @@ abbr, acronym, .explain {
     cursor: help;
 }
 
-
-
 code {
-    font-size: 120%;
+    font-size: 1.2em;
     color: Black;
     background-color: #dee7ec;
 }
 
 pre {
-    font-size: 120%;
+    font-size: 1.2em;
     padding: 1em;
     border: 1px solid #8cacbb;
     color: Black;
@@ -188,5 +191,3 @@ pre {
    Mostly strategically placed hr tags and &middot;'s */
     display: none;
 }
-
-
