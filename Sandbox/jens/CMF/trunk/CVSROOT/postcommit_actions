@@ -132,10 +132,6 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
         fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s to %s; of %s/ %s / %s\n",
                  name, remote, os.environ["CVSROOT"], repo, fnames)
-    try:
-        repodir = remote['repodir'] % name
-    except TypeError:
-        repodir = remote['repodir']
 
     ssh_fragment = ('--rsh="/usr/bin/ssh %s -i %s -l %s"'
                     % ((VERBOSE and "-v") or "", IDENTITY_FILE, IDENTITY_ACCT))
@@ -158,12 +154,14 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
 
-    os.system("%s%s%s %s/%s/ %s:%s"
+    os.system("%s%s%s %s/%s/ %s:%s %s"
               % ((VERBOSE and "set -x; ") or "",
                  (DRYRUN and "echo ") or "",
                  cmd,
                  os.environ["CVSROOT"], repo,
-                 remote['host'], repodir))
+                 remote['host'], remote['repodir'],
+                 # if not waiting, ground the output so emacs doesn't wait...
+                 (not WAIT and " 2>&1 > /dev/null") or ""))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
