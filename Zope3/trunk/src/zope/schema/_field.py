@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.2 2002/12/25 14:15:20 jim Exp $
+$Id: _field.py,v 1.3 2003/01/25 03:05:58 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -26,8 +26,9 @@ from zope.schema.interfaces import IMinMaxLen, IValueSet, IText, ITextLine
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 
-from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable, MinMaxLen
-from zope.schema._bootstrapfields import ValueSet, Text, TextLine, Bool, Int
+from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
+from zope.schema._bootstrapfields import MinMaxLen, ValueSet
+from zope.schema._bootstrapfields import Text, TextLine, Bool, Int
 from zope.schema.fieldproperty import FieldProperty
 from datetime import datetime
 
