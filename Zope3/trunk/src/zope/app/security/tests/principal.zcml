@@ -1,0 +1,17 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.security" file="meta.zcml"/>
+
+  <principal 
+      id="1"
+      title="Sir Tim Peters"
+      description="Tim Peters"
+      login="tim" password="123" />
+
+  <principal 
+      id="2"
+      title="Sir Jim Fulton"
+      description="Jim Fulton"
+      login="jim" password="123" />
+ 
+</configure>

@@ -11,19 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Register security related configuration directives.
+"""securityPolicy Directive Schema
 
-$Id: metaconfigure.py,v 1.4 2003/08/02 20:05:30 srichter Exp $
+$Id: metadirectives.py,v 1.1 2003/08/02 20:05:30 srichter Exp $
 """
-from zope.configuration.action import Action
-from zope.security.manager import setSecurityPolicy
+from zope.configuration.fields import GlobalObject
+from zope.interface import Interface
 
-def securityPolicy(_context, component):
+class ISecurityPolicyDirective(Interface):
+    """Defines the security policy that will be used for Zope."""
 
-    if callable(component):
-        component = component()
-
-    _context.action(
-            discriminator = 'defaultPolicy',
-            callable = setSecurityPolicy,
-            args = (component,) )
+    component = GlobalObject(
+        title=u"Component",
+        description=u"Pointer to the object that will handle the security.",
+        required=True)

@@ -1,12 +1,11 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   package="zope.app.security"
->
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   package="zope.app.security">
 
   <serviceType
       id="Roles" 
       interface="zope.app.interfaces.security.IRoleService" />
+
   <service
       serviceType="Roles" 
       component=".registries.roleregistry.roleRegistry" />
@@ -14,28 +13,26 @@
   <serviceType
       id="Permissions" 
       interface="zope.app.interfaces.security.IPermissionService" />
+
   <service
       serviceType="Permissions" 
-      component=".registries.permissionregistry.permissionRegistry" 
-      />
+      component=".registries.permissionregistry.permissionRegistry" />
 
   <serviceType
       id="Authentication" 
       interface="zope.app.interfaces.security.IAuthenticationService" />
+
   <service
       serviceType="Authentication" 
-      component=".registries.principalregistry.principalRegistry" 
-      />
+      component=".registries.principalregistry.principalRegistry" />
 
   <!-- protect Roles and Permissions -->
   <content class=".registries.roleregistry.Role">
-    <allow
-        interface="zope.app.interfaces.security.IRegisteredObject" />
+    <allow interface="zope.app.interfaces.security.IRegisteredObject" />
   </content>
 
   <content class=".registries.permissionregistry.Permission">
-    <allow
-        interface="zope.app.interfaces.security.IRegisteredObject" />
+    <allow interface="zope.app.interfaces.security.IRegisteredObject" />
   </content>
 
   <content class=".registries.principalregistry.Principal">
@@ -43,5 +40,5 @@
   </content>
 
   
-</zopeConfigure>
+</configure>
 

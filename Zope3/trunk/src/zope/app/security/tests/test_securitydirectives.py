@@ -11,13 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.9 2003/07/28 22:22:01 jim Exp $
+$Id: test_securitydirectives.py,v 1.10 2003/08/02 20:05:43 srichter Exp $
 """
-
 import unittest
-from StringIO import StringIO
 
 from zope.component.service import serviceManager as services
 from zope.app.services.servicenames import Roles, Permissions, Authentication
@@ -27,11 +25,11 @@ from zope.app.interfaces.security import IAuthenticationService
 
 from zope.configuration.xmlconfig import ZopeXMLConfigurationError
 from zope.configuration.config import ConfigurationConflictError
-from zope.configuration.xmlconfig import XMLConfig, xmlconfig
+from zope.configuration import xmlconfig
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
-import zope.app.security
+import zope.app.security.tests
 from zope.app.security.settings import Allow
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry \
@@ -42,47 +40,27 @@ from zope.app.security.grants.rolepermission \
 from zope.app.security.grants.principalpermission \
     import principalPermissionManager as principal_perm_mgr
 from zope.app.security.grants.principalrole \
-    import principalRoleManager as principal_role_mgr
+    import principalRoleManager as principal_role_mgr    
 
-
-def configfile(s):
-    return StringIO("""<zopeConfigure
-      xmlns='http://namespaces.zope.org/zope'>
-      %s
-      </zopeConfigure>
-      """ % s)
-
-def setUp(self):
-    CleanUp.setUp(self)
-    
-    services.defineService(Permissions, IPermissionService)
-    services.provideService(Permissions, pregistry)
-    
-    services.defineService(Roles, IRoleService)
-    services.provideService(Roles, rregistry)
-    
-    services.defineService(Authentication, IAuthenticationService)
-    services.provideService(Authentication, principalRegistry)
-    
-
-class TestPrincipalDirective(CleanUp, unittest.TestCase):
-
+class TestBase(CleanUp):
 
     def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
+        CleanUp.setUp(self)
+    
+        services.defineService(Permissions, IPermissionService)
+        services.provideService(Permissions, pregistry)
+    
+        services.defineService(Roles, IRoleService)
+        services.provideService(Roles, rregistry)
+    
+        services.defineService(Authentication, IAuthenticationService)
+        services.provideService(Authentication, principalRegistry)
+
+
+class TestPrincipalDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
-        f = configfile("""<principal id="1"
-                             title="Sir Tim Peters"
-                             description="Tim Peters"
-                             login="tim" password="123" />
-                          <principal id="2"
-                             title="Sir Jim Fulton"
-                             description="Jim Fulton"
-                             login="jim" password="123" />""")
-        xmlconfig(f)
-
+        context = xmlconfig.file("principal.zcml", zope.app.security.tests)
         reg=principalRegistry
 
         p = reg.getPrincipal('1')
@@ -97,56 +75,25 @@ class TestPrincipalDirective(CleanUp, unittest.TestCase):
         self.assertEqual(len(reg.getPrincipals('')), 2)
 
 
-class TestPermissionDirective(CleanUp, unittest.TestCase):
-    def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
+class TestPermissionDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
-        f = configfile("""
- <permission
-     id="Can Do It"
-     title="A Permissive Permission"
-     description="This permission lets you do anything" />""")
-
-        xmlconfig(f)
-
-        perm = pregistry.getPermission("Can Do It")
-        self.failUnless(perm.getId().endswith('Can Do It'))
+        context = xmlconfig.file("perm.zcml", zope.app.security.tests)
+        perm = pregistry.getPermission("Can.Do.It")
+        self.failUnless(perm.getId().endswith('Can.Do.It'))
         self.assertEqual(perm.getTitle(), 'A Permissive Permission')
         self.assertEqual(perm.getDescription(),
                          'This permission lets you do anything')
 
     def testDuplicationRegistration(self):
-        f = configfile("""
- <permission
-     id="Can Do It"
-     title="A Permissive Permission"
-     description="This permission lets you do anything" />
+        self.assertRaises(ConfigurationConflictError, xmlconfig.file,
+                          "perm_duplicate.zcml", zope.app.security.tests)
 
- <permission
-     id="Can Do It"
-     title="A Permissive Permission"
-     description="This permission lets you do anything" />
-     """)
 
-        #self.assertRaises(AlreadyRegisteredError, xmlconfig, f)
-        self.assertRaises(ConfigurationConflictError, xmlconfig, f)
-
-class TestRoleDirective(CleanUp, unittest.TestCase):
-    def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
+class TestRoleDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
-        f = configfile("""
- <role
-     id="Everyperson"
-     title="Tout le monde"
-     description="The common man, woman, person, or thing" />
-     """)
-
-        xmlconfig(f)
+        context = xmlconfig.file("role.zcml", zope.app.security.tests)
 
         role = rregistry.getRole("Everyperson")
         self.failUnless(role.getId().endswith('Everyperson'))
@@ -155,110 +102,57 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
                          'The common man, woman, person, or thing')
 
     def testDuplicationRegistration(self):
-        f = configfile("""
- <role
-     id="Everyperson"
-     title="Tout le monde"
-     description="The common man, woman, person, or thing" />
+        self.assertRaises(ConfigurationConflictError, xmlconfig.file,
+                          "role_duplicate.zcml", zope.app.security.tests)
 
- <role
-     id="Everyperson"
-     title="Tout le monde"
-     description="The common man, woman, person, or thing" />
-     """)
 
-        #self.assertRaises(AlreadyRegisteredError, xmlconfig, f)
-        self.assertRaises(ConfigurationConflictError, xmlconfig, f)
-
-class TestRolePermission(CleanUp, unittest.TestCase):
+class TestSecurityMapping(TestBase, unittest.TestCase):
 
     def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
-
-    def testMap(self):
-        pregistry.definePermission("Foo", '', '')
+        TestBase.setUp(self)
+        pregistry.definePermission("zope.Foo", '', '')
         rregistry.defineRole("Bar", '', '')
-        f = configfile("""
- <grant
-     permission="Foo"
-     role="Bar" />
-     """)
+        principalRegistry.definePrincipal("Blah", '', '')
+        self.context = xmlconfig.file("mapping.zcml", zope.app.security.tests)
 
-        xmlconfig(f)
-
-        roles = role_perm_mgr.getRolesForPermission("Foo")
+    def test_PermRoleMap(self):
+        roles = role_perm_mgr.getRolesForPermission("zope.Foo")
         perms = role_perm_mgr.getPermissionsForRole("Bar")
 
         self.assertEqual(len(roles), 1)
         self.failUnless(("Bar",Allow) in roles)
 
         self.assertEqual(len(perms), 1)
-        self.failUnless(("Foo",Allow) in perms)
+        self.failUnless(("zope.Foo",Allow) in perms)
 
-class TestPrincipalPermission(CleanUp, unittest.TestCase):
-
-    def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
-
-    def testMap(self):
-        pregistry.definePermission("Foo", '', '')
-        principalRegistry.definePrincipal("Bar", '', '')
-        f = configfile("""
- <grant
-     permission="Foo"
-     principal="Bar" />
-     """)
-
-        xmlconfig(f)
-
-        principals = principal_perm_mgr.getPrincipalsForPermission("Foo")
-        perms = principal_perm_mgr.getPermissionsForPrincipal("Bar")
+    def test_PermPrincipalMap(self):
+        principals = principal_perm_mgr.getPrincipalsForPermission("zope.Foo")
+        perms = principal_perm_mgr.getPermissionsForPrincipal("Blah")
 
         self.assertEqual(len(principals), 1)
-        self.failUnless(("Bar", Allow) in principals)
+        self.failUnless(("Blah", Allow) in principals)
 
         self.assertEqual(len(perms), 1)
-        self.failUnless(("Foo", Allow) in perms)
+        self.failUnless(("zope.Foo", Allow) in perms)
 
-class TestPrincipalRole(CleanUp, unittest.TestCase):
-
-    def setUp(self):
-        setUp(self)
-        XMLConfig('meta.zcml', zope.app.security)()
-
-    def testMap(self):
-        rregistry.defineRole("Foo", '', '')
-        principalRegistry.definePrincipal("Bar", '', '')
-        f = configfile("""
- <grant
-     role="Foo"
-     principal="Bar" />
-     """)
-
-        xmlconfig(f)
-
-        principals = principal_role_mgr.getPrincipalsForRole("Foo")
-        roles = principal_role_mgr.getRolesForPrincipal("Bar")
+    def test_RolePrincipalMap(self):
+        principals = principal_role_mgr.getPrincipalsForRole("Bar")
+        roles = principal_role_mgr.getRolesForPrincipal("Blah")
 
         self.assertEqual(len(principals), 1)
-        self.failUnless(("Bar",Allow) in principals)
+        self.failUnless(("Blah", Allow) in principals)
 
         self.assertEqual(len(roles), 1)
-        self.failUnless(("Foo",Allow) in roles)
+        self.failUnless(("Bar", Allow) in roles)
+
 
 def test_suite():
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTest(loader.loadTestsFromTestCase(TestPrincipalDirective))
-    suite.addTest(loader.loadTestsFromTestCase(TestPermissionDirective))
-    suite.addTest(loader.loadTestsFromTestCase(TestRoleDirective))
-    suite.addTest(loader.loadTestsFromTestCase(TestRolePermission))
-    suite.addTest(loader.loadTestsFromTestCase(TestPrincipalPermission))
-    suite.addTest(loader.loadTestsFromTestCase(TestPrincipalRole))
-    return suite
+    return unittest.TestSuite((
+        unittest.makeSuite(TestPrincipalDirective),
+        unittest.makeSuite(TestPermissionDirective),
+        unittest.makeSuite(TestRoleDirective),
+        unittest.makeSuite(TestSecurityMapping),
+        ))
 
-
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+if __name__ == '__main__':
+    unittest.main()

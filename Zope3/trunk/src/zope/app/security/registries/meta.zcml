@@ -1,22 +1,29 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-  <!-- zope.app.security -->
-  <directives namespace="http://namespaces.zope.org/zope">
-    <directive
-       name="permission"
-       attributes="id title description"
-       handler="zope.app.security.registries.metaconfigure.definePermission" />
-    <directive 
-       name="role"
-       attributes="id title description"
-       handler="zope.app.security.registries.metaconfigure.defineRole" />
-    <directive 
-       name="principal" 
-       attributes="id title description login password"
-       handler="zope.app.security.registries.metaconfigure.principal" />
-    <directive name="unauthenticatedPrincipal" 
-               attributes="id title description"
-       handler=".metaconfigure.unauthenticatedPrincipal" />
-  </directives>
+  <meta:directive
+      namespace="http://namespaces.zope.org/zope"
+      name="permission"
+      schema=".metadirectives.IDefinePermissionDirective"
+      handler=".metaconfigure.definePermission" />
 
-</zopeConfigure>
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="role"
+      schema=".metadirectives.IDefineRoleDirective"
+      handler=".metaconfigure.defineRole" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="principal" 
+      schema=".metadirectives.IDefinePrincipalDirective"
+      handler=".metaconfigure.principal" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="unauthenticatedPrincipal" 
+      schema=".metadirectives.IDefineUnauthenticatedPrincipalDirective"
+      handler=".metaconfigure.unauthenticatedPrincipal" />
+
+</configure>

@@ -1,38 +1,33 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   >
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <content class=".permissionroles.PermissionRoles">
     <require
         permission="zope.Security"
         attributes="roles rolesInfo"
-        interface="zope.app.interfaces.security.IRegisteredObject" 
-        />
-    </content>
+        interface="zope.app.interfaces.security.IRegisteredObject" />
+  </content>
 
   <content class="zope.app.security.grants.rolepermission.RolePermissions">
     <require
         permission="zope.Security"
         attributes="permissions permissionsInfo"
-        interface="zope.app.interfaces.security.IRegisteredObject" 
-        />
+        interface="zope.app.interfaces.security.IRegisteredObject" />
     </content>
 
-  <adapter factory=".rolepermission.AnnotationRolePermissionManager"
-           provides="zope.app.interfaces.security.IRolePermissionManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" 
-           />
+  <adapter 
+      factory=".rolepermission.AnnotationRolePermissionManager"
+      provides="zope.app.interfaces.security.IRolePermissionManager"
+      for="zope.app.interfaces.annotation.IAnnotatable" />
 
-  <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
-           provides="zope.app.interfaces.security.IPrincipalRoleManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" 
-           />
+  <adapter 
+      factory=".principalrole.AnnotationPrincipalRoleManager"
+      provides="zope.app.interfaces.security.IPrincipalRoleManager"
+      for="zope.app.interfaces.annotation.IAnnotatable" />
 
-  <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
-           provides="zope.app.interfaces.security.IPrincipalPermissionManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" 
-           />
+  <adapter 
+      factory=".principalpermission.AnnotationPrincipalPermissionManager"
+      provides="zope.app.interfaces.security.IPrincipalPermissionManager"
+      for="zope.app.interfaces.annotation.IAnnotatable" />
 
-</zopeConfigure>
+</configure>
 

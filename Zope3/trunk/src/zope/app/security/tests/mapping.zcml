@@ -1,0 +1,18 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.security" file="meta.zcml"/>
+
+ <grant
+     permission="zope.Foo"
+     role="Bar" />
+
+ <grant
+     permission="zope.Foo"
+     principal="Blah" />
+
+ <grant
+     role="Bar"
+     principal="Blah" />
+
+ 
+</configure>

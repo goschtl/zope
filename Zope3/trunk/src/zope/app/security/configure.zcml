@@ -1,64 +1,59 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   >
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <include package=".registries" />
 
   <!-- Standard Permissions -->
 
-  <permission id="zope.View"
-                       title="View"
-                       />
+  <permission 
+      id="zope.View"
+      title="View" />
 
-  <permission id="zope.Security"
-                       title="Change security settings"
-                       />
+  <permission 
+      id="zope.Security"
+      title="Change security settings" />
 
-  <permission id="zope.ManageContent" 
-                       title="Manage Content"
-                       />
+  <permission 
+      id="zope.ManageContent" 
+      title="Manage Content" />
 
-  <permission id="zope.ManageBindings" 
-                       title="Manage Service Bindings"
-                       />
+  <permission 
+      id="zope.ManageBindings" 
+      title="Manage Service Bindings" />
 
-  <permission id="zope.ManageCode" 
-                       title="Manage Code"
-                       description="Manage executable code, including
-                                    Python, SQL, ZPT, etc."
-                        />
+  <permission 
+      id="zope.ManageCode" 
+      title="Manage Code"
+      description="Manage executable code, including Python, SQL, ZPT, etc." />
 
-  <permission id="zope.ManageServices" 
-                       title="Manage Services"
-                        />
+  <permission 
+      id="zope.ManageServices" 
+      title="Manage Services" />
 
-  <!-- XXX What is this for? -->
-  <permission id="zope.ManageApplication" 
-                       title="Manage Application"
-                       />
-
-  <!-- XXX What is this for? -->
-  <permission id="zope.I18n" 
-                       title="Use Internationalization (?XXX)"
-                       />
+  <permission 
+      id="zope.ManageApplication" 
+      title="Manage Application"
+      description="Manage the Zope Application, such as Restart/Shutdown or 
+                   packing the ZODB." />
 
   <include package=".grants" />
 
   <securityPolicy 
-      name="zope.app.security.zopepolicy.zopeSecurityPolicy" />
+      component="zope.app.security.zopepolicy.zopeSecurityPolicy" />
 
-  <adapter factory="zope.app.security.basicauthadapter.BasicAuthAdapter"
-           provides="zope.app.interfaces.security.ILoginPassword"
-           for="zope.publisher.interfaces.http.IHTTPCredentials" />
+  <adapter 
+      factory="zope.app.security.basicauthadapter.BasicAuthAdapter"
+      provides="zope.app.interfaces.security.ILoginPassword"
+      for="zope.publisher.interfaces.http.IHTTPCredentials" />
 
-  <adapter factory="zope.app.security.ftpauth.FTPAuth"
-           provides="zope.app.interfaces.security.ILoginPassword"
-           for="zope.publisher.interfaces.ftp.IFTPCredentials" />
+  <adapter 
+      factory="zope.app.security.ftpauth.FTPAuth"
+      provides="zope.app.interfaces.security.ILoginPassword"
+      for="zope.publisher.interfaces.ftp.IFTPCredentials" />
 
-  <adapter factory="zope.app.security.principallogging.PrincipalLogging"
-           provides="zope.publisher.interfaces.logginginfo.ILoggingInfo"
-           for="zope.app.interfaces.security.IPrincipal" />
+  <adapter 
+      factory="zope.app.security.principallogging.PrincipalLogging"
+      provides="zope.publisher.interfaces.logginginfo.ILoggingInfo"
+      for="zope.app.interfaces.security.IPrincipal" />
 
-</zopeConfigure>
+</configure>
 

@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.security" file="meta.zcml"/>
+
+  <role
+      id="Everyperson"
+      title="Tout le monde"
+      description="The common man, woman, person, or thing" />
+
+  <role
+      id="Everyperson"
+      title="Tout le monde"
+      description="The common man, woman, person, or thing" />
+ 
+</configure>
