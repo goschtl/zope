@@ -96,6 +96,14 @@
   <factory
     id="ContentWorkflowsManager"
   />
+
+  <implements
+      interface="zope.app.utility.interfaces.ILocalUtility" 
+      />
+  <implements 
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+      />
+
   <require
     permission="zope.ManageServices"
     interface=".interfaces.IContentWorkflowsManager"
