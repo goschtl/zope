@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.3 2003/03/13 18:49:03 alga Exp $
+$Id: test_rolecontents.py,v 1.4 2003/06/03 14:42:54 stevea Exp $
 """
 
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.browser.services.role import Contents
 from zope.app.services.role import RoleService
 from zope.app.browser.container.tests.test_contents \
@@ -28,7 +28,7 @@ class IDummy(Interface):
     pass
 
 class Dummy:
-    __implements__ = IDummy
+    implements(IDummy)
 
 class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
