@@ -257,7 +257,7 @@
       </div>
 
         <div class="box" id="help" 
-	     tal:define="results view/@@find_help_topics"
+	     tal:define="results view/@@find_help_topics|nothing"
              tal:condition="results">
           <h4>Online Help</h4>
           <div class="body">
