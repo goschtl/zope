@@ -130,10 +130,9 @@ class VocabularyFieldTests(BaseTest):
 
 class SimpleVocabularyTests(unittest.TestCase):
 
-    def setUp(self):
-        self.list_vocab = vocabulary.SimpleVocabulary([1, 2, 3])
-        self.items_vocab = vocabulary.SimpleVocabulary.fromItems(
-            [('one', 1), ('two', 2), ('three', 3), ('fore!', 4)])
+    list_vocab = vocabulary.SimpleVocabulary([1, 2, 3])
+    items_vocab = vocabulary.SimpleVocabulary.fromItems(
+        [('one', 1), ('two', 2), ('three', 3), ('fore!', 4)])
 
     def test_simple_term(self):
         t = vocabulary.SimpleTerm(1)
