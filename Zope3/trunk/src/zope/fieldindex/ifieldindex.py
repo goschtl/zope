@@ -30,10 +30,10 @@ class IFieldIndex(Interface):
         """
 
     def index_doc(docid, value):
-        "XXX"
+        """ index the value 'value' for a given docid"""
 
     def unindex_doc(docid):
-        "XXX"
+        """ unindex document with document ID docid """
 
     def has_doc(docid):
         """Returns true if docid is an id of a document in the index"""

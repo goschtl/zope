@@ -51,6 +51,18 @@ class FieldIndexTest(TestCase):
         self.assertEqual(self.index.documentCount(), 0)
 
 
+    def test_hasdoc(self):
+    
+        self._populate_index()
+        self.assertEqual(self.index.has_doc(1), 1)
+        self.assertEqual(self.index.has_doc(2), 1)
+        self.assertEqual(self.index.has_doc(3), 1)
+        self.assertEqual(self.index.has_doc(4), 1)
+        self.assertEqual(self.index.has_doc(5), 1)
+        self.assertEqual(self.index.has_doc(99), 0)
+
+
+
     def test_indexdoc(self):
 
         self._populate_index()
