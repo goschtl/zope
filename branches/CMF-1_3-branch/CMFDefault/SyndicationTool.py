@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 
 """ CMFDefault portal_syndication tool.
@@ -19,8 +19,8 @@ Manage outbound RSS syndication of folder content.
 import os
 import string
 
-from Globals import HTMLFile, package_home, InitializeClass 
-from AccessControl import ClassSecurityInfo, SecurityManagement
+from Globals import HTMLFile, package_home, InitializeClass
+from AccessControl import ClassSecurityInfo, SecurityManagement, Unauthorized
 from Acquisition import aq_base, aq_inner, aq_parent
 from DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
@@ -55,7 +55,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
                   , action=Expression(
                         text='string: ${folder_url}/synPropertiesForm')
                   , condition=Expression(
-                        text='python: folder is object') 
+                        text='python: folder is object')
                   , permissions=(ManageProperties,)
                   , category='folder'
                   , visible=1
@@ -63,7 +63,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
                ]
 
     security = ClassSecurityInfo()
-    
+
     #Default Sitewide Values
     isAllowed = 0
     syUpdatePeriod = 'daily'
@@ -108,7 +108,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
 
     security.declareProtected(ManagePortal, 'reportForm')
     reportForm = HTMLFile('synReports', _dtmldir)
-   
+
     security.declarePrivate('listActions')
     def listActions(self, info=None):
         """
@@ -340,13 +340,13 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
             return syInfo.syUpdateFrequency
         else:
             return 'Syndication is not Allowed'
-     
+
     security.declarePublic('getUpdateBase')
     def getUpdateBase(self, obj=None):
         """
         Return the base date to be used with the update frequency
         and the update period to calculate a publishing schedule.
-        
+
         Note:  I'm not sure what's best here, creation date, last
         modified date (of the folder being syndicated) or some
         arbitrary date.  For now, I'm going to build a updateBase
