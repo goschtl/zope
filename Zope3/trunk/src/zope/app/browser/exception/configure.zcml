@@ -33,4 +33,11 @@
       attribute="snippet" 
       />
 
+  <page
+      for="zope.publisher.interfaces.NotFound"
+      name="index.html"
+      permission="zope.Public"
+      template="notfound.pt"
+      />
+
 </zope:configure>
