@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.9 2002/10/24 15:37:02 jim Exp $
+$Id: xmlconfig.py,v 1.10 2002/11/19 23:18:48 jim Exp $
 """
 
 import os
@@ -40,7 +40,7 @@ class ZopeXMLConfigurationError(ConfigurationError):
         if etype is None:
             if not isinstance(mess, StringType):
                 try:
-                    mess = "\n%s: %s" % (mess.__class__.__name__, mess)
+                    mess = "\n%s:\n  %s" % (mess.__class__.__name__, mess)
                 except AttributeError:
                     mess = str(mess)
         else:
@@ -169,9 +169,12 @@ class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
     def __str__(self):
         return """Conflicting configuration action:
         %s
-        at line %s column %s of %s
-        and% at line %s column %s of %s
-        """ % ((self.des,) + self.l1 + self.l2)
+        File "%s", line %s column %s
+        File "%s", line %s column %s
+        """ % (self.des,
+               self.l1[2], self.l1[0], self.l1[1], 
+               self.l2[2], self.l2[0], self.l2[1],
+               )
         
 class Context:
     def __init__(self, stack, module):
@@ -230,10 +233,12 @@ def xmlconfig(file, actions=None, context=None, directives=None,
     if call:
         descriptors = {}
         for level, loc, des, callable, args, kw in call:
-            if des in descriptors:
-                raise ZopeConflictingConfigurationError(
-                    descriptors[des], loc, des)
-            descriptors[des] = loc
+            if des is not None:
+                if des in descriptors:
+                    raise ZopeConflictingConfigurationError(
+                        descriptors[des], loc, des)
+                descriptors[des] = loc
+                
             callable(*args, **kw)
 
 def testxmlconfig(file, actions=None, context=None, directives=None):
@@ -253,7 +258,8 @@ class ZopeConfigurationConflictError(ZopeXMLConfigurationError):
         for dis, locs in self._conflicts.items():
             r.append('for: %s' % (dis,))
             for loc in locs:
-                r.append("  at line %s column %s of %s" % loc)
+                r.append('  File "%s", line %s column %s' %
+                         (loc[2], loc[0], loc[1]))
         
         return "\n".join(r)
         
@@ -319,8 +325,16 @@ class XMLConfig:
 
         # organize actions by discriminators
         unique = {}
+        cactions = []
         for i in range(len(actions)):
             context, loc, des, callable, args, kw = actions[i]
+            if des is None:
+                # The descriminator is None, so this directive can
+                # never conflict. We can add it directly to the
+                # configuration actions.
+                cactions.append((i, loc, (callable, args, kw)))
+                continue
+
             a = unique.setdefault(des, [])
             a.append((context._stackcopy(), i, loc, (callable, args, kw)))
 
@@ -329,7 +343,8 @@ class XMLConfig:
         for des, actions in unique.items():
             path, i, loc, f = actions[0]
             for opath, i, oloc, f in actions[1:]:
-                if opath[:len(path)] != path:
+                # Test whether path is a prefix of opath
+                if opath[:len(path)] != path or (opath == path):
                     if des not in conflicts:
                         conflicts[des] = [loc]
                     conflicts[des].append(oloc)
@@ -338,7 +353,6 @@ class XMLConfig:
             raise ZopeConfigurationConflictError(conflicts)
 
         # Now order the configuration directives
-        cactions = []
         for des, actions in unique.items():
             path, i, loc, f = actions.pop(0)
             cactions.append((i, loc, f))
