@@ -124,22 +124,4 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         '''
         return self()
 
-    # Overridden methods to support cataloging items that might
-    # be stored in attributes unknown to the content object, such
-    # as the DiscussionItemContainer "talkback"
-
-    security.declareProtected(AccessContentsInformation, 'objectItems')
-    def objectItems(self):
-        """
-        since 'talkback' is the only opaque item on content
-        right now, I will return that. Should be replaced with
-        a list of tuples for every opaque item!
-        """
-        talkback = ( hasattr( aq_base( self ), 'talkback' ) and
-                      self.talkback or None )
-        if talkback is not None:
-            return ((talkback.id, talkback),)
-        else:
-            return ()
-
 InitializeClass(PortalContent)
