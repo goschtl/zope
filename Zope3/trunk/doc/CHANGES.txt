@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Added new API method `getAdapters(objects, provided)` to `zapi`. It
+        will return all available adapters for this configuration. Note that
+        every name will be only returned once.
+
       - When parsing a DSN, allow the host to be specified without a port.
 
       - Removed Browser Menu Service and implemented menus as subscriber

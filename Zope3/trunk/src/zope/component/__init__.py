@@ -170,6 +170,17 @@ def queryMultiAdapter(objects, interface, name=u'', default=None,
 
     return adapters.queryMultiAdapter(objects, interface, name, default)
 
+def getAdapters(objects, provided, context=None):
+    try:
+        adapters = getService(Adapters, context)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return []
+    return [(name, adapter(*objects))
+            for name, adapter in adapters.lookupAll(map(providedBy, objects),
+                                                    provided)
+            ]
+
 def subscribers(objects, interface, context=None):
     try:
         adapters = getService(Adapters, context=context)

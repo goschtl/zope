@@ -19,7 +19,7 @@ import unittest
 
 from zope import component
 from zope.component import servicenames
-from zope.component import getAdapter, queryAdapter
+from zope.component import getAdapter, queryAdapter, getAdapters
 from zope.component import getAdapterInContext, queryAdapterInContext
 from zope.component import getService
 from zope.component import getUtility, queryUtility
@@ -265,6 +265,15 @@ class Test(PlacelessSetup, unittest.TestCase):
         c = I2(ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
+
+    def testgetAdapters(self):
+        getService(Adapters).register([I1], I2, '', Comp)
+        getService(Adapters).register([None], I2, 'foo', Comp)
+        c = getAdapters((ob,), I2)
+        c.sort()
+        self.assertEquals([(name, adapter.__class__, adapter.context)
+                           for name, adapter in c],
+                          [('', Comp, ob), ('foo', Comp, ob)])
 
     def testUtility(self):
         self.assertRaises(ComponentLookupError, getUtility, I1, context=ob)

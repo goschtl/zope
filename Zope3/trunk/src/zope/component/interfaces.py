@@ -208,6 +208,20 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
+    def getAdapters(objects, provided, context=None):
+        """Look for all matching adapters to a provided interface for objects
+
+        Return a list of adapters that match. If an adapter is named, only the
+        most specific adapter of a given name is returned.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters'
+        service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
+        """
+
     def subscribers(required, provided, context=None):
         """Get subscribers
 
