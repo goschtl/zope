@@ -296,6 +296,40 @@ class InclusionProcessorTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(foodir)
 
+    def test_createDistributionTree_nested_excludes(self):
+        self.source = os.path.join(self.source, "input", "collection-1")
+        specs = include.load(self.source)
+        specs.collection.cook()
+        self.processor.createDistributionTree(self.destination,
+                                              specs.collection)
+        implied = os.path.join(self.destination, "implied")
+        self.assert_(os.path.isdir(implied))
+        self.failIf(os.path.exists(os.path.join(implied, "dropped.txt")))
+
+    def test_createDistributionTree_nested_includes(self):
+        self.write_file(os.path.join("input", "package", include.PACKAGE_CONF),
+                        "<collection>\n"
+                        "  something.py __init__.py\n"
+                        "</collection>\n")
+        specs = include.load(self.source)
+        specs.collection.cook()
+        self.processor.createDistributionTree(self.destination,
+                                              specs.collection)
+        destdir = os.path.join(self.destination, "input", "package")
+        self.assert_(os.path.isfile(os.path.join(destdir, "something.py")))
+        self.failIf(os.path.exists(os.path.join(destdir, "__init__.py")))
+
+    def test_nested_loads_disallowed(self):
+        self.write_file(os.path.join("input", "package", include.PACKAGE_CONF),
+                        "<load>\n"
+                        "  something.py http://www.example.org/\n"
+                        "</load>\n")
+        specs = include.load(self.source)
+        specs.collection.cook()
+        self.assertRaises(include.InclusionSpecificationError,
+                          self.processor.createDistributionTree,
+                          self.destination, specs.collection)
+
     def check_file(self, name):
         srcname = join(self.source, name)
         destname = join(self.destination, name)

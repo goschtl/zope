@@ -276,7 +276,7 @@ class Specification:
         self.group = group
 
     def __nonzero__(self):
-        return bool(self.includes)
+        return bool(self.includes or self.excludes)
 
     def cook(self):
         patterns = self.includes.pop(None, [])
@@ -360,6 +360,11 @@ class InclusionProcessor:
         """
         self.create_directory(source, destination)
         prefix = os.path.join(source, "")
+
+        # The directory walk *must* be performed in top-down fashion
+        # since the handling of nested PACKAGE_CONF files must be able
+        # to modify the list of directories which are considered.
+        #
         for dirname, dirs, files in os.walk(source, topdown=True):
             dirs[:] = filter_names(dirs)
             files = filter_names(files)
@@ -368,6 +373,24 @@ class InclusionProcessor:
             # relative to destination.  It will be '' at the top
             # level.
             reldir = dirname[len(prefix):]
+            if reldir:
+                destdir = os.path.join(destination, reldir)
+            else:
+                destdir = destination
+
+            if PACKAGE_CONF in files and dirname != source:
+                # a nested PACKAGE.cfg needs to be handled as well
+                specs = load(dirname)
+                if specs.loads:
+                    raise InclusionSpecificationError(
+                        "<load> disallowed in a nested %s file"
+                        % PACKAGE_CONF)
+                if specs.collection:
+                    specs.collection.cook()
+                    self.createDistributionTree(destdir, specs.collection)
+                    del dirs[:]
+                    continue
+
             if excludes:
                 # excludes are in POSIX path notation
                 preldir = reldir.replace(os.sep, "/")
@@ -379,10 +402,7 @@ class InclusionProcessor:
                     prelpath = posixpath.join(preldir, name)
                     if prelpath in excludes:
                         files.remove(name)
-            if reldir:
-                destdir = os.path.join(destination, reldir)
-            else:
-                destdir = destination
+
             for file in files:
                 srcname = os.path.join(dirname, file)
                 destname = os.path.join(destdir, file)
