@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.15 2003/08/21 14:19:22 srichter Exp $
+$Id: zpt.py,v 1.16 2003/09/16 22:00:07 srichter Exp $
 """
-
 import re
 
 from persistence import Persistent

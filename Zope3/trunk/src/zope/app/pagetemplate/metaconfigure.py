@@ -14,9 +14,8 @@
 """ZCML configuration directives for configuring the default zope:
 namespace in TALES.
 
-$Id: metaconfigure.py,v 1.3 2003/08/03 21:00:21 philikon Exp $
+$Id: metaconfigure.py,v 1.4 2003/09/16 22:04:17 srichter Exp $
 """
-
 from zope.app.pagetemplate.engine import Engine
 from zope.testing.cleanup import addCleanUp
 from zope.component import getAdapter
