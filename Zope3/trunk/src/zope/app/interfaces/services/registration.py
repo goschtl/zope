@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.17 2004/03/03 10:38:46 philikon Exp $
+$Id: registration.py,v 1.18 2004/03/06 20:06:34 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -107,24 +107,6 @@ class IRegistration(Interface):
         """
 
 
-class INamedRegistration(IRegistration):
-    """Registration object that is registered only by name.
-    """
-
-    name = TextLine(
-        title=_("Name"),
-        description=_("The name that is registered"),
-        readonly=True,
-        # Don't allow empty or missing name:
-        required=True,
-        min_length=1,
-        )
-
-    # The label is generally set as a class attribute on the
-    # registration class.
-    label = Attribute("Descriptive label of the registration type "
-                      "(for example, Service, Connection)")
-
 class IComponentPath(ITextLine):
     """A component path
     """
@@ -159,9 +141,22 @@ class IComponentRegistration(IRegistration):
         """
 
 
-class INamedComponentRegistration(INamedRegistration,
-                                  IComponentRegistration):
+class INamedComponentRegistration(IComponentRegistration):
     """Components registered by name, using componemt path and permission."""
+
+    name = TextLine(
+        title=_("Name"),
+        description=_("The name that is registered"),
+        readonly=True,
+        # Don't allow empty or missing name:
+        required=True,
+        min_length=1,
+        )
+
+    # The label is generally set as a class attribute on the
+    # registration class.
+    label = Attribute("Descriptive label of the registration type "
+                      "(for example, Service, Connection)")
 
 
 class IRegistrationStack(Interface):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.3 2003/09/21 17:33:22 jim Exp $
+$Id: test_registrations.py,v 1.4 2004/03/06 20:06:35 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -139,10 +139,6 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
         cfg.removeNotify(event)
         # check that the dependency tracking works
         self.assertEquals(component.dependents(), ())
-
-
-# NamedRegistration is too simple to need testing at the moment
-
 
 def test_suite():
     return TestSuite((

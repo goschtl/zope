@@ -13,12 +13,14 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.10 2003/06/21 21:22:10 jim Exp $
+$Id: query.py,v 1.11 2004/03/06 20:06:34 jim Exp $
 """
 
+import zope.schema
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.interface import Interface, Attribute
 from zope.app.security.permission import PermissionField
-from zope.app.interfaces.services.registration import INamedRegistration
+from zope.app.interfaces.services.registration import IRegistration
 from zope.app.component.interfacefield import InterfacesField
 from zope.schema.interfaces import ITuple
 # There's another import further down
@@ -27,7 +29,9 @@ class IQueryProcessorsField(ITuple):
     """Field for entering a pipeline of query processors."""
 
 class IQueryProcessable(Interface):
-    """Marker interface that says that the implementing component is adaptable
+    """Query Processor
+
+    Marker interface that says that the implementing component is adaptable
     to IQueryProcessor, although maybe only via a named adapter."""
 
 class IQueryProcessor(IQueryProcessable):
@@ -59,13 +63,8 @@ class IQueryService(Interface):
 class IQueryListItem(Interface):
 
     id = Attribute('The id of this query.')
-    #permission = Attribute('Permission required to run the query.'
-    #                       ' An object, not an id.')
-    #inputInterfaces = Attribute('Sequence of interfaces the input must be'
-    #                            ' adaptable to.')
-    #outputInterfaces = Attribute('Sequence of interfaces the output must be'
-    #                             ' adaptable to.')
-    permission = PermissionField(title=u'Required permission', required=False)
+    permission = PermissionField(title=u'Required permission',
+                                 required=False)
 
     inputInterfaces = InterfacesField(title=u'Input interfaces',
                                       basetype=None)
@@ -75,9 +74,19 @@ class IQueryListItem(Interface):
 # The import is here to avoid circular imports
 from zope.app.services.queryfield import QueryProcessorsField
 
-class IQueryRegistration(INamedRegistration):
+class IQueryRegistration(IRegistration):
 
-    permission = PermissionField(title=u'Required permission', required=False)
+    name = zope.schema.TextLine(
+        title=_("Name"),
+        description=_("The name that is registered"),
+        readonly=True,
+        # Don't allow empty or missing name:
+        required=True,
+        min_length=1,
+        )
+
+    permission = PermissionField(title=u'Required permission',
+                                 required=False)
     inputInterfaces = InterfacesField(title=u'Input interfaces',
                                       basetype=None)
     outputInterfaces = InterfacesField(title=u'Output interfaces',

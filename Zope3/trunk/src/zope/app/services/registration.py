@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.25 2004/03/06 17:48:53 jim Exp $
+$Id: registration.py,v 1.26 2004/03/06 20:06:35 jim Exp $
 """
 __metaclass__ = type
 
@@ -350,19 +350,6 @@ class SimpleRegistration(Persistent, Contained):
             self.status = interfaces.UnregisteredStatus
 
 
-class NamedRegistration(SimpleRegistration):
-    """Named registration
-    """
-
-    implements(interfaces.INamedRegistration)
-
-    def __init__(self, name):
-        self.name = name
-
-    def usageSummary(self):
-        return "%s %s" % (self.name, self.__class__.__name__)
-
-
 class ComponentRegistration(SimpleRegistration):
     """Component registration.
 
@@ -450,7 +437,7 @@ class ComponentRegistration(SimpleRegistration):
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(self))
 
-class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
+class NamedComponentRegistration(ComponentRegistration):
     """Registrations for named components.
 
     This configures components that live in folders, by name.
@@ -458,8 +445,12 @@ class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
     implements(interfaces.INamedComponentRegistration)
 
     def __init__(self, name, component_path, permission=None):
-        NamedRegistration.__init__(self, name)
+        self.name = name
         ComponentRegistration.__init__(self, component_path, permission)
+
+    def usageSummary(self):
+        return "%s %s" % (self.name, self.__class__.__name__)
+
 
 
 class NameRegistry:
