@@ -83,6 +83,9 @@ table.table {
 table.table thead {
   background-color: rgb(230,230,230); }
 
+dt {
+  font-weight: bold; }
+
 /* docutils uses the "option" class with both "col" and "span"
    elements, so we have to be explicit here */
 .option-list span.option {
