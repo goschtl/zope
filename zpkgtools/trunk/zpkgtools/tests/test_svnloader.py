@@ -17,6 +17,7 @@ import os
 import shutil
 import unittest
 
+from zpkgsetup import urlutils
 from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import cvsloader
@@ -259,6 +260,10 @@ class SubversionPlusSpecialUrlTestCase(SubversionUrlTestCase):
 class SubversionFileUrlTestCase(SubversionLocalRepositoryBase,
                                 SubversionUrlTestCase):
     """Test handling of file:///... URLs."""
+
+    def mkurl(self, path):
+        root = urlutils.pathname2url(self.SVNROOT)
+        return "file://%s%s%s" % (self.HOSTPART, root, path)
 
 
 class SubversionLocalhostFileUrlTestCase(SubversionFileUrlTestCase):
