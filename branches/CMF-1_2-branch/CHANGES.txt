@@ -9,11 +9,15 @@
   - Enabled querying actions from workflow tool in absence
     of actions tool (Tracker #401).
 
+  - Added 'operator' attribute to CMFTopic.ListCriterion, to permit
+    specifying an operator ('and', for the most part) for indexes which
+    support it, e.g., KeywordIndex (Tracker #442).
+
  Bugs Fixed
 
-   - Added external method update_catalogIndexes.py to run as part of a
-     upgrade to CMFs migrating to Zope2.4+ from from CMF sites which were built
-     using Zope2.3 catalog
+  - Added external method update_catalogIndexes.py to run as part of a
+    upgrade to CMFs migrating to Zope2.4+ from from CMF sites which were built
+    using Zope2.3 catalog
 
   - Use ID to label Favorite when target has an empty Title (Tracker #440).
 
