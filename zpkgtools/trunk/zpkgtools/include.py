@@ -417,7 +417,6 @@ class InclusionProcessor:
             # bits and stat info.
             os.mkdir(destination)
             shutil.copymode(source, destination)
-            shutil.copystat(source, destination)
 
     def copy_file(self, source, destination):
         """Copy a single file into the output tree."""
