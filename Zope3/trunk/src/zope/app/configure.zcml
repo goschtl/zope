@@ -104,7 +104,6 @@
   <include package="zope.app.file" />
   <include package="zope.app.i18nfile" />
   <include package="zope.app.zptpage" />
-  <include package="zope.app.dtmlpage" />
   <include package="zope.app.pythonpage" />
   <include package="zope.app.sqlscript" />
 
