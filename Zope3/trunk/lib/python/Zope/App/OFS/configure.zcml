@@ -6,7 +6,6 @@
 
 <include package=".ApplicationControl" />
 
-<include package=".Introspector" />
 <include package=".Annotation" />
 
 
