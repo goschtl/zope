@@ -44,6 +44,10 @@ zs Components/GreyThing \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
+CHANGES -a ZBin/doc/CHANGES.txt
+
+Zope ZSrc CHANGES
+
 pcgi Components/pcgi2 pcgi_publisher.py
 
 
