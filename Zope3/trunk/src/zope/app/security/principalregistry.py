@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Authentication Service or Principal Registry
 
-$Id: principalregistry.py,v 1.3 2004/04/02 00:45:42 srichter Exp $
+$Id: principalregistry.py,v 1.4 2004/04/06 17:55:38 jim Exp $
 """
 from warnings import warn
 from zope.interface import implements
@@ -24,6 +24,7 @@ from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.site.interfaces import ISimpleService
 from zope.app.container.contained import Contained, contained
+from warnings import warn
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -132,7 +133,8 @@ class PrincipalBase(Contained):
         return self.title
 
     def getDescription(self):
-        warn("Use principal.description instead of principal.getDescription().",
+        warn("Use principal.description instead of "
+             "principal.getDescription().",
              DeprecationWarning, 2)
         return self.description
 
