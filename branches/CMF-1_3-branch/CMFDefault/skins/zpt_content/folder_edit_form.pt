@@ -29,7 +29,7 @@
   <td colspan="3">
    <textarea name="description:text" rows="5"
              cols="65" wrap="soft"
-			 tal:content="here/description">
+			 tal:content="here/Description">
    </textarea>
   </td>
  </tr>
