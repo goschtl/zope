@@ -61,7 +61,20 @@ BUGS
 TO DO
 -----
 
-* more unit tests for fsmerge
+* Rewrite fromFS to integrate uptodate checking; because the db is
+  transactional it's ok to have made some changes and later raise an
+  exception.  Then it could also update the disk copy in-place to
+  reflect changes, ready to be zipped and sent back.
+
+* Don't rely on external zip/unzip tools.  Maybe switch to tar as the
+  archival format, because it is easier to stream and compress at the
+  same time.  The file can be probably streamed right to the socket,
+  without going to a temp file first, assuming the receiver can handle
+  not having a Content-length header.
+
+* more unit tests for fsmerge, to check that entries are handled
+  correctly in all cases (including addition/deletion/change of
+  type).
 
 * unit tests for the fssync core functionality
 
