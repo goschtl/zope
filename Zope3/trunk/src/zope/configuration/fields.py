@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.16 2003/08/18 22:14:39 fdrake Exp $
+$Id: fields.py,v 1.17 2003/11/21 17:09:15 jim Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -317,7 +317,8 @@ class MessageID(schema.Text):
     >>> i.domain
     'untranslated'
     >>> warned
-    ("You did not specify an i18n translation domain for the '' field in file location",)
+    ("You did not specify an i18n translation domain for the '' """ \
+        """field in file location",)
 
     >>> warnings.warn = realwarn
 
