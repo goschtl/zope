@@ -1,0 +1,34 @@
+subscriber
+
+  File zope/app/component/meta.zcml, lines 19 - 23.
+
+  Handler: zope.app.component.metaconfigure.subscriber
+
+  Register a subscriber
+
+  Attributes
+
+    factory -- GlobalObject (required)
+
+      Subscriber factory
+
+      A factory used to create the subscriber instance.
+
+    provides -- GlobalObject (required)
+
+      Interface the component provides
+
+      This attribute specifes the interface the adapter instance must provide.
+
+    for -- Tokens (required)
+
+      Interfaces or classes that this subscriber depends on
+
+      This should be a list of interfaces or classes
+
+    permission -- Permission (optional, default=None)
+
+      Permission
+
+      This subscriber is only available, if the principal has this permission.
+

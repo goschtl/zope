@@ -1,0 +1,22 @@
+traversalNamespace
+
+  File zope/app/traversing/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.traversing.metaconfigure.traversalNamespace
+
+  Register a new traversal namespace.
+
+  Attributes
+
+    name -- PythonIdentifier (required)
+
+      Name
+
+      The name under which the namespace will be accessible.
+
+    handler -- GlobalObject (required)
+
+      Handler
+
+      Specifies the handler component for this namespace.
+
