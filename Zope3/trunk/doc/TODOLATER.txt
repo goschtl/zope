@@ -2,6 +2,9 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- When converting a possible site to a site, prompt the user for services that
+  should be added right away. See zope/app/site/browser/__init__.py
+
 - http://dev.zope.org/Zope3/TALESPathExpressionAdapters
 
 - I think the session api needs a little more work.  Among other
