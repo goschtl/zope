@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.10 2004/01/16 13:09:07 philikon Exp $
+$Id: widget.py,v 1.11 2004/02/19 20:15:17 philikon Exp $
 """
 import traceback
 from warnings import warn
@@ -118,6 +118,3 @@ class CustomWidgetFactory:
         for item in self.kw.items():
             setattr(instance, item[0], item[1])
         return instance
-
-# XXX backward compatability, will be removed in a month (2004-02-16)
-CustomWidget = CustomWidgetFactory
