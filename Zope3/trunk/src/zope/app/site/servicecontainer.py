@@ -20,7 +20,6 @@ import zope.interface
 
 from transaction import get_transaction
 from zope.app.container.contained import Contained
-from zope.app import zapi
 from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService

@@ -26,7 +26,7 @@ from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.app.event.interfaces import ISubscriber
 from zope.interface import implements
 from zope.app.event import publish
-from zope.app import zapi
+from zope.component import subscribers
 
 _marker = object()
 
@@ -79,7 +79,7 @@ class ObjectEventNotifier:
 
     def notify(self, event):
         assert IObjectEvent.providedBy(event)
-        adapters = zapi.subscribers((event.object, event), ISubscriber)
+        adapters = subscribers((event.object, event), ISubscriber)
         for adapter in adapters:
             adapter.notify(event)
 
