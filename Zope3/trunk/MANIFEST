@@ -8,6 +8,7 @@ setup.py
 site.zcml
 test.py
 z3.py
+zope.conf.in
 doc/CHANGES.txt
 doc/CREDITS.txt
 doc/DEBUG.txt

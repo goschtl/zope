@@ -3,6 +3,7 @@ include Makefile
 include test.py
 include log.ini
 include z3.py
+include zope.conf.in
 include site.zcml sample_principals.zcml
 include *.zcml.in
 
