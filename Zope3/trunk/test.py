@@ -231,8 +231,6 @@ class ImmediateTestResult(unittest._TextTestResult):
                 pre = s[:pos+2]
                 w = self._maxWidth - (pos + 5)
                 post = s[-w:]
-                if post[:1] == ".":
-                    post = post[1:]
                 s = "%s...%s" % (pre, post)
         return s
 
