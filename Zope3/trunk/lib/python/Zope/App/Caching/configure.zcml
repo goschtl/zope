@@ -1,0 +1,13 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.App.Caching"
+>
+
+  <adapter factory=".Caching.AnnotationCacheable."
+           provides=".ICacheable."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
+
+</zopeConfigure>
+
+
