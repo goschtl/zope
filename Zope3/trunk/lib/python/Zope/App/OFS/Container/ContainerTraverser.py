@@ -15,8 +15,6 @@
     Define view component for folder contents.
 """
 
-import os
-
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
 from Zope.Publisher.Exceptions import NotFound
