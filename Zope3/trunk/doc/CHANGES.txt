@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - Renamed the "Common Tasks" box in the default skin to "Add:",
+      since this is really just a list of things to be added.
+
     Bug fixes
 
     Restructuring
