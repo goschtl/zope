@@ -758,8 +758,6 @@ def main(module_filter, test_filter, libdir):
     global pathinit
     pathinit = PathInit(BUILD, BUILD_INPLACE, libdir)
 
-    # Initialize the logging module.
-
     configure_logging()
 
 ##    try:
@@ -801,6 +799,7 @@ def main(module_filter, test_filter, libdir):
 
 
 def configure_logging():
+    """Initialize the logging module."""
     import logging.config
 
     # Get the log.ini file from the current directory instead of possibly
