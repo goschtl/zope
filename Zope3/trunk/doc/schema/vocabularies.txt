@@ -144,7 +144,8 @@ This vocabulary represents the set of `state and territory
 abbreviations`_ issued by the United States Postal Service.  The
 values will be the two-letter abbreviations.
 
-.. _state and territory abbreviations: http://www.usps.com/ncsc/lookups/abbreviations.html
+.. _state and territory abbreviations: http://www.usps.com/
+   ncsc/lookups/abbreviations.html
 
 This is the vocabulary implementation::
 
