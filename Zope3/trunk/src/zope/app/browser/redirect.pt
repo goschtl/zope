@@ -1,0 +1,21 @@
+<html metal:use-macro="context/@@standard_macros/dialog">
+  <head>
+    <metal:block fill-slot="headers">
+      <meta http-equiv="refresh" content="0;url=./"
+        tal:attributes="content string:0;;url=${view/request/nextURL}" />
+    </metal:block>
+  </head>
+  <body>
+  <div metal:fill-slot="body">
+  
+     <h1>You are being redirected!</h1>
+
+     <p style="font-size: 150%">
+       If you you see this screen, click 
+       <a tal:attributes="href view/request/nextURL">here</a>.
+     </p>
+
+  </div>
+  </body>
+
+</html>

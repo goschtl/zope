@@ -13,7 +13,7 @@
 ##############################################################################
 """Login and Logout screens
 
-$Id: auth.py,v 1.1 2003/08/01 03:21:28 srichter Exp $
+$Id: auth.py,v 1.2 2003/08/01 13:47:38 srichter Exp $
 """
 from zope.interface import implements
 from zope.app.interfaces.publisher.http import ILogin, ILogout
@@ -29,6 +29,7 @@ class HTTPAuthenticationLogin(object):
         """See zope.app.interfaces.security.ILogin"""
         if isinstance(self.request.user, UnauthenticatedPrincipal):
             self.request.unauthorized("basic realm='Zope'")
+            return self.failed()
         else:
             if nextURL is None:
                 return self.confirmation()
@@ -36,6 +37,8 @@ class HTTPAuthenticationLogin(object):
                 self.request.response.redirect(nextURL)
 
     confirmation = ViewPageTemplateFile('login.pt')
+
+    failed = ViewPageTemplateFile('login_failed.pt')
 
 
 class HTTPAuthenticationLogout(object):
@@ -52,10 +55,16 @@ class HTTPAuthenticationLogout(object):
         """See zope.app.interfaces.security.ILogout"""
         if not isinstance(self.request.user, UnauthenticatedPrincipal):
             self.request.unauthorized("basic realm='Zope'")
+            if nextURL:
+                return self.redirect()
+
+        if nextURL is None:
+            return self.confirmation()
         else:
-            if nextURL is None:
-                return self.confirmation()
-            else:
-                self.request.response.redirect(nextURL)
+            return self.request.response.redirect(nextURL)
             
     confirmation = ViewPageTemplateFile('logout.pt')
+
+    redirect = ViewPageTemplateFile('redirect.pt')
+
+
