@@ -111,7 +111,6 @@
 /StandaloneZODB/ExtensionClass
 /StandaloneZODB/BTrees
 /StandaloneZODB/bsddb3Storage
-/StandaloneZODB/bsddb3Storage/bsddb3Storage
 /StandaloneZODB/bsddb3Storage/docs
 /StandaloneZODB/Persistence
 /StandaloneZODB/ThreadedAsync
@@ -122,7 +121,6 @@
 
 # Retire these in favor of BDBStorage
 /ZODB3/bsddb3Storage     
-/ZODB3/bsddb3Storage/bsddb3Storage
 /ZODB3/bsddb3Storage/docs
 
 /ZODB3/ZODB              /Packages/ZODB
