@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHubSetup.py,v 1.3 2002/11/30 18:37:17 jim Exp $
+$Id: ObjectHubSetup.py,v 1.4 2002/12/11 09:04:08 mgedmin Exp $
 """
 
 from Zope.App.OFS.Services.LocalEventService.tests.EventSetup import \
@@ -53,13 +53,5 @@ class ObjectHubSetup(EventSetup):
         configuration = ServiceConfiguration("ObjectHub", path)
 
         configure = traverse(default, 'configure')
-        configure.setObject("myObjectHubDir", configuration)
-
-        for i in range(1, 100):
-            c = traverse(configure, str(i))
-            if c == configuration:
-                break
-            i += 1
-
-        c.status = Active
-
+        key = configure.setObject("myObjectHubDir", configuration)
+        traverse(configure, key).status = Active

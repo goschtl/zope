@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: testCachingService.py,v 1.4 2002/12/06 18:03:31 alga Exp $
+$Id: testCachingService.py,v 1.5 2002/12/11 09:04:08 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -70,15 +70,9 @@ class CachingServiceSetup(EventSetup):
         configuration = ServiceConfiguration("CachingService", path)
 
         configure = traverse(default, 'configure')
-        configure.setObject("myCachingServiceDir", configuration)
-
-        # XXX: This can't be the easiest way to activate the service!
-        for i in range(1, 100):
-            c = traverse(configure, str(i))
-            if c == configuration:
-                break
-
-        c.status = Active
+        configure = traverse(default, 'configure')
+        key = configure.setObject("myCachingServiceDir", configuration)
+        traverse(configure, key).status = Active
 
 
 class TestCachingService(CachingServiceSetup, TestCase):
