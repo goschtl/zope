@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.5 2003/02/03 16:34:40 stevea Exp $
+$Id: adding.py,v 1.6 2003/03/04 16:28:48 tim_one Exp $
 """
 __metaclass__ = type
 
@@ -68,7 +68,7 @@ class Adding(BrowserView):
             view_name = name[2:]
         else:
             view_name = name
-            
+
         view = queryView(self, view_name, request)
         if view is not None:
             return view
@@ -87,17 +87,24 @@ class Adding(BrowserView):
     index = ViewPageTemplateFile("add.pt")
 
     def addingInfo(wrapped_self):
-        """Return menu data"""
+        """Return menu data.
+
+        This is sorted with title as primary key, and description
+        as secondary key.
+        """
         menu_service = getService(wrapped_self.context, "BrowserMenu")
-        return menu_service.getMenu(wrapped_self.menu_id,
-                                    wrapped_self,
-                                    wrapped_self.request)
+        result = menu_service.getMenu(wrapped_self.menu_id,
+                                      wrapped_self,
+                                      wrapped_self.request)
+        result.sort(lambda a, b: cmp((a['title'], a['description']),
+                                     (b['title'], b['description'])))
+        return result
     addingInfo = ContextMethod(addingInfo)
 
     def action(self, type_name, id=''):
         if type_name.startswith('@@'):
             type_name = type_name[2:]
-        
+
         if queryView(self, type_name, self.request) is not None:
             url = "%s=%s" % (type_name, id)
             self.request.response.redirect(url)
