@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+    - It is now possible to use a sub-directive called 'browser:widget' inside
+      'browser:addform' and 'browser:editform' to specify custom widgets and
+      customized properties of widgets for certain fields. Therefore it should
+      not be necessary anymore to create custom edit and add view classes just
+      to create custom widgets using 'CustomWidgetFactory'.
+
     - Until now, only a checkbox widget was available for boolean fields. This
       situation has changed, as we now also have BooleanRadioWidget,
       BoolenSelectWidget, and BoolenDropdownWidget.
