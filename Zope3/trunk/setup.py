@@ -222,6 +222,9 @@ ext_modules = [
     Extension(name = 'ZODB.winlock',
               sources = ['src/ZODB/winlock.c']
               ),
+    Extension("zope.i18nmessageid._zope_i18nmessageid_message",
+              ["src/zope/i18nmessageid/_zope_i18nmessageid_message.c"],
+              ),
 
     Extension("zope.proxy._zope_proxy_proxy",
               ["src/zope/proxy/_zope_proxy_proxy.c"],
