@@ -13,7 +13,7 @@
 ##############################################################################
 """ Server Control View
 
-$Id: globaltranslationservicecontrol.py,v 1.2 2003/08/17 06:05:26 philikon Exp $
+$Id: globaltranslationservicecontrol.py,v 1.3 2004/01/16 12:17:08 philikon Exp $
 """
 
 from zope.app.interfaces.applicationcontrol import IGlobalTSControl
@@ -35,7 +35,7 @@ class GlobalTSControlView:
         for domain, language in domains_languages:
             fileNames = list(catalogsInfo[(language, domain)])
             catalogsInfoMaps.append({'language':language, 'domain':domain,
-                                'fileNames':fileNames})
+                                     'fileNames':fileNames})
         return catalogsInfoMaps
 
 
