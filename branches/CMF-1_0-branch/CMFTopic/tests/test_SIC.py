@@ -15,7 +15,7 @@ class TestCase( unittest.TestCase ):
     
     def test_Empty( self ):
         sic = SIC('foo', 'foofield' )
-        assert sic.id == 'foo'
+        assert sic.getId() == 'foo'
         assert sic.field == 'foofield'
         assert sic.value == None
         assert len( sic.getCriteriaItems() ) == 0
@@ -23,7 +23,7 @@ class TestCase( unittest.TestCase ):
     def test_Nonempty( self ):
         sic = SIC('foo', 'foofield')
         sic.edit('0')
-        assert sic.id == 'foo'
+        assert sic.getId() == 'foo'
         assert sic.field == 'foofield'
         assert sic.value == 0
         items =sic.getCriteriaItems()

@@ -319,9 +319,9 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
                     continue
 
             if path:
-                subpath = path + '/' + subob.id
+                subpath = path + '/' + subob.getId()
             else:
-                subpath = subob.id
+                subpath = subob.getId()
             title = getattr(subob, 'title', None)
             if title:
                 name = '%s (%s)' % (subpath, title)
@@ -387,7 +387,7 @@ class DirectoryView (Folder):
         rval.sort()
         return rval
 
-    security.declarePublic('getid')
+    security.declarePublic('getId')
     def getId(self):
         return self.id
 
