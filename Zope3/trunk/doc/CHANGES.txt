@@ -6,6 +6,17 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  Zope X3.0.0 Milestone 3
+
+    What is Zope X3? It's Zope 3 "experimental". This is the release
+    that will provide the new features of Zope 3 without any Zope 2
+    support.   Zope 3.0 will provide support for Zope 2 content and
+    products, probably using conversion utilities of some sort. 
+
+
+
+  ------------------------------------------------------------------
+
   Zope X3.0.0 Milestone 2
 
     What is Zope X3? It's Zope 3 "experimental". This is the release
