@@ -17,8 +17,8 @@ Manage outbound RSS syndication of folder content.
 
 import os
 
-from Globals import HTMLFile, package_home, InitializeClass 
-from AccessControl import ClassSecurityInfo, SecurityManagement
+from Globals import HTMLFile, package_home, InitializeClass
+from AccessControl import ClassSecurityInfo, SecurityManagement, Unauthorized
 from Acquisition import aq_base, aq_inner, aq_parent
 from DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
@@ -53,7 +53,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
                   , action=Expression(
                         text='string: ${folder_url}/synPropertiesForm')
                   , condition=Expression(
-                        text='python: folder is object') 
+                        text='python: folder is object')
                   , permissions=(ManageProperties,)
                   , category='folder'
                   , visible=1
@@ -69,7 +69,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
     max_items = 15
 
     security = ClassSecurityInfo()
-    
+
     #ZMI Methods
     manage_options = ( ActionProviderBase.manage_options
                      + ( { 'label'  : 'Overview'
@@ -103,10 +103,9 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
 
     security.declareProtected(ManagePortal, 'policiesForm')
     policiesForm = HTMLFile('synPolicies', _dtmldir)
-
     security.declareProtected(ManagePortal, 'reportForm')
     reportForm = HTMLFile('synReports', _dtmldir)
-   
+
     security.declareProtected(ManagePortal, 'editProperties')
     def editProperties( self
                       , updatePeriod=None
@@ -331,13 +330,13 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
             return syInfo.syUpdateFrequency
         else:
             return 'Syndication is not Allowed'
-     
+
     security.declarePublic('getUpdateBase')
     def getUpdateBase(self, obj=None):
         """
         Return the base date to be used with the update frequency
         and the update period to calculate a publishing schedule.
-        
+
         Note:  I'm not sure what's best here, creation date, last
         modified date (of the folder being syndicated) or some
         arbitrary date.  For now, I'm going to build a updateBase
