@@ -11,42 +11,44 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_annotationrolepermissionmanager.py,v 1.1 2004/02/27 12:46:33 philikon Exp $
-"""
+"""Test handler for Annotation Role Permission Manager.
 
+$Id: test_annotationrolepermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+"""
+import unittest
 from zope.interface import implements
-from zope.component import getServiceManager, getService
 
+from zope.app import zapi
 from zope.app.tests import ztapi
+from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.services.servicenames import Permissions, Adapters
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.settings import Allow, Deny
+from zope.app.services.servicenames import Permissions, Adapters
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
-from zope.app.securitypolicy.interfaces import IRoleService
-from zope.app.securitypolicy.roleregistry import roleRegistry
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 
-import unittest
-
 class Manageable:
     implements(IAttributeAnnotatable)
+
+def defineRole(id, title=None, description=None):
+    role = Role(id, title, description)
+    ztapi.provideUtility(IRole, role, name=role.id)
+    return role
 
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        defineService=getServiceManager(None).defineService
-        provideService=getServiceManager(None).provideService
-        defineService('Roles', IRoleService)
+        defineService = zapi.getServiceManager(None).defineService
+        provideService = zapi.getServiceManager(None).provideService
         defineService(Permissions, IPermissionService)
-        provideService('Roles', roleRegistry)
         provideService(Permissions, permissionRegistry)
         ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
                              AttributeAnnotations)
@@ -57,11 +59,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         write = permissionRegistry.definePermission('write', 'Write Something')
         self.write = write.getId()
 
-        peon = roleRegistry.defineRole('peon', 'Poor Slob')
-        self.peon = peon.getId()
+        peon = defineRole('peon', 'Poor Slob')
+        self.peon = peon.id
 
-        manager = roleRegistry.defineRole('manager', 'Supreme Being')
-        self.manager = manager.getId()
+        manager = defineRole('manager', 'Supreme Being')
+        self.manager = manager.id
 
     def testNormal(self):
         obj = Manageable()

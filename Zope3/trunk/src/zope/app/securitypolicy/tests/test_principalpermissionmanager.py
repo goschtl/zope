@@ -13,9 +13,8 @@
 ##############################################################################
 """Test handler for PrincipalPermissionManager module.
 
-$Id: test_principalpermissionmanager.py,v 1.1 2004/02/27 12:46:33 philikon Exp $
+$Id: test_principalpermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
 """
-
 import unittest
 
 from zope.component.service import serviceManager as services

@@ -13,18 +13,19 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.1 2004/02/27 12:46:33 philikon Exp $
+$Id: test_securitydirectives.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
 """
 import unittest
 
-from zope.component.service import serviceManager as services
+from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.services.servicenames import Permissions, Authentication
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IAuthenticationService
 
 from zope.configuration.config import ConfigurationConflictError
 from zope.configuration import xmlconfig
-from zope.testing.cleanup import CleanUp
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 import zope.app.securitypolicy.tests
 import zope.app.securitypolicy.tests
@@ -33,8 +34,8 @@ from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry \
         import permissionRegistry as pregistry
 
-from zope.app.securitypolicy.interfaces import IRoleService
-from zope.app.securitypolicy.roleregistry import roleRegistry as rregistry
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.rolepermission \
         import rolePermissionManager as role_perm_mgr
 from zope.app.securitypolicy.principalpermission \
@@ -43,16 +44,20 @@ from zope.app.securitypolicy.principalrole \
     import principalRoleManager as principal_role_mgr
 
 
-class TestBase(CleanUp):
+def defineRole(id, title=None, description=None):
+    role = Role(id, title, description)
+    ztapi.provideUtility(IRole, role, name=role.id)
+    return role
+
+
+class TestBase(PlacelessSetup):
 
     def setUp(self):
-        CleanUp.setUp(self)
+        super(TestBase, self).setUp()
+        services = zapi.getServiceManager(None)
     
         services.defineService(Permissions, IPermissionService)
         services.provideService(Permissions, pregistry)
-    
-        services.defineService("Roles", IRoleService)
-        services.provideService("Roles", rregistry)
     
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
@@ -64,10 +69,10 @@ class TestRoleDirective(TestBase, unittest.TestCase):
         context = xmlconfig.file("role.zcml",
                                  zope.app.securitypolicy.tests)
 
-        role = rregistry.getRole("zope.Everyperson")
-        self.failUnless(role.getId().endswith('Everyperson'))
-        self.assertEqual(role.getTitle(), 'Tout le monde')
-        self.assertEqual(role.getDescription(),
+        role = zapi.getUtility(None, IRole, name="zope.Everyperson")
+        self.failUnless(role.id.endswith('Everyperson'))
+        self.assertEqual(role.title, 'Tout le monde')
+        self.assertEqual(role.description,
                          'The common man, woman, person, or thing')
 
     def testDuplicationRegistration(self):
@@ -79,9 +84,9 @@ class TestRoleDirective(TestBase, unittest.TestCase):
 class TestSecurityMapping(TestBase, unittest.TestCase):
 
     def setUp(self):
-        TestBase.setUp(self)
+        super(TestSecurityMapping, self).setUp()
         pregistry.definePermission("zope.Foo", '', '')
-        rregistry.defineRole("zope.Bar", '', '')
+        defineRole("zope.Bar", '', '')
         principalRegistry.definePrincipal("zope.Blah", '', '')
         self.context = xmlconfig.file("mapping.zcml",
                                       zope.app.securitypolicy.tests)

@@ -65,7 +65,7 @@
           python:path('repeat/setting/even') and 'row-normal' or 'row-hilite'">
               <td align="left" valign="top"
                   tal:define="ir repeat/setting/index"
-                  tal:content="python:path('view/roles')[ir].getId()">
+                  tal:content="python:path('view/roles')[ir].id">
                 Manager
               </td>
               <td>

@@ -11,22 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test handler for AnnotationPrincipalPermissionManager module."""
+"""Test handler for AnnotationPrincipalPermissionManager module.
 
+$Id: test_annotationprincipalpermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+"""
 import unittest
 
 from zope.interface import implements
-from zope.component import getService
 
 from zope.app.tests import ztapi
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.services.servicenames import Adapters
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.security.registries.permissionregistry \
-    import permissionRegistry as permregistry
-from zope.app.security.registries.principalregistry \
-    import principalRegistry as prinregistry
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.security.registries.permissionregistry import \
+     permissionRegistry as permregistry
+from zope.app.security.registries.principalregistry import \
+     principalRegistry as prinregistry
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.tests.placelesssetup import PlacelessSetup
 

@@ -3,34 +3,51 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
-<!-- Role Service -->
+<!-- Role Utility -->
 
-  <icon
-      name="zmi_icon" 
-      for="zope.app.securitypolicy.role.ILocalRoleService"
-      file="role_service.gif" />
+  <addform
+      label="New Role"
+      name="addRole.html"
+      schema="zope.app.securitypolicy.interfaces.IRole"
+      permission="zope.Security"
+      content_factory="zope.app.securitypolicy.role.PersistentRole"
+      arguments="title"
+      keyword_arguments="description"
+      fields="title description"
+      usage="addingdialog" />
 
-  <pages 
-     permission="zope.ManageServices" 
-     for="zope.app.securitypolicy.role.IRoleService"
-     class=".Contents">
+  <editform
+      schema="zope.app.securitypolicy.interfaces.IRole"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"/>
 
-     <page name="index.html" attribute="contents"
-           menu="zmi_views" title="Contents" />
-     <page name="removeObjects.html" attribute="removeObjects" />
+  <defaultView
+      for="zope.app.securitypolicy.interfaces.IRole"
+      name="edit.html" />
 
-  </pages>
+  <!-- Menu entry for "Add Utility" menu -->
+  <addMenuItem
+      class="zope.app.securitypolicy.role.PersistentRole"
+      title="Role"
+      description="A Persistent Role"
+      permission="zope.Security"
+      view="addRole.html"
+      />
 
-  <pages 
-     permission="zope.ManageServices" 
-     for="zope.app.securitypolicy.role.IRoleService"
-     class=".Add">
-
-    <page name="+" template="addrole.pt" 
-          menu="zmi_actions" title="Add" />
-    <page name="action.html" attribute="action" />
-
-  </pages>
+  <!-- Custom Role registration screen -->
+  <addform
+      label="New Role Registration"
+      for="zope.app.securitypolicy.interfaces.IRole"
+      name="addRegistration.html"
+      schema="zope.app.interfaces.services.utility.IUtilityRegistration"
+      class="zope.app.browser.services.utility.AddRegistration"
+      permission="zope.ManageServices"
+      content_factory="zope.app.securitypolicy.role.RoleRegistration"
+      arguments="name interface componentPath"
+      set_after_add="status"
+      fields="name interface componentPath permission status"
+      usage="addingdialog" />
 
 
 <!-- Role Permissions -->
@@ -63,6 +80,7 @@
       class=".principalroleview.PrincipalRoleView"
       template="principal_role_association.pt" />
       <!-- menu="zmi_actions" title="Principal Roles" / -->
+
 
 <!-- Principal Permission (not working) -->
 

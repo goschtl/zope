@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: rolepermission.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: rolepermission.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
 """
-from zope.component import getAdapter
 from zope.interface import implements
 
+from zope.app import zapi
 from zope.app.interfaces.annotation import IAnnotations
 
 from zope.app.security.settings import Allow, Deny, Unset
@@ -109,7 +109,7 @@ class AnnotationRolePermissionManager:
         # getting RolePermissions.
         from zope.proxy import removeAllProxies
         context = removeAllProxies(self._context)
-        annotations = getAdapter(context, IAnnotations)
+        annotations = zapi.getAdapter(context, IAnnotations)
         try:
             return annotations[annotation_key]
         except KeyError:
@@ -128,17 +128,17 @@ class RolePermissions:
         self._permissions = permissions
 
     def getId(self):
-        return self._role.getId()
+        return self._role.id
 
     def getTitle(self):
-        return self._role.getTitle()
+        return self._role.title
 
     def getDescription(self):
-        return self._role.getDescription()
+        return self._role.description
 
     def permissionsInfo(self):
-        prm = getAdapter(self._context, IRolePermissionManager)
-        rperms = prm.getPermissionsForRole(self._role.getId())
+        prm = zapi.getAdapter(self._context, IRolePermissionManager)
+        rperms = prm.getPermissionsForRole(self._role.id)
         settings = {}
         for permission, setting in rperms:
             settings[permission] = setting.getName()

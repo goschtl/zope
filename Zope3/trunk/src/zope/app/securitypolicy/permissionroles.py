@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: permissionroles.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: permissionroles.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
 """
 
 from zope.component import getAdapter
@@ -50,4 +50,4 @@ class PermissionRoles:
         for role, setting in proles:
             settings[role] = setting.getName()
         nosetting = Unset.getName()
-        return [settings.get(role.getId(), nosetting) for role in self._roles]
+        return [settings.get(role.id, nosetting) for role in self._roles]

@@ -13,15 +13,16 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: rolepermissionview.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
 """
 from datetime import datetime
 
-from zope.component import getService, getAdapter
+from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.services.servicenames import Permissions
 
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.app.securitypolicy.permissionroles import PermissionRoles
 from zope.app.securitypolicy.rolepermission import RolePermissions
@@ -31,15 +32,14 @@ class RolePermissionView:
     def roles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
-            roles = self._roles = getService(
-                self.context, "Roles"
-                ).getRoles()
+            roles = self._roles = \
+              [role for name, role in zapi.getUtilitiesFor(self.context, IRole)]
         return roles
 
     def permissions(self):
         permissions = getattr(self, '_permissions', None)
         if permissions is None:
-            permissions = self._permissions = getService(
+            permissions = self._permissions = zapi.getService(
                 self.context, Permissions
                 ).getPermissions()
         return permissions
@@ -66,15 +66,14 @@ class RolePermissionView:
     def permissionForID(self, pid):
         context = self.context
         roles = self.roles()
-        perm = getService(context, Permissions
+        perm = zapi.getService(context, Permissions
                           ).getPermission(pid)
         return PermissionRoles(perm, context, roles)
 
     def roleForID(self, rid):
         context = self.context
         permissions = self.permissions()
-        role = getService(context, "Roles"
-                          ).getRole(rid)
+        role = zapi.getUtility(context, IRole, name=rid)
         return RolePermissions(role, context, permissions)
 
 
@@ -83,9 +82,9 @@ class RolePermissionView:
         changed = False
 
         if 'SUBMIT' in self.request:
-            roles       = [r.getId() for r in self.roles()]
+            roles       = [r.id for r in self.roles()]
             permissions = [p.getId() for p in self.permissions()]
-            prm         = getAdapter(self.context, IRolePermissionManager)
+            prm         = zapi.getAdapter(self.context, IRolePermissionManager)
             for ip in range(len(permissions)):
                 rperm = self.request.get("p%s" % ip)
                 if rperm not in permissions: continue
@@ -105,12 +104,12 @@ class RolePermissionView:
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
-            prm = getAdapter(self.context, IRolePermissionManager)
+            prm = zapi.getAdapter(self.context, IRolePermissionManager)
             roles = self.roles()
             rperm = self.request.get('permission_id')
             settings = self.request.get('settings', ())
             for ir in range(len(roles)):
-                rrole = roles[ir].getId()
+                rrole = roles[ir].id
                 setting = settings[ir]
                 if setting == Unset.getName():
                     prm.unsetPermissionFromRole(rperm, rrole)
@@ -124,7 +123,7 @@ class RolePermissionView:
 
         if 'SUBMIT_ROLE' in self.request:
             role_id = self.request.get('role_id')
-            prm = getAdapter(self.context, IRolePermissionManager)
+            prm = zapi.getAdapter(self.context, IRolePermissionManager)
             allowed = self.request.get(Allow.getName(), ())
             denied = self.request.get(Deny.getName(), ())
             for permission in self.permissions():

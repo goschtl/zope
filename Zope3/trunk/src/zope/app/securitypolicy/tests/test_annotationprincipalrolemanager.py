@@ -11,28 +11,36 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test handler for PrincipalRoleManager module."""
+"""Test handler for PrincipalRoleManager module.
 
+$Id: test_annotationprincipalrolemanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+"""
 import unittest
 from zope.interface import implements
 from zope.component import getService
 
 from zope.app.tests import ztapi
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.services.servicenames import Adapters
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.security.registries.principalregistry \
-     import principalRegistry as pregistry
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.services.servicenames import Adapters
+from zope.app.security.registries.principalregistry import \
+     principalRegistry as pregistry
 from zope.app.security.settings import Allow, Deny
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
-from zope.app.securitypolicy.roleregistry import roleRegistry as rregistry
-from zope.app.securitypolicy.principalrole \
-        import AnnotationPrincipalRoleManager
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.principalrole import \
+     AnnotationPrincipalRoleManager
 
 class Manageable:
     implements(IAttributeAnnotatable)
+
+def defineRole(id, title=None, description=None):
+    role = Role(id, title, description)
+    ztapi.provideUtility(IRole, role, name=role.id)
+    return role
 
 class Test(PlacefulSetup, unittest.TestCase):
 
@@ -56,15 +64,16 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testUnboundPrincipalRole(self):
         principalRoleManager = self._make_roleManager()
-        role = rregistry.defineRole('ARole', 'A Role').getId()
+        role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()
-        self.assertEqual(principalRoleManager.getPrincipalsForRole(role), [])
-        self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
-                         [])
+        self.assertEqual(
+            principalRoleManager.getPrincipalsForRole(role), [])
+        self.assertEqual(
+            principalRoleManager.getRolesForPrincipal(principal), [])
 
     def testPrincipalRoleAllow(self):
         principalRoleManager = self._make_roleManager()
-        role = rregistry.defineRole('ARole', 'A Role').getId()
+        role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()
         principalRoleManager.assignRoleToPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
@@ -74,7 +83,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testPrincipalRoleDeny(self):
         principalRoleManager = self._make_roleManager()
-        role = rregistry.defineRole('ARole', 'A Role').getId()
+        role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
@@ -84,7 +93,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testPrincipalRoleUnset(self):
         principalRoleManager = self._make_roleManager()
-        role = rregistry.defineRole('ARole', 'A Role').getId()
+        role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
         principalRoleManager.unsetRoleForPrincipal(role, principal)
@@ -95,8 +104,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testManyRolesOnePrincipal(self):
         principalRoleManager = self._make_roleManager()
-        role1 = rregistry.defineRole('Role One', 'Role #1').getId()
-        role2 = rregistry.defineRole('Role Two', 'Role #2').getId()
+        role1 = defineRole('Role One', 'Role #1').id
+        role2 = defineRole('Role Two', 'Role #2').id
         prin1 = self._make_principal()
         principalRoleManager.assignRoleToPrincipal(role1, prin1)
         principalRoleManager.assignRoleToPrincipal(role2, prin1)
@@ -107,7 +116,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testManyPrincipalsOneRole(self):
         principalRoleManager = self._make_roleManager()
-        role1 = rregistry.defineRole('Role One', 'Role #1').getId()
+        role1 = defineRole('Role One', 'Role #1').id
         prin1 = self._make_principal()
         prin2 = self._make_principal('Principal 2', 'Principal Two')
         principalRoleManager.assignRoleToPrincipal(role1, prin1)
@@ -121,8 +130,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalRoleManager = self._make_roleManager()
         principalsAndRoles = principalRoleManager.getPrincipalsAndRoles()
         self.assertEqual(len(principalsAndRoles), 0)
-        role1 = rregistry.defineRole('Role One', 'Role #1').getId()
-        role2 = rregistry.defineRole('Role Two', 'Role #2').getId()
+        role1 = defineRole('Role One', 'Role #1').id
+        role2 = defineRole('Role Two', 'Role #2').id
         prin1 = self._make_principal()
         prin2 = self._make_principal('Principal 2', 'Principal Two')
         principalRoleManager.assignRoleToPrincipal(role1, prin1)

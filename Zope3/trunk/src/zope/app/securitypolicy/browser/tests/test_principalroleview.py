@@ -11,23 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_principalroleview.py,v 1.1 2004/02/27 12:46:32 philikon Exp $
-"""
+"""Principal-Role View Tests
 
+$Id: test_principalroleview.py,v 1.2 2004/03/05 18:39:08 srichter Exp $
+"""
 import unittest
 
-from zope.component import getServiceManager
 from zope.interface import implements
 from zope.publisher.browser import BrowserView, TestRequest
 
+from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.interfaces.security import IAuthenticationService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.servicenames import Authentication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IRoleService
 from zope.app.securitypolicy.browser.principalroleview import \
      PrincipalRoleView
 
@@ -47,15 +49,6 @@ class DummyManager:
     def getSetting(self, role, principal):
         return DummySetting('%r:%r' % (role, principal))
 
-class DummyRoleService:
-
-    implements(IRoleService, ISimpleService)
-
-    def __init__(self, roles):
-        self._roles = roles
-
-    def getRoles(self):
-        return self._roles
 
 class DummyObject:
     def __init__(self, id, title):
@@ -78,19 +71,21 @@ class DummyAuthenticationService:
     def getPrincipals(self, name):
         return self._principals
 
+def defineRole(id, title=None, description=None):
+    role = Role(id, title, description)
+    ztapi.provideUtility(IRole, role, name=role.id)
+    return role
+
+
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        self._roles = []
-        self._roles.append(DummyObject('qux', 'Qux'))
-        self._roles.append(DummyObject('baz', 'Baz'))
-        defineService=getServiceManager(None).defineService
-        provideService=getServiceManager(None).provideService
 
-        defineService("Roles", IRoleService)
-        provideService("Roles"
-                      , DummyRoleService(roles = self._roles))
+        self._roles = [defineRole('qux', 'Qux'), defineRole('baz', 'Baz')]
+        
+        defineService = zapi.getServiceManager(None).defineService
+        provideService = zapi.getServiceManager(None).provideService
 
         defineService(Authentication, IAuthenticationService)
 
@@ -109,17 +104,17 @@ class Test(PlacefulSetup, unittest.TestCase):
         roles = list(view.getAllRoles())
         self.assertEqual(len(roles), 2)
 
-        ids = map(lambda x: x.getId(), self._roles)
+        ids = [role.id for role in self._roles]
 
         for role in roles:
-            self.failUnless(role.getId() in ids)
+            self.failUnless(role.id in ids)
 
     def testPrincipals(self):
         view = self._makeOne()
         principals = list(view.getAllPrincipals())
         self.assertEqual(len(principals), 2)
 
-        ids = map(lambda x: x.getId(), self._principals)
+        ids = [p.getId() for p in self._principals]
 
         for principal in principals:
             self.failUnless(principal.getId() in ids, (principal, ids))
@@ -130,7 +125,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         grid = view.createGrid()
 
         p_ids = [p.getId() for p in view.getAllPrincipals()]
-        r_ids = [r.getId() for r in view.getAllRoles()]
+        r_ids = [r.id for r in view.getAllRoles()]
 
         self.failUnless(grid.listAvailableValues())
 

@@ -13,35 +13,33 @@
 ##############################################################################
 """Tests the standard zope policy.
 
-$Id: test_zopepolicy.py,v 1.1 2004/02/27 12:46:33 philikon Exp $
+$Id: test_zopepolicy.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import implements
-from zope.component.service import serviceManager as services
-from zope.component import getService
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IAuthenticationService
 
-from zope.app.tests import ztapi
-from zope.app.services.servicenames import Permissions, Adapters
-from zope.app.services.servicenames import Authentication
+from zope.app import zapi
+from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotations
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.principalregistry import PrincipalBase
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.services.servicenames import Permissions, Adapters
+from zope.app.services.servicenames import Authentication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.tests import ztapi
 
-from zope.app.securitypolicy.interfaces import IRoleService
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 
+from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.zopepolicy import permissionsOfPrincipal
-from zope.app.securitypolicy.roleregistry import roleRegistry
 from zope.app.securitypolicy.principalpermission \
      import principalPermissionManager
 from zope.app.securitypolicy.rolepermission import rolePermissionManager
@@ -65,22 +63,23 @@ class Principal(PrincipalBase):
     pass
 
 
+def defineRole(id, title=None, description=None):
+    role = Role(id, title, description)
+    ztapi.provideUtility(IRole, role, name=role.id)
+    return role
+
+
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-
+        services = zapi.getServiceManager(None)
 
         services.defineService(Permissions, IPermissionService)
         services.provideService(Permissions, permissionRegistry)
 
-        services.defineService("Roles", IRoleService)
-        services.provideService("Roles", roleRegistry)
-
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
-
-
 
         ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
@@ -111,14 +110,16 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.update = update.getId()
 
         # ... and some roles...
-        peon = roleRegistry.defineRole('Peon', 'Site Peon')
-        self.peon = peon.getId()
+        defineRole("zope.Anonymous", "Everybody",
+                   "All users have this role implicitly")
+        peon = defineRole('Peon', 'Site Peon')
+        self.peon = peon.id
 
-        manager = roleRegistry.defineRole('Manager', 'Site Manager')
-        self.manager = manager.getId()
+        manager = defineRole('Manager', 'Site Manager')
+        self.manager = manager.id
 
-        arole = roleRegistry.defineRole('Another', 'Another Role')
-        self.arole = arole.getId()
+        arole = defineRole('Another', 'Another Role')
+        self.arole = arole.id
 
         # grant and deny some permissions to a principal
         principalPermissionManager.grantPermissionToPrincipal(self.create,
@@ -140,7 +141,6 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.policy = self._makePolicy()
 
     def _makePolicy(self):
-
         from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
         return ZopeSecurityPolicy()
 

@@ -24,8 +24,8 @@
        <span i18n:translate="">Role(s)</span>:
        <select name="roles:list" multiple="multiple">
          <option tal:repeat="role view/getAllRoles"
-                 tal:attributes="value role/getId"
-                 tal:content="role/getTitle">my title</option>
+                 tal:attributes="value role/id"
+                 tal:content="role/title">my title</option>
        </select>
 
        <input type="submit" name="Filter" value="Filter"
@@ -52,8 +52,8 @@
                &nbsp;
              </td>
              <td class="role" tal:repeat="role listRoles"
-                              tal:content="role/getTitle">
-               Role Id
+                              tal:content="role/title">
+               Role Title
              </td>
            </tr>
 
@@ -65,11 +65,11 @@
              <td class="principalRole" tal:repeat="role listRoles">
                <select name="grid.role.principal:records"
                        tal:attributes="
-                           name string:grid.${role/getId}.${principal/getId}"
+                           name string:grid.${role/id}.${principal/getId}"
                        tal:define="selectedValue
                                    python:principalRoleGrid.getValue(
                                               principal.getId(),
-                                              role.getId()
+                                              role.id
                                               )" >
                  <option value="" tal:repeat="defaultValue listValues"
                          tal:attributes="
@@ -91,7 +91,7 @@
 
          <input type="hidden" name="roles:list"
                 tal:repeat="role listRoles"
-                tal:attributes="value role/getId" />
+                tal:attributes="value role/id" />
 
 	 <metal:block define-slot="buttons">
 

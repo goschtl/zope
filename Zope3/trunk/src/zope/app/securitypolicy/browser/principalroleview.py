@@ -12,17 +12,18 @@
 #
 ##############################################################################
 """Management view component for principal-role management (Zope2's
-"local roles").
+'local roles').
 
-$Id: principalroleview.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: principalroleview.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
 """
 from datetime import datetime
 
-from zope.component import getService, getAdapter
+from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.settings import Unset, Deny, Allow
 from zope.app.services.servicenames import Authentication
 
+from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 
@@ -31,7 +32,7 @@ class PrincipalRoleView:
     def getAllPrincipals(self):
         principals = getattr(self, '_principals', None)
         if principals is None:
-            principals = self._principals = getService(
+            principals = self._principals = zapi.getService(
                 self.context, Authentication
                 ).getPrincipals('')
         return principals
@@ -39,8 +40,8 @@ class PrincipalRoleView:
     def getAllRoles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
-            roles = self._roles = getService(self.context, "Roles"
-                ).getRoles()
+            roles = self._roles = \
+              [role for name, role in zapi.getUtilitiesFor(self.context, IRole)]
         return roles
 
     def createGrid(self, principals=None, roles=None):
@@ -50,7 +51,7 @@ class PrincipalRoleView:
                 principals = self.getAllPrincipals()
             else:
                 # Ugh, we have ids, but we want objects
-                auth_service = getService(self.context, Authentication)
+                auth_service = zapi.getService(self.context, Authentication)
                 principals = [auth_service.getPrincipal(principal)
                               for principal in principals]
 
@@ -60,11 +61,9 @@ class PrincipalRoleView:
             if roles is None:
                 roles = self.getAllRoles()
             else:
-                # Ugh, we have ids, but we want objects
                 # XXX This code path needs a test
-                role_service = getService(self.context, 'Roles')
-                roles = [role_service.getRole(role)
-                         for role in roles]
+                utils = zapi.getUtilitiesFor(self.context, IRole)
+                roles = [role for name, role in utils if name in roles]
 
         return PrincipalRoleGrid(principals, roles, self.context)
 
@@ -74,7 +73,7 @@ class PrincipalRoleView:
         if 'APPLY' in self.request:
             principals = self.request.get('principals')
             roles = self.request.get('roles')
-            prm = getAdapter(self.context, IPrincipalRoleManager)
+            prm = zapi.getAdapter(self.context, IPrincipalRoleManager)
             for role in roles:
                 for principal in principals:
                     name = 'grid.%s.%s' % (role, principal)
@@ -102,10 +101,10 @@ class PrincipalRoleGrid:
         self._roles = roles
         self._grid = {}
 
-        map = getAdapter(context, IPrincipalRoleMap)
+        map = zapi.getAdapter(context, IPrincipalRoleMap)
 
         for role in roles:
-            rid = role.getId()
+            rid = role.id
             for principal in principals:
                 pid = principal.getId()
                 setting = map.getSetting(rid, pid)
@@ -121,7 +120,7 @@ class PrincipalRoleGrid:
         return self._roles
 
     def roleIds(self):
-        return [r.getId() for r in self._roles]
+        return [r.id for r in self._roles]
 
     def getValue(self, principal_id, role_id):
         return self._grid[(principal_id, role_id)]

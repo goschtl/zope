@@ -41,12 +41,12 @@
           <div class="list-item">
             <a href="RolePermissions.html"
               tal:attributes="
-              href string:RolePermissions.html?role_to_manage=${role/getId}" 
-              tal:content="role/getTitle">Anonymous</a>
+              href string:RolePermissions.html?role_to_manage=${role/id}" 
+              tal:content="role/title">Anonymous</a>
             <input type="hidden" name="r0" value=""
               tal:attributes="
               name string:r${repeat/role/index};
-              value  string:${role/getId}" />
+              value  string:${role/id}" />
   
           </div>
         </td>
