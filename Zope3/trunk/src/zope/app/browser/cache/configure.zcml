@@ -8,14 +8,14 @@
       title="RAM Cache" action="zope.app.caching.RAMCache"
       description="RAM Cache"/>
 
-  <browser:view for="zope.app.interfaces.cache.ram.IRAMCache"
-		factory="zope.app.browser.cache.ram.RAMCacheView"
+  <browser:pages for="zope.app.interfaces.cache.ram.IRAMCache"
+		class="zope.app.browser.cache.ram.RAMCacheView"
 		permission="zope.Public"
 		>
     <browser:page name="editAction.html" attribute="action" />
-    <browser:page name="index.html"       template="edit.pt" />
-    <browser:page name="stats.html"      template="stats.pt" />
-  </browser:view>
+    <browser:page name="index.html"       template="ramedit.pt" />
+    <browser:page name="stats.html"      template="ramstats.pt" />
+  </browser:pages>
 
   <browser:menuItems menu="zmi_views"
      for="zope.app.interfaces.cache.ram.IRAMCache">
@@ -23,9 +23,9 @@
     <browser:menuItem title="Statistics" action="stats.html"/>
   </browser:menuItems>
 
-  <browser:view for="zope.app.interfaces.annotation.IAnnotatable"
+  <browser:pages for="zope.app.interfaces.annotation.IAnnotatable"
                 permission="zope.ManageBindings"
-                factory="zope.app.browser.cache.cacheable.CacheableView">
+                class="zope.app.browser.cache.cacheable.CacheableView">
 
     <browser:page name="Caching.html"
                   attribute="form" />
@@ -33,6 +33,6 @@
                   attribute="action" />
     <browser:page name="InvalidateCache.html"
                   attribute="invalidate" />
-  </browser:view>
+  </browser:pages>
 
 </zopeConfigure>

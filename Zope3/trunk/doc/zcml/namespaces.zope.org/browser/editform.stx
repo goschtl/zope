@@ -1,0 +1,70 @@
+editform (function edit)
+
+
+
+  Attributes
+
+    layer -- (optional) 
+
+      The layer the view is in.
+      
+      A skin is composed of layers. It is common to put skin specific
+      views in a layer named after the skin. If the 'layer' attribute
+      is not supplied, it defaults to
+      'default'.
+
+    title -- (optional) 
+
+      The browser menu label for the edit form
+      
+      This attribute defaults to "Edit".
+
+    name -- (required) 
+
+      The name of the generated edit view.
+
+    for -- (optional) 
+
+      The interface this page (view) applies to.
+      
+      The view will be for all objects that implement this
+      
+      The schema is used if the for attribute is not specified.
+      interface. If the for attribute is specified, the given
+      interface must extend the schema.
+
+    permission -- (required) 
+
+      The permission needed to use the view.
+      
+      This attribute is required.
+
+    menu -- (optional) 
+
+      The browser menu to include the edit form in.
+      
+      Many views are included in menus. It's convenient to name
+      the menu in the page directive, rather than having to give a
+      separate menuItem directive.
+
+    schema -- (required) 
+
+      The schema from which the edir form is generated.
+      
+      A schema is an interface that includes fields.
+
+    class -- (optional) 
+
+      A class to provide custom widget defineitions or methods to be
+      used by a custom template.
+
+    template -- (optional) 
+
+      An alternate template to use for the edit form.
+      
+      XXX Need to document how to extend the default.
+
+    label -- (required) 
+
+      A label to be used as the heading for the form.
+

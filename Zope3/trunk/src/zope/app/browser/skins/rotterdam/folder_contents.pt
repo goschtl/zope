@@ -22,6 +22,86 @@ Add new content:<br>
 <div metal:define-macro="contents">
 
       <table id="sortable" class="listing" summary="Content listing"
+             tal:condition="request/type_name|nothing"
+             tal:define="container_contents view/listContentInfo"
+             >
+    
+        <thead> 
+          <tr>
+            <th>&nbsp;</th>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Size</th>
+            <th>Created</th>
+            <th>Modified</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+          <td></td>
+          <td>
+          <form name="addForm" action="+/action.html" method="POST">
+            <input type="hidden" name="type_name" 
+                   tal:attributes="value request/type_name">
+            <input name="id" value="">
+          </form>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          </tr>
+
+          <metal:block tal:repeat="item container_contents">
+            <tr tal:define="oddrow repeat/item/odd; url item/url"
+                tal:attributes="class python:oddrow and 'even' or 'odd'" > 
+              <td>
+                <input type="checkbox" class="noborder" name="ids:list" id="#"
+                       value="#"
+                       tal:attributes="value item/id;
+                                       id python: 'cb_'+item['id'];
+                                       checked request/ids_checked|nothing;"/>
+              </td>
+              <td> 
+                <a href="#" 
+                   tal:attributes="href 
+                                   string:${url}/@@SelectedManagementView.html"
+                   tal:content="structure item/icon|default"
+                   >
+                </a> 
+                <a href="#" 
+                   tal:attributes="href 
+                                   string:${url}/@@SelectedManagementView.html"
+                   tal:content="item/id"
+                   >foo</a> 
+              </td>
+              <td><span tal:content="item/title|default">&nbsp;</span></td>
+              <td><span tal:attributes="size item/size/sizeForSorting"
+                        tal:content="item/size/sizeForDisplay">&nbsp;</span></td>
+              <td><span tal:define="created item/created|default"
+                        tal:content="created">&nbsp;</span></td>
+              <td><span tal:define="modified item/modified|default"
+                        tal:content="modified">&nbsp;</span></td>
+            </tr>
+          </metal:block>
+
+        </tbody> 
+      </table>
+
+      <script tal:condition="request/type_name|nothing"><!--
+          prettydump('focus', LG_INFO);
+          document.addForm.id.focus();
+          //-->
+      </script>
+
+
+  <form name="containerContentsForm" method="get" action="." 
+        tal:condition="not:request/type_name|nothing"
+        tal:define="container_contents view/listContentInfo"
+        >
+
+
+      <table id="sortable" class="listing" summary="Content listing"
              metal:define-macro="contents_table"
              >
     
@@ -37,23 +117,6 @@ Add new content:<br>
         </thead>
 
         <tbody>
-  <tr tal:condition="request/type_name|nothing">
-  <td></td>
-  <td>
-  <form name="addForm" action="+/action.html" method="POST">
-  <input type="hidden" name="type_name" tal:attributes="value request/type_name">
-  <input name="id" value="">
-  </form>
-  </td>
-  <td></td>
-  <td></td>
-  <td></td>
-  </tr>
-  <form name="containerContentsForm" method="get" action="." 
-        tal:define="container_contents view/listContentInfo"
-        tal:condition="container_contents"
-        >
-
 
         <metal:block tal:repeat="item container_contents">
           <tr tal:define="oddrow repeat/item/odd; url item/url"
@@ -87,17 +150,13 @@ Add new content:<br>
                       tal:content="modified">&nbsp;</span></td>
           </tr>
         </metal:block>
-  </form>
 
         </tbody> 
       </table>
       <input type="submit" name="@@removeObjects.html:method" value="Delete"/>
 
-      <script tal:condition="request/type_name|nothing"><!--
-          prettydump('focus', LG_INFO);
-          document.addForm.id.focus();
-          //-->
-      </script>
+  </form>
+
 </div>
 
 </div>

@@ -1,6 +1,10 @@
-view (class zope.app.publisher.browser.view)
+addview (function addview)
 
-  The view directive defines a viewe that has subpages.
+  The addview directive defines an add view that has subpages.
+  
+  An add view is a view for a specific adding interface,
+  IAdding. This directive is a convenience directive that allows
+  the for interface to be ommitted, since it is implied.
   
   The pages provided by the defined view are accessed by first
   traversing to the view name and then traversing to the page

@@ -1,0 +1,69 @@
+menuItems (class zope.app.publisher.browser.menuItemsDirective)
+
+  Define a group of browser menu items
+  
+  This directive is useful when many menu items are defined for
+  the same interface and menu.
+
+  Attributes
+
+    menu -- (required) 
+
+      The (name of the) menu the items are defined for
+
+    for -- (optional) 
+
+      The interface the menu items are defined for
+
+  Subdirectives
+
+    menuItem (method menuItem)
+
+      Define a menu item within a group of menu items
+
+      Attributes
+
+        action -- (required) 
+
+          The relative url to use if the item is selected
+          
+          The url is relative to the object the menu is being
+          displayed for.
+
+        filter -- (optional) 
+
+          A condition for displaying the menu item
+          
+          The condition is given as a TALES expression. The
+          expression has access to the variables:
+          
+          context -- The object the menu is being displayed for
+          
+          request -- The browser request
+          
+          nothing -- None
+          
+          The menu item will not be displayed if there is a filter
+          and the filter evaluates to a false value.
+
+        permission -- (optional) 
+
+          The id of the permission needed access the item
+          
+          This can usually be infered by the system, however, doing
+          so may be expensive. When displaying a menu, the system
+          tries to traverse to the URLs given in each action to
+          determine whether the url is accessable to the current
+          user.  This can be avoided if the permission is given explicitly.
+
+        description -- 
+
+          A longer explaination of the menu item
+          
+          A UI may display this with the item or display it when the
+          user requests more assistance.
+
+        title -- (required) 
+
+          The text to be displayed for the menu item
+

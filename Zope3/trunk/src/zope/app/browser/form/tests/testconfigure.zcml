@@ -4,12 +4,12 @@
 >
 
   <!-- Test view for folders -->
-  <browser:view
+  <browser:pages
       permission="zope.View" 
       for="zope.app.interfaces.content.folder.IFolder"  
-      factory=".SchemaTestObject.EditFactory">
+      class=".SchemaTestObject.EditFactory">
       <browser:page name="testSchemaFormView.html" attribute="form" />
       <browser:page name="testSchemaFormAction.html" attribute="action" />
-  </browser:view>
+  </browser:pages>
 
 </zopeConfigure>

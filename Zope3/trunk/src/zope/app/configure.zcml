@@ -75,6 +75,7 @@
   <include package="zope.app.dublincore" />
   <include package="zope.app.startup" />
   <include package="zope.app.index" />
+  <include package="zope.app.pagetemplate" />
 
 <!-- Views -->
 

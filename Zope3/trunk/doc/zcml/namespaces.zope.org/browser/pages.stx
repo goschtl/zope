@@ -1,0 +1,106 @@
+pages (class zope.app.publisher.browser.pages)
+
+  Define multiple pages without repeating all of the parameters.
+  
+  The pages directive allows multiple page views to be defined
+  without repeating the 'for', 'permission', 'class', 'layer',
+  'allowed_attributes', and 'allowed_interface' attributes.
+
+  Attributes
+
+    layer -- (optional) 
+
+      The layer the view is in.
+      
+      A skin is composed of layers. It is common to put skin specific
+      views in a layer named after the skin. If the 'layer' attribute
+      is not supplied, it defaults to
+      'default'.
+
+    for -- (required) 
+
+      The interface this page (view) applies to.
+      
+      The view will be for all objects that implement this interface.
+      
+      To provide a page for all components, use
+      "zope.interface.Interface".  To provide a page for all
+      objects, use "*".
+
+    allowed_attributes -- (optional) 
+
+      View attributes that are also allowed if user has permission.
+      
+      By default, 'permission' only applies to viewing the view and any
+      possible sub views. By specifying 'allowed_attributes', you can
+      make the permission also apply to the extra attributes on the
+      view object.
+
+    permission -- (required) 
+
+      The permission needed to use the view.
+
+    allowed_interface -- (optional) 
+
+      Interface that is also allowed if user has permission.
+      
+      By default, 'permission' only applies to viewing the view and
+      any possible sub views. By specifying this attribute, you can
+      make the permission also apply to everything described in the
+      supplied interface.
+
+    class -- 
+
+      A class to use with a template, or to provide an attribute
+      to publish.
+      
+      It's common to provide a class with methods to be used by
+      the template to prevent including Python code in the template.
+
+  Subdirectives
+
+    page (method page)
+
+      Attributes
+
+        attribute -- (optional) 
+
+          If a class is used, this is the name of the attribute to be used
+          
+          This is the attribute, usually a method, to be published as
+          the page (view).  The fault is "__call__".
+
+        title -- (optional) 
+
+          The browser menu label for the page (view)
+          
+          This attribute must be supplied if a menu attribute is
+          supplied.
+
+        name -- (required) 
+
+          The name of the view defined by the page.
+          
+          The name shows up in URLs/paths. For example 'foo' or
+          'foo.html'. This attribute is required unless you use the
+          subdirective 'page' to create sub views. If you do not have
+          sub pages, it is common to use an extension for the view name
+          such as '.html'. If you do have sub pages and you want to
+          provide a view name, you shouldn't use
+          extensions.
+
+        template -- 
+
+          The name of a page template.
+          
+          Refers to a file containing a page template (must end in
+          extension '.pt').
+
+        menu -- (optional) 
+
+          The browser menu to include the page (view) in.
+          
+          Many views are included in menus. It's convenient to name
+          the menu in the page directive, rather than having to give a
+          separate menuItem directive.
+

@@ -1,0 +1,16 @@
+menu (function              zope.app.publisher.browser.menuDirective)
+
+  Define a new browser menu
+
+  Attributes
+
+    name -- 
+
+      The name of the menu.
+      
+      This is, effectively, an id.
+
+    title -- 
+
+      A descriptive title for documentation purposes
+

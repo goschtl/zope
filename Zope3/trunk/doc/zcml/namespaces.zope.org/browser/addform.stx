@@ -1,0 +1,4 @@
+addform (function zope.app.browser.form.add)
+
+  Attributes
+

@@ -1,0 +1,28 @@
+menuItem (function          zope.app.publisher.browser.menuItemDirective)
+
+  Attributes
+
+    filter -- 
+
+
+
+    description -- 
+
+
+
+    for -- 
+
+
+
+    title -- 
+
+
+
+    action -- 
+
+
+
+    menu -- 
+
+
+

@@ -47,7 +47,7 @@
   <page
      for="*"
      name="manage"
-     permission="zope.Public"
+     permission="zope.ManageContent"
      class=".managementviewselector.ManagementViewSelector" 
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
@@ -106,7 +106,7 @@
   <view
       name="zope.app.rdb.gadflyda.GadflyAdapter"
       for="zope.app.interfaces.container.IAdding"
-      factory="zope.app.browser.gadflyda.GadflyDAAddView"
+      class="zope.app.browser.gadflyda.GadflyDAAddView"
       permission="zope.ManageServices">
 
     <page name="+" attribute="add" />
@@ -131,36 +131,39 @@
     <menuItem title="Test" action="testForm.html"/>
     </menuItems>
 
-  <view
+  <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       permission="zope.View"
-      factory="zope.app.browser.rdb.Connection">
+      class="zope.app.browser.rdb.Connection"
+      >
     <page name="editForm.html"
         template="rdbconnection.pt" />
     <page name="edit.html" attribute="edit" />
     <page name="connect.html" attribute="connect" />
     <page name="disconnect.html" attribute="disconnect" />
   
-    </view>
+    </pages>
 
-  <view
+  <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       permission="zope.View"
-      factory="zope.app.browser.rdb.TestSQL">
-    <page name="testForm.html" template="testsql.pt" />
-    <page name="test.html" template="testresults.pt" />
+      class="zope.app.browser.rdb.TestSQL"
+      >
+    <page name="testForm.html" template="rdbtestsql.pt" />
+    <page name="test.html" template="rdbtestresults.pt" />
 
-    </view>
+    </pages>
 
 <!-- Undo -->
 
-  <view
+  <pages
+      for="*"
       permission="zope.ManageContent"
-      factory="zope.app.browser.undo.Undo" >
+      class="zope.app.browser.undo.Undo" >
 
      <page name="undoForm.html" attribute="index" />
      <page name="undo.html" attribute="action" />
-     </view>
+     </pages>
 
   <menuItem
       for="*"

@@ -5,7 +5,7 @@
 <browser:view 
    permission="zope.ManageServices" 
    for="zope.i18n.interfaces.ITranslationService"
-   factory="zope.app.browser.services.translation.translate.Translate">
+   class="zope.app.browser.services.translation.translate.Translate">
 
    <browser:page name="index.html" attribute="index" />
    <browser:page name="translateMessage.html" attribute="translateMessage" />
@@ -33,7 +33,7 @@
 <browser:view 
    permission="zope.ManageServices" 
    for="zope.i18n.interfaces.ITranslationService"
-   factory="zope.app.browser.services.translation.exportimport.ExportImport">
+   class="zope.app.browser.services.translation.exportimport.ExportImport">
 
    <browser:page name="exportImportForm.html" attribute="exportImportForm" />
 
@@ -45,7 +45,7 @@
 <browser:view 
    permission="zope.ManageServices" 
    for="zope.i18n.interfaces.ITranslationService"
-   factory="zope.app.browser.services.translation.synchronize.Synchronize">
+   class="zope.app.browser.services.translation.synchronize.Synchronize">
 
    <browser:page name="synchronizeForm.html" attribute="synchronizeForm" />
    <browser:page name="synchronize.html" attribute="synchronize" />

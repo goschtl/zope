@@ -5,14 +5,14 @@
 >
 
   <!-- ServerControl View Directives -->
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
       permission="zope.ManageApplication"
-      factory="zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
+      class="zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
     
     <browser:page name="ServerControlForm.html" attribute="index" />
     <browser:page name="ServerControl.html"     attribute="action" />
-  </browser:view>
+  </browser:pages>
  
 
   <browser:menuItem

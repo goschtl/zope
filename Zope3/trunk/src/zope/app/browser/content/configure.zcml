@@ -66,10 +66,10 @@
       class="zope.app.browser.content.i18n.I18nFileView"
       />
 
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.content.i18nfile.II18nFile"
       permission="zope.View"
-      factory="zope.app.browser.content.i18n.I18nFileEdit">
+      class="zope.app.browser.content.i18n.I18nFileEdit">
 
       <browser:page
           name="editForm.html" 
@@ -80,7 +80,7 @@
           attribute="action" 
           />
 
-      </browser:view>
+      </browser:pages>
 
   <browser:menuItems menu="zmi_views"
       for="zope.app.interfaces.content.i18nfile.II18nFile">
@@ -154,15 +154,15 @@
       class="zope.app.browser.content.i18nimage.I18nImageData" 
       />
 
-  <browser:view
+  <browser:pages
       for="zope.app.content.i18nimage.II18nImage"
       permission="zope.ManageContent"
-      factory="zope.app.browser.content.i18nimage.I18nImageEdit">
+      class="zope.app.browser.content.i18nimage.I18nImageEdit">
 
       <browser:page name="upload.html" template="i18nimageedit.pt" />
       <browser:page name="uploadAction.html" attribute="action" />
 
-      </browser:view>
+      </browser:pages>
 
   <browser:menuItems 
       menu="zmi_views" 
@@ -228,7 +228,7 @@
       for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.ManageContent" 
       name="create"  
-      factory="zope.app.browser.content.folder.FolderAdding">
+      class="zope.app.browser.content.folder.FolderAdding">
 
     <browser:page name="index.html" template="add.pt" />
     <browser:page name="action.html" attribute="action" />
@@ -252,16 +252,25 @@
       description="A simple Folder." 
       />
 
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.ManageContent" 
-      factory="zope.app.browser.container.contents.Contents">
+      class="zope.app.browser.container.contents.Contents"
+      >
 
-    <browser:page name="index.html" attribute="index" permission="zope.View" />
     <browser:page name="contents.html" attribute="contents" />
     <browser:page name="removeObjects.html" attribute="removeObjects" />
 
-    </browser:view>
+    </browser:pages>
+
+  <browser:pages
+      for="zope.app.interfaces.content.folder.IFolder"
+      permission="zope.View" 
+      class="zope.app.browser.container.contents.Contents">
+
+    <browser:page name="index.html" attribute="index" />
+
+    </browser:pages>
 
   <browser:page
       for="zope.app.interfaces.content.folder.IFolder"
@@ -287,10 +296,10 @@
 
 <!-- SQL Script View Directives -->
 
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.content.sql.ISQLScript"
       permission="zope.View"
-      factory="zope.app.browser.content.sql.SQLScriptTest"
+      class="zope.app.browser.content.sql.SQLScriptTest"
       >
       
       <browser:page name="index.html" 
@@ -299,7 +308,7 @@
       <browser:page name="testResults.html" 
                     template="sqltestresults.pt" 
                     />
-      </browser:view>
+      </browser:pages>
 
 
   <browser:editform

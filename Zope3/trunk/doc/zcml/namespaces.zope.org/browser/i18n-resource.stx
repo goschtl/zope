@@ -1,0 +1,30 @@
+i18n-resource (type zope.app.publisher.browser.I18nResource)
+
+  Attributes
+
+    default_language -- 
+
+
+
+    name -- 
+
+
+
+  Subdirectives
+
+    translation (method translation)
+
+      Attributes
+
+        image -- 
+
+
+
+        file -- 
+
+
+
+        language -- 
+
+
+

@@ -2,10 +2,10 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.annotation.IAnnotatable"
       permission="zope.ManageContent"
-      factory="zope.app.browser.dublincore.metadataedit.MetaDataEdit"
+      class="zope.app.browser.dublincore.metadataedit.MetaDataEdit"
       >
 
     <browser:page name="EditMetaData.html"
@@ -14,7 +14,7 @@
     <browser:page name="MetaDataBox"
                   template="box.pt" />
 
-    </browser:view>
+    </browser:pages>
 
 
     <browser:menuItems menu="zmi_views"

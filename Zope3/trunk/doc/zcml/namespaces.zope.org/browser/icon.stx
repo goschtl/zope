@@ -1,0 +1,28 @@
+icon (function IconDirective)
+
+  Attributes
+
+    layer -- 
+
+
+
+    resource -- 
+
+
+
+    name -- 
+
+
+
+    file -- 
+
+
+
+    alt -- 
+
+
+
+    for -- 
+
+
+

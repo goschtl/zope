@@ -5,10 +5,10 @@
 
 <!-- Role Permissions -->
 
-  <browser:view
+  <browser:pages
       for="zope.app.interfaces.annotation.IAnnotatable"
       permission="zope.Security"
-      factory=".rolepermissionview.RolePermissionView">
+      class=".rolepermissionview.RolePermissionView">
 
     <browser:page name="AllRolePermissions.html"
                   attribute="index" />
@@ -22,7 +22,7 @@
                   attribute="manage_permissionForm" />
     <browser:page name="ChangeRolesWithPermission.html"
                   attribute="update_permission" />
-  </browser:view>
+  </browser:pages>
 
   <!--browser:menuItem
       for="zope.app.interfaces.annotation.IAnnotatable"
@@ -47,14 +47,14 @@
 
 <!-- Principal Roles -->
 
-  <browser:view for="zope.app.interfaces.annotation.IAnnotatable"
+  <browser:pages for="zope.app.interfaces.annotation.IAnnotatable"
                 permission="zope.Security"
-                factory=".principalroleview.PrincipalRoleView">
+                class=".principalroleview.PrincipalRoleView">
     <browser:page name="PrincipalRoles.html"
                   attribute="index" />
     <browser:page name="ChangePrincipalRoles.html"
                   attribute="action" />
-    </browser:view>
+    </browser:pages>
 
   <!--browser:menuItem
       for="zope.app.interfaces.annotation.IAnnotatable"

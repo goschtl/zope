@@ -21,13 +21,13 @@
 <browser:resource 
     name="mi.gif" file="mi.gif" layer="rotterdam" />
 
-<browser:view
+<browser:pages
     for="zope.app.interfaces.container.IReadContainer"
     permission="zope.View"
-    factory=".xmlobject.ReadContainerXmlObjectView">
+    class=".xmlobject.ReadContainerXmlObjectView">
   <browser:page name="children.xml" attribute="children" />
   <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
-</browser:view>
+</browser:pages>
 
 <browser:page
     name="singleBranchTree.xml" 
