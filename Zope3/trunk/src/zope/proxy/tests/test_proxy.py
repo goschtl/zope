@@ -166,6 +166,15 @@ class ProxyTestCase(unittest.TestCase):
             b.append(x)
         self.assertEquals(a, b)
 
+    def test_wrapped_iterator(self):
+        a = [1, 2, 3]
+        b = []
+        for x in self.new_proxy(iter(a)):
+            b.append(x)
+        self.assertEquals(a, b)
+        t = tuple(self.new_proxy(iter(a)))
+        self.assertEquals(t, (1, 2, 3))
+
     def test_bool_wrapped_None(self):
         w = self.new_proxy(None)
         self.assertEquals(not w, 1)
