@@ -67,8 +67,9 @@
   <include package="zope.app.broken" />
 
 
-  <!-- Database boostrapping -->
+  <!-- Database boostrapping and maintanance -->
   <include package=".appsetup" />
+  <include package=".zopeappgenerations" />
 
 
   <!-- Skins -->
