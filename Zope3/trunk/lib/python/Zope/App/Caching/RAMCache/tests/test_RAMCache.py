@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.1 2002/10/31 16:01:40 alga Exp $
+$Id: test_RAMCache.py,v 1.2 2002/11/13 15:16:41 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -117,6 +117,15 @@ class TestRAMCache(PlacelessSetup,
         self.assertEqual(storage1.maxEntries, 2002, "maxEntries not set")
         self.assertEqual(storage1.cleanupInterval, 42,
                          "cleanupInterval not set")
+
+        # Simulate persisting and restoring the RamCache which removes
+        # all _v_ attributes.
+        for k in c.__dict__.keys():
+            if k.startswith('_v_'):
+                del c.__dict__[k]
+        storage2 = c._getStorage()
+        self.assertEqual(storage1, storage2,
+                         "_getStorage returns different storages")
 
     def test_buildKey(self): 
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.2 2002/11/11 14:26:56 stevea Exp $
+$Id: RAMCache.py,v 1.3 2002/11/13 15:16:41 stevea Exp $
 """
 from Persistence import Persistent
 from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
@@ -138,7 +138,7 @@ class RAMCache(Persistent):
             if not caches.has_key(cacheId):
                 caches[cacheId] = Storage(self.maxEntries, self.maxAge,
                                           self.cleanupInterval)
-                self._v_storage = caches[cacheId]
+            self._v_storage = caches[cacheId]
         finally:
             writelock.release()
         return self._v_storage
