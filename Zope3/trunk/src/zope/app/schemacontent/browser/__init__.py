@@ -41,31 +41,46 @@ class ContentComponentPermissionEdit(EditView):
     def buildPermissionWidgets(self):
         schema = self.context.schema
         for name, field in getFieldsInOrder(schema):
-            # Try to get current settings
+            
+            # get the permissions and then the permission id.
+            # We can't deal in dropdownboxes with permission itself.
+            # There is no way to compare the permission to the
+            # "Permission" or "Permission Id" vocabulary for to
+            # get the SELECTED state.
             if self.context.permissions.has_key(name):
                 get_perm, set_perm = self.context.permissions[name]
+                try:
+                    get_perm_id = get_perm.id
+                    print 'get_perm.id = %s' % get_perm.id
+                except:
+                    get_perm_id = None
+                try:
+                    set_perm_id = set_perm.id
+                    print 'set_perm.id = %s' % set_perm.id
+                except:
+                    set_perm_id = None
             else:
-                get_perm, set_perm = None, None
-
+                get_perm_id, set_perm_id = None, None
+            
             # Create the Accessor Permission Widget for this field
             permField = Choice(
                 __name__=name+'_get_perm',
                 title=u"Accessor Permission",
                 default=CheckerPublic,
-                vocabulary="Permissions",
+                vocabulary="Permission Ids",
                 required=False)
             setUpWidget(self, name+'_get_perm', permField, IInputWidget,
-                        value=get_perm)
+                        value=get_perm_id, ignoreStickyValues=True)
 
             # Create the Mutator Permission Widget for this field
             permField = Choice(
                 __name__=name+'_set_perm',
                 title=u"Mutator Permission",
                 default=CheckerPublic,
-                vocabulary="Permissions",
+                vocabulary="Permission Ids",
                 required=False)
             setUpWidget(self, name+'_set_perm', permField, IInputWidget,
-                        value=set_perm)
+                        value=set_perm_id, ignoreStickyValues=True)
 
     def update(self):
         status = ''
@@ -77,9 +92,24 @@ class ContentComponentPermissionEdit(EditView):
             schema = self.context.schema
             perms = trustedRemoveSecurityProxy(self.context.permissions)
             for name, field in getFieldsInOrder(schema):
-                getPerm = getattr(self, name+'_get_perm_widget').getInputValue()
-                setPerm = getattr(self, name+'_set_perm_widget').getInputValue()
-                perms[name] = (getPerm, setPerm)
+                getPermWidget = getattr(self, name+'_get_perm_widget')
+                setPermWidget = getattr(self, name+'_set_perm_widget')
+                
+                # get the selected permission id from the from request
+                get_perm_id = getPermWidget.getInputValue()
+                set_perm_id = setPermWidget.getInputValue()
+
+                # get the right permission from the given id
+                get_perm = zapi.getUtility(IPermission, get_perm_id)
+                set_perm = zapi.getUtility(IPermission, set_perm_id)
+                
+                # set the permission back to the instance
+                perms[name] = (get_perm, set_perm)
+
+                # update widget ohterwise we see the old value
+                getPermWidget.setRenderedValue(get_perm_id)
+                setPermWidget.setRenderedValue(set_perm_id)
+                
             status = 'Fields permissions mapping updated.'
 
         return status
@@ -159,5 +189,14 @@ class EditContentComponentInstanceView(EditView):
         self.label = 'Edit %s' %context.__name__
         super(EditContentComponentInstanceView, self).__init__(context,
                                                                request)
-
+        # XXX We have a proxied SimplyViewClass here. 
+        # We have no permission for to edit the fields
+        # from the given schema. 
+        # We need the permission to set the fields back
+        # from the SimplyViewClass instance to the context
+        
+        # I see no way for set this in the configure.zcml
+        # because we don't know the schema or the fields.
+        # And in the schema is just the attribute
+        # generated_form allowed for to save. ???
 
