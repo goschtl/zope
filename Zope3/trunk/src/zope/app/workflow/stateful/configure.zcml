@@ -120,15 +120,13 @@
    />
 
 
+<!-- Cause workflow instances to be added to content objects when they
+     are created. -->
 <subscriber
    for="..interfaces.IProcessInstanceContainerAdaptable
         zope.app.event.objectevent.IObjectCreatedEvent"
    factory=".contentworkflow.NewObjectProcessInstanceCreator"
-   >
-
-   Cause workflow instances to be added to content objects when they
-   are created.
-</subscriber>
+   />
 
 <!-- Test Object for testing Stateful Workflows -->
 <!--include file="testobject.zcml"/-->
