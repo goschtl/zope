@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.14 2003/12/18 09:57:12 pnaveen Exp $
+$Id: registration.py,v 1.15 2004/02/06 04:13:36 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -366,62 +366,6 @@ class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
     def __setitem__(name, object):
         """Add to object"""
 
-class IRegisterable(IAnnotatable, IContained):
-    """A marker interface."""
-    
-    __parent__ = Field(
-        constraint = ContainerTypesConstraint(IRegistrationManager))
-
-IRegistrationManager['__setitem__'].setTaggedValue(
-    'precondition', ItemTypePrecondition(IRegisterable))
-    
-
-class IRegistered(Interface):
-    """An object that can keep track of its configured uses.
-
-    The object need not implement this functionality itself, but must at
-    least support doing so via an adapter.
-    """
-
-    def addUsage(location):
-        """Add a usage by location.
-
-        The location is the physical path to the registration object that
-        configures the usage.
-        """
-    def removeUsage(location):
-        """Remove a usage by location.
-
-        The location is the physical path to the registration object that
-        configures the usage.
-        """
-    def usages():
-        """Return a sequence of locations.
-
-        A location is a physical path to a registration object that
-        configures a usage.
-        """
-
-    def registrations():
-        """Return a sequence of registration objects for this object."""
-
-class IAttributeRegisterable(IAttributeAnnotatable, IRegisterable):
-    """A marker interface."""
-
-class INoRegistrationManagerError(Interface):
-    """No registration manager error
-    """
-
-class NoRegistrationManagerError(Exception):
-    """No registration manager
-
-    There is no registration manager in a site-management folder, or
-    an operation would result in no registration manager in a
-    site-management folder.
-
-    """
-    implements(INoRegistrationManagerError)
-
 class IRegistrationManagerContainer(IContainer):
     """Containers with registration managers
 
@@ -478,6 +422,62 @@ class IRegistrationManagerContainer(IContainer):
         name.
 
         """
+
+class IRegisterable(IAnnotatable, IContained):
+    """A marker interface."""
+    
+    __parent__ = Field(
+        constraint = ContainerTypesConstraint(IRegistrationManagerContainer))
+
+IRegistrationManager['__setitem__'].setTaggedValue(
+    'precondition', ItemTypePrecondition(IRegisterable))
+    
+
+class IRegistered(Interface):
+    """An object that can keep track of its configured uses.
+
+    The object need not implement this functionality itself, but must at
+    least support doing so via an adapter.
+    """
+
+    def addUsage(location):
+        """Add a usage by location.
+
+        The location is the physical path to the registration object that
+        configures the usage.
+        """
+    def removeUsage(location):
+        """Remove a usage by location.
+
+        The location is the physical path to the registration object that
+        configures the usage.
+        """
+    def usages():
+        """Return a sequence of locations.
+
+        A location is a physical path to a registration object that
+        configures a usage.
+        """
+
+    def registrations():
+        """Return a sequence of registration objects for this object."""
+
+class IAttributeRegisterable(IAttributeAnnotatable, IRegisterable):
+    """A marker interface."""
+
+class INoRegistrationManagerError(Interface):
+    """No registration manager error
+    """
+
+class NoRegistrationManagerError(Exception):
+    """No registration manager
+
+    There is no registration manager in a site-management folder, or
+    an operation would result in no registration manager in a
+    site-management folder.
+
+    """
+    implements(INoRegistrationManagerError)
 
 
 
