@@ -65,6 +65,8 @@ class TestUniqueIdUtility(BrowserTestCase):
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         self.assert_(response.getBody().find('0 objects') > 0)
+        self.assert_('<a href="/++etc++site">/++etc++site</a>'
+                     not in response.getBody())
 
         response = self.publish(self.basepath + '/uniqueid/@@populate',
                                 basic='mgr:mgrpw')
@@ -74,9 +76,9 @@ class TestUniqueIdUtility(BrowserTestCase):
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_(response.getBody().find('2 objects') > 0)
-        self.checkForBrokenLinks(response.getBody(), response.getPath(),
-                                 basic='mgr:mgrpw')
+        self.assert_('2 objects' in body)
+        self.assert_('<a href="/++etc++site">/++etc++site</a>' in body)
+        self.checkForBrokenLinks(body, response.getPath(), basic='mgr:mgrpw')
 
 
 def test_suite():
