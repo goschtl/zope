@@ -15,7 +15,7 @@
 
 HTML- and XML-based template objects using TAL, TALES, and METAL.
 
-$Id: PageTemplate.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: PageTemplate.py,v 1.3 2002/06/14 00:57:19 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -25,7 +25,7 @@ from Zope.TAL.HTMLTALParser import HTMLTALParser
 from Zope.TAL.TALGenerator import TALGenerator
 from Zope.TAL.TALInterpreter import TALInterpreter
 from Engine import Engine
-from cStringIO import StringIO
+from StringIO import StringIO
 
 
 class MacroCollection:
@@ -105,7 +105,7 @@ class PageTemplate:
                                     self, namespace)
         if self._v_errors:
             raise PTRuntimeError(str(self._v_errors))
-        output = StringIO()
+        output = StringIO(u'')
 
         context = self.pt_getEngineContext(namespace)
         TALInterpreter(self._v_program, self._v_macros,
