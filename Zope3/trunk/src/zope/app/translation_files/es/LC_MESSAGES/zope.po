@@ -35,11 +35,11 @@ msgstr ""
 
 #: src/zope/app/browser/applicationcontrol/configure.zcml:23
 msgid "ZODB Control"
-msgstr ""
+msgstr "Control de ZODB"
 
 #: src/zope/app/browser/applicationcontrol/configure.zcml:9
 msgid "Server Control"
-msgstr "Control del servidor"
+msgstr "Control de servidor"
 
 #: src/zope/app/browser/applicationcontrol/runtimeinfo.pt:10
 msgid "Zope version:"
@@ -103,7 +103,7 @@ msgstr ""
 
 #: src/zope/app/browser/applicationcontrol/zodbcontrol.pt:21
 msgid "days"
-msgstr ""
+msgstr "dias"
 
 #: src/zope/app/browser/applicationcontrol/zodbcontrol.pt:26
 msgid "pack-button"
@@ -483,8 +483,7 @@ msgstr "Probar"
 
 #: src/zope/app/browser/content/configure.zcml:287
 msgid "A content object getting its data from a RDB."
-msgstr ""
-"Un objeto de contenido que recibe sus datos de un base de datos relacional."
+msgstr "Un objeto de contenido que recibe sus datos de un base de datos relacional."
 
 #: src/zope/app/browser/content/configure.zcml:287
 msgid "SQLScript"
@@ -576,8 +575,7 @@ msgid "Edit Form"
 msgstr "Ficha de editar"
 
 #: src/zope/app/browser/content/i18nimage.py:26
-msgid ""
-"This edit form allows you to make changes to the properties of this image."
+msgid "This edit form allows you to make changes to the properties of this image."
 msgstr "En esta ficha puede cambiar los propiedades de esta imagen."
 
 #: src/zope/app/browser/content/i18nimageedit.pt:85
@@ -997,8 +995,7 @@ msgid "Login Failed!"
 msgstr ""
 
 #: src/zope/app/browser/login_failed.pt:9
-msgid ""
-"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 
 #: src/zope/app/browser/logout.pt:5
@@ -1096,8 +1093,7 @@ msgstr "URI de la conexión"
 #: src/zope/app/browser/rdb/rdbadd.pt:16
 #: src/zope/app/browser/rdb/rdbconnection.pt:16
 msgid "Template: dbi://username:password@host:port/dbname;param1=value..."
-msgstr ""
-"Plantilla: dbi://usuario:clave@servidor:puerto/nombre_del_db;param1=valor..."
+msgstr "Plantilla: dbi://usuario:clave@servidor:puerto/nombre_del_db;param1=valor..."
 
 #: src/zope/app/browser/rdb/rdbadd.pt:3
 msgid "Add Relational Database Adapter"
@@ -1345,8 +1341,7 @@ msgid "activate-bundle-button"
 msgstr "Activar paquete"
 
 #: src/zope/app/browser/services/bundle.pt:127
-msgid ""
-"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 
 #: src/zope/app/browser/services/bundle.pt:130
@@ -2107,8 +2102,7 @@ msgstr "Importar y exportar mensajes"
 
 #: src/zope/app/browser/services/translation/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Service."
-msgstr ""
-"Aquí puede exportar y importar mensajes de su Servicio de Traducciones."
+msgstr "Aquí puede exportar y importar mensajes de su Servicio de Traducciones."
 
 #: src/zope/app/browser/services/translation/exportimport.pt:20
 #: src/zope/app/browser/services/translation/synchronize.pt:63
@@ -2267,8 +2261,7 @@ msgid "Utility registrations for interface ${interface}"
 msgstr ""
 
 #: src/zope/app/browser/services/utility/configureutility.pt:9
-msgid ""
-"Utility registrations for interface ${interface} with name ${utility_name}"
+msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 
 #: src/zope/app/browser/services/utility/utilities.pt:34
@@ -3195,11 +3188,11 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:142
 msgid "Boolean Field"
-msgstr ""
+msgstr "Campo de Boleano"
 
 #: src/zope/app/schema/fields.zcml:153
 msgid "Integer Field"
-msgstr ""
+msgstr "Campo de Número Entero"
 
 #: src/zope/app/schema/fields.zcml:164
 msgid "Float Field"
@@ -3207,15 +3200,15 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:175
 msgid "Tuple Field"
-msgstr ""
+msgstr "Campo de Tuple"
 
 #: src/zope/app/schema/fields.zcml:186
 msgid "List Field"
-msgstr ""
+msgstr "Campo de Lista"
 
 #: src/zope/app/schema/fields.zcml:197
 msgid "Password Field"
-msgstr ""
+msgstr "Campo de Contraseña"
 
 #: src/zope/app/schema/fields.zcml:208
 msgid "Dict Field"
@@ -3223,23 +3216,23 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:219
 msgid "Datetime Field"
-msgstr ""
+msgstr "Campo de Fecha y Tiempo"
 
 #: src/zope/app/schema/fields.zcml:230
 msgid "SourceText Field"
-msgstr ""
+msgstr "Campo de Texto Fuente"
 
 #: src/zope/app/schema/fields.zcml:241
 msgid "Object Field"
-msgstr ""
+msgstr "Campo de Objeto"
 
 #: src/zope/app/schema/fields.zcml:252
 msgid "URI Field"
-msgstr ""
+msgstr "Campo de URI"
 
 #: src/zope/app/schema/fields.zcml:263
 msgid "Id Field"
-msgstr ""
+msgstr "Campo de ID"
 
 #: src/zope/app/schema/fields.zcml:274
 msgid "EnumeratedTextLine Field"
@@ -3255,11 +3248,11 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:307
 msgid "Interface Field"
-msgstr ""
+msgstr "Campo de Interfaz"
 
 #: src/zope/app/schema/fields.zcml:32
 msgid "Container Field"
-msgstr ""
+msgstr "Campo de Envase"
 
 #: src/zope/app/schema/fields.zcml:43
 msgid "Iterable Field"
@@ -3267,7 +3260,7 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:5
 msgid "Basic Field"
-msgstr ""
+msgstr "Campo Básico"
 
 #: src/zope/app/schema/fields.zcml:54
 msgid "Orderable Field"
@@ -3275,19 +3268,19 @@ msgstr ""
 
 #: src/zope/app/schema/fields.zcml:65
 msgid "MinMaxLen Field"
-msgstr ""
+msgstr "Campo MinMaxLong"
 
 #: src/zope/app/schema/fields.zcml:76
 msgid "Enumerated Field"
-msgstr ""
+msgstr "Campo Enumerado"
 
 #: src/zope/app/schema/fields.zcml:87
 msgid "Sequence Field"
-msgstr ""
+msgstr "Campo de Secuencia"
 
 #: src/zope/app/schema/fields.zcml:98
 msgid "Bytes Field"
-msgstr ""
+msgstr "Campo de Bytes"
 
 #: src/zope/app/security/configure.zcml:14
 msgid "Change security settings"
@@ -3413,3 +3406,4 @@ msgstr ""
 #: src/zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr ""
+
