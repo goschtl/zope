@@ -13,23 +13,19 @@
 ##############################################################################
 """Message Export/Import View
 
-$Id: exportimport.py,v 1.3 2002/12/31 02:51:55 jim Exp $
+$Id: exportimport.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
 """
 from zope.component import getAdapter
 from zope.i18n.interfaces import IMessageExportFilter, IMessageImportFilter
 
-from zope.app.browser.services.translation.basetranslationserviceview \
-     import BaseTranslationServiceView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.browser.services.translation import BaseView
 
 
-class ExportImport(BaseTranslationServiceView):
-
-    exportImportForm = ViewPageTemplateFile('exportimport.pt')
+class ExportImport(BaseView):
 
     def exportMessages(self, domains, languages):
         self.request.response.setHeader('content-type',
-                                             'application/x-gettext')
+                                        'application/x-gettext')
         filter = getAdapter(self.context, IMessageExportFilter)
         return filter.exportMessages(domains, languages)
 

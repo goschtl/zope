@@ -13,7 +13,7 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: synchronize.py,v 1.3 2003/03/23 22:35:37 jim Exp $
+$Id: synchronize.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
 """
 import httplib
 import urllib
@@ -21,14 +21,10 @@ import xmlrpclib
 
 from base64 import encodestring
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.browser.services.translation.basetranslationserviceview \
-     import BaseTranslationServiceView
+from zope.app.browser.services.translation import BaseView
 
 
-class Synchronize(BaseTranslationServiceView):
-
-    synchronizeForm = ViewPageTemplateFile('synchronize.pt')
+class Synchronize(BaseView):
 
     messageStatus = ['Up to Date', 'New Remote', 'Out of Date', 'Newer Local',
                      'Does not exist']

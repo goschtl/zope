@@ -13,17 +13,11 @@
 ##############################################################################
 """Translation GUI
 
-$Id: translate.py,v 1.3 2003/04/17 20:05:11 bwarsaw Exp $
+$Id: translate.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
 """
-from zope.app.browser.services.translation.basetranslationserviceview \
-     import BaseTranslationServiceView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.browser.services.translation import BaseView
 
-
-class Translate(BaseTranslationServiceView):
-
-    index = ViewPageTemplateFile('translate.pt')
-    translateMessage = ViewPageTemplateFile('translatemessage.pt')
+class Translate(BaseView):
 
     def getMessages(self):
         """Get messages based on the domain selection"""
