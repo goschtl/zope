@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+    - Implemented type based message subscriptions
+      (http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions)
+      Removed IAddNotifiable, IRemoveNotifiable interfaces.
+
     - Hard restart and shutdown works now. A utility is used to do the work
       and is server specific. So if someone uses Twisted instead of
       zope.server they just need to provide their own implementation of the
