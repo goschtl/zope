@@ -111,7 +111,6 @@ class ServiceAdding(ComponentAdding):
 
     def add(self, content):
         # Override so as to check the type of the new object.
-        # XXX This wants to be generalized!
         if not ILocalService.providedBy(content):
             raise TypeError("%s is not a local service" % content)
 
@@ -148,7 +147,6 @@ class UtilityAdding(ComponentAdding):
 
     def add(self, content):
         # Override so as to check the type of the new object.
-        # XXX This wants to be generalized!
         if not ILocalUtility.providedBy(content):
             raise TypeError("%s is not a local utility" % content)
         return super(UtilityAdding, self).add(content)
