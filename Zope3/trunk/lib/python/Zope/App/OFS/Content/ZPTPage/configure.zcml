@@ -15,7 +15,9 @@
                       attributes="content_type __call__" />
 
     <require permission="Zope.ManageContent"
-                      interface=".ZPTPage.IZPTPage" />
+                      interface=".ZPTPage.IZPTPage"
+                      set_attributes="source"
+                      />
 
     <require permission="Zope.View"
                       interface=".ZPTPage.IRenderZPTPage" />
