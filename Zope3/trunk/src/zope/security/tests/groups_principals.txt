@@ -1,0 +1,32 @@
+Groups & Principals
+================
+
+We import the needed modules
+    >>> from zope.security.group import Group
+    >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
+    >>> from zope.app.pas.principalplugins import PrincipalFactory
+    >>> from zope.publisher.tests.httprequest import TestRequest
+
+We first create a group folder and add some groups:
+
+    >>> groups = GroupsFolder()
+    >>> geeks = Group(id='geeks', principalsids=['srichter','jim'])
+    >>> newbies = Group(id='newbies', principalsids=['amos','claudia'])
+    >>> sprinters = Group(id='sprinters', principalsids=['srichter', 'jim', 'amos','claudia'])
+    >>> for g in [geeks, sprinters, newbies]: groups[g.id] = g
+
+Now we create some principals and check if they operate correctly:
+1) Instantiate a Principal Factory
+    >>> pf  = PrincipalFactory()
+    
+2) Get some principals
+    >>> srichter = pf.createAuthenticatedPrincipal('srichter', {} , TestRequest())
+    >>> groups.getGroupsForPrincipal(srichter.id)
+    ['geeks', 'sprinters']
+    >>> thomas = pf.createAuthenticatedPrincipal('thomas', {} , TestRequest())
+    >>> groups.getGroupsForPrincipal(thomas.id)
+    []
+    >>> amos = pf.createAuthenticatedPrincipal('amos', {} , TestRequest())
+    >>> groups.getGroupsForPrincipal(amos.id)
+    ['sprinters', 'newbies']
+    

@@ -1,0 +1,49 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="security"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+  
+  <browser:addMenuItem
+      title="Group"
+      description="A principals group"
+      class=".group.Group"
+      permission="zope.ManageServices"
+      />
+      
+      
+<content class=".group.Group">
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IGroup"
+        set_schema=".interfaces.IGroup"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.groupscontainer.interfaces.IGroupContained"
+        />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </content>
+  
+<browser:editform
+    schema=".interfaces.IGroup"
+    label="Change group information"
+    name="edit.html"
+    menu="zmi_views" title="Edit"
+    permission="zope.ManageContent"
+    />
+    
+  <subscriber
+    factory="zope.security.group.updateGroupsForPrincipal"
+    for="zope.security.interfaces.IPrincipalCreatedEvent"
+    />
+  
+    <subscriber
+    factory="zope.security.group.updatePrincipalsFromGroups"
+    for="zope.security.interfaces.IGroupChangedEvent"
+    />
+
+</configure> 
