@@ -14,7 +14,7 @@
 import pickle
 import unittest
 
-from zope.proxy.context import wrapper, getcontext, getobject
+from zope.proxy.context import wrapper, getcontext, getobject, ContextWrapper
 from zope.proxy.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
@@ -158,6 +158,11 @@ class WrapperTestCase(ProxyTestCase):
         # Nothing special happens; we don't rebind the self of __getattr__
         self.assertEquals(p.getArgs(), (y, 'foo'))
         self.assert_(p.getArgs()[0] is y)
+
+    def test_ContextAware_doesnt_mess_up___class__(self):
+        class C(ContextAware): pass
+        self.assertEqual(ContextWrapper(C(), None).__class__, C)
+
 
     def test_ContextMethod_getattr(self):
         class Z(object):

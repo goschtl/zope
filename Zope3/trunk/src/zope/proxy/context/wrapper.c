@@ -652,8 +652,11 @@ wrap_getattro(PyObject *self, PyObject *name)
     if (descriptor != NULL &&
         descriptor->ob_type->tp_descr_get != NULL &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
-         PyObject_TypeCheck(wrapped, &ContextAwareType))
+         PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
+        ! (PyString_Check(name)
+           && strcmp(PyString_AS_STRING(name), "__class__") == 0)
         ) {
+      
         wrapped_type = (PyObject *)wrapped->ob_type;
         if (wrapped_type == NULL)
             return NULL;
