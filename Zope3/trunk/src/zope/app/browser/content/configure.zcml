@@ -51,7 +51,7 @@
           />
       <browser:menuItem
           title="View" 
-          action="show.html" 
+          action="index.html" 
           />
 
       </browser:menuItems>
