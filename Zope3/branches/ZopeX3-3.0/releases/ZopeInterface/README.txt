@@ -20,6 +20,10 @@ Interfaces Wiki:
 
     http://zope.org/Wikis/Interfaces/FrontPage
 
+New releases can be found at:
+
+    http://zope.org/Products/ZopeInterface/
+
 You can also join the Interface-Dev mailing list and ask there:
 
     http://mail.zope.org/mailman/listinfo/interface-dev/
