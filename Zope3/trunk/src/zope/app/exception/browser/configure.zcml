@@ -30,6 +30,7 @@
       name="index.html"
       permission="zope.Public"
       template="notfound.pt"
+      class=".notfound.NotFound"
       />
 
 </zope:configure>
