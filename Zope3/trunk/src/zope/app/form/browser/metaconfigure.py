@@ -11,14 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: metaconfigure.py,v 1.2 2004/03/23 22:08:10 srichter Exp $
-"""
+"""Configuration handlers for forms and widgets
 
-__metaclass__ = type
-
+$Id: metaconfigure.py,v 1.3 2004/04/25 16:19:14 srichter Exp $
+"""
 import os
 
+from zope.interface import implementedBy
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema import getFieldNamesInOrder
@@ -27,13 +26,14 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      menuItemDirective
 
+from zope.app.form import CustomWidgetFactory
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
 from addwizard import AddWizardView, AddWizardViewFactory
 from editwizard import EditWizardView, EditWizardViewFactory
 from schemadisplay import DisplayView, DisplayViewFactory
 
-class BaseFormDirective:
+class BaseFormDirective(object):
 
     # to be overriden by the subclasses
     view = None
@@ -58,6 +58,27 @@ class BaseFormDirective:
             if not (value is None and hasattr(self, key)):
                 setattr(self, key, value)
         self._normalize()
+        self._widgets = {}
+
+    def widget(self, _context, field, class_, **kw):
+        attrs = kw
+        ifaces = implementedBy(class_)
+        # Try to do better than accepting the string value by looking through
+        # the interfaces and trying to find the field, so that we can use
+        # 'fromUnicode()' 
+        for name, value in kw.items():
+            for iface in ifaces:
+                if name in iface:
+                    attrs[name] = iface[name].fromUnicode(value)
+                    break
+
+        self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs) 
+
+    def _processWidgets(self):
+        if self._widgets:
+            customWidgetsObject = type('CustomWidgetsMixin', (object,),
+                                       self._widgets) 
+            self.bases = self.bases + (customWidgetsObject,)
 
     def _normalize(self):
         if self.for_ is None:
@@ -94,7 +115,8 @@ class BaseFormDirective:
         return ('view', self.for_, self.name, IBrowserRequest,
                 self.layer)
 
-class Pane:
+
+class Pane(object):
     ''' Holder for information about a Pane of a wizard '''
     # TODO: Add more funky stuff to each pane, such as a validator
     def __init__(self, field_names, label):
@@ -204,6 +226,7 @@ class AddFormDirective(BaseFormDirective):
             self.set_after_add = leftover
 
     def __call__(self):
+        self._processWidgets()
         self._handle_menu()
         self._handle_arguments()
 
@@ -229,6 +252,7 @@ class EditFormDirective(BaseFormDirective):
                 '@@' + self.name, self.title, permission=self.permission)
 
     def __call__(self):
+        self._processWidgets()
         self._handle_menu()
         self._context.action(
             discriminator=self._discriminator(),
@@ -247,6 +271,7 @@ class SubeditFormDirective(BaseFormDirective):
     fulledit_label = None
 
     def __call__(self):
+        self._processWidgets()
         self._context.action(
             discriminator = self._discriminator(),
             callable = EditViewFactory,

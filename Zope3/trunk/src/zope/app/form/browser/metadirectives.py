@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.4 2004/04/14 14:31:18 hdima Exp $
+$Id: metadirectives.py,v 1.5 2004/04/25 16:19:14 srichter Exp $
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
@@ -319,3 +319,28 @@ class ISchemaDisplayDirective(ICommonFormInformation):
         description=u"This attribute defaults to 'Edit'.",
         required=False
         )
+
+
+class IWidgetSubdirective(Interface):
+    """Register custom widgets for a form.
+
+    This directive allows you to quickly generate custom widget directives for
+    a form.
+    """
+
+    field = TextLine(
+        title=u"Field Name",
+        description=u"""
+        The name of the field/attribute/property for which this widget will be
+        used.""",
+        required=False
+        )
+
+    class_ = GlobalObject(
+        title=u"Widget Class",
+        description=u"""The class that will create the widget.""",
+        required=False
+        )
+
+# Arbitrary keys and values are allowed to be passed to the CustomWidget.
+IWidgetSubdirective.setTaggedValue('keyword_arguments', True)

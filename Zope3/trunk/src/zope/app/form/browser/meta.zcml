@@ -18,6 +18,7 @@
 
     </meta:complexDirective>
 
+
     <meta:complexDirective
         name="editwizard"
         schema=".metadirectives.IEditWizardDirective"
@@ -31,23 +32,48 @@
 
     </meta:complexDirective>
 
+
     <meta:complexDirective
         name="editform"
         schema=".metadirectives.IEditFormDirective"
         handler=".metaconfigure.EditFormDirective"
-        />
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema=".metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
 
     <meta:complexDirective
         name="subeditform"
         schema=".metadirectives.ISubeditFormDirective"
         handler=".metaconfigure.SubeditFormDirective"
-        />
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema=".metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
 
     <meta:complexDirective
         name="addform"
         schema=".metadirectives.IAddFormDirective"
         handler=".metaconfigure.AddFormDirective"
-        />
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema=".metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
 
     <meta:complexDirective
         name="schemadisplay"
