@@ -895,7 +895,7 @@ init_proxy(void)
 	SecurityProxyType.ob_type = &PyType_Type;
 	SecurityProxyType.tp_alloc = PyType_GenericAlloc;
 	SecurityProxyType.tp_free = _PyObject_GC_Del;
-	SecurityProxyType.tp_base = ProxyType;
+	SecurityProxyType.tp_base = &ProxyType;
 	if (PyType_Ready(&SecurityProxyType) < 0)
 		return;
 

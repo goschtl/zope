@@ -12,17 +12,51 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.15 2003/05/28 17:19:23 jim Exp $
+$Id: test_wrapper.py,v 1.16 2003/05/29 09:06:35 stevea Exp $
 """
 import pickle
 import unittest
 
 from zope.proxy import getProxiedObject
-from zope.context import wrapper, getcontext, ContextWrapper
+from zope.context import ContextWrapper, wrapper
 from zope.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
 _marker = object()
+
+class WrapperProperty(object):
+    def __init__(self, name, dictname, default=_marker):
+        self.name = name
+        self.dictname = dictname
+        self.default = default
+
+    def __get__(self, obj, tp=None):
+        if obj is None:
+            return self
+        d = wrapper.getdict(obj)
+        if d:
+            try:
+                return d[self.dictname]
+            except KeyError:
+                pass
+        if self.default is not _marker:
+            return self.default
+        raise AttributeError, self.name
+
+    def __set__(self, obj, value):
+        self.default = _marker
+        wrapper.getdictcreate(obj)[self.dictname] = value
+
+    def __delete__(self, obj):
+        self.default = _marker
+        d = wrapper.getdict(obj)
+        if d:
+            try:
+                del d[self.dictname]
+                return
+            except KeyError:
+                pass
+        raise AttributeError, self.name
 
 class WrapperTestCase(ProxyTestCase):
 
@@ -92,7 +126,7 @@ class WrapperTestCase(ProxyTestCase):
         context = object()
 
         def doit(self, *args):
-            self.retval = getcontext(self), args
+            self.retval = wrapper.getcontext(self), args
             if fixed_retval is _marker:
                 return self.retval
             else:
@@ -484,10 +518,203 @@ class WrapperTestCase(ProxyTestCase):
         w = self.new_proxy(Thing())
         self.assertRaises(pickle.PicklingError,
                           pickle.dumps, w)
+        try:
+            pickle.dumps(w)
+        except pickle.PicklingError, err:
+            # We need to check that the error is the one raised by the
+            # Wrapper's __reduce__ method, and not one caused by the pickling
+            # machinery getting confused.
+            self.assertEquals(err[0], "Wrapper instances cannot be pickled.")
 
+    def test_reduce_in_subclass(self):
+        class CustomPicklingError(pickle.PicklingError):
+            pass
+        class WrapperWithReduce(self.proxy_class):
+            def __reduce__(self):
+                raise CustomPicklingError
+        w = WrapperWithReduce(Thing())
+        self.assertRaises(CustomPicklingError, pickle.dumps, w)
+
+    def test_simple_subclass(self):
+
+        class Foo(self.proxy_class):
+            def bar(self, *args):
+                inner = getProxiedObject(self)
+                inner += args
+                return len(args)
+
+            baz = 23
+            spoo = WrapperProperty('spoo', 'spooprop', default=23)
+
+        self.assert_(self.proxy_class in Foo.__mro__)
+
+        l = []
+        w = Foo(l)
+
+        self.assert_(w.__class__ is l.__class__)
+        self.assert_(type(w) is Foo)
+
+        self.assertEquals(w.bar(1, 2, 3), 3)
+        self.assertEquals(l, [1, 2, 3])
+        w.append('x')
+        self.assertEquals(l, [1, 2, 3, 'x'])
+
+        self.assertEquals(w.spoo, 23)
+        w.spoo = 24
+        self.assertEquals(w.spoo, 24)
+
+        self.assertEquals(w.baz, 23)
+        self.assertRaises(TypeError, setattr, w, 'baz', 24)
+
+    def test_subclass_with_slots(self):
+        obj = object()
+
+        names = ('__len__', '__getitem__', '__setitem__', '__str__',
+                 '__contains__', '__call__', '__nonzero__', '__iter__',
+                 'next')
+
+        dummy_iter = iter(range(5))
+        proxy_class = self.proxy_class
+        class WrapperWithSlots(proxy_class):
+            def __init__(self, *args, **kw):
+                super(WrapperWithSlots, self).__init__(*args, **kw)
+                d = wrapper.getdictcreate(self)
+                d['initargs'] = args
+                d['initkw'] = kw
+
+            count = WrapperProperty('count', 'wrapper_count', default=0)
+            called = WrapperProperty('called', 'wrapper_called')
+            def __len__(self):
+                self.called = 'len'
+                return 5
+            def __nonzero__(self):
+                self.called = 'nonzero'
+                return False
+            def __getitem__(self, key):
+                self.called = 'getitem'
+                return 5
+            def __setitem__(self, key, value):
+                self.called = 'setitem'
+            def __str__(self):
+                self.called = 'str'
+                return '5'
+            def __contains__(self, key):
+                self.called = 'contains'
+                return True
+            def __call__(self):
+                self.called = 'call'
+                return 'skidoo'
+            def __iter__(self):
+                self.called = 'iter'
+                return self
+            def next(self):
+                self.called = 'next'
+                self.count += 1
+                if self.count == 5:
+                    self.count = 0
+                    raise StopIteration
+                return self.count
+
+        w = WrapperWithSlots(obj, None)
+
+        self.assertEquals(len(w), 5)
+        self.assertEquals(w.called, 'len')
+        del w.called
+
+        self.assertEquals(w[3], 5)
+        self.assertEquals(w.called, 'getitem')
+        del w.called
+
+        w[3] = 5
+        self.assertEquals(w.called, 'setitem')
+        del w.called
+
+        self.assertEquals(str(w), '5')
+        self.assertEquals(w.called, 'str')
+        del w.called
+
+        self.assert_(5 in w)
+        self.assertEquals(w.called, 'contains')
+        del w.called
+
+        self.assertEquals(w(), 'skidoo')
+        self.assertEquals(w.called, 'call')
+        del w.called
+
+        self.assertEquals(bool(w), False)
+        self.assertEquals(w.called, 'nonzero')
+        del w.called
+
+        # Test case where w doesn't provide a __nonzero__ but does
+        # provide a __len__.
+        del WrapperWithSlots.__nonzero__
+        self.assertEquals(bool(w), True)
+        self.assertEquals(w.called, 'len')
+        del w.called
+
+        self.assertEquals(iter(w), w)
+        self.assertEquals(w.called, 'iter')
+        del w.called
+
+        self.assertEquals(w.next(), 1)
+        self.assertEquals(w.called, 'next')
+        self.assertEquals([i for i in iter(w)], [2, 3, 4])
+        del w.called
+
+    def test_decorated_iterable(self):
+        obj = object()
+        a = [1, 2, 3]
+        b = []
+        class IterableDecorator(self.proxy_class):
+            def __iter__(self):
+                return iter(a)
+        for x in IterableDecorator(obj):
+            b.append(x)
+        self.assertEquals(a, b)
+
+    def test_iteration_using_decorator(self):
+        # Wrap an iterator within the iteration protocol, expecting it
+        # still to work.  PyObject_GetIter() will not be called on the
+        # proxy, so the tp_iter slot won't unwrap it.
+
+        class Iterable:
+            def __init__(self, test, data):
+                self.test = test
+                self.data = data
+            def __iter__(self):
+                obj = object()
+                it = iter(self.data)
+                class IterableDecorator(self.test.proxy_class):
+                    def __iter__(self):
+                        return it.__iter__()
+                    def next(self):
+                        return it.next()
+                return IterableDecorator(obj)
+
+        a = [1, 2, 3]
+        b = []
+        for x in Iterable(self, a):
+            b.append(x)
+        self.assertEquals(a, b)
+
+
+class WrapperSubclass(wrapper.Wrapper):
+
+    def someMethodOrOther(self):
+        pass
+
+class WrapperSubclassTestCase(WrapperTestCase):
+
+    proxy_class = WrapperSubclass
+
+    def new_proxy(self, o, c=None):
+        return self.proxy_class(o, c)
 
 def test_suite():
-    return unittest.makeSuite(WrapperTestCase)
+    return unittest.TestSuite((
+            unittest.makeSuite(WrapperTestCase),
+            unittest.makeSuite(WrapperSubclassTestCase),
+            ))
 
 
 if __name__ == "__main__":

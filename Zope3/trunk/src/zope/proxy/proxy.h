@@ -43,7 +43,7 @@ Proxy_Import(void)
     return (_proxy_api == NULL) ? -1 : 0;
 }
 
-#define ProxyType               (_proxy_api->proxytype)
+#define ProxyType               (*_proxy_api->proxytype)
 #define Proxy_Check(obj)        (_proxy_api->check((obj)))
 #define Proxy_CheckExact(obj)   ((obj)->ob_type == ProxyType)
 #define Proxy_New(obj)          (_proxy_api->create((obj)))

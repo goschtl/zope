@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <Python.h>
 #include "structmember.h"
 #include "modsupport.h"
@@ -14,7 +15,6 @@
 
 #define Wrapper_GetDict(wrapper) \
         (((WrapperObject *)wrapper)->wrap_dict)
-
 
 static PyTypeObject WrapperType;
 static PyTypeObject ContextAwareType;
@@ -525,7 +525,7 @@ wrap_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         PyObject *proxyargs = create_proxy_args(args, object);
         if (proxyargs == NULL)
             goto finally;
-        result = ProxyType->tp_new(type, proxyargs, NULL);
+        result = ProxyType.tp_new(type, proxyargs, NULL);
         Py_DECREF(proxyargs);
     }
  finally:
@@ -546,7 +546,7 @@ wrap_init(PyObject *self, PyObject *args, PyObject *kwds)
         proxyargs = create_proxy_args(args, object);
         if (proxyargs == NULL)
             goto finally;
-        if (ProxyType->tp_init(self, proxyargs, NULL) < 0)
+        if (ProxyType.tp_init(self, proxyargs, NULL) < 0)
             goto finally;
         if (wrapper->wrap_context != context) {
             /* XXX This might be a little weird: if a subclass initializes
@@ -637,6 +637,52 @@ wrap_dealloc(PyObject *self)
  * However, Guido says that it is ok to use _PyType_Lookup, and that the
  * function isn't going to go away.
  */
+
+
+/* A variant of _PyType_Lookup that doesn't look in WrapperType or ProxyType.
+ *
+ * The argument is_reduce is 1 iff name is "__reduce__".
+ * If is_reduce is 1, we may look in WrapperType.
+ */
+PyObject *
+WrapperType_Lookup(PyTypeObject *type, PyObject *name, int is_reduce)
+{
+    int i, n;
+    PyObject *mro, *res, *base, *dict;
+
+    /* Look in tp_dict of types in MRO */
+    mro = type->tp_mro;
+
+    /* If mro is NULL, the type is either not yet initialized
+       by PyType_Ready(), or already cleared by type_clear().
+       Either way the safest thing to do is to return NULL. */
+    if (mro == NULL)
+        return NULL;
+
+    assert(PyTuple_Check(mro));
+    n = PyTuple_GET_SIZE(mro);
+
+    for (i = 0; i < n; i++) {
+        base = PyTuple_GET_ITEM(mro, i);
+
+        if (((PyTypeObject *)base) != &ProxyType &&
+            (((PyTypeObject *)base) != &WrapperType || is_reduce)) {
+            if (PyClass_Check(base))
+                dict = ((PyClassObject *)base)->cl_dict;
+            else {
+                assert(PyType_Check(base));
+                dict = ((PyTypeObject *)base)->tp_dict;
+            }
+            assert(dict && PyDict_Check(dict));
+            res = PyDict_GetItem(dict, name);
+            if (res != NULL)
+                return res;
+        }
+    }
+    return NULL;
+}
+
+
 static PyObject *
 wrap_getattro(PyObject *self, PyObject *name)
 {
@@ -644,6 +690,7 @@ wrap_getattro(PyObject *self, PyObject *name)
     PyObject *descriptor;
     PyObject *wrapped_type;
     PyObject *res = NULL;
+    char *name_as_string;
 
 #ifdef Py_USING_UNICODE
     /* The Unicode to string conversion is done here because the
@@ -663,32 +710,49 @@ wrap_getattro(PyObject *self, PyObject *name)
     else
         Py_INCREF(name);
 
+    name_as_string = PyString_AS_STRING(name);
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
         PyErr_Format(PyExc_RuntimeError,
             "object is NULL; requested to get attribute '%s'",
-            PyString_AS_STRING(name));
+            name_as_string);
         goto finally;
     }
-    descriptor = _PyType_Lookup(wrapped->ob_type, name);
-    if (descriptor != NULL &&
-        PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
-        descriptor->ob_type->tp_descr_get != NULL &&
-        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
-        /* If object is context-aware, still don't rebind __class__.
-         */
-         (PyObject_TypeCheck(wrapped, &ContextAwareType)
-          && ! (PyString_Check(name)
-           && strcmp(PyString_AS_STRING(name), "__class__") == 0))
-        )) {
-        wrapped_type = (PyObject *)wrapped->ob_type;
-        if (wrapped_type == NULL)
+    if (strcmp(name_as_string, "__class__") != 0) {
+
+        descriptor = WrapperType_Lookup(
+                self->ob_type, name,
+                strcmp(name_as_string, "__reduce__") == 0);
+        if (descriptor != NULL) {
+            if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
+                && descriptor->ob_type->tp_descr_get != NULL) {
+                res = descriptor->ob_type->tp_descr_get(
+                        descriptor,
+                        self,
+                        (PyObject *)self->ob_type);
+            } else {
+                Py_INCREF(descriptor);
+                res = descriptor;
+            }
             goto finally;
-        res = descriptor->ob_type->tp_descr_get(
-                descriptor,
-                self,
-                wrapped_type);
-        goto finally;
+        }
+
+        descriptor = _PyType_Lookup(wrapped->ob_type, name);
+        if (descriptor != NULL &&
+            PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
+            descriptor->ob_type->tp_descr_get != NULL &&
+            (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
+             PyObject_TypeCheck(wrapped, &ContextAwareType)
+            )) {
+            wrapped_type = (PyObject *)wrapped->ob_type;
+            if (wrapped_type == NULL)
+                goto finally;
+            res = descriptor->ob_type->tp_descr_get(
+                    descriptor,
+                    self,
+                    wrapped_type);
+            goto finally;
+        }
     }
     res = PyObject_GetAttr(wrapped, name);
 finally:
@@ -720,6 +784,19 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     }
     else
         Py_INCREF(name);
+
+    descriptor = WrapperType_Lookup(self->ob_type, name, 0);
+    if (descriptor != NULL) {
+        if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
+            descriptor->ob_type->tp_descr_set != NULL) {
+            res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
+        } else {
+            PyErr_Format(PyExc_TypeError,
+                "Tried to set attribute '%s' on wrapper, but it is not"
+                " a data descriptor", PyString_AS_STRING(name));
+        }
+        goto finally;
+    }
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
@@ -837,6 +914,31 @@ wrap_nonzero(PyObject *self)
                      );
             return -1;
     }
+    descriptor = WrapperType_Lookup(self->ob_type, SlotStrings[LEN_IDX], 0);
+    if (descriptor != NULL) {
+        /* There's a __len__ defined in a wrapper subclass, so we need
+         * to call that.
+         */
+        if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
+            && descriptor->ob_type->tp_descr_get != NULL) {
+            descriptor = descriptor->ob_type->tp_descr_get(
+                            descriptor,
+                            self,
+                            (PyObject *)self->ob_type);
+            if (descriptor == NULL)
+                return -1;
+            res = PyObject_CallFunctionObjArgs(descriptor, NULL);
+            Py_DECREF(descriptor);
+        } else {
+            res = PyObject_CallFunctionObjArgs(descriptor, self, NULL);
+        }
+        if (res == NULL)
+            return -1;
+        result = PyObject_IsTrue(res);
+        Py_DECREF(res);
+        return result;
+    }
+
     descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[NONZERO_IDX]);
     if (descriptor == NULL)
         descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[LEN_IDX]);
@@ -1584,7 +1686,7 @@ initwrapper(void)
     SlotStrings[CALL_IDX] = PyString_InternFromString("__call__");
     SlotStrings[STR_IDX] = PyString_InternFromString("__str__");
 
-    WrapperType.tp_base = ProxyType;
+    WrapperType.tp_base = &ProxyType;
     WrapperType.tp_alloc = PyType_GenericAlloc;
     WrapperType.tp_free = _PyObject_GC_Del;
     if (PyType_Ready(&WrapperType) < 0)
