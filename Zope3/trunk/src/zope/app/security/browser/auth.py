@@ -127,10 +127,10 @@ class LoginLogout:
 
     def __call__(self):
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            page = 'login.html'
+            page = '@@login.html'
             label = _('[Login]')
         else:
-            page = 'logout.html'
+            page = '@@logout.html'
             label = _('[Logout]')
         return '<a href="%s?nextURL=%s">%s</a>' % (
             page, urllib.quote(self.request.getURL()), label)

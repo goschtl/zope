@@ -25,7 +25,7 @@ it provides the user with a link to 'Login':
   >>> request = TestRequest()
   >>> request.setPrincipal(anonymous)
   >>> LoginLogout(None, request)()
-  u'<a href="login.html?nextURL=http%3A//127.0.0.1">[Login]</a>'
+  u'<a href="@@login.html?nextURL=http%3A//127.0.0.1">[Login]</a>'
 
 When LoginLogout is used for a request that has an authenticated principal:
 
@@ -43,4 +43,4 @@ When LoginLogout is used for a request that has an authenticated principal:
 it provides the user with a link to 'Logout':
 
   >>> LoginLogout(None, request)()
-  u'<a href="logout.html?nextURL=http%3A//127.0.0.1">[Logout]</a>'
+  u'<a href="@@logout.html?nextURL=http%3A//127.0.0.1">[Logout]</a>'
