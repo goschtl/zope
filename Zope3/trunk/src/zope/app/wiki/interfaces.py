@@ -15,11 +15,10 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.3 2004/03/03 10:38:57 philikon Exp $
+$Id: interfaces.py,v 1.4 2004/04/24 23:20:30 srichter Exp $
 """
 from zope.interface import Interface
-from zope.schema import TextLine, List, SourceText
-from zope.schema.vocabulary import VocabularyField
+from zope.schema import TextLine, List, SourceText, Choice
 
 from zope.schema import Field
 from zope.app.container.interfaces import IContained
@@ -47,7 +46,7 @@ class IComment(Interface):
         default=u"",
         required=True)
 
-    type = VocabularyField(
+    type = Choice(
         title=_(u"Source Type"),
         description=_(u"Type of the source text, e.g. structured text"),
         default=u"zope.source.rest",
@@ -73,7 +72,7 @@ class IWikiPage(IContainer, IContentContainer):
         default=u"",
         required=True)
 
-    type = VocabularyField(
+    type = Choice(
         title=_(u"Source Type"),
         description=_(u"Type of the source text, e.g. structured text"),
         default=u"zope.source.rest",

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
+$Id: wikipage.py,v 1.9 2004/04/24 23:20:30 srichter Exp $
 """
 import re
 from urllib import quote, unquote
@@ -24,7 +24,6 @@ from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.form.browser.submit import Update
-from zope.app.form.browser import ListWidget
 from zope.app.form import CustomWidgetFactory
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.renderer.vocabulary import SourceTypeEditWidget
