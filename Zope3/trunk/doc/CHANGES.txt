@@ -192,6 +192,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed the registerd object view of the uniqueid utility.
+
       - Fixed the page that reports "system errors", errors that
         represent a failure of the system, rather than the user, to set
         the response status to 500.
