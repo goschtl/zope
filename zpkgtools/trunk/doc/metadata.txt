@@ -81,7 +81,8 @@ explanation.  The process has the following steps:
    If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
    to specify which files should be copied into the
    component-specific portion of the distribution tree.  Only files
-   listed will be copied.
+   listed will be copied.  If the ``<collection>`` section specifies
+   exclusions, all files will be copied *except* for those excluded.
 
    If the ``<collection>`` section is not present or is empty, all
    files in the workspace are copied; directories are copied
@@ -100,6 +101,18 @@ explanation.  The process has the following steps:
    If *destination* is omitted, the destination is assumed to have
    the same name as the source.  In this case, *source* can contain
    POSIX globbing wildcards.
+
+   Files and directories can be excluded from the collection by
+   specifying exclusions instead of inclusions.  It is not possible to
+   specify both using the current |zpkg|_ implementation.  An
+   exclusion is similar to an inclusion, but the destination is always
+   ``-`` (a single hyphen):
+
+     *source* ``-``
+
+   will cause files and directories matching *source* to be excluded
+   from the distribution.  *source* can contain POSIX globbing
+   wildcards.
 
 4. If the component being processed is the primary resource being
    packaged, files from the workspace can be copied into the
@@ -290,3 +303,5 @@ will cause all the files in the `default-config` directory (a sibling
 of the `SETUP.cfg` file containing this section) to be copied into the
 directory `$prefix/etc/myapp/`; this directory will be created if
 necessary.
+
+.. include:: links.rst

@@ -178,7 +178,13 @@ class SpecificationSchema(cfgparser.Schema):
                                            % typename)
 
     def endSection(self, parent, typename, name, child):
-        pass
+        if child.includes and child.excludes:
+            # XXX not sure what the exact semantics should be of
+            # allowing both inclusions and exclusions at the same
+            # time; which takes precedence?  what about precedence
+            # when wildcards are involved?
+            raise cfgparser.ConfigurationError(
+                "exclusions and inclusions cannot coexist in a single section")
 
     def createSection(self, name, typename, typedef):
         raise NotImplementedError(
@@ -191,6 +197,15 @@ class SpecificationSchema(cfgparser.Schema):
         if not isinstance(section, Specification):
             raise cfgparser.ConfigurationError(
                 "all inclusion lines must be in a section")
+
+        if other == "-":
+            # This is an exclusion.
+            if section.group != "collection":
+                raise cfgparser.ConfigurationError(
+                    "exclusions are only permitted in <collection>")
+            workfile = normalize_path(workfile, "exclusion", section.group)
+            section.excludes.append(workfile)
+            return
 
         if section.group == "load":
             if not other:
@@ -223,6 +238,9 @@ class Specification:
         source) to either the destination path (relative) or an empty
         string.
 
+      - `excludes`: List of relative paths (relative to the source)
+        which should *not* be copied along with the included files.
+
       - `source`: Source directory which will be used to expand glob
         patterns.
 
@@ -252,6 +270,7 @@ class Specification:
         # The source directory is needed since globbing is performed
         # to locate files if the spec includes wildcards.
         self.includes = {}
+        self.excludes = []
         self.source = source
         self.filename = filename
         self.group = group
@@ -273,6 +292,18 @@ class Specification:
             for fn in expansions:
                 suffix = fn[len(prefix):]
                 self.includes[suffix] = suffix
+        excludes = []
+        for pat in self.excludes:
+            path = os.path.join(source, pat)
+            expansions = filter_names(glob.glob(path))
+            if not expansions:
+                raise InclusionSpecificationError(
+                    "%r doesn't match any files in <%s>" % (pat, self.group),
+                    self.filename)
+            for fn in expansions:
+                suffix = fn[len(prefix):]
+                excludes.append(suffix)
+        self.excludes[:] = excludes
 
 
 class InclusionProcessor:
@@ -308,9 +339,9 @@ class InclusionProcessor:
             self.create_directory(spec.source, destination)
             self.addIncludes(destination, spec)
         else:
-            self.copyTree(spec.source, destination)
+            self.copyTree(spec.source, destination, spec.excludes)
 
-    def copyTree(self, source, destination):
+    def copyTree(self, source, destination, excludes=()):
         """Populate the destination tree from the source tree.
 
         :Parameters:
@@ -320,6 +351,9 @@ class InclusionProcessor:
           - `destination`: Absolute path to a directory that
             corresponds to the `source` tree.  It will be created if
             it doesn't exist.
+
+          - `excludes`: Paths relative to source which should be
+            excluded from the copy operation.
 
         Files and directories will be created with the same permission
         bits and stat info as the source tree.
@@ -334,6 +368,17 @@ class InclusionProcessor:
             # relative to destination.  It will be '' at the top
             # level.
             reldir = dirname[len(prefix):]
+            if excludes:
+                # excludes are in POSIX path notation
+                preldir = reldir.replace(os.sep, "/")
+                for name in dirs[:]:
+                    prelpath = posixpath.join(preldir, name)
+                    if prelpath in excludes:
+                        dirs.remove(name)
+                for name in files[:]:
+                    prelpath = posixpath.join(preldir, name)
+                    if prelpath in excludes:
+                        files.remove(name)
             if reldir:
                 destdir = os.path.join(destination, reldir)
             else:

@@ -23,6 +23,7 @@ import urllib2
 from os.path import join
 from StringIO import StringIO
 
+from zpkgtools import cfgparser
 from zpkgtools import include
 from zpkgtools import loader
 
@@ -96,6 +97,72 @@ class InclusionProcessorTestCase(unittest.TestCase):
                          "ignorethis.txt")
         self.assertEqual(specs.loads.includes["repository:doc/whatzit.txt"],
                          join("doc", "whatzit.txt"))
+
+    def test_load_disallows_exclusion(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <load>
+              foobar.txt -
+            </load>
+            """)
+        self.assertRaises(cfgparser.ConfigurationError,
+                          include.load, self.source)
+
+    def test_collection_disallows_exclusion_with_inclusion(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              foobar.txt -
+              file.txt
+            </collection>
+            """)
+        self.assertRaises(cfgparser.ConfigurationError,
+                          include.load, self.source)
+
+    def test_distribution_disallows_exclusion(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <distribution>
+              foobar.txt -
+            </distribution>
+            """)
+        self.assertRaises(cfgparser.ConfigurationError,
+                          include.load, self.source)
+
+    def test_exclusions_saved_in_excludes(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              foobar.txt -
+              doc/todo-*.txt -
+            </collection>
+            """)
+        specs = include.load(self.source)
+        # These are "uncooked", so wildcards haven't been expanded.
+        self.assertEqual(len(specs.collection.excludes), 2)
+        self.assert_("foobar.txt" in specs.collection.excludes)
+        self.assert_("doc/todo-*.txt" in specs.collection.excludes)
+        # Now populate the source dir:
+        self.write_file("foobar.txt", "some text\n")
+        docdir = join(self.source, "doc")
+        os.mkdir(docdir)
+        try:
+            self.write_file(join("doc", "todo-1.txt"), "something to do\n")
+            self.write_file(join("doc", "todo-2.txt"), "something else\n")
+            # And check that cooking finds produces the right thing:
+            specs.collection.cook()
+            self.assertEqual(len(specs.collection.excludes), 3)
+            self.assert_("foobar.txt" in specs.collection.excludes)
+            self.assert_("doc/todo-1.txt" in specs.collection.excludes)
+            self.assert_("doc/todo-2.txt" in specs.collection.excludes)
+        finally:
+            shutil.rmtree(docdir)
+
+    def test_unmatched_wildcards_in_exclusions(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              doc/todo-*.txt -
+            </collection>
+            """)
+        specs = include.load(self.source)
+        self.assertRaises(include.InclusionSpecificationError,
+                          specs.collection.cook)
 
     def test_omitted_destination_keeps_name(self):
         self.write_file(include.PACKAGE_CONF, """\
@@ -191,6 +258,43 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.check_file("somescript.py")
         self.assert_(not os.path.exists(join(self.destination, "CVS")))
         self.assert_(not os.path.exists(join(self.destination, ".cvsignore")))
+
+    def test_createDistributionTree_excludes_file(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              ignorethis.txt  -
+            </collection>
+            """)
+        specs = include.load(self.source)
+        specs.collection.cook()
+        self.processor.createDistributionTree(self.destination,
+                                              specs.collection)
+        self.check_file("somescript.py")
+        ignorethis_txt = join(self.destination, "ignorethis.txt")
+        self.assert_(not os.path.exists(ignorethis_txt))
+
+    def test_createDistributionTree_excludes_directory(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              foo/bar -
+            </collection>
+            """)
+        specs = include.load(self.source)
+        foodir = join(self.source, "foo")
+        os.mkdir(foodir)
+        try:
+            os.mkdir(join(foodir, "bar"))
+            self.write_file(join("foo", "bar.txt"), "some text\n")
+            specs.collection.cook()
+            self.processor.createDistributionTree(self.destination,
+                                                  specs.collection)
+            self.assert_(os.path.isdir(join(self.destination, "foo")))
+            self.assert_(
+                not os.path.isdir(join(self.destination, "foo", "bar")))
+            self.assert_(
+                os.path.isfile(join(self.destination, "foo", "bar.txt")))
+        finally:
+            shutil.rmtree(foodir)
 
     def check_file(self, name):
         srcname = join(self.source, name)
