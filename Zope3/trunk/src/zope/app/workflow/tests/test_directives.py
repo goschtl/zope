@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test the workflow ZCML namespace directives.
 
+$Id: test_directives.py,v 1.4 2003/08/01 20:41:05 srichter Exp $
+"""
 import unittest
-from cStringIO import StringIO
 
 from zope.app.tests.placelesssetup import PlacelessSetup
-
-from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-
-import zope.configuration
-import zope.app.workflow
+from zope.configuration import xmlconfig
 
 from zope.app.workflow import globalimportexport
 from zope.app.workflow.tests import directive_helpers
@@ -28,57 +26,28 @@ from zope.app.workflow.tests import directive_helpers
 gIE = globalimportexport.globalImportExport
 
 
-template = """<zopeConfigure
-   xmlns:test='http://namespaces.zope.org/workflow'>
-   %s
-   </zopeConfigure>"""
-
-
-class Test(PlacelessSetup, unittest.TestCase):
-
+class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        XMLConfig('meta.zcml', zope.app.workflow)()
+        self.context = xmlconfig.file("workflow.zcml", directive_helpers)
 
     def testImportHandler(self):
-
-        xmlconfig(StringIO(template % (
-            """
-            <configure package="zope.app.workflow.tests.directive_helpers">
-              <test:importHandler
-                 interface=".ITestProcessDefinitionA"
-                 factory=".TestImportHandlerA"
-                 />
-            </configure>
-            """
-            )))
-
-        self.assertEqual(directive_helpers.TestImportHandlerA,
-                         gIE._importers.get(directive_helpers.ITestProcessDefinitionA))
+        self.assertEqual(
+            gIE._importers.get(directive_helpers.ITestProcessDefinitionA),
+            directive_helpers.TestImportHandlerA)
 
     def testExportHandler(self):
-
-        xmlconfig(StringIO(template % (
-            """
-            <configure package="zope.app.workflow.tests.directive_helpers">
-              <test:exportHandler
-                  interface=".ITestProcessDefinitionA"
-                  factory=".TestExportHandlerA"
-                  />
-            </configure>
-            """
-            )))
-
-        self.assertEqual(directive_helpers.TestExportHandlerA,
-                         gIE._exporters.get(directive_helpers.ITestProcessDefinitionA))
+        self.assertEqual(
+            gIE._exporters.get(directive_helpers.ITestProcessDefinitionA),
+            directive_helpers.TestExportHandlerA)
 
 
-        
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(DirectivesTest),
+        ))
 
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+if __name__ == '__main__':
+    unittest.main()

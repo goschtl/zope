@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:service="http://namespaces.zope.org/service">
 
@@ -131,4 +131,4 @@
 
 <include package=".stateful" />
 
-</zopeConfigure>
+</configure>

@@ -13,39 +13,24 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: metaconfigure.py,v 1.1 2003/05/08 17:27:18 jack-e Exp $
+$Id: metaconfigure.py,v 1.2 2003/08/01 20:40:59 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.configuration.action import Action
 from globalimportexport import globalImportExport
 
-#
 
 def importHandlerDirective(_context, interface, factory):
-    interface = _context.resolve(interface)
-    factory = _context.resolve(factory)
-    return [
-        Action(
-              discriminator = ('workflow','importHandler', interface),
-              callable = addImportHandler,
-              args = (interface, factory)
-              )
-        ]
+    _context.action(
+        discriminator = ('workflow','importHandler', interface),
+        callable = addImportHandler,
+        args = (interface, factory) )
 
 
 def exportHandlerDirective(_context, interface, factory):
-    interface = _context.resolve(interface)
-    factory = _context.resolve(factory)
-    return [
-        Action(
-              discriminator = ('workflow','exportHandler', interface),
-              callable = addExportHandler,
-              args = (interface, factory)
-              )
-        ]
-
-
+    _context.action(
+        discriminator = ('workflow','exportHandler', interface),
+        callable = addExportHandler,
+        args = (interface, factory) )
 
 
 def addImportHandler(interface, factory):

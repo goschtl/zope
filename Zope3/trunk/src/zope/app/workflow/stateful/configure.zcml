@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:workflow="http://namespaces.zope.org/workflow" >
 
@@ -127,4 +127,4 @@
 <!-- Test Object for testing Stateful Workflows -->
 <!--include file="testobject.zcml"/-->
 
-</zopeConfigure>
+</configure>
