@@ -2,7 +2,16 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
+
+
+  <!-- Default preconfigured basic auth -->
+  <utility
+      name="Zope Realm HTTP Basic"
+      factory=".httpplugins.HTTPBasicAuthChallenger"
+      provides=".interfaces.IChallengePlugin"
+      />
   
+  <!-- Locally custom-configured basic auth -->
   <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
 
     <implements
@@ -14,35 +23,21 @@
         set_schema=".httpplugins.IHTTPBasicAuthRealm" />
 
   </localUtility>
+
+  <utility
+      name="No Challenge if Authenticated"
+      factory=".generic.AlreadyAuthenticatedUserChallenger"
+      provides=".interfaces.IChallengePlugin"
+      />
+
   
-  <browser:addMenuItem
-      title="PAS Basic Auth Challenge Plugin"
-      description="A PAS Basic Auth Challenge Plugin"
-      class=".httpplugins.HTTPBasicAuthChallenger"
-      permission="zope.ManageContent"
+  <utility
+      name="Rediect to loginForm.html"
+      factory=".browserplugins.FormChallenger"
+      provides=".interfaces.IChallengePlugin"
       />
 
-  <localUtility class=".generic.AlreadyAuthenticatedUserChallenger">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-  </localUtility>
-  
-  <browser:addMenuItem
-      title="PAS Authenticated User Challenge Plugin"
-      description="A PAS Authenticated User Challenge Plugin"
-      class=".generic.AlreadyAuthenticatedUserChallenger"
-      permission="zope.ManageServices"
-      />
-
-  <browser:addMenuItem
-      title="PAS Browser Session Challenge Plugin"
-      description="A PAS Challenge Plugin"
-      class="zope.app.pas.browserplugins.FormChallenger"
-      permission="zope.ManageServices"
-      />
-
+  <!-- Configure where to redirect to -->
   <localUtility class=".browserplugins.FormChallenger">
 
     <implements

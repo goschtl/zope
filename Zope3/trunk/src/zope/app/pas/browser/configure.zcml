@@ -98,6 +98,30 @@
       description="PAS Credential Extraction and Challenge Plugin"
       />
 
+<!-- Challengers -->
+  
+  <addMenuItem
+      title="PAS Custom Realm Basic Auth Challenge Plugin"
+      description="A PAS Basic Auth Challenge Plugin"
+      class="..httpplugins.HTTPBasicAuthChallenger"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      title="Custom Form Session Challenge Plugin"
+      description="A PAS Challenge Plugin"
+      class="..browserplugins.FormChallenger"
+      permission="zope.ManageServices"
+      />
+
+<!-- Extractors -->
+
+  <addMenuItem
+      title="PAS Browser Session Extractor"
+      description="A PAS Extraction Plugin"
+      class="..browserplugins.SessionExtractor"
+      permission="zope.ManageServices"
+      />
 
 
 </zope:configure>

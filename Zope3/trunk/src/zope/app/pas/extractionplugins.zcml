@@ -3,32 +3,16 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
-  <localUtility class=".httpplugins.HTTPBasicAuthExtractor">
+<utility
+    name="HTTP Basic"
+    provides=".interfaces.IExtractionPlugin"
+    factory=".httpplugins.HTTPBasicAuthExtractor"
+    />
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-  </localUtility>
-
-  <browser:addMenuItem
-      title="PAS HTTP Basic Auth Extractor"
-      description="A PAS Extraction Plugin"
-      class="zope.app.pas.httpplugins.HTTPBasicAuthExtractor"
-      permission="zope.ManageContent"
-      />
-
-  <localUtility class=".browserplugins.SessionExtractor">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-  </localUtility>
-
-  <browser:addMenuItem
-      title="PAS Browser Session Extractor"
-      description="A PAS Extraction Plugin"
-      class="zope.app.pas.browserplugins.SessionExtractor"
-      permission="zope.ManageServices"
-      />
+<utility
+    name="Session"
+    provides=".interfaces.IExtractionPlugin"
+    factory=".browserplugins.SessionExtractor"
+    />
 
 </configure>
