@@ -74,6 +74,10 @@ import smtplib
 import socket, whrandom, getpass
 
 CVSROOT = os.environ.get('CVSROOT', '/cvs-repository')
+LDAP_PORT = 389
+LDAP_HOST = "10.0.11.6"
+OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
+
 os.chdir('/tmp')                        # So we have a valid working directory.
 
 #SMTP_SERVER = 'smtp.digicool.com'
@@ -107,8 +111,7 @@ CHMOD_GW = 1
 # eg, people doing remote :ext: and :pserver: checkins).
 CHMOD_CASUAL = 1
 
-MAIL_CMD = "/usr/lib/sendmail"
-MAIL_CMD_FULLNAME_SLOT = "-F'%s'"
+MAIL_CMD = "/usr/lib/sendmail -ba"
 SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 
 # IDENTITY_FILE must be readable by anyone doing a checkin that uses the
@@ -390,27 +393,36 @@ def do_mail(remote, repo, addrs, subjs,
 
     mailcmd = MAIL_CMD
     user = getuser()
+    fullname = email = ''
     if user:
-        try: fullname = pwd.getpwnam(user)[4]
-        except KeyError: fullname = ''
-        if fullname:
-            mailcmd = "%s %s" % (MAIL_CMD, MAIL_CMD_FULLNAME_SLOT % fullname)
+        fullname, email = get_user_ldap_info(user)
     else:
-        user = "<unknown>"
+        user = "*unknown*"
+    if not fullname:
+        fullname = "The Unidentified User"
+    if not email:
+        email = OFFICIAL_SENDER
 
     cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
-                                     (DRYRUN and "echo Would do: ") or "",
-                                     mailcmd,
-                                     (VERBOSE and "-v") or "",
-                                     string.join(addrs, ",")))
+                             (DRYRUN and "echo Would do: ") or "",
+                             mailcmd,
+                             (VERBOSE and "-v") or "",
+                             string.join(addrs, ",")))
 
-    # Prepend the subject line and and append the diff:
+    # Prepend the Subject and From lines, and append the diff:
     mf = open(msgfilenm, 'r')
     oldcontents = mf.read()
     mf.close()
     mf = open(msgfilenm, 'w')
-    mf.write("Subject: %s\nTo: %s\n\n%s %s"
-             % (subject, string.join(addrs, ","), oldcontents, diff_msg))
+    mf.write("Subject: %(subject)s\nTo: %(to)s\n"
+             "From: %(from)s\nSender: %(sender)s\n\n"
+             "%(contents)s %(diff)s"
+             % {'subject': subject,
+                'to': string.join(addrs, ","),
+                'from': "%s <%s>" % (fullname, email),
+                'sender': OFFICIAL_SENDER,
+                'contents': oldcontents,
+                'diff': diff_msg})
     mf.close()
     cmd = cmd + "< %s" % msgfilenm
 
@@ -623,6 +635,51 @@ def getuser():
     """Try to get the user's login name."""
     try: return getpass.getuser()
     except: return None
+
+def get_user_ldap_info(user):
+    """Obtain some aproximation to user's (fullname, email).
+
+    We prefer to get the info out of ldap.
+
+    Failing that, we use whatever we can get from the password file.
+
+    Failing that, we return an empty fullname and user@cvs.zope.org.
+
+    Failling all, we return ('', '')."""
+    if not user:
+        return ('', '')
+    # Fallback values:
+    email = "%s@cvs.zope.org" % user
+    try:
+        fullname = pwd.getpwnam(user)[4]
+    except KeyError:
+        fullname = ''
+
+    try:
+        import _ldap; ldap_mod = _ldap
+    except ImportError:
+        try:
+            import ldap; ldap_mod = ldap
+        except ImportError:
+            return (fullname, email)
+    try:
+        c = ldap_mod.open(LDAP_HOST, LDAP_PORT)
+        c.simple_bind_s('', '')
+        # ('sn' for "surname")
+        record = c.search_s('ou=people,dc=zope,dc=org', ldap_mod.SCOPE_SUBTREE,
+                            'cn=%s' % user, ['mail', 'sn', 'givenName'])
+        if record:
+            d = record[0][1]
+            email = d.get('mail', [email])[0]
+            first = d.get('givenName', [''])[0]
+            last = d.get('sn', [''])[0]
+            if first or last:
+                if first: first = first + " "
+                fullname = "%s%s" % (first, last)
+    except ldap_mod.LDAPError:
+        pass
+
+    return (fullname, email)
 
 def handle_failures(argstring):
     """On serious failures, send the complaints log to CVSMASTER."""
