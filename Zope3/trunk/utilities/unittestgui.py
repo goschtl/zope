@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.4 $"[11:-2]
+__version__ = "$Revision: 1.5 $"[11:-2]
 
 import linecache
 import unittest
@@ -308,7 +308,8 @@ class TkTestRunner(BaseGUITestRunner):
         add((self.stopGoButton, {'fill': tk.X}, 0))
         add((tk.Button(buttonFrame, text="Close", command=self.top.quit),
              {'side': tk.BOTTOM, 'fill': tk.X}, 0))
-        add((tk.Button(buttonFrame, text="About", command=self.showAboutDialog),             {'side': tk.BOTTOM, 'fill': tk.X}, 0))
+        add((tk.Button(buttonFrame, text="About", command=self.showAboutDialog),
+             {'side': tk.BOTTOM, 'fill': tk.X}, 0))
         add((tk.Button(buttonFrame, text="Help", command=self.showHelpDialog),
              {'side': tk.BOTTOM, 'fill': tk.X}, 0))
 
