@@ -16,6 +16,7 @@
 $Id$
 """
 import os
+import transaction
 import unittest
 
 from zope.app.folder.interfaces import IRootFolder
@@ -37,6 +38,7 @@ class Test(BrowserTestCase):
              'contents.html')
         root = self.getRootFolder()
         root['file']=File()
+        transaction.commit()
 
         response = self.publish(
             '/contents.html',
