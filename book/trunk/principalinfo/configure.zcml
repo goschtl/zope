@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="principalinfo">
+
+  <adapter
+      factory=".info.PrincipalInformation"
+      provides=".interfaces.IPrincipalInformation"
+      for="zope.app.security.interfaces.IPrincipal"
+      permission="zope.ManageServices"
+      />
+
+  <browser:editform
+      name="userInfo.html"
+      schema=".interfaces.IPrincipalInformation"
+      for="zope.app.security.interfaces.IPrincipal"
+      label="Change User Information"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="User Info" />
+
+</configure>
