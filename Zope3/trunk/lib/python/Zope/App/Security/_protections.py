@@ -14,12 +14,11 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.5 2002/11/30 14:49:42 stevea Exp $
+$Id: _protections.py,v 1.6 2002/11/30 15:17:58 stevea Exp $
 """
 
 def protect():
-    from Zope.Security.Checker import \
-         defineChecker, getCheckerForInstancesOf, NamesChecker, NoProxy
+    from Zope.Security.Checker import defineChecker, NamesChecker, NoProxy
 
 
     # excluding _check, _bucket_type, _firstbucket, and write operations
