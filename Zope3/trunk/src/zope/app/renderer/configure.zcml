@@ -19,6 +19,16 @@
         attributes="title"/>
   </content>
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoiceSequence
+           .vocabulary.ISourceTypeVocabulary"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".vocabulary.SourceTypeEditWidget"
+      permission="zope.Public"
+      />
+  
+
   <!-- Plain Text Support -->
 
   <factory

@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.8 2004/04/24 23:19:52 srichter Exp $
+$Id: vocabulary.py,v 1.9 2004/04/29 12:19:39 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -41,7 +41,7 @@ class SourceTypeTerm:
 
 class SourceTypeVocabulary(object):
 
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(ISourceTypeVocabulary)
 
     def __init__(self, context):
         self.types = list(zapi.getFactoriesFor(None, ISource))
