@@ -28,7 +28,8 @@ import Products, CMFCorePermissions
 from ActionProviderBase import ActionProviderBase
 from ActionInformation import ActionInformation
 from Expression import Expression
-from zLOG import LOG, WARNING
+from zLOG import LOG, WARNING, ERROR
+import sys
 
 from CMFCorePermissions import View, ManagePortal, AccessContentsInformation
 
@@ -306,19 +307,20 @@ class TypeInformation (SimpleItemWithProperties):
         actions = []
         for idx in range(len(self._actions)):
             s_idx = str(idx)
-            action = {
-                'id': str(properties.get('id_' + s_idx, '')),
-                'name': str(properties.get('name_' + s_idx, '')),
-                'action': str(properties.get('action_' + s_idx, '')),
-                'permissions':
-                (properties.get('permission_' + s_idx, ()),),
-                'category': str(properties.get('category_' + s_idx, '')),
-                'visible': not not properties.get('visible_' + s_idx, 0),
-                }
+            action = self._actions[idx].copy()
+            action.update( {
+                    'id': str(properties.get('id_' + s_idx, '')),
+                    'name': str(properties.get('name_' + s_idx, '')),
+                    'action': str(properties.get('action_' + s_idx, '')),
+                    'permissions':
+                    (properties.get('permission_' + s_idx, ()),),
+                    'category': str(properties.get('category_' + s_idx, '')),
+                    'visible': not not properties.get('visible_' + s_idx, 0),
+                    } )
             if not action['name']:
                 raise ValueError('A name is required.')
-            actions.append(action)
-        self._actions = tuple(actions)
+            actions.append( action )
+        self._actions = tuple( actions )
         if REQUEST is not None:
             return self.manage_editActionsForm(REQUEST, manage_tabs_message=
                                                'Actions changed.')
@@ -444,28 +446,43 @@ class FactoryTypeInformation (TypeInformation):
     #
     #   Agent methods
     #
-    def _getFactoryMethod(self, container, raise_exc=0):
+    def _getFactoryMethod(self, container):
         if not self.product or not self.factory:
-            return None
+            raise ValueError, ('Product factory for %s was undefined' %
+                               self.getId())
+        p = container.manage_addProduct[self.product]
+        
+        m = getattr(p, self.factory, None)
+        if m is None:
+            raise ValueError, ('Product factory for %s was invalid' %
+                               self.getId())
+        if getSecurityManager().validate(p, p, self.factory, m):
+            return m
+        raise Unauthorized, ('Cannot create %s' % self.getId())
+
+    def _queryFactoryMethod(self, container, m=None):
         try:
-            p = container.manage_addProduct[self.product]
-            m = getattr(p, self.factory, None)
-            if m is not None:
-                if getSecurityManager().validate(p, p, self.factory, m):
-                    return m
-            return None
-        except: # only raise if allowed
-            if raise_exc:
-                raise
-            return None
+            if self.product and self.factory:
+                p = container.manage_addProduct[self.product]
+                t = getattr(p, self.factory, None)
+                if getSecurityManager().validate(p, p, self.factory, t):
+                    m = t
+        except:
+            LOG('Types Tool', ERROR, '_queryFactoryMethod raised an exception',
+                error=sys.exc_info())
+        return m
 
     security.declarePublic('isConstructionAllowed')
-    def isConstructionAllowed ( self, container, raise_exc=0):
+    def isConstructionAllowed ( self, container ):
         """
-        Does the current user have the permission required in
-        order to construct an instance?
+        a. Does the factory method exist?
+
+        b. Is the factory method usable?
+
+        c. Does the current user have the permission required in
+        order to invoke the factory method?
         """
-        m = self._getFactoryMethod(container, raise_exc)
+        m = self._queryFactoryMethod(container)
         return (m is not None)
 
     security.declarePublic('constructInstance')
@@ -476,10 +493,8 @@ class FactoryTypeInformation (TypeInformation):
         """
         # Get the factory method, performing a security check
         # in the process.
-        m = self._getFactoryMethod(container, raise_exc=1)
 
-        if m is None:
-            raise Unauthorized, ('Cannot create %s' % self.getId())
+        m = self._getFactoryMethod(container)
 
         id = str(id)
 
