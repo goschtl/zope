@@ -84,8 +84,7 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         request = Request(I, '')
 
         T = WikiPageTraverser(page1, request)
-        zapi.getService(zapi.servicenames.Presentation).provideView(
-            IWikiPage, 'viewfoo', I, View)
+        ztapi.provideView(IWikiPage, I, Interface, 'viewfoo', View)
 
         self.failUnless(
             T.publishTraverse(request, 'viewfoo').__class__ is View )
