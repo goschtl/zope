@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.19 2003/03/12 19:22:36 gvanrossum Exp $
+$Id: event.py,v 1.20 2003/03/16 15:44:05 stevea Exp $
 """
 
 from __future__ import generators
@@ -112,11 +112,12 @@ class EventChannel(Subscribable):
                 # adding this subscriber to badSubscribers is inappropriate.
                 getAdapter(obj, ISubscriber).notify(event)
 
-##        # XXX This code is bogus: unsubscribe() takes two arguments, not one.
-##        #     Alas, I don't know how to fix it; I just don't want it to fail.
-##        for subscriber in badSubscribers:
-##            # XXX this ought to be logged
-##            clean_self.unsubscribe(subscriber)
+        for subscriber in badSubscribers:
+            # XXX this ought to be logged
+            # Also, is it right that we should sometimes have
+            # "write caused by a read" semantics? I'm seeing notify() as
+            # basically a read, and (un)subscribe as a write.
+            wrapped_self.unsubscribeAll(subscriber)
 
     def notify(wrapped_self, event):
         clean_self = removeAllProxies(wrapped_self)

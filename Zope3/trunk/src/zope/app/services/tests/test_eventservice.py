@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.14 2003/03/11 16:11:31 jim Exp $
+$Id: test_eventservice.py,v 1.15 2003/03/16 15:44:05 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -238,6 +238,44 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
+
+    def testBadSubscriber(self):
+        self._createSubscribers()
+        root = subscribe(
+            self.rootFolderSubscriber,
+            event_type=IObjectAddedEvent
+            )
+        folder1 = subscribe(self.folder1Subscriber,
+                            event_type=IObjectAddedEvent)
+        folder1_1 = subscribe(self.folder1_1Subscriber,
+                              event_type=IObjectAddedEvent)
+        self.assertEqual(
+            root,
+            getPhysicalPathString(self.rootFolderSubscriber))
+        self.assertEqual(
+            folder1,
+            getPhysicalPathString(self.folder1Subscriber))
+        self.assertEqual(
+            folder1_1,
+            getPhysicalPathString(self.folder1_1Subscriber))
+        # Remove folder1Subscriber, so that the event service will not
+        # be able to notify it.
+        folder1Subscriber = self.folder1['folder1Subscriber']
+        del self.folder1['folder1Subscriber']
+
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 1)
+        self.assertEqual(self.folder1Subscriber.notified, 0)
+        self.assertEqual(self.folder1_1Subscriber.notified, 1)
+
+        # Now, put folder1Subscriber back. It should not be notified
+        # now, because it was removed as a bad subscriber.
+        self.folder1.setObject('folder1Subscriber', folder1Subscriber)
+
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 2)
+        self.assertEqual(self.folder1Subscriber.notified, 0)
+        self.assertEqual(self.folder1_1Subscriber.notified, 2)
 
     def testByPathExplicit(self):
         # test complex interaction, with hubids available but explicitly
