@@ -39,6 +39,11 @@
         attributes="__getattr__" />
   </content>
 
+   <adapter
+       factory="zope.app.introspector.Introspector"
+       permission="zope.View"
+       provides="zope.app.interfaces.introspector.IIntrospector" />
+
   <adapter
       factory="zope.app.attributeannotations.AttributeAnnotations"
       provides="zope.app.interfaces.annotation.IAnnotations"
