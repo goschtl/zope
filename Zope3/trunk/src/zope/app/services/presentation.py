@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.2 2003/11/21 17:09:59 jim Exp $
+$Id: presentation.py,v 1.3 2003/12/18 06:09:44 sraju Exp $
 """
 
 from zope.app import zapi
@@ -37,6 +37,9 @@ import zope.interface
 import zope.proxy
 import zope.publisher.interfaces.browser
 import zope.schema
+from zope.app.interfaces.container import IAddNotifiable
+from zope.app.interfaces.dependable import IDependable, DependencyError
+from zope.app.interfaces.services.registration import IRegistered
 
 # XXX How do we define skins and layers here?
 # For now, we will leave skin and layer definition to services above,
@@ -370,10 +373,9 @@ class IPageRegistration(IViewRegistration):
         required = False,
         )
 
-    template = zope.app.services.field.ComponentPath(
+    template = zope.app.interfaces.services.registration.ComponentPath(
         title = u"Page template",
         required = False,
-        type = zope.app.services.zpt.IZPTTemplate,
         )
 
     attribute = zope.schema.TextLine(
@@ -393,7 +395,7 @@ class IPageRegistration(IViewRegistration):
 
 class PageRegistration(ViewRegistration):
 
-    zope.interface.implements(IPageRegistration)
+    zope.interface.implements(IPageRegistration, IAddNotifiable)
 
     # We only care about browser pages
     requestType = zope.publisher.interfaces.browser.IBrowserRequest
@@ -465,17 +467,49 @@ class PageRegistration(ViewRegistration):
             class_  = DefaultClass
 
 
-        # This is needed because we need to do an unrestricted zapi.traverse
-        root = zope.proxy.removeAllProxies(zapi.getRoot(sm))
 
         if self.attribute:
             return (AttrViewFactory(class_, self.attribute), )
 
         else:
-            template = zapi.traverse(root, self.template)
+
+            if self.template[0]=='/':
+                # This is needed because we need to do an unrestricted zapi.
+                # traverse
+                root = zope.proxy.removeAllProxies(zapi.getRoot(sm))
+                template = zapi.traverse(root, self.template)
+            else:
+                template = zapi.traverse(self.__parent__.__parent__,
+                                         self.template)
             return (TemplateViewFactory(class_, template, self.permission), )
 
     factories = property(factories)
+
+
+    def addNotify(self, event):
+        "See IAddNotifiable"
+        template = zapi.traverse(self.__parent__.__parent__,self.template)
+        dependents = zapi.getAdapter(template, IDependable)
+        objectpath = zapi.getPath(self)
+        dependents.addDependent(objectpath)
+        # Also update usage, if supported
+        adapter = zapi.queryAdapter(template, IRegistered)
+        if adapter is not None:
+            adapter.addUsage(objectpath)
+
+
+    def removeNotify(self, event):
+        "See IRemoveNotifiable"
+        super(PageRegistration, self).removeNotify(event)
+        template = zapi.traverse(self.__parent__.__parent__,self.template)
+        dependents = zapi.getAdapter(template, IDependable)
+        objectpath = zapi.getPath(self)
+        dependents.addDependent(objectpath)
+        # Also update usage, if supported
+        adapter = zapi.queryAdapter(template, IRegistered)
+        if adapter is not None:
+            adapter.removeUsage(zapi.getPath(self))
+
 
 class TemplateViewFactory:
 

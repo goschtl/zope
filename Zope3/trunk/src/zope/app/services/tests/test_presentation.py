@@ -13,10 +13,12 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.2 2003/11/21 17:09:59 jim Exp $
+$Id: test_presentation.py,v 1.3 2003/12/18 06:09:44 sraju Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.testing.doctestunit import DocTestSuite
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 from zope.app import zapi
 from zope.interface import Interface, directlyProvides, implements
@@ -46,6 +48,10 @@ from zope.proxy import removeAllProxies
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.container.contained import contained
+
+from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.dependable import Dependable
 
 class I1(Interface):
     pass
@@ -339,7 +345,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         registration = contained(
             PageRegistration(
                 I1, 'test', 'zope.View', "Foo.Bar.A", attribute='run'),
-            self.folder,
+            self.folder,6
             )
         c = C()
         request = TestRequest()
@@ -360,6 +366,17 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         self.assertRaises(ConfigurationError, lambda: registration.factories)
 
 
+def test_PageRegistration_addremoveNotify():
+    """for addNotify and removeNotify
+
+    XXX
+      - Jim suggested we can write unit test later.
+
+      - It will be easiar to write unit test, for Direct reference.
+
+    """
+
+
 def test_suite():
     return TestSuite([
         makeSuite(TestLocalPresentationService),
@@ -369,3 +386,5 @@ def test_suite():
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
+
+

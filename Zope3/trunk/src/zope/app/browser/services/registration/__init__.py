@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.12 2003/11/03 21:56:49 fdrake Exp $
+$Id: __init__.py,v 1.13 2003/12/18 06:09:43 sraju Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -22,7 +22,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import INameChooser
 
-from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.interfaces.services.registration import IRegistration
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
@@ -244,7 +244,7 @@ class ComponentPathWidget(BrowserWidget):
         # Render as a link to the component
         field = self.context
         context = field.context
-        if IComponentRegistration.isImplementedBy(context):
+        if IRegistration.isImplementedBy(context):
             # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.__name__)
             # The path may be relative; then interpret relative to ../..
@@ -274,7 +274,7 @@ class ComponentPathWidget(BrowserWidget):
         "See zope.app.interfaces.form.IWidget"
         field = self.context
         context = field.context
-        if IComponentRegistration.isImplementedBy(context):
+        if IRegistration.isImplementedBy(context):
             # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.getName())
         else:

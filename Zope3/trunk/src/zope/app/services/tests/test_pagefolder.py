@@ -13,11 +13,11 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.9 2003/11/21 17:09:42 jim Exp $
+$Id: test_pagefolder.py,v 1.10 2003/12/18 06:09:44 sraju Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.pagefolder import PageFolder, IPageFolder
@@ -29,6 +29,16 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.services.tests.test_registrationmanager \
      import RegistrationManagerContainerTests
 from zope.component.servicenames import Presentation
+
+
+from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.dependable import Dependable
+from zope.app import zapi
+from zope.app.interfaces.annotation import IAnnotations, IAnnotatable
+from zope.app.attributeannotations import AttributeAnnotations
+
+
 
 class I(Interface):
     pass
@@ -44,23 +54,34 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
         setup.addService(sm, Presentation, LocalPresentationService(),
                          suffix='service')
         default = zapi.traverse(self.rootFolder, '++etc++site/default')
+
+        ztapi.provideAdapter(IAnnotatable, IAnnotations,
+                         AttributeAnnotations)
+
+        ztapi.provideAdapter(IAnnotatable, IDependable,
+                         Dependable)
+
         default["PF"] = PageFolder()
         pagefolder = zapi.traverse(default, "PF")
+
         pagefolder.required = I
         pagefolder.factoryName = None
         pagefolder.permission = 'zope.View'
 
         self.__pagefolder = pagefolder
 
-    def test___setitem__(self):
 
+
+    def test___setitem__(self):
+        
         pagefolder = self.__pagefolder
 
         pagefolder['foo.html'] = ZPTTemplate()
 
         rm = pagefolder.getRegistrationManager()
         name = rm.keys()[-1]
-        registration = zapi.traverse(pagefolder.getRegistrationManager(), name)
+        registration = zapi.traverse(pagefolder.getRegistrationManager(),
+                                     name)
         self.assertEqual(registration.status, ActiveStatus)
         self.assertEqual(registration.required, I)
         self.assertEqual(registration.requestType, IBrowserRequest)
