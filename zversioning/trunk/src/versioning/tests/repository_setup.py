@@ -29,6 +29,13 @@ from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
 
+from zope.app.copypastemove.interfaces import IObjectCopier
+from zope.app.copypastemove import ObjectCopier
+
+
+from zope.app.container.interfaces import IWriteContainer, INameChooser
+from zope.app.container.contained import NameChooser
+
 
 def registerAdapter() :
     """ Register some common adapter. """ 
@@ -43,8 +50,11 @@ def registerAdapter() :
     ztapi.provideAdapter(IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
     ztapi.provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
 
-
-
+    # for copy and moves
+    ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
+    ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
+    
+    
 def buildDatabaseRoot():
     """Opens a connection to a test database and returns the root object
     """

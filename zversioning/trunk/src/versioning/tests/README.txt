@@ -95,134 +95,54 @@ Now the reference from b to c is invalid ...
   >>> new_b["c"] == new_c
   False
   
-as well as the reference from c to a is defunct :
+as well as the reference from c to a :
   
   >>> new_c.refers_to == new_a
   False
-  
-A closer look reveals that
-
-  >>> new_c         # doctest: +ELLIPSIS
-  <zope.app.versioncontrol.README.TestFolder object at ...>
 
   
-This demonstrates that the reference to a is not correctly preserved. To
-achieve this goal we overwrite the copy process with our own:
+This demonstrates that the reference to a is not preserved, which is the major
+motivation for a new implementation.
+
+
+
+
+Alternative implementation
+--------------------------
+
+We want to use versioning with objects other than standard zope objects that use
+only the standard containment structure meachanism. In the same time some parts
+of the versioning system should be pluggable, e.g. the storage for the object histories,
+the locking mechanism etc.
+
+We start with the basic building blocks, a storage that holds version histories
+of several objects. Note that this implementation does not collide with the
+implementation in zope.app.versioncontrol. This versioning scheme does not attach any
+information to the versioned objects and keeps the necessary bookeeping information 
+encapsulated in the storage of object histories.
+
+    >>> from versioning.storage import SimpleHistoryStorage
+    >>> from versioning.policies import VersionableAspectsAdapter
+    >>> histories = SimpleHistoryStorage()
+    >>> histories.register(a)
+    '\x00\x00\x00\x00\x00\x00\x00\x04'
+    >>> histories.register(b)
+    '\x00\x00\x00\x00\x00\x00\x00\x05'
+    >>> util.commit()
+    >>> len(histories.values())
+    2
+    >>> [x for x in histories.keys()]
+    [u'\x00\x00\x00\x00\x00\x00\x00\x04', u'\x00\x00\x00\x00\x00\x00\x00\x05']
+    >>> adapter = VersionableAspectsAdapter(a, histories)
+    >>> adapter.writeAspects()
+    'Version 001'
+
+
 
     
-  >>> def cloneByPickle(obj, repository, ignore_list=()):
-  ...     """Makes a copy of a ZODB object, loading ghosts as needed.
-  ...      
-  ...     Ignores specified objects along the way, replacing them with None
-  ...     in the copy.
-  ...     """
-  ...     ignore_dict = {}
-  ...     for o in ignore_list:
-  ...         ignore_dict[id(o)] = o
-  ...     ids = {"ignored": object()}
-  ...     
-  ...     def persistent_id(ob):
-  ...         if ignore_dict.has_key(id(ob)):
-  ...             return 'ignored'
-  ...         if IVersionable.providedBy(object) :
-  ...             if IVersioned.providedBy(object) :
-  ...                myid = repository.getExistingTicket(object)
-  ...             else :
-  ...                myid = repository.getNewTicket(object)
-  ...            
-  ...             ids[myid] = ob
-  ...             return myid
-  ...         if getattr(ob, '_p_changed', 0) is None:
-  ...             ob._p_changed = 0
-  ...         return None
-  ...     
-  ...     stream = StringIO()
-  ...     p = Pickler(stream, 1)
-  ...     p.persistent_id = persistent_id
-  ...     p.dump(obj)
-  ...     stream.seek(0)
-  ...     u = Unpickler(stream)
-  ...     u.persistent_load = ids.get
-  ...     return u.load()
-
-  >>> VERSION_INFO_KEY = "gaga.at.isarsprint"
-  >>> from zope.app.versioncontrol.repository import Repository
-  >>> from zope.app.uniqueid import UniqueIdUtility
-  >>> class RefertialVersionControl(Repository) : 
-  ...   # an implementation that preprocesses the object states
-  ...
-  ...   tickets = UniqueIdUtility()
-  ...
-  ...   def getExistingTicket(self, object) :
-  ...       IAnnotations(object)[VERSION_INFO_KEY]
-  ...
-  ...   def getNewTicket(self, object) :
-  ...       id = self.tickets.register(object)
-  ...       IAnnotations(object)[VERSION_INFO_KEY] = id
-  ...       return id
-  ...
-  ...   def applyVersionControl(self, object, message=None) :
-  ...       obj = self.preprocess(object)
-  ...       super(RefertialVersionControl, self).applyVersionControl(obj, message)
-  ...
-  ...   def getVersionOfResource(self, history_id, branch) :
-  ...       obj = super(RefertialVersionControl, self).getVersionOfResource(history_id, branch)
-  ...       return self.postprocess(obj)
-  ...
-  ...   def preprocess(self, obj) :
-  ...       # We replace python references by unique ids
-  ...       return obj.cloneByPickle()
-  ...
-  ...   def postprocess(self, obj) :
-  ...       return obj   
-  
-  >>> def declare_unversioned(object):
-  ...   # remove object from version controll
-  ...   ifaces = zope.interface.directlyProvidedBy(object)
-  ...   ifaces -= IVersioned
-  ...   zope.interface.directlyProvides(object, *ifaces)
-    
-  >>> declare_unversioned(sample)
-  >>> declare_unversioned(a)
-  >>> declare_unversioned(b)
-  >>> declare_unversioned(c)
-  >>> repository2 = buildRepository(RefertialVersionControl, interaction=False)
-  >>> repository2.applyVersionControl(sample)
-  >>> repository2.applyVersionControl(a)
-  >>> repository2.applyVersionControl(b)
-  >>> repository2.applyVersionControl(c)
-  
- 
-  >>> new_a = accessVersion(repository2, a)
-  >>> new_b = accessVersion(repository2, b)
-  >>> new_c = accessVersion(repository2, c)
-  
-  Now the reference from b to c is intact:
-  >>> new_b["c"] == new_c
-  False
-  >>> new_c.refers_to == new_a
-  False
-  
 
 
 
-
-
-Extensions: We want to define a repository that works as a black box and returns
-only a ticket which guarantees that we get a valid copy back if we use this ticket.
-
-class IRepository(Interface) :
-
-    def register(self, obj) :
-        """ Returns an ITicket. """
-        
-    def retrieve(self, ticket) :
-        """ Returns an object or throws an ObjectNotFound 
-            or ObjectPermanentylDeleted exception.
-        """
-    
-We want to use versioning with object other than standard zope objects that use
-only the standard containment structure meachanism.
 
 
 

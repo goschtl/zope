@@ -35,6 +35,11 @@ to allow versionable objects to subscribe to new versions if the
 used backend generates its own versions.
 """
 
+import persistent, zope
+from zope.interface import Interface
+
+
+
 class IRepository(Interface):
     """A version repository providing core functionality.
     
@@ -136,7 +141,7 @@ class IIntrospectableRepository(Interface):
         """Returns the metadata of all versions of the given object.
         """
 
-class IDeletableStorage(IStorage) :
+class IDeletableRepository(Interface) :
     """ Most versioning systems do not allow to throw away versioned
     data, but there might be use cases were simple file repositories
     or other storage solutions can sweep out old versions. """
@@ -149,7 +154,7 @@ class IDeletableStorage(IStorage) :
         """
 
 
-class ICheckoutAware(Interfaces):
+class ICheckoutAware(Interface):
     """Marking objects as checked in or checked out.
     
     XXX Naming conventions? Aren't IBlahAware interfaces usually marker 
