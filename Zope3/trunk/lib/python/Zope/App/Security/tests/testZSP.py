@@ -14,13 +14,11 @@
 """
 
 
-Revision information: $Id: testZSP.py,v 1.6 2002/11/08 18:35:06 stevea Exp $
+Revision information: $Id: testZSP.py,v 1.7 2002/12/21 19:53:13 stevea Exp $
 """
-
 
 import unittest
 
-from Interface import Interface
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getService
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
@@ -35,18 +33,13 @@ from Zope.App.Security.Grants.Global.PrincipalRoleManager \
      import principalRoleManager 
 from Zope.App.Security.Grants.AnnotationPrincipalPermissionManager \
     import AnnotationPrincipalPermissionManager 
-from Zope.App.Security.Grants.Global.PrincipalPermissionManager \
-    import PrincipalPermissionManager 
 from Zope.App.Security.IPrincipalPermissionManager \
     import IPrincipalPermissionManager 
 from Zope.App.Security.Grants.AnnotationPrincipalRoleManager \
     import AnnotationPrincipalRoleManager 
-from Zope.App.Security.Grants.Global.PrincipalRoleManager \
-    import PrincipalRoleManager 
 from Zope.App.Security.Grants.AnnotationRolePermissionManager \
     import AnnotationRolePermissionManager 
 from Zope.App.Security.IPrincipalRoleManager import IPrincipalRoleManager 
-from Zope.Exceptions import Unauthorized, Forbidden
 from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
 from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
@@ -62,14 +55,13 @@ class Unprotected:
     pass
 
 
-
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         getService(None,"Adapters").provideAdapter(
                        IAttributeAnnotatable, IAnnotations,
-                       AttributeAnnotations)    
+                       AttributeAnnotations)
 
         # set up some principals
         jim = principalRegistry.definePrincipal('jim', 'Jim', 'Jim Fulton',
