@@ -553,7 +553,7 @@ def process_args(argv=None):
     timetests = 0
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDgGhLmptTuv",
+        opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDg:G:hLmptTuv",
                                    ["all", "help", "libdir=", "times="])
     except getopt.error, msg:
         print msg
