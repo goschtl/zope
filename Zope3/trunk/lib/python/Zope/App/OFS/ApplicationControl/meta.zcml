@@ -1,4 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-
-  <include package=".ServerControl" file="meta.zcml" />
-</zopeConfigure>

@@ -1,9 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-
-  <directives namespace="http://namespaces.zope.org/server-control">
-    <directive name="registerShutdownHook"
-               attributes="call priority name"
-               handler=".metaConfigure.registerShutdownHook" />
-  </directives>
-
-</zopeConfigure>
