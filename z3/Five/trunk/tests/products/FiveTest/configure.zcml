@@ -425,6 +425,12 @@
   <!-- as new style classes are ignored, zope.app.form.browser
        can be imported -->
 
+  <five:parrot
+      class=".metaconfigure.NorwegianBlue"
+      name="Polly"
+      />
+      
+
   <include package="zope.app.form.browser"/>
 
 </configure>
