@@ -1,0 +1,171 @@
+=============
+Publish tests
+=============
+
+These tests are about the publishing features of Five.  Before we can
+test we need to create a little bit of demo content from the
+``FiveTest`` product:
+
+  >>> five_test = self.folder.manage_addProduct['FiveTest']
+  >>> i = five_test.manage_addSimpleContent('testoid', 'Testoid')
+  >>> i = five_test.manage_addCallableSimpleContent('testcall', 'TestCall')
+  >>> i = five_test.manage_addIndexSimpleContent('testindex', 'TestIndex')
+
+We'll also add some demo users:
+
+  >>> uf = self.folder.acl_users
+  >>> uf._doAddUser('viewer', 'secret', [], [])
+  >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+No docstrings
+-------------
+
+Here we test whether view components that have no docstrings are
+automatically enhanced with one so that the ZPublisher is satisfied.
+We test whether this works with functions, methods and objects:
+
+  ... print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-function HTTP/1.1
+  ... """ % view_name)
+  HTTP/1.1 200 OK
+  Content-Length: 12
+  Content-Type: text/plain
+  <BLANKLINE>
+  No docstring
+
+  ... print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-method HTTP/1.1
+  ... """ % view_name)
+  HTTP/1.1 200 OK
+  Content-Length: 12
+  Content-Type: text/plain
+  <BLANKLINE>
+  No docstring
+
+  ... print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-object HTTP/1.1
+  ... """ % view_name)
+  HTTP/1.1 200 OK
+  Content-Length: 12
+  Content-Type: text/plain
+  <BLANKLINE>
+  No docstring
+
+
+Fallback raises NotFound
+------------------------
+
+This ensures that the default fallback for traversable classes raises
+a NotFound error which results in an HTTP 404 error code:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/doesntexist HTTP/1.1
+  ... """)
+  HTTP/1.1 404 Not Found
+  ...
+
+
+Existing __bobo_traverse__
+--------------------------
+
+This tests whether the structured monkey patch works correctly with
+existing `__bobo_traverse__` methods on classes.  In order to test
+this we add another type of content object:
+
+  >>> i = five_test.manage_addFancyContent('fancy')
+
+Check if the old `__bobo_traverse__` method can still kick in:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/fancy/something-else HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  Content-Length: 14
+  Content-Type: text/plain
+  <BLANKLINE>
+  something-else
+
+Now check if Zope3-style views are looked up:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/fancy/fancy HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  Content-Length: 12
+  Content-Type: text/plain
+  <BLANKLINE>
+  Fancy, fancy
+
+
+Resources
+---------
+
+Here we test whether resources can be accessed the way we know it from
+Zope 3.
+
+Image resource:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/++resource++pattern.png HTTP/1.1
+  ... Authorization: Basic bWFuYWdlcjpyMDB0
+  ... """)
+  HTTP/1.1 200 OK
+  ...
+  Content-Length: 170
+  Content-Type: image/png
+  ...
+
+File resource:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/++resource++style.css HTTP/1.1
+  ... Authorization: Basic bWFuYWdlcjpyMDB0
+  ... """)
+  HTTP/1.1 200 OK
+  ...
+  Content-Length: 29
+  Content-Type: text/css
+  ...
+
+
+Existing __call__
+-----------------
+
+Disabled __call__ overriding for now. Causes more trouble than it
+fixes.  Thus disabled the test:
+
+  #>>> print http(r"""
+  #... GET /test_folder_1_/testcall HTTP/1.1
+  #... """)
+  HTTP/1.1 200 OK
+  Content-Length: 23
+  Content-Type: text/plain
+  <BLANKLINE>
+  Default __call__ called
+
+Existing index_html and default view
+------------------------------------
+
+Make sure that an existing `index_html` can still be called:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testindex HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  Content-Length: 25
+  Content-Type: text/plain
+  <BLANKLINE>
+  Default index_html called
+
+Test whether an instance of a default viewable class is published
+properly:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid HTTP/1.1
+  ... Authorization: Basic bWFuYWdlcjpyMDB0
+  ... """)
+  HTTP/1.1 200 OK
+  Content-Length: 20
+  Content-Type: text/plain
+  <BLANKLINE>
+  The eagle has landed
