@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.8 2003/05/01 19:35:35 faassen Exp $
+$Id: test_servicemanager.py,v 1.9 2003/05/27 14:18:25 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import Interface
-from zope.proxy.context import getWrapperContainer
+from zope.context import getWrapperContainer
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
 from zope.component import getService, getServiceManager
@@ -171,7 +171,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(service, ts)
 
     def test_resolve(self):
-        from zope.proxy.context import ContextWrapper as cw
+        from zope.context import ContextWrapper as cw
         from zope.app.services.module import Manager
         import zope.app.services.tests.sample1
         import zope.app.services.tests.sample2

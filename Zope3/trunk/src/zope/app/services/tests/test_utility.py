@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.5 2003/05/01 19:35:35 faassen Exp $
+$Id: test_utility.py,v 1.6 2003/05/27 14:18:25 jim Exp $
 """
 
 import unittest
@@ -32,7 +32,7 @@ from zope.app.interfaces.services.configuration \
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.dependable import IDependable
-from zope.proxy.context import getWrapperContainer
+from zope.context import getWrapperContainer
 
 class IFo(Interface): pass
 

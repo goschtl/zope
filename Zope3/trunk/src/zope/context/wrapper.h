@@ -51,7 +51,7 @@ static int
 Wrapper_Import(void)
 {
     if (_wrapper_api == NULL) {
-        PyObject *m = PyImport_ImportModule("zope.proxy.context.wrapper");
+        PyObject *m = PyImport_ImportModule("zope.context.wrapper");
         if (m != NULL) {
             PyObject *tmp = PyObject_GetAttrString(m, "_CAPI");
             if (tmp != NULL) {

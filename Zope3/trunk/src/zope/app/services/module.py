@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: module.py,v 1.3 2003/05/27 14:18:24 jim Exp $
 """
 
 from persistence import Persistent
@@ -21,7 +21,7 @@ from zodb.code.module import PersistentModuleManager
 from zodb.code.interfaces import IPersistentModuleManager
 
 from zope.component import getServiceManager
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 class Registry:
 

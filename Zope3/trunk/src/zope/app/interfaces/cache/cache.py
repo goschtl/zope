@@ -13,12 +13,12 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: cache.py,v 1.3 2003/02/03 15:59:13 stevea Exp $
+$Id: cache.py,v 1.4 2003/05/27 14:18:18 jim Exp $
 """
 from zope.interface import Interface
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
-from zope.proxy.context import ContextProperty
+from zope.context import ContextProperty
 from zope.schema import TextLine
 from zope.app.interfaces.event import ISubscriber
 

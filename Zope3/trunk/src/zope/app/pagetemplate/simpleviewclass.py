@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.7 2003/05/01 19:35:25 faassen Exp $
+$Id: simpleviewclass.py,v 1.8 2003/05/27 14:18:20 jim Exp $
 """
 
 import sys
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 from zope.publisher.interfaces import NotFound
 
 class simple(BrowserView):

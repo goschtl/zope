@@ -13,12 +13,12 @@
 
 XXX longer description goes here.
 
-$Id: delete.py,v 1.1 2003/02/28 22:34:28 jim Exp $
+$Id: delete.py,v 1.2 2003/05/27 14:18:15 jim Exp $
 """
 __metaclass__ = type
 
 from zope.component import getAdapter
-from zope.proxy.context import getWrapperContainer, getWrapperData
+from zope.context import getWrapperContainer, getWrapperData
 from zope.app.interfaces.file import IWriteDirectory
 from zope.app.interfaces.container import IZopeWriteContainer
 

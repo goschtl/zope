@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.10 2003/05/01 19:35:34 faassen Exp $
+$Id: hub.py,v 1.11 2003/05/27 14:18:24 jim Exp $
 """
 
 from __future__ import generators
@@ -29,7 +29,7 @@ from zope.app.traversing import getPath, canonicalPath
 
 from zope.component import getAdapter
 from zope.exceptions import NotFoundError
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.interfaces.traversing import ITraverser

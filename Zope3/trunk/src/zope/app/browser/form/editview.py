@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.23 2003/05/02 18:27:07 jim Exp $
+$Id: editview.py,v 1.24 2003/05/27 14:18:09 jim Exp $
 """
 
 import os
@@ -24,7 +24,7 @@ from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
 
 from zope.configuration.action import Action
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker

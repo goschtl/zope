@@ -13,11 +13,11 @@
 ##############################################################################
 """Test directly implemented functions in zapi
 
-$Id: test_zapi.py,v 1.1 2003/05/23 22:18:13 jim Exp $
+$Id: test_zapi.py,v 1.2 2003/05/27 14:18:26 jim Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.app import zapi
 
 def test_name():

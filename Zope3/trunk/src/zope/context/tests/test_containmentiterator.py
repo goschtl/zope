@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_containmentiterator.py,v 1.3 2003/05/01 19:35:45 faassen Exp $
+$Id: test_containmentiterator.py,v 1.4 2003/05/27 14:18:30 jim Exp $
 """
 
 import unittest
 
-from zope.proxy.context import Wrapper, getbaseobject
-from zope.proxy.context.containmentiterator import ContainmentIterator
+from zope.context import Wrapper, getbaseobject
+from zope.context.containmentiterator import ContainmentIterator
 
 class Test(unittest.TestCase):
 

@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.18 2003/05/01 19:35:34 faassen Exp $
+$Id: service.py,v 1.19 2003/05/27 14:18:24 jim Exp $
 """
 
 import sys
@@ -34,8 +34,8 @@ from zodb.code.module import PersistentModuleRegistry
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
 
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextMethod
+from zope.context import ContextWrapper
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.component.nextservice import getNextService

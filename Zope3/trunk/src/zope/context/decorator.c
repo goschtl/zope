@@ -2,9 +2,9 @@
 #include "structmember.h"
 #include "modsupport.h"
 #include "zope/proxy/proxy.h"
-#include "zope/proxy/context/wrapper.h"
+#include "zope/context/wrapper.h"
 #define DECORATOR_MODULE
-#include "zope/proxy/context/decorator.h"
+#include "zope/context/decorator.h"
 
 /* XXX perhaps all these wrapper args should be renamed to decorator? */
 #define Decorator_Check(wrapper)  (PyObject_TypeCheck(wrapper, &DecoratorType))

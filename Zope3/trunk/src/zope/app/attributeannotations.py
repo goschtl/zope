@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: attributeannotations.py,v 1.2 2002/12/25 14:12:24 jim Exp $
+$Id: attributeannotations.py,v 1.3 2003/05/27 14:18:05 jim Exp $
 """
 
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations
 from zope.proxy.introspection import removeAllProxies
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 
 class AttributeAnnotations:
     """

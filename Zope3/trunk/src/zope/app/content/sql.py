@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.4 2003/05/01 19:35:10 faassen Exp $
+$Id: sql.py,v 1.5 2003/05/27 14:18:14 jim Exp $
 """
 
 import re
@@ -158,7 +158,7 @@ from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
 from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.component import getService
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.interfaces.content.file import IFileContent

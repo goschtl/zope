@@ -13,10 +13,10 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.1 2003/05/23 22:18:13 jim Exp $
+$Id: zapi.py,v 1.2 2003/05/27 14:18:18 jim Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
-from zope.proxy.interfaces.context import IContextDecorator
+from zope.context.interfaces import IContextDecorator
 
 class IZAPI(
     IComponentArchitecture,

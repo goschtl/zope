@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: iconfigurable.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: iconfigurable.py,v 1.3 2003/05/27 14:18:25 jim Exp $
 """
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.interface.verify import verifyObject
-from zope.proxy.context import getWrapperContainer
+from zope.context import getWrapperContainer
 
 class TestingIConfigurable:
     """Base class for testing implementors of IConfigurable

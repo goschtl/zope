@@ -12,15 +12,15 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.10 2003/04/18 18:45:01 jim Exp $
+$Id: zpt.py,v 1.11 2003/05/27 14:18:14 jim Exp $
 """
 
 import re
 
 from persistence import Persistent
 
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import getWrapperContainer
+from zope.context import ContextMethod
+from zope.context import getWrapperContainer
 from zope.proxy.introspection import removeAllProxies
 from zope.security.proxy import ProxyFactory
 

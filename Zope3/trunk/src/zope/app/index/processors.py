@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.8 2003/02/12 02:17:23 seanb Exp $
+$Id: processors.py,v 1.9 2003/05/27 14:18:16 jim Exp $
 """
 
 from __future__ import generators
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.query import IQueryProcessor
 
 from zope.component import getAdapter, getService
 from zope.app.services.servicenames import HubIds
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 class ObjectRetrievingProcessor:
     """Converts a RankedHubIdList into an iteratable

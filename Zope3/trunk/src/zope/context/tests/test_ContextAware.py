@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_ContextAware.py,v 1.2 2003/04/08 12:21:39 stevea Exp $
+$Id: test_ContextAware.py,v 1.3 2003/05/27 14:18:30 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.proxy.context import ContextAware, ContextWrapper
-from zope.proxy.context import getWrapperContainer
+from zope.context import ContextAware, ContextWrapper
+from zope.context import getWrapperContainer
 
 def setter(self, v):
     self.v = getWrapperContainer(self), v

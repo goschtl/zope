@@ -16,7 +16,7 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.4 2003/05/01 19:35:24 faassen Exp $
+$Id: __init__.py,v 1.5 2003/05/27 14:18:19 jim Exp $
 """
 import os
 from zope.app.container.sample import SampleContainer
@@ -24,7 +24,7 @@ from zope.app.traversing import getParent, objectName
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.traversing.adapters import Traverser
 import zope.app
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 
 from zope.app.interfaces.onlinehelp import IOnlineHelpTopic, IOnlineHelp
 

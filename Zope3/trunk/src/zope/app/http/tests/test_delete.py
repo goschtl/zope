@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_delete.py,v 1.2 2003/05/01 19:35:17 faassen Exp $
+$Id: test_delete.py,v 1.3 2003/05/27 14:18:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteDirectory, IFileFactory
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 
 class Container:
 

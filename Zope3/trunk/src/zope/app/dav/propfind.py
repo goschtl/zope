@@ -11,13 +11,13 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.5 2003/05/22 15:10:58 sidnei Exp $
+$Id: propfind.py,v 1.6 2003/05/27 14:18:15 jim Exp $
 """
 __metaclass__ = type
 
 from xml.dom import minidom
 from zope.component import getAdapter, getView, queryView, queryAdapter
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.proxy.introspection import removeAllProxies
 from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer

@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """
-$Id: servicemanager.py,v 1.3 2003/05/01 19:35:35 faassen Exp $
+$Id: servicemanager.py,v 1.4 2003/05/27 14:18:25 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.component.interfaces import IServiceService
 from zope.app.component.nextservice import getNextServiceManager
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.app.interfaces.services.service import IBindingAware
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 class TestingServiceManager:
     """Simple placeful service manager used for writing tests

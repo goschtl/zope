@@ -14,10 +14,10 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.12 2003/04/10 21:35:54 jack-e Exp $
+$Id: stateful.py,v 1.13 2003/05/27 14:18:19 jim Exp $
 """
 import zope.schema
-from zope.proxy.context import ContextProperty
+from zope.context import ContextProperty
 from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute

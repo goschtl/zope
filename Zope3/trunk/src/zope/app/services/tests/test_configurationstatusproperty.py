@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.4 2003/04/30 23:37:59 faassen Exp $
+$Id: test_configurationstatusproperty.py,v 1.5 2003/05/27 14:18:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -27,7 +27,7 @@ from zope.app.services.tests.configurationregistry \
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.interfaces.services.configuration \
      import Active, Unregistered, Registered
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.configuration import NoLocalServiceError
 

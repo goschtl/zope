@@ -13,13 +13,13 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.9 2003/05/01 19:35:34 faassen Exp $
+$Id: cache.py,v 1.10 2003/05/27 14:18:24 jim Exp $
 """
 
 from persistence import Persistent
 
 from zope.component import getService
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.cache.cache import ICache, ICachingService

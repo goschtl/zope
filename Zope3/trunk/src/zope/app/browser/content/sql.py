@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.5 2003/02/20 16:46:04 stevea Exp $
+$Id: sql.py,v 1.6 2003/05/27 14:18:07 jim Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 class SQLScriptTest(BrowserView):
     """Edit View for SQL Scripts"""

@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: containmentiterator.py,v 1.2 2002/12/25 14:15:16 jim Exp $
+$Id: containmentiterator.py,v 1.3 2003/05/27 14:18:29 jim Exp $
 """
 
-from zope.proxy.context import Wrapper, wrapperTypes, getinnercontext
+from zope.context import Wrapper, wrapperTypes, getinnercontext
 
 class ContainmentIterator:
 

@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: find.py,v 1.2 2002/12/25 14:12:29 jim Exp $
+$Id: find.py,v 1.3 2003/05/27 14:18:06 jim Exp $
 """
 
 from zope.app.interfaces.container.find import IFind
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.proxy.context import getInnerWrapperData
+from zope.context import getInnerWrapperData
 # XXX this needs to be looked up in a registry
 from zope.app.container.find import SimpleIdFindFilter
 

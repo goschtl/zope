@@ -16,21 +16,21 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.12 2003/05/27 13:12:10 jim Exp $
+$Id: __init__.py,v 1.13 2003/05/27 14:18:29 jim Exp $
 """
 __metaclass__ = type
 
 from zope.interface import moduleProvides
 from zope.security.proxy import Proxy, getChecker, getObject
-from zope.proxy.context.wrapper import getobject, getdict, getdictcreate
-from zope.proxy.context.wrapper import getcontext, getinnercontext
-from zope.proxy.context.wrapper import getinnerwrapper, getbaseobject
-from zope.proxy.context.wrapper import ContextDescriptor, ContextAware
-from zope.proxy.context.wrapper import ContextMethod, ContextProperty
-from zope.proxy.context.wrapper import Wrapper
-from zope.proxy.context.decorator import Decorator
+from zope.context.wrapper import getobject, getdict, getdictcreate
+from zope.context.wrapper import getcontext, getinnercontext
+from zope.context.wrapper import getinnerwrapper, getbaseobject
+from zope.context.wrapper import ContextDescriptor, ContextAware
+from zope.context.wrapper import ContextMethod, ContextProperty
+from zope.context.wrapper import Wrapper
+from zope.context.decorator import Decorator
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
-from zope.proxy.interfaces.context import IContextDecorator
+from zope.context.interfaces import IContextDecorator
 from zope.hookable import hookable
 
 moduleProvides(IContextDecorator)
@@ -157,8 +157,8 @@ def queryAttr(collection, name, default=None):
 
 wrapperTypes = (Wrapper, Decorator)
 
-#defineChecker(Wrapper, _contextWrapperChecker)
-#defineChecker(Decorator, _contextWrapperChecker)
+defineChecker(Wrapper, _contextWrapperChecker)
+defineChecker(Decorator, _contextWrapperChecker)
 
 class ContextSuper:
 

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.10 2003/05/13 11:33:18 stevea Exp $
+$Id: test_decorator.py,v 1.11 2003/05/27 14:18:30 jim Exp $
 """
 import unittest
 
-from zope.proxy.context import wrapper, decorator
-from zope.proxy.context.tests.test_wrapper import WrapperTestCase
+from zope.context import wrapper, decorator
+from zope.context.tests.test_wrapper import WrapperTestCase
 
 class DecoratorTestCase(WrapperTestCase):
 

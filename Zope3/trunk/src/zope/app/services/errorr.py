@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: errorr.py,v 1.8 2003/03/11 16:11:22 jim Exp $
+$Id: errorr.py,v 1.9 2003/05/27 14:18:24 jim Exp $
 """
 
 import time
@@ -24,7 +24,7 @@ from persistence import Persistent
 from types import StringTypes
 import logging
 from zope.exceptions.exceptionformatter import format_exception
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 from zope.app.interfaces.services.error import IErrorReportingService
 from zope.app.interfaces.services.service import ISimpleService
 

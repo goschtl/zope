@@ -13,14 +13,14 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.1 2003/05/08 17:27:18 jack-e Exp $
+$Id: definition.py,v 1.2 2003/05/27 14:18:28 jim Exp $
 """
 __metaclass__ = type
 
 from types import StringTypes
 from persistence import Persistent
 from persistence.dict import PersistentDict
-from zope.proxy.context import ContextAware, getWrapperContainer
+from zope.context import ContextAware, getWrapperContainer
 from zope.app.interfaces.workflow \
      import IProcessDefinition, IProcessDefinitionElementContainer
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.24 2003/05/12 16:31:50 stevea Exp $
+$Id: event.py,v 1.25 2003/05/27 14:18:24 jim Exp $
 """
 
 from __future__ import generators
@@ -31,7 +31,7 @@ from zope.app.services.servicenames import HubIds, EventPublication
 from zope.app.services.servicenames import EventSubscription
 from zope.app.component.nextservice import getNextService, queryNextService
 
-from zope.proxy.context import ContextMethod, ContextSuper
+from zope.context import ContextMethod, ContextSuper
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.event.subs import Subscribable, SubscriptionTracker

@@ -15,18 +15,18 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.1 2003/05/23 22:18:13 jim Exp $
+$Id: zapi.py,v 1.2 2003/05/27 14:18:05 jim Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
 from zope.interface import moduleProvides
-from zope.proxy.context import getWrapperData
+from zope.context import getWrapperData
 
 moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)
 
 from zope.component import *
-from zope.proxy.context import *
+from zope.context import *
 
 def name(object):
     data = getWrapperData(object)

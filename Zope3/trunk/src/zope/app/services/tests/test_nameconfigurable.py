@@ -13,15 +13,15 @@
 ##############################################################################
 """NameConfigurable tests
 
-$Id: test_nameconfigurable.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_nameconfigurable.py,v 1.3 2003/05/27 14:18:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app.services.configuration import NameConfigurable
 from zope.app.services.configuration import NameComponentConfigurable
-from zope.proxy.context import ContextWrapper
-from zope.proxy.context import getWrapperContainer
+from zope.context import ContextWrapper
+from zope.context import getWrapperContainer
 
 class ConfigurationStub:
 

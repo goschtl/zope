@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.11 2003/05/01 19:35:34 faassen Exp $
+$Id: connection.py,v 1.12 2003/05/27 14:18:24 jim Exp $
 """
 
 from persistence import Persistent
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.services.connection import ILocalConnectionService

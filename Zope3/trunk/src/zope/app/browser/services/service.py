@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.25 2003/05/01 16:28:28 gvanrossum Exp $
+$Id: service.py,v 1.26 2003/05/27 14:18:09 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -30,8 +30,8 @@ from zope.app.services.service import ServiceConfiguration
 from zope.app.traversing import traverse, getPath, getParent, objectName
 from zope.component import getServiceManager
 from zope.component import getView, getAdapter, queryView
-from zope.proxy.context import ContextSuper
-from zope.proxy.context import getWrapperContainer
+from zope.context import ContextSuper
+from zope.context import getWrapperContainer
 from zope.publisher.browser import BrowserView
 
 class ComponentAdding(Adding):

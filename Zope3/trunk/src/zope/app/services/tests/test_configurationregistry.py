@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationregistry.py,v 1.4 2003/03/23 22:35:42 jim Exp $
+$Id: test_configurationregistry.py,v 1.5 2003/05/27 14:18:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.proxy.context import ContextWrapper, getItem
+from zope.context import ContextWrapper, getItem
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.service import ServiceManager
 from zope.app.traversing import traverse

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.9 2003/04/28 20:42:27 gvanrossum Exp $
+$Id: adding.py,v 1.10 2003/05/27 14:18:06 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,7 +28,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import \
      getView, getService, createObject, queryFactory, queryView, getAdapter
 from zope.app.event import publish
-from zope.proxy.context import ContextSuper, ContextMethod
+from zope.context import ContextSuper, ContextMethod
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse
 

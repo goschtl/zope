@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.1 2003/05/08 17:27:20 jack-e Exp $
+$Id: test_instance.py,v 1.2 2003/05/27 14:18:29 jim Exp $
 """
 
 import unittest
@@ -32,7 +32,7 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
 from zope.security.management import system_user
 
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextWrapper
 from zope.app.traversing import traverse
 
 from zope.app.container.zopecontainer import ZopeContainerAdapter

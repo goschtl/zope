@@ -19,13 +19,13 @@ that creates a wrapper object, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.4 2003/05/01 19:35:45 faassen Exp $
+$Id: test_wrapperinteraction.py,v 1.5 2003/05/27 14:18:30 jim Exp $
 """
 import sys
 import unittest
 
-from zope.proxy.context import Wrapper, ContextMethod, ContextProperty
-from zope.proxy.context import ContextSuper
+from zope.context import Wrapper, ContextMethod, ContextProperty
+from zope.context import ContextSuper
 
 class NewStyleClass(object):
 
@@ -477,7 +477,7 @@ class TestContextWrapperFactory(unittest.TestCase):
     pass
 
 # XXX commented this test out because of Jim's change in
-# src/zope/proxy/context/__init__.py
+# src/zope/context/__init__.py
 
 ##     def testClassicClassWarning(self):
 ##         from types import ClassType

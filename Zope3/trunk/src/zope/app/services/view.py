@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.18 2003/05/06 11:18:54 efge Exp $
+$Id: view.py,v 1.19 2003/05/27 14:18:24 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,8 +27,8 @@ from zope.component import getServiceManager
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import SimpleConfiguration
-from zope.proxy.context import ContextWrapper
-from zope.proxy.context import ContextMethod
+from zope.context import ContextWrapper
+from zope.context import ContextMethod
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.component import getSkin

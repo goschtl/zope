@@ -3,7 +3,7 @@
 #include "modsupport.h"
 #include "zope/proxy/proxy.h"
 #define WRAPPER_MODULE
-#include "zope/proxy/context/wrapper.h"
+#include "zope/context/wrapper.h"
 
 #define Wrapper_Check(wrapper)   (PyObject_TypeCheck(wrapper, &WrapperType))
 

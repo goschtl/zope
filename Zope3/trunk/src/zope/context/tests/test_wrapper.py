@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.12 2003/05/12 15:44:41 mgedmin Exp $
+$Id: test_wrapper.py,v 1.13 2003/05/27 14:18:30 jim Exp $
 """
 import pickle
 import unittest
 
-from zope.proxy.context import wrapper, getcontext, getobject, ContextWrapper
-from zope.proxy.context import ContextMethod, ContextProperty, ContextAware
+from zope.context import wrapper, getcontext, getobject, ContextWrapper
+from zope.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
 _marker = object()

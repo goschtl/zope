@@ -22,8 +22,8 @@
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.component.nextservice import getNextService
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import ContextWrapper
+from zope.context import ContextMethod
+from zope.context import ContextWrapper
 from zope.app.interfaces.annotation import IAnnotations
 
 # Sibling imports

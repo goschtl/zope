@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.13 2003/05/01 19:35:15 faassen Exp $
+$Id: subs.py,v 1.14 2003/05/27 14:18:15 jim Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -24,7 +24,7 @@ from zodb.btrees.IOBTree import IOBTree
 
 from types import StringTypes
 
-from zope.proxy.context import ContextMethod
+from zope.context import ContextMethod
 from zope.proxy.introspection import removeAllProxies
 
 from zope.app.traversing import getPath

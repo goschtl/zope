@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.3 2003/01/06 15:46:26 srichter Exp $
+$Id: dtmlpage.py,v 1.4 2003/05/27 14:18:14 jim Exp $
 """
 from persistence import Persistent
 
@@ -20,8 +20,8 @@ from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.content.file import IFileContent
 from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
 
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import getWrapperContainer
+from zope.context import ContextMethod
+from zope.context import getWrapperContainer
 from zope.security.proxy import ProxyFactory
 
 from zope.documenttemplate.dt_html import HTML

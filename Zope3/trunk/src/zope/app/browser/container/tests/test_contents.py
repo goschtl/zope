@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.13 2003/04/30 23:37:50 faassen Exp $
+$Id: test_contents.py,v 1.14 2003/05/27 14:18:07 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -304,7 +304,7 @@ class Test(BaseTestContentsBrowserView, TestCase):
     def _TestView__newContext(self):
         from zope.app.container.sample import SampleContainer
         from zope.app.content.folder import RootFolder
-        from zope.proxy.context import ContextWrapper
+        from zope.context import ContextWrapper
         root = RootFolder()
         container = SampleContainer()
         return ContextWrapper(container, root, name='sample')

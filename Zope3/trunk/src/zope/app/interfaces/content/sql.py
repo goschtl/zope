@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.4 2003/05/01 19:35:22 faassen Exp $
+$Id: sql.py,v 1.5 2003/05/27 14:18:19 jim Exp $
 """
 import zope.schema
 
 from zope.app.interfaces.rdb import ISQLCommand
 from zope.component import getService
-from zope.proxy.context import ContextProperty
+from zope.context import ContextProperty
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 

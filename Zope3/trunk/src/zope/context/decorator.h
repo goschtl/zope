@@ -9,7 +9,7 @@
 #define _decorator_H_
 
 #ifndef _wrapper_H_
-#include "zope/proxy/context/wrapper.h"
+#include "zope/context/wrapper.h"
 #endif
 
 typedef struct {
@@ -46,7 +46,7 @@ static int
 Decorator_Import(void)
 {
     if (_decorator_api == NULL) {
-        PyObject *m = PyImport_ImportModule("zope.proxy.context.decorator");
+        PyObject *m = PyImport_ImportModule("zope.context.decorator");
         if (m != NULL) {
             PyObject *tmp = PyObject_GetAttrString(m, "_CAPI");
             if (tmp != NULL) {
