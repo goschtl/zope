@@ -328,7 +328,7 @@
         interface=
         "zope.app.interfaces.services.connection.IConnectionConfiguration"
         set_attributes="name componentPath"
-        set_schema="zope.app.interfaces.services.configuration.IConfiguration" 
+        set_schema="zope.app.interfaces.services.interfaces.IPageConfiguration" 
         />
     <require
         permission="zope.ManageServices"
