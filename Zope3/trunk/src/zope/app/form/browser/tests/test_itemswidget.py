@@ -19,6 +19,7 @@ import unittest
 
 from zope.interface import Interface, implements
 from zope.schema import Choice, List
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import WidgetInputError
@@ -36,11 +37,18 @@ from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.tests.support import VerifyResults
 from zope.app.tests.placelesssetup import PlacelessSetup 
 
+vocab = SimpleVocabulary(
+    [SimpleTerm(value, token, title) for value, token, title in (
+        ('one', 'token1', 'One'),
+        ('two', 'token2', 'Two'),
+        ('three', 'token3', 'Three'))])
+
 class ICollector(Interface):
     choice = Choice(
         title=u"Number",
         description=u"The Number",
-        values=['one', 'two', 'three'],
+        # we want to be able to distinguish between tokens and values
+        vocabulary=vocab,
         required=True)
 
     numbers = List(
@@ -86,7 +94,7 @@ class ItemsWidgetBaseTest(VerifyResults, PlacelessSetup, unittest.TestCase):
 
     def test_convertTokensToValues(self):
         widget = self._makeWidget()
-        self.assertEqual(widget.convertTokensToValues(['one', 'two']),
+        self.assertEqual(widget.convertTokensToValues(['token1', 'token2']),
                          ['one', 'two'])
 
 
@@ -102,8 +110,8 @@ class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
     def test__call__(self):
         widget = self._makeWidget()
         self.assertEqual(widget(), '')        
-        widget = self._makeWidget(form={'field.choice': 'one'})
-        self.assertEqual(widget(), 'one')
+        widget = self._makeWidget(form={'field.choice': 'token1'})
+        self.assertEqual(widget(), 'One')
 
 
 class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
@@ -116,21 +124,21 @@ class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
     def test__call__(self):
         widget = self._makeWidget()
         self.assertEqual(widget(), '')        
-        widget = self._makeWidget(form={'field.numbers': ['one', 'two']})
+        widget = self._makeWidget(form={'field.numbers': ['token1', 'token2']})
         self.assertEqual(
             widget(),
             '<%s class="textType" '
             'id="field.numbers" '
             'name="field.numbers" '
             'type="text" >'
-            '<li>one</li>\n<li>two</li>'
+            '<li>One</li>\n<li>Two</li>'
             '</%s>' %(self._tag, self._tag))
         
     def test_renderItems(self):
         widget = self._makeWidget()
         self.assertEqual(
             widget.renderItems(['one', 'two']),
-            [u'<li>one</li>', u'<li>two</li>'])
+            [u'<li>One</li>', u'<li>Two</li>'])
         self.assertRaises(LookupError, widget.renderItems, 'one')
         self.assertRaises(TypeError, widget.renderItems, 1)
 
@@ -180,20 +188,29 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
         widget = self._makeWidget()
         self.assertEqual(
             widget.renderItemsWithValues(['one', 'two']),
-            [u'<option selected="selected" value="one">one</option>',
-             u'<option selected="selected" value="two">two</option>',
-             u'<option value="three">three</option>'])             
+            [u'<option selected="selected" value="token1">One</option>',
+             u'<option selected="selected" value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])             
         self.assertEqual(
             widget.renderItemsWithValues([]),
-            [u'<option value="one">one</option>',
-             u'<option value="two">two</option>',
-             u'<option value="three">three</option>'])             
+            [u'<option value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])             
 
     def test_error(self):
         widget = self._makeWidget(form={'field.choice': 'ten'})
         widget.setPrefix('field.')
         widget._getFormValue()
         self.assert_(isinstance(widget._error, WidgetInputError))
+    
+    def test_hidden(self):
+        widget = self._makeWidget(form={'field.choice': 'token2'})
+        widget.setPrefix('field.')
+        widget.context.required = False
+        self.verifyResult(
+            widget.hidden(),
+            ['<input', 'type="hidden"', 'value="token2"', 'id="field.choice"', 
+             'name="field.choice"'])
 
 class SelectWidgetTest(ItemsEditWidgetBaseTest):
 
@@ -201,7 +218,7 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
     _size = 5
 
     def test__call__(self):
-        widget = self._makeWidget(form={'field.choice': 'one'})
+        widget = self._makeWidget(form={'field.choice': 'token1'})
         widget.setPrefix('field.')
         widget.context.required = False
         self.assertEqual(
@@ -210,9 +227,9 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
             '<div class="value">\n'
             '<select name="field.choice" size="%i" >\n'
             '<option value="">(no value)</option>\n'
-            '<option selected="selected" value="one">one</option>\n'
-            '<option value="two">two</option>\n'
-            '<option value="three">three</option>\n'
+            '<option selected="selected" value="token1">One</option>\n'
+            '<option value="token2">Two</option>\n'
+            '<option value="token3">Three</option>\n'
             '</select>\n</div>\n'
             '<input name="field.choice-empty-marker" '
             'type="hidden" value="1" />\n</div>' %self._size)
@@ -223,9 +240,9 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         self.assertEqual(
             widget.renderValue('one'),
             '<select name="field.choice" size="%i" >\n'
-            '<option selected="selected" value="one">one</option>\n'
-            '<option value="two">two</option>\n'
-            '<option value="three">three</option>\n'
+            '<option selected="selected" value="token1">One</option>\n'
+            '<option value="token2">Two</option>\n'
+            '<option value="token3">Three</option>\n'
             '</select>' %self._size)
 
     def test_renderItems(self):
@@ -233,19 +250,19 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         widget.setPrefix('field.')
         self.assertEqual(
             widget.renderItems('one'),
-            [u'<option selected="selected" value="one">one</option>',
-             u'<option value="two">two</option>',
-             u'<option value="three">three</option>'])
+            [u'<option selected="selected" value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
         self.assertEqual(
             widget.renderItems('two'),
-            [u'<option value="one">one</option>',
-             u'<option selected="selected" value="two">two</option>',
-             u'<option value="three">three</option>'])
+            [u'<option value="token1">One</option>',
+             u'<option selected="selected" value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
         self.assertEqual(
             widget.renderItems(None),
-            [u'<option value="one">one</option>',
-             u'<option value="two">two</option>',
-             u'<option value="three">three</option>'])
+            [u'<option value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
 
     def test_renderItems_notRequired(self):
         widget = self._makeWidget()
@@ -254,9 +271,9 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         self.assertEqual(
             widget.renderItems([]),
             [u'<option value="">(no value)</option>',
-             u'<option value="one">one</option>',
-             u'<option value="two">two</option>',
-             u'<option value="three">three</option>'])
+             u'<option value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
 
     def test_renderItems_firstItem(self):
         widget = self._makeWidget()
@@ -264,9 +281,9 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         widget.firstItem = True
         self.assertEqual(
             widget.renderItems(None),
-            [u'<option selected="selected" value="one">one</option>',
-             u'<option value="two">two</option>',
-             u'<option value="three">three</option>'])
+            [u'<option selected="selected" value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
 
 
 class DropdownWidgetTest(SelectWidgetTest):
@@ -304,53 +321,54 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
     def test_renderItemsWithValues(self):
         widget = self._makeWidget()
         items = widget.renderItemsWithValues(['one'])
-        values = ['one', 'two', 'three']
-        for item in items:
-            index = items.index(item)
+        values = [('token1','One'), ('token2','Two'), ('token3','Three')]
+        for index, item in enumerate(items):
             self.verifyResult(
                 item,
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i' %index, 'type="radio"',
-                 'value="%s"' %values[index], '&nbsp;%s' %values[index]])
+                 'value="%s"' %values[index][0], 
+                 '&nbsp;%s' %values[index][1]])
         self.verifyResult(items[0], ['checked="checked"'])
 
     def test_renderItems(self):
         widget = self._makeWidget()
         items = widget.renderItems('one')
-        values = ['one', 'two', 'three']
-        for item in items:
-            index = items.index(item)
+        values = [('token1','One'), ('token2','Two'), ('token3','Three')]
+        for index, item in enumerate(items):
             self.verifyResult(
                 item,
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i' %index, 'type="radio"',
-                 'value="%s"' %values[index], '&nbsp;%s' %values[index]])
+                 'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
         self.verifyResult(items[0], ['checked="checked"'])
 
     def test_renderItems_notRequired(self):
         widget = self._makeWidget()
         widget.context.required = False
         items = widget.renderItems([])
-        values = ['(no value)', 'one', 'two', 'three']
-        for item in items:
-            index = items.index(item)
+        values = [('', '(no value)'),
+                  ('token1','One'), 
+                  ('token2','Two'), 
+                  ('token3','Three')]
+        for index, item in enumerate(items):
             self.verifyResult(
                 item,
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
-                 'type="radio"', '&nbsp;%s' %values[index]])
+                 'type="radio"', 
+                 'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
 
     def test_renderItems_firstItem(self):
         widget = self._makeWidget()
         widget.firstItem = True
         items = widget.renderItems(None)
-        values = ['one', 'two', 'three']
-        for item in items:
-            index = items.index(item)
+        values = [('token1','One'), ('token2','Two'), ('token3','Three')]
+        for index, item in enumerate(items):
             self.verifyResult(
                 item,
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i"' %index, 'type="radio"',
-                 '&nbsp;%s' %values[index]])
+                 'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
         self.verifyResult(items[0], ['checked="checked"'])
 
     def test_renderValue(self):
@@ -372,15 +390,25 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
         self.verifyResult(
             widget.renderValue(['one', 'two']),
             ['<select', 'multiple="multiple"', 'name="field.numbers:list"',
-             'size="5"', '><option', 'selected="selected"', 'value="one"',
-             '>one</option>\n', 'value="two"', '>two</option>\n',
-             'value="three"', '>three</option>', '</select>'])
+             'size="5"', '><option', 'selected="selected"', 'value="token1"',
+             '>One</option>\n', 'value="token2"', '>Two</option>\n',
+             'value="token3"', '>Three</option>', '</select>'])
 
     def test_error(self):
         widget = self._makeWidget(form={'field.numbers': ['ten']})
         widget.setPrefix('field.')
         widget._getFormValue()
         self.assert_(isinstance(widget._error, WidgetInputError))
+    
+    def test_hidden(self):
+        widget = self._makeWidget(
+            form={'field.numbers': ['two','three']})
+        widget.setPrefix('field.')
+        widget.context.required = False
+        self.verifyResult(
+            widget.hidden(),
+            ['<input', 'type="hidden"', 'value="token2"', 'id="field.numbers"', 
+             'name="field.numbers:list"', 'value="token3"'])
 
 
 class MultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
@@ -423,15 +451,16 @@ class MultiCheckBoxWidgetTest(ItemsMultiEditWidgetBaseTest):
     def test_renderItemsWithValues(self):
         widget = self._makeWidget()
         items = widget.renderItemsWithValues(['one'])
-        for item in items:
-            index = items.index(item)
+        values = [('token1','One'), ('token2','Two'), ('token3','Three')]
+        for index, item in enumerate(items):
             self.verifyResult(
                 item,
                 ['<input', 'class="checkboxType',
-                 'id="field.numbers.%i"' %index, 'type="checkbox"', '/>&nbsp;'])
+                 'id="field.numbers.%i"' %index, 'type="checkbox"', 
+                 'value="%s"' % values[index][0], 
+                 '/>&nbsp;%s' % values[index][1]])
 
-        self.verifyResult(items[0],
-                          ['checked="checked"', '/>&nbsp;one'])
+        self.verifyResult(items[0], ['checked="checked"'])
 
 
 def test_suite():

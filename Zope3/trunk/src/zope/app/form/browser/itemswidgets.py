@@ -197,6 +197,16 @@ class SingleDataHelper(object):
         else:
             return None
 
+    def hidden(self):
+        return renderElement(u'input',
+                             type='hidden',
+                             name=self.name,
+                             id=self.name,
+                             value=self.vocabulary.getTerm(
+                                self._getFormValue()).token,
+                             cssClass=self.cssClass,
+                             extra=self.extra)
+
 
 class MultiDataHelper(object):
     """Mix-in helper class for getting the term from the HTML form.
@@ -477,7 +487,7 @@ class RadioWidget(ItemsEditWidgetBase):
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list."""
         id = '%s.%s' % (name, index)
-        elem = renderElement('input',
+        elem = renderElement(u'input',
                              value=value,
                              name=name,
                              id=id,
@@ -488,7 +498,7 @@ class RadioWidget(ItemsEditWidgetBase):
     def renderSelectedItem(self, index, text, value, name, cssClass):
         """Render a selected item of the list."""
         id = '%s.%s' % (name, index)
-        elem = renderElement('input',
+        elem = renderElement(u'input',
                              value=value,
                              name=name,
                              id=id,
@@ -567,11 +577,11 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
         items = []
         for item in self._getFormValue():
             items.append(
-                renderElement(self.tag,
+                renderElement(u'input',
                               type='hidden',
                               name=self.name+':list',
                               id=self.name,
-                              value=item,
+                              value=self.vocabulary.getTerm(item).token,
                               cssClass=self.cssClass,
                               extra=self.extra))
         return '\n'.join(items)
