@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.15 2003/12/09 07:35:36 sraju Exp $
+$Id: test_adding.py,v 1.16 2003/12/09 10:45:49 sraju Exp $
 """
 
 import unittest
@@ -263,15 +263,21 @@ def test_renderAddButton():
 
     >>> class Fake:
     ...    pass
-
     >>> adding = Adding(FakeContainer(),TestRequest())
     >>> adding.renderAddButton()
-    "<input type='submit' value=' Add '>"
+    "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>"
     >>> adding = Adding(Fake(),TestRequest())
     >>> adding.renderAddButton()
-    "<input type='submit' value=' Add '><input type='text' name='add_input_name' value=''>"
+    "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>""" \
+          """<input type='text' name='add_input_name' value=''>"
+    >>> adding.contentName='myname'
+    >>> adding.renderAddButton()
+    "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>""" \
+         """<input type='text' name='add_input_name' value='myname'>"
 
+    >>>     
     """
+
 
 
 
@@ -283,3 +289,4 @@ def test_suite():
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
+

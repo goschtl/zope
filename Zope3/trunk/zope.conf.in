@@ -7,7 +7,7 @@ interrupt-check-interval 200
 
 <server>
   type HTTP
-  address 9494
+  address 8080
 </server>
 
 # For debugging purposes, you can use this publisher instead/as well
