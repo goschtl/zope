@@ -74,12 +74,6 @@ AddView and EditView, but we pre-define the widget for the sequence because
 we need to pass in additional information. This is given in the
 ``browser.py`` file::
 
-    from zope.app.container.interfaces import IAdding
-
-    from zope.app.event import publish
-    from zope.app.event.objectevent import ObjectModifiedEvent
-    from zope.app.event.objectevent import ObjectCreatedEvent
-
     from zope.app.form.browser.editview import EditView
     from zope.app.form.browser.add import AddView
     from zope.app.form import CustomWidgetFactory
@@ -176,10 +170,18 @@ Tying all this together is the ``configure.zcml``::
         schema=".interfaces.IPoll"
         label="Add a Poll"
         content_factory=".poll.Poll"
-        name="zope.app.demo.poll"
+        name="AddPoll.html"
         class=".browser.PollAddView"
-        menu="add_content" title="Poll"
         permission="zope.ManageContent" />
+
+    <browser:addMenuItem
+        title="Poll Demo"
+        description="Poll Demo"
+        content_factory=".poll.Poll"
+        view="AddPoll.html"
+        permission="zope.ManageContent"
+        />
+
 
     <browser:editform
         schema=".interfaces.IPoll"
