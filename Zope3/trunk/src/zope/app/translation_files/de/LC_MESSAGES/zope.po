@@ -202,7 +202,7 @@ msgstr "Statistiken"
 
 #: zope/app/browser/cache/configure.zcml:38
 msgid "Caching"
-msgstr "Caching"
+msgstr "Cache"
 
 #: zope/app/browser/cache/configure.zcml:6
 #: zope/app/browser/cache/configure.zcml:13
@@ -416,7 +416,7 @@ msgstr "Erstellt am"
 #: zope/app/browser/container/index.pt:29
 #: zope/app/browser/container/contents.pt:37
 msgid "Modified"
-msgstr "Modifiziert am"
+msgstr "Geändert am"
 
 #: zope/app/browser/content/configure.zcml:101
 msgid "Upload an image"
@@ -625,7 +625,7 @@ msgstr "Metadaten"
 #: zope/app/browser/workflow/stateful/definition_edit.pt:19
 #: zope/app/browser/workflow/stateful/definition_edit.pt:48
 msgid "refresh-button"
-msgstr "Auffrischen"
+msgstr "Aktualisieren"
 
 #: zope/app/browser/dublincore/edit.pt:43
 msgid "Content Last Modified"
@@ -633,7 +633,7 @@ msgstr "Inhalt wurde zuletzt geändert am"
 
 #: zope/app/browser/dublincore/edit.pt:47
 msgid "Creator"
-msgstr "Autor"
+msgstr "Ersteller"
 
 #: zope/app/browser/dublincore/metadataedit.py:40
 msgid "Changed data ${datetime}"
@@ -829,7 +829,7 @@ msgstr "Interface:"
 #: zope/app/browser/introspector.pt:33 zope/app/browser/introspector.pt:111
 #: zope/app/browser/marker.pt:34
 msgid "Bases:"
-msgstr "Basen:"
+msgstr "Basisklassen:"
 
 #: zope/app/browser/introspector.pt:44 zope/app/browser/introspector.pt:128
 #: zope/app/browser/marker.pt:52
@@ -905,11 +905,11 @@ msgstr "Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden kön
 
 #: zope/app/browser/menus.zcml:23
 msgid "Menu of objects to be added to service manager packages"
-msgstr "Menü der Objekte die zu Service Verwalter Paketen hinzugefügt werden können"
+msgstr "Menü der Objekte die zu Diensteverwalter-Paketen hinzugefügt werden können"
 
 #: zope/app/browser/menus.zcml:28
 msgid "Menu of services to be added"
-msgstr "Menü der hinzufügbaren Services"
+msgstr "Menü der hinzufügbaren Dienste"
 
 #: zope/app/browser/menus.zcml:3
 msgid "Menu for displaying alternate representations of an object"
@@ -965,11 +965,11 @@ msgstr "Menü zum Hinzufügen neuer Benutzer."
 
 #: zope/app/browser/services/cache.zcml:11
 msgid "A Persistent Caching Service for TTW development"
-msgstr "Ein persistenter Caching-Service für die TTW Entwicklung"
+msgstr "Ein persistenter Cachedienst für die Online-Entwicklung"
 
 #: zope/app/browser/services/cache.zcml:11
 msgid "Caching Service"
-msgstr "Caching Service"
+msgstr "Cachedienst"
 
 #: zope/app/browser/services/cache.zcml:20
 msgid "Caches"
@@ -998,7 +998,7 @@ msgstr "(Registrierung ändern)"
 
 #: zope/app/browser/services/caches.pt:8
 msgid "Caches registered in this cache service:"
-msgstr "Caches die mit diesem Cache Service registriert wurden:"
+msgstr "Caches die mit diesem Cachedienst registriert wurden:"
 
 #: zope/app/browser/services/configure.zcml:146
 msgid "Change adapter"
@@ -1010,11 +1010,11 @@ msgstr "Adapter"
 
 #: zope/app/browser/services/configure.zcml:181
 msgid "Adapter Service"
-msgstr "Adapter Service"
+msgstr "Adapterdienst"
 
 #: zope/app/browser/services/configure.zcml:228
 msgid "Manage Local Services"
-msgstr "Lokale Services verwalten"
+msgstr "Lokale Dienste verwalten"
 
 #: zope/app/browser/services/configure.zcml:233
 msgid "Turn On Local Service Manager"
@@ -1022,7 +1022,7 @@ msgstr "Lokalen Serive Verwalter anschalten"
 
 #: zope/app/browser/services/configure.zcml:244
 msgid "Services"
-msgstr "Services"
+msgstr "Dienste"
 
 #: zope/app/browser/services/configure.zcml:270
 msgid "Visit default package"
@@ -1030,15 +1030,15 @@ msgstr "Direkt zum 'default' Paket"
 
 #: zope/app/browser/services/configure.zcml:275
 msgid "Add service"
-msgstr "Service hinzufügen"
+msgstr "Dienst hinzufügen"
 
 #: zope/app/browser/services/configure.zcml:33
 msgid "Error Reporting Service for Logging Errors"
-msgstr "Fehlermelde-Service für Logging Fehler"
+msgstr "Fehlermeldedienst für Logging-Fehler"
 
 #: zope/app/browser/services/configure.zcml:33
 msgid "Error Logging Service"
-msgstr "Fehlermelde-Service"
+msgstr "Fehlermeldedienst"
 
 #: zope/app/browser/services/configure.zcml:342
 #: zope/app/browser/workflow/configure.zcml:32
@@ -1051,7 +1051,7 @@ msgstr "Einfache Session Unterstützungen durch Cookies"
 
 #: zope/app/browser/services/configure.zcml:375
 msgid "Cookie Session Service"
-msgstr "Cookie-Sitzungs-Service"
+msgstr "Cookie-Sitzungsdienst"
 
 #: zope/app/browser/services/configure.zcml:383
 msgid "Stores Annotations for Principals"
@@ -1059,7 +1059,7 @@ msgstr "Speichert Anmerkungen für Prinzipal"
 
 #: zope/app/browser/services/configure.zcml:383
 msgid "Principal Annotation Service"
-msgstr "Prinzipal Anmerkungen Service"
+msgstr "Prinzipal-Anmerkungendienst"
 
 #: zope/app/browser/services/configure.zcml:403
 msgid ""
@@ -1071,7 +1071,7 @@ msgstr ""
 
 #: zope/app/browser/services/configure.zcml:403
 msgid "HubIds Service"
-msgstr "Hub-Ids Service"
+msgstr "Hub-ID-Dienst"
 
 #: zope/app/browser/services/configure.zcml:419
 msgid "An event subscriber that registers content with the objecthub"
@@ -1083,11 +1083,11 @@ msgstr "Registrierungs-Abonnent"
 
 #: zope/app/browser/services/configure.zcml:440
 msgid "Takes you to a menu of services to add"
-msgstr "Bringt sie zu einem Menü zum hinzufügen von Services"
+msgstr "Bringt sie zu einem Menü zum hinzufügen von Diensten"
 
 #: zope/app/browser/services/configure.zcml:440
 msgid "Service"
-msgstr "Service"
+msgstr "Dienst"
 
 #: zope/app/browser/services/configure.zcml:45
 msgid "Errors"
@@ -1107,17 +1107,17 @@ msgstr "Kontrolle"
 
 #: zope/app/browser/services/configure.zcml:65
 msgid "Event Service"
-msgstr "Ereignis-Service"
+msgstr "Ereignisdienst"
 
 #: zope/app/browser/services/configure.zcml:65
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
-"Ein Ereignis-Service. Einer dieser im Wurzelelement ist normalerweise "
+"Ein Ereignisdienst. Eine Instanz im Wurzelelement ist normalerweise "
 "ausreichend"
 
 #: zope/app/browser/services/configure.zcml:81
 msgid "Role Service"
-msgstr "Rollen-Service"
+msgstr "Rollendienst"
 
 #: zope/app/browser/services/configureCache.pt:22
 #: zope/app/browser/services/configureConnection.pt:22
@@ -1135,11 +1135,11 @@ msgstr "Verbindungs-Registrierungen für ${connection_name}"
 
 #: zope/app/browser/services/connection.zcml:11
 msgid "A Persistent SQL Connection Service for TTW development"
-msgstr "Ein persistenter SQL-Verbindungs-Service für die TTW Entwicklung"
+msgstr "Ein persistenter SQL-Verbindungsdienst für die Online Entwicklung"
 
 #: zope/app/browser/services/connection.zcml:11
 msgid "SQL Connection Service"
-msgstr "SQL-Verbindungs-Service"
+msgstr "SQL-Verbindungsdienst"
 
 #: zope/app/browser/services/connection.zcml:20
 msgid "Connections"
@@ -1155,11 +1155,11 @@ msgstr "Bearbeite Verbindungs-Registrierung"
 
 #: zope/app/browser/services/connections.pt:8
 msgid "Connections registered in this connection service:"
-msgstr "Verbindungen, die mit diesem Verbindungs-Service registriert sind:"
+msgstr "Verbindungen, die mit diesem Verbindungsdienst registriert sind:"
 
 #: zope/app/browser/services/interface/browse.pt:6
 msgid "Interfaces registered with the interface service"
-msgstr "Interfaces die mit dem Interface Service registriert sind"
+msgstr "Interfaces, die mit dem Interfacedienst registriert sind"
 
 #: zope/app/browser/services/interface/configure.zcml:14
 msgid "Browse"
@@ -1171,11 +1171,11 @@ msgstr "Detail"
 
 #: zope/app/browser/services/interface/configure.zcml:6
 msgid "Local Interface Service"
-msgstr "Lokaler Interface Service"
+msgstr "Lokaler Interfacedienst"
 
 #: zope/app/browser/services/interface/detail.pt:33
 msgid "Registrations for ${name} service"
-msgstr "Registrierungen für den ${name} Service"
+msgstr "Registrierungen für den ${name}-Dienst"
 
 #: zope/app/browser/services/interface/detail.pt:7
 msgid "Interface <span></span>"
@@ -1203,7 +1203,7 @@ msgstr "Standard-Registrierung"
 
 #: zope/app/browser/services/pagefolder.zcml:44
 msgid "Page Folder"
-msgstr "Seiten Ordner"
+msgstr "Seitenordner"
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:27
 msgid "Add Source"
@@ -1234,12 +1234,12 @@ msgid ""
 "A Pluggable Authentication Service                    Uses plug-in principal "
 "sources."
 msgstr ""
-"Ein einfügbarer Legitimations-Service                  Nutzt einfügbare "
+"Ein einfügbarer Authentifzierungsdienst                  Nutzt einfügbare "
 "Prinzipalquellen."
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:9
 msgid "Authentication Service"
-msgstr "Legitimations-Service"
+msgstr "Authentifzierungsdienst"
 
 #: zope/app/browser/services/registration/changeregistrations.pt:19
 msgid "Disabled"
@@ -1255,11 +1255,11 @@ msgstr "Registrierung"
 
 #: zope/app/browser/services/translation/configure.zcml:109
 msgid "A Persistent Translation Service for TTW development"
-msgstr "Ein persistenter Übersetzungsservice für die TTW Entwicklung"
+msgstr "Ein persistenter Übersetzungsdienst für die Online-Entwicklung"
 
 #: zope/app/browser/services/translation/configure.zcml:109
 msgid "Translation Service"
-msgstr "Übersetzungsservice"
+msgstr "Übersetzungsdienst"
 
 #: zope/app/browser/services/translation/configure.zcml:12
 msgid "Translate"
@@ -1332,7 +1332,7 @@ msgstr "Nachricht bearbeiten"
 
 #: zope/app/browser/services/utility/configure.zcml:11
 msgid "Utility Service"
-msgstr "Utility Service"
+msgstr "Werkzeugdienst"
 
 #: zope/app/browser/services/utility/configure.zcml:19
 msgid "Utilities"
@@ -1362,11 +1362,11 @@ msgstr "Registrierung ändern"
 
 #: zope/app/browser/services/utility/utilities.pt:8
 msgid "Utilities registered in this utility service:"
-msgstr "Utilities, die mit diesem Utility-Service registriert sind:"
+msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind:"
 
 #: zope/app/browser/services/view.zcml:17
 msgid "View Service"
-msgstr "View-Service"
+msgstr "Ansichtendienst"
 
 #: zope/app/browser/services/view.zcml:34
 msgid "Change page"
@@ -1378,7 +1378,7 @@ msgstr "Eine neue Seite registrieren"
 
 #: zope/app/browser/services/view.zcml:8
 msgid "Views"
-msgstr "Views"
+msgstr "Ansichten"
 
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:11
 #: zope/app/browser/skins/rotterdam/template.pt:9
@@ -1991,7 +1991,7 @@ msgstr "Seitenschablone"
 #: zope/app/browser/services/configure.zcml:199
 #: zope/app/browser/services/configure.zcml:207
 msgid "ZPT Template"
-msgstr "ZPT Schablone"
+msgstr "ZPT-Schablone"
 
 #: zope/app/services/configure.zcml:289
 msgid "Registration Manager"
