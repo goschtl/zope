@@ -8,6 +8,10 @@ from ISecurityProxyFactory import ISecurityProxyFactory
 from Zope.Security.SecurityManagement import getSecurityManager
 import sys, os, types
 import datetime
+from Persistence.BTrees.IIBTree import IIBTree, IIBucket, IISet, IITreeSet
+from Persistence.BTrees.IOBTree import IOBTree, IOBucket, IOSet, IOTreeSet
+from Persistence.BTrees.OIBTree import OIBTree, OIBucket, OISet, OITreeSet
+from Persistence.BTrees.OOBTree import OOBTree, OOBucket, OOSet, OOTreeSet
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = 1
@@ -335,6 +339,34 @@ _interfaceChecker = NamesChecker(['__str__', '__repr__', '__name__',
                                   '__module__', '__bases__', 'getBases',
                                   'isImplementedBy', 'extends'])
 
+# excluding _check, _bucket_type, _firstbucket, and write operations
+_btreeChecker = NamesChecker(['__str__', '__repr__', '__contains__',
+                              '__getitem__', '__iter__', '__len__',  
+                              'byValue', 'get', 'has_key', 'items', 
+                              'iteritems', 'iterkeys', 'itervalues',
+                              'keys', 'maxKey', 'minKey', 'values'])
+
+# excluding _next
+_btreeBucketChecker = NamesChecker([
+        '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
+        '__str__', 'byValue', 'get', 'has_key', 'items', 'iteritems',
+        'iterkeys', 'itervalues', 'keys', 'maxKey','minKey', 'values'])
+
+_btreeSetChecker = NamesChecker([
+        '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
+        '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
+
+# excluding _bucket_type, _check
+_btreeTreeSetChecker = NamesChecker([
+        '__contains__', '__iter__', '__len__', '__repr__',
+        '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
+
+_btreeItemsChecker = NamesChecker([
+        '__iter__', '__repr__', '__str__', '__getitem__', '__len__',
+        '__contains__'])
+
+_iteratorChecker = NamesChecker(['next'])
+
 BasicTypes = {
     object: NoProxy,
     int: NoProxy,
@@ -345,6 +377,8 @@ BasicTypes = {
     str: NoProxy,
     unicode: NoProxy,
     type(not 1): NoProxy, # Boolean, if available :)
+    type(iter(IIBTree())): NoProxy, # II-iterator
+    type(IIBTree().keys()): NoProxy, # IIBTreeItems
 }
 
 class _Sequence(object):
@@ -372,8 +406,8 @@ _default_checkers = {
     types.BuiltinMethodType: _callableChecker,
     type: _typeChecker,
     types.ModuleType: _moduleChecker,
-    type(iter([])): NamesChecker(['next']), # same types in Python 2.2.1,
-    type(iter(())): NamesChecker(['next']), # different in Python 2.3
+    type(iter([])): _iteratorChecker, # same types in Python 2.2.1,
+    type(iter(())): _iteratorChecker, # different in Python 2.3
     type(iter(_Sequence())): NamesChecker(['next']),
     type(Interface): _interfaceChecker,
     datetime.timedelta: NamesChecker(['__repr__', '__str__', '__add__',
@@ -407,6 +441,30 @@ _default_checkers = {
                                        'isocalendar', 'isoformat', 'min',
                                        'max', 'resolution', 'utcoffset',
                                        'tzname', 'dst']),
+    IIBTree: _btreeChecker,
+    IOBTree: _btreeChecker,
+    OIBTree: _btreeChecker,
+    OOBTree: _btreeChecker,
+    IIBucket: _btreeBucketChecker,
+    IOBucket: _btreeBucketChecker,
+    OIBucket: _btreeBucketChecker,
+    OOBucket: _btreeBucketChecker,
+    IISet: _btreeSetChecker,
+    IOSet: _btreeSetChecker,
+    OISet: _btreeSetChecker,
+    OOSet: _btreeSetChecker,
+    IITreeSet: _btreeTreeSetChecker,
+    IOTreeSet: _btreeTreeSetChecker,
+    OITreeSet: _btreeTreeSetChecker,
+    OOTreeSet: _btreeTreeSetChecker,
+    # II-iterator is a rock
+    type(iter(IOBTree())): _iteratorChecker, # IO-iterator
+    type(iter(OIBTree())): _iteratorChecker, # OI-iterator
+    type(iter(OOBTree())): _iteratorChecker, # OO-iterator
+    # IIBTreeItems is a rock
+    type(IOBTree().keys()): _btreeItemsChecker, # IOBTreeItems
+    type(OIBTree().keys()): _btreeItemsChecker, # OIBTreeItems
+    type(OOBTree().keys()): _btreeItemsChecker, # OOBTreeItems
     }
 
 
