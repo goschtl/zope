@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.7 2003/05/28 15:28:25 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.8 2003/05/28 19:09:22 gvanrossum Exp $
 """
 
 import os
@@ -71,6 +71,8 @@ class TestFSMerger(TempFiles):
         if isinstance(data, dict):
             self.ensuredir(path)
             pentry = self.metadata.getentry(path)
+            if entry is not None and "flag" in entry:
+                pentry["flag"] = entry["flag"]
             for x in data:
                 if entry is not None:
                     newentry = entry.copy()
@@ -222,9 +224,9 @@ class TestFSMerger(TempFiles):
 
         expected_reports = []
         for er in expected_reports_template:
+            er = er.replace("/", os.sep)
             er = er.replace("%l", localfile)
             er = er.replace("%r", remotefile)
-            er = er.replace("/", os.sep)
             expected_reports.append(er)
         filtered_reports = [r for r in reports if r[0] not in "*/"]
         self.assertEqual(filtered_reports, expected_reports)
@@ -275,16 +277,147 @@ class TestFSMerger(TempFiles):
                        self.make_conflict_entry, self.entry)
 
     def make_conflict_entry(self, local):
+        # Helper for test_merge_conflict
         e = {"conflict": os.path.getmtime(local)}
         e.update(self.entry)
         return e
 
-    def test_new_directory(self):
+    # Tests for added files: local, remote, both
+
+    def test_added_file_local(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", "x", None, None,
+                       added_entry, None,
+                       ["A %l"],
+                       "x", None, None,
+                       added_entry, {})
+
+    def test_added_file_remote(self):
+        self.mergetest("foo", None, None, "x",
+                       None, self.entry,
+                       ["U %l"],
+                       "x", "x", "x",
+                       self.entry, self.entry)
+
+    def test_added_file_both(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", "x", None, "x",
+                       added_entry, self.entry,
+                       ["U %l"],
+                       "x", "x", "x",
+                       self.entry, self.entry)
+
+    # Tests for removed files: local, remote, both
+
+    def test_removed_file_local(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, "x", "x",
+                       removed_entry, self.entry,
+                       ["R %l"],
+                       None, "x", "x",
+                       removed_entry, self.entry)
+
+    def test_removed_file_remote(self):
+        self.mergetest("foo", "x", "x", None,
+                       self.entry, {},
+                       ["D %l"],
+                       None, None, None,
+                       {}, {})
+
+    def test_removed_file_both(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, "x", None,
+                       removed_entry, {},
+                       ["D %l"],
+                       None, None, None,
+                       {}, {})
+
+    # Tests for added empty directories: local, remote, both
+
+    def test_added_emptydir_local(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", {}, None, None,
+                       added_entry, None,
+                       ["A %l/"],
+                       {}, None, None,
+                       added_entry, {})
+
+    def test_added__emptydir_remote(self):
+        self.mergetest("foo", None, None, {},
+                       None, self.entry,
+                       ["N %l/"],
+                       {}, {}, {},
+                       self.entry, self.entry)
+
+    def test_added_emptydir_both(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", {}, None, {},
+                       added_entry, self.entry,
+                       ["U %l/"],
+                       {}, None, {},
+                       self.entry, self.entry)
+
+    # Tests for added non-empty directories: local, remote, both
+
+    def test_added_dir_local(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", {"x": "x"}, None, None,
+                       added_entry, None,
+                       ["A %l/", "A %l/x"],
+                       {"x": "x"}, None, None,
+                       added_entry, {})
+
+    def test_added_dir_remote(self):
         self.mergetest("foo", None, None, {"x": "x"},
                        None, self.entry,
                        ["N %l/", "U %l/x"],
                        {"x": "x"}, {"x": "x"}, {"x": "x"},
                        self.entry, self.entry)
+
+    def test_added_dir_both(self):
+        added_entry = {"flag": "added"}
+        added_entry.update(self.entry)
+        self.mergetest("foo", {"x": "x"}, None, {"x": "x"},
+                       added_entry, self.entry,
+                       ["U %l/", "U %l/x"],
+                       {"x": "x"}, {"x": "x"}, {"x": "x"},
+                       self.entry, self.entry)
+
+    # Tests for removed empty directories: local, remote, both
+
+    def test_removed_emptydir_local(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, None, {},
+                       removed_entry, self.entry,
+                       ["R %l/"],
+                       None, None, {},
+                       removed_entry, self.entry)
+
+    def test_removed_emptydir_remote(self):
+        self.mergetest("foo", {}, None, None,
+                       self.entry, {},
+                       ["D %l/"],
+                       None, None, None,
+                       {}, {})
+
+    def test_removed_emptydir_both(self):
+        removed_entry = {"flag": "removed"}
+        removed_entry.update(self.entry)
+        self.mergetest("foo", None, None, None,
+                       removed_entry, {},
+                       ["D %l"],
+                       None, None, None,
+                       {}, {})
+
+    # XXX Tests for removed non-empty directories?
 
 def test_suite():
     s = unittest.TestSuite()
