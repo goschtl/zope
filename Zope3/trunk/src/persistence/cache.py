@@ -100,13 +100,17 @@ class Cache(object):
                 ob = ob()
             # The _p_atime field is seconds since the start of the day.
             # When we start a new day, we'll expect to see most of the
-            # _p_atime values be less than now.
+            # _p_atime values be greater than now.
             if ob._p_atime > now:
                 deltat = (86400 - ob._p_atime) + now
             else:
                 deltat = now - ob._p_atime
             L.append((deltat, oid, ob))
+
+        # Sort on deltat so that the least recently used objects --
+        # those with the largest deltat -- are at the front.
         L.sort()
+        L.reverse()
 
         if na > self._size:
             # If the cache is full, ghostify everything up to the cache
