@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for HelloPDF.
 
-$Id: test_hellomodule.py,v 1.1 2004/01/15 15:01:37 philikon Exp $
+$Id: test_hellomodule.py,v 1.2 2004/01/15 15:29:57 fdrake Exp $
 """
 
 import unittest
@@ -22,8 +22,8 @@ from zope.interface.verify import verifyObject
 class TestHelloModule(unittest.TestCase):
 
     def test_interface(self):
-        from zope.products.hellopackage.interfaces import IHello
-        from zope.products.hellopackage.hellomodule import HelloClass
+        from zope.products.demo.hellopackage.interfaces import IHello
+        from zope.products.demo.hellopackage.hellomodule import HelloClass
         verifyObject(IHello, HelloClass())
 
 
