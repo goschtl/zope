@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.5 2002/09/16 05:52:40 rdmurray Exp $
+$Id: meta.py,v 1.6 2002/09/17 21:58:17 rdmurray Exp $
 """
 
 
@@ -56,7 +56,7 @@ def registersub(directives, name, handler_method=None):
     directives is the subdirective registry for the containing
     directive, which may be either a top-level directive or an
     intermediate sub-directive (if subdirectives are nested more than
-    two deep).
+    two deep.
 
     The name argument is a tuple with a namespace URI and an
     name string.
@@ -248,7 +248,16 @@ class Subdirective:
         return ()
 
 def _clear():
-    "To support unit tests"
+    """Initialize _directives data structure with bootstrap directives."""
+
+    #We initialize _directives with handlers for three (sub)directives:
+    #directives, directive, and subdirective.  Given these three
+    #(whose implementation is defined in this module) we can use
+    #zcml to define any other directives needed for a given system.
+    #
+    #This initialziation is done in a function to facilitate support
+    #the unittest CleanUp class.
+
     _directives.clear()
     _directives[('http://namespaces.zope.org/zope', 'directive')] = (
         Directive, {
