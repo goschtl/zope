@@ -65,3 +65,11 @@ Exceptions to this are the following files within the docutils package:
     This program is free software; you can redistribute it and/or modify
     it under the terms of the Python 2.1.1 license, available at
     http://www.python.org/2.1.1/license.html
+
+----------------------------------------------------------------------
+
+The zope.testing.doctest module is a copy of the doctest module from
+the Python 2.4 standard library.  It if the property of the Python
+Software Foundation (PSF) and is covered by the PSF license agreement
+for Python 2.4.  We will no-longer distribute this module with Zope at
+some point on the future.
