@@ -87,18 +87,11 @@ Add new content:<br>
                       tal:content="modified">&nbsp;</span></td>
           </tr>
         </metal:block>
-  <tr>
-  <td colspan="6">
-        <input type="submit" name="@@removeObjects.html:method" value="Delete"
-             tal:attributes="value string:menu_delete_button"
-             i18n:attributes="value" /> 
- </td>
- </tr>
   </form>
 
         </tbody> 
       </table>
-      <br />
+      <input type="submit" name="@@removeObjects.html:method" value="Delete"/>
 
       <script tal:condition="request/type_name|nothing"><!--
           prettydump('focus', LG_INFO);

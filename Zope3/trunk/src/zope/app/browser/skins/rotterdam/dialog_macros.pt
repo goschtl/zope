@@ -57,7 +57,7 @@
 
       <div class="box" id="navigationTree">
 
-        <h3>Navigation</h3>
+        <h4>Navigation</h4>
 
         <div 
           xmlns="http://www.zope.org/zope3xmltree"
@@ -89,7 +89,15 @@
                      tal:content="string:${breadcrumb/name}"
                      tal:attributes="
                      href string:${breadcrumb/url}/@@SelectedManagementView.html"
-                      >breadcrumb item</a>/</tal:block>
+                     >breadcrumb item</a>/</tal:block></div>
+             <div class="itemViews" >
+
+
+
+      </div>
+
+      <div class="itemViewsBar">
+      &nbsp;
       </div>
 
       <div class="item">
@@ -127,6 +135,7 @@
 
             </table>
         </metal:block>
+        </div>
 
 
         <div id="messages">
@@ -134,7 +143,6 @@
           Status and error messages
 
           <div id="logger"></div>
-        </div>
 
       </div>
 
@@ -147,7 +155,7 @@
 
       <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
 
-        <h3>Tip</h3>
+        <h4>Tip</h4>
 
         <div class="body">
 
