@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.9 2003/05/10 21:09:56 gvanrossum Exp $
+$Id: syncer.py,v 1.10 2003/05/10 22:00:53 gvanrossum Exp $
 """
 
 import os
@@ -50,7 +50,7 @@ def loadFile(path):
 def dumpFile(obj, path):
     writeFile(dumps(obj), path)
 
-def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
+def toFS(ob, name, location, writeOriginals=True):
     """Check an object out to the file system
 
     ob -- The object to be checked out
@@ -59,16 +59,14 @@ def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
 
     location -- The directory on the file system where the object will go
 
-    mode -- 'C' for conflict objects,
-            'N' for new objects,
-            'D' for new directories, forces writing @@Zope and Entries.xml,
-            None for normal mode
-
-    objpath -- for mode 'N' or 'D', specify the object's path
-
     writeOriginals -- If True (the default), write 'Original' directory.
     """
-    objectPath = ''
+
+    # Get name path and check that name is not an absolute path
+    path = os.path.join(location, name)
+    if path == name:
+        raise ValueError("Invalid absolute path name")
+
     # Look for location admin dir
     admin_dir = os.path.join(location, '@@Zope')
     if not os.path.exists(admin_dir):
@@ -90,24 +88,14 @@ def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
                      }
 
     try:
-        if mode == 'N' or mode == 'D':
-            objectPath = objpath
-            entries[name]['isNew'] = 'Y'
-        else:
-            objectPath = str(getPath(ob))
-        entries[name]['path'] = objectPath
+        objectPath = str(getPath(ob))
     except TypeError:
-        pass
+        objectPath = ''
+    else:
+        entries[name]['path'] = objectPath
 
     # Write entries file
     dumpFile(entries, entries_path)
-
-
-    # Get name path and check that name is not an absolute path
-    path = os.path.join(location, name)
-    if path == name:
-        raise ValueError("Invalid absolute path name")
-
 
     # Handle extras
     extra = adapter.extra()
@@ -136,16 +124,13 @@ def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
             toFS(annotation, key, annotation_dir,
                  writeOriginals=writeOriginals)
 
-
     # Handle data
     if IObjectFile.isImplementedBy(adapter):
+        # File
         data = ''
-        if mode != 'C': # is None:
-            if not os.path.exists(path):
-                data = adapter.getBody()
-                writeFile(data, path)
-            if objectPath:
-                print 'U %s' % (objectPath[1:])
+        if not os.path.exists(path):
+            data = adapter.getBody()
+            writeFile(data, path)
         if writeOriginals:
             original_path = os.path.join(admin_dir, 'Original')
             if not os.path.exists(original_path):
@@ -154,29 +139,16 @@ def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
             if not data:
                 data = adapter.getBody()
             writeFile(data, original_path)
-
-
     else:
         # Directory
-        if objectPath:
-            print 'UPDATING %s' % (objectPath[1:])
         if os.path.exists(path):
             dir_entries = os.path.join(path, '@@Zope', 'Entries.xml')
             if os.path.exists(dir_entries):
                 dumpFile({}, dir_entries)
-            elif mode == 'D':
-                admin_dir = os.path.join(path, '@@Zope')
-                os.mkdir(admin_dir)
-                dumpFile({}, dir_entries)
         else:
             os.mkdir(path)
-            if mode == 'D':
-                admin_dir = os.path.join(path, '@@Zope')
-                os.mkdir(admin_dir)
-                dir_entries = os.path.join(path, '@@Zope', 'Entries.xml')
-                dumpFile({}, dir_entries)
 
-        for cname, cob in  adapter.contents():
+        for cname, cob in adapter.contents():
             toFS(cob, cname, path, writeOriginals=writeOriginals)
 
 
@@ -184,7 +156,7 @@ class SynchronizationError(Exception):
     pass
 
 
-def _setItem(container, name, ob, old=0):
+def _setItem(container, name, ob, old=False):
     # Set an item in a container or in a mapping
     if IContainer.isImplementedBy(container):
         if old:
@@ -198,7 +170,7 @@ def _setItem(container, name, ob, old=0):
         container[name] = ob
 
 
-def fromFS(container, name, location, mode=None):
+def fromFS(container, name, location):
     """Synchromize a file from what's on the file system.
 
     container -- parent of new object
@@ -206,13 +178,8 @@ def fromFS(container, name, location, mode=None):
     name -- name of new object in container
 
     location -- filesystem directory containing name
-
-    mode -- 'T' to skip updating the filesystem administration,
-            'F' to force updating the filesystem administration,
-            None default
     """
-    msg =''
-    objectPath = ''
+
     # Look for location admin dir
     admin_dir = os.path.join(location, '@@Zope')
     if not os.path.exists(admin_dir):
@@ -229,7 +196,6 @@ def fromFS(container, name, location, mode=None):
     if path == name:
         raise ValueError("Invalid absolute path name")
 
-
     # See if this is an existing object
     if name in container:
         # Yup, let's see if we have the same kind of object
@@ -238,7 +204,6 @@ def fromFS(container, name, location, mode=None):
         ob = container[name]
         syncService = getService(ob, 'FSRegistryService')
         adapter = syncService.getSynchronizer(ob)
-
 
         # Replace the object if the type is different
         if adapter.typeIdentifier() != entry.get('type'):
@@ -249,27 +214,27 @@ def fromFS(container, name, location, mode=None):
             else:
                 newOb = loadFile(path)
 
-            _setItem(container, name, newOb, old=1)
+            _setItem(container, name, newOb, old=True)
 
         elif not factory:
             if entry.get('type') == '__builtin__.str':
                 newOb = readFile(path)
-                _setItem(container, name, newOb, old=1)
+                _setItem(container, name, newOb, old=True)
             else:
                 # Special case pickle data
                 oldOb = container[name]
                 newOb = loadFile(path)
                 try:
                     # See if we can and should just copy the state
-                    oldOb._p_oid # Is it persisteny
+                    oldOb._p_oid # Is it persistent?
                     getstate = newOb.__getstate__
                 except AttributeError:
-                    # Nope, we have to replace.
-                    _setItem(container, name, newOb, old=1)
+                    # Nope, we have to replace
+                    _setItem(container, name, newOb, old=True)
                 else:
                     oldOb.__setstate__(getstate())
-                    oldOb._p_changed = 1
-
+                    oldOb._p_changed = True
+        # XXX else, what?
 
     else:
         # We need to create a new object
@@ -280,13 +245,10 @@ def fromFS(container, name, location, mode=None):
 
         _setItem(container, name, newOb)
 
-
     # Get the object adapter again
     ob = container[name]
     syncService = getService(ob, 'FSRegistryService')
     adapter = syncService.getSynchronizer(ob)
-
-
 
     # Handle extra
     extra = adapter.extra()
@@ -301,13 +263,12 @@ def fromFS(container, name, location, mode=None):
         else:
             extra_entries = loadFile(extra_entries_path)
             for ename in extra_entries:
-                fromFS(extra, ename, extra_dir, mode)
+                fromFS(extra, ename, extra_dir)
     elif os.path.exists(extra_entries_path):
         extra_entries = loadFile(extra_entries_path)
         if extra_entries:
             raise SynchronizationError(
                 "File-system extras for object with no extra data")
-
 
     # Handle annotations
     annotations = queryAdapter(ob, IAnnotations)
@@ -323,7 +284,7 @@ def fromFS(container, name, location, mode=None):
         else:
             annotation_entries = loadFile(annotation_entries_path)
             for ename in annotation_entries:
-                fromFS(annotations, ename, annotation_dir, mode)
+                fromFS(annotations, ename, annotation_dir)
     elif os.path.exists(annotation_entries_path):
         annotation_entries = loadFile(annotation_entries_path)
         if annotation_entries:
@@ -336,40 +297,13 @@ def fromFS(container, name, location, mode=None):
         if os.path.isdir(path):
             raise SynchronizationError("Object is file, but data is directory")
         adapter.setBody(readFile(path))
-        if mode is not None and mode != 'T':
-            if path.find('@@Zope') < 0:
-                #copying to original
-                fspath = path
-                data = readFile(fspath)
-                original_path = os.path.join(os.path.dirname(fspath),
-                                             '@@Zope', 'Original',
-                                             os.path.basename(fspath))
-                writeFile(data, original_path)
-                entries_path = os.path.join(os.path.dirname(fspath),
-                                            '@@Zope', 'Entries.xml')
-                entries = loadFile(entries_path)
-                if entries[os.path.basename(fspath)].has_key('isNew'):
-                    del entries[os.path.basename(fspath)]['isNew']
-                    dumpFile(entries, entries_path)
-                objectpath = entries[os.path.basename(fspath)]['path']
-                msg = "%s  <--  %s" %(objectpath, objectpath.split('/')[-1])
-                print msg
-
 
     else:
         # Directory
         if not os.path.isdir(path):
             raise SynchronizationError("Object is directory, but data is file")
 
-        if mode != 'T':
-            entries_path = os.path.join(os.path.dirname(path),
-                                        '@@Zope', 'Entries.xml')
-            entries = loadFile(entries_path)
-            if entries[os.path.basename(path)].has_key('isNew'):
-                del entries[os.path.basename(path)]['isNew']
-                dumpFile(entries, entries_path)
-
         dir_entries_path = os.path.join(path, '@@Zope', 'Entries.xml')
         dir_entries = loadFile(dir_entries_path)
         for cname in dir_entries:
-            fromFS(ob, cname, path, mode)
+            fromFS(ob, cname, path)
