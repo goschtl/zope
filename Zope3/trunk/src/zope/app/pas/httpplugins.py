@@ -29,7 +29,7 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
     """A Basic HTTP Authentication Crendentials Extraction Plugin
 
     First we need to create a request that contains some credentials.
-    
+
     >>> from zope.publisher.browser import TestRequest
     >>> request = TestRequest(
     ...     environ={'HTTP_AUTHORIZATION': u'Basic bWdyOm1ncnB3'})
@@ -46,7 +46,7 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
     >>> extractor.extractCredentials(TestRequest()) is None
     True
 
-    Also, this extractor can *only* hadle basic authentication.
+    Also, this extractor can *only* handle basic authentication.
 
     >>> request = TestRequest({'HTTP_AUTHORIZATION': 'foo bar'})
     >>> extractor.extractCredentials(TestRequest()) is None
@@ -57,16 +57,19 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
     def extractCredentials(self, request):
         if request._auth:
             if request._auth.lower().startswith(u'basic '):
-                credentials = request._auth.split()[-1] 
-                username, password = base64.decodestring(credentials).split(':')
-                return {'login': username.decode('utf-8'),
+                credentials = request._auth.split()[-1]
+                login, password = base64.decodestring(credentials).split(':')
+                return {'login': login.decode('utf-8'),
                         'password': password.decode('utf-8')}
+        return None
 
 
 class HTTPBasicAuthChallenger(Persistent, Contained):
     """A Basic HTTP Authentication Challenge Plugin
 
     >>> challenger = HTTPBasicAuthChallenger()
+
+    The challenger adds its challenge to the HTTP response.
 
     >>> from zope.publisher.browser import TestRequest
     >>> request = TestRequest()
@@ -78,6 +81,8 @@ class HTTPBasicAuthChallenger(Persistent, Contained):
     >>> response.getHeader('WWW-Authenticate', literal=True)
     'basic realm=Zope3'
 
+    The challenger only works with HTTP requests.
+
     >>> from zope.publisher.base import TestRequest
     >>> request = TestRequest('/')
     >>> response = request.response
@@ -87,13 +92,12 @@ class HTTPBasicAuthChallenger(Persistent, Contained):
     implements(IChallengePlugin)
 
     realm = 'Zope3'
-
     protocol = 'http auth'
-    
+
     def challenge(self, request, response):
         if not IHTTPRequest.providedBy(request):
             return None
-        response.setHeader("WWW-Authenticate", "basic realm=%s" %self.realm,
-                           True)
+        response.setHeader("WWW-Authenticate", "basic realm=%s" % self.realm,
+                           literal=True)
         response.setStatus(401)
         return True
