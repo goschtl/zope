@@ -18,17 +18,17 @@ The order that items are listed here is not significant.
   the fact that people will likley plug in different grant and
   owndership systems for different security policies.
 
-  o Document the relationship between the security policy and the
+  * Document the relationship between the security policy and the
     grants
 
 - Untrusted modules.  Also implement a way of
   specifying policies for trusted and untrusted modules.
   At a minimum:
 
-  o Say globally whether or not modules are trusted or
+  * Say globally whether or not modules are trusted or
     untrusted.
 
-  o Say globally whether modules are editable through the web.
+  * Say globally whether modules are editable through the web.
 
   A slight variation on this is to have two kinds of modules and
   say under what circumstances they are editable through the
@@ -36,34 +36,34 @@ The order that items are listed here is not significant.
 
 - File-system synchronization
 
-  - Client command-line tool w HTTP-based interface to server
+  * Client command-line tool w HTTP-based interface to server
     that provided CVS-like interface and features. Including:
 
-    - checkout and commit
+    + checkout and commit
 
-    - update including merge and offline version
+    + update including merge and offline version
 
-    - diff and offline diff
+    + diff and offline diff
 
-  - Refine the adapter protocol or implementation to leverage
+  * Refine the adapter protocol or implementation to leverage
     the file-system representation protocol.
 
-  - Maybe leverage adaptable storage ideas to assure
+  * Maybe leverage adaptable storage ideas to assure
     losslessness.
 
-  - In common case where extra data are simple values, store
+  * In common case where extra data are simple values, store
     extra data in the entries file to simplify representation
     and updates.  Maybe do something similar w annotations.
 
-  - Maybe do some more xmlpickle refinement with an eye toward
+  * Maybe do some more xmlpickle refinement with an eye toward
     impproving the usability of simple dictionary pickles.
 
-  - export and import as a special case
+  * export and import as a special case
 
-  - Improve some common data file formats (e.g. simplify
+  * Improve some common data file formats (e.g. simplify
     entries file).
 
-  - Work out security details
+  * Work out security details
 
   Guido is working on this. 
 
@@ -72,16 +72,16 @@ The order that items are listed here is not significant.
 - ZCML directive for layers and corresponding checks that a resource is 
   registered in a registered layer
 
-  o Typos can cause new layers to be defined unintentionally
+  * Typos can cause new layers to be defined unintentionally
 
 - Local/persistent modules:
 
-  o Out to stderr/stdout should be captured, saved to be viewed after
-    import
+  * Output to stderr/stdout should be captured, saved to be viewed
+    after import
 
 - ZCML directives for module security
 
-  o Fix the ++module++ namespace to honor security assertions; instead
+  * Fix the ++module++ namespace to honor security assertions; instead
     of ++module++pkg.mod.Thing, we should use ++module++pkg.mod/Thing
 
 - Local module service. This provides support for local imports as
@@ -93,10 +93,10 @@ The order that items are listed here is not significant.
 
   * Change import mechanism:
 
-    - only import from other modules and registrations in the same
+    + only import from other modules and registrations in the same
       folder by default
 
-    - importing from elsewhere should require explicit registration
+    + importing from elsewhere should require explicit registration
 
   * Registrations that allow module security assertions
 
@@ -106,19 +106,19 @@ The order that items are listed here is not significant.
 
   Simplify the undo model. To kinds of undo:
 
-  - Undo my changes
+  * Undo my changes
 
-  - Undo everybody
+  * Undo everybody
 
-  - Undo optionally takes place into acount.
+  * Undo optionally takes place into acount.
 
-  - Should be an undo last. 
+  * Should be an undo last. 
 
   Make sure we handle multiple undos properly.
 
 - Implement interface types, and thus content types.
 
-  o Categories?  (Not inheritable.)
+  * Categories?  (Not inheritable.)
 
 - Local Interface service
 
@@ -186,15 +186,15 @@ The order that items are listed here is not significant.
 
 - UI
 
-  - Get rid of "common tasks".
+  * Get rid of "common tasks".
 
-  - Make the add menu a pull-down menu
+  * Make the add menu a pull-down menu
 
-  - Add nested menus.
+  * Add nested menus.
 
-  - Make it easier to get to the error logging service.
+  * Make it easier to get to the error logging service.
 
-  - Get the html titles a lot righter than they are now.
+  * Get the html titles a lot righter than they are now.
 
 - Schema fields
 
