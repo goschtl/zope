@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.9 2003/12/07 11:24:03 philikon Exp $
+$Id: __init__.py,v 1.10 2003/12/10 05:13:00 jace Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -334,7 +334,7 @@ class ServiceActivation(BrowserView):
             return _("Service deactivated")
         else:
             new_active.status = ActiveStatus
-            s = "${active_services} activated"
+            s = _("${active_services} activated")
             s.mapping = {'active_services': active}
             return s
 
