@@ -2,10 +2,6 @@
 
  Features Added
 
-  - Extended TypesTool to permit registration of new TypeInformation
-    implementations (Tracker #409, thanks to Jeffrey Shell for the
-    work!)
-
   - Enabled querying actions from workflow tool in absence
     of actions tool (Tracker #401).
 
