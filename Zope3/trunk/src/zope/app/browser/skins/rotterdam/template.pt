@@ -85,6 +85,24 @@
 
     <div id="workspace">
 
+      <div id="breadcrumbs"
+	   metal:define-macro="breadcrumbs"
+       > Location:&nbsp;<tal:block
+	   repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+	  ><a href=""
+	      tal:condition="repeat/breadcrumb/start"
+	      tal:content="string:[top]"
+	      tal:attributes="
+	      href string:${breadcrumb/url}/@@SelectedManagementView.html"
+	      >XXX should not hardcode root folder name string</a
+	     ><a href=""
+		 tal:condition="not:repeat/breadcrumb/start"
+		 tal:content="string:${breadcrumb/name}"
+		 tal:attributes="
+		 href string:${breadcrumb/url}/@@SelectedManagementView.html"
+		  >breadcrumb item</a> / </tal:block>
+      </div>
+
       <div class="itemViews"
            metal:define-slot="tabs">
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
@@ -110,24 +128,6 @@
       </div>
                         
       <div id="viewspace">
-
-        <div id="breadcrumbs"
-             metal:define-macro="breadcrumbs"
-         > Location:&nbsp;<tal:block
-             repeat="breadcrumb context/@@absolute_url/breadcrumbs"
-            ><a href=""
-                tal:condition="repeat/breadcrumb/start"
-                tal:content="string:[top]"
-                tal:attributes="
-                href string:${breadcrumb/url}/@@SelectedManagementView.html"
-                >XXX should not hardcode root folder name string</a
-               ><a href=""
-                   tal:condition="not:repeat/breadcrumb/start"
-                   tal:content="string:${breadcrumb/name}"
-                   tal:attributes="
-                   href string:${breadcrumb/url}/@@SelectedManagementView.html"
-                    >breadcrumb item</a> / </tal:block>
-        </div>
                 
         <div metal:define-slot="message" id="message">
         </div>
