@@ -97,7 +97,6 @@
 <content class=".service.ProcessDefinitionVocabulary">
   <allow interface="zope.schema.interfaces.IVocabulary"/>
   <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-  <allow attributes="__contains__"/>
 </content>
 
 <content class=".service.ProcessDefinitionTerm">

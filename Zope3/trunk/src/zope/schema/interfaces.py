@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.39 2004/01/22 16:31:27 philikon Exp $
+$Id: interfaces.py,v 1.40 2004/02/14 23:35:59 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -456,6 +456,9 @@ class IBaseVocabulary(Interface):
     or by sequence __getitem__() (the later only being useful for
     vocabularies which are intrinsically ordered).
     """
+
+    def __contains__(value):
+        """Returns True if the value is available in this vocabulary."""
 
     def getQuery():
         """Return an IVocabularyQuery object for this vocabulary.

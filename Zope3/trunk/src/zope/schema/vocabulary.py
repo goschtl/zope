@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Vocabulary support for schema.
 
-"""Vocabulary support for schema."""
-
+$Id: vocabulary.py,v 1.20 2004/02/14 23:35:59 srichter Exp $
+"""
 import copy
 
 from zope.interface.declarations import directlyProvides, implements
@@ -159,7 +160,7 @@ class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
 
 # simple vocabularies performing enumerated-like tasks
 
-class SimpleTerm:
+class SimpleTerm(object):
     """Simple tokenized term used by SimpleVocabulary."""
 
     implements(ITokenizedTerm)
@@ -241,27 +242,33 @@ class SimpleVocabulary(object):
     createTerm = classmethod(createTerm)
 
     def __contains__(self, value):
+        """See zope.schema.interfaces.IBaseVocabulary"""
         return value in self.by_value
 
     def getQuery(self):
+        """See zope.schema.interfaces.IBaseVocabulary"""
         return None
 
     def getTerm(self, value):
+        """See zope.schema.interfaces.IBaseVocabulary"""
         try:
             return self.by_value[value]
         except KeyError:
             raise LookupError(value)
 
     def getTermByToken(self, token):
+        """See zope.schema.interfaces.IVocabularyTokenized"""
         try:
             return self.by_token[token]
         except KeyError:
             raise LookupError(token)
 
     def __iter__(self):
+        """See zope.schema.interfaces.IIterableVocabulary"""
         return iter(self._terms)
 
     def __len__(self):
+        """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self.by_value)
 
 # registry code
@@ -283,6 +290,7 @@ class VocabularyRegistry(object):
         self._map = {}
 
     def get(self, object, name):
+        """See zope.schema.interfaces.IVocabularyRegistry""" 
         try:
             vtype = self._map[name]
         except KeyError:

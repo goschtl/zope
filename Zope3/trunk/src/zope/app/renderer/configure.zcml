@@ -21,7 +21,6 @@
   <content class=".vocabulary.SourceTypeVocabulary">
     <allow interface="zope.schema.interfaces.IVocabulary"/>
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-    <allow attributes="__contains__"/>
   </content>
 
   <content class=".vocabulary.SourceTypeTerm">
