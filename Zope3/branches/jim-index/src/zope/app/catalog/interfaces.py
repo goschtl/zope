@@ -15,26 +15,64 @@
 
 $Id$
 """
-from zope.interface import Interface
-from zope.index.interfaces import IInjection
 
-class ICatalogQuery(Interface):
+import zope.index.interfaces
+import zope.interface
+import zope.schema
+import zope.app.container.interfaces
+import zope.app.container.constraints
+
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+class ICatalogQuery(zope.interface.Interface):
     """Provides Catalog Queries."""
 
     def searchResults(**kw):
         """Search on the given indexes."""
 
 
-class ICatalogEdit(IInjection):
+class ICatalogEdit(zope.index.interfaces.IInjection):
     """Allows one to manipulate the Catalog information."""
-
-    def clearIndexes():
-        """Remove all index data."""
 
     def updateIndexes():
         """Reindex all objects."""
 
 
-class ICatalog(ICatalogQuery, ICatalogEdit): 
+class ICatalogIndex(zope.index.interfaces.IInjection):
+    """An index to be used in a catalog
+    """
+    __parent__ = zope.schema.Field()
+    
+
+class ICatalog(ICatalogQuery, ICatalogEdit,
+               zope.app.container.interfaces.IContainer): 
     """Marker to describe a catalog in content space."""
 
+    zope.app.container.constraints.contains(ICatalogIndex)
+
+ICatalogIndex['__parent__'].constraint = (
+    zope.app.container.constraints.ContainerTypesConstraint(ICatalog))
+
+class IAttributeIndex(zope.interface.Interface):
+    """I index objects by first adapting them to an interface, then
+       retrieving a field on the adapted object.
+    """
+
+    interface = zope.schema.Choice(
+        title=_(u"Interface"),
+        description=_(u"Objects will be adapted to this interface"),
+        vocabulary=_("Interfaces"),
+        required=False,
+        )
+
+    field_name = zope.schema.BytesLine(
+        title=_(u"Field Name"),
+        description=_(u"Name of the field to index"),
+        )
+
+    field_callable = zope.schema.Bool(
+        title=_(u"Field Callable"),
+        description=_(u"If true, then the field should be called to get the "
+                      u"value to be indexed"),
+        )
+        

@@ -1,0 +1,17 @@
+This is a to-do list for this branch
+
+DON'T MERGE IT TO THE TRUNK!
+
+- zope.app.uniqueid needs to be restructured:
+
+  - persistent.py, persistent uid adapter
+    persistent.txt doctest (incl hash)
+
+  - registry.py, the unique id registry
+    registry.txt doctest
+
+  Rename UniqueIdUtility to UniqueIds
+
+- ftest for catalog
+
+- Define catalog tool

@@ -18,7 +18,7 @@ $Id$
 from zope.app.container.browser.adding import Adding
 from zope.app.catalog.interfaces import ICatalog
 
-class CatalogEditView:
+class Advanced:
     "Provides a user interface for configuring a catalog"
 
     __used_for__ = ICatalog
@@ -27,23 +27,7 @@ class CatalogEditView:
         self.context = context
         self.request = request
 
-    def subscribe(self, update=False):
-        self.context.subscribeEvents(update)
-        self.request.response.redirect(".")
-
-    def unsubscribe(self):
-        self.context.unsubscribeEvents()
-        self.request.response.redirect(".")
-
-    def clear(self):
-        self.context.clearIndexes()
-        self.request.response.redirect(".")
-
     def reindex(self):
+        self.context.clear()
         self.context.updateIndexes()
         self.request.response.redirect(".")
-
-
-class IndexAdding(Adding):
-    menu_id = 'catalog_index_menu'
-

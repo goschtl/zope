@@ -11,17 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""This is a keyword index which can be subscribed to an event service.
+"""Keyword catalog indexes
 
 $Id$
 """
-from zope.index.keyword.index import KeywordIndex 
-from zope.interface import implements
 
-from zope.app.index.interfaces.keyword import IUIKeywordCatalogIndex
-from zope.app.catalog.interfaces.index import ICatalogIndex
-from zope.app.index import InterfaceIndexingSubscriber
+import zope.index.keyword
+import zope.interface
 
-class KeywordCatalogIndex(InterfaceIndexing, KeywordIndex):
-    implements(ICatalogIndex, IUIKeywordCatalogIndex)
+import zope.app.container.contained
+import zope.app.catalog.attribute
+import zope.app.catalog.interfaces
+
+class IKeywordIndex(zope.app.catalog.interfaces.IAttributeIndex,
+                    zope.app.catalog.interfaces.ICatalogIndex,
+                    ):
+    """Interface-based catalog keyword index
+    """
+
+class KeywordIndex(zope.app.catalog.attribute.AttributeIndex,
+                   zope.index.keyword.KeywordIndex,
+                   zope.app.container.contained.Contained):
+
+    zope.interface.implements(IKeywordIndex)
 

@@ -4,9 +4,6 @@
     >
 
 <content class=".catalog.Catalog">
-  <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-      />
   <factory
       id="zope.app.catalog"
       />
@@ -16,29 +13,11 @@
       />
   <require
       interface="zope.app.catalog.interfaces.ICatalogEdit"
-      permission="zope.ManageContent"
+      permission="zope.ManageServices"
       />
   <require
       interface="zope.app.container.interfaces.IContainer"
-      permission="zope.ManageContent"
-      />
-</content>
-
-<content class=".catalog.CatalogUtility">
-  <factory
-      id="zope.app.catalogutility"
-      />
-  <require
-      interface="zope.app.catalog.interfaces.ICatalogQuery"
-      permission="zope.View"
-      />
-  <require
-      interface="zope.app.catalog.interfaces.ICatalogEdit"
-      permission="zope.ManageContent"
-      />
-  <require
-      interface="zope.app.container.interfaces.IContainer"
-      permission="zope.ManageContent"
+      permission="zope.ManageServices"
       />
 </content>
 
@@ -48,22 +27,53 @@
       permission="zope.Public"/>
 </content>
 
-  <subscriber
-      factory=".catalog.indexDocSubscriber"
-      for="zope.app.uniqueid.interfaces.UniqueIdAddedEvent"
-      />
+<subscriber
+    factory=".catalog.indexAdded"
+    for=".interfaces.ICatalogIndex
+         zope.app.container.interfaces.IObjectAddedEvent"
+    />
 
-  <subscriber
-      factory=".catalog.reindexDocSubscriber"
-      for="zope.app.event.objectevent.ObjectModifiedEvent"
-      />
+<subscriber
+    factory=".catalog.indexDocSubscriber"
+    for="zope.app.uniqueid.interfaces.IUniqueIdAddedEvent"
+    />
 
-  <subscriber
-      factory=".catalog.unindexDocSubscriber"
-      for="zope.app.uniqueid.interfaces.UniqueIdRemovedEvent"
-      />
+<subscriber
+    factory=".catalog.reindexDocSubscriber"
+    for="zope.app.event.objectevent.IObjectModifiedEvent"
+    />
 
-<!-- Include browser package -->
+<subscriber
+    factory=".catalog.unindexDocSubscriber"
+    for="zope.app.uniqueid.interfaces.IUniqueIdRemovedEvent"
+    />
+
+
+<content class=".field.FieldIndex">
+  <require
+      permission="zope.ManageServices"
+      interface=".interfaces.IAttributeIndex"
+      set_schema=".interfaces.IAttributeIndex"
+      />
+</content>
+
+<content class=".keyword.KeywordIndex">
+  <require
+      permission="zope.ManageServices"
+      interface=".interfaces.IAttributeIndex"
+      set_schema=".interfaces.IAttributeIndex"
+      />
+</content>
+
+<content class=".text.TextIndex">
+  <require
+      permission="zope.ManageServices"
+      interface=".interfaces.IAttributeIndex"
+      set_schema=".interfaces.IAttributeIndex"
+      />
+</content>
+
+
 
 <include package=".browser" />
 

@@ -2,60 +2,25 @@
 <body>
 <div metal:fill-slot="body">
 
-  <table border="0">
-    <caption i18n:translate="">Advanced Catalog Thingies</caption>
-    <tbody>
-      <tr>
-        <span tal:condition="context/getSubscribed" tal:omit-tag="">
-          <td i18n:translate="">
-            Catalog is currently <strong>subscribed</strong> to the 
-            object hub.
-          </td>
-          <td>
-            <form method="post" action="unsubscribe.html">
-              <input type="submit" name="unsubscribe" value="Unsubscribe"
-                  i18n:attributes="value unsubscribe-button" />
-            </form>
-          </td>
-        </span>
-        <span tal:condition="not:context/getSubscribed" tal:omit-tag="">
-          <td>
-            Catalog is currently <strong>unsubscribed</strong> from the 
-            object hub.
-          </td>
-          <td>
-            <form method="post" action="subscribe.html">
-              <input type="submit" name="subscribe" value="Subscribe"
-                     i18n:attributes="value subscribe-button"/>
-              <input type="checkbox" value="true" name="update" checked=""/> 
-              <span tal:omit-tag="" i18n:translate="">
-                (and reindex all objects, if checked)
-              </span>
-            </form>
-          </td>
-        </span>
-      </tr>
-      <tr>
-        <form method="POST" action="clear.html">
-          <td align="right">
-            Clear all indexes<br><i>not hooked up yet</i>
-          </td>
-          <td><input type="submit" name="submit" value="Clear"></td>
-        </form>
-      </tr>
-      <tr>
-        <form method="POST" action="reindex.html">
-          <td align="right">
-            Refresh all indexes<br><i>not hooked up yet</i>
-          </td>
-          <td>
-            <input type="submit" name="submit" value="Refresh"
-                   i18n:attributes="value refresh-button"/>
-          </td>
-        </form>
-      </tr>
-    </tbody>
-  </table>
+<h2 i18n:translate="">Catalog statistics</h2>
+
+<table border="0">
+   <tr><th i18n:translate="">Index</th>
+       <th i18n:translate="">Document Count</th>
+       <th i18n:translate="">Word Count</th>
+   </tr>
+   <tr tal:repeat="indexname context"
+       >
+       <td tal:content="indexname">foo</td>
+       <td tal:content="index/?indexname/documentCount|nothing">42</td>
+       <td tal:content="index/?indexname/wordCount|nothing">99</td>
+    </tr>
+</table>
+
+<form method="POST" action="reindex.html">
+    <input type="submit" value="Reindex"
+           i18n:attributes="value reindex-button"/>
+</form>
 
 </div>
 </body>

@@ -156,11 +156,18 @@ class Test(PlacelessSetup, unittest.TestCase):
         for index in catalog.values():
             checkNotifies = index.doc
             self.assertEqual(len(checkNotifies), 18)
-            ### notifLocs = [ x.location for x in checkNotifies ]
-            ### notifLocs.sort()
-            ### expected = [ "/%s"%(i+1) for i in range(18) ]
-            ### expected.sort()
-            ### self.assertEqual(notifLocs, expected)
+
+    def test_updateindex(self):
+        """Test a full refresh."""
+        self._frob_uniqueidutil()
+        catalog = Catalog()
+        catalog['author'] = StubIndex('author', None)
+        catalog['title'] = StubIndex('author', None)
+        catalog.updateIndexe(catalog['author'])
+        checkNotifies = catalog['author'].doc
+        self.assertEqual(len(checkNotifies), 18)
+        checkNotifies = catalog['title'].doc
+        self.assertEqual(len(checkNotifies), 0)
 
     def test_basicsearch(self):
         """Test the simple search results interface."""
@@ -269,9 +276,11 @@ class TestEventSubscribers(unittest.TestCase):
         self.assertEqual(self.cat.regs, [])
 
 def test_suite():
+    from zope.testing.doctestunit import DocTestSuite
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
+    suite.addTest(DocTestSuite('zope.app.catalog.attribute'))
     return suite
 
 

@@ -11,23 +11,26 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""This is a field index which can be subscribed to an event service.
-
-Events related to object creation and deletion are translated into
-index_doc() and unindex_doc() calls.
-
-In addition, this implements TTW subscription management.
+"""Field catalog indexes
 
 $Id$
 """
-import zope.app.index.ifaceindex
+import zope.index.field
 import zope.interface
 
-class IFieldIndex(zope.app.index.ifaceindex.IInterfaceIndexer):
-    """Interface-based field index
-       """
+import zope.app.container.contained
+import zope.app.catalog.attribute
+import zope.app.catalog.interfaces
 
-class FieldIndex(InterfaceIndexing, BaseFieldIndex, Contained):
+class IFieldIndex(zope.app.catalog.interfaces.IAttributeIndex,
+                  zope.app.catalog.interfaces.ICatalogIndex):
+    """Interface-based catalog field index
+    """
+
+class FieldIndex(zope.app.catalog.attribute.AttributeIndex,
+                 zope.index.field.FieldIndex,
+                 zope.app.container.contained.Contained):
+
     zope.interface.implements(IFieldIndex)
 
 

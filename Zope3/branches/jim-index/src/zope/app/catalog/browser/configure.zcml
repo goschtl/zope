@@ -4,101 +4,117 @@
    i18n_domain="zope"
    >
 
-  <!-- Allow a catalog to be added to content space -->
-  <addMenuItem
-      title="Catalog"
-      description="A Catalog allows indexing and searching of objects"
-      class="zope.app.catalog.catalog.Catalog"
-      permission="zope.ManageContent"
-      />
+<!-- Allow a catalog to be added to content space -->
+<addMenuItem
+    title="Catalog"
+    description="A Catalog allows indexing and searching of objects"
+    class="zope.app.catalog.catalog.Catalog"
+    permission="zope.ManageContent"
+    />
 
-  <icon
-      name="zmi_icon"
-      for="zope.app.catalog.interfaces.ICatalog"
-      file="catalog_icon.gif"
-      />
+<icon
+    name="zmi_icon"
+    for="zope.app.catalog.interfaces.ICatalog"
+    file="catalog_icon.gif"
+    />
 
-  <addMenuItem
-      title="Site Catalog"
-      description="A Catalog allows indexing and searching of objects"
-      class="zope.app.catalog.catalog.CatalogUtility"
-      permission="zope.ManageServices"
+<containerViews
+     for="..interfaces.ICatalog"
+     contents="zope.ManageServices"
+     index="zope.ManageServices"
+     add="zope.ManageServices"
      />
 
-  <!-- Standard container 'contents' tab -->
-  <page
-      for="zope.app.catalog.interfaces.ICatalog"
-      name="contents.html"
-      menu="zmi_views"
-      title="Indexes"
-      attribute="contents"
-      class="zope.app.container.browser.contents.Contents"
-      permission="zope.ManageContent"
-      />
+<pages
+    for="..interfaces.ICatalog"
+    class=".catalog.Advanced"
+    permission="zope.ManageContent">
 
-  <!-- This hooks up a custom add menu.  -->
-  <view
-      for="zope.app.catalog.interfaces.ICatalog"
-      name="+"
-      menu="zmi_actions" title="Add"
-      class="zope.app.catalog.browser.catalog.IndexAdding"
-      permission="zope.ManageContent">
-    <page name="index.html"  attribute="index" />
-    <page name="action.html" attribute="action" />
-  </view>
+  <page name="advances.html" template="advanced.pt"
+        menu="zmi_views" title="Advanced"/>
+  <page name="reindex.html" attribute="reindex"/>
+</pages>
 
-  <!-- the add menu is browser.IndexAdding -->
-  <menu id="catalog_index_menu" title="Add Index" />
+<!-- Indexes -->
 
-  <!-- Add a couple of items to the add menu -->
-  <!-- TextIndex -->
-  <addform
-      name="AddTextIndexToCatalog"
-      menu="catalog_index_menu" title="Text Index"
-      schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
-      permission="zope.ManageServices"
-      content_factory="zope.app.index.text.index.TextCatalogIndex"
-      arguments="field_name"
-      keyword_arguments="interface"
-      description="A full text index"
-      />
+<addform
+    name="AddFieldIndex"
+    label="Add a field index"
+    schema="..interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="..field.FieldIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    />
 
-  <!-- FieldIndex -->
-  <addform
-      name="AddFieldIndexToCatalog"
-      menu="catalog_index_menu" title="Field Index"
-      schema="zope.app.index.interfaces.field.IUIFieldCatalogIndex"
-      permission="zope.ManageServices"
-      content_factory="zope.app.index.field.index.FieldCatalogIndex"
-      arguments="field_name"
-      keyword_arguments="interface"
-      description="An index of a specific field"
-      />
+<addMenuItem
+    title="Field Index"
+    description="Index items based on an orderable field value"
+    class="..field.FieldIndex"
+    permission="zope.ManageServices"
+    view="AddFieldIndex"
+   />
 
-  <!-- KeywordIndex -->
-  <addform
-      name="AddKeywordIndexToCatalog"
-      menu="catalog_index_menu" title="Keyword Index"
-      schema="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
-      permission="zope.ManageServices"
-      content_factory="zope.app.index.keyword.index.KeywordCatalogIndex"
-      arguments="field_name"
-      keyword_arguments="interface"
-      description="A keyword index of a specific field"
-      />
+<schemadisplay
+    name="index.html"
+    schema="..field.IFieldIndex"
+    label="Field Index"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
 
-  <!-- the Advanced tab of the Catalog -->
-  <pages
-      for="zope.app.catalog.interfaces.ICatalog"
-      class="zope.app.catalog.browser.catalog.CatalogEditView"
-      permission="zope.ManageContent">
+<addform
+    name="AddKeywordIndex"
+    label="Add a keyword index"
+    schema="..interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="..keyword.KeywordIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    />
 
-    <page name="index.html" template="advanced.pt"
-          menu="zmi_views" title="Advanced"/>
-    <page name="subscribe.html" attribute="subscribe"/>
-    <page name="unsubscribe.html" attribute="unsubscribe"/>
-    <page name="clear.html" attribute="clear"/>
-    <page name="reindex.html" attribute="reindex"/>
-  </pages>
+<addMenuItem
+    title="Keyword Index"
+    description="Index items based on multi-value fields with
+                 orderable values"
+    class="..keyword.KeywordIndex"
+    permission="zope.ManageServices"
+    view="AddKeywordIndex"
+   />
+
+<schemadisplay
+    name="index.html"
+    schema="..keyword.IKeywordIndex"
+    label="Keyword Index"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
+
+<addform
+    name="AddTextIndex"
+    label="Add a text index"
+    schema="..interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="..text.TextIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    />
+
+<addMenuItem
+    title="Text Index"
+    description="Index items based on multi-value fields with
+                 orderable values"
+    class="..text.TextIndex"
+    permission="zope.ManageServices"
+    view="AddTextIndex"
+   />
+
+<schemadisplay
+    name="index.html"
+    schema="..text.ITextIndex"
+    label="Text Index"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
 
 </zope:configure>

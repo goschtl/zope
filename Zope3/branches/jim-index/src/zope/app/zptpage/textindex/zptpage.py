@@ -17,7 +17,7 @@ $Id$
 
 from zope.interface import implements
 from zope.app.zptpage.interfaces import IZPTPage
-from zope.app.index.interfaces.text import ISearchableText
+from zope.index.interfaces.searchabletext import ISearchableText
 import re
 
 tag = re.compile(r"<[^>]+>")

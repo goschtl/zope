@@ -46,11 +46,11 @@ class ResultSet:
             yield obj
 
 
-class CatalogBase(Persistent, SampleContainer):
+class Catalog(Persistent, SampleContainer):
 
-    implements(ICatalog, IContainer, IAttributeAnnotatable)
+    implements(ICatalog, IContainer, IAttributeAnnotatable, ILocalUtility)
 
-    def clearIndexes(self):
+    def clear(self):
         for index in self.values():
             index.clear()
 
@@ -63,6 +63,12 @@ class CatalogBase(Persistent, SampleContainer):
         """Unregister the data from indexes of this catalog."""
         for index in self.values():
             index.unindex_doc(docid)
+
+    def updateIndex(self, index):
+        uidutil = zapi.getUtility(IUniqueIdUtility)
+        for uid, ref in uidutil.items():
+            obj = ref()
+            index.index_doc(uid, obj)
 
     def updateIndexes(self):
         uidutil = zapi.getUtility(IUniqueIdUtility)
@@ -95,20 +101,27 @@ class CatalogBase(Persistent, SampleContainer):
         results = ResultSet(pendingResults, uidutil)
         return results
 
+def indexAdded(index, event):
+    """When an index is added to a catalog, we have to index existing objects
 
-class CatalogUtility(CatalogBase):
-    """A catalog in service-space."""
-    # Utilities will default to implementing the most specific
-    # interface. This piece of delightfulness is needed because
-    # the interface resolution order machinery implements (no
-    # pun intended) the old-style Python resolution order machinery.
-    implements(ILocalUtility)
+       When an index is added, we tell it's parent to index it:
 
+         >>> class FauxCatalog:
+         ...     def updateIndex(self, index):
+         ...         self.updated = index
 
-class Catalog(CatalogBase):
-    """A catalog in content-space."""
+         >>> class FauxIndex:
+         ...     pass
 
+         >>> index = FauxIndex()
+         >>> index.__parent__ = FauxCatalog()
 
+         >>> indexAdded(index, None)
+         >>> index.__parent__.updated is index
+         True
+       """
+    index.__parent__.updateIndex(index)
+    
 def indexDocSubscriber(event):
     """A subscriber to UniqueIdAddedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):

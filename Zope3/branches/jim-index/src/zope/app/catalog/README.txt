@@ -1,9 +1,5 @@
 Adding a site catalog:
 
-The following presupposes that the ObjectHub is installed and the
-Registration object for the object hub is installed and active, so the
-ObjectHub can pass events on to the catalogs/indexes.
-
 This also presupposes a product called "blog", which allows you to create
 content objects - this should apply equally to any other content objects
 in your own zope install, presuming they have attributes with values ;)
