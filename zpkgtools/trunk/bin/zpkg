@@ -46,7 +46,15 @@ class Application:
         self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
         tempfile.tempdir = self.tmpdir
         self.loader = cvsloader.CvsLoader()
-        cf = config.Configuration(options.configfile)
+        cf = config.Configuration()
+        path = options.configfile
+        if path is None:
+            path = config.defaultConfigurationPath()
+            if os.path.exists(path):
+                cf.loadPath(path)
+        elif path:
+            cf.loadPath(path)
+
         if options.location_maps:
             cf.location_maps[:0] = options.location_maps
         cf.finalize()
@@ -169,6 +177,10 @@ def main(argv=None):
     parser.add_option(
         "-C", "--configure", dest="configfile",
         help="path or URL to the configuration file")
+    parser.add_option(
+        "-f", dest="configfile",
+        action="store_const", const="",
+        help="don't read a configuration file")
     parser.add_option(
         "-m", "--resource-map", dest="location_maps",
         action="append",

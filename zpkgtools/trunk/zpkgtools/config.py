@@ -39,15 +39,9 @@ SCHEMA = cfgparser.Schema(
 class Configuration:
     """Configuration settings for zpkg."""
 
-    def __init__(self, path=None):
+    def __init__(self):
         self.location_maps = []
         self.locations = None
-        if path is None:
-            path = defaultConfigurationPath()
-            if os.path.exists(path):
-                self.loadPath(path)
-        else:
-            self.loadPath(path)
 
     def finalize(self):
         for loc in self.location_maps:
