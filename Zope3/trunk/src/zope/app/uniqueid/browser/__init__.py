@@ -25,8 +25,10 @@ class UniqueIdUtilityView:
         return len(trustedRemoveSecurityProxy(self.context).refs)
 
     def populate(self):
+        # XXX I think this should be moved to the functional test.
         self.context.register(zapi.traverse(self.context, "/"))
         self.context.register(zapi.traverse(self.context, "/++etc++site"))
+        self.request.response.redirect('index.html')
 
     def items(self):
         return [(uid, zapi.getPath(ref())) for uid, ref in self.context.items()]
