@@ -16,7 +16,6 @@
 import logging
 import os.path
 import posixpath
-import re
 import sets
 import urllib
 import urllib2
@@ -45,7 +44,7 @@ def load(f, base=None, mapping=None):
     cvsbase = None
     if base is not None:
         try:
-            cvsbase = cvsloader.parse(base)
+            cvsbase = loader.parse(base)
         except ValueError:
             pass
     if mapping is None:
@@ -64,10 +63,10 @@ def load(f, base=None, mapping=None):
                                   getattr(f, "name", "<unknown>"), lineno)
         resource, url = parts
         try:
-            cvsurl = cvsloader.parse(url)
+            cvsurl = loader.parse(url)
         except ValueError:
             # conventional URL
-            if base is not None:
+            if cvsbase is None:
                 url = urlparse.urljoin(base, url)
         else:
             if isinstance(cvsurl, cvsloader.RepositoryUrl):
@@ -95,8 +94,9 @@ def load(f, base=None, mapping=None):
 
 def fromPathOrUrl(path, mapping=None):
     # XXX need to deal with cvs: URLs directly!
+    # still need to support Subversion here
     if os.path.isfile(path):
-        # prefer a cvs: URL over a local path if possible:
+        # prefer a revision-control URL over a local path if possible:
         try:
             cvsurl = cvsloader.fromPath(path)
         except IOError, e:
@@ -124,10 +124,3 @@ def fromPathOrUrl(path, mapping=None):
         return load(f, base, mapping)
     finally:
         f.close()
-
-
-_ident = "[a-zA-Z_][a-zA-Z_0-9]*"
-_module_match = re.compile(r"%s(\.%s)*$" % (_ident, _ident)).match
-
-def isModuleName(string):
-    return _module_match(string) is not None
