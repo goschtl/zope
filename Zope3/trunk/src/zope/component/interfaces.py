@@ -1,4 +1,4 @@
-##############################################################################
+############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,10 +10,10 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.25 2004/03/10 00:58:44 srichter Exp $
+$Id: interfaces.py,v 1.26 2004/03/15 20:42:25 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -79,7 +79,7 @@ class IComponentArchitecture(Interface):
 
         Returns the nearest adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
-        use wrapping around object to specify a context.  If a
+        use  object to specify a context.  If a
         matching adapter cannot be found, raises ComponentLookupError.
 
         If the object has a __conform__ method, this method will be
@@ -94,7 +94,7 @@ class IComponentArchitecture(Interface):
 
         Returns the nearest named adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
-        use wrapping around object to specify a context.  If a
+        use  object to specify a context.  If a
         matching adapter cannot be found, raises ComponentLookupError.
 
         The name consisting of an empty string is reserved for unnamed
@@ -107,7 +107,7 @@ class IComponentArchitecture(Interface):
 
         Returns the nearest adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
-        use wrapping around object to specify a context.  If a matching
+        use  object to specify a context.  If a matching
         adapter cannot be found, returns the default.
 
         If the object has a __conform__ method, this method will be
@@ -122,13 +122,41 @@ class IComponentArchitecture(Interface):
 
         Returns the nearest named adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
-        use wrapping around object to specify a context.  If a matching
+        use  object to specify a context.  If a matching
         adapter cannot be found, returns the default.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
         """
+
+    def queryMultiAdapter(objects, interface, name='', default=None,
+                          context=None):
+        """Look for a multi-adapter to an interface for an object
+
+        Returns the nearest multi-adapter to the context that can
+        adapt object to interface.  If context is not specified, the
+        first object, if any, is used.  If a matching adapter cannot
+        be found, returns the default.
+
+        If a matching adapter cannot be found, returns the default.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+        """
+
+    def subscribers(required, provided, context=None):
+        """Get subscribers
+
+        Subscribers are returned that provide the provided interface
+        and that depend on and are comuted from the sequence of
+        required objects.
+
+        Returns the subscribers for the context.  If context is not
+        specified, attempts to use object to specify a context.
+        """
+    
 
     # Factory service
 
@@ -184,7 +212,7 @@ class IComponentArchitecture(Interface):
         object is found. If a matching view cannot be found, raises
         ComponentLookupError.
 
-        If context is not specified, attempts to use wrapping around
+        If context is not specified, attempts to use 
         object to specify a context.
         """
 
@@ -196,7 +224,7 @@ class IComponentArchitecture(Interface):
         type and the skin name.  The nearest one to the object is
         found. If a matching view cannot be found, returns default.
 
-        If context is not specified, attempts to use wrapping around
+        If context is not specified, attempts to use 
         object to specify a context.
         """
         
@@ -225,7 +253,7 @@ class IComponentArchitecture(Interface):
         If a matching default view name cannot be found, raises
         NotFoundError.
 
-        If context is not specified, attempts to use wrapping around
+        If context is not specified, attempts to use 
         object to specify a context.
         """
 
@@ -237,7 +265,7 @@ class IComponentArchitecture(Interface):
         If a matching default view name cannot be found, returns the
         default.
 
-        If context is not specified, attempts to use wrapping around
+        If context is not specified, attempts to use 
         object to specify a context.
         """
 
@@ -395,6 +423,14 @@ class IAdapterService(Interface):
 
         - the object registered specifically for the required and
           provided interfaces.
+        """
+
+    def subscribers(required, provided):
+        """Get subscribers
+
+        Subscribers are returned that provide the provided interface
+        and that depend on and are comuted from the sequence of
+        required objects.
         """
 
 class IPresentation(Interface):
