@@ -26,7 +26,7 @@ class TestCaseInsensitiveFolder(BrowserTestCase):
         response = self.publish(
             '/+/action.html',
             basic='mgr:mgrpw',
-            form={'type_name': u'zope.CaseInsensitiveFolder',
+            form={'type_name': u'book.CaseInsensitiveFolder',
                   'id': u'cisf'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
