@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: metametaconfigure.py,v 1.3 2002/12/27 23:28:33 jim Exp $
 """
 from zope.configuration.meta import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
@@ -30,15 +30,25 @@ class DirectiveNamespace(bootstrapDirectiveNamespace):
     __class_implements_ = INonEmptyDirective
     __implements__ = ISubdirectiveHandler
 
-    def _Subdirective(self, *args, **kw): return Subdirective(*args, **kw)
+    def _Subdirective(self, *args, **kw):
+        return Subdirective(*args, **kw)
 
-    def _useDescription(self, namespace, name, handler, description, subs): pass
+    def _useDescription(self, namespace, name, handler, description, subs):
+        pass
 
     def directive(self, _context, name, handler, attributes='',
-            namespace=None, description=''):
+                  namespace=None, description=''):
+
         subs, namespace = self._register(_context, name, handler, namespace)
+
+        # Extra whitespace is not significant, since the parser
+        # removes the newlines.
+        description = ' '.join(description.strip().split())
+
         self._useDescription(namespace, name, handler, description, subs)
+
         return self._Subdirective(subs, namespace=namespace, name=name)
+
     directive.__implements__ = INonEmptyDirective
 
 
@@ -51,21 +61,93 @@ class Subdirective(bootstrapSubdirective):
         bootstrapSubdirective.__init__(self,subs,namespace)
         self._name = name
 
-    def _useDescription(self, namespace, name, subs, description): pass
+    def _useDescription(self, namespace, name, subs, description):
+        pass
 
     def subdirective(self, _context, name, attributes='',
                      namespace=None, handler_method=None, description=''):
+
         subs, namespace = self._register(_context, name, namespace,
                                          handler_method)
+
+        # Extra whitespace is not significant, since the parser
+        # removes the newlines.
+        description = ' '.join(description.strip().split())
+
         self._useDescription(namespace, name, subs, description)
         return self.__class__(subs, namespace=namespace, name=name)
+
     subdirective.__implements__ = INonEmptyDirective
 
-    def _useAttributeDescription(self, name, required, description): pass
+    def _useAttributeDescription(self, name, required, description):
+        pass
 
     def attribute(self, _context, name, required='', description=''):
-        required = required.lower()
-        if required not in ('', 'yes', 'no'): raise ValueError(required)
-        self._useAttributeDescription(name, required, description)
+        return Attribute(self, name, required, description)
+
+    attribute.__implements__ = INonEmptyDirective
+
+    def description(self, _context):
+        return Description(self)
+
+    description.__implements__ = INonEmptyDirective
+
+class Description:
+
+    __implements__ = ISubdirectiveHandler
+    
+    def __init__(self, dir):
+        self._dir = dir
+        self._description = ''
+
+    def zcmlText(self, text):
+        self._description += text
+
+    def __call__(self):
+        self._dir._useDescription(
+            self._dir._namespace, self._dir._name, self._dir._subs,
+            self._description)
+
         return ()
-    attribute.__implements__ = IEmptyDirective
+
+class Attribute:
+
+    __implements__ = ISubdirectiveHandler
+    
+    def __init__(self, dir, name, required, description=''):
+        required = required.lower()
+        if required not in ('', 'yes', 'no'):
+            raise ValueError(required)
+
+        # Extra whitespace is not significant, since the parser
+        # removes the newlines.
+        description = ' '.join(description.strip().split())
+
+        self._dir = dir
+        self._name = name
+        self._required = required
+        self._description = description
+
+    def description(self, _context):
+        return AttrDescription(self)
+
+    description.__implements__ = INonEmptyDirective
+
+    def __call__(self):
+        self._dir._useAttributeDescription(
+            self._name, self._required, self._description)
+        return ()
+
+class AttrDescription:
+
+    __implements__ = ISubdirectiveHandler
+    
+    def __init__(self, dir):
+        self._dir = dir
+
+    def zcmlText(self, text):
+        self._dir._description += text
+
+    def __call__(self):
+        return ()
+        

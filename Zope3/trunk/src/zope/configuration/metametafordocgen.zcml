@@ -16,16 +16,18 @@
       handler="zope.configuration.metametaconfigurefordocgen.DirectiveNamespace"
       description="Define a set of new configuration directives within a
           defaultnamespace"
-  >
+      >
+
     <attribute
         name="namespace"
         required="yes"
         description="XML-style namespace identifier for the namespace
             in which the directives being defined will reside." />
+
     <subdirective
         name="directive"
         description="Define a new configuration directive."
-    >
+        >
       <attribute
           name="name"
           required="yes"
@@ -46,11 +48,15 @@
           name="description"
           description="structured Text sentences that document the
               purpose and function of the directive." />
+
+
+
+
       <subdirective
           name="attribute"
           description="Define an attribute that may be specified on the
               directive being defined"
-      >
+          >
         <attribute
             name="name"
             required="yes"
@@ -67,16 +73,31 @@
             name="description"
             description="structured Text sentences describing the purpose,
               function, and allowed values of the attribute." />
+
+        <subdirective
+            name="description"
+            description="Provide a description for the directive"
+            />
+
       </subdirective>
+
+
+      <subdirective
+          name="description"
+          description="Provide a description for the directive"
+          />
+
       <subdirective
           name="subdirective"
           description="Define a subdirective that may be used inside
               the enclosing directive in a configuration."
-      >
+          >
+
         <attribute
             name="name"
             required="yes"
             description="the name of the subdirective" />
+
         <attribute
             name="handler_method"
             description="the name of an IEmptyDirective or an
@@ -84,22 +105,26 @@
                 ISubDirectiveHandler returned by the handler for
                 the enclosing directive.  If not specified, the
                 subdirective name is used." />
+
         <attribute
             name="description"
             description="structured Text sentences that document the
                 purpose and function of the subdirective." />
+
         <attribute
             name="namespace"
             description="XML-style namespace identifier for the namespace
                 in which the directives being defined will reside.  If
                 specified it overrides the namespace inherited from
                 the enclosing directive." />
+
         <!--
              We don't need to redefine the attribute subdirective of
              the subdirective subdirective, because defining it in
              directive's namespace defined it in the same (recursive)
              namespace subdirective uses.
         -->
+
       </subdirective>
     </subdirective>
   </directive>

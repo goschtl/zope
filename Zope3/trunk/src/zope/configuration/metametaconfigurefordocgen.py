@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigurefordocgen.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: metametaconfigurefordocgen.py,v 1.3 2002/12/27 23:28:33 jim Exp $
 """
 from zope.configuration.metametaconfigure import DirectiveNamespace as baseDirectiveNamespace
 from zope.configuration.metametaconfigure import Subdirective as baseSubdirective
@@ -61,11 +61,16 @@ and/or a zope-based introspection tool.
 _metadataKey = "__zope.configuration.metadataKey__"
 
 def _recordCommandMetadata(subs, description, handler=None):
-    if _metadataKey not in subs: subs[_metadataKey] = {}
+    if _metadataKey not in subs:
+        subs[_metadataKey] = {}
+
     md = subs[_metadataKey]
-    if 'attributes' not in md: md['attributes'] = {}
-    if description: md['description'] = ' '.join(description.split())
-    if handler: md['handler'] = handler
+    if 'attributes' not in md:
+        md['attributes'] = {}
+    if description:
+        md['description'] = description
+    if handler:
+        md['handler'] = handler
 
 
 class DirectiveNamespace(baseDirectiveNamespace):
@@ -74,7 +79,8 @@ class DirectiveNamespace(baseDirectiveNamespace):
     __class_implements_ = INonEmptyDirective
     __implements__ = ISubdirectiveHandler
 
-    def _Subdirective(self, *args, **kw): return Subdirective(*args, **kw)
+    def _Subdirective(self, *args, **kw):
+        return Subdirective(*args, **kw)
 
     def _useDescription(self, namespace, name, handler, description, subs):
         _recordCommandMetadata(subs, description, handler)
@@ -91,5 +97,5 @@ class Subdirective(baseSubdirective):
     def _useAttributeDescription(self, name, required, description):
         attribs = self._subs[_metadataKey]['attributes']
         attribs[name] = {
-            'description': description and ' '.join(description.split()),
+            'description': description,
             'required': required}

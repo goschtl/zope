@@ -30,21 +30,38 @@
       name="directives"
       attributes="namespace name handler attributes description"
       handler="zope.configuration.metametaconfigure.DirectiveNamespace"
-    >
+      >
     <subdirective
         name="directive"
         attributes="namespace name handler attributes description"
-    >
+        >
       <subdirective
           name="attribute"
-          attributes="name description required" />
+          attributes="name description required" >
+        <subdirective
+            name="description"
+            attributes="" 
+            />
+        </subdirective>
+      <subdirective
+          name="description"
+          attributes="" />
       <subdirective
           name="subdirective"
           attributes="name attributes namespace handler_method description"
-      >
+          >
+        <subdirective
+            name="description"
+            attributes="" />
         <subdirective
             name="attribute"
-            attributes="name description required" />
+            attributes="name description required"
+            >
+        <subdirective
+            name="description"
+            attributes="" 
+            />
+          </subdirective>
       </subdirective>
     </subdirective>
   </directive>
