@@ -13,7 +13,7 @@
 ##############################################################################
 """Tree-copy helpers for 'zsync copy' and 'zbundle create'.
 
-$Id: copier.py,v 1.1 2003/09/05 19:09:36 fdrake Exp $
+$Id: copier.py,v 1.2 2003/09/05 20:32:08 fdrake Exp $
 """
 
 import os
@@ -27,7 +27,6 @@ class FileCopier:
 
     def __init__(self, sync):
         self.sync = sync
-        self.ignore = sync.fsmerger.ignore
 
     def copy(self, source, target, children=True):
         if os.path.isdir(source):
