@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: PlacefulSetup.py,v 1.3 2002/07/02 23:44:13 jim Exp $
+$Id: PlacefulSetup.py,v 1.4 2002/07/15 20:34:51 poster Exp $
 """
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
@@ -22,6 +22,10 @@ class PlacefulSetup(PlacelessSetup):
     
     def setUp(self):
         PlacelessSetup.setUp(self)
+        # set up etc namespace
+        from Zope.App.Traversing.Namespaces import provideNamespaceHandler
+        from Zope.App.Traversing.EtcNamespace import etc
+        provideNamespaceHandler("etc", etc)
         # set up placeful hooks, saving originals for tearDown
         from Zope import ComponentArchitecture as CA
         self.__old_getServiceManager_hook = CA.getServiceManager_hook

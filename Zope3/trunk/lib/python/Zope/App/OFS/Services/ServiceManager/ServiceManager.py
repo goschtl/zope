@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ServiceManager.py,v 1.4 2002/07/11 18:21:32 jim Exp $
+$Id: ServiceManager.py,v 1.5 2002/07/15 20:34:51 poster Exp $
 """
 from Persistence import Persistent
 
@@ -22,7 +22,7 @@ from Zope.Exceptions import NotFoundError, ZopeError
 from Zope.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 from Zope.ComponentArchitecture \
-     import getService, getNextServiceManager, getNextService
+     import getService, getNextServiceManager, getNextService, queryAdapter
 from Zope.ComponentArchitecture.GlobalServiceManager import UndefinedService
 from Zope.ComponentArchitecture.GlobalServiceManager import InvalidService
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -120,7 +120,14 @@ class ServiceManager(Persistent):
         "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
         directives = self.__bindings.get(service_type)
         if directives and directives[0] is not None:
-            directives.insert(0, None)            
+            service = directives[0].getService(self)
+            aware_service = queryAdapter(service, IBindingAware)
+            if aware_service is not None:
+                aware_service.unbound(service_type)
+            directives.insert(0, None)
+            self._p_changed = 1
+    
+    disableService = ContextMethod(disableService)
 
     def enableService(self, service_type, index):
         "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
@@ -131,12 +138,14 @@ class ServiceManager(Persistent):
         del directives[index]
         directives.insert(0, directive)
 
-
         self._p_changed = 1
-                
+
         service = directive.getService(self)
-        if IBindingAware.isImplementedBy(service):
-            service.bound(service_type)
+        aware_service = queryAdapter(service, IBindingAware)
+        if aware_service is not None:
+            aware_service.bound(service_type)
+    
+    enableService = ContextMethod(enableService)
 
 
     def _disableFirstBeforeEnable(self, service_type):
@@ -148,11 +157,16 @@ class ServiceManager(Persistent):
             if directives[0] is None:
                 # remove deactivation marker
                 del directives[0]
-            elif IBindingAware.isImplementedBy(directives[0]):
-                # unbind old service, if necessary
-                old_service = directives[0].getService(self)
-                old_service.unbound(service_type)
-        
+            else:
+                
+                old_service = queryAdapter(
+                    directives[0].getService(self), IBindingAware)
+                if old_service is not None:
+                    # unbind old service, if necessary
+                    old_service.unbound(service_type)
+    
+    _disableFirstBeforeEnable = ContextMethod(
+        _disableFirstBeforeEnable)
 
     def bindService(self, directive):
         "See "
@@ -175,9 +189,10 @@ class ServiceManager(Persistent):
             directives.insert(0, directive)
 
         self._p_changed = 1
-                
-        if IBindingAware.isImplementedBy(service):
-            service.bound(service_type)
+        
+        aware_service = queryAdapter(service, IBindingAware)
+        if aware_service is not None:
+            aware_service.bound(service_type)
 
     bindService = ContextMethod(bindService)
 
@@ -199,24 +214,26 @@ class ServiceManager(Persistent):
 
         self._p_changed = 1
                 
-        if len(bindings) == 1 and IBindingAware.isImplementedBy(service):
-            service.bound(service_type)
+        if len(bindings) == 1:
+            aware_service = queryAdapter(service, IBindingAware)
+            if aware_service is not None:
+                aware_service.bound(service_type)
 
     addService = ContextMethod(addService)
     
     def unbindService(self, directive):
         "See Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        self = removeAllProxies(self)
-        service = directive.getService(self)        
+        service = directive.getService(self) # must be before unwrapping self
+        self = removeAllProxies(self)  
         service_type = directive.service_type
 
         directives = self.__bindings[service_type]
         if directive not in directives:
             raise KeyError(directive)
         
-        if IBindingAware.isImplementedBy(service):
-            service.unbound(service_type)
-
+        aware_service = queryAdapter(service, IBindingAware)
+        if aware_service is not None:
+            aware_service.unbound(service_type)
 
         self.__bindings[service_type] = [d for d in directives
                                          if d != directive]
