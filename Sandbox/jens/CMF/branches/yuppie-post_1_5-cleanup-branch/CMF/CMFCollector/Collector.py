@@ -414,7 +414,8 @@ class Collector(SkinnedFolder):
         acquires (old workflows controlled this).  This isn't exactly the
         right place, but it is an expedient one."""
 
-        for i in self.objectValues(spec='CMF Collector Issue'):
+        _filter = { 'portal_type': ('Collector Issue',) }
+        for i in self.objectValues(filter=_filter):
 
             # Ensure the issue acquires AddCollectorIssueFollowup
             # and AddPortalContent permissions.
