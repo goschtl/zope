@@ -596,6 +596,11 @@
         action="Packages/default/@@SelectedManagementView.html"
         permission="zope.ManageServices"
         />
+    <menuItem
+        title="Add service"
+        action="Packages/default/AddService"
+	permission="zope.ManageServices"
+	/>
   </menuItems>
 
 <!-- Packages -->
