@@ -13,39 +13,31 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.4 2004/03/13 18:01:24 srichter Exp $
+$Id: definition.py,v 1.5 2004/04/16 11:51:35 srichter Exp $
 """
-__metaclass__ = type
- 
-from zope.component import getView, getUtility
+from zope.app import zapi
 from zope.app.traversing import traverse
 from zope.app.registration.interfaces import IRegistered
-from zope.app.workflow.interfaces import IProcessDefinitionImportExport
+from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
+from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 
 
-class ProcessDefinitionView:
+class ProcessDefinitionView(object):
  
     def getName(self):
         return """I'm a dummy ProcessInstance"""
 
 
-class ImportExportView:
-
-    def doExport(self):
-        return self._getUtil().exportProcessDefinition(self.context,
-                                                       self.context)
-
-    def doImport(self, data):
-        return self._getUtil().importProcessDefinition(self.context,
-                                                       data)
-    def _getUtil(self):
-        return getUtility(self.context, IProcessDefinitionImportExport)
+class ImportExportView(object):
 
     def importDefinition(self):
         xml = self.request.get('definition')
         if xml:
-            self.doImport(xml)
+            zapi.getAdapter(
+                self.context, IProcessDefinitionImportHandler, context=self
+                ).doImport(xml)
         self.request.response.redirect('@@importexport.html?success=1')
 
     def exportDefinition(self):
-        return self.doExport()
+        return zapi.getAdapter(self.context, IProcessDefinitionExportHandler,
+                               context=self).doExport()
