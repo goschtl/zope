@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: IQueryService.py,v 1.1 2002/12/05 14:33:36 stevea Exp $
+$Id: IQueryService.py,v 1.2 2002/12/18 17:29:31 stevea Exp $
 """
 from Interface import Interface
 
@@ -29,6 +29,6 @@ class IQueryService(Interface):
     def processQuery(query_id, input):
         '''Processes the input, using the query registered with query_id.
 
-        The input is adapted to the input interface of the query processor
-        that is registered for the query_id.'''
+        The input is adapted to the input interface that is registered for
+        the query_id.'''
 
