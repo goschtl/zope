@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.3 2002/11/25 13:48:06 alga Exp $
+$Id: test_RAMCache.py,v 1.4 2002/11/27 17:37:49 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -88,10 +88,15 @@ class TestRAMCache(PlacelessSetup,
         self.assertEqual(storage1, storage2,
                          "_getStorage returns different storages")
 
-        self.assertEqual(storage1.maxAge, 123, "maxAge not set")
-        self.assertEqual(storage1.maxEntries, 2002, "maxEntries not set")
+        self.assertEqual(storage1.maxAge, 123,
+                         "maxAge not set (expected 123, got %s)"
+                         % storage1.maxAge)
+        self.assertEqual(storage1.maxEntries, 2002,
+                         "maxEntries not set (expected 2002, got %s)"
+                         % storage1.maxEntries)
         self.assertEqual(storage1.cleanupInterval, 42,
-                         "cleanupInterval not set")
+                         "cleanupInterval not set (expected 42, got %s)"
+                         % storage1.cleanupInterval)
 
         # Simulate persisting and restoring the RamCache which removes
         # all _v_ attributes.
