@@ -27,6 +27,9 @@ CMF 1.5.0beta2 (unreleased)
       once defined there. Note that importing expandpath from DirectoryView is
       deprecated and doesn't work with CMF HEAD / 1.6.
 
+    - RegistrationTool: An optional password can now be passed to 
+      registeredNotify() (Issue #277).
+
 CMF 1.5.0beta (2004/08/12)
 
   New Features
