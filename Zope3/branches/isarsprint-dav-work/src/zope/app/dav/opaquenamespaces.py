@@ -38,7 +38,7 @@ class DAVOpaqueNamespaces(DictMixin):
         self._p_changed = True
 
     def get(self, key, default=None):
-        self._mapping.get(key, default)
+        return self._mapping.get(key, default)
 
     def __getitem__(self, key):
         return self._mapping[key]
