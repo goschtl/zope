@@ -55,6 +55,8 @@ def page(_context, name, permission, for_,
     except ComponentLookupError, err:
         pass
 
+    _handle_menu(_context, menu, title, [for_], name, permission)
+
     if not (class_ or template):
         raise ConfigurationError("Must specify a class or template")
     if allowed_attributes is None:
@@ -182,6 +184,24 @@ def _handle_for(_context, for_):
             callable = provideInterface,
             args = ('', for_)
             )
+
+def _handle_menu(_context, menu, title, for_, name, permission):
+    if menu or title:
+        if not (menu and title):
+            raise ConfigurationError(
+                "If either menu or title are specified, they must "
+                "both be specified.")
+
+        if len(for_) != 1:
+            raise ConfigurationError(
+                "Menus can be specified only for single-view, not for "
+                "multi-views.")
+
+        return menuItemDirective(
+            _context, menu, for_[0], '@@' + name, title,
+            permission=permission)
+
+    return []
 
 _factory_map = {'image':{'prefix':'ImageResource',
                          'count':0,

@@ -5,6 +5,8 @@ Trunk
 -----
 
 * Five now supports the browser:menu, menuItem and menuItems directives.
+  Also supports the menu parameter for page directives and subdirectives,
+  as well as editform directives.
 
 * A new Five-specific directive has been added: five:pagesFromDirectory.
   This adds one page for each .pt file in a directory to the specified
