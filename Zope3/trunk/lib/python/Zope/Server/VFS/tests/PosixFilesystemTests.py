@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PosixFilesystemTests.py,v 1.2 2002/06/10 23:29:37 jim Exp $
+$Id: PosixFilesystemTests.py,v 1.3 2002/07/17 23:10:35 jeremy Exp $
 """
 
 
@@ -71,10 +71,3 @@ class PosixFilesystemTests (WriteFilesystemTests):
             IPosixFileSystem.isImplementedByInstancesOf(class_))
         self.failUnless(verifyClass(IPosixFileSystem, class_))
 
-
-def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(OSFileSystemTest)
-
-if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )

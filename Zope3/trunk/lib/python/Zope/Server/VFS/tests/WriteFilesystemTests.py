@@ -13,9 +13,9 @@
 ##############################################################################
 """
 
-$Id: WriteFilesystemTests.py,v 1.3 2002/06/29 15:41:44 srichter Exp $
+$Id: WriteFilesystemTests.py,v 1.4 2002/07/17 23:10:35 jeremy Exp $
 """
-from StringIO import StringIO
+from cStringIO import StringIO
 
 from Interface.Verify import verifyClass
 from Zope.Server.VFS.IWriteFileSystem import IWriteFileSystem
@@ -128,11 +128,3 @@ class WriteFilesystemTests (ReadFilesystemTests):
         self.failUnless(
             IWriteFileSystem.isImplementedByInstancesOf(class_))
         self.failUnless(verifyClass(IWriteFileSystem, class_))
-
-
-def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(OSFileSystemTest)
-
-if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
