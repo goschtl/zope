@@ -40,6 +40,9 @@ class DummyCheckoutAware(object):
     zope.interface.implements(interfaces.ICheckoutAware)
     __used_for__ = interfaces.IHistoryStorage
     
+    def __init__(self, histories):
+        self.histories = histories
+    
     def markAsCheckedIn(self, obj):
         """Fake checkin mark doing anything.
         """
@@ -155,18 +158,18 @@ class CheckoutCheckinRepository(CopyModifyMergeRepository):
         XXX Other exceptions (for repository problems)?
         """
         # the order may be significant for the marking, XXX really?
-        checkoutaware = ICheckoutAware(self.histories)
+        checkoutaware = interfaces.ICheckoutAware(self.histories)
         checkoutaware.markAsCheckedIn(obj)
         self._saveAsVersion(obj)
         
     def checkout(self, obj):
         """Marks the object as checked out (being in use somehow).
         """
-        checkoutaware = ICheckoutAware(self.histories)
+        checkoutaware = interfaces.ICheckoutAware(self.histories)
         checkoutaware.markAsCheckedOut(obj)
 
     def isCheckedOut(self, obj):
-        checkoutaware = ICheckoutAware(self.histories)
+        checkoutaware = interfaces.ICheckoutAware(self.histories)
         return checkoutaware.isCheckedOut(obj)
 
 
