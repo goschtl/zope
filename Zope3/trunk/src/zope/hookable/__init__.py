@@ -46,20 +46,16 @@
 
    >>> del f.original
    Traceback (most recent call last):
-     File "/usr/local/python/2.2.2/lib/python2.2/doctest.py", line 430, in _run_examples_inner
-       compileflags, 1) in globs
-     File "<string>", line 1, in ?
+   ...
    TypeError: readonly attribute
 
    >>> del f.implementation
    Traceback (most recent call last):
-     File "/usr/local/python/2.2.2/lib/python2.2/doctest.py", line 430, in _run_examples_inner
-       compileflags, 1) in globs
-     File "<string>", line 1, in ?
+   ...
    TypeError: readonly attribute
 
    
-$Id: __init__.py,v 1.1 2003/05/18 18:03:55 jim Exp $
+$Id: __init__.py,v 1.2 2003/05/20 20:27:47 jim Exp $
 """
 from _zope_hookable import *
 
