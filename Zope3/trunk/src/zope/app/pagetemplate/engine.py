@@ -19,12 +19,15 @@ $Id$
 """
 import sys
 
+from zope.interface import implements
+
 from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
 from zope.component.exceptions import ComponentLookupError
+from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
@@ -33,7 +36,7 @@ from zope.i18n import translate
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.traversing.adapters import Traverser
-from zope.app.traversing.interfaces import IPathAdapter
+from zope.app.traversing.interfaces import IPathAdapter, ITraversable
 
 class InlineCodeError(Exception):
     pass
@@ -59,6 +62,7 @@ class ZopePythonExpr(PythonExpr):
         return eval(self._code, vars)
 
 class ZopeContextBase(Context):
+    """Base class for both trusted and untrusted evaluation contexts."""
 
     def evaluateText(self, expr):
         text = self.evaluate(expr)
@@ -110,6 +114,7 @@ class ZopeContextBase(Context):
 
 
 class ZopeContext(ZopeContextBase):
+    """Evaluation context for untrusted programs."""
 
     def setContext(self, name, value):
         # Hook to allow subclasses to do things like adding security proxies
@@ -117,7 +122,7 @@ class ZopeContext(ZopeContextBase):
 
 
 class TrustedZopeContext(ZopeContextBase):
-    pass
+    """Evaluation context for trusted programs."""
 
 
 class AdapterNamespaces(object):
@@ -170,6 +175,37 @@ class AdapterNamespaces(object):
         return namespace
 
 class ZopeEngine(ExpressionEngine):
+    """Untrusted expression engine.
+
+    This engine does not allow modules to be imported; only modules
+    already available may be accessed::
+
+      >>> modname = 'zope.app.pagetemplate.tests.trusted'
+      >>> engine = _Engine()
+      >>> context = engine.getContext(engine.getBaseNames())
+
+      >>> modname in sys.modules
+      False
+      >>> context.evaluate('modules/' + modname)
+      Traceback (most recent call last):
+        ...
+      KeyError: 'zope.app.pagetemplate.tests.trusted'
+
+    (The use of KeyError is an unfortunate implementation detail; I
+    think this should be a NotFoundError.)
+
+    Modules which have already been imported by trusted code are
+    available, wrapped in security proxies::
+
+      >>> m = context.evaluate('modules/sys')
+      >>> m.__name__
+      'sys'
+      >>> m._getframe
+      Traceback (most recent call last):
+        ...
+      ForbiddenAttribute: ('_getframe', <module 'sys' (built-in)>)
+
+    """
 
     _create_context = ZopeContext
 
@@ -198,8 +234,47 @@ class ZopeEngine(ExpressionEngine):
 
 
 class TrustedZopeEngine(ZopeEngine):
+    """Trusted expression engine.
+
+    This engine allows modules to be imported::
+
+      >>> modname = 'zope.app.pagetemplate.tests.trusted'
+      >>> engine = _TrustedEngine()
+      >>> context = engine.getContext(engine.getBaseNames())
+
+      >>> modname in sys.modules
+      False
+      >>> m = context.evaluate('modules/' + modname)
+      >>> m.__name__ == modname
+      True
+      >>> modname in sys.modules
+      True
+
+    Since this is trusted code, we can look at whatever is in the
+    module, not just __name__ or what's declared in a security
+    assertion::
+
+      >>> m.x
+      42
+
+    Clean up after ourselves::
+
+      >>> del sys.modules[modname]
+
+    """
 
     _create_context = TrustedZopeContext
+
+
+class TraversableModuleImporter(SimpleModuleImporter):
+
+    implements(ITraversable)
+
+    def traverse(self, name, further_path):
+        try:
+            return self[name]
+        except KeyError:
+            raise NotFoundError(name)
 
 
 def _Engine(engine=None):
@@ -221,7 +296,7 @@ def _TrustedEngine(engine=None):
         engine = TrustedZopeEngine()
     engine = _create_base_engine(engine)
     engine.registerType('python', PythonExpr)
-    engine.registerBaseName('modules', SimpleModuleImporter())
+    engine.registerBaseName('modules', TraversableModuleImporter())
     return engine
 
 def _create_base_engine(engine):
