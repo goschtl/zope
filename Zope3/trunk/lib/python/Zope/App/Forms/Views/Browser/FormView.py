@@ -12,14 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.13 2002/10/04 19:48:30 jim Exp $
+$Id: FormView.py,v 1.14 2002/10/09 13:38:53 mgedmin Exp $
 """
 from Zope.Schema.IField import IField
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll, ConversionErrorsAll
 from Zope.App.Forms.Exceptions import ConversionError
 from Zope.Schema import getFields, validateMappingAll
-#from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getView
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -45,10 +44,11 @@ class FormView(BrowserView):
         fields = getFields(self.schema)
         fields_order = self.fields_order
         if fields_order:
-            return [fields[name] for name in fields_order]
+            fields = [fields[name] for name in fields_order]
         else:
-            return fields.values()
-        
+            fields = fields.values()
+        return [ContextWrapper(field, self.context) for field in fields]
+
     def getField(self, name):
         'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
         field = self.schema.getDescriptionFor(name)
