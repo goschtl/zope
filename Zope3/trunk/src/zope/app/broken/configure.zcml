@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:event="http://namespaces.zope.org/event"
+    >
+
+  <event:subscribe
+      subscriber=".broken.installBroken"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" 
+      />
+
+  <include file="browser.zcml" /> 
+
+</configure>
