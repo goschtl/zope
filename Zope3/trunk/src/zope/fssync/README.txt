@@ -113,6 +113,8 @@ TO DO
   * Make the commands more closely match Subversion, since the model
     is more similar.
 
+  * Add support for HTTP proxies.
+
 - Code maintenance:
 
   * Rewrite toFS() to use the Metadata class, and add unit tests.
