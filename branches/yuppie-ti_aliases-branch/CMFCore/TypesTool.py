@@ -147,8 +147,11 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
                           , visible=action.get( 'visible', 1 )
                           )
 
-        aliases = kw.get( 'aliases', {} )
-        self.setAliases(aliases)
+        aliases = kw.get( 'aliases', _marker )
+        if aliases is _marker:
+            self._guessMethodAliases()
+        else:
+            self.setMethodAliases(aliases)
 
 
     #
@@ -316,15 +319,23 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
 
         return ob
 
-    security.declareProtected(ManagePortal, 'getAliases')
-    def getAliases(self):
-        """ Get aliases dict.
+    security.declareProtected(ManagePortal, 'getMethodAliases')
+    def getMethodAliases(self):
+        """ Get method aliases dict.
         """
-        return getattr( self, 'aliases', {} )
+        if not hasattr(self, '_aliases'):
+            self._guessMethodAliases()
+        dict = {}
+        aliases = self._aliases
+        for k, v in aliases.items():
+            path = list(v)
+            path.reverse()
+            dict[k] = '/'.join(path)
+        return dict
 
-    security.declareProtected(ManagePortal, 'setAliases')
-    def setAliases(self, aliases):
-        """ Set aliases dict.
+    security.declareProtected(ManagePortal, 'setMethodAliases')
+    def setMethodAliases(self, aliases):
+        """ Set method aliases dict.
         """
         dict = {}
         for k, v in aliases.items():
@@ -333,30 +344,56 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
                 path = v.split('/')
                 path.reverse()
                 dict[ k.strip() ] = tuple(path)
-        if not self.getAliases() == dict:
-            self.aliases = dict
+        if not getattr(self, '_aliases', None) == dict:
+            self._aliases = dict
             return 1
         else:
             return 0
 
-    security.declarePublic('getAlias')
-    def getAlias(self, key):
-        """ Get alias path for key in reverse order.
-        
-        Returns -- Tuple of IDs
+    security.declarePublic('getMethodPath')
+    def getMethodPath(self, key):
+        """ Get reverse relative method path by alias.
         """
-        aliases = getattr( self, 'aliases', {} )
+        if not hasattr(self, '_aliases'):
+            self._guessMethodAliases()
+        aliases = self._aliases
         return aliases.get( key, () )
 
-    security.declarePublic('getAliasURL')
-    def getAliasURL(self, key):
-        """ Get alias for key.
-        
-        Returns -- Slash-separated string
+    security.declarePublic('getMethodURL')
+    def getMethodURL(self, key):
+        """ Get relative method URL by alias.
         """
-        path = list( self.getAlias(key) )
+        path = list( self.getMethodPath(key) )
         path.reverse()
         return '/'.join(path)
+
+    security.declarePrivate('_guessMethodAliases')
+    def _guessMethodAliases(self):
+        """ Guess and set Method Aliases. Used for upgrading old TIs.
+        """
+        context = getActionContext(self)
+        actions = self.listActions()
+        ordered = []
+        for action in actions:
+            if action.getId() == 'view':
+                ordered.insert(0, action)
+            else:
+                ordered.append(action)
+        for action in ordered:
+            perms = action.getPermissions()
+            if not perms or View in perms:
+                method = action.action(context).strip()
+                if method.startswith('/'):
+                    method = method[1:]
+                if not method:
+                    self.setMethodAliases( {'view':'(Default)'} )
+                    break
+                self.setMethodAliases( {'(Default)':method, 'view':method} )
+                break
+        else:
+            # we couldn't find a default method
+            self.setMethodAliases( {'view':'(Default)'} )
+        return 1
 
 InitializeClass( TypeInformation )
 
@@ -670,9 +707,9 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
         if RESPONSE is not None:
             RESPONSE.redirect('%s/manage_main' % self.absolute_url())
 
-    security.declareProtected(ManagePortal, 'manage_setTIAliases')
-    def manage_setTIAliases(self, REQUEST):
-        """ Config aliases.
+    security.declareProtected(ManagePortal, 'manage_setTIMethodAliases')
+    def manage_setTIMethodAliases(self, REQUEST):
+        """ Config method aliases.
         """
         form = REQUEST.form
         aliases = {}
@@ -686,7 +723,7 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
             for k, v in form[ ti.getId() ].items():
                 if aliases.has_key(k):
                     dict[ aliases[k] ] = v
-            ti.setAliases(dict)
+            ti.setMethodAliases(dict)
         REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
     security.declareProtected(AccessContentsInformation, 'getTypeInfo')
@@ -809,15 +846,15 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
 
         return actions
 
-    security.declareProtected(ManagePortal, 'listAliasKeys')
-    def listAliasKeys(self):
-        """ List defined aliases.
+    security.declareProtected(ManagePortal, 'listMethodAliasKeys')
+    def listMethodAliasKeys(self):
+        """ List all defined method alias names.
         """
         dict = {}
         for ti in self.listTypeInfo():
-            aliases = ti.getAliases()
-            for alias, v in aliases.items():
-                dict[alias] = 1
+            aliases = ti.getMethodAliases()
+            for k, v in aliases.items():
+                dict[k] = 1
         rval = dict.keys()
         rval.sort()
         return rval

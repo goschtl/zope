@@ -3,11 +3,11 @@
     tal:replace="structure here/manage_tabs">Tabs</h2>
 <br />
 
-<form action="manage_setTIAliases" method="post">
+<form action="manage_setTIMethodAliases" method="post">
 <table cellspacing="0" cellpadding="2" border="0">
  <tr class="list-header">
   <td>&nbsp;</td>
-  <th tal:repeat="key here/listAliasKeys">
+  <th tal:repeat="key here/listMethodAliasKeys">
    <input type="text" name="" size="18" value=""
      tal:attributes="name string:aliases.${repeat/key/index}:record;
                      value key" />
@@ -21,10 +21,10 @@
    tal:repeat="ti tis" tal:omit-tag=""><tr class=""
    tal:attributes="class python:(repeat['ti'].odd() and 'row-normal' or 'row-hilite')">
   <th align="left" tal:content="ti/getId">id</th>
-  <td tal:repeat="key here/listAliasKeys">
+  <td tal:repeat="key here/listMethodAliasKeys">
    <input type="text" name="" size="18" value=""
      tal:attributes="name string:${ti/getId}.${repeat/key/index}:record;
-                     value python:ti.getAliasURL(key) or ''" />
+                     value python:ti.getMethodURL(key) or ''" />
   </td>
   <td>
    <input type="text" name="" size="18" value=""

@@ -101,11 +101,12 @@ class DynamicType:
 
         stack = REQUEST['TraversalRequestNameStack']
         key = stack and stack[-1] or '(Default)'
-        alias = self.getTypeInfo().getAlias(key)
-        if alias:
+        ti = self.getTypeInfo()
+        path = ti and ti.getMethodPath(key) or None
+        if path:
             if key is not '(Default)':
                 stack.pop()
-            for id in alias:
+            for id in path:
                 if id is not '(Default)':
                     stack.append(id)
 
