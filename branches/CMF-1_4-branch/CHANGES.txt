@@ -2,6 +2,9 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - CMFDefault.RegistrationTool: Allow '+' in e-mail addresses.
+      (http://zope.org/Collectors/CMF/322)
+
     - DCWorkflow.DCWorkflow:  include transition ID in the dict for
       workflow actions (http://zope.org/Collectors/CMF/308).
 
