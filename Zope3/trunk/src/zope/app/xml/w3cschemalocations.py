@@ -14,9 +14,66 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.1 2003/04/10 10:33:29 faassen Exp $
+$Id: w3cschemalocations.py,v 1.2 2003/04/11 14:44:27 philikon Exp $
 """
 from xml.parsers.expat import ParserCreate, ExpatError
+from zope.app.component.globalinterfaceservice import interfaceService
+
+def setInstanceInterfacesForXMLText(xmltext):
+    """
+    Sets the schema interfaces on an instance that implements IXMLText
+    according to the schemas locations the text refers to
+    """
+    schema_uris = getW3CXMLSchemaLocations(xmltext.source)
+    schema_interfaces = getInterfacesForXMLSchemaLocations(schema_uris)
+    setInstanceInterfaces(xmltext, schema_interfaces)
+
+def getInterfacesForXMLSchemaLocations(schema_uris):
+    """
+    Get interfaces for XML schema locations (URIs)
+    """
+    result = []
+    for uri in schema_uris:
+        interface = interfaceService.queryInterface(uri, None)
+        if interface is not None:
+            result.append(interface)
+    return result
+
+def setInstanceInterfaces(ob, interfaces):
+    #XXX this is really a hack. interfacegeddon will hopefully provide a better
+    # way to do this
+    
+    # if there are no interfaces, then we go back to whatever the class
+    # implements
+    if not interfaces:
+        try:
+            del ob.__implements__
+        except AttributeError:
+            pass
+        return
+
+    cls = ob.__class__
+    if isinstance(cls.__implements__, tuple):
+        implements = list(cls.__implements__)
+    else:
+        implements = [cls.__implements__]
+
+    orig_implements = implements[:]
+        
+    for interface in interfaces:
+        if interface not in implements:
+            implements.append(interface)
+
+    # if there are no changes in the interfaces, go back to whatever
+    # the class implements
+    if implements == orig_implements:
+        try:
+            del ob.__implements__
+        except AttributeError:
+            pass
+        return
+
+    ob.__implements__ = tuple(implements)    
 
 def getW3CXMLSchemaLocations(xml):
     """Give list of URIs of the schema an XML document promises to implement.
