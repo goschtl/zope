@@ -48,19 +48,6 @@ def main():
         os.path.exists('products.zcml.in')):
         print 'Copying products.zcml.in to products.zcml'
         open('products.zcml', 'w').write(open('products.zcml.in').read())
-
-    if not os.path.exists('principals.zcml'):
-        print """WARNING: You need to create principals.zcml
-
-        The file principals.zcml contains your "bootstrap" user
-        database. You aren't going to get very far without it.  Start
-        by copying principals.zcml.in and then look at
-        sample_principals.zcml for some example principal and role
-        settings.
-        """
-
-
-        
     setup_dirs = []
     os.path.walk(os.getcwd(), visit, setup_dirs)
     args = tuple(sys.argv[1:])

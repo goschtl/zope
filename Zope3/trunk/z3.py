@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.2 2002/06/10 23:27:34 jim Exp $
+$Id: z3.py,v 1.3 2002/06/14 18:51:10 gvanrossum Exp $
 """
 
 import os, sys, asyncore
@@ -22,6 +22,17 @@ import os, sys, asyncore
 basepath = filter(None, sys.path)
 
 def run(argv=sys.argv):
+
+    # Refuse to run without principals.zcml
+    if not os.path.exists('principals.zcml'):
+        print """ERROR: You need to create principals.zcml
+
+        The file principals.zcml contains your "bootstrap" user
+        database. You aren't going to get very far without it.  Start
+        by copying principals.zcml.in and then look at
+        sample_principals.zcml for some example principal and role
+        settings."""
+        sys.exit(1)
 
     # setting python paths
     program = argv[0]
