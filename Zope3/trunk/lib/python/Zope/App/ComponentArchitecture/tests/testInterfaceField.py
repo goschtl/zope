@@ -13,26 +13,43 @@
 ##############################################################################
 """Interface fields tests
 
-$Id: testInterfaceField.py,v 1.2 2002/12/04 09:54:06 jim Exp $
+$Id: testInterfaceField.py,v 1.3 2002/12/19 20:19:06 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-import Interface
+from Interface import Interface
+import Interface as InterfaceModule
 from Zope.App.ComponentArchitecture.InterfaceField import InterfaceField
 from Zope.Schema.Exceptions import ValidationError
+
+
         
 class Test(TestCase):
 
     def test_validate(self):
         field = InterfaceField()
         
-        field.validate(Interface.Interface)
-        class I(Interface.Interface): pass
+        field.validate(Interface)
+        class I(Interface): pass
         field.validate(I)
         
-        self.assertRaises(ValidationError, field.validate, Interface)
+        self.assertRaises(ValidationError, field.validate, InterfaceModule)
         class I: pass
         self.assertRaises(ValidationError, field.validate, I)
+
+    def test_validate_w_type(self):
+
+        class I1(Interface): pass
+        class I2(I1): pass
+        class I3(I2): pass
+        
+        field = InterfaceField(type=I2)
+        
+        field.validate(I2)
+        field.validate(I3)
+        
+        self.assertRaises(ValidationError, field.validate, Interface)
+        self.assertRaises(ValidationError, field.validate, I1)
 
 def test_suite():
     return TestSuite((makeSuite(Test),))

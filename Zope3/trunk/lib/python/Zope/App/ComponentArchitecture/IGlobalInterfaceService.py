@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IGlobalInterfaceService.py,v 1.2 2002/11/19 23:15:14 jim Exp $
+$Id: IGlobalInterfaceService.py,v 1.3 2002/12/19 20:19:05 jim Exp $
 """
 
 from IInterfaceService import IInterfaceService
@@ -25,6 +25,10 @@ class IGlobalInterfaceService(IInterfaceService):
         """Register an interface with a given id
 
         The id is the full dotted name for the interface.
+
+        If the id is false, the id will be computed from the interface
+        module and name.
+        
         """
 
 __doc__ = IGlobalInterfaceService.__doc__ + __doc__

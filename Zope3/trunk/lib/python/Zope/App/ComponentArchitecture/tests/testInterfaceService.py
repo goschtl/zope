@@ -11,15 +11,18 @@ from Zope.ComponentArchitecture.GlobalServiceManager \
      import serviceManager, defineService
 
 
+class B(Interface):
+    pass
+
 class I(Interface):
     """bah blah
     """
     
-class I2(Interface):
+class I2(B):
     """eek
     """
     
-class I3(Interface):
+class I3(B):
     """
     """
     def one():
@@ -50,6 +53,7 @@ class Test(CleanUp, TestCase):
         self.assertEqual(service.getInterface('Foo.Bar'), I)
         self.assertEqual(service.queryInterface('Foo.Bar'), I)
         self.assertEqual(list(service.searchInterface('')), [I])
+        self.assertEqual(list(service.searchInterface(base=B)), [])
 
         service.provideInterface('Foo.Baz', I2)
 
@@ -65,6 +69,11 @@ class Test(CleanUp, TestCase):
 
         service.provideInterface('Foo.Bus', I3)
         self.assertEqual(list(service.searchInterface('two')), [I3])
+        self.assertEqual(list(service.searchInterface('two', base=B)), [I3])
+
+        r = list(service.searchInterface(base=B))
+        r.sort()
+        self.assertEqual(r, [I2, I3])
 
 def test_suite():
     return TestSuite((makeSuite(Test),))

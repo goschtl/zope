@@ -52,6 +52,17 @@ def managerHandler(methodName, *args, **kwargs):
     method=getattr(getServiceManager(None), methodName)
     method(*args, **kwargs)
 
+def interface(_context, interface):
+    interface = _context.resolve(interface)
+    return [
+        Action(
+          discriminator = None,
+          callable = handler,
+          args = ('Interfaces', 'provideInterface', '', interface)
+        ),
+      ]
+
+
 def adapter(_context, factory, provides, for_=None, permission=None, name=''):
     if for_ is not None: for_ = _context.resolve(for_)
     provides = _context.resolve(provides)
@@ -72,8 +83,7 @@ def adapter(_context, factory, provides, for_=None, permission=None, name=''):
         Action(
             discriminator = None,
             callable = handler,
-            args = ('Interfaces', 'provideInterface',
-                    provides.__module__+'.'+provides.__name__, provides)
+            args = ('Interfaces', 'provideInterface', '', provides)
               )
               ]
     if for_ is not None:
@@ -82,8 +92,7 @@ def adapter(_context, factory, provides, for_=None, permission=None, name=''):
         Action(
             discriminator = None,
             callable = handler,
-            args = ('Interfaces', 'provideInterface',
-                    for_.__module__+'.'+for_.__name__, for_)
+            args = ('Interfaces', 'provideInterface', '', for_)
               )
          )
         

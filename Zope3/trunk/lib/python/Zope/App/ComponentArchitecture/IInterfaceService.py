@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IInterfaceService.py,v 1.3 2002/12/04 09:54:04 jim Exp $
+$Id: IInterfaceService.py,v 1.4 2002/12/19 20:19:05 jim Exp $
 """
 
 from Interface import Interface
@@ -33,12 +33,22 @@ class IInterfaceService(Interface):
         The default is returned if the interface can't be found.
         """
 
-    def searchInterface(search_string):
-        """Return the interfaces that match the search string.
+    def searchInterface(search_string='', base=None):
+        """Return the interfaces that match the search criteria
+
+        If a search string is given, only interfaces that contain the
+        string in their documentation will be returned.
+
+        If base is given, only interfaces that equal or extend base
+        will be returned.
+        
         """
 
-    def searchInterfaceIds(search_string):
-        """Return the ids of the interfaces that match the search string.
+    def searchInterfaceIds(search_string='', base=None):
+        """Return the ids of the interfaces that match the search criteria.
+
+        See searchInterface
+
         """
 
 

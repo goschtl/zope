@@ -55,6 +55,8 @@
      component=
         'Zope.App.ComponentArchitecture.InterfaceService.interfaceService' />
 
+  <interface interface="Interface.Interface" />
+
   <include package="Zope.App.ComponentArchitecture.Browser" />
 
 </zopeConfigure>

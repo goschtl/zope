@@ -12,12 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: InterfaceService.py,v 1.2 2002/11/19 23:15:14 jim Exp $
+$Id: InterfaceService.py,v 1.3 2002/12/19 20:19:05 jim Exp $
 """
 from IGlobalInterfaceService import IGlobalInterfaceService
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
-import string
-
 
 class InterfaceService:
     __implements__ = IGlobalInterfaceService
@@ -39,41 +37,44 @@ class InterfaceService:
         else:
             return default
 
-    def searchInterface(self, search_string):
-        search_result = []
+    def searchInterfaceIds(self, search_string='', base=None):
+        result = []
 
-        for id in self.__data.keys():
+        data = self.__data
+        search_string = search_string.lower()
+
+        for id in data:
+            interface, doc = data[id]
+            
             if search_string:
-                if string.find(string.lower(self.__data[id][1]),
-                               string.lower(search_string)
-                               ) >= 0:
-                    search_result.append(self.__data[id][0])
-            else:
-                search_result.append(self.__data[id][0])
+                if doc.find(search_string) < 0:
+                    continue
 
-        return search_result
+            if base is not None and not interface.extends(base, 0):
+                continue
 
-    def searchInterfaceIds(self, search_string):
-        search_result = []
+            result.append(id)
 
-        for id in self.__data.keys():
-            if search_string:
-                if string.find(string.lower(self.__data[id][1]),
-                               string.lower(search_string)
-                               ) >= 0:
-                    search_result.append(id)
-            else:
-                search_result.append(id)
+        return result
 
-        return search_result
+    def searchInterface(self, search_string='', base=None):
+        data = self.__data
+        return [data[id][0]
+                for id in self.searchInterfaceIds(search_string, base)]
     
     def _getAllDocs(self,interface):
-        docs = str(interface.__name__)+'\n'+str(interface.__doc__)
-        for name in interface.names():
-            docs = docs + '\n' + str(interface.getDescriptionFor(name).__doc__)
-        return docs
+        docs = [str(interface.__name__).lower(),
+                str(interface.__doc__).lower()]
+
+        for name in interface:
+            docs.append(str(interface.getDescriptionFor(name).__doc__).lower())
+
+        return '\n'.join(docs)
     
     def provideInterface(self, id, interface):
+        if not id:
+            id = "%s.%s" % (interface.__module__, interface.__name__)
+            
         self.__data[id]=(interface, self._getAllDocs(interface))
     
     _clear = __init__ 
