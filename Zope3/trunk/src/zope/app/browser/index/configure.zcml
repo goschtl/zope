@@ -1,7 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
 
-  <browser:menuItem
+  <menuItem
     menu="add_component"
     for="zope.app.interfaces.container.IAdding"
     action="zope.app.index.subscribers.Registration"
@@ -9,11 +9,11 @@
     description="An event subscriber that registers content with the objecthub"
     />
 
-  <browser:defaultView
+  <defaultView
     for="zope.app.index.subscribers.ISubscriptionControl"
     name="control.html" />
 
-  <browser:page
+  <page
     for="zope.app.index.subscribers.ISubscriptionControl"
     permission="zope.ManageServices"
     name="control.html"

@@ -73,6 +73,7 @@
 <include package=".security" />
 <include package=".services" />
 <include package=".skins" />
+<include package=".index" />
 
 <!-- Introspection -->
 

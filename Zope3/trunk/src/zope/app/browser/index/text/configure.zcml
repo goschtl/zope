@@ -15,13 +15,15 @@
     for="zope.textindex.textindexinterfaces.IStatistics"
     name="control.html" />
 
-  <browser:page
+  <browser:view
     for="zope.textindex.textindexinterfaces.IStatistics"
-    name="index.html"
-    template="control.pt" 
     permission="zope.ManageServices"
     name="control.html"
-    class=".control.ControlView">
-    />
+    class=".control.ControlView"
+    >
+
+    <browser:page name="index.html" template="control.pt" />
+
+  </browser:view>
 
 </zopeConfigure>
