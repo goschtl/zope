@@ -1,14 +1,10 @@
-import os, sys
 
+import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing import ZopeTestCase
+from Products.Five.tests.fivetest import *
 
-ZopeTestCase.installProduct('Five')
-
-from zope.configuration import xmlconfig
 from zope.component import getView
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
@@ -17,16 +13,17 @@ from Products.Five.security import clearSecurityInfo, checkPermission
 from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
 
-class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
+
+class PageSecurityTest(CleanUp, FiveTestCase):
 
     def setUp(self):
-        super(PageSecurityTestCase, self).setUp()
+        super(PageSecurityTest, self).setUp()
         zcml.reset()
         zcml.load_site()
         self.dummy1 = Dummy1
 
     def tearDown(self):
-        super(PageSecurityTestCase, self).tearDown()
+        super(PageSecurityTest, self).tearDown()
         zcml.reset()
         clearSecurityInfo(self.dummy1)
 
@@ -59,10 +56,11 @@ class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
         self.failIf(foo_roles == ())
         self.assertEquals(foo_roles.__of__(view), ('Manager',))
 
-class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
+
+class SecurityEquivalenceTest(CleanUp, FiveTestCase):
 
     def setUp(self):
-        super(SecurityEquivalenceTestCase, self).setUp()
+        super(SecurityEquivalenceTest, self).setUp()
         zcml.reset()
         zcml.initialize()
         self.dummy1 = Dummy1
@@ -70,7 +68,7 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
 
     def tearDown(self):
         zcml.reset()
-        super(SecurityEquivalenceTestCase, self).tearDown()
+        super(SecurityEquivalenceTest, self).tearDown()
         clearSecurityInfo(self.dummy1)
         clearSecurityInfo(self.dummy2)
 
@@ -129,7 +127,8 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
         baz_roles2 = getattr(self.dummy2, 'baz__roles__')
         self.assertEquals(baz_roles2, ())
 
-class CheckPermissionTest(ZopeTestCase.ZopeTestCase):
+
+class CheckPermissionTest(FiveTestCase):
 
     def test_publicPermissionId(self):
         #import pdb;pdb.set_trace()
@@ -147,10 +146,11 @@ class CheckPermissionTest(ZopeTestCase.ZopeTestCase):
 
 
 def test_suite():
-    suite = unittest.TestSuite()
-    #suite.addTest(unittest.makeSuite(SecurityEquivalenceTestCase))
-    #suite.addTest(unittest.makeSuite(PageSecurityTestCase))
-    suite.addTest(unittest.makeSuite(CheckPermissionTest))
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    #suite.addTest(makeSuite(SecurityEquivalenceTest))
+    #suite.addTest(makeSuite(PageSecurityTest))
+    suite.addTest(makeSuite(CheckPermissionTest))
     return suite
 
 if __name__ == '__main__':
