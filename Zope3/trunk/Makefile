@@ -15,7 +15,7 @@ test_build: build
 	$(PYTHON) test.py -v $(TESTOPTS)
 
 test_inplace: inplace
-	$(PYTHON) test.py -vB $(TESTOPTS)
+	$(PYTHON) test.py -v $(TESTOPTS)
 
 # XXX What should the default be?
 test: test_inplace
