@@ -19,15 +19,6 @@
                    "zope.app.browser.interfaces.form.IFormCollaborationView"
       permission="zope.ManageServices" />
 
-  <editform
-      name="index.html"
-      schema=
-        "zope.app.interfaces.services.registration.INamedComponentRegistration"
-      menu="zmi_views"
-      label="Edit Registration"
-      permission="zope.ManageServices"
-      fields="name componentPath permission status" />
-
   <page
       name="index.html" 
       for="zope.app.interfaces.services.registration.INameComponentRegistry"

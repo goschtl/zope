@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.18 2004/03/06 20:06:34 jim Exp $
+$Id: registration.py,v 1.19 2004/03/06 22:07:25 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -139,24 +139,6 @@ class IComponentRegistration(IRegistration):
     def getComponent():
         """Return the component named in the registration.
         """
-
-
-class INamedComponentRegistration(IComponentRegistration):
-    """Components registered by name, using componemt path and permission."""
-
-    name = TextLine(
-        title=_("Name"),
-        description=_("The name that is registered"),
-        readonly=True,
-        # Don't allow empty or missing name:
-        required=True,
-        min_length=1,
-        )
-
-    # The label is generally set as a class attribute on the
-    # registration class.
-    label = Attribute("Descriptive label of the registration type "
-                      "(for example, Service, Connection)")
 
 
 class IRegistrationStack(Interface):

@@ -149,6 +149,15 @@
 
   <!-- ServiceRegistration -->
 
+  <editform
+      name="index.html"
+      schema=
+        "zope.app.interfaces.services.service.IServiceRegistration"
+      menu="zmi_views"
+      label="Edit Service Registration"
+      permission="zope.ManageServices"
+      fields="name componentPath permission status" />
+
   <page
       name="addRegistration.html"
       for="zope.app.interfaces.services.service.ILocalService"

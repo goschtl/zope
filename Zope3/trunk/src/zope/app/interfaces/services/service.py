@@ -13,13 +13,16 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.18 2004/03/03 17:21:28 stevea Exp $
+$Id: service.py,v 1.19 2004/03/06 22:07:25 jim Exp $
 """
 __metaclass__ = type
 
-from zope.interface import Interface
-from zope.component.interfaces import IServiceService
+import zope.schema
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.services import registration
+from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.component.interfaces import IServiceService
+from zope.interface import Interface
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -116,7 +119,8 @@ class ISiteManager(IServiceService, IComponentManager,
         its containing sites and its subsites.
         """
 
-class IServiceRegistration(registration.INamedComponentRegistration):
+
+class IServiceRegistration(IComponentRegistration):
     """Service Registration
 
     Service registrations are dependent on the components that they
@@ -125,3 +129,12 @@ class IServiceRegistration(registration.INamedComponentRegistration):
     The name of a service registration is used to determine the service
     type.
     """
+
+    name = zope.schema.TextLine(
+        title=_("Name"),
+        description=_("The name that is registered"),
+        readonly=True,
+        # Don't allow empty or missing name:
+        required=True,
+        min_length=1,
+        )

@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.40 2004/03/05 22:09:16 jim Exp $
+$Id: service.py,v 1.41 2004/03/06 22:07:25 jim Exp $
 """
 
 import sys
@@ -55,7 +55,7 @@ from zope.app.interfaces.services.service import IServiceRegistration
 from zope.app.interfaces.services.service import ISiteManager
 
 from zope.app.services.registration import NameComponentRegistry
-from zope.app.services.registration import NamedComponentRegistration
+from zope.app.services.registration import ComponentRegistration
 from zope.app.services.folder import SiteManagementFolder
 from zope.app.interfaces.services.service import ILocalService
 
@@ -266,25 +266,28 @@ class SiteManager(
 
 ServiceManager = SiteManager # Backward compat
 
-class ServiceRegistration(NamedComponentRegistration):
+class ServiceRegistration(ComponentRegistration):
+    """Registrations for named components.
 
-    __doc__ = IServiceRegistration.__doc__
+    This configures components that live in folders, by name.
+    """
+
+    serviceType = zapi.servicenames.Services
 
     zope.interface.implements(IServiceRegistration)
 
-    serviceType = 'Services'
-
-    label = "Service"
-
     def __init__(self, name, path, context=None):
-        super(ServiceRegistration, self).__init__(name, path)
+        ComponentRegistration.__init__(self, path, None)
+        self.name = name
+
         if context is not None:
             # Check that the object implements stuff we need
             self.__parent__ = context
             service = self.getComponent()
             if not ILocalService.providedBy(service):
-                raise TypeError("service %r doesn't implement ILocalService" %
-                                service)
+                raise TypeError(
+                    "service %r doesn't implement ILocalService" %
+                    service)
         # Else, this must be a hopeful test invocation
 
     def getInterface(self):
