@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - The browser:containerViews directive provides an optional layer
+        attribute.
+
       - Groups for unauthenticated users, authenticated users, and
         everybody can now be defined in ZCML.
 
@@ -323,6 +326,10 @@ Zope Changes
           not include the default layer.
 
     Bug Fixes
+
+      - Partially fixed issue #306 (Problem 2: Browser page and view directive
+        cannot register serveral pages views within different layers for
+        the same for, menu and title attributes.)
 
       - Fixed issue #353 (applySkin does not work in functional doctests).
 
