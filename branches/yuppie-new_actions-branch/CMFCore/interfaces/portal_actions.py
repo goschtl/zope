@@ -90,7 +90,7 @@ class ActionProvider(Interface):
         Raises an ValueError exception if the action is of the wrong format.
         
         Permission -- Private
-        
+
         Returns -- The actions object reference.
         """
 
@@ -117,6 +117,40 @@ class ActionProvider(Interface):
         Permission -- Always available
 
         Returns -- ActionInfo object
+        """
+
+
+class ActionCategory(Interface):
+    """ Group of Action objects.
+    """
+
+    def listActions():
+        """ List the actions defined in this category and its subcategories.
+
+        Permission -- Python only
+
+        Returns -- Tuple of Action objects.
+        """
+
+
+class Action(Interface):
+    """ Reference to an action.
+    """
+
+    def getInfoData():
+        """ Get the data needed to create an ActionInfo.
+
+        Default keys are: 'id', 'category', 'title', 'description', 'url',
+        'icon', 'available', 'permissions' and 'visible'.
+
+        Instead of computed values callable expression objects or methods are
+        returned. For performance reasons, these objects are called later and
+        only if the values are actually needed. The keys for all these lazy
+        values are registered in a separate list.
+
+        Permission -- Python only
+
+        Returns -- Lazy info mapping and list of lazy keys.
         """
 
 
