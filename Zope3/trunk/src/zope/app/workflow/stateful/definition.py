@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.8 2003/11/04 04:04:24 jeremy Exp $
+$Id: definition.py,v 1.9 2003/12/15 13:33:17 srichter Exp $
 """
 __metaclass__ = type
 
@@ -205,6 +205,11 @@ class StatefulProcessDefinition(ProcessDefinition):
         # XXX
         # Process instances need to have a place, so they can look things
         # up.  It's not clear to me (Jim) what place they should have.
+
+        # XXX: The parent of the process instance should be the object it is
+        # created for!!! This will cause all sorts of head-aches, but at this
+        # stage we do not have the object around; it would need some API
+        # changes to do that for which I do not have time right now. (SR)
         pi_obj.__parent__ = self
 
 

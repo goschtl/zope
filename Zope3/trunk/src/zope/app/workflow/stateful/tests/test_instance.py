@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.9 2003/09/21 17:34:02 jim Exp $
+$Id: test_instance.py,v 1.10 2003/12/15 13:33:17 srichter Exp $
 """
 
 import unittest
@@ -390,10 +390,14 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
                       k).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
-        # give the pi some context to find a service
+        # give the process instance container (pic) some context to find a
+        # service (while this is not correct, it resembles the current
+        # behavior.
+        from zope.app.workflow.instance import ProcessInstanceContainerAdapter
+        pic = ProcessInstanceContainerAdapter(self.rootFolder)
         self.pi = contained(
             self.service.createProcessInstance('definition1'),
-            self.rootFolder)
+            pic)
 
     def testPermissionedTranstitions(self):
         pi = self.pi

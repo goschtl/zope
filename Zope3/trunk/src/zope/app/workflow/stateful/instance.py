@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.14 2003/12/15 04:31:36 srichter Exp $
+$Id: instance.py,v 1.15 2003/12/15 13:33:17 srichter Exp $
 """
 __metaclass__ = type
 
@@ -216,7 +216,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService."""
-        svc =  getService(zapi.getParent(self).context, "Workflows")
+        svc =  getService(self, "Workflows")
         return svc.getProcessDefinition(self.processDefinitionName)
 
     # XXX this is not entirely tested

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.8 2003/09/21 17:33:53 jim Exp $
+$Id: instance.py,v 1.9 2003/12/15 13:33:17 srichter Exp $
 """
 __metaclass__ = type
 
@@ -67,6 +67,10 @@ class ProcessInstanceContainerAdapter:
 
     def __init__(self, context):
         self.context = context
+        # XXX: Band-aid, so that the process instance can have a valid
+        # path. Eventually the pi should have context as parent directly. 
+        self.__parent__ = context
+        self.__name__ = "processInstances"
         annotations = getAdapter(context, IAnnotations)
         wfdata = annotations.get(WFKey)
         if not wfdata:
