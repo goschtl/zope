@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.20 2003/04/14 21:13:01 fdrake Exp $
+$Id: editview.py,v 1.21 2003/04/16 16:23:12 fdrake Exp $
 """
 
 from datetime import datetime
@@ -197,11 +197,10 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
         for_ = resolveInterface(_context, for_)
 
     if class_ is None:
-        bases = (view, )
+        bases = view,
     else:
         # XXX What about class_.__implements__ ?
-        bases = (_context.resolve(class_), view)
-
+        bases = _context.resolve(class_), view
 
     if template is not None:
         template = _context.path(template)
