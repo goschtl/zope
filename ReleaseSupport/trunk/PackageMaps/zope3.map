@@ -36,7 +36,7 @@ zope.thread           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/thread
 zope.xmlpickle        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/xmlpickle
 
 zope.app.xmlrpc            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/xmlrpc
-zope.app.translation_files svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/translation
+zope.app.translation_files svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/translation_file
 zope.app.tree              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/tree
 zope.app.dtmlpage          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/dtmlpage
 zope.app.debugskin         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/debugskin
