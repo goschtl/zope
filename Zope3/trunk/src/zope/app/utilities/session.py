@@ -20,12 +20,11 @@ work.
 # System imports
 import sha, time, string, random, hmac, logging
 from UserDict import IterableUserDict
+from heapq import heapify, heappop
 
 # Zope3 imports
 from persistence import Persistent
-from persistence.dict import PersistentDict
 from zope.server.http.http_date import build_http_date
-from zope.component import getService
 from zope.interface import implements
 from zope.app import zapi
 from zodb.btrees.OOBTree import OOBTree
@@ -63,7 +62,7 @@ class CookieBrowserIdManager(Persistent):
     def __init__(self):
         self.namespace = "zope3_cs_%x" % (int(time.time()) - 1000000000)
         self.secret = "%.20f" % random.random()
-        self.cookieLifeSeconds = 3600
+        self.cookieLifetime = None
 
     def generateUniqueId(self):
         """Generate a new, random, unique id."""
@@ -106,27 +105,24 @@ class CookieBrowserIdManager(Persistent):
         #     Seeing as this service instance has a unique namespace for its
         #     cookie, using ApplicationURL shouldn't be a problem.
 
-        # XXX: Fix this as per documentation in ICookieBrowserIdManager
-        if self.cookieLifeSeconds == 0 or self.cookieLifeSeconds is None:
-            raise NotImplementedError, \
-                    'Need to implement advanced cookie lifetime'
-
-        if self.cookieLifeSeconds:
-            expires = build_http_date(time.time() + self.cookieLifeSeconds)
+        if self.cookieLifetime is not None:
+            if self.cookieLifetime:
+                expires = build_http_date(time.time() + self.cookieLifetime)
+            else:
+                expires = 'Tue, 19 Jan 2038 00:00:00 GMT'
+            request.response.setCookie(
+                    self.namespace, id, expires=expires,
+                    path=request.getApplicationURL(path_only=True)
+                    )
         else:
-            expires = None
-        request.response.setCookie(
-                self.namespace,
-                id,
-                expires=expires,
-                path=request.getApplicationURL(path_only=True)
-                )
+            request.response.setCookie(
+                    self.namespace, id,
+                    path=request.getApplicationURL(path_only=True)
+                    )
 
-
-    #######################################
-    # Implementation of IBrowserIdManager #
 
     def getBrowserId(self, request):
+        ''' See zope.app.interfaces.utilities.session.IBrowserIdManager '''
         sid = self.getRequestId(request)
         if sid is None:
             sid = self.generateUniqueId()
@@ -139,27 +135,52 @@ class PersistentSessionDataContainer(Persistent, IterableUserDict):
     __parent__ = __name__ = None
     implements(
             ISessionDataContainer, IContained,
-            ILocalUtility, IAttributeAnnotatable
+            ILocalUtility, IAttributeAnnotatable,
             )
 
     def __init__(self):
         self.data = OOBTree()
+        self.sweepInterval = 5*60
+
+    def __getitem__(self, key):
+        rv = IterableUserDict.__getitem__(self, key)
+        now = time.time()
+        # Only update lastAccessTime once every few minutes, rather than
+        # every hit, to avoid ZODB bloat since this is being stored 
+        # persistently
+        if rv.lastAccessTime + self.sweepInterval < now:
+            rv.lastAccessTime = now
+            # XXX: When scheduler exists, this method should just schedule
+            # a sweep later since we are currently busy handling a request
+            # and may end up doing simultaneous sweeps
+            self.sweep()
+        return rv
+
+    def sweep(self):
+        ''' Clean out stale data '''
+        expire_time = time.time() - self.sweepInterval
+        heap = [(v.lastAccessTime, k) for k,v in self.data.items()]
+        heapify(heap)
+        while heap:
+            lastAccessTime, key = heappop(heap)
+            if lastAccessTime < expire_time:
+                del self.data[key]
+            else:
+                return
+
 
 class SessionData(Persistent, IterableUserDict):
     ''' Mapping nodes in the ISessionDataContainer tree '''
     implements(IFullMapping)
+
     def __init__(self):
         self.data = OOBTree()
-    def __setitem__(self, key, value):
-        self.data[key] = value
-        self.data._p_changed = 1
-    def __delitem__(self, key):
-        del self.data[key]
-        self.data._p_changed = 1
+        self.lastAccessTime = time.time()
 
 class Session(IterableUserDict):
     implements(ISession)
     def __init__(self, data_manager, browser_id, product_id):
+        ''' See zope.app.interfaces.utilities.session.ISession '''
         browser_id = str(browser_id)
         product_id = str(product_id)
         try:

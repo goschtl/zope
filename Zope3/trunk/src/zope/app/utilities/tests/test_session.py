@@ -13,10 +13,10 @@
 #
 ##############################################################################
 '''
-$Id: test_session.py,v 1.2 2004/02/09 05:16:33 Zen Exp $
+$Id: test_session.py,v 1.3 2004/02/10 15:16:23 Zen Exp $
 '''
 
-import unittest, doctest
+import unittest, doctest, time, rfc822
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests import setup
@@ -30,7 +30,7 @@ from zope.app.interfaces.utilities.session import \
         IBrowserId, IBrowserIdManager, ISession, ISessionDataContainer
 
 from zope.app.utilities.session import \
-        CookieBrowserIdManager, Session, getSession, \
+        CookieBrowserIdManager, Session, SessionData, getSession, \
         PersistentSessionDataContainer
 
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -41,9 +41,9 @@ def test_CookieBrowserIdManager():
     CookieBrowserIdManager.generateUniqueId should generate a unique
     IBrowserId each time it is called
 
-    >>> csu = CookieBrowserIdManager()
-    >>> id1 = csu.generateUniqueId()
-    >>> id2 = csu.generateUniqueId()
+    >>> bim = CookieBrowserIdManager()
+    >>> id1 = bim.generateUniqueId()
+    >>> id2 = bim.generateUniqueId()
     >>> id1 != id2
     True
     >>> IBrowserId.isImplementedBy(id1)
@@ -57,13 +57,13 @@ def test_CookieBrowserIdManager():
     returning None if we have a corrupt or forged browser id.
     
     >>> request = HTTPRequest(None, None, {}, None)
-    >>> csu.getRequestId(request) is None
+    >>> bim.getRequestId(request) is None
     True
-    >>> csu.setRequestId(request, id1)
-    >>> csu.getRequestId(request) == id1
+    >>> bim.setRequestId(request, id1)
+    >>> bim.getRequestId(request) == id1
     True
-    >>> csu.setRequestId(request, 'invalid_id')
-    >>> csu.getRequestId(request) is None
+    >>> bim.setRequestId(request, 'invalid_id')
+    >>> bim.getRequestId(request) is None
     True
 
     Make sure that the same browser id is extracted from a cookie in
@@ -72,15 +72,15 @@ def test_CookieBrowserIdManager():
 
     >>> request2 = HTTPRequest(None, None, {}, None)
     >>> request2._cookies = request.response._cookies
-    >>> csu.getRequestId(request) == csu.getRequestId(request2)
+    >>> bim.getRequestId(request) == bim.getRequestId(request2)
     True
 
     CookieBrowserIdManager.getBrowserId pulls the IBrowserId from an
     IHTTPRequest, or generates a new one and returns it after storing
     it in the request.
 
-    >>> id3 = csu.getBrowserId(request)
-    >>> id4 = csu.getBrowserId(request)
+    >>> id3 = bim.getBrowserId(request)
+    >>> id4 = bim.getBrowserId(request)
     >>> str(id3) == str(id4)
     True
     >>> id3 == id4
@@ -90,17 +90,38 @@ def test_CookieBrowserIdManager():
     for here will eventually change - it should be the URL to the
     site containing the CookieBrowserIdManager
 
-    >>> cookie = request.response.getCookie(csu.namespace)
+    >>> cookie = request.response.getCookie(bim.namespace)
     >>> cookie['path'] == request.getApplicationURL(path_only=True)
     True
 
-    XXX: Confirm the expiry time of the cookie is correct.
-    XXX: >>> expires = strptime(cookie['expires'])
+    Confirm the expiry time of the cookie is correct.
+    Default is no expires.
 
+    >>> cookie.has_key('expires')
+    False
+
+    Expiry time of 0 means never (well - close enough)
+
+    >>> bim.cookieLifetime = 0
+    >>> request = HTTPRequest(None, None, {}, None)
+    >>> bid = bim.getBrowserId(request)
+    >>> cookie = request.response.getCookie(bim.namespace)
+    >>> cookie['expires']
+    'Tue, 19 Jan 2038 00:00:00 GMT'
+
+    >>> bim.cookieLifetime = 3600
+    >>> request = HTTPRequest(None, None, {}, None)
+    >>> bid = bim.getBrowserId(request)
+    >>> cookie = request.response.getCookie(bim.namespace)
+    >>> expires = time.mktime(rfc822.parsedate(cookie['expires']))
+    >>> expires > time.mktime(time.gmtime()) + 55*60
+    True
     """
 
 def test_PersistentSessionIdContainer():
     """
+    Ensure mapping interface is working as expected
+
     >>> sdc = PersistentSessionDataContainer()
     >>> sdc['a']
     Traceback (most recent call last):
@@ -108,9 +129,8 @@ def test_PersistentSessionIdContainer():
     File "/usr/python-2.3.3/lib/python2.3/UserDict.py", line 19, in __getitem__
         def __getitem__(self, key): return self.data[key]
     KeyError: 'a'
-    >>> from zodb.btrees.OOBTree import OOBTree
-    >>> sdc['a'] = OOBTree()
-    >>> pdict = OOBTree()
+    >>> sdc['a'] = SessionData()
+    >>> pdict = SessionData()
     >>> sdc['a'] = pdict
     >>> id(pdict) == id(sdc['a'])
     True
@@ -127,6 +147,17 @@ def test_PersistentSessionIdContainer():
     File "/usr/python-2.3.3/lib/python2.3/UserDict.py", line 21, in __delitem__
         def __delitem__(self, key): del self.data[key]
     KeyError: 'a'
+
+    Make sure stale data is removed
+
+    >>> sdc.sweepInterval = 60
+    >>> sdc[1], sdc[2] = sd1, sd2 = SessionData(), SessionData()
+    >>> ignore = sdc[1], sdc[2]
+    >>> sd1.lastAccessTime = sd1.lastAccessTime - 62
+    >>> sd2.lastAccessTime = sd2.lastAccessTime - 62
+    >>> ignore = sdc[1]
+    >>> sdc.get(2, 'stale')
+    'stale'
     """
 
 def test_Session():

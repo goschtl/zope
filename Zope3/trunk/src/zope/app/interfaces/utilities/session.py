@@ -16,10 +16,8 @@
 import re
 from zope.interface import Interface
 from zope import schema
-from zope.i18n import MessageIDFactory
 from zope.app.interfaces.container import IContainer
-
-_ = MessageIDFactory("zope")
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 # XXX: These mapping interfaces should probably live somewhere like 
 # zope.interface.common.mapping, but there are already similar but less
@@ -89,12 +87,12 @@ class ICookieBrowserIdManager(IBrowserIdManager):
             constraint=re.compile("^[\d\w_]+$").search,
             )
 
-    cookieLifeSeconds = schema.Int(
+    cookieLifetime = schema.Int(
             title=_('Cookie Lifetime'),
             description=_(
                 "Number of seconds until the browser expires the cookie. "
-                "Leave blank to never expire the cookie. Set to 0 to expire "
-                "the cookie when the browser is quit."
+                "Leave blank expire the cookie when the browser is quit. "
+                "Set to 0 to never expire. "
                 ),
             min=0,
             required=False,
@@ -119,8 +117,20 @@ class ISessionDataContainer(IReadMapping, IWriteMapping):
     '''
     timeout = schema.Int(
             title=_(u"Timeout"),
-            description=_("Number of seconds before inactive data is removed"),
+            description=_(
+                "Number of seconds before data becomes stale and may "
+                "be removed"),
             default=3600,
+            required=True,
+            min=1,
+            )
+    sweepInterval = schema.Int(
+            title=_(u"Purge Interval"),
+            description=_(
+                "How often stale data is purged in seconds. "
+                "Higer values improve performance."
+                ),
+            default=5*60,
             required=True,
             min=1,
             )
