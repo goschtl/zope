@@ -320,7 +320,9 @@ def find_entries(repo=None, all=None):
 
 def do_mail(name, remote, repo, addrs, subjs,
             msgfilenm="", doing_directory=0, no_files=0):
-    """Send notice about checkin to addresses dictated by traffic table."""
+    """Send notice about checkin to addresses dictated by traffic table.
+
+    We include a diff."""
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
@@ -409,7 +411,7 @@ def create_diff(name, repo, file, old, new):
                      str(e), '\n***** file: ', file, ' cwd: ', os.getcwd()]
 
     else:                # A "normal" update happened
-        diff_cmd = 'cvs -f diff -kk -C 5 -r %s -r %s %s' % (old, new, file)
+        diff_cmd = 'cvs -f diff -kk -u -r %s -r %s %s' % (old, new, file)
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
