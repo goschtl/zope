@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.26 2004/03/08 23:35:32 srichter Exp $
+$Id: engine.py,v 1.27 2004/04/06 20:58:13 jim Exp $
 """
 import sys
 from types import StringTypes
@@ -132,16 +132,18 @@ class ZopeEngine(ExpressionEngine):
 
         return context
 
-def _Engine():
-    e = ZopeEngine()
+def _Engine(engine=None):
+    if engine is None:
+        engine = ZopeEngine()
+        
     for pt in ZopePathExpr._default_type_names:
-        e.registerType(pt, ZopePathExpr)
-    e.registerType('string', StringExpr)
-    e.registerType('python', ZopePythonExpr)
-    e.registerType('not', NotExpr)
-    e.registerType('defer', DeferExpr)
-    e.registerBaseName('modules', ProxyFactory(sys.modules))
-    return e
+        engine.registerType(pt, ZopePathExpr)
+    engine.registerType('string', StringExpr)
+    engine.registerType('python', ZopePythonExpr)
+    engine.registerType('not', NotExpr)
+    engine.registerType('defer', DeferExpr)
+    engine.registerBaseName('modules', ProxyFactory(sys.modules))
+    return engine
 
 Engine = _Engine()
 
