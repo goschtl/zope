@@ -13,11 +13,11 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.22 2004/02/20 16:57:30 fdrake Exp $
+$Id: module.py,v 1.23 2004/02/20 22:02:24 fdrake Exp $
 """
 
 from persistent import Persistent
-from zodb.code.module import PersistentModule, compileModule
+from zodbcode.module import PersistentModule, compileModule
 from zope.app.event import function
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.file import IFileFactory
@@ -121,7 +121,7 @@ class ModuleFactory(object):
 # This installs an import hook necessary to support persistent modules.
 
 def installPersistentModuleImporter(event):
-    from zodb.code.module import PersistentModuleImporter
+    from zodbcode.module import PersistentModuleImporter
     PersistentModuleImporter().install()
 
 installPersistentModuleImporter = function.Subscriber(

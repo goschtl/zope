@@ -13,14 +13,14 @@
 ##############################################################################
 """Interface Service Tests
 
-$Id: test_interface.py,v 1.10 2004/02/20 16:57:32 fdrake Exp $
+$Id: test_interface.py,v 1.11 2004/02/20 22:02:25 fdrake Exp $
 """
 import unittest
 
 from transaction import get_transaction
 
 from ZODB.tests.util import DB
-from zodb.code.module import ManagedRegistry
+from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface
 from zope.app.services.interface import PersistentInterface

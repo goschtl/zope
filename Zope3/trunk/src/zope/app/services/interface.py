@@ -16,12 +16,12 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.19 2004/02/20 16:57:30 fdrake Exp $
+$Id: interface.py,v 1.20 2004/02/20 22:02:24 fdrake Exp $
 """
 
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zodb.code.patch import registerWrapper, Wrapper
+from zodbcode.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
 from zope.interface import Interface, providedBy

@@ -23,13 +23,13 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.36 2004/01/13 19:32:23 fdrake Exp $
+$Id: service.py,v 1.37 2004/02/20 22:02:24 fdrake Exp $
 """
 
 import sys
 
 from transaction import get_transaction
-from zodb.code.module import PersistentModuleRegistry
+from zodbcode.module import PersistentModuleRegistry
 
 import zope.interface
 
