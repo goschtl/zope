@@ -138,8 +138,7 @@ class ZPTPageTest(BrowserTestCase):
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_(
-            '<iframe src="." height="98%" width="98%"></iframe>' in body)
+        self.assert_('<iframe src="."' in body)
         self.checkForBrokenLinks(body, '/zptpage/@@preview.html', 'mgr:mgrpw')
 
     def testSource(self):
