@@ -22,18 +22,23 @@ __docformat__ = 'restructuredtext'
 
 import os
 from persistent import Persistent
+
+from zope.exceptions import NotFoundError
+from zope.interface import implements
+
 from zope.app.container.contained import Contained
 from zope.app.location import locate
 from zope.app.pluggableauth import SimplePrincipal
+from zope.app.pluggableauth.interfaces import IContainedPrincipalSource
 from zope.app.pluggableauth.interfaces import ILoginPasswordPrincipalSource
-from zope.exceptions import NotFoundError
-from zope.interface import implements
+
 from interfaces import IFileBasedPrincipalSource
 
 class PasswdPrincipalSource(Contained, Persistent):
     """A Principal Source for /etc/passwd-like files."""
 
-    implements(ILoginPasswordPrincipalSource, IFileBasedPrincipalSource)
+    implements(ILoginPasswordPrincipalSource, IFileBasedPrincipalSource,
+               IContainedPrincipalSource)
 
     def __init__(self, filename=''):
         self.filename = filename

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003, 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.schema import TextLine
+from zope.schema import TextLine, Field
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from zope.app.pluggableauth.interfaces import IPrincipalSource

@@ -16,11 +16,14 @@
 $Id$
 """
 import os
-from zope.app.demo import passwdauth
-from zope.exceptions import NotFoundError
-from unittest import TestCase, main, makeSuite
+import unittest
 
-class PasswdPrincipalSourceTest(TestCase):
+from zope.exceptions import NotFoundError
+
+from book import passwdauth
+
+
+class PasswdPrincipalSourceTest(unittest.TestCase):
 
     def setUp(self):
         dir = os.path.dirname(passwdauth.__file__)
@@ -40,11 +43,10 @@ class PasswdPrincipalSourceTest(TestCase):
     def test_authenticate(self):
         self.assertEqual(self.source.authenticate('foo1', 'bar1')._id, 'foo1')
         self.assertEqual(self.source.authenticate('foo1', 'bar'), None)
-        self.assertEqual(self.source.authenticate('foo', 'bar'), None)
+        self.assertEqual(self.source.authenticate('foo', 'bar1'), None)
     
 def test_suite():
-    return makeSuite(PasswdPrincipalSourceTest)
+    return unittest.makeSuite(PasswdPrincipalSourceTest)
     
 if __name__=='__main__':
-    main(defaultTest='test_suite')
-    
+    unittest.main(defaultTest='test_suite')

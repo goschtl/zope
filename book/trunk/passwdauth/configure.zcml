@@ -6,27 +6,36 @@
 <content class=".PasswdPrincipalSource">
   <factory
       id="zope.app.principalsources.PasswdPrincipalSource"
-      permission="zope.ManageServices"/>
-  <allow interface=".interfaces.IFileBasedPrincipalSource"/>
+      />
+  <allow interface=".interfaces.IFileBasedPrincipalSource"
+      />
   <require
       permission="zope.ManageContent"
-      set_schema=".interfaces.IFileBasedPrincipalSource"/>
+      set_schema=".interfaces.IFileBasedPrincipalSource"
+      />
 </content>
 
 <browser:addform
     schema=".interfaces.IFileBasedPrincipalSource" 
     label="Add file-based Principal Source in /etc/passwd style" 
+    name="AddPasswdPrincipalSourceForm.html" 
     content_factory=".PasswdPrincipalSource" 
     arguments="filename" 
-    name="AddPasswdPrincipalSourceForm" 
-    menu="add_principal_source" title="/etc/passwd Principal Source" 
-    permission="zope.ManageContent" /> 
+    permission="zope.ManageContent" 
+    />
+
+<browser:addMenuItem
+    title="/etc/passwd Principal Source" 
+    class=".PasswdPrincipalSource"
+    view="AddPasswdPrincipalSourceForm.html"	
+    permission="zope.ManageServices"
+    />
 
 <browser:editform 
     schema=".interfaces.IFileBasedPrincipalSource" 
     label="Edit file-based Principal Source" 
     name="edit.html"        
     menu="zmi_views" title="Edit" 
-    permission="zope.ManageContent" /> 
-
+    permission="zope.ManageContent" 
+    />
 </configure>
