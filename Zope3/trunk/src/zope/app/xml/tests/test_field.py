@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.1 2003/04/09 09:31:53 faassen Exp $
+$Id: test_field.py,v 1.2 2003/04/10 09:05:14 faassen Exp $
 """
 import unittest
 from zope.app.xml.field import XML, NotWellFormedXML
@@ -42,7 +42,15 @@ class XMLFieldTestCase(FieldTestBase):
                     readonly=False, required=True)
         self.assertRaisesErrorNames(errornames.RequiredMissing,
                                     field.validate, None)
-    
+
+    def testTurnOffWellformedness(self):
+        field = XML(title=u"XML field")
+        field.check_wellformedness = False
+        field.validate('bad')
+        field.check_wellformedness = True
+        self.assertRaisesErrorNames(NotWellFormedXML, field.validate, 'bad')
+        
+        
 def test_suite():
     return unittest.TestSuite([
         unittest.makeSuite(XMLFieldTestCase)

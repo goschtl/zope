@@ -14,12 +14,18 @@
 """
 
 Revision information:
-$Id: field.py,v 1.2 2003/04/09 09:46:47 faassen Exp $
+$Id: field.py,v 1.3 2003/04/10 09:05:12 faassen Exp $
 """
 from zope.schema.interfaces import IBytes
+from zope.schema import Bool
 
 class IXML(IBytes):
     u"""A field that can store XML text.
     """
+
+    check_wellformedness = Bool(
+        title=u"Check for wellformedness",
+        default=True)
+    
     
 
