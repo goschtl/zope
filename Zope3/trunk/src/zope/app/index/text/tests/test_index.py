@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.12 2003/06/07 06:37:27 stevea Exp $
+$Id: test_index.py,v 1.13 2003/09/21 17:32:19 jim Exp $
 """
 
 import unittest
@@ -49,9 +49,9 @@ class Test(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
         self.index = TextIndex()
-        self.rootFolder.setObject('myIndex', self.index)
-        self.object = FakeSearchableObject()
-        self.rootFolder.setObject('bruce', self.object)
+        self.rootFolder['myIndex'] = self.index
+        self.rootFolder['bruce'] = FakeSearchableObject()
+        self.object = self.rootFolder['bruce']
 
     def assertPresent(self, word, docid):
         results, total = self.index.query(word)
@@ -96,13 +96,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         hub.subscribe(index, IRegistrationHubEvent)
         hub.subscribe(index, IObjectModifiedHubEvent)
         location = "/bruce"
-        self.rootFolder.setObject(location, self.object)
 
         hubid = hub.register(location)
         self.assertPresent(Bruce, hubid)
 
         self.object.texts = [Sheila]
-        event = ObjectModifiedEvent(self.object, location)
+        event = ObjectModifiedEvent(self.object)
         hub.notify(event)
         self.assertPresent(Sheila, hubid)
         self.assertAbsent(Bruce)
@@ -132,7 +131,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertPresent(Bruce, hubid)
 
         self.object.texts = [Sheila]
-        event = ObjectModifiedEvent(self.object, location)
+        event = ObjectModifiedEvent(self.object)
         hub.notify(event)
         self.assertPresent(Bruce, hubid)
         self.assertAbsent(Sheila)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.3 2003/06/23 16:44:38 mgedmin Exp $
+$Id: test_index.py,v 1.4 2003/09/21 17:32:19 jim Exp $
 """
 
 import unittest
@@ -64,9 +64,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         provideAdapter(None, ISomeInterface, SomeAdapter)
         self.buildFolders()
         self.index = FieldIndex('zope3')
-        self.rootFolder.setObject('myIndex', self.index)
-        self.object = FakeSearchableObject()
-        self.rootFolder.setObject('bruce', self.object)
+        self.rootFolder['myIndex'] = self.index
+        self.rootFolder['bruce'] = FakeSearchableObject()
+        self.object = self.rootFolder['bruce']
 
     def assertPresent(self, value, docid):
         result = self.index.search(value)
@@ -108,12 +108,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         hub.subscribe(index, IRegistrationHubEvent)
         hub.subscribe(index, IObjectModifiedHubEvent)
         location = "/bruce"
-        self.rootFolder.setObject(location, self.object)
         hubid = hub.register(location)
         self.assertPresent(Bruce, hubid)
 
         self.object.zope3 = 38
-        event = ObjectModifiedEvent(self.object, location)
+        event = ObjectModifiedEvent(self.object)
         hub.notify(event)
         self.assertPresent(38, hubid)
         self.assertAbsent(Sheila)
@@ -132,8 +131,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(index.isSubscribed(), False)
         self.assertAbsent(Bruce)
         self.assertAbsent(Sheila)
-        location = '/bruce'
         hub = getService(self.rootFolder, HubIds)
+        location = '/bruce'
         hubid = hub.register(location)
         index.subscribe(hub)
         self.assertEqual(index.isSubscribed(), True)
@@ -144,7 +143,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertPresent(Bruce, hubid)
 
         self.object.zope3 = [Sheila]
-        event = ObjectModifiedEvent(self.object, location)
+        event = ObjectModifiedEvent(self.object)
         hub.notify(event)
         self.assertPresent(Bruce, hubid)
         self.assertAbsent(Sheila)
