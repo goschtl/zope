@@ -16,7 +16,7 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.4 2003/09/21 17:33:17 jim Exp $
+$Id: test_modulelookup.py,v 1.5 2004/01/13 14:27:56 fdrake Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
@@ -43,6 +43,7 @@ class MyFolder(RegistrationManagerContainer, dict, Contained):
 
 def test_findMoule():
     """
+    Tests for RegistrationManagerContainer.findModule().
 
     >>> folder = MyFolder()
     >>> folder['m1.py'] = MyModuleManager(1)
