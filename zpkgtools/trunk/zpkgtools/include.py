@@ -273,12 +273,8 @@ class InclusionProcessor:
     def __init__(self, loader):
         """Initialize the processor.
 
-        :Parameters:
-          - `source`: Source directory for the primary resource being
-            included.
-
-          - `loader`: Resource loader which should be used to load
-            external resources.
+        :param loader: Resource loader which should be used to load
+          external resources.
 
         """
         self.manifests = []
