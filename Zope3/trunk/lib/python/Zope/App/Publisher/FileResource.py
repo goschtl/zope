@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.1 2002/06/13 23:15:43 jim Exp $
+$Id: FileResource.py,v 1.2 2002/12/02 10:03:18 ryzaja Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -21,7 +21,6 @@ __metaclass__ = type # All classes are new style when run with Python 2.2+
 from Zope.Misc.content_types import guess_content_type
 from Zope.Misc.package_home import package_home
 from Zope.Misc.standard_dates import rfc1123_date
-from Zope.Misc.DateTimeParse import time as timeFromDateTimeString
 from Zope.Exceptions import NotFoundError
 from time import time
 from os import stat
