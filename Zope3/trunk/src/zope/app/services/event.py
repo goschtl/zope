@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.28 2003/06/16 20:32:53 stevea Exp $
+$Id: event.py,v 1.29 2003/06/16 20:35:47 stevea Exp $
 """
 
 from __future__ import generators
@@ -212,6 +212,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
             clean_self._v_ssecunbinding = True
             while hubIds:
                 hubId = iter(hubIds).next()
+                # XXX This code path needs a unit test!
                 unsubscribeAll(hubId, local_only=True)
 
             paths = clean_self._paths
