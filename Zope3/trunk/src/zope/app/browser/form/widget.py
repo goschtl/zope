@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.19 2003/02/24 14:50:44 stevea Exp $
+$Id: widget.py,v 1.20 2003/02/28 14:24:41 stevea Exp $
 """
 
 __metaclass__ = type
@@ -317,8 +317,7 @@ class FloatWidget(TextWidget):
 
 class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     """Textarea widget."""
-    propertyNames = BrowserWidget.propertyNames +\
-                     ['width', 'height', 'extra']
+    propertyNames = BrowserWidget.propertyNames + ['width', 'height', 'extra']
 
     default = ""
     width = 60
