@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.7 2002/10/02 21:35:47 jeremy Exp $
+$Id: Adding.py,v 1.8 2002/10/04 19:48:30 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -25,6 +25,9 @@ from Zope.ComponentArchitecture \
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod, getbaseobject
 from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.Event import publishEvent
+from Zope.Event.ObjectEvent \
+     import ObjectCreatedEvent, ObjectModifiedEvent, ObjectAddedEvent
 
 class Adding(BrowserView):
 
@@ -40,7 +43,10 @@ class Adding(BrowserView):
         'See Zope.App.OFS.Container.IAdding.IAdding'
         content = removeAllProxies(content) # XXX We need to think about this
         name = self.context.setObject(self.contentName, content)
-        return ContextWrapper(self.context[name], self.context, name=name)
+        content = ContextWrapper(self.context[name], self.context, name=name)
+        publishEvent(self.context, ObjectAddedEvent(content))
+        publishEvent(self.context, ObjectModifiedEvent(self.context))
+        return content
     
     # See Zope.App.OFS.Container.Views.Browser.IAdding.IAdding
     contentName=None # usually set by Adding traverser
@@ -109,6 +115,8 @@ class Adding(BrowserView):
         self.contentName = id
         
         content = createObject(self, type_name)
+        publishEvent(self.context, ObjectCreatedEvent(content))
+        
         self.add(content)
         self.request.response.redirect(self.nextURL())
 

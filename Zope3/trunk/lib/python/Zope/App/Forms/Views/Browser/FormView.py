@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.12 2002/09/07 16:18:48 jim Exp $
+$Id: FormView.py,v 1.13 2002/10/04 19:48:30 jim Exp $
 """
 from Zope.Schema.IField import IField
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
@@ -23,6 +23,9 @@ from Zope.Schema import getFields, validateMappingAll
 from Zope.ComponentArchitecture import getView
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.Event.ObjectEvent import ObjectModifiedEvent
+from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.Event import publishEvent
 
 from IForm import IForm
 
@@ -93,6 +96,8 @@ class FormView(BrowserView):
             print e[0]
             return self.form(self, errors=e)
         else:
+            publishEvent(self.context, ObjectModifiedEvent(self.context))
+            
             # XXX This should do a redirect by looking up the object in
             # the view registry
             return self.form(self)
