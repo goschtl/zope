@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.schema
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -41,8 +43,8 @@ class IRenderDTMLPage(Interface):
     def render(request, *args, **kw):
         """Render the page template.
 
-        The first argument is bound to the top-level 'request'
-        variable. The positional arguments are bound to the 'args'
-        variable and the keyword arguments are bound to the 'options'
+        The first argument is bound to the top-level `request`
+        variable. The positional arguments are bound to the `args`
+        variable and the keyword arguments are bound to the `kw`
         variable.
         """

@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
