@@ -16,8 +16,7 @@ import unittest
 from Interface.Verify import verifyClass
 from Interface.Implements import instancesOfObjectImplements
 
-import ZODB
-from ZODB.MappingStorage import MappingStorage
+from ZODB.MappingStorage import DB
 
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
@@ -57,7 +56,7 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         self.policy = setSecurityPolicy(
             SimpleSecurityPolicies.PermissiveSecurityPolicy()
             )
-        self.db = ZODB.DB(MappingStorage('foo'))
+        self.db = DB("foo")
 
         connection = self.db.open()
         root = connection.root()
