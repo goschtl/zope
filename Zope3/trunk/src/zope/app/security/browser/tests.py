@@ -22,6 +22,9 @@ from zope.app.tests import placelesssetup
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocFileSuite('authservicesearchview.txt',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown),
         doctest.DocFileSuite('principalterms.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),

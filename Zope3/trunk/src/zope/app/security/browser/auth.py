@@ -16,10 +16,48 @@
 $Id$
 """
 from zope.interface import implements
+from zope.i18n import translate
 from zope.app.publisher.interfaces.http import ILogin, ILogout
+from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.principalregistry import UnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+
+search_label = _('search-button', 'Search')
+
+class AuthServiceSearchView(object):
+    __used_for__ = IAuthenticationService
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def render(self, name):
+        html = []
+        html.append('<div class="row">')
+        html.append('<div class="label">')
+        html.append('Search String')
+        html.append('</div>')
+        html.append('<div class="field">')
+        html.append('<input type="text" name="%s" />' %(name+'.searchstring'))
+        html.append('</div>')
+        html.append('</div>')
+
+        html.append('<br /><input type="submit" name="%s" value="%s" />'
+                    % (name+'.search',
+                       translate(search_label, context=self.request)))
+
+        return '\n'.join(html)
+
+    def results(self, name):
+        if not (name+'.search' in self.request):
+            return None
+        searchstring = self.request[name+'.searchstring']
+        return [principal.id
+                for principal in self.context.getPrincipals(searchstring)]
+
 
 class HTTPAuthenticationLogin(object):
     implements(ILogin)
