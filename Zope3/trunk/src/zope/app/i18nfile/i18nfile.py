@@ -17,7 +17,6 @@ $Id$
 """
 from persistent import Persistent
 from zope.interface import implements
-from zope.publisher.browser import FileUpload
 from zope.app.file.file import File
 
 from interfaces import II18nFile
