@@ -23,7 +23,10 @@ InitializeClass(FancyAttribute)
 
 class FancyContent(SimpleItem):
     """A class that already comes with its own __bobo_traverse__ handler.
-    Quite fancy indeed."""
+    Quite fancy indeed.
+
+    It also comes with its own get_size method.
+    """
     implements(IFancyContent)
 
     meta_type = "Fancy Content"
@@ -31,6 +34,9 @@ class FancyContent(SimpleItem):
 
     def __bobo_traverse__(self, REQUEST, name):
         return FancyAttribute(name).__of__(self)
+
+    def get_size(self):
+	return 43
 
 InitializeClass(FancyContent)
 

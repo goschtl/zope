@@ -351,7 +351,6 @@ class PublishTest(Functional, FiveTestCase):
         response = self.publish('/test_folder_1_/testoid/dirpage2')
         self.assert_('page 2' in response.getBody())
 
-
 class IRecurse(Interface):
     pass
 
@@ -405,6 +404,17 @@ class MenuTest(FiveTestCase):
         self.assertEquals('Test Menu Item 2', menu[1]['title'])
         self.assertEquals('parakeet.html', menu[1]['action'])
 
+class SizeTest(FiveTestCase):
+
+    def test_no_get_size_on_original(self):
+        manage_addSimpleContent(self.folder, 'simple', 'Simple')
+	obj = self.folder.simple
+	self.assertEquals(obj.get_size(), 42)
+
+    def test_get_size_on_original_and_fallback(self):
+	manage_addFancyContent(self.folder, 'fancy', 'Fancy')
+	obj = self.folder.fancy
+	self.assertEquals(obj.get_size(), 43)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
@@ -413,6 +423,7 @@ def test_suite():
     suite.addTest(makeSuite(FiveTest))
     suite.addTest(makeSuite(PublishTest))
     suite.addTest(makeSuite(MenuTest))
+    suite.addTest(makeSuite(SizeTest))
     return suite
 
 if __name__ == '__main__':

@@ -428,11 +428,32 @@
       menu="testmenu"
       />
 
+  <!-- register size adapters -->
+
+  <five:sizable
+      class=".simplecontent.SimpleContent"
+      />
+
+  <five:sizable
+      class=".fancycontent.FancyContent"
+      />
+
+  <adapter
+      for=".interfaces.ISimpleContent"
+      provides="zope.app.size.interfaces.ISized"
+      factory=".size.SimpleContentSize"
+      />
+
+  <adapter
+      for=".interfaces.IFancyContent"
+      provides="zope.app.size.interfaces.ISized"
+      factory=".size.FancyContentSize"
+      />
 
   <!-- subscribe to all events -->
   <five:sendEvents
       class=".simplecontent.SimpleContent"
-     />
+      />
 
   <subscriber
       factory=".subscriber.objectEventSubscriber"
