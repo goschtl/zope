@@ -13,7 +13,7 @@
 ##############################################################################
 """XML schema interfaces
 
-$Id: schemainterface.py,v 1.2 2003/04/11 10:52:17 philikon Exp $
+$Id: schemainterface.py,v 1.3 2003/05/20 15:46:40 sidnei Exp $
 """
 
 from zope.interface.interface import InterfaceClass
@@ -25,7 +25,7 @@ class XMLSchemaInterfaceClass(InterfaceClass):
     """
 
     __safe_for_unpickling__ = True
-    
+
     def __init__(self, uri):
         doc = """XML Schema based interface
 

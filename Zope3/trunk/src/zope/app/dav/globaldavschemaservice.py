@@ -12,20 +12,23 @@
 #
 ##############################################################################
 """
-Default service names
-
-$Id: servicenames.py,v 1.6 2003/05/20 15:46:40 sidnei Exp $
+$Id: globaldavschemaservice.py,v 1.1 2003/05/20 15:46:38 sidnei Exp $
 """
 
-from zope.component.servicenames import *
+from zope.app.component.globalinterfaceservice import InterfaceService
+from zope.app.interfaces.component import IGlobalDAVSchemaService
 
-HubIds = 'HubIds'
-EventPublication = 'EventPublication'
-EventSubscription = 'EventSubscription'
-ErrorLogging = 'ErrorLogging'
-Roles = 'Roles'
-Permissions = 'Permissions'
-Authentication = 'Authentication'
-Workflows = 'Workflows'
-Translation = 'Translation'
-DAVSchema = 'DAVSchema'
+class DAVSchemaService(InterfaceService):
+    __implements__ = IGlobalDAVSchemaService
+
+davSchemaService = DAVSchemaService()
+provideInterface = davSchemaService.provideInterface
+getInterface = davSchemaService.getInterface
+queryInterface = davSchemaService.queryInterface
+searchInterface = davSchemaService.searchInterface
+
+_clear = davSchemaService._clear
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(_clear)
+del addCleanUp

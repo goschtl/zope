@@ -1,0 +1,19 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:dav='http://namespaces.zope.org/zope/dav'>
+
+<serviceType
+    id='DAVSchema'
+    interface='zope.app.interfaces.component.IDAVSchemaService' />
+
+<service
+   serviceType='DAVSchema'
+   permission='zope.Public'
+   component='zope.app.dav.globaldavschemaservice.davSchemaService' />
+
+<dav:provideInterface
+   for="http://purl.org/dc/elements/1.1/"
+   interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+/>
+
+</zopeConfigure>

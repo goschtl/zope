@@ -121,4 +121,8 @@
 
   <include package="zope.app.fssync" />
 
+<!-- WebDAV Support -->
+
+  <include package="zope.app.dav" />
+
 </zopeConfigure>

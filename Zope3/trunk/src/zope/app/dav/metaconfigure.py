@@ -12,20 +12,19 @@
 #
 ##############################################################################
 """
-Default service names
-
-$Id: servicenames.py,v 1.6 2003/05/20 15:46:40 sidnei Exp $
+$Id: metaconfigure.py,v 1.1 2003/05/20 15:46:38 sidnei Exp $
 """
 
-from zope.component.servicenames import *
+from zope.app.services.servicenames import DAVSchema
+from zope.app.component.metaconfigure import handler, resolveInterface
+from zope.configuration.action import Action
 
-HubIds = 'HubIds'
-EventPublication = 'EventPublication'
-EventSubscription = 'EventSubscription'
-ErrorLogging = 'ErrorLogging'
-Roles = 'Roles'
-Permissions = 'Permissions'
-Authentication = 'Authentication'
-Workflows = 'Workflows'
-Translation = 'Translation'
-DAVSchema = 'DAVSchema'
+def interface(_context, for_, interface):
+    interface = resolveInterface(_context, interface)
+    return [
+        Action(
+          discriminator = None,
+          callable = handler,
+          args = (DAVSchema, 'provideInterface', for_, interface)
+        ),
+      ]

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: component.py,v 1.1 2003/05/13 17:08:34 alga Exp $
+$Id: component.py,v 1.2 2003/05/20 15:46:39 sidnei Exp $
 """
 
 from zope.interface import Interface
@@ -44,16 +44,13 @@ class IInterfaceService(Interface):
 
         If base is given, only interfaces that equal or extend base
         will be returned.
-
         """
 
     def searchInterfaceIds(search_string='', base=None):
         """Return the ids of the interfaces that match the search criteria.
 
         See searchInterface
-
         """
-
 
 class IGlobalInterfaceService(IInterfaceService):
     """Global registry for Interface
@@ -66,7 +63,20 @@ class IGlobalInterfaceService(IInterfaceService):
 
         If the id is false, the id will be computed from the interface
         module and name.
+        """
 
+class IDAVSchemaService(IInterfaceService):
+    """Service that keeps tracks of namespace to interfaces mapping"""
+    pass
+
+class IGlobalDAVSchemaService(IDAVSchemaService):
+    """Global registry from DAV namespaces to interfaces
+    """
+
+    def provideInterface(id, interface):
+        """Register an interface with a given id
+
+        The id is the URI for the namespace.
         """
 
 class IInterfaceField(IEnumerated, IField):
