@@ -13,9 +13,8 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.5 2003/06/13 17:41:19 stevea Exp $
+$Id: test_talesapi.py,v 1.6 2003/09/16 22:05:05 srichter Exp $
 """
-
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -53,7 +52,7 @@ def title():
     u'apple cart'
     """
 
-def title():
+def description():
     """
     >>> api = ZopeTalesAPI(testObject)
     >>> api.description
