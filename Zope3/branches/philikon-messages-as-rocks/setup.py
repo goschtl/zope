@@ -256,6 +256,9 @@ ext_modules = [
                  "src/zope/proxy/_zope_proxy_proxy.c",
                  ]),
     
+    Extension("zope.i18nmessageid._zope_i18nmessageid_message",
+              ["src/zope/i18nmessageid/_zope_i18nmessageid_message.c"]),
+
     ]
 
 # We're using the module docstring as the distutils descriptions.

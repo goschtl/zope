@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Message ID tests.
+"""I18n Messages
 
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite, DocFileSuite
+__docformat__ = "reStructuredText"
 
-def test_suite():
-    return unittest.TestSuite((
-	    DocTestSuite('zope.i18nmessageid.messageid'),
-	    DocFileSuite('messages.txt', package='zope.i18nmessageid'),
-	    ))
+from _zope_i18nmessageid_message import Message
 
-if __name__ == '__main__':
-    unittest.main(defaultTest="test_suite")
+class MessageFactory(object):
+    """Factory for creating i18n messages."""
+
+    def __init__(self, domain):
+        self._domain = domain
+
+    def __call__(self, ustr, default=None, mapping=None):
+        return Message(ustr, self._domain, default, mapping)

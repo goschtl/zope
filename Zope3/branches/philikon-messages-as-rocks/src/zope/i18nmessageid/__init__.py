@@ -11,5 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"$Id$"
+"""I18n Messages
+
+$Id$
+"""
 from messageid import MessageID, MessageIDFactory
+from message import Message, MessageFactory
