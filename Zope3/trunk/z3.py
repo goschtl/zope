@@ -1,4 +1,4 @@
-#! /usr/bin/env python2.2
+#! /usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.21 2003/07/13 00:50:06 anthony Exp $
+$Id: z3.py,v 1.22 2003/10/30 08:15:30 philikon Exp $
 """
 
 import os
@@ -25,12 +25,10 @@ basepath = filter(None, sys.path)
 
 def run(argv=list(sys.argv)):
 
-    if sys.version_info < ( 2,2,3 ):
+    if sys.version_info < ( 2,3,2 ):
 	print """\
 	ERROR: Your python version is not supported by Zope3.
-	Zope3 needs either Python2.3 or Python2.2.3 or greater.
-	In particular, Zope3 on Python2.2.2 is a recipe for 
-	pain. You are running:""" + sys.version
+	Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
 	sys.exit(1)
 
     # Refuse to run without principals.zcml

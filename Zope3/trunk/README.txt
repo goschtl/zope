@@ -12,16 +12,14 @@ Welcome to the Zope3 source
 
 Building and running tests
 
-  Zope3 requires Python 2.2.3 or later and PyXML 0.8.1 or higher.
-  PyXML can be downloaded from http://sf.net/projects/pyxml.
-  (PyXML is not required if you're using Python 2.3.)
+  Zope3 requires Python 2.3.2 or later.
 
   In the top-level Zope3 directory, you should find a script called
   setup.py.  Run it to build the extension modules needed by
   Zope.  Example::
 
     # cd Zope3
-    # python2.2 setup.py -q build_ext -i
+    # python2.3 setup.py -q build_ext -i
 
   On a unix variant, you can just type: make
 
@@ -35,7 +33,7 @@ Building and running tests
 
   To run all the tests, use the script test.py::
 
-    # python2.2 test.py -v
+    # python2.3 test.py -v
 
   Use test.py -h for usage.  The test script can run selected tests,
   stop after the first error, run the tests in a loop, etc.
@@ -48,7 +46,7 @@ Starting Zope3
 
   To run Zope just run the z3.py script:
 
-    # python2.2 z3.py
+    # python2.3 z3.py
 
   This will run Zope on port 8080.  Visit the url:
 

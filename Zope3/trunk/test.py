@@ -1,4 +1,4 @@
-#! /usr/bin/env python2.2
+#! /usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -785,12 +785,10 @@ def process_args(argv=None):
         elif k == '--dir':
             test_dir = v
 
-    if sys.version_info < ( 2,2,3 ):
+    if sys.version_info < ( 2,3,2 ):
 	print """\
 	ERROR: Your python version is not supported by Zope3.
-	Zope3 needs either Python2.3 or Python2.2.3 or greater.
-	In particular, Zope3 on Python2.2.2 is a recipe for
-	pain. You are running:""" + sys.version
+	Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
 	sys.exit(1)
 
     if gcthresh is not None:
