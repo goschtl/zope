@@ -12,12 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id: test_registrationmanager.py,v 1.2 2004/03/23 15:15:06 mmceahern Exp $
 """
-from unittest import TestCase, main, makeSuite
+from unittest import TestSuite, TestCase, main, makeSuite
+from doctest import DocTestSuite
 from zope.app.container.interfaces import IRemoveNotifiable
 from zope.app.registration.interfaces import IRegistrationManager
 from zope.app.registration.registration import RegistrationManager
+from zope.app.registration.registration import RegistrationManagerRemoveSubscriber
 from zope.app.site.tests import placefulsetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing import traverse
@@ -352,16 +354,33 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
 
     #########################################################
 
-    def test_removeNotify(self):
-        manager = RegistrationManager()
-        thingy = Undeletable()
-        manager['xyzzy'] = thingy
-        event = ObjectRemovedEvent(manager, 'xxx', 'yyy')
-        manager.removeNotify(event)
-        self.failUnless(thingy.was_called)
+class DummyRM(dict):
+    def __iter__(self):
+        for n in self.keys():
+            yield n
+        
+class TestRegistrationManagerRemoveSubscriber:
+    def test_subscriber():
+        """
+        First create a dummy registration manager with some
+        initial data.
+        
+        >>> regmgr = DummyRM()
+        >>> regmgr['foo'] = 'bar'
+
+        Create an adapter for it.
+        >>> adapter = RegistrationManagerRemoveSubscriber(regmgr, None)
+
+        Trigger the event.
+        >>> adapter.notify(None)
+
+        Check the results.
+        >>> regmgr
+        {}
+        
+        """
 
 class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
-
 
     def test_getRegistrationManager(self):
         sm = self.buildFolders(site=True)
@@ -389,7 +408,11 @@ class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
 
 
 def test_suite():
-    return makeSuite(Test)
+    import sys
+    return TestSuite((
+        makeSuite(Test),
+        DocTestSuite(sys.modules[__name__]),
+        ))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

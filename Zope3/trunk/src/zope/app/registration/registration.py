@@ -13,12 +13,11 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.4 2004/03/13 23:01:04 srichter Exp $
+$Id: registration.py,v 1.5 2004/03/23 15:15:05 mmceahern Exp $
 """
 from persistent import Persistent
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
-from zope.app.container.interfaces import IAddNotifiable, IRemoveNotifiable
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dependable.interfaces import IDependable, DependencyError
@@ -32,7 +31,7 @@ from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.xmlpickle import dumps, loads
 import interfaces
-
+from zope.app.event.interfaces import ISubscriber
 
 class RegistrationStatusProperty(object):
 
@@ -295,22 +294,35 @@ class NotifyingRegistrationStack(RegistrationStack):
         RegistrationStack.deactivate(self, registration)
         self.__parent__.notifyDeactivated(self, registration)
 
+class SimpleRegistrationRemoveSubscriber:
+
+    implements(ISubscriber)
+
+    def __init__(self, simple_registration, event):
+        self.registration = simple_registration
+
+    def notify(self, event):
+        """Receive notification of remove event."""
+        objectstatus = self.registration.status
+
+        if objectstatus == interfaces.ActiveStatus:
+            try:
+                objectpath = zapi.getPath(self.registration)
+            except: # XXX
+                objectpath = str(self.registration)
+            raise DependencyError("Can't delete active registration (%s)"
+                                  % objectpath)
+        elif objectstatus == interfaces.RegisteredStatus:
+            self.registration.status = interfaces.UnregisteredStatus
+
 class SimpleRegistration(Persistent, Contained):
-    """Registration objects that just contain registration data
+    """Registration objects that just contain registration data"""
 
-    Classes that derive from this must make sure they implement
-    IRemoveNotifiable either by implementing
-    implementedBy(SimpleRegistration) or explicitly implementing
-    IRemoveNotifiable.
-    """
-
-    implements(interfaces.IRegistration, IRemoveNotifiable,
-               # We are including this here because we want all of the
-               # subclasses to get it and we don't really need to be
-               # flexible about the policy here. At least we don't
-               # *think* we do. :)
-               IAttributeAnnotatable,
-               )
+    # We are including IAttributeAnnotatable here because we want all
+    # of the subclasses to get it and we don't really need to be
+    # flexible about the policy here. At least we don't *think* we
+    # do. :)
+    implements(interfaces.IRegistration, IAttributeAnnotatable)
 
     status = RegistrationStatusProperty()
 
@@ -328,24 +340,6 @@ class SimpleRegistration(Persistent, Contained):
     def implementationSummary(self):
         return ""
 
-    # Methods from IRemoveNotifiable
-
-    def removeNotify(self, event):
-        "See IRemoveNotifiable"
-
-        objectstatus = self.status
-
-        if objectstatus == interfaces.ActiveStatus:
-            try:
-                objectpath = zapi.getPath(self)
-            except: # XXX
-                objectpath = str(self)
-            raise DependencyError("Can't delete active registration (%s)"
-                                  % objectpath)
-        elif objectstatus == interfaces.RegisteredStatus:
-            self.status = interfaces.UnregisteredStatus
-
-
 class ComponentRegistration(SimpleRegistration):
     """Component registration.
 
@@ -353,9 +347,7 @@ class ComponentRegistration(SimpleRegistration):
     of the component.
     """
 
-    # SimpleRegistration implements IRemoveNotifiable, so we don't need
-    # it below.
-    implements(interfaces.IComponentRegistration, IAddNotifiable)
+    implements(interfaces.IComponentRegistration)
 
     def __init__(self, component_path, permission=None):
         self.componentPath = component_path
@@ -410,29 +402,41 @@ class ComponentRegistration(SimpleRegistration):
 
         return component
 
-    def addNotify(self, event):
-        "See IAddNotifiable"
-        component = self.getComponent()
+class ComponentRegistrationRemoveSubscriber:
+
+    implements(ISubscriber)
+ 
+    def __init__(self, component_registration, event):
+        self.component_registration = component_registration
+
+    def notify(self, event):
+        """Receive notification of remove event."""
+        component = self.component_registration.getComponent()
         dependents = IDependable(component)
-        objectpath = zapi.getPath(self)
+        objectpath = zapi.getPath(self.component_registration)
+        dependents.removeDependent(objectpath)
+        # Also update usage, if supported
+        adapter = interfaces.IRegistered(component, None)
+        if adapter is not None:
+            adapter.removeUsage(zapi.getPath(self.component_registration))
+
+class ComponentRegistrationAddSubscriber:
+
+    implements(ISubscriber)
+ 
+    def __init__(self, component_registration, event):
+        self.component_registration = component_registration
+
+    def notify(self, event):
+        """Receive notification of add event."""
+        component = self.component_registration.getComponent()
+        dependents = IDependable(component)
+        objectpath = zapi.getPath(self.component_registration)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
         adapter = interfaces.IRegistered(component, None)
         if adapter is not None:
             adapter.addUsage(objectpath)
-
-    def removeNotify(self, event):
-        "See IRemoveNotifiable"
-        super(ComponentRegistration, self).removeNotify(event)
-        component = self.getComponent()
-        dependents = IDependable(component)
-        objectpath = zapi.getPath(self)
-        dependents.removeDependent(objectpath)
-        # Also update usage, if supported
-        adapter = interfaces.IRegistered(component, None)
-        if adapter is not None:
-            adapter.removeUsage(zapi.getPath(self))
-
 
 from zope.app.dependable import PathSetAnnotation
 
@@ -459,14 +463,26 @@ class Registered(PathSetAnnotation):
         return [zapi.traverse(self.context, path)
                 for path in self.getPaths()]
 
+class RegistrationManagerRemoveSubscriber:
+    """Subscriber for RegistrationManager remove events."""
 
+    implements(ISubscriber)
+
+    def __init__(self, registration_manager, event):
+        self.registration_manager = registration_manager
+
+    def notify(self, event):
+        """Receive notification of remove event."""
+        for name in self.registration_manager:
+            del self.registration_manager[name]
+            
 class RegistrationManager(Persistent, Contained):
     """Registration manager
 
     Manages registrations within a package.
     """
 
-    implements(interfaces.IRegistrationManager, IRemoveNotifiable)
+    implements(interfaces.IRegistrationManager)
 
     def __init__(self):
         self._data = ()
@@ -594,10 +610,7 @@ class RegistrationManager(Persistent, Contained):
     def moveDown(self, names):
         self._moveUpOrDown(names, 1)
 
-    def removeNotify(self, event):
-        assert event.object == self
-        for name in self:
-            del self[name]
+
 
 
 class RegistrationManagerContainer(object):

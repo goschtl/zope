@@ -13,10 +13,11 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.2 2004/03/13 22:02:07 srichter Exp $
+$Id: test_registrations.py,v 1.3 2004/03/23 15:15:06 mmceahern Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from doctest import DocTestSuite
 
 from zope.interface import Interface, implements
 from zope.app.registration.interfaces import UnregisteredStatus
@@ -30,6 +31,12 @@ from zope.app.dependable.interfaces import IDependable
 from zope.app.traversing import traverse
 from zope.security.proxy import Proxy
 from zope.app.container.contained import ObjectRemovedEvent
+from zope.app.tests import ztapi
+from zope.app.registration.interfaces import IRegistration
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.event.interfaces import ISubscriber
+from zope.app.registration.registration import SimpleRegistrationRemoveSubscriber, ComponentRegistrationRemoveSubscriber, ComponentRegistrationAddSubscriber
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 class ITestComponent(Interface):
     pass
@@ -56,9 +63,38 @@ class ComponentStub:
         return self._dependents
 
 
+class DummyRegistration(ComponentStub):
+    implements (IRegistration, IPhysicallyLocatable)
+
+    def __init__(self):
+        self.status = UnregisteredStatus
+        
+    def getPath(self):
+        return 'dummy!'
+
+    def getComponent(self):
+        return self
+    
+class TestSimpleRegistrationEvents(TestCase):
+
+    def test_RemoveSubscriber(self):
+        reg = DummyRegistration()
+        adapter = SimpleRegistrationRemoveSubscriber(reg, None)
+
+        # test that removal fails with Active status
+        reg.status = ActiveStatus
+        self.assertRaises(DependencyError, adapter.notify, None)
+
+        # test that removal succeeds with Registered status
+        reg.status = RegisteredStatus
+        adapter.notify(None)
+
+        self.assertEquals(reg.status, UnregisteredStatus)
+        
 class TestSimpleRegistration(TestCase):
 
     def setUp(self):
+        # XXX: May need more setup related to Adapter service?
         # We can't use the status property on a SimpleRegistration instance.
         # we disable it for these tests
         self.__oldprop = SimpleRegistration.status
@@ -67,21 +103,6 @@ class TestSimpleRegistration(TestCase):
     def tearDown(self):
         # Restore the status prop
         SimpleRegistration.status = self.__oldprop
-
-    def test_removeNotify(self):
-        cfg = SimpleRegistration()
-
-        # cannot delete an active registration
-        cfg.status = ActiveStatus
-        event = ObjectRemovedEvent(cfg, None, 'somename')
-        self.assertRaises(DependencyError, cfg.removeNotify, event)
-
-        # deletion of a registered registration causes it to become
-        # unregistered
-        cfg.status = RegisteredStatus
-        cfg.removeNotify(event)
-        self.assertEquals(cfg.status, UnregisteredStatus)
-
 
 class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
 
@@ -113,37 +134,53 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
 
+class TestComponentRegistrationEvents:
     def test_addNotify(self):
-        # set up a component
-        name, component = 'foo', ComponentStub()
-        self.rootFolder[name] = component
-        # set up a registration
-        cfg = ComponentRegistration("/"+name)
-        self.rootFolder['cfg'] = cfg
-        cfg = traverse(self.rootFolder, 'cfg')
-        # check that the dependency tracking works
-        self.assertEquals(component.dependents(), ('/cfg',))
+        """
+        First we create a dummy registration and an adapter for it.
+        
+        >>> reg = DummyRegistration()
+        >>> adapter = ComponentRegistrationAddSubscriber(reg, None)
 
+        Now call notification
+        >>> adapter.notify(None)
+
+        Check to make sure the adapter added the path
+        >>> reg.dependents()
+        ('dummy!',)
+        """
+        
     def test_removeNotify_dependents(self):
-        # set up a component
-        name, component = 'foo', ComponentStub()
-        self.rootFolder[name] = component
-        component.addDependent('/cfg')
-        # set up a registration
-        cfg = ComponentRegistration("/"+name)
-        cfg.status = UnregisteredStatus
-        self.rootFolder['cfg'] = cfg
-        cfg = traverse(self.rootFolder, 'cfg')
-        # simulate IRemoveNotifiable
-        event = ObjectRemovedEvent(cfg, self.rootFolder, 'cfg')
-        cfg.removeNotify(event)
-        # check that the dependency tracking works
-        self.assertEquals(component.dependents(), ())
+        """
+        First we create a dummy registration and an adapter for it.
+        
+        >>> reg = DummyRegistration()
+        >>> adapter = ComponentRegistrationAddSubscriber(reg, None)
+
+        Now call notification
+        >>> adapter.notify(None)
+
+        Check to make sure the adapter added the path
+        >>> reg.dependents()
+        ('dummy!',)
+
+        Now create a removal adapter and call it.
+        >>> removal_adapter = ComponentRegistrationRemoveSubscriber(reg, None)
+        >>> removal_adapter.notify(None)
+
+        Check to make sure the adapter removed the dependencie(s).
+        >>> reg.dependents()
+        ()
+        
+        """
 
 def test_suite():
+    import sys
     return TestSuite((
         makeSuite(TestSimpleRegistration),
         makeSuite(TestComponentRegistration),
+        makeSuite(TestSimpleRegistrationEvents),
+        DocTestSuite(sys.modules[__name__]),
         ))
 
 if __name__=='__main__':

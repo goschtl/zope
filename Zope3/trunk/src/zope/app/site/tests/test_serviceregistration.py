@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Registration tests.
 
-$Id: test_serviceregistration.py,v 1.3 2004/03/13 22:02:09 srichter Exp $
+$Id: test_serviceregistration.py,v 1.4 2004/03/23 15:15:06 mmceahern Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -110,36 +110,6 @@ class Test(PlacefulSetup, TestCase):
 
     def test_getComponent(self):
         self.assertEqual(self.__config.getComponent(), self.__c)
-
-    def test_addNotify(self):
-        self.assertEqual(self.__c._dependents,
-                         (self.__configpath, ))
-        u = IRegistered(self.__c)
-        self.assertEqual(list(u.usages()),
-                         [self.__configpath])
-
-    def test_removeNotify_and_unregistered(self):
-        self.__config.status = RegisteredStatus
-
-        sm = getServiceManager(self.__default)
-        registry = sm.queryRegistrationsFor(self.__config)
-        self.failUnless(registry, "The components should be registered")
-
-        del self.__cm[self.__registration_name]
-        self.assertEqual(self.__c._dependents, ())
-        u = IRegistered(self.__c)
-        self.assertEqual(len(u.usages()), 0)
-
-        self.failIf(registry, "The components should not be registered")
-
-    def test_disallow_delete_when_active(self):
-        self.__config.status = ActiveStatus
-        try:
-            del self.__cm[self.__registration_name]
-        except DependencyError:
-            pass # OK
-        else:
-            self.fail("Should have gotten a dependency error")
 
     def test_not_a_local_service(self):
         defineService('test_service_2', ITestService)
