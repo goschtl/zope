@@ -43,6 +43,13 @@ Test harness.
     the threshold is set to 1 (agressive garbage collection).  Do "-g 0" to
     disable garbage collection altogether.
 
+-u  Use unittestgui
+-m  Use unittestgui; start minimized
+    Use the PyUnit GUI instead of output to the command line. The GUI
+    imports tests on its own, taking care to reload all dependencies on each
+    run. The debug (-d), verbose (-v), and Loop (-L) options will be
+    ignored.
+
 modfilter
 testfilter
     Case-sensitive regexps to limit which tests are run, used in search
@@ -71,6 +78,13 @@ Extreme (yet useful) examples:
     As before, but runs all tests whose names aren't precisely
     "checkWriteClient".  Useful to avoid a specific failing test you don't
     want to deal with just yet.
+
+    test.py -m . "!^checkWriteClient$"
+
+    As before, but now opens up a minimized PyUnit GUI window (only showing
+    the progressbar). Double-clicking the progressbar will start the import
+    and run all tests. Useful for refactoring runs where you continually
+    want to make sure all tests still pass.
 """
 
 import os
@@ -241,6 +255,17 @@ def filter_testcases(s, rx):
                 new.addTest(filtered)
     return new
 
+def gui_runner(files, test_filter):
+    sys.path.insert(0, join(os.getcwd(), 'utilities'))
+    import unittestgui
+    suites = []
+    for file in files:
+        suites.append(module_from_path(file))
+
+    suites = ", ".join(suites)
+    minimal = (GUI == 'minimal')
+    unittestgui.main(suites, minimal)
+
 def runner(files, test_filter, debug):
     runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug)
     suite = unittest.TestSuite()
@@ -268,7 +293,9 @@ def main(module_filter, test_filter):
     files = find_tests(module_filter)
     files.sort()
 
-    if LOOP:
+    if GUI:
+        gui_runner(files, test_filter)
+    elif LOOP:
         while 1:
             runner(files, test_filter, debug)
     else:
@@ -281,6 +308,7 @@ def process_args():
     global test_filter
     global VERBOSE
     global LOOP
+    global GUI
     global debug
     global build
     global gcthresh
@@ -289,12 +317,13 @@ def process_args():
     test_filter = None
     VERBOSE = 0
     LOOP = 0
+    GUI = 0
     debug = 0 # Don't collect test results; simply let tests crash
     build = 0
     gcthresh = None
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'vdLbhCg:',
+        opts, args = getopt.getopt(sys.argv[1:], 'vdLbhCumg:',
                                    ['help'])
     except getopt.error, msg:
         print msg
@@ -317,6 +346,10 @@ def process_args():
             import pychecker.checker
         elif k == '-g':
             gcthresh = int(v)
+        elif k == '-u':
+            GUI = 1
+        elif k == '-m':
+            GUI = 'minimal'
 
     if gcthresh is not None:
         import gc
