@@ -13,11 +13,12 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.10 2004/04/11 18:16:43 jim Exp $
+$Id: utility.py,v 1.11 2004/04/12 17:28:55 jim Exp $
 """
 
 from zope.component.exceptions import Invalid, ComponentLookupError
 from zope.component.interfaces import IUtilityService, IComponentRegistry
+from zope.component.service import GlobalService
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import implements
 
@@ -29,7 +30,7 @@ class IGlobalUtilityService(IUtilityService, IComponentRegistry):
         A utility is a component that provides an interface.
         """
 
-class GlobalUtilityService(AdapterRegistry):
+class GlobalUtilityService(AdapterRegistry, GlobalService):
 
     implements(IGlobalUtilityService)
 
@@ -61,10 +62,17 @@ class GlobalUtilityService(AdapterRegistry):
     def queryUtility(self, interface, default=None, name=''):
         """See IUtilityService interface"""
 
-        return self.lookup((), interface, name, default)
+        byname = self._null.get(interface)
+        if byname:
+            return byname.get(name, default)
+        else:
+            return default
 
     def getUtilitiesFor(self, interface):
-        return AdapterRegistry.lookupAll(self, (), interface)
+        byname = self._null.get(interface)
+        if byname:
+            for item in byname.iteritems():
+                yield item
 
     def getRegisteredMatching(self, interface=None, name=None):
         # doomed method
