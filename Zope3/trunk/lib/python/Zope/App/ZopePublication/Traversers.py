@@ -20,7 +20,7 @@ from Zope.Publisher.Exceptions import Unauthorized, NotFound, DebugError
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
 from Zope.ComponentArchitecture \
-     import getView, getDefaultViewName
+     import queryView, getView, getDefaultViewName
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 
 class SimpleComponentTraverser:
@@ -42,12 +42,10 @@ class SimpleComponentTraverser:
     def publishTraverse(self, request, name):
         ob = self.context
         from Zope.ComponentArchitecture.GlobalViewService import viewService
-        try:
-            return getView(ob, name, request)
-        except ComponentLookupError:
+        view = queryView(ob, name, request)
+        if view is None:
             raise NotFound(ob, name)
-
-
+        return view
 
 class FileContentTraverser(SimpleComponentTraverser):
     """Browser traverser for file content.
