@@ -13,14 +13,13 @@
 ##############################################################################
 """Tests of xmlpickle package
 
-$Id: test_xmlpickle.py,v 1.6 2003/09/21 17:32:12 jim Exp $
+$Id: test_xmlpickle.py,v 1.7 2004/01/13 17:21:46 jim Exp $
 """
 
-from unittest import TestCase, main, makeSuite
-
+import unittest
 from zope.xmlpickle import dumps, loads
 
-class Test(TestCase):
+class Test(unittest.TestCase):
 
     def __test(self, v, expected_xml=None):
         xml = dumps(v)
@@ -269,7 +268,11 @@ class DictSub(dict):
         return not self.__eq__(other)
 
 def test_suite():
-    return makeSuite(Test)
+    from zope.testing.doctestunit import DocTestSuite
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        DocTestSuite('zope.xmlpickle.xmlpickle'),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pickle-based serialization of Python objects to and from XML.
 
-$Id: xmlpickle.py,v 1.4 2003/09/21 17:32:12 jim Exp $
+$Id: xmlpickle.py,v 1.5 2004/01/13 17:21:45 jim Exp $
 """
 
 from xml.parsers import expat
@@ -73,10 +73,68 @@ def _dumpsUsing_PicklerThatSortsDictItems(object, bin = 0):
     _PicklerThatSortsDictItems(file, bin).dump(object)
     return file.getvalue()
 
-def toxml(p):
+def toxml(p, index=0):
     """Convert a standard Python pickle to xml
+
+    You can provide a pickle string and get XML of an individual pickle:
+
+    >>> import pickle
+    >>> s = pickle.dumps(42)
+    >>> print toxml(s).strip()
+    <?xml version="1.0" encoding="utf-8" ?>
+    <pickle> <int>42</int> </pickle>
+
+    If the string contains multiple pickles:
+
+    >>> l = [1]
+    >>> import StringIO
+    >>> f = StringIO.StringIO()
+    >>> pickler = pickle.Pickler(f)
+    >>> pickler.dump(l)
+    >>> pickler.dump(42)
+    >>> pickler.dump([42, l])
+    >>> s = f.getvalue()
+
+    You can supply indexes to access individual pickles:
+    
+    >>> print toxml(s).strip()
+    <?xml version="1.0" encoding="utf-8" ?>
+    <pickle>
+      <list>
+        <int>1</int>
+      </list>
+    </pickle>
+
+    >>> print toxml(s, 0).strip()
+    <?xml version="1.0" encoding="utf-8" ?>
+    <pickle>
+      <list>
+        <int>1</int>
+      </list>
+    </pickle>
+
+    >>> print toxml(s, 1).strip()
+    <?xml version="1.0" encoding="utf-8" ?>
+    <pickle> <int>42</int> </pickle>
+
+    >>> print toxml(s, 2).strip()
+    <?xml version="1.0" encoding="utf-8" ?>
+    <pickle>
+      <list>
+        <int>42</int>
+        <reference id="o0"/>
+      </list>
+    </pickle>
+
+    Note that all of the pickles in a string share a common memo, so
+    the last pickle in the example above has a reference to the
+    list pickled in the first pickle.
+
     """
     u = ppml.ToXMLUnpickler(StringIO(p))
+    while index > 0:
+        xmlob = u.load()
+        index -= 1
     xmlob = u.load()
     r = ['<?xml version="1.0" encoding="utf-8" ?>\n']
     xmlob.output(r.append)
