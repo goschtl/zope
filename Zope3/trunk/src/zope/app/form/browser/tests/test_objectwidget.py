@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.3 2004/05/07 19:41:33 garrett Exp $
+$Id: test_objectwidget.py,v 1.4 2004/05/11 11:17:36 garrett Exp $
 """
 
 import unittest, doctest
@@ -63,17 +63,9 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         self.request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(self.field, self.request)
-        
-    def test_hasInput(self):
-        # doesn't work with subfields
-        pass
-
-    def testRender(self):
-        # doesn't work with subfields
-        pass
 
     def setUp(self):
-        BrowserWidgetTest.setUp(self)
+        super(ObjectWidgetTest, self).setUp()
         self.field = Object(ITestContact, __name__=u'foo')
         ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Select Widget Tests
 
-$Id: test_itemswidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
+$Id: test_itemswidget.py,v 1.3 2004/05/11 11:17:36 garrett Exp $
 """
 import unittest
 
@@ -192,7 +192,7 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
     def test_error(self):
         widget = self._makeWidget(form={'field.choice': 'ten'})
         widget.setPrefix('field.')
-        widget._showData()
+        widget._getFormValue()
         self.assert_(isinstance(widget._error, WidgetInputError))
 
 class SelectWidgetTest(ItemsEditWidgetBaseTest):
@@ -378,7 +378,7 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
     def test_error(self):
         widget = self._makeWidget(form={'field.numbers': ['ten']})
         widget.setPrefix('field.')
-        widget._showData()
+        widget._getFormValue()
         self.assert_(isinstance(widget._error, WidgetInputError))
 
 

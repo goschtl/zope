@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_textareawidget.py,v 1.3 2004/05/11 11:17:36 garrett Exp $
 """
 import unittest, doctest
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextAreaWidget
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.interface.verify import verifyClass
 
-class TextAreaWidgetTest(BrowserWidgetTest):
+class TextAreaWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the text area widget.
 
         >>> verifyClass(IInputWidget, TextAreaWidget)

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_checkboxwidget.py,v 1.3 2004/05/11 11:17:35 garrett Exp $
 """
 import unittest, doctest
 
@@ -22,10 +22,10 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Bool
 from zope.interface.verify import verifyClass
 
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 
-class CheckBoxWidgetTest(BrowserWidgetTest):
+class CheckBoxWidgetTest(SimpleInputWidgetTest):
     """Documents and tests thec checkbox widget.
         
         >>> verifyClass(IInputWidget, CheckBoxWidget)

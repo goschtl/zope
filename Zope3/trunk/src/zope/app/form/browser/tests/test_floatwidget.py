@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_floatwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_floatwidget.py,v 1.3 2004/05/11 11:17:35 garrett Exp $
 """
 import unittest, doctest
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import FloatWidget
 from zope.app.form.interfaces import ConversionError, WidgetInputError
@@ -24,7 +24,7 @@ from zope.interface.verify import verifyClass
 from zope.schema import Float
 
 
-class FloatWidgetTest(BrowserWidgetTest):
+class FloatWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the float widget.
         
         >>> verifyClass(IInputWidget, FloatWidget)

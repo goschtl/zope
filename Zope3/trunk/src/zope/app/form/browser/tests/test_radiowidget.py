@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.4 2004/05/07 19:43:26 garrett Exp $
+$Id: test_radiowidget.py,v 1.5 2004/05/11 11:17:36 garrett Exp $
 """
 import os
 import unittest, doctest
@@ -28,10 +28,10 @@ from zope.i18n.translationdomain import TranslationDomain
 from zope.app.tests import ztapi
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import RadioWidget
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 import zope.app.form.browser.tests
 
-class RadioWidgetTest(BrowserWidgetTest):
+class RadioWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the radio widget.
 
         >>> verifyClass(IInputWidget, RadioWidget)

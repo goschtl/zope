@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.5 2004/05/07 19:43:26 garrett Exp $
+$Id: test_multicheckboxwidget.py,v 1.6 2004/05/11 11:17:36 garrett Exp $
 """
 import unittest, doctest
 from zope.interface import Interface, implements
@@ -21,10 +21,10 @@ from zope.schema import Choice, List
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import MultiCheckBoxWidget
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.interface.verify import verifyClass
 
-class MultiCheckBoxWidgetTest(BrowserWidgetTest):
+class MultiCheckBoxWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the multi checkbox widget.
         
         >>> verifyClass(IInputWidget, MultiCheckBoxWidget)
