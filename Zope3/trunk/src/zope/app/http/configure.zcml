@@ -40,4 +40,13 @@
   allowed_attributes="PUT"
   />
 
+<view 
+  for="*"
+  name="DELETE"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".delete.DELETE"
+  permission="zope.Public"
+  allowed_attributes="DELETE"
+  />
+
 </zopeConfigure>
