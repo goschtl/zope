@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002, 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -44,124 +44,57 @@ from zope.app.utility import UtilityRegistration, LocalUtilityService
 
 from zope.app.principalannotation import PrincipalAnnotationService
 
+def ensureObject(root_folder, object_name, object_type, object_factory):
+    """Check that there's a basic object in the service
+    manager. If not, add one.
 
-class BootstrapSubscriberBase(object):
-    """A startup event subscriber base class.
-
-    Ensures the root folder and the service manager are created.
-    Subclasses may create local services by overriding the doSetup()
-    method.
+    Return the name abdded, if we added an object, otherwise None.
     """
+    package = getServiceManagerDefault(root_folder)
+    valid_objects = [ name
+                      for name in package
+                      if object_type.providedBy(package[name]) ]
+    if valid_objects:
+        return None
+    name = object_name
+    obj = object_factory()
+    package[name] = obj
+    return name
 
-    def doSetup(self):
-        """Instantiate some service.
+def ensureService(service_manager, root_folder, service_type,
+                  service_factory, **kw):
+    """Add and configure a service to the root folder if it's
+    not yet provided.
 
-        This method is meant to be overriden in the subclasses.
-        """
-        pass
-
-    def __call__(self, event):
-
-        db = event.database
-        connection = db.open()
-        root = connection.root()
-        self.root_folder = root.get(ZopePublication.root_name, None)
-        self.root_created = False
-
-        if self.root_folder is None:
-            self.root_created = True
-            # ugh... we depend on the root folder implementation
-            self.root_folder = rootFolder()
-            root[ZopePublication.root_name] = self.root_folder
-
-        try:
-            self.service_manager = traverse(self.root_folder, '++etc++site')
-        except ComponentLookupError:
-            self.service_manager = ServiceManager(self.root_folder)
-            self.root_folder.setSiteManager(self.service_manager)
-
-        self.doSetup()
-
-        get_transaction().commit()
-        connection.close()
-
-    def ensureObject(self, object_name, object_type, object_factory):
-        """Check that there's a basic object in the service
-        manager. If not, add one.
-
-        Return the name added, if we added an object, otherwise None.
-        """
-        package = getServiceManagerDefault(self.root_folder)
-        valid_objects = [ name
-                          for name in package
-                          if object_type.providedBy(package[name]) ]
-        if valid_objects:
-            return None
-        name = object_name
-        obj = object_factory()
-        package[name] = obj
-        return name
-
-    def ensureService(self, service_type, service_factory, **kw):
-        """Add and configure a service to the root folder if it's
-        not yet provided.
-
-        Returns the name added or None if nothing was added.
-        """
-        if not self.service_manager.queryLocalService(service_type):
-            # The site-manager may have chosen to disable one of the
-            # core services. Their loss. The alternative is that when
-            # they restart, they get a new service of the one that 
-            # they chose to disable. 
-            reg = self.service_manager.queryRegistrations(service_type)
-            if reg is None:
-                return addConfigureService(self.root_folder, service_type,
-                                           service_factory, **kw)
-        else:
-            return None
-
-    def ensureUtility(
-            self, interface, utility_type, utility_factory, name='', **kw):
-        """Add a utility to the top Utility Service
-        
-        Returns the name added or ``None`` if nothing was added.
-        """
-        utility_manager = zapi.getService(Utilities, self.root_folder)
-        utility = utility_manager.queryUtility(interface, name)
-        if utility is None:
-            return addConfigureUtility(
-                    self.root_folder, interface, utility_type, utility_factory,
-                    name, **kw
-                    )
-        else:
-            return None
-
-
-class BootstrapInstance(BootstrapSubscriberBase):
-    """Bootstrap a Zope3 instance given a database object.
-
-    This first checks if the root folder exists and has a service
-    manager.  If it exists, nothing else is changed.  If no root
-    folder exists, one is added, and several essential services are
-    added and configured.
+    Returns the name added or None if nothing was added.
     """
+    if not service_manager.queryLocalService(service_type):
+        # The site-manager may have chosen to disable one of the
+        # core services. Their loss. The alternative is that when
+        # they restart, they get a new service of the one that
+        # they chose to disable.
+        reg = service_manager.queryRegistrations(service_type)
+        if reg is None:
+            return addConfigureService(root_folder, service_type,
+                                       service_factory, **kw)
+    else:
+        return None
 
-    def doSetup(self):
-        """Add essential services.
+def ensureUtility(root_folder, interface, utility_type,
+                  utility_factory, name='', **kw):
+    """Add a utility to the top Utility Service
 
-        XXX This ought to be configurable.  For now, hardcode some
-        services we know we all need.
-        """
-
-        # Sundry other services
-        self.ensureService(ErrorLogging,
-                           RootErrorReportingService, copy_to_zlog=True)
-        self.ensureService(PrincipalAnnotation, PrincipalAnnotationService)
-
-        self.ensureService(Utilities, LocalUtilityService)
-
-bootstrapInstance = BootstrapInstance()
-
+    Returns the name added or ``None`` if nothing was added.
+    """
+    utility_manager = zapi.getService(Utilities, root_folder)
+    utility = utility_manager.queryUtility(interface, name)
+    if utility is None:
+        return addConfigureUtility(
+            root_folder, interface, utility_type, utility_factory,
+            name, **kw
+            )
+    else:
+        return None
 
 def addConfigureService(root_folder, service_type, service_factory, **kw):
     """Add and configure a service to the root folder."""
@@ -240,3 +173,66 @@ def getServiceManagerDefault(root_folder):
     package_name = '/++etc++site/default'
     package = traverse(root_folder, package_name)
     return package
+
+def getInformationFromEvent(event):
+    """ Extracts information from the event
+
+    Return a tuple containing
+
+      - db
+      - connection open from the db
+      - root connection object
+      - the root_folder object
+    """
+    db = event.database
+    connection = db.open()
+    root = connection.root()
+    root_folder = root.get(ZopePublication.root_name, None)
+    return db, connection, root, root_folder
+
+def getServiceManager(root_folder):
+    """ Returns the Service Manager from the root_folder object
+    """
+    try:
+        service_manager = traverse(root_folder, '++etc++site')
+    except ComponentLookupError:
+        service_manager = ServiceManager(root_folder)
+        root_folder.setSiteManager(service_manager)
+    return service_manager
+
+######################################################################
+######################################################################
+
+def bootStrapSubscriber(event):
+    """The actual subscriber to the bootstrap IDataBaseOpenedEvent
+
+    Boostrap a Zope3 instance given a database object This first checks if the
+    root folder exists and has a service manager.  If it exists, nothing else
+    is changed.  If no root folder exists, one is added, and several essential
+    services are added and configured.
+    """
+
+    db, connection, root, root_folder = getInformationFromEvent(event)
+    root_created = False
+
+    if root_folder is None:
+        root_created = True
+        # ugh... we depend on the root folder implementation
+        root_folder = rootFolder()
+        root[ZopePublication.root_name] = root_folder
+        service_manager = getServiceManager(root_folder)
+
+        # Sundry other services
+        ensureService(service_manager, root_folder, ErrorLogging,
+                      RootErrorReportingService,
+                      copy_to_zlog=True)
+        ensureService(service_manager, root_folder, PrincipalAnnotation,
+                      PrincipalAnnotationService)
+        ensureService(service_manager, root_folder, Utilities,
+                      LocalUtilityService)
+
+        get_transaction().commit()
+        connection.close()
+
+########################################################################
+########################################################################
