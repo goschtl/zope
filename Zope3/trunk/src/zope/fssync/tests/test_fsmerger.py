@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.6 2003/05/28 15:02:25 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.7 2003/05/28 15:28:25 gvanrossum Exp $
 """
 
 import os
@@ -224,6 +224,7 @@ class TestFSMerger(TempFiles):
         for er in expected_reports_template:
             er = er.replace("%l", localfile)
             er = er.replace("%r", remotefile)
+            er = er.replace("/", os.sep)
             expected_reports.append(er)
         filtered_reports = [r for r in reports if r[0] not in "*/"]
         self.assertEqual(filtered_reports, expected_reports)
@@ -279,9 +280,8 @@ class TestFSMerger(TempFiles):
         return e
 
     def test_new_directory(self):
-        if not self.check_for_diff3():
-            return
-        self.mergetest("foo", None, None, {"x": "x"}, None, self.entry,
+        self.mergetest("foo", None, None, {"x": "x"},
+                       None, self.entry,
                        ["N %l/", "U %l/x"],
                        {"x": "x"}, {"x": "x"}, {"x": "x"},
                        self.entry, self.entry)
