@@ -4,6 +4,10 @@ Post CMF 1.4.2
 
     - CMFCore.PortalFolder: Explicitly declare base interfaces.
 
+    - CMFDefault.SkinnedFolder: Creator() method now resembles the one from
+      DublinCore. This allows for unowned objects and shuts up a deprectation
+      warning in Zope 2.6.4/2.7.0.
+
     - CMFCore.FSMetadata: the "acquire" flag for permission mappings was
       not converted to an int;  '0' was therefore coming through as true.
 
