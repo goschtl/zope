@@ -24,6 +24,7 @@ Test harness.
     The default is to run tests at level 1.  --all is a shortcut for -a 0.
 
 -b
+--build
     Run "python setup.py build" before running tests, where "python"
     is the version of python used to run test.py.  Highly recommended.
     Tests will be run from the build directory.  (Note: In Python < 2.3
@@ -683,7 +684,7 @@ def process_args(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmprtTuv",
                                    ["all", "help", "libdir=", "times=",
-                                    "keepbytecode", "dir="])
+                                    "keepbytecode", "dir=", "build"])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -694,7 +695,7 @@ def process_args(argv=None):
             level = int(v)
         elif k == "--all":
             level = 0
-        elif k == "-b":
+        elif k in ("-b", "--build"):
             build = True
         elif k == "-B":
              build = build_inplace = True
