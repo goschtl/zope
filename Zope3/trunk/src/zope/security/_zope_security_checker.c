@@ -90,7 +90,7 @@ checkPermission(PyObject *permission, PyObject *object, PyObject *name)
       Py_DECREF(r);
       if (i < 0)
         return -1;
-      if (i) 
+      if (i)
         return 0;
 /*             else: */
 /*                 __traceback_supplement__ = (TracebackSupplement, object) */
@@ -133,7 +133,7 @@ Checker_check_int(Checker *self, PyObject *object, PyObject *name)
     }
 
 
-  operator = (PyString_Check(name) 
+  operator = (PyString_Check(name)
               && PyString_AS_STRING(name)[0] == '_'
               && PyString_AS_STRING(name)[1] == '_');
 
@@ -150,10 +150,10 @@ Checker_check_int(Checker *self, PyObject *object, PyObject *name)
 /*         if name != '__iter__' or hasattr(object, name): */
 /*             __traceback_supplement__ = (TracebackSupplement, object) */
 /*             raise ForbiddenAttribute, (name, object) */
-      
+
       if (strcmp("__iter__", PyString_AS_STRING(name)) == 0
           && ! PyObject_HasAttr(object, name))
-        /* We want an attr error if we're asked for __iter__ and we don't 
+        /* We want an attr error if we're asked for __iter__ and we don't
            have it. We'll get one by allowing the access. */
         return 0;
     }
@@ -214,7 +214,7 @@ Checker_check_setattr(Checker *self, PyObject *args)
       Py_INCREF(Py_None);
       return Py_None;
     }
-  
+
 /*         __traceback_supplement__ = (TracebackSupplement, object) */
 /*         raise ForbiddenAttribute, (name, object) */
   args = Py_BuildValue("OO", name, object);
@@ -235,6 +235,15 @@ static PyObject *
 Checker_proxy(Checker *self, PyObject *value)
 {
   PyObject *checker, *r;
+
+/*        if type(value) is Proxy: */
+/*            return value */
+  if ((PyObject*)(value->ob_type) == Proxy)
+    {
+      Py_INCREF(value);
+      return value;
+    }
+
 /*         checker = getattr(value, '__Security_checker__', None) */
   checker = PyObject_GetAttr(value, str___Security_checker__);
 /*         if checker is None: */
@@ -267,10 +276,10 @@ Checker_proxy(Checker *self, PyObject *value)
           PyErr_SetObject(PyExc_ValueError, errv);
           Py_DECREF(errv);
         }
-      
+
       return NULL;
     }
-    
+
   r = PyObject_CallFunctionObjArgs(Proxy, value, checker, NULL);
   Py_DECREF(checker);
   return r;
@@ -282,7 +291,7 @@ Checker_proxy(Checker *self, PyObject *value)
 static struct PyMethodDef Checker_methods[] = {
   {"permission_id", (PyCFunction)Checker_permission_id, METH_O,
    "permission_id(name) -- Return the permission neded to get the name"},
-  {"setattr_permission_id", (PyCFunction)Checker_setattr_permission_id, 
+  {"setattr_permission_id", (PyCFunction)Checker_setattr_permission_id,
    METH_O,
    "setattr_permission_id(name) -- Return the permission neded to set the name"
   },
@@ -320,7 +329,7 @@ Checker_traverse(Checker *self, visitproc visit, void *arg)
     return -1;
   if (self->setperms != NULL && visit(self->setperms, arg) < 0)
     return -1;
-	
+
   return 0;
 }
 
@@ -330,10 +339,10 @@ Checker_init(Checker *self, PyObject *args, PyObject *kwds)
   PyObject *getperms, *setperms=NULL;
   static char *kwlist[] = {"get_permissions", "set_permissions", NULL};
 
-  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O!|O!:Checker", kwlist, 
-                                    &PyDict_Type, &getperms, 
+  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O!|O!:Checker", kwlist,
+                                    &PyDict_Type, &getperms,
                                     &PyDict_Type, &setperms))
-    return -1; 
+    return -1;
 
   Py_INCREF(getperms);
   self->getperms = getperms;
@@ -372,11 +381,11 @@ Checker_get_set_permissions(Checker *self, void *closure)
 }
 
 static PyGetSetDef Checker_getset[] = {
-    {"get_permissions", 
+    {"get_permissions",
      (getter)Checker_get_get_permissions, NULL,
      "getattr name to permission dictionary",
      NULL},
-    {"set_permissions", 
+    {"set_permissions",
      (getter)Checker_get_set_permissions, NULL,
      "setattr name to permission dictionary",
      NULL},
@@ -421,7 +430,7 @@ static PyTypeObject CheckerType = {
         /* tp_setattro       */ (setattrofunc)0,
         /* tp_as_buffer      */ 0,
         /* tp_flags          */ Py_TPFLAGS_DEFAULT
-				| Py_TPFLAGS_BASETYPE 
+				| Py_TPFLAGS_BASETYPE
                           	| Py_TPFLAGS_HAVE_GC,
 	/* tp_doc            */ "Security checker",
         /* tp_traverse       */ (traverseproc)Checker_traverse,
@@ -455,7 +464,7 @@ static PyTypeObject CheckerType = {
 /*     return value is None, then object should not be wrapped in a proxy. */
 /*     """ */
 
-static char selectChecker_doc[] = 
+static char selectChecker_doc[] =
 "Get a checker for the given object\n"
 "\n"
 "The appropriate checker is returned or None is returned. If the\n"
@@ -485,7 +494,7 @@ selectChecker(PyObject *ignored, PyObject *object)
 /*     if checker is _defaultChecker and isinstance(object, Exception): */
 /*         return None */
 
-  if (checker == _defaultChecker 
+  if (checker == _defaultChecker
       && PyObject_IsInstance(object, PyExc_Exception))
     {
       Py_INCREF(Py_None);
@@ -529,7 +538,7 @@ static PyMethodDef module_methods[] = {
 #define PyMODINIT_FUNC void
 #endif
 PyMODINIT_FUNC
-init_zope_security_checker(void) 
+init_zope_security_checker(void)
 {
   PyObject* m;
 
@@ -548,7 +557,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   INIT_STRING(__Security_checker__);
   INIT_STRING(interaction);
 
-  if ((_checkers = PyDict_New()) == NULL) 
+  if ((_checkers = PyDict_New()) == NULL)
     return;
 
   NoProxy = PyObject_CallObject((PyObject*)&PyBaseObject_Type, NULL);
@@ -580,7 +589,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
 
   m = Py_InitModule3("_zope_security_checker", module_methods,
                      "C optimizations for zope.security.checker");
-  
+
   if (m == NULL)
     return;
 
@@ -590,7 +599,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   EXPORT(NoProxy);
   EXPORT(_defaultChecker);
   EXPORT(_available_by_default);
-    
+
   Py_INCREF(&CheckerType);
   PyModule_AddObject(m, "Checker", (PyObject *)&CheckerType);
 }

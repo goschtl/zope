@@ -193,6 +193,8 @@ class Checker(object):
 
     def proxy(self, value):
         'See IChecker'
+        if type(value) is Proxy:
+            return value
         checker = getattr(value, '__Security_checker__', None)
         if checker is None:
             checker = selectChecker(value)
