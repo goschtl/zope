@@ -1,19 +1,48 @@
 #!/usr/bin/env python
 
+ XXX have to uninhibit the module docstring after editing - something is 
+     foiling pymode's font locking.
+
 """Apply actions dictated by traffic_table.py to checkins as they occur.
 
-An optional leading arg "--verbose" argument says operate verbosely.
+Normal operation is to fork into the background with stderr and stdout
+redirected to append to the file named by the OUTPUT_LOG config var.
 
-We expect to be invoked from loginfo with "%{CVSROOT} %{sVv}".  The %{sVv}
+Options:
+
+ --verbose - operate in verbose mode, with output to stdout.
+ --recurse - remote repository sync recurses into all subject dirs offspring
+ --dryrun - do not actually do any of the activities
+ --wait - do not fork into the background (and leave output in stdout/stderr)
+
+An optional leading arg --verbose argument says operate verbosely.
+
+We expect to be invoked from loginfo with %{CVSROOT} %{sVv}: The %{sVv}
 format string is expanded into a single argument passed in, containing
-multiple space-delimited parts.  The first part is the path of repository
-directory, then a comma-concatenated string for each file being checked in,
-consisting of the file name, the old version number, then the new one, like
-so: file-name,old-version,new-version.  (See the CVS Gnu INFO file for the
-node 'loginfo' for more format-string details.)
+multiple space-delimited parts:
 
-Currently the actions are emailing checkin messages and doing an rsync 
-to the public repository."""
+  - The first part is the path of repository directory
+
+  - Then a comma-concatenated string for each file being checked in,
+    consisting of:
+
+    - The file name,
+    - The old version number, then
+    - the new one, like so
+
+    filename,1.1,1.2
+
+(See the CVS Gnu INFO file for loginfo for more format-string details.)
+
+Currently the actions are:
+
+ - doing a g+w chmod of the subject files
+ - emailing checkin messages to designated recipients
+ - doing an rsync of the repository to the public repository host.
+
+... as dictated in the traffic_table.py module."""
+
+OUTPUT_LOG = "/var/tmp/cvs-postcommit_actions.log"
 
 MAIL_CMD = "/bin/mail"
 RSYNC_CMD = "/usr/bin/rsync"
@@ -83,11 +112,11 @@ def main(args):
     got = find_entries(repo)
 
     if not WAIT:
-        if os.fork():
-            # In parent - all done with that.
-            os._exit(0)
+        detach()
 
     do_chmod(subjs)
+
+    return                              # DEBUG
 
     for entry in got:
         (nm, expr, addrs, remote) = entry
@@ -95,6 +124,36 @@ def main(args):
             do_mail(nm, repo, addrs, subjs)
         if remote:
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
+
+logf = None
+def detach():
+    """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
+
+    global logf
+
+    if VERBOSE:
+        complain("Redirecting stdout and stderr to %s\n", OUTPUT_LOG)
+    try:
+        logf = open(OUTPUT_LOG, 'a')
+    except IOError:
+        complain("** Failed to open %s for append!!\n", OUTPUT_LOG)
+        complain("** Sticking with regular stdout and stderr!\n")
+        logf = None
+
+    sys.stdout = logf
+    sys.stderr = logf
+## This may not be necessary - keeping for now, in case it turns out to be.
+##     if hasattr(sys, "__stdout__"):
+##         sys.__stdout__ = logf
+##     if hasattr(sys, "__stderr__"):
+##         sys.__stderr__ = logf
+
+    if VERBOSE:
+        complain("Forking to background...\n")
+    if os.fork():
+        # In parent - all done with that.
+        os._exit(0)
+    
 
 def find_entries(repo):
     """Return all traffic_table entries that trigger for repo."""
@@ -113,12 +172,12 @@ def do_mail(name, repo, addrs, subjs):
     subject = "CVS checkin: %s -" % name
     for fn, old, new in subjs:
         subject = subject + " %s:%s" % (fn, new)
-    os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
-                                        (DRYRUN and "echo ") or "",
-                                        MAIL_CMD,
-                                        (VERBOSE and "-v") or "",
-                                        subject,
-                                        string.join(addrs, ",")))
+    directed_system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+                                              (DRYRUN and "echo ") or "",
+                                              MAIL_CMD,
+                                              (VERBOSE and "-v") or "",
+                                              subject,
+                                              string.join(addrs, ",")))
 
 def do_sync(name, repo, remote, subjs=None, recurse=0):
     """Instigate repository mirror synchronize.
@@ -154,22 +213,29 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
 
-    os.system("%s%s%s %s/%s/ %s:%s %s"
-              % ((VERBOSE and "set -x; ") or "",
-                 (DRYRUN and "echo ") or "",
-                 cmd,
-                 os.environ["CVSROOT"], repo,
-                 remote['host'], remote['repodir'],
-                 # if not waiting, ground the output so emacs doesn't wait...
-                 (not WAIT and " 2>&1 > /dev/null") or ""))
+    directed_system("%s%s%s %s/%s/ %s:%s"
+                    % ((VERBOSE and "set -x; ") or "",
+                       (DRYRUN and "echo ") or "",
+                       cmd,
+                       os.environ["CVSROOT"], repo,
+                       remote['host'], remote['repodir']))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
     if not fnames:
         fnames = ["."]
-    os.system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                    (DRYRUN and "echo ") or "",
-                                    string.join(fnames, " ")))
+    directed_system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
+                                          (DRYRUN and "echo ") or "",
+                                          string.join(fnames, " ")))
+
+def directed_system(cmd):
+    "Like os.system, but we wrap cmd for output redirection as appropriate."
+    if logf:
+        # Put parens around the command body, and redirect into the logf.
+        cmd = ("( exec 1> %s 2>&1; " + cmd +  ")") % logf.name
+
+    print "**", cmd, "**"               # DEBUG
+    os.system(cmd)
 
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
@@ -184,6 +250,7 @@ def usage():
 
 def complain(msg, *args):
     sys.stderr.write(msg % args)
+    sys.stderr.flush()
 
 if __name__ == "__main__":
     main(sys.argv)
