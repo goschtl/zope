@@ -2,6 +2,12 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CMFCore.TypesTool and CMFCore.PortalFolder: If invokeFactory is 
+      called from code it will now hand back the created object's ID. This
+      does not change any behavior when called directly from the web. Both
+      methods returned None before, so there is no dependencies anywhere
+      on their return values, anyway. (http://collector.zope.org/CMF/331)
+
     - CMFSetup: When importing skins configurations you can now specify a
       layer to be inserted after a given layer. Previously you could only
       insert before a given layer.
