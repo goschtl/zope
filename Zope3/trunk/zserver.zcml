@@ -33,7 +33,7 @@
     are optional.
 
     The following types are currently available: 
-        Browser - A standard HTML/XUL server
+        Browser - A standard HTML server
         XML-RPC - An XML-RPC server, for calling objects remotely
         FTP - A server to access the ZODB via the FTP protocol
     Soon:
