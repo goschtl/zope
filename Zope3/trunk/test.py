@@ -554,7 +554,11 @@ def process_args(argv=None):
 
     # Do the builds
     if build:
-        cmd = sys.executable + ' setup.py -q build'
+        # Python 2.3 is more sane in its non -q output
+        qflag = '-q'
+        if sys.hexversion >= 0x02030000:
+            qflag = ''
+        cmd = sys.executable + ' setup.py ' + qflag + ' build'
         if build_inplace:
             cmd += '_ext -i'
         sts = os.system(cmd)
