@@ -1,3 +1,15 @@
+##############################################################################
+#
+# Copyright (c) 2004 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Machinery for making things viewable through Five views
+
+$Id$
+"""
 from webdav.NullResource import NullResource
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements

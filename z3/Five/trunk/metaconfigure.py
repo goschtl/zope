@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic Components ZCML Handlers
 
-$Id: metaconfigure.py,v 1.5 2004/06/02 08:44:01 faassen Exp $
+$Id$
 """
 from zope.component import getService, getServices
 from zope.component.servicenames import Adapters
