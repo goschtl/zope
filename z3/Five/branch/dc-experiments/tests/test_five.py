@@ -132,15 +132,30 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 <p>maybe</p>
 """
         self.assertEquals(expected, resource())
+        resource = self.folder.unrestrictedTraverse('testoid/cockatiel.html')
+        self.assert_(isinstance(resource, Resource))
+        expected = """\
+<p>Have you ever seen a cockatiel?</p>
+<p>maybe</p>
+"""
+        self.assertEquals(expected, resource())
 
     def test_file_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++style.css')
         self.assert_(isinstance(resource, Resource))
         expected = 'http://nohost/test_folder_1_/testoid/++resource++style.css'
         self.assertEquals(expected, resource())
+        resource = self.folder.unrestrictedTraverse('testoid/style.css')
+        self.assert_(isinstance(resource, Resource))
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++style.css'
+        self.assertEquals(expected, resource())
 
     def test_image_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++pattern.png')
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++pattern.png'
+        self.assert_(isinstance(resource, Resource))
+        self.assertEquals(expected, resource())
+        resource = self.folder.unrestrictedTraverse('testoid/pattern.png')
         expected = 'http://nohost/test_folder_1_/testoid/++resource++pattern.png'
         self.assert_(isinstance(resource, Resource))
         self.assertEquals(expected, resource())

@@ -91,6 +91,10 @@ class SecurityTestCase(RestrictedPythonTest):
             self.checkUnauthorized(
                 'context.restrictedTraverse("testoid/++resource++%s")()' %
                 resource)
+        for resource in resource_names:
+            self.checkUnauthorized(
+                'context.restrictedTraverse("testoid/%s")()' %
+                resource)
 
     def test_permission(self):
         self.login('manager')
@@ -103,6 +107,10 @@ class SecurityTestCase(RestrictedPythonTest):
         for resource in resource_names:
             self.check(
                 'context.restrictedTraverse("testoid/++resource++%s")()' %
+                resource)
+        for resource in resource_names:
+            self.check(
+                'context.restrictedTraverse("testoid/%s")()' %
                 resource)
 
     def test_public_permission(self):
