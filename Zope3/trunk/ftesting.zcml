@@ -10,6 +10,7 @@
 
   <include files="package-includes/*-meta.zcml" />
   <include files="package-includes/*-configure.zcml" />
+  <include files="package-includes/*-ftesting.zcml" />
 
   <include file="securitypolicy.zcml" />
 
