@@ -159,8 +159,8 @@ acts like the time module's
 although not all objects support a timetuple() method.
 
 For time and timetz objects, format codes for year, month, and day
-should not be used, as time objects have no such values.  0 is used
-instead.
+should not be used, as time objects have no such values.  1900 is
+used for the year, and 0 for the month and day.
 
 For date objects, format codes for hours, minutes, and seconds should
 not be used, as date objects have no such values.  0 is used insted.
@@ -188,9 +188,8 @@ implementation.  Note that the 1999 version of the C standard added
 additional format codes.
 
 The exact range of years for which strftime() works also varies
-across platforms.  For example, Microsoft's implementation of
-strftime() refuses to accept years before 1900, and Python inherits
-this limitation.
+across platforms.  Regardless of platform, years before 1900 cannot
+be used.
 
 
 class timedelta
