@@ -20,7 +20,7 @@
 
 <subscriber
     handler=".generations.evolveMinimumSubscriber"
-    for="zope.app.appsetup.IDatabaseOpenedEvent" 
+    for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent" 
     >
     Only evolve to minimum generations on startup
 </subscriber>
