@@ -11,15 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-Run the test suite.
+"""Run the test suite.
 
 Usage: %(PROGRAM)s [options] [modfilter [testfilter]]
 Options:
 
 -b
     Run "python setup.py -q build" before running tests, where "python" is the
-    version of python used to run test.py.  Highly recommended.
+    version of python used to run test.py.  Highly recommended.  Tests will be
+    run from the build directory.
+
+-B
+    Run "python setup.py -q build_ext -i" before running tests.  Tests will be
+    run from the source directory.
 
 -c
     Use pychecker.
@@ -110,13 +114,14 @@ Extreme (yet useful) examples:
     to make sure all tests still pass.
 """
 
+import gc
 import os
-import pdb
 import re
+import pdb
 import sys
-import traceback
 import unittest
 import linecache
+import traceback
 from os.path import join, commonprefix
 
 from distutils.util import get_platform
@@ -159,6 +164,11 @@ class ImmediateTestResult(unittest._TextTestResult):
             self._maxWidth = 80 # would be nice to determine terminal width
             self._maxWidth -= len('xxxx/xxxx (xxx.x%): ') + 1
 
+    def stopTest(self, test):
+        if gc.garbage:
+            print test
+            print gc.garbage
+        
     def _print_traceback(self, msg, err, test, errlist):
         if self.showAll or self.dots:
             self.stream.writeln("\n")
@@ -273,7 +283,7 @@ class TestFileFinder:
 
         # ignore tests when the package can't be imported, possibly due to
         # dependency failures.
-        pkg = dir[len(self.prefix)+1:].replace('/', '.')
+        pkg = dir[len(self.prefix)+1:].replace(os.sep, '.')
         try:
             __import__(pkg)
         # We specifically do not want to catch ImportError since that's useful
@@ -424,6 +434,7 @@ def process_args(argv=None):
     global build
     global gcthresh
     global progress
+    global build_inplace
 
     module_filter = None
     test_filter = None
@@ -435,13 +446,14 @@ def process_args(argv=None):
     debug = False
     debugger = False
     build = False
+    build_inplace = False
     gcthresh = None
     gcflags = []
     progress = False
 
     try:
         opts, args = getopt.getopt(
-            argv[1:], 'bcdDg:G:hLumpTv',
+            argv[1:], 'bBcdDg:G:hLumpTv',
             ['help'])
     except getopt.error, msg:
         print msg
@@ -451,6 +463,8 @@ def process_args(argv=None):
     for k, v in opts:
         if k == '-b':
             build = True
+        elif k == '-B':
+            build = build_inplace = True
         elif k == '-c':
             os.environ['PYCHECKER'] = "-q"
             import pychecker.checker
@@ -483,7 +497,6 @@ def process_args(argv=None):
             VERBOSE += 1
 
     if gcthresh is not None:
-        import gc
         gc.set_threshold(gcthresh)
         print 'gc threshold:', gc.get_threshold()
 
@@ -499,6 +512,7 @@ def process_args(argv=None):
             val |= v
         gc.set_debug(v)
 
+    # XXX support not-build-in-place, when we get a setup.py
     if build:
         cmd = sys.executable + " stupid_build.py"
         if VERBOSE:
