@@ -2,6 +2,10 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - FSObject: Now FSObject-derived items like FSImage or FSFile can have 
+      security declarations inside the metadata file.
+      (http://www.zope.org/Collectors/CMF/289)
+
     - profiles: Moved 'default' profile to CMFDefault.
       Using the new 'importVarious' handler this profile now allows to create
       CMF sites identical to those created with manage_addCMFSite. 
