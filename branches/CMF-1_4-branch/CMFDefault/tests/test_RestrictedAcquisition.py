@@ -74,6 +74,7 @@ class BrokenAcquisitionTest(RequestTest):
         self.portal.allowed.ps()
 
     # This test fails in Zope 2.7.3. But it's a feature.
+    # Also see http://zope.org/Collectors/CMF/259
     def DISABLED_testAcquisitionDenied(self):
         self._makePS(self.portal, 'ps', '', 'print context.portal_membership')
         self.portal.denied.ps()
