@@ -1,0 +1,22 @@
+From: Foo Bar <foo.bar@bar.com>
+Subject: [Zope3-checkins] CVS: Zope3/src/foo/bar - Imported sources
+Date: Fri, 28 Mar 2003 11:58:05 +03:00
+Message-Id: <42@bar.com>
+
+Update of /cvs-repository/Zope3/src/foo/bar
+In directory cvs.zope.org:/tmp/cvs-serv12345
+
+Log message:
+Ipsum suum dolores quantum est er nonsensicum textum writum esmum inum tuum
+lineum furum testum logum messageum.
+
+Status:
+
+Vendor Tag:\tbarfulator
+Release Tags:\tyo-yo
+
+N Zope3/src/foo/bar/baz.py
+N Zope3/src/foo/bar/bar.pt
+
+No conflicts created by this import
+
