@@ -18,10 +18,10 @@ Zope Road Map
 
     - Provide a relatively firm foundation for beginner Zope 3
       developers who want to start building Zope 3 products or to
-      contribute to development.  
+      contribute to development.
 
     - Provide support for web "scriptors", who are creators of active
-      content. 
+      content.
 
     - Provide wider exposure of Zope 3.
 
@@ -45,7 +45,7 @@ Zope Road Map
         in the database and on the file-system can be merged.
 
       - ...
-  
+
   Later releases
 
     Zope X3.0
@@ -55,4 +55,3 @@ Zope Road Map
     After Zope X3.0
 
       See the list of things to do later: TODOLATER.txt.
-
