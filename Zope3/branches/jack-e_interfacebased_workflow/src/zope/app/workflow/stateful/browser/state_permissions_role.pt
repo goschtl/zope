@@ -1,0 +1,51 @@
+<html metal:use-macro='context/@@standard_macros/view'
+      i18n:domain='zope'>
+<body>
+<div metal:fill-slot='body'>
+<h1>State permissions role configuration</h1>
+<i>
+You may configure in here the set of permissions you want to be applied on this
+state. The permissions are defined on the process definition itself. You may
+add some from them.
+</i>
+<div align="left">
+  <h2>Below are the permissions role mapping in use for this state</h2>
+  <br />
+  <form name="form"
+        action="state_permissions_role_mapping_change.py">
+    <tal:block define="permissions context/getProcessDefinitionPermissions;
+                       roles context/getRelevantRoles">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+        <td>&nbsp;</td>
+        <td tal:repeat="role roles">
+          <strong>
+            <span tal:replace="role" />
+          </strong>
+        </td>
+        </tr>
+        <tr tal:repeat="permission permissions">
+          <td>
+            <strong>
+              <span tal:replace="permission" />
+            </strong>
+          </td>
+          <td tal:repeat="role roles">
+            <tal:block define="isChecked python:role in context.getPermissionInfo(permission) and 1 or 0">
+               <input type="checkbox"
+                      tal:attributes="value role;
+                                      name string:${permission}:list;
+                                      checked python:isChecked and 'checked' or  None" />
+             </tal:block>
+          </td>
+        </tr>
+      </table>
+    </tal:block>
+    <p>
+      <input type="submit" value="Change" />
+    </P>
+  </form>
+</div>
+</div>
+</body>
+</html>
