@@ -42,6 +42,26 @@
         menu="zmi_views" title="Test"
         permission="zope.ManageServices"/>
 
+    <pages
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        permission="zope.ManageBindings"
+        class="zope.app.cache.browser.cacheable.CacheableView"
+        >
 
+    <page
+        name="Caching.html"
+        attribute="form"  
+        menu="zmi_views" title="Caching"
+        />
+    <page
+        name="ChangeCaching.html"
+        attribute="action"
+        />
+    <page
+        name="InvalidateCache.html"
+        attribute="invalidate"
+        />
+
+    </pages>
 
 </configure>
