@@ -8,6 +8,7 @@
     <require
       permission="Zope.ManageServices"
       interface=".interfaces.IUITextIndex"
+      attributes="query"
       />
 
     <factory
