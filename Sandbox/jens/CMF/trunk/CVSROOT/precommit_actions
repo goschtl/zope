@@ -5,12 +5,11 @@
 # The script is invoked within the directory of the checkin.
 #  $1 - the directory of the corresponding cvs repository for the checkins.
 #  $2- - the names of the files being committed, from the working directory.
+#  $CVSROOT - 
 
-echo Args: $*
-
-SCRIPT="$0"; shift
-REPOSITORY="$0"; shift
-FILES="$*"
+SCRIPT="$0"
+REPOSITORY="$1"; shift
+FILES="$@"
 
 echo Script: "$SCRIPT", Repository: "$REPOSITORY", Files: "$FILES"
-echo Root? "${CVSROOT}"
+echo Root: "${CVSROOT}"
