@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.13 2003/03/25 16:30:23 tseaver Exp $
+$Id: add.py,v 1.14 2003/03/26 10:43:54 tseaver Exp $
 """
 
 import sys
@@ -158,7 +158,7 @@ def AddViewFactory(name, schema, label, permission, layer,
     provideView(for_, name, IBrowserPresentation, class_, layer)
 
 
-def add(_context, name, schema, content_factory, label='',
+def add(_context, name, schema, content_factory='', label='',
         permission = 'zope.Public', layer = "default",
         class_ = None, for_ = 'zope.app.interfaces.container.IAdding',
         template = None, omit=None, fields=None,
@@ -180,7 +180,8 @@ def add(_context, name, schema, content_factory, label='',
         actions = []
 
 
-    content_factory = _context.resolve(content_factory)
+    content_factory = (content_factory and _context.resolve(content_factory)
+                       or None)
 
     (schema, for_, bases, template, fields,
      ) = _normalize(
