@@ -22,7 +22,7 @@ from webdav.common import rfc1123_date
 from OFS.Image import File
 from OFS.content_types import guess_content_type
 
-from utils import _dtmldir
+from utils import _dtmldir, _setCacheHeaders, _ViewEmulator
 from CMFCorePermissions import ViewManagementScreens, View, FTPAccess
 from FSObject import FSObject
 from DirectoryView import registerFileExtension, registerMetaType, expandpath
@@ -117,7 +117,10 @@ class FSFile(FSObject):
         RESPONSE.setHeader('Content-Type', self.content_type)
         RESPONSE.setHeader('Content-Length', len(data))
 
-        self.ZCacheable_set(None)
+        if self.ZCacheable_getManager() is not None:
+            self.ZCacheable_set(None)
+        else:
+            _setCacheHeaders(_ViewEmulator().__of__(self), extra_context={})
         return data
 
     security.declareProtected(View, 'getContentType')

@@ -4,7 +4,10 @@ import os.path
 
 class DummyCachingManager:
     def getHTTPCachingHeaders( self, content, view_name, keywords, time=None ):
-        return ( ( 'foo', 'Foo' ), ( 'bar', 'Bar' ) )
+        return (
+            ('foo', 'Foo'), ('bar', 'Bar'),
+            ('test_path', '/'.join(content.getPhysicalPath())),
+            )
 
 from Products.CMFCore.tests.base.testcase import RequestTest, FSDVTest
 
@@ -118,6 +121,18 @@ class FSFileTests( RequestTest, FSDVTest):
 
         self.failUnless( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 200 )
+
+    def test_caching( self ):
+        self.root.caching_policy_manager = DummyCachingManager()
+        original_len = len(self.RESPONSE.headers)
+        file = self._makeOne('test_file', 'test_file.swf')
+        file = file.__of__(self.root)
+        file.index_html(self.REQUEST, self.RESPONSE)
+        headers = self.RESPONSE.headers
+        self.failUnless(len(headers) >= original_len + 3)
+        self.failUnless('foo' in headers.keys())
+        self.failUnless('bar' in headers.keys())
+        self.assertEqual(headers['test_path'], '/test_file')
 
 def test_suite():
     return unittest.TestSuite((

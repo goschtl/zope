@@ -24,6 +24,7 @@ from Globals import InitializeClass
 from Globals import MessageDialog
 
 from ExtensionClass import Base
+from Acquisition import Implicit
 from Acquisition import aq_get, aq_inner, aq_parent
 
 from AccessControl import ClassSecurityInfo
@@ -300,6 +301,17 @@ def _setCacheHeaders(obj, extra_context):
             RESPONSE = REQUEST['RESPONSE']
             for key, value in headers:
                 RESPONSE.setHeader(key, value)
+
+class _ViewEmulator(Implicit):
+    """Auxiliary class used to adapt FSFile and FSImage
+    for caching_policy_manager
+    """
+    def __init__(self, view_name=''):
+        self._view_name = view_name
+
+    def getId(self):
+        return self._view_name
+
 
 #
 #   Base classes for tools
