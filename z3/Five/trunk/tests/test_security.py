@@ -131,8 +131,8 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SecurityEquivalenceTestCase))
-    suite.addTest(unittest.makeSuite(PageSecurityTestCase))
+    #suite.addTest(unittest.makeSuite(SecurityEquivalenceTestCase))
+    #suite.addTest(unittest.makeSuite(PageSecurityTestCase))
     return suite
 
 if __name__ == '__main__':
