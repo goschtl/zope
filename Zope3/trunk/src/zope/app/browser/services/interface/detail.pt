@@ -1,0 +1,33 @@
+<html metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="zope">
+
+<div metal:fill-slot="body" tal:define="ignored view/setup">
+
+<h2 i18n:translate="">Interface
+<span tal:content="view/name">name</span>
+</h2>
+
+<div tal:condition="view/doc">
+    <h3>Documentation</h3>
+    <div tal:content="view/doc">This is a doc string.</div>
+</div>
+
+<div tal:condition="view/methods">
+    <h3>Methods</h3> 
+    <ul>
+    <li tal:repeat="method view/methods"
+        tal:content="method/__name__">Method name</li>
+    </ul>
+</div>
+
+<div tal:condition="view/schema">
+    <h3>Schema</h3>
+    <ul>
+    <li tal:repeat="field view/schema"
+        tal:content="field/__name__">Field name</li>
+    </ul>
+</div>
+
+</div>
+
+</html>

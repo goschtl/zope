@@ -18,4 +18,14 @@
     title="Browse"
     />
 
+<page
+    for="zope.app.interfaces.component.IInterfaceService"
+    name="detail.html"
+    template="detail.pt"
+    class=".Detail"
+    permission="zope.ManageServices"
+    menu="zmi_views"
+    title="Detail"
+    />
+
 </zopeConfigure>
