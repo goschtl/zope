@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.6 2002/09/17 21:58:17 rdmurray Exp $
+$Id: meta.py,v 1.7 2002/09/17 22:44:04 rdmurray Exp $
 """
 
 
@@ -56,7 +56,7 @@ def registersub(directives, name, handler_method=None):
     directives is the subdirective registry for the containing
     directive, which may be either a top-level directive or an
     intermediate sub-directive (if subdirectives are nested more than
-    two deep.
+    two deep).
 
     The name argument is a tuple with a namespace URI and an
     name string.
@@ -130,14 +130,15 @@ def begin(_custom_directives, _name, _context, **kw):
 
     return _exe(callable, subs, _context, kw)
 
-def sub(subs, _name, _context, **kw):
+def sub(handlertuple, _name, _context, **kw):
     """Begin executing a subdirective
 
-    The first argument, subs, is a registry of allowable subdirectives
+    The first argument, handlertuple, is a pair consisting of
+    an ISubdirectiveHandler and a registry of allowable subdirectives
     for the containing directive or subdirective.
 
     The _name argument is a tuple with a namespace URI and a
-    name string.
+    name string, naming the subdirective we are executing.
 
     The _context argument is an execution context object that
     directives use for functions like resolving names. It will be
@@ -151,29 +152,20 @@ def sub(subs, _name, _context, **kw):
       object will return a sequence of actions. The object must be
       called after sub-directives are processed.
 
-    - A registry for looking up subdirectives.
+    - A registry for looking up sub-subdirectives.
 
     """
 
-    base, subdirs = subs
+    base, subdirs = handlertuple
     try:
-        subs = subdirs[_name]
+        subtuple = subdirs[_name]
     except KeyError:
         raise InvalidDirective(_name)
         
-    # this is crufty.
-    # if this is a tuple, it means we created it as such in 
-    # registersub, and so we grab item 1 as the handler_method
-    # and rebind subs as item 0
-        
-    if isinstance(subs, tuple):
-        handler_method = subs[1]
-        subs = subs[0]
-    else:
-        handler_method = _name[1]
+    subsubs, handler_method = subtuple
     callable = getattr(base, handler_method)
 
-    return _exe(callable, subs, _context, kw)
+    return _exe(callable, subsubs, _context, kw)
 
 defaultkw = ({},)
 def end(base):
@@ -252,26 +244,23 @@ def _clear():
 
     #We initialize _directives with handlers for three (sub)directives:
     #directives, directive, and subdirective.  Given these three
-    #(whose implementation is defined in this module) we can use
+    #(whose implementation is contained in this module) we can use
     #zcml to define any other directives needed for a given system.
     #
     #This initialziation is done in a function to facilitate support
     #the unittest CleanUp class.
 
+    zopens = 'http://namespaces.zope.org/zope'
+    subdirkey = (zopens, 'subdirective')
+    subdir1 = {subdirkey: ({}, 'subdirective')}
+    subdir2 = {subdirkey: (subdir1, 'subdirective')}
+    subdir3 = {subdirkey: (subdir2, 'subdirective')}
     _directives.clear()
-    _directives[('http://namespaces.zope.org/zope', 'directive')] = (
-        Directive, {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        }}}})
-    _directives[('http://namespaces.zope.org/zope', 'directives')] = (
-        DirectiveNamespace, {
-        ('http://namespaces.zope.org/zope', 'directive'): {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        ('http://namespaces.zope.org/zope', 'subdirective'): {
-        }}}}})
+    _directives[(zopens, 'directive')] = (Directive, subdir3)
+    #This is incecstuous, but since there's no way to modify a
+    #directive or subdirective other than replacement, it should be OK.
+    directive = {(zopens, 'directive'): (subdir3, 'directive')}
+    _directives[(zopens, 'directives')] = (DirectiveNamespace, directive)
 
 _clear()
 
