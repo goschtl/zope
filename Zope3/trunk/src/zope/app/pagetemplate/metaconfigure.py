@@ -18,12 +18,25 @@ $Id$
 """
 from zope.app.pagetemplate.engine import Engine, _Engine
 from zope.testing.cleanup import addCleanUp
+from zope.interface import Interface
+from zope.configuration.fields import GlobalObject
+from zope.schema import TextLine
 
-def namespace(_context, prefix, interface):
-    _context.action(
-        discriminator = ("tales:namespace", prefix),
-        callable = Engine.registerFunctionNamespace,
-        args = (prefix, lambda ob: interface(ob)),
+class IExpressionTypeDirective(Interface):
+    """Register a new TALES expression type"""
+
+    name = TextLine(
+        title=u"Name",
+        description=u"""Name of the expression. This will also be used
+        as the prefix in actual TALES expressions.""",
+        required=True
+        )
+
+    handler = GlobalObject(
+        title=u"Handler",
+        description=u"""Handler is class that implements
+        zope.tales.interfaces.ITALESExpression.""",
+        required=True
         )
 
 def expressiontype(_context, name, handler):

@@ -5,13 +5,8 @@
 
   <meta:directives namespace="http://namespaces.zope.org/tales">
 
-    <meta:directive name="namespace"
-        schema=".metadirectives.INamespaceDirective"
-        handler=".metaconfigure.namespace"
-        />
-
     <meta:directive name="expressiontype"
-        schema=".metadirectives.IExpressionTypeDirective"
+        schema=".metaconfigure.IExpressionTypeDirective"
         handler=".metaconfigure.expressiontype"
         />
 

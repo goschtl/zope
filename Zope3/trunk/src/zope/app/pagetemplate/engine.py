@@ -33,7 +33,7 @@ from zope.i18n import translate
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.traversing.adapters import Traverser
-
+from zope.app.traversing.interfaces import IPathAdapter
 
 class InlineCodeError(Exception):
     pass
@@ -112,7 +112,61 @@ class ZopeContext(Context):
                 self.setGlobal(name, value)
         return result
 
+
+class AdapterNamespaces(object):
+    """Simulate tales function namespaces with adapter lookup.
+
+    When we are asked for a namespace, we return an object that
+    actually computes an adapter when called:
+
+    To demonstrate this, we need to register an adapter:
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+      >>> from zope.app.tests import ztapi
+      >>> def adapter1(ob):
+      ...     return 1
+      >>> ztapi.provideAdapter(None, IPathAdapter, adapter1, 'a1')
+
+    Now, with this adapter in place, we can try out the namespaces:
+
+      >>> ob = object()
+      >>> namespaces = AdapterNamespaces()
+      >>> namespace = namespaces['a1']
+      >>> namespace(ob)
+      1
+      >>> namespace = namespaces['a2']
+      >>> namespace(ob)
+      Traceback (most recent call last):
+      ...
+      KeyError: 'a2'
+
+
+    Cleanup:
+    
+      >>> tearDown()
+    """
+
+    def __init__(self):
+        self.namespaces = {}
+
+    def __getitem__(self, name):
+        namespace = self.namespaces.get(name)
+        if namespace is None:
+            def namespace(object):
+                try:
+                    return zapi.getAdapter(object, IPathAdapter, name=name)
+                except ComponentLookupError:
+                    raise KeyError, name
+                
+            self.namespaces[name] = namespace
+        return namespace
+
 class ZopeEngine(ExpressionEngine):
+
+    def __init__(self):
+        ExpressionEngine.__init__(self)
+        self.namespaces = AdapterNamespaces()
 
     def getContext(self, __namespace=None, **namespace):
         if __namespace:

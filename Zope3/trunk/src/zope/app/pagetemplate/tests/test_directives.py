@@ -36,21 +36,6 @@ template = """<configure
    </configure>"""
 
 
-class I(Interface):
-    pass
-
-class Adapter:
-    implements(I, ITraversable)
-
-    def __init__(self, context):
-        pass
-  
-    def title(self):
-        return "42" 
-
-    def traverse(self, name, *args):
-        return getattr(self, name)
-
 class Handler:
     pass
 
@@ -59,23 +44,6 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(Test, self).setUp()
         XMLConfig('meta.zcml', zope.app.pagetemplate)()
-
-    def testTalesAPI1(self):
-        ztapi.provideAdapter(None, I, Adapter)
-
-        xmlconfig(StringIO(template % (
-            """
-            <tales:namespace
-              prefix="zope"
-              interface="zope.app.pagetemplate.tests.test_directives.I"
-              />
-            """
-            )))
-
-        e = Engine.compile('context/zope:title')
-        res = e(Engine.getContext(context=None))
-
-        self.assertEqual(res, '42')
 
     def testExpressionType(self):
         xmlconfig(StringIO(template % (
