@@ -20,8 +20,11 @@ import sys, os
 
 here = os.path.dirname(os.path.realpath(__file__))
 here = os.path.dirname(here)
-lib = os.path.join(here, "lib", "python")
-print lib
+
+if sys.platform in ("win32",):
+    lib = os.path.join(here, "Lib", "site-packages")
+else:
+    lib = os.path.join(here, "lib", "python")
 sys.path.append(lib)
 
 ftesting = os.path.join(here, "skel", "etc", "ftesting.zcml")
