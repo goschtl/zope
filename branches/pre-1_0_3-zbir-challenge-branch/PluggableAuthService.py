@@ -1096,48 +1096,51 @@ class PluggableAuthService( Folder ):
         """ The __before_publishing_traverse__ hook. 
         """
         resp = req['RESPONSE']
-        resp.exception = self.exception
+        req._hold(ResponseCleanup(resp))
         resp._unauthorized = self._unauthorized
 
     #
-    # Response overrides
+    # Response override
     #
     def _unauthorized(self):
-        pass
-    
-    def exception(self, fatal=0, info=None,
-                  absuri_match=re.compile(r'\w+://[\w\.]+').match,
-                  tag_search=re.compile('[a-zA-Z]>').search,
-                  abort=1
-                  ):
         req = self.REQUEST
         resp = req['RESPONSE']
-        try: del resp.exception
-        except: pass
-        try: del resp._unauthorized
-        except: pass
-        
-        if type(info) is type(()) and len(info) == 3:
-            t, v, tb = info
-        else:
-            t, v, tb = sys.exc_info()
-        
-        if t == 'Unauthorized' or t == Unauthorized or (
-            isinstance(t, types.ClassType) and issubclass(t, Unauthorized)):
-            t = 'Unauthorized'
-            self.challenge(req, resp)
-            return resp
-        
-        return resp.exception(fatal, info, absuri_match, tag_search, abort)
-    
+        if not self.challenge(req, resp):
+            # Need to fall back here
+            resp = self._cleanupResponse()
+            resp._unauthorized()
+
     def challenge(self, request, response):
         # Go through all challenge plugins
         plugins = self._getOb('plugins')
         challengers = plugins.listPlugins( IChallengePlugin )
+
+        protocol = None
+
         for challenger_id, challenger in challengers:
-            if challenger.challenge(request, response):
-                break
-                                
+            challenger_protocol = getattr(challenger, 'protocol',
+                                          challenger_id)
+            if protocol is None or protocol == challenger_protocol:
+                if challenger.challenge(request, response):
+                    protocol = challenger_protocol
+
+        if protocol is not None:
+            # something fired, so it was a successful PAS challenge
+            return True
+
+        # nothing fired, so trigger the fallback
+        return False
+
+    def _cleanupResponse(self):
+        resp = self.REQUEST['RESPONSE']
+        # No errors of any sort may propagate, and we don't care *what*
+        # they are, even to log them.
+        try: del resp.unauthorized
+        except: pass
+        try: del resp._unauthorized
+        except: pass
+        return resp
+
     security.declarePublic( 'hasUsers' )
     def hasUsers(self):
         """Zope quick start sacrifice.
@@ -1261,3 +1264,20 @@ def addPluggableAuthService( dispatcher, REQUEST=None ):
                                 '?manage_tabs_message='
                                 'PluggableAuthService+added.'
                               % dispatcher.absolute_url() ) 
+
+class ResponseCleanup:
+    def __init__(self, resp):
+        self.resp = resp
+
+    def __del__(self):
+        # Free the references.
+        #
+        # No errors of any sort may propagate, and we don't care *what*
+        # they are, even to log them.
+        try: del self.resp.unauthorized
+        except: pass
+        try: del self.resp._unauthorized
+        except: pass
+        try: del self.resp
+        except: pass
+
