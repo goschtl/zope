@@ -34,7 +34,7 @@ else:
     sys.exit(1)
 
 
-from zope.app.process.mkzopeinstance import main
+from zope.app.server.mkzopeinstance import main
 
 
 sys.exit(main())
