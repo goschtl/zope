@@ -47,3 +47,6 @@ Do the following things to build a ZopeX3 distribution:
     After listening to a good CD, or perhaps having some Thai food,
     you should find a very large tarball named *ZopeX3-1.0.0a1.tgz* in
     the current directory.
+
+
+.. include:: links.rst
