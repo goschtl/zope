@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.9 2003/06/23 17:17:01 sidnei Exp $
+$Id: xmlobject.py,v 1.10 2003/08/07 15:55:53 garrett Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -86,7 +86,10 @@ class ReadContainerXmlObjectView(BrowserView):
             if item == oldItem:
                     continue
             subItems = []
-            keys = list(item.keys())
+            if IReadContainer.isImplementedBy(item):
+                keys = list(item.keys())
+            else:
+                keys = []
 
             # include the service manager
             keys.append('++etc++site')
