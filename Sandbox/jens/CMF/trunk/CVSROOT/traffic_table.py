@@ -109,6 +109,10 @@ def init_table():
          'addrs': 'zope-ptk@mail.zope.org',
          'remote': None},
 
+        {'path': "CMF",
+         'addrs': 'cmf-checkins@zope.org',
+         'remote': public_remote},
+
         {'path': "Packages/Products/XMLDocument",
          'addrs': zopeaddr,
          'remote': products_remote},
