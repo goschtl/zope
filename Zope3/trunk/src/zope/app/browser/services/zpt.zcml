@@ -1,0 +1,26 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+<!-- ZPT Templates -->
+
+  <view
+    for="zope.app.services.zpt.IZPTTemplate"
+    name="index.html"
+    class=".zpt.Source"
+    permission="zope.ManageServices" />
+
+  <editform
+    schema="zope.app.services.zpt.IZPTTemplate"
+    name="edit.html"
+    menu="zmi_views"
+    label="ZPT Template"
+    permission="zope.ManageServices" />
+
+  <menuItem
+    for="zope.app.interfaces.container.IAdding"
+    menu="add_component"
+    action="zope.app.services.zpt.ZPTTemplate"
+    title="ZPT Template" />
+
+</zope:configure>
