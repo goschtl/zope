@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.20 2004/03/05 22:09:25 jim Exp $
+$Id: config.py,v 1.21 2004/03/08 17:26:59 jim Exp $
 """
 
 import os.path
@@ -382,7 +382,8 @@ class ConfigurationAdapterRegistry(object):
     def __init__(self):
         super(ConfigurationAdapterRegistry, self).__init__()
         self._registry = {}
-        # Stores tuples of form: (namespace, name), schema, usedIn, info, parent
+        # Stores tuples of form:
+        #   (namespace, name), schema, usedIn, info, parent
         self._docRegistry = []
 
     def register(self, interface, name, factory):
@@ -391,7 +392,7 @@ class ConfigurationAdapterRegistry(object):
             r = AdapterRegistry()
             self._registry[name] = r
 
-        r.register(interface, Interface, factory)
+        r.provideAdapter(interface, Interface, factory)
 
     def document(self, name, schema, usedIn, info, parent=None):
         if isinstance(name, (str, unicode)):
@@ -407,7 +408,7 @@ class ConfigurationAdapterRegistry(object):
             if r is None:
                 raise ConfigurationError("Unknown directive", ns, n)
 
-        f = r.getForObject(context, Interface)
+        f = r.queryAdapter(context, Interface, raw=True)
         if f is None:
             raise ConfigurationError(
                 "The directive %s cannot be used in this context" % (name, ))
