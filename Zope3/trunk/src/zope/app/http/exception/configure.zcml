@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-<defaultView
+<view
     for="zope.exceptions.IUnauthorized"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
@@ -9,11 +9,23 @@
     />
 
 <defaultView
+    for="zope.exceptions.IUnauthorized"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    name="index.html"
+    />
+
+<view
     for="zope.exceptions.INotFoundError"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     permission="zope.Public"
     factory=".notfound.NotFound"
+    />
+
+<defaultView
+    for="zope.exceptions.INotFoundError"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    name="index.html"
     />
 
 </configure>
