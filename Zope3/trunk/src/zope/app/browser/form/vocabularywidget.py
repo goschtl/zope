@@ -327,7 +327,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
                                     selected=None)
 
 
-class VocabularyEditWidget(VocabularyEditWidgetBase):
+class SelectListWidget(VocabularyEditWidgetBase):
     """Vocabulary-backed single-selection edit widget.
 
     This widget can be used when the number of selections isn't going
@@ -368,6 +368,13 @@ class VocabularyEditWidget(VocabularyEditWidgetBase):
                                     id=self.name,
                                     value=self._showData())
 
+# more general alias
+VocabularyEditWidget = SelectListWidget
+
+class DropdownListWidget(SelectListWidget):
+    """Variation of the SelectListWidget that uses a drop-down list."""
+
+    size = 1
 
 class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
