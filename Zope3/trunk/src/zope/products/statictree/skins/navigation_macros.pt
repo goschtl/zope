@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      i18n:domain="zope">
+<body>
+
+  <!-- Java scripts for the navigation tree - none! -->
+
+  <metal:tree define-macro="navigation_tree_js">
+  </metal:tree>
+
+  <!-- Box containing the actual navigation tree -->
+
+  <metal:tree define-macro="navigation_tree_box">
+      <div class="box" id="navigationTree">
+        <h4 i18n:translate="">Navigation</h4>
+
+
+<table cellspacing="0"
+       tal:define="root      context/@@root_cookie_tree;
+                   result    root/getFlatDicts;
+                   flatdicts python:result[0];
+                   maxdepth  python:result[1];">
+
+<tr>
+  <td width="16">
+    <img src="" tal:define="icon root/context/@@zmi_icon | nothing"
+         tal:replace="structure icon" />
+  </td>
+
+  <td class="list-item"
+      tal:attributes="colspan python:maxdepth+2">
+    <a href=""
+       tal:attributes="href root/context/@@absolute_url"
+       tal:content="root/getId() | string:[top]"></a>
+  </td>
+</tr>
+
+<tr tal:repeat="dict flatdicts">
+<tal:block tal:define="node dict/node">
+
+  <td style="width:16px" tal:repeat="depth python:range(dict['depth'])">
+  </td>
+
+  <td style="width:16px">
+    <a href=""
+       tal:attributes="href string:?tree-state=${dict/tree-state}"
+       tal:condition="node/hasChildren">
+      <img tal:attributes="src context/++resource++pl.gif"
+           tal:condition="not:node/expanded" alt="+" border="0" />
+      <img tal:attributes="src context/++resource++mi.gif"
+           tal:condition="node/expanded" alt="-" border="0" />
+    </a>
+  </td>
+
+  <td style="width:16px"
+      tal:define="object nocall:node/context;
+                  icon   object/@@zmi_icon | nothing">
+    <img src="" tal:replace="structure icon" />
+  </td>
+
+  <td colspan="1" class="list-item"
+      tal:attributes="colspan python:maxdepth - dict['depth'] + 1">
+    <a href=""
+       tal:attributes="href node/context/@@absolute_url"
+       tal:content="node/context/__name__">
+      node/id
+    </a>
+  </td>
+
+</tal:block>
+</tr>
+
+</table>
+
+
+    </div>
+  </metal:tree>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="statictree"
+  >
+
+<!-- browser stuff -->
+
+  <browser:page
+    for="*"
+    permission="zope.View"
+    name="tree_example1.html"
+    template="example1.pt"
+    />
+
+</configure>
+

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="views/standard_macros/page"
+      >
+<body>
+
+<!--
+This example template demonstrates the direct use of the supplemented
+browser view (context/@@static_cookie_tree). No extra python code was
+required, only ZCML configuration.
+
+Feel free to use this template or parts of it in your own works
+without any license restrictions, but please give credit where credit
+is due.
+
+Tip: Change to @@static_cookie_tree below to @@folder_cookie_tree for
+a tree with only folders.
+-->
+
+<div metal:fill-slot="body">
+
+<table cellspacing="0"
+       tal:define="root      context/@@static_cookie_tree;
+                   result    root/getFlatDicts;
+                   flatdicts python:result[0];
+                   maxdepth  python:result[1];">
+
+<tr>
+  <td width="16">
+    <img src="" tal:define="icon context/@@zmi_icon | nothing"
+         tal:replace="structure icon" />
+  </td>
+
+  <td class="list-item"
+      tal:attributes="colspan python:maxdepth+2">
+    <b tal:content="root/getId() | string:[top]"></b>
+  </td>
+</tr>
+
+<tr tal:repeat="dict flatdicts">
+<tal:block tal:define="node dict/node">
+
+  <td style="width:16px" tal:repeat="depth python:range(dict['depth'])">
+  </td>
+
+  <td style="width:16px">
+    <a href=""
+       tal:attributes="href string:?tree-state=${dict/tree-state}"
+       tal:condition="node/hasChildren">
+      <img tal:attributes="src context/++resource++pl.gif"
+           tal:condition="not:node/expanded" alt="+" border="0" />
+      <img tal:attributes="src context/++resource++mi.gif"
+           tal:condition="node/expanded" alt="-" border="0" />
+    </a>
+  </td>
+
+  <td style="width:16px"
+      tal:define="object nocall:node/context;
+                  icon   object/@@zmi_icon | nothing">
+    <img src="" tal:replace="structure icon" />
+  </td>
+
+  <td colspan="1" class="list-item"
+      tal:attributes="colspan python:maxdepth - dict['depth'] + 1"
+      tal:content="node/context/__name__">
+    node/id
+  </td>
+
+</tal:block>
+</tr>
+
+</table>
+
+</div>
+</body>
+</html>

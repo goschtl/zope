@@ -1,0 +1,24 @@
+CHANGES
+=======
+
+v1.0.1 (2004-01-16) -- 'Nibbler'
+
+  - Added last remaining pieces for unit tests
+
+  - Updated documentation
+
+  - Integrated it into the Zope3 distribution below the zope.products
+    package
+
+v1.0 (2003-11-24) -- 'Lur'
+
+  - Ported to Zope 3
+
+  - Renamed it to 'statictree'
+
+  - Much more unit tests
+
+  - Added filter functionality
+
+  - Provided sample implementations as well as an alternate
+    rotterdam-like skin using the static tree
