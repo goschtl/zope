@@ -33,9 +33,9 @@ class WindowsUrlutilsTestCase(unittest.TestCase):
         self.assertEqual(urlutils.file_url("c:some\\file.txt"),
                          "file:///C|/some/file.txt")
         self.assertEqual(urlutils.file_url("\\some\\folder"),
-                         "file:///C|/some/folder")
+                         "file:///some/folder")
         self.assertEqual(urlutils.file_url("\\some\\folder\\"),
-                         "file:///C|/some/folder")
+                         "file:///some/folder")
 
     def test_without_drive_letter(self):
         self.assertEqual(urlutils.file_url("\\some\\file.txt"),
