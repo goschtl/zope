@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.7 2003/09/02 20:46:07 jim Exp $
+$Id: __init__.py,v 1.8 2003/09/21 17:32:29 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer 
@@ -85,6 +85,12 @@ class IPrincipalSource(Interface):
         Returns an object of type IPrincipal for the given principal
         id. A NotFoundError is raised if the principal cannot be
         found.
+
+        Note that the id has three parts, separated by tabs.  The
+        first two part are an authentication service id and a
+        principal source id.  The pricipal source will typically need
+        to remove the two leading parts from the id when doing it's
+        own internal lookup.
 
         Note that the authentication service nearest to the requested
         resource is called. It is up to authentication service
