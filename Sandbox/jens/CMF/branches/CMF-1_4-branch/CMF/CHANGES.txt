@@ -2,6 +2,9 @@ CMF 1.4.3 (unreleased)
 
   Bug Fixes
 
+    - CMFCalendar.CalendarTool: Converted '_usage' queries to dictionary 
+      syntax. Shuts up DeprecationWarnings in Zope 2.7.
+    
     - CMFCore.CachingPolicyManager:  make REQUEST argument optional
       for public methods, to ease scripting policy operations from
       setup code. (Collector #234)
