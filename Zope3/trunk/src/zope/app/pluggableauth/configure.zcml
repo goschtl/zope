@@ -40,7 +40,7 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.ISimpleService"
+        interface="zope.app.site.interfaces.ISimpleService"
         />
   </content>
 

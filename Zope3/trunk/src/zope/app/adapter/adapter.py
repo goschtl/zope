@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.1 2004/03/08 19:40:25 jim Exp $
+$Id: adapter.py,v 1.2 2004/03/13 15:21:06 srichter Exp $
 """
 __metaclass__ = type
 
@@ -28,7 +28,7 @@ import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.interfaces.services.registration
-import zope.app.interfaces.services.service
+import zope.app.site.interfaces
 import zope.app.security.permission
 import zope.app.services.registration
 import zope.component.interfaces
@@ -182,7 +182,7 @@ class LocalAdapterBasedService(
     """
 
     zope.interface.implements(
-        zope.app.interfaces.services.service.IBindingAware,
+        zope.app.site.interfaces.IBindingAware,
         )
 
     def __updateNext(self, servicename):
@@ -218,7 +218,7 @@ class LocalAdapterService(LocalAdapterRegistry, LocalAdapterBasedService):
 
     zope.interface.implements(
         zope.component.interfaces.IAdapterService,
-        zope.app.interfaces.services.service.ISimpleService,
+        zope.app.site.interfaces.ISimpleService,
         )
 
     def __init__(self):

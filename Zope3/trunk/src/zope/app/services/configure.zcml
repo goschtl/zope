@@ -20,71 +20,6 @@
   factory="zope.app.services.registration.Registered"
   />
 
-<!-- Service Manager -->
-
-  <content class="zope.app.services.service.SiteManager">
-    <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.ISiteManager
-                   zope.app.container.interfaces.IWriteContainer" />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-    </content>
-
-  <content class="zope.app.services.service.ServiceRegistration">
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.IServiceRegistration"
-        set_attributes="serviceType componentPath permission"
-        set_schema=
-            "zope.app.interfaces.services.registration.IRegistration"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IAddNotifiable"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IRemoveNotifiable"
-        />
-
-  </content>
-
-<!-- SiteManagementFolders -->
-
-  <content class="zope.app.services.folder.SiteManagementFolders">
-    <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IWriteContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.IComponentManager" />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-    </content>
-
-  <content class="zope.app.services.folder.SiteManagementFolder">
-    <factory />
-    <require
-        permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IWriteContainer"
-        attributes="getRegistrationManager resolve" 
-        />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-    </content>
-
 <!-- Registration Manager -->
 
   <content class="zope.app.services.registration.RegistrationManager">
@@ -138,27 +73,5 @@
     class=".registration.RegistrationManager"
     factory="zope.fssync.server.entryadapter.DirectoryAdapter"
     />
-
-<fssync:adapter
-    class=".folder.SiteManagementFolder"
-    factory="zope.fssync.server.entryadapter.DirectoryAdapter"
-    />
-
-<fssync:adapter
-    class=".service.ServiceManager"
-    factory=".service.ServiceManagerAdapter"
-    />
-
-<fssync:adapter
-    class=".service.ServiceRegistration"
-    factory=".registration.ComponentRegistrationAdapter"
-    />
-
-<adapter 
-  for="zope.app.interfaces.services.service.ISiteManager"
-  provides="zope.app.interfaces.file.IDirectoryFactory"
-  factory=".folder.SMFolderFactory"
-  permission="zope.ManageContent"
-  />
 
 </configure>

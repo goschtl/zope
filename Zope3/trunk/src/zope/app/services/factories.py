@@ -19,7 +19,7 @@ registration.py.
 The functions here may create invalid objects; a subsequent setBody()
 call to the adapter's setBody() method will make the object valid.
 
-$Id: factories.py,v 1.3 2003/06/21 21:22:12 jim Exp $
+$Id: factories.py,v 1.4 2004/03/13 15:21:34 srichter Exp $
 """
 
 def CacheRegistration():
@@ -31,7 +31,7 @@ def ConnectionRegistration():
     return ConnectionRegistration("", "") # name, componentPath
 
 def ServiceRegistration():
-    from zope.app.services.service import ServiceRegistration
+    from zope.app.site.service import ServiceRegistration
     return ServiceRegistration("", "") # name, componentPath
 
 def UtilityRegistration():

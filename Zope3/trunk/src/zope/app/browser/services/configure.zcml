@@ -2,9 +2,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-<!-- Site management -->
-   <zope:include package=".service" />
-
 <!-- General registration views --> 
    <zope:include package=".registration" />
 
@@ -27,40 +24,6 @@
       factory="zope.app.browser.services.field.ComponentPathDisplayWidget"
       permission="zope.ManageServices"
       />
-
-<!-- SiteManagementFolder -->
-
-  <addMenuItem
-      class="zope.app.services.folder.SiteManagementFolder"
-      permission="zope.ManageServices"
-      title="Site-Management Folder"
-      />
-
-  <page
-    for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-    permission="zope.ManageServices" 
-    class="zope.app.browser.container.contents.JustContents"
-    name="index.html" attribute="index" />
-
-  <page
-     name="contents.html"
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-     menu="zmi_views" title="Contents"
-     permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
-     attribute="contents" />
-
-  <view
-     name="+"
-     menu="zmi_actions" title="Add"
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-     permission="zope.ManageServices"
-     class="zope.app.browser.services.service.ComponentAdding">
-
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
-
-  </view>
 
 <!-- Generic page for objects that keep track of their registrations -->
 
@@ -90,9 +53,9 @@
 
   <view
     name="AddUtility"
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+     for="zope.app.site.interfaces.ISiteManagementFolder"
      permission="zope.ManageServices"
-     class="zope.app.browser.services.service.UtilityAdding">
+     class="zope.app.site.browser.UtilityAdding">
 
     <page name="index.html"  attribute="index"  />
     <page name="action.html" attribute="action" />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.4 2004/03/06 20:06:35 jim Exp $
+$Id: test_registrations.py,v 1.5 2004/03/13 15:21:35 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.dependable import DependencyError
 from zope.app.services.registration import SimpleRegistration
 from zope.app.services.registration import ComponentRegistration
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.dependable import IDependable
 from zope.app.traversing import traverse
 from zope.security.proxy import Proxy

@@ -65,6 +65,7 @@
   <include package="zope.app.hub" />  
   <include package="zope.app.menu" />  
   <include package="zope.app.pluggableauth" />  
+  <include package="zope.app.site" />  
   <include package="zope.app.utility" />  
 
   <!-- Utilities -->
@@ -76,12 +77,6 @@
   <include package="zope.app.bundle" />  
   <include package="zope.app.module" />
   <include package="zope.app.schemacontent" />
-
-  <!-- Interfaces -->
-  <!-- This is for module security declarations to make interfaces
-       accessable -->
-  <include package=".interfaces" />
-
 
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
@@ -134,5 +129,6 @@
   <!-- Browser Configurations -->
 
   <include package="zope.app.event.browser" />
+  <include package="zope.app.site.browser" />  
 
 </configure>

@@ -13,12 +13,12 @@
 ##############################################################################
 """Peristent Module tests
 
-$Id: test_module.py,v 1.1 2004/03/10 17:00:55 srichter Exp $
+$Id: test_module.py,v 1.2 2004/03/13 15:21:24 srichter Exp $
 """
 import unittest
 
 from zope.interface import Interface, implements
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.module import Manager
 from ZODB.tests.util import DB

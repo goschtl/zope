@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: __init__.py,v 1.1 2004/03/10 23:10:43 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 15:21:22 srichter Exp $
 """
 from persistent import Persistent
 from zope.interface import implements, providedBy
@@ -25,7 +25,7 @@ from zope.app.container.ordered import OrderedContainer
 from interfaces import ILocalBrowserMenu, ILocalBrowserMenuService
 from zope.app.publisher.interfaces.browser import \
      IBrowserMenuItem, IGlobalBrowserMenuService
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      BaseBrowserMenuService
 from zope.app.services.servicenames import Utilities, BrowserMenu

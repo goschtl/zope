@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.4 2004/03/11 11:03:38 srichter Exp $
+$Id: presentation.py,v 1.5 2004/03/13 15:21:26 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -25,7 +25,7 @@ import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.interfaces.services.registration
-import zope.app.interfaces.services.service
+import zope.app.site.interfaces
 import zope.app.adapter
 import zope.app.services.field
 import zope.app.interface.interfaces
@@ -50,7 +50,7 @@ class LocalPresentationService(
 
     zope.interface.implements(
         zope.component.interfaces.IPresentationService,
-        zope.app.interfaces.services.service.ISimpleService,
+        zope.app.site.interfaces.ISimpleService,
         zope.app.interfaces.services.registration.IRegistry,
         zope.app.interface.interfaces.IInterfaceBasedRegistry,
         )

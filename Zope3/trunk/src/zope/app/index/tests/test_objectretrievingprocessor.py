@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_objectretrievingprocessor.py,v 1.12 2004/03/11 09:19:31 srichter Exp $
+$Id: test_objectretrievingprocessor.py,v 1.13 2004/03/13 15:21:20 srichter Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
@@ -26,7 +26,7 @@ from zope.app.hub.interfaces import IObjectHub
 
 from zope.app.index.interfaces.interfaces import \
      IRankedObjectIterator, IRankedObjectRecord
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 from zope.app.index.processors import ObjectRetrievingProcessor
 from zope.app.index.processors import RankedObjectRecord, RankedObjectIterator
 from zope.app.index.queries import BatchedRankedResult

@@ -13,14 +13,14 @@
 ##############################################################################
 """MKCOL tests
 
-$Id: test_mkcol.py,v 1.8 2004/03/03 10:38:41 philikon Exp $
+$Id: test_mkcol.py,v 1.9 2004/03/13 15:21:14 srichter Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
 from zope.app.traversing import traverse
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.container.interfaces import IWriteContainer
 from zope.app.interfaces.file import IWriteDirectory

@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Authentication Service or Principal Registry
 
-$Id: principalregistry.py,v 1.1 2004/03/08 12:08:08 srichter Exp $
+$Id: principalregistry.py,v 1.2 2004/03/13 15:21:32 srichter Exp $
 """
 from zope.interface import implements
 from zope.exceptions import NotFoundError
@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 from zope.app.container.contained import Contained, contained
 
 class DuplicateLogin(Exception): pass

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Auth Tests
 
-$Id: test_pluggableauth.py,v 1.1 2004/03/10 17:56:37 srichter Exp $
+$Id: test_pluggableauth.py,v 1.2 2004/03/13 15:21:26 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -21,7 +21,7 @@ from zope.interface.verify import verifyObject
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.tests import placefulsetup
+from zope.app.site.tests import placefulsetup
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.1 2004/03/11 10:18:37 srichter Exp $
+$Id: test_presentation.py,v 1.2 2004/03/13 15:21:27 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -25,10 +25,10 @@ from zope.interface.verify import verifyObject
 
 from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
-from zope.app.services.service import ServiceManager
+from zope.app.site.service import ServiceManager
 from zope.app.services.servicenames import Presentation
 from zope.app.services.tests.iregistry import TestingIRegistry
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.presentation.presentation import ViewRegistration
 from zope.app.presentation.presentation import PageRegistration
 from zope.app.presentation.presentation import BoundTemplate

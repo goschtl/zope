@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.1 2004/03/02 17:11:11 philikon Exp $
+$Id: test_standardmacros.py,v 1.2 2004/03/13 15:21:08 srichter Exp $
 """
 
 import unittest
 from zope.app.tests import ztapi
 from zope.interface import implements
-from zope.app.services.tests.placefulsetup \
+from zope.app.site.tests.placefulsetup \
            import PlacefulSetup
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView

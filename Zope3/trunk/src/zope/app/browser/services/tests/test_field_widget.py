@@ -13,11 +13,11 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.15 2003/09/21 17:30:40 jim Exp $
+$Id: test_field_widget.py,v 1.16 2004/03/13 15:21:10 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest

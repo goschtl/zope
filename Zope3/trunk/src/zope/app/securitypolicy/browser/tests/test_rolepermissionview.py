@@ -13,7 +13,7 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id: test_rolepermissionview.py,v 1.3 2004/03/08 12:06:06 srichter Exp $
+$Id: test_rolepermissionview.py,v 1.4 2004/03/13 15:21:33 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.publisher.browser import BrowserView, TestRequest
 from zope.app.tests import ztapi
 from zope.app.security.permission import Permission
 from zope.app.security.interfaces import IPermission
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole

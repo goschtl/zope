@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for Annotation Role Permission Manager.
 
-$Id: test_annotationrolepermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
+$Id: test_annotationrolepermissionmanager.py,v 1.4 2004/03/13 15:21:33 srichter Exp $
 """
 import unittest
 from zope.interface import implements
@@ -24,7 +24,7 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.app.security.settings import Allow, Deny
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole

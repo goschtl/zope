@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: localservice.py,v 1.1 2004/03/11 08:14:02 srichter Exp $
+$Id: localservice.py,v 1.2 2004/03/13 15:21:16 srichter Exp $
 """
 import logging
 from zope.exceptions import NotFoundError
@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.component import queryService
 from zope.app.event.interfaces import IEvent, ISubscriber, IEventChannel
 from zope.app.event.interfaces import ISubscriptionService, IEventService
-from zope.app.interfaces.services.service import IBindingAware
+from zope.app.site.interfaces import IBindingAware
 
 from zope.component import ComponentLookupError
 from zope.app.services.servicenames import HubIds, EventPublication
@@ -325,7 +325,7 @@ class ServiceSubscribable(Subscribable):
                     yield subscription
 
 
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 
 class EventService(ServiceSubscriberEventChannel, ServiceSubscribable,
                    Contained):

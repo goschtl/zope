@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editregistration.py,v 1.6 2004/03/03 10:38:37 philikon Exp $
+$Id: test_editregistration.py,v 1.7 2004/03/13 15:21:09 srichter Exp $
 """
 __metaclass__ = type
 
@@ -26,7 +26,7 @@ from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest

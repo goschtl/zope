@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.5 2004/03/10 19:41:09 srichter Exp $
+$Id: test_sqlscript.py,v 1.6 2004/03/13 15:21:35 srichter Exp $
 """
 import unittest
 from zope.interface import implements, classImplements
@@ -35,7 +35,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 
 from zope.app.sqlscript.sqlscript import SQLScript, Arguments
 from zope.app.sqlscript.interfaces import ISQLScript

@@ -13,11 +13,11 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.1 2004/03/11 22:05:01 srichter Exp $
+$Id: tests.py,v 1.2 2004/03/13 15:21:39 srichter Exp $
 """
 import unittest
 from zope.app.tests import setup
-from zope.app.services.tests import placefulsetup
+from zope.app.site.tests import placefulsetup
 from zope.app import utility
 from zope.component.utility import utilityService as globalUtilityService
 from zope.interface import Interface, implements

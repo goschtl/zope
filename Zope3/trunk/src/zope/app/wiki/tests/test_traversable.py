@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_traversable.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_traversable.py,v 1.2 2004/03/13 15:21:40 srichter Exp $
 """
 import unittest, sys
 from zope.exceptions import NotFoundError
@@ -23,7 +23,7 @@ from zope.app.wiki.wiki import Wiki
 from zope.app.wiki.wikipage import WikiPage
 from zope.app.wiki.traversal import WikiPageTraversable
 
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 class TestTraversable(PlacefulSetup, CleanUp, unittest.TestCase):
 

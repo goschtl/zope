@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: folder.py,v 1.3 2004/02/25 23:02:25 faassen Exp $
+$Id: folder.py,v 1.4 2004/03/13 15:21:17 srichter Exp $
 """
 
 from persistent import Persistent
@@ -21,7 +21,7 @@ from zope.exceptions import DuplicationError
 from zope.interface import implements, directlyProvides
 
 from zope.app.container.contained import Contained, setitem, uncontained
-from zope.app.services.servicecontainer import ServiceManagerContainer
+from zope.app.site.servicecontainer import ServiceManagerContainer
 
 from interfaces import IFolder, IRootFolder
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.2 2004/03/06 16:50:19 jim Exp $
+$Id: tests.py,v 1.3 2004/03/13 15:21:14 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
@@ -22,7 +22,7 @@ from zope.app.tests import ztapi
 
 from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.traversing import traverse
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.container.interfaces import IContainer
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove import ObjectMover

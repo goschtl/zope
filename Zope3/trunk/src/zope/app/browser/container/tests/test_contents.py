@@ -13,11 +13,11 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.34 2004/03/08 12:05:52 srichter Exp $
+$Id: test_contents.py,v 1.35 2004/03/13 15:21:08 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.copypastemove.interfaces import IObjectMover
 

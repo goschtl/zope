@@ -13,12 +13,12 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.1 2004/03/11 10:18:37 srichter Exp $
+$Id: test_pagefolder.py,v 1.2 2004/03/13 15:21:27 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
 from zope.app.tests import setup
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.presentation.pagefolder import PageFolder, IPageFolder
 from zope.app.presentation.zpt import ZPTTemplate
 from zope.app.presentation import LocalPresentationService

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.17 2004/03/06 16:50:20 jim Exp $
+$Id: test_propfind.py,v 1.18 2004/03/13 15:21:14 srichter Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,7 +31,7 @@ from zope.app.tests import ztapi
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.container.interfaces import IReadContainer
 from zope.app.dublincore.interfaces import IZopeDublinCore

@@ -33,7 +33,7 @@
   />
 
 <adapter 
-  for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+  for="zope.app.site.interfaces.ISiteManagementFolder"
   provides="zope.app.interfaces.file.IDirectoryFactory"
   factory=".pagefolder.PageFolderFactory"
   permission="zope.ManageContent"

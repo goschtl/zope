@@ -13,7 +13,7 @@
 ##############################################################################
 """Undo Tests
 
-$Id: test_undo.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
+$Id: test_undo.py,v 1.2 2004/03/13 15:21:39 srichter Exp $
 """
 from datetime import datetime
 from unittest import TestCase, main, makeSuite
@@ -21,7 +21,7 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.undo.interfaces import IUndoManager
 from zope.app.undo.browser import UndoView
 

@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""REgistration Status Property Tests
 
-XXX longer description goes here.
-
-$Id: test_registrationstatusproperty.py,v 1.4 2003/09/21 17:31:13 jim Exp $
+$Id: test_registrationstatusproperty.py,v 1.5 2004/03/13 15:21:35 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.services.tests.registrationstack import TestingRegistration
 from zope.app.services.tests.registrationstack import TestingRegistrationStack
 from zope.app.interfaces.services.registration import RegisteredStatus

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.5 2004/03/06 15:38:43 jim Exp $
+$Id: tests.py,v 1.6 2004/03/13 15:21:18 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.tests import ztapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.folder.interfaces import IFolder
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.component.tests.test_servicemanagercontainer \
      import BaseTestServiceManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer

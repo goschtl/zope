@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.15 2004/03/11 09:19:32 srichter Exp $
+$Id: test_index.py,v 1.16 2004/03/13 15:21:21 srichter Exp $
 """
 
 import unittest
 
 from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.component import getService
 from zope.app.services.servicenames import HubIds

@@ -16,13 +16,13 @@
 This setup class can be used, if a set of local principals are required for a
 test.
 
-$Id: authsetup.py,v 1.1 2004/03/10 17:56:37 srichter Exp $
+$Id: authsetup.py,v 1.2 2004/03/13 15:21:26 srichter Exp $
 """
 import base64
 from zope.publisher.browser import TestRequest as Request
 
 from zope.app.tests import ztapi, setup
-from zope.app.services.tests import placefulsetup
+from zope.app.site.tests import placefulsetup
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.basicauthadapter import BasicAuthAdapter

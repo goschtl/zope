@@ -11,12 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Event Setup
 
-Revision information:
-$Id: eventsetup.py,v 1.1 2004/03/11 08:14:04 srichter Exp $
+$Id: eventsetup.py,v 1.2 2004/03/13 15:21:17 srichter Exp $
 """
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 class EventSetup(PlacefulSetup):
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.12 2003/09/21 17:30:46 jim Exp $
+$Id: test_field.py,v 1.13 2004/03/13 15:21:35 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.schema.interfaces import ValidationError
 from zope.interface import Interface, implements

@@ -13,11 +13,11 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspectorview.py,v 1.2 2004/03/05 15:54:39 eddala Exp $
+$Id: test_introspectorview.py,v 1.3 2004/03/13 15:21:22 srichter Exp $
 """
 
 import unittest
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.publisher.browser import TestRequest
 from zope.app.tests import setup
 from zope.interface import Interface, directlyProvidedBy

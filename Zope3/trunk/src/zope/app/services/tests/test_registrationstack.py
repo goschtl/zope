@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Registration Stack tests
 
-XXX longer description goes here.
-
-$Id: test_registrationstack.py,v 1.4 2003/11/21 17:09:56 jim Exp $
+$Id: test_registrationstack.py,v 1.5 2004/03/13 15:21:35 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.services.registration import RegistrationStack
 from zope.app.traversing import traverse
 

@@ -13,11 +13,10 @@
 ##############################################################################
 """Principal Annotation Tests
 
-$Id: test_principalannotation.py,v 1.11 2004/03/08 12:06:21 srichter Exp $
+$Id: test_principalannotation.py,v 1.12 2004/03/13 15:21:35 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.services.tests.placefulsetup \
-    import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.component import getServiceManager
 from zope.app.services.principalannotation import \
      PrincipalAnnotationService, AnnotationsForPrincipal

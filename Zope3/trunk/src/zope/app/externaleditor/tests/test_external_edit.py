@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_external_edit.py,v 1.2 2004/03/02 18:16:13 philikon Exp $
+$Id: test_external_edit.py,v 1.3 2004/03/13 15:21:17 srichter Exp $
 """
 
 import unittest
@@ -20,7 +20,7 @@ from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest
 
 from zope.app import zapi
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import ztapi
 from zope.app.container.contained import contained
 from zope.app.content.interfaces import IContentType

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.1 2004/03/10 17:56:32 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 15:21:25 srichter Exp $
 """
 import random
 import sys
@@ -44,7 +44,7 @@ from zope.app.container.ordered import OrderedContainer
 
 from zope.app.services.servicenames import Authentication
 from zope.app.security.interfaces import ILoginPassword
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 from zope.app.component.nextservice import queryNextService
 
 from interfaces import IUserSchemafied, IPluggableAuthenticationService

@@ -13,7 +13,7 @@
 ##############################################################################
 """XML import/export tests
 
-$Id: test_xmlimportexport.py,v 1.12 2004/03/08 12:06:25 srichter Exp $
+$Id: test_xmlimportexport.py,v 1.13 2004/03/13 15:21:42 srichter Exp $
 """
 import unittest
 from StringIO import StringIO
@@ -29,7 +29,7 @@ from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.security.permission import Permission
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler

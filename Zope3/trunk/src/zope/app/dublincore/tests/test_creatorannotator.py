@@ -13,10 +13,10 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.10 2004/03/08 12:05:56 srichter Exp $
+$Id: test_creatorannotator.py,v 1.11 2004/03/13 15:21:15 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.testing.cleanup import CleanUp
 
 from zope.interface import Interface, implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """View ZPT Tests
 
-$Id: test_viewzpt.py,v 1.11 2004/03/04 02:07:04 philikon Exp $
+$Id: test_viewzpt.py,v 1.12 2004/03/13 15:21:24 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.interface import Interface, implements
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 
 class I1(Interface):

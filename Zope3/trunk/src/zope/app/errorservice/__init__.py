@@ -15,7 +15,7 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: __init__.py,v 1.1 2004/03/10 13:43:35 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 15:21:16 srichter Exp $
 """
 import time
 import logging
@@ -26,7 +26,7 @@ from types import StringTypes
 
 from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 from zope.app.container.contained import Contained
 from interfaces import IErrorReportingService, ILocalErrorReportingService
 

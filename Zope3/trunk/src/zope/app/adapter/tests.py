@@ -173,7 +173,7 @@
    >>> a.args == (f2, )
    True
 
-   $Id: tests.py,v 1.1 2004/03/08 19:40:25 jim Exp $
+   $Id: tests.py,v 1.2 2004/03/13 15:21:07 srichter Exp $
    """
 
 def test_named_adapters():
@@ -824,11 +824,11 @@ def test_LocalAdapterBasedService():
 
     Create a local service class, which must define setNext:
 
-    >>> import zope.app.interfaces.services.service
+    >>> import zope.app.site.interfaces
     >>> class LocalF(LocalAdapterBasedService):
     ...     zope.interface.implements(
     ...         IF2,
-    ...         zope.app.interfaces.services.service.ISimpleService,
+    ...         zope.app.site.interfaces.ISimpleService,
     ...         )
     ...     def setNext(self, next, global_):
     ...         self.next, self.global_ = next, global_

@@ -13,12 +13,12 @@
 ##############################################################################
 """Folder interfaces
 
-$Id: interfaces.py,v 1.3 2004/03/03 10:38:43 philikon Exp $
+$Id: interfaces.py,v 1.4 2004/03/13 15:21:18 srichter Exp $
 """
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.services.service import IPossibleSite
+from zope.app.site.interfaces import IPossibleSite
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 class IFolder(IContainer, IContentContainer, IPossibleSite,

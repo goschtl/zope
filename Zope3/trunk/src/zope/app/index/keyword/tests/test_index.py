@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for keyword index.
 
-$Id: test_index.py,v 1.5 2004/03/11 09:19:30 srichter Exp $
+$Id: test_index.py,v 1.6 2004/03/13 15:21:20 srichter Exp $
 """
 import unittest
 
 from zope.interface import Interface, Attribute, implements
 from zope.interface.verify import verifyObject
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import ztapi
 from zope.app.hub import \
     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, ObjectModifiedHubEvent

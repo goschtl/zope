@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Browser Tests
 
-$Id: tests.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
+$Id: tests.py,v 1.2 2004/03/13 15:21:23 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 
 from zope.component import getServiceManager
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.menu.browser import MenuAccessView
 from zope.publisher.browser import TestRequest
@@ -31,7 +31,7 @@ from zope.app.publication.traversers import TestTraverser
 from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 
 def d(title, action):
     return {'action': action, 'title': title, 'description': ''}
