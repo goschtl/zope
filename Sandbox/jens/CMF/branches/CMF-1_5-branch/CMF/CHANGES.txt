@@ -11,6 +11,8 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - ZPT skin: Added missing mail_password_template.
+
     - TypeInformation: Simplified Method Aliases API.
       The new queryMethodID() replaces getMethodPath() and getMethodURL().
       Aliases for method paths are no longer supported.
