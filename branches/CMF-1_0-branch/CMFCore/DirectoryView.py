@@ -89,8 +89,7 @@ __version__='$Revision$'[11:-2]
 import Globals
 from Globals import HTMLFile, Persistent
 import os
-from os import path
-from os import listdir
+from os import path, listdir, stat
 from Acquisition import aq_inner, aq_parent, aq_base
 from string import split, rfind, strip
 from App.Common import package_home
@@ -136,6 +135,7 @@ def minimalpath(p):
 
 class DirectoryInformation:
     data = None
+    _v_last_read = 0
 
     def __init__(self, expanded_fp, minimal_fp):
         self.filepath = minimal_fp
@@ -183,11 +183,20 @@ class DirectoryInformation:
         return types
 
     def getContents(self, registry):
+        changed = 0
+        if Globals.DevelopmentMode:
+            try: mtime = stat(expandpath(self.filepath))[8]
+            except: mtime = 0
+            if mtime != self._v_last_read:
+                self._v_last_read = mtime
+                changed = 1
+
         data = self.data
-        if data is not None:
+        if data is not None and not changed:
             return data
         try:
-            self.data = data = self.prepareContents(registry)
+            self.data = data = self.prepareContents(registry,
+                register_subdirs=changed)
         except:
             # DEBUG
             import traceback
@@ -196,7 +205,7 @@ class DirectoryInformation:
             self.data = data = {}
         return data
 
-    def prepareContents(self, registry):
+    def prepareContents(self, registry, register_subdirs=0):
         # Creates objects for each file.
         fp = expandpath(self.filepath)
         data = {}
@@ -208,9 +217,14 @@ class DirectoryInformation:
             e_filepath = path.join(self.filepath, entry)
             e_fp = expandpath(e_filepath)
             if path.isdir(e_fp):
-                # Add a subdirectory only if it was
-                # previously registered.
+                # Add a subdirectory only if it was previously registered,
+                # unless register_subdirs is set.
                 info = registry.getDirectoryInfo(e_filepath)
+                if info is None and register_subdirs:
+                    # Register unknown subdirs
+                    if entry not in ('CVS', 'SVN', '.', '..'):
+                        registry.registerDirectoryByPath(e_fp)
+                        info = registry.getDirectoryInfo(e_filepath)
                 if info is not None:
                     mt = types.get(entry)
                     t = None
