@@ -98,11 +98,13 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
+        self.assertEquals(list(u), [])
 
         uid = u.register(obj)
         ref = KeyReferenceToPersistent(obj)
         self.assertEquals(len(u), 1)
         self.assertEquals(u.items(), [(uid, ref)])
+        self.assertEquals(list(u), [uid])
 
         obj2 = P()
         obj2.__parent__ = obj
@@ -112,6 +114,11 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(len(u), 2)
         result = u.items()
         expected = [(uid, ref), (uid2, ref2)]
+        result.sort()
+        expected.sort()
+        self.assertEquals(result, expected)
+        result = list(u)
+        expected = [uid, uid2]
         result.sort()
         expected.sort()
         self.assertEquals(result, expected)

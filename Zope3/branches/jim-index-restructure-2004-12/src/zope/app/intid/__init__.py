@@ -59,6 +59,9 @@ class IntIds(Persistent, Contained):
     def items(self):
         return list(self.refs.items())
 
+    def __iter__(self):
+        return self.refs.iterkeys()
+
     def getObject(self, id):
         return self.refs[id]()
 
