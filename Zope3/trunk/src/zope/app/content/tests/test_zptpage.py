@@ -14,12 +14,13 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.5 2002/12/28 17:49:25 stevea Exp $
+$Id: test_zptpage.py,v 1.6 2003/01/25 14:48:52 jim Exp $
 """
 
 import unittest
 
 from zope.interface.verify import verifyClass
+from zope.exceptions import Forbidden
 
 from zope.app.content.zpt import ZPTPage, SearchableText
 from zope.app.interfaces.content.zpt import IZPTPage
@@ -90,6 +91,17 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             'zope'
             '</a></body></html>'
             )
+
+    def test_request_protected(self):
+        page = ZPTPage()
+        page.setSource(
+            u'<p tal:content="python: request.__dict__" />'
+            )
+
+        page = Wrapper(page, Data(name='zope'))
+
+        self.assertRaises(Forbidden, page.render, Data())
+
 
 class DummyZPT:
 
