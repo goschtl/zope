@@ -41,11 +41,12 @@ Five Misc Topics
 
 Resources
 
+
 	Various kinds of resources available
 
 	File, image, page template resource
 
-        Accessible through ++resource++ namespace
+	Accessible through ++resource++ namespace
 
 %page
 
@@ -100,7 +101,7 @@ Bridging interfaces
 	"Bride of Frankenzope"
 
 	Utility functions in bridge.py
-	
+
 	Can convert Zope 2 interface to Zope 3 interface
 
 %page
@@ -120,7 +121,7 @@ Events
 
 Content directive and permissions
 
-	
+
 	Use content directive to declare Zope 2 permissions Zope 3 style
 
 	Declare permissions from ZCML, no more declareProtected()
