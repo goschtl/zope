@@ -67,7 +67,7 @@ table = [
 
     {'path': "Custom/ZapMedia",
      'addrs': ["jim@digicool.com", "klm@digicool.com", "chrism@digicool.com",
-               "karl@digicool.com"],
+               "karl@digicool.com", "evan@digicool.com"],
      'remote': None},
 
     {'path': "Zope2",
@@ -79,6 +79,10 @@ table = [
      'remote': None},
 
     {'path': "ZopeMozilla",
+     'addrs': 'zope-mozilla@zope.org',
+     'remote': None},
+
+    {'path': "ZopePTK",
      'addrs': 'zope-mozilla@zope.org',
      'remote': None},
 
