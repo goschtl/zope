@@ -1,324 +1,330 @@
+==============
 Zope3 Security
+==============
+
+Introduction
+------------
 
-  Introduction
+The Security framework provides a generic mechanism to implement
+security policies on Python objects.  This introduction provides a
+tutorial of the framework explaining concepts, design, and going
+through sample usage from the perspective of a Python programmer using
+the framework outside of Zope.
+
+Definitions
+-----------
+
+Principal
+  A generalization of a concept of a user.
+
+Permission
+  A kind of access, i.e. permission to READ vs. permission to WRITE.
+  Fundamentally the whole security framework is organized around
+  checking permissions on objects.
+
+Purpose
+-------
 
-    The Security framework provides a generic mechanism to implement
-    security policies on Python objects.  This introduction provides a
-    tutorial of the framework explaining concepts, design, and going
-    through sample usage from the perspective of a Python programmer
-    using the framework outside of Zope.
+The security framework's primary purpose is to guard and check access
+to Python objects.  It does this by providing mechanisms for explicit
+and implicit security checks on attribute access for objects.
+Attribute names are mapped onto permission names when checking access
+and the implementation of the security check is defined by the
+security policy, which receives the object, the permission name, and
+an interaction.
 
-  Definitions
+Interactions are objects that represent the use of the system by one
+or more principals.  An interaction contains a list of participations,
+which represents the way a single principal participates in the
+interaction.  An HTTP request is one example of a participation.
 
-    Principal
+Its important to keep in mind that the policy provided is just a
+default, and it can be substituted with one which doesn't care about
+principals or interactions at all.
 
-     A generalization of a concept of a user.
+Framework Components
+--------------------
 
-    Permission
+Low Level Components
+~~~~~~~~~~~~~~~~~~~~
 
-     A kind of access, i.e. permission to READ vs. permission to
-     WRITE.  Fundamentally the whole security framework is organized
-     around checking permissions on objects.
+These components provide the infrastructure for guarding attribute
+access and providing hooks into the higher level security framework.
 
-  Purpose
+Checkers
+  A checker is associated with an object kind, and provides the hooks
+  that map attribute checks onto permissions deferring to the security
+  manager (which in turn defers to the policy) to perform the check.
 
-    The security framework's primary purpose is to guard and check
-    access to Python objects.  It does this by providing mechanisms
-    for explicit and implicit security checks on attribute access for
-    objects.  Attribute names are mapped onto permission names when
-    checking access and the implementation of the security check is
-    defined by the security policy, which receives the object, the
-    permission name, and an interaction.
+  Additionally, checkers provide for creating proxies of objects
+  associated with the checker.
 
-    Interactions are objects that represent the use of the system by
-    one or more principals.  An interaction contains a list of
-    participations, which represents the way a single principal
-    participates in the interaction.  An HTTP request is one example
-    of a participation.
+  There are several implementation variants of checkers, such as
+  checkers that grant access based on attribute names.
 
-    Its important to keep in mind that the policy provided is just a
-    default, and it can be substituted with one which doesn't care
-    about principals or interactions at all.
+Proxies
+  Wrappers around Python objects that implicitly guard access to their
+  wrapped contents by delegating to their associated checker.  Proxies
+  are also viral in nature, in that values returned by proxies are
+  also proxied.
 
-  Framework Components
+High Level Components
+~~~~~~~~~~~~~~~~~~~~~
 
-    Low Level Components
+Security Management
+  Provides accessors for setting up interactions and global security
+  policy.
 
-      These components provide the infrastructure for guarding
-      attribute access and providing hooks into the higher level
-      security framework.
+Interaction
+  Stores transient information on the list of participations.
 
-      Checkers
+Participation
+  Stores information about a principal participating in the
+  interaction.
 
-        A checker is associated with an object kind, and provides the
-        hooks that map attribute checks onto permissions deferring to
-        the security manager (which in turn defers to the policy) to
-        perform the check.
+Security Policy
+  Provides a single method that accepts the object, the permission,
+  and the interaction of the access being checked and is used to
+  implement the application logic for the security framework.
 
-        Additionally, checkers provide for creating proxies of objects
-        associated with the checker.
+Narrative (agent sandbox)
+-------------------------
 
-        There are several implementation variants of checkers, such as
-        checkers that grant access based on attribute names.
+As an example we take a look at constructing a multi-agent distributed
+system, and then adding a security layer using the Zope security model
+onto it.
 
-      Proxies
+Scenario
+~~~~~~~~
 
-        Wrappers around Python objects that implicitly guard access to
-        their wrapped contents by delegating to their associated
-        checker.  Proxies are also viral in nature, in that values
-        returned by proxies are also proxied.
+Our agent simulation consists of autonomous agents that live in
+various agent homes/sandboxes and perform actions that access services
+available at their current home.  Agents carry around authentication
+tokens which signify their level of access within any given home.
+Additionally agents attempt to migrate from home to home randomly.
 
-    High Level Components
+The agent simulation was constructed separately from any security
+aspects.  Now we want to define and integrate a security model into
+the simulation.  The full code for the simulation and the security
+model is available separately; we present only relevant code snippets
+here for illustration as we go through the implementation process.
 
-      Security Management
+For the agent simulation we want to add a security model such that we
+group agents into two authentication groups, "norse legends",
+including the principals thor, odin, and loki, and "greek men",
+including prometheus, archimedes, and thucydides.
 
-        Provides accessors for setting up interactions and global
-        security policy.
+We associate permissions with access to services and homes.  We
+differentiate the homes such that certain authentication groups only
+have access to services or the home itself based on the local settings
+of the home in which they reside.
 
-      Interaction
+We define the homes/sandboxes
 
-        Stores transient information on the list of participations.
+origin
+  all agents start here, and have access to all services here.
 
-      Participation
+valhalla
+  only agents in the authentication group 'norse legend' can reside
+  here.
 
-        Stores information about a principal participating in the
-        interaction.
+jail
+  all agents can come here, but only 'norse legend's can leave or
+  access services.
 
-      Security Policy
+Process
+~~~~~~~
 
-        Provides a single method that accepts the object, the
-        permission, and the interaction of the access being checked
-        and is used to implement the application logic for the security
-        framework.
+Loosely we define a process for implementing this security model
 
-  Narrative (agent sandbox)
+- mapping permissions onto actions
 
-    As an example we take a look at constructing a multi-agent
-    distributed system, and then adding a security layer using the
-    Zope security model onto it.
+- mapping authentication tokens onto permissions
 
-    Scenario
+- implementing checkers and security policies that use our
+  authentication tokens and permissions.
 
-      Our agent simulation consists of autonomous agents that live in
-      various agent homes/sandboxes and perform actions that access
-      services available at their current home.  Agents carry around
-      authentication tokens which signify their level of access within
-      any given home.  Additionally agents attempt to migrate from
-      home to home randomly.
+- binding checkers to our simulation classes
 
-      The agent simulation was constructed separately from any
-      security aspects.  Now we want to define and integrate a
-      security model into the simulation.  The full code for the
-      simulation and the security model is available separately; we
-      present only relevant code snippets here for illustration as we
-      go through the implementation process.
+- inserting the hooks into the original simulation code to add proxy
+  wrappers to automatically check security.
 
-      For the agent simulation we want to add a security model such
-      that we group agents into two authentication groups, "norse
-      legends", including the principals thor, odin, and loki, and
-      "greek men", including prometheus, archimedes, and thucydides.
+- inserting hooks into the original simulation to register the agents
+  as the active principal in an interaction.
 
-      We associate permissions with access to services and homes.  We
-      differentiate the homes such that certain authentication groups
-      only have access to services or the home itself based on the
-      local settings of the home in which they reside.
+Defining Permission Model
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      We define the homes/sandboxes
+We define the following permissions::
 
-        - origin - all agents start here, and have access to all
-          services here.
+ NotAllowed = 'Not Allowed'
+ Public = Checker.CheckerPublic
+ TransportAgent = 'Transport Agent'
+ AccessServices = 'Access Services'
+ AccessAgents = 'Access Agents'
+ AccessTimeService = 'Access Time Services'
+ AccessAgentService = 'Access Agent Service'
+ AccessHomeService = 'Access Home Service'
 
-        - valhalla - only agents in the authentication group 'norse
-          legend' can reside here.
+and create a dictionary database mapping homes to authentication
+groups which are linked to associated permissions.
 
-        - jail - all agents can come here, but only 'norse legend's
-          can leave or access services.
+Defining and Binding Checkers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Checkers are the foundational unit for the security framework.  They
+define what attributes can be accessed or set on a given instance.
+They can be used implicitly via Proxy objects, to guard all attribute
+access automatically or explicitly to check a given access for an
+operation.
 
-    Process
+Checker construction expects two functions or dictionaries, one is
+used to map attribute names to permissions for attribute access and
+another to do the same for setting attributes.
 
-      Loosely we define a process for implementing this security model
+We use the following checker factory function::
 
-      - mapping permissions onto actions
+  def PermissionMapChecker(permissions_map={},
+                           setattr_permission_func=NoSetAttr):
+      res = {}
+      for k,v in permissions_map.items():
+          for iv in v:
+              res[iv]=k
+      return checker.Checker(res.get, setattr_permission_func)
 
-      - mapping authentication tokens onto permissions
+  time_service_checker = PermissionMapChecker(
+                                 # permission : [methods]
+                                 {'AccessTimeService':['getTime']}
+                                 )
 
-      - implementing checkers and security policies that use our
-        authentication tokens and permissions.
+with the NoSetAttr function defined as a lambda which always return
+the permission NotAllowed
 
-      - binding checkers to our simulation classes
+To bind the checkers to the simulation classes we register our
+checkers with the security model's global checker registry::
 
-      - inserting the hooks into the original simulation code to add
-        proxy wrappers to automatically check security.
+   import sandbox_simulation
+   from zope.security.checker import defineChecker
+   defineChecker(sandbox_simulation.TimeService, time_service_checker)
 
-      - inserting hooks into the original simulation to register the
-        agents as the active principal in an interaction.
+Defining a Security Policy
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Defining Permission Model
+We implement our security policy such that it checks the current
+agent's authentication token against the given permission in the home
+of the object being accessed::
 
-      We define the following permissions::
+  class SimulationSecurityPolicy:
 
-       NotAllowed = 'Not Allowed'
-       Public = Checker.CheckerPublic
-       TransportAgent = 'Transport Agent'
-       AccessServices = 'Access Services'
-       AccessAgents = 'Access Agents'
-       AccessTimeService = 'Access Time Services'
-       AccessAgentService = 'Access Agent Service'
-       AccessHomeService = 'Access Home Service'
+      implements(ISecurityPolicy)
 
-      and create a dictionary database mapping homes to authentication
-      groups which are linked to associated permissions.
+      createInteraction = staticmethod(simpleinteraction.createInteraction)
 
-    Defining and Binding Checkers
+      def checkPermission(self, permission, object, interaction):
 
-      Checkers are the foundational unit for the security framework.
-      They define what attributes can be accessed or set on a given
-      instance.  They can be used implicitly via Proxy objects, to
-      guard all attribute access automatically or explicitly to check a
-      given access for an operation.
+          home = object.getHome()
+          db = getattr(SimulationSecurityDatabase, home.getId(), None)
 
-      Checker construction expects two functions or dictionaries, one
-      is used to map attribute names to permissions for attribute
-      access and another to do the same for setting attributes.
+          if db is None:
+              return False
 
-      We use the following checker factory function::
-
-         def PermissionMapChecker(permissions_map={},
-                                  setattr_permission_func=NoSetAttr):
-             res = {}
-             for k,v in permissions_map.items():
-                 for iv in v:
-                     res[iv]=k
-             return checker.Checker(res.get, setattr_permission_func)
-
-         time_service_checker = PermissionMapChecker(
-                                        # permission : [methods]
-                                        {'AccessTimeService':['getTime']}
-                                        )
-
-      with the NoSetAttr function defined as a lambda which always
-      return the permission NotAllowed
-
-      To bind the checkers to the simulation classes we register our
-      checkers with the security model's global checker registry::
-
-         import sandbox_simulation
-         from zope.security.checker import defineChecker
-         defineChecker(sandbox_simulation.TimeService, time_service_checker)
-
-    Defining a Security Policy
-
-      We implement our security policy such that it checks the current
-      agent's authentication token against the given permission in the
-      home of the object being accessed::
-
-      class SimulationSecurityPolicy:
-
-          implements(ISecurityPolicy)
-
-          createInteraction = staticmethod(simpleinteraction.createInteraction)
-
-          def checkPermission(self, permission, object, interaction):
-
-              home = object.getHome()
-              db = getattr(SimulationSecurityDatabase, home.getId(), None)
-
-              if db is None:
-                  return False
-
-              allowed = db.get('any', ())
-              if permission in allowed or ALL in allowed:
-                  return True
-
-              if interaction is None:
-                  return False
-              if not interaction.participations:
-                  return False
-              for participation in interaction.participations:
-                  token = participation.principal.getAuthenticationToken()
-                  allowed = db.get(token, ())
-                  if permission not in allowed:
-                      return False
-
+          allowed = db.get('any', ())
+          if permission in allowed or ALL in allowed:
               return True
 
-      There are no specific requirements for the interaction class, so we
-      can just use zope.security.simpleinteraction.Interaction.
+          if interaction is None:
+              return False
+          if not interaction.participations:
+              return False
+          for participation in interaction.participations:
+              token = participation.principal.getAuthenticationToken()
+              allowed = db.get(token, ())
+              if permission not in allowed:
+                  return False
 
-      Since an interaction can have more than one principal, we check that
-      *all* of them are given the necessary permission.  This is not really
-      necessary since we only create interactions with a single active
-      principal.
+          return True
 
-      There is some additional code present to allow for shortcuts in
-      defining the permission database when defining permissions for
-      all auth groups and all permissions.
+There are no specific requirements for the interaction class, so we
+can just use zope.security.simpleinteraction.Interaction.
 
-    Integration
+Since an interaction can have more than one principal, we check that
+*all* of them are given the necessary permission.  This is not really
+necessary since we only create interactions with a single active
+principal.
 
-      At this point we have implemented our security model, and we
-      need to integrate it with our simulation model.  We do so in
-      three separate steps.
+There is some additional code present to allow for shortcuts in
+defining the permission database when defining permissions for all
+auth groups and all permissions.
 
-      First we make it such that agents only access homes that are
-      wrapped in a security proxy.  By doing this all access to homes
-      and services (proxies have proxied return values for their
-      methods) is implicitly guarded by our security policy.
+Integration
+~~~~~~~~~~~
 
-      The second step is that we want to associate the active agent
-      with the security context so the security policy will know which
-      agent's authentication token to validate against.
+At this point we have implemented our security model, and we need to
+integrate it with our simulation model.  We do so in three separate
+steps.
 
-      The third step is to set our security policy as the default
-      policy for the Zope security framework.  It is possible to
-      create custom security policies at a finer grained than global,
-      but such is left as an exercise for the reader.
+First we make it such that agents only access homes that are wrapped
+in a security proxy.  By doing this all access to homes and services
+(proxies have proxied return values for their methods) is implicitly
+guarded by our security policy.
 
-    Interaction Access
+The second step is that we want to associate the active agent with the
+security context so the security policy will know which agent's
+authentication token to validate against.
 
-      The *default* implementation of the interaction management
-      interfaces defines interactions on a per thread basis with
-      a function for an accessor.  This model is not appropriate for
-      all systems, as it restricts one to a single active interaction per
-      thread at any given moment.  Reimplementing the interaction access
-      methods though is easily doable and is noted here for
-      completeness.
+The third step is to set our security policy as the default policy for
+the Zope security framework.  It is possible to create custom security
+policies at a finer grained than global, but such is left as an
+exercise for the reader.
 
-    Perspectives
+Interaction Access
+~~~~~~~~~~~~~~~~~~
 
-      It's important to keep in mind that there is a lot more that is
-      possible using the security framework than what's been presented
-      here.  All of the interactions are interface based, such that if
-      you need to re-implement the semantics to suite your application
-      a new implementation of the interface will be sufficient.
-      Additional possibilities range from restricted interpreters and
-      dynamic loading of untrusted code to non Zope web application
-      security systems.  Insert imagination here ;-).
+The *default* implementation of the interaction management interfaces
+defines interactions on a per thread basis with a function for an
+accessor.  This model is not appropriate for all systems, as it
+restricts one to a single active interaction per thread at any given
+moment.  Reimplementing the interaction access methods though is
+easily doable and is noted here for completeness.
 
-    Zope Perspective
+Perspectives
+~~~~~~~~~~~~
 
-      A Zope3 programmer will never commonly need to interact with the
-      low level security framework.  Zope3 defines a second security
-      package over top the low level framework and authentication
-      sources and checkers are handled via zcml registration.  Still
-      those developing Zope3 will hopefully find this useful as an
-      introduction into the underpinnings of the security framework.
+It's important to keep in mind that there is a lot more that is
+possible using the security framework than what's been presented here.
+All of the interactions are interface based, such that if you need to
+re-implement the semantics to suite your application a new
+implementation of the interface will be sufficient.  Additional
+possibilities range from restricted interpreters and dynamic loading
+of untrusted code to non Zope web application security systems.
+Insert imagination here ;-).
 
-    Code
+Zope Perspective
+~~~~~~~~~~~~~~~~
 
-      The complete code for this example is available.
+A Zope3 programmer will never commonly need to interact with the low
+level security framework.  Zope3 defines a second security package
+over top the low level framework and authentication sources and
+checkers are handled via zcml registration.  Still those developing
+Zope3 will hopefully find this useful as an introduction into the
+underpinnings of the security framework.
 
-      sandbox.py - the agent framework
+Code
+~~~~
 
-      sandbox_security.py - the security implementation and binding to
-      the agent framework.
+The complete code for this example is available.
 
-    Author
+sandbox.py
+  the agent framework
 
-      Kapil Thangavelu <hazmat at objectrealms.net>
+sandbox_security.py
+  the security implementation and binding to the agent framework.
 
-      Guido Wesdorp <guido at infrae.com>
+Author
+~~~~~~
 
-      Marius Gedminas <marius at pov.lt>
+Kapil Thangavelu <hazmat at objectrealms.net>
 
+Guido Wesdorp <guido at infrae.com>
+
+Marius Gedminas <marius at pov.lt>
