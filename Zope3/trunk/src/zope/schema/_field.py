@@ -12,20 +12,22 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.11 2003/04/14 20:02:31 fdrake Exp $
+$Id: _field.py,v 1.12 2003/04/24 20:51:58 poster Exp $
 """
 __metaclass__ = type
 
 import warnings
 
 from zope.interface.implements import implements
+from zope.interface.interfaces import IInterface
 
 from zope.schema.interfaces import ValidationError
-from zope.schema.errornames import WrongContainedType
+from zope.schema.errornames import WrongContainedType, WrongType
 
 from zope.schema.interfaces import IField, IContainer, IIterable, IOrderable
 from zope.schema.interfaces import IMinMaxLen, IEnumerated, IText, ITextLine
 from zope.schema.interfaces import ISourceText
+from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword
@@ -114,6 +116,15 @@ class Datetime(Enumerated, Orderable, Field):
 class EnumeratedDatetime(Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
     __implements__ = IEnumeratedDatetime
+
+class InterfaceField(Field):
+    __doc__ = IInterfaceField.__doc__
+    __implements__ = IInterfaceField
+
+    def _validate(self, value):
+        super(InterfaceField, self)._validate(value)
+        if not IInterface.isImplementedBy(value):
+            raise ValidationError(WrongType)
 
 def _validate_sequence(value_types, value, errors=None):
     if errors is None:

@@ -13,9 +13,10 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.11 2003/04/24 14:51:54 fdrake Exp $
+$Id: interfaces.py,v 1.12 2003/04/24 20:51:58 poster Exp $
 """
 from zope.interface import Interface
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class StopValidation(Exception):
     """This exception is raised, if the validation is done for sure early.
@@ -103,35 +104,35 @@ class IField(Interface):
         """
 
     title = TextLine(
-        title=u"Title",
-        description=u"A short summary or label",
+        title=_(u"Title"),
+        description=_(u"A short summary or label"),
         default=u"",
         required=False,
         )
 
     description = Text(
-        title=u"Description",
-        description=u"A description of the field",
+        title=_(u"Description"),
+        description=_(u"A description of the field"),
         default=u"",
         required=False,
         )
 
     required = Bool(
-        title=u"Required",
+        title=_(u"Required"),
         description=(
-        u"tells whether a field requires its value to exist."),
+        _(u"tells whether a field requires its value to exist.")),
         default=True)
 
     readonly = Bool(
-        title=u"Read Only",
-        description=u"Read-only.", # XXX what is this?
+        title=_(u"Read Only"),
+        description=_(u"Read-only."), # XXX what is this?
         required=False,
         default=False)
 
     default = Field(
-        title=u"default field value if no value is present",
-        description=u"""The field default value may be None or a legal
-                        field value"""
+        title=_(u"default field value if no value is present"),
+        description=_(u"""The field default value may be None or a legal
+                        field value""")
         )
 
     def constraint(value):
@@ -152,15 +153,15 @@ class IField(Interface):
         """
 
     order = Int(
-        title=u"Field Order",
-        description=u"""\
+        title=_(u"Field Order"),
+        description=_(u"""\
         The order attribute can be used to determine the order in
         which fields in a schema were defined. If one field is created
         after another (in the same thread), its order will be
         greater.
 
         (Fields in separate threads could have the same order.)
-        """,
+        """),
         required=True,
         readonly=True,
         )
@@ -218,13 +219,13 @@ class IMinMax(IOrderable):
     """
 
     min = Field(
-        title=u"Start of the range",
+        title=_(u"Start of the range"),
         required=False,
         default=None
         )
 
     max = Field(
-        title=u"End of the range (excluding the value itself)",
+        title=_(u"End of the range (excluding the value itself)"),
         required=False,
         default=None
         )
@@ -234,22 +235,22 @@ class IMinMaxLen(ILen):
     u"""a Field requiring the length of its value to be within a range"""
 
     min_length = Int(
-        title=u"Minimum length",
-        description=u"""\
+        title=_(u"Minimum length"),
+        description=_(u"""\
         Value after whitespace processing cannot have less than
         min_length characters. If min_length is None, there is
         no minimum.
-        """,
+        """),
         required=False,
         min=0, # needs to be a positive number
         default=0)
 
     max_length = Int(
-        title=u"Maximum length",
-        description=u"""\
+        title=_(u"Maximum length"),
+        description=_(u"""\
         Value after whitespace processing cannot have greater
         or equal than max_length characters. If max_length is
-        None, there is no maximum.""",
+        None, there is no maximum."""),
         required=False,
         min=0, # needs to be a positive number
         default=None)
@@ -258,14 +259,18 @@ class IEnumerated(IField):
     u"""Field whose value is contained in a predefined set"""
 
     allowed_values = Container(
-        title=u"Allowed Values",
-        description=u"""\
+        title=_(u"Allowed Values"),
+        description=_(u"""\
         Only values specified here can be values of this field.
         If the list is empty, then there are no further
-        restictions.""",
+        restictions."""),
         required=False)
 
 IValueSet = IEnumerated
+
+class IInterfaceField(IField):
+    u"""Fields with a value that is an interface (implementing
+    zope.interface.Interface)."""
 
 class IBool(IField):
     u"""a Boolean Field."""
@@ -346,12 +351,12 @@ class ISequence(IMinMaxLen, IIterable, IContainer):
     """
 
     value_types = Iterable(
-        title=u"Value Types",
+        title=_(u"Value Types"),
         description=(
-        u"""\
+        _(u"""\
         If set to a non-empty value, field value items must conform to one
         of the given types, which are expressed via fields.
-        """),
+        """)),
         required=False,
         constraint=_fields,
         )
@@ -370,22 +375,23 @@ class IDict(IMinMaxLen, IIterable, IContainer):
     """
 
     key_types = Iterable(
-        title=u"Value Types",
-        description=u"""\
+        title=_(u"Value Types"),
+        description=_(u"""\
         If set to a non-empty value, field value keys must conform to one
-        of the given types, which are expressed via fields.
-        """,
-        constraint=_fields,
-        required=False,
-        )
-
-    value_types = Iterable(
-        title=u"Value Types",
-        description=(
-        u"""\
-        If set to a non-empty value, field value values must conform to one
         of the given types, which are expressed via fields.
         """),
         constraint=_fields,
         required=False,
         )
+
+    value_types = Iterable(
+        title=_(u"Value Types"),
+        description=(
+        _(u"""\
+        If set to a non-empty value, field value values must conform to one
+        of the given types, which are expressed via fields.
+        """)),
+        constraint=_fields,
+        required=False,
+        )
+
