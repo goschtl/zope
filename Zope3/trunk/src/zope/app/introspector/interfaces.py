@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: interfaces.py,v 1.1 2004/03/01 10:18:20 philikon Exp $
+"""
 from zope.interface import Interface
 
 class IIntrospector(Interface):

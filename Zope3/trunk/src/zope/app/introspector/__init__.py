@@ -13,19 +13,20 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.20 2004/02/10 05:21:29 anthony Exp $
+$Id: __init__.py,v 1.1 2004/03/01 10:18:20 philikon Exp $
 """
-from zope.interface import Interface
-
-from zope.app.interfaces.introspector import IIntrospector
-from zope.app.interfaces.services.module import IModuleService
 from zope.component import getService, getAdapter, getServiceDefinitions
 from zope.proxy import removeAllProxies
-from zope.interface import implements, implementedBy
+
+from zope.interface import Interface, implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.interface.interface import InterfaceClass
+
+from zope.app.interfaces.services.module import IModuleService
 from zope.app.services.servicenames import Interfaces
+
+from zope.app.introspector.interfaces import IIntrospector
 
 class Introspector:
     """Introspects an object"""

@@ -12,17 +12,15 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_introspector.py,v 1.7 2003/08/17 06:08:25 philikon Exp $
+$Id: test_introspector.py,v 1.1 2004/03/01 10:18:21 philikon Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.testing.cleanup import CleanUp
-from zope.app.introspector import Introspector
-from zope.app.interfaces.introspector import IIntrospector
+
 from zope.interface import Interface, Attribute, implements, directlyProvides
 from zope.interface.verify import verifyObject
+from zope.component.service import serviceManager, defineService
+from zope.testing.cleanup import CleanUp
+
 from zope.app.process.bootstrap import addConfigureService
 from zope.app.services.servicenames import Interfaces
 from zope.app.services.interface import LocalInterfaceService
@@ -30,7 +28,9 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.component.globalinterfaceservice import provideInterface
 from zope.app.component.globalinterfaceservice import InterfaceService
 from zope.app.interfaces.component import IInterfaceService
-from zope.component.service import serviceManager, defineService
+
+from zope.app.introspector import Introspector
+from zope.app.introspector.interfaces import IIntrospector
 
 class ITestClass(Interface):
     def drool():
@@ -76,15 +76,15 @@ class TestIntrospector(CleanUp, TestCase):
         defineService(Interfaces, IInterfaceService)
         serviceManager.provideService(Interfaces, service)
         provideInterface = service.provideInterface
-        provideInterface('zope.app.tests.test_introspector.I', I)
-        provideInterface('zope.app.tests.test_introspector.I2', I2)
-        provideInterface('zope.app.tests.test_introspector.I3', I3)
-        provideInterface('zope.app.tests.test_introspector.I4', I4)
-        provideInterface('zope.app.tests.test_introspector.M1', M1)
-        provideInterface('zope.app.tests.test_introspector.M2', M2)
-        provideInterface('zope.app.tests.test_introspector.M3', M3)
-        provideInterface('zope.app.tests.test_introspector.M4', M4)
-        provideInterface('zope.app.tests.test_introspector.ITestClass',
+        provideInterface('zope.app.introspector.tests.test_introspector.I', I)
+        provideInterface('zope.app.introspector.tests.test_introspector.I2', I2)
+        provideInterface('zope.app.introspector.tests.test_introspector.I3', I3)
+        provideInterface('zope.app.introspector.tests.test_introspector.I4', I4)
+        provideInterface('zope.app.introspector.tests.test_introspector.M1', M1)
+        provideInterface('zope.app.introspector.tests.test_introspector.M2', M2)
+        provideInterface('zope.app.introspector.tests.test_introspector.M3', M3)
+        provideInterface('zope.app.introspector.tests.test_introspector.M4', M4)
+        provideInterface('zope.app.introspector.tests.test_introspector.ITestClass',
                          ITestClass)
 
     def test_isInterface(self):
@@ -110,21 +110,21 @@ class TestIntrospector(CleanUp, TestCase):
         ints = Introspector(TestClass)
         self.assertEqual(ints.isInterface(), 0)
         request['PATH_INFO'] = (
-            '++module++zope.app.tests.test_introspector.TestClass')
+            '++module++zope.app.introspector.tests.test_introspector.TestClass')
         ints.setRequest(request)
         self.assertEqual(ints.getClass(), 'TestClass')
 
         self.assertEqual(
             ints.getBaseClassNames(),
-            ['zope.app.tests.test_introspector.BaseTestClass'])
+            ['zope.app.introspector.tests.test_introspector.BaseTestClass'])
         self.assertEqual(
             ints.getModule(),
-            'zope.app.tests.test_introspector')
+            'zope.app.introspector.tests.test_introspector')
         self.assertEqual(ints.getDocString(), "This is my stupid doc string")
         self.assertEqual(ints.getInterfaces(), (ITestClass,))
         self.assertEqual(
             ints.getInterfaceNames(),
-            ['zope.app.tests.test_introspector.ITestClass'])
+            ['zope.app.introspector.tests.test_introspector.ITestClass'])
         self.assertEqual(ints.getExtends(), (BaseTestClass,))
 
     def testIntrospectorOnInterface(self):
@@ -132,18 +132,18 @@ class TestIntrospector(CleanUp, TestCase):
         ints = Introspector(I3)
         self.assertEqual(ints.isInterface(), 1)
         request['PATH_INFO'] = (
-            '++module++zope.app.tests.test_introspector.I3')
+            '++module++zope.app.introspector.tests.test_introspector.I3')
         ints.setRequest(request)
         self.assertEqual(
             ints.getModule(),
-            'zope.app.tests.test_introspector')
+            'zope.app.introspector.tests.test_introspector')
         self.assertEqual(ints.getExtends(), (I, I2, ))
         self.assertEqual(
             ints.getDocString(),
             "This is dummy doc string")
         Iname = 'I3'
-        bases = ['zope.app.tests.test_introspector.I',
-                 'zope.app.tests.test_introspector.I2']
+        bases = ['zope.app.introspector.tests.test_introspector.I',
+                 'zope.app.introspector.tests.test_introspector.I2']
         desc = 'This is dummy doc string'
         m1_name = 'one'
         m1_signature = '(param)'
@@ -177,8 +177,8 @@ class TestIntrospector(CleanUp, TestCase):
         directlyProvides(ob, I, I2)
         ints = Introspector(ob)
         self.assertEqual(tuple(ints.getDirectlyProvidedNames()),
-                         ('zope.app.tests.test_introspector.I',
-                          'zope.app.tests.test_introspector.I2'))
+                         ('zope.app.introspector.tests.test_introspector.I',
+                          'zope.app.introspector.tests.test_introspector.I2'))
 
 
 class I4(I3):
@@ -204,14 +204,14 @@ class TestMarkerInterfaces(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.createStandardServices()
         addConfigureService(self.rootFolder, Interfaces, LocalInterfaceService)
-        provideInterface('zope.app.tests.test_introspector.I', I)
-        provideInterface('zope.app.tests.test_introspector.I2', I2)
-        provideInterface('zope.app.tests.test_introspector.I3', I3)
-        provideInterface('zope.app.tests.test_introspector.I4', I4)
-        provideInterface('zope.app.tests.test_introspector.M1', M1)
-        provideInterface('zope.app.tests.test_introspector.M2', M2)
-        provideInterface('zope.app.tests.test_introspector.M3', M3)
-        provideInterface('zope.app.tests.test_introspector.M4', M4)
+        provideInterface('zope.app.introspector.tests.test_introspector.I', I)
+        provideInterface('zope.app.introspector.tests.test_introspector.I2', I2)
+        provideInterface('zope.app.introspector.tests.test_introspector.I3', I3)
+        provideInterface('zope.app.introspector.tests.test_introspector.I4', I4)
+        provideInterface('zope.app.introspector.tests.test_introspector.M1', M1)
+        provideInterface('zope.app.introspector.tests.test_introspector.M2', M2)
+        provideInterface('zope.app.introspector.tests.test_introspector.M3', M3)
+        provideInterface('zope.app.introspector.tests.test_introspector.M4', M4)
 
     def test_getMarkerInterfaces(self):
         ints = Introspector(Content())
@@ -221,9 +221,9 @@ class TestMarkerInterfaces(PlacefulSetup, TestCase):
 
     def test_getMarkerInterfaceNames(self):
         ints = Introspector(Content())
-        expected = ['zope.app.tests.test_introspector.M1',
-                    'zope.app.tests.test_introspector.M2',
-                    'zope.app.tests.test_introspector.M3']
+        expected = ['zope.app.introspector.tests.test_introspector.M1',
+                    'zope.app.introspector.tests.test_introspector.M2',
+                    'zope.app.introspector.tests.test_introspector.M3']
         expected.sort()
         self.assertEqual(ints.getMarkerInterfaceNames(), tuple(expected))
 

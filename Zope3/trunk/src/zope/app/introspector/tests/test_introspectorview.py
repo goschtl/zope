@@ -13,31 +13,35 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspector.py,v 1.3 2003/11/21 17:11:59 jim Exp $
+$Id: test_introspectorview.py,v 1.1 2004/03/01 10:18:21 philikon Exp $
 """
-
 import unittest
+
+from zope.interface import Interface, directlyProvidedBy
+from zope.interface import directlyProvides, implements
+from zope.publisher.browser import TestRequest
+
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.interface import LocalInterfaceService
 from zope.app.services.servicenames import Interfaces
-from zope.publisher.browser import TestRequest
 from zope.app.tests import setup
-from zope.interface import Interface, directlyProvidedBy
-from zope.interface import directlyProvides, implements
 from zope.app.component.globalinterfaceservice import provideInterface
 from zope.app.tests import ztapi
-from zope.app.interfaces.introspector import IIntrospector
+
 from zope.app.introspector import Introspector
+from zope.app.introspector.browser import IntrospectorView
+from zope.app.introspector.interfaces import IIntrospector
+
 
 class I1(Interface):
     pass
 
-id = 'zope.app.browser.tests.test_introspector.I1'
+id = 'zope.app.introspector.tests.test_introspector.I1'
 
 class I2(Interface):
     pass
 
-id2 = 'zope.app.browser.tests.test_introspector.I2'
+id2 = 'zope.app.introspector.tests.test_introspector.I2'
 
 class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
@@ -53,8 +57,6 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
 
     def test_getInterfaceURL(self):
-        from zope.app.browser.introspector import IntrospectorView
-
         request = TestRequest()
         view = IntrospectorView(self.rootFolder, request)
 
@@ -67,8 +69,6 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
                          '')
 
     def test_update(self):
-        from zope.app.browser.introspector import IntrospectorView
-
         class Context:
             implements(Interface)
 

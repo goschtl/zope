@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <adapter
+      for='*'
+      factory="zope.app.introspector.Introspector"
+      permission="zope.View"
+      provides="zope.app.introspector.interfaces.IIntrospector"
+      />
+
+
+  <!-- Browser directives -->
+
+  <!--browser:page
+      name="classBrowser.html"
+      for = "zope.interface.Interface"
+      permission="zope.ManageServices"
+      template="introspector.pt"
+      class="zope.app.introspector.browser.IntrospectorView"
+      menu="zmi_views" title="Introspector"
+      /-->
+
+  <browser:pages
+      for="zope.interface.Interface"
+      permission="zope.ManageServices"
+      class="zope.app.introspector.browser.IntrospectorView"
+      >
+
+    <browser:page
+        name="classBrowser.html"
+        template="introspector.pt"
+        menu="zmi_views" title="Introspector"
+        />
+    <browser:page
+        name="objectMarker.html"
+        template="marker.pt"
+        />
+  </browser:pages>
+
+  <browser:page
+      name="index.html"
+      for="zope.interface.interfaces.IInterface"
+      permission="zope.View"
+      template="introspector.pt"
+      class="zope.app.introspector.browser.IntrospectorView"
+      />
+
+</configure>

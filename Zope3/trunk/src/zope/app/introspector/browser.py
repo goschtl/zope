@@ -13,25 +13,21 @@
 ##############################################################################
 """Introspector View class
 
-$Id: introspector.py,v 1.8 2003/09/21 17:30:20 jim Exp $
+$Id: browser.py,v 1.1 2004/03/01 10:18:20 philikon Exp $
 """
-from zope.app.publisher.browser import BrowserView
-from zope.app.interfaces.introspector import IIntrospector
-from zope.component import getAdapter
-from zope.app import zapi
-from zope.app.services.servicenames import Interfaces
-from zope.component.exceptions import ComponentLookupError
-from zope.interface import directlyProvides, directlyProvidedBy
 from zope.proxy import removeAllProxies
-# XXX only used for commented-out section below
-# from zope.component import getServiceManager, getServiceDefinitions, \
-#      queryAdapter, getService
+from zope.interface import directlyProvides, directlyProvidedBy
+from zope.component.exceptions import ComponentLookupError
 
+from zope.app import zapi
+from zope.app.publisher.browser import BrowserView
+from zope.app.services.servicenames import Interfaces
+from zope.app.introspector.interfaces import IIntrospector
 
 class IntrospectorView(BrowserView):
 
     def getIntrospector(self):
-        introspector = getAdapter(self.context, IIntrospector)
+        introspector = zapi.getAdapter(self.context, IIntrospector)
         introspector.setRequest(self.request)
         return introspector
 
@@ -63,15 +59,15 @@ class IntrospectorView(BrowserView):
 
     def getServicesFor(self):
         services = []
-        #sm = getServiceManager(self.context)
+        #sm = zapi.getServiceManager(self.context)
         #for stype, interface in sm.getServiceDefinitions():
         #    try:
-        #        service = getService(self.context, stype)
+        #        service = zapi.getService(self.context, stype)
         #    except ComponentLookupError:
         #        pass
         #    else:
         #        # XXX IConfigureFor appears to have disappeared at some point
-        #        adapter = queryAdapter(service, IConfigureFor)
+        #        adapter = zapi.queryAdapter(service, IConfigureFor)
         #        if (adapter is not None
         #            and adapter.hasRegistrationFor(self.context)):
         #            search_result = service.getRegisteredMatching(
