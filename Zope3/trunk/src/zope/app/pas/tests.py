@@ -38,7 +38,6 @@ from zope.publisher.tests.httprequest import TestRequest
 class TestClientId(object):
     implements(IClientId)
     def __new__(cls, request):
-        #return str.__new__(cls, getUtility(IClientIdManager).getClientId(request))
         return 'dummyclientidfortesting'
 
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
@@ -47,7 +46,7 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     ztapi.provideAdapter(IRequest, ISession, Session)
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
     sdc = session_data_container_class()
-    ztapi.provideUtility(ISessionDataContainer, sdc, 'pas')
+    ztapi.provideUtility(ISessionDataContainer, sdc, '')
 
 def formAuthSetUp(self):
     placefulSetUp(site=True)
