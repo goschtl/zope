@@ -3,7 +3,7 @@ from zope.interface import Interface
 class IObjectMover(Interface):
     '''Use getAdapter(obj, IObjectMover) to move an object somewhere.'''
 
-    def moveTo(target, name=None):
+    def moveTo(target, new_name=None):
         '''Move this object to the target given.
 
         Returns the new name within the target
@@ -21,7 +21,7 @@ class IObjectMover(Interface):
 
 class IObjectCopier(Interface):
 
-    def copyTo(target, name=None, with_children=True):
+    def copyTo(target, new_name=None):
         """Copy this object to the target given.
 
         Returns the new name within the target, or None
@@ -31,9 +31,6 @@ class IObjectCopier(Interface):
         an IObjectCopied event in the context of the target container.
         If a new object is created as part of the copying process, then
         an IObjectCreated event should be published.
-
-        If with_children is true and the object is folderish, copy contents,
-        else copy just the folder.
         """
 
     def copyable():
@@ -45,6 +42,22 @@ class IObjectCopier(Interface):
         Returns True if it can be copied there. Otherwise, returns
         False.
         '''
+
+class INoChildrenObjectCopier(IObjectCopier):
+    """Interface for adapters that can copy an containerish object
+    without its children"""
+
+    def copyTo(target, new_name=None):
+        """Copy this object without chidren to the target given.
+
+        Returns the new name within the target, or None
+        if the target doesn't do names.
+        Typically, the target is adapted to IPasteTarget.
+        After the copy is added to the target container, publish
+        an IObjectCopied event in the context of the target container.
+        If a new object is created as part of the copying process, then
+        an IObjectCreated event should be published.
+        """
 
 class IPrincipalClipboard(Interface):
     '''Interface for adapters that store/retrieve clipboard information

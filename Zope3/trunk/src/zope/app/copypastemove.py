@@ -14,19 +14,20 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.4 2003/03/30 15:40:57 sidnei Exp $
+$Id: copypastemove.py,v 1.5 2003/03/31 14:48:39 sidnei Exp $
 """
 
 from zope.app.traversing import getParent, objectName, getPath
 from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.interfaces.copypastemove import IObjectCopier, INoChildrenObjectCopier
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IMoveNotifiable
 from zope.app.interfaces.container import ICopyNotifiable
 from zope.app.interfaces.container import IMoveSource
-from zope.app.interfaces.container import ICopySource
+from zope.app.interfaces.container import ICopySource, INoChildrenCopySource, \
+     CopyException, MoveException
 from zope.app.interfaces.container import IPasteTarget
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.event.objectevent import ObjectMovedEvent, ObjectCopiedEvent
@@ -104,7 +105,7 @@ class ObjectCopier:
     def __init__(self, object):
         self.context = object
 
-    def copyTo(self, target, new_name=None, with_children=True):
+    def copyTo(self, target, new_name=None):
         """Copy this object to the target given.
 
         Returns the new name within the target, or None
@@ -125,7 +126,7 @@ class ObjectCopier:
         source_path = getPath(container)
 
         copysource = getAdapter(container, ICopySource)
-        obj = copysource.copyObject(orig_name, target_path, with_children)
+        obj = copysource.copyObject(orig_name, target_path)
 
         pastetarget = getAdapter(target, IPasteTarget)
         # publish an ObjectCreatedEvent (perhaps...?)
@@ -158,6 +159,56 @@ class ObjectCopier:
             name = objectName(obj)
         pastetarget = getAdapter(target, IPasteTarget)
         return pastetarget.acceptsObject(name, obj)
+
+
+class NoChildrenObjectCopier(ObjectCopier):
+
+    __implements__ = INoChildrenObjectCopier
+
+    def __init__(self, object):
+        self.context = object
+
+    def copyTo(self, target, new_name=None):
+        """Copy this object but not its children to the target given.
+
+        Returns the new name within the target, or None
+        if the target doesn't do names.
+        Typically, the target is adapted to IPasteTarget.
+        After the copy is added to the target container, publish
+        an IObjectCopied event in the context of the target container.
+        If a new object is created as part of the copying process, then
+        an IObjectCreated event should be published.
+        """
+        obj = self.context
+        container = getParent(obj)
+        orig_name = objectName(obj)
+        if new_name is None:
+            new_name = orig_name
+
+        target_path = getPath(target)
+        source_path = getPath(container)
+
+        copysource = getAdapter(container, INoChildrenCopySource)
+        obj = copysource.copyObjectWithoutChildren(orig_name, target_path)
+        if obj is None:
+            raise CopyException(container, orig_name, \
+                                'Could not get a copy without children of %s' % orig_name) 
+
+        pastetarget = getAdapter(target, IPasteTarget)
+        # publish an ObjectCreatedEvent (perhaps...?)
+        new_name = pastetarget.pasteObject(new_name, obj)
+
+        # call afterAddHook
+        if queryAdapter(obj, ICopyNotifiable):
+            getAdapter(obj, ICopyNotifiable).afterAddHook(obj, container, \
+                                copiedFrom=source_path)
+        elif queryAdapter(obj, IAddNotifiable):
+            getAdapter(obj, IAddNotifiable).afterAddHook(obj, container)
+
+        # publish ObjectCopiedEvent
+        publish(container, ObjectCopiedEvent(container, source_path, target_path))
+
+        return new_name
 
 class PrincipalClipboard:
     '''Clipboard information consists on tuples of {'action':action, 'target':target}.

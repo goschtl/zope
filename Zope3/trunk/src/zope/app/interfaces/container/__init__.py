@@ -13,6 +13,29 @@ class DuplicateIDError(KeyError):
 class ContainerError(Exception):
     """An error of a container with one of its components."""
 
+class CopyException(Exception):
+    """An error that occurred within a copy operation."""
+
+    def __init__(self, container, key, message=""):
+        self.container = container
+        self.key = key
+        self.message = message and ": %s" % message
+
+    def __str__(self):
+        return ("%(key)s cannot be copied "
+                "from %(container)s%(message)s" % self.__dict__)
+
+class MoveException(Exception):
+    """An error that occurred within a move operation."""
+
+    def __init__(self, container, key, message=""):
+        self.container = container
+        self.key = key
+        self.message = message and ": %s" % message
+
+    def __str__(self):
+        return ("%(key)s cannot be copied "
+                "from %(container)s%(message)s" % self.__dict__)
 
 class UnaddableError(ContainerError):
     """An object cannot be added to a container."""
@@ -273,14 +296,22 @@ class IMoveSource(Interface):
 
 class ICopySource(Interface):
     
-    def copyObject(key, copyingTo, with_children=True):
+    def copyObject(key, copyingTo):
         '''Return the object with the given key, as the first part of a
         copy.
 
         copyingTo is the unicode path for where the copy is to.
+        '''
 
-        If the object is a folder an with_children is True, then the folder
-        contents is copied too.
+class INoChildrenCopySource(ICopySource):
+    
+    def copyObjectWithoutChildren(key, copyingTo):
+        '''Return the object with the given key, without any children,
+        as the first part of a copy.
+
+        copyingTo is the unicode path for where the copy is to.
+
+        May return None if its not possible to get a copy without children.
         '''
 
 class IPasteNamesChooser(Interface):

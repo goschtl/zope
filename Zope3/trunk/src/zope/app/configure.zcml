@@ -74,6 +74,12 @@
       for="*" />
 
   <adapter
+      factory="zope.app.copypastemove.NoChildrenObjectCopier"
+      provides="zope.app.interfaces.copypastemove.INoChildrenObjectCopier"
+      permission="zope.ManageContent" 
+      for="zope.app.interfaces.content.folder.IFolder" />
+
+  <adapter
       factory="zope.app.copypastemove.PrincipalClipboard"
       provides="zope.app.interfaces.copypastemove.IPrincipalClipboard"
       permission="zope.ManageContent" 
