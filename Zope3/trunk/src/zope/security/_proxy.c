@@ -117,6 +117,12 @@ check(SecurityProxy *self, PyObject *meth, PyObject *name)
 {
   PyObject *r;
 
+  /* If the checker has __setitem__, we call it's slot rather than
+     calling check or check_getattr. Why? Because calling operator slots
+     is much faster than calling methods and security checks are done so
+     often that speed matters.  So we have this hack of using
+     almost-arbitrary operations to represent methods that we call
+     alot.  */
   if (self->proxy_checker->ob_type->tp_as_mapping != NULL
       && self->proxy_checker->ob_type->tp_as_mapping->mp_ass_subscript != NULL
       && meth != str_check_setattr)
@@ -133,6 +139,12 @@ check(SecurityProxy *self, PyObject *meth, PyObject *name)
   return 0;
 }
 
+/* If the checker has __getitem__, we call it's slot rather than
+   calling proxy. Why? Because calling operator slots
+   is much faster than calling methods and security checks are done so
+   often that speed matters.  So we have this hack of using
+   almost-arbitrary operations to represent methods that we call
+   alot.  */
 #define PROXY_RESULT(self, result) \
 if (result != NULL) { \
   PyObject *tmp; \
