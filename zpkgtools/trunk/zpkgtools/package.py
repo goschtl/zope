@@ -67,7 +67,8 @@ def expand_globs(directory, reldir, globlist):
             gs = g.replace("/", os.sep)
             filenames = glob.glob(gs)
             if not filenames:
-                raise ValueError("filename pattern %r doesn't match any files" % g)
+                raise ValueError(
+                    "filename pattern %r doesn't match any files" % g)
             results += [posixpath.join(reldir, fn.replace(os.sep, "/"))
                         for fn in filenames]
     finally:
