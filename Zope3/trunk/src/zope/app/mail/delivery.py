@@ -13,10 +13,12 @@
 ##############################################################################
 """Mail Delivery utility implementation
 
-This module contains various implementations of MailDeliverys.
+This module contains various implementations of `MailDeliverys`.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import rfc822
 import threading
 import logging
@@ -116,7 +118,7 @@ class QueuedMailDelivery(AbstractMailDelivery):
 
 class QueueProcessorThread(threading.Thread):
     """This thread is started at configuration time from the
-    mail:queuedDelivery directive handler.
+    `mail:queuedDelivery` directive handler.
     """
     log = logging.getLogger("QueueProcessorThread")
     __stopped = False
@@ -128,7 +130,7 @@ class QueueProcessorThread(threading.Thread):
     def setMaildir(self, maildir):
         """Set the maildir.
 
-        This method is used just to provide a maildir stubs ."""
+        This method is used just to provide a `maildir` stubs ."""
         self.maildir = maildir
 
     def setQueuePath(self, path):
@@ -139,7 +141,7 @@ class QueueProcessorThread(threading.Thread):
 
     def _parseMessage(self, message):
         """Extract fromaddr and toaddrs from the first two lines of
-        the message.
+        the `message`.
 
         Returns a fromaddr string, a toaddrs tuple and the message
         string.

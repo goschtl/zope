@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.app.location.location import Location, locate, LocationIterator
 from zope.app.location.location import inside, LocationProxy

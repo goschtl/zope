@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.app.location.interfaces import ILocation
 from zope.app.location.location import Location, inside
@@ -26,7 +27,7 @@ import tempfile
 import zope.interface
 
 def locationCopy(loc):
-    """Return a copy of an object,, and anything in it
+    """Return a copy of an object, and anything in it
 
     If object in the location refer to objects outside of the
     location, then the copies of the objects in the location refer to
@@ -84,14 +85,14 @@ def locationCopy(loc):
 class CopyPersistent(object):
     """Persistence hooks for copying locations
 
-    See locationCopy above.
+    See `locationCopy` above.
 
     We get initialized with an initial location:
 
     >>> o1 = Location()
     >>> persistent = CopyPersistent(o1)
 
-    We provide an id function that returns None when given a non-location:
+    We provide an `id` function that returns None when given a non-location:
 
     >>> persistent.id(42)
 
@@ -102,7 +103,7 @@ class CopyPersistent(object):
     >>> persistent.id(o2)
 
     But, if we get a location outside the original location, we assign
-    it an id and return the id:
+    it an `id` and return the `id`:
 
     >>> o3 = Location()
     >>> id3 = persistent.id(o3)
@@ -115,8 +116,8 @@ class CopyPersistent(object):
     >>> id4 is id3
     0
 
-    If we ask for the id of an outside location more than once, we
-    always get the same id back:
+    If we ask for the `id` of an outside location more than once, we
+    always get the same `id` back:
 
     >> persistent.id(o4) == id4
     1
@@ -159,16 +160,16 @@ class CopyPersistent(object):
 class PathPersistent(object):
     """Persistence hooks for pickling locations
 
-    See locationCopy above.
+    See `locationCopy` above.
 
     Unlike copy persistent, we use paths for ids of outside locations
     so that we can separate pickling and unpickling in time.  We have
     to compute paths and traverse objects to load paths, but paths can
-    be stored for later use, unlike the ids used by CopyPersistent.
+    be stored for later use, unlike the ids used by `CopyPersistent`.
 
-    We require outside locations that can be adapted to ITraversable.
+    We require outside locations that can be adapted to `ITraversable`.
     To simplify the example, we'll use a simple traversable location
-    defined in zope.app.location.tests, TLocation.
+    defined in `zope.app.location.tests`, `TLocation`.
 
     Normally, general adapters are used to make objects traversable.
 

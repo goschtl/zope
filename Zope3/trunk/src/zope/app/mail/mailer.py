@@ -17,6 +17,8 @@ message could be sent out by.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from os import popen
 from smtplib import SMTP
 

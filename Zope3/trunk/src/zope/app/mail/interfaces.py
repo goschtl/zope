@@ -15,22 +15,22 @@
 
 Email sending from Zope 3 applications works as follows:
 
-- A Zope 3 application locates a mail delivery utility ('IMailDelivery') and
+- A Zope 3 application locates a mail delivery utility (`IMailDelivery`) and
   feeds a message to it. It gets back a unique message ID so it can keep
-  track of the message by subscribing to 'IMailEvent' events.
+  track of the message by subscribing to `IMailEvent` events.
 
 - The utility registers with the transaction system to make sure the
   message is only sent when the transaction commits successfully.  (Among
-  other things this avoids duplicate messages on 'ConflictErrors'.)
+  other things this avoids duplicate messages on `ConflictErrors`.)
 
-- If the delivery utility is a 'IQueuedMailDelivery', it puts the message into
+- If the delivery utility is a `IQueuedMailDelivery`, it puts the message into
   a queue (a Maildir mailbox in the file system). A separate process or thread
-  ('IMailQueueProcessor') watches the queue and delivers messages
+  (`IMailQueueProcessor`) watches the queue and delivers messages
   asynchronously. Since the queue is located in the file system, it survives
   Zope restarts or crashes and the mail is not lost.  The queue processor
   can implement batching to keep the server load low.
 
-- If the delivery utility is a IDirectMailDelivery, it delivers messages
+- If the delivery utility is a `IDirectMailDelivery`, it delivers messages
   synchronously during the transaction commit.  This is not a very good idea,
   as it makes the user wait.  Note that transaction commits must not fail,
   but that is not a problem, because mail delivery problems dispatch an
@@ -40,21 +40,22 @@ Email sending from Zope 3 applications works as follows:
   executed during the transaction commit phase.  There should be a way to
   start a new transaction for event processing after this one is commited.
 
-- An 'IMailQueueProcessor' or 'IDirectMailDelivery' actually delivers the
-  messages by using a mailer ('IMailer') component that encapsulates the
+- An `IMailQueueProcessor` or `IDirectMailDelivery` actually delivers the
+  messages by using a mailer (`IMailer`) component that encapsulates the
   delivery process.  There are currently two mailers:
 
-    - 'ISMTPMailer' sends all messages to a relay host using SMTP
+    - `ISMTPMailer` sends all messages to a relay host using SMTP
 
-    - 'ISendmailMailer' sends messages by calling an external process (usually
+    - `ISendmailMailer` sends messages by calling an external process (usually
       /usr/lib/sendmail on Unix systems).
 
-- If mail delivery succeeds, an 'IMailSentEvent' is dispatched by the mailer.
-  If mail delivery fails, no exceptions are raised, but an 'IMailErrorEvent' is
+- If mail delivery succeeds, an `IMailSentEvent` is dispatched by the mailer.
+  If mail delivery fails, no exceptions are raised, but an `IMailErrorEvent` is
   dispatched by the mailer.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import Interface, Attribute
 from zope.schema import Object, TextLine, Int, Password, BytesLine
@@ -69,17 +70,17 @@ class IMailDelivery(Interface):
     def send(fromaddr, toaddrs, message):
         """Send an email message.
 
-        'fromaddr' is the sender address (byte string),
+        `fromaddr` is the sender address (byte string),
 
-        'toaddrs' is a sequence of recipient addresses (byte strings).
+        `toaddrs` is a sequence of recipient addresses (byte strings).
 
-        'message' is a byte string that contains both headers and body
+        `message` is a byte string that contains both headers and body
         formatted according to RFC 2822.  If it does not contain a Message-Id
         header, it will be generated and added automatically.
 
         Returns the message ID.
 
-        You can subscribe to IMailEvent events for notification about problems
+        You can subscribe to `IMailEvent` events for notification about problems
         or successful delivery.
 
         Messages are actually sent during transaction commit.
@@ -131,18 +132,18 @@ class IMailer(Interface):
     def send(fromaddr, toaddrs, message):
         """Send an email message.
 
-        'fromaddr' is the sender address (unicode string),
+        `fromaddr` is the sender address (unicode string),
 
-        'toaddrs' is a sequence of recipient addresses (unicode strings).
+        `toaddrs` is a sequence of recipient addresses (unicode strings).
 
-        'message' contains both headers and body formatted according to RFC
+        `message` contains both headers and body formatted according to RFC
         2822.  It should contain at least Date, From, To, and Message-Id
         headers.
 
         Messages are sent immediatelly.
 
-        Dispatches an IMailSentEvent on successful delivery, otherwise an
-        IMailErrorEvent.
+        Dispatches an `IMailSentEvent` on successful delivery, otherwise an
+        `IMailErrorEvent`.
         """
 
 
@@ -201,20 +202,20 @@ class IMailErrorEvent(IMailEvent):
 class IMaildirFactory(Interface):
 
     def __call__(dirname, create=False):
-        """Opens a Maildir folder at a given filesystem path.
+        """Opens a `Maildir` folder at a given filesystem path.
 
-        If 'create' is True, the folder will be created when it does not
-        exist.  If 'create' is False and the folder does not exist, an
-        exception (OSError) will be raised.
+        If `create` is ``True``, the folder will be created when it does not
+        exist.  If `create` is ``False`` and the folder does not exist, an
+        exception (``OSError``) will be raised.
 
         If path points to a file or an existing directory that is not a
-        valid Maildir folder, an exception is raised regardless of the
-        'create' argument.
+        valid `Maildir` folder, an exception is raised regardless of the
+        `create` argument.
         """
 
 
 class IMaildir(Interface):
-    """Read/write access to Maildir folders.
+    """Read/write access to `Maildir` folders.
 
     See http://www.qmail.org/man/man5/maildir.html for detailed format
     description.
@@ -225,48 +226,48 @@ class IMaildir(Interface):
         """
 
     def newMessage():
-        """Creates a new message in the maildir.
+        """Creates a new message in the `maildir`.
 
-        Returns a file-like object for a new file in the 'tmp' subdirectory
-        of the Maildir.  After writing message contents to it, call the
-        commit() or abort() method on it.
+        Returns a file-like object for a new file in the ``tmp`` subdirectory
+        of the `Maildir`.  After writing message contents to it, call the
+        ``commit()`` or ``abort()`` method on it.
 
-        The returned object implements IMaildirMessageWriter.
+        The returned object implements `IMaildirMessageWriter`.
         """
 
 
 class IMaildirMessageWriter(Interface):
-    """A file-like object to a new message in a Maildir."""
+    """A file-like object to a new message in a `Maildir`."""
 
     def write(str):
         """Writes a string to the file.
 
         There is no return value. Due to buffering, the string may not actually
-        show up in the file until the commit() method is called.
+        show up in the file until the ``commit()`` method is called.
         """
 
     def writelines(sequence):
         """Writes a sequence of strings to the file.
 
         The sequence can be any iterable object producing strings, typically a
-        list of strings. There is no return value.  'writelines' does not add
+        list of strings. There is no return value.  ``writelines`` does not add
         any line separators.
         """
 
     def commit():
-        """Commits the new message using the Maildir protocol.
+        """Commits the new message using the `Maildir` protocol.
 
         First, the message file is flushed, closed, then it is moved from
-        'tmp' into 'new' subdirectory of the maildir.
+        ``tmp`` into ``new`` subdirectory of the maildir.
 
-        Calling commit() more than once is allowed.
+        Calling ``commit()`` more than once is allowed.
         """
 
     def abort():
         """Aborts the new message.
 
-        The message file is closed and removed from the 'tmp' subdirectory
-        of the maildir.
+        The message file is closed and removed from the ``tmp`` subdirectory
+        of the `maildir`.
 
-        Calling abort() more than once is allowed.
+        Calling ``abort()`` more than once is allowed.
         """

@@ -11,10 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Read/write access to Maildir folders.
+"""Read/write access to `Maildir` folders.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 import socket
 import time
@@ -25,13 +27,13 @@ from zope.app.mail.interfaces import \
      IMaildirFactory, IMaildir, IMaildirMessageWriter
 
 class Maildir(object):
-    """See zope.app.interfaces.mail.IMaildir"""
+    """See `zope.app.interfaces.mail.IMaildir`"""
 
     classProvides(IMaildirFactory)
     implements(IMaildir)
 
     def __init__(self, path, create=False):
-        "See zope.app.interfaces.mail.IMaildirFactory"
+        "See `zope.app.interfaces.mail.IMaildirFactory`"
         self.path = path
 
         def access(path):
@@ -54,7 +56,7 @@ class Maildir(object):
             raise ValueError('%s is not a Maildir folder' % path)
 
     def __iter__(self):
-        "See zope.app.interfaces.mail.IMaildir"
+        "See `zope.app.interfaces.mail.IMaildir`"
         join = os.path.join
         subdir_cur = join(self.path, 'cur')
         subdir_new = join(self.path, 'new')
@@ -69,7 +71,7 @@ class Maildir(object):
         return iter(new_messages + cur_messages)
 
     def newMessage(self):
-        "See zope.app.interfaces.mail.IMaildir"
+        "See `zope.app.interfaces.mail.IMaildir`"
         # NOTE: http://www.qmail.org/man/man5/maildir.html says, that the first
         #       step of the delivery process should be a chdir.  Chdirs and
         #       threading do not mix.  Is that chdir really necessary?
@@ -96,7 +98,7 @@ class Maildir(object):
 
 
 class MaildirMessageWriter(object):
-    """See zope.app.interfaces.mail.IMaildirMessageWriter"""
+    """See `zope.app.interfaces.mail.IMaildirMessageWriter`"""
 
     implements(IMaildirMessageWriter)
 
