@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: testZPTPage.py,v 1.6 2002/12/05 17:37:42 fdrake Exp $
+$Id: testZPTPage.py,v 1.7 2002/12/07 16:53:11 zagy Exp $
 """
 
 import unittest
@@ -51,11 +51,21 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
     def testSearchableText(self):
         page = ZPTPage()
-        utext = u'another test\n' # The source will grow a newline if ommited
-
-        page.setSource(utext)
         searchableText = getAdapter(page, ISearchableText)
+        
+        utext = u'another test\n' # The source will grow a newline if ommited
+        html = u"<html><body>%s</body></html>\n" % (utext, )
+        
+        page.setSource(utext)
         self.failUnlessEqual(searchableText.getSearchableText(), [utext])
+
+        page.setSource(html, content_type='text/html')
+        self.assertEqual(searchableText.getSearchableText(), [utext+'\n'])
+        
+        page.setSource(html, content_type='text/plain')
+        self.assertEqual(searchableText.getSearchableText(), [html])
+
+       
 
     def testZPTRendering(self):
         page = ZPTPage()
