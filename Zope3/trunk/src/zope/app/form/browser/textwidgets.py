@@ -27,6 +27,8 @@ from zope.app.form.browser.widget import DisplayWidget
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 
 def escape(str):
     if str is not None:
@@ -149,7 +151,7 @@ class TextWidget(SimpleInputWidget):
             try:
                 value = unicode(input)
             except ValueError, v:
-                raise ConversionError("Invalid text data", v)
+                raise ConversionError(_("Invalid text data"), v)
         return unescape(value)
 
 
@@ -161,7 +163,7 @@ class Bytes(SimpleInputWidget):
             try:
                 value = value.encode('ascii')
             except UnicodeError, v:
-                raise ConversionError("Invalid textual data", v)
+                raise ConversionError(_("Invalid textual data"), v)
         return value
 
 
@@ -303,7 +305,7 @@ class TextAreaWidget(SimpleInputWidget):
             try:
                 value = unicode(value)
             except ValueError, v:
-                raise ConversionError("Invalid unicode data", v)
+                raise ConversionError(_("Invalid unicode data"), v)
             else:
                 value = unescape(value)
                 value = value.replace("\r\n", "\n")                
@@ -408,7 +410,7 @@ class FileWidget(TextWidget):
             seek = input.seek
             read = input.read
         except AttributeError, e:
-            raise ConversionError('Form input is not a file object', e)
+            raise ConversionError(_('Form input is not a file object'), e)
         else:
             seek(0)
             data = read()
@@ -441,7 +443,7 @@ class IntWidget(TextWidget):
             try:
                 return int(input)
             except ValueError, v:
-                raise ConversionError("Invalid integer data", v)
+                raise ConversionError(_("Invalid integer data"), v)
 
 
 class FloatWidget(TextWidget):
@@ -455,7 +457,7 @@ class FloatWidget(TextWidget):
             try:
                 return float(input)
             except ValueError, v:
-                raise ConversionError("Invalid floating point data", v)
+                raise ConversionError(_("Invalid floating point data"), v)
 
 
 class DatetimeWidget(TextWidget):
@@ -470,7 +472,7 @@ class DatetimeWidget(TextWidget):
             try:
                 return parseDatetimetz(input)
             except (DateTimeError, ValueError, IndexError), v:
-                raise ConversionError("Invalid datetime data", v)
+                raise ConversionError(_("Invalid datetime data"), v)
 
 
 class DateWidget(TextWidget):
@@ -486,7 +488,7 @@ class DateWidget(TextWidget):
             try:
                 return parseDatetimetz(input).date()
             except (DateTimeError, ValueError, IndexError), v:
-                raise ConversionError("Invalid datetime data", v)
+                raise ConversionError(_("Invalid datetime data"), v)
 
 
 class DateDisplayWidget(DisplayWidget):
