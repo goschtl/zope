@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_datetime.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
+$Id: test_datetime.py,v 1.5 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import Datetime, EnumeratedDatetime
+from zope.schema import Datetime
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
@@ -82,28 +82,8 @@ class DatetimeTest(FieldTestBase):
         self.assertRaises(TooBig, field.validate, d5)
 
 
-class EnumeratedDatetimeTest(DatetimeTest):
-    """Tests of the EnumeratedDatetime field type."""
-
-    _Field_Factory = EnumeratedDatetime
-
-    def testAllowedValues(self):
-        d1 = datetime(2000,10,1)
-        d2 = datetime(2000,10,2)
-
-        field = self._Field_Factory(title=u'Datetime field', description=u'',
-                                    readonly=False, required=False,
-                                    allowed_values=(d1, d2))
-        field.validate(None)
-        field.validate(d2)
-        field.validate(datetime(2000,10,2))
-
-        self.assertRaises(InvalidValue, field.validate, datetime(2000,10,4))
-
-
 def test_suite():
     suite = makeSuite(DatetimeTest)
-    suite.addTest(makeSuite(EnumeratedDatetimeTest))
     return suite
 
 if __name__ == '__main__':

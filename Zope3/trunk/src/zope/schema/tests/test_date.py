@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_date.py,v 1.3 2004/04/11 10:35:17 srichter Exp $
+$Id: test_date.py,v 1.4 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import Date, EnumeratedDate
+from zope.schema import Date
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
@@ -81,28 +81,9 @@ class DateTest(FieldTestBase):
         self.assertRaises(TooSmall, field.validate, d1)
         self.assertRaises(TooBig, field.validate, d5)
 
-class EnumeratedDateTest(DateTest):
-    """Test the EnumeratedDate Field."""
-
-    _Field_Factory = EnumeratedDate
-
-    def testAllowedValues(self):
-        d1 = date(2000,10,1)
-        d2 = date(2000,10,2)
-
-        field = self._Field_Factory(title=u'Date field', description=u'',
-                                    readonly=False, required=False,
-                                    allowed_values=(d1, d2))
-        field.validate(None)
-        field.validate(d2)
-        field.validate(date(2000,10,2))
-
-        self.assertRaises(InvalidValue, field.validate, date(2000,10,4))
-
 
 def test_suite():
     suite = makeSuite(DateTest)
-    suite.addTest(makeSuite(EnumeratedDateTest))
     return suite
 
 if __name__ == '__main__':

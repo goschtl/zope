@@ -11,38 +11,40 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Tests of the states example.
 
-"""Tests of the states example."""
-
+$Id: test_states.py,v 1.6 2004/04/24 23:21:06 srichter Exp $
+"""
 import unittest
 
 from zope.interface import Interface
 from zope.interface.verify import verifyObject
 
 from zope.schema import vocabulary
+from zope.schema import Choice
 from zope.schema.interfaces import IVocabulary
 from zope.schema.tests import states
 
 
 class IBirthInfo(Interface):
-    state1 = vocabulary.VocabularyField(
+    state1 = Choice(
         title=u'State of Birth',
         description=u'The state in which you were born.',
         vocabulary="states",
         default="AL",
         )
-    state2 = vocabulary.VocabularyField(
+    state2 = Choice(
         title=u'State of Birth',
         description=u'The state in which you were born.',
         vocabulary="states",
         default="AL",
         )
-    state3 = vocabulary.VocabularyField(
+    state3 = Choice(
         title=u'Favorite State',
         description=u'The state you like the most.',
         vocabulary=states.StateVocabulary(),
         )
-    state4 = vocabulary.VocabularyField(
+    state4 = Choice(
         title=u"Name",
         description=u"The name of your new state",
         vocabulary="states",

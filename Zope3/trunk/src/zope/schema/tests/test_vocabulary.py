@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test of the Vocabulary and related support APIs.
 
-"""Test of the VocabularyField and related support APIs."""
-
+$Id: test_vocabulary.py,v 1.14 2004/04/24 23:21:06 srichter Exp $
+"""
 import unittest
 
 from zope.interface.verify import verifyObject
@@ -21,7 +22,6 @@ from zope.interface import Interface, implements
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
-from zope.testing.doctestunit import DocTestSuite
 
 
 class DummyRegistry(vocabulary.VocabularyRegistry):
@@ -63,6 +63,9 @@ class SampleTerm:
 class SampleVocabulary:
     implements(interfaces.IVocabulary)
 
+    def __iter__(self):
+        return iter([self.getTerm(x) for x in range(0, 10)])
+
     def __contains__(self, value):
         return 0 <= value < 10
 
@@ -79,131 +82,6 @@ class SampleVocabulary:
             t.double = 2 * value
             return t
         raise LookupError("no such value: %r" % value)
-
-
-class VocabularyFieldTests(BaseTest):
-    """Tests of the VocabularyField implementation."""
-
-    def check_preconstructed(self, cls, okval, badval):
-        v = SampleVocabulary()
-        field = cls(vocabulary=v)
-        self.assert_(field.vocabulary is v)
-        self.assert_(field.vocabularyName is None)
-        bound = field.bind(None)
-        self.assert_(bound.vocabulary is v)
-        self.assert_(bound.vocabularyName is None)
-        bound.default = okval
-        self.assertEqual(bound.default, okval)
-        self.assertRaises(interfaces.ValidationError,
-                          setattr, bound, "default", badval)
-
-    def test_preconstructed_vocabulary(self):
-        self.check_preconstructed(vocabulary.VocabularyField, 1, 42)
-
-    def test_preconstructed_vocabulary_multi(self):
-        self.check_preconstructed(vocabulary.VocabularyListField,
-                                  [1], [1, 42])
-
-    def check_constructed(self, cls, okval, badval):
-        vocabulary.setVocabularyRegistry(DummyRegistry())
-        field = cls(vocabulary="vocab")
-        self.assert_(field.vocabulary is None)
-        self.assertEqual(field.vocabularyName, "vocab")
-        o = object()
-        bound = field.bind(o)
-        self.assert_(isinstance(bound.vocabulary, SampleVocabulary))
-        bound.default = okval
-        self.assertEqual(bound.default, okval)
-        self.assertRaises(interfaces.ValidationError,
-                          setattr, bound, "default", badval)
-
-    def test_constructed_vocabulary(self):
-        self.check_constructed(vocabulary.VocabularyField, 1, 42)
-
-    def test_constructed_vocabulary_multi(self):
-        self.check_constructed(vocabulary.VocabularyListField,
-                               [1], [1, 42])
-
-    def test_abstract_base_class_is_abstract(self):
-        self.assertRaises(NotImplementedError,
-                          vocabulary.VocabularyMultiField, vocabulary="foo")
-
-    def check_constructed_vocabulary_multi_default(self, cls):
-        # make sure these don't die during construction:
-        cls(vocabulary="testvocab", default=None)
-        L = []
-        unbound = cls(vocabulary="testvocab", default=L)
-        self.assertEqual(L, unbound.default)
-        self.assert_(unbound.default is not L)
-        # XXX this does, but not clear that it should:
-        self.assertRaises(ValueError,
-                          cls, vocabulary="testvocab", default=['xy'])
-
-    def test_constructed_vocabulary_bag_default(self):
-        self.check_constructed_vocabulary_multi_default(
-            vocabulary.VocabularyBagField)
-
-    def test_constructed_vocabulary_list_default(self):
-        self.check_constructed_vocabulary_multi_default(
-            vocabulary.VocabularyListField)
-
-    def test_constructed_vocabulary_set_default(self):
-        self.check_constructed_vocabulary_multi_default(
-            vocabulary.VocabularySetField)
-
-    def test_constructed_vocabulary_unique_list_default(self):
-        self.check_constructed_vocabulary_multi_default(
-            vocabulary.VocabularyUniqueListField)
-
-    def check_min_length_ok(self, v, cls):
-        field = cls(vocabulary=v, min_length=1)
-        self.assertEqual(field.min_length, 1)
-        field.validate([0])
-
-    def test_min_length_ok(self):
-        v = SampleVocabulary()
-        self.check_min_length_ok(v, vocabulary.VocabularyBagField)
-        self.check_min_length_ok(v, vocabulary.VocabularyListField)
-        self.check_min_length_ok(v, vocabulary.VocabularySetField)
-        self.check_min_length_ok(v, vocabulary.VocabularyUniqueListField)
-
-    def check_min_length_short(self, v, cls):
-        field = cls(vocabulary=v, min_length=1)
-        self.assertEqual(field.min_length, 1)
-        self.assertRaises(interfaces.ValidationError,
-                          field.validate, [])
-
-    def test_min_length_short(self):
-        v = SampleVocabulary()
-        self.check_min_length_short(v, vocabulary.VocabularyBagField)
-        self.check_min_length_short(v, vocabulary.VocabularyListField)
-        self.check_min_length_short(v, vocabulary.VocabularySetField)
-        self.check_min_length_short(v, vocabulary.VocabularyUniqueListField)
-
-    def check_max_length_ok(self, v, cls):
-        field = cls(vocabulary=v, min_length=2)
-        self.assertEqual(field.min_length, 2)
-        field.validate([0, 1])
-
-    def test_max_length_ok(self):
-        v = SampleVocabulary()
-        self.check_max_length_ok(v, vocabulary.VocabularyBagField)
-        self.check_max_length_ok(v, vocabulary.VocabularyListField)
-        self.check_max_length_ok(v, vocabulary.VocabularySetField)
-        self.check_max_length_ok(v, vocabulary.VocabularyUniqueListField)
-
-    def check_max_length_long(self, v, cls):
-        field = cls(vocabulary=v, max_length=2)
-        self.assertEqual(field.max_length, 2)
-        self.assertRaises(interfaces.ValidationError,
-                          field.validate, [0, 1, 2])
-
-    def test_max_length_long(self):
-        v = SampleVocabulary()
-        self.check_max_length_long(v, vocabulary.VocabularyBagField)
-        self.check_max_length_long(v, vocabulary.VocabularyListField)
-        self.check_max_length_long(v, vocabulary.VocabularySetField)
-        self.check_max_length_long(v, vocabulary.VocabularyUniqueListField)
 
 
 class SimpleVocabularyTests(unittest.TestCase):
@@ -292,9 +170,7 @@ class SimpleVocabularyTests(unittest.TestCase):
 
 def test_suite():
     suite = unittest.makeSuite(RegistryTests)
-    suite.addTest(unittest.makeSuite(VocabularyFieldTests))
     suite.addTest(unittest.makeSuite(SimpleVocabularyTests))
-    suite.addTest(DocTestSuite("zope.schema.vocabulary"))
     return suite
 
 if __name__ == "__main__":

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_strfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
+$Id: test_strfield.py,v 1.5 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Bytes, BytesLine, Text, TextLine, EnumeratedTextLine
+from zope.schema import Bytes, BytesLine, Text, TextLine
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooShort, TooLong, ConstraintNotSatisfied
@@ -85,7 +85,7 @@ class StrTest(FieldTestBase):
         self.assertRaises(TooLong, field.validate, self._convert('999999999'))
 
 
-class MultiLine:
+class MultiLine(object):
 
     def test_newlines(self):
         field = self._Field_Factory(title=u'Str field')
@@ -110,7 +110,7 @@ class TextTest(StrTest, MultiLine):
         field = self._Field_Factory()
         self.assertRaises(ValidationError, field.validate, 'hello')
 
-class SingleLine:
+class SingleLine(object):
 
     def test_newlines(self):
         field = self._Field_Factory(title=u'Str field')
@@ -124,20 +124,6 @@ class LineTest(SingleLine, BytesTest):
 class TextLineTest(SingleLine, TextTest):
     _Field_Factory = TextLine
 
-class EnumeratedTextLineTest(TextLineTest):
-    _Field_Factory = EnumeratedTextLine
-
-    def testAllowedValues(self):
-        field = self._Field_Factory(
-            title=u'Str field', description=u'',
-            readonly=False, required=False,
-            allowed_values=(self._convert('foo'),
-                            self._convert('bar')))
-        field.validate(None)
-        field.validate(self._convert('foo'))
-
-        self.assertRaises(InvalidValue, field.validate, self._convert('blah'))
-
 
 def test_suite():
     return TestSuite((
@@ -145,7 +131,6 @@ def test_suite():
         makeSuite(TextTest),
         makeSuite(LineTest),
         makeSuite(TextLineTest),
-        makeSuite(EnumeratedTextLineTest),
         ))
 
 if __name__ == '__main__':

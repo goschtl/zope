@@ -11,12 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Sequence and Tuple field tests.
+
 This set of tests exercises both Tuple and Sequence.  The only
 behavior Tuple adds to sequence is the restriction of the type
 to 'tuple'.
 
-$Id: test_tuplefield.py,v 1.7 2004/04/11 10:35:17 srichter Exp $
+$Id: test_tuplefield.py,v 1.8 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import TestSuite, main, makeSuite
 
@@ -24,34 +25,9 @@ from zope.interface import implements
 from zope.schema import Field, Sequence, Tuple, Int
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import NotAContainer, RequiredMissing
-from zope.schema.interfaces import WrongContainedType, WrongType
+from zope.schema.interfaces import WrongContainedType, WrongType, NotUnique
 from zope.schema.interfaces import TooShort, TooLong
 from zope.schema.tests.test_field import FieldTestBase
-
-class SequenceTest(FieldTestBase):
-    """Test the Sequence Field."""
-
-    _Field_Factory = Sequence
-
-    def testValidate(self):
-        field = self._Field_Factory(title=u'test field', description=u'',
-                                    readonly=False, required=False)
-        field.validate(None)
-        field.validate(())
-        field.validate([])
-        field.validate('')
-        field.validate({})
-        field.validate([1, 2])
-
-        self.assertRaises(NotAContainer, field.validate, 1)
-
-    def testValidateRequired(self):
-        field = self._Field_Factory(title=u'test field', description=u'',
-                                    readonly=False, required=True)
-        field.validate([1, 2])
-
-        self.assertRaises(RequiredMissing, field.validate, None)
-
 
 class TupleTest(FieldTestBase):
     """Test the Tuple Field."""
@@ -136,10 +112,15 @@ class TupleTest(FieldTestBase):
             implements(IField)
         Tuple(value_type=FakeField())
 
+    def testUnique(self):
+        field = self._Field_Factory(title=u'test field', description=u'',
+                                    readonly=False, required=True, unique=True)
+        field.validate((1, 2))
+        self.assertRaises(NotUnique, field.validate, (1, 2, 1))
+
 def test_suite():
     suite = TestSuite()
     suite.addTest(makeSuite(TupleTest))
-    suite.addTest(makeSuite(SequenceTest))
     return suite
 
 if __name__ == '__main__':

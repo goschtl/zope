@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_floatfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
+$Id: test_floatfield.py,v 1.5 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import Float, EnumeratedFloat
+from zope.schema import Float
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
@@ -77,23 +77,8 @@ class FloatTest(FieldTestBase):
         self.assertRaises(TooBig, field.validate, 20.02)
 
 
-class EnumeratedFloatTest(FloatTest):
-    """Tests for the EnumeratedFloat field type."""
-
-    _Field_Factory = EnumeratedFloat
-
-    def testAllowedValues(self):
-        field = self._Field_Factory(title=u'Integer field', description=u'',
-                                    readonly=False, required=False,
-                                    allowed_values=(0.1, 2.6))
-        field.validate(None)
-        field.validate(2.6)
-        self.assertRaises(InvalidValue, field.validate, -5.4)
-
-
 def test_suite():
     suite = makeSuite(FloatTest)
-    suite.addTest(makeSuite(EnumeratedFloatTest))
     return suite
 
 if __name__ == '__main__':

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_intfield.py,v 1.5 2004/04/11 10:35:17 srichter Exp $
+$Id: test_intfield.py,v 1.6 2004/04/24 23:21:06 srichter Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import Int, EnumeratedInt
+from zope.schema import Int
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
@@ -77,23 +77,8 @@ class IntTest(FieldTestBase):
         self.assertRaises(TooBig, field.validate, 20)
 
 
-class EnumeratedIntTest(IntTest):
-    """Test the EnumeratedInt field type."""
-
-    _Field_Factory = EnumeratedInt
-
-    def testAllowedValues(self):
-        field = self._Field_Factory(title=u'Int field', description=u'',
-                                    readonly=False, required=False,
-                                    allowed_values=(-1, 2))
-        field.validate(None)
-        field.validate(2)
-        self.assertRaises(InvalidValue, field.validate, 4)
-
-
 def test_suite():
     suite = makeSuite(IntTest)
-    suite.addTest(makeSuite(EnumeratedIntTest))
     return suite
 
 if __name__ == '__main__':
