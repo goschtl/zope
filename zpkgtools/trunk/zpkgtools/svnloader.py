@@ -24,6 +24,7 @@ import urllib
 import urlparse
 
 from zpkgtools import LoadingError
+from zpkgtools import runlog
 
 
 class SubversionLoadingError(LoadingError):
@@ -225,7 +226,9 @@ class SubversionLoader:
 
         """
         # do an "svn cat" to get a file, or learn that this is a directory
-        stdin, stdout, stderr = os.popen3("svn cat '%s'" % url)
+        cmd = "svn cat '%s'" % url
+        runlog.report_command(cmd)
+        stdin, stdout, stderr = os.popen3(cmd)
         data = stdout.read()
         if not data:
             # maybe url referenced a directory
@@ -233,7 +236,10 @@ class SubversionLoader:
             if "directory" in err:
                 # it is!
                 target = os.path.join(workdir, "foo")
-                rc = os.system("svn export -q '%s' '%s'" % (url, target))
+                cmd = "svn export -q '%s' '%s'" % (url, target)
+                runlog.report_command(cmd)
+                rc = os.system(cmd)
+                runlog.report_exit_code(rc)
                 if rc != 0:
                     raise SubversionLoadingError(url, rc)
                 return target

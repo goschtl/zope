@@ -23,6 +23,7 @@ import urllib
 import urlparse
 
 from zpkgtools import Error, LoadingError
+from zpkgtools import runlog
 
 
 class CvsLoadingError(LoadingError):
@@ -233,12 +234,16 @@ class CvsLoader:
         wf = posixpath.basename(path)
         pwd = os.getcwd()
         os.chdir(workdir)
+        cmdline = ("cvs", "-f", "-Q", "-z6", "-d", cvsroot,
+                   "export", "-kk", "-d", wf, "-r", tag, path)
+
+        runlog.report_command(" ".join(cmdline))
         try:
-            return os.spawnlp(os.P_WAIT, "cvs",
-                              "cvs", "-f", "-Q", "-z6", "-d", cvsroot,
-                              "export", "-kk", "-d", wf, "-r", tag, path)
+            rc = os.spawnlp(os.P_WAIT, "cvs", *cmdline)
         finally:
             os.chdir(pwd)
+        runlog.report_exit_code(rc)
+        return rc
 
     # XXX CVS does some weird things with export; not sure how much
     # they mean yet.  Note that there's no way to tell if the resource
@@ -280,5 +285,6 @@ class CvsLoader:
     # separate this out to ease testing
 
     def openCvsRLog(self, cvsroot, path):
-        return os.popen(
-            "cvs -f -q -d '%s' rlog -R -l '%s'" % (cvsroot, path), "r")
+        cmd = "cvs -f -q -d '%s' rlog -R -l '%s'" % (cvsroot, path)
+        runlog.report_command(cmd)
+        return os.popen(cmd, "r")

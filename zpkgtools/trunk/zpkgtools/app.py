@@ -40,7 +40,7 @@ class Application:
         """Initialize the application based on an options object as
         returned by `parse_args()`.
         """
-        self.logger = logging.getLogger(options.program)
+        self.logger = logging.getLogger(__name__)
         self.options = options
         cf = config.Configuration()
         cf.location_maps.extend(options.location_maps)
@@ -61,7 +61,7 @@ class Application:
             options.include_support_code = cf.include_support_code
 
     def error(self, message, rc=1):
-        print >>sys.stderr, message
+        self.logger.critical(message)
         sys.exit(rc)
 
 
@@ -497,11 +497,13 @@ class BuilderApplication(Application):
         """
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
+        cmdline = ("tar", "cjf", self.target_file, self.target_name)
+        runlog.report_command(" ".join(cmdline))
         try:
-            rc = os.spawnlp(os.P_WAIT, "tar",
-                            "tar", "cjf", self.target_file, self.target_name)
+            rc = os.spawnlp(os.P_WAIT, "tar", *cmdline)
         finally:
             os.chdir(pwd)
+        runlog.report_exit_code(rc)
         if rc:
             self.error("error generating %s" % self.target_file)
         # We have a tarball; clear some space, then copy the tarball
