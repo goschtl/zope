@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.4 2004/03/19 20:26:22 srichter Exp $
+$Id: test_standardmacros.py,v 1.5 2004/03/23 22:08:29 srichter Exp $
 """
 import unittest
 from zope.app.tests import ztapi
@@ -58,8 +58,10 @@ class works_with_page1(ViewWithMacros):
              'tree':'works_with_page1_tree'}
 
 def createMacrosInstance(pages):
-    from zope.app.basicskin.standardmacros import Macros
+    
     class T(Macros):
+        aliases = {'afoo': 'foo', 'abar': 'bar'}
+
         def __init__(self, context, request):
             self.context = context
             self.request = request
@@ -94,6 +96,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(macros['bar'], 'page1_bar')
         self.assertEqual(macros['baz'], 'collides_with_page1_baz')
         self.assertRaises(KeyError, macros.__getitem__, 'pants')
+
+    def testMacroAliases(self):
+        macros = createMacrosInstance(('page1', 'collides_with_page1'))
+        self.assertEqual(macros['afoo'], 'page1_foo')
+        self.assertEqual(macros['abar'], 'page1_bar')
+        
 
 def test_suite():
     loader = unittest.TestLoader()

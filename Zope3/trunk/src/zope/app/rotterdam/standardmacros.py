@@ -12,10 +12,12 @@
 #
 ##############################################################################
 """
-$Id: standardmacros.py,v 1.1 2004/03/02 17:11:30 philikon Exp $
+$Id: standardmacros.py,v 1.2 2004/03/23 22:08:28 srichter Exp $
 """
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 
 class StandardMacros(BaseMacros):
     macro_pages = ('skin_macros', 'view_macros', 'dialog_macros',
                    'navigation_macros')
+    
+    aliases = {'view': 'page', 'dialog': 'page', 'addingdialog': 'page'}

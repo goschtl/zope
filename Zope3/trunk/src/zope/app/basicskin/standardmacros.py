@@ -15,7 +15,7 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.2 2004/03/19 20:26:22 srichter Exp $
+$Id: standardmacros.py,v 1.3 2004/03/23 22:08:28 srichter Exp $
 """
 from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping
@@ -28,7 +28,10 @@ class Macros:
 
     macro_pages = ()
 
+    aliases = {}
+
     def __getitem__(self, key):
+        key = self.aliases.get(key, key)
         context = self.context
         request = self.request
         for name in self.macro_pages:
