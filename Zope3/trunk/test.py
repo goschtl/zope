@@ -411,7 +411,8 @@ class TestFileFinder:
 def find_tests(rx):
     global finder
     finder = TestFileFinder(pathinit.libdir)
-    os.path.walk(pathinit.libdir, finder.visit, rx)
+    walkdir = test_dir or pathinit.libdir
+    os.path.walk(walkdir, finder.visit, rx)
     return finder.files
 
 def package_import(modname):
@@ -606,6 +607,7 @@ def process_args(argv=None):
     global progress
     global build_inplace
     global functional
+    global test_dir
 
     if argv is None:
         argv = sys.argv
@@ -630,10 +632,12 @@ def process_args(argv=None):
     timesfn = None
     timetests = 0
     functional = False
+    test_dir = None
 
     try:
         opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmprtTuv",
-                                   ["all", "help", "libdir=", "times="])
+                                   ["all", "help", "libdir=", "times=",
+                                    "dir="])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -698,6 +702,8 @@ def process_args(argv=None):
             except ValueError:
                 # must be a filename to write
                 timesfn = v
+        elif k == '--dir':
+            test_dir = v
 
     if gcthresh is not None:
         if gcthresh == 0:
