@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.23 2003/05/28 17:29:50 gvanrossum Exp $
+$Id: syncer.py,v 1.24 2003/06/09 18:48:52 gvanrossum Exp $
 """
 
 import os
@@ -23,7 +23,6 @@ from zope.xmlpickle import dumps, loads
 from zope.app.interfaces.fssync \
      import IObjectEntry, IObjectDirectory, IObjectFile
 
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IContainer
 from zope.configuration.name import resolve
 from zope.app.fssync.classes import Default
@@ -111,7 +110,7 @@ def toFS(ob, name, location):
             toFS(edata, ename, extra_dir)
 
     # Handle annotations
-    annotations = queryAdapter(ob, IAnnotations)
+    annotations = adapter.annotations()
     if annotations is not None:
         annotation_dir = os.path.join(admin_dir, 'Annotations')
         if not os.path.exists(annotation_dir):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.11 2003/06/05 21:50:46 gvanrossum Exp $
+$Id: committer.py,v 1.12 2003/06/09 18:48:52 gvanrossum Exp $
 """
 
 import os
@@ -30,7 +30,6 @@ from zope.fssync import fsutil
 from zope.app.interfaces.fssync \
      import IObjectEntry, IObjectDirectory, IObjectFile
 
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath, traverseName, objectName
@@ -111,7 +110,7 @@ class Checker(object):
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
                     self.check_dir(extra, extrapath)
-                ann = queryAdapter(obj, IAnnotations)
+                ann = adapter.annotations()
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
                     self.check_dir(ann, annpath)
@@ -243,7 +242,7 @@ class Committer(object):
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
                     self.synch_dir(extra, extrapath)
-                ann = queryAdapter(obj, IAnnotations)
+                ann = adapter.annotations()
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
                     self.synch_dir(ann, annpath)

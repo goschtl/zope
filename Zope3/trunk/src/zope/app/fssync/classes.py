@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.7 2003/06/06 19:29:02 stevea Exp $
+$Id: classes.py,v 1.8 2003/06/09 18:48:52 gvanrossum Exp $
 """
 
 import os
@@ -21,6 +21,8 @@ import os
 from zope.app.content.file import File
 from zope.app.content.folder import Folder
 from zope.app.interfaces.fssync import IFSAddView, IObjectFile
+from zope.app.interfaces.annotation import IAnnotations
+from zope.component import queryAdapter
 from zope.component.interfaces import IPresentationRequest
 from zope.xmlpickle import dumps
 from zope.proxy import removeAllProxies
@@ -89,16 +91,20 @@ class ObjectEntryAdapter(object):
         self.context = context
 
     def extra(self):
-        "See Zope.App.FSSync.IObjectEntry.IObjectEntry"
+        "See IObjectEntry"
         return None
 
+    def annotations(self):
+        "See IObjectEntry"
+        return queryAdapter(self.context, IAnnotations)
+
     def typeIdentifier(self):
-        "See Zope.App.FSSync.IObjectEntry.IObjectEntry"
+        "See IObjectEntry"
         class_ = self.context.__class__
         return "%s.%s" % (class_.__module__, class_.__name__)
 
     def factory(self):
-        "See Zope.App.FSSync.IObjectEntry.IObjectEntry"
+        "See IObjectEntry"
         # Return the dotted class name, assuming that it can be used
         class_ = self.context.__class__
         return "%s.%s" % (class_.__module__, class_.__name__)
