@@ -23,7 +23,6 @@ as an example :
   ...   zope.interface.implements(IPhysicallyLocatable)
   ...   def getPath(self) :
   ...       return ""
-  
   >>> sample = TestFolder()
   >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
   >>> a = sample["a"] = TestFolder()

@@ -84,7 +84,7 @@ class VersionableAspectsAdapter(object) :
         parent = target.__parent__
         name = target.__name__       
         del parent[name]
-        IObjectCopier(version).copyTo(parent, name)
+        IObjectCopier(source).copyTo(parent, name)
 
 
 class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
@@ -102,7 +102,7 @@ class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
         parent = target.__parent__
         name = target.__name__       
         del parent[name]
-        IObjectCopier(version).copyTo(parent, name)
+        IObjectCopier(source).copyTo(parent, name)
  
  
 class UpdateStatusPolicy(VersionableAspectsAdapter) :

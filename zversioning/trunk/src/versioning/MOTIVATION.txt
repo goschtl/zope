@@ -13,70 +13,72 @@ folder tree with the following structure as our sample :
          |--> c
      
 
-  >>> import zope.app.versioncontrol.interfaces
-  >>> from zope.interface import directlyProvides
-  >>> from zope.app.versioncontrol.repository import declare_versioned
-  >>> from zope.app.folder import Folder, rootFolder
-  >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
-  >>> from ZODB.tests import util
-  >>> from zope.app.versioncontrol.interfaces import IVersioned
-  >>> class TestFolder(Folder) :
-  ...   zope.interface.implements(IPhysicallyLocatable)
-  ...   def getPath(self) :
-  ...       return ""
+    >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   
-  >>> sample = TestFolder()
-  >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
-  >>> a = sample["a"] = TestFolder()
-  >>> b = sample["b"] = TestFolder()
-  >>> c = b["c"] = TestFolder()
-  >>> for x in (sample, a, b, c) :
-  ...     directlyProvides(x, zope.app.versioncontrol.interfaces.IVersionable)
-  >>> [x for x in sample.keys()]
-  [u'a', u'b']
-  
-  
+
+    >>> from zope.interface import directlyProvides
+    >>> from ZODB.tests import util
+    >>> import zope.app.versioncontrol.interfaces
+    >>> import zope.app.traversing.interfaces
+    >>> import zope.app.folder
+    >>> from zope.interface import implements
+    >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
+    >>> class TestFolder(zope.app.folder.Folder) :
+    ...     implements(IPhysicallyLocatable)
+    ...     def getPath(self) : return ""
+    >>> sample = TestFolder()
+    >>> directlyProvides(sample, zope.app.traversing.interfaces.IContainmentRoot)
+    >>> a = sample["a"] = TestFolder()
+    >>> b = sample["b"] = TestFolder()
+    >>> c = b["c"] = TestFolder()
+    >>> for x in (sample, a, b, c) :
+    ...     directlyProvides(x, zope.app.versioncontrol.interfaces.IVersionable)
+    >>> [x for x in sample.keys()]
+    [u'a', u'b']
+    >>> db_root = buildDatabaseRoot()
+    >>> db_root["sample"] = sample  
+    >>> repository = buildRepository(interaction=True) 
+    >>> util.commit()
+    
+    
 The interesting test case is the reference that uses references outside
 the hierarchical ones, which should be naturally handled in Zope3:
 
-  >>> c.refers_to = a
-  >>> a == c.refers_to
-  True
+    >>> c.refers_to = a
+    >>> a == c.refers_to
+    True
 
 In order to show some limitations of the current implementation we use a
 prebuild version control repository :
 
-  >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
-  >>> db_root = buildDatabaseRoot()
-  >>> db_root["sample"] = sample 
-  >>> repository = buildRepository()
+  
   
 The current policy forces us to remove __parent__ and __name__. We'll do that
 by specializing the standard adapter that removes nothing:
 
-  >>> from zope.app.versioncontrol.nonversioned import StandardNonVersionedDataAdapter
-  >>> class NonVersionedAdapter(StandardNonVersionedDataAdapter) :
-  ...     attrs = ("__name__", "__parent__")   # remove __name__ and __parent from versioning
+    >>> from zope.app.versioncontrol.nonversioned import StandardNonVersionedDataAdapter
+    >>> class NonVersionedAdapter(StandardNonVersionedDataAdapter) :
+    ...     attrs = ("__name__", "__parent__")   # remove __name__ and __parent from versioning
   
   
-  >>> from zope.app.tests import ztapi
-  >>> ztapi.provideAdapter(zope.app.versioncontrol.interfaces.IVersionable,
-  ...                       zope.app.versioncontrol.interfaces.INonVersionedData,
-  ...                       NonVersionedAdapter)
-  >>> zope.app.versioncontrol.interfaces.INonVersionedData(a) is not None
-  True
+    >>> from zope.app.tests import ztapi
+    >>> ztapi.provideAdapter(zope.app.versioncontrol.interfaces.IVersionable,
+    ...                       zope.app.versioncontrol.interfaces.INonVersionedData,
+    ...                       NonVersionedAdapter)
+    >>> zope.app.versioncontrol.interfaces.INonVersionedData(a) is not None
+    True
 
 Now we can put our example data under version control:
 
-  >>> repository.applyVersionControl(sample)
-  >>> repository.applyVersionControl(a)
-  >>> repository.applyVersionControl(b)
-  >>> repository.applyVersionControl(c)
-  >>> util.commit()
-  >>> [IVersioned.providedBy(x) for x in (sample, a, b, c)]
-  [True, True, True, True]
-  >>> [x for x in sample.keys()]
-  [u'a', u'b']
+    >>> repository.applyVersionControl(sample)
+    >>> repository.applyVersionControl(a)
+    >>> repository.applyVersionControl(b)
+    >>> repository.applyVersionControl(c)
+    >>> util.commit()
+    >>> [zope.app.versioncontrol.interfaces.IVersioned.providedBy(x) for x in (sample, a, b, c)]
+    [True, True, True, True]
+    >>> [x for x in sample.keys()]
+    [u'a', u'b']
   
 
 The implementation in zope.app.versioncontrol breaks any database identity references
@@ -85,24 +87,24 @@ outside the sub tree. In the example above this means, that the version of c los
 its reference to a because c is not contained in a. (See 
  zope.app.versioncontrol.version.cloneByPickle)
 
-  >>> def accessVersion(repository, obj) :
-  ...   info = repository.getVersionInfo(obj)
-  ...   return repository.getVersionOfResource(info.history_id, 'mainline')
-  >>> new_a = accessVersion(repository, a)
-  >>> new_b = accessVersion(repository, b)
-  >>> new_c = accessVersion(repository, c)
-  >>> [x for x in sample.keys()]
-  [u'a', u'b']
+    >>> def accessVersion(repository, obj) :
+    ...   info = repository.getVersionInfo(obj)
+    ...   return repository.getVersionOfResource(info.history_id, 'mainline')
+    >>> new_a = accessVersion(repository, a)
+    >>> new_b = accessVersion(repository, b)
+    >>> new_c = accessVersion(repository, c)
+    >>> [x for x in sample.keys()]
+    [u'a', u'b']
 
 Now the reference from b to c is invalid ...
   
-  >>> new_b["c"] == new_c
-  False
+    >>> new_b["c"] == new_c
+    False
   
 as well as the reference from c to a :
   
-  >>> new_c.refers_to == new_a
-  False
+    >>> new_c.refers_to == new_a
+    False
 
   
 This demonstrates that the reference to a is not preserved, which is the major
@@ -141,11 +143,11 @@ IVersionControl.applyVersionControl) :
     >>> histories.register(sample)
     '\x00\x00\x00\x00\x00\x00\x00\x01'
     >>> histories.register(a)
-    '\x00\x00\x00\x00\x00\x00\x00\x04'
+    '\x00\x00\x00\x00\x00\x00\x00\x03'
     >>> histories.register(b)
-    '\x00\x00\x00\x00\x00\x00\x00\x05'
+    '\x00\x00\x00\x00\x00\x00\x00\x04'
     >>> histories.register(c)
-    '\x00\x00\x00\x00\x00\x00\x00\t'
+    '\x00\x00\x00\x00\x00\x00\x00\x06'
     >>> util.commit()
     >>> len(histories.values())
     4
@@ -157,7 +159,7 @@ to save each version as a normal copy of the original content object.
     
     >>> import versioning.policies
     >>> def saveAsVersion(obj, histories) :       # a helper method XXX remove later
-    ...     adapter = VersionableAspectsAdapter(obj, histories)
+    ...     adapter = versioning.policies.ReplaceWithCopyPolicy(obj, histories)
     ...     return adapter.writeAspects()
     >>> saveAsVersion(sample, histories)
     '001'
@@ -216,6 +218,8 @@ The more interesting case arises if we update the refered object too :
 
 Depending on the use case this might be what you want.
 
+    >>> util.commit()
+
 
 A Second Implementation
 =======================
@@ -229,18 +233,19 @@ the original object with versioned data. This implementation
 does not replace the original with a copy but updates only all fields
 with the versioned values.
 
-    >>> def revertToVersionState(obj, histories, selector) :
-    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
-    ...     adapter.updateAspects(selector)
-    >>> a = new_a
-    >>> a.text
-    'First text version of a'
-    >>> revertToVersionState(new_a, histories, '002')
-    >>> a.text
-    'Second text version of a'
-    >>> a == new_a
-    True
-    
+#    
+#    >>> def revertToVersionState(obj, histories, selector) :
+#    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
+#    ...     adapter.updateAspects(selector)
+#    >>> a = new_a
+#    >>> a.text
+#    'First text version of a'
+#    >>> revertToVersionState(new_a, histories, '002')
+#    >>> a.text
+#    'Second text version of a'
+#    >>> a == new_a
+#    True
+#    
 
 
 

@@ -17,7 +17,8 @@ out whether the existing implementation fits our needs.
 
 
 """
-import unittest
+import unittest, sys
+from transaction import abort
 from zope.interface import implements
 from zope.app.container.sample import SampleContainer
 from zope.app.tests import placelesssetup
@@ -28,7 +29,7 @@ from zope.app.versioncontrol.tests import setUp, tearDown, name
 
 from zope.testing import doctest
 
-
+import zope
 import persistent
 import zope.interface
 import zope.app.annotation.attribute
@@ -65,12 +66,39 @@ from zope.app.copypastemove import ObjectCopier
 
 from zope.app.container.interfaces import IWriteContainer, INameChooser
 from zope.app.container.contained import NameChooser
+from zope.component.tests.placelesssetup import PlacelessSetup
 
+class FakeModule:
+    def __init__(self, dict):
+        self.__dict = dict
+    def __getattr__(self, name):
+        try:
+            return self.__dict[name]
+        except KeyError:
+            raise AttributeError, name
 
-def setUp(test) :
+ps = PlacelessSetup()
+
+def setUpModule(test, name):
+    ps.setUp()
+    dict = test.globs
+    dict.clear()
+    dict['__name__'] = name    
+    sys.modules[name] = FakeModule(dict)
+
+def tearDown(test, name):
+    del sys.modules[name]
+    abort()
+    db = test.globs.get('db')
+    if db is not None:
+        db.close()
+    ps.tearDown()
+    
+   
+def setUp(test, name) :
     """ Sets up a test and registers some commonly used adapters. """
     
-    placelesssetup.setUp()
+    setUpModule(test, name)
     setUpTraversal()
  
     classImplements(File, IAttributeAnnotatable)
@@ -87,13 +115,24 @@ def setUp(test) :
     ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
     ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
 
- 
-def tearDown(test) :
-    placelesssetup.tearDown()
 
+def setUpReadMe(test) :
+    setUp(test, "versioning.README")
 
+def teatDownReadMe(test) :
+    tearDown(test, "versioning.README")
+
+def setUpMotivation(test) :
+    setUp(test, "versioning.MOTIVATION")
+
+def tearDownMotivation(test) :
+    tearDown(test, "versioning.MOTIVATION")
+
+    
 def instanceProvides(obj, interface) :
     """ Adds an interface to the directly provided ones of obj. """
+   
+    
     ifaces = zope.interface.directlyProvidedBy(obj)
     ifaces += interface
     zope.interface.directlyProvides(obj, *ifaces)
@@ -111,7 +150,7 @@ def buildDatabaseRoot():
     connection = db.open()
     return connection.root()
 
-def buildRepository(factory=zope.app.versioncontrol.repository.Repository, interaction=True):
+def buildRepository(factory=zope.app.versioncontrol.repository.Repository, interaction=False):
     """Setup a zope.app.versioncontrol repository
     
     Placing an object under version control requires an instance of an
@@ -121,7 +160,7 @@ def buildRepository(factory=zope.app.versioncontrol.repository.Repository, inter
     instance is responsible for providing version control operations; 
     an instance should never be asked to perform operations directly.
     """
-    
+    import zope
     repository = factory()
     assert zope.interface.verify.verifyObject(
                interfaces.IVersionControl,
@@ -156,8 +195,8 @@ def buildRepository(factory=zope.app.versioncontrol.repository.Repository, inter
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        #doctest.DocFileSuite("../README.txt", setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite("../MOTIVATION.txt", setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite("../README.txt", setUp=setUpReadMe, tearDown=tearDownReadMe),
+        doctest.DocFileSuite("../MOTIVATION.txt", setUp=setUpMotivation, tearDown=tearDownMotivation),
         ))
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
