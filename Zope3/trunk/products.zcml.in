@@ -3,10 +3,6 @@
   <!-- Add include directives for your custom products -->
   <!-- or 3rd-party installed products here. -->
 
-  <!-- The Zope 3 API documentation tool should be available by default. -->
-  <include package="zope.products.apidoc"/>
-  <include package="zope.products.statictree"/>
-
   <!-- Uncomment this if you want to try External Editor
   <include package="zope.products.externaleditor"/>
   -->
