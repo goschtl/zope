@@ -116,8 +116,6 @@ def main(args):
 
     do_chmod(subjs)
 
-    return                              # DEBUG
-
     for entry in got:
         (nm, expr, addrs, remote) = entry
         if addrs:
@@ -234,7 +232,6 @@ def directed_system(cmd):
         # Put parens around the command body, and redirect into the logf.
         cmd = ("( exec 1> %s 2>&1; " + cmd +  ")") % logf.name
 
-    print "**", cmd, "**"               # DEBUG
     os.system(cmd)
 
 def grok_file(s):
