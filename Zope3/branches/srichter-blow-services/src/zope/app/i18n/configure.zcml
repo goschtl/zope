@@ -21,28 +21,28 @@
   <!-- Register the Translation Domain as a content object -->
   <localUtility class=".translationdomain.TranslationDomain">
     <factory 
-         id="zope.app.TranslationService" 
+         id="zope.app.i18n.TranslationDomain" 
          />
     <allow interface="zope.i18n.interfaces.ITranslationDomain" 
         />
-    <require permission="zope.ManageServices"
+    <require permission="zope.ManageSite"
         interface="zope.app.container.interfaces.IContainer" 
         />
-    <require permission="zope.ManageServices"
+    <require permission="zope.ManageSite"
         interface=".interfaces.IWriteTranslationDomain" 
         />
-    <require permission="zope.ManageServices"
+    <require permission="zope.ManageSite"
         interface=".interfaces.ISyncTranslationDomain" 
         />
   </localUtility>
   
   <subscriber
-     for="..registration.interfaces.IRegistrationActivatedEvent"
+     for="..component.interfaces.registration.IRegistrationActivatedEvent"
      factory=".translationdomain.setDomainOnActivation"
      />
 
   <subscriber
-     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
      factory=".translationdomain.unsetDomainOnDeactivation"
      />  
 
@@ -54,7 +54,7 @@
   
     <require permission="zope.View" 
         interface="zope.i18n.interfaces.IMessageCatalog" />
-    <require permission="zope.ManageServices"
+    <require permission="zope.ManageSite"
         attributes="setMessage getMessageIds" />
   </content>
   

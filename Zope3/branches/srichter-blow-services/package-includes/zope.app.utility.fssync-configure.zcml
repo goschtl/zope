@@ -1,1 +1,3 @@
-<include package="zope.app.utility.fssync" />
+<configure>
+<!-- XXX: include package="zope.app.utility.fssync" /-->
+</configure>

@@ -1,11 +1,11 @@
 <configure
-    xmlns='http://namespaces.zope.org/zope'
-    i18n_domain='zope'
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
     >
 
   <vocabulary
       name="Connection Names"
-      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      factory="zope.app.component.vocabulary.UtilityVocabulary"
       interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" 
       nameOnly="True" />
 

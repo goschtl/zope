@@ -11,18 +11,18 @@
 
 <!-- Content Component Definition -->
 
-  <addform
+  <!-- XXX: addform
       label="Content Component Definition Registration"
       for= "zope.app.schemacontent.interfaces.IContentComponentDefinition"
       name="addRegistration.html"
-      schema="zope.app.utility.interfaces.IUtilityRegistration"
-      class="zope.app.utility.browser.AddRegistration"
+      schema="zope.app.component.interfaces.IUtilityRegistration"
+      class="zope.app.component.browser.registration.AddRegistration"
       permission="zope.ManageServices"
       content_factory="
           zope.app.schemacontent.content.ContentComponentDefinitionRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status" />
+      fields="name interface componentPath permission status" /-->
 
 
   <!-- Menu entry for "add component" menu -->

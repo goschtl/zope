@@ -65,19 +65,6 @@
       permission="zope.ManageServices"
       />
 
-  <!-- Custom Domain registration screen -->
-  <addform
-      label="New Translation Domain Registration"
-      for="zope.app.i18n.interfaces.ILocalTranslationDomain"
-      name="addRegistration.html"
-      schema="zope.app.utility.interfaces.IUtilityRegistration"
-      class="zope.app.utility.browser.AddRegistration"
-      permission="zope.ManageServices"
-      content_factory="zope.app.i18n.translationdomain.DomainRegistration"
-      arguments="name interface componentPath"
-      set_after_add="status"
-      fields="name interface componentPath permission status" />
-
   <icon 
       name="zmi_icon" 
       for="zope.i18n.interfaces.ITranslationDomain"

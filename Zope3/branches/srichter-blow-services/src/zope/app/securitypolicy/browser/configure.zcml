@@ -47,7 +47,7 @@
   <!-- The role-permission mapping is really the domain of programmers -->
 
   <pages
-      for="zope.app.site.interfaces.ISiteManager"
+      for="zope.app.component.interfaces.ILocalSiteManager"
       permission="zope.Security"
       class=".rolepermissionview.RolePermissionView">
     <page

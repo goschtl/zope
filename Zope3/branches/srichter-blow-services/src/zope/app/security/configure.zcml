@@ -96,6 +96,11 @@
       title="[manage-services-permission] Manage Services" 
       />
 
+  <permission 
+      id="zope.ManageSite" 
+      title="[manage-site-permission] Manage Site" 
+      />
+
   <permission
       id="zope.ManagePrincipals"
       title="[manage-principal-permission] Manage Principals"

@@ -6,7 +6,7 @@
 
   <vocabulary
       name="Content Types"
-      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      factory="zope.app.component.vocabulary.UtilityVocabulary"
       interface="zope.app.content.interfaces.IContentType" />
 
 </configure>

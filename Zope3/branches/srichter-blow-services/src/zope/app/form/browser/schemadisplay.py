@@ -92,5 +92,5 @@ def DisplayViewFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapters)
-    s.register((for_, layer), Interface, name, class_)
+    sm = zapi.getGlobalSiteManager()
+    sm.provideAdapter((for_, layer), Interface, name, class_)

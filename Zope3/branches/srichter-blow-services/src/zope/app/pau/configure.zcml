@@ -32,35 +32,35 @@
 
   <vocabulary
     name="ExtractionPlugins"
-    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    factory="zope.app.component.vocabulary.UtilityVocabulary"
     interface="zope.app.pau.interfaces.IExtractionPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="AuthenticationPlugins"
-    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    factory="zope.app.component.vocabulary.UtilityVocabulary"
     interface="zope.app.pau.interfaces.IAuthenticationPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="ChallengePlugins"
-    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    factory="zope.app.component.vocabulary.UtilityVocabulary"
     interface="zope.app.pau.interfaces.IChallengePlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="PrincipalFactoryPlugins"
-    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    factory="zope.app.component.vocabulary.UtilityVocabulary"
     interface="zope.app.pau.interfaces.IPrincipalFactoryPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="PrincipalSearchPlugins"
-    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    factory="zope.app.component.vocabulary.UtilityVocabulary"
     interface="zope.app.pau.interfaces.IPrincipalSearchPlugin" 
     nameOnly="True"
    />
