@@ -169,7 +169,13 @@ port_number = RangeCheckedConversion(integer, min=1, max=0xffff).__call__
 
 
 if sys.platform[:3] == "win":
-    DEFAULT_HOST = "localhost"
+    # XXX I removed the setting of DEFAULT_HOST under Windows to get Zope to
+    # accept connections from other machines when the host name is omitted
+    # from the server address (in zope.conf). This may cause other problems,
+    # as I don't know why the special handling is there in the first place.
+    # See collector issue 383 for more info.
+    ##DEFAULT_HOST = "localhost"
+    DEFAULT_HOST = ""
 else:
     DEFAULT_HOST = ""
 
