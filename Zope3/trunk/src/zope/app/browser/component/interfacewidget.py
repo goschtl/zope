@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.16 2003/01/09 09:37:17 stevea Exp $
+$Id: interfacewidget.py,v 1.17 2003/01/09 12:58:52 stevea Exp $
 """
 
 import sys
@@ -82,7 +82,6 @@ class InterfaceWidget(Widget, BrowserView):
         interfaces = map(interfaceToName, interfaces)
         # Only include None if there is no search string, and include_none
         # is True
-        # XXX need test for this
         if include_none and not search_string:
             interfaces = ['None'] + interfaces
 
@@ -261,6 +260,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
             interfaces = list(service.searchInterface(search, base=base))
             interfaces.sort()
             interfaces = map(interfaceToName, interfaces)
+            # Only include None if there is no search string, and include_none
+            # is True
             if include_none and not search:
                 interfaces = ['None'] + interfaces
             search_name = '%s.search.i%s' % (name, count)

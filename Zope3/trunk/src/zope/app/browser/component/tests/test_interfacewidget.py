@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.11 2003/01/09 09:37:16 stevea Exp $
+$Id: test_interfacewidget.py,v 1.12 2003/01/09 12:58:54 stevea Exp $
 """
 
 __metaclass__ = type
@@ -267,6 +267,29 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         )
 
         self.assertEqual(widget(), out)
+
+        # test that None / Anything disappears when there is a search string
+
+        request.form["field.TestName.search"] = (
+        'two'
+        )
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="two">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget(), out)
+
 
     def testBadInterfaceName(self):
         request = self.request
@@ -635,6 +658,59 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '">'
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+
+        # test that None / Anything disappears when there is a search string
+        
+        request.form["field.TestName.search.i1"] = 'two'
+
+        out = (
+        'Use refresh to enter more interfaces'
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i0" value="">'
+
+        '<select name="field.TestName.i0">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'None'
+        '">'
+        'Anything'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i1" value="two">'
+
+        '<select name="field.TestName.i1">'
+
+        '<option value="">---select interface---</option>'
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I3'
         '">'
