@@ -50,8 +50,8 @@ class IWriteDemoIntWidget(Interface):
 
     constraint = Int(
         title = _(u"constraint"),
-        description=_(u"""zope.schema.Int field with """
-            """constraint = lambda x: x == u'constraint'."""),
+        description=_(u"""zope.schema.Int field with constraint """
+            """lambda x: x == 42."""),
         constraint=lambda x: x == 42)
 
     default = Int(
