@@ -35,6 +35,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - ActionInfo: Fixed issue with oldstyle Action info mappings.
+      The 'allowed' key was broken for non-empty 'permissions'.
+
     - CMFDefault.DiscussionTool: 'getDiscussionFor' sometimes returned
       unwrapped talkback objects.
 
