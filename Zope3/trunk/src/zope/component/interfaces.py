@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.6 2003/06/22 19:00:29 jeremy Exp $
+$Id: interfaces.py,v 1.7 2003/06/23 16:52:46 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -147,7 +147,7 @@ class IComponentArchitecture(Interface):
         Get the factory of the given name that is nearest to the
         context.  If a matching factory cannot be found raises
         ComponentLookupError
-        
+
         """
 
     def queryFactory(context, name, default=None):
@@ -156,7 +156,7 @@ class IComponentArchitecture(Interface):
         Get the factory of the given name that is nearest to the
         context.  If a matching factory cannot be found then the
         default is returned.
-        
+
         """
 
     def getFactoryInterfaces(context, name):
@@ -273,6 +273,11 @@ class IServiceService(Interface):
 
 class IFactory(Interface):
 
+    # XXX Because __call__ does not receive a context, it is not possible
+    #     to write a factory that does its job in terms of another factory.
+    #     This functionality is needed for making advanced factories that
+    #     do what other factories do, and then mark the resultant object
+    #     with an interface.
     def __call__():
         """Return an instance of the objects we're a factory for."""
 
