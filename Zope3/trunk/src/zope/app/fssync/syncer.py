@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.18 2003/05/15 21:27:43 gvanrossum Exp $
+$Id: syncer.py,v 1.19 2003/05/21 20:29:45 jim Exp $
 """
 
 import os
@@ -175,10 +175,12 @@ def _create(container, name, factory, path, old=False):
         if isuffix >= 0:
             suffix = name[isuffix:]
         else:
-            suffix = ""
-        factory = as.queryAdapter(container, IFileFactory, name=suffix)
-        if factory is None and suffix:
+            suffix = "."
+            
+        factory = as.queryNamedAdapter(container, IFileFactory, suffix)
+        if factory is None:
             factory = as.queryAdapter(container, IFileFactory)
+
         if factory:
             newOb = factory(name, None, readFile(path))
             newOb = removeAllProxies(newOb)
