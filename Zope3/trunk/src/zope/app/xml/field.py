@@ -12,20 +12,18 @@
 #
 ##############################################################################
 """
-$Id: field.py,v 1.1 2003/04/09 09:31:52 faassen Exp $
+$Id: field.py,v 1.2 2003/04/09 09:46:47 faassen Exp $
 """
 from zope.app.interfaces.xml.field import IXML
 from zope.schema.interfaces import ValidationError
-from zope.schema import Field
+from zope.schema import Bytes
 from xml.parsers.expat import ParserCreate, ExpatError
 
 NotWellFormedXML = u"NotWellFormedXML"
 
-class XML(Field):
+class XML(Bytes):
+    
     __implements__ = IXML
-
-    # by default XML text is actually in a byte encoding
-    _type = str
 
     def _validate(self, value):
         super(XML, self)._validate(value)
