@@ -19,7 +19,7 @@ them, especially editing interfaces.
 
 In Zope 3, formulator's forms are replaced by Schema (See
 Zope.Schema). In addition, the Formulator fields have been replaced by
-schema filds and form widgets. Schema fields just express the sematics
+schema fields and form widgets. Schema fields just express the sematics
 of data values. They contain no presentation logic or parameters.
 Widgets are views on fields that take care of presentation. The widget
 view names represent styles that can be selected by applications to
@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.3 2002/10/29 17:12:37 jim Exp $
+$Id: Utility.py,v 1.4 2002/10/30 09:19:20 stevea Exp $
 """
 __metaclass__ = type
 
