@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.7 2003/04/11 18:38:34 fdrake Exp $
+$Id: datetimeutils.py,v 1.8 2003/04/24 17:43:22 gvanrossum Exp $
 """
 
-__version__='$Revision: 1.7 $'[11:-2]
+__version__='$Revision: 1.8 $'[11:-2]
 
 import math
 import re
@@ -946,6 +946,6 @@ def parseDatetimetz(string):
     s, micro = divmod(s, 1.0)
     micro = round(micro * 1000000)
     offset = _tzoffset(tz, None) / 60
-    return _datetime(y, mo, d, h, m, s, micro, tzinfo(offset))
+    return _datetime(y, mo, d, h, m, int(s), int(micro), tzinfo(offset))
 
 _iso_tz_re = re.compile("[-+]\d\d:\d\d$")
