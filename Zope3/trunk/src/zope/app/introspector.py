@@ -17,7 +17,7 @@ from zope.interface.interfaces import IInterface
 from zope.interface.implements import implements, getImplements
 
 from zope.app.interfaces.introspector import IIntrospector
-from zope.app.interfaces.services.service import INameResolver
+from zope.app.interfaces.services.module import IModuleService
 from zope.component import getServiceManager, getAdapter, \
      queryServiceManager, getServiceDefinitions
 from zope.proxy.introspection import removeAllProxies
@@ -54,7 +54,7 @@ class Introspector:
             if (self.context == Interface and
                 name != 'Interface._Interface.Interface'):
                 servicemanager = getServiceManager(self.context)
-                adapter = getAdapter(servicemanager, INameResolver)
+                adapter = getAdapter(servicemanager, IModuleService)
                 self.currentclass = adapter.resolve(name)
                 self.context = self.currentclass
             else:

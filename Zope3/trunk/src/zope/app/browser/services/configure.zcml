@@ -507,16 +507,15 @@
 
 <!-- ConnectionConfiguration -->
 
-  <view
-      for="zope.app.interfaces.container.IAdding"
+  <addform
+      schema=
+        "zope.app.interfaces.services.connection.IConnectionConfiguration"
       name="ConnectionConfiguration"
-      class="zope.app.browser.services.connection.AddConnectionConfiguration"
-      permission="zope.ManageServices">
-
-    <page name="add.html" template="addconnectionconfig.pt" />
-    <page name="finish.html" attribute="action" />
-
-  </view>
+      content_factory="zope.app.services.connection.ConnectionConfiguration"
+      arguments="name componentPath"
+      label="Configure a database connection"
+      permission="zope.ManageServices"
+      />
 
   <menuItem
       menu="add_configuration"

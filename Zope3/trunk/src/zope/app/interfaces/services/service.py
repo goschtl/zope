@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Interfaces to support service managers.
 
-$Id: service.py,v 1.8 2003/03/11 16:11:09 jim Exp $
+$Id: service.py,v 1.9 2003/03/13 17:10:36 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -122,19 +122,6 @@ class IServiceManager(IServiceService, IComponentManager,
     """
 
     Packages = Attribute("Package container")
-
-class INameResolver(Interface):
-    """Objects that can resolve dotted names to objects
-    """
-
-    def resolve(dotted_name):
-        """Resolve the given dotted name to a module global variable.
-
-        If the name ends with a trailing dot, the last name segment
-        may be repeated.
-
-        If the dotted name cannot be resolved, an ImportError is raised.
-        """
 
 class IServiceConfiguration(configuration.INamedComponentConfiguration):
     """Service Configuration

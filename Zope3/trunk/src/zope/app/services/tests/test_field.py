@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.5 2003/01/12 21:23:16 stevea Exp $
+$Id: test_field.py,v 1.6 2003/03/13 17:10:37 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,12 +22,13 @@ from zope.app.traversing import traverse
 from zope.schema.interfaces import ValidationError
 from zope.interface import Interface
 
-from zope.app.interfaces.services.service import INameResolver
+from zope.app.interfaces.services.module import IModuleService
 from zope.component.interfaces import IServiceService
-class NameResolver:
-    __implements__ = INameResolver, IServiceService
+
+class ModuleService:
+    __implements__ = IModuleService, IServiceService
     # I'm lying about implementing IServiceService, but that is needed to get
-    # a NameResolver as a service manager
+    # a ModuleService as a service manager.  (See XXX comment in module.py.)
     def __init__(self, name=None, component=None):
         self.lookup = {}
         if name is not None:
@@ -80,7 +81,7 @@ class TestComponentLocation(TestComponentPath):
 
     def createObjects(self):
         TestComponentPath.createObjects(self)
-        self.resolver = NameResolver()
+        self.resolver = ModuleService()
         self.rootFolder.setServiceManager(self.resolver)
 
     def createFields(self):
@@ -123,7 +124,7 @@ class TestLocateComponent(PlacefulSetup, TestCase):
 
         dotted_name = 'zope.app.whatever.ClassName'
         some_class = self.__class__
-        resolver = NameResolver(dotted_name, some_class)
+        resolver = ModuleService(dotted_name, some_class)
         self.rootFolder.setServiceManager(resolver)
         self.assertEqual(locateComponent(dotted_name, folder2),
                          some_class

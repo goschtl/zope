@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.6 2003/03/10 22:36:40 gvanrossum Exp $
+$Id: configuration.py,v 1.7 2003/03/13 17:10:36 gvanrossum Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -22,6 +22,8 @@ from zope.schema.interfaces import ITextLine
 from zope.app.security.permission import PermissionField
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.services.field import ComponentPath
 
 Unregistered = u'Unregistered'
 Registered = u'Registered'
@@ -71,7 +73,8 @@ class INamedConfigurationInfo(Interface):
     """
 
     name = TextLine(title=u"Name",
-                    description=u"The name that is registered")
+                    description=u"The name that is registered",
+                    required=True, readonly=True, min_length=1)
 
     # The label is generally set as a class attribute on the
     # configuration class.
@@ -88,7 +91,11 @@ class INamedComponentConfigurationInfo(INamedConfigurationInfo):
     permission = PermissionField(
         title=u"The permission needed to use the component.")
 
-    componentPath = Attribute("The physical path to the component")
+    componentPath = ComponentPath(
+        type=IZopeDatabaseAdapter,
+        title=u"Component path",
+        description=u"The physical path to the component",
+        required=True)
 
 class INamedComponentConfiguration(INamedComponentConfigurationInfo,
                                    INamedConfiguration):

@@ -23,13 +23,6 @@
        <td tal:content="structure view/status"><input type="text"></td>
      </tr>
      <tr>
-       <td>Title</td>
-       <td tal:content="structure view/title"><input type="text"></td>
-     </tr>
-     <tr>
-       <td>Description</td>
-       <td tal:content="structure view/description"><textarea></textarea></td>
-     </tr>
 
   </table>
   <input type="submit" />

@@ -13,7 +13,6 @@
 ##############################################################################
 """Service manager implementation
 
-
 A service manager has a number of roles:
 
   - A service service
@@ -21,9 +20,10 @@ A service manager has a number of roles:
   - A place to do TTW development or to manage database-based code
 
   - A registry for persistent modules.  The Zope import hook uses the
-    ServiceManager to search for modules.
+    ServiceManager to search for modules.  (This functionality will
+    eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.11 2003/03/11 16:11:22 jim Exp $
+$Id: service.py,v 1.12 2003/03/13 17:10:37 gvanrossum Exp $
 """
 
 import sys
@@ -45,14 +45,14 @@ from zope.app.component.nextservice import getNextServiceManager
 
 from zope.app.interfaces.container import IReadContainer
 from zope.app.interfaces.services.service import IBindingAware
-from zope.app.interfaces.services.service import INameResolver
+from zope.app.interfaces.services.module import IModuleService
 from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
 from zope.app.interfaces.services.service import IServiceManagerContainer
 from zope.app.interfaces.services.configuration import IUseConfiguration
 
-ModuleType = type(INameResolver)
-ModuleType = ModuleType, PersistentModule
+# XXX This makes no sense?
+ModuleType = type(IModuleService), PersistentModule
 
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
@@ -68,7 +68,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
     __implements__ = (IServiceManager, IReadContainer,
                       PersistentModuleRegistry.__implements__,
                       NameComponentConfigurable.__implements__,
-                      INameResolver)
+                      IModuleService)
 
     def __init__(self):
         super(ServiceManager, self).__init__()

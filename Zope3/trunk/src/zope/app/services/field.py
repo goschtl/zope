@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.6 2003/01/17 16:32:18 stevea Exp $
+$Id: field.py,v 1.7 2003/03/13 17:10:37 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -24,7 +24,7 @@ from zope.exceptions import NotFoundError
 from zope.app.interfaces.services.field import IComponentPath
 from zope.app.interfaces.services.field import IComponentLocation
 from zope.component import getServiceManager, getAdapter
-from zope.app.interfaces.services.service import INameResolver
+from zope.app.interfaces.services.module import IModuleService
 
 class ComponentPath(Field):
 
@@ -86,7 +86,7 @@ def locateComponent(location, context, interface=None):
         # XXX Need to be careful here. Jim was going to look
         #     at whether a checkedResolve method is needed.
         servicemanager = getServiceManager(context)
-        resolver = getAdapter(servicemanager, INameResolver)
+        resolver = getAdapter(servicemanager, IModuleService)
         try:
             component = resolver.resolve(location)
         except ImportError:
