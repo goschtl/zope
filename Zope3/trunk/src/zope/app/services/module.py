@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.20 2004/01/13 19:32:23 fdrake Exp $
+$Id: module.py,v 1.21 2004/01/15 16:08:05 fdrake Exp $
 """
 
 from persistence import Persistent
@@ -23,7 +23,7 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.file import IFileFactory
 from zope.app.interfaces.services.module import IModuleManager
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
-from zope.fssync.server.entryadapter import IObjectFile
+from zope.fssync.server.interfaces import IObjectFile
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.container.contained import Contained
