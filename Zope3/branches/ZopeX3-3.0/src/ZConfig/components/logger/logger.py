@@ -102,16 +102,6 @@ class AccessLogFactory(LoggerFactoryBase):
         return logger
 
 
-class HitLogFactory(AccessLogFactory):
-    """AccessLogFactory that generates a deprecation warning."""
-
-    def create(self):
-        import warnings
-        warnings.warn("<hitlog> is deprecated; use <accesslog> instead",
-                      DeprecationWarning)
-        return AccessLogFactory.create(self)
-
-
 class LoggerFactory(LoggerFactoryBase):
     """Logger factory that returns the named logger."""
 

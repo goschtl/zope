@@ -33,6 +33,11 @@ Zope Changes
 
     Restructuring
 
+      - The <hitlog> section is no longer supported in the zope.conf
+        file; use <accesslog> instead.  (The name <hitlog> was added
+        between the second alpha and the first beta, and generated a
+        deprecation warning by the time the second beta was released.)
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
