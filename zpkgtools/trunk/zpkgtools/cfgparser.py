@@ -58,15 +58,15 @@ class Schema:
     """Schema definition that can be used by the Parser class to
     construct a configuration.
 
-    The definition is defined as a set of 'type definitions'.  Each
+    The definition is defined as a set of *type definitions*.  Each
     type definition is a triple containing a dictionary, a list, and a
-    function (or None).  The dictionary maps the names of the keys
+    function (or `None`).  The dictionary maps the names of the keys
     allowed in the section to conversion functions for the values (or
     None if no conversion is required).  The list names the section
     types which can occur in the section.  The function is used to
-    convert a SectionValue representing the collected values to the
-    actual value of the section itself; if None is used, no conversion
-    is performed.
+    convert a `SectionValue` representing the collected values to the
+    actual value of the section itself; if `None` is used, no
+    conversion is performed.
 
     """
 
@@ -303,7 +303,7 @@ class Parser:
 
 
 class SectionValue:
-    """Generic 'bag-of-values' object for a section."""
+    """Generic bag-of-values object for a section."""
 
     def __init__(self, name, typename, typedef):
         self._name = name
@@ -311,10 +311,15 @@ class SectionValue:
         self._typedef = typedef
 
     def getSectionName(self):
+        """Return the name of the section, or `None`."""
         return self._name
 
     def getSectionType(self):
+        """Return the name of the section type."""
         return self._typename
 
     def getSectionDefinition(self):
+        """Return the data structure that represents the type of this
+        section value.
+        """
         return self._typedef
