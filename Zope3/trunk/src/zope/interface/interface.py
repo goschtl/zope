@@ -754,22 +754,21 @@ class InterfaceClass(Element, Specification):
         # __eq__, which is really fast.
         """Make interfaces sortable
 
-        It would ne nice if:
+        TODO: It would ne nice if:
 
            More specific interfaces should sort before less specific ones.
            Otherwise, sort on name and module.
 
            But this is too complicated, and we're going to punt on it
-           for now. XXX
+           for now.
 
-        XXX For now, sort on interface and module name.
+        For now, sort on interface and module name.
 
         None is treated as a pseudo interface that implies the loosest
         contact possible, no contract. For that reason, all interfaces
         sort before None.
 
         """
-
         if o1 == o2:
             return 0
 

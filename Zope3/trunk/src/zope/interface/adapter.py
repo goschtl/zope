@@ -610,7 +610,7 @@ def adapterImplied(adapters):
 
     for key, value in adapters.iteritems():
 
-        # XXX Backward compatability
+        # TODO: Backward compatability
         # Don't need to handle 3-tuples some day
         try:
             (subscription, with, name, target) = key
