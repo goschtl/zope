@@ -237,6 +237,7 @@ Extreme (yet useful) examples:
 
 import gc
 import hotshot, hotshot.stats
+import logging
 import os
 import re
 import pdb
@@ -799,11 +800,25 @@ def configure_logging():
     if os.path.exists(logini):
         logging.config.fileConfig(logini)
     else:
+        # If there's no log.ini, cause the logging package to be
+        # silent during testing.
+        root = logging.getLogger()
+        root.addHandler(NullHandler())
         logging.basicConfig()
 
     if os.environ.has_key("LOGGING"):
         level = int(os.environ["LOGGING"])
         logging.getLogger().setLevel(level)
+
+
+class NullHandler(logging.Handler):
+    """Logging handler that drops everything on the floor.
+
+    We require silence in the test environment.  Hush.
+    """
+
+    def emit(self, record):
+        pass
 
 
 def process_args(argv=None):
