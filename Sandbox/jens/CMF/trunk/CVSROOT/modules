@@ -127,7 +127,7 @@ GreyThing -d lib/python -l Components/GreyThing
 # ZopeBase has most of what you need to build Zope, without anything
 # specific to a source or a binary distribution.
 #
-ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
+ZopeBase &utilities &pcgi &GreyThing \
   &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
   &lpHelpSys \
@@ -139,7 +139,7 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZODB &lpZope &lpZopeZODB3 \
   &ZServer &lpMIMETools &lpZCatalog
 
-Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
+Zope  ZSrc &utilities &pcgi &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
   &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
