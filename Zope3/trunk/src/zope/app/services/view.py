@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.29 2003/06/30 16:37:13 jim Exp $
+$Id: view.py,v 1.30 2003/07/04 13:28:16 ryzaja Exp $
 """
 __metaclass__ = type
 
 from __future__ import generators
 
-from zope.app import zapi
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
@@ -230,7 +229,7 @@ class RegistrationAdapter:
     def getRegistrationsForInterface(self, iface):
         for t in self.gvs.getRegisteredMatching(required_interfaces=[iface]):
             yield GlobalViewRegistration(*t)
-            
+
 class GlobalViewRegistration:
     """Registrations representing global view service thingies."""
 
@@ -295,7 +294,7 @@ class ViewRegistration(SimpleRegistration):
         if self.layer and self.layer != "default":
             L.extend([_("in layer"), self.layer])
         return " ".join(L)
-    
+
 class PageRegistration(ViewRegistration):
 
     implements(IPageRegistration)
@@ -353,13 +352,13 @@ class PageRegistration(ViewRegistration):
 
     def getView(self, object, request):
 
-
         self.validate()
 
         sm = zapi.getServiceManager(self)
 
         if self.class_:
-            class_ = sm.resolve(self.class_)
+            folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+            class_ = folder.resolve(self.class_)
             class_ = type(class_.__name__, (class_, DefaultClass), {})
         else:
             class_  = DefaultClass

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.20 2003/06/30 16:37:14 jim Exp $
+$Id: test_view.py,v 1.21 2003/07/04 13:28:19 ryzaja Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -94,7 +94,6 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def test_implements_IViewService(self):
         from zope.component.interfaces import IViewService
-        from zope.interface.verify import verifyObject
 
         verifyObject(IViewService, self._service)
 
@@ -202,10 +201,6 @@ class PhonyServiceManager(ServiceManager):
 
     implements(IServiceService)
 
-    def resolve(self, name):
-        if name == 'Foo.Bar.A':
-            return A
-
 class ModuleFinder:
 
     def resolve(self, name):
@@ -244,6 +239,8 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         default = traverse(self.rootFolder, '++etc++site/default')
         self.__template = PhonyTemplate()
         default.setObject('t', self.__template)
+        self.folder = ContextWrapper(ModuleFinder(), self.rootFolder)
+        self.folder = ContextWrapper(ModuleFinder(), self.folder)
 
     def test_getView_template(self):
         registration = ContextWrapper(
@@ -251,7 +248,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
                               "Foo.Bar.A",
                               template='/++etc++site/default/t',
                               ),
-            self.rootFolder,
+            self.folder,
             )
 
         c = C()
@@ -273,7 +270,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
                               "Foo.Bar.A",
                               attribute='run',
                               ),
-            self.rootFolder,
+            self.folder,
             )
         c = C()
         request = TestRequest()
@@ -285,7 +282,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
             PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               ),
-            self.rootFolder,
+            self.folder,
             )
         c = C()
         request = TestRequest()
