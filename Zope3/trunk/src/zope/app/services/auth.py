@@ -11,10 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Authentication service implementation.
+
+$Id: auth.py,v 1.6 2002/12/27 18:54:17 gvanrossum Exp $
 """
-$Id: auth.py,v 1.5 2002/12/27 18:42:09 rdmurray Exp $
-"""
+
 from types import TupleType
+
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
 
@@ -35,8 +38,11 @@ from zope.app.security.grants.principalrole import principalRoleManager
 
 
 
-class DuplicateLogin(Exception): pass
-class DuplicateId(Exception): pass
+class DuplicateLogin(Exception):
+    pass
+
+class DuplicateId(Exception):
+    pass
 
 
 class AuthenticationService(Persistent):
@@ -48,8 +54,10 @@ class AuthenticationService(Persistent):
         self._usersbyid = OOBTree()
 
     def getPrincipalByLogin(self, login):
-        try: return self._usersbylogin[login]
-        except KeyError: raise NotFoundError(login)
+        try:
+            return self._usersbylogin[login]
+        except KeyError:
+            raise NotFoundError(login)
 
     def queryPrincipalByLogin(self, login):
         return self._usersbylogin.get(login)
@@ -80,8 +88,10 @@ class AuthenticationService(Persistent):
 
     def getPrincipal(self, id):
         'See IAuthenticationService'
-        try: return self._usersbyid[id]
-        except KeyError: raise NotFoundError(id)
+        try:
+            return self._usersbyid[id]
+        except KeyError:
+            raise NotFoundError(id)
 
     def getPrincipals(self, name):
         'See IAuthenticationService'
@@ -97,10 +107,14 @@ class AuthenticationService(Persistent):
     def setObject(self, key, object):
         'See IWriteContainer'
         # XXX I think this should generate an id if blank is passed. (RDM)
-        if not isinstance(key, (str, unicode)): raise TypeError(key)
-        try: unicode(key)
-        except UnicodeDecodeError: raise TypeError(key)
-        if not key: raise ValueError(key)
+        if not isinstance(key, (str, unicode)):
+            raise TypeError(key)
+        try:
+            unicode(key)
+        except UnicodeError:
+            raise TypeError(key)
+        if not key:
+            raise ValueError(key)
         self._usersbyid[key] = object
         self._usersbylogin[object.getLogin()] = object
 
@@ -194,6 +208,3 @@ class User(Persistent):
         'See IReadUser'
         annotations = AttributeAnnotations(self)
         annotations['roles'] = roles
-
-    #
-    ############################################################
