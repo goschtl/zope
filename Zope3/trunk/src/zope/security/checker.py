@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.21 2003/05/01 19:35:47 faassen Exp $
+$Id: checker.py,v 1.22 2003/05/03 16:38:17 jim Exp $
 """
 
 import os
@@ -20,14 +20,19 @@ import sys
 import types
 import datetime
 
+from zope.interface import directlyProvides, Interface
+from zope.interface.interfaces import IInterface, IInterfaceSpecification
+from zope.interface.declarations import ObjectSpecification
+from zope.interface.declarations import ProvidesSpecification
+from zope.interface.declarations import OnlyImplementsSpecification
+from zope.interface.declarations import ImplementsSpecification
+from zope.interface.declarations import InterfaceSpecification
 from zope.security.interfaces import IChecker
-from zope.exceptions \
-     import Unauthorized, ForbiddenAttribute, DuplicationError
-from zope.interface.interfaces import IInterface
-from zope.interface import Interface
-from zope.security._proxy import _Proxy as Proxy
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityManager
+from zope.security._proxy import _Proxy as Proxy
+from zope.exceptions \
+     import Unauthorized, ForbiddenAttribute, DuplicationError
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = True
@@ -58,7 +63,7 @@ def ProxyFactory(object, checker=None):
 
     return Proxy(object, checker)
 
-ProxyFactory.__implements__ = ISecurityProxyFactory
+directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
 class Checker:
 
@@ -262,8 +267,8 @@ def NamesChecker(names=(), permission_id=CheckerPublic, **__kw__):
 
     return Checker(data.get)
 
-def InterfaceChecker(interface, permission_id=CheckerPublic):
-    return NamesChecker(interface.names(all=True), permission_id)
+def InterfaceChecker(interface, permission_id=CheckerPublic, **__kw__):
+    return NamesChecker(interface.names(all=True), permission_id, **__kw__)
 
 def MultiChecker(specs):
     """Create a checker from a sequence of specifications
@@ -396,7 +401,7 @@ def _moduleChecker(module):
 _always_available = ['__lt__', '__le__', '__eq__',
                      '__gt__', '__ge__', '__ne__',
                      '__hash__', '__nonzero__',
-                     '__class__', '__implements__',
+                     '__class__', '__providedBy__', '__implements__',
                      '__repr__'
                      ]
 
@@ -404,11 +409,7 @@ _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
 _typeChecker = NamesChecker(
     ['__str__', '__name__', '__module__', '__bases__', '__mro__'])
 
-_interfaceChecker = NamesChecker(['__str__', '__name__', '__module__',
-                                  '__bases__', 'getBases', 'isImplementedBy',
-                                  'extends'])
-
-_iteratorChecker = NamesChecker(['next'])
+_iteratorChecker = NamesChecker(['next', '__iter__'])
 
 BasicTypes = {
     object: NoProxy,
@@ -429,6 +430,8 @@ BasicTypes = {
 class _Sequence(object):
     def __len__(self): return 0
     def __getitem__(self, i): raise IndexError
+
+_InterfaceSpecification_checker = InterfaceChecker(IInterfaceSpecification)
 
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
@@ -453,10 +456,14 @@ _default_checkers = {
     types.ModuleType: _moduleChecker,
     type(iter([])): _iteratorChecker, # Same types in Python 2.2.1,
     type(iter(())): _iteratorChecker, # different in Python 2.3.
-    type(iter(_Sequence())): NamesChecker(['next']),
-    type(Interface): _interfaceChecker,
+    type(iter(_Sequence())): _iteratorChecker,
+    type(Interface): InterfaceChecker(IInterface, __str__=CheckerPublic),
+    ObjectSpecification: _InterfaceSpecification_checker,
+    ProvidesSpecification: _InterfaceSpecification_checker,
+    ImplementsSpecification: _InterfaceSpecification_checker,
+    OnlyImplementsSpecification: _InterfaceSpecification_checker,
+    InterfaceSpecification: _InterfaceSpecification_checker,
 }
-
 
 def _clear():
     _checkers.clear()
