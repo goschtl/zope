@@ -30,10 +30,11 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.19 2003/05/21 16:10:07 sidnei Exp $
+$Id: utility.py,v 1.20 2003/06/05 20:13:09 jim Exp $
 """
 __metaclass__ = type
 
+from warnings import warn
 from zope.component import getView, getDefaultViewName
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import ValidationError
@@ -49,6 +50,44 @@ def _fieldlist(names, schema):
         fields = [ (name, schema[name]) for name in names ]
     return fields
 
+def _whine(view, name):
+    url = view.request.URL
+    vname = view.__class__.__name__
+    warn(
+        "View (%s) saved a widget (%s) without a '_widget' suffix.\n"
+        "Url: %s"
+        % (vname, name, url),
+        DeprecationWarning, stacklevel=4,
+        )
+
+class WhiningWidget:
+
+    def __init__(self, view, name, widget):
+        self.__widget = widget
+        self.__whineargs = view, name
+
+    def __whine(self):
+        whineargs = self.__whineargs
+        if whineargs:
+            _whine(*whineargs)
+            self.__whineargs = ()
+
+    def __call__(self, *args, **kw):
+        self.__whine()
+        return self.__widget(*args, **kw)
+
+    def __repr__(self):
+        self.__whine()
+        return `self.__widget`
+
+    def __str__(self):
+        self.__whine()
+        return str(self.__widget)
+
+    def __getattr__(self, name):
+        self.__whine()
+        return getattr(self.__widget, name)
+
 def setUpWidget(view, name, field, value=None, prefix=None,
                 force=False, vname=None, context=None):
     """Set up a single view widget
@@ -61,7 +100,28 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     widget will be created and assigned to the attribute.
     """
     # Has a (custom) widget already been defined?
-    widget = getattr(view, name, None)
+
+    wname = name+'_widget'
+
+    widget = getattr(view, wname, None)
+    installold = False
+    if widget is None:
+        widget = getattr(view, name, None)
+        if widget is not None:
+            if IViewFactory.isImplementedBy(widget):
+                # Old custom widget definition.
+                # We'll accept it, but we'll whine
+                _whine(view, name)
+
+                # we also need to remember to install the widget
+                installold = True
+            elif IWidget.isImplementedBy(widget):
+                # Old widget definition. We'll accept it, but we'll whine
+                _whine(view, name)
+            else:
+                # we found something else, which is innocent.
+                widget = None
+                installold = True
 
     if context is None:
         context = view.context
@@ -72,7 +132,9 @@ def setUpWidget(view, name, field, value=None, prefix=None,
         if vname is None:
             vname = getDefaultViewName(field, view.request)
         widget = getView(field, vname, view.request)
-        setattr(view, name, widget)
+        setattr(view, wname, widget)
+        if not hasattr(view, name):
+            setattr(view, name, WhiningWidget(view, name, widget))
 
     else:
         # We have an attribute of the right name, is it really a widget
@@ -83,13 +145,18 @@ def setUpWidget(view, name, field, value=None, prefix=None,
             widget = widget(field, view.request)
             if IWidget.isImplementedBy(widget):
                 # Yee ha! We have a widget now, save it
-                setattr(view, name, widget)
+                setattr(view, wname, widget)
+                if installold or not hasattr(view, name):
+                    setattr(view, name, WhiningWidget(view, name, widget))
 
         if not IWidget.isImplementedBy(widget):
             raise TypeError(
                 "The %s view attribute named, %s, should be a widget, "
                 "but isn't."
                 % (view.__class__.__name__, name))
+
+        if not hasattr(view, wname):
+            setattr(view, wname, widget)
 
     if prefix:
         widget.setPrefix(prefix)
@@ -106,7 +173,7 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     # opposite meaning.
     if value is not None and (force or not widget.haveData()):
         widget.setData(value)
-
+            
 
 def setUpWidgets(view, schema, prefix=None, force=False,
                  initial={}, names=None, context=None):
@@ -181,7 +248,7 @@ def haveWidgetsData(view, schema, names=None):
     that was entered by the user.
     """
     for name, field in _fieldlist(names, schema):
-        if  getattr(view, name).haveData():
+        if  getattr(view, name+'_widget').haveData():
             return True
 
     return False
@@ -224,7 +291,7 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
     errors = []
 
     for name, field in _fieldlist(names, schema):
-        widget = getattr(view, name)
+        widget = getattr(view, name+'_widget')
         if exclude_readonly and widget.context.readonly:
             continue
         if widget.haveData():

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.13 2003/04/30 23:37:52 faassen Exp $
+$Id: test_add.py,v 1.14 2003/06/05 20:13:07 jim Exp $
 """
 
 import sys
@@ -48,7 +48,7 @@ class Context:
 
 class I(Interface):
 
-    name_ = TextLine()
+    name = TextLine()
     first = TextLine()
     last = TextLine()
     email = TextLine()
@@ -69,22 +69,22 @@ class C:
     def setfoo(self, v): self._foo = v
 
 class V:
-    name_ = CustomWidget(Text)
-    first = CustomWidget(Text)
-    last = CustomWidget(Text)
-    email = CustomWidget(Text)
-    address = CustomWidget(Text)
-    getfoo = CustomWidget(Text)
-    extra1 = CustomWidget(Text)
-    extra2 = CustomWidget(Text)
+    name_widget = CustomWidget(Text)
+    first_widget = CustomWidget(Text)
+    last_widget = CustomWidget(Text)
+    email_widget = CustomWidget(Text)
+    address_widget = CustomWidget(Text)
+    getfoo_widget = CustomWidget(Text)
+    extra1_widget = CustomWidget(Text)
+    extra2_widget = CustomWidget(Text)
 
 class FooV:
-    bar = CustomWidget(Text)
+    bar_widget = CustomWidget(Text)
 
 
 class SampleData:
 
-    name_ = u"foo"
+    name = u"foo"
     first = u"bar"
     last = u"baz"
     email = u"baz@dot.com"
@@ -123,7 +123,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         result1 = self._invoke_add()
         result2 = self._invoke_add(
-            fields="name_ first last email address getfoo extra1 extra2",
+            fields="name first last email address getfoo extra1 extra2",
             )
 
         self.assertEqual(result1, result2)
@@ -152,7 +152,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(bases, (V, AddView, ))
         self.assertEqual(for_, IAdding)
         self.assertEqual(" ".join(fields),
-                         "name_ first last email address getfoo extra1 extra2")
+                         "name first last email address getfoo extra1 extra2")
         self.assertEqual(content_factory, C)
         self.assertEqual(" ".join(arguments),
                          "first last")
@@ -161,7 +161,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(" ".join(set_before_add),
                          "getfoo")
         self.assertEqual(" ".join(set_after_add),
-                         "extra1 name_ address extra2")
+                         "extra1 name address extra2")
         self.failIf(kw)
 
         return args
@@ -229,7 +229,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(adding.ob.extra1, "extra1")
         self.assertEqual(adding.ob.extra2, "extra2")
-        self.assertEqual(adding.ob.name_, "foo")
+        self.assertEqual(adding.ob.name, "foo")
         self.assertEqual(adding.ob.address, "aa")
 
     def test_createAndAdd_w_adapter(self):
@@ -303,7 +303,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
             self.assertEqual(l[0].extra1, "extra1")
             self.assertEqual(l[0].extra2, "extra2")
-            self.assertEqual(l[0].name_, "foo")
+            self.assertEqual(l[0].name, "foo")
             self.assertEqual(l[0].address, "aa")
 
             self.assertEqual(request.response.getHeader("Location"), "next")

@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.8 2003/05/28 15:46:02 jim Exp $
+$Id: useconfiguration.py,v 1.9 2003/06/05 20:13:08 jim Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -65,7 +65,7 @@ class AddConfiguration(AddComponentConfiguration):
     directive.
     """
 
-    interface = CustomWidget(UtilityInterfaceWidget)
+    interface_widget = CustomWidget(UtilityInterfaceWidget)
 
 
 class Utilities(BrowserView):

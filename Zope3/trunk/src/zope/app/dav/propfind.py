@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.9 2003/06/03 22:46:19 jim Exp $
+$Id: propfind.py,v 1.10 2003/06/05 20:13:08 jim Exp $
 """
 __metaclass__ = type
 
@@ -106,7 +106,8 @@ class PROPFIND:
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
                 adapter = queryAdapter(self.context, iface, None)
-                initial = getWidgetsDataFromAdapter(adapter, iface, names=avail.get(ns))
+                initial = getWidgetsDataFromAdapter(
+                    adapter, iface, names=avail.get(ns))
                 setUpWidgets(self, iface, initial=initial, \
                              names=avail.get(ns), force=True)
                 for p in avail.get(ns):
@@ -114,17 +115,19 @@ class PROPFIND:
                     if ns is not None and ns != self.default_ns:
                         el.setAttribute('xmlns', attr_name)
                     prop.appendChild(el)
-                    value = getattr(self, p)()
+                    value = getattr(self, p+'_widget')()
                     if isinstance(value, (unicode, str)):
-                        value = response.createTextNode(value) ## Get the widget value here
+                        # Get the widget value here
+                        value = response.createTextNode(value)
                         el.appendChild(value)
                     else:
                         if isinstance(removeAllProxies(value), minidom.Node):
                             el.appendChild(removeAllProxies(value))
                         else:
                             # Try to string-ify
-                            value = str(getattr(self, p))
-                            value = response.createTextNode(value) ## Get the widget value here
+                            value = str(getattr(self, p+'_widget'))
+                            # Get the widget value here
+                            value = response.createTextNode(value)
                             el.appendChild(value)
 
         if not_avail:
@@ -170,7 +173,8 @@ class PROPFIND:
                         pfind.setDepth(subdepth)
                         value = pfind.PROPFIND()
                         parsed = minidom.parseString(value)
-                        responses = parsed.getElementsByTagNameNS(self.default_ns, 'response')
+                        responses = parsed.getElementsByTagNameNS(
+                            self.default_ns, 'response')
                         for r in responses:
                             ms.appendChild(r)
 

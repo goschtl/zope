@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: file.py,v 1.3 2003/06/05 20:13:07 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -34,7 +34,7 @@ class FileView(BrowserView):
 
 
 """
-$Id: file.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: file.py,v 1.3 2003/06/05 20:13:07 jim Exp $
 """
 
 __metaclass__ = type
@@ -46,7 +46,7 @@ class FileUpload:
     """File editing mix-in that uses a file-upload widget.
     """
 
-    data = CustomWidget(FileWidget)
+    data_widget = CustomWidget(FileWidget)
 
 
 

@@ -14,7 +14,7 @@
 """\
 Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.4 2003/06/01 15:59:27 jim Exp $
+$Id: schemadisplay.py,v 1.5 2003/06/05 20:13:07 jim Exp $
 """
 
 from zope.schema import getFieldNamesInOrder
@@ -69,7 +69,7 @@ class DisplayView(BrowserView):
             widget.setPrefix(prefix)
 
     def widgets(self):
-        return [getattr(self, name)
+        return [getattr(self, name+'_widget')
                 for name in self.fieldNames]
 
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.14 2003/06/04 11:13:48 stevea Exp $
+$Id: test_utility.py,v 1.15 2003/06/05 20:13:09 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -75,12 +75,12 @@ class Ca:
 
 class ViewWithCustomTitleWidgetFactory(BrowserView):
 
-    def title(self, context, request):
+    def title_widget(self, context, request):
         w = W(context, request)
         w.custom = 1
         return w
 
-    directlyProvides(title, IViewFactory)
+    directlyProvides(title_widget, IViewFactory)
 
 def kw(**kw):
     return kw
@@ -129,8 +129,8 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'])
-        self.assertEqual(view.title(), u'title: ')
-        self.assertEqual(view.title.getData(), None)
+        self.assertEqual(view.title_widget(), u'title: ')
+        self.assertEqual(view.title_widget.getData(), None)
 
 
     def test_setUpWidget_w_request_data(self):
@@ -139,8 +139,8 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'xxx'
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'])
-        self.assertEqual(view.title(), u'title: xxx')
-        self.assertEqual(view.title.getData(), u'xxx')
+        self.assertEqual(view.title_widget(), u'title: xxx')
+        self.assertEqual(view.title_widget.getData(), u'xxx')
 
     def test_setUpWidget_w_request_data_and_initial_data(self):
         c = C()
@@ -148,8 +148,8 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'xxx'
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
-        self.assertEqual(view.title(), u'title: xxx')
-        self.assertEqual(view.title.getData(), u'xxx')
+        self.assertEqual(view.title_widget(), u'title: xxx')
+        self.assertEqual(view.title_widget.getData(), u'xxx')
 
     def test_setUpWidget_w_request_data_and_initial_data_force(self):
         c = C()
@@ -157,16 +157,16 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'xxx'
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy', force=1)
-        self.assertEqual(view.title(), u'title: yyy')
-        self.assertEqual(view.title.getData(), u'xxx')
+        self.assertEqual(view.title_widget(), u'title: yyy')
+        self.assertEqual(view.title_widget.getData(), u'xxx')
 
     def test_setUpWidget_w_initial_data(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
-        self.assertEqual(view.title(), u'title: yyy')
-        self.assertEqual(view.title.getData(), None)
+        self.assertEqual(view.title_widget(), u'title: yyy')
+        self.assertEqual(view.title_widget.getData(), None)
 
     def test_setUpWidget_w_bad_initial_data(self):
         c = C()
@@ -179,35 +179,35 @@ class Test(PlacelessSetup, TestCase):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
-        view.title = w = W(I['title'], request)
+        view.title_widget = w = W(I['title'], request)
         setUpWidget(view, 'title', I['title'], u'yyy')
-        self.assertEqual(view.title(), u'title: yyy')
-        self.assertEqual(view.title.getData(), None)
-        self.assertEqual(view.title, w)
+        self.assertEqual(view.title_widget(), u'title: yyy')
+        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget, w)
 
     def test_setUpWidget_w_Custom_widget(self):
         c = C()
         request = TestRequest()
         view = ViewWithCustomTitleWidgetFactory(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
-        self.assertEqual(view.title(), u'title: yyy')
-        self.assertEqual(view.title.getData(), None)
-        self.assertEqual(view.title.custom, 1)
+        self.assertEqual(view.title_widget(), u'title: yyy')
+        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget.custom, 1)
 
     def test_setupWidgets(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I)
-        self.assertEqual(view.title(), u'title: ')
-        self.assertEqual(view.description(), u'description: ')
+        self.assertEqual(view.title_widget(), u'title: ')
+        self.assertEqual(view.description_widget(), u'description: ')
 
     def test_setupWidgets_via_names(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, names=['title'])
-        self.assertEqual(view.title(), u'title: ')
+        self.assertEqual(view.title_widget(), u'title: ')
         self.failIf(hasattr(view, 'description'))
 
     def test_setupWidgets_bad_field_name(self):
@@ -225,18 +225,18 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, prefix='spam')
-        self.assertEqual(view.title.prefix, 'spam')
-        self.assertEqual(view.description.prefix, 'spam')
+        self.assertEqual(view.title_widget.prefix, 'spam')
+        self.assertEqual(view.description_widget.prefix, 'spam')
 
     def test_setupWidgets_w_initial_data_and_custom_widget(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
-        view.title = w = W(I['title'], request)
+        view.title_widget = w = W(I['title'], request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(view.title(), u'title: ttt')
-        self.assertEqual(view.description(), u'description: ddd')
-        self.assertEqual(view.title, w)
+        self.assertEqual(view.title_widget(), u'title: ttt')
+        self.assertEqual(view.description_widget(), u'description: ddd')
+        self.assertEqual(view.title_widget, w)
 
     def test_setupWidgets_w_initial_data_and_request_data(self):
         c = C()
@@ -244,7 +244,7 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'yyy'
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(view.title(), u'title: yyy')
+        self.assertEqual(view.title_widget(), u'title: yyy')
 
     def test_setupWidgets_w_initial_data_forced_and_request_data(self):
         c = C()
@@ -253,7 +253,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidgets(view, I, force=1,
                      initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(view.title(), u'title: ttt')
+        self.assertEqual(view.title_widget(), u'title: ttt')
 
     def test_setupEditWidgets_w_custom_widget(self):
         c = C()
@@ -261,11 +261,11 @@ class Test(PlacelessSetup, TestCase):
         c.description = u'cd'
         request = TestRequest()
         view = BrowserView(c, request)
-        view.title = w = W(I['title'], request)
+        view.title_widget = w = W(I['title'], request)
         setUpEditWidgets(view, I)
-        self.assertEqual(view.title(), u'title: ct')
-        self.assertEqual(view.description(), u'description: cd')
-        self.assertEqual(view.title, w)
+        self.assertEqual(view.title_widget(), u'title: ct')
+        self.assertEqual(view.description_widget(), u'description: cd')
+        self.assertEqual(view.title_widget, w)
 
     def test_setupEditWidgets_w_form_data(self):
         c = C()
@@ -276,8 +276,8 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.description'] = u'fd'
         view = BrowserView(c, request)
         setUpEditWidgets(view, I)
-        self.assertEqual(view.title(), u'title: ft')
-        self.assertEqual(view.description(), u'description: fd')
+        self.assertEqual(view.title_widget(), u'title: ft')
+        self.assertEqual(view.description_widget(), u'description: fd')
 
     def test_setupEditWidgets_via_names(self):
         c = C()
@@ -286,7 +286,7 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'ft'
         view = BrowserView(c, request)
         setUpEditWidgets(view, I, names=['title'])
-        self.assertEqual(view.title(), u'title: ft')
+        self.assertEqual(view.title_widget(), u'title: ft')
         self.failIf(hasattr(view, 'description'))
 
     def test_setupEditWidgets_and_accessors(self):
@@ -296,8 +296,8 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpEditWidgets(view, Ia)
-        self.assertEqual(view.getTitle(), u'getTitle: ct')
-        self.assertEqual(view.getDescription(), u'getDescription: cd')
+        self.assertEqual(view.getTitle_widget(), u'getTitle: ct')
+        self.assertEqual(view.getDescription_widget(), u'getDescription: cd')
 
     def test_setupWidgets_bad_field_name(self):
         c = C()
@@ -319,8 +319,8 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.description'] = u'ft'
         view = BrowserView(c, request)
         setUpEditWidgets(view, I, force=1)
-        self.assertEqual(view.title(), u'title: ct')
-        self.assertEqual(view.description(), u'description: cd')
+        self.assertEqual(view.title_widget(), u'title: ct')
+        self.assertEqual(view.description_widget(), u'description: cd')
 
     def test_setupEditWidgets_w_custom_widget_and_prefix(self):
         c = C()
@@ -328,11 +328,11 @@ class Test(PlacelessSetup, TestCase):
         c.description = u'cd'
         request = TestRequest()
         view = BrowserView(c, request)
-        view.title = w = W(I['title'], request)
+        view.title_widget = w = W(I['title'], request)
         setUpEditWidgets(view, I, prefix='eggs')
-        self.assertEqual(view.title.prefix, 'eggs')
-        self.assertEqual(view.description.prefix, 'eggs')
-        self.assertEqual(view.title, w)
+        self.assertEqual(view.title_widget.prefix, 'eggs')
+        self.assertEqual(view.description_widget.prefix, 'eggs')
+        self.assertEqual(view.title_widget, w)
 
     def test_setupEditWidgets_w_other_data(self):
         c = C()
@@ -342,16 +342,16 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpEditWidgets(view, I)
-        self.assertEqual(view.title(), u'title: ')
-        self.assertEqual(view.description(), u'description: ')
+        self.assertEqual(view.title_widget(), u'title: ')
+        self.assertEqual(view.description_widget(), u'description: ')
         setUpEditWidgets(view, I, c2)
-        self.assertEqual(view.title(), u'title: ct')
-        self.assertEqual(view.description(), u'description: cd')
+        self.assertEqual(view.title_widget(), u'title: ct')
+        self.assertEqual(view.description_widget(), u'description: cd')
 
         view = BrowserView(c2, request)
         setUpEditWidgets(view, I)
-        self.assertEqual(view.title(), u'title: ct')
-        self.assertEqual(view.description(), u'description: cd')
+        self.assertEqual(view.title_widget(), u'title: ct')
+        self.assertEqual(view.description_widget(), u'description: cd')
 
     def test_setupEditWidgets_w_bad_data(self):
         class Forbidden(AttributeError): pass
@@ -376,8 +376,8 @@ class Test(PlacelessSetup, TestCase):
         request.form['field.title'] = u'ft'
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(view.title(), u'title: ft')
-        self.assertEqual(view.description(), u'description: ddd')
+        self.assertEqual(view.title_widget(), u'title: ft')
+        self.assertEqual(view.description_widget(), u'description: ddd')
 
 
     def test_getWidgetsData(self):

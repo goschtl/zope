@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.25 2003/06/01 15:59:27 jim Exp $
+$Id: editview.py,v 1.26 2003/06/05 20:13:07 jim Exp $
 """
 
 import os
@@ -76,7 +76,7 @@ class EditView(BrowserView):
             widget.setPrefix(prefix)
 
     def widgets(self):
-        return [getattr(self, name)
+        return [getattr(self, name+'_widget')
                 for name in self.fieldNames]
 
     def apply_update(self, data):
