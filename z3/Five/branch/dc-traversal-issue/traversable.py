@@ -45,38 +45,9 @@ class Traversable:
         This method is called by __bobo_traverse___ when Zope3-style
         ITraverser traversal fails.
 
-        Try to look up on the stack to see if we are being called from
-        a SubPathExpr, and if so, return None instead of raising a
-        NotFoundError.
-
-        Otherwise, raise a Zope2 zExceptions.NotFound error.
+        Just raise a AttributeError and let Zope do it's job.
         """
-
-        import inspect
-        frame = inspect.currentframe()
-        try:
-            while frame is not None:
-                context = frame.f_locals.get('self', _marker)
-                if (context is not _marker and
-                    isinstance(context, SubPathExpr)):
-                    # We are being called from a SubPathExpr.  Return
-                    # None instead of raising a NotFoundError, because
-                    # no __bobo_traverse__ caller expects an
-                    # exception. See more below.
-                    return None
-                frame = frame.f_back
-            # If we got this far, we are being called from something
-            # else that isn't a SubPathExpr.  None of the
-            # __bobo_traverse__ callers expect to get an
-            # exception. Instead, they *always* expect to get an
-            # object.  However, for BaseRequest, if we return None,
-            # instead of getting a NotFoundError, we will get an
-            # exception complaining about a missing docstring. Thus,
-            # we raise the NotFoundError ourselves.
-            return REQUEST.RESPONSE.notFoundError(name)
-        finally:
-            del frame
-            del context
+        raise AttributeError, name
 
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal

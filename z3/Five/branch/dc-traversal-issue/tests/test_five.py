@@ -238,8 +238,8 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
-    def test_ignore_new_style_class(self):
-        self.assertRaises(NotFound, self.folder.unrestrictedTraverse,
+    def test_unrestrictedTraverse_non_existing(self):
+        self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
                           'testoid/@@invalid_page')
 
     def test_get_widgets_for_schema_fields(self):
