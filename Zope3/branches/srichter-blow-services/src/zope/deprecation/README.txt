@@ -32,12 +32,12 @@ Let's now see how the deprecation warnings are displayed.
 
   >>> from zope.deprecation import tests
   >>> tests.demo1
-  <string>:1: DeprecationWarning: demo1 is no more
+  <string>:1: DeprecationWarning: demo1 is no more.
   1
 
   >>> import zope.deprecation.tests
   >>> zope.deprecation.tests.demo2
-  <string>:1: DeprecationWarning: demo2 is no more
+  <string>:1: DeprecationWarning: demo2 is no more.
   2
 
 You can see that merely importing the affected module or one of its parents
@@ -46,7 +46,7 @@ the module, we get a deprecation warning. On the other hand, if we import the
 name directly, the deprecation warning will be raised immediately.
 
   >>> from zope.deprecation.tests import demo3
-  <string>:1: DeprecationWarning: demo3 is no more
+  <string>:1: DeprecationWarning: demo3 is no more.
 
 Also, once a deprecation warning has been displayed, it is not shown again:
 
