@@ -85,7 +85,7 @@ class FSPythonScript (FSObject, Script):
     def __call__(self, *args, **kw):
         '''Calls the script.'''
         self._updateFromFS()
-        return Script.__call__(self, args, kw)
+        return Script.__call__(self, *args, **kw)
 
     #### The following is mainly taken from PythonScript.py ###
 
