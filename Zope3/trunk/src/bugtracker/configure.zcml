@@ -164,7 +164,7 @@
 
     <factory
         id="bugtracker.BugTracker"
-	title="Bug Tracker"
+        title="Bug Tracker"
         description="A Bug Tracker" />
 
     <require
