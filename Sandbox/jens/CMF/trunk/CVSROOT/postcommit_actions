@@ -347,7 +347,7 @@ def create_diff(repo, file, old, new):
         diff_cmd = ('cvs -d %s -f rdiff -r %s -r %s -kk -u %s/%s'
                     % (CVSROOT, old, new, repo, file))
         file_handle = os.popen(diff_cmd)
-        lines = file_handle.readlines()[5:]
+        lines = file_handle.readlines()[2:]
         file_handle.close()
         header = ("=== %s/%s %s => %s ==="
                   % (str(repo), str(file), old, new))
