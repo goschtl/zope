@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ComponentAdding.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: ComponentAdding.py,v 1.2 2002/11/18 13:28:02 stevea Exp $
 """
 
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding
@@ -21,5 +21,5 @@ from Zope.App.OFS.Services.ServiceManager.IServiceAdding import IServiceAdding
 
 class ServiceAdding(Adding):
     
-    __implements__ = IServiceAdding
+    __implements__ = Adding.__implements__, IServiceAdding
 
