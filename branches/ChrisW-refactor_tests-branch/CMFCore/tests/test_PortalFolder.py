@@ -314,23 +314,6 @@ class PortalFolderTests( SecurityTest ):
         assert has_path( catalog._catalog, '/test/sub2/dummy' )
         assert has_path( catalog._catalog, '/test/sub3/dummy' )
 
-class PortalFolderPermissionTests( SecurityTest ):
-
-    def setUp( self ):
-        
-        SecurityTest.setUp(self)
-        
-        self.manager = OmnipotentUser().__of__( self.root )
-        self.member = UserWithRoles(['Member']).__of__( self.root )
-        self.root._setObject( 'folder', PortalFolder( 'folder', '' ) )
-        self.folder = self.root.folder
-        self.folder._setObject( 'doc1', DummyContent( 'doc1' ) )
-        self.folder._setObject( 'doc2', DummyContent( 'doc2' ) )
-        self.folder._setObject( 'doc3', DummyContent( 'doc3' ) )
-    
-    def test_listFolderContentsPerms( self ):
-        pass
-
 class DummyContentWithMetadata( DummyContent ):
 
     def Title( self ):
@@ -566,7 +549,6 @@ class ContentFilterTests( TestCase ):
 def test_suite():
     return TestSuite((
         makeSuite( PortalFolderTests ),
-        makeSuite( PortalFolderPermissionTests ),
         makeSuite( ContentFilterTests ),
         ))
 
