@@ -33,7 +33,7 @@
              tal:content="error">Foo </div>
       </div>
 
-      <form action="action" method="post">
+      <form action="edit.html" method="post">
 
         <table class="EditTable">      
 	  <tbody>   
