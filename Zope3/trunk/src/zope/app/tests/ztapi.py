@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.6 2004/03/15 20:42:20 jim Exp $
+$Id: ztapi.py,v 1.7 2004/03/23 00:23:12 maru Exp $
 """
 from zope.app import zapi
 import zope.interface
@@ -62,6 +62,10 @@ def provideAdapter(required, provided, factory, name='', with=()):
         required = [required]
             
     s.register(required, provided, name, factory)
+
+def subscribe(required, provided, factory):
+    s = zapi.getService(None, Adapters)
+    s.subscribe(required, provided, factory)
     
 def provideUtility(provided, component, name=''):
     s = zapi.getService(None, Utilities)
