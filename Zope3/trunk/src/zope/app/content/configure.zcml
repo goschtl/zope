@@ -385,6 +385,29 @@
   provides="zope.app.interfaces.fssync.IObjectFile"
   />
 
+  <!-- add views -->
+
+<view 
+  factory=".fssync.FolderAddView"
+  for="zope.app.interfaces.fssync.IContentDirectory"
+  type="zope.app.interfaces.fssync.IFSAddView"
+  name=".folder"
+  />
+
+<view 
+  factory=".fssync.FileAddView"
+  for="zope.app.interfaces.fssync.IContentDirectory"
+  type="zope.app.interfaces.fssync.IFSAddView"
+  name=".file"
+  />
+
+<view 
+  factory=".fssync.ZPTAddView"
+  for="zope.app.interfaces.fssync.IContentDirectory"
+  type="zope.app.interfaces.fssync.IFSAddView"
+  name=".pt"
+  />
+
 <!-- Further Directives -->
 
 </zopeConfigure>

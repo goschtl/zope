@@ -13,11 +13,15 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.2 2003/05/05 18:01:00 gvanrossum Exp $
+$Id: fssync.py,v 1.3 2003/05/06 19:51:32 gvanrossum Exp $
 """
 
-from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
+from zope.app.content.file import File
+from zope.app.content.folder import Folder
+from zope.app.content.zpt import ZPTPage
+from zope.app.fssync.classes import FSAddView
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
 from zope.proxy.context import ContextWrapper
 
 _attrs = ('contentType', )
@@ -64,3 +68,24 @@ class ZPTObjectFileAdapter(ObjectEntryAdapter):
     def setBody(self, data):
         "See IObjectFile"
         self.context.setSource(data)
+
+class FolderAddView(FSAddView):
+    """Support to create a filesystem representation of Zope folder objects.
+    """
+
+    def create(self):
+        return Folder()
+
+class FileAddView(FSAddView):
+    """Support to create a filesystem representation of Zope file objects.
+    """
+
+    def create(self):
+        return File()
+
+class ZPTAddView(FSAddView):
+    """Support to create a filesystem representation of ZPT page objects.
+    """
+
+    def create(self, fs_path=None):
+        return ZPTPage()
