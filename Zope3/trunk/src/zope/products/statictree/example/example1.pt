@@ -17,8 +17,8 @@ Feel free to use this template or parts of it in your own works
 without any license restrictions, but please give credit where credit
 is due.
 
-Tip: Change to @@static_cookie_tree below to @@folder_cookie_tree for
-a tree with only folders.
+Tip: Change the 'context/@@static_cookie_tree' expression below to
+'context/@@folder_cookie_tree' for a tree with only folders.
 -->
 
 <div metal:fill-slot="body">
@@ -47,8 +47,6 @@ a tree with only folders.
 
   <!-- generate the lines that will point to the next node in the level -->
   <td style="width:16px" tal:repeat="state nodeInfo/row-state">
-    <img tal:attributes="src context/++resource++tree_images/empty.png"
-         tal:condition="not:state" alt="" border="0" />
     <img tal:attributes="src context/++resource++tree_images/vline.png"
          tal:condition="state" alt="|" border="0" />
   </td>
@@ -58,15 +56,17 @@ a tree with only folders.
     <a href=""
        tal:attributes="href string:?tree-state=${nodeInfo/tree-state}"
        tal:condition="node/hasChildren">
+
+      <!-- If the node is the last node of the level, then we need to use
+           different plus and minus that do not have a line going off 
+           downward -->
       <tal:block condition="not:nodeInfo/last-level-node">
         <img tal:attributes="src context/++resource++tree_images/plus_vline.png"
              tal:condition="not:node/expanded" alt="+" border="0" />
         <img tal:attributes="src context/++resource++tree_images/minus_vline.png"
              tal:condition="node/expanded" alt="-" border="0" />
       </tal:block>
-      <!-- If the node is the last node of the level, then we need to use
-           different plus and minus that do not have a line going off 
-           downward -->
+
       <tal:block condition="nodeInfo/last-level-node">
         <img tal:attributes="src context/++resource++tree_images/plus.png"
              tal:condition="not:node/expanded" alt="+" border="0" />
@@ -75,12 +75,14 @@ a tree with only folders.
       </tal:block>
     </a>
 
-    <!-- this node has no children, so either display a T or L as lines --> 
+    <!-- this node has no children, so either display a T or L as
+         lines, depending on whether we're the last node in this level
+         or not -->
     <tal:block condition="not:node/hasChildren">
       <img tal:attributes="src context/++resource++tree_images/tline.png"
-           tal:condition="not:nodeInfo/last-level-node" alt="T" border="0" />
+           tal:condition="not:nodeInfo/last-level-node" alt="" border="0" />
       <img tal:attributes="src context/++resource++tree_images/lline.png"
-           tal:condition="nodeInfo/last-level-node" alt="L" border="0" />
+           tal:condition="nodeInfo/last-level-node" alt="" border="0" />
     </tal:block>
   </td>
 
