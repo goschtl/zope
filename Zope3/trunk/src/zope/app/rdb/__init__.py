@@ -17,10 +17,11 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.20 2003/07/07 17:14:55 sidnei Exp $
+$Id: __init__.py,v 1.21 2003/07/22 10:05:51 Zen Exp $
 """
 __metaclass__ = type
 
+import types, string
 from types import StringTypes
 
 from persistence import Persistent
@@ -39,6 +40,31 @@ from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.rdb import IGlobalConnectionService
 
 from zope.app.component.nextservice import getNextService
+
+def sqlquote(x):
+    """
+    Escape data suitable for inclusion in generated ANSI SQL92 code for
+    cases where bound variables are not suitable.
+    
+    >>> sqlquote('''Hi''')
+    "'Hi'"
+    >>> sqlquote('''It's mine''')
+    "'It''s mine'"
+    >>> sqlquote(32)
+    32
+    >>> sqlquote(None)
+    'NULL'
+    """
+    if type(x) == types.StringType:
+        x = "'" + string.replace(
+            string.replace(str(x), '\\', '\\\\'), "'", "''") + "'"
+    elif type(x) in (types.IntType, types.LongType, types.FloatType):
+        pass
+    elif x is None:
+        x = 'NULL'
+    else:
+        raise TypeError, 'do not know how to handle type %s' % type(x)
+    return x
 
 
 class ResultSet(list):
@@ -456,3 +482,5 @@ _clear         = connectionService._clear
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 del addCleanUp
+
+
