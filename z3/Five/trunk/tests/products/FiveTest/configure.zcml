@@ -32,4 +32,10 @@
     name="flamingo.html"
     />
 
+  <five:page
+    for=".interfaces.ISimpleContent"
+    template="flamingo2.pt"
+    name="flamingo2.html"
+    />
+
 </configure>

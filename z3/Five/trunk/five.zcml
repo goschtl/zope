@@ -4,6 +4,13 @@
   <include file="meta.zcml" />
   <include file="services.zcml" />
 
+  <!-- do 'traditional' traversing for ZPT by default -->
+
+  <adapter 
+      for="*"
+      factory="zope.app.traversing.adapters.DefaultTraversable"
+      provides="zope.app.traversing.interfaces.ITraversable" />
+
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
                    interface="zope.publisher.interfaces.browser.IBrowserRequest" />
 

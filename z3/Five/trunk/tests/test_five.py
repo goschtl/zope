@@ -41,37 +41,38 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         test = self.root.test
         view = self.root.unrestrictedTraverse('testoid/eagle.txt')
         self.assert_(isinstance(view, SimpleContentView))
-        data = view()
-        self.assertEquals('The eagle has landed', data)
+        self.assertEquals('The eagle has landed', view())
 
     def test_template_view(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         view = self.root.unrestrictedTraverse('testoid/falcon.html')
         self.assert_(isinstance(view, SimpleContentView))
-        data = view()
-        self.assertEquals(u'<p>The falcon has taken flight</p>\n', data)
+        self.assertEquals(u'<p>The falcon has taken flight</p>\n', view())
 
     def test_template_view_without_class(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         view = self.root.unrestrictedTraverse('testoid/owl.html')
-        data = view()
-        self.assertEquals(u'<p>2</p>\n', data)
+        self.assertEquals(u'<p>2</p>\n', view())
 
     def test_template_view_context(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         view = self.root.unrestrictedTraverse('testoid/flamingo.html')
-        data = view()
-        self.assertEquals(u'<p>Hello world</p>\n', data)
+        self.assertEquals(u'<p>Hello world</p>\n', view())
+
+    def test_template_view_context_path(self):
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        view = self.root.unrestrictedTraverse('testoid/flamingo2.html')
+        self.assertEquals(u'<p>Hello world</p>\n', view())
         
     def test_view_backwards_compatibility(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         old_view = self.root.unrestrictedTraverse('testoid/direct')
-        data = old_view()
-        self.assertEquals('Direct traversal worked', data)
+        self.assertEquals('Direct traversal worked', old_view())
         
 if __name__ == '__main__':
     framework()
