@@ -21,7 +21,7 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
-from zope.app.component.localservice import getNextService
+from zope.app.component.localservice import queryNextService
 from zope.app.file.image import Image
 
 from interfaces import ISmileyTheme, ISmiley, ILocalSmileyTheme
@@ -80,7 +80,7 @@ class SmileyTheme(BTreeContainer):
     >>> getSmiley('8)', TestRequest(), 'plain')
     Traceback (most recent call last):
     ...
-    ComponentLookupError: '8)'
+    ComponentLookupError: 'Smiley not found.'
     >>> querySmiley('8)', TestRequest(), 'plain', 'nothing')
     'nothing'
 
@@ -94,7 +94,7 @@ class SmileyTheme(BTreeContainer):
     >>> getSmiley(':|', TestRequest(), 'plain')
     Traceback (most recent call last):
     ...
-    ComponentLookupError: ':|'
+    ComponentLookupError: 'Smiley not found.'
     >>> querySmiley(':|', TestRequest(), 'plain', 'nothing')
     'nothing'
     
@@ -130,13 +130,10 @@ class SmileyTheme(BTreeContainer):
 
     def getSmiley(self, text, request):
         "See book.smileyutility.interfaces.ISmileyTheme"
-        if text not in self:
-            theme = queryNextTheme(self, zapi.name(self))
-            if theme is None:
-                raise ComponentLookupError(text)
-            else:
-                return theme.getSmiley(text, request)
-        return getURL(self[text], request)
+        smiley = self.querySmiley(text, request)
+        if smiley is None:
+            raise ComponentLookupError, 'Smiley not found.'
+        return smiley
         
     def querySmiley(self, text, request, default=None):
         "See book.smileyutility.interfaces.ISmileyTheme"
@@ -163,9 +160,60 @@ class SmileyTheme(BTreeContainer):
 
 
 def queryNextTheme(context, name, default=None):
-    """Get the next theme higher up."""
-    utilities = getNextService(context, zapi.servicenames.Utilities)
-    return utilities.queryUtility(ISmileyTheme, name, default)
+    """Get the next theme higher up.
+
+    >>> from zope.app.tests import setup
+    >>> from zope.app.utility.utility import LocalUtilityService
+    >>> site = setup.placefulSetUp()
+    >>> rootFolder = setup.buildSampleFolderTree()
+
+    Create various themes at various sites, so that we can efficiently test
+    the implementation.
+
+    >>> site = setup.createServiceManager(rootFolder)
+    >>> utils = setup.addService(site, zapi.servicenames.Utilities,
+    ...                         LocalUtilityService())
+    >>> r_plain = setup.addUtility(site, 'plain', ISmileyTheme, SmileyTheme())
+    >>> r_yazoo = setup.addUtility(site, 'yazoo', ISmileyTheme, SmileyTheme())
+
+    >>> site = setup.createServiceManager(rootFolder['folder1'])
+    >>> utils = setup.addService(site, zapi.servicenames.Utilities,
+    ...                         LocalUtilityService())
+    >>> f1_plain = setup.addUtility(site, 'plain', ISmileyTheme, SmileyTheme())
+    >>> f1_kmess = setup.addUtility(site, 'kmess', ISmileyTheme, SmileyTheme())
+
+    >>> site = setup.createServiceManager(rootFolder['folder1']['folder1_1'])
+    >>> utils = setup.addService(site, zapi.servicenames.Utilities,
+    ...                         LocalUtilityService())
+    >>> f11_kmess = setup.addUtility(site, 'kmess', ISmileyTheme, SmileyTheme())
+    >>> f11_yazoo = setup.addUtility(site, 'yazoo', ISmileyTheme, SmileyTheme())
+
+    Now we are ready to test.
+
+    >>> queryNextTheme(f11_kmess, 'kmess') is f1_kmess
+    True
+    >>> queryNextTheme(f1_kmess, 'kmess') is None
+    True
+
+    >>> queryNextTheme(f11_yazoo, 'yazoo') is r_yazoo
+    True
+    >>> queryNextTheme(r_yazoo, 'kmess') is None
+    True
+
+    >>> queryNextTheme(f1_plain, 'plain') is r_plain
+    True
+    >>> queryNextTheme(r_plain, 'plain') is None
+    True
+    """
+    theme = default
+    while theme is default:
+        utilities = queryNextService(context, zapi.servicenames.Utilities)
+        if utilities is None:
+            return default
+        theme = utilities.queryUtility(ISmileyTheme, name, default)
+        context = utilities
+    return theme
+
 
 def getURL(smiley, request):
     """Get the URL of the smiley."""
