@@ -2,6 +2,12 @@ After CMF-1.5.1beta
 
   New Features
 
+    - CMFCore.DirectoryView: Made list of file names to ignore configurable.
+      The previously hardcoded list of files to ignore when creating their
+      ZODB representations can now be configured by passing a sequence of
+      names to registerDirectory, which will be ignored in addition to the
+      standard list of ignored names (http://www.zope.org/Collectors/CMF/319).
+
     - CMFCalendar: Added extension profile.
       You can now set up CMFCalendar in one step together with a new site or
       add calendar support to an existing site using the portal_setup tool.
