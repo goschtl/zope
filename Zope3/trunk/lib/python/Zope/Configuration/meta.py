@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.13 2002/09/22 16:05:18 rdmurray Exp $
+$Id: meta.py,v 1.14 2002/09/22 18:47:07 rdmurray Exp $
 """
 
 
@@ -281,6 +281,7 @@ class DirectiveNamespace:
         namespace = namespace or self._namespace
         subs = register((namespace, name), _context.resolve(handler))
         return Subdirective(subs, namespace=namespace)
+    directive.__implements__ = INonEmptyDirective
 
     def __call__(self):
         return ()
@@ -314,6 +315,7 @@ class Subdirective:
         #If handler_method is None, registersub will use name.
         subs = registersub(self._subs, (namespace, name), handler_method)
         return Subdirective(subs,namespace=namespace)
+    subdirective.__implements__ = INonEmptyDirective
 
     def __call__(self):
         return ()
