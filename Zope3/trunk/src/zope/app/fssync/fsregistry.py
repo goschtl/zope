@@ -13,7 +13,9 @@
 ##############################################################################
 """Filesystem synchronization registry.
 
-$Id: fsregistry.py,v 1.2 2003/05/05 18:01:01 gvanrossum Exp $
+This acts as a global (placeless) service.
+
+$Id: fsregistry.py,v 1.3 2003/05/15 18:45:33 gvanrossum Exp $
 """
 
 from zope.app.interfaces.fssync import IGlobalFSSyncService
@@ -29,15 +31,16 @@ class FSRegistry(object):
 
     def __init__(self):
         self._class_factory_reg = {}
-        
+
     def __call__(self):
         return self.__init__()
 
     def getSynchronizer(self, object):
         """Return factory method for a given class.
 
-        The factory is returned of the object if None of the 
-        Factory method is present return default factory.
+        If no factory is registered for the given class, return the
+        default factory, if one has been registered.  If no default
+        factory has been registered, raise NotFoundError.
         """
 
         factory = self._class_factory_reg.get(object.__class__)
