@@ -48,10 +48,10 @@ class IUniqueIdUtilityManage(Interface):
     """Some methods used by the view"""
 
     def __len__():
-        """Returns the number of objects indexed"""
+        """Returns the number of objects indexed."""
 
     def items():
-        """Returns a list of (id, object) pairs"""
+        """Returns a list of (id, reference) pairs."""
 
 
 class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
