@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.1 2002/06/13 23:15:43 jim Exp $
+$Id: FileResource.py,v 1.2 2002/06/14 07:39:00 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -41,7 +41,7 @@ class FileResource(BrowserView, Resource):
 
     def browserDefault(self, request):
         '''See interface IBrowserPublisher'''
-        method = request.get('REQUET_METHOD', 'GET').upper()
+        method = request.get('REQUEST_METHOD', 'GET').upper()
         return getattr(self, method), ()
         
     #
