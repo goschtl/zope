@@ -81,6 +81,8 @@ TO DO
 * refine the adapter protocol or implementation to leverage the
   file-system representation protocol
 
+* use camelCase for method names
+
 
 TO DO LATER
 -----------
