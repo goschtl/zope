@@ -183,7 +183,7 @@ class RegistrationStack(Persistent, Contained):
          r1 False
 
        So why is this a stack? Unregistering an object is a bit like
-       poping an element. Suppose we unrgister r2:
+       popping an element. Suppose we unregister r2:
 
          >>> stack.unregister(r2)
 
