@@ -149,6 +149,9 @@ Zope Changes
 
     Restructuring
 
+      - The `pluggableauth` package has been deprecated. The `pas` module
+        provides a much more modular approach with many more capabilities.
+
       - Removed special `RoleRegistration` now that we have events for
         notification. Also, renamed `PersistentRole` to `LocalRole`.
 

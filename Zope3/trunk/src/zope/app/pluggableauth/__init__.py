@@ -13,6 +13,8 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
+BBB: ENTIRE PACKAGE IS DEPRECATED!!! 12/05/2004
+
 $Id$
 """
 __docformat__ = 'restructuredtext'
@@ -61,7 +63,12 @@ class PluggableAuthenticationService(OrderedContainer):
 
     implements(IPluggableAuthenticationService, IOrderedContainer)
 
-    def __init__(self, earmark=None):
+    def __init__(self, earmark=None, hide_deprecation_warning=False):
+        if not hide_deprecation_warning:
+            import pdb; pdb.set_trace()
+            warn("The `pluggableauth` module has been deprecated in favor of "
+                 "the new `pas` code, which is much more modular and powerful.",
+                 DeprecationWarning, 2)        
         self.earmark = earmark
         # The earmark is used as a token which can uniquely identify
         # this authentication service instance even if the service moves
@@ -153,7 +160,7 @@ class PluggableAuthenticationService(OrderedContainer):
     def addPrincipalSource(self, id, principal_source):
         """ See `IPluggableAuthenticationService`.
 
-        >>> pas = PluggableAuthenticationService()
+        >>> pas = PluggableAuthenticationService(None, True)
         >>> sps = BTreePrincipalSource()
         >>> pas.addPrincipalSource('simple', sps)
         >>> sps2 = BTreePrincipalSource()
@@ -170,7 +177,7 @@ class PluggableAuthenticationService(OrderedContainer):
     def removePrincipalSource(self, id):
         """ See `IPluggableAuthenticationService`.
 
-        >>> pas = PluggableAuthenticationService()
+        >>> pas = PluggableAuthenticationService(None, True)
         >>> sps = BTreePrincipalSource()
         >>> pas.addPrincipalSource('simple', sps)
         >>> sps2 = BTreePrincipalSource()

@@ -41,7 +41,7 @@ class AuthSetup(placefulsetup.PlacefulSetup):
                           PrincipalAuthenticationView)
 
         auth = setup.addService(sm, "PluggableAuthService",
-                                PluggableAuthenticationService())
+                                PluggableAuthenticationService(None, True))
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()

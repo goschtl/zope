@@ -46,10 +46,6 @@ Miscellaneous
 
   o Run book sources against source tree (Stephan and Phillip)
 
-- Make sure that all deprecation warnings are raised
-
-  o old pluggable authentication service should be deprecated
-
 - Create a new ZODB generation for the following objects:
 
     - PersistentRole --> LocalRole
@@ -58,6 +54,7 @@ Miscellaneous
 
     - Registration (using paths) --> Registration (using objects)
 
+    - PluggableAuthenticationService --> PAS
 
 Bug Fixes
 ---------

@@ -53,7 +53,7 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
                           PrincipalAuthenticationView)
 
         auth = setup.addService(sm, "TestPluggableAuthenticationService",
-                                PluggableAuthenticationService())
+                                PluggableAuthenticationService(None, True))
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()

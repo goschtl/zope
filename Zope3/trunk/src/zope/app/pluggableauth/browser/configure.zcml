@@ -4,12 +4,13 @@
 
 <!-- Pluggable Authentication Service -->
 
-  <addMenuItem
+  <!-- BBB: Deactivated as a deprecation measure. -->
+  <!--addMenuItem
        class="zope.app.pluggableauth.PluggableAuthenticationService"
        title="Authentication Service"
        description="A Pluggable Authentication uses plug-in principal sources."
        permission="zope.ManageServices"
-       />
+       /-->
 
   <containerViews
        for="zope.app.pluggableauth.interfaces.IPluggableAuthenticationService"
