@@ -168,7 +168,7 @@ class MailSubscriptions:
     >>> verifyClass(IMailSubscriptions, MailSubscriptions)
     True
 
-    Create asubscription instance of a message
+    Create a subscription instance of a message
 
     >>> msg = Message()
     >>> sub = MailSubscriptions(msg)
@@ -210,11 +210,11 @@ class MailSubscriptions:
             self._annotations[SubscriberKey] = ()
 
     def getSubscriptions(self):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See book.messageboard.interfaces.IMailSubscriptions"
         return self._annotations[SubscriberKey]
         
     def addSubscriptions(self, emails):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See book.messageboard.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email not in subscribers:
@@ -222,7 +222,7 @@ class MailSubscriptions:
         self._annotations[SubscriberKey] = tuple(subscribers)
                 
     def removeSubscriptions(self, emails):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See book.messageboard.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email in subscribers:
