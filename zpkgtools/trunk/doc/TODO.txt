@@ -68,6 +68,12 @@ Things that need to be done
     the installation directory already exists and the user hasn't
     explicitly said that's ok (-f/--force).
 
+  - Some way to transform template files on build or installation
+    beyond what distutils does for scripts would be nice; it's not
+    clear how to feed enough interesting information into the process.
+    The use cases aren't sufficiently clear at this time.  Won't
+    happen unless the use cases become clearer.
+
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
