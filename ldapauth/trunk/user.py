@@ -29,8 +29,8 @@ class LDAPPrincipal(Contained):
     def __init__(self, login):
         self._id = login
         self.login = login
-        self.title = ''
         self.description = ''
+
 
     def _getId(self):
         source = self.__parent__
@@ -41,3 +41,19 @@ class LDAPPrincipal(Contained):
         self._id = id
 
     id = property(_getId, _setId)
+
+
+    def _getTitle(self):
+        # Hmm, replace with DublinCore adapter!
+        #if hasattr(self, '_title') : return self._title
+        return self.login
+
+    def _setTitle(self, title) :
+        print "LDAPPrincipal %s was asked to set its title to '%s'" % \
+                                                              (self.id, title)
+
+    title = property(_getTitle, _setTitle)
+
+
+    def getLogin(self) : return self.login
+
