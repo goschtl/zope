@@ -338,6 +338,7 @@
       for=".interfaces.ISimpleContent"
       menu="testmenu">
 
+
       <menuItem
           title="Test Menu Item 2"
           action="parakeet.html"
@@ -353,6 +354,17 @@
           />
 
   </browser:menuItems>
+
+  <!-- page in a menu -->
+  <browser:page
+      for=".interfaces.ISimpleContent"
+      class=".browser.SimpleContentView"
+      template="parakeet.pt"
+      name="parakeet_beyond.html"
+      permission="zope2.ViewManagementScreens"
+      title="A page based entry"
+      menu="testmenu"
+      />
 
   <!-- subscribe to all events -->
   <five:sendEvents
