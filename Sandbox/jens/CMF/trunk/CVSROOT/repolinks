@@ -70,6 +70,8 @@
 /Zope/lib/python/zLOG                           /Packages/zLOG
 /Zope/lib/python/ZTUtils                        /Packages/ZTUtils
 /Zope/lib/python/ZConfig                        /Packages/ZConfig
+/Zope/lib/python/logging			/Packages/logging
+/Zope/lib/python/Signals			/Packages/Signals
 /Zope/lib/python/Products/ExternalMethod        /Products/ExternalMethod
 /Zope/lib/python/Products/MailHost              /Products/MailHost
 /Zope/lib/python/Products/MIMETools             /Products/MIMETools
@@ -104,6 +106,7 @@
 /StandaloneZODB/ThreadedAsync     /Packages/ThreadedAsync
 /StandaloneZODB/zdaemon           /Packages/zdaemon
 /StandaloneZODB/zLOG              /Packages/zLOG
+/StandaloneZODB/logging           /Packages/logging
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
@@ -119,6 +122,7 @@
 /ZODB3/ZEO-NEWS.txt,v	 /ZEO/CHANGES.txt,v
 /ZODB3/ZopeUndo		 /Packages/ZopeUndo
 /ZODB3/ZConfig           /Packages/ZConfig
+/ZODB3/logging           /Packages/logging
 
 /ZODB4/ZODB		 /Packages3/ZODB
 /ZODB4/ZEO		 /Packages3/ZEO
@@ -126,6 +130,7 @@
 /ZODB4/Persistence	 /Packages3/Persistence
 /ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zLOG		 /Packages3/zLOG
+/ZODB4/logging           /Packages/logging
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 
@@ -146,6 +151,7 @@
 /Zope3/lib/python/Persistence                  /Packages3/Persistence
 /Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
 /Zope3/lib/python/ZConfig		       /Packages/ZConfig
+/Zope3/lib/python/logging                      /Packages/logging
 /Zope3/lib/python/ZEO                          /Packages3/ZEO
 /Zope3/lib/python/zLOG                         /Packages3/zLOG
 /Zope3/lib/python/ZODB                         /Packages3/ZODB
@@ -158,7 +164,6 @@
 /Zope3/lib/python/Zope/ContextWrapper          /Packages3/ContextWrapper
 
 /Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
-
 # Zope 3 products
 /ZopeProducts                                  /Products3
 /Products3/JobBoardEx                          /Packages/JobBoardEx
