@@ -13,7 +13,7 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.5 2003/05/01 19:35:37 faassen Exp $
+$Id: test_clipboard.py,v 1.6 2003/05/29 18:15:56 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -50,7 +50,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         user = auth.getPrincipalByLogin('srichter')
 
         annotationsvc = getService(self, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
         expected = ({'action':'move', 'target':'bla'},
@@ -67,7 +67,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         user = auth.getPrincipalByLogin('srichter')
 
         annotationsvc = getService(self, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
 
         expected = ({'action':'move', 'target':'bla'},
@@ -83,7 +83,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         auth = self._auth
         user = auth.getPrincipalByLogin('srichter')
         annotationsvc = getService(self, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         clipboard.clearContents()
         self.failUnless(clipboard.getContents() == ())

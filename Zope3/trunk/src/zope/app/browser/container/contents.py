@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.18 2003/05/27 09:47:18 stevea Exp $
+Revision information: $Id: contents.py,v 1.19 2003/05/29 18:15:55 jim Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -87,7 +87,7 @@ class Contents(BrowserView):
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         clipboard.clearContents()
         items = []
@@ -103,7 +103,7 @@ class Contents(BrowserView):
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         clipboard.clearContents()
         items = []
@@ -120,7 +120,7 @@ class Contents(BrowserView):
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         items = clipboard.getContents()
         for item in items:
@@ -143,7 +143,8 @@ class Contents(BrowserView):
         user = self.request.user
 
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
-        annotations = annotationsvc.getAnnotation(user)
+        annotations = annotationsvc.getAnnotations(user)
+        
         clipboard = getAdapter(annotations, IPrincipalClipboard)
 
         if clipboard.getContents():
