@@ -1,3 +1,4 @@
+# translation of zope.po to 
 # translation of zope.po to German
 # This file is distributed under the same license as Zope itself.
 # Stephan Richter <stephan.richter@tufts.edu>, 2003, 2004.
@@ -8,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
 "POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
-"PO-Revision-Date: 2004-04-14 21:05-0400\n"
-"Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
-"Language-Team: German <zope3-dev@zope.org>\n"
+"PO-Revision-Date: 2004-04-15 15:47-0400\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -113,8 +114,7 @@ msgid "seconds"
 msgstr "Sekunden"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid ""
-"If you specify a time of 0 seconds, then the server will do a hard shutdown."
+msgid "If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Wenn Sie eine Zeit von 0 Sekunden eingeben, dann wird der Server sofort "
 "angehalten (hard shutdown)."
@@ -241,8 +241,7 @@ msgstr "Dieses Bündel stellt keine Registrierungen zur Verfügung."
 
 #: src/zope/app/bundle/browser/bundle.pt:123
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr ""
-"Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
+msgstr "Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
 
 #: src/zope/app/bundle/browser/bundle.pt:127
 msgid "activate-bundle-button"
@@ -255,8 +254,7 @@ msgid "reset-button"
 msgstr "Zurücksetzen"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
-msgid ""
-"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 "Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem "
 "Bündel nichtig zu machen."
@@ -378,8 +376,7 @@ msgstr "Cache ungültig machen"
 
 #: src/zope/app/cache/browser/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
-msgstr ""
-"Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
+msgstr "Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:9
 msgid "Currently there is no cache associated with the object."
@@ -800,8 +797,7 @@ msgid "Error Logging Service"
 msgstr "Fehlermeldedienst"
 
 #: src/zope/app/errorservice/browser/error.pt:10
-msgid ""
-"This page lists the exceptions that have occurred in this site recently."
+msgid "This page lists the exceptions that have occurred in this site recently."
 msgstr ""
 "Diese Seite listet die Ausnahmen auf, die kürzlich in dieser Webseite "
 "aufgetreten sind."
@@ -899,8 +895,7 @@ msgstr "Ereignisdienst"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "An event service. One of these in the root is usually enough"
-msgstr ""
-"Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
+msgstr "Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
 
 #: src/zope/app/event/browser/eventcontrol.pt:5
 msgid "This is an event service."
@@ -1397,8 +1392,7 @@ msgstr "Aktualisieren"
 
 #: src/zope/app/i18n/browser/synchronize.pt:122
 msgid "No connection could be made to remote data source."
-msgstr ""
-"Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
+msgstr "Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
 
 #: src/zope/app/i18n/browser/synchronize.pt:26
 msgid "Server URL"
@@ -1529,8 +1523,7 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
-msgid ""
-"This edit form allows you to make changes to the properties of this image."
+msgid "This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es ihnen Änderungen an den "
 "Einstellungen ihres Bildes vorzunehmen."
@@ -1805,8 +1798,7 @@ msgid "Add Browser Menu (Registration)"
 msgstr "Browsermenü hinzufügen (Registrierung)"
 
 #: src/zope/app/menu/browser/configure.zcml:5
-msgid ""
-"Browser Menu tools are used to build menus for Web user        interfaces."
+msgid "Browser Menu tools are used to build menus for Web user        interfaces."
 msgstr ""
 "Browsermenü-Werkzeuge werden benutzt, um Menüs für Web-Benutzeroberflächen "
 "zu erstellen."
@@ -1901,8 +1893,7 @@ msgstr "Menü der hinzufügbaren Caches"
 
 #: src/zope/app/menus.zcml:17
 msgid "Menu of objects to be added to content folders"
-msgstr ""
-"Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
+msgstr "Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:21
 msgid "Menu for objects to be added according to containment constraints"
@@ -1912,8 +1903,7 @@ msgstr ""
 
 #: src/zope/app/menus.zcml:26
 msgid "Menu of objects to be added to site management folders"
-msgstr ""
-"Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
+msgstr "Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:30
 msgid "Menu of database connections to be added"
@@ -2089,8 +2079,7 @@ msgstr "Anmeldung"
 
 #: src/zope/app/pluggableauth/interfaces.py:31
 msgid "The Login/Username of the user. This value can change."
-msgstr ""
-"Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
+msgstr "Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
 
 #: src/zope/app/pluggableauth/interfaces.py:37
 msgid "The password for the user."
@@ -2109,8 +2098,7 @@ msgid "Presentation Service"
 msgstr "Präsentationsdienst"
 
 #: src/zope/app/presentation/browser/configure.zcml:3
-msgid ""
-"A Presentation Service allows you to register views, resources and skins"
+msgid "A Presentation Service allows you to register views, resources and skins"
 msgstr ""
 "Ein Präsentationsdienst erlaubt es Ihnen, Ansichten, Ressourcen und Themen "
 "zu registrieren."
@@ -2200,8 +2188,7 @@ msgstr "Die URL, die aufgerufen werden soll, wenn der Eintrag ausgewählt ist"
 
 #: src/zope/app/publisher/interfaces/browser.py:40
 msgid "The url is relative to the object the menu is being displayed for."
-msgstr ""
-"DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
+msgstr "DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
 
 #: src/zope/app/publisher/interfaces/browser.py:46
 msgid "The text to be displayed for the menu item"
@@ -2330,8 +2317,7 @@ msgid "Database Adapter"
 msgstr "Datenbankadapter"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
-msgid ""
-"Database Adapters are used to connect to external       relational databases."
+msgid "Database Adapters are used to connect to external       relational databases."
 msgstr ""
 "Datenbankadapter werde benutzt, um Verbindungen zu externen relationalen "
 "Datenbanken herzustellen."
@@ -2379,8 +2365,7 @@ msgstr "Datenbankadapter - Testverbindung"
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:13
 msgid "Here you can enter an SQL statement, so you can test the connection."
-msgstr ""
-"Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
+msgstr "Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:18
 msgid "Query"
@@ -3100,8 +3085,7 @@ msgid "Login Failed!"
 msgstr "Login fehlgeschlagen!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
-msgid ""
-"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 "Sie haben den Loginprozess abgebrochen. <a href=\"\"> Bitte hier klicken um "
 "zurückzukehren. </a>"
@@ -3293,8 +3277,7 @@ msgstr "Der Rolle zugewiesene Berechtigungen ${perm_title} (id: ${perm_id})"
 
 #: src/zope/app/securitypolicy/browser/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
-msgstr ""
-"Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
+msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
 
 #: src/zope/app/securitypolicy/browser/principal_permission_edit.pt:12
 msgid "Permission Settings"
@@ -3416,8 +3399,7 @@ msgid "Purge Interval"
 msgstr "Abfrageintervall"
 
 #: src/zope/app/session/interfaces.py:110
-msgid ""
-"How often stale data is purged in seconds. Higer values improve performance."
+msgid "How often stale data is purged in seconds. Higer values improve performance."
 msgstr ""
 "Wie oft verfallene Daten gelöscht werden, in Sekunden. Höhere Werte "
 "verbessern die Geschwindigkeit."
@@ -4077,8 +4059,7 @@ msgid "Utility registrations for interface ${interface}"
 msgstr "Werkzeugregistrierung für Interface ${interface}"
 
 #: src/zope/app/utility/browser/configureutility.pt:9
-msgid ""
-"Utility registrations for interface ${interface} with name ${utility_name}"
+msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 "Werkzeugregistrierung für Interface ${interface} mit dem Namen "
 "${utility_name}"
@@ -4467,8 +4448,7 @@ msgid "Workflow Process Definitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen"
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:5
-msgid ""
-"Process Definitions are used to define the way a workflow       will behave."
+msgid "Process Definitions are used to define the way a workflow       will behave."
 msgstr ""
 "Prozessdefinitionen werden dazu benutzt, das Verhalten von Arbeitsabläufen "
 "zu definieren."
@@ -4745,63 +4725,59 @@ msgstr "${lines} Zeilen"
 #: src/zope/exceptions/unauthorized.py:69
 #: src/zope/exceptions/unauthorized.py:72
 msgid "You are not allowed to access ${name} in this context"
-msgstr ""
+msgstr "Es ist Ihnen nicht gestattet auf ${name} in diesem Kontext zuzugreifen."
 
 #: src/zope/exceptions/unauthorized.py:74
-#, fuzzy
 msgid "You are not authorized"
-msgstr "Unberechtigt"
+msgstr "Sie sind nicht bevollmächtigt"
 
 #: src/zope/exceptions/unauthorized.py:84
 msgid "a particular ${object}"
-msgstr ""
+msgstr "ein bestimmtes ${object}"
 
 #: src/zope/schema/_bootstrapinterfaces.py:43
-#, fuzzy
 msgid "Required input is missing."
-msgstr "Erforderliches Argument 'name' fehlt"
+msgstr "Erforderliche Eingabe fehlt."
 
 #: src/zope/schema/_bootstrapinterfaces.py:46
 msgid "Object is of wrong type."
-msgstr ""
+msgstr "Objekttyp ist falsch."
 
 #: src/zope/schema/_bootstrapinterfaces.py:49
 msgid "Value is too big"
-msgstr ""
+msgstr "Wert ist zu groß."
 
 #: src/zope/schema/_bootstrapinterfaces.py:52
 msgid "Value is too small"
-msgstr ""
+msgstr "Wert ist zu klein."
 
 #: src/zope/schema/_bootstrapinterfaces.py:55
 msgid "Value is too long"
-msgstr ""
+msgstr "Wert ist zu lang."
 
 #: src/zope/schema/_bootstrapinterfaces.py:58
 msgid "Value is too short"
-msgstr ""
+msgstr "Wert ist zu kurz."
 
 #: src/zope/schema/_bootstrapinterfaces.py:61
 msgid "Invalid value"
-msgstr ""
+msgstr "Ungültiger Wert"
 
 #: src/zope/schema/_bootstrapinterfaces.py:64
-#, fuzzy
 msgid "Constraint not satisfied"
-msgstr "Inhalt wurde zuletzt geändert am"
+msgstr "Beschränkung ist nicht yufriedengestellt"
 
 #: src/zope/schema/_bootstrapinterfaces.py:67
 msgid "Not a container"
-msgstr ""
+msgstr "Kein Behälter"
 
 #: src/zope/schema/_bootstrapinterfaces.py:70
 msgid "Not an iterator"
-msgstr ""
+msgstr "Kein Iterator"
 
 #: src/zope/schema/interfaces.py:103
-#, fuzzy
 msgid "A description of the field"
-msgstr "Eine detailierte Beschreibung des Prinzipals."
+msgstr "Eine Beschreibung des Feldes"
 
 #: src/zope/schema/interfaces.py:109
 #: src/zope/app/schema/browser/schema_edit.pt:39
@@ -4810,45 +4786,43 @@ msgstr "Notwendig"
 
 #: src/zope/schema/interfaces.py:111
 msgid "Tells whether a field requires its value to exist."
-msgstr ""
+msgstr "Sagt, ob ein Feld einen Wert benötigt."
 
 #: src/zope/schema/interfaces.py:115
-#, fuzzy
 msgid "Read Only"
 msgstr "Nur lesbar"
 
 #: src/zope/schema/interfaces.py:116
 msgid "If true, the field's value cannot be changed."
-msgstr ""
+msgstr "Wenn wahr kann der Wert dieses Feldes nicht geändert werden."
 
 #: src/zope/schema/interfaces.py:121 src/zope/schema/interfaces.py:272
 #: src/zope/schema/interfaces.py:327
-#, fuzzy
 msgid "Default Value"
-msgstr "Vorgegebene Sprache"
+msgstr "Vorgegebener Wert"
 
 #: src/zope/schema/interfaces.py:122 src/zope/schema/interfaces.py:273
 #: src/zope/schema/interfaces.py:328
 msgid ""
 "The field default value may be None or a legal\n"
 "                        field value"
-msgstr ""
+msgstr "Der \"default\" Wert des Feldes kann None oder ein legaler Feldwert sein"
 
 #: src/zope/schema/interfaces.py:127
-#, fuzzy
 msgid "Missing Value"
-msgstr "Fehlt"
+msgstr "Fehlender Wert"
 
 #: src/zope/schema/interfaces.py:128
 msgid ""
 "If input for this Field is missing, and that's ok,\n"
 "                          then this is the value to use"
 msgstr ""
+"Wenn ein Eingabewert für dieses Feld fehlt, und wenn dieses okay ist, dann "
+"nutze diesen Wert stattdessen"
 
 #: src/zope/schema/interfaces.py:133
-#, fuzzy
 msgid "Field Order"
-msgstr "Feldindex"
+msgstr "Feldreihenfolge"
 
 #: src/zope/schema/interfaces.py:134
 msgid ""
@@ -4860,19 +4834,21 @@ msgid ""
 "        (Fields in separate threads could have the same order.)\n"
 "        "
 msgstr ""
+"Das Ordnungsattribut (order) kann dazu benutzt werden die Reihenfolge der Felder wie sie im Schema definiert wurden zu bestimmen. Wenn ein Feld nach einem anderen (im gleichen Thread) erstellt wurde, dann ist seine Ordnungsnummer größer.\n"
+"\n"
+"(Felder in unterschiedlichen Threads könnten die gleiche Ordnungsnummer haben.)"
 
 #: src/zope/schema/interfaces.py:215 src/zope/schema/interfaces.py:315
-#, fuzzy
 msgid "Start of the range"
-msgstr "Zurück zur Hauptseite."
+msgstr "Anfang der Auswahl"
 
 #: src/zope/schema/interfaces.py:221 src/zope/schema/interfaces.py:321
 msgid "End of the range (excluding the value itself)"
-msgstr ""
+msgstr "Ende der Auswahl (ausschließlich dem Wert selbst)"
 
 #: src/zope/schema/interfaces.py:231
 msgid "Minimum length"
-msgstr ""
+msgstr "Minimale Länge"
 
 #: src/zope/schema/interfaces.py:232
 msgid ""
@@ -4881,12 +4857,11 @@ msgid ""
 "        another sequence type). If min_length is None, there is\n"
 "        no minimum.\n"
 "        "
-msgstr ""
+msgstr "Der Wert nach der Leerraumbearbeitung kann nicht weniger als min_length Zeichen (wenn es eine Zeichenkette ist) oder Objekte (für all anderen Folgetypen) haben. Wenn min_length None ist, dann gibt es kein Minimum."
 
 #: src/zope/schema/interfaces.py:243
-#, fuzzy
 msgid "Maximum length"
-msgstr "Maximale Anzahl der gecachten Einträge"
+msgstr "Maximale Länge"
 
 #: src/zope/schema/interfaces.py:244
 msgid ""
@@ -4894,12 +4869,11 @@ msgid ""
 "        or equal than max_length characters (if a string type) or \n"
 "        elements (if another sequence type). If max_length is\n"
 "        None, there is no maximum."
-msgstr ""
+msgstr "Der Wert nach der Leerraumbearbeitung kann nicht mehr als max_length Zeichen (wenn es eine Zeichenkette ist) oder Objekte (für all anderen Folgetypen) haben. Wenn max_length None ist, dann gibt es kein Maximum."
 
 #: src/zope/schema/interfaces.py:257
-#, fuzzy
 msgid "Allowed Values"
-msgstr "Zugelassene Berechtigungen"
+msgstr "Zugelassene Werte"
 
 #: src/zope/schema/interfaces.py:258
 msgid ""
@@ -4907,74 +4881,75 @@ msgid ""
 "        If the list is empty, then there are no further\n"
 "        restictions."
 msgstr ""
+"Nur hier spezifizierte Werte können Werte dieses Feldes sein.\n"
+"Wenn diese Liste lehr ist, dann gibt es keine weiteren Beschränkungen."
 
 #: src/zope/schema/interfaces.py:38
 msgid "Wrong contained type"
-msgstr ""
+msgstr "Falscher enthaltener Wert"
 
 #: src/zope/schema/interfaces.py:397
 msgid ""
 "Field value items must conform to the given type, expressed\n"
 "           via a Field.\n"
 "        "
-msgstr ""
+msgstr "Feldwerte müssen sich auf den Typen in diesem Feld anpassen."
 
 #: src/zope/schema/interfaces.py:41
 msgid "Schema not fully implemented"
-msgstr ""
+msgstr "Schema nicht vollständig implementiert"
 
 #: src/zope/schema/interfaces.py:411
 msgid "The Interface that defines the Fields comprising the Object."
-msgstr ""
+msgstr "Das Interface welches die Felder des Objektes bestimmt."
 
 #: src/zope/schema/interfaces.py:421
 msgid ""
 "Field keys must conform to the given type, expressed\n"
 "           via a Field.\n"
 "        "
-msgstr ""
+msgstr "Feldwerte müssen sich auf den Typen in diesem Feld anpassen."
 
 #: src/zope/schema/interfaces.py:426
 msgid ""
 "Field values must conform to the given type, expressed\n"
 "           via a Field.\n"
 "        "
-msgstr ""
+msgstr "Feldwerte müssen sich auf den Typen in diesem Feld anpassen."
 
 #: src/zope/schema/interfaces.py:44
 msgid "Schema not provided"
-msgstr ""
+msgstr "Schema nicht angegeben"
 
 #: src/zope/schema/interfaces.py:47
 msgid "The specified URI is not valid."
-msgstr ""
+msgstr "Die angegebene URI ist nicht gültig."
 
 #: src/zope/schema/interfaces.py:50
 msgid "The specified id is not valid."
-msgstr ""
+msgstr "Die angegebene Id ist nicht gültig."
 
 #: src/zope/schema/interfaces.py:53
 msgid "The specified dotted name is not valid."
-msgstr ""
+msgstr "Der angegebene punktierte Namen ist nicht gültig."
 
 #: src/zope/schema/interfaces.py:96
 msgid "A short summary or label"
-msgstr ""
+msgstr "Eine kurze Zusammenfassung oder Etikett"
 
 #: src/zope/schema/tests/test_objectfield.py:38
 msgid "Foo"
-msgstr ""
+msgstr "Foo"
 
 #: src/zope/schema/tests/test_objectfield.py:39
-#, fuzzy
 msgid "Foo description"
-msgstr "Beschreibung"
+msgstr "Foo Beschreibung"
 
 #: src/zope/schema/tests/test_objectfield.py:44
 msgid "Bar"
-msgstr ""
+msgstr "Bar"
 
 #: src/zope/schema/tests/test_objectfield.py:45
-#, fuzzy
 msgid "Bar description"
-msgstr "Beschreibung"
+msgstr "Bar Beschreibung"
+
