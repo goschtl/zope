@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.5 2003/05/29 18:04:26 gvanrossum Exp $
+$Id: committer.py,v 1.6 2003/05/29 19:51:34 gvanrossum Exp $
 """
 
 import os
@@ -88,8 +88,12 @@ class Committer(object):
         if (os.sep in name or
             (os.altsep and os.altsep in name) or
             name == os.curdir or
-            name == os.pardir):
-            # This name can't be mapped safely to the filesystem :-(
+            name == os.pardir or
+            name == "." or
+            name == ".." or
+            "/" in name):
+            # This name can't be mapped safely to the filesystem
+            # or it is a magic value for traverseName (".", "..", "/")
             raise SynchronizationError("invalid separator in name %r" % name)
 
         if not name:
