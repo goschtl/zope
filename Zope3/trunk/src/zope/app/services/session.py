@@ -49,6 +49,7 @@ class CookieSessionService(Persistent):
         self.dataManagers = PersistentDict()
         self.namespace = "zope3-cs-%x" % (int(time.time()) - 1000000000)
         self.secret = "%.20f" % random.random()
+        self.cookieLifeSeconds = 1800
 
     def generateUniqueId(self):
         """Generate a new, random, unique id."""
@@ -90,10 +91,14 @@ class CookieSessionService(Persistent):
         #     have to be altered to take virtual hosting into account.
         #     Seeing as this service instance has a unique namespace for its
         #     cookie, using ApplicationURL shouldn't be a problem.
+        if self.cookieLifeSeconds:
+            expires = build_http_date(time.time() + self.cookieLifeSeconds)
+        else:
+            expires = None
         request.response.setCookie(
                 self.namespace,
                 id,
-                expires=build_http_date(time.time() + 1800),
+                expires=expires,
                 path=request.getApplicationURL(path_only=True)
                 )
 
@@ -123,7 +128,6 @@ class CookieSessionService(Persistent):
 
     def unregisterDataManager(self, name):
         del self.dataManagers[name]
-
 
 
 def getSessionDataObject(context, request, name):
