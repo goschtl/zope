@@ -14,19 +14,10 @@
 """ Unit tests for the 'exceptions' view.
 
 Revision information:
-$Id: test_exceptions.py,v 1.1 2003/03/12 14:24:26 tseaver Exp $
+$Id: test_exceptions.py,v 1.2 2003/03/12 14:35:50 tseaver Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
-
-from zope.app.services.tests.eventsetup import EventSetup
-from zope.pagetemplate.tests.util import check_xml
-from zope.app.browser.skins.rotterdam.tests import util
-from zope.app.browser.skins.rotterdam.xmlobject \
-    import ReadContainerXmlObjectView
-from zope.app.interfaces.container import IReadContainer
-from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
-from zope.publisher.browser import TestRequest
 
 class TestExceptions(TestCase):
     
