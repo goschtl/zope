@@ -34,6 +34,12 @@ class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
     def makeTestData(self):
         return DefaultTestData()
 
+    def getUnknownKey(self):
+        return '10'
+
+    def getBadKeyTypes(self):
+        return [None, ['foo'], 1, '\xf3abc']
+
     def test_cloneWithoutChildren(self):
         folder = self.makeTestObject()
         self.failUnless(ICloneWithoutChildren.isImplementedBy(folder))

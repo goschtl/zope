@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.17 2003/06/05 12:03:18 stevea Exp $
+$Id: test_auth.py,v 1.18 2003/07/28 11:45:31 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -133,6 +133,12 @@ class TestAuthAsIContainer(BaseTestIContainer, TestCase):
         return [ (k, User(k, k+'title', k+'desc', k, k+'pass'))
                     for k in 'abcdefghijkl' ]
 
+    def getUnknownKey(self):
+        return 'm'
+
+    def getBadKeyTypes(self):
+        return [None, ['foo'], 1, '\xf3abc']
+    
 
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
