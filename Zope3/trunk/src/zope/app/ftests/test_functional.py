@@ -18,6 +18,7 @@ $Id: functional.py 26214 2004-07-08 19:00:07Z srichter $
 __docformat__ = 'restructuredtext'
 
 import unittest
+import transaction
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
 from zope.app.tests.functional import FunctionalDocFileSuite
 
@@ -62,7 +63,7 @@ class CookieFunctionalTest(BrowserTestCase):
             </tal:tag>'''
 
         root['setcookie'] = page
-
+        transaction.commit()
 
     def tearDown(self):
         root = self.getRootFolder()
