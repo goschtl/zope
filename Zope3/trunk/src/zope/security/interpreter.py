@@ -11,22 +11,22 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
+"""Restricted interpreter.
+
+XXX This code is not used!  Before using it, a serious security review
+should be undertaken.
+
+$Id: interpreter.py,v 1.2 2003/03/10 16:48:48 gvanrossum Exp $
 """
 
-Revision information:
-$Id: interpreter.py,v 1.1 2002/12/31 03:35:13 jim Exp $
-"""
-
-import sys
-
-from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
 
 class RestrictedInterpreter:
 
     def __init__(self):
-        self.globals = {'__builtins__' : RestrictedBuiltins}
+        self.globals = {}
 
     def ri_exec(self, code):
-        # what is the type of code?
+        # XXX What is the type of code?
+        self.globals['__builtins__'] = RestrictedBuiltins
         exec code in self.globals
