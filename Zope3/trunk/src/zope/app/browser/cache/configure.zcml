@@ -33,8 +33,8 @@
       >
 
     <browser:page name="Caching.html"
-                  attribute="form" 
-                  menu="zmi_views" title="Caching"
+                  attribute="form"  
+                  menu="zmi_views" title="Caching" 
                   />
     <browser:page name="ChangeCaching.html"
                   attribute="action" />

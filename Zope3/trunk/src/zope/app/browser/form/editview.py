@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.17 2003/04/09 20:51:29 philikon Exp $
+$Id: editview.py,v 1.18 2003/04/11 22:15:45 gotcha Exp $
 """
 
 from datetime import datetime
@@ -38,7 +38,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 
 from zope.app.publisher.browser.globalbrowsermenuservice \
-     import menuItemDirective
+     import menuItemDirective, globalBrowserMenuService
 
 
 class EditView(BrowserView):
@@ -161,7 +161,8 @@ class EditView(BrowserView):
 
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
-                    fulledit_path=None, fulledit_label=None):
+                    fulledit_path=None, fulledit_label=None, menu=u'',
+                    usage=u''):
     # XXX What about the __implements__ of the bases?
     class_  = SimpleViewClass(
         template,
@@ -178,6 +179,10 @@ def EditViewFactory(name, schema, label, permission, layer,
     class_.fulledit_label = fulledit_label
 
     class_.generated_form = ViewPageTemplateFile(default_template)
+
+    class_.usage = usage or (
+        menu and globalBrowserMenuService.getMenuUsage(menu)
+        )
 
     defineChecker(class_,
                   NamesChecker(
@@ -237,7 +242,7 @@ def edit(_context, name, schema, permission, label='',
          layer = "default",
          class_ = None, for_ = None,
          template = None, omit=None, fields=None,
-         menu=None, title='Edit'):
+         menu=None, title='Edit', usage=u''):
 
 
     if menu:
@@ -258,7 +263,7 @@ def edit(_context, name, schema, permission, label='',
         callable = EditViewFactory,
         args = (name, schema, label, permission, layer, template, 'edit.pt',
                 bases,
-                for_, fields),
+                for_, fields, menu, usage),
         )
         )
 

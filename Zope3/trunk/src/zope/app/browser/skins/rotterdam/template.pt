@@ -48,7 +48,8 @@
 	  <tal:block replace="request/user/getTitle">
             User
           </tal:block>
-        </metal:block>  
+        </metal:block> 
+        <span tal:content="string:Usage $usage" />  
       </div>
       <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>

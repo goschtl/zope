@@ -16,6 +16,7 @@
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Unauthorized
 from zope.security.management import system_user
+import zope.security.checker
 
 class ParanoidSecurityPolicy:
     """
@@ -24,6 +25,8 @@ class ParanoidSecurityPolicy:
     __implements__ = ISecurityPolicy
 
     def checkPermission(self, permission, object, context):
+        if permission is zope.security.checker.CheckerPublic:
+            return 1
         if (context.user is system_user   # no user
             and not context.stack  # no untrusted code
             ):

@@ -14,7 +14,7 @@
 """
 See ViewPageTemplateFile
 
-$Id: viewpagetemplatefile.py,v 1.4 2003/04/08 12:21:37 stevea Exp $
+$Id: viewpagetemplatefile.py,v 1.5 2003/04/11 22:15:46 gotcha Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -46,7 +46,7 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile, ContextDescriptor):
         # parameter template_usage needed such as the publisher machinery
         # can find it and extract it from the request
         if not template_usage:
-            template_usage = self.usage
+            template_usage = self.usage or getattr(instance, 'usage', u'')
         keywords["template_usage"] = template_usage
         namespace = self.pt_getContext(
             request=instance.request,

@@ -81,7 +81,8 @@
     permission="zope.ManageContent"
     layer="rotterdam"
     class="zope.app.browser.container.contents.Contents"
-    template="folder_contents.pt" 
+    template="folder_contents.pt"
+    usage="objectview"
     />
 
 <browser:page

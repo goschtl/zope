@@ -1,33 +1,34 @@
 <zopeConfigure xmlns="http://namespaces.zope.org/browser">
 
-    <menu 
-       id="zmi_views" 
-       title="Menu for displaying alternate representations of an object"
-       />
+    <menu id="zmi_views" 
+          title="Menu for displaying alternate representations of an object"
+          usage="objectview"
+          />
 
-    <menu
-       id="zmi_actions" 
-       title="Menu for displaying actions to be performed"
-       />
+    <menu id="zmi_actions" 
+          title="Menu for displaying actions to be performed"
+          usage="activitydialog"
+          />
 
-   <menu
-        id="add_content"
-        title="Menu of objects to be added to content folders"
-        />
+   <menu id="add_content"
+         title="Menu of objects to be added to content folders"
+         usage="addingdialog"
+         />
 
-   <menu
-        id="add_component"
-        title="Menu of objects to be added to service manager packages"
-        />
+   <menu id="add_component"
+         title="Menu of objects to be added to service manager packages"
+         usage="addingdialog"
+         />
 
-   <menu
-      id="add_service"
-      title="Menu of services to be added"
-      />
+   <menu id="add_service"
+         title="Menu of services to be added"
+         usage="addingdialog"
+         />
 
    <menu id="add_configuration"
-        title="Menu of addable configuration objects"
-        />
+         title="Menu of addable configuration objects"
+         usage="addingdialog"
+         />
 
   <!-- Management view selector -->
   <!-- Get first accessable item from zmi_views menu -->

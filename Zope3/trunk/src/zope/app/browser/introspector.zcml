@@ -1,22 +1,25 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 <!-- Introspection -->
 
-  <!-- XXX wrong perm  -->
-  <page
+  <!--page
       name="classBrowser.html"
       for = "zope.interface.Interface"
-      permission="zope.View" 
+      permission="zope.ManageServices" 
       template="introspector.pt"
       class="zope.app.browser.introspector.IntrospectorView"
-      />
-
-  <menuItem 
-      for = "zope.interface.Interface" 
       title="Introspector" 
       menu="zmi_views" 
-      action="classBrowser.html"
+      /-->
+  <pages
+      for = "zope.interface.Interface"
+      permission="zope.ManageServices" 
+      class="zope.app.browser.introspector.IntrospectorView" >
+      <page name="classBrowser.html"
+            title="Introspector" 
+            template="introspector.pt"
+            menu="zmi_views" 
       />
-
+    </pages>
 
   <page
       name="index.html"

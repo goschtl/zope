@@ -31,18 +31,13 @@
       action="@@AllRolePermissions.html"
       /-->
 
-  <browser:menuItem
-      for="zope.app.interfaces.annotation.IAnnotatable"
-      menu="zmi_actions"
-      title="Grant"
-      action="@@grant.html"
-      />
-
   <browser:page
     for="zope.app.interfaces.annotation.IAnnotatable"
     name="grant.html"
     permission="zope.Security"
     template="grant.pt" 
+    menu="zmi_actions"
+    title="Grant"
     />
 
 <!-- Principal Roles -->

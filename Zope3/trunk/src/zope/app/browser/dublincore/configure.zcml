@@ -9,17 +9,12 @@
       >
 
     <browser:page name="EditMetaData.html"
+                  menu="zmi_views" title="Metadata"
                   template="edit.pt" />
 
     <browser:page name="MetaDataBox"
                   template="box.pt" />
 
     </browser:pages>
-
-
-    <browser:menuItems menu="zmi_views"
-        for="zope.app.interfaces.annotation.IAnnotatable">
-      <browser:menuItem title="Metadata" action="@@EditMetaData.html" />
-      </browser:menuItems>
 
 </zopeConfigure>
