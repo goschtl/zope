@@ -2,7 +2,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.2 2003/04/14 13:24:10 mgedmin Exp $
+$Id: functional.py,v 1.3 2003/04/14 15:08:59 mgedmin Exp $
 """
 
 import unittest
@@ -37,11 +37,11 @@ class ResponseWrapper:
     def getBody(self):
         """Returns the response body"""
         output = self._outstream.getvalue()
-        idx = output.find('\n\n')
+        idx = output.find('\r\n\r\n')
         if idx == -1:
             return None
         else:
-            return output[idx+2:]
+            return output[idx+4:]
 
     def getPath(self):
         """Returns the path of the request"""
