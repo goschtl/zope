@@ -37,7 +37,10 @@ class IPASPrincipalCreated(zope.interface.Interface):
         )
 
 class IAuthenticatedPrincipalCreated(IPASPrincipalCreated):
-    """Event indicating that a principal was created by authenticating a reqest
+    """An authenticated principal object has been created
+
+    This event is generated when a principal has been created by
+    authenticating a request.
     """
 
     request = zope.interface.Attribute(
@@ -71,7 +74,7 @@ class IPlugin(zope.interface.Interface):
 
 class IPrincipalIdAwarePlugin(IPlugin):
     """Principal-Id aware plugin
-    
+
     A requirements of plugins that deal with principal ids is that
     principal ids must be unique within a PAS.  A PAS manager may want
     to use plugins to support multiple principal sources.  If the ids
@@ -90,7 +93,7 @@ class IExtractionPlugin(IPlugin):
         """Try to extract credentials from a request
 
         A return value of None indicates that no credentials could be
-        found. Any other return value is treated as valid credentials.        
+        found. Any other return value is treated as valid credentials.
         """
 
 class IAuthenticationPlugin(IPrincipalIdAwarePlugin):
@@ -137,7 +140,7 @@ class IPrincipalFactoryPlugin(IPlugin):
         subscribers.  The contents of the info dictionary are defined
         by the authentication plugin used to authenticate the
         principal id.
-        
+
         If a principal is created, an IAuthenticatedPrincipalCreated
         event must be published and the principal is returned.  If no
         principal is created, return None.
@@ -171,7 +174,6 @@ class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
     XXX Need to say more here.  We need to work out what to say. :)
     XXX In the mean time, see IQuerySchemaSearch.  Initially, search
     XXX plugins should provide IQuerySchemaSearch.
-    
     """
 
     def get(principal_id):
@@ -180,7 +182,6 @@ class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
         If the principal id is valid, then return a dictionary
         containing supplemental information, if any.  Otherwise,
         return None.
-
         """
 
 class IQuerySchemaSearch(IPrincipalSearchPlugin):
@@ -193,19 +194,16 @@ class IQuerySchemaSearch(IPrincipalSearchPlugin):
     """)
 
     def search(query, start=None, batch_size=None):
-        """Search for principals 
+        """Search for principals
 
         The query argument is a mapping object with items defined by
-        the plugin's.  An iterable of principal ids should be returned.
+        the plugins.  An iterable of principal ids should be returned.
 
-        If the start argument is privided, then it should be an
+        If the start argument is provided, then it should be an
         integer and the given number of initial items should be
         skipped.
 
         If the batch_size argument is provided, then it should be an
         integer and no more than the given number of items should be
         returned.
-        
         """
-
-    
