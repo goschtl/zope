@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatuswidget.py,v 1.1 2003/03/21 21:09:34 jim Exp $
+$Id: test_configurationstatuswidget.py,v 1.2 2003/04/14 18:03:38 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -58,7 +58,7 @@ class Test(TestCase):
             '&nbsp;Active</label>'
             )
 
-        widget.setData(u"Active")
+        widget.setData("Active")
         text = ' '.join(widget().split())
         self.assertEqual(
             text,

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.10 2003/03/24 11:09:39 jim Exp $
+$Id: configuration.py,v 1.11 2003/04/14 18:03:18 gvanrossum Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -24,9 +24,9 @@ from zope.interface import Interface, Attribute
 from zope.schema import Text, TextLine
 from zope.schema.interfaces import ITextLine
 
-Unregistered = u'Unregistered'
-Registered = u'Registered'
-Active = u'Active'
+Unregistered = 'Unregistered'
+Registered = 'Registered'
+Active = 'Active'
 
 class IConfigurationStatus(ITextLine):
     """The registration status of a configuration
