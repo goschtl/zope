@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.12 2003/05/20 19:09:54 gvanrossum Exp $
+$Id: fssync.py,v 1.13 2003/05/27 19:46:51 gvanrossum Exp $
 """
 
 import os
@@ -23,13 +23,21 @@ import tempfile
 
 from transaction import get_transaction
 
-from zope.fssync.compare import checkUptodate
-
 from zope.publisher.browser import BrowserView
-from zope.app.fssync.syncer import toFS, fromFS
 from zope.app.traversing import objectName, getParent, getRoot
 from zope.app.interfaces.exceptions import UserError
 from zope.fssync.snarf import Snarfer, Unsnarfer
+from zope.app.fssync.syncer import toFS
+from zope.app.fssync.committer import Committer
+from zope.fssync.metadata import Metadata
+
+def snarf_dir(response, dirname):
+    """Helper to snarf a directory to the response."""
+    response.setStatus(200)
+    response.setHeader("Content-Type", "application/x-snarf")
+    snf = Snarfer(response)
+    snf.addtree(dirname)
+    return ""
 
 class SnarfFile(BrowserView):
 
@@ -40,43 +48,29 @@ class SnarfFile(BrowserView):
 
     def show(self):
         """Return the snarfed response."""
-        response = self.request.response
-        response.setStatus(200)
-        response.setHeader("Content-Type", "application/x-snarf")
         dirname = tempfile.mktemp()
         try:
             os.mkdir(dirname)
             toFS(self.context, objectName(self.context) or "root", dirname)
-            snf = Snarfer(response)
-            snf.addtree(dirname)
+            return snarf_dir(self.request.response, dirname)
         finally:
             if os.path.isdir(dirname):
                 shutil.rmtree(dirname)
-        return ""
 
-# And here is the inverse operation, fromFS.snarf.
+class SnarfCommit(BrowserView):
 
-class SnarfCommit(SnarfFile):
+    """View for committing changes.
 
-    """View for committing changes."""
+    This should be a POST request whose data is a snarf archive;
+    it returns an updated snarf archive, or a text document with errors.
+    """
 
     def commit(self):
         if not self.request.getHeader("Content-Type") == "application/x-snarf":
             self.request.response.setHeader("Content-Type", "text/plain")
             return "ERROR: Content-Type is not application/x-snarf\n"
-        istr = self.request.bodyFile
-        istr.seek(0)
-        errors = self.do_commit(istr)
-        if not errors:
-            return self.show() # Return the snarfed tree!
-        else:
-            self.request.response.setHeader("Content-Type", "text/plain")
-            errors.insert(0, "Up-to-date check failed:")
-            errors.append("")
-            return "\n".join(errors)
-
-    def do_commit(self, istr):
-        # 000) Set transaction note
+        txn = get_transaction() # Save for later
+        # 00) Set transaction note
         note = self.request.get("note")
         if not note:
             # XXX Hack because cgi doesn't parse the query string
@@ -86,39 +80,42 @@ class SnarfCommit(SnarfFile):
                 import urllib
                 note = urllib.unquote(note)
         if note:
-            get_transaction().note(note)
+            txn.note(note)
         # 0) Allocate temporary names
-        topdir = tempfile.mktemp()
-        working = os.path.join(topdir, "working")
-        current = os.path.join(topdir, "current")
+        working = tempfile.mktemp()
         try:
-            # 1) Create the top directory
-            os.mkdir(topdir)
-            # 2) Unsnarf into a working directory
+            # 1) Create the working directory
             os.mkdir(working)
+            # 2) Unsnarf into the working directory
+            istr = self.request.bodyFile
+            istr.seek(0)
             uns = Unsnarfer(istr)
             uns.unsnarf(working)
-            # 3) Save the current state of the object to disk
-            os.mkdir(current)
-            toFS(self.context, objectName(self.context) or "root", current)
-            # 4) Check that the working originals are up-to-date
-            errors = checkUptodate(working, current)
-            if errors:
-                # Make the messages nicer by editing out topdir
-                errors = [x.replace(os.path.join(topdir, ""), "")
-                          for x in errors]
-                return errors
-            # 5) Now call fromFS()
+            # 3) Commit; this includes the uptodate check and updates
             name = objectName(self.context)
             container = getParent(self.context)
             if container is None and name == "":
-                # Hack to get loading the root to work; see top of fromFS().
+                # Hack to get loading the root to work
                 container = getRoot(self.context)
-            fromFS(container, name, working)
-            # 6) Return success
-            return []
+            md = Metadata()
+            c = Committer(md)
+            c.synch(container, name, os.path.join(working, name))
+            # 4) Generate response (snarfed archive or error text)
+            errors = c.get_errors()
+            if not errors:
+                md.flush()
+                return snarf_dir(self.request.response, working)
+            else:
+                txn.abort()
+                lines = ["Up-to-date check failed:"]
+                working_sep = os.path.join(working, "") # E.g. foo -> foo/
+                for e in errors:
+                    lines.append(e.replace(working_sep, ""))
+                lines.append("")
+                self.request.response.setHeader("Content-Type", "text/plain")
+                return "\n".join(lines)
         finally:
             try:
-                shutil.rmtree(topdir)
+                shutil.rmtree(working)
             except os.error:
                 pass
