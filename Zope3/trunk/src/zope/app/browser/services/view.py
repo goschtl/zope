@@ -21,7 +21,7 @@
 
   PageConfigurationView -- calls validation on PageConfiguration.
 
-$Id: view.py,v 1.10 2003/04/30 22:06:31 gvanrossum Exp $
+$Id: view.py,v 1.11 2003/05/01 14:40:24 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -102,10 +102,12 @@ class ViewServiceView(BrowserView):
         else:
             forInterface = sm.resolve(forInterfaceName)
         presentationType = sm.resolve(presentationTypeName)
-        return self.context.getRegisteredMatching(forInterface,
-                                                  presentationType,
-                                                  viewName,
-                                                  layerName)
+        infos = self.context.getRegisteredMatching(forInterface,
+                                                   presentationType,
+                                                   viewName,
+                                                   layerName)
+        # We only want exact matches on 'forInterface'
+        return [info for info in infos if info[0] == forInterface]
 
     def _deactivate(self, todo):
         done = []
