@@ -13,6 +13,22 @@ Zope Changes
     support.   Zope 3.0 will provide support for Zope 2 content and
     products, probably using conversion utilities of some sort. 
 
+    - Major changes have been made to the way local components are
+      registered in a first step toward simplifying local (through the
+      web) component registration.
+
+    - The interface framework has been refactored in major ways:
+
+      * Object interfaces are declared differently.
+
+      * Interface introspection and component registry lookup
+        performance has been improved.
+
+      * Interface are now inherited.
+
+    - Added a framework for decorators, which are context wrappers
+      that also ease integration with the Zope application framework.
+
     - Configuration of the application server using a ZConfig-syntax
       configuration file with a simple schema.  This replaces
       zserver.zcml.
