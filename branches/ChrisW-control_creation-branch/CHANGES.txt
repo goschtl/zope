@@ -1,5 +1,9 @@
 New Features
 
+  - Added functionality such that only users who have the
+    view permission on the relevent Type object can create
+    content of that type.
+
   - Added the ability to limit what types of object an
     object of a given Portal Type can be created in. 
 
