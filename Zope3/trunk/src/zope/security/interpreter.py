@@ -16,7 +16,11 @@
 XXX This code is not used!  Before using it, a serious security review
 should be undertaken.
 
-$Id: interpreter.py,v 1.3 2003/08/21 04:02:18 srichter Exp $
+XXX (SR) Yes the code is used for the inline Python support. As far as I can
+tell the security works well, as I had to make all sorts of security
+declarations to make it work. 
+
+$Id: interpreter.py,v 1.4 2004/02/05 22:18:47 srichter Exp $
 """
 
 from zope.security.builtins import RestrictedBuiltins
