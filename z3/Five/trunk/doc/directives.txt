@@ -8,8 +8,8 @@ few directives of its own under the ``five`` namespace.
 
 Directives are listed per namespace, in alphabetic order.
 
-zope http://namespaces.zope.org/zope
-====================================
+zope ``http://namespaces.zope.org/zope``
+========================================
 
 adapter
 -------
@@ -67,8 +67,8 @@ utility
 
 Declare a global utility.
 
-browser http://namespaces.zope.org/browser
-==========================================
+browser ``http://namespaces.zope.org/browser``
+==============================================
 
 page
 ----
@@ -82,8 +82,8 @@ pages
 Declare multiple page views for an interface. Permissions are Zope 2
 permissions.
 
-five http://namespaces.zope.org/five
-====================================
+five ``http://namespaces.zope.org/five``
+========================================
 
 implements
 ----------
