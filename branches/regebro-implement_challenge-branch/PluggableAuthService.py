@@ -239,6 +239,7 @@ class PluggableAuthService( Folder ):
         """ See IUserFolder.
         """
         plugins = self._getOb( 'plugins' )
+        self.setupChallenge(plugins, request.RESPONSE)
         is_top = self._isTop()
 
         user_ids = self._extractUserIds( request
@@ -275,25 +276,7 @@ class PluggableAuthService( Folder ):
                 return user
 
         if not is_top:
-            self.setupChallenge(plugins, request.RESPONSE)
             return None
-#             # Try to validate with user folders higher up.
-#             innerob=self.aq_parent
-#             while hasattr(innerob,"aq_parent"):
-#                 inner = getattr(innerob, 'aq_inner', innerob)
-#                 parent = getattr(inner, 'aq_parent', None)
-#                 if parent is not None:
-#                     innerob = parent
-#                 else:
-#                     if hasattr(innerob, 'im_self'):
-#                         innerob = innerob.im_self
-#                         innerob = getattr(innerob, 'aq_inner', innerob)
-#                 if hasattr(innerob,"__allow_groups__"):
-#                     userfolder=innerob.__allow_groups__
-#                     if hasattr(userfolder,"validate"):
-#                         user=userfolder.validate(request,auth,roles)
-#                         if user is not None:
-#                             return user
                         
         #
         #   No other user folder above us can satisfy, and we have no user;
@@ -309,25 +292,10 @@ class PluggableAuthService( Folder ):
                               ):
             return anonymous
 
-        # No validation in upper user folders: Make a challenge
-            
-#         for challenger_id, challenger in challengers:
-#             try:
-#                 # A successful challenge involves raising a 
-#                 # "Redirect", url exception.
-#                 if challenger.challenge(request, request.RESPONSE):
-#                     break
-#                 
-#             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-#                 LOG('PluggableAuthService', WARNING, 
-#                     'ChallengePlugin %s error' % challenger_id,
-#                     error=sys.exc_info())
-        
         return None
 
 
     def setupChallenge(self, plugins, response):
-        #import pdb;pdb.set_trace()
         challengers = plugins.listPlugins(IChallengePlugin)
         if len(challengers) > 0 and \
            not getattr(response, '_old_unauthorized', None):
@@ -336,7 +304,6 @@ class PluggableAuthService( Folder ):
             response._challenger = self
             
     def challenge(self):
-        #import pdb;pdb.set_trace()
         request = self.REQUEST
         response = request.RESPONSE
         plugins = self._getOb( 'plugins' )
