@@ -208,7 +208,7 @@ Zope3 Security
              for k,v in permissions_map.items():
                  for iv in v:
                      res[iv]=k
-             return Checker.Checker(res.get, setattr_permission_func)
+             return checker.Checker(res.get, setattr_permission_func)
 
          time_service_checker = PermissionMapChecker(
                                         # permission : [methods]
