@@ -36,10 +36,11 @@ Options:
     -m / --module
         Specify the dotted name of the module that is to be inspected.
 
+    -p / --packages
+        List only package names, not individual module names.
+
     -z / --zcml
         Also look through ZCML files for dependencies.
-
-Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
 $Id$
 """
@@ -84,26 +85,37 @@ def usage(code, msg=''):
 
 def makeDottedName(path):
     """Convert a path to a dotted module name, using sys.path."""
-    syspaths = sys.path[1:]
-    syspaths.append(os.getcwd())
+    dirname, basename = os.path.split(path)
+    basename = os.path.splitext(basename)[0]
+    path = os.path.join(dirname, basename)
+    syspaths = sys.path[:]
+    if "" in syspaths:
+        # This is the directory that contains the driver script; there
+        # are no modules there.
+        syspaths.remove("")
     for syspath in syspaths:
         syspath = os.path.join(syspath, '')
         if path.startswith(syspath):
             return path[len(syspath):].replace(os.sep, ".")
 
-    raise ValueError, 'Cannot create dotted name.'
+    raise ValueError, 'Cannot create dotted name for %r' % path
 
 
-def getDependenciesOfPythonFile(path):
-    finder = ImportFinder()
-    finder.find_imports(open(path, 'rU'), path)
+def getDependenciesOfPythonFile(path, packages):
+    finder = ImportFinder(packages)
+    module_name = makeDottedName(path)
+    if '.' in module_name:
+        package = module_name[:module_name.rfind('.')]
+    else:
+        package = None
+    finder.find_imports(open(path, 'rU'), path, package)
     return finder.get_imports()
 
 
-def getDependenciesOfZCMLFile(path):
+def getDependenciesOfZCMLFile(path, packages):
     """Get dependencies from ZCML file."""
-    localModule = stripZopePrefix(os.path.dirname(path))
-    localModule = localModule.replace(os.sep, '.')
+    s = makeDottedName(path)
+    localPackage = s[:s.rfind(".")]
     deps = []
     lineno = 0
     for line in open(path, 'r'):
@@ -115,7 +127,7 @@ def getDependenciesOfZCMLFile(path):
 
             for name in match:
                 if name.startswith('.'):
-                    name = localModule + name
+                    name = localPackage + name
                 try:
                     __import__(name)
                 except:
@@ -139,9 +151,10 @@ def filterStandardModules(deps):
     filteredDeps = []
     for dep in deps:
         try:
-            module = __import__(dep.name)
+            __import__(dep.name)
         except ImportError:
             continue
+        module = sys.modules[dep.name]
         # built-ins (like sys) do not have a file associated
         if not hasattr(module, '__file__'):
             continue
@@ -152,62 +165,18 @@ def filterStandardModules(deps):
     return filteredDeps
 
 
-def filterLocalModules(deps, path):
-    """Filter out local module imports."""
-    # File-based modules cannot have relative imports
-    if os.path.isfile(path):
-        return deps
-
-    # Filter relative imports
-    filteredDeps = []
-    for dep in deps:
-        module = dep.name.split('.')[0]
-        modulePath = os.path.join(path, module)
-        if not (os.path.exists(modulePath)
-                or os.path.exists(modulePath+'.py')):
-            filteredDeps.append(dep)
-    deps = filteredDeps
-
-    # Filter absolute imports
-    dottedName = makeDottedName(path)
-    filteredDeps = []
-    for dep in deps:
-        if not dep.name.startswith(dottedName):
-            filteredDeps.append(dep)
-
-    return filteredDeps
-
-
-def filterMostGeneral(deps):
-    """Return only the parent module and no children.
-
-    for example (foo, foo.bar) --> (foo,)
-    """
-    newdeps = []
-    for dep in deps:
-        subpackage = False
-        for parentdep in deps:
-            if parentdep is not dep and dep.isSubPackageOf(parentdep):
-                subpackage = True
-                break
-        if not subpackage:
-            newdeps.append(dep)
-    return newdeps
-
-
 def makeUnique(deps):
     """Remove entries that appear multiple times"""
     uniqueDeps = {}
     for dep in deps:
-        if not dep.name in uniqueDeps.keys():
-            uniqueDeps[dep.name] = dep
-        else:
+        if dep.name in uniqueDeps:
             uniqueDeps[dep.name].addOccurence(*dep.occurences[0])
-
+        else:
+            uniqueDeps[dep.name] = dep
     return uniqueDeps.values()
 
 
-def getDependencies(path, zcml=False):
+def getDependencies(path, zcml=False, packages=False):
     """Get all dependencies of a package or module.
 
     If the path is a package, all Python source files are searched inside it.
@@ -217,23 +186,23 @@ def getDependencies(path, zcml=False):
         for file in os.listdir(path):
             filePath = os.path.join(path, file)
             if pythonfile.match(file):
-                deps += getDependenciesOfPythonFile(filePath)
+                deps += getDependenciesOfPythonFile(filePath, packages)
             elif zcml and zcmlfile.match(file):
-                deps += getDependenciesOfZCMLFile(filePath)
+                deps += getDependenciesOfZCMLFile(filePath, packages)
             elif os.path.isdir(filePath):
                 filenames = os.listdir(filePath)
                 if (  'PUBLICATION.cfg' not in filenames
                       and 'SETUP.cfg' not in filenames
                       and 'DEPENDENCIES.cfg' not in filenames
                       and '__init__.py' in filenames):
-                    deps += getDependencies(filePath)
+                    deps += getDependencies(filePath, zcml, packages)
 
     elif os.path.isfile(path):
         ext = os.path.splitext(path)[1]
         if ext == ".py":
-            deps = getDependenciesOfPythonFile(path)
+            deps = getDependenciesOfPythonFile(path, packages)
         elif ext == ".zcml":
-            deps = getDependenciesOfZCMLFile(path)
+            deps = getDependenciesOfZCMLFile(path, packages)
         else:
             print >>sys.stderr, ("dependencies can only be"
                                  " extracted from Python and ZCML files")
@@ -246,20 +215,20 @@ def getDependencies(path, zcml=False):
     return deps
 
 
-def getCleanedDependencies(path, zcml=False):
+def getCleanedDependencies(path, zcml=False, packages=False):
     """Return clean dependency list."""
-    deps = getDependencies(path, zcml)
+    deps = getDependencies(path, zcml, packages)
     deps = filterStandardModules(deps)
-    deps = filterLocalModules(deps, path)
-    deps = filterMostGeneral(deps)
     deps = makeUnique(deps)
     deps.sort()
     return deps
 
 
-def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
+def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None,
+                              packages=False):
     """Return a list of all cleaned dependencies in a path."""
     # zope and zope/app are too general to be considered.
+    # XXX why?  dependencies are dependencies.
     if path.endswith('src/zope/') or path.endswith('src/zope/app/'):
         return deps
 
@@ -267,7 +236,7 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
         deps = []
         paths = []
 
-    newdeps = getCleanedDependencies(path)
+    newdeps = getCleanedDependencies(path, zcml, packages)
     for dep in newdeps:
         if dep.name not in paths:
             deps.append(dep)
@@ -276,18 +245,17 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
             dirname, basename = os.path.split(modulePath)
             if basename in ('__init__.py', '__init__.pyc', '__init__.pyo'):
                 modulePath = os.path.join(dirname, '')
-            getAllCleanedDependencies(modulePath, zcml, deps, paths)
-    deps = filterMostGeneral(deps)
+            getAllCleanedDependencies(modulePath, zcml, deps, paths, packages)
     deps.sort()
     return deps
 
 
-def showDependencies(path, zcml=False, long=False, all=False):
+def showDependencies(path, zcml=False, long=False, all=False, packages=False):
     """Show the dependencies of a module on the screen."""
     if all:
-        deps = getAllCleanedDependencies(path, zcml)
+        deps = getAllCleanedDependencies(path, zcml, packages)
     else:
-        deps = getCleanedDependencies(path, zcml)
+        deps = getCleanedDependencies(path, zcml, packages)
 
     if long:
         print '='*(8+len(path))
@@ -311,13 +279,14 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(
             argv[1:],
-            'd:m:ahlz',
-            ['all', 'help', 'dir=', 'module=', 'long', 'zcml'])
+            'd:m:pahlz',
+            ['all', 'help', 'dir=', 'module=', 'long', 'packages', 'zcml'])
     except getopt.error, msg:
         usage(1, msg)
 
     all = False
     long = False
+    packages = False
     path = None
     zcml = False
     for opt, arg in opts:
@@ -330,6 +299,7 @@ def main(argv=None):
         elif opt in ('-d', '--dir'):
             cwd = os.getcwd()
             # This is for symlinks. Thanks to Fred for this trick.
+            # XXX wha????
             if os.environ.has_key('PWD'):
                 cwd = os.environ['PWD']
             path = os.path.normpath(os.path.join(cwd, arg))
@@ -339,12 +309,14 @@ def main(argv=None):
                 path = os.path.dirname(module.__file__)
             except ImportError:
                 usage(1, "Could not import module %s" % module)
+        elif opt in ('-p', '--packages'):
+            packages = True
         elif opt in ('-z', '--zcml'):
             zcml = True
     if path is None:
         usage(1, 'The module must be specified either by path, '
               'dotted name or ZCML file.')
-    showDependencies(path, zcml, long, all)
+    showDependencies(path, zcml, long, all, packages)
 
 
 if __name__ == '__main__':

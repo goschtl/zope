@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Helper to locate all the imports from a single source file.
 
 $Id$
 """
@@ -41,7 +41,13 @@ dotjoin = ".".join
 
 class ImportFinder:
 
-    def __init__(self):
+    def __init__(self, packages=False):
+        """Initialize the import finder.
+
+        `packages` -- if true, reports package names rather than
+          module names
+        """
+        self.packages = packages
         self.module_checks = {}
         self.deps = []
         self.imported_names = {}
@@ -49,8 +55,15 @@ class ImportFinder:
     def get_imports(self):
         return self.deps
 
-    def find_imports(self, f, path):
+    def find_imports(self, f, path, package=None):
+        """Find all the imported names in a source file.
+
+        `f` -- open file
+        `path` -- path of the source file
+        `package` -- Python package the source file is contained in, or None
+        """
         self.path = path
+        self.package = package
         self.state = START
         self.post_name_state = None
         prevline = None
@@ -63,6 +76,23 @@ class ImportFinder:
             raise
 
     def add_import(self, name, lineno):
+        """Record an import for `name`.
+
+        `name` -- full dotted name as found in an import statement
+          (may still be relative)
+
+        `lineno` -- line number the import was found on
+        """
+        # is this a relative import?
+        if self.package:
+            fullname = "%s.%s" % (self.package, name)
+            self.check_module_name(fullname)
+            if not self.module_checks[fullname]:
+                fullname = fullname[:fullname.rfind(".")]
+                self.check_module_name(fullname)
+            if self.module_checks[fullname]:
+                # this was a relative import; use the full name:
+                name = fullname
         if name not in self.module_checks:
             self.check_module_name(name)
             if not self.module_checks[name] and "." in name:
@@ -73,6 +103,16 @@ class ImportFinder:
         # A few oddball cases import __main__ (support for
         # command-line scripts), so we need to filter that out.
         if self.module_checks[name] and name != "__main__":
+            if self.packages:
+                __import__(name)
+                module = sys.modules[name]
+                if not hasattr(module, "__path__"):
+                    if "." in name:
+                        name = name[:name.rfind(".")]
+                    else:
+                        # just drop it on the floor, since we're not
+                        # interested in bare modules
+                        return
             self.deps.append(Dependency(name, self.path, lineno))
 
     def check_module_name(self, name):
