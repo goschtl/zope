@@ -186,8 +186,8 @@ class Pickler(pickle.Pickler):
         # stores the name of the instance's class which defeats
         # the desire to replace references to classes with
         # persistent classes.
-        pickle.Pickler.__init__(self, file, bin=True)
-        
+        pickle.Pickler.__init__(self, file, protocol=1)
+
         self._pmemo = memo
         self._wrapped = {} # set of objects already wrapped
         self._module = module
