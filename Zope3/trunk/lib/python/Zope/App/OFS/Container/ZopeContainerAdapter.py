@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ZopeContainerAdapter.py,v 1.3 2002/11/30 18:34:34 jim Exp $
+$Id: ZopeContainerAdapter.py,v 1.4 2002/12/01 10:32:28 jim Exp $
 """
 
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
@@ -22,7 +22,7 @@ from Zope.App.OFS.Container.IContainer import IOptionalNamesContainer
 from Zope.App.OFS.Container.IContainer import IContainerNamesContainer
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.Proxy.ContextWrapper import ContextWrapper
-from Zope.Event import publishEvent
+from Zope.Event import publish
 from Zope.Event.ObjectEvent \
      import ObjectRemovedEvent, ObjectModifiedEvent, ObjectAddedEvent
 from Zope.App.OFS.Container.IAddNotifiable import IAddNotifiable
@@ -104,14 +104,14 @@ class ZopeContainerAdapter:
 
         # Publish an added event
         object = ContextWrapper(container[key], container, name=key)
-        publishEvent(container, ObjectAddedEvent(object))
+        publish(container, ObjectAddedEvent(object))
 
         # Call the after add hook, if necessary
         adapter = queryAdapter(object, IAddNotifiable)
         if adapter is not None:
             adapter.manage_afterAdd(object, container)
 
-        publishEvent(container, ObjectModifiedEvent(container))
+        publish(container, ObjectModifiedEvent(container))
         return key
 
     def __delitem__(self, key):
@@ -129,7 +129,7 @@ class ZopeContainerAdapter:
             
         del container[key]
 
-        publishEvent(container, ObjectRemovedEvent(object))
-        publishEvent(container, ObjectModifiedEvent(container))
+        publish(container, ObjectRemovedEvent(object))
+        publish(container, ObjectModifiedEvent(container))
 
         return key

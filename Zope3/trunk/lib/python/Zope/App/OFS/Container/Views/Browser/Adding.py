@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.12 2002/11/30 18:34:34 jim Exp $
+$Id: Adding.py,v 1.13 2002/12/01 10:32:28 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -26,7 +26,7 @@ from Zope.ComponentArchitecture \
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod, getbaseobject
 from Zope.Proxy.ContextWrapper import ContextWrapper
-from Zope.Event import publishEvent
+from Zope.Event import publish
 from Zope.Event.ObjectEvent \
      import ObjectCreatedEvent, ObjectModifiedEvent, ObjectAddedEvent
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
@@ -114,7 +114,7 @@ class Adding(BrowserView):
         self.contentName = id
         
         content = createObject(self, type_name)
-        publishEvent(self.context, ObjectCreatedEvent(content))
+        publish(self.context, ObjectCreatedEvent(content))
         
         self.add(content)
         self.request.response.redirect(self.nextURL())

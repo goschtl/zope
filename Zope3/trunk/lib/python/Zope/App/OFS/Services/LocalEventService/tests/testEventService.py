@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.6 2002/11/30 18:37:17 jim Exp $
+$Id: testEventService.py,v 1.7 2002/12/01 10:32:29 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -34,7 +34,7 @@ from Zope.ComponentArchitecture import getService, getServiceManager
 
 from Zope.Exceptions import NotFoundError
 
-from Zope.Event import subscribe, unsubscribe, listSubscriptions, publishEvent
+from Zope.Event import subscribe, unsubscribe, listSubscriptions, publish
 from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
 from Zope.Event.IObjectEvent import IObjectEvent
 from Zope.Event.IObjectEvent import IObjectAddedEvent
@@ -145,7 +145,7 @@ class EventServiceTests(EventSetup, TestCase):
         "Test subscribe method with one parameter"
         self._createSubscribers()
         subscribe(self.rootFolderSubscriber)
-        publishEvent(self.rootFolder, ObjectAddedEvent(None, '/foo'))
+        publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         
     def testSubscribe2(self):
@@ -155,7 +155,7 @@ class EventServiceTests(EventSetup, TestCase):
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe3(self):
@@ -166,7 +166,7 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter()
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe4(self):
@@ -179,7 +179,7 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter(0)
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
     def testSubscribe5(self):
@@ -192,26 +192,26 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectModifiedEvent,
             filter=DummyFilter()
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
     def testSubscribe6(self):
         """Test subscribe method where the event type
         registered is a generalised interface of the
-        event passed to the 'publishEvent' method.
+        event passed to the 'publish' method.
         """
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectEvent
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe7(self):
         """Test subscribe method where one of the
         event types registered is not interested in
-        the publishEvented event.
+        the published event.
         """
         self._createSubscribers()
         subscribe(
@@ -222,7 +222,7 @@ class EventServiceTests(EventSetup, TestCase):
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe8(self):
@@ -243,7 +243,7 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter(0)
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 2)
 
     def testUnsubscribe1(self):
@@ -252,12 +252,12 @@ class EventServiceTests(EventSetup, TestCase):
         subscribe(
             self.rootFolderSubscriber
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         unsubscribe(
             self.rootFolderSubscriber
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testUnsubscribe2(self):
@@ -293,30 +293,30 @@ class EventServiceTests(EventSetup, TestCase):
             subscriber2,
             event_type=IObjectAddedEvent
             )
-        publishEvent(self.folder1_1_1, event)
+        publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 3)
         self.assertEqual(subscriber2.notified, 1)
-        publishEvent(self.folder1_1_1, event2)
+        publish(self.folder1_1_1, event2)
         self.assertEqual(subscriber.notified, 4)
         self.assertEqual(subscriber2.notified, 1)
         unsubscribe(subscriber, IObjectAddedEvent)
-        publishEvent(self.folder1_1_1, event)
+        publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 2)
         unsubscribe(subscriber, IEvent)
-        publishEvent(self.folder1_1_1, event2)
+        publish(self.folder1_1_1, event2)
         self.assertEqual(subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 2)
-        publishEvent(self.folder1_1_1, event)
+        publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 3)
         self.assertRaises(NotFoundError, unsubscribe, subscriber, IObjectAddedEvent)
         unsubscribe(subscriber, IObjectAddedEvent, filter)
-        publishEvent(self.folder1_1_1, event)
+        publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 4)
         unsubscribe(subscriber2, IObjectAddedEvent)
-        publishEvent(self.folder1_1_1, event)
+        publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 4)
     
@@ -325,17 +325,17 @@ class EventServiceTests(EventSetup, TestCase):
         self._createNestedServices()
         self.testUnsubscribe3()
 
-    def testpublishEvent1(self):
-        "Test publishEvent method"
+    def testpublish1(self):
+        "Test publish method"
         self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(subscriber)
         self.assertEqual(subscriber.notified, 0)
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 1)
 
-    def testpublishEvent2(self):
-        """Test publishEvent method where subscriber has been
+    def testpublish2(self):
+        """Test publish method where subscriber has been
         subscribed twice, with a more generalised
         version of the initially subscribed interface
         in the second subscription.
@@ -350,11 +350,11 @@ class EventServiceTests(EventSetup, TestCase):
             subscriber,
             event_type=IObjectAddedEvent,
             )
-        publishEvent(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder1_1_1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(subscriber.notified, 2)
 
-    def testpublishEvent3(self):
-        """Test publishEvent method where subscriber has been
+    def testpublish3(self):
+        """Test publish method where subscriber has been
         to two interfaces and a single event implements both
         of those interfaces.
         """
@@ -368,11 +368,11 @@ class EventServiceTests(EventSetup, TestCase):
             subscriber,
             event_type=IObjectAddedEvent
             )
-        publishEvent(self.folder1_1_1, DummyEvent())
+        publish(self.folder1_1_1, DummyEvent())
         self.assertEqual(subscriber.notified, 2)
 
-    def testpublishEvent4(self):
-        """Test publishEvent method to make sure that we don't
+    def testpublish4(self):
+        """Test publish method to make sure that we don't
         'leak registrations up' sez Jim.
         """
         self._createSubscribers()
@@ -385,7 +385,7 @@ class EventServiceTests(EventSetup, TestCase):
             subscriber,
             event_type=IObjectAddedEvent
             )
-        publishEvent(self.folder1_1_1, ObjectEvent())
+        publish(self.folder1_1_1, ObjectEvent())
         self.assertEqual(subscriber.notified, 1)
     
     def _createAlternateService(self, service):
@@ -422,7 +422,7 @@ class EventServiceTests(EventSetup, TestCase):
         """test to see if events are not passed on to a parent event
         service with the appropriate isPromotableEvent setting"""
         self._createAlternateService(UnpromotingLocalEventService())
-        publishEvent(self.folder2, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
     
@@ -430,7 +430,7 @@ class EventServiceTests(EventSetup, TestCase):
         """test to see if events are passed on to a parent event
         service with the appropriate isPromotableEvent setting"""
         self._createAlternateService(LocalEventService())
-        publishEvent(self.folder2, ObjectAddedEvent(None, '/foo'))
+        publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
     
@@ -456,7 +456,7 @@ class EventServiceTests(EventSetup, TestCase):
         configuration = sm.queryConfigurations("Events").active()
         configuration.status = Registered
 
-        publishEvent(self.rootFolder, ObjectAddedEvent(None, '/foo'))
+        publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
     
@@ -466,7 +466,7 @@ class EventServiceTests(EventSetup, TestCase):
         sv=LocalEventService()
         sv.subscribeOnBind=0
         self._createAlternateService(sv)
-        publishEvent(self.rootFolder, ObjectAddedEvent(None, '/foo'))
+        publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 0)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 

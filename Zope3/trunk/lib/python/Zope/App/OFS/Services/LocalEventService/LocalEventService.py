@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.9 2002/11/28 15:31:14 poster Exp $
+$Id: LocalEventService.py,v 1.10 2002/12/01 10:32:29 jim Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -51,7 +51,7 @@ class LocalEventService(ProtoServiceEventChannel):
         # (c) removed.
         return 1
     
-    def publishEvent(wrapped_self, event):
+    def publish(wrapped_self, event):
         "see IEventService"
         clean_self = removeAllProxies(wrapped_self)
         
@@ -69,9 +69,9 @@ class LocalEventService(ProtoServiceEventChannel):
         else:
             publishedEvents.append(event)
         if(clean_self.isPromotableEvent(event)):
-            getNextService(wrapped_self, 'Events').publishEvent(event)
+            getNextService(wrapped_self, 'Events').publish(event)
         publishedEvents.remove(event)
-    publishEvent = ContextMethod(publishEvent)
+    publish = ContextMethod(publish)
         
     def notify(wrapped_self, event):
         "see ISubscriber"

@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: testLogger.py,v 1.4 2002/10/03 20:53:22 jim Exp $
+$Id: testLogger.py,v 1.5 2002/12/01 10:32:29 jim Exp $
 """
 
 import unittest, sys
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
 
-from Zope.Event import subscribe, unsubscribe, publishEvent
+from Zope.Event import subscribe, unsubscribe, publish
 from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.Logger import Logger
 
@@ -55,7 +55,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         # register a logger
         subscribe(self.eventlogger)
         # send an event
-        publishEvent(None, ObjectAddedEvent(None, 'foo'))
+        publish(None, ObjectAddedEvent(None, 'foo'))
 
     def tearDown(self):
         unsubscribe(self.eventlogger)

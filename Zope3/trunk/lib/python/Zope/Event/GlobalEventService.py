@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: GlobalEventService.py,v 1.3 2002/08/01 15:33:45 jim Exp $
+$Id: GlobalEventService.py,v 1.4 2002/12/01 10:32:29 jim Exp $
 """
 
 from IEventService import IEventService
@@ -24,7 +24,7 @@ class GlobalEventService(Subscribable):
     
     __implements__ = IEventService
         
-    def publishEvent(self, event):
+    def publish(self, event):
         
         for subscriptions in self.subscriptionsForEvent(event):
             

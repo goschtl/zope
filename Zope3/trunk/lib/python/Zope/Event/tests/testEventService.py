@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.4 2002/10/03 20:53:22 jim Exp $
+$Id: testEventService.py,v 1.5 2002/12/01 10:32:29 jim Exp $
 """
 
 import unittest, sys
@@ -50,7 +50,7 @@ class TestEventService(CleanUp, unittest.TestCase):
     def testSubscribe1(self):
         "Test subscribe method with one parameter"
         self.service.subscribe(self.subscriber)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
         
     def testSubscribe2(self):
@@ -59,7 +59,7 @@ class TestEventService(CleanUp, unittest.TestCase):
             self.subscriber,
             event_type=IObjectAddedEvent
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe3(self):
@@ -69,7 +69,7 @@ class TestEventService(CleanUp, unittest.TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter()
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe4(self):
@@ -81,7 +81,7 @@ class TestEventService(CleanUp, unittest.TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter(0)
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 0)
 
     def testSubscribe5(self):
@@ -93,25 +93,25 @@ class TestEventService(CleanUp, unittest.TestCase):
             event_type=IObjectModifiedEvent,
             filter=DummyFilter()
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 0)
 
     def testSubscribe6(self):
         """Test subscribe method where the event type
         registered is a generalised interface of the
-        event passed to the 'publishEvent' method.
+        event passed to the 'publish' method.
         """
         self.service.subscribe(
             self.subscriber,
             event_type=IObjectEvent
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe7(self):
         """Test subscribe method where one of the
         event types registered is not interested in
-        the publishEvented event.
+        the published event.
         """
         self.service.subscribe(
             self.subscriber,
@@ -121,7 +121,7 @@ class TestEventService(CleanUp, unittest.TestCase):
             self.subscriber,
             event_type=IObjectAddedEvent
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe8(self):
@@ -143,17 +143,17 @@ class TestEventService(CleanUp, unittest.TestCase):
             event_type=IObjectAddedEvent,
             filter=DummyFilter(0)
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 2)
 
     def testUnsubscribe1(self):
         "Test unsubscribe method"
         subscriber = self.subscriber
         self.service.subscribe(subscriber)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
         self.service.unsubscribe(subscriber)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testUnsubscribe2(self):
@@ -185,41 +185,41 @@ class TestEventService(CleanUp, unittest.TestCase):
             subscriber2,
             event_type=IObjectAddedEvent
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 3)
         self.assertEqual(subscriber2.notified, 1)
-        self.service.publishEvent(event2)
+        self.service.publish(event2)
         self.assertEqual(self.subscriber.notified, 4)
         self.assertEqual(subscriber2.notified, 1)
         self.service.unsubscribe(self.subscriber, IObjectAddedEvent)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 2)
         self.service.unsubscribe(self.subscriber, IEvent)
-        self.service.publishEvent(event2)
+        self.service.publish(event2)
         self.assertEqual(self.subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 2)
         self.assertRaises(NotFoundError, self.service.unsubscribe,
                           self.subscriber, IObjectAddedEvent)
         self.service.unsubscribe(self.subscriber, IObjectAddedEvent, filter)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 3)
         self.service.unsubscribe(subscriber2, IObjectAddedEvent)
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 3)
 
-    def testpublishEvent1(self):
-        "Test publishEvent method"
+    def testpublish1(self):
+        "Test publish method"
         subscriber = self.subscriber
         self.service.subscribe(subscriber)
         self.assertEqual(self.subscriber.notified, 0)        
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
-    def testpublishEvent2(self):
-        """Test publishEvent method where subscriber has been
+    def testpublish2(self):
+        """Test publish method where subscriber has been
         subscribed twice, with a more generalised
         version of the initially subscribed interface
         in the second subscription.
@@ -233,11 +233,11 @@ class TestEventService(CleanUp, unittest.TestCase):
             self.subscriber,
             event_type=IObjectAddedEvent,
             )
-        self.service.publishEvent(self.event)
+        self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 2) 
 
-    def testpublishEvent3(self):
-        """Test publishEvent method where subscriber has been
+    def testpublish3(self):
+        """Test publish method where subscriber has been
         to two interfaces and a single event implements both
         of those interfaces.
         """
@@ -250,11 +250,11 @@ class TestEventService(CleanUp, unittest.TestCase):
             self.subscriber,
             event_type=IObjectAddedEvent
             )
-        self.service.publishEvent(DummyEvent())
+        self.service.publish(DummyEvent())
         self.assertEqual(self.subscriber.notified, 2)
 
-    def testpublishEvent4(self):
-        """Test publishEvent method to make sure that we don't
+    def testpublish4(self):
+        """Test publish method to make sure that we don't
         'leak registrations up' sez Jim.
         """
         subscriber = self.subscriber
@@ -266,7 +266,7 @@ class TestEventService(CleanUp, unittest.TestCase):
             self.subscriber,
             event_type=IObjectAddedEvent
             )
-        self.service.publishEvent(ObjectEvent())
+        self.service.publish(ObjectEvent())
         self.assertEqual(self.subscriber.notified, 1)
     
     def testListSubscriptions1(self):

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testDirectives.py,v 1.5 2002/11/08 18:53:36 rdmurray Exp $
+$Id: testDirectives.py,v 1.6 2002/12/01 10:32:29 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from StringIO import StringIO
 from Zope.Configuration.xmlconfig import xmlconfig
 
 from Zope.Exceptions import NotFoundError
-from Zope.Event import subscribe, unsubscribe, publishEvent
+from Zope.Event import subscribe, unsubscribe, publish
 from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.ObjectEvent import ObjectRemovedEvent
 from Zope.Event.ObjectEvent import ObjectModifiedEvent
@@ -60,13 +60,13 @@ class Test(PlacelessSetup, TestCase):
                    filter="Zope.Event.tests.subscriber.filter" />'''
             ))
 
-        publishEvent(None,ObjectAddedEvent(None, 'foo'))
+        publish(None,ObjectAddedEvent(None, 'foo'))
         self.assertEqual(subscriber.notified,1)
-        publishEvent(None,ObjectRemovedEvent(object(), 'foo'))
+        publish(None,ObjectRemovedEvent(object(), 'foo'))
         self.assertEqual(subscriber.notified,2)
-        publishEvent(None,ObjectModifiedEvent(None, 'foo'))
+        publish(None,ObjectModifiedEvent(None, 'foo'))
         self.assertEqual(subscriber.notified,2) # NB: no increase ;-)
-        publishEvent(None,DummyEvent())
+        publish(None,DummyEvent())
         self.assertEqual(subscriber.notified,4) # NB: increased by 2 ;-)
         
         unsubscribe(subscriber)
