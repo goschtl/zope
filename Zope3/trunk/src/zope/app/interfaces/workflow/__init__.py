@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.5 2003/02/06 01:03:51 jack-e Exp $
+$Id: __init__.py,v 1.6 2003/02/07 15:26:30 jack-e Exp $
 """
 
 from zope.interface import Interface
@@ -82,6 +82,9 @@ class IProcessDefinitionElementContainer(IContainer):
     """
 
 
+    def getProcessDefinition():
+        """Return the ProcessDefinition Object.
+        """
 
 
 class IProcessInstance(Interface):

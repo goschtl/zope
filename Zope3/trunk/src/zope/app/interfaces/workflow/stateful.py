@@ -14,8 +14,12 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.5 2003/02/06 21:54:13 jack-e Exp $
+$Id: stateful.py,v 1.6 2003/02/07 15:26:30 jack-e Exp $
 """
+import zope.schema
+from zope.proxy.context import ContextProperty
+from zope.app.security.permission import PermissionField
+
 from zope.interface import Interface, Attribute
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IProcessInstance
@@ -33,18 +37,68 @@ class IStatefulStatesContainer(IProcessDefinitionElementContainer):
 
 
 
+class AvailableStatesField(zope.schema.TextLine):
+    """Available States.
+    """
+
+    def __allowed(self):
+        pd = self.context.getProcessDefinition()
+        return pd.getStateNames()
+
+    allowed_values = ContextProperty(__allowed)
+
+
 class ITransition(Interface):
     """Stateful workflow transition.
     """
 
-    sourceState = Attribute("Name of the source state.")
+    sourceState = AvailableStatesField(
+        title=u"Source State",
+        description=u"Name of the source state.",
+        required=True)
 
-    destinationState = Attribute("Name of the destination state.")
+    destinationState = AvailableStatesField(
+        title=u"Destination State",
+        description=u"Name of the destination state.",
+        required=True)
 
-    condition = Attribute("""The condition that is evaluated to decide if \
-                             the condition is fired or not.""")
+    condition = zope.schema.TextLine(
+        title=u"Condition",
+        description=u"The condition that is evaluated to decide if the condition is fired or not.",
+        required=False)
 
-    permission = Attribute("Permission for this Transition.")
+    permission = PermissionField(
+        title=u"The permission needed to fire the Transition.")
+
+
+    def getSourceState():
+        """Get Source State."""
+
+    def setSourceState(source):
+        """Set Source State."""
+        
+    def getDestinationState():
+        """Get Destination State."""
+
+    def setDestinationState(destination):
+        """Set Destination State."""
+
+    def getCondition():
+        """Get Condition."""
+
+    def setCondition(condition):
+        """Set Condition."""
+
+    def getPermission():
+        """Get Permission."""
+
+    def setPermission(permission):
+        """Set Permission."""
+
+    def getProcessDefinition():
+        """Return the ProcessDefinition Object.
+        """
+
 
 
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
@@ -58,8 +112,23 @@ class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition.
     """
 
-    # more methods/attributes to come
-    # relevantData - Permissions (checker)
+    # XXX How to specify permissions for RelevantData ??
+
+    relevantDataSchema = zope.schema.TextLine(
+        title=u"RelevantData Schema",
+        description=u"Dotted Name of RelevantData Schema.",
+        required=True)
+
+
+    def setRelevantDataSchema(schema):
+        """Set the Schema for RelevantData.
+        """
+
+    def getRelevantDataSchema():
+        """Return the Schema for RelevantData.
+        """
+
+
 
     states = Attribute("State objects container.")
 
@@ -101,14 +170,6 @@ class IStatefulProcessDefinition(IProcessDefinition):
     
     def getTransitionNames():
         """Get the transition names.
-        """
-
-    def setSchema(schema):
-        """Set the Schema for RelevantData.
-        """
-
-    def getSchema():
-        """Return the Schema for RelevantData.
         """
 
 
