@@ -86,12 +86,6 @@ def getServices(context=None):
 getServices = hookable(getServices)
 
 def getService(name, context=None):
-    # Deprecated backwards-compatibility hack.
-    if isinstance(context, basestring) and not isinstance(name, basestring):
-        name, context = context, name
-        warnings.warn("getService(context, name) is deprecated."
-                      "  Use getService(name, context=context).",
-                      DeprecationWarning, warningLevel())
     return getServices(context).getService(name)
 
 def getServiceDefinitions(context=None):
@@ -175,25 +169,24 @@ def getAdapter(object, interface, name, context=None):
         raise ComponentLookupError(object, interface)
     return adapter
 
-def queryAdapter(object, interface, name, default=None, context=None):
-    adapters = getService(Adapters, context)
-    return adapters.queryAdapter(object, interface, name, default)
-
-def interfaceAdapterHook(iface, ob):
+def adapter_hook(interface, object, name='', default=None):
     try:
         adapters = getService(Adapters)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running
         # from a test
-        #warnings.warn("There is no adapters service.  Returning the default.",
-        #              DeprecationWarning, warningLevel())
         return None
+    return adapters.queryAdapter(object, interface, name, default)
+adapter_hook = hookable(adapter_hook)
 
-    return adapters.queryAdapter(ob, iface, '')
+import zope.interface.interface
+zope.interface.interface.adapter_hooks.append(adapter_hook)
 
-from zope.interface.interface import adapter_hooks
-adapter_hooks.append(interfaceAdapterHook)
-
+def queryAdapter(object, interface, name, default=None, context=None):
+    if context is None:
+        return adapter_hook(interface, object, name, default)
+    adapters = getService(Adapters, context)
+    return adapters.queryAdapter(object, interface, name, default)
 
 def getMultiAdapter(objects, interface, name=u'', context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
