@@ -24,10 +24,8 @@ contain different aspects of the relevant metadata.
 
   Note that dependencies are kept separate from the information in the
   `INSTALL.cfg` file since that's intended to record information about
-  what the distribution contains, while dependencies are intended to
-  serve as constraints on any software included in the distribution as
-  well as meta-information used for constructing collection
-  distributions.
+  what the distribution contains, while dependencies serve as
+  constraints on any software included in the distribution.
 
 `INLCUDES.cfg`
   List of inclusions (and exclusions) that are added/removed from the
