@@ -1,16 +1,14 @@
 <configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser" >
 
 <!-- XXX We shouldn't have to repeat the skin definition to set the default -->
-<browser:skin name="" layers="rotterdam default" />
+  <browser:skin name="" layers="rotterdam default" />
 
-<include package=".basic" />
-<include package=".zopetop" />
-<include package=".rotterdam" />
-<include package=".debug" />
-<include package=".onlinehelp" />
+  <include package=".basic" />
+  <include package=".zopetop" />
+  <include package=".rotterdam" />
+  <include package=".debug" />
+  <include package=".onlinehelp" />
 
 </configure>

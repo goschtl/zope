@@ -1,28 +1,22 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:skin name="Debug" layers="debug rotterdam default" />
+  <skin name="Debug" layers="debug rotterdam default" />
 
-  <browser:page
+  <page
       for="zope.exceptions.IUnauthorized"
       name="index.html"
       permission="zope.Public"
       template="unauthorized.pt"
       class="zope.app.browser.exception.unauthorized.Unauthorized"
-      layer="debug"
-      />
+      layer="debug" />
 
-  <browser:page 
+  <page 
       name="index.html"
       template="error_debug.pt"
       for="zope.interface.common.interfaces.IException"
       class=".exceptions.ExceptionDebugView"
       permission="zope.Public"
-      layer="debug"
-      />
+      layer="debug" />
 
 </configure>
 

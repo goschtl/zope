@@ -1,48 +1,38 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:skin name="Basic" layers="default" />
+  <skin name="Basic" layers="default" />
   
-  <browser:page 
+  <page 
       name="standard_macros"
       for="*"
       class=".standardmacros.StandardMacros" 
       allowed_interface="zope.interface.common.mapping.IItemMapping"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
-  <browser:page 
+  <page 
       name="view_macros"
       for="*"
       permission="zope.View"
-      template="www/view_macros.pt" 
-      />
+      template="view_macros.pt" />
 
-  <browser:page 
+  <page 
       name="dialog_macros"
       for="*"
       permission="zope.View"
-      template="www/dialog_macros.pt" 
-      />
+      template="dialog_macros.pt" />
 
-  <browser:resource 
+  <resource
       name="zopetopBasic.css" 
-      file="www/zopetopbasic.css" 
-      />
+      file="zopetopbasic.css" />
 
-  <browser:resource 
+  <resource 
       name="zopetopWidgets.css" 
-      file="www/zopetopwidgets.css"
-      />
+      file="zopetopwidgets.css" />
 
-  <browser:resource 
+  <resource 
       name="zopetopStructure.css" 
-      file="www/zopetopstructure.css"
-      />
+      file="zopetopstructure.css" />
 
-  <browser:resource name="arrowUp.gif" file="www/arrowup.gif"/>
+  <resource name="arrowUp.gif" file="arrowup.gif"/>
 
 </configure>

@@ -1,52 +1,42 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:skin name="Onlinehelp" layers="onlinehelp images css default" />
+  <skin name="Onlinehelp" layers="onlinehelp images css default" />
 
-  <browser:page
+  <page
       for="*"
       name="standard_macros"
       permission="zope.View"
       class="zope.app.browser.skins.onlinehelp.standardmacros.StandardMacros"
       allowed_interface="zope.interface.common.mapping.IItemMapping"
-      layer="onlinehelp" 
-      />
+      layer="onlinehelp" />
   
-  <browser:page
+  <page
       for="*"
       name="skin_macros"
       permission="zope.View"
-      template="www/template.pt"
-      layer="onlinehelp" 
-      />
+      template="template.pt"
+      layer="onlinehelp" />
   
-  <browser:page
+  <page
       for="*"
       name="view_macros"
       permission="zope.View"
-      template="www/view_macros.pt"
-      layer="onlinehelp"
-      />
+      template="view_macros.pt"
+      layer="onlinehelp" />
 
- <browser:resource
+  <resource
       name="favicon.png" 
-      file="www/favicon.png"
-      layer="onlinehelp" 
-      />
+      file="favicon.png"
+      layer="onlinehelp" />
 
-  <browser:resource
+  <resource
       name="onlinehelp.css" 
-      file="www/onlinehelp.css" 
-      layer="css"
-      />
+      file="onlinehelp.css" 
+      layer="css" />
 
-  <browser:resource
+  <resource
       name="zope3onlinehelplogo.gif" 
-      file="www/zope3onlinehelplogo.gif"
-      layer="images" 
-      />
+      file="zope3onlinehelplogo.gif"
+      layer="images" />
       
 </configure>

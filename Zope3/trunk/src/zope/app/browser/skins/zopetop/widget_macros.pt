@@ -1,27 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html i18n:domain="zope">
 <head>
-<link href="zopetopBasic.css" rel="stylesheet" type="text/css" />
-<link href="zopetopStructure.css" rel="stylesheet" type="text/css" />
-<link href="zopetopWidgets.css" rel="stylesheet" type="text/css" />
+  <link href="zopetopBasic.css" rel="stylesheet" type="text/css" />
+  <link href="zopetopStructure.css" rel="stylesheet" type="text/css" />
+  <link href="zopetopWidgets.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
 
-<div class="user" metal:define-macro="logged_user">
-   Logged in as <span tal:replace="request/user/getTitle">
-                      dtremea
-                 </span>
+<div class="user" metal:define-macro="logged_user" i18n:translate="">
+   Logged in as 
+   <span tal:replace="request/user/getTitle" i18n:name="user_title">
+     dtremea</span>
 </div>
 
 <div class="box" id="navigationTree" metal:define-macro="navigation_box">
 
-  <h5>Navigation</h5>
+  <h5 i18n:translate="">Navigation</h5>
 
   <div xmlns="http://www.zope.org/zope3xmltree"
        id="navtreecontents" 
        class="body" 
-       onclick="treeclicked(event);">Loading...
+       onclick="treeclicked(event);" i18n:translate="">Loading...
   </div>
 
 </div>
@@ -31,7 +31,7 @@
        tal:condition="view/strip|nothing"
        metal:define-macro="commontasks_box">
 
-  <h5>Common Tasks</h5>
+  <h5 i18n:translate="">Common Tasks</h5>
 
   <div class="body" tal:content="structure view">
       CommonTasks
@@ -39,39 +39,39 @@
 </div>
 
 <div class="box" metal:define-macro="services_box">
-  <h5>Services</h5>
-   <div class="body">
-   <div class="content even">
-   <img src="user_accounts.gif" width="22" height="28"
-      tal:attributes="src context/++resource++user_accounts.gif"
-      alt="user accounts" />
-    User Accounts
-   </div>
-   <div class="content odd">
-    <img src="control_panels.gif" width="24" height="28"
-      tal:attributes="src context/++resource++control_panels.gif"
-      alt="control panels" />
-    Control Panels
-   </div>
-   <div class="content even">
-    <img src="system_security.gif" width="23" height="28"
-      tal:attributes="src context/++resource++system_security.gif"
-      alt="system security" />
-    System Security
-   </div>
-   <div class="content odd">
-    <img src="add_more.gif" width="26" height="28"
-      tal:attributes="src context/++resource++add_more.gif"
-      alt="add more" />
-    Add More
-   </div>
+  <h5 i18n:translate="">Services</h5>
+  <div class="body">
+    <div class="content even">
+      <img src="user_accounts.gif" width="22" height="28"
+          tal:attributes="src context/++resource++user_accounts.gif"
+          alt="user accounts" i18n:attributes="alt"/>
+      <span i18n:translate="">User Accounts</span>
+    </div>
+    <div class="content odd">
+      <img src="control_panels.gif" width="24" height="28"
+           tal:attributes="src context/++resource++control_panels.gif"
+           alt="control panels" i18n:attributes="alt"/>
+      <span i18n:translate="">Control Panels</span>
+    </div>
+    <div class="content even">
+      <img src="system_security.gif" width="23" height="28"
+           tal:attributes="src context/++resource++system_security.gif"
+           alt="system security" i18n:attributes="alt" />
+      <span i18n:translate="">System Security</span>
+    </div>
+    <div class="content odd">
+      <img src="add_more.gif" width="26" height="28"
+           tal:attributes="src context/++resource++add_more.gif"
+           alt="add more" i18n:attributes="alt" />
+      <span i18n:translate="">Add More</span>
+    </div>
   </div>
 </div>
 
 <table metal:define-macro="explorer_box" align="center" class="box" width="150">
   <thead>
     <tr> 
-      <th align="center" class="boxtop">Root Folder</th>
+      <th align="center" class="boxtop" i18n:translate="">Root Folder</th>
       <th class="empty">&nbsp;</th>
     </tr>
     </thead>
@@ -137,7 +137,7 @@
        tal:condition="views"
        metal:define-macro="views_box">
 
-  <h5>Views</h5>
+  <h5 i18n:translate="">Views</h5>
 
   <div class="body">
      <div class="content" tal:repeat="view views">
@@ -154,7 +154,7 @@
        tal:condition="actions"
        metal:define-macro="actions_box">
 
-  <h5>Actions</h5>
+  <h5 i18n:translate="">Actions</h5>
 
   <div class="body">
      <div class="content" tal:repeat="action actions">
@@ -171,7 +171,7 @@
        tal:condition="view/strip|nothing"
        metal:define-macro="metadata_box">
 
-  <h5>Metadata</h5>
+  <h5 i18n:translate="">Metadata</h5>
 
   <div class="body">
      <div class="content" tal:content="structure view">
@@ -183,14 +183,14 @@
 <div class="breadcrumbs" metal:define-macro="content_header_bar">
   <span class="help">
     <a href="#">
-      Help
+      <span i18n:translate="">Help</span>
       <img src="help.gif" width="25" height="25"
            tal:attributes="src context/++resource++help.gif"
            alt="help" />
     </a>
   </span>
 
-  Location:
+  <span i18n:translate="">Location:</span>
   <span
       metal:define-macro="breadcrumbs"
           tal:omit-tag=""
@@ -202,7 +202,7 @@
 </div>
   
 <div metal:define-macro="footer">
-  <p>Powered by Zope</p>
+  <p i18n:translate="">Powered by Zope</p>
 </div>
                     
 </body>

@@ -2,10 +2,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
-    lang="en">
+    lang="en"
+    i18n:domain="zope">
 
   <head>
-    <title metal:define-slot="title">Z3 UI Onlinehelp</title>
+    <title metal:define-slot="title" i18n:translate="">Z3 UI Onlinehelp</title>
 
 
     <style type="text/css"
@@ -39,7 +40,7 @@
       <!-- Tree of the help topics that appears on the help namespace -->
       <div class="box" id="help"
            tal:condition="not:python:request.getURL().find('++help++')==-1">
-        <h4>Online Help - TOC</h4>              
+        <h4 i18n:translate="">Online Help - TOC</h4>              
         <div class="body">
           <div tal:content="structure view/getTopicTree|nothing"
                tal:omit-tag="">content of topicTree
@@ -50,8 +51,8 @@
       <!-- Error message if you are not in the ++help++ namespace -->
       <div class="box" id="help"
            tal:condition="python:request.getURL().find('++help++')==-1">
-        <h4>Online Help - TOC</h4>              
-        <div class="body content">
+        <h4 i18n:translate="">Online Help - TOC</h4>              
+        <div class="body content"  i18n:translate="">
           You are not in the ++help++ namespace.<br>
           Add /++help++/ after your host address in the URL.<br>
           And use the own help skin like:<br>
@@ -64,15 +65,20 @@
            tal:condition="not:python:request.getURL().find('++help++')==-1">
         <h4>Toolbox</h4>
         <div class="body content">
-          <a href="javascript:close()">Close this window</a>
+          <a href="javascript:close()" 
+             i18n:translate="">Close this window</a>
           <br />
-          <a href="javascript:blur()">Blur</a>
+          <a href="javascript:blur()" 
+             i18n:translate="">Blur</a>
           <br />
-          <a href="javascript:resizeTo(780,580)">view 800x600</a>
+          <a href="javascript:resizeTo(780,580)" 
+             i18n:translate="">view 800x600</a>
           <br />
-          <a href="javascript:resizeTo(980,740)">view 1024x768</a>
+          <a href="javascript:resizeTo(980,740)"
+              i18n:translate="">view 1024x768</a>
           <br />
-          <a href="javascript:print()">Print</a>
+          <a href="javascript:print()"
+              i18n:translate="">Print</a>
           <br />
         </div>
       </div>
@@ -91,7 +97,8 @@
       <!-- breadcrumb in the headline of the content -->
       <div id="breadcrumbsBar" 
            metal:define-slot="tabs">
-         Location:&nbsp;<tal:block
+        <span i18n:translate="">Location:</span>
+        <tal:block
            repeat="breadcrumb context/@@absolute_url/breadcrumbs"
           ><a href=""
                  tal:condition="not:repeat/breadcrumb/start"
@@ -127,7 +134,7 @@
           </metal:block>
         </div>
 
-<!-- We don't have pagetip's in the Onlinehelp self.
+<!-- We don't have pagetip's in the Onlinehelp itself.
      I clean up this code later if I implement the 
      link for the context sensitive HelpTopics
      in the Rotteram skin.
@@ -135,7 +142,7 @@
         <div id="context_information">
           <div id="helpers">
             <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
-              <h4>Tip</h4>
+              <h4 i18n:translate="">Tip</h4>
               <div class="body">
                 <div class="content odd">
                   <metal:block define-slot="pagetip"

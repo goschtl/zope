@@ -18,24 +18,20 @@
 </head>
 <body>
 
-  <table metal:define-macro="zmi_tabs"><tr>
-    <td tal:repeat="view context/@@view_get_menu/zmi_views">
-    <a href="" tal:attributes="href view/action" tal:content="view/title">
-        label</a>
-    <tal:block condition="not: repeat/view/end">'</tal:block>
-    </td>
-   </tr></table>
-
   <div metal:define-slot="body">
      <p>Body here</p>
   </div>
 
   <div metal:define-macro="logged_user">
-  <p>User: <span tal:replace="request/user/getTitle">User</span></p>
+    <p i18n:translate="">
+      User: 
+      <span tal:replace="request/user/getTitle" 
+            i18n:name="user_title">User</span>
+    </p>
   </div>
 
   <div metal:define-macro="footer">
-  <p>Powered by Zope</p>
+  <p i18n:translate="">Powered by Zope</p>
   </div>
 
 </body>
