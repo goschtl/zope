@@ -1,0 +1,43 @@
+<dtml-var standard_html_header>
+
+<dtml-in folder_rename_items>
+
+<dtml-if sequence-start>
+<div class="Desktop">
+<H1> Rename Items </H2>
+
+<FORM ACTION="folder_rename" METHOD="POST">
+<TABLE class="FormLayout">
+</dtml-if sequence-start>
+<TR>
+  <TD ALIGN="LEFT" VALIGN="TOP" width="8%">
+  <dtml-var iconHTML>
+  </TD>
+  <TD ALIGN="LEFT" VALIGN="TOP" width="20%" NOWRAP>
+  <dtml-var getId>
+  <INPUT TYPE="HIDDEN" NAME="ids:list" VALUE="&dtml-getId;">
+  </TD>
+  <TD ALIGN="LEFT" VALIGN="TOP" width="5%">
+  <STRONG>to</STRONG>
+  </TD>
+  <TD ALIGN="LEFT" VALIGN="TOP">
+  <INPUT TYPE="TEXT" NAME="new_ids:list" value="&dtml-getId;" SIZE="20">
+  </TD>
+</TR>
+<dtml-if sequence-end>
+<TR>
+<TD COLSPAN=4>
+  <INPUT TYPE="submit" VALUE=" Ok ">
+</TD>
+</TR>
+</TABLE>
+</FORM>
+</dtml-if sequence-end>
+
+<dtml-else>
+<FORM ACTION="folder_contents" METHOD="GET">
+<p>You must select renamable items to rename.</p>
+<INPUT TYPE="submit" VALUE=" Ok ">
+</FORM>
+</dtml-in>
+<dtml-var standard_html_footer>
