@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.5 2003/01/25 02:52:27 rdmurray Exp $
+$Id: _bootstrapfields.py,v 1.6 2003/02/28 14:23:23 stevea Exp $
 """
 __metaclass__ = type
 
@@ -203,21 +203,23 @@ class MinMaxLen(Field):
 class ValueSet(Field):
 
     def allowed_values(self, values):
-        # Reset current value so it doesn't hose validation
+        # This method checks that each of the given allowed values
+        # are valid potential values.
+
         if not values:
             return
 
+        # Reset current value of allowed_values to not constrain allowed
+        # values. If we didn't do this, we'd only be able to allow a subset
+        # of the values currently allowed.
         old_allowed = getattr(self, 'allowed_values', None)
         self.allowed_values = None
-
-        for value in values:
-
-            try:
+        try:
+            for value in values:
                 self.validate(value)
-            except:
-                # restore the old value
-                self.allowed_values = old_allowed
-                raise
+        finally:
+            # restore the old value
+            self.allowed_values = old_allowed
 
     allowed_values = ValidatedProperty('allowed_values', allowed_values)
 
@@ -258,16 +260,7 @@ class TextLine(Text):
 
 class Bool(Field):
     """A field representing a Bool."""
-
-    try:
-        if type(True) is int:
-            # If we have True and it's an int, then pretend we're 2.2.0.
-            raise NameError("True")
-    except NameError:
-        # Pre booleans
-        _type = int
-    else:
-        _type = bool
+    _type = type(True)
 
 class Int(ValueSet, Orderable):
     """A field representing an Integer."""
