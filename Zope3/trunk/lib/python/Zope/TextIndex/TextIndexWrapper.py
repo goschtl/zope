@@ -15,7 +15,7 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: TextIndexWrapper.py,v 1.3 2002/12/04 17:11:01 gvanrossum Exp $
+$Id: TextIndexWrapper.py,v 1.4 2002/12/04 18:41:56 gvanrossum Exp $
 """
 
 from Persistence import Persistent
@@ -75,8 +75,9 @@ class TextIndexWrapper(Persistent):
     # Methods implementing IStatistics
 
     def documentCount(self):
-        # Use _docweight because it is (relatively) small
-        return len(self.index._docweight)
+        """Return the number of documents in the index."""
+        return self.index.documentCount()
 
     def wordCount(self):
-        return self.index.length()
+        """Return the number of words in the index."""
+        return self.index.documentCount()

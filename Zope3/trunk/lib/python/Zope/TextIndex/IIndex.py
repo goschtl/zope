@@ -19,9 +19,11 @@ from Interface import Interface
 class IIndex(Interface):
     """Interface for an Index."""
 
-    def length():
+    def wordCount():
         """Return the number of words in the index."""
-        # Why not the number of docs?
+
+    def documentCount():
+        """Return the number of documents in the index."""
 
     def get_words(docid):
         """Return a list of wordids for the given docid."""

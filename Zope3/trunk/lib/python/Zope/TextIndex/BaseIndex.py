@@ -83,12 +83,16 @@ class BaseIndex(Persistent):
         self._docwords = IOBTree()
 
         # Use a BTree length for efficient length computation w/o conflicts
-        self.length = Length.Length()
+        self.wordCount = Length.Length()
 
-    def length(self):
+    def wordCount(self):
         """Return the number of words in the index."""
         # This is overridden per instance
         return len(self._wordinfo)
+
+    def documentCount(self):
+        """Return the number of documents in the index."""
+        return len(self.index._docweight)
 
     def get_words(self, docid):
         """Return a list of the wordids for a given docid."""
@@ -245,7 +249,7 @@ class BaseIndex(Persistent):
         doc2score = self._wordinfo.get(wid)
         if doc2score is None:
             doc2score = {}
-            self.length.change(1)
+            self.wordCount.change(1)
         else:
             # _add_wordinfo() is called for each update.  If the map
             # size exceeds the DICT_CUTOFF, convert to an IIBTree.
@@ -280,7 +284,7 @@ class BaseIndex(Persistent):
                 doc2score = IIBTree(doc2score)
             doc2score[docid] = weight
             self._wordinfo[wid] = doc2score # not redundant:  Persistency!
-        self.length.change(new_word_count)
+        self.wordCount.change(new_word_count)
 
 
     def _del_wordinfo(self, wid, docid):
@@ -289,7 +293,7 @@ class BaseIndex(Persistent):
         numdocs = len(doc2score)
         if numdocs == 0:
             del self._wordinfo[wid]
-            self.length.change(-1)
+            self.wordCount.change(-1)
             return
         if numdocs == self.DICT_CUTOFF:
             new = {}

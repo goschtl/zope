@@ -38,7 +38,7 @@ class IndexTest(TestCase):
         self.assertEqual(len(self.index._docwords), 1)
         self.assertEqual(len(self.index.get_words(DOCID)), 5)
         self.assertEqual(len(self.index._wordinfo),
-                         self.index.length())
+                         self.index.wordCount())
         for map in self.index._wordinfo.values():
             self.assertEqual(len(map), 1)
             self.assert_(map.has_key(DOCID))
@@ -51,7 +51,7 @@ class IndexTest(TestCase):
         self.assertEqual(len(self.index._wordinfo), 0)
         self.assertEqual(len(self.index._docwords), 0)
         self.assertEqual(len(self.index._wordinfo),
-                         self.index.length())
+                         self.index.wordCount())
 
     def test_index_two_documents(self):
         self.test_index_document()
@@ -64,7 +64,7 @@ class IndexTest(TestCase):
         self.assertEqual(len(self.index._docwords), 2)
         self.assertEqual(len(self.index.get_words(DOCID)), 4)
         self.assertEqual(len(self.index._wordinfo),
-                         self.index.length())
+                         self.index.wordCount())
         wids = self.lexicon.termToWordIds("document")
         self.assertEqual(len(wids), 1)
         document_wid = wids[0]
@@ -87,7 +87,7 @@ class IndexTest(TestCase):
         self.assertEqual(len(self.index._docwords), 1)
         self.assertEqual(len(self.index.get_words(DOCID)), 4)
         self.assertEqual(len(self.index._wordinfo),
-                         self.index.length())
+                         self.index.wordCount())
         for map in self.index._wordinfo.values():
             self.assertEqual(len(map), 1)
             self.assert_(map.has_key(DOCID))
@@ -100,7 +100,7 @@ class IndexTest(TestCase):
         self.assertEqual(len(self.index._docwords), 1)
         self.assertEqual(len(self.index.get_words(DOCID)), 7)
         self.assertEqual(len(self.index._wordinfo),
-                         self.index.length())
+                         self.index.wordCount())
         wids = self.lexicon.termToWordIds("repeat")
         self.assertEqual(len(wids), 1)
         repititive_wid = wids[0]

@@ -44,7 +44,7 @@ class Lexicon(Persistent):
         self._nbytes = 0 # Number of bytes indexed (at start of pipeline)
         self._nwords = 0 # Number of words indexed (after pipeline)
 
-    def length(self):
+    def wordCount(self):
         """Return the number of unique terms in the lexicon."""
         return self._nextwid - 1
 
