@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.28 2004/03/13 21:37:17 srichter Exp $
+$Id: utility.py,v 1.29 2004/03/19 03:17:30 srichter Exp $
 """
 __metaclass__ = type
 
@@ -212,7 +212,7 @@ def applyWidgetsChanges(view, schema, target=None, names=None):
     
     schema contrains the values provided by the widgets.
     
-    names can be specified to update a subset of the schema constrained values.    
+    names can be specified to update a subset of the schema constrained values.
     """
     
     errors = []
