@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: testZSP.py,v 1.4 2002/07/02 19:48:40 jim Exp $
+Revision information: $Id: testZSP.py,v 1.5 2002/07/16 23:41:18 jim Exp $
 """
 
 
@@ -159,6 +159,23 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(permissions, expected)
         
 
+    def testPlayfulPrincipalRole(self):
+        getService(None,"Adapters").provideAdapter(
+            ITest,
+            IPrincipalRoleManager, AnnotationPrincipalRoleManager)
+
+        ob1 = TestClass()
+        ob2 = TestClass()
+        ob3 = TestClass()
+        ob  = ContextWrapper(ob3, ContextWrapper(ob2, ob1))
+        self.failIf(self.policy.checkPermission(
+            self.write, ob, Context(self.jim)))
+        AnnotationPrincipalRoleManager(ob).assignRoleToPrincipal(
+            self.manager, self.jim)
+        self.failUnless(self.policy.checkPermission(
+            self.write, ob, Context(self.jim)))
+        
+
     def testPlayfulRolePermissions(self):
         
         ARPM = AnnotationRolePermissionManager
@@ -192,7 +209,6 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
 
-        # Make sure global principal permissions override placeful role perms
         principalPermissionManager.denyPermissionToPrincipal(
             test, self.jim)
         self.failIf(self.policy.checkPermission(
@@ -257,17 +273,14 @@ class Test(PlacefulSetup, unittest.TestCase):
                                                 Context(self.jim)))
         self.__assertPermissions(self.jim, ['read'], ob)
 
-        # make sure placeful principal permissions override global ones
+        # make sure placeless principal permissions override placeful ones
         APPM(ob).grantPermissionToPrincipal(test, self.tim)
         principalPermissionManager.denyPermissionToPrincipal(
             test, self.tim)
-        self.failUnless(self.policy.checkPermission(test, ob,
-                                                    Context(self.tim)))
+        self.failIf(self.policy.checkPermission(test, ob,
+                                                Context(self.tim)))
 
-        self.__assertPermissions(self.tim, ['read', 'test', 'write'], ob)
-
-        principalPermissionManager.unsetPermissionForPrincipal(
-            test, self.tim)
+        self.__assertPermissions(self.tim, ['read', 'write'], ob)
 
 
 class ITest(IAttributeAnnotatable):

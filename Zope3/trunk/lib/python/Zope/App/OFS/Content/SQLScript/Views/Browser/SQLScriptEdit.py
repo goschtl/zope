@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.2 2002/07/12 13:33:41 jim Exp $
+$Id: SQLScriptEdit.py,v 1.3 2002/07/16 23:41:14 jim Exp $
 """
 from Zope.ComponentArchitecture import getService
 from Zope.App.Traversing import getParent
@@ -37,6 +37,6 @@ class SQLScriptEdit(BrowserView):
 
     def getAllConnections(self):
         parent = getParent(self.context)
-        connection_service = getService(parent, "ConnectionService")
+        connection_service = getService(parent, "Connections")
         connections = connection_service.getAvailableConnections()
         return connections

@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection Management GUI
 
-$Id: EditUser.py,v 1.2 2002/07/13 18:26:26 srichter Exp $
+$Id: EditUser.py,v 1.3 2002/07/16 23:41:14 jim Exp $
 """
 from Zope.ComponentArchitecture import getService
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -31,5 +31,5 @@ class EditUser(BrowserView):
         return self.request.response.redirect(self.request.URL[-1])
 
     def getAvailableRoles(self):
-        service = getService(self.context, "RoleService")
+        service = getService(self.context, "Roles")
         return service.getRoles()

@@ -29,11 +29,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
-        defineService('RoleService', IRoleService)
-        provideService('RoleService', RoleService(
+        defineService('Roles', IRoleService)
+        provideService('Roles', RoleService(
             manager='Manager', member='Member'))
-        defineService('PermissionService', IPermissionService)
-        provideService('PermissionService', PermissionService(
+        defineService('Permissions', IPermissionService)
+        provideService('Permissions', PermissionService(
             read='Read', write='Write'))
         self.view = RolePermissionView(RolePermissionManager(), None)
 

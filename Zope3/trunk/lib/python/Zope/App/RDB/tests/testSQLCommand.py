@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.1 2002/07/10 23:37:26 srichter Exp $
+$Id: testSQLCommand.py,v 1.2 2002/07/16 23:41:16 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -65,8 +65,8 @@ class Test(TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        sm.defineService('ConnectionService', IConnectionService)
-        sm.provideService('ConnectionService', ConnectionServiceStub())
+        sm.defineService('Connections', IConnectionService)
+        sm.provideService('Connections', ConnectionServiceStub())
         self._old_getNextServiceManager = \
                               Zope.ComponentArchitecture.getNextServiceManager
         Zope.ComponentArchitecture.getNextServiceManager = \

@@ -36,6 +36,8 @@
   <div metal:define-slot="body">
      <p>Body here</p>
   </div>
+
+  <p>User: <span tal:replace="request/user/getTitle">User</span><p>
 </body>
 </html>
 

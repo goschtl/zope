@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: RoleService.py,v 1.3 2002/06/20 15:54:55 jim Exp $
+$Id: RoleService.py,v 1.4 2002/07/16 23:41:15 jim Exp $
 """
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.Security.IRoleService import IRoleService
@@ -39,7 +39,7 @@ class RoleService(BTreeContainer):
         try: return wrapped_self[rid]
         except KeyError:
             # We failed locally: delegate to a higher-level service.
-            sv= getNextService(wrapped_self, 'RoleService')
+            sv= getNextService(wrapped_self, 'Roles')
             if sv: return sv.getRole(rid)
             raise # will be original Key Error
     
@@ -48,7 +48,7 @@ class RoleService(BTreeContainer):
     def getRoles(wrapped_self):
         '''See interface IRoleService'''
         roles = list(wrapped_self.values())
-        roleserv=getNextService(wrapped_self, 'RoleService')
+        roleserv=getNextService(wrapped_self, 'Roles')
         if roleserv:
             roles.extend(roleserv.getRoles())
         return roles

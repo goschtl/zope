@@ -14,7 +14,7 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: PrincipalRoleView.py,v 1.3 2002/07/02 19:48:39 jim Exp $
+$Id: PrincipalRoleView.py,v 1.4 2002/07/16 23:41:17 jim Exp $
 """
 
 import time
@@ -40,24 +40,39 @@ class PrincipalRoleView(BrowserView):
         principals = getattr(self, '_principals', None)
         if principals is None:
             principals = self._principals = getService(
-                self.context, 'AuthenticationService'
+                self.context, 'Authentication'
                 ).getPrincipals('')
-            principals = [p.getId() for p in principals]
         return principals
 
     def getAllRoles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
-            roles = self._roles = getService(self.context, 'RoleService'
+            roles = self._roles = getService(self.context, 'Roles'
                 ).getRoles()
-            roles = [r.getId() for r in roles]
         return roles
 
     def createGrid(self, principals=None, roles=None):
-        if not principals:
-            principals = self.getAllPrincipals()
-        if not roles:
-            roles = self.getAllRoles()
+        if principals is None:
+            principals = self.request.get('principals')
+            if principals is None:
+                principals = self.getAllPrincipals()
+            else:
+                # Ugh, we have ids, but we want objects
+                auth_service = getService(self.context, 'Authentication')
+                principals = [auth_service.getPrincipal(principal)
+                              for principal in principals]
+            
+
+        if roles is None:
+            roles = self.request.get('roles')
+            if roles is None:
+                roles = self.getAllRoles()
+            else:
+                # Ugh, we have ids, but we want objects
+                role_service = getService(self.context, 'Roles')
+                roles = [role_service.getRole(role)
+                         for role in roles]
+
         return PrincipalRoleGrid(principals, roles, self.context)
 
     def action(self, principals, roles, testing=None):
@@ -91,18 +106,26 @@ class PrincipalRoleGrid:
         map = getAdapter(context, IPrincipalRoleMap)
 
         for role in roles:
+            rid = role.getId()
             for principal in principals:
-                setting = map.getSetting(role, principal)
-                self._grid[(principal, role)] = setting.getName()
+                pid = principal.getId()
+                setting = map.getSetting(rid, pid)
+                self._grid[(pid, rid)] = setting.getName()
 
     def principals(self):
         return self._principals
 
+    def principalIds(self):
+        return [p.getId() for p in self._principals]
+
     def roles(self):
         return self._roles
 
-    def getValue(self, principal, role):
-        return self._grid[(principal, role)]
+    def roleIds(self):
+        return [r.getId() for r in self._roles]
+
+    def getValue(self, principal_id, role_id):
+        return self._grid[(principal_id, role_id)]
 
     def listAvailableValues(self):
         # XXX rather use Allow.getName() & co

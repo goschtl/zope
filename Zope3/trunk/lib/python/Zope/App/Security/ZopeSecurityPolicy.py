@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: ZopeSecurityPolicy.py,v 1.4 2002/07/02 19:48:38 jim Exp $
+$Id: ZopeSecurityPolicy.py,v 1.5 2002/07/16 23:41:17 jim Exp $
 """
-__version__='$Revision: 1.4 $'[11:-2]
+__version__='$Revision: 1.5 $'[11:-2]
 
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.Proxy.ContextWrapper import ContainmentIterator
@@ -79,79 +79,149 @@ class ZopeSecurityPolicy:
     def checkPermission(self, permission, object, context):
         # XXX We aren't really handling multiple principals yet
 
-        principals = { context.user : 1 }
-        assigned_roles = {}
-        roles = {}
-        seen_allow = 0
-
-        # Check the placeful principal permissions and aggregate the
-        # Roles in this context
-        for c in ContainmentIterator(object):
-            ppm = queryAdapter(c, IPrincipalPermissionManager, None,
-                               globalContext)
-            if ppm is not None: 
-                for principal in principals.keys():
-                    setting = ppm.getSetting(permission, principal)
-                    if setting is Deny:
-                        return 0 # Explicit deny on principal
-                    elif setting is Allow:
-                        return 1 # Explicit allow on principal
-                    
-            prm = queryAdapter(c, IPrincipalRoleManager, None, globalContext)
-            if prm is not None:
-                for principal in principals.keys():
-                    for role, setting in prm.getRolesForPrincipal(principal):
-                        if not (role in roles):
-                            roles[role] = 1
-                            if setting is Allow:
-                                assigned_roles[role] = 1
+        # mapping from principal to set of roles
+        principals = { context.user : {'Anonymous': Allow} }
         
-        # now check the global principal permissions
-        getSetting = principalPermissionManager.getSetting
-        for principal in principals.keys():
-            setting = getSetting(permission, principal)
-            if setting is Allow:
-                return 1 # Explicit allow on global principal
-            elif setting is Deny:
-                return 0 # Explicit deny on global principal
-                                    
-        # aggregate global roles
-        global_roles = principalRoleManager.getRolesForPrincipal(principal)
-        for principal in principals.keys():
-            for role, setting in global_roles:
-                if not (role in roles):
-                    roles[role] = 1
-                    if setting is Allow:
-                        assigned_roles[role] = 1
-                        
-        # Check the placeful role permissions, checking anonymous first
-        for c in ContainmentIterator(object):
-            rpm = queryAdapter(c, IRolePermissionManager, None, globalContext)
-            if rpm is not None:
-                for role in ['Anonymous'] + assigned_roles.keys():
-                    setting = rpm.getSetting(permission, role)
-                    if setting is Allow:
-                        seen_allow = 1 # Flag allow, but continue processing
-                    elif setting is Deny:
-                        return 0 # Deny on placeful role permission
-                if seen_allow:
-                    return 1 # Allow on placeful role permission
-            
-        # Last, check if there are any global role settings
-        getSetting = rolePermissionManager.getSetting
-        for principal in principals.keys():
-            for role, role_setting in [('Anonymous', Allow)] + global_roles:
-                if role_setting is Allow:
-                    setting = getSetting(permission, role)
-                    if setting == Allow:
-                        seen_allow = 1 # Flag allow and continue
-                    elif setting == Deny:
-                        return 0 # Deny on global role
-            if seen_allow:
-                return 1 # Allow on global role
+        role_permissions = {}
+        remove = {}
+        orig = object
 
-        return 0 # Deny by default
+        # Look for placeless grants first.
 
+        # get placeless principal permissions
+        for principal in principals:
+            for permission, setting in getPermissionsForPrincipal(principal):
+                if setting is Deny:
+                    return 0
+                assert setting is Allow
+                remove[principal] = 1
+
+
+        # Clean out removed principals
+        if remove:
+            for principal in remove:
+                del principals[principal]
+            if principals:
+                # not done yet
+                remove.clear()
+            else:
+                # we've eliminated all the principals
+                return 1
+
+
+        # get placeless principal roles
+        for principal in principals:
+            roles = principals[principal]
+            for role, setting in getRolesForPrincipal(principal):
+                assert setting in (Allow, Deny)
+                if role not in roles:
+                    roles[role] = setting
+
+        for perm, role, setting in (
+            rolePermissionManager.getRolesAndPermissions()):
+            assert setting in (Allow, Deny)
+            if role not in role_permissions:
+                role_permissions[role] = {perm: setting}
+            else:
+                if perm not in role_permissions[role]:
+                    role_permissions[role][perm] = setting
+
+        # Get principal permissions based on roles
+        for principal in principals:
+            roles = principals[principal]
+            for role in roles:
+                if role in role_permissions:
+                    if permission in role_permissions[role]:
+                        setting = role_permissions[role][permission]
+                        if setting is Deny:
+                            return 0
+                        remove[principal] = 1
+
+
+        # Clean out removed principals
+        if remove:
+            for principal in remove:
+                del principals[principal]
+            if principals:
+                # not done yet
+                remove.clear()
+            else:
+                # we've eliminated all the principals
+                return 1
+
+
+        # Look for placeful grants
+        for object in ContainmentIterator(orig):
+
+            # Copy specific principal permissions
+            prinper = queryAdapter(object, IPrincipalPermissionMap)
+            if prinper is not None:
+                for principal in principals:
+                    for permission, setting in (
+                        prinper.getPermissionsForPrincipal(principal)):
+
+                        if setting is Deny:
+                            return 0
+
+                        assert setting is Allow
+                        remove[principal] = 1
+
+            # Clean out removed principals
+            if remove:
+                for principal in remove:
+                    del principals[principal]
+                if principals:
+                    # not done yet
+                    remove.clear()
+                else:
+                    # we've eliminated all the principals
+                    return 1
+                
+            # Collect principal roles
+            prinrole = queryAdapter(object, IPrincipalRoleMap)
+            if prinrole is not None:
+                for principal in principals:
+                    roles = principals[principal]
+                    for role, setting in (
+                        prinrole.getRolesForPrincipal(principal)):
+                        assert setting in (Allow, Deny)
+                        if role not in roles:
+                            roles[role] = setting
+
+            # Collect role permissions
+            roleper = queryAdapter(object, IRolePermissionMap)
+            if roleper is not None:
+                for perm, role, setting in roleper.getRolesAndPermissions():
+                    assert setting in (Allow, Deny)
+                    if role not in role_permissions:
+                        role_permissions[role] = {perm: setting}
+                    else:
+                        if perm not in role_permissions[role]:
+                            role_permissions[role][perm] = setting
+
+            # Get principal permissions based on roles
+            for principal in principals:
+                roles = principals[principal]
+                for role in roles:
+                    if role in role_permissions:
+                        if permission in role_permissions[role]:
+                            setting = role_permissions[role][permission]
+                            if setting is Deny:
+                                return 0
+                            remove[principal] = 1
+
+            # Clean out removed principals
+            if remove:
+                for principal in remove:
+                    del principals[principal]
+                if principals:
+                    # not done yet
+                    remove.clear()
+                else:
+                    # we've eliminated all the principals
+                    return 1
+
+        return 0 # deny by default
 
 
 def permissionsOfPrincipal(principal, object):
@@ -163,6 +233,19 @@ def permissionsOfPrincipal(principal, object):
     # Make two passes.
 
     # First, collect what we know about the principal:
+
+
+    # get placeless principal permissions
+    for permission, setting in getPermissionsForPrincipal(principal):
+        if permission not in permissions:
+            permissions[permission] = setting
+
+    # get placeless principal roles
+    for role, setting in getRolesForPrincipal(principal):
+        if role not in roles:
+            roles[role] = setting
+
+    # get placeful principal permissions and roles
     for object in ContainmentIterator(orig):
 
         # Copy specific principal permissions
@@ -180,17 +263,13 @@ def permissionsOfPrincipal(principal, object):
                 if role not in roles:
                     roles[role] = setting
 
-    # get global principal permissions
-    for permission, setting in getPermissionsForPrincipal(principal):
-        if permission not in permissions:
-            permissions[permission] = setting
-
-    # get glolbal principal roles
-    for role, setting in getRolesForPrincipal(principal):
-        if role not in roles:
-            roles[role] = setting
-
     # Second, update permissions using principal 
+
+    for perm, role, setting in (
+        rolePermissionManager.getRolesAndPermissions()):
+        if role in roles and perm not in permissions:
+            permissions[perm] = setting
+
     for object in ContainmentIterator(orig):
 
         # Collect role permissions
@@ -200,11 +279,6 @@ def permissionsOfPrincipal(principal, object):
                 if role in roles and perm not in permissions:
                     permissions[perm] = setting
 
-
-    for perm, role, setting in (
-        rolePermissionManager.getRolesAndPermissions()):
-        if role in roles and perm not in permissions:
-            permissions[perm] = setting
 
 
     result = [permission

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ServiceDirective.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: ServiceDirective.py,v 1.2 2002/07/16 23:41:16 jim Exp $
 """
 
 __metaclass__ = type
@@ -22,6 +22,8 @@ from Zope.Security.Checker import CheckerPublic, InterfaceChecker
 from Zope.Security.Proxy import Proxy
 from Zope.App.Traversing import traverse
 from IServiceDirective import IServiceDirective
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
+from Zope.App.Traversing import getPhysicalRoot
 
 class ServiceDirective(Persistent):
     __doc__ = IServiceDirective.__doc__
@@ -47,7 +49,20 @@ class ServiceDirective(Persistent):
         
         service = getattr(self, '_v_service', None)
         if service is None:
-            service = traverse(service_manager, self.component_path)
+            
+            # We have to be clever here. We need to do an honest to
+            # god unrestricted traveral, which means we have to
+            # traverse from an unproxies object. But, it's not enough
+            # for the service manager to be unproxies, because the
+            # path is an absolute path. When absolute paths are
+            # traversed, the traverser finds the physical root and
+            # traverses from there, so we need to make sure the
+            # physical root isn;t proxied.
+
+            # get the root and unproxy it.
+            root = removeAllProxies(getPhysicalRoot(service_manager))            
+            service = traverse(root, self.component_path)
+
             if self.permission:
                 if type(service) is Proxy:
                     service = removeSecurityProxy(service)

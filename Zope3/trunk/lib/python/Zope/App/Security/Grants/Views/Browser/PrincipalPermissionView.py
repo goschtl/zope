@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PrincipalPermissionView.py,v 1.1 2002/06/20 15:55:00 jim Exp $
+$Id: PrincipalPermissionView.py,v 1.2 2002/07/16 23:41:17 jim Exp $
 """
 import time
 
@@ -31,11 +31,11 @@ class PrincipalPermissionView(BrowserView):
     index = ViewPageTemplateFile('pt/principal_permission_edit.pt')
 
     def get_permission_service(self):
-        return getService(self.context, 'PermissionService')
+        return getService(self.context, 'Permissions')
 
     def get_principal(self, principal_id):
         return getService(self.context,
-                          'AuthenticationService'
+                          'Authentication'
                           ).getPrincipal(principal_id)
 
     def unsetPermissions(self, principal_id, permission_ids, REQUEST=None):
@@ -84,7 +84,7 @@ class PrincipalPermissionView(BrowserView):
 
         ppmap = getAdapter(self.context, IPrincipalPermissionMap)
         principal = self.get_principal(principal_id)
-        perm_serv = getService(self.context, 'PermissionService')
+        perm_serv = getService(self.context, 'Permissions')
         result = []
         for perm in perm_serv.getPermissions():
             if ppmap.getSetting(perm, principal) == Unset:

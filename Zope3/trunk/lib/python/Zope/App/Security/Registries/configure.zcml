@@ -5,24 +5,24 @@
 >
 
   <serviceType
-      id="RoleService" 
+      id="Roles" 
       interface=".IRoleService." />
   <service
-      serviceType="RoleService" 
+      serviceType="Roles" 
       component=".Registries.RoleRegistry.roleRegistry" />
 
   <serviceType
-      id="PermissionService" 
+      id="Permissions" 
       interface=".IPermissionService." />
   <service
-      serviceType="PermissionService" 
+      serviceType="Permissions" 
       component=".Registries.PermissionRegistry.permissionRegistry" />
 
   <serviceType
-      id="AuthenticationService" 
+      id="Authentication" 
       interface=".IAuthenticationService." />
   <service
-      serviceType="AuthenticationService" 
+      serviceType="Authentication" 
       component=".Registries.PrincipalRegistry.principalRegistry" />
 
   <!-- protect Roles and Permissions -->

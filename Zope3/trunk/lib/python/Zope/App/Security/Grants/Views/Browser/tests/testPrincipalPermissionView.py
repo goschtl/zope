@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testPrincipalPermissionView.py,v 1.1 2002/06/20 15:55:01 jim Exp $
+$Id: testPrincipalPermissionView.py,v 1.2 2002/07/16 23:41:17 jim Exp $
 """
 
 import unittest
@@ -140,18 +140,18 @@ class Test(PlacefulSetup, unittest.TestCase):
         provideService=getServiceManager(None).provideService
 
         defineService(
-                 'PermissionService', IPermissionService)
-        provideService('PermissionService',
+                 'Permissions', IPermissionService)
+        provideService('Permissions',
                  DummyPermissionService(self._permissions))
 
-        defineService('AuthenticationService',
+        defineService('Authentication',
                  IAuthenticationService)
 
         self._principals = []
         self._principals.append(DummyObject('foo', 'Foo'))
         self._principals.append(DummyObject('bar', 'Bar'))
 
-        provideService('AuthenticationService',
+        provideService('Authentication',
             DummyAuthenticationService(principals = self._principals))
         provideAdapter=getService(None,'Adapters').provideAdapter
         provideAdapter(IAttributeAnnotatable,

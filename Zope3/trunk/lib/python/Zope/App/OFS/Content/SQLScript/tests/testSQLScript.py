@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.1 2002/07/11 00:03:19 srichter Exp $
+$Id: testSQLScript.py,v 1.2 2002/07/16 23:41:14 jim Exp $
 """
 
 import unittest
@@ -64,8 +64,8 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        sm.defineService('ConnectionService', IConnectionService)
-        sm.provideService('ConnectionService', ConnectionServiceStub())
+        sm.defineService('Connections', IConnectionService)
+        sm.provideService('Connections', ConnectionServiceStub())
         self._old_getNextServiceManager = \
                               Zope.ComponentArchitecture.getNextServiceManager
         Zope.ComponentArchitecture.getNextServiceManager = \

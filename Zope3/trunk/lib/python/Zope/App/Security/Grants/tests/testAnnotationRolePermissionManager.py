@@ -37,10 +37,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
-        defineService('RoleService', IRoleService)
-        defineService('PermissionService', IPermissionService)
-        provideService('RoleService', roleRegistry)
-        provideService('PermissionService', permissionRegistry)
+        defineService('Roles', IRoleService)
+        defineService('Permissions', IPermissionService)
+        provideService('Roles', roleRegistry)
+        provideService('Permissions', permissionRegistry)
         provideAdapter=getService(None,"Adapters").provideAdapter
         provideAdapter(IAttributeAnnotatable, IAnnotations, 
                        AttributeAnnotations)                       

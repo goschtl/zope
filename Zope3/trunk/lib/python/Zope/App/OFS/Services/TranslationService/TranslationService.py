@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: TranslationService.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
+$Id: TranslationService.py,v 1.2 2002/07/16 23:41:16 jim Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -125,7 +125,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         # If the message id equals the returned text, then we should look up
         # a translation server higher up the tree.
         if text == msgid:
-            ts = queryNextService(self, 'TranslationService')
+            ts = queryNextService(self, 'Translation')
             if ts is not None:
                 return ts.translate(domain, msgid, mapping, context,
                                     target_language)

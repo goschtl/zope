@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: RolePermissionView.py,v 1.4 2002/06/25 11:36:40 efge Exp $
+$Id: RolePermissionView.py,v 1.5 2002/07/16 23:41:17 jim Exp $
 """
 
 import time
@@ -35,7 +35,7 @@ class RolePermissionView(BrowserView):
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = self._roles = getService(
-                self.context, 'RoleService'
+                self.context, 'Roles'
                 ).getRoles()
         return roles
 
@@ -43,7 +43,7 @@ class RolePermissionView(BrowserView):
         permissions = getattr(self, '_permissions', None)
         if permissions is None:
             permissions = self._permissions = getService(
-                self.context, 'PermissionService'
+                self.context, 'Permissions'
                 ).getPermissions()
         return permissions
 
@@ -66,14 +66,14 @@ class RolePermissionView(BrowserView):
     def permissionForID(self, pid):
         context = self.context
         roles = self.roles()
-        perm = getService(context, 'PermissionService'
+        perm = getService(context, 'Permissions'
                           ).getPermission(pid)
         return PermissionRoles(perm, context, roles)
 
     def roleForID(self, rid):
         context = self.context
         permissions = self.permissions()
-        role = getService(context, 'RoleService'
+        role = getService(context, 'Roles'
                           ).getRole(rid)
         return RolePermissions(role, context, permissions)
 

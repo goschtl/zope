@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testRoleService.py,v 1.5 2002/07/11 18:21:32 jim Exp $
+$Id: testRoleService.py,v 1.6 2002/07/16 23:41:15 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
@@ -72,9 +72,9 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         sm=getServiceManager(None)
         defineService=sm.defineService
         provideService=sm.provideService
-        defineService("RoleService", IRoleService)
+        defineService("Roles", IRoleService)
         self.roleRegistry=roleRegistry
-        provideService("RoleService", self.roleRegistry)
+        provideService("Roles", self.roleRegistry)
         self.createServiceManager()
         
         self.sm=getServiceManager(self.rootFolder)
@@ -84,11 +84,11 @@ class RoleServiceTests(PlacefulSetup, TestCase):
 
         path = "%s/Packages/default/myRoleService" % getPhysicalPathString(
             self.sm)
-        directive = ServiceDirective("RoleService", path)
+        directive = ServiceDirective("Roles", path)
         self.sm.Packages['default'].setObject("myRoleServiceDir", directive)
         self.sm.bindService(directive)
 
-        self.rs=getService(self.rootFolder,"RoleService")
+        self.rs=getService(self.rootFolder,"Roles")
 
     def testGetRole(self):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
@@ -119,11 +119,11 @@ class RoleServiceTests(PlacefulSetup, TestCase):
 
         path = "%s/Packages/default/myRoleService" % getPhysicalPathString(
             self.sm1)
-        directive = ServiceDirective("RoleService", path)
+        directive = ServiceDirective("Roles", path)
         self.sm1.Packages['default'].setObject("myRoleServiceDir", directive)
         self.sm1.bindService(directive)
 
-        self.rs1=self.sm1.getService("RoleService")
+        self.rs1=self.sm1.getService("Roles")
         r1=Role("Reviewer",'','')
         self.rs1.setObject("Reviewer", r1)
         self.assertEqual(self.rs1.getRole('Hacker').getId(), 'Hacker')
