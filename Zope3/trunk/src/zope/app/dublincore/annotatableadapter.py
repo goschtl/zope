@@ -18,12 +18,13 @@ from persistent.dict import PersistentDict
 
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
+from zope.app.location import Location
 
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"
 
 
-class ZDCAnnotatableAdapter(ZopeDublinCore):
+class ZDCAnnotatableAdapter(ZopeDublinCore, Location):
     """Adapt annotatable objects to Zope Dublin Core."""
 
     __used_for__ = IAnnotatable
