@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.4 2003/08/17 06:08:11 philikon Exp $
+$Id: menu.py,v 1.5 2003/08/19 23:11:05 srichter Exp $
 """
 __metaclass__ = type 
 
@@ -119,8 +119,8 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
     def getAllLocalMenus(self):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
         utilities = zapi.getService(self, Utilities)
-        matching = utilities.getRegisteredMatching(ILocalBrowserMenu)
-        return map(lambda m: m[2].active().getComponent(), matching)
+        menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
+        return map(lambda m: m[1], menus)
     getAllLocalMenus = ContextMethod(getAllLocalMenus)
 
 
@@ -136,9 +136,10 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
     def queryLocalMenu(self, menu_id, default=None):
         """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
         utilities = zapi.getService(self, Utilities)
-        matching = utilities.getRegisteredMatching(ILocalBrowserMenu, menu_id)
-        if matching and matching[0][2].active():
-            return matching[0][2].active().getComponent()
+        menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
+        for name, menu in menus:
+            if name == menu_id:
+                return menu
         return default
     queryLocalMenu = ContextMethod(queryLocalMenu)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.9 2003/08/08 00:14:41 srichter Exp $
+$Id: utility.py,v 1.10 2003/08/19 23:11:02 srichter Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -73,6 +73,15 @@ class ILocalUtilityService(IUtilityService):
     Methods which must be implemented by a local utility service to
     allow views to retrieve sufficient information from the service.
     """
+    
+    def getLocalUtilitiesFor(interface):
+        """Returns all active (registered is not enough) utilities that are
+        directly registered with this utility service.
+
+        An empty list is returned, if no local utilities for this interface
+        were found. If the interface is None, all utilities will be retruned.
+        """ 
+
     def getRegisteredMatching(interface=None, name=None):
         """Return the registered utilities.
 

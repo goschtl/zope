@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection View classes
 
-$Id: connection.py,v 1.17 2003/08/19 17:34:02 srichter Exp $
+$Id: connection.py,v 1.18 2003/08/19 23:10:55 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -28,30 +28,22 @@ class Connections:
     def getLocalConnections(self):
         conns = []
         utilities = zapi.getService(self.context, Utilities)
-        matching = utilities.getRegisteredMatching(IZopeDatabaseAdapter)
-        for match in matching:
-            conns.append(self.buildInfo(match))
+        for id, conn in utilities.getLocalUtilitiesFor(IZopeDatabaseAdapter):
+            conns.append(self.buildInfo(id, conn))
         return conns
-
 
     def getInheritedConnections(self):
         conns = []
-        next = queryNextService(self.context, Utilities)
-        while next is not None:
-            matching = next.getRegisteredMatching(IZopeDatabaseAdapter)
-            for match in matching:
-                conns.append(self.buildInfo(match))
-            next = queryNextService(next, Utilities)
+        utilities = queryNextService(self.context, Utilities)
+        for id, conn in utilities.getUtilitiesFor(IZopeDatabaseAdapter):
+            conns.append(self.buildInfo(id, conn))
         return conns
 
-
-    def buildInfo(self, match):
+    def buildInfo(self, id, conn):
         info = {}
-        info['id'] = match[1]
-        info['url'] = str(zapi.getView(match[2].active().getComponent(),
-                                       'absolute_url', self.request))
-
-        info['dsn'] = match[2].active().getComponent().dsn    
+        info['id'] = id
+        info['url'] = str(zapi.getView(conn, 'absolute_url', self.request))
+        info['dsn'] = conn.dsn
         return info
 
 
@@ -61,6 +53,7 @@ class ConnectionAdding(ComponentAdding):
 
     def add(self, content):
         if not IZopeDatabaseAdapter.isImplementedBy(content):
-            raise TypeError("%s is not a zope database adapter" % content)
+            error = _("${object} is not a Zope database adapter.")
+            error.mapping['object'] = str(content)
 
         return zapi.ContextSuper(ConnectionAdding, self).add(content)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache registry support classes.
 
-$Id: cache.py,v 1.13 2003/08/19 17:34:02 srichter Exp $
+$Id: cache.py,v 1.14 2003/08/19 23:10:55 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -28,29 +28,21 @@ class Caches:
     def getLocalCaches(self):
         caches = []
         utilities = zapi.getService(self.context, Utilities)
-        matching = utilities.getRegisteredMatching(ICache)
-        for match in matching:
-            caches.append(self.buildInfo(match))
+        for id, cache in utilities.getLocalUtilitiesFor(ICache):
+            caches.append(self.buildInfo(id, cache))
         return caches
-
 
     def getInheritedCaches(self):
         caches = []
-        next = queryNextService(self.context, Utilities)
-        while next is not None:
-            matching = next.getRegisteredMatching(ICache)
-            for match in matching:
-                caches.append(self.buildInfo(match))
-            next = queryNextService(next, Utilities)
+        utilities = queryNextService(self.context, Utilities)
+        for id, cache in utilities.getUtilitiesFor(ICache):
+            caches.append(self.buildInfo(id, cache))
         return caches
 
-
-    def buildInfo(self, match):
+    def buildInfo(self, id, cache):
         info = {}
-        info['id'] = match[1]
-        info['url'] = str(zapi.getView(match[2].active().getComponent(),
-                                       'absolute_url', self.request))
-
+        info['id'] = id
+        info['url'] = str(zapi.getView(cache, 'absolute_url', self.request))
         return info
 
 
@@ -60,6 +52,8 @@ class CacheAdding(ComponentAdding):
 
     def add(self, content):
         if not ICache.isImplementedBy(content):
-            raise TypeError("%s is not a Cache" % content)
+            error = _("${object} is not a Cache.")
+            error.mapping['object'] = str(content)
+            raise TypeError(error)
 
         return zapi.ContextSuper(CacheAdding, self).add(content)

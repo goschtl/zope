@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.3 2003/08/17 06:05:47 philikon Exp $
+$Id: menu.py,v 1.4 2003/08/19 23:10:55 srichter Exp $
 """
 
 from zope.app import zapi
@@ -21,7 +21,7 @@ from zope.app.browser.container.contents import Contents
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.services.menu import ILocalBrowserMenu
-from zope.app.services.servicenames import Utilities
+from zope.app.services.servicenames import Utilities, BrowserMenu
 from zope.security.proxy import trustedRemoveSecurityProxy
 
 class MenuContents(Contents):
@@ -56,30 +56,21 @@ class BrowserMenuServiceOverview:
     def getLocalMenus(self):
         menus_info = []
         utilities = zapi.getService(self.context, Utilities)
-        matching = utilities.getRegisteredMatching(ILocalBrowserMenu)
-        matching = map(lambda m: (m[1], m[2].active().getComponent()),
-                       matching)
-        for menu_id, menu in matching:
+        for menu_id, menu in utilities.getLocalUtilitiesFor(ILocalBrowserMenu):
             menus_info.append(self._getInfoFromMenu(menu_id, menu))
         return menus_info
 
 
     def getInheritedMenus(self):
-        next = queryNextService(self.context, "BrowserMenu")
         menus = []
-        while next is not None:
-            try:
-                menus += next.items()
-            except AttributeError:
-                # We deal with a global browser menu service
-                service = trustedRemoveSecurityProxy(next)
-                menus += service._registry.items()
-            next = queryNextService(next, "BrowserMenu")
-    
-        menus_info = []
-        for menu_id, menu in menus:
-            menus_info.append(self._getInfoFromMenu(menu_id, menu))
-        return menus_info
+        utilities = queryNextService(self.context, Utilities)
+        for id, menu in utilities.getUtilitiesFor(ILocalBrowserMenu):
+            menus.append(self._getInfoFromMenu(id, menu))
+        # Global Browser Menus
+        service = zapi.getService(None, BrowserMenu)
+        for id, menu in service._registry.items():
+            menus.append(self._getInfoFromMenu(id, menu))
+        return menus
             
 
     def _getInfoFromMenu(self, menu_id, menu):
@@ -90,7 +81,7 @@ class BrowserMenuServiceOverview:
         info['inherit'] = False
         if getattr(menu, 'inherit', False):
             info['inherit'] = True
-            next = queryNextService(menu, "BrowserMenu")
+            next = queryNextService(menu, BrowserMenu)
             if next is not None:
                 try:
                     inherit_menu = next.queryLocalMenu(menu_id)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Relational Database Adapter interfaces.
 
-$Id: rdb.py,v 1.4 2003/08/19 07:09:43 srichter Exp $
+$Id: rdb.py,v 1.5 2003/08/19 23:10:59 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute
@@ -315,7 +315,8 @@ class IConnectionService(Interface):
         """Returns a connection object by name or default."""
 
     def getAvailableConnections():
-        """Returns the connections available from this connection service."""
+        """Returns the connection names available from this connection
+        service."""
 
 
 class IGlobalConnectionService(IConnectionService):

@@ -14,19 +14,19 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.15 2003/08/16 00:44:08 srichter Exp $
+$Id: utility.py,v 1.16 2003/08/19 23:11:05 srichter Exp $
 """
-
 from zope.interface import implements
 from persistence.dict import PersistentDict
 from persistence import Persistent
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.services.utility import IUtilityRegistration
-from zope.app.interfaces.services.utility import ILocalUtilityService
-from zope.app.services.registration import RegistrationStack
-from zope.app.services.registration import ComponentRegistration
+from zope.app.interfaces.services.utility import \
+     IUtilityRegistration, ILocalUtilityService
+from zope.app.services.servicenames import Utilities
+from zope.app.services.registration import \
+     RegistrationStack, ComponentRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
 from zope.context import ContextMethod
@@ -41,6 +41,7 @@ class LocalUtilityService(Persistent):
         self._utilities = PersistentDict()
 
     def getUtility(self, interface, name=''):
+        """See zope.component.interfaces.IUtilityService"""
         utility = self.queryUtility(interface, name=name)
         if utility is None:
             raise ComponentLookupError("utility", interface, name)
@@ -48,54 +49,48 @@ class LocalUtilityService(Persistent):
     getUtility = ContextMethod(getUtility)
 
     def queryUtility(self, interface, default=None, name=''):
+        """See zope.component.interfaces.IUtilityService"""
         stack = self.queryRegistrations(name, interface)
         if stack is not None:
             registration = stack.active()
             if registration is not None:
                 return registration.getComponent()
 
-        next = getNextService(self, "Utilities")
+        next = getNextService(self, Utilities)
         return next.queryUtility(interface, default, name)
     queryUtility = ContextMethod(queryUtility)
 
-    def queryRegistrationsFor(self, registration, default=None):
-        return self.queryRegistrations(registration.name,
-                                        registration.interface,
-                                        default)
-    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
+    def getUtilitiesFor(self, interface):
+        """See zope.component.interfaces.IUtilityService"""
+        utilities = self.getLocalUtilitiesFor(interface)
+        names = map(lambda u: u[0], utilities)
 
-    def queryRegistrations(self, name, interface, default=None):
-        utilities = self._utilities.get(name)
-        if utilities is None:
-            return default
-        stack = utilities.getRegistered(interface)
-        if stack is None:
-            return default
+        next = getNextService(self, Utilities)
+        for utility in next.getUtilitiesFor(interface):
+            if utility[0] not in names:
+                utilities.append(utility)
+        return utilities
+    getUtilitiesFor = ContextMethod(getUtilitiesFor)
 
-        return ContextWrapper(stack, self)
-    queryRegistrations = ContextMethod(queryRegistrations)
+    def getLocalUtilitiesFor(self, interface):
+        """See zope.app.interfaces.services.ILocalUtilityService"""
+        utilities = []
+        for name in self._utilities:
+            for iface, cr in self._utilities[name].getRegisteredMatching():
+                cr = ContextWrapper(cr, self)
+                if not cr or cr.active() is None:
+                    continue
+                utility = cr.active().getComponent()
+                if interface and not iface.extends(interface, 0) and \
+                       removeAllProxies(utility) is not interface:
+                    continue
+                utilities.append((name, utility))
+        return utilities
+    getLocalUtilitiesFor = ContextMethod(getLocalUtilitiesFor)
 
-    def createRegistrationsFor(self, registration):
-        return self.createRegistrations(registration.name,
-                                         registration.interface)
-
-    createRegistrationsFor = ContextMethod(createRegistrationsFor)
-
-    def createRegistrations(self, name, interface):
-        utilities = self._utilities.get(name)
-        if utilities is None:
-            utilities = ImplementorRegistry(PersistentDict())
-            self._utilities[name] = utilities
-
-        stack = utilities.getRegistered(interface)
-        if stack is None:
-            stack = RegistrationStack()
-            utilities.register(interface, stack)
-
-        return ContextWrapper(stack, self)
-    createRegistrations = ContextMethod(createRegistrations)
 
     def getRegisteredMatching(self, interface=None, name=None):
+        """See zope.app.interfaces.services.ILocalUtilityService"""
         L = []
         for reg_name in self._utilities:
             for iface, cr in self._utilities[reg_name].getRegisteredMatching():
@@ -109,27 +104,47 @@ class LocalUtilityService(Persistent):
         return L
     getRegisteredMatching = ContextMethod(getRegisteredMatching)
 
-    def getUtilitiesFor(self, interface=None):
-        utilities = {}
-        for name in self._utilities:
-            for iface, cr in self._utilities[name].getRegisteredMatching():
-                if not cr:
-                    continue
-                cr = ContextWrapper(cr, self)
-                utility = cr.active().getComponent()
-                if interface and not iface.extends(interface, 0) and \
-                       removeAllProxies(utility) is not interface:
-                    continue
-                utilities[(name, utility)] = None
+    def queryRegistrationsFor(self, registration, default=None):
+        """zope.app.interfaces.services.registration.IRegistry"""
+        return self.queryRegistrations(registration.name,
+                                        registration.interface,
+                                        default)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-        next = getNextService(self, "Utilities")
+    def queryRegistrations(self, name, interface, default=None):
+        """zope.app.interfaces.services.registration.IRegistry"""
+        utilities = self._utilities.get(name)
+        if utilities is None:
+            return default
+        stack = utilities.getRegistered(interface)
+        if stack is None:
+            return default
 
-        for utility in next.getUtilitiesFor(interface):
-            if not utilities.has_key(utility):
-                utilities[utility] = None
-        return utilities.keys()
-    
-    getUtilitiesFor = ContextMethod(getUtilitiesFor)
+        return ContextWrapper(stack, self)
+    queryRegistrations = ContextMethod(queryRegistrations)
+
+    def createRegistrationsFor(self, registration):
+        """zope.app.interfaces.services.registration.IRegistry"""
+        return self.createRegistrations(registration.name,
+                                         registration.interface)
+
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
+
+    def createRegistrations(self, name, interface):
+        """zope.app.interfaces.services.registration.IRegistry"""
+        utilities = self._utilities.get(name)
+        if utilities is None:
+            utilities = ImplementorRegistry(PersistentDict())
+            self._utilities[name] = utilities
+
+        stack = utilities.getRegistered(interface)
+        if stack is None:
+            stack = RegistrationStack()
+            utilities.register(interface, stack)
+
+        return ContextWrapper(stack, self)
+    createRegistrations = ContextMethod(createRegistrations)
+
 
 class UtilityRegistration(ComponentRegistration):
     """Utility component registration for persistent components
