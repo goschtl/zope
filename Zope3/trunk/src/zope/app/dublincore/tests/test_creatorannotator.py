@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
+$Id: test_creatorannotator.py,v 1.5 2003/07/11 08:33:00 beams Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -111,11 +111,20 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
         self.failIf(len(data.creators) != 1)
         self.failUnless(bad_author.getId() in data.creators)
-        
+
         # Now let the good edit it
         security = newSecurityManager(good_author)
         CreatorAnnotator.notify(event)
-        
+
+        self.failIf(len(data.creators) != 2)
+        self.failUnless(good_author.getId() in data.creators)
+        self.failUnless(bad_author.getId() in data.creators)
+
+        # Let the bad edit it again
+        security = newSecurityManager(bad_author)
+        CreatorAnnotator.notify(event)
+
+	# Check that the bad author hasn't been added twice.
         self.failIf(len(data.creators) != 2)
         self.failUnless(good_author.getId() in data.creators)
         self.failUnless(bad_author.getId() in data.creators)
