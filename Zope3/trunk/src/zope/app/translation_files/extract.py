@@ -15,7 +15,7 @@
 """Extract message strings from python modules, page template files
 and ZCML files.
 
-$Id: extract.py,v 1.16 2004/02/19 15:20:37 philikon Exp $
+$Id: extract.py,v 1.17 2004/04/02 14:03:29 mgedmin Exp $
 """
 
 import os, sys, fnmatch
@@ -27,7 +27,7 @@ from pygettext import safe_eval, normalize, make_escapes
 from interfaces import IPOTEntry, IPOTMaker, ITokenEater
 from zope.interface import implements
 
-__meta_class__ = type
+__metaclass__ = type
 
 DEFAULT_CHARSET = 'UTF-8'
 DEFAULT_ENCODING = '8bit'
