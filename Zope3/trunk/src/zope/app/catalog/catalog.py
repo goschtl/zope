@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog
 
-$Id: catalog.py,v 1.25 2004/03/13 23:54:57 srichter Exp $
+$Id: catalog.py,v 1.26 2004/03/23 15:52:27 mmceahern Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -50,11 +50,32 @@ class ResultSet:
             obj = self.hub.getObject(hubid)
             yield obj
 
+class CatalogBaseAddSubscriber:
+
+    implements(ISubscriber)
+
+    def __init__(self, catalog, event):
+        self.catalog = catalog
+    
+    def notify(self, event):
+        """Receive notification of add events."""
+        self.catalog.subscribeEvents(update=False)
+
+class CatalogBaseRemoveSubscriber:
+
+    implements(ISubscriber)
+
+    def __init__(self, catalog, event):
+        self.catalog = catalog
+
+    def notify(self, event):
+        """Receive notification of remove events."""
+        if self.catalog.getSubscribed():
+            self.catalog.unsubscribeEvents()
 
 class CatalogBase(Persistent, SampleContainer):
 
-    implements(ICatalog, ISubscriber, IRemoveNotifiable, 
-               IAddNotifiable, IContainer, IAttributeAnnotatable)
+    implements(ICatalog, ISubscriber, IContainer, IAttributeAnnotatable)
 
     _subscribed = False
 
@@ -63,14 +84,6 @@ class CatalogBase(Persistent, SampleContainer):
 
     def getSubscribed(self): 
         return self._subscribed
-
-    def addNotify(self, event):
-        self.subscribeEvents(update=False)
-
-    def removeNotify(self, event):
-        " be nice, unsub ourselves in this case "
-        if self._subscribed:
-            self.unsubscribeEvents()
 
     def clearIndexes(self):
         for index in self.values():

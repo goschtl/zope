@@ -28,6 +28,20 @@
       />
 </content>
 
+<subscriber
+    factory=".catalog.CatalogBaseRemoveSubscriber"
+    provides="zope.app.event.interfaces.ISubscriber"
+    for=".interfaces.ICatalog
+         zope.app.container.interfaces.IObjectRemovedEvent"
+    />
+
+<subscriber
+    factory=".catalog.CatalogBaseAddSubscriber"
+    provides="zope.app.event.interfaces.ISubscriber"
+    for=".interfaces.ICatalog
+         zope.app.container.interfaces.IObjectAddedEvent"
+    />
+
 <content class=".catalog.CatalogUtility">
   <factory 
       id="zope.app.catalogutility" 

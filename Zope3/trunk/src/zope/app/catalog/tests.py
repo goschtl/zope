@@ -16,9 +16,10 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.6 2004/03/17 17:59:27 srichter Exp $
+$Id: tests.py,v 1.7 2004/03/23 15:52:27 mmceahern Exp $
 """
 import unittest
+import doctest
 
 from zope.interface import implements
 from zope.app.index.interfaces.field import IUIFieldCatalogIndex
@@ -28,6 +29,8 @@ from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.index.interfaces import ISimpleQuery
 
 from zope.app.catalog.catalog import Catalog
+from zope.app.catalog.catalog import CatalogBaseAddSubscriber
+from zope.app.catalog.catalog import CatalogBaseRemoveSubscriber
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
 from zope.app.servicenames import HubIds
@@ -79,6 +82,59 @@ class StubIndex(object):
 class stoopid(object):
     def __init__(self, **kw):
         self.__dict__ = kw
+
+class DummyCatalog:
+
+    def __init__(self):
+        self.subscribed = False
+
+    def subscribeEvents(self, update=False):
+        self.subscribed = True
+        
+    def getSubscribed(self):
+        return self.subscribed
+
+    def unsubscribeEvents(self):
+        self.subscribed = False
+        
+class TestEventAdapters:
+    def test_addNotify(self):
+        """
+        First we create a dummy catalog and an adapter for it.
+        
+        >>> catalog = DummyCatalog()
+        >>> adapter = CatalogBaseAddSubscriber(catalog, None)
+
+        Now call notification
+        >>> adapter.notify(None)
+
+        Check to make sure the adapter added the path
+        >>> catalog.getSubscribed()
+        True
+        """
+    
+    def test_deleteNotify(self):
+        """
+        First we create a dummy catalog and an adapter for it.
+        
+        >>> catalog = DummyCatalog()
+        >>> adapter = CatalogBaseAddSubscriber(catalog, None)
+
+        Now call notification
+        >>> adapter.notify(None)
+
+        Check to make sure the adapter subscribed
+        >>> catalog.getSubscribed()
+        True
+
+        Now create a removal adapter and notify it
+        >>> adapter = CatalogBaseRemoveSubscriber(catalog, None)
+        >>> adapter.notify(None)
+
+        Check to make sure the adapter unsubscribed
+        >>> catalog.getSubscribed()
+        False
+        """
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -183,8 +239,11 @@ class Test(PlacelessSetup, unittest.TestCase):
         res = list(res)
 
 def test_suite():
-    return unittest.makeSuite(Test)
-
+    import sys
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        doctest.DocTestSuite(sys.modules[__name__]),
+        ))
 
 if __name__ == "__main__":
     unittest.main()
