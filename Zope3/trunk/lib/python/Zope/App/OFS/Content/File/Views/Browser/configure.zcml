@@ -43,10 +43,13 @@
              action="AllRolePermissions.html"/>
   </browser:menuItems>
 
-  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
                     title="File" action="File" />
-
-  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+ 
+  <!-- XXX this isn't working -->
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
                     title="Naive File" action="NaiveFile" />
 
 

@@ -12,6 +12,13 @@
     <browser:menuItem title="Control" action="@@control.html" />
   </browser:menuItems>
 
+  <browser:menuItem menu="add_content"
+                for="Zope.App.OFS.Services.ServiceManager.IServiceAdding."
+                title="Events" action="EventService"
+                description="Capture events from all the contents of this folder
+                and its entire nested folder structure"
+                    />
+
 </zopeConfigure>
 
 

@@ -6,6 +6,17 @@
 
   <!-- Folder View Directives -->
 
+   <browser:view
+       permission="Zope.ManageContent" 
+       for=".Folder.IFolder"
+       name="create"  
+       factory=".Views.Browser.FolderAdding."
+       >
+       <browser:page name="index.html"
+       template="Views/Browser/add.pt" />
+       <browser:page name="action.html" attribute="action" />
+   </browser:view>
+
   <browser:icon name="zmi_icon" for=".Folder.IFolder."
                 file="Folder_icon.gif" />
 
@@ -15,7 +26,8 @@
              action="@@AllRolePermissions.html"/>
   </browser:menuItems>
 
-  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
                     title="Folder" action="Folder"
                     />
 
@@ -33,6 +45,9 @@
                   />
     <browser:page name="addServiceManager.html"
                   attribute="addServiceManager"
+                  />
+    <browser:page name="removeObjects.html"
+                  attribute="removeObjects"
                   />
   </browser:view>
 
@@ -75,13 +90,19 @@
     <browser:menuItem title="Limit" action="@@FolderLimitEditForm.html"/>
   </browser:menuItems>
 
+  <!--
+  we already get these from IFolder above
+  
   <browser:menuItems menu="zmi_views" for=".LoadedFolder.ILoadedFolder.">
     <browser:menuItem title="Contents" action="@@index.html"/>
     <browser:menuItem title="Role Permissions" 
              action="@@AllRolePermissions.html"/>
   </browser:menuItems>
+  
+  -->
 
-  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
                     title="Loaded Folder" action="LoadedFolder"
                     description="A Folder having all the goodies."
                     />

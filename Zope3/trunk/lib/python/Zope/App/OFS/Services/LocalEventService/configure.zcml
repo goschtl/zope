@@ -5,6 +5,12 @@
 >
 
   <content class='.LocalEventService.'>
+    <factory
+        id="EventService"
+        permission="Zope.ManageServices"
+        title="Events"
+        description="Capture events from all the contents of this folder
+        and its entire nested folder structure" />
     <require
         permission="Zope.View"
         attributes="publishEvent notify" />
@@ -16,13 +22,6 @@
   
   <browser:icon name="zmi_icon" for=".LocalEventService.ILocalEventService" 
                 file="./event_service.gif" />
-
-  <service:factoryFromClass
-      id='Events'
-      class='.LocalEventService.'
-      permission='Zope.ManageServices'
-      title='Events'
-      description='An event service: use sparingly' />
 
   <include package=".Views" />
 

@@ -17,6 +17,13 @@
 
   </browser:view>
 
+  <browser:menuItem menu="add_content"
+                    for="Zope.App.OFS.Services.ServiceManager.IServiceAdding."
+                    title="Roles" action="RoleService"
+                    description="Add and manage roles specifically
+                    for this folder and all its contents"
+                    />
+
   <browser:view 
      name="adder"
      permission="Zope.ManageServices" 

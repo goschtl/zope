@@ -7,6 +7,15 @@
                  title="Menu of objects to be added to content containers"
                  />
 
+   <!--
+   
+   Actually using this Adding would add an item to *all* container menus:
+       folders, service managers, role services, and so on: undesirable.
+       
+       Most content objects will want to use OFS.Folder.IFolderAdding as their
+       primary create menu interface.  ServiceManagers and other containers will
+       have their own Addings to use.
+   
    <browser:view
        for="Zope.App.OFS.Container.IContentContainer."
        name="create"  
@@ -16,6 +25,8 @@
        <browser:page name="index.html" template="add.pt" />
        <browser:page name="action.html" attribute="action" />
    </browser:view>
+
+   -->
 
 </zopeConfigure>
        

@@ -20,7 +20,7 @@
 
 <div>Folder Contents <a href="@@create"> Add... </a> </div>
 
-  <form name="folderContentsForm" method="get" action="@@index.html" 
+  <form name="folderContentsForm" method="get" action="." 
         tal:define="folder_contents view/listContentInfo">
 
     <metal:block tal:condition="folder_contents">
@@ -67,7 +67,7 @@
       </table>
       <br />
 
-      <input type="submit" name="removeObjects:method" value="Delete"
+      <input type="submit" name="@@removeObjects.html:method" value="Delete"
              tal:attributes="value string:menu_delete_button"
              i18n:attributes="value" /> 
 

@@ -23,7 +23,7 @@
   <table class="ContentListing">
   
     <caption>Folder Contents 
-             <a href="@@addForm.html"> Add... </a> </caption>
+             <a href="@@create"> Add... </a> </caption>
   
     <tbody>
   

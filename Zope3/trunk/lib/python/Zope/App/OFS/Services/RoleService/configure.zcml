@@ -5,6 +5,10 @@
    xmlns:service='http://namespaces.zope.org/service'
 >
   <content class=".RoleService.">
+    <factory
+        id="RoleService"
+        permission="Zope.ManageServices"
+        title="Roles" />
     <require
         permission="Zope.Security"
         interface="Zope.App.Security.IRoleService." />
@@ -18,12 +22,6 @@
         permission="Zope.Security"
         interface="Zope.App.Security.IRole." />
   </content>
-
-  <service:factoryFromClass
-      id="RoleService"
-      class=".RoleService."
-      permission="Zope.ManageServices"
-      title="Role Service" />
 
   <factory component=".Role." />
 

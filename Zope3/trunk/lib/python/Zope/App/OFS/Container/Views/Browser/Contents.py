@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.4 2002/06/18 14:47:02 jim Exp $
+Revision information: $Id: Contents.py,v 1.5 2002/06/22 17:16:11 poster Exp $
 """
 
 
@@ -22,7 +22,7 @@ import os
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.ComponentArchitecture import queryView
+from Zope.ComponentArchitecture import queryView, getView
 
 class Contents(BrowserView):
 
@@ -50,11 +50,12 @@ class Contents(BrowserView):
         for id in ids:
             self.remove(id)
 
-        # XXX:  This is horribly broken, but I can't do better until
-        #       we have a way to compute absolute URLs.
         if REQUEST is not None:
             # for unit tests
-            REQUEST.response.redirect(REQUEST.URL['-1'])
+            REQUEST.response.redirect(
+                getView(self.context, "absolute_url", REQUEST)
+                )
+            return
         return self.confirmRemoved()
     
 
