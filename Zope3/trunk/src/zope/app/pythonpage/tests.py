@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Python Page
 
-$Id: tests.py,v 1.1 2004/01/30 23:19:23 srichter Exp $
+$Id: tests.py,v 1.2 2004/02/24 16:50:28 philikon Exp $
 """
 import unittest
 from zope.app import zapi
@@ -57,7 +57,7 @@ def tearDown():
     
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.products.pythonpage'),
+        DocTestSuite('zope.app.pythonpage'),
         ))
 
 if __name__ == '__main__':

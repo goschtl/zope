@@ -13,10 +13,10 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.3 2004/02/02 15:03:41 anthony Exp $
+$Id: __init__.py,v 1.2 2004/02/24 16:50:28 philikon Exp $
 """
 import re
-from persistence import Persistent
+from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.interface import Interface, implements
@@ -118,7 +118,6 @@ class PythonPage(Contained, Persistent):
         else:
             filename = zapi.getPath(self)
         return filename
-
         
     def setSource(self, source):
         r"""Set the source of the page and compile it.

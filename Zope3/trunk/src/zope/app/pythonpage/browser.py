@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page Browser Views 
 
-$Id: browser.py,v 1.3 2004/01/31 14:02:09 srichter Exp $
+$Id: browser.py,v 1.2 2004/02/24 16:50:28 philikon Exp $
 """
 from zope.app.browser.form.editview import EditView
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -26,9 +26,8 @@ class PythonPageEval:
 
         self.request.response.setHeader('content-type',
                                         self.context.contentType)
-        
-        return self.context(self.request, **kw)
 
+        return self.context(self.request, **kw)
 
 class PythonPageEditView(EditView):
     """Edit View Class for Python Page."""
@@ -45,5 +44,3 @@ class PythonPageEditView(EditView):
             self.update_status = status
 
         return status
-
-        
