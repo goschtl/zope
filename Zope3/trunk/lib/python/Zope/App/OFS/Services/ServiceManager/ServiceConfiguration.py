@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ServiceConfiguration.py,v 1.2 2002/11/30 18:39:16 jim Exp $
+$Id: ServiceConfiguration.py,v 1.3 2002/12/03 18:16:58 efge Exp $
 """
 
 __metaclass__ = type
@@ -129,7 +129,6 @@ class ServiceConfiguration(Persistent):
     def manage_beforeDelete(self, configuration, container):
         "See Zope.App.OFS.Container.IDeleteNotifiable"
         assert self == configuration
-        service_type = self.serviceType
         sm = getServiceManager(self)
         service = self.getService()
         objectstatus = self.status
