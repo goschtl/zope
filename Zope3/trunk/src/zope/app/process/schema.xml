@@ -7,7 +7,7 @@
   </description>
 
   <!-- database and storage types -->
-  <import package="zodb" />
+  <import package="ZODB" />
 
   <!-- logging configuration -->
   <import package="zope.app.process" />
@@ -18,7 +18,7 @@
     <key name="verbose" datatype="boolean" />
   </sectiontype>
 
-  <section type="zodb.database" name="*" required="yes"
+  <section type="ZODB.database" name="*" required="yes"
            attribute="database">
     <description>
       The main application database that should be used.

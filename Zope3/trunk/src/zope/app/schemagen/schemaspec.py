@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: schemaspec.py,v 1.3 2003/06/04 10:46:37 stevea Exp $
+$Id: schemaspec.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
 """
 __metaclass__ = type
 
 from zope.app.interfaces.schemagen import ISchemaSpec
-from persistence import Persistent
+from persistent import Persistent
 from zope.app.schemagen.modulegen import generateModuleSource
 from zope.interface import implements
 

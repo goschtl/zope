@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.15 2003/12/18 04:10:19 jim Exp $
+$Id: _app.py,v 1.16 2004/02/20 16:57:18 fdrake Exp $
 """
 
 import base64, time
@@ -61,11 +61,11 @@ def database(db):
                 db = globals['DB']
             else:
                 storage = globals['Storage']
-                from zodb.db import DB
+                from ZODB.DB import DB
                 db = DB(storage, cache_size=4000)
         elif db.endswith(".fs"):
-            from zodb.storage.file import FileStorage
-            from zodb.db import DB
+            from ZODB.FileStorage import FileStorage
+            from ZODB.DB import DB
             storage = FileStorage(db)
             db = DB(storage, cache_size=4000)
 

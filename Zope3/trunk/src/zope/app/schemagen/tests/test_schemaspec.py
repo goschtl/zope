@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemaspec.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: test_schemaspec.py,v 1.3 2004/02/20 16:57:29 fdrake Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -201,12 +201,12 @@ class SchemaSpecTests(TestCase):
         self.assertEquals(source, s.generateModuleSource())
 
     def test_generateModuleSourceNoHistory(self):
-        s = self.s
         # no history, so expect no setstate
         f = openInTests('setstatemodule_no_history.py.txt', 'r')
         source = f.read()
         f.close()
-        self.assertEquals(source.strip(), s.generateModuleSource().strip())
+        self.assertEquals(source.strip(),
+                          self.s.generateModuleSource().strip())
 
     def test_prepareSetstate(self):
         from zope.app.schemagen.schemaspec import prepareSetstate

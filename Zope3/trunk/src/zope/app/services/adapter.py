@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.23 2003/11/21 17:10:07 jim Exp $
+$Id: adapter.py,v 1.24 2004/02/20 16:57:30 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -118,7 +118,7 @@ AdapterConfiguration = AdapterRegistration
 
 #BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
-import persistence
+import persistent
 from zope.interface.surrogate import ReadProperty
 
 AdapterRegistration.required = ReadProperty(lambda self: self.forInterface)
@@ -126,5 +126,5 @@ AdapterRegistration.provided = ReadProperty(
     lambda self: self.providedInterface)
 AdapterRegistration.name     = ReadProperty(lambda self: self.adapterName)
 
-class AdapterService(persistence.Persistent):
+class AdapterService(persistent.Persistent):
     pass

@@ -13,14 +13,14 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.10 2004/02/15 13:04:27 philikon Exp $
+$Id: __init__.py,v 1.11 2004/02/20 16:57:31 fdrake Exp $
 """
 import random
 import sys
 import time
 import random
 
-from persistence import Persistent
+from persistent import Persistent
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 from zope.interface import implements

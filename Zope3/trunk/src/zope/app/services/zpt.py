@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.18 2004/02/06 04:13:31 jim Exp $
+$Id: zpt.py,v 1.19 2004/02/20 16:57:30 fdrake Exp $
 """
 
 from zope.security.proxy import ProxyFactory
-import persistence
+import persistent
 import re
 import zope.app.container.contained
 import zope.fssync.server.entryadapter
@@ -68,7 +68,7 @@ class IZPTTemplate(
 class ZPTTemplate(
     zope.app.pagetemplate.engine.AppPT,
     zope.pagetemplate.pagetemplate.PageTemplate,
-    persistence.Persistent,
+    persistent.Persistent,
     zope.app.container.contained.Contained,
     ):
 

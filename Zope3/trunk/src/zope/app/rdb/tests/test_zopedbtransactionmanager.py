@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_zopedbtransactionmanager.py,v 1.3 2003/05/01 19:35:30 faassen Exp $
+$Id: test_zopedbtransactionmanager.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
 """
 
-from unittest import TestCase, main, makeSuite
+from unittest import TestCase, main, makeSuite, TestSuite
 from transaction import get_transaction
 from transaction.tests.abstestIDataManager import IDataManagerTests
 from zope.app.rdb import ZopeDBTransactionManager
@@ -44,7 +44,11 @@ class TxnMgrTest(IDataManagerTests, TestCase):
         self.assertEqual(self.conn._called.get('commit'), 1)
 
 def test_suite():
-    return makeSuite(TxnMgrTest)
+    from doctest import DocTestSuite
+    return TestSuite((
+        DocTestSuite('zope.app.rdb'),
+        makeSuite(TxnMgrTest),
+        ))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

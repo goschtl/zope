@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.12 2003/12/19 16:53:15 mchandra Exp $
+$Id: sql.py,v 1.13 2004/02/20 16:57:24 fdrake Exp $
 """
 
 import re
@@ -150,8 +150,8 @@ import sys
 
 from types import StringTypes
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 
 from zope.documenttemplate.dt_html import HTML
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param

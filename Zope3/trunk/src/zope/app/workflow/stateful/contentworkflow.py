@@ -15,12 +15,12 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.8 2003/09/21 17:33:56 jim Exp $
+$Id: contentworkflow.py,v 1.9 2004/02/20 16:57:34 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 from zope.component import getService, queryAdapter
 
 from zope.app.interfaces.event import ISubscriber

@@ -13,7 +13,7 @@
 ##############################################################################
 """Functions that control how the Zope appserver knits itself together.
 
-$Id: main.py,v 1.3 2003/10/13 21:55:12 fdrake Exp $
+$Id: main.py,v 1.4 2004/02/20 16:57:26 fdrake Exp $
 """
 
 import logging
@@ -23,7 +23,7 @@ import time
 
 from zdaemon import zdoptions
 
-from zodb.zeo import threadedasync
+import ThreadedAsync
 
 from zope.app import config
 from zope.app.event import publish
@@ -65,7 +65,7 @@ def main(args=None):
 
 def run():
     try:
-        threadedasync.loop()
+        ThreadedAsync.loop()
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass

@@ -1,6 +1,6 @@
-from persistence import Persistent
-from persistence.dict import PersistentDict
-from zope.interface import implements, implementsOnly, implementedBy
+from persistent import Persistent
+from persistent.dict import PersistentDict
+from zope.interface import implements
 from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError

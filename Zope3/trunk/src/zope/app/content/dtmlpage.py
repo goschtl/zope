@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.7 2003/09/21 17:31:49 jim Exp $
+$Id: dtmlpage.py,v 1.8 2004/02/20 16:57:24 fdrake Exp $
 """
-from persistence import Persistent
+from persistent import Persistent
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.content.file import IFileContent

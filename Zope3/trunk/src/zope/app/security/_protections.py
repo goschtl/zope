@@ -13,7 +13,7 @@
 ##############################################################################
 """Register protection information for some standard low-level types
 
-$Id: _protections.py,v 1.7 2004/02/05 22:17:00 srichter Exp $
+$Id: _protections.py,v 1.8 2004/02/20 16:57:30 fdrake Exp $
 """
 
 def protect():
@@ -81,7 +81,7 @@ def protect():
     for which_type, checker in _btree_checkers.iteritems():
         defineChecker(which_type, checker)
 
-    from persistence.list import PersistentList
+    from persistent.list import PersistentList
 
     defineChecker(PersistentList,
                   NamesChecker(
@@ -89,7 +89,7 @@ def protect():
                       '__contains__', 'index', 'count'])
                   )
 
-    from persistence.dict import PersistentDict
+    from persistent.dict import PersistentDict
 
     defineChecker(PersistentDict,
                   NamesChecker(['__getitem__', '__len__', '__iter__',
@@ -99,13 +99,6 @@ def protect():
                         ]
                      )
                   )
-
-    # In Python 2.3 and up, PersistentMetaClass is just type.
-    # It causes an error to define a new checker for type.
-    from persistence import PersistentMetaClass
-    if PersistentMetaClass != type:
-        from zope.security.checker import _typeChecker
-        defineChecker(PersistentMetaClass, _typeChecker)
 
     # Make sure the message id gets never proxied
     from zope.i18n.messageid import MessageID

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.5 2004/01/13 19:32:19 fdrake Exp $
+$Id: annotatableadapter.py,v 1.6 2004/02/20 16:57:25 fdrake Exp $
 """
 
 __metaclass__ = type
@@ -25,7 +25,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
 from zope.xmlpickle import dumps, loads
-from persistence.dict import PersistentDict
+from persistent.dict import PersistentDict
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"
 

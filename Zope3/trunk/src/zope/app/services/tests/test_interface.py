@@ -13,14 +13,13 @@
 ##############################################################################
 """Interface Service Tests
 
-$Id: test_interface.py,v 1.9 2003/08/16 00:44:14 srichter Exp $
+$Id: test_interface.py,v 1.10 2004/02/20 16:57:32 fdrake Exp $
 """
 import unittest
 
 from transaction import get_transaction
 
-from zodb.db import DB
-from zodb.storage.mapping import MappingStorage
+from ZODB.tests.util import DB
 from zodb.code.module import ManagedRegistry
 
 from zope.interface import Interface
@@ -41,7 +40,7 @@ aFoo = Foo()
 class PersistentInterfaceTest(unittest.TestCase):
 
     def setUp(self):
-        self.db = DB(MappingStorage())
+        self.db = DB()
         self.root = self.db.open().root()
         self.registry = ManagedRegistry()
         self.root["registry"] = self.registry

@@ -13,12 +13,12 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.7 2003/12/18 09:57:16 pnaveen Exp $
+$Id: content.py,v 1.8 2004/02/20 16:57:32 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotations

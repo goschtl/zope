@@ -13,9 +13,10 @@
 ##############################################################################
 """File implementation that can have its content in multiple languages.
 
-$Id: i18nfile.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
+$Id: i18nfile.py,v 1.6 2004/02/20 16:57:24 fdrake Exp $
 """
-import persistence
+
+import persistent
 from zope.app.interfaces.content.i18n import II18nFile
 from zope.app.content.file import File
 from zope.interface import implements
@@ -23,7 +24,7 @@ from zope.interface import implements
 # XXX We shouldn't be dependent on Browser here! Aaaargh.
 from zope.publisher.browser import FileUpload
 
-class I18nFile(persistence.Persistent):
+class I18nFile(persistent.Persistent):
     """I18n aware file object.  It contains a number of File objects --
     one for each language.
     """

@@ -14,7 +14,7 @@
 """Provide persistent wrappers for objects that cannot derive from
 persistence for some reason."""
 
-from persistence import Persistent
+from persistent import Persistent, GHOST
 from zope.interface import implementedBy
 from zope.security.checker import selectChecker
 
@@ -37,7 +37,7 @@ class SecurityDescriptor:
             #
             # Added the same code below, in ClassDescriptor,
             # though I'm not sure it is really needed there.
-            if inst._p_state == 3:
+            if inst._p_state == GHOST:
                 inst._p_activate()
             return selectChecker(inst.__proxied__)
 
@@ -51,7 +51,7 @@ class ClassDescriptor:
         if inst is None:
             return cls
         else:
-            if inst._p_state == 3:
+            if inst._p_state == GHOST:
                 inst._p_activate()
             return inst.__proxied__.__class__
 
@@ -85,14 +85,14 @@ class Struct(Persistent):
 
   def __getattribute__(self, name):
       if name.startswith('_p_') or name in struct_attrs:
-          v = object.__getattribute__(self, name)
+          v = Persistent.__getattribute__(self, name)
           # Handle descriptors here, eg: __Security_checker__
           # is a descriptor for Struct objects.
           if hasattr(v, '__get__'):
               return v.__get__(self, type(self))
           return v
       # XXX This is butt ugly. See the comment on SecurityDescriptor.
-      if self._p_state == 3:
+      if self._p_state == GHOST:
           self._p_activate()
       proxied = self.__proxied__
       v = getattr(proxied, name)

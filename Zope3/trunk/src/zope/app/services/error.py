@@ -15,10 +15,10 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: error.py,v 1.3 2003/09/21 17:32:49 jim Exp $
+$Id: error.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
 """
 
-from persistence import Persistent
+from persistent import Persistent
 from random import random
 from thread import allocate_lock
 from types import StringTypes

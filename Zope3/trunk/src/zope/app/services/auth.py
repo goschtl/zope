@@ -13,10 +13,10 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.22 2004/01/14 22:55:28 chrism Exp $
+$Id: auth.py,v 1.23 2004/02/20 16:57:30 fdrake Exp $
 """
 
-from persistence import Persistent
+from persistent import Persistent
 from zodb.btrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError

@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.17 2003/09/21 17:31:52 jim Exp $
+$Id: zpt.py,v 1.18 2004/02/20 16:57:24 fdrake Exp $
 """
 import re
 
-from persistence import Persistent
+from persistent import Persistent
 
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory

@@ -15,7 +15,7 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.8 2003/09/22 22:37:23 jim Exp $
+$Id: service.py,v 1.9 2004/02/20 16:57:26 fdrake Exp $
 """
 import rfc822
 import threading
@@ -32,6 +32,7 @@ from zope.app.interfaces.mail import IDirectMailService, IQueuedMailService
 from zope.app.mail.maildir import Maildir
 from transaction.interfaces import IDataManager
 from transaction import get_transaction
+from transaction.util import NoSavepointSupportRollback
 
 __metaclass__ = type
 
@@ -56,7 +57,7 @@ class MailDataManager:
         self.callable(*self.args)
 
     def savepoint(self, transaction):
-        pass
+        return NoSavepointSupportRollback(self)
 
 
 class AbstractMailService:

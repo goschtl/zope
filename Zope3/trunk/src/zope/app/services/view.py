@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.36 2003/11/04 04:04:25 jeremy Exp $
+$Id: view.py,v 1.37 2004/02/20 16:57:30 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 
 from zope.app.component.nextservice import getNextService
 from zope.app.container.contained import Contained

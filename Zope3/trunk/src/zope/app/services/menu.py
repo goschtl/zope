@@ -13,11 +13,11 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.8 2003/12/03 05:41:34 jim Exp $
+$Id: menu.py,v 1.9 2004/02/20 16:57:30 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
+from persistent import Persistent
 from zope.app import zapi
 from zope.app.component.nextservice import getNextService
 from zope.app.container.ordered import OrderedContainer

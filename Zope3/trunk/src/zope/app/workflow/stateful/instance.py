@@ -13,12 +13,12 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.15 2003/12/15 13:33:17 srichter Exp $
+$Id: instance.py,v 1.16 2004/02/20 16:57:34 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 
 from zope.app import zapi
 from zope.app.event import publish

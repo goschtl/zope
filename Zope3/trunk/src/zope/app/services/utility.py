@@ -14,11 +14,11 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.18 2004/02/09 01:10:16 anthony Exp $
+$Id: utility.py,v 1.19 2004/02/20 16:57:30 fdrake Exp $
 """
 from zope.interface import implements
-from persistence.dict import PersistentDict
-from persistence import Persistent
+from persistent.dict import PersistentDict
+from persistent import Persistent
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.interfaces.services.service import ISimpleService

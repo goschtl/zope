@@ -13,12 +13,12 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.10 2003/12/18 09:57:09 pnaveen Exp $
+$Id: ram.py,v 1.11 2004/02/20 16:57:19 fdrake Exp $
 """
 from time import time
 from thread import allocate_lock
 from pickle import dumps
-from persistence import Persistent
+from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.interfaces.cache.ram import IRAMCache

@@ -173,7 +173,7 @@
    >>> a.args == (f2, )
    True
 
-   $Id: test_surrogates.py,v 1.2 2003/11/21 17:09:52 jim Exp $
+   $Id: test_surrogates.py,v 1.3 2004/02/20 16:57:32 fdrake Exp $
    """
 
 def test_named_adapters():
@@ -521,8 +521,7 @@ def test_multi_adapters():
 
 def test_persistence():
     """
-    >>> storage = MemoryFullStorage('test')
-    >>> db = DB(storage)
+    >>> db = DB()
     >>> conn1 = db.open()
 
     >>> G = globalSurrogateRegistry
@@ -888,8 +887,7 @@ from zope.interface.surrogate import SurrogateRegistry
 from zope.app.services.surrogate import LocalSurrogateRegistry
 from zope.app.services.surrogate import LocalSurrogateBasedService
 import zope.interface
-from zodb.storage.memory import MemoryFullStorage
-from zodb.db import DB
+from ZODB.tests.util import DB
 from transaction import get_transaction
 from zope.app import zapi
 from zope.app.interfaces.services.registration import RegisteredStatus

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.12 2004/01/12 23:25:44 fdrake Exp $
+$Id: test_module.py,v 1.13 2004/02/20 16:57:32 fdrake Exp $
 """
 
 import unittest
@@ -23,8 +23,7 @@ from zope.interface import Interface, implements
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.services.module import Manager
-from zodb.storage.mapping import MappingStorage
-from zodb.db import DB
+from ZODB.tests.util import DB
 from transaction import get_transaction
 
 
@@ -65,7 +64,7 @@ class LocalModuleTests(PlacefulSetup, unittest.TestCase):
         self.assertEqual(called, old_called + 1)
 
     def test_module_persistence(self):
-        db = DB(MappingStorage())
+        db = DB()
         conn = db.open()
         root = conn.root()
         root['Application'] = self.rootFolder

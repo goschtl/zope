@@ -13,9 +13,9 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.19 2003/09/21 17:31:59 jim Exp $
+$Id: cache.py,v 1.20 2004/02/20 16:57:30 fdrake Exp $
 """
-from persistence import Persistent
+from persistent import Persistent
 from zope.app import zapi
 from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent

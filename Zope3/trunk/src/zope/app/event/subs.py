@@ -14,10 +14,10 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.21 2003/11/05 03:08:20 jeremy Exp $
+$Id: subs.py,v 1.22 2004/02/20 16:57:25 fdrake Exp $
 """
 from zope.exceptions import NotFoundError
-from persistence import Persistent
+from persistent import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zodb.btrees.IOBTree import IOBTree
 

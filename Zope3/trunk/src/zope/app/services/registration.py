@@ -13,13 +13,13 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.20 2004/01/13 19:32:23 fdrake Exp $
+$Id: registration.py,v 1.21 2004/02/20 16:57:30 fdrake Exp $
 """
 __metaclass__ = type
 
 from zope.app import zapi
 
-from persistence import Persistent
+from persistent import Persistent
 from zope.interface import implements
 from zope.fssync.server.interfaces import IObjectFile
 from zope.fssync.server.entryadapter import ObjectEntryAdapter

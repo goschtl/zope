@@ -13,12 +13,12 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.14 2003/12/17 21:27:32 sidnei Exp $
+$Id: schema.py,v 1.15 2004/02/20 16:57:33 fdrake Exp $
 """
 from types import FunctionType
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.proxy import removeAllProxies

@@ -13,9 +13,9 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.13 2003/08/26 18:17:18 fdrake Exp $
+$Id: file.py,v 1.14 2004/02/20 16:57:24 fdrake Exp $
 """
-from persistence import Persistent
+from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
 
@@ -99,7 +99,7 @@ class File(Persistent):
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
-        get_transaction().savepoint()
+        get_transaction().commit(1)
 
         jar = self._p_jar
 

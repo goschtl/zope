@@ -14,11 +14,11 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.11 2003/10/29 20:28:50 sidnei Exp $
+$Id: service.py,v 1.12 2004/02/20 16:57:33 fdrake Exp $
 """
 __metaclass__ = type
 
-from persistence import Persistent
+from persistent import Persistent
 from zope.component import getService
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.services.registration import INameComponentRegistry

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from persistence import Persistent
+from persistent import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.content.fssync import DirectoryAdapter
 from zope.app.interfaces.content.folder import IFolder, IRootFolder

@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_modulegen.py,v 1.4 2003/06/04 10:46:38 stevea Exp $
+$Id: test_modulegen.py,v 1.5 2004/02/20 16:57:29 fdrake Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from zope.schema import Text, Int, Float, getFieldsInOrder
 from zope.interface import implementedBy
-from persistence.interfaces import IPersistent
+from persistent.interfaces import IPersistent
 from zope.app.schemagen.modulegen import generateModuleSource
 
 class GenerateModuleSourceTestsBase(TestCase):

@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -164,32 +164,23 @@ class MyDistribution(Distribution):
 
 # Set up dependencies for the BTrees package
 base_btrees_depends = [
-    "src/persistence/persistence.h",
-    "src/persistence/persistenceAPI.h",
-    "src/zodb/btrees/BTreeItemsTemplate.c",
-    "src/zodb/btrees/BTreeModuleTemplate.c",
-    "src/zodb/btrees/BTreeTemplate.c",
-    "src/zodb/btrees/BucketTemplate.c",
-    "src/zodb/btrees/MergeTemplate.c",
-    "src/zodb/btrees/SetOpTemplate.c",
-    "src/zodb/btrees/SetTemplate.c",
-    "src/zodb/btrees/TreeSetTemplate.c",
-    "src/zodb/btrees/sorters.c",
+    "src/persistent/cPersistence.h",
     ]
 
 _flavors = {"O": "object", "I": "int"}
 
-KEY_H = "src/zodb/btrees/%skeymacros.h"
-VALUE_H = "src/zodb/btrees/%svaluemacros.h"
+KEY_H = "src/BTrees/%skeymacros.h"
+VALUE_H = "src/BTrees/%svaluemacros.h"
 
 include_dirs = ['src']
+
 
 def BTreeExtension(flavor):
     key = flavor[0]
     value = flavor[1]
-    name = "zodb.btrees._zodb_btrees_%sBTree" % flavor
-    sources = ["src/zodb/btrees/_zodb_btrees_%sBTree.c" % flavor]
-    kwargs = {"include_dirs": include_dirs}
+    name = "BTrees._%sBTree" % flavor
+    sources = ["src/BTrees/_%sBTree.c" % flavor]
+    kwargs = {"include_dirs": ['src/persistent']}
     if flavor != "fs":
         kwargs["depends"] = (base_btrees_depends + [KEY_H % _flavors[key],
                                                     VALUE_H % _flavors[value]])
@@ -202,12 +193,30 @@ ext_modules = [
     BTreeExtension("OI"),
     BTreeExtension("II"),
     BTreeExtension("fs"),
-    Extension("persistence._persistence",
-              ["src/persistence/persistence.c"],
-              depends = ["src/persistence/persistence.h",
-                         "src/persistence/persistenceAPI.h",]),
-    Extension("zodb._timestamp", ["src/zodb/_timestamp.c"]),
-    Extension("zodb.storage._helper", ["src/zodb/storage/_helper.c"]),
+    Extension(name = 'persistent.cPersistence',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/cPersistence.c',
+                        'src/persistent/ring.c'],
+              depends = ['src/persistent/cPersistence.h',
+                         'src/persistent/ring.h',
+                         'src/persistent/ring.c']
+              ),
+    Extension(name = 'persistent.cPickleCache',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/cPickleCache.c',
+                        'src/persistent/ring.c'],
+               depends = ['src/persistent/cPersistence.h',
+                         'src/persistent/ring.h',
+                         'src/persistent/ring.c']
+              ),
+    Extension(name = 'persistent.TimeStamp',
+              include_dirs = ['src/persistent'],
+              sources= ['src/persistent/TimeStamp.c']
+              ),
+    Extension(name = 'ZODB.winlock',
+              include_dirs = ['src/persistent'],
+              sources = ['src/ZODB/winlock.c']
+              ),
 
     Extension("zope.proxy._zope_proxy_proxy",
               ["src/zope/proxy/_zope_proxy_proxy.c"],
@@ -229,8 +238,7 @@ ext_modules = [
               ["src/zope/app/container/_zope_app_container_contained.c"],
               include_dirs = include_dirs,
               depends = [
-                 "src/persistence/persistence.h",
-                 "src/persistence/persistenceAPI.h",
+                 "src/persistent/cPersistence.h",
                  "src/zope/proxy/_zope_proxy_proxy.c",
                  ]),
     
@@ -255,9 +263,9 @@ setup(name="ZopeX3",
       url = "http://dev.zope.org/Zope3/",
       ext_modules = ext_modules,
       # This doesn't work right at all
-      headers = ["src/persistence/persistence.h",
-                 "src/persistence/persistenceAPI.h",
-                 "src/zope/proxy/proxy.h"],
+      headers = ["src/persistent/cPersistence.h",
+                 "src/zope/proxy/proxy.h",
+                 "src/zope/context/wrapper.h"],
       scripts = ["z3.py", "utilities/runurl.py"],
       license = "http://www.zope.org/Resources/ZPL",
       platforms = ["any"],

@@ -13,10 +13,10 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.1 2003/12/16 10:05:52 nmurthy Exp $
+$Id: wikipage.py,v 1.2 2004/02/20 16:57:37 fdrake Exp $
 """
 import smtplib
-from persistence import Persistent
+from persistent import Persistent
 
 from zope.interface import implements
 from zope.component import getAdapter

@@ -13,11 +13,11 @@
 ##############################################################################
 """Local/persistent surrogate (adapter) registry support
 
-$Id: surrogate.py,v 1.3 2004/02/09 07:41:20 dunny Exp $
+$Id: surrogate.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
 """
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 from zope.interface.surrogate import Surrogate, SurrogateRegistry
 from zope.interface.surrogate import adapterImplied, Default
 from zope.app.services.registration import NotifyingRegistrationStack

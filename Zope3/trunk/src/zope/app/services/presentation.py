@@ -13,14 +13,14 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.3 2003/12/18 06:09:44 sraju Exp $
+$Id: presentation.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
 """
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.component.presentation import IDefaultViewName
 from zope.security.checker import NamesChecker, ProxyFactory
-import persistence.dict
+import persistent.dict
 import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
@@ -59,7 +59,7 @@ class LocalPresentationService(
     next = base = None
 
     def __init__(self):
-        self.layers = persistence.dict.PersistentDict()
+        self.layers = persistent.dict.PersistentDict()
         self.base = zapi.getService(None, zapi.servicenames.Presentation)
 
     def setNext(self, next, global_):
@@ -550,7 +550,7 @@ class BoundTemplate:
 #BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
 from zope.app.event.function import Subscriber
-import persistence
+import persistent
 import sys
 from zope.interface.surrogate import ReadProperty
 
@@ -558,7 +558,7 @@ ViewRegistration.required    = ReadProperty(lambda self: self.forInterface)
 ViewRegistration.factoryName = ReadProperty(lambda self: self.class_)
 ViewRegistration.name        = ReadProperty(lambda self: self.viewName)
 
-class ViewService(persistence.Persistent):
+class ViewService(persistent.Persistent):
     pass
 
 def fixup(event):

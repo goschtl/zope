@@ -13,13 +13,12 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.8 2004/02/07 07:21:26 anthony Exp $
+$Id: test_bootstrap.py,v 1.9 2004/02/20 16:57:27 fdrake Exp $
 """
 
 import unittest
 from transaction import get_transaction
-from zodb.db import DB
-from zodb.storage.memory import MemoryFullStorage
+from ZODB.tests.util import DB
 from zope.app.content.folder import rootFolder
 from zope.app.interfaces.content.folder import IRootFolder
 from zope.app.interfaces.services.error import IErrorReportingService
@@ -47,8 +46,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        self.storage = MemoryFullStorage("Memory Storage")
-        self.db = DB(self.storage)
+        self.db = DB()
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)

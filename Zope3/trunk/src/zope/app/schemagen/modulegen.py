@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: modulegen.py,v 1.3 2003/06/04 10:46:37 stevea Exp $
+$Id: modulegen.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
 """
 
 from zope.app.schemagen.typereg import fieldRegistry
@@ -47,7 +47,7 @@ def generateModuleSource(schema_name, fields, class_name,
 
     text = '''\
 from zope.interface import Interface, implements
-from persistence import Persistent
+from persistent import Persistent
 from zope.schema.fieldproperty import FieldProperty
 
 # field imports

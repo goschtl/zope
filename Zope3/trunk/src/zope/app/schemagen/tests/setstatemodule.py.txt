@@ -1,5 +1,5 @@
 from zope.interface import Interface, implements
-from persistence import Persistent
+from persistent import Persistent
 from zope.schema.fieldproperty import FieldProperty
 
 # field imports

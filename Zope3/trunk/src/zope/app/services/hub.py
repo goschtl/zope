@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.26 2003/12/16 22:05:40 garrett Exp $
+$Id: hub.py,v 1.27 2004/02/20 16:57:30 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -52,7 +52,7 @@ from zope.app.services.servicenames import HubIds
 from zope.app.traversing \
      import getPath, canonicalPath, traverse, traverseName, getRoot
 from zope.app.interfaces.services.hub import ISubscriptionControl
-from persistence import Persistent
+from persistent import Persistent
 from zope.app.container.contained import Contained
 
 class HubEvent:

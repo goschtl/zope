@@ -13,8 +13,8 @@
 ##############################################################################
 import unittest
 
-from persistence import Persistent, PersistentMetaClass
-from persistence.tests.test_persistence import DM as BaseDM, BrokenDM
+from persistent import Persistent, GHOST, UPTODATE
+from persistent.tests.test_persistent import DM as BaseDM, BrokenDM
 
 from zope.interface import Interface, directlyProvides, directlyProvidedBy
 
@@ -63,10 +63,8 @@ class Test(unittest.TestCase):
         p._p_deactivate()
         self.assertEqual(p._p_changed, 1)
         self.assertEqual(dm.called, 1)
-        p._p_deactivate(force=True)
-        # XXX deal with current cPersistence implementation
-        if p._p_changed != 3:
-            self.assertEqual(p._p_changed, None)
+        p._p_invalidate()
+        self.assertEqual(p._p_changed, None)
         self.assertEqual(dm.called, 1)
         p.x += 1
         self.assertEqual(p.x, 43)
@@ -98,8 +96,8 @@ class Test(unittest.TestCase):
         self.assertEqual(p._p_changed, 0)
         p._p_deactivate()
         self.assertEqual(p._p_changed, 0)
-        p._p_deactivate(force=True)
-        self.assertEqual(p._p_changed, 0)
+        p._p_invalidate()
+        self.assertEqual(p._p_changed, None)
         if self.has_dict:
             self.failUnless(p.__dict__)
         self.assertEqual(p.x, 2)
@@ -118,9 +116,9 @@ class Test(unittest.TestCase):
 
     def testSetStateSerial(self):
         p = self.klass()
-        p._p_serial = 12
+        p._p_serial = 'abcdefgh'
         p.__setstate__(p.__getstate__())
-        self.assertEqual(p._p_serial, 12)
+        self.assertEqual(p._p_serial, 'abcdefgh')
 
     def testDirectChanged(self):
         p = self.klass()
@@ -140,9 +138,9 @@ class Test(unittest.TestCase):
         dm = DM()
         p._p_jar = dm
         p._p_deactivate()
-        self.assertEqual(p._p_state, 3)
+        self.assertEqual(p._p_state, GHOST)
         p._p_changed = True
-        self.assertEqual(p._p_state, 3)
+        self.assertEqual(p._p_state, GHOST)
 
     def testRegistrationFailure(self):
         p = self.klass()
@@ -184,7 +182,7 @@ class Test(unittest.TestCase):
         p._p_deactivate()
         # XXX does this really test the activate method?
         p._p_activate()
-        self.assertEqual(p._p_state, 0)
+        self.assertEqual(p._p_state, UPTODATE)
         self.assertEqual(p.x, 42)
 
     def testDeactivate(self):
@@ -192,13 +190,13 @@ class Test(unittest.TestCase):
         dm = DM()
         p._p_oid = 1
         p._p_deactivate() # this deactive has no effect
-        self.assertEqual(p._p_state, 0)
+        self.assertEqual(p._p_state, UPTODATE)
         p._p_jar = dm
         p._p_changed = 0
         p._p_deactivate()
-        self.assertEqual(p._p_state, 3)
+        self.assertEqual(p._p_state, GHOST)
         p._p_activate()
-        self.assertEqual(p._p_state, 0)
+        self.assertEqual(p._p_state, UPTODATE)
         self.assertEqual(p.x, 42)
 
 # XXX to do this right and expose both IPersistent and the
@@ -207,7 +205,7 @@ class Test(unittest.TestCase):
 # zope.interface.
 
 #     def testInterface(self):
-#         from persistence.interfaces import IPersistent
+#         from persistent.interfaces import IPersistent
 #         self.assert_(IPersistent.isImplementedByInstancesOf(Persistent),
 #                      "%s does not implement IPersistent" % Persistent)
 #         p = Persistent()
@@ -250,9 +248,9 @@ class Test(unittest.TestCase):
             pass
         class alternate(object):
             __metaclass__ = alternateMeta
-        class mixedMeta(alternateMeta, PersistentMetaClass):
+        class mixedMeta(alternateMeta, type):
             pass
-        class mixed(alternate,Persistent):
+        class mixed(alternate, Persistent):
             __metaclass__ = mixedMeta
 
     def testSlots(self):
@@ -348,6 +346,4 @@ class PersistentTest(Test):
 
 
 def test_suite():
-    s = unittest.TestSuite()
-    s.addTest(unittest.makeSuite(PersistentTest))
-    return s
+    return unittest.makeSuite(PersistentTest)

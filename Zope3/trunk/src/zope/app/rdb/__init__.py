@@ -17,17 +17,18 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.22 2003/12/19 16:53:17 mchandra Exp $
+$Id: __init__.py,v 1.23 2004/02/20 16:57:28 fdrake Exp $
 """
 __metaclass__ = type
 
 import types, string
 from types import StringTypes
 
-from persistence import Persistent
+from persistent import Persistent
 
 from transaction import get_transaction
-from transaction.interfaces import IDataManager
+from transaction.interfaces import IDataManager, IRollback
+from transaction.util import NoSavepointSupportRollback
 
 from zope.security.checker import NamesChecker
 
@@ -365,12 +366,30 @@ class ZopeDBTransactionManager:
     def commit(self, txn):
         self._dbconn.commit()
 
-    # XXX Do any of the Python DB-API implementations support
-    # two-phase commit?
-
     def savepoint(self, txn):
-        return None
+        """Create a savepoint that can not be rolled back
 
+        Savepoint implementation for data managers that do not
+        support savepoints. We don't raise an error here, because
+        there's no harm in ignoring a call if no one ever tries to
+        rollback a savepoint.  By ignoring the call, the data
+        manager can be used with data managers that so support
+        savepoints.
+
+        We return a rollback that raises an error if we call it.
+
+        >>> dm = ZopeDBTransactionManager(None)
+        >>> rb = dm.savepoint(None)
+        >>> rb.rollback()
+        Traceback (most recent call last):
+        ...
+        NotImplementedError: """ \
+           """ZopeDBTransactionManager data managers do not support """ \
+           """savepoints (aka subtransactions
+        """
+
+        return NoSavepointSupportRollback(self)
+    
 
 class Row(object):
     """Represents a row in a ResultSet"""

@@ -15,10 +15,10 @@
 
 This represents a simple content object that can receive workflows.
 
-$Id: testobject.py,v 1.1 2003/07/31 15:01:36 srichter Exp $
+$Id: testobject.py,v 1.2 2004/02/20 16:57:34 fdrake Exp $
 """
 
-from persistence import Persistent
+from persistent import Persistent
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Int
 

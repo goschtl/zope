@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.16 2003/09/22 20:30:16 jim Exp $
+$Id: functional.py,v 1.17 2004/02/20 16:57:37 fdrake Exp $
 """
 
 import logging
@@ -26,9 +26,8 @@ import unittest
 from StringIO import StringIO
 
 from transaction import get_transaction
-from zodb.db import DB
-from zodb.storage.memory import MemoryFullStorage
-from zodb.storage.demo import DemoStorage
+from ZODB.DB import DB
+from ZODB.DemoStorage import DemoStorage
 from zope.app import Application
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
@@ -92,7 +91,7 @@ class FunctionalTestSetup:
             self.log = StringIO()
             # Make it silent but keep the log available for debugging
             logging.root.addHandler(logging.StreamHandler(self.log))
-            self.base_storage = MemoryFullStorage("Memory Storage")
+            self.base_storage = DemoStorage("Memory Storage")
             self.db = DB(self.base_storage)
             self.app = Application(self.db, config_file)
             self.connection = None

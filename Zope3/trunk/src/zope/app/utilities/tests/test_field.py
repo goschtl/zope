@@ -13,7 +13,7 @@
 ##############################################################################
 import unittest
 
-from persistence.tests.test_persistence import PersistentTest, DM
+from persistent.tests.test_persistent import PersistentTest, DM
 
 from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldsInOrder
