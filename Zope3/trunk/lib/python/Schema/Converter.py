@@ -1,3 +1,22 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""XXX short summary goes here.
+
+XXX longer description goes here.
+
+$Id: Converter.py,v 1.2 2002/07/16 15:15:54 srichter Exp $
+"""
 from IConverter import IConverter
 from Exceptions import ConversionError
 
@@ -52,7 +71,3 @@ IntToStrConverter = _functionConverterFactory('IntToStrConverter', str)
 
 StrToFloatConverter = _functionConverterFactory('StrToFloatConverter', float)
 FloatToStrConverter = _functionConverterFactory('FloatToStrConverter', str)
-
-
-        
-    
