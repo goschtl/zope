@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.5 2003/06/03 19:43:43 jim Exp $
+$Id: zapi.py,v 1.6 2003/06/03 19:50:41 gvanrossum Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
 from zope.app.interfaces.context import IContextWrapper
@@ -29,8 +29,8 @@ class IZAPI(
     """Convenience API for use with Zope applications.
     """
 
-    def name(object):
-        """Return the object's name
+    def name(obj):
+        """Return an object's name
 
         This is the name the object is stored under in the container
         it was accessed in.  If the name is unknown, None is returned.
