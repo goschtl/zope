@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.1 2003/05/13 17:16:25 gvanrossum Exp $
+$Id: test_network.py,v 1.2 2003/05/13 17:39:12 gvanrossum Exp $
 """
 
 import os
@@ -49,6 +49,7 @@ class TestNetwork(unittest.TestCase):
     def adddir(self):
         # Create and register a temporary directory
         dir = tempfile.mktemp()
+        self.tempfiles.append(dir)
         os.mkdir(dir)
         return dir
 
