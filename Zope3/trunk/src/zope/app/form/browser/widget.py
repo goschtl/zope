@@ -394,11 +394,12 @@ class DisplayWidget(BrowserWidget):
 
     def __call__(self):
         if self._renderedValueSet():
-            if self._data == self.context.missing_value:
-                return ""
-            return escape(self._data)
+            value = self._data
         else:
-            return escape(self.context.default)
+            value = self.context.default
+        if value == self.context.missing_value:
+            return ""
+        return escape(value)
 
 
 class UnicodeDisplayWidget(BrowserWidget):
@@ -406,11 +407,12 @@ class UnicodeDisplayWidget(BrowserWidget):
 
     def __call__(self):
         if self._renderedValueSet():
-            if self._data == self.context.missing_value:
-                return ""
-            return escape(unicode(self._data))
+            value = self._data
         else:
-            return escape(unicode(self.context.default))
+            value = self.context.default
+        if value == self.context.missing_value:
+            return ""
+        return escape(unicode(value))
 
 
 def renderTag(tag, **kw):
