@@ -761,6 +761,8 @@ class date(object):
             y, m, d = self.__year, self.__month, self.__day
             y2, m2, d2 = other.__year, other.__month, other.__day
             return cmp((y, m, d), (y2, m2, d2))
+        elif hasattr(other, "timetuple"):
+            return NotImplemented
         else:
             raise TypeError, ("can't compare date to %s instance" %
                               type(other).__name__)
@@ -1433,9 +1435,12 @@ class datetime(date):
 
     def __cmp__(self, other):
         if not isinstance(other, datetime):
-            # XXX Buggy in 2.2.2.
-            raise TypeError("can't compare '%s' to '%s'" % (
-                            type(self).__name__, type(other).__name__))
+            if hasattr(other, "timetuple"):
+                return NotImplemented
+            else:
+                # XXX Buggy in 2.2.2.
+                raise TypeError("can't compare '%s' to '%s'" % (
+                                type(self).__name__, type(other).__name__))
         mytz = self._tzinfo
         ottz = other._tzinfo
         myoff = otoff = None

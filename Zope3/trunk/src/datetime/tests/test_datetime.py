@@ -878,6 +878,38 @@ class TestDate(unittest.TestCase):
             self.assertRaises(TypeError, lambda: badarg > t1)
             self.assertRaises(TypeError, lambda: badarg >= t1)
 
+    def test_mixed_compare(self):
+        our = self.theclass(2000, 4, 5)
+        self.assertRaises(TypeError, cmp, our, 1)
+        self.assertRaises(TypeError, cmp, 1, our)
+
+        class AnotherDateTimeClass(object):
+            def __cmp__(self, other):
+                # Return "equal" so calling this can't be confused with
+                # compare-by-address (which never says "equal" for distinct
+                # objects).
+                return 0
+
+        # This still errors, because date and datetime comparison raise
+        # TypeError instead of NotImplemented when they don't know what to
+        # do, in order to stop comparison from falling back to the default
+        # compare-by-address.
+        their = AnotherDateTimeClass()
+        self.assertRaises(TypeError, cmp, our, their)
+        self.assertEqual(cmp(their, our), 0)
+
+        # But date and datetime comparison aise NotImplemented instead if the
+        # other object has a timetuple attr.
+        class Comparable(AnotherDateTimeClass):
+            def timetuple(self):
+                return ()
+
+        their = Comparable()
+        self.assertEqual(cmp(our, their), 0)
+        self.assertEqual(cmp(their, our), 0)
+        self.failUnless(our == their)
+        self.failUnless(their == our)
+
     def test_bool(self):
         # All dates are considered true.
         self.failUnless(self.theclass.min)
