@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 import unittest, sys
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup\
@@ -66,13 +66,14 @@ class Test(PlacefulSetup, unittest.TestCase):
         #         manager  member
         # read       +
         # write      .       -
-        self.view.action({
+        REQ = {
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
             'p0r0': 'Allow',
             'p1r0': 'Unset', 'p1r1': 'Deny',
-            },
-                         testing=1)
+            }
+        self.view.request = REQ # XXX yuck
+        self.view.action(testing=1)
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
@@ -91,13 +92,14 @@ class Test(PlacefulSetup, unittest.TestCase):
         #         manager  member
         # read       -
         # write      +
-        self.view.action({
+        REQ = {
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
             'p0r0': 'Deny',
             'p1r0': 'Allow', 'p1r1': 'Unset'
-            },
-                         testing=1)
+            }
+        self.view.request = REQ # XXX yuck
+        self.view.action(testing=1)
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
@@ -114,8 +116,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                     self.failUnless(setting == 'Unset')
 
     def testPermissionRoles(self):
-        self.view.update_permission(REQUEST=None,
-                                    permission_id='write',
+        self.view.update_permission(permission_id='write',
                                     settings=['Allow', 'Unset'],
                                     testing=1)
         permission = self.view.permissionForID('write')
@@ -123,8 +124,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEquals(settings, ['Allow', 'Unset'])
 
 
-        self.view.update_permission(REQUEST=None,
-                                    permission_id='write',
+        self.view.update_permission(permission_id='write',
                                     settings=['Unset', 'Deny'],
                                     testing=1)
         permission = self.view.permissionForID('write')
@@ -133,7 +133,6 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.assertRaises(ValueError,
                           self.view.update_permission,
-                          REQUEST=None,
                           permission_id='write',
                           settings=['Unset', 'foo'],
                           testing=1)
@@ -141,8 +140,8 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testRolePermissions(self):
         REQ={'Allow': ['read'],
              'Deny': ['write']}
-        self.view.update_role(REQUEST=REQ,
-                              role_id='member',
+        self.view.request = REQ # XXX yuck
+        self.view.update_role(role_id='member',
                               testing=1)
         role = self.view.roleForID('member')
         pinfos = role.permissionsInfo()
@@ -155,8 +154,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         REQ={'Allow': [],
              'Deny': ['read']}
-        self.view.update_role(REQUEST=REQ,
-                              role_id='member',
+        self.view.request = REQ # XXX yuck
+        self.view.update_role(role_id='member',
                               testing=1)
         role = self.view.roleForID('member')
         pinfos = role.permissionsInfo()

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: RolePermissionView.py,v 1.3 2002/06/25 10:30:24 efge Exp $
+$Id: RolePermissionView.py,v 1.4 2002/06/25 11:36:40 efge Exp $
 """
 
 import time
@@ -77,17 +77,18 @@ class RolePermissionView(BrowserView):
                           ).getRole(rid)
         return RolePermissions(role, context, permissions)
 
-    def action(self, REQUEST, testing=None):
+    def action(self, testing=None):
+        request = self.request
         roles       = [r.getId() for r in self.roles()]
         permissions = [p.getId() for p in self.permissions()]
         prm         = getAdapter(self.context, IRolePermissionManager)
         for ip in range(len(permissions)):
-            rperm = REQUEST.get("p%s" % ip)
+            rperm = request.get("p%s" % ip)
             if rperm not in permissions: continue
             for ir in range(len(roles)):
-                rrole = REQUEST.get("r%s" % ir)
+                rrole = request.get("r%s" % ir)
                 if rrole not in roles: continue
-                setting = REQUEST.get("p%sr%s" % (ip, ir), None)
+                setting = request.get("p%sr%s" % (ip, ir), None)
                 if setting is not None:
                     if setting == Unset.getName():
                         prm.unsetPermissionFromRole(rperm, rrole)
@@ -99,11 +100,11 @@ class RolePermissionView(BrowserView):
                         raise ValueError("Incorrect setting: %s" % setting)
 
         if not testing:
-            return self.index( REQUEST,
+            return self.index(
                 message="Settings changed at %s" % time.ctime(time.time())
                 )
 
-    def update_permission(self, REQUEST, permission_id,
+    def update_permission(self, permission_id,
                           settings=(), testing=None):
         prm = getAdapter(self.context, IRolePermissionManager)
         roles = self.roles()
@@ -121,15 +122,15 @@ class RolePermissionView(BrowserView):
                 raise ValueError("Incorrect setting: %s" % setting)
 
         if not testing:
-            return self.index(REQUEST,
-                              message="Settings changed at %s"
+            return self.index(message="Settings changed at %s"
                                   % time.ctime(time.time())
                               )
 
-    def update_role(self, REQUEST, role_id, testing=None):
+    def update_role(self, role_id, testing=None):
+        request = self.request
         prm = getAdapter(self.context, IRolePermissionManager)
-        allowed = REQUEST.get(Allow.getName(), ())
-        denied = REQUEST.get(Deny.getName(), ())
+        allowed = request.get(Allow.getName(), ())
+        denied = request.get(Deny.getName(), ())
         for permission in self.permissions():
             rperm = permission.getId()
             if rperm in allowed and rperm in denied:
@@ -142,8 +143,7 @@ class RolePermissionView(BrowserView):
                 prm.unsetPermissionFromRole(rperm, role_id)
 
         if not testing:
-            return self.index(REQUEST,
-                              message="Settings changed at %s"
+            return self.index(message="Settings changed at %s"
                                   % time.ctime(time.time())
                               )
 
