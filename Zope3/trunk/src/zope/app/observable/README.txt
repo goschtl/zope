@@ -1,4 +1,4 @@
-$Id: README.txt,v 1.1 2004/04/02 13:50:04 nathan Exp $
+$Id: README.txt,v 1.2 2004/04/02 13:54:20 nathan Exp $
 
 Instance and Based Event Subscription Support
 
@@ -8,7 +8,7 @@ Package Description
 This package implements support for subscribing to events for a
 particular instance of an object.  This package
 implements the proposal found at
-http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/InstanceAndTypeBasedSubscriptions .
+http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions .
 
 The package provides an event channel for dispatching events to the
 appropriate instance as well as an adapter from IObservable to
