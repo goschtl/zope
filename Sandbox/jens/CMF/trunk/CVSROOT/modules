@@ -151,5 +151,5 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
 
 
 # testing amos stuff
-AmosFoo Publishers/AmosFoo
+AmosFoo -d lib/python/AmosFoo Packages/AmosFoo
 AmosTest &lpZPublisher &AmosFoo
