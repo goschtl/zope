@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.12 2003/01/08 18:39:20 stevea Exp $
+$Id: interfacewidget.py,v 1.13 2003/01/08 18:42:21 stevea Exp $
 """
 
 import sys
@@ -170,7 +170,6 @@ class MultiInterfaceWidget(Widget, BrowserView):
             values = tuple([nameToInterface(field, value) for value in values])
         except ComponentLookupError:
             # Convert to conversion error
-            # XXX this code path needs to be tested!
             exc = ConversionError(sys.exc_info()[1])
             raise ConversionError, exc, sys.exc_info()[2]
 

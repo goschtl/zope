@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.7 2003/01/08 18:39:21 stevea Exp $
+$Id: test_interfacewidget.py,v 1.8 2003/01/08 18:42:24 stevea Exp $
 """
 
 __metaclass__ = type
@@ -63,19 +63,6 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
 
 
 class TestInterfaceWidget(BaseInterfaceWidgetTest):
-
-    def testBadInterface(self):
-        request = self.request
-        field = InterfaceField(__name__='TestName',
-                               title=u"This is a test",
-                               required=False)
-
-        widget = InterfaceWidget(field, request)
-
-        request.form["field.TestName"] = (
-        'bad interface name'
-        )
-        self.assertRaises(ConversionError, widget.getData)
 
     def testInterfaceWidget(self):
         request = self.request
@@ -281,6 +268,19 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         )
 
         self.assertEqual(widget(), out)
+
+    def testBadInterfaceName(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=False)
+
+        widget = InterfaceWidget(field, request)
+
+        request.form["field.TestName"] = (
+        'bad interface name'
+        )
+        self.assertRaises(ConversionError, widget.getData)
 
 
 class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
@@ -604,6 +604,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         )
         self.assertEqual(widget(), out)
 
+    def testBadInterfaceName(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=False)
+
+        widget = MultiInterfaceWidget(field, request)
+
+        request.form["field.TestName.i0"] = (
+        'bad interface name'
+        )
+        self.assertRaises(ConversionError, widget.getData)
+        
 
 def test_suite():
     return TestSuite((makeSuite(TestInterfaceWidget),
