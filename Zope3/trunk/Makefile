@@ -1,5 +1,5 @@
-PYTHON=python2.2
-TESTOPTS=
+PYTHON=python2.3
+TESTOPTS="!(:?zeo|zodb)"
 
 # XXX What should the default be?
 all: inplace
@@ -12,10 +12,10 @@ build:
 	$(PYTHON) setup.py -q build
 
 test_build: build
-	$(PYTHON) test.py -v $(TESTOPTS)
+	$(PYTHON) test.py -p -v $(TESTOPTS)
 
 test_inplace: inplace
-	$(PYTHON) test.py -v $(TESTOPTS)
+	$(PYTHON) test.py -p -v $(TESTOPTS)
 
 # XXX What should the default be?
 test: test_inplace
