@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: testObjectHub.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
+$Id: testObjectHub.py,v 1.3 2002/11/29 15:51:03 stevea Exp $
 """
 
 import unittest, sys
@@ -236,7 +236,7 @@ class TestSearchRegistrations(BasicHubTest):
                           for location in self.locations]
         location_hubid.sort()
 
-        r = list(object_hub.registrations())
+        r = list(object_hub.getRegistrations())
         self.assertEqual(r, location_hubid)
 
     def testSearchSome(self):
@@ -247,7 +247,7 @@ class TestSearchRegistrations(BasicHubTest):
                           if location.startswith('/foo/bar/')]
         location_hubid.sort()
 
-        r = list(object_hub.registrations('/foo/bar'))
+        r = list(object_hub.getRegistrations('/foo/bar'))
         self.assertEqual(r, location_hubid)
 
     def testDetectUnichrFFFF(self):
@@ -257,6 +257,36 @@ class TestSearchRegistrations(BasicHubTest):
         # that starts with that character.
         self.assertRaises(ValueError,
                           self.object_hub.register, u'/foo/\uffffstuff')
+
+    def testIterObjectRegistrations(self):
+        from Zope.App.Traversing import locationAsUnicode
+        def fake_object_for_location(location):
+            return 'object at %s' % locationAsUnicode(location)
+
+        from Zope.App.Traversing.ITraverser import ITraverser
+        class DummyTraverser:
+            __implements__ = ITraverser
+            def __init__(self, context):
+                pass
+            def traverse(self, location):
+                return fake_object_for_location(location)
+
+        from Zope.ComponentArchitecture.GlobalAdapterService\
+             import provideAdapter
+        provideAdapter(None, ITraverser, DummyTraverser)
+
+        object_hub = self.object_hub
+        
+        location_hubid_object = [(locationAsTuple(location),
+                                  object_hub.register(location),
+                                  fake_object_for_location(location)
+                                 )
+                                 for location in self.locations]
+        location_hubid_object.sort()
+
+        r = [loc_id for loc_id in object_hub.iterObjectRegistrations()]
+        r.sort()
+        self.assertEqual(r, location_hubid_object)
 
 class TestNoRegistration(BasicHubTest):
             

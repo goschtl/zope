@@ -14,9 +14,10 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.3 2002/11/26 19:02:49 stevea Exp $
+$Id: ObjectHub.py,v 1.4 2002/11/29 15:51:03 stevea Exp $
 """
 
+from __future__ import generators
 from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
      import ProtoServiceEventChannel
 
@@ -161,10 +162,10 @@ class ObjectHub(ProtoServiceEventChannel):
         except KeyError:
             raise NotFoundError(hubid)
     
-    def getObject(self, hubid):
+    def getObject(wrapped_self, hubid):
         '''See interface IObjectHub'''
-        location = self.getLocation(hubid)
-        adapter = getAdapter(self, ITraverser)
+        location = wrapped_self.getLocation(hubid)
+        adapter = getAdapter(wrapped_self, ITraverser)
         return adapter.traverse(location)
     getObject = ContextMethod(getObject)
     
@@ -241,7 +242,7 @@ class ObjectHub(ProtoServiceEventChannel):
         # assert len(self.__hubid_to_location)==len(self.__location_to_hubid)
         return len(self.__hubid_to_location)
 
-    def registrations(self, location=(u'',)):
+    def getRegistrations(self, location=(u'',)):
         """See interface IObjectHub"""
         # Location can be an ascii string a unicode or a tuple of strings
         # or unicodes. So, get a canonical location first of all.
@@ -256,6 +257,13 @@ class ObjectHub(ProtoServiceEventChannel):
         # be larger than any other. I could also use a type that
         # sorts after unicodes.
         return self.__location_to_hubid.items(location, location+(u'\uffff',))
+
+    def iterObjectRegistrations(wrapped_self):
+        """See interface IHubEventChannel"""
+        traverser = getAdapter(wrapped_self, ITraverser)
+        for location, hubId in wrapped_self.getRegistrations():
+            yield (location, hubId, traverser.traverse(location))
+    iterObjectRegistrations = ContextMethod(iterObjectRegistrations)
 
     ############################################################
 

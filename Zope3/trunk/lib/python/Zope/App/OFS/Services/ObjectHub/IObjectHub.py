@@ -14,15 +14,15 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.3 2002/11/26 19:02:49 stevea Exp $
+$Id: IObjectHub.py,v 1.4 2002/11/29 15:51:03 stevea Exp $
 """
 
-from Zope.Event.IEventChannel import IEventChannel
+from IHubEventChannel import IHubEventChannel
 
 class ObjectHubError(Exception):
     pass
 
-class IObjectHub(IEventChannel):
+class IObjectHub(IHubEventChannel):
     """ObjectHub.
     
     Receives Object Modify Events from the Event Service, and
@@ -146,7 +146,7 @@ class IObjectHub(IEventChannel):
         """Returns the number of location<-->hubid registrations held.
         """
 
-    def registrations(location='/'):
+    def getRegistrations(location='/'):
         """Returns a sequence of the registrations at and within the
         given location.
 
