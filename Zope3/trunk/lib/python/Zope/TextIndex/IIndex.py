@@ -20,7 +20,8 @@ class IIndex(Interface):
     """Interface for an Index."""
 
     def length():
-        """Return the number of documents in the index."""
+        """Return the number of words in the index."""
+        # Why not the number of docs?
 
     def get_words(docid):
         """Return a list of wordids for the given docid."""
