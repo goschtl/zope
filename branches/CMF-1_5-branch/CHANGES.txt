@@ -29,6 +29,9 @@ CMF 1.5.0beta2 (unreleased)
 
     - RegistrationTool: An optional password can now be passed to 
       registeredNotify() (Issue #277).
+      
+    - Tool icons can now reside in subdirectories (Issue #144).
+    
 
 CMF 1.5.0beta (2004/08/12)
 
