@@ -100,14 +100,13 @@ Now we will create a few sample objects to work with:
 It is possible to test whether an object supports locking by attempting
 to adapt it to the ILockable interface:
 
-  >>> from zope.app.locking.interfaces import ILockable, ILockTracker
+  >>> from zope.app.locking.interfaces import ILockable
   >>> from zope.app.locking.interfaces import ILockInfo
 
   >>> ILockable(item1, None)
   <Locking adapter for...
 
   >>> ILockable(42, None)
-  ...
 
 
 There must be an active interaction to use locking, to allow the framework
@@ -123,7 +122,7 @@ examples:
   >>> tim = FauxPrincipal('tim')
 
   >>> class FauxParticipation:
-  ...     interaction=None
+  ...     interaction = None
   ...     def __init__(self, principal):
   ...         self.principal = principal
 
@@ -150,10 +149,9 @@ We can ask if the object is locked:
 
 
 If it were locked, we could get the id of the principal that owns the
-lock. Since it is not locked, this will return None:
+lock. Since it is not locked, this will return `None`:
 
   >>> obj.locker()
-  ...
 
 
 Now let's lock the object. Note that the lock method return an instance
@@ -205,7 +203,6 @@ principal can unlock the object:
 
   >>> set_principal(britney)
   >>> obj.unlock()
-  ...
 
 
 There is a mechanism for breaking locks that does not take the current
@@ -249,7 +246,7 @@ created.
 
 Finally, it is possible to explicitly get an `ILockInfo` object that
 contains the lock information for the object. Note that locks that do
-not have a timeout set have a timeout value of None.
+not have a timeout set have a timeout value of `None`.
 
   >>> obj = ILockable(item2)
   >>> obj.lock()
@@ -259,11 +256,10 @@ not have a timeout set have a timeout value of None.
   >>> info.principal_id
   'tim'
   >>> info.timeout
-  ...
 
 
 It is possible to get the object associated with a lock directly from
-an ILockInfo instance:
+an `ILockInfo` instance:
 
   >>> target = info.target
   >>> target.__name__ == 'item2'
@@ -276,8 +272,8 @@ that keys for extra data use qualified names following the convention that
 is commonly used for annotations:
 
   >>> info['my.namespace.extra'] = 'spam'
-  >>> info['my.namespace.extra'] == 'spam'
-  True
+  >>> info['my.namespace.extra']
+  'spam'
   >>> obj.unlock()
   >>> obj.locked()
   False
@@ -323,8 +319,8 @@ performs unlocking or breaking of locks on sets of objects:
   ...     obj.breaklock()
 
   >>> items = util.getAllLocks()
-  >>> len(items) == 0
-  True
+  >>> len(items)
+  0
 
 
 Locking events
@@ -353,4 +349,3 @@ by applications. Note that expiration of a lock *does not* fire an event
 
   >>> obj.breaklock()
   BreakLockEvent ...
-
