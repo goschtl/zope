@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.4 2003/01/05 19:01:49 stevea Exp $
+$Id: query.py,v 1.5 2003/01/06 19:13:14 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -55,8 +55,10 @@ class IQueryService(Interface):
 class IQueryConfigurationInfo(INamedConfigurationInfo):
 
     permission = PermissionField(title=u'Required permission')
-    inputInterfaces = InterfacesField(title=u'Input interfaces')
-    outputInterfaces = InterfacesField(title=u'Output interfaces')
+    inputInterfaces = InterfacesField(title=u'Input interfaces',
+                                      basetype=None)
+    outputInterfaces = InterfacesField(title=u'Output interfaces',
+                                       basetype=None)
 
 class IQueryConfiguration(IQueryConfigurationInfo, INamedConfiguration):
     pass
