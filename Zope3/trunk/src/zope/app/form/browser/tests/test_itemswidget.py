@@ -283,7 +283,7 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
         widget = self._makeWidget()
         self.verifyResult(
             widget.renderItem('', 'Foo', 'foo', 'bar', None),
-            ['<input', 'type="radio"', 'name="bar"', 'value="foo"',
+            ['<label', '<input', 'type="radio"', 'name="bar"', 'value="foo"',
              'class="radioType"', '>&nbsp;Foo'])
         self.verifyResult(
             widget.renderItem('bar', 'Foo', 'foo', 'bar', 'klass'),
@@ -294,11 +294,11 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
         widget = self._makeWidget()
         self.verifyResult(
             widget.renderSelectedItem('', 'Foo', 'foo', 'bar', 'klass'),
-            ['<input', 'type="radio"', 'name="bar"', 'value="foo"',
+            ['<label', '<input', 'type="radio"', 'name="bar"', 'value="foo"',
              'checked="checked"', '>&nbsp;Foo'])
         self.verifyResult(
             widget.renderSelectedItem('', 'Foo', 'foo', 'bar', 'klass'),
-            ['<input', 'type="radio"', 'name="bar"', 'value="foo"',
+            ['<label', '<input', 'type="radio"', 'name="bar"', 'value="foo"',
              'class="klass radioType"', 'checked="checked"', '>&nbsp;Foo'])
 
     def test_renderItemsWithValues(self):
@@ -309,7 +309,7 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
             index = items.index(item)
             self.verifyResult(
                 item,
-                ['<input', 'class="radioType"', 'name="field.choice"',
+                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i' %index, 'type="radio"',
                  'value="%s"' %values[index], '&nbsp;%s' %values[index]])
         self.verifyResult(items[0], ['checked="checked"'])
@@ -322,7 +322,7 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
             index = items.index(item)
             self.verifyResult(
                 item,
-                ['<input', 'class="radioType"', 'name="field.choice"',
+                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i' %index, 'type="radio"',
                  'value="%s"' %values[index], '&nbsp;%s' %values[index]])
         self.verifyResult(items[0], ['checked="checked"'])
@@ -336,7 +336,7 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
             index = items.index(item)
             self.verifyResult(
                 item,
-                ['<input', 'class="radioType"', 'name="field.choice"',
+                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'type="radio"', '&nbsp;%s' %values[index]])
 
     def test_renderItems_firstItem(self):
@@ -348,16 +348,17 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
             index = items.index(item)
             self.verifyResult(
                 item,
-                ['<input', 'class="radioType"', 'name="field.choice"',
+                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i"' %index, 'type="radio"',
                  '&nbsp;%s' %values[index]])
         self.verifyResult(items[0], ['checked="checked"'])
 
     def test_renderValue(self):
         widget = self._makeWidget()
-        self.verifyResult(widget.renderValue(None), ['<br /><input'])
-        widget.orientation='horizontal'
-        self.verifyResult(widget.renderValue(None), ['&nbsp;&nbsp;<input'])
+        self.verifyResult(widget.renderValue(None), ['<br /><label><input'])
+        widget.orientation = 'horizontal'
+        self.verifyResult(widget.renderValue(None),
+                          ['&nbsp;&nbsp;<label><input'])
 
 
 class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):

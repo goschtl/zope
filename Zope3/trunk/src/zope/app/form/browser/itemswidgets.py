@@ -472,7 +472,7 @@ class RadioWidget(ItemsEditWidgetBase):
     _messageNoValue = message(_("vocabulary-missing-single-value-for-edit"),
                               "(no value)")
 
-    _joinButtonToMessageTemplate = u"%s&nbsp;%s"
+    _joinButtonToMessageTemplate = u"<label>%s&nbsp;%s</label>"
 
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list."""
