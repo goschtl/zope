@@ -1,4 +1,3 @@
-from zope.app.services.tests.test_auth import AuthSetup
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -12,44 +11,45 @@ from zope.app.services.tests.test_auth import AuthSetup
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_clipboard.py,v 1.9 2004/03/06 16:50:31 jim Exp $
+"""Clipboard tests
+
+$Id: test_clipboard.py,v 1.10 2004/03/08 12:53:40 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.copypastemove.interfaces import IPrincipalClipboard
-from zope.app.copypastemove import PrincipalClipboard
-from zope.component import getService, getServiceManager
+
+from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.principalannotation \
-    import PrincipalAnnotationService
+from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \
     import IPrincipalAnnotationService
-from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.annotation import IAnnotations
 
-class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
+from zope.app.copypastemove.interfaces import IPrincipalClipboard
+from zope.app.copypastemove import PrincipalClipboard
+from zope.app.services.pluggableauth.tests.authsetup import AuthSetup
+
+
+class PrincipalClipboardTest(AuthSetup, TestCase):
 
     def setUp(self):
         AuthSetup.setUp(self)
-        PlacefulSetup.setUp(self)
         self.buildFolders()
 
         ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
                              PrincipalClipboard)
-        root_sm = getServiceManager(None)
+        root_sm = zapi.getServiceManager(None)
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \
             IPrincipalAnnotationService)
         root_sm.provideService("PrincipalAnnotation", svc)
-        sm = getServiceManager(self.rootFolder)
+        sm = zapi.getServiceManager(self.rootFolder)
         sm.PrincipalAnnotation = svc
-        self.svc = getService(self.rootFolder, "PrincipalAnnotation")
+        self.svc = zapi.getService(self.rootFolder, "PrincipalAnnotation")
 
     def testAddItems(self):
-        auth = self._auth
-        user = auth.getPrincipalByLogin('srichter')
+        user = self._auth['one']['srichter']
 
-        annotationsvc = getService(self, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
@@ -63,10 +63,9 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         self.failUnless(clipboard.getContents() == expected)
 
     def testSetContents(self):
-        auth = self._auth
-        user = auth.getPrincipalByLogin('srichter')
+        user = self._auth['one']['srichter']
 
-        annotationsvc = getService(self, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
 
@@ -80,9 +79,9 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         self.failUnless(clipboard.getContents() == expected)
 
     def testClearContents(self):
-        auth = self._auth
-        user = auth.getPrincipalByLogin('srichter')
-        annotationsvc = getService(self, 'PrincipalAnnotation')
+        user = self._auth['one']['srichter']
+
+        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()
