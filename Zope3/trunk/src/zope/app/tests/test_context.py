@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_context.py,v 1.4 2003/06/02 19:41:14 jim Exp $
+$Id: test_context.py,v 1.5 2003/07/01 23:28:42 jim Exp $
 """
 
 import pickle
@@ -353,6 +353,31 @@ def test_SecurityCheckerDescriptor():
     >>> type(w.__Security_checker__)
     <class 'zope.security.checker.Checker'>
     """
+
+def test_avoiding_redundant_wrappers_in_presence_of_security_proxy():
+    """
+    >>> from zope.security.checker import ProxyFactory
+    >>> from zope.context import getWrapperData
+    >>> from zope.app.context import Wrapper, ContextWrapper
+    >>> from zope.proxy import ProxyIterator
+    >>> class X:
+    ...     pass
+    >>> parent = X()
+    >>> child = X()
+    >>> wrapped_child = Wrapper(child, parent, x=1)
+    >>> proxied_parent = ProxyFactory(parent)
+    >>> rewrapped = ContextWrapper(wrapped_child, proxied_parent, y=2)
+    >>> len(list(ProxyIterator(rewrapped)))
+    2
+    >>> rewrapped is wrapped_child
+    1
+    >>> l = list(getWrapperData(rewrapped).items())
+    >>> l.sort()
+    >>> l
+    [('x', 1), ('y', 2)]
+    
+    """
+
 
 def test_suite():
     suite = DocTestSuite()

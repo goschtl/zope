@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.10 2003/06/20 06:59:08 stevea Exp $
+$Id: context.py,v 1.11 2003/07/01 23:28:42 jim Exp $
 """
 
 from pickle import PicklingError
@@ -28,7 +28,7 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface import moduleProvides, implements, providedBy
-from zope.proxy import queryProxy, getProxiedObject
+from zope.proxy import queryProxy, getProxiedObject, sameProxiedObjects
 from zope.security.checker import defineChecker, BasicTypes
 from zope.security.checker import selectChecker, CombinedChecker, NoProxy
 from zope.security.proxy import Proxy, getChecker
@@ -133,9 +133,26 @@ def ContextWrapper(_ob, _parent, **kw):
     wrapper = queryProxy(_ob, Wrapper)
     if wrapper is not None: # using kw as marker
 
-        if _parent is getcontext(wrapper):
+        wrappercontext = getcontext(wrapper)
+
+
+        if (_parent is wrappercontext
+
+            # Check after removing a security proxy
+            or
+            (sameProxiedObjects(_parent, wrappercontext)
+             and 
+             issubclass(type(_parent), Proxy)
+             and
+             getProxiedObject(_parent) is wrappercontext
+             )
+            ):
+
             # This would be a redundant wrapper. We'll just use the
             # one we've got.
+
+            if wrappercontext is not _parent:
+                setcontext(wrapper, _parent)
 
             # But we want tp make sure we have the same data
             if kw:
