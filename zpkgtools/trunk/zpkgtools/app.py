@@ -494,7 +494,7 @@ def parse_args(argv):
 
     """
 
-    prog=os.path.basename(argv[0])
+    prog = os.path.basename(argv[0])
     parser = optparse.OptionParser(
         prog=prog,
         usage="usage: %prog [options] resource",
