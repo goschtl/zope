@@ -7,7 +7,6 @@
 #include "zope/proxy/context/decorator.h"
 
 /* XXX perhaps all these wrapper args should be renamed to decorator? */
-/* XXX provides should probably be renamed to providedBy */
 #define Decorator_Check(wrapper)  (PyObject_TypeCheck(wrapper, &DecoratorType))
 
 #define Decorator_GetObject(wrapper) Proxy_GET_OBJECT((wrapper))
@@ -24,8 +23,8 @@
 #define Decorator_GetNamesDict(wrapper) \
     (((DecoratorObject *)wrapper)->names_dict)
 
-#define Decorator_GetProvides(wrapper) \
-    (((DecoratorObject *)wrapper)->provides)
+#define Decorator_GetProvidedby(wrapper) \
+    (((DecoratorObject *)wrapper)->providedby)
 
 static PyTypeObject DecoratorType;
 
@@ -85,10 +84,10 @@ decorate_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     PyObject *object;
     PyObject *mixin_factory;
     PyObject *names;
-    PyObject *provides;
+    PyObject *providedby;
 
     if (PyArg_UnpackTuple(args, "__new__", 1, 5, &object, &context,
-            &mixin_factory, &names, &provides)) {
+            &mixin_factory, &names, &providedby)) {
         PyObject *wrapperargs = create_wrapper_args(args, object, context);
         if (wrapperargs == NULL)
             goto finally;
@@ -108,11 +107,11 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
     PyObject *object;
     PyObject *mixin_factory = NULL;
     PyObject *names = NULL;
-    PyObject *provides = NULL;
+    PyObject *providedby = NULL;
     PyObject *fast_names = NULL;
 
     if (PyArg_UnpackTuple(args, "__init__", 1, 5, &object, &context,
-            &mixin_factory, &names, &provides)) {
+            &mixin_factory, &names, &providedby)) {
         PyObject *temp;
         int size;
         DecoratorObject *decorator = (DecoratorObject *)self;
@@ -131,10 +130,10 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
             decorator->mixin_factory = mixin_factory;
             Py_XDECREF(temp);
         }
-        if (decorator->provides != provides) {
-            temp = decorator->provides;
-            Py_XINCREF(provides);
-            decorator->provides = provides;
+        if (decorator->providedby != providedby) {
+            temp = decorator->providedby;
+            Py_XINCREF(providedby);
+            decorator->providedby = providedby;
             Py_XDECREF(temp);
         }
         /* Take the given names and force them to be in a tuple.
@@ -200,8 +199,8 @@ decorate_traverse(PyObject *self, visitproc visit, void *arg)
         err = visit(Decorator_GetNames(self), arg);
     if (!err && Decorator_GetNamesDict(self) != NULL)
         err = visit(Decorator_GetNamesDict(self), arg);
-    if (!err && Decorator_GetProvides(self) != NULL)
-        err = visit(Decorator_GetProvides(self), arg);
+    if (!err && Decorator_GetProvidedby(self) != NULL)
+        err = visit(Decorator_GetProvidedby(self), arg);
 
     return err;
 }
@@ -230,8 +229,8 @@ decorate_clear(PyObject *self)
         decorator->names_dict = NULL;
         Py_DECREF(temp);
     }
-    if ((temp = decorator->provides) != NULL) {
-        decorator->provides = NULL;
+    if ((temp = decorator->providedby) != NULL) {
+        decorator->providedby = NULL;
         Py_DECREF(temp);
     }
     return 0;
@@ -728,7 +727,7 @@ DecoratorType = {
 
 static PyObject *
 create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
-                 PyObject *names, PyObject *provides)
+                 PyObject *names, PyObject *providedby)
 {
     PyObject *result = NULL;
     PyObject *args;
@@ -750,9 +749,9 @@ create_decorator(PyObject *object, PyObject *context, PyObject *mixin_factory,
     Py_INCREF(names);
     PyTuple_SET_ITEM(args, 3, names);
 
-    if (!provides) provides = Py_None;
-    Py_INCREF(provides);
-    PyTuple_SET_ITEM(args, 4, provides);
+    if (!providedby) providedby = Py_None;
+    Py_INCREF(providedby);
+    PyTuple_SET_ITEM(args, 4, providedby);
 
     result = PyObject_CallObject((PyObject *)&DecoratorType, args);
     Py_DECREF(args);
@@ -767,14 +766,15 @@ api_check(PyObject *obj)
 
 static PyObject *
 api_create(PyObject *object, PyObject *context, PyObject *mixin_factory,
-           PyObject *names, PyObject *provides)
+           PyObject *names, PyObject *providedby)
 {
     if (object == NULL) {
         PyErr_SetString(PyExc_ValueError,
                         "cannot create decorator around NULL");
         return NULL;
     }
-    return create_decorator(object, context, mixin_factory, names, provides);
+    return create_decorator(object, context, mixin_factory, names,
+                            providedby);
 }
 
 static PyObject *
@@ -837,36 +837,36 @@ api_getnames(PyObject *wrapper)
 }
 
 static PyObject *
-api_getprovides(PyObject *wrapper)
+api_getprovidedby(PyObject *wrapper)
 {
     /* Returns a borrowed reference. */
     if (wrapper == NULL)
-        return missing_decorator("getprovides");
-    if (check_decorator(wrapper, "getprovides"))
-        return Decorator_GetProvides(wrapper);
+        return missing_decorator("getprovidedby");
+    if (check_decorator(wrapper, "getprovidedby"))
+        return Decorator_GetProvidedby(wrapper);
     else
         return NULL;
 }
 
 static int
-api_setprovides(PyObject *wrapper, PyObject *object)
+api_setprovidedby(PyObject *wrapper, PyObject *object)
 {
     DecoratorObject *wrap;
-    PyObject *oldprovides;
+    PyObject *oldprovidedby;
 
     if (wrapper == NULL) {
-        (void) missing_decorator("setprovides");
+        (void) missing_decorator("setprovidedby");
         return 0;
     }
-    if (!check_decorator(wrapper, "setprovides"))
+    if (!check_decorator(wrapper, "setprovidedby"))
         return 0;
     wrap = (DecoratorObject *) wrapper;
-    oldprovides = Decorator_GetProvides(wrap);
+    oldprovidedby = Decorator_GetProvidedby(wrap);
     if (object == Py_None)
         object = NULL;
     Py_XINCREF(object);
-    wrap->provides = object;
-    Py_XDECREF(oldprovides);
+    wrap->providedby = object;
+    Py_XDECREF(oldprovidedby);
     return 1;
 }
 
@@ -877,8 +877,8 @@ decorator_capi = {
     api_getmixin,
     api_getmixinfactory,
     api_getnames,
-    api_getprovides,
-    api_setprovides
+    api_getprovidedby,
+    api_setprovidedby
 };
 
 static char
@@ -986,19 +986,19 @@ decorator_getnamesdict(PyObject *unused, PyObject *obj)
 }
 
 static char
-getprovides__doc__[] =
-"getprovides(decorator) --> object\n"
+getprovidedby__doc__[] =
+"getprovidedby(decorator) --> object\n"
 "\n"
-"Return the provides for the decorator. XXX continue from interface.";
+"Return the providedby for the decorator. XXX continue from interface.";
 
 static PyObject *
-decorator_getprovides(PyObject *unused, PyObject *obj)
+decorator_getprovidedby(PyObject *unused, PyObject *obj)
 {
     PyObject *result = NULL;
 
-    if (!check_decorator(obj, "getprovides"))
+    if (!check_decorator(obj, "getprovidedby"))
         return NULL;
-    result = Decorator_GetProvides(obj);
+    result = Decorator_GetProvidedby(obj);
     if (result == NULL)
         result = Py_None;
     Py_INCREF(result);
@@ -1006,21 +1006,21 @@ decorator_getprovides(PyObject *unused, PyObject *obj)
 }
 
 static char
-setprovides__doc__[] =
-"setprovides(decorator, provides)\n"
+setprovidedby__doc__[] =
+"setprovidedby(decorator, providedby)\n"
 "\n"
-"Replace the provides on the decorator with the given one.\n"
-"A None value indicates no provides.";
+"Replace the providedby on the decorator with the given one.\n"
+"A None value indicates no providedby.";
 
 static PyObject *
-decorator_setprovides(PyObject *unused, PyObject *args)
+decorator_setprovidedby(PyObject *unused, PyObject *args)
 {
     PyObject *wrapper;
     PyObject *object;
     PyObject *result = NULL;
 
-    if (PyArg_UnpackTuple(args, "setprovides", 2, 2, &wrapper, &object)) {
-        if (api_setprovides(wrapper, object)) {
+    if (PyArg_UnpackTuple(args, "setprovidedby", 2, 2, &wrapper, &object)) {
+        if (api_setprovidedby(wrapper, object)) {
             result = Py_None;
             Py_INCREF(result);
         }
@@ -1040,10 +1040,10 @@ module_functions[] = {
      getnames__doc__},
     {"getnamesdict",      decorator_getnamesdict,      METH_O,
      getnamesdict__doc__},
-    {"getprovides",       decorator_getprovides,       METH_O,
-     getprovides__doc__},
-    {"setprovides",       decorator_setprovides,       METH_VARARGS,
-     setprovides__doc__},
+    {"getprovidedby",     decorator_getprovidedby,     METH_O,
+     getprovidedby__doc__},
+    {"setprovidedby",     decorator_setprovidedby,     METH_VARARGS,
+     setprovidedby__doc__},
     {NULL, NULL, 0, NULL}
 };
 

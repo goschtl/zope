@@ -18,18 +18,18 @@ typedef struct {
     PyObject *mixin;
     PyObject *names;
     PyObject *names_dict;
-    PyObject *provides;
+    PyObject *providedby;
 } DecoratorObject;
 
 typedef struct {
     int (*check)(PyObject *obj);
     PyObject *(*create)(PyObject *object, PyObject *context,
-        PyObject *mixin_factory, PyObject *names, PyObject *provides);
+        PyObject *mixin_factory, PyObject *names, PyObject *providedby);
     PyObject *(*getmixin)(PyObject *wrapper);
     PyObject *(*getmixinfactory)(PyObject *wrapper);
     PyObject *(*getnames)(PyObject *wrapper);
-    PyObject *(*getprovides)(PyObject *wrapper);
-    int (*setprovides)(PyObject *wrapper, PyObject *provides);
+    PyObject *(*getprovidedby)(PyObject *wrapper);
+    int (*setprovidedby)(PyObject *wrapper, PyObject *providedby);
 } DecoratorInterface;
 
 
@@ -60,21 +60,21 @@ Decorator_Import(void)
     return (_decorator_api == NULL) ? -1 : 0;
 }
 
-#define Decorator_Check(obj)                                           \
+#define Decorator_Check(obj)                                              \
         (_decorator_api->check((obj)))
-#define Decorator_New(object, context, mixin_factory, names, provides) \
-        (_decorator_api->create((object), (context), (mixin_factory),  \
-                                (names), (provides)))
-#define Decorator_GetMixin(wrapper)                                    \
+#define Decorator_New(object, context, mixin_factory, names, providedby)  \
+        (_decorator_api->create((object), (context), (mixin_factory),     \
+                                (names), (providedby)))
+#define Decorator_GetMixin(wrapper)                                       \
         (_decorator_api->getmixin((wrapper)))
-#define Decorator_GetMixinFactory(wrapper)                             \
+#define Decorator_GetMixinFactory(wrapper)                                \
         (_decorator_api->getmixinfactory((wrapper)))
-#define Decorator_GetNames(wrapper)                                    \
+#define Decorator_GetNames(wrapper)                                       \
         (_decorator_api->getnames((wrapper)))
-#define Decorator_GetProvides(wrapper)                                 \
-        (_decorator_api->getprovides((wrapper)))
-#define Decorator_SetProvides(wrapper, provides)                       \
-        (_decorator_api->setprovides((wrapper), (provides)))
+#define Decorator_GetProvides(wrapper)                                    \
+        (_decorator_api->getprovidedby((wrapper)))
+#define Decorator_SetProvides(wrapper, providedby)                        \
+        (_decorator_api->setprovidedby((wrapper), (providedby)))
 
 #endif
 

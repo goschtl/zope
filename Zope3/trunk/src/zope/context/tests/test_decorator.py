@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.1 2003/05/08 10:56:59 stevea Exp $
+$Id: test_decorator.py,v 1.2 2003/05/08 14:51:02 stevea Exp $
 """
 import unittest
 
@@ -23,8 +23,9 @@ class DecoratorTestCase(WrapperTestCase):
 
     proxy_class = decorator.Decorator
 
-    def new_proxy(self, o, c=None, mixinfactory=None, names=(), provides=None):
-        return self.proxy_class(o, c, mixinfactory, names, provides)
+    def new_proxy(self, o, c=None, mixinfactory=None, names=(),
+                  providedby=None):
+        return self.proxy_class(o, c, mixinfactory, names, providedby)
 
     def test_subclass_constructor(self):
         class MyWrapper(self.proxy_class):
@@ -45,7 +46,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(wrapper.getcontext(w) is None)
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), ())
-        self.assert_(decorator.getprovides(w) is None)
+        self.assert_(decorator.getprovidedby(w) is None)
         self.assert_(decorator.getmixinfactory(w) is None)
 
         # check that non-default arguments are set correctly
@@ -73,7 +74,7 @@ class DecoratorTestCase(WrapperTestCase):
         self.assert_(wrapper.getcontext(w) is c)
         self.assert_(decorator.getmixin(w) is None)
         self.assertEquals(decorator.getnames(w), n)
-        self.assert_(decorator.getprovides(w) is p)
+        self.assert_(decorator.getprovidedby(w) is p)
         self.assert_(decorator.getmixinfactory(w) is f)
 
         # Check that accessing a non-name does not create the mixin.
@@ -83,11 +84,11 @@ class DecoratorTestCase(WrapperTestCase):
         w.foo()
         self.assert_(type(decorator.getmixin(w)) is MixinFactory)
 
-        # check set and get provides
-        decorator.setprovides(w, None)
-        self.assert_(decorator.getprovides(w) is None)
-        decorator.setprovides(w, p)
-        self.assert_(decorator.getprovides(w) is p)
+        # check set and get providedby
+        decorator.setprovidedby(w, None)
+        self.assert_(decorator.getprovidedby(w) is None)
+        decorator.setprovidedby(w, p)
+        self.assert_(decorator.getprovidedby(w) is p)
 
         # check that getmixincreate works
         w = self.proxy_class(obj, c, f, n, p)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.5 2003/05/07 16:33:36 stevea Exp $
+$Id: context.py,v 1.6 2003/05/08 14:51:02 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -134,7 +134,7 @@ class IDecoratorFuncs(Interface):
     """Interface implemented by callables in 'decorator' module"""
 
     def Decorator(object, context=None, mixinfactory=None,
-                  names=(), provides=None, **data):
+                  names=(), providedby=None, **data):
         """Create and return a new decorator for object.
 
         Decorator is a subtype of Wrapper.
@@ -145,15 +145,16 @@ class IDecoratorFuncs(Interface):
         'names' is a tuple of names that are dispatched to the mixin rather
         than to the object. The mixin is instantiated from the factory
         before the first dispatch of one of the names.
-        If provides is not None, its value is used as the decorator's
-        __provides__ attribute. This is typically used to make the decorator's
-        apparent interface be a union of the object's and the mixin's.
+        If providedby is not None, its value is used as the decorator's
+        __providedBy__ attribute. This is typically used to make the
+        decorator's apparent interface be a union of the object's and the
+        mixin's.
 
         Wrapper data may be passed as keyword arguments. The data are added
         to the context dictionary.
 
         Note that the arguments object, context, mixinafactory, names,
-        and provides must be given as positional arguments. All keyword
+        and providedby must be given as positional arguments. All keyword
         arguments are taken to be part of **data.
         """
 
@@ -169,19 +170,19 @@ class IDecoratorFuncs(Interface):
     def getnames(obj):
         """Returns the names."""
 
-    def setprovides(obj, provides):
-        """Sets the __provides__ attribute to the given value.
+    def setprovidedby(obj, providedby):
+        """Sets the __providedBy__ attribute to the given value.
 
-        If the given value is None, remove the provides so that
-        obj.__provides__ will pass through to the decorated object.
+        If the given value is None, remove the providedby so that
+        obj.__providedBy__ will pass through to the decorated object.
         """
 
-    def getprovides(obj):
-        """Returns the 'provides' value of the object.
+    def getprovidedby(obj):
+        """Returns the 'providedby' value of the object.
 
-        Returns None if there is no provides.
+        Returns None if there is no providedby.
         This does not pass through to the decorated object, as
-        obj.__provides__ would.
+        obj.__providedBy__ would.
         """
 
 
@@ -193,7 +194,7 @@ class IDecorator(IWrapper):
     to the wrapped object.
 
     There is special support for making the decorator instance appear to
-    provide a particular collection of interfaces via its __provides__
+    provide a particular collection of interfaces via its __providedBy__
     attribute.
     """
 
