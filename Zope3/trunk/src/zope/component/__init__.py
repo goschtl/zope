@@ -112,9 +112,9 @@ def getUtility(interface, name='', context=None):
         context, interface, name = interface, name, context
         if name is None:
             name = ''
-            warnings.warn("getUtility(context, interface, name) is deprecated."
-                          "  Use getUtility(interface, name, context=context).",
-                          DeprecationWarning, warningLevel())
+        warnings.warn("getUtility(context, interface, name) is deprecated."
+                      "  Use getUtility(interface, name, context=context).",
+                      DeprecationWarning, warningLevel())
     return getService(Utilities, context=context).getUtility(interface, name)
 
 def queryUtility(interface, default=None, name='', context=None):
