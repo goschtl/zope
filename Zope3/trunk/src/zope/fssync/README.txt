@@ -94,9 +94,6 @@ TO DO
   * When committing a change, shouldn't the mtime in the DC metadata
     be updated?
 
-  * Refine the adapter protocol or implementation to leverage the
-    file-system representation protocol.
-
 - In the sync application:
 
   * Implement diff using difflib.
@@ -124,6 +121,17 @@ TO DO LATER
 -----------
 
 * Work out security details.
+
+* A commit unpickles user-provided data.  Unpickling is not a safe
+  operation.  Possible solution: have an unpickler that finds globals
+  in a secure way.  Use an import on a security proxy for sys.modules.
+
+* The adapters returned by the fs registry should optionally have
+  a permission associated with them.  If you have an adapter that
+  calls removeAllProxies, the adapter should require a permission.
+
+* Refine the fssync adapter protocol or implementation to leverage the
+  file-system representation (== FTP, WebDAV) protocol.
 
 * In common case where extra data are simple values, store extra data
   in the entries file to simplify representation and updates.  Maybe
