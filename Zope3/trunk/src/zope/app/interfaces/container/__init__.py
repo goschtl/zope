@@ -68,6 +68,9 @@ class IWriteContainer(Interface):
     def setObject(key, object):
         """Add the given object to the container under the given key.
 
+        The container might choose to add a different object than the
+        one passed to this method.
+
         Raises a ValueError if key is an empty string, unless the
         container chooses a different key.
 
