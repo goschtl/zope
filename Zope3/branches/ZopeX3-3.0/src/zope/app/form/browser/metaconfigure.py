@@ -128,7 +128,7 @@ class BaseWizardDirective(BaseFormDirective):
 
     # default wizard information
     description = None
-    use_sessions = True
+    use_session = False
 
     def __init__(self, _context, **kwargs):
         super(BaseWizardDirective, self).__init__(_context, **kwargs)
@@ -282,7 +282,6 @@ class AddWizardDirective(BaseWizardDirective, AddFormDirective):
 
     view = AddWizardView
     default_template = 'addwizard.pt'
-    use_session = False
 
     def __call__(self):
         self._handle_menu()

@@ -152,7 +152,8 @@ class ICommonWizardInformation(ICommonInformation):
         between panes in the wizard. Only simple data types can
         be propagated with this method.
 
-        Defaults to 'yes'.""",
+        Defaults to 'no'.""",
+        default=False,
         required=False
         )
 
