@@ -45,19 +45,22 @@ class CookieFunctionalTest(BrowserTestCase):
         from zope.app.zptpage.zptpage import ZPTPage
 
         page = ZPTPage()
-        page.evaluateInlineCode = True
-        page.source = u'''<script type="text/server-python">
-            cookies = ['%s=%s'%(k,v) for k,v in request.getCookies().items()]
-            cookies.sort()
-            print ';'.join(cookies)
-            </script>'''
+
+        page.source = u'''<tal:tag tal:define="
+        cookies python:['%s=%s'%(k,v) for k,v in request.getCookies().items()]"
+        ><tal:tag tal:define="
+        ignored python:cookies.sort()"
+        /><span tal:replace="python:';'.join(cookies)" /></tal:tag>'''
+
         root['getcookies'] = page
 
         page = ZPTPage()
-        page.evaluateInlineCode = True
-        page.source = u'''<script type="text/server-python">
-            request.response.setCookie('bid','bval')
-            </script>'''
+
+        page.source = u'''<tal:tag tal:define="
+            ignored python:request.response.setCookie('bid','bval')" >
+            <h1 tal:condition="ignored" />
+            </tal:tag>'''
+
         root['setcookie'] = page
 
 
