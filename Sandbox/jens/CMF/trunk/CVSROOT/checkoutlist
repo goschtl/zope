@@ -12,7 +12,6 @@
 #
 # comment lines begin with '#'
 #
-#precommit_actions
 postcommit_actions
 traffic_table.py
 adjustlinks.py
