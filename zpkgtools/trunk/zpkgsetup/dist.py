@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Distribution class which ensure we can operate with or without Python 2.4.
+"""Distribution class which ensures we can operate with or without Python 2.4.
 
 $Id$
 """
@@ -27,6 +27,12 @@ if sys.version_info < (2, 3):
     from distutils.extension import Extension
 
     class ZPkgExtension(Extension):
+        """Extension object that supports *depends* and *language*.
+
+        Older versions of the `distutils.extension.Extension` class
+        did not support the *depends* and *language* keywords and
+        attributes, but `ZPkgExtension` always does.
+        """
 
         def __init__(self, *args, **kw):
             self.depends = []
@@ -44,11 +50,17 @@ if sys.version_info < (2, 3):
     import distutils.core
     distutils.core.Extension = ZPkgExtension
 else:
-    ZPkgExtension = distutils.extension.Extension
+    class ZPkgExtension(distutils.extension.Extension):
+        """Extension object that supports *depends* and *language*.
 
+        Older versions of the `distutils.extension.Extension` class
+        did not support the *depends* and *language* keywords and
+        attributes, but `ZPkgExtension` always does.
+        """
 
 
 class ZPkgDistribution(distutils.dist.Distribution):
+    """Distribution that ensures features needed by **zpkg** are available."""
 
     def __init__ (self, attrs=None):
         self.package_data = None
