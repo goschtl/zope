@@ -10,6 +10,13 @@
 
   <five:defaultViewable class=".simplecontent.SimpleContent" />
 
+  <!-- this is a test whether the *directive* can be called -->
+  <!-- more than once without raising a conflicting -->
+  <!-- configuration exception -->
+
+  <five:traversable class=".simplecontent.SimpleContent" />
+
+  <five:defaultViewable class=".simplecontent.SimpleContent" />
 
   <browser:defaultView
       for=".interfaces.ISimpleContent"
