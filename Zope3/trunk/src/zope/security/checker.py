@@ -21,12 +21,13 @@ forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 
 Note that the ZOPE_WATCH_CHECKERS mechanism will eventually be
-replaces with a more general ecurity auditing mechanism.
+replaces with a more general security auditing mechanism.
 
 $Id$
 """
 import os
 import sys
+import sets
 import types
 import datetime
 import weakref
@@ -546,6 +547,13 @@ _namedChecker = NamesChecker(['__name__'])
 
 _iteratorChecker = NamesChecker(['next', '__iter__'])
 
+_setChecker = NamesChecker(['__iter__', '__len__', '__str__', '__contains__',
+                            'copy', 'difference', 'intersection', 'issubset',
+                            'issuperset', 'symmetric_difference', 'union',
+                            '__and__', '__or__', '__sub__', '__xor__',
+                            '__eq__', '__ne__', '__lt__', '__gt__',
+                            '__le__', '__ge__'])
+
 BasicTypes = {
     object: NoProxy,
     int: NoProxy,
@@ -601,6 +609,8 @@ _default_checkers = {
     list: NamesChecker(['__getitem__', '__getslice__', '__len__', '__iter__',
                         '__contains__', 'index', 'count', '__str__',
                         '__add__', '__radd__', ]),
+    sets.Set: _setChecker,
+    sets.ImmutableSet: _setChecker,
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
