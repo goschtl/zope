@@ -28,8 +28,7 @@ class CacheName(TextLine):
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped.
         """
-        names = [name \
-                 for name, util in zapi.getUtilitiesFor(self.context, ICache)]
+        names = [name for name, util in zapi.getUtilitiesFor(ICache)]
         return names + ['']
 
     allowed_values = property(__allowed)

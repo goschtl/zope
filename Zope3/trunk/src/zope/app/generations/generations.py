@@ -105,7 +105,7 @@ class Context:
 def findManagers():
     # Hook to let Chris use this for Zope 2
     import zope.app
-    return zope.app.zapi.getUtilitiesFor(None, ISchemaManager)
+    return zope.app.zapi.getUtilitiesFor(ISchemaManager)
 
 def PersistentDict():
     # Another hook to let Chris use this for Zope 2

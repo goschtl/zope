@@ -42,7 +42,7 @@ class PrincipalRoleView:
         if roles is None:
             roles = self._roles = \
               [role
-               for name, role in zapi.getUtilitiesFor(self.context, IRole)]
+               for name, role in zapi.getUtilitiesFor(IRole)]
         return roles
 
     def createGrid(self, principals=None, roles=None):
@@ -63,7 +63,7 @@ class PrincipalRoleView:
                 roles = self.getAllRoles()
             else:
                 # XXX This code path needs a test
-                utils = zapi.getUtilitiesFor(self.context, IRole)
+                utils = zapi.getUtilitiesFor(IRole)
                 roles = [role for name, role in utils if name in roles]
 
         return PrincipalRoleGrid(principals, roles, self.context)

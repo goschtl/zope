@@ -29,7 +29,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideConnection(self):
 
-        conns = list(zapi.getUtilitiesFor(None, IZopeDatabaseAdapter))
+        conns = list(zapi.getUtilitiesFor(IZopeDatabaseAdapter))
         self.assertEqual(conns, [])
         connectionstub = queryUtility(IZopeDatabaseAdapter, None, 'stub')
         self.assertEqual(connectionstub, None)
@@ -38,7 +38,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         connectionstub = queryUtility(IZopeDatabaseAdapter, None, 'stub')
         connection = connectionstub()
         self.assertEqual(connectionstub.__class__, DAStub)
-        conns = zapi.getUtilitiesFor(None, IZopeDatabaseAdapter)
+        conns = zapi.getUtilitiesFor(IZopeDatabaseAdapter)
            
         self.assertEqual([c[0] for c in conns], ["stub"])
         self.assertEqual(connection.__class__, ZopeConnection)

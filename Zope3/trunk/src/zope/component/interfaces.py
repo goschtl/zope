@@ -86,7 +86,7 @@ class IComponentArchitecture(Interface):
         the specified interface.  If one is not found, returns default.
         """
 
-    def getUtilitiesFor(context, interface):
+    def getUtilitiesFor(interface, context=None):
         """Return the utilities that provide an interface
 
         An iterable of utility name-value pairs is returned.

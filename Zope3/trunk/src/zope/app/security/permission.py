@@ -53,7 +53,7 @@ def checkPermission(context, permission_id):
     if not zapi.queryUtility(IPermission, name=permission_id, context=context):
         raise ValueError("Undefined permission id", permission_id)
 
-def allPermissions(context):
+def allPermissions(context=None):
     """Get the ids of all defined permissions
 
     >>> from zope.app.tests.placelesssetup import setUp, tearDown
@@ -70,6 +70,6 @@ def allPermissions(context):
 
     >>> tearDown()
     """
-    for id, permission in zapi.getUtilitiesFor(context, IPermission):
+    for id, permission in zapi.getUtilitiesFor(IPermission, context):
         if id != u'zope.Public':
             yield id

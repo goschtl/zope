@@ -155,7 +155,7 @@ class Managers:
            """
 
         self.managers = managers = dict(
-            zapi.getUtilitiesFor(None, ISchemaManager))
+            zapi.getUtilitiesFor(ISchemaManager))
         db = self._getdb()
         conn = db.open()
         try:

@@ -81,7 +81,7 @@ class PrincipalPermissionView(BrowserView):
         ppmap = IPrincipalPermissionMap(self.context)
         principal = self.get_principal(principal_id)
         result = []
-        for perm in zapi.getUtilitiesFor(self.context, IPermission):
+        for perm in zapi.getUtilitiesFor(IPermission):
             if ppmap.getSetting(perm, principal) == Unset:
                 result.append(perm)
 

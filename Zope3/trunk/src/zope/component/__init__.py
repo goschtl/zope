@@ -124,8 +124,12 @@ def queryUtility(interface, default=None, name='', context=None):
     return getService(Utilities, context).queryUtility(
         interface, default, name)
 
-def getUtilitiesFor(context, interface):
-    return getService(context, Utilities).getUtilitiesFor(interface)
+def getUtilitiesFor(interface, context=None):
+    if not IInterface.providedBy(interface):
+        raise TypeError("getUtilitiesFor got nonsense arguments."
+                        " Check that you are updated with the"
+                        " component API change.")
+    return getService(Utilities, context).getUtilitiesFor(interface)
 
 # Adapter service
 

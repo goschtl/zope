@@ -32,15 +32,14 @@ class RolePermissionView:
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = self._roles = \
-              [role for name, role in zapi.getUtilitiesFor(self.context, IRole)]
+              [role for name, role in zapi.getUtilitiesFor(IRole)]
         return roles
 
     def permissions(self):
         permissions = getattr(self, '_permissions', None)
         if permissions is None:
             permissions = self._permissions = \
-              [perm for name, perm in zapi.getUtilitiesFor(self.context,
-                                                           IPermission)]
+              [perm for name, perm in zapi.getUtilitiesFor(IPermission)]
         return permissions
 
     def availableSettings(self, noacquire=False):

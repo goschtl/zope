@@ -71,7 +71,7 @@ class Test(TestCase, CleanUp):
     def testgetUtilitiesFor(self):
         us = getService(None, Utilities)
         us.provideUtility(IDummyUtility, dummyUtility)
-        self.assertEqual(list(getUtilitiesFor(None, IDummyUtility)),
+        self.assertEqual(list(getUtilitiesFor(IDummyUtility)),
                          [('',dummyUtility)])
         self.assertEqual(list(us.getUtilitiesFor(IDummyUtility)),
                          [('',dummyUtility)])

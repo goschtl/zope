@@ -25,6 +25,7 @@ from zope.app.cache.interfaces import CacheName, ICache
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.utility import LocalUtilityService
+from zope.thread import thread_globals
 
 class CacheStub(object):
     __name__ = __parent__ = None
@@ -38,10 +39,16 @@ class CacheNameTest(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self, folders=True)
         sm = self.makeSite()
+        thread_globals().site = sm.__parent__
+        
         setup.addService(sm, 'Utilities', LocalUtilityService())
         setup.addUtility(sm, 'bar', ICache, CacheStub())
         setup.addUtility(sm, 'baz', ICache, CacheStub())
         setup.addUtility(sm, 'foo', ICache, CacheStub())
+
+    def tearDown(self):
+        PlacefulSetup.tearDown(self)
+        thread_globals().site = None
 
     def test(self):
         field = CacheName().bind(self.rootFolder)

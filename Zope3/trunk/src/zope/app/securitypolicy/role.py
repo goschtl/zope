@@ -58,6 +58,6 @@ class RoleRegistration(UtilityRegistration):
     
 
 def checkRole(context, role_id):
-    names = [name for name, util in zapi.getUtilitiesFor(context, IRole)]
+    names = [name for name, util in zapi.getUtilitiesFor(IRole, context)]
     if not role_id in names:
         raise ValueError("Undefined role id", role_id)

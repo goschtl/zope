@@ -80,7 +80,7 @@ class PROPFIND(object):
         # XXX For now, list the propnames for the all namespaces
         # but later on, we need to list *all* propnames from *all* known
         # namespaces that this object has.
-        for ns, iface in zapi.getUtilitiesFor(None, IDAVNamespace):
+        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:

@@ -65,8 +65,9 @@ class ManageContentProcessRegistry(BrowserView):
     def getProcessInterfacesMapping(self):
         mapping = []
         for name in [name for name, util in zapi.getUtilitiesFor(
+                                                       IProcessDefinition,
                                                        self.context,
-                                                       IProcessDefinition)]:
+                                                       )]:
             ifaces = self.context.getInterfacesForProcessName(name)
             ifaces = map(lambda i: interfaceToName(self.context, i), ifaces)
             if ifaces:

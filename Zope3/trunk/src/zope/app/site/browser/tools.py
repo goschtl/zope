@@ -71,7 +71,7 @@ class IUtilityToolView(IToolView):
 class ToolsOverview:
     def getTools(self):
         tools = []
-        for n, iface in zapi.getUtilitiesFor(None, IToolType):
+        for n, iface in zapi.getUtilitiesFor(IToolType):
             name = iface.getName()
             view = zapi.getView(self.context, 'manage%sTool.html' % name,
                                 self.request)
