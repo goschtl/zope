@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.18 2004/02/09 05:45:33 richard Exp $
+$Id: __init__.py,v 1.19 2004/02/11 05:52:58 jim Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -54,10 +54,9 @@ class ComponentAdding(Adding):
 
         return super(ComponentAdding, self).nextURL()
 
-    def action(self, type_name, id):
+    def action(self, type_name, id=''):
         # For special case of that we want to redirect to another adding view
         # (usually another menu such as AddService)
-        import re
         if type_name.startswith("../"):
             # Special case
             url = type_name
@@ -65,24 +64,6 @@ class ComponentAdding(Adding):
                 url += "?id=" + id
             self.request.response.redirect(url)
             return
-
-        if not id:
-            # Generate an id from the type name
-            id = type_name
-            l = id.rfind('.')
-            if l >= 0:
-                id = id[l+1:]
-                # Add menus generate meaningless factory names.
-                # Skip them.
-                if re.match('^f[0-9]*$', id):
-                    id = type_name[:l]
-                    l = id.rfind('.')
-                    if l >= 0:
-                        id = id[l+1:]
-                
-            
-        chooser = zapi.getAdapter(self.context, INameChooser)
-        id = chooser.chooseName(id, None)
 
         # Call the superclass action() method.
         # As a side effect, self.added_object is set by add() above.
