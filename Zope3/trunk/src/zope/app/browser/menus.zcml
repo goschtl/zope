@@ -21,9 +21,9 @@
         />
 
    <menu
-        id="add_service"
-	title="Menu of services to be added"
-	/>
+      id="add_service"
+      title="Menu of services to be added"
+      />
 
    <menu id="add_configuration"
         title="Menu of addable configuration objects"

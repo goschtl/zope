@@ -101,16 +101,16 @@
       </directive>
 
     <directive
-       name="subeditform" 
+       name="subeditform"
        attributes="name schema label for layer permission class template
                    fulledit fulledit_label"
        handler="zope.app.browser.form.editview.subedit"
        />
 
     <directive
-       name="addform" 
+       name="addform"
        handler="zope.app.browser.form.add.add"
-       >       
+       >
       <description>
         Define an automatically generated add form
 
@@ -147,7 +147,7 @@
 
       <attribute name="for" required="no">
         <description>
-        The interface this page (view) applies to. 
+        The interface this page (view) applies to.
 
         The view will be for all objects that implement this interface.
 
@@ -167,11 +167,11 @@
 
       <attribute name="layer" required="no">
         <description>
-              The layer the view is in. 
+              The layer the view is in.
 
               A skin is composed of layers. It is common to put skin specific
               views in a layer named after the skin. If the 'layer' attribute
-              is not supplied, it defaults to 'default'. 
+              is not supplied, it defaults to 'default'.
           </description>
         </attribute>
 
@@ -195,7 +195,7 @@
         A class to provide custom widget definitions or methods to be
         used by a custom template.
 
-	This class can override methods defined in IAddFormCustomization.
+        This class can override methods defined in IAddFormCustomization.
 
         This class is used as a mix-in class. As a result, it needn't
         subclass any special classes, such as BrowserView.

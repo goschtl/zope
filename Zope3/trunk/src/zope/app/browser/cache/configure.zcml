@@ -10,10 +10,11 @@
       action="zope.app.caching.RAMCache"
       />
 
-  <browser:pages for="zope.app.interfaces.cache.ram.IRAMCache"
-		class="zope.app.browser.cache.ram.RAMCacheView"
-		permission="zope.Public"
-		>
+  <browser:pages
+      for="zope.app.interfaces.cache.ram.IRAMCache"
+      class="zope.app.browser.cache.ram.RAMCacheView"
+      permission="zope.Public"
+      >
     <browser:page name="editAction.html" attribute="action" />
     <browser:page name="index.html"       template="ramedit.pt" />
     <browser:page name="stats.html"      template="ramstats.pt" />

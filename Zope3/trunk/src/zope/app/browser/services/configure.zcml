@@ -7,7 +7,7 @@
      for="zope.app.interfaces.services.service.ILocalService"
      name="index.html"
      permission="zope.ManageServices"
-     class="zope.app.browser.managementviewselector.ManagementViewSelector" 
+     class="zope.app.browser.managementviewselector.ManagementViewSelector"
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
 
@@ -29,18 +29,18 @@
 
   <menuItem
      menu="add_service"
-     for="zope.app.interfaces.container.IAdding" 
+     for="zope.app.interfaces.container.IAdding"
      action="ErrorLogging"
      title="Error Logging Service"
      description="Error Reporting Service for Logging Errors"
      />
-  
-  <icon name="zmi_icon" 
-      for="zope.app.interfaces.services.error.IErrorReportingService" 
+
+  <icon name="zmi_icon"
+      for="zope.app.interfaces.services.error.IErrorReportingService"
       file="error_service.gif" />
 
   <menuItem
-      for="zope.app.interfaces.services.error.IErrorReportingService" 
+      for="zope.app.interfaces.services.error.IErrorReportingService"
       menu="zmi_views"
       title="Errors"
       action="index.html"
@@ -167,7 +167,7 @@
      for="zope.app.services.auth.IAuthenticationService"
      permission="zope.ManageServices" 
      class="zope.app.browser.container.contents.Contents"
-     attribute="contents" 
+     attribute="contents"
      />
 
   <view
@@ -189,7 +189,7 @@
        description="A Persistent Authentication Service"
        />
 
-  <defaultView for="zope.app.interfaces.security.IPrincipal" 
+  <defaultView for="zope.app.interfaces.security.IPrincipal"
                        name="editForm.html" />
 
   <pages
@@ -241,9 +241,9 @@
      for = "zope.component.interfaces.IAdapterService."
      name = "index.html"
      template = "adapter_search.pt"
-     permission="zope.ManageServices" 
+     permission="zope.ManageServices"
      class="zope.app.browser.services.adapter.AdapterServiceView"
-     />  
+     />
 
 <view
      for = "zope.app.interfaces.container.IAdding"
@@ -312,7 +312,7 @@
      permission="zope.ManageServices" 
      class="zope.app.browser.services.view.ViewServiceView"
      menu="zmi_views" title="Views"
-     />  
+     />
 
 <menuItem
       for="zope.app.interfaces.container.IAdding"
@@ -469,12 +469,11 @@
       for="zope.app.interfaces.services.service.IServiceManager" 
       file="service_manager.gif" />
 
- 
-  <menuItems 
+  <menuItems
       menu="zmi_actions"
       for="zope.app.interfaces.services.service.IServiceManager"
       >
-    <menuItem 
+    <menuItem
         title="Visit default package"
         action="default/@@SelectedManagementView.html"
         permission="zope.ManageServices"
@@ -482,18 +481,18 @@
     <menuItem
         title="Add service"
         action="default/AddService"
-	permission="zope.ManageServices"
-	/>
+        permission="zope.ManageServices"
+        />
   </menuItems>
 
   <pages
-      for="zope.app.interfaces.services.service.IServiceManager" 
+      for="zope.app.interfaces.services.service.IServiceManager"
       permission="zope.ManageServices"
       class="zope.app.browser.services.service.SiteManagementFoldersContents">
 
     <page name="contents.html"
           attribute="index"
-          menu="zmi_views" title="Contents" 
+          menu="zmi_views" title="Contents"
           />
     <page name="addSiteManagementFolder.html"
           attribute="addSiteManagementFolder"
@@ -506,16 +505,16 @@
 
   <!-- Disable the add action -->
   <menuItem
-      menu="zmi_actions" 
-      for="zope.app.interfaces.services.service.IServiceManager" 
+      menu="zmi_actions"
+      for="zope.app.interfaces.services.service.IServiceManager"
       title="Add"
       action="@@contents.html"
       filter="nothing"
       />
 
   <pages
-      for="zope.app.interfaces.services.service.IServiceManager" 
-      permission="zope.ManageServices" 
+      for="zope.app.interfaces.services.service.IServiceManager"
+      permission="zope.ManageServices"
       class="zope.app.browser.container.contents.JustContents">
 
     <page name="index.html" attribute="index" />
@@ -539,7 +538,7 @@
    class="zope.app.browser.container.contents.Contents"
    >
 
-  <page name="contents.html" 
+  <page name="contents.html"
         attribute="contents"
         menu="zmi_views" title="Contents"
         />
@@ -666,14 +665,14 @@
   <menuItem
      menu="add_component"
      for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.PageFolder" 
+     action="zope.app.services.PageFolder"
      title="Page Folder" />
 
 <!-- Session service -->
 
   <menuItem
      menu="add_service"
-     for="zope.app.interfaces.container.IAdding" 
+     for="zope.app.interfaces.container.IAdding"
      action="ISessionService"  title='Cookie Session Service'
      description='Simplistic session support using cookies' />
 
@@ -681,10 +680,10 @@
 
   <menuItem
      menu="add_service"
-     for="zope.app.interfaces.container.IAdding" 
+     for="zope.app.interfaces.container.IAdding"
      action="IPrincipalAnnotationService"
      title="Principal Annotation Service"
-     description="Stores Annotations for Principals" 
+     description="Stores Annotations for Principals"
      />
 
 
@@ -696,7 +695,7 @@
     permission="zope.ManageServices" 
     for="zope.app.interfaces.services.hub.IObjectHub"
     class="zope.app.browser.services.hub.Control"
-    attribute="index" 
+    attribute="index"
     />
 
   <menuItem
@@ -704,13 +703,13 @@
       for="zope.app.interfaces.container.IAdding"
       action="HubIds"
       title="HubIds Service"
-      description="An object hub, for cataloging, unique object ids, and 
-                   more: use sparingly" 
+      description="An object hub, for cataloging, unique object ids, and
+                   more: use sparingly"
       />
 
   <icon
       name="zmi_icon"
-      for="zope.app.interfaces.services.hub.IObjectHub" 
+      for="zope.app.interfaces.services.hub.IObjectHub"
       file="hub.gif" />
 
 <!-- Utility Service --> <include package=".utility" />
