@@ -97,78 +97,11 @@ class PROPFIND(object):
             _props = self._handleProp(source, _props)
 
         avail, not_avail = self._propertyResolver(_props)
-
         if avail:
-            re.appendChild(response.createElement('propstat'))
-            prop = response.createElement('prop')
-            re.lastChild.appendChild(prop)
-            re.lastChild.appendChild(response.createElement('status'))
-            re.lastChild.lastChild.appendChild(
-                response.createTextNode('HTTP/1.1 200 OK'))
-            count = 0
-            for ns in avail.keys():
-                attr_name = 'a%s' % count
-                if ns is not None and ns != self.default_ns:
-                    count += 1
-                    prop.setAttribute('xmlns:%s' % attr_name, ns)
-                iface = _props[ns]['iface']
-
-                if not iface:
-                    # The opaque properties case, hand it off
-                    oprops = IDAVOpaqueNamespaces(self.context, {})
-                    for name in avail.get(ns):
-                        oprops.renderProperty(ns, attr_name, name, prop)
-                    continue
-                
-                # The registered namespace case
-                initial = {}
-                adapter = iface(self.context, None)
-                for name in avail.get(ns):
-                    value = getattr(adapter, name, None)
-                    if value is not None:
-                        initial[name] = value
-                setUpWidgets(self, iface, IDAVWidget,
-                    ignoreStickyValues=True, initial=initial, 
-                    names=avail.get(ns))
-                            
-                for p in avail.get(ns):
-                    el = response.createElement('%s' % p )
-                    if ns is not None and ns != self.default_ns:
-                        el.setAttribute('xmlns', attr_name)
-                    prop.appendChild(el)
-                    value = getattr(self, p+'_widget')()
-                        
-                    if isinstance(value, (unicode, str)):
-                        # Get the widget value here
-                        el.appendChild(response.createTextNode(value))
-                    else:
-                        if zapi.isinstance(value, minidom.Node):
-                            el.appendChild(value)
-                        else:
-                            # Try to string-ify
-                            value = str(getattr(self, p+'_widget'))
-                            # Get the widget value here
-                            el.appendChild(response.createTextNode(value))
-
+            self._renderAvail(avail, response, _props)
         if not_avail:
-            re.appendChild(response.createElement('propstat'))
-            prop = response.createElement('prop')
-            re.lastChild.appendChild(prop)
-            re.lastChild.appendChild(response.createElement('status'))
-            re.lastChild.lastChild.appendChild(
-                response.createTextNode('HTTP/1.1 404 Not Found'))
-            count = 0
-            for ns in not_avail.keys():
-                attr_name = 'a%s' % count
-                if ns is not None and ns != self.default_ns:
-                    count += 1
-                    prop.setAttribute('xmlns:%s' % attr_name, ns)
-                for p in not_avail.get(ns):
-                    el = response.createElement('%s' % p )
-                    prop.appendChild(el)
-                    if ns is not None and ns != self.default_ns:
-                        el.setAttribute('xmlns', attr_name)
-
+            self._renderNotAvail(not_avail, response)
+            
         self._depthRecurse(ms)
 
         body = response.toxml().encode('utf-8')
@@ -265,3 +198,76 @@ class PROPFIND(object):
                     not_avail[ns] = l
 
         return avail, not_avail
+    
+    def _renderAvail(self, avail, response, _props):
+        re = response.lastChild.lastChild
+        re.appendChild(response.createElement('propstat'))
+        prop = response.createElement('prop')
+        re.lastChild.appendChild(prop)
+        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.lastChild.appendChild(
+            response.createTextNode('HTTP/1.1 200 OK'))
+        count = 0
+        for ns in avail.keys():
+            attr_name = 'a%s' % count
+            if ns is not None and ns != self.default_ns:
+                count += 1
+                prop.setAttribute('xmlns:%s' % attr_name, ns)
+            iface = _props[ns]['iface']
+
+            if not iface:
+                # The opaque properties case, hand it off
+                oprops = IDAVOpaqueNamespaces(self.context, {})
+                for name in avail.get(ns):
+                    oprops.renderProperty(ns, attr_name, name, prop)
+                continue
+            
+            # The registered namespace case
+            initial = {}
+            adapter = iface(self.context, None)
+            for name in avail.get(ns):
+                value = getattr(adapter, name, None)
+                if value is not None:
+                    initial[name] = value
+            setUpWidgets(self, iface, IDAVWidget,
+                ignoreStickyValues=True, initial=initial, 
+                names=avail.get(ns))
+                        
+            for p in avail.get(ns):
+                el = response.createElement('%s' % p )
+                if ns is not None and ns != self.default_ns:
+                    el.setAttribute('xmlns', attr_name)
+                prop.appendChild(el)
+                value = getattr(self, p+'_widget')()
+                    
+                if isinstance(value, (unicode, str)):
+                    # Get the widget value here
+                    el.appendChild(response.createTextNode(value))
+                else:
+                    if zapi.isinstance(value, minidom.Node):
+                        el.appendChild(value)
+                    else:
+                        # Try to string-ify
+                        value = str(getattr(self, p+'_widget'))
+                        # Get the widget value here
+                        el.appendChild(response.createTextNode(value))
+
+    def _renderNotAvail(self, not_avail, response):
+        re = response.lastChild.lastChild
+        re.appendChild(response.createElement('propstat'))
+        prop = response.createElement('prop')
+        re.lastChild.appendChild(prop)
+        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.lastChild.appendChild(
+            response.createTextNode('HTTP/1.1 404 Not Found'))
+        count = 0
+        for ns in not_avail.keys():
+            attr_name = 'a%s' % count
+            if ns is not None and ns != self.default_ns:
+                count += 1
+                prop.setAttribute('xmlns:%s' % attr_name, ns)
+            for p in not_avail.get(ns):
+                el = response.createElement('%s' % p )
+                prop.appendChild(el)
+                if ns is not None and ns != self.default_ns:
+                    el.setAttribute('xmlns', attr_name)
