@@ -126,66 +126,17 @@
     permission="zope.ManageServices" />
 
 <!-- Adapters -->
-
-  <editform
-    schema="zope.app.interfaces.services.adapter.IAdapterRegistration"
-    name="index.html"
-    menu="zmi_views"
-    label="Change adapter"
-    permission="zope.ManageServices"
-    />
-
-  <page
-     for="zope.component.interfaces.IAdapterService"
-     name="index.html"
-     template="adapter_search.pt"
-     permission="zope.ManageServices"
-     class="zope.app.browser.services.adapter.AdapterServiceView" />
-
-  <view
-     for="zope.app.interfaces.container.IAdding"
-     name="AdapterRegistration"
-     permission="zope.ManageServices" 
-     class="zope.app.browser.services.adapter.AdapterRegistrationAdd"
-     menu="add_registration" title="Adapter">
-
-    <page name="index.html" template="add_adapter_config.pt" />
-
-  </view>
-
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service"
-      action="zope.app.services.AdapterService"
-      title="Adapter Service" />
+  <zope:include package=".adapter" />
 
 <!-- Views -->  
-  <zope:include file="view.zcml" />
+  <zope:include package=".presentation" />
 
 <!-- Menu -->  
   <zope:include file="menu.zcml" />
 
 
 <!-- ZPT Templates -->
-
-  <view
-    for="zope.app.interfaces.services.view.IZPTTemplate"
-    name="index.html"
-    class=".zpt.Source"
-    permission="zope.ManageServices" />
-
-  <editform
-    schema="zope.app.interfaces.services.view.IZPTTemplate"
-    name="edit.html"
-    menu="zmi_views"
-    label="ZPT Template"
-    permission="zope.ManageServices" />
-
-  <menuItem
-    for="zope.app.interfaces.container.IAdding"
-    menu="add_component"
-    action="zope.app.services.zpt.template"
-    title="ZPT Template" />
+  <include file="zpt.zcml" />
 
 <!-- ConnectionService --> 
   <zope:include file="connection.zcml" />

@@ -21,9 +21,12 @@
 
   AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.15 2003/09/21 17:30:48 jim Exp $
+$Id: __init__.py,v 1.2 2003/11/21 17:11:11 jim Exp $
 """
 __metaclass__ = type
+
+from zope.app.form.utility import setUpWidgets, getWidgetsData
+
 
 import md5
 
@@ -33,62 +36,13 @@ from zope.component import getView
 from zope.publisher.browser import BrowserView
 
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.services.adapter import IAdapterRegistration
-from zope.app.interfaces.services.adapter import IAdapterRegistrationInfo
+from zope.app.services.adapter import IAdapterRegistration
 from zope.app.interfaces.services.registration import IRegistration
-from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.utility import getWidgetsDataForContent
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.services.adapter import AdapterRegistration
 from zope.app.component.interfacefield import InterfaceField
-
-class IAdapterSearch(Interface):
-
-    forInterface = InterfaceField(
-        title=_("For interface"),
-        required=False)
-    
-    providedInterface = InterfaceField(
-        title=_("Provided interface"),
-        required=False)
-
-
-class AdapterServiceView(BrowserView):
-
-    def __init__(self, *args):
-        super(AdapterServiceView, self).__init__(*args)
-        setUpWidgets(self, IAdapterSearch)
-
-    def configInfo(self):
-        forInterface = self.forInterface.hasInput() and \
-            self.forInterface.getInputValue() or None
-        providedInterface = self.providedInterface.hasInput() and \
-            self.providedInterface.getInputValue() or None
-
-
-        result = []
-        for (forInterface, providedInterface, registry
-             ) in self.context.getRegisteredMatching(forInterface,
-                                                     providedInterface):
-            forInterface = (
-                forInterface.__module__ +"."+ forInterface.getName())
-            providedInterface = (
-                providedInterface.__module__ +"."+ providedInterface.getName())
-
-            view = getView(registry, "ChangeRegistrations", self.request)
-            prefix = md5.new('%s %s' %
-                             (forInterface, providedInterface)).hexdigest()
-            view.setPrefix(prefix)
-            view.update()
-            result.append(
-                {'forInterface': forInterface,
-                 'providedInterface': providedInterface,
-                 'view': view,
-                 })
-
-        return result
-
 
 class AdapterRegistrationAdd(BrowserView):
 
@@ -98,7 +52,7 @@ class AdapterRegistrationAdd(BrowserView):
 
     def refresh(self):
         if "FINISH" in self.request:
-            data = getWidgetsData(self, IAdapterRegistrationInfo, strict=True)
+            data = getWidgetsData(self, IAdapterRegistration, strict=True)
             registration = AdapterRegistration(**data)
             publish(self.context.context, ObjectCreatedEvent(registration))
             registration = self.context.add(registration)
@@ -111,7 +65,7 @@ class AdapterRegistrationAdd(BrowserView):
 
     def getWidgets(self):
         return ([getattr(self, name)
-                 for name in getFieldNamesInOrder(IAdapterRegistrationInfo)]
+                 for name in getFieldNamesInOrder(IAdapterRegistration)]
                 +
                 [getattr(self, name)
                  for name in getFieldNamesInOrder(IRegistration)]
