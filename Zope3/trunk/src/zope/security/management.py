@@ -14,7 +14,7 @@
 """
 Default ISecurityManagement implementation
 
-$Id: management.py,v 1.3 2003/04/18 22:12:34 jim Exp $
+$Id: management.py,v 1.4 2003/06/02 14:31:48 stevea Exp $
 """
 
 # Special system user that has all permissions
@@ -22,7 +22,8 @@ $Id: management.py,v 1.3 2003/04/18 22:12:34 jim Exp $
 system_user = object()
 
 from zope.interface import moduleProvides
-from zope.security.interfaces import ISecurityManagement, ISecurityManagementSetup
+from zope.security.interfaces import ISecurityManagement
+from zope.security.interfaces import ISecurityManagementSetup
 from zope.security.manager import SecurityManager
 from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
 from zope.security.context import SecurityContext
