@@ -394,19 +394,25 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
 
     # Special case for individual file targets:
     if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], path)):
-        trailing_slash_or_comma_v = ",v"
-    elif doing_directory:
-        trailing_slash_or_comma_v = ""
+        trailing_slash_or_comma_v_1 = ",v"
+        trailing_slash_or_comma_v_2 = ",v"
+    elif doing_directory or recurse:
+        # We must have the slash on the origin dir arg, or it'll be nested
+        # in target:
+        trailing_slash_or_comma_v_1 = "/"
+        # If we don't have slash on target dir arg, it'll be created if
+        # it's not already there:
+        trailing_slash_or_comma_v_2 = ""
     else:
-        trailing_slash_or_comma_v = "/"
+        trailing_slash_or_comma_v_1 = "/"
+        trailing_slash_or_comma_v_2 = "/"
 
-    cmd = ("%s%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
-                                          (DRYRUN and "echo Would do: ") or "",
-                                          cmd,
-                                          os.environ["CVSROOT"], path,
-                                          trailing_slash_or_comma_v,
-                                          remote['host'], repodir, path,
-                                          trailing_slash_or_comma_v))
+    cmd = ("%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
+                                        cmd,
+                                        os.environ["CVSROOT"], path,
+                                        trailing_slash_or_comma_v_1,
+                                        remote['host'], repodir, path,
+                                        trailing_slash_or_comma_v_2))
     if VERBOSE:
         complain("%sDoing rsync cmd:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), cmd)
@@ -414,7 +420,11 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
         complain("%sDoing syncrepo rsync of %s\n", 
                  ((DRYRUN and "NOT ") or ""), path)
 
-    result = os.system(cmd)
+    if DRYRUN:
+        print "Would do:\n\t", cmd
+        result = 0
+    else:
+        result = os.system(cmd)
     if result:
         note_failure("*** Rsync returned %s...", result)
 
