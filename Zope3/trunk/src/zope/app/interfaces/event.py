@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.9 2003/06/07 07:23:51 stevea Exp $
+$Id: event.py,v 1.10 2003/06/25 15:20:37 fdrake Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -306,3 +306,11 @@ class IObjectCopiedEvent(IObjectAddedEvent):
     """An object has been copied"""
 
     fromLocation = Attribute("The old location for the object.")
+
+class IDatabaseOpenedEvent(IEvent):
+    """The main database has been opened."""
+
+    database = Attribute("The main database.")
+
+class IProcessStartingEvent(IEvent):
+    """The application server process is starting."""
