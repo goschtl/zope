@@ -33,8 +33,7 @@ def main(argv=None):
 
 
 def run(options):
-    reporter = FirstImportReporter()
-    h = hook.ReportingHook(reporter)
+    h = hook.ReportingHook(options.reporter)
     h.install()
     globals = {"__name__": "__main__",
                "__file__": options.argv[0]}
@@ -45,17 +44,37 @@ def run(options):
     finally:
         h.uninstall()
         sys.argv[:] = old_argv
-    reporter.display_report()
+    options.reporter.display_report()
 
 
 class Options:
 
+    known_options = ["--first-import", "--cyclic-imports"]
+
     def __init__(self, argv):
         self.program = os.path.basename(argv[0])
+        self.argv = argv[1:]
+        self.reporter = None
+        while self.argv and self.argv[0] in self.known_options:
+            opt = self.argv.pop(0)
+            m = getattr(self, opt[2:].replace("-", "_"))
+            m()
         if len(argv) < 2:
             raise SystemExit(2)
-        self.argv = argv[1:]
         self.script = self.argv[0]
+        if self.reporter is None:
+            self.reporter = FirstImportReporter()
+
+    def first_import(self):
+        if self.reporter is not None:
+            raise SystemExit(2)
+        self.reporter = FirstImportReporter()
+
+    def cyclic_imports(self):
+        if self.reporter is not None:
+            raise SystemExit(2)
+        from zope.importtool import cycle
+        self.reporter = cycle.CycleReporter()
 
 
 class FirstImportReporter(reporter.Reporter):
