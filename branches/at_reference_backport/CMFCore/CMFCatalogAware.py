@@ -19,11 +19,14 @@ from AccessControl import ClassSecurityInfo
 from CMFCorePermissions import ModifyPortalContent
 from CMFCorePermissions import AccessContentsInformation
 from CMFCorePermissions import ManagePortal
-from utils import getToolByName
 from utils import _dtmldir
+from utils import getToolByName
 
+from interfaces.IOpaqueItems import ICallableOpaqueItemWithHooks
 
-class CMFCatalogAware(Base):
+from Referenceable    import Referenceable
+
+class CMFCatalogAware(Referenceable):
     """Mix-in for notifying portal_catalog and portal_workflow
     """
 
@@ -143,6 +146,7 @@ class CMFCatalogAware(Base):
             Add self to the catalog.
             (Called when the object is created or moved.)
         """
+        Referenceable.manage_afterAdd(item, item, container)
         if aq_base(container) is not aq_base(self):
             self.indexObject()
             self.__recurse('manage_afterAdd', item, container)
@@ -152,6 +156,7 @@ class CMFCatalogAware(Base):
             Add self to the workflow.
             (Called when the object is cloned.)
         """
+        Referenceable.manage_afterClone(item, item)
         self.notifyWorkflowCreated()
         self.__recurse('manage_afterClone', item)
 
@@ -163,6 +168,9 @@ class CMFCatalogAware(Base):
         if aq_base(container) is not aq_base(self):
             self.__recurse('manage_beforeDelete', item, container)
             self.unindexObject()
+
+        Referenceable.manage_beforeDelete(self, item, container)
+
 
     def __recurse(self, name, *args):
         """
