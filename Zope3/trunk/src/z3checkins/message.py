@@ -202,7 +202,7 @@ class CheckinMessageParser:
         (year, month, day, hours, minutes, seconds,
          weekday, yearday, dst, tzoffset) = email.Utils.parsedate_tz(date)
 
-        # TODO: a workaround to deal with messages that don't specify a timezone
+        # A workaround to deal with messages that don't specify a timezone.
         if tzoffset is None:
             tzoffset = 0
 
@@ -242,7 +242,7 @@ class CheckinMessageParser:
             subject = parts[1]
             directory = subject.split(' - ')[0]
         elif "SVN:" in subject:
-            # TODO: Format specific to the Zope3 mailing list
+            # XXX: Format specific to the Zope3 mailing list
             # [foo-bar] SVN: foobaz/boo/bar.py log message
             parts = subject.split("SVN: ", 1)
             if len(parts) < 2:
@@ -276,7 +276,7 @@ class CheckinMessageParser:
         for line in lines:
             if in_log_msg:
                 if (line.startswith('=== ')
-                    or line.startswith('-=-') # TODO: Zope3 ML specific
+                    or line.startswith('-=-') # XXX: Zope3 ML specific
                     or line.startswith("Added:")
                     or line.startswith("Modified:")
                     or line.startswith("Removed:")
@@ -392,18 +392,17 @@ class ContainerView:
         return title or "Zope 3 Checkins"
 
     def description(self):
-        """Returns the description of this archive.
-        """
+        """Return the description of this archive."""
         return self.context.description
 
     def archive_url(self):
-        """Returns the URL for mailing list archives.
-        """
+        """Return the URL for mailing list archives."""
         return self.context.archive_url
 
     def bookmarks(self):
-        """Returns a list of bookmarks from a cookie.  Each bookmark is
-        expressed as a datetime object.
+        """Return a list of bookmarks from a cookie.
+
+        Each bookmark is expressed as a datetime object.
         """
         bookmarks = []
         cookie = self.request.get('bookmarks', '')
@@ -415,8 +414,7 @@ class ContainerView:
         return bookmarks
 
     def placeBookmark(self):
-        """Place a new bookmark after the latest checkin message in a
-        cookie."""
+        """Place a new bookmark after the latest message in a cookie."""
         if int(self.request.get('start', 0)) > 0:
             return # The user can't see the newest checkins
         if not hasattr(self, '_archive'):
@@ -437,8 +435,10 @@ class ContainerView:
                                         max_age=365*24*60*60) # 1 year
 
     def checkins(self, start=None, size=None):
-        """Returns a list of the last 'size' checkin messages in
-        self.context, newest first, skipping the first 'start' messages.
+        """Return a list of messages.
+
+        Returns the last 'size' checkin messages in self.context, newest
+        first, skipping the first 'start' messages.
         """
         if start is None: start = int(self.request.get('start', 0))
         if size is None: size = int(self.request.get('size', 20))
@@ -473,8 +473,9 @@ class ContainerView:
         return items
 
     def renderCheckins(self, start=None, size=None):
-        """Returns a list of checkins rendered into HTML.  See `checkins` for
-        description of parameters."""
+        """Return a list of checkins rendered into HTML.
+
+        See `checkins` for description of parameters."""
         html = []
         previous_message = None
         for item in self.checkins(start=start, size=size):
@@ -489,7 +490,7 @@ class ContainerView:
         return "".join(html)
 
     def count(self):
-        """Returns the number of checkin messages in the archive."""
+        """Return the number of checkin messages in the archive."""
         if not hasattr(self, '_archive'):
             self._archive = IMessageArchive(self.context)
         return len(self._archive)
@@ -517,7 +518,7 @@ class MessageView:
             self._index = self._archive.index(self.context)
 
     def next(self):
-        """Returns the next message in archive."""
+        """Return the next message in archive."""
         self._calc_index()
         if self._index is not None and self._index < len(self._archive) - 1:
             return self._archive[self._index + 1]
@@ -525,7 +526,7 @@ class MessageView:
             return None
 
     def previous(self):
-        """Returns the previous message in archive."""
+        """Return the previous message in archive."""
         self._calc_index()
         if self._index is not None and self._index > 0:
             return self._archive[self._index - 1]
@@ -533,7 +534,7 @@ class MessageView:
             return None
 
     def first(self):
-        """Returns the first message in archive."""
+        """Return the first message in archive."""
         self._calc_index()
         if self._archive:
             return self._archive[0]
@@ -541,7 +542,7 @@ class MessageView:
             return None
 
     def last(self):
-        """Returns the last message in archive."""
+        """Return the last message in archive."""
         self._calc_index()
         if self._archive:
             return self._archive[-1]
@@ -549,15 +550,13 @@ class MessageView:
             return None
 
     def icon(self):
-        """Returns a mapping describing an icon for this checkin.  The mapping
-        contains 'src', 'alt' and 'title' attributes."""
+        """Return a mapping describing an icon for this checkin."""
         return {'src': '++resource++message.png',
                 'alt': 'Message',
                 'title': 'Email message'}
 
     def body(self):
-        """Colorizes the body of a checkin message."""
-
+        """Colorize the body of a checkin message."""
         text = self.context.body.replace('\r', '')\
                                 .replace('&', '&amp;') \
                                 .replace('<', '&lt;') \
@@ -571,8 +570,9 @@ class CheckinMessageView(MessageView):
     """View mixin for checkin messages."""
 
     _subtrees = None
+
     def subtrees(self):
-        """Returns a sequence of tuples (prefix, icon, alt, title).
+        """Return a sequence of tuples (prefix, icon, alt, title).
 
         (icon, alt, title) are the resource name, alt text and tooltip used
         for any checkin messages that have directory starting with prefix.
@@ -600,8 +600,7 @@ class CheckinMessageView(MessageView):
         return self._subtrees
 
     def icon(self):
-        """Returns a mapping describing an icon for this checkin.  The mapping
-        contains 'src', 'alt' and 'title' attributes."""
+        """Return a mapping describing an icon for this checkin."""
         for prefix, icon, alt, title in self.subtrees():
             if self.context.directory.startswith(prefix):
                 return {'src': '++resource++%s' % icon,
@@ -612,8 +611,8 @@ class CheckinMessageView(MessageView):
                 'title': 'Checkin'}
 
     def body(self):
-        """Colorizes checkin message body."""
-
+        """Colorize checkin message body."""
+        # XXX This method is rather bloated and hard to understand.
         text = self.context.body.replace('\r', '')\
                                 .replace('&', '&amp;') \
                                 .replace('<', '&lt;') \
@@ -634,10 +633,11 @@ class CheckinMessageView(MessageView):
             if log_idx != -1:
                 log_idx += len('\nLog:\n')
             else:
-                log_idx = text.find('Log message') #TODO: Zope3 checkin-specific
+                log_idx = text.find('Log message')
+                # XXX: Zope3 checkin-specific
                 if log_idx != -1:
                     log_idx = text.find('\n', log_idx) + 1
-                    # TODO: This is yucky...
+                    # XXX: This is yucky...
                     text = text.replace('\n-=-\n', '')
         if log_idx == -1:
             return '<pre>%s</pre>' % text
@@ -723,7 +723,7 @@ class CheckinMessageView(MessageView):
         """
         if line == ' ' or (not line.endswith(' ') and '\t' not in line):
             return line
-        m = re.search('\s+\Z', line)
+        m = re.search(r'\s+\Z', line)
         if m:
             n = m.start()
             if n == 0:
