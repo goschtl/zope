@@ -1,11 +1,11 @@
 ==========================
-Message Board Demo Product
+Message Board Demo Package
 ==========================
 
-This product is developed as an example for the Zope 3 Cookbook. You can
-find the text at http://dev.zope.org/Zope3/DevelCookbook. Each step
-corresponds to a separate recipe in the "Content Components" section. The
-recipes map as follows:
+This product is developed as an example for the Zope 3 Developers Book. 
+You can find the text at http://dev.zope.org/Zope3/Zope3Book. Each step 
+corresponds to a separate recipe in the "Content Components" parts. The 
+chapters map as follows:
 
 Step  1: Writing Content Objects
 
@@ -19,7 +19,7 @@ Step  5: Changing Size Information
 
 Step  6: Internationalizing a Product
 
-Step  7: Events, Channels and Subscriptions
+Step  7: Events and Subscribers
 
 Step  8: Approval Workflow for Messages
 
