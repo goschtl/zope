@@ -18,7 +18,7 @@
       />
 
   <page
-      for="zope.app.interfaces.exceptions.IUserError"
+      for="zope.app.exception.interfaces.IUserError"
       name="index.html"
       permission="zope.Public"
       template="user.pt"

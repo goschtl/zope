@@ -64,15 +64,15 @@
       zope.app.registration.interfaces.INoRegistrationManagerError"
       name="index.html"
       permission="zope.Public"
-      template="../../browser/exception/user.pt"
-      class="zope.app.browser.exception.user.UserErrorView" />
+      template="../../exception/browser/user.pt"
+      class="zope.app.exception.browser.user.UserErrorView" />
 
   <page
       for="zope.app.registration.interfaces.INoLocalServiceError"
       name="index.html"
       permission="zope.Public"
-      template="../../browser/exception/user.pt"
-      class="zope.app.browser.exception.user.UserErrorView" />
+      template="../../exception/browser/user.pt"
+      class="zope.app.exception.browser.user.UserErrorView" />
 
 
 <!-- Generic page for objects that keep track of their registrations -->
@@ -94,6 +94,5 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Registration"
       />
-
 
 </zope:configure>

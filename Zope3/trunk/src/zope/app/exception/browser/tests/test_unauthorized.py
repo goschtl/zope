@@ -13,14 +13,14 @@
 ##############################################################################
 """Test Unauthorized Exception Views
 
-$Id: test_unauthorized.py,v 1.12 2004/03/08 12:05:53 srichter Exp $
+$Id: test_unauthorized.py,v 1.1 2004/03/14 04:44:52 srichter Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.container.contained import contained
-from zope.app.browser.exception.unauthorized import Unauthorized
+from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.event.tests.placelesssetup import PlacelessSetup
 
 class Unauthorized(Unauthorized):

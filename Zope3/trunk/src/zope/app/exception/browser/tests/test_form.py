@@ -1,29 +1,26 @@
 ##############################################################################
+#
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
+#
 ##############################################################################
-"""General exceptions
+"""XXX short summary goes here.
 
-$Id: exceptions.py,v 1.4 2003/06/03 15:56:44 stevea Exp $
+$Id: test_form.py,v 1.1 2004/03/14 04:44:52 srichter Exp $
 """
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 
-from zope.interface import Interface, implements
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.app.exception.browser.form'),
+        ))
 
-class IUserError(Interface):
-    """User error exceptions
-    """
-
-class UserError(Exception):
-    """User errors
-
-    These exceptions should generally be displayed to users unless
-    they are handled.
-    """
-    implements(IUserError)
+if __name__ == '__main__': unittest.main()

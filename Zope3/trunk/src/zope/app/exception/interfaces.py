@@ -9,15 +9,21 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""Support for user views
+"""General exceptions
 
-$Id: user.py,v 1.1 2003/03/07 12:06:40 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
 """
-__metaclass__ = type
 
-class UserErrorView:
+from zope.interface import Interface, implements
 
-    def title(self):
-        return self.context.__class__.__name__
+class IUserError(Interface):
+    """User error exceptions
+    """
 
-    
+class UserError(Exception):
+    """User errors
+
+    These exceptions should generally be displayed to users unless
+    they are handled.
+    """
+    implements(IUserError)

@@ -10,7 +10,7 @@
       name="index.html"
       permission="zope.Public"
       template="unauthorized.pt"
-      class="zope.app.browser.exception.unauthorized.Unauthorized"
+      class="zope.app.exception.browser.unauthorized.Unauthorized"
       layer="debug" />
 
   <page 

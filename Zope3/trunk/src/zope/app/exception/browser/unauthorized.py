@@ -13,7 +13,7 @@
 ##############################################################################
 """Unautorized Exception View Class
 
-$Id: unauthorized.py,v 1.8 2004/03/08 12:05:52 srichter Exp $
+$Id: unauthorized.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.security.interfaces import IAuthenticationService

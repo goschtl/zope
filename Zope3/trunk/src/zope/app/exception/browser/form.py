@@ -13,7 +13,7 @@
 ##############################################################################
 """Form-related exception views
 
-$Id: form.py,v 1.3 2004/03/13 21:37:19 srichter Exp $
+$Id: form.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
 """
 
 from zope.app.form.interfaces import IWidgetInputError

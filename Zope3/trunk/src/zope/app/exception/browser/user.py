@@ -1,26 +1,23 @@
 ##############################################################################
-#
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-#
+# 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-#
 ##############################################################################
-"""XXX short summary goes here.
+"""Support for user views
 
-$Id: test_form.py,v 1.1 2003/08/07 21:34:36 jim Exp $
+$Id: user.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
+__metaclass__ = type
 
-def test_suite():
-    return unittest.TestSuite((
-        DocTestSuite('zope.app.browser.exception.form'),
-        ))
+class UserErrorView:
 
-if __name__ == '__main__': unittest.main()
+    def title(self):
+        return self.context.__class__.__name__
+
+    
