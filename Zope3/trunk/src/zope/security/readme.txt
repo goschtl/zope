@@ -222,7 +222,7 @@ Zope3 Security
       checkers with the security model's global checker registry::
 
          import sandbox_simulation
-         from Zope.Security.Checker import defineChecker
+         from zope.security.checker import defineChecker
          defineChecker(sandbox_simulation.TimeService, time_service_checker)
 
     Defining a Security Policy

@@ -1,7 +1,6 @@
-import zope.security.examples.sandbox
-
-# XXX These imports are wrong and were wrong before the renaming
-from zope.security import ISecurityPolicy, Checker, IChecker
+import sandbox
+from zope.security.interfaces import ISecurityPolicy, IChecker
+from zope.security import securitymanagement, checker
 
 #################################
 # 1. map permissions to actions
@@ -14,7 +13,7 @@ from zope.security import ISecurityPolicy, Checker, IChecker
 #################################
 # permissions
 NotAllowed = 'Not Allowed'
-Public = Checker.CheckerPublic
+Public = checker.CheckerPublic
 TransportAgent = 'Transport Agent'
 AccessServices = 'Access Services'
 AccessAgents = 'Access Agents'
@@ -88,7 +87,7 @@ def PermissionMapChecker(permissions_map={}, setattr_permission_func=NoSetAttr):
     for k,v in permissions_map.items():
         for iv in v:
             res[iv]=k
-    return Checker.Checker(res.get, setattr_permission_func)
+    return checker.Checker(res.get, setattr_permission_func)
 
 
 #################################
@@ -124,16 +123,16 @@ def wire_security():
 
     import zope.security.examples.sandbox
 
-    Checker.defineChecker(sandbox.Sandbox, sandbox_checker)
-    Checker.defineChecker(sandbox.TimeService, time_service_checker)
-    Checker.defineChecker(sandbox.AgentDiscoveryService, agent_service_checker)
-    Checker.defineChecker(sandbox.HomeDiscoveryService, home_service_checker)
+    checker.defineChecker(sandbox.Sandbox, sandbox_checker)
+    checker.defineChecker(sandbox.TimeService, time_service_checker)
+    checker.defineChecker(sandbox.AgentDiscoveryService, agent_service_checker)
+    checker.defineChecker(sandbox.HomeDiscoveryService, home_service_checker)
 
     def addAgent(self, agent):
         if not self._agents.has_key(agent.getId()) \
            and sandbox.IAgent.isImplementedBy(agent):
             self._agents[agent.getId()]=agent
-            checker = Checker.selectChecker(self)
+            checker = checker.selectChecker(self)
             wrapped_home = checker.proxy(self)
             agent.setHome(wrapped_home)
         else:
@@ -142,7 +141,7 @@ def wire_security():
     sandbox.Sandbox.addAgent = addAgent
 
     def setupAgent(self, agent):
-        SecurityManagement.newSecurityManager(agent)
+        securitymanagement.newSecurityManager(agent)
 
     sandbox.TimeGenerator.setupAgent = setupAgent
 
@@ -153,7 +152,7 @@ def wire_security():
         possible_homes = _homes.keys()
         possible_homes.remove(agent.getHome().getId())
         new_home =  _homes.get(whrandom.choice(possible_homes))
-        return Checker.selectChecker(new_home).proxy(new_home)
+        return checker.selectChecker(new_home).proxy(new_home)
 
     sandbox.GreenerPastures = GreenerPastures
 
