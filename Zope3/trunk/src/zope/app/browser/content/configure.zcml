@@ -242,18 +242,6 @@
       />
 
 <!-- Folder View Directives -->
-
-  <browser:view
-      for="zope.app.interfaces.content.folder.IFolder"
-      permission="zope.ManageContent" 
-      name="create"  
-      class="zope.app.browser.content.folder.FolderAdding">
-
-    <browser:page name="index.html" template="add.pt" />
-    <browser:page name="action.html" attribute="action" />
-
-  </browser:view>
-
   <browser:icon
       name="zmi_icon" 
       for="zope.app.interfaces.content.folder.IFolder"
