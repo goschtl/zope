@@ -1,0 +1,11 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:code="http://namespaces.zope.org/code">
+
+  <include package="zope.app.interpreter" file="meta.zcml" />
+
+  <code:registerInterpreter
+      type="text/server-test"
+      component=".test_directives.TestInterpreter" />
+
+</configure>

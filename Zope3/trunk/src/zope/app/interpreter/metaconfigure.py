@@ -11,22 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test Content
+"""Handle code: directives
 
-$Id: content.py,v 1.4 2003/08/21 14:19:28 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2003/08/21 14:19:24 srichter Exp $
 """
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.interpreter import provideInterpreter
 
-class Content:
-    def getSomething(self):
-        return 42
-
-
-class PTComponent(object):
-    def __init__(self, content, request=None):
-        self.context = content
-        self.request = request
-
-    index = ViewPageTemplateFile("view.pt")
-    default = ViewPageTemplateFile("default.pt")
-    nothing = ViewPageTemplateFile("nothing.pt")
+def registerInterpreter(_context, type, component):
+    return _context.action(
+        discriminator = ('code', 'registerInterpreter', type),
+        callable = provideInterpreter,
+        args = (type, component)
+        )

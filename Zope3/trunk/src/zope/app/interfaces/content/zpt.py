@@ -11,21 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: zpt.py,v 1.4 2003/04/10 09:34:29 paul Exp $
-"""
+"""Templated Page Content Component Interfaces
 
-import zope.schema
+$Id: zpt.py,v 1.5 2003/08/21 14:19:24 srichter Exp $
+"""
+from zope.schema import SourceText, Bool
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IZPTPage(Interface):
-    """ZPT Pages are a persistent implementation of Page Templates.
+    """ZPT Pages are a persistent implementation of Page Templates."""
 
-       Note: I introduced some new methods whose functionality is
-             actually already covered by some other methods but I
-             want to start enforcing a common coding standard.
-    """
 
     def setSource(text, content_type='text/html'):
         """Save the source of the page template.
@@ -36,14 +32,25 @@ class IZPTPage(Interface):
     def getSource():
         """Get the source of the page template."""
 
-    source = zope.schema.SourceText(
-        title=_(u"Source"),
-        description=_(u"""The source of the page template."""),
+    source = SourceText(
+        title=_("Source"),
+        description=_("The source of the page template."),
         required=True)
 
-    expand = zope.schema.Bool(
-        title=_(u"Expand macros"),
-        )
+    expand = Bool(
+        title=_("Expand macros"),
+        description=_("Expand Macros so that they all are shown in the "
+                      "code."),
+        default=False,
+        required=True)
+
+    evaluateInlineCode = Bool(
+        title=_("Evaluate Inline Code"),
+        description=_("Evaluate code snippets in TAL. We usually discourage "
+                      "people from using this feature."),
+        default=False,
+        required=True)
+
 
 class IRenderZPTPage(Interface):
 

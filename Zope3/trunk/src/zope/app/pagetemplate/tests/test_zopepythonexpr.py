@@ -11,14 +11,12 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Zope Python Expression Tests
 
-Revision information:
-$Id: test_zopepythonexpr.py,v 1.3 2003/05/01 19:35:26 faassen Exp $
+$Id: test_zopepythonexpr.py,v 1.4 2003/08/21 14:19:28 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+from zope.testing.cleanup import CleanUp
 
 class Engine:
 

@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Sample Component
 
-Revision information: $Id: sample.py,v 1.2 2002/12/25 14:13:06 jim Exp $
+$Id: sample.py,v 1.3 2003/08/21 14:19:28 srichter Exp $
 """
-
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 class C:

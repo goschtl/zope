@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Simple Test View
 
+$Id: simpletestview.py,v 1.3 2003/08/21 14:19:28 srichter Exp $
+"""
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 
 SimpleTestView = SimpleViewClass('testsimpleviewclass.pt')

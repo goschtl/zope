@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
@@ -14,7 +13,7 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: size.py,v 1.4 2003/05/01 19:35:21 faassen Exp $
+$Id: size.py,v 1.5 2003/08/21 14:19:23 srichter Exp $
 """
 
 from zope.interface import Interface

@@ -12,13 +12,9 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.3 2003/08/13 21:28:25 garrett Exp $
+$Id: editingwidgets.py,v 1.4 2003/08/21 14:19:22 srichter Exp $
 """
-
 __metaclass__ = type
-
-from types import ListType, TupleType
-ListTypes = (ListType, TupleType)
 
 from zope.app.browser.form.widget import BrowserWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -31,8 +27,7 @@ class SimpleEditingWidget(BrowserWidget):
     width = 60
     height = 15
     extra=""
-    style="width:100%"
-    style = ''
+    style="width: 98%; font-family: monospace;"
     rowTemplate = ViewPageTemplateFile("simpleeditingrow.pt")
     rowFragment = ViewPageTemplateFile("simpleeditingrowfragment.pt")
     
@@ -46,9 +41,9 @@ class SimpleEditingWidget(BrowserWidget):
                              name = self.name,
                              id = self.name,
                              cssClass = self.getValue('cssClass'),
-#                             rows = self.getValue('height'),
-#                             cols = self.getValue('width'),
-#                             style = self.style,
+                             rows = self.getValue('height'),
+                             cols = self.getValue('width'),
+                             style = self.style,
                              contents = self._showData(),
                              extra = self.getValue('extra'))
 
@@ -56,10 +51,11 @@ class SimpleEditingWidget(BrowserWidget):
         """Make the contents available to the template"""
         return self._showData()
 
-    def row(self):
-        # XXX This was originally set to make a colspan=2 table cell, and
-        #     have the label above the text area. Perhaps we should use
-        #     different div classes for this case?
-        return self.rowTemplate()
-        return '<h1>here</h1><div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self())
+    # XXX: This is ridiculous! This cannot work in any browser well!
+    #def row(self):
+    #    # XXX This was originally set to make a colspan=2 table cell, and
+    #    #     have the label above the text area. Perhaps we should use
+    #    #     different div classes for this case?
+    #    return self.rowTemplate()
+    #    return '<h1>here</h1><div class="label">%s</div><div class="field">%s</div>' % (
+    #            self.label(), self())

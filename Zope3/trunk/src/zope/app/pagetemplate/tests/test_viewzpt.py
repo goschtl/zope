@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""View ZPT Tests
+
+$Id: test_viewzpt.py,v 1.9 2003/08/21 14:19:28 srichter Exp $
+"""
 import unittest
 
 from zope.component import getService

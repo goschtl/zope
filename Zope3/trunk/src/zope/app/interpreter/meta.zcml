@@ -1,0 +1,13 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/code">
+
+    <meta:directive
+        name="registerInterpreter"
+        schema=".metadirectives.IRegisterInterpreterDirective"
+        handler=".metaconfigure.registerInterpreter" />
+
+  </meta:directives>
+
+</configure>

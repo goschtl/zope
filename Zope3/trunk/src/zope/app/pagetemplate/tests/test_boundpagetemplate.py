@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Bound Page Template Tests
+
+$Id: test_boundpagetemplate.py,v 1.4 2003/08/21 14:19:28 srichter Exp $
+"""
 import unittest
 
 class Test(unittest.TestCase):

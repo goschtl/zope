@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Binding Tests
 
+$Id: test_binding.py,v 1.7 2003/08/21 14:19:28 srichter Exp $
+"""
 import unittest
 
 from zope.app.pagetemplate.tests.testpackage.content \

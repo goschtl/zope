@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.14 2003/08/06 14:45:10 srichter Exp $
+$Id: zpt.py,v 1.15 2003/08/21 14:19:22 srichter Exp $
 """
 
 import re
@@ -40,18 +40,30 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
     implements(IZPTPage, IRenderZPTPage)
 
+    # See zope.app.interfaces.content.zpt.IZPTPage
     expand = False
 
+    # See zope.app.interfaces.content.zpt.IZPTPage
+    evaluateInlineCode = False
+
     def getSource(self):
-        '''See IZPTPage'''
+        '''See zope.app.interfaces.content.zpt.IZPTPage'''
         return self.read()
 
     def setSource(self, text, content_type='text/html'):
-        '''See IZPTPage'''
+        '''See zope.app.interfaces.content.zpt.IZPTPage'''
         if not isinstance(text, unicode):
             raise TypeError("source text must be Unicode" , text)
-
         self.pt_edit(text.encode('utf-8'), content_type)
+
+    # See zope.app.interfaces.content.zpt.IZPTPage
+    source = property(getSource, setSource, None,
+                      """Source of the Page Template.""")
+
+    def pt_getEngineContext(self, namespace):
+        context = self.pt_getEngine().getContext(namespace)
+        context.evaluateInlineCode = self.evaluateInlineCode
+        return context
 
     def pt_getContext(wrapped_self, instance, request, **_kw):
         # instance is a View component
@@ -78,9 +90,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         return self.pt_render(namespace)
 
     render = ContextMethod(render)
-
-    source = property(getSource, setSource, None,
-                      """Source of the Page Template.""")
 
 
 class SearchableText:

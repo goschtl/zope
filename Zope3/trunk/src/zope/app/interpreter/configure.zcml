@@ -1,0 +1,18 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:code="http://namespaces.zope.org/code">
+
+  <serviceType 
+      id="Interpreter" 
+      interface="zope.app.interfaces.interpreter.IInterpreterService" />
+
+  <service 
+      serviceType="Interpreter" 
+      component="zope.app.interpreter.interpreterService" />
+
+
+  <code:registerInterpreter
+      type="text/server-python"
+      component=".python.PythonInterpreter" />
+
+</configure>

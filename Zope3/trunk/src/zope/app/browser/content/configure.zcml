@@ -196,11 +196,23 @@
       permission="zope.ManageContent" />
 
   <editform
+      for="zope.app.content.zpt.IZPTPage"
       schema="zope.app.content.zpt.IZPTPage"
       name="edit.html"
-      menu="zmi_views"
       label="Edit a ZPT page"
-      permission="zope.ManageContent" />
+      fields="source expand"
+      permission="zope.ManageContent" 
+      menu="zmi_views" title="Edit"/>
+
+  <editform
+      for="zope.app.content.zpt.IZPTPage"
+      schema="zope.app.content.zpt.IZPTPage"
+      name="inlineCode.html"
+      label="Inline Code"
+      fields="evaluateInlineCode"
+      template="zpt_inlinecode.pt"
+      permission="zope.ManageContent" 
+      menu="zmi_views" title="Inline Code"/>
 
   <page
       for="zope.app.content.zpt.IZPTPage"

@@ -11,8 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest
+"""Simple View Class Tests
 
+$Id: test_simpleviewclass.py,v 1.3 2003/08/21 14:19:28 srichter Exp $
+"""
+import unittest
 
 class data: pass
 

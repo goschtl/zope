@@ -203,7 +203,7 @@
   <require
       permission="zope.ManageContent"
       interface="zope.app.interfaces.content.zpt.IZPTPage"
-      set_attributes="source expand" />
+      set_attributes="source expand evaluateInlineCode" />
 
   <require
       permission="zope.View"

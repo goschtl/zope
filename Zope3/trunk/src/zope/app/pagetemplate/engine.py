@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.18 2003/07/01 17:30:59 stevea Exp $
+$Id: engine.py,v 1.19 2003/08/21 14:19:26 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -37,8 +37,13 @@ from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
 from zope.i18n.translate import Translator
 
+from zope.app import zapi
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.traversing.adapters import Traverser
 
+
+class InlineCodeError(Exception):
+    pass
 
 def zopeTraverser(object, path_items, econtext):
     """Traverses a sequence of names, first trying attributes then items.
@@ -88,6 +93,33 @@ class ZopeContext(Context):
         translator = Translator(request.locale, domain, self.context)
         return translator.translate(msgid, mapping, default=default)
 
+    evaluateInlineCode = False
+
+    def evaluateCode(self, lang, code):
+        if not self.evaluateInlineCode:
+            raise InlineCodeError, \
+                  _('Inline Code Evaluation is deactivated, which means that '
+                    'you cannot have inline code snippets in your Page '
+                    'Template. Activate Inline Code Evaluation and try again.')
+        service = zapi.queryService(self.context, 'Interpreter')
+        if service is None:
+            raise InlineCodeError, \
+                  _('No interpreter service was found. This should never '
+                    'happen, since Zope defines a global interpreter service.')
+        interpreter = service.queryInterpreter(lang)
+        if interpreter is None:
+            error = _('No interpreter named "${lang_name}" was found.')
+            error.mapping = {'lang_name': lang}
+            raise InlineCodeError, error
+                  
+        globals = self.vars.copy()
+        result = interpreter.evaluateRawCode(code, globals)
+        # Add possibly new global variables.
+        old_names = self.vars.keys()
+        for name, value in globals.items():
+            if name not in old_names:
+                self.setGlobal(name, value)
+        return result
 
 class ZopeEngine(ExpressionEngine):
 
