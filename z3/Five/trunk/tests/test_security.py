@@ -42,7 +42,7 @@ class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
              class="Products.Five.tests.dummy.DummyView"
              attribute="foo"
              name="foo.txt"
-             permission="zope.ViewManagementScreens"
+             permission="zope2.ViewManagementScreens"
            />
 
         </configure>
@@ -91,7 +91,7 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
           -->
 
           <require attributes="bar keg"
-              permission="zope.ViewManagementScreens"
+              permission="zope2.ViewManagementScreens"
               />
 
         </content>
