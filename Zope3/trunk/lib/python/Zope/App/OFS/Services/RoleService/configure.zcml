@@ -31,6 +31,7 @@
 
   <include package=".Views" />
 
-  <zmi:icon for=".RoleService.ILocalRoleService" file="role_service.gif" />
+  <browser:icon name="zmi_icon" for=".RoleService.ILocalRoleService"
+                file="role_service.gif" />
 
 </zopeConfigure>

@@ -37,7 +37,7 @@
              action="AllRolePermissions.html"/>
   </browser:menuItems>
 
-  <zmi:icon for=".Image.IImage." file="Image_icon.gif" />
+  <browser:icon name="zmi_icon" for=".Image.IImage." file="Image_icon.gif" />
 
   <!-- Further Directives -->
 

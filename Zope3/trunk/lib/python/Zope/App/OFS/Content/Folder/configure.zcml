@@ -34,9 +34,6 @@
     <security:mimic class=".Folder." />
   </content>
 
-  <zmi:icon for=".Folder.IFolder." file="Folder_icon.gif" />
-
-
   <!-- Loaded Folder Directives -->
   <content class=".LoadedFolder.">
     <zmi:factory

@@ -38,7 +38,7 @@
     -->
   </browser:menuItems>
 
-  <zmi:icon for=".ZPTPage.IZPTPage." file="zpt.gif" />
+  <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
   <include package=".Views" />
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.2 2002/06/17 19:12:32 bwarsaw Exp $
+$Id: testIconDirective.py,v 1.1 2002/06/18 20:33:33 jim Exp $
 """
 import os
 from StringIO import StringIO
@@ -30,12 +30,12 @@ from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture import queryView, getView, getResource
 from Zope.Security.Proxy import ProxyFactory
 
-import Zope.App.ZMI as p
+import Zope.App.Publisher.Browser as p
 defs_path = os.path.join(os.path.split(p.__file__)[0], 'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
    >
    %s
    </zopeConfigure>"""
@@ -62,7 +62,8 @@ class Test(PlacelessSetup, TestCase):
         
         xmlconfig(StringIO(template % (
             """
-            <zmi:icon for="Zope.ComponentArchitecture.tests.TestViews.IC"
+            <browser:icon name="zmi_icon"
+                      for="Zope.ComponentArchitecture.tests.TestViews.IC"
                       file="%s" /> 
             """ % path
             ))) 

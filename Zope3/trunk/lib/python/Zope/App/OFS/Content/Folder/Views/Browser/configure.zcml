@@ -6,6 +6,10 @@
 >
 
   <!-- Folder View Directives -->
+
+  <browser:icon name="zmi_icon" for=".Folder.IFolder."
+                file="Folder_icon.gif" />
+
      
   <browser:defaultView
        for=".Folder.IFolder." 

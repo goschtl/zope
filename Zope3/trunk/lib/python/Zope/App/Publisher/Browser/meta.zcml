@@ -46,6 +46,9 @@
        /> 
     </directive>
 
+    <directive name="icon" attributes="name for file image alt layer"
+               handler="Zope.App.Publisher.Browser.IconDirective." />
+
   </directives>
 
 </zopeConfigure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IconDirective.py,v 1.3 2002/06/13 23:15:44 jim Exp $
+$Id: IconDirective.py,v 1.1 2002/06/18 20:33:33 jim Exp $
 """
 import os
 import re
@@ -51,7 +51,7 @@ class IconViewFactory:
     def __call__(self, context, request):
         return IconView(context, request, self.rname, self.alt)
 
-def IconDirective(_context, for_, file, layer='default',
+def IconDirective(_context, name, for_, file, layer='default',
                   alt=None):
 
     for_ = _context.resolve(for_)
@@ -63,7 +63,7 @@ def IconDirective(_context, for_, file, layer='default',
             alt = alt[1:] # Remove leading 'I'
 
     rname = '-'.join(for_.__module__.split('.'))
-    rname = "%s-%s-zmi_icon" % (rname, iname)
+    rname = "%s-%s-%s" % (rname, iname, name)
 
     ext = os.path.splitext(file)[1]
     if ext:
@@ -73,10 +73,10 @@ def IconDirective(_context, for_, file, layer='default',
 
     return resource(_context, image=file, name=rname, layer=layer)() + [
         Action(
-        discriminator = ('view', 'zmi_icon', vfactory, layer),
+        discriminator = ('view', name, vfactory, layer),
         callable = handler,
         args = ('Views', 'provideView',
-                for_, 'zmi_icon', IBrowserPresentation,
+                for_, name, IBrowserPresentation,
                 vfactory, layer)),
         
         ]

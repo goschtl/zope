@@ -44,4 +44,6 @@
              action="AllRolePermissions.html"/>
   </browser:menuItems>
 
+  <browser:icon name="zmi_icon" for=".IFile." file="File_icon.gif" />
+
 </zopeConfigure>

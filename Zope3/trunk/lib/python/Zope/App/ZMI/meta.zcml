@@ -1,12 +1,5 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-  <!-- Zope.App.ZMI -->
-  <directives namespace="http://namespaces.zope.org/zmi">
-
-    <directive name="icon" attributes="for file image alt layer"
-               handler="Zope.App.ZMI.IconDirective." />
-  </directives>
-
   <!-- Zope.App.ZMI.Service -->
   <directives namespace="http://namespaces.zope.org/service">
        <directive name="factoryFromClass"
