@@ -9,7 +9,9 @@
 <body>
 
 
-<span metal:define-macro="logged_user">Logged in as dtremea</span>
+<span metal:define-macro="logged_user"
+   >Logged in as <span tal:replace="request/user/getTitle"
+   >dtremea</span></span>
 
 <table metal:define-macro="services_bar" border="0" cellspacing="0" cellpadding="0">
   <tr tal:on-error="string: No services available">
