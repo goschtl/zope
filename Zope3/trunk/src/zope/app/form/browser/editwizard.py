@@ -30,8 +30,6 @@ from zope.app.location import LocationProxy
 
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-     globalBrowserMenuService
 
 from editview import EditView
 from submit import Next, Previous, Update

@@ -32,8 +32,6 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-    globalBrowserMenuService
 from editview import EditView
 from submit import Update
 
