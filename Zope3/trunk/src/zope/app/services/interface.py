@@ -20,6 +20,9 @@ from zope.interface.interface import InterfaceClass
 class PersistentInterfaceClass(Persistent, InterfaceClass):
     pass
 
+# PersistentInterface is equivalent to the zope.interface.Interface object
+# except that it is also persistent.  It is used in conjunction with
+# zodb.code to support interfaces in persistent modules.
 PersistentInterface = PersistentInterfaceClass("PersistentInterface")
 
 class PersistentInterfaceWrapper(Wrapper):
