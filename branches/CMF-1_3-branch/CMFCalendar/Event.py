@@ -24,7 +24,6 @@ from Products.CMFCore.PortalContent import PortalContent, NoWL, ResourceLockedEr
 from Products.CMFCore.WorkflowCore import WorkflowAction
 
 # Import permission names
-from Products.CMFCore import CMFCorePermissions
 from Products.CMFCore.CMFCorePermissions import View, ModifyPortalContent
 from Products.CMFDefault.utils import formatRFC822Headers, html_headcheck
 from Products.CMFDefault.utils import SimpleHTMLParser, bodyfinder, parseHeadersBody
@@ -46,7 +45,7 @@ factory_type_information = (
      'actions': ({'id': 'view',
                   'name': 'View',
                   'action': 'event_view',
-                  'permissions': (CMFCorePermissions.View,)},
+                  'permissions': (View,)},
                  {'id': 'edit',
                   'name': 'Edit',
                   'action': 'event_edit_form',
@@ -61,8 +60,8 @@ def addEvent(self
              , description=''
              , effective_date = None 
              , expiration_date = None 
-             , start_date = DateTime() 
-             , end_date = DateTime()
+             , start_date = None 
+             , end_date = None
              , location=''
              , contact_name=''
              , contact_email=''
@@ -110,7 +109,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
 
     # Declarative security
     security = ClassSecurityInfo()
-    security.declareObjectProtected(CMFCorePermissions.View)
+    security.declareObjectProtected(View)
     
     __implements__ = ( PortalContent.__implements__
                      , DefaultDublinCoreImpl.__implements__
@@ -122,8 +121,8 @@ class Event(PortalContent, DefaultDublinCoreImpl):
                  , description=''
                  , effective_date = None 
                  , expiration_date = None 
-                 , start_date = DateTime()
-                 , end_date = DateTime()
+                 , start_date = None
+                 , end_date = None
                  , location=''
                  , contact_name=''
                  , contact_email=''
@@ -137,6 +136,11 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         self.effective_date = effective_date
         self.expiration_date = expiration_date
         self.setStartDate(start_date)
+
+        if start_date is None:
+            start_date = DateTime()
+        if end_date is None:
+            end_date = start_date
         
         if end_date < start_date:
             end_date = start_date
@@ -318,7 +322,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         return self.end().AMPMMinutes() 
 
     security.declarePrivate('handleText')
-    def handleText(self, text, format=None, stx_level=None):
+    def handleText(self, text, format=None):
         """ Handles the raw text, returning headers, body, cooked, format """
         headers = {}
         if format == 'html':
