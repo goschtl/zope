@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: ConfigurationStatusWidget.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: ConfigurationStatusWidget.py,v 1.3 2002/12/01 10:30:32 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,10 +28,10 @@ class ConfigurationStatusWidget(BrowserWidget):
     def __call__(self):
         checked = self._showData() or Unregistered        
         result = [
-            ('<input type="radio" name="%s" value="%s"%s> %s'
+            ('<input type="radio" name="%s" value="%s"%s>&nbsp;%s'
              % (self.name, v, (v == checked and ' checked' or ''), v)
              )
             for v in (Unregistered, Registered, Active)
             ]
-        return '<br />'.join(result)
+        return ' '.join(result)
     

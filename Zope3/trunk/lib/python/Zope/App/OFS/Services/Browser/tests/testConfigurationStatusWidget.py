@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testConfigurationStatusWidget.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: testConfigurationStatusWidget.py,v 1.3 2002/12/01 10:30:33 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -38,11 +38,11 @@ class Test(TestCase):
         self.assertEqual(
             text,
             '<input type="radio" name="f.status" value="Unregistered" checked>'
-            ' Unregistered<br />'
+            '&nbsp;Unregistered '
             '<input type="radio" name="f.status" value="Registered">'
-            ' Registered<br />'
+            '&nbsp;Registered '
             '<input type="radio" name="f.status" value="Active">'
-            ' Active'
+            '&nbsp;Active'
             )
         
         request.form['f.status'] = u'Registered'
@@ -50,11 +50,11 @@ class Test(TestCase):
         self.assertEqual(
             text,
             '<input type="radio" name="f.status" value="Unregistered">'
-            ' Unregistered<br />'
+            '&nbsp;Unregistered '
             '<input type="radio" name="f.status" value="Registered" checked>'
-            ' Registered<br />'
+            '&nbsp;Registered '
             '<input type="radio" name="f.status" value="Active">'
-            ' Active'
+            '&nbsp;Active'
             )
 
         widget.setData(u"Active")
@@ -62,11 +62,11 @@ class Test(TestCase):
         self.assertEqual(
             text,
             '<input type="radio" name="f.status" value="Unregistered">'
-            ' Unregistered<br />'
+            '&nbsp;Unregistered '
             '<input type="radio" name="f.status" value="Registered">'
-            ' Registered<br />'
+            '&nbsp;Registered '
             '<input type="radio" name="f.status" value="Active" checked>'
-            ' Active'
+            '&nbsp;Active'
             )
 
         widget.setData(u"Unregistered")
@@ -74,11 +74,11 @@ class Test(TestCase):
         self.assertEqual(
             text,
             '<input type="radio" name="f.status" value="Unregistered" checked>'
-            ' Unregistered<br />'
+            '&nbsp;Unregistered '
             '<input type="radio" name="f.status" value="Registered">'
-            ' Registered<br />'
+            '&nbsp;Registered '
             '<input type="radio" name="f.status" value="Active">'
-            ' Active'
+            '&nbsp;Active'
             )
 
 
