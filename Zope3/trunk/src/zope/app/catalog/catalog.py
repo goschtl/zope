@@ -26,7 +26,6 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
-from zope.app.utility.interfaces import ILocalUtility
 from zope.index.interfaces import ISimpleQuery
 
 
@@ -48,7 +47,7 @@ class ResultSet:
 
 class Catalog(BTreeContainer):
 
-    implements(ICatalog, IContainer, IAttributeAnnotatable, ILocalUtility)
+    implements(ICatalog, IContainer, IAttributeAnnotatable)
 
     def clear(self):
         for index in self.values():

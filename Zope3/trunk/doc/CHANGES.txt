@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - Implemented the `zope:localUtility` directive, so that you can use it
+        instead of the `zope:content` directive, which we had to use
+        before. The new directive automatically makes the utility implement
+        `ILocalUtility. I also changed all the local utility declarations to
+        use this new directive.
+
       - The `Attribute` and `Method` class of the `zope.interface` have now a
         new public `interface` attribute that stores the interface they are
         defined in.  

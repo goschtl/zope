@@ -16,13 +16,10 @@
     provides="zope.i18n.interfaces.IUserPreferredCharsets" />
 
 <!-- Register the Translation Domain as a content object -->
-<content 
+<localUtility 
     class=".translationdomain.TranslationDomain">
    <factory 
         id="zope.app.TranslationService" 
-        />
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -38,7 +35,7 @@
    <require permission="zope.ManageServices"
        interface=".interfaces.ISyncTranslationDomain" 
        />
-</content>
+</localUtility>
 
 <content class=".translationdomain.DomainRegistration">
   <require

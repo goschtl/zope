@@ -58,12 +58,9 @@
     <allow interface=".interfaces.IRole" />
   </content>
 
-  <content class=".role.PersistentRole">
+  <localUtility class=".role.PersistentRole">
     <factory
         id="zope.security.role.Role"
-        />
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -72,7 +69,7 @@
         permission="zope.Security"
         interface=".interfaces.IRole"
         />
-  </content>
+  </localUtility>
 
   <content class=".role.RoleRegistration">
     <require

@@ -17,17 +17,13 @@
       factory="zope.app.uniqueid.connectionOfPersistent"
       />
 
-  <content class=".UniqueIdUtility">
+  <localUtility class=".UniqueIdUtility">
     <factory
         id="zope.app.uniqueid.UniqueIdUtility"
         />
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-        />
-
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility"
         />
 
     <require
@@ -44,7 +40,7 @@
         interface=".interfaces.IUniqueIdUtilityManage"
         />
 
-  </content>
+  </localUtility>
 
   <subscriber
       factory=".removeUniqueIdSubscriber"

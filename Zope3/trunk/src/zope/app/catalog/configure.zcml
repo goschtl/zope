@@ -3,7 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
-<content class=".catalog.Catalog">
+<localUtility class=".catalog.Catalog">
   <factory
       id="zope.app.catalog"
       />
@@ -19,7 +19,7 @@
       interface="zope.app.container.interfaces.IContainer"
       permission="zope.ManageServices"
       />
-</content>
+</localUtility>
 
 <content class=".catalog.ResultSet">
   <require

@@ -1,13 +1,10 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class=".schema.SchemaUtility">
+  <localUtility class=".schema.SchemaUtility">
 
     <factory
         title="Mutable Schema"
         description="A Persistent Schema that can be edited through the web"/>
-
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -21,7 +18,7 @@
         interface=".interfaces.ISchemaUtility"
         set_schema=".interfaces.ISchemaUtility" />
 
-  </content>
+  </localUtility>
 
   <content class=".schema.SchemaRegistration">
     <require

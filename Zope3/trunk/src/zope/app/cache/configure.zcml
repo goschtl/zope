@@ -8,7 +8,7 @@
       factory="zope.app.cache.annotationcacheable.AnnotationCacheable"
       />
 
-  <content class=".ram.RAMCache">
+  <localUtility class=".ram.RAMCache">
     <factory
         id="zope.caching.RAMCache"
         />
@@ -21,15 +21,11 @@
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
 
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility"
-        />
-
     <require 
         permission="zope.ManageServices" 
         interface="zope.app.cache.interfaces.ram.IRAMCache"
         />
-  </content>
+  </localUtility>
 
   <vocabulary
       name="Cache Names"

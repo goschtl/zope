@@ -2,13 +2,10 @@
 
 <!-- Stateful ProcessDefintion -->
 
-<content 
+<localUtility 
     class=".definition.StatefulProcessDefinition">
   <factory
       id="zope.app.workflow.StatefulProcessDefinition"
-      />
-  <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" 
       />
   <implements 
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -22,7 +19,7 @@
       permission="zope.workflow.ManageProcessDefinitions"
       interface="zope.app.container.interfaces.IReadContainer" 
       />
-</content>
+</localUtility>
 
 
 <!-- States Container -->
@@ -93,25 +90,20 @@
 
 <!-- ContentWorkflowsManager -->
 
-<content 
+<localUtility
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
-    id="zope.app.workflow.ContentWorkflowsManager"
-  />
-
-  <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" 
+      id="zope.app.workflow.ContentWorkflowsManager"
       />
   <implements 
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
       />
-
   <require
-    permission="zope.ManageServices"
-    interface=".interfaces.IContentWorkflowsManager"
-    attributes="cpRegistry"
-    />
-</content>
+      permission="zope.ManageServices"
+      interface=".interfaces.IContentWorkflowsManager"
+      attributes="cpRegistry"
+      />
+</localUtility>
 
 <class class=".instance.StatefulProcessInstance">
   <require

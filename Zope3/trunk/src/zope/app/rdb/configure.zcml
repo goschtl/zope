@@ -29,19 +29,16 @@
         />
   </content>
 
-  <content class="zope.app.rdb.ZopeDatabaseAdapter">
+  <localUtility class="zope.app.rdb.ZopeDatabaseAdapter">
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-    <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <require
         permission="zope.app.rdb.Use"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
 
-  </content>
+  </localUtility>
 
   <content class="zope.app.rdb.ResultSet">
     <!-- require zope.View for all list methods -->

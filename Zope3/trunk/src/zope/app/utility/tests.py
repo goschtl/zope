@@ -16,13 +16,19 @@
 $Id$
 """
 import unittest
+from StringIO import StringIO
+
+from zope.component import getService
+from zope.component.exceptions import ComponentLookupError
+from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+from zope.interface import Interface, implements
 from zope.testing.doctestunit import DocTestSuite
+
+import zope.app.security
+import zope.app.utility
 from zope.app.tests import setup
 from zope.app.site.tests import placefulsetup
 from zope.app import utility, zapi
-from zope.interface import Interface, implements
-from zope.component import getService
-from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import IRegistrationStack
 from zope.app.registration.interfaces import UnregisteredStatus
@@ -32,6 +38,16 @@ from zope.app.registration.interfaces import IRegistered
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.dependable.interfaces import IDependable
 from zope.app.tests import setup
+from zope.app.tests.placelesssetup import PlacelessSetup
+
+
+def configfile(s):
+    return StringIO("""<configure
+      xmlns='http://namespaces.zope.org/zope'
+      i18n_domain='zope'>
+      %s
+      </configure>
+      """ % s)
 
 class IFo(Interface): pass
 
@@ -80,6 +96,11 @@ class Foo(object):
     def dependents(self):
         "See zope.app.dependable.interfaces.IDependable"
         return self._dependents
+
+
+class UtilityStub(object):
+    pass
+
 
 class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
@@ -213,9 +234,27 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(zapi.getUtility(IFoo, 'u2', sm2).name, 'u22')
 
 
+class TestLocalUtilityDirective(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        super(TestLocalUtilityDirective, self).setUp()
+        XMLConfig('meta.zcml', zope.app.component)()
+        XMLConfig('meta.zcml', zope.app.utility)()
+
+    def testDirective(self):
+        f = configfile('''
+        <localUtility
+            class="zope.app.utility.tests.UtilityStub">
+        </localUtility>
+        ''')
+        xmlconfig(f)
+        self.assert_(ILocalUtility.implementedBy(UtilityStub))
+    
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestUtilityService),
+        unittest.makeSuite(TestLocalUtilityDirective),
         DocTestSuite('zope.app.utility.vocabulary',
                      setUp=setup.placelessSetUp,
                      tearDown=setup.placelessTearDown)

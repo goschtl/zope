@@ -5,15 +5,12 @@
 
 <!-- Content Component Definition -->
 
-  <content class=".content.ContentComponentDefinition">
+  <localUtility class=".content.ContentComponentDefinition">
 
     <factory
       id="utility.ContentComponentDefinition"
       title="Content Component Definition"
       description="A Persistent Content Component Definition" />
-
-    <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <implements
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -23,7 +20,7 @@
       interface=".interfaces.IContentComponentDefinition"
       set_schema=".interfaces.IContentComponentDefinition" />
 
-  </content>
+  </localUtility>
 
   <content class=".content.ContentComponentDefinitionRegistration">
     <require

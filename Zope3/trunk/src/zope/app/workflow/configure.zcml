@@ -27,12 +27,9 @@
        This is only a generic placeholder for
        future Process Definition implementations -->
 
-  <content class="zope.app.workflow.definition.ProcessDefinition">
+  <localUtility class="zope.app.workflow.definition.ProcessDefinition">
     <factory
         id="zope.app.workflow.ProcessDefinition"
-        />
-    <implements
-        interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements 
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -41,7 +38,7 @@
         permission="zope.ManageServices"
         interface="zope.app.workflow.interfaces.IProcessDefinition" 
         />
-  </content>
+  </localUtility>
 
   <!-- Process Definition Name Vocabualry -->
 
