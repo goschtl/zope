@@ -15,28 +15,38 @@
 
 The macros are drawn from various different page templates.
 
-$Id: StandardMacros.py,v 1.2 2002/10/22 19:34:59 stevea Exp $
+$Id: StandardMacros.py,v 1.3 2002/10/28 11:21:13 stevea Exp $
 """
-from ZMIViewUtility import ZMIViewUtility
-from Zope.App.PageTemplate.ViewPageTemplateFile import ViewPageTemplateFile
+from ZMIViewUtility import ZMIViewUtility, IZMIViewUtility
+from Zope.ComponentArchitecture import getView
 
 class Macros:
 
     macro_pages = ()
 
     def __getitem__(self, key):
-        for page in self.macro_pages:
-            v = page.macros.get(key)
-            if v is not None:
+        context = self.context
+        request = self.request
+        for name in self.macro_pages:
+            page = getView(context, name, request)
+            try:
+                v = page[key]
+            except KeyError:
+                pass
+            else:
                 return v
         raise KeyError, key
+    
+
+class IStandardMacros(IZMIViewUtility):
+
+    def __getitem__(key):
+        """Return the macro named 'key'"""
+
 
 class StandardMacros(ZMIViewUtility, Macros):
 
-    __implements__ = ZMIViewUtility.__implements__
+    __implements__ = IStandardMacros
 
-    macro_pages = (
-            ViewPageTemplateFile('www/view_macros.pt'),
-            ViewPageTemplateFile('www/dialog_macros.pt')
-            )
+    macro_pages = ('view_macros', 'dialog_macros')
 

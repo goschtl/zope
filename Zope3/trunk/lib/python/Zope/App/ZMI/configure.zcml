@@ -9,7 +9,16 @@
 
   <browser:view name="standard_macros"
                 permission="Zope.View"
-                factory=".StandardMacros." />
+                factory=".StandardMacros." 
+                allowed_interface=".StandardMacros.IStandardMacros" />
+
+  <browser:view name="view_macros"
+                permission="Zope.View"
+                template="www/view_macros.pt" />
+
+  <browser:view name="dialog_macros"
+                permission="Zope.View"
+                template="www/dialog_macros.pt" />
 
   <browser:view name="ZMIUtility"
                 permission="Zope.View"
