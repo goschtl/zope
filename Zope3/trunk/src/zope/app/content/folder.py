@@ -120,7 +120,7 @@ class ReadDirectory:
     def get(self, key, default=None):
         if key == '++etc++Services' and self.context.hasServiceManager():
             return self.context.getServiceManager()
-        
+
         return self.context.get(key, default)
 
     def __iter__(self):
