@@ -1,6 +1,6 @@
 .. Common links used in the zsync docs.
-   This file should have no comment, and should be included by each of
-   the ReST documentation files in doc/zsync/.
+   This file should have no textual content, and should be included by
+   each of the reStructuredText documentation files in doc/zsync/.
 
 .. |FSSYNC| replace::   *Filesystem Synchronization Proposal*
 .. |TTWSITE| replace::  *Through the Web Site Development*
