@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+    - Added broken-object support.  If an object can't be loaded from
+      the database because it's class has been removed or moved, then
+      a placeholder "broken" object is loaded instead.  This allows
+      containing objects to be loaded properly and provides diagnostic
+      information needed to restore the missing class, if necessary.
+
+    - Now use ZODB 3.3, rather than ZODB 4.
+
     - Removed source type service and replaced source types by source
       factories. Updated the vocabulary accordingly.
 

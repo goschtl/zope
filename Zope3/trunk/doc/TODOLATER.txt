@@ -202,3 +202,10 @@ Things to do After the next release (in no particular order)
   as it should be, but it might be OK for the first release.
 
 - Reimplement or port Evan's ZPT adapter work.
+
+- Investigate "component specifications", that make more explicit the
+  relationships among components.
+
+  Add checking and better spelling of __used_for__.
+
+  
