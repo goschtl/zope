@@ -64,19 +64,6 @@
     template="dialog_macros.pt" />
 
 <browser:view
-    for="zope.app.interfaces.container.IContentContainer"
-    name="+"
-    factory="zope.app.browser.container.adding.Adding"
-    permission="zope.ManageContent"
-    layer="rotterdam"
-    allowed_attributes="addingInfo"
-    >
-
-    <browser:page name="index.html"  template="add.pt" />
-    <browser:page name="action.html" attribute="action" />
-</browser:view>
-
-<browser:view
     for="zope.app.interfaces.content.folder.IFolder"
     permission="zope.ManageContent"
     layer="rotterdam"
