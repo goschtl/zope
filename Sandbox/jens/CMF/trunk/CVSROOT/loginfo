@@ -1,1 +1,1 @@
-^cvsetc /cvs-repository/CVSROOT/postcommit_actions %%s: %s, %%v: %v, %%{}: %{}
+^cvsetc /cvs-repository/CVSROOT/postcommit_actions %{svV}
