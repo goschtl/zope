@@ -19,11 +19,12 @@ from xml.dom import minidom
 
 import transaction
 from zope.app import zapi
-from zope.schema import getFieldNamesInOrder
+from zope.schema import getFieldNamesInOrder, getFields
 from zope.app.container.interfaces import IReadContainer
 from zope.publisher.http import status_reasons
+from zope.app.form.utility import setUpWidget, no_value
 
-from interfaces import IDAVNamespace
+from interfaces import IDAVNamespace, IDAVWidget
 from opaquenamespaces import IDAVOpaqueNamespaces
 
 class PROPPATCH(object):
@@ -156,9 +157,31 @@ class PROPPATCH(object):
                     props.append(prop.localName)
                 return 200
             return 403
-            
-        # XXX: Deal with registered ns interfaces here
-        return 403
+        
+        if not prop.localName in self.avail_props[ns]:
+            return 403 # Cannot add propeties to a registered schema
+        
+        fields = getFields(iface)
+        field = fields[prop.localName]
+        if field.readonly:
+            return 409 # RFC 2518 specifies 409 for readonly props
+        
+        value = field.get(iface(self.context))
+        if value is field.missing_value:
+            value = no_value
+        setUpWidget(self, prop.localName, field, IDAVWidget,
+            value=value, ignoreStickyValues=True)
+        
+        widget = getattr(self, prop.localName + '_widget')
+        widget.setRenderedValue(prop)
+
+        if not widget.hasValidInput():
+            return 409 # Didn't match the widget validation
+        
+        if widget.applyChanges(iface(self.context)):
+            return 200
+        
+        return 422 # Field didn't accept the value
 
     def _handleRemove(self, prop):
         ns = prop.namespaceURI
@@ -171,6 +194,20 @@ class PROPPATCH(object):
                 return 200
             self.oprops.removeProperty(ns, prop.localName)
             return 200
-            
-        # XXX: Deal with registered ns interfaces here
-        return 403
+        
+        # Registered interfaces
+        fields = getFields(iface)
+        field = fields[prop.localName]
+        if field.readonly:
+            return 409 # RFC 2518 specifies 409 for readonly props
+        
+        if field.required:
+            if field.default is None:
+                return 409 # Clearing a required property is a conflict
+            # Reset the field to the default if a value is required
+            field.set(iface(self.context), field.default)
+            return 200
+        
+        # Reset the field to it's defined missing_value
+        field.set(iface(self.context), field.missing_value)
+        return 200

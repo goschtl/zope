@@ -108,6 +108,7 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
     
     #
     # Convenience methods; storing and retrieving properties through WebDAV
+    # It may be better to use specialised IDAWWidget implementatins for this.
     #
     def renderProperty(self, ns, nsprefix, prop, propel):
         """Render a property as DOM elements"""
