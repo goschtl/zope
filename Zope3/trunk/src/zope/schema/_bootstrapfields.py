@@ -12,15 +12,15 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.19 2003/07/13 06:47:28 richard Exp $
+$Id: _bootstrapfields.py,v 1.20 2003/07/28 22:22:21 jim Exp $
 """
 __metaclass__ = type
 
 import warnings
 
-from zope.interface import Attribute, providedBy
-
+from zope.interface import Attribute, providedBy, implements
 from zope.schema.interfaces import StopValidation, ValidationError
+from zope.schema.interfaces import IFromUnicode
 from zope.schema._schema import getFields
 from zope.schema import errornames
 
@@ -63,7 +63,47 @@ class Field(Attribute):
                  title=u'', description=u'',
                  required=True, readonly=False, constraint=None, default=None,
                  ):
-        """Pass in field values as keyword parameters."""
+        """Pass in field values as keyword parameters.
+
+
+        Generally, you want to pass either a title and description, or
+        a doc string.  If you pass no doc string, it will be computed
+        from the title and description.  If you pass a doc string that
+        follows the Python coding style (title line separated from the
+        body by a blank line), the title and description will be
+        computed from the doc string.  Unfortunately, the doc string
+        must be passed as a positional argument.
+
+        Here are some examples:
+
+        >>> f = Field()
+        >>> f.__doc__, f.title, f.description
+        ('', u'', u'')
+
+        >>> f = Field(title=u"sample")
+        >>> f.__doc__, f.title, f.description
+        (u'sample', u'sample', u'')
+
+        >>> f = Field(title=u"sample", description=u"blah blah\\nblah")
+        >>> f.__doc__, f.title, f.description
+        (u'sample\\n\\nblah blah\\nblah', u'sample', u'blah blah\\nblah')
+
+        >>> f = Field(__doc__='''sample
+        ...
+        ...    blah blah
+        ...    blah
+        ...    ''')
+        >>> f.__doc__, f.title
+        ('sample\\n\\n   blah blah\\n   blah\\n   ', u'sample')
+        >>> f.description
+        u'   blah blah\\n   blah\\n'
+
+        >>> f = Field(title=u"sample", description=u"blah blah",
+        ...           __doc__="xxx")
+        >>> f.__doc__, f.title, f.description
+        ('xxx', u'sample', u'blah blah')
+
+        """
 
         if not __doc__:
             if title:
@@ -73,6 +113,12 @@ class Field(Attribute):
                     __doc__ = title
             elif description:
                 __doc__ = description
+        else:
+            doc = __doc__.strip().split('\n')
+            if (not title and not description
+                and (len(doc) == 1 or not doc[1].strip())):
+                title = unicode(doc[0])
+                description = u'\n'.join(doc[2:])+u'\n'
 
         super(Field, self).__init__(__name__, __doc__)
         self.title = title
@@ -284,6 +330,8 @@ class Text(Enumerated, MinMaxLen, Field):
     """A field containing text used for human discourse."""
     _type = unicode
 
+    implements(IFromUnicode)
+
     def __init__(self, *args, **kw):
         if (  kw.get("allowed_values") is not None
               and self.__class__ in (Text, TextLine)):
@@ -292,6 +340,23 @@ class Text(Enumerated, MinMaxLen, Field):
                           " use Enumerated%s instead" % (clsname, clsname),
                           DeprecationWarning, stacklevel=2)
         super(Text, self).__init__(*args, **kw)
+
+    def fromUnicode(self, str):
+        """
+        >>> t = Text(constraint=lambda v: 'x' in v)
+        >>> t.fromUnicode("foo x spam")
+        Traceback (most recent call last):
+        ...
+        ValidationError: (u'Wrong type', 'foo x spam', <type 'unicode'>)
+        >>> t.fromUnicode(u"foo x spam")
+        u'foo x spam'
+        >>> t.fromUnicode(u"foo spam")
+        Traceback (most recent call last):
+        ...
+        ValidationError: (u'Constraint not satisfied', u'foo spam')
+        """
+        self.validate(str)
+        return str
 
 class TextLine(Text):
     """A text field with no newlines."""
@@ -313,6 +378,8 @@ class Int(Enumerated, Orderable, Field):
     """A field representing an Integer."""
     _type = int, long
 
+    implements(IFromUnicode)
+
     def __init__(self, *args, **kw):
         if (  kw.get("allowed_values") is not None
               and self.__class__ is Int):
@@ -321,6 +388,20 @@ class Int(Enumerated, Orderable, Field):
                           " use Enumerated%s instead" % (clsname, clsname),
                           DeprecationWarning, stacklevel=2)
         super(Int, self).__init__(*args, **kw)
+
+    def fromUnicode(self, str):
+        """
+        >>> f = Int()
+        >>> f.fromUnicode("125")
+        125
+        >>> f.fromUnicode("125.6")
+        Traceback (most recent call last):
+        ...
+        ValueError: invalid literal for int(): 125.6
+        """
+        v = int(str)
+        self.validate(v)
+        return v
 
 class EnumeratedInt(Int):
     """A field representing one of a selected set of Integers."""
