@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.6 2002/12/30 14:04:45 stevea Exp $
+$Id: event.py,v 1.7 2003/01/28 11:30:55 stevea Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -24,7 +24,7 @@ from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.interfaces.services.event import IEventChannel, IEventService
 from zope.app.interfaces.services.service import IBindingAware
 
-from zope.component import getAdapter, getService, queryService
+from zope.component import getAdapter, queryAdapter, getService, queryService
 from zope.component import ComponentLookupError
 from zope.app.component.nextservice import getNextService, queryNextService
 
@@ -65,18 +65,18 @@ def listSubscriptions(subscriber, event_type=None, context=None):
 
 
 class EventChannel(Subscribable):
-    
+
     __implements__ = IEventChannel
-    
+
     # needs __init__ from zope.app.event.subs.Subscribable
-    
+
     def _notify(clean_self, wrapped_self, event):
         subscriptionsForEvent = clean_self._registry.getAllForObject(event) 
         hubGet = getService(wrapped_self, "HubIds").getObject
         pathGet = getAdapter(wrapped_self, ITraverser).traverse
-        
+
         badSubscribers = {}
-        
+
         for subscriptions in subscriptionsForEvent:
             for subscriber,filter in subscriptions:
                 if filter is not None and not filter(event):
@@ -94,11 +94,10 @@ class EventChannel(Subscribable):
                         badSubscribers[subscriber] = 1
                         continue
                 obj.notify(event)
-        
+
         for subscriber in badSubscribers.keys():
             clean_self.unsubscribe(subscriber)
-        
-        
+
     def notify(wrapped_self, event):
         clean_self = removeAllProxies(wrapped_self)
         clean_self._notify(wrapped_self, event)
@@ -109,31 +108,31 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
     """An event channel that wants to subscribe to the nearest
     event service when bound, and unsubscribe when unbound.
     """
-    
+
     __implements__ = (
         EventChannel.__implements__,
         SubscriptionTracker.__implements__,
         IBindingAware
         )
-   
+
     def __init__(self):
         SubscriptionTracker.__init__(self)
         EventChannel.__init__(self)
-    
+
     subscribeOnBind = True
         # if true, event service will subscribe
         # to the parent event service on binding, unless the parent
         # service is the global event service; see 'bound' method
         # below
-    
+
     _serviceName = None
         # the name of the service that this object is providing, or
         # None if unbound
-    
+
     _subscribeToServiceName = "Subscriptions"
     _subscribeToServiceInterface = IEvent
     _subscribeToServiceFilter = None
-    
+
     def bound(wrapped_self, name):
         "See IBindingAware"
         # Note: if a component is used for more than one service then
@@ -150,7 +149,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
                     clean_self._subscribeToServiceFilter
                     )
     bound = ContextMethod(bound)
-    
+
     def unbound(wrapped_self, name):
         "See IBindingAware"
         # see comment in "bound" above
@@ -164,30 +163,29 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
     unbound = ContextMethod(unbound)
 
 
-
 class ServiceSubscribable(Subscribable):
     """A mix-in for local event services.
-    
+
     * unsubscribe() asks the next higher service to unsubscribe if this
       service cannot.
 
     * listSubscriptions() includes this service's subscriptions, and
       those of the next higher service.
     """
-    
+
     __implements__ = Subscribable.__implements__
-    
+
     _serviceName = None # should be replaced; usually done in "bound"
                         # method of a subclass that is IBindingAware
-    
+
     # uses (and needs) __init__ from zope.app.event.subs.Subscribable
-    
+
     def unsubscribe(wrapped_self, subscriber, event_type=None, filter=None):
         originalSubscriber = subscriber
         clean_self = removeAllProxies(wrapped_self)
         subscribers, clean_subObj, subObj = clean_self._getSubscribers(
             wrapped_self, subscriber)
-        
+
         try:
             ev_sets = clean_self._getEventSets(subscribers)
         except NotFoundError:
@@ -202,12 +200,12 @@ class ServiceSubscribable(Subscribable):
                                     event_type,
                                     filter)
             return
-        
-        do_alert = (subObj is not None and
-                    ISubscribingAware.isImplementedBy(clean_subObj))
-        
+
+        # XXX need to check if subObj is not None?
+        subscribingaware  = queryAdapter(subObj, ISubscribingAware)
+
         clean_self._p_changed = 1
-        
+
         if event_type is not None:
             # we have to clean out one and only one subscription of this
             # subscriber for event_type, filter (there may be more, even for
@@ -229,8 +227,8 @@ class ServiceSubscribable(Subscribable):
                         except ValueError:
                             pass
                         else:
-                            if do_alert:
-                                subObj.unsubscribedFrom(
+                            if subscribingaware:
+                                subscribingaware.unsubscribedFrom(
                                     wrapped_self, event_type, filter)
                             ev_set[ev_type] -= 1
                             if ev_set[ev_type] < 1:
@@ -257,7 +255,7 @@ class ServiceSubscribable(Subscribable):
             # we have to clean all the event types out (ignoring filter)
             clean_self._cleanAllForSubscriber(wrapped_self,
                                               ev_sets,
-                                              do_alert,
+                                              subscribingaware,
                                               subObj)
             next_service = queryNextService(wrapped_self,
                                             clean_self._serviceName)
@@ -271,7 +269,7 @@ class ServiceSubscribable(Subscribable):
         clean_self = removeAllProxies(wrapped_self)
         subscribers, clean_subObj, subObj = clean_self._getSubscribers(
             wrapped_self, subscriber)
-        
+
         result=[]
         if event_type:
             ev_type = event_type
@@ -308,17 +306,17 @@ class ServiceSubscribable(Subscribable):
 
 
 class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
-        
+
     __implements__ = (
         IEventService,
         ServiceSubscribable.__implements__,
         ServiceSubscriberEventChannel.__implements__
         )
-    
+
     def __init__(self):
         ServiceSubscriberEventChannel.__init__(self)
         ServiceSubscribable.__init__(self)
-        
+
     def isPromotableEvent(self, event):
         """A hook.  Returns True if, when publishing an event, the event
         should also be promoted to the next (higher) level of event service,
@@ -327,7 +325,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         # this should be (a) kept as is, (b) made into a registry, or
         # (c) removed.
         return True
-    
+
     def publish(wrapped_self, event):
         "see IEventPublisher"
         clean_self = removeAllProxies(wrapped_self)
@@ -342,7 +340,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             getNextService(wrapped_self, 'Events').publish(event)
         publishedEvents.remove(event)
     publish = ContextMethod(publish)
-        
+
     def notify(wrapped_self, event):
         "see ISubscriber"
         clean_self = removeAllProxies(wrapped_self)
@@ -350,7 +348,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         if publishedEvents is None or event not in publishedEvents:
             clean_self._notify(wrapped_self, event)
     notify = ContextMethod(notify)
-    
+
     def bound(wrapped_self, name):
         "See IBindingAware"
         if name == "Subscription":
@@ -364,9 +362,9 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
                 else:
                     es.subscribe(wrapped_self)
     bound = ContextMethod(bound)
-    
+
     # _unbound = ServiceSubscriberEventChannel.unbound # see comment below
-    
+
     def unbound(wrapped_self, name):
         "See IBindingAware"
         if name == "Subscription":
@@ -375,7 +373,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             # this flag is used by the unsubscribedFrom method (below) to
             # determine that it doesn't need to further unsubscribe beyond
             # what we're already doing.
-            
+
             # Both of the following approaches have wrapper/security
             # problems:
             #
@@ -394,26 +392,27 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             clean_self._subscriptions = ()
             clean_self._serviceName = None
             # end copy/paste
-            
+
             for subscriber in clean_self._subscribers:
                 clean_self.__unsubscribeAllFromSelf(
                         wrapped_self, subscriber[0])
             # unset flag
             clean_self._v_unbinding = None
     unbound = ContextMethod(unbound)
-    
+
     def __unsubscribeAllFromSelf(clean_self, wrapped_self, subscriber):
         subscribers, clean_subObj, subObj = clean_self._getSubscribers(
             wrapped_self, subscriber)
         ev_sets = clean_self._getEventSets(subscribers)
-        do_alert = (subObj is not None and
-                    ISubscribingAware.isImplementedBy(clean_subObj))
+        # XXX need to check if subObj is not None?
+        subscribingaware = queryAdapter(subObj, ISubscribingAware)
+
         clean_self._p_changed = 1  # trigger persistence before change
         clean_self._cleanAllForSubscriber(wrapped_self,
                                           ev_sets,
-                                          do_alert,
+                                          subscribingaware,
                                           subObj)
-    
+
     def unsubscribedFrom(wrapped_self, subscribable, event_type, filter):
         "See ISubscribingAware"
         clean_self = removeAllProxies(wrapped_self)

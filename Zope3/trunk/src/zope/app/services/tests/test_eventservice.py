@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.5 2003/01/27 18:39:47 stevea Exp $
+$Id: test_eventservice.py,v 1.6 2003/01/28 11:30:57 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -39,6 +39,8 @@ from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered
 from zope.proxy.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup
+from zope.component.tests.components import RecordingAdapter
+from zope.component.adapter import provideAdapter
 
 class UnpromotingEventService(EventService):
 
@@ -79,31 +81,30 @@ class DumbObjectHub:
                 return i
         raise NotFoundError
 
+class IHasSubscribingAwareAdapter(Interface):
+    pass
 
-class DummySubscriptionAwareSubscriber(DummySubscriber):
-    __implements__ = ISubscribingAware, ISubscriber
+class HasSubscribingAwareAdapter(DummySubscriber):
+    __implements__ = IHasSubscribingAwareAdapter, ISubscriber
+
+
+class SubscribingAwareAdapter(RecordingAdapter):
+
+    __implements__ = ISubscribingAware
 
     def subscribedTo(self, subscribable, event_type, filter):
-        self.subscribable = subscribable
-        self.event_type = event_type
-        self.filter = filter
+        self.record.append(('subscribed', self.context, subscribable,
+                            event_type, filter))
 
     def unsubscribedFrom(self, subscribable, event_type, filter):
-        self.un_subscribable = subscribable
-        self.un_event_type = event_type
-        self.un_filter = filter
+        self.record.append(('unsubscribed', self.context, subscribable,
+                            event_type, filter))
+
 
 class TestEventPublisher(EventSetup, TestCase):
 
     def setUp(self):
         EventSetup.setUp(self)
-        #sm = getServiceManager(None)
-        #defineService = sm.defineService
-        #provideService = sm.provideService
-        #self.objectHub = DumbObjectHub()
-
-        #defineService("HubIds", IObjectHub)
-        #provideService("HubIds", self.objectHub)
 
     def getObjectHub(self):
         self.objectHub = DumbObjectHub()
@@ -866,10 +867,13 @@ class TestEventPublisher(EventSetup, TestCase):
         configuration.status = Registered
 
     def testSubscriptionAwareInteraction(self):
-        sub = DummySubscriptionAwareSubscriber()
+        adapter = SubscribingAwareAdapter()
+        provideAdapter(IHasSubscribingAwareAdapter,
+                       ISubscribingAware,
+                       adapter)
         self.rootFolder.setObject(
             "mySubscriber",
-            DummySubscriptionAwareSubscriber())
+            HasSubscribingAwareAdapter())
         self.mySubscriber = ContextWrapper(
             self.rootFolder["mySubscriber"],
             self.rootFolder,
@@ -879,34 +883,45 @@ class TestEventPublisher(EventSetup, TestCase):
             self.mySubscriber,
             event_type=IObjectAddedEvent,
             filter=filter)
-        self.assertEqual(
-            self.mySubscriber.subscribable,
-            getEventService(self.rootFolder))
-        self.assertEqual(
-            self.mySubscriber.subscribable,
-            getSubscriptionService(self.rootFolder))
-        self.assertEqual(
-            self.mySubscriber.event_type,
-            IObjectAddedEvent)
-        self.assertEqual(
-            self.mySubscriber.filter,
-            filter)
+        adapter.check(
+            ('subscribed',
+             self.mySubscriber,
+             getSubscriptionService(self.rootFolder),
+             IObjectAddedEvent,
+             filter
+            )
+        )
+        #self.assertEqual(
+        #    self.mySubscriber.subscribable,
+        #    getEventService(self.rootFolder))
+        #self.assertEqual(
+        #    self.mySubscriber.subscribable,
+        #    getSubscriptionService(self.rootFolder))
+        #self.assertEqual(
+        #    self.mySubscriber.event_type,
+        #    IObjectAddedEvent)
+        #self.assertEqual(
+        #    self.mySubscriber.filter,
+        #    filter)
         unsubscribe(
             self.mySubscriber,
             event_type=IObjectAddedEvent,
             filter=filter)
-        self.assertEqual(
-            self.mySubscriber.un_subscribable,
-            getEventService(self.rootFolder))
-        self.assertEqual(
-            self.mySubscriber.un_subscribable,
-            getSubscriptionService(self.rootFolder))
-        self.assertEqual(
-            self.mySubscriber.un_event_type,
-            IObjectAddedEvent)
-        self.assertEqual(
-            self.mySubscriber.un_filter,
-            filter)
+        adapter.check(
+            ('subscribed',
+             self.mySubscriber,
+             getSubscriptionService(self.rootFolder),
+             IObjectAddedEvent,
+             filter
+            ),
+            ('unsubscribed',
+             self.mySubscriber,
+             getSubscriptionService(self.rootFolder),
+             IObjectAddedEvent,
+             filter
+            )
+        )
+
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 Revision information:
-$Id: subs.py,v 1.1 2002/12/30 14:03:02 stevea Exp $
+$Id: subs.py,v 1.2 2003/01/28 11:30:54 stevea Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -28,7 +28,7 @@ from zope.app.traversing import locationAsUnicode, getPhysicalPath, traverse
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
-from zope.component import getService, getAdapter
+from zope.component import getService, getAdapter, queryAdapter
 from zope.interface.type import TypeRegistry
 
 __metaclass__ = type
@@ -37,7 +37,7 @@ try:
     enumerate # python 2.3
 except NameError:
     def enumerate(collection):
-        'Generates an indexed series:  (0,coll[0]), (1,coll[1]) ...'     
+        'Generates an indexed series:  (0,coll[0]), (1,coll[1]) ...'
         i = 0
         it = iter(collection)
         while 1:
@@ -46,15 +46,15 @@ except NameError:
 
 class Subscribable(Persistent):
     """A local mix-in"""
-    
+
     __implements__ = ISubscribable
-    
+
     def __init__(self):
         self._registry = TypeRegistry()
         # using a list rather than a dict so that subscribers may define
         # custom __eq__ methods
         self._subscribers = []
-        
+
     def subscribe(wrapped_self, subscriber, event_type=IEvent, filter=None):
         '''See ISubscribable'''
         clean_subObj = removeAllProxies(subscriber)
@@ -76,17 +76,19 @@ class Subscribable(Persistent):
                 #     always return a canonical path.
                 subscriber = locationAsUnicode(
                     getPhysicalPath(subscriber))
-        
-        if ISubscribingAware.isImplementedBy(clean_subObj):
-            subObj.subscribedTo(wrapped_self, event_type, filter)
-        
+
+        # could subObj be None? should I check for this here?
+        subscribingaware = queryAdapter(subObj, ISubscribingAware)
+        if subscribingaware is not None:
+            subscribingaware.subscribedTo(wrapped_self, event_type, filter)
+
         ev_type = event_type
         if ev_type is IEvent:
             ev_type = None  # optimization
         clean_self = removeAllProxies(wrapped_self)
-        
+
         clean_self._p_changed = 1
-        
+
         subscribers = clean_self._registry.get(ev_type)
         if subscribers is None:
             subscribers = []
@@ -94,19 +96,20 @@ class Subscribable(Persistent):
         subscribers.append((subscriber, filter))
 
         subs = clean_self._subscribers
-        for sub in subs:
-            if sub[0] == subscriber:
+        # XXX I don't know what kind of thing xxxsomethingelse represents
+        for asubscriber, xxxsomethingelse in subs:
+            if asubscriber == subscriber:
                 try:
-                    sub[1][ev_type] += 1
+                    xxxsomethingelse[ev_type] += 1
                 except KeyError:
-                    sub[1][ev_type] = 1
+                    xxxsomethingelse[ev_type] = 1
                 break
         else:
             subs.append((subscriber,{ev_type:1}))
-        
+
         return subscriber
     subscribe = ContextMethod(subscribe)
-    
+
     def _getSubscribers(clean_self, wrapped_self, subscriber):
         subscribers = []
         # XXX This comment needs explanation:
@@ -141,13 +144,13 @@ class Subscribable(Persistent):
             subscribers.append(locationAsUnicode(
                 getPhysicalPath(subscriber)))
         return subscribers, clean_subObj, subObj
-    
+
     def _getEventSets(self, subscribers):
         ev_sets = {}
-        for self_ix, sub in enumerate(self._subscribers):
+        for self_ix, (asubscriber, afilter) in enumerate(self._subscribers):
             for arg_ix, subscriber in enumerate(subscribers):
-                if sub[0] == subscriber:
-                    ev_sets[(subscriber, self_ix)] = sub[1]
+                if asubscriber == subscriber:
+                    ev_sets[(subscriber, self_ix)] = afilter
                     del subscribers[arg_ix]
                     break
             if not subscribers:
@@ -156,11 +159,11 @@ class Subscribable(Persistent):
             if len(ev_sets.keys()) == 0:
                 raise NotFoundError(subscribers)
         return ev_sets
-    
+
     def _cleanAllForSubscriber(clean_self,
                                wrapped_self,
                                ev_sets,
-                               do_alert,
+                               subscribingaware,
                                subObj):
         for (subscriber, subscriber_index), ev_set in ev_sets.items():
             for ev_type in ev_set:
@@ -169,30 +172,29 @@ class Subscribable(Persistent):
                     ev_type = IEvent
                 subs = subscriptions[:]
                 subscriptions[:] = []
-                for sub in subs:
-                    if sub[0] == subscriber:  # deleted (not added back)
-                        if do_alert:
-                            subObj.unsubscribedFrom(
-                                wrapped_self, ev_type, sub[1]
+                for asubscriber, afilter in subs:
+                    if asubscriber == subscriber:  # deleted (not added back)
+                        if subscribingaware is not None:
+                            subscribingaware.unsubscribedFrom(
+                                wrapped_self, ev_type, afilter
                                 )
                     else: # kept (added back)
-                        subscriptions.append(sub)
+                        subscriptions.append((asubscriber, afilter))
             del clean_self._subscribers[subscriber_index]
-    
+
     def unsubscribe(wrapped_self, subscriber, event_type=None, filter=None):
         '''See ISubscribable'''
         clean_self = removeAllProxies(wrapped_self)
         subscribers, clean_subObj, subObj = clean_self._getSubscribers(
             wrapped_self, subscriber)
-        
+
         ev_sets = clean_self._getEventSets(subscribers)
-        
-        do_alert = (subObj is not None and
-                    ISubscribingAware.isImplementedBy(clean_subObj)
-                   )
-        
+
+        # XXX could subObj be None? should I check for this?
+        subscribingaware = queryAdapter(subObj, ISubscribingAware)
+
         clean_self._p_changed = 1
-        
+
         if event_type:
             # we have to clean out one and only one subscription of this
             # subscriber for event_type, filter (there may be more,
@@ -213,13 +215,13 @@ class Subscribable(Persistent):
                         except ValueError:
                             pass
                         else:
-                            if do_alert:
-                                subObj.unsubscribedFrom(
+                            if subscribingaware is not None:
+                                subscribingaware.unsubscribedFrom(
                                     wrapped_self, event_type, filter)
                             ev_set[ev_type] -= 1
                             if ev_set[ev_type] < 1:
-                                for sub in subscriptions:
-                                    if sub[0] == subscriber:
+                                for asubscriber, afilter in subscriptions:
+                                    if asubscriber == subscriber:
                                         break
                                 else:
                                     if len(ev_set) > 1:
@@ -234,7 +236,7 @@ class Subscribable(Persistent):
             # we have to clean all the event types out (ignoring filter)
             clean_self._cleanAllForSubscriber(wrapped_self,
                                               ev_sets,
-                                              do_alert,
+                                              subscribingaware,
                                               subObj)
     unsubscribe = ContextMethod(unsubscribe)
 
@@ -243,7 +245,7 @@ class Subscribable(Persistent):
         clean_self = removeAllProxies(wrapped_self)
         subscribers, clean_subObj, subObj = clean_self._getSubscribers(
             wrapped_self, subscriber)
-        
+
         result=[]
         if event_type:
             ev_type=event_type
@@ -251,10 +253,10 @@ class Subscribable(Persistent):
                 ev_type=None  # handle optimization
             subscriptions = self._registry.get(ev_type)
             if subscriptions:
-                for sub in subscriptions:
+                for asubscriber, afilter in subscriptions:
                     for subscriber in subscribers:
-                        if sub[0]==subscriber:
-                            result.append((event_type, sub[1]))
+                        if asubscriber == subscriber:
+                            result.append((event_type, afilter))
         else:
             try:
                 ev_sets = clean_self._getEventSets(subscribers)
@@ -266,28 +268,28 @@ class Subscribable(Persistent):
                     if subscriptions:
                         if ev_type is None:
                             ev_type = IEvent
-                        for sub in subscriptions:
-                            if sub[0]==subscriber:
-                                result.append((ev_type, sub[1]))
+                        for asubscriber, afilter in subscriptions:
+                            if asubscriber == subscriber:
+                                result.append((ev_type, afilter))
         return result
     listSubscriptions = ContextMethod(listSubscriptions)
 
 
 class SubscriptionTracker:
     "Mix-in for subscribers that want to know to whom they are subscribed"
-    
+
     __implements__ = ISubscribingAware
-    
+
     def __init__(self):
         self._subscriptions = ()
-    
+
     def subscribedTo(self, subscribable, event_type, filter):
         # XXX insert super() call here
         # This raises an error for subscriptions to global event service.
         subscribable_path = getPhysicalPathString(subscribable)
         if (subscribable_path, event_type, filter) not in self._subscriptions:
             self._subscriptions += ((subscribable_path, event_type, filter),)
-    
+
     def unsubscribedFrom(self, subscribable, event_type, filter):
         # XXX insert super() call here
         # This raises an error for subscriptions to global event service.
