@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.8 2003/05/08 19:48:26 gvanrossum Exp $
+$Id: syncer.py,v 1.9 2003/05/10 21:09:56 gvanrossum Exp $
 """
 
 import os
@@ -59,7 +59,12 @@ def toFS(ob, name, location, mode=None, objpath=None, writeOriginals=True):
 
     location -- The directory on the file system where the object will go
 
-    XXX what are mode and objpath?
+    mode -- 'C' for conflict objects,
+            'N' for new objects,
+            'D' for new directories, forces writing @@Zope and Entries.xml,
+            None for normal mode
+
+    objpath -- for mode 'N' or 'D', specify the object's path
 
     writeOriginals -- If True (the default), write 'Original' directory.
     """
@@ -195,6 +200,16 @@ def _setItem(container, name, ob, old=0):
 
 def fromFS(container, name, location, mode=None):
     """Synchromize a file from what's on the file system.
+
+    container -- parent of new object
+
+    name -- name of new object in container
+
+    location -- filesystem directory containing name
+
+    mode -- 'T' to skip updating the filesystem administration,
+            'F' to force updating the filesystem administration,
+            None default
     """
     msg =''
     objectPath = ''
