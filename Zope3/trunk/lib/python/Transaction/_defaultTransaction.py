@@ -2,23 +2,25 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Transaction management
 
-$Id: _defaultTransaction.py,v 1.6 2002/10/03 19:44:24 efge Exp $
+$Id: _defaultTransaction.py,v 1.7 2002/12/19 21:45:27 tim_one Exp $
 """
 import sys
+import logging
 
 from Transaction.Exceptions import ConflictError, TransactionError
-from zLOG import LOG, ERROR, PANIC, PROBLEM, DEBUG
+
+logger = logging.getLogger("Transaction")
 
 # Flag indicating whether certain errors have occurred.
 hosed = 0
@@ -28,7 +30,7 @@ already_hosed_text =  \
            occurred in a previous database transaction.  This
            application may be in an invalid state and must be
            restarted before database updates can be allowed.
-           
+
            Beware though that if the error was due to a serious system
            problem, such as a disk full condition, then the
            application may not come up until you deal with the system
@@ -42,11 +44,11 @@ hosed_text = \
            may be in a hosed state, so transactions will not be
            allowed to commit until the site/storage is reset by a
            restart.  """
-           
+
 
 class Transaction:
     """Simple transaction objects for single-threaded applications."""
-    
+
     user = ""
     description = ""
     _connections = None
@@ -59,7 +61,7 @@ class Transaction:
     # commits and aborts to ensure that they are correctly committed
     # or aborted in the "outside" transaction.
     _non_st_objects = None
-    
+
     def __init__(self, id=None):
         self._id = id
         self._objects = []
@@ -79,7 +81,7 @@ class Transaction:
         r.description = self.description
         r._extension = self._extension
         return r
-        
+
     def __str__(self):
         return "Transaction %s %s" % (self._id or 0, self.user)
 
@@ -133,7 +135,7 @@ class Transaction:
             while subjars:
                 j = subjars.pop()
                 j.abort_sub(self) # This should never fail
-        
+
             if t is not None:
                 raise t, v, tb
 
@@ -209,7 +211,7 @@ class Transaction:
 
     def _commit(self, objects, jars, subtransaction, subjars):
         # Do the real work of commit
-        
+
         # It's important that:
         #
         # - Every object in self._objects is either committed
@@ -230,16 +232,15 @@ class Transaction:
             for o in objects:
                 j = getattr(o, '_p_jar', o)
                 if j is None:
-                    LOG("Transaction", PROBLEM,
-                        "Ignoring object %s because it has no jar" % repr(o))
+                    logger.error("Ignoring object %s because it has no jar",
+                                 repr(o))
                 else:
                     if __debug__:
-                        LOG("Transaction", DEBUG,
-                            "Committing %s with jar %s" % (repr(o), j))
+                        logger.error("Committing %s with jar %s", repr(o), j)
                     i = id(j)
                     if i not in jars:
                         jars[i] = j
-                        
+
                         if subtransaction:
                             if not self._subtrans_begin(o, j, subtransaction):
                                 # The jar does not support subtransactions
@@ -280,10 +281,9 @@ class Transaction:
                 jarsv.pop() # It didn't, so it's taken care of.
         except:
             # Bug if it does, we need to keep track of it
-            LOG("Transaction", ERROR,
-                "A storage error occurred in the last phase of a "
-                "two-phase commit.  This shouldn\'t happen. ",
-                error=sys.exc_info())
+            logger.error("A storage error occurred in the last phase of a "
+                         "two-phase commit.  This shouldn\'t happen. ",
+                         exc_info=True)
             raise
 
     def _commit_rest(self, jarsv):
@@ -296,7 +296,7 @@ class Transaction:
             # But if it does, we need to yell FIRE!  Someone finished,
             # so don't allow any more work without at least a restart!
             hosed = 1
-            LOG("Transaction", PANIC, hosed_text, error=sys.exc_info())
+            logger.critical(hosed_text, exc_info=True)
             raise
 
     def _commit_failed(self, uncommitted, jarsv, subjars):
@@ -310,19 +310,18 @@ class Transaction:
                 if j is not None:
                     j.abort(o, self)
             except:
-                LOG("Transaction", ERROR,
+                logger.error(
                     "An error occured while cleaning up a failed commit.",
-                    error=sys.exc_info())
+                    exc_info=True)
 
         # Then, we unwind TPC for the jars that began it.
         for j in jarsv:
             try:
                 j.tpc_abort(self) # This should never fail
-            except:     
-                LOG("Transaction", ERROR,
-                    "A storage error occured during object abort "
-                    "This shouldn't happen. ",
-                    error=sys.exc_info())
+            except:
+                logger.error("A storage error occured during object abort "
+                             "This shouldn't happen. ",
+                             exc_info=True)
 
         # Ugh, we need to abort work done in sub-transactions.
         for j in subjars:
@@ -332,7 +331,7 @@ class Transaction:
     def _subtrans_begin(self, obj, jar, subtransaction):
         # If a jar does not support subtransactions, we need to save
         # it away to be committed in the outer transaction.
-        
+
         # XXX I think subtransaction is always 1, and, thus, doesn't
         # need to be passed
         assert subtransaction == 1
@@ -367,9 +366,9 @@ class Transaction:
     def note(self, text):
         if self.description:
             self.description = "%s\n\n%s" % (self.description, text.strip())
-        else: 
+        else:
             self.description = text.strip()
-    
+
     def setUser(self, user_name, path='/'):
         self.user = "%s %s" % (path, user_name)
 
@@ -386,13 +385,13 @@ try:
     import thread
 except:
     _t = Transaction(None)
-    
+
     def get_transaction():
         return _t
-    
+
     def free_transaction():
         _t.__init__()
-        
+
 else:
     _t = {}
     def get_transaction():
