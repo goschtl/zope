@@ -2,4 +2,6 @@
 
 # Actions executed (via commitinfo) at the start of a commit.
 
+echo -n Working dir:" "
+pwd
 echo precommit_actions: '$0': $0, '$*':, $*
