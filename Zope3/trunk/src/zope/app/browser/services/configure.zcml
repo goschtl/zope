@@ -2,6 +2,17 @@
    xmlns='http://namespaces.zope.org/browser'
    >
 
+<!-- For services, just treat @@manage as @@index.html by default -->
+
+  <!-- Get first accessable item from zmi_views menu -->
+  <page
+     for="zope.app.interfaces.services.interfaces.ILocalService"
+     name="index.html"
+     permission="zope.ManageServices"
+     class="zope.app.browser.managementviewselector.ManagementViewSelector" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+     />
+
 <!--Error Logging Service -->
 
   <pages
