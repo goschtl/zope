@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.9 2003/06/30 16:23:34 jim Exp $
+$Id: test_field.py,v 1.10 2003/07/04 10:59:21 ryzaja Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,7 +22,6 @@ from zope.app.traversing import traverse
 from zope.schema.interfaces import ValidationError
 from zope.interface import Interface, implements
 
-from zope.app.interfaces.services.module import IModuleService
 from zope.component.interfaces import IServiceService
 
 class I1(Interface):  pass

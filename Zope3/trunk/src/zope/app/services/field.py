@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.9 2003/06/30 16:23:33 jim Exp $
+$Id: field.py,v 1.10 2003/07/04 10:59:16 ryzaja Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,6 @@ from zope.schema import Field
 from zope.schema.interfaces import ValidationError
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.services.field import IComponentPath
-from zope.app.interfaces.services.module import IModuleService
 from zope.interface import implements
 
 class ComponentPath(Field):
