@@ -423,8 +423,6 @@ def main(module_filter, test_filter):
     global pathinit
 
     os.path.walk(os.curdir, remove_stale_bytecode, None)
-    # Initialize the path and cwd
-    pathinit = PathInit(build, build_inplace)
 
     # Initialize the logging module.
     import logging.config
@@ -433,6 +431,9 @@ def main(module_filter, test_filter):
     # If log.ini exists, use it
     if os.path.exists("log.ini"):
         logging.config.fileConfig("log.ini")
+
+    # Initialize the path and cwd
+    pathinit = PathInit(build, build_inplace)
 
     files = find_tests(module_filter)
     files.sort()
