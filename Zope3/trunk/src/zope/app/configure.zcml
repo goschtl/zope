@@ -1,6 +1,8 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:global_translation="http://namespaces.zope.org/gts">
+    xmlns:global_translation="http://namespaces.zope.org/gts"
+    i18n_domain="zope"
+    >
 
   <!-- Meta configuration (new directives) -->
   <include file="meta.zcml" />
