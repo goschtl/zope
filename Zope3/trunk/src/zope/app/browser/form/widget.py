@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.50 2003/08/16 00:42:49 srichter Exp $
+$Id: widget.py,v 1.51 2003/08/16 17:23:35 sidnei Exp $
 """
 
 __metaclass__ = type
@@ -290,14 +290,18 @@ class BrowserWidget(Widget, BrowserView):
             self.name, self._tooltip(title, self.context.description),
             )
 
+    def labelClass(self):
+        return self.context.required and "label required" or "label"
+
     def row(self):
         if self.error:
             error = zapi.getView(self.error, 'snippet', self.request)()
-            return '<div class="label">%s</div><div class="field">%s</div>' \
-                '<div class="error">%s</div>' % (self.label(), self(), error)
+            return '<div class="%s">%s</div><div class="field">%s</div>' \
+                '<div class="error">%s</div>' % (self.labelClass(),
+                                                 self.label(), self(), error)
         else:
-            return '<div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self()
+            return '<div class="%s">%s</div><div class="field">%s</div>' % (
+                self.labelClass(), self.label(), self()
                 )
 
 class DisplayWidget(BrowserWidget):
@@ -937,9 +941,9 @@ class RadioWidget(SingleItemsWidget):
         return title
 
     def row(self):
-        return ('<div class="label"><label for="%s">%s</label></div>'
+        return ('<div class="%s"><label for="%s">%s</label></div>'
                 '<div class="field" id="%s">%s</div>' % (
-                self.name, self.label(), self.name, self())
+                self.labelClass(), self.name, self.label(), self.name, self())
                 )
 
 class MultiItemsWidget(ItemsWidget):

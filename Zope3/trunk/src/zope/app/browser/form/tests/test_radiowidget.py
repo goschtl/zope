@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.9 2003/08/13 21:28:04 garrett Exp $
+$Id: test_radiowidget.py,v 1.10 2003/08/16 17:23:37 sidnei Exp $
 """
 import unittest
 
@@ -88,8 +88,23 @@ class RadioWidgetTest(BrowserWidgetTest):
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, 'oofay itletay')
 
-    def testRow(self):
+    def testRowRequired(self):
         self._widget.request.form.clear()
+        self._widget.context.required = True
+        label = ''.join(self._widget.label().strip().split())
+        value = ''.join(self._widget().strip().split())
+        row = ''.join(self._widget.row().strip().split())
+        id = 'field.foo'
+        self.assertEqual(row, '<divclass="labelrequired">'
+                              '<labelfor="%s">%s</label>'
+                              '</div>'
+                              '<divclass="field"id="%s">'
+                              '%s'
+                              '</div>' % (id, label, id, value))
+
+    def testRowNonRequired(self):
+        self._widget.request.form.clear()
+        self._widget.context.required = False
         label = ''.join(self._widget.label().strip().split())
         value = ''.join(self._widget().strip().split())
         row = ''.join(self._widget.row().strip().split())

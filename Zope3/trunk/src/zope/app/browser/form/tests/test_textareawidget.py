@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
+$Id: test_textareawidget.py,v 1.9 2003/08/16 17:23:37 sidnei Exp $
 """
 import unittest
 
@@ -44,15 +44,6 @@ class TextAreaWidgetTest(BrowserWidgetTest):
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"')
         self.verifyResult(self._widget.hidden(), check_list)
-
-    def testRow(self):
-        self._widget.request.form.clear()
-        label = ''.join(self._widget.label().strip().split())
-        value = ''.join(self._widget().strip().split())
-        row = ''.join(self._widget.row().strip().split())
-        self.assertEqual(row,
-                         '<divclass="label">%s</div>'
-                         '<divclass="field">%s</div>' % (label, value))
 
 
 def test_suite():

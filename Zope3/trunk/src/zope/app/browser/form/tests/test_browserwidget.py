@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.15 2003/08/13 21:28:04 garrett Exp $
+$Id: test_browserwidget.py,v 1.16 2003/08/16 17:23:37 sidnei Exp $
 """
 
 from zope.interface import Interface, implements
@@ -111,14 +111,23 @@ class BrowserWidgetTest(PlacelessSetup,
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
 
-    def testRow(self):
+    def testRowRequired(self):
         self._widget.request.form.clear()
+        self._widget.context.required = True
+        label = ''.join(self._widget.label().strip().split())
+        value = ''.join(self._widget().strip().split())
+        row = ''.join(self._widget.row().strip().split())
+        self.assertEqual(row, '<divclass="labelrequired">%s</div>'
+                              '<divclass="field">%s</div>' % (label, value))
+
+    def testRowNonRequired(self):
+        self._widget.request.form.clear()
+        self._widget.context.required = False
         label = ''.join(self._widget.label().strip().split())
         value = ''.join(self._widget().strip().split())
         row = ''.join(self._widget.row().strip().split())
         self.assertEqual(row, '<divclass="label">%s</div>'
                               '<divclass="field">%s</div>' % (label, value))
-
 
 class TestWidget(BrowserWidget):
 
