@@ -150,6 +150,12 @@ the test runner script (see the list of global variables in process_args().).
     Look for refcount problems.
     This requires that Python was built --with-pydebug.
 
+-1
+--report-only-first-doctest-failure
+
+   Report only the first failure in a doctest. (Examples after the
+   failure are still executed, in case they do any cleanup.)
+
 -t
 --top-fifty
     Time the individual tests and print a list of the top 50, sorted from
@@ -394,6 +400,11 @@ class ImmediateTestResult(unittest._TextTestResult):
                               test, self.failures)
 
     def printErrors(self):
+        if VERBOSE < 2:
+            # We'be output errors as they occured. Outputing them a second
+            # time is just annoying. 
+            return
+
         if self._progress and not (self.dots or self.showAll):
             self.stream.writeln()
         self.__super_printErrors()
@@ -933,6 +944,7 @@ def process_args(argv=None):
     global RUN_UNIT
     global RUN_FUNCTIONAL
     global PYCHECKER
+    global REPORT_ONLY_FIRST_DOCTEST_FAILURE
 
     if argv is None:
         argv = sys.argv
@@ -962,6 +974,7 @@ def process_args(argv=None):
     TEST_DIRS = []
     PROFILE = False
     PYCHECKER = False
+    REPORT_ONLY_FIRST_DOCTEST_FAILURE = False
     config_filename = 'test.config'
 
     # import the config file
@@ -972,7 +985,7 @@ def process_args(argv=None):
 
     try:
         opts, args = getopt.getopt(argv[1:],
-                                   "a:bBcdDfFg:G:hkl:LmMPprs:tTuUvN:",
+                                   "a:bBcdDfFg:G:hkl:LmMPprs:tTuUvN:1",
                                    ["all", "help", "libdir=", "times=",
                                     "keepbytecode", "dir=", "build",
                                     "build-inplace",
@@ -982,7 +995,8 @@ def process_args(argv=None):
                                     "loop", "gui", "minimal-gui",
                                     "test=", "module=",
                                     "profile", "progress", "refcount", "trace",
-                                    "top-fifty", "verbose", "repeat="
+                                    "top-fifty", "verbose", "repeat=",
+                                    "report-only-first-doctest-failure",
                                     ])
     # fixme: add the long names
     # fixme: add the extra documentation
@@ -1055,6 +1069,8 @@ def process_args(argv=None):
                 TIMETESTS = 50
         elif k in ("-U", "--gui"):
             GUI = 1
+        elif k in ("-1", "--report-only-first-doctest-failure"):
+            REPORT_ONLY_FIRST_DOCTEST_FAILURE = True
         elif k in ("-v", "--verbose"):
             VERBOSE += 1
         elif k == "--times":
@@ -1085,6 +1101,14 @@ def process_args(argv=None):
         ERROR: Your python version is not supported by Zope3.
         Zope3 needs Python 2.3.4 or greater. You are running:""" + sys.version
         sys.exit(1)
+
+    if REPORT_ONLY_FIRST_DOCTEST_FAILURE:
+        import zope.testing.doctest
+        zope.testing.doctest.set_unittest_reportflags(
+            zope.testing.doctest.REPORT_ONLY_FIRST_FAILURE)
+        import doctest
+        if hasattr(doctest, 'REPORT_ONLY_FIRST_FAILURE'):
+            doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
 
     if GC_THRESHOLD is not None:
         if GC_THRESHOLD == 0:
