@@ -255,8 +255,7 @@ def test_bad_import():
     >>> c.resolve('zope.configuration.tests.victim.x')
     Traceback (most recent call last):
     ...
-    ConfigurationError: Couldn't import zope.configuration.tests.victim,""" \
-                                       """ No module named bad_to_the_bone
+    ImportError: No module named bad_to_the_bone
 
     Cleanup:
 
