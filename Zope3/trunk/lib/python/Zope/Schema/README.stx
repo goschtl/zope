@@ -8,16 +8,16 @@ Table of contents
 
  What is a schema, how does it compare to an interface and why should you care?
 
- What does a Schema look like ( Example )
+ What does a Schema look like 
  
- Where Schemas make sense: Providing views from Schemas ( Example )
-
- Issues
+ Where Schemas make sense: Providing views from Schemas 
+ 
+ Issues to be solved 
 
 
 Short introduction
 
- Schemas:
+ Schemas are like interfaces, but describing properties - rather thab methods:
 
   - Model the public information managed by the object.
 
@@ -33,7 +33,8 @@ Short introduction
 
 Long introduction
 
-  Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
+  Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and 
+  PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
 
  What is a schema, how does it compare to an interface and why should you care?
 
@@ -99,15 +100,39 @@ What does a schema look like?
 
 Where Schemas make sense: Providing views from Schemas
 
-  Schemas, Fields, Widgets and Forms form a combination that can be used to provide views automaticly by Zope machinery.
+  Schemas, Fields, Widgets and Forms form a combination that can be used to provide views automaticly by Zope machinery. Example is provided in programmers tutorial, chapter 2.
   
-  TUTORIAL STUFF HERE.
   
+     In View's configure.zcml is said:
+     
+    <form:edit
+    schema=".IContact."
+    name="edit.html"
+    label="Edit contact information"
+    permission="ZopeProducts.Contact.ManageContacts" 
+    />
+  
+    And there is corresponding Schema.
+ 
+    class IContact(Interface):
+        "Provides access to basic contact information."
+
+        first = TextLine(title=u"First name")
+        last = TextLine(title=u"Last name")
+        email = TextLine(title=u"Electronic mail address")
+        address = Text(title=u"Postal address")
+        postalCode = TextLine(title=u"Postal code",
+                constraint=re.compile("\d{5,5}(-\d{4,4})?$").match)
+
+        def name():
+            """Gets the contact name.
+        
+            The contact name is the first and last name"""
  
   
   
 
-Issues
+Issues to be solved
 
  These issues were written up at Rotterdam Sprint
  
@@ -124,9 +149,6 @@ Issues
   And in view, while the widget or widget's messages are constructed:
   
   TranslatorService.getMessage('book.author.title','DE_DE')   
-
-  CHECK ... HOW DOES VIEW HAVE REFERENCE TO THE CLASS NAMES?  
-
 
 References
 
