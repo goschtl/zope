@@ -58,11 +58,11 @@ class Test(PlacelessSetup, unittest.TestCase):
              import getAdapter, getService, queryAdapter
         from zope.component.exceptions import ComponentLookupError
 
-        # if an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object
+        # If an object implements the interface you want to adapt to,
+        # getAdapter should simply return the object.
         self.assertEquals(getAdapter(ob, I1), ob)
 
-        # if an adapter isn't registered for the given object and interface,
+        # If an adapter isn't registered for the given object and interface,
         # and you provide no default, raise ComponentLookupError...
         self.assertRaises(ComponentLookupError, getAdapter, ob, I2)
 
@@ -82,12 +82,12 @@ class Test(PlacelessSetup, unittest.TestCase):
              import getAdapter, getService, queryAdapter
         from zope.component.exceptions import ComponentLookupError
 
-        # if an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object UNLESS we are sking for a
-        # names adapter.
+        # If an object implements the interface you want to adapt to,
+        # getAdapter should simply return the object UNLESS we are asking for a
+        # named adapter.
         self.assertRaises(ComponentLookupError, getAdapter, ob, I1, 'test')
 
-        # if an adapter isn't registered for the given object and interface,
+        # If an adapter isn't registered for the given object and interface,
         # and you provide no default, raise ComponentLookupError...
         self.assertRaises(ComponentLookupError, getAdapter, ob, I2, 'test')
 
