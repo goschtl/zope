@@ -29,7 +29,7 @@ from zope.app.site.service import ServiceRegistration
 from zope.app.publisher.browser import BrowserView
 from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.site.service import SiteManager
-from zope.app.component.localservice import getLocalServices
+from zope.app.component.localservice import getNextServices
 from zope.component.service import IGlobalServiceManager
 from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
@@ -126,7 +126,7 @@ class ServiceAdding(ComponentAdding):
         path = zapi.name(content)
         rm = content.__parent__.getRegistrationManager()
         chooser = INameChooser(rm)
-        
+
         # register an activated service registration
         for type_name in implements:
             sc = ServiceRegistration(type_name, path, content)
@@ -317,7 +317,7 @@ def gatherConfiguredServices(sm, request, items=None):
         # don't want the "change registration" link for parent services
         manageable = False
 
-    if IGlobalServiceService.providedBy(sm):
+    if IGlobalServiceManager.providedBy(sm):
         # global service manager
         names = []
         for type_name, interface in sm.getServiceDefinitions():
@@ -350,7 +350,7 @@ def gatherConfiguredServices(sm, request, items=None):
             'disabled': not url, 'manageable': manageable}
 
     # look for more
-    gatherConfiguredServices(getLocalService(sm), request, items)
+    gatherConfiguredServices(getNextServices(sm), request, items)
 
     # make it a list and sort by name
     items = items.values()
