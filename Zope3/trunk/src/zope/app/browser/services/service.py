@@ -13,9 +13,9 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.26 2003/05/27 14:18:09 jim Exp $
+$Id: service.py,v 1.27 2003/06/12 09:31:42 jim Exp $
 """
-
+from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.container.contents import Contents
 from zope.app.interfaces.container import IZopeContainer
@@ -27,11 +27,6 @@ from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.services.folder import SiteManagementFolder
 from zope.app.services.service import ServiceConfiguration
-from zope.app.traversing import traverse, getPath, getParent, objectName
-from zope.component import getServiceManager
-from zope.component import getView, getAdapter, queryView
-from zope.context import ContextSuper
-from zope.context import getWrapperContainer
 from zope.publisher.browser import BrowserView
 
 class ComponentAdding(Adding):
@@ -41,16 +36,19 @@ class ComponentAdding(Adding):
 
     def add(self, content):
         # Override so as to save a reference to the added object
-        self.added_object = ContextSuper(ComponentAdding, self).add(content)
+        self.added_object = zapi.ContextSuper(
+            ComponentAdding, self).add(content)
         return self.added_object
 
     def nextURL(self):
-        v = queryView(self.added_object, "addConfiguration.html", self.request)
+        v = zapi.queryView(
+            self.added_object, "addConfiguration.html", self.request)
         if v is not None:
-            url = str(getView(self.added_object, 'absolute_url', self.request))
+            url = str(
+                zapi.getView(self.added_object, 'absolute_url', self.request))
             return url + "/@@addConfiguration.html"
 
-        return ContextSuper(ComponentAdding, self).nextURL()
+        return zapi.ContextSuper(ComponentAdding, self).nextURL()
 
     def action(self, type_name, id):
         if type_name == "../AddService":
@@ -74,7 +72,10 @@ class ComponentAdding(Adding):
 
         # Call the superclass action() method.
         # As a side effect, self.added_object is set by add() above.
-        ContextSuper(ComponentAdding, self).action(type_name, id)
+        zapi.ContextSuper(ComponentAdding, self).action(type_name, id)
+
+    action = zapi.ContextMethod(action)
+
 
 class ServiceAdding(ComponentAdding):
     """Adding subclass used for adding services."""
@@ -87,7 +88,7 @@ class ServiceAdding(ComponentAdding):
         if not ILocalService.isImplementedBy(content):
             raise TypeError("%s is not a local service" % content)
 
-        return ContextSuper(ServiceAdding, self).add(content)
+        return zapi.ContextSuper(ServiceAdding, self).add(content)
 
 class UtilityAdding(ComponentAdding):
     """Adding subclass used for adding utilities."""
@@ -99,7 +100,7 @@ class UtilityAdding(ComponentAdding):
         # XXX This wants to be generalized!
         if not ILocalUtility.isImplementedBy(content):
             raise TypeError("%s is not a local utility" % content)
-        return ContextSuper(UtilityAdding, self).add(content)
+        return zapi.ContextSuper(UtilityAdding, self).add(content)
 
 class ConnectionAdding(ComponentAdding):
     """Adding subclass used for adding database connections."""
@@ -118,7 +119,7 @@ class AddServiceConfiguration(BrowserView):
     def listServiceTypes(self):
 
         # Collect all defined services interfaces that it implements.
-        sm = getServiceManager(self.context)
+        sm = zapi.getServiceManager(self.context)
         lst = []
         for servicename, interface in sm.getServiceDefinitions():
             if interface.isImplementedBy(self.context):
@@ -131,9 +132,10 @@ class AddServiceConfiguration(BrowserView):
         return lst
 
     def action(self, name=[], active=[]):
-        path = getPath(self.context)
-        configure = getWrapperContainer(self.context).getConfigurationManager()
-        container = getAdapter(configure, IZopeContainer)
+        path = zapi.getPath(self.context)
+        configure = zapi.getWrapperContainer(
+            self.context).getConfigurationManager()
+        container = zapi.getAdapter(configure, IZopeContainer)
 
         for nm in name:
             sc = ServiceConfiguration(nm, path, self.context)
@@ -220,12 +222,12 @@ class ServiceSummary(BrowserView):
             for info in registry.info():
                 conf = info['configuration']
                 obj = conf.getComponent()
-                path = getPath(obj)
+                path = zapi.getPath(obj)
                 services[path] = obj
                 conf.status = Unregistered
-                parent = getParent(conf)
-                name = objectName(conf)
-                container = getAdapter(parent, IZopeContainer)
+                parent = zapi.getParent(conf)
+                name = zapi.objectName(conf)
+                container = zapi.getAdapter(parent, IZopeContainer)
                 del container[name]
 
         # 2) Delete the service objects
@@ -237,9 +239,9 @@ class ServiceSummary(BrowserView):
         #     deleting a service; if you don't want that, you can
         #     manipulate the folder explicitly.
         for path, obj in services.items():
-            parent = getParent(obj)
-            name = objectName(obj)
-            container = getAdapter(parent, IZopeContainer)
+            parent = zapi.getParent(obj)
+            name = zapi.objectName(obj)
+            container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
         return "Deleted: %s" % ", ".join(todo)
@@ -256,7 +258,8 @@ class ServiceSummary(BrowserView):
             if infos:
                 configobj = infos[0]['configuration']
                 component = configobj.getComponent()
-                url = str(getView(component, 'absolute_url', self.request))
+                url = str(
+                    zapi.getView(component, 'absolute_url', self.request))
             else:
                 url = ""
             items.append({'name': name, 'url': url})
@@ -273,12 +276,12 @@ class ServiceActivation(BrowserView):
     'type' determines which service is to be configured."""
 
     def isDisabled(self):
-        sm = getServiceManager(self.context)
+        sm = zapi.getServiceManager(self.context)
         registry = sm.queryConfigurations(self.request.get('type'))
         return not (registry and registry.active())
 
     def listRegistry(self):
-        sm = getServiceManager(self.context)
+        sm = zapi.getServiceManager(self.context)
         registry = sm.queryConfigurations(self.request.get('type'))
         if not registry:
             return []
@@ -288,11 +291,12 @@ class ServiceActivation(BrowserView):
         for info in registry.info():
             configobj = info['configuration']
             component = configobj.getComponent()
-            path = getPath(component)
+            path = zapi.getPath(component)
             path = path.split("/")
             info['name'] = "/".join(path[-2:])
-            info['url'] = str(getView(component, 'absolute_url', self.request))
-            info['config'] = str(getView(configobj, 'absolute_url',
+            info['url'] = str(
+                zapi.getView(component, 'absolute_url', self.request))
+            info['config'] = str(zapi.getView(configobj, 'absolute_url',
                                          self.request))
             result.append(info)
         return result
@@ -302,7 +306,7 @@ class ServiceActivation(BrowserView):
         if not active:
             return ""
 
-        sm = getServiceManager(self.context)
+        sm = zapi.getServiceManager(self.context)
         registry = sm.queryConfigurations(self.request.get('type'))
         if not registry:
             return "Invalid service type specified"
@@ -310,7 +314,7 @@ class ServiceActivation(BrowserView):
         if active == "None":
             new_active = None
         else:
-            new_active = traverse(sm, active)
+            new_active = zapi.traverse(sm, active)
         if old_active == new_active:
             return "No change"
 
