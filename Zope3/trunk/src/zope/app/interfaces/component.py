@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: component.py,v 1.3 2003/05/20 19:43:28 sidnei Exp $
+$Id: component.py,v 1.4 2003/06/22 20:18:17 jeremy Exp $
 """
 
 from zope.interface import Interface
@@ -36,7 +36,7 @@ class IInterfaceService(Interface):
         The default is returned if the interface can't be found.
         """
 
-    def searchInterface(search_string='', base=None):
+    def searchInterface(search_string=None, base=None):
         """Return the interfaces that match the search criteria
 
         If a search string is given, only interfaces that contain the
@@ -46,10 +46,16 @@ class IInterfaceService(Interface):
         will be returned.
         """
 
-    def searchInterfaceIds(search_string='', base=None):
+    def searchInterfaceIds(search_string=None, base=None):
         """Return the ids of the interfaces that match the search criteria.
 
         See searchInterface
+        """
+
+    def items(search_string=None, base=None):
+        """Return id, interface pairs for all items matching criteria.
+
+        See searchInterface for the meaning of search-string and base.
         """
 
 class IGlobalInterfaceService(IInterfaceService):
