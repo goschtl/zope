@@ -65,19 +65,19 @@
     <meta:directive
        name="layer"
        schema="zope.app.component.metadirectives.ILayerDirective"
-       handler=".fiveconfigure.layer"
+       handler="zope.app.component.metaconfigure.layer"
        />
 
      <meta:directive
        name="skin"
        schema="zope.app.component.metadirectives.ISkinDirective"
-       handler=".fiveconfigure.skin"
+       handler="zope.app.component.metaconfigure.skin"
        />
 
      <meta:directive
        name="defaultSkin"
        schema="zope.app.component.metadirectives.IDefaultSkinDirective"
-       handler=".fiveconfigure.defaultSkin"
+       handler="zope.app.component.metaconfigure.defaultSkin"
        />
 
   </meta:directives>
@@ -87,13 +87,13 @@
     <meta:directive
         name="page"
         schema="zope.app.publisher.browser.metadirectives.IPageDirective"
-        handler=".fiveconfigure.page"
+        handler=".browserconfigure.page"
         />
 
     <meta:complexDirective
         name="pages"
         schema="zope.app.publisher.browser.metadirectives.IPagesDirective"
-        handler=".fiveconfigure.pages"
+        handler=".browserconfigure.pages"
         >
 
       <meta:subdirective
