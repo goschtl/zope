@@ -201,6 +201,7 @@ class STXDecapitatorTests( unittest.TestCase ):
         self.assertEqual( md[ 'Title' ], 'Sample Title' )
         self.assertEqual( md[ 'Description' ], 'Sample description' )
 
+
 PLAIN_TEXT_WITH_PARAGRAPHS = """\
 This is the first paragraph.  It contains just enough text that we have to
 wrap it.
@@ -218,19 +219,61 @@ class ParagraphInserterTests( unittest.TestCase ):
         self.failUnless(
                 TextFilter.isImplementedByInstancesOf( ParagraphInserter ) )
 
-    def testInsert( self ):
+    def _makePattern( self ):
+        import re
+        return re.compile( r'<p>(.*?)</p>', re.MULTILINE | re.DOTALL )
+
+    def testInsertEmpty( self ):
+
+        from Products.CMFCore.TextFilters import ParagraphInserter
+
+        inserter = ParagraphInserter()
+
+        ti = inserter.filterText( '' )
+        text = ti()
+
+        graphs = self._makePattern().findall( text )
+        self.assertEqual( len( graphs ), 0 )
+
+    def testInsertOneGraph( self ):
+
+        from Products.CMFCore.TextFilters import ParagraphInserter
+
+        inserter = ParagraphInserter()
+
+        ti = inserter.filterText( SAMPLE_TEXT )
+        text = ti()
+
+        graphs = self._makePattern().findall( text )
+        self.assertEqual( len( graphs ), 1 )
+
+    def testInsertTwoGraphs( self ):
 
         from Products.CMFCore.TextFilters import ParagraphInserter
 
         inserter = ParagraphInserter()
 
         ti = inserter.filterText( PLAIN_TEXT_WITH_PARAGRAPHS )
-
-        import re
         text = ti()
-        pattern = re.compile( r'<p>(.*?)</p>', re.MULTILINE | re.DOTALL )
-        graphs = pattern.findall( text )
+
+        graphs = self._makePattern().findall( text )
         self.assertEqual( len( graphs ), 2 )
+
+    def testInsertManyGraphs( self ):
+
+        from Products.CMFCore.TextFilters import ParagraphInserter
+        import string
+
+        inserter = ParagraphInserter()
+
+        graphs = [PLAIN_TEXT_WITH_PARAGRAPHS] * 12
+        text = string.join( graphs, '\n\n' )
+
+        ti = inserter.filterText( text )
+        text = ti()
+
+        graphs = self._makePattern().findall( text )
+        self.assertEqual( len( graphs ), 24 )
 
 
 def test_suite():
