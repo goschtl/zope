@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.24 2003/12/01 23:11:36 mj Exp $
+$Id: utility.py,v 1.25 2004/01/23 17:00:20 poster Exp $
 """
 __metaclass__ = type
 
@@ -297,7 +297,7 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
     and you want to make use of the data that *is* available in your
     error-handler.
 
-    Normaly, readonly fields are included. To exclude readonly fields,
+    Normally, readonly fields are included. To exclude readonly fields,
     provide a exclude_readonly keyword argument with a true value.
 
     """
