@@ -70,6 +70,10 @@ table = [
                "karl@digicool.com", "evan@digicool.com"],
      'remote': None},
 
+    {'path': "Custom/BeOpen",
+     'addrs': ["boi@digicool.com",],
+     'remote': None},
+    
     {'path': "Zope2",
      'remote': public_remote,
      'addrs': zopeaddr},
