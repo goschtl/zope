@@ -14,11 +14,12 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.6 2002/07/07 20:32:32 stevea Exp $
+$Id: ObjectHub.py,v 1.7 2002/07/12 17:45:57 stevea Exp $
 """
 
 from IObjectHub import IObjectHub
-from Zope.Event.IObjectEvent import IObjectEvent, IObjectAddedEvent, IObjectModifiedEvent
+from Zope.Event.IObjectEvent import \
+    IObjectEvent, IObjectAddedEvent, IObjectModifiedEvent
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 from Zope.Event.IEvent import IEvent
 from Zope.Event.EventChannel import EventChannel
@@ -109,9 +110,9 @@ class ObjectHub(Persistent):
                     self._objectModified(canonical_location, ruid)
                                       
                 elif IObjectRemovedEvent.isImplementedBy(event):
-                    self._objectRemoved(canonical_location, ruid, event.getObject())
-                
-
+                    self._objectRemoved(canonical_location,
+                                        ruid,
+                                        event.getObject())
         # otherwise, ignore the event
 
     def lookupRuid(self, location):
