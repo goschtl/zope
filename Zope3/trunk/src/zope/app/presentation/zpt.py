@@ -73,12 +73,19 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
     expand = False
     usage = u''
 
-    source = property(
-        # get
-        lambda self: self.read(),
-        # set
-        lambda self, text: self.pt_edit(text.encode('utf-8'), self.contentType)
-        )
+    def getSource(self):
+        """See zope.app.presentation.zpt.IZPTInfo"""
+        return self.read()
+
+    def setSource(self, text):
+        """See zope.app.presentation.zpt.IZPTInfo"""
+        if not isinstance(text, unicode):
+            raise TypeError("source text must be Unicode" , text)
+        self.pt_edit(text, self.contentType)
+
+    # See zope.app.presentation.zpt.IZPTInfo
+    source = property(getSource, setSource, None,
+                      """Source of the Page Template.""")
 
     def pt_getContext(self, view, **_kw):
         # instance is a View component

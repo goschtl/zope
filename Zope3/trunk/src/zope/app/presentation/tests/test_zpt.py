@@ -40,9 +40,15 @@ class Test(TestCase):
     # XXX We need tests for the template class itself and for the
     # SearchableText adapter.
 
+    def test_unicode_required(self):
+        template = ZPTTemplate()
+        self.assertRaises(TypeError, template.setSource, 'not unicode')
+        template.source = source = u'123\u1234'
+        self.assertEquals(template.source, source)
+
     def test_ReadFile(self):
         template = ZPTTemplate()
-        source = '<p>Test content</p>'
+        source = u'<p>Test content</p>'
         template.source = source
         adapter = ReadFile(template)
         self.assertEqual(adapter.read(), source)
@@ -50,15 +56,15 @@ class Test(TestCase):
 
     def test_WriteFile(self):
         template = ZPTTemplate()
-        source = '<p>Test content</p>'
-        template.source = '<p>Old content</p>'
+        source = u'<p>Test content</p>'
+        template.source = u'<p>Old content</p>'
         adapter = WriteFile(template)
         adapter.write(source)
         self.assertEqual(template.source, source)
 
     def test_ZPTFactory(self):
         factory = ZPTFactory(None)
-        source = '<p>Test content</p>'
+        source = u'<p>Test content</p>'
         template = factory('foo', 'text/html', source)
         self.assertEqual(template.source, source)
 
@@ -87,7 +93,7 @@ class TestDebugFlags(PlacelessSetup, TestCase):
 
     def test_debug_flags(self):
         template = self.pageInContext(ZPTTemplate())
-        template.source = '<tal:p>Test</tal:p>'
+        template.source = u'<tal:p>Test</tal:p>'
 
         self.request = TestRequest()
         self.context = None
