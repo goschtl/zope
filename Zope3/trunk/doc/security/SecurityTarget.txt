@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.14 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Rev$ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.14 $ (Draft)
-:Date: $Date: 2004/05/07 08:57:47 $
+:Version: $Rev$ (Draft)
+:Date: $Date$
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>, Jim Fulton <jim@zope.com>
-:DocumentID: $Id: SecurityTarget.txt,v 1.14 2004/05/07 08:57:47 jim Exp $
+:DocumentID: $Id$
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.14 2004/05/07 08:57:47 jim Exp $
+:Document ID: $Id$
 
-:Document Version: $Revision: 1.14 $
+:Document Version: $Rev$
 
 :Origin: Zope Corporation public CVS server
 

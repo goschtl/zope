@@ -3,7 +3,7 @@ Registration
 ============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.2 $
+:Version: $Rev$
 
 Many services act as component registries.  Their primary job is to
 allow components to be looked up based on parameters such as names,

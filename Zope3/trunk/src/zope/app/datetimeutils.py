@@ -17,9 +17,6 @@ Encapsulation of date/time values
 
 $Id$
 """
-
-__version__='$Revision: 1.10 $'[11:-2]
-
 import math
 import re
 import time as _time # there is a method definition that makes just "time"
