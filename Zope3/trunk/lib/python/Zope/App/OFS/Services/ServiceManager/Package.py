@@ -15,17 +15,21 @@
 
 XXX longer description goes here.
 
-$Id: Package.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: Package.py,v 1.2 2002/11/30 18:40:29 jim Exp $
 """
 __metaclass__ = type
 
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 
 from IPackage import IPackage
+from ConfigurationManager import ConfigurationManager
 
 
 class Package(BTreeContainer):
     __implements__ = IPackage
 
-    
+    def __init__(self):
+        super(Package, self).__init__()
+        self.setObject('configure', ConfigurationManager())
+
     
