@@ -15,9 +15,8 @@
 
 XXX longer description goes here.
 
-$Id: ut.py,v 1.9 2004/01/12 15:42:34 fdrake Exp $
+$Id$
 """
-
 import unittest
 
 #############################################################################

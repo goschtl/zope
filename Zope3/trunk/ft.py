@@ -15,9 +15,8 @@
 
 XXX longer description goes here.
 
-$Id: ft.py,v 1.2 2004/04/06 20:57:58 jim Exp $
+$Id$
 """
-
 import unittest
 from zope.app.tests.functional import FunctionalTestCase
 

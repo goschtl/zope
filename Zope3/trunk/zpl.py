@@ -15,5 +15,5 @@
 
 XXX longer description goes here.
 
-$Id: zpl.py,v 1.8 2004/01/09 21:26:52 fdrake Exp $
+$Id$
 """
