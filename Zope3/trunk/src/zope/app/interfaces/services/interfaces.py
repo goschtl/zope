@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.12 2003/02/11 15:59:51 sidnei Exp $
+$Id: interfaces.py,v 1.13 2003/02/19 15:24:49 stevea Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -109,7 +109,7 @@ class IViewConfigurationInfo(Interface):
         description=u"The permission required to use the view",
         required = True,
         )
-        
+
 
 class IViewConfiguration(IConfiguration, IViewConfigurationInfo):
 
