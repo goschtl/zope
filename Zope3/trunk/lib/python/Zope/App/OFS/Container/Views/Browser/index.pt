@@ -1,0 +1,69 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css">
+<!--
+
+.ContentIcon {
+    width: 20px;
+}
+
+.ContentTitle {
+    text-align: left;
+}
+-->
+</style>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+  <table class="ContentListing">
+  
+    <tbody>
+  
+      <tr>
+	<td class="ContentIcon"><br /> </td>
+	<th class="ContentTitle">Title</th>
+      </tr>
+  
+      <tr tal:repeat="info view/listContentInfo">
+  
+        <td> 
+          <a href="#" 
+             tal:attributes="href info/url"
+             tal:content="structure info/icon|default"
+             >
+          </a> 
+        </td>
+  
+	<td class="ContentTitle">
+	  <a href="subfolder_id"
+	     tal:attributes="href info/url"
+	     tal:content="info/title"
+	  >Folder Title or ID here</a>
+	</td>
+  
+      </tr>
+  
+      <tr tal:condition="nothing">
+  
+	<td class="ContentIcon">
+	  <img alt="Document" src="../../ZMI/www/document_icon.gif" />
+	</td>
+  
+	<td class="ContentTitle">
+	   <a href="document_id">Document Title or ID here</a>
+	</td>
+  
+      </tr>
+    </tbody>
+  
+  </table>
+  <br />
+
+</div>
+</body>
+</html>
+
+
+
+
