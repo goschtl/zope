@@ -165,4 +165,4 @@ sazBTree -d BTree Zope2/lib/Components/BTree intSet.h
 sazBTrees -d BTrees Zope2/lib/python/BTrees &sazBTree
 
 StandaloneZODB Releases/StandaloneZODB \
-	       &sazZODB &sazZEO &sazExtensionClass &sazLib
+	       &sazZODB &sazZEO &sazExtensionClass &sazLib &sazBTrees
