@@ -39,14 +39,12 @@ from zope.app.publication.http import HTTPPublication
 import zope.app.tests.setup
 from zope.app.component.hooks import setSite, getSite
 
-__metaclass__ = type
-
 
 class HTTPTaskStub(StringIO):
     pass
 
 
-class ResponseWrapper:
+class ResponseWrapper(object):
     """A wrapper that adds several introspective methods to a response."""
 
     def __init__(self, response, outstream, path):
@@ -75,7 +73,7 @@ class ResponseWrapper:
         return getattr(self._response, attr)
 
 
-class FunctionalTestSetup:
+class FunctionalTestSetup(object):
     """Keeps shared state across several functional test cases."""
 
     __shared_state = { '_init': False }
