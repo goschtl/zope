@@ -227,6 +227,11 @@ Checker_proxy(Checker *self, PyObject *value)
 /*         checker = getattr(value, '__Security_checker__', None) */
   checker = PyObject_GetAttr(value, str___Security_checker__);
 /*         if checker is None: */
+  if (checker == Py_None)
+    {
+      Py_DECREF(checker);
+      checker = NULL;
+    }
   if (checker == NULL)
     {
       PyErr_Clear();
