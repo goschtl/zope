@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: testAbsoluteURL.py,v 1.2 2002/06/14 16:50:19 srichter Exp $
+$Id: testAbsoluteURL.py,v 1.3 2002/07/11 19:33:58 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -75,6 +75,15 @@ class Test(PlacelessSetup, TestCase):
         content = ContextWrapper(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
         self.assertEqual(str(view), 'http://foobar.com/a/b/c')
+
+        breadcrumbs = view.breadcrumbs()
+        self.assertEqual(breadcrumbs,
+                         ({'name':  '', 'url': 'http://foobar.com'},
+                          {'name': 'a', 'url': 'http://foobar.com/a'},
+                          {'name': 'b', 'url': 'http://foobar.com/a/b'},
+                          {'name': 'c', 'url': 'http://foobar.com/a/b/c'},
+                          ))
+                          
 
 def test_suite():
     return TestSuite((

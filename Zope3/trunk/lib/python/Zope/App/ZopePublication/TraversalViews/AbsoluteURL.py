@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: AbsoluteURL.py,v 1.2 2002/07/11 18:21:36 jim Exp $
+$Id: AbsoluteURL.py,v 1.3 2002/07/11 19:33:58 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Proxy.ContextWrapper import getWrapperContainer, getInnerWrapperData
@@ -36,6 +36,7 @@ class IAbsoluteURL(Interface):
         """Get a string representation
         """
 
+
 class AbsoluteURL(BrowserView):
 
     def __str__(self):
@@ -51,6 +52,19 @@ class AbsoluteURL(BrowserView):
 
     __call__ = __str__
 
+    def breadcrumbs(self):
+        context = self.context
+        dict = getInnerWrapperData(context)
+        name = dict and dict.get('name') or None
+        container = getWrapperContainer(context)
+        if name is None or container is None:
+            raise TypeError, 'Not enough context information to get a URL'
+
+        base = getView(container, 'absolute_url', self.request).breadcrumbs()
+        base += ({'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))}, )
+        return base
+        
+
 
 class SiteAbsoluteURL(BrowserView):
 
@@ -58,3 +72,8 @@ class SiteAbsoluteURL(BrowserView):
         return self.request.getApplicationURL()
 
     __call__ = __str__
+
+    def breadcrumbs(self):
+        return ({'name':'', 'url': self.request.getApplicationURL()}, )
+
+        
