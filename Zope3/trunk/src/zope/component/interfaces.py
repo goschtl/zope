@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.9 2003/07/12 01:22:13 richard Exp $
+$Id: interfaces.py,v 1.10 2003/07/13 04:25:10 anthony Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -439,8 +439,9 @@ class IGlobalAdapterService(IAdapterService):
 
         providedInterface -- The provided interface
 
-        maker -- a callable object that gets an adapter component for
-        a context component.
+        maker -- a sequence of factories that are used to create the adapter.
+        The first factory is called with the object to be adapted, subsequent
+        factories are called with the results of the previous factory.
         """
     def getRegisteredMatching(for_interface=None, provide_interface=None,
                               name=None):
