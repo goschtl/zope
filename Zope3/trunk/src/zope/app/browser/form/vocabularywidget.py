@@ -29,7 +29,7 @@ from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
-from zope.schema.interfaces import IVocabularyTokenized
+from zope.schema.interfaces import IVocabularyTokenized, ValidationError
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -106,7 +106,7 @@ class ViewSupport:
                      "<input type='%s' value='%s' name='%s' %s/>"
                      "</td>\n    <td>%s</td>"
                      "</tr>\n"
-                     % (type, term.value, name, flag, self.textForValue(term)))
+                     % (type, term.token, name, flag, self.textForValue(term)))
         L.append("</table>")
         return ''.join(L)
 
@@ -291,19 +291,18 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
         rendered_items = []
         count = 0
         for term in self.context.vocabulary:
-            item_value = term.value
             item_text = self.textForValue(term)
 
-            if item_value in values:
+            if term.value in values:
                 rendered_item = self.renderSelectedItem(count,
                                                         item_text,
-                                                        item_value,
+                                                        term.token,
                                                         self.name,
                                                         cssClass)
             else:
                 rendered_item = self.renderItem(count,
                                                 item_text,
-                                                item_value,
+                                                term.token,
                                                 self.name,
                                                 cssClass)
 
@@ -498,9 +497,17 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         else:
             if self.query_index < 0:
                 self.query_index = 0
-        self.query_selections = get(self.query_selections_name, [])
-        if not isinstance(self.query_selections, list):
-            self.query_selections = [self.query_selections]
+        QS = get(self.query_selections_name, [])
+        if not isinstance(QS, list):
+            QS = [QS]
+        self.query_selections = []
+        for token in QS:
+            try:
+                term = self.vocabulary.getTermByToken(token)
+            except LookupError:
+                raise ValidationError
+            else:
+                self.query_selections.append(term.value)
 
     def renderQueryInput(self):
         # There's no query support, so we can't actually have input.
