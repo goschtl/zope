@@ -402,6 +402,8 @@ Zope Changes
         adapters. Menu Item Types (in other words, menus) are now utilities
         that provide `IMenuItemType`.
 
+        + Implemented sub-menus.
+
         + Completes http://dev.zope.org/Zope3/AdaptersForMenuItems. New
           features such as sub-menus, icons, disabled entries and so on were
           not well defined and should be reconsidered in a different proposal.
