@@ -101,12 +101,18 @@ Test harness.
     of "name" ...).  With no -v, unittest is silent until the end of the run,
     except when errors occur.
 
+    When -p is also specified, the meaning of -v is sligtly changed.  With
+    -p and no -v only the percent indicator is displayed.  With -p and -v
+    the test name of the current test is shown to the right of the percent
+    indicator.  With -p and -vv the test name is not truncated to fit into
+    80 columns and it is not cleared after the test finishes.
+
 -u
 -m
     Use the PyUnit GUI instead of output to the command line.  The GUI imports
     tests on its own, taking care to reload all dependencies on each run.  The
-    debug (-d), verbose (-v), and Loop (-L) options will be ignored.  The
-    testfilter filter is also not applied.
+    debug (-d), verbose (-v), progress (-p), and Loop (-L) options will be
+    ignored.  The testfilter filter is also not applied.
 
     -m starts the gui minimized.  Double-clicking the progress bar will start
     the import and run all tests.
@@ -129,19 +135,19 @@ testfilter
 
 Extreme (yet useful) examples:
 
-    test.py -vvb . "^checkWriteClient$"
+    test.py -vvb . "^testWriteClient$"
 
     Builds the project silently, then runs unittest in verbose mode on all
-    tests whose names are precisely "checkWriteClient".  Useful when
+    tests whose names are precisely "testWriteClient".  Useful when
     debugging a specific test.
 
-    test.py -vvb . "!^checkWriteClient$"
+    test.py -vvb . "!^testWriteClient$"
 
     As before, but runs all tests whose names aren't precisely
-    "checkWriteClient".  Useful to avoid a specific failing test you don't
+    "testWriteClient".  Useful to avoid a specific failing test you don't
     want to deal with just yet.
 
-    test.py -m . "!^checkWriteClient$"
+    test.py -m . "!^testWriteClient$"
 
     As before, but now opens up a minimized PyUnit GUI window (only showing
     the progress bar).  Useful for refactoring runs where you continually want
