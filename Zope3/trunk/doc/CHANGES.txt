@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - Schemas are now copied before they are appended to content type or
+        instance. This should probably become a policy later.
+
+      - Implemented ICacheable view's current_cache_url() method, so that a
+        link to the cache utility can be provided.
+
       - Added ++debug++ traversal adapter that allows you to turn on debugging
         flags in request.debug.  Currently the following flags are defined:
 
@@ -33,12 +39,17 @@ Zope Changes
         
     Restructuring
 
+      - Removed CacheName field and replaced it by a 'Cache Names' vocabulary
+        and a Choice field.
+
       - Templated Pages are now called ZPT Pages.
 
       - The "layer" and "skin" ZCML directives were redundantly
         registered for both the zope and the browser namespace. They
         now only exist in the browser namespace; the "defaultSkin"
         directive was moved to the browser namespace.
+
+    Bug Fixes
 
   Zope X3.0.0 Beta 2
 
