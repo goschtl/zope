@@ -4,10 +4,6 @@ Things to do for the next release (in no particular order)
 
 - Zope-2 style installation, configuration and process management.
 
-- ZODB 3.3 in Zope 3
-
-  See: http://zope.org/Wikis/ZODB/PersistentCodeImplementationPlan
-
 - Persistent interfaces
 
   These were broken (I think) by recent interface and adapter
@@ -108,12 +104,3 @@ Things to do for the next release (in no particular order)
   events. The UI should generate some sort of ShutdownRequest event
   and code in the server should be subscribed. Care needs to be taken
   to assure that only privileged users can generate these events.
-
-- Broken-object support
-
-  When an object cannot be unpickled because it's class can't be found, 
-  it should be converted to a special kind of immutable object.  
-
-  See http://collector.zope.org/Zope3-dev/109
-  This requires a hook in the ZODB that Zope can override.
-
