@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.10 2004/03/15 20:41:44 jim Exp $
+$Id: presentation.py,v 1.11 2004/03/23 00:23:10 maru Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -24,6 +24,7 @@ from zope.security.checker import NamesChecker, ProxyFactory
 import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
+import zope.app.event.interfaces
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter
@@ -36,7 +37,6 @@ import zope.interface
 import zope.proxy
 import zope.publisher.interfaces.browser
 import zope.schema
-from zope.app.container.interfaces import IAddNotifiable
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.registration.interfaces import IRegistered
 
@@ -396,7 +396,7 @@ class IPageRegistration(IViewRegistration):
 
 class PageRegistration(ViewRegistration):
 
-    zope.interface.implements(IPageRegistration, IAddNotifiable)
+    zope.interface.implements(IPageRegistration)
 
     # We only care about browser pages
     requestType = zope.publisher.interfaces.browser.IBrowserRequest
@@ -487,8 +487,16 @@ class PageRegistration(ViewRegistration):
     factory = property(factory)
 
 
-    def addNotify(self, event):
-        "See IAddNotifiable"
+class PageRegistrationAddSubscriber:
+
+    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+
+    def __init__(self, page_registration, event):
+        self.page_registration = page_registration
+        self.event = event
+        
+    def notify(self, event):
+        self = self.page_registration
         if self.template:
             template = zapi.traverse(self.__parent__.__parent__,self.template)
             dependents = IDependable(template)
@@ -500,9 +508,16 @@ class PageRegistration(ViewRegistration):
                 adapter.addUsage(objectpath)
 
 
-    def removeNotify(self, event):
-        "See IRemoveNotifiable"
-        super(PageRegistration, self).removeNotify(event)
+class PageRegistrationRemoveSubscriber:
+
+    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+
+    def __init__(self, page_registration, event):
+        self.page_registration = page_registration
+        self.event = event
+
+    def notify(self, event):
+        self = self.page_registration
         if self.template:
             template = zapi.traverse(self.__parent__.__parent__,self.template)
             dependents = IDependable(template)

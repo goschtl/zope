@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.8 2004/03/15 20:41:45 jim Exp $
+$Id: test_presentation.py,v 1.9 2004/03/23 00:23:11 maru Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,6 +24,9 @@ from zope.app import zapi
 from zope.interface import Interface, directlyProvides, implements
 from zope.interface.verify import verifyObject
 
+from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.event.interfaces import ISubscriber
 from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
 from zope.app.site.service import ServiceManager
@@ -34,6 +37,9 @@ from zope.app.presentation.presentation import ViewRegistration
 from zope.app.presentation.presentation import PageRegistration
 from zope.app.presentation.presentation import BoundTemplate
 from zope.app.presentation.presentation import LocalPresentationService
+from zope.app.presentation.presentation import IPageRegistration
+from zope.app.presentation.presentation import PageRegistrationAddSubscriber
+from zope.app.presentation.presentation import PageRegistrationRemoveSubscriber
 from zope.app.tests import setup
 from zope.app.traversing import traverse
 
@@ -434,19 +440,31 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         registration.attribute = 'run'
         self.assertRaises(ConfigurationError, lambda: registration.factory)
 
-    def test_addremoveNotify_template(self):
+    def test_registerAddSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              PhonyPathAdapter)
+        ztapi.subscribe((IPageRegistration, IObjectAddedEvent), ISubscriber,
+                        PageRegistrationAddSubscriber)
         registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
                                         template='/++etc++site/default/t')
-        # Test addNotify
+        
+        # Test add event
         self.folder['test'] = registration
         dependents = zapi.getAdapter(self.__template, IDependable)
         self.assert_('test' in dependents.dependents())
         usages = zapi.getAdapter(self.__template, IRegistered)
         self.assert_('test' in usages.usages())
 
-        # Test removeNotify
+    def test_registerRemoveSubscriber_template(self):
+        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
+                             PhonyPathAdapter)
+        ztapi.subscribe((IPageRegistration, IObjectRemovedEvent), ISubscriber,
+                        PageRegistrationRemoveSubscriber)
+        registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
+                                        template='/++etc++site/default/t')
+
+        # Test remove event
+        self.folder['test'] = registration
         uncontained(registration, self.folder, 'test')
         dependents = zapi.getAdapter(self.__template, IDependable)
         self.assert_('test' not in dependents.dependents())

@@ -39,6 +39,20 @@
       />
 </content>
 
+<subscriber
+    factory=".presentation.PageRegistrationAddSubscriber"
+    for=".presentation.IPageRegistration 
+         zope.app.container.interfaces.IObjectAddedEvent"
+    provides="zope.app.event.interfaces.ISubscriber"    
+    />
+
+<subscriber
+    factory=".presentation.PageRegistrationRemoveSubscriber"
+    for=".presentation.IPageRegistration 
+         zope.app.container.interfaces.IObjectRemovedEvent"
+    provides="zope.app.event.interfaces.ISubscriber"    
+    />
+
 <modulealias module="zope.app.presentation.presentation"
              alias="zope.app.services.presentation"
              />
