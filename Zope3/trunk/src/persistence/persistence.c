@@ -18,7 +18,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.8 2003/04/02 21:02:42 jeremy Exp $\n";
+"$Id: persistence.c,v 1.9 2003/04/02 23:07:00 bwarsaw Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -251,7 +251,7 @@ call_p_deactivate(PyPersistObject *self, int unraisable)
 	    return 0;
     }
     func = PyObject_GetAttrString((PyObject *)self, "_p_deactivate");
-    if (!func) 
+    if (!func)
 	return 0;
     r = PyObject_Call(func, t, NULL);
     if (unraisable && !r) {
@@ -346,16 +346,14 @@ persist_set_state(PyPersistObject *self, PyObject *v)
 static PyObject *
 convert_name(PyObject *name)
 {
-    /* The ifdef block is copied from PyObject_GenericGetAttr. */
 #ifdef Py_USING_UNICODE
     /* The Unicode to string conversion is done here because the
        existing tp_setattro slots expect a string object as name
        and we wouldn't want to break those. */
     if (PyUnicode_Check(name)) {
 	name = PyUnicode_AsEncodedString(name, NULL, NULL);
-	if (name == NULL)
-	    return NULL;
-    } else
+    }
+    else
 #endif
     if (!PyString_Check(name)) {
 	PyErr_SetString(PyExc_TypeError, "attribute name must be a string");
@@ -421,6 +419,7 @@ persist_getattro(PyPersistObject *self, PyObject *name)
 		   to print the exception to stderr. It would probably be
 		   better to log it but that would be painful from C.
 		*/
+                Py_DECREF(name);
 		if (!call_p_deactivate(self, 1))
 		    return NULL;
 		self->po_state = GHOST;
@@ -448,8 +447,7 @@ persist_getattro(PyPersistObject *self, PyObject *name)
 */
 
 static int
-persist_setattr_prep(PyPersistObject *self, PyObject *name, 
-			PyObject *value)
+persist_setattr_prep(PyPersistObject *self, PyObject *name, PyObject *value)
 {
     char *s_name;
 
@@ -510,17 +508,18 @@ persist_setattro(PyPersistObject *self, PyObject *name, PyObject *value)
     name = convert_name(name);
     if (!name)
 	return -1;
-    if (persist_setattr_prep(self, name, value) < 0)
+    if (persist_setattr_prep(self, name, value) < 0) {
+        Py_DECREF(name);
 	return -1;
-
+    }
     r = PyObject_GenericSetAttr((PyObject *)self, name, value);
     Py_DECREF(name);
     return r;
 }
 
 static PyObject *
-persist_p_set_or_delattr(PyPersistObject *self, PyObject *name, 
-			 PyObject *value)
+persist_p_set_or_delattr(PyPersistObject *self, PyObject *name,
+                         PyObject *value)
 {
     PyObject *res;
     int r;
@@ -529,8 +528,10 @@ persist_p_set_or_delattr(PyPersistObject *self, PyObject *name,
     if (!name)
 	return NULL;
     r = persist_setattr_prep(self, name, value);
-    if (r < 0)
+    if (r < 0) {
+        Py_DECREF(name);
 	return NULL;
+    }
     else if (r > 0)
 	res = Py_False;
     else {
@@ -539,8 +540,10 @@ persist_p_set_or_delattr(PyPersistObject *self, PyObject *name,
 	*/
 	res = Py_True;
 	r = PyObject_GenericSetAttr((PyObject *)self, name, value);
-	if (r < 0)
+	if (r < 0) {
+            Py_DECREF(name);
 	    return NULL;
+        }
     }
     Py_INCREF(res);
     Py_DECREF(name);
