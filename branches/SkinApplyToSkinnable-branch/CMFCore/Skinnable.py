@@ -70,12 +70,11 @@ class SkinnableObjectManager (ObjectManager):
         if superGetAttr is None:
             raise AttributeError, name
         return superGetAttr(self, name)
-    
+
     security.declarePrivate('getSkin')
     def getSkin(self, name=None):
-        '''
-        Returns the requested skin.
-        '''
+        """Returns the requested skin.
+        """
         skinob = None
         skinstool = None
         sfn = self.getSkinsFolderName()
@@ -89,8 +88,8 @@ class SkinnableObjectManager (ObjectManager):
                    skinob = sf.getSkinByName(sf.getDefaultSkin())
                    if skinob is None:
                        skinob = sf.getSkinByPath('')
-               return skinob
-    
+        return skinob
+
     security.declarePublic('getSkinNameFromRequest')
     def getSkinNameFromRequest(self, REQUEST=None):
         ''' returns the skin name from the Request'''
@@ -103,15 +102,10 @@ class SkinnableObjectManager (ObjectManager):
     security.declarePublic('changeSkin')
     def changeSkin(self, skinname):
         self._v_skindata = None
-        skinobj=self.getSkin(skinname)
+        skinobj = self.getSkin(skinname)
         if skinobj is not None:
             self._v_skindata = (self.REQUEST, skinobj, {})
-        else:
-            import sys
-            from zLOG import LOG, ERROR
-            LOG('CMFCore', ERROR, 'Unable to change skin',
-                error=sys.exc_info())
-            
+
     security.declarePublic('setupCurrentSkin')
     def setupCurrentSkin(self, REQUEST=None):
         '''
@@ -122,23 +116,30 @@ class SkinnableObjectManager (ObjectManager):
         if REQUEST is None:
             REQUEST = getattr(self, 'REQUEST', None)
         if REQUEST is None:
-            # We are traversing without a REQUEST at the root.
-            # Don't change the skin right now. (Otherwise
-            # [un]restrictedTraverse messes up the skin data.)
+            # self is not fully wrapped at the moment.  Don't
+            # change anything.
             return
         if self._v_skindata is not None and self._v_skindata[0] is REQUEST:
             # Already set up for this request.
             return
-        skinname=self.getSkinNameFromRequest(REQUEST)
+        skinname = self.getSkinNameFromRequest(REQUEST)
         self.changeSkin(skinname)
-        
+
     def __of__(self, parent):
         '''
         Sneakily sets up the portal skin then returns the wrapper
         that Acquisition.Implicit.__of__() would return.
         '''
         w_self = ImplicitAcquisitionWrapper(aq_base(self), parent)
-        w_self.setupCurrentSkin()
+        try:
+            w_self.setupCurrentSkin()
+        except:
+            # This shouldn't happen, even if the requested skin
+            # does not exist.
+            import sys
+            from zLOG import LOG, ERROR
+            LOG('CMFCore', ERROR, 'Unable to setupCurrentSkin()',
+                error=sys.exc_info())
         return w_self
 
     def _checkId(self, id, allow_dup=0):
