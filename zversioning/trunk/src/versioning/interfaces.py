@@ -140,6 +140,10 @@ class ICheckoutAware(Interfaces):
         """Marks the object as being checked out.
         """
 
+    def isCheckedOut(obj):
+        """Returns true if the object is checked out
+        """
+
    
 class IVersionableAspects(Interface) :
     """ An interface that implements a versioning policy for
