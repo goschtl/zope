@@ -39,7 +39,7 @@ class ICatalogEdit(zope.index.interfaces.IInjection):
 
 
 class ICatalogIndex(zope.index.interfaces.IInjection,
-                    zope.index.interfaces.ISimpleQuery,
+                    zope.index.interfaces.IIndexSearch,
                     ):
     """An index to be used in a catalog
     """

@@ -1,391 +1,303 @@
 Catalogs
 ========
 
-Catalogs are simple tools used to suppprt searching.  A catalog
-manages a collection of indexes, and aranges for objects to indexed
-with it's contained indexes.
+Catalogs provide management of collections of related indexes with a
+basic search algorithm.  Let's look at an example:
 
-TODO: Filters
-      Catalogs should provide the option to filter the objects the
-      catalog. This would facilitate the use of separate catalogs for
-      separate purposes.  It should be possible to specify a a
-      collection of types (interfaces) to be cataloged and a filtering
-      expression.  Perhaps another option would be to be the ability
-      to spcify a names filter adapter.
+    >>> from zope.app.catalog.catalog import Catalog
+    >>> cat = Catalog()
 
-Catalogs use a unique-id tool to assign short (integer) ids to
-objects.  Before creating a catalog, you must create a intid tool:
+We can add catalog indexes to catalogs.  A catalog index is, among
+other things, an attribute index. It indexes attributes of objects. To
+see how this works, we'll create a demonstration attribute index. Our
+attribute index will simply keep track of objects that have a given
+attribute value.  The `catalog` package provides an attrbute-index
+mix-in class that is meant to work with a base indexing class. First,
+we'll write the base index class:
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 78
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
-  ... 
-  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
-  HTTP/1.1 303 ...
+    >>> import persistent, BTrees.OOBTree, BTrees.IFBTree, BTrees.IOBTree
+    >>> import zope.interface, zope.index.interfaces
 
-And register it:
+    >>> class BaseIndex(persistent.Persistent):
+    ...     zope.interface.implements(
+    ...         zope.index.interfaces.IInjection,
+    ...         zope.index.interfaces.IIndexSearch,
+    ...         )
+    ...
+    ...     def clear(self):
+    ...         self.forward = BTrees.OOBTree.OOBTree()
+    ...         self.backward = BTrees.IOBTree.IOBTree()
+    ...
+    ...     __init__ = clear
+    ...
+    ...     def index_doc(self, docid, value):
+    ...         if docid in self.backward:
+    ...             self.unindex_doc(docid)
+    ...         self.backward[docid] = value
+    ...
+    ...         set = self.forward.get(value)
+    ...         if set is None:
+    ...             set = BTrees.IFBTree.IFTreeSet()
+    ...             self.forward[value] = set
+    ...         set.insert(docid)
+    ...
+    ...     def unindex_doc(self, docid):
+    ...         value = self.backward.get(docid)
+    ...         if value is None:
+    ...             return
+    ...         self.forward[value].remove(docid)
+    ...         del self.backward[docid]
+    ...
+    ...     def apply(self, value):
+    ...         set = self.forward.get(value)
+    ...         if set is None:
+    ...             set = BTrees.IFBTree.IFTreeSet()
+    ...         return set
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/IntIds/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 864
-  ... Content-Type: multipart/form-data; boundary=---------------------------68417209514430962931254091825
-  ... Referer: http://localhost:8081/++etc++site/default/IntIds/addRegistration.html
-  ... 
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.name"
-  ... 
-  ... 
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.interface"
-  ... 
-  ... zope.app.intid.interfaces.IIntIds
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... zope.Public
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------68417209514430962931254091825
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------68417209514430962931254091825--
-  ... """)
-  HTTP/1.1 303 ...
+The class implements `IInjection` to allow values to be indexed and
+unindexed and `IIndexSearch` to support searching via the `apply`
+method.
 
-
-Moving short-id management outside of catalogs make it possible to
-join searches accross multiple catalogs and indexing tools
-(e.g. relationship indexes).
-
-TODO: Filters?
-      Maybe unique-id tools should be filtered as well, however, this
-      would limit the value of unique id tools for providing
-      cross-catalog/cross-index merging.  At least the domain for a
-      unique id tool would be broader than the domain of a catalog.
-      The value of filtering in the unique id tool is that it limits
-      the amount of work that needs to be done by catalogs.
-      One obvious aplication is to provide separate domains for
-      ordinary and meta content. If we did this, then we'd need to be
-      able to select, and, perhaps, alter, the unique-id tool used by
-      a catalog.
-   
-Once we have a unique-id tool, you can add a catalog:
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 77
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/AddUtility
-  ... 
-  ... type_name=BrowserAdd__zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
-  HTTP/1.1 303 ...
-
-and register it:
-
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/Catalog/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 855
-  ... Content-Type: multipart/form-data; boundary=---------------------------17974048709381505781405189947
-  ... Referer: http://localhost:8081/++etc++site/default/Catalog/addRegistration.html
-  ... 
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.name"
-  ... 
-  ... 
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.interface"
-  ... 
-  ... zope.app.catalog.interfaces.ICatalog
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.permission"
-  ... 
-  ... zope.Public
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="field.permission-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------17974048709381505781405189947
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------17974048709381505781405189947--
-  ... """)
-  HTTP/1.1 303 ...
-
-
-Once we have a catalog, we can add indexes to it.  Before we add an
-index, let's add a templated page.  When adding indexes, existing
-objects are indexed, so the document we add now will appear in the
+Now, we can use the AttributeIndex mixin to make this an attribute
 index:
 
-  >>> print http(r"""
-  ... POST /+/zope.app.zptpage.ZPTPage%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------1425445234777458421417366789
-  ... Referer: http://localhost:8081/+/zope.app.zptpage.ZPTPage=
-  ... 
-  ... -----------------------------1425445234777458421417366789
-  ... Content-Disposition: form-data; name="field.source"
-  ... 
-  ... <html>
-  ... <body>
-  ... Now is the time, for all good dudes to come to the aid of their country.
-  ... </body>
-  ... </html>
-  ... -----------------------------1425445234777458421417366789
-  ... Content-Disposition: form-data; name="field.expand.used"
-  ... 
-  ... 
-  ... -----------------------------1425445234777458421417366789
-  ... Content-Disposition: form-data; name="field.evaluateInlineCode.used"
-  ... 
-  ... 
-  ... -----------------------------1425445234777458421417366789
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------1425445234777458421417366789
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... dudes
-  ... -----------------------------1425445234777458421417366789--
-  ... """)
-  HTTP/1.1 303 ...
+    >>> import zope.app.catalog.attribute
+    >>> import zope.app.container.contained
+    >>> import zope.app.catalog.interfaces
 
-Perhaps the most common type of index to be added is a text index.
-Most indexes require the specification of an interface, an attribute,
-and an indication of whether the attribute must be called.
+    >>> class Index(zope.app.catalog.attribute.AttributeIndex, 
+    ...             BaseIndex,
+    ...             zope.app.container.contained.Contained,
+    ...             ):
+    ...    zope.interface.implements(zope.app.catalog.interfaces.ICatalogIndex)
 
-TODO: Simplify the UI for selecting interfaces and attributes
-      There are a number of ways the UI for this could be made more
-      user friendly:
+Unfortunately, because of the way we currenty handle containment
+constraints, we have to provide `ICatalogIndex`, which extends
+`IContained`. We subclass `Contained` to get an implementation for
+`IContained`. 
 
-      - If the user selects an interface, we could then provide a
-        select list of possible attributes and we could determine the
-        callability.  Perhaps selection of an interface should be
-        required. 
+Now let's add some of these indexes to our catalog.  Let's create some
+indexes.  First we'll define some interfaces providing data to index:
 
-      - An index should have a way to specify default values. In
-        particular, text indexes usially use ISearchableText and
-        searchableText. 
+    >>> class IFavoriteColor(zope.interface.Interface):
+    ...     color = zope.interface.Attribute("Favorite color")
 
-For text indexes, one generally uses
-`zope.index.interfaces.searchabletext.ISearchableText`,
-`getSearchableText` and True.
+    >>> class IPerson(zope.interface.Interface):
+    ...     def age():
+    ...         """Return the person's age, in years"""
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/Catalog/+/AddTextIndex%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1003
-  ... Content-Type: multipart/form-data; boundary=---------------------------12609588153518590761493918424
-  ... Referer: http://localhost:8081/++etc++site/default/Catalog/+/AddTextIndex=
-  ... 
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="field.interface"
-  ... 
-  ... zope.index.interfaces.searchabletext.ISearchableText
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
-  ... 
-  ... 1
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="field.field_name"
-  ... 
-  ... getSearchableText
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="field.field_callable.used"
-  ... 
-  ... 
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="field.field_callable"
-  ... 
-  ... on
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------12609588153518590761493918424
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... 
-  ... -----------------------------12609588153518590761493918424--
-  ... """, handle_errors=False)
-  HTTP/1.1 303 ...
+We'll create color and age indexes:
 
+    >>> cat['color'] = Index('color', IFavoriteColor)
+    >>> cat['age'] = Index('age', IPerson, True)
+    >>> cat['size'] = Index('sz')
 
-We can visit the advanced tab of the catalog to get some index
-statistics.  Doing so, we see that we have a single document and that
-the total word count is 8. The word count is only 8 because ssome stop
-words have been eliminated.
+The indexes are created with:
 
+- the name of the of the attribute to index
 
-  >>> print http(r"""
-  ... GET /++etc++site/default/Catalog/@@advanced.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Referer: http://localhost:8081/++etc++site/default/Catalog/@@contents.html
-  ... """)
-  HTTP/1.1 200 Ok
-  ...
-  <table border="0">
-     <tr><th>Index</th>
-         <th>Document Count</th>
-         <th>Word Count</th>
-     </tr>
-     <tr>
-         <td>TextIndex</td>
-         <td>1</td>
-         <td>8</td>
-      </tr>
-  </table>
-  ...
+- the interface defining the attribute, and
 
-Now lets add some more pages:
+- a flag indicating whether the attribute should be called, which
+  defaults to false.
 
-  >>> print http(r"""
-  ... POST /+/zope.app.zptpage.ZPTPage%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 754
-  ... Content-Type: multipart/form-data; boundary=---------------------------1213614620286666602740364725
-  ... Referer: http://localhost:8081/+/zope.app.zptpage.ZPTPage=
-  ... 
-  ... -----------------------------1213614620286666602740364725
-  ... Content-Disposition: form-data; name="field.source"
-  ... 
-  ... <html>
-  ... <body>
-  ... Dudes, we really need to switch to Zope 3 now.
-  ... </body>
-  ... </html>
-  ... -----------------------------1213614620286666602740364725
-  ... Content-Disposition: form-data; name="field.expand.used"
-  ... 
-  ... 
-  ... -----------------------------1213614620286666602740364725
-  ... Content-Disposition: form-data; name="field.evaluateInlineCode.used"
-  ... 
-  ... 
-  ... -----------------------------1213614620286666602740364725
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------1213614620286666602740364725
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... zope3
-  ... -----------------------------1213614620286666602740364725--
-  ... """)
-  HTTP/1.1 303 ...
+If an interface is provided, then we'll only be able to index an
+object if it can be adapted to the interface, otherwise, we'll simply
+try to get the attribute from the object. If the attribute isn't
+present, then we'll ignore the object.
 
-  >>> print http(r"""
-  ... POST /+/zope.app.zptpage.ZPTPage%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 838
-  ... Content-Type: multipart/form-data; boundary=---------------------------491825988706308579952614349
-  ... Referer: http://localhost:8081/+/zope.app.zptpage.ZPTPage=
-  ... 
-  ... -----------------------------491825988706308579952614349
-  ... Content-Disposition: form-data; name="field.source"
-  ... 
-  ... <html>
-  ... <body>
-  ... <p>Writing tests as doctests makes them much more understandable.</p>
-  ... <p>Python 2.4 has major enhancements to the doctest module.</p>
-  ... </body>
-  ... </html>
-  ... -----------------------------491825988706308579952614349
-  ... Content-Disposition: form-data; name="field.expand.used"
-  ... 
-  ... 
-  ... -----------------------------491825988706308579952614349
-  ... Content-Disposition: form-data; name="field.evaluateInlineCode.used"
-  ... 
-  ... 
-  ... -----------------------------491825988706308579952614349
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------491825988706308579952614349
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... doctest
-  ... -----------------------------491825988706308579952614349--
-  ... """)
-  HTTP/1.1 303 ...
+Now, let's create some objects and index them:
 
-Now, if we visit the catalog advanced tab, we can see that the 3
-documents have been indexed and that the word count has increased to 30:
+    >>> class Person:
+    ...     zope.interface.implements(IPerson)
+    ...     def __init__(self, age):
+    ...         self._age = age
+    ...     def age(self):
+    ...         return self._age
 
-  >>> print http(r"""
-  ... GET /++etc++site/default/Catalog/@@advanced.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Referer: http://localhost:8081/++etc++site/default/Catalog/@@contents.html
-  ... """)
-  HTTP/1.1 200 Ok
-  ...
-  <table border="0">
-     <tr><th>Index</th>
-         <th>Document Count</th>
-         <th>Word Count</th>
-     </tr>
-     <tr>
-         <td>TextIndex</td>
-         <td>3</td>
-         <td>30</td>
-      </tr>
-  </table>
-  ...
+    >>> class Discriminating:
+    ...     zope.interface.implements(IFavoriteColor)
+    ...     def __init__(self, color):
+    ...         self.color = color
 
+    >>> class DiscriminatingPerson(Discriminating, Person):
+    ...     def __init__(self, age, color):
+    ...         Discriminating.__init__(self, color)
+    ...         Person.__init__(self, age)
 
-Now that we have a catalog with some documents indexed, we can search
-it.  The catalog is really meant to be used from Python:
+    >>> class Whatever:
+    ...     def __init__(self, **kw):
+    ...         self.__dict__.update(kw)
 
-  >>> root = getRootFolder()
+    >>> o1 = Person(10)
+    >>> o2 = DiscriminatingPerson(20, 'red')
+    >>> o3 = Discriminating('blue')
+    >>> o4 = Whatever(a=10, c='blue', sz=5)
+    >>> o5 = Whatever(a=20, c='red', sz=6)
+    >>> o6 = DiscriminatingPerson(10, 'blue')
 
-We'll make our root folder the site (this would normally be done by
-the publisher):
+    >>> cat.index_doc(1, o1)
+    >>> cat.index_doc(2, o2)
+    >>> cat.index_doc(3, o3)
+    >>> cat.index_doc(4, o4)
+    >>> cat.index_doc(5, o5)
+    >>> cat.index_doc(6, o6)
 
-  >>> from zope.app.component.hooks import setSite
-  >>> setSite(root)
+We search by providing query mapping objects that have a key for every
+index we want to use:
 
-Now, we'll get the catalog:
+    >>> list(cat.apply({'age': 10}))
+    [1, 6]
+    >>> list(cat.apply({'age': 10, 'color': 'blue'}))
+    [6]
+    >>> list(cat.apply({'age': 10, 'color': 'blue', 'size': 5}))
+    []
+    >>> list(cat.apply({'size': 5}))
+    [4]
 
-  >>> from zope.app import zapi
-  >>> from zope.app.catalog.interfaces import ICatalog
-  >>> catalog = zapi.getUtility(ICatalog)
+We can unindex objects:
 
-And search it to find the names of all of the documents that contain
-the word 'now':
+    >>> cat.unindex_doc(4)
+    >>> list(cat.apply({'size': 5}))
+    []
 
-  >>> results = catalog.searchResults(TextIndex='now')
-  >>> [result.__name__ for result in results]
-  [u'dudes', u'zope3']
+and reindex objects:
 
-TODO
-   This stuff needs a lot of work.  The indexing interfaces, despite
-   being rather elaborate are still a bit too simple.  There really
-   should be more provision for combining result.  In particular,
-   catalog should have a search interface that returns ranked docids,
-   rather than documents.
+    >>> o5.sz = 5
+    >>> cat.index_doc(5, o5)
+    >>> list(cat.apply({'size': 5}))
+    [5]
 
-You don't have to use the search algorithm build into the catalog. You
-can implement your own search algorithms and use them with a catalog's
-indexes.   
+If we clear the catalog, we'll clear all of the indexes:
+
+    >>> cat.clear()
+    >>> [len(index.forward) for index in cat.values()]
+    [0, 0, 0]
+
+Note that you don't have to use the catalog's search methods. You can
+access it's indexes directly, since the catalog is a mapping:
+
+    >>> [(name, cat[name].field_name) for name in cat]
+    [(u'age', 'age'), (u'color', 'color'), (u'size', 'sz')]
+
+Catalogs work with int-id utilities, which are responsible for
+maintaining id <-> object mappings.  To see how this works, we'll
+create a utility to work with our catalog:
+
+    >>> import zope.app.intid.interfaces
+    >>> class Ids:
+    ...     zope.interface.implements(zope.app.intid.interfaces.IIntIds)
+    ...     def __init__(self, data):
+    ...         self.data = data
+    ...     def getObject(self, id):
+    ...         return self.data[id]
+    ...     def __iter__(self):
+    ...         return self.data.iterkeys()
+    >>> ids = Ids({1: o1, 2: o2, 3: o3, 4: o4, 5: o5, 6: o6})
+    
+    >>> from zope.app.tests import ztapi
+    >>> ztapi.provideUtility(zope.app.intid.interfaces.IIntIds, ids)
+
+With this utility in place, catalogs can recompute indexes:
+
+    >>> cat.updateIndex(cat['size'])
+    >>> list(cat.apply({'size': 5}))
+    [4, 5]
+
+Of course, that only updates *that* index:
+
+    >>> list(cat.apply({'age': 10}))
+    []
+
+We can update all of the indexes:
+
+    >>> cat.updateIndexes()
+    >>> list(cat.apply({'age': 10}))
+    [1, 6]
+    >>> list(cat.apply({'color': 'red'}))
+    [2]
+
+There's an alternate search interface that returns "result sets".
+Result sets provide access to objects, rather than object ids:
+
+    >>> result = cat.searchResults(size=5)
+    >>> len(result)
+    2
+    >>> list(result) == [o4, o5]
+    True
+
+The index example we looked at didn't provide document scores.  Simple
+indexes normally don't, but more complex indexes might give results
+scores, according to how closely a document matches a query.  Let's
+create a new index, a "keyword index" that indexes sequences of
+values:
+
+    >>> class BaseKeywordIndex(persistent.Persistent):
+    ...     zope.interface.implements(
+    ...         zope.index.interfaces.IInjection,
+    ...         zope.index.interfaces.IIndexSearch,
+    ...         )
+    ...
+    ...     def clear(self):
+    ...         self.forward = BTrees.OOBTree.OOBTree()
+    ...         self.backward = BTrees.IOBTree.IOBTree()
+    ...
+    ...     __init__ = clear
+    ...
+    ...     def index_doc(self, docid, values):
+    ...         if docid in self.backward:
+    ...             self.unindex_doc(docid)
+    ...         self.backward[docid] = values
+    ...
+    ...         for value in values:
+    ...             set = self.forward.get(value)
+    ...             if set is None:
+    ...                 set = BTrees.IFBTree.IFTreeSet()
+    ...                 self.forward[value] = set
+    ...             set.insert(docid)
+    ...
+    ...     def unindex_doc(self, docid):
+    ...         values = self.backward.get(docid)
+    ...         if values is None:
+    ...             return
+    ...         for value in values:
+    ...             self.forward[value].remove(docid)
+    ...         del self.backward[docid]
+    ...
+    ...     def apply(self, values):
+    ...         result = BTrees.IFBTree.IFBucket()
+    ...         for value in values:
+    ...             set = self.forward.get(value)
+    ...             if set is not None:
+    ...                 _, result = BTrees.IFBTree.weightedUnion(result, set)
+    ...         return result
+
+    >>> class KeywordIndex(zope.app.catalog.attribute.AttributeIndex, 
+    ...                    BaseKeywordIndex,
+    ...                    zope.app.container.contained.Contained,
+    ...                    ):
+    ...    zope.interface.implements(zope.app.catalog.interfaces.ICatalogIndex)
+
+Now, we'll add a hobbies index:
+
+    >>> cat['hobbies'] = KeywordIndex('hobbies')
+    >>> o1.hobbies = 'camping', 'music'
+    >>> o2.hobbies = 'hacking', 'sailing'
+    >>> o3.hobbies = 'music', 'camping', 'sailing'
+    >>> o6.hobbies = 'cooking', 'dancing'
+    >>> cat.updateIndexes()
+
+When we apply the catalog:
+
+    >>> cat.apply({'hobbies': ['music', 'camping', 'sailing']})
+    BTrees._IFBTree.IFBucket([(1, 2.0), (2, 1.0), (3, 3.0)])
+
+We found objects 1-3, because they each contained at least some of the
+words in the query.  The scores represent the number of words that
+matched. If we also include age:
+
+    >>> cat.apply({'hobbies': ['music', 'camping', 'sailing'], 'age': 10})
+    BTrees._IFBTree.IFBucket([(1, 3.0)])
+
+The score increased because we used an additional index.  If an index
+doesn't provide scores, scores of 1.0 are assumed.

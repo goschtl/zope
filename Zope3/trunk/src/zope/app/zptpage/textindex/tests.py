@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.index.interfaces.searchabletext import ISearchableText
+from zope.index.text.interfaces import ISearchableText
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.zptpage.interfaces import IZPTPage

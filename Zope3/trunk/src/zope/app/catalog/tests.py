@@ -21,14 +21,16 @@ $Id$
 import unittest
 import doctest
 
+import BTrees.IFBTree
+
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.tests import ztapi, setup
-from zope.app.tests.placelesssetup import PlacelessSetup
-from BTrees.IIBTree import IISet
+import zope.app.tests.placelesssetup
+from BTrees.IFBTree import IFSet
 from zope.app.intid.interfaces import IIntIds
 
-from zope.index.interfaces import IInjection, ISimpleQuery
+from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
 from zope.app import zapi
@@ -81,14 +83,14 @@ class IntIdsStub:
     def queryId(self, ob, default=None):
         return self.ids.get(ob, default)
 
-    def items(self):
-        return [(id, ReferenceStub(obj)) for id, obj in self.objs.items()]
+    def __iter__(self):
+        return self.objs.iterkeys()
 
 
 class StubIndex:
     """A stub for Index."""
 
-    implements(ISimpleQuery, IInjection)
+    implements(IIndexSearch, IInjection)
 
     def __init__(self, field_name, interface=None):
         self._field_name = field_name
@@ -101,14 +103,14 @@ class StubIndex:
     def unindex_doc(self, docid):
         del self.doc[docid]
 
-    def query(self, term, start=0, count=None):
+    def apply(self, term):
         results = []
         for docid in self.doc:
             obj = self.doc[docid]
             fieldname = getattr(obj, self._field_name, '')
             if fieldname == term:
                 results.append(docid)
-        return IISet(results)
+        return IFSet(results)
 
 
 class stoopid:
@@ -116,7 +118,7 @@ class stoopid:
         self.__dict__ = kw
 
 
-class Test(PlacelessSetup, unittest.TestCase):
+class Test(zope.app.tests.placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_catalog_add_del_indexes(self):
         catalog = Catalog()
@@ -202,7 +204,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         res = catalog.searchResults(simiantype='ape', name='mwumi')
         self.assertEqual(len(res), 0)
-        self.assertRaises(ValueError, catalog.searchResults,
+        self.assertRaises(KeyError, catalog.searchResults,
                           simiantype='monkey', hat='beret')
 
 
@@ -289,33 +291,17 @@ class TestEventSubscribers(unittest.TestCase):
         self.assertEqual(self.cat.regs, [])
 
 
-def test_textindex_simple_query():
-    """
-    >>> class Doc:
-    ...     def __init__(self, text):
-    ...         self.text = text
-    >>> from zope.app.catalog.text import TextIndex
-    >>> index = TextIndex('text')
-    >>> index.index_doc(1, Doc('now time for all good men to come to the aid'))
-    >>> index.index_doc(2, Doc('we should use Zope3 now'))
-    >>> index.index_doc(3, Doc('doctest makes tests more readable'))
-    >>> r = index.query('now')
-    >>> r.sort()
-    >>> r
-    [1, 2]
-    >>> index.query('doctest')
-    [3]
-    
-    
-    """
-
 def test_suite():
-    from zope.testing.doctestunit import DocTestSuite
+    from zope.testing import doctest
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
-    suite.addTest(DocTestSuite('zope.app.catalog.attribute'))
-    suite.addTest(DocTestSuite())
+    suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
+    suite.addTest(doctest.DocFileSuite(
+        'README.txt',
+        setUp=zope.app.tests.placelesssetup.setUp,
+        tearDown=zope.app.tests.placelesssetup.tearDown,
+        ))
     return suite
 
 

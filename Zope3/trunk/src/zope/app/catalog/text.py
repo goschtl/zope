@@ -16,7 +16,7 @@
 $Id$
 """
 import zope.index.text
-import zope.index.interfaces.searchabletext
+import zope.index.text.interfaces
 import zope.interface
 
 import zope.app.catalog.attribute
@@ -34,7 +34,7 @@ class ITextIndex(zope.app.catalog.interfaces.IAttributeIndex,
         description=_(u"Objects will be adapted to this interface"),
         vocabulary=_("Interfaces"),
         required=False,
-        default=zope.index.interfaces.searchabletext.ISearchableText,
+        default=zope.index.text.interfaces.ISearchableText,
         )
 
     field_name = zope.schema.BytesLine(
@@ -55,13 +55,3 @@ class TextIndex(zope.app.catalog.attribute.AttributeIndex,
                 zope.app.container.contained.Contained):
 
     zope.interface.implements(ITextIndex)
-
-    def query(self, text, start=0, count=None):
-        """Return a list of ids matching the text
-
-        This a dumbed-down implementation that matches ISimpleQuery.
-        
-        """
-        result = super(TextIndex, self).query(text, start, count)
-        return [id for (id, rank) in result[0]]
-    
