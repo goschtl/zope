@@ -35,7 +35,8 @@ are still being determined.  Here are some rough notes:
   in the module, all references must be replaced with references to
   the converted object.
 
-Implementation notes:
+Implementation notes
+--------------------
 
 The conversion operation is implemented using a pickler.  It wasn't
 possible to use the copy module, because it isn't possible to extend
@@ -65,7 +66,8 @@ alias.  When the class is updated, the alias changes, but the bound
 method isn't.  Then the bound method can invoke an old method on a new
 object, which may not be legal.  It might sufficient to outlaw this case.
 
-XXX Open issues
+Open issues
+-----------
 
 Can we handle metaclasses within this framework?  That is, what if an
 object's type is not type, but a subclass of type.
@@ -74,12 +76,16 @@ How do we handle things like staticmethods?  We'd like the code to be
 able to use them, but Python doesn't expose an introspection on them.
 
 What if the same object is bound to two different names in the same
-namespace?  Example:
+namespace?  For example::
+
     x = lambda: 1
     y = x
-If the module is updated to:
+
+If the module is updated to::
+
     x = lambda: 1
     y = lambda: 2
+
 What are the desired semantics?
 """
 
