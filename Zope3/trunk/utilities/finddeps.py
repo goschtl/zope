@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.2 2004/02/25 21:16:33 fdrake Exp $
+$Id: finddeps.py,v 1.3 2004/03/11 16:50:21 fdrake Exp $
 """
 import sys
 import getopt
@@ -234,7 +234,7 @@ def getDependencies(path, zcml=False):
             if pythonfile.match(file):
                 deps += getDependenciesOfPythonFile(filePath)
             elif zcml and zcmlfile.match(file):
-                deps += getDependenciesOfZCMLFile(filePath)                
+                deps += getDependenciesOfZCMLFile(filePath)
             elif os.path.isdir(filePath) and \
                      '__init__.py' in os.listdir(filePath):
                 deps += getDependencies(filePath)
@@ -272,8 +272,9 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
             deps.append(dep)
             paths.append(dep.path)
             modulePath = __import__(dep.path).__file__
-            if modulePath.endswith('__init__.pyc'):
-                modulePath = modulePath[:-12]
+            dirname, basename = os.path.split(modulePath)
+            if basename in ('__init__.py', '__init__.pyc', '__init__.pyo'):
+                modulePath = os.path.join(dirname, '')
             getAllCleanedDependencies(modulePath, zcml, deps, paths)
     deps = filterMostGeneral(deps)
     deps.sort()
