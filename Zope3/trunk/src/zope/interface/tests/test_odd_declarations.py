@@ -16,11 +16,11 @@
 These tests are to make sure we do something sane in the presense of
 classic ExtensionClass classes and instances.
 
-$Id: test_odd_declarations.py,v 1.2 2003/05/03 16:38:00 jim Exp $
+$Id: test_odd_declarations.py,v 1.3 2003/05/06 11:08:01 jim Exp $
 """
 
 import unittest, odd
-from zope.interface import Interface
+from zope.interface import Interface, implements, implementsOnly
 from zope.interface import directlyProvides, providedBy, directlyProvidedBy
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 
@@ -36,21 +36,17 @@ class Odd: __metaclass__ = odd.MetaClass
 class B(Odd): __implements__ = I2
 
 
-# XXX We are going to need more magic to make implements work with odd
+# XXX We are going to need more magic to make classProvides work with odd
 #     classes. This will work in the next iteration. For now, we'll use
 #     a different mechanism.
 
-# from zope.interface import implements, classProvides
+# from zope.interface import classProvides
 
 class A(Odd):
-    # implements(I1)
-    __implements__ = I1
-
+    implements(I1)
+    
 class C(A, B):
-    pass
-    #implements(I31)
-classImplements(C, I31)
-
+    implements(I31)
 
 
 class Test(unittest.TestCase):
@@ -71,11 +67,11 @@ class Test(unittest.TestCase):
         self.failIf(providedBy(c).extends(I5))
 
         class COnly(A, B):
-            # XXX implementsOnly(I31)
-            __implements__ = I31
+            implementsOnly(I31)
+            
         class D(COnly):
-            # XXX implements(I5)
-            pass
+            implements(I5)
+            
         classImplements(D, I5)
         
         c = D()
@@ -93,8 +89,8 @@ class Test(unittest.TestCase):
 
         class COnly(A, B): __implements__ = I31        
         class D(COnly):
-            # XXX implements(I5)
-            pass
+            implements(I5)
+            
         classImplements(D, I5)
         c = D()
         directlyProvides(c, I4)
@@ -111,11 +107,11 @@ class Test(unittest.TestCase):
         
     def test_classImplements(self):
         class A(Odd):
-          # XXX implements(I3)
-          __implements__ = I3
+          implements(I3)
+          
         class B(Odd):
-          # XXX implements(I4)
-          __implements__ = I4
+          implements(I4)
+          
         class C(A, B):
           pass
         classImplements(C, I1, I2)
@@ -127,11 +123,11 @@ class Test(unittest.TestCase):
         
     def test_classImplementsOnly(self):
         class A(Odd):
-            # XXX implements(I3)
-          __implements__ = I3
+            implements(I3)
+          
         class B(Odd):
-            # XXX implements(I4)
-          __implements__ = I4
+            implements(I4)
+          
         class C(A, B):
           pass
         classImplementsOnly(C, I1, I2)
@@ -145,15 +141,14 @@ class Test(unittest.TestCase):
         class IB(Interface): pass
         class IC(Interface): pass
         class A(Odd):
-            # XXX implements(IA1, IA2)
-            __implements__ = IA1, IA2
+            implements(IA1, IA2)
+            
         class B(Odd):
-            # XXX implements(IB)
-            __implements__ = IB
+            implements(IB)
+            
         class C(A, B):
-            # XXX implements(IC)
-            pass
-        classImplements(C, IC)
+            implements(IC)
+            
 
         ob = C()
         directlyProvides(ob, I1, I2)
@@ -189,12 +184,11 @@ class Test(unittest.TestCase):
         class I2(I1): pass
         
         class C1(Odd):
-          # XXX implements(I2)
-          __implements__ = I2
+          implements(I2)
+          
         class C2(C1):
-          # XXX implements(I3)
-          pass
-        classImplements(C2, I3)
+          implements(I3)
+          
         self.assertEqual([i.__name__ for i in implementedBy(C2)],
                          ['I3', 'I2'])
 

@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.3 2003/05/03 16:36:19 jim Exp $
+$Id: declarations.py,v 1.4 2003/05/06 11:08:00 jim Exp $
 """
 
 import sys
@@ -485,6 +485,8 @@ class ObjectSpecification:
         1
     """
 
+    only = True
+
     def __init__(self, ob):
         self.ob = ob
 
@@ -530,6 +532,11 @@ class ObjectSpecification:
 
                         implements = getattr(c, '__implements__', None)
                         if implements is not None:
+                            assert ((implements.__class__ == tuple)
+                                    or
+                                    (InterfaceClass in
+                                     implements.__class__.__mro__)
+                                    )
                             result.append(`implements`)
                         
                     else:
@@ -606,7 +613,14 @@ def providedBy(ob):
     # or a descriptor
 
     try:
-        r = ob.__providedBy__        
+        r = ob.__providedBy__
+
+        # We might have gotten a descriptor from an instance of a
+        # class (like an ExtensionClass) that doesn't support
+        # descriptors.  We'll make sure we got one by trying to get
+        # the only attribute, which all specs have.
+        r.only
+        
     except AttributeError:
         # No descriptor, so fall back to a plain object spec
         r = ObjectSpecification(ob)
@@ -1124,10 +1138,7 @@ def _setImplements(cls, v):
 
     if flags & heap:
         cls.__implements__ = v
-
-        # Only set up the descriptor if the class supports descriptors
-        if isinstance(cls, DescriptorAwareMetaClasses):
-            cls.__providedBy__ = _objectSpecificationDescriptor
+        cls.__providedBy__ = _objectSpecificationDescriptor
     else:
         _implements_reg[cls] = v
 
