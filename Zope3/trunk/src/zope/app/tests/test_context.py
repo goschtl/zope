@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_context.py,v 1.1 2003/06/02 11:05:53 jim Exp $
+$Id: test_context.py,v 1.2 2003/06/02 16:29:44 jim Exp $
 """
 
 import pickle
@@ -225,5 +225,10 @@ def test_reduce_in_subclass():
     CustomPicklingError
     """
 
-def test_suite(): return DocTestSuite()
+def test_suite():
+    suite = DocTestSuite()
+    suite.addTest(DocTestSuite('zope.app.context'))
+    return suite
+
+
 if __name__ == '__main__': unittest.main()
