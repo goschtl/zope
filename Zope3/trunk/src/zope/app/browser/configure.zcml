@@ -21,6 +21,7 @@
 <include file="introspector.zcml" />
 <include file="traversal.zcml" />
 <include file="undo.zcml" />
+<include file="auth.zcml" />
 
 <include package=".exception" />
 
