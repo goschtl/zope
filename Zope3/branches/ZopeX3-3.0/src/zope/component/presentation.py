@@ -374,6 +374,34 @@ class GlobalPresentationService(GlobalService):
             ] = PresentationRegistration(layer, ifaces, providing, name,
                                          factory, info)
 
+    def unprovideAdapter(self, request_type, factory, name=u'', contexts=(), 
+                       providing=zope.interface.Interface, layer='default',
+                       info=''):
+        """Provide a presentation adapter
+
+        This is a fairly low-level interface that supports both
+        resources and views.
+
+        """
+
+        ifaces = []
+        for context in contexts:
+            if not IInterface.providedBy(context) and context is not None:
+                if not isinstance(context, (type, ClassType)):
+                    raise TypeError(context, IInterface)
+                context = zope.interface.implementedBy(context)
+
+            ifaces.append(context)
+
+        ifaces.append(request_type)
+        ifaces = tuple(ifaces)
+
+        reg = self._layers[layer]
+
+        reg.unregister(ifaces, providing, name, factory)
+
+        del self._registrations[(layer, ifaces, providing, name)]
+
     def queryResource(self, name, request, default=None,
                       providing=zope.interface.Interface):
         """Look up a named resource for a given request
