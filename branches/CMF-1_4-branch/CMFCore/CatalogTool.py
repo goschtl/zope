@@ -263,7 +263,7 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
                     range = 'min:max'
                 kw[k] = {'query': query, 'range': range}
 
-        return apply(ZCatalog.searchResults, (self, REQUEST), kw)
+        return ZCatalog.searchResults(self, REQUEST, **kw)
 
     __call__ = searchResults
 

@@ -117,7 +117,7 @@ class Topic( PortalFolder ):
         """
         view = _getViewFor( self )
         if getattr( aq_base( view ), 'isDocTemp', 0 ):
-            return apply( view, ( self, self.REQUEST ) )
+            return view(self, self.REQUEST)
         else:
             return view()
 
@@ -215,7 +215,7 @@ class Topic( PortalFolder ):
         """
         kw.update( self.buildQuery() )
         portal_catalog = getToolByName( self, 'portal_catalog' )
-        return apply( portal_catalog.searchResults, ( REQUEST, ), kw )
+        return portal_catalog.searchResults(REQUEST, **kw)
 
 
     ### Criteria adding/editing/deleting

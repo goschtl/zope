@@ -119,7 +119,7 @@ class FSSTXMethod( FSObject ):
 
         if RESPONSE is not None:
             RESPONSE.setHeader( 'Content-Type', 'text/html' )
-        return apply( self._render, ( REQUEST, RESPONSE ), kw )
+        return self._render(REQUEST, RESPONSE, **kw)
 
     security.declarePrivate( '_render' )
     def _render( self, REQUEST={}, RESPONSE=None, **kw ):
@@ -134,7 +134,7 @@ class FSSTXMethod( FSObject ):
         else:
             posargs = ()
         
-        return apply( template, posargs, { 'cooked' : self.cook() } )
+        return template(*posargs, **{'cooked': self.cook()})
 
     security.declareProtected( FTPAccess, 'manage_FTPget' )
     def manage_FTPget( self ):

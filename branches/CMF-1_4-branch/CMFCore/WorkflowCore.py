@@ -80,7 +80,7 @@ class WorkflowMethod( Method ):
         if wf is None or not hasattr(wf, 'wrapWorkflowMethod'):
             # No workflow tool found.
             try:
-                res = apply(self._m, (instance,) + args, kw)
+                res = self._m(instance, *args, **kw)
             except ObjectDeleted, ex:
                 res = ex.getResult()
             else:

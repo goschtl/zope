@@ -59,8 +59,8 @@ class TestCalendar(unittest.TestCase):
         Site = self.Site
         obj = Site.restrictedTraverse(url)
         if params is None:
-            params=(obj, Site.REQUEST)
-        apply(obj,params)
+            params = (obj, Site.REQUEST)
+        obj(*params)
 
     def tearDown(self):
         noSecurityManager()

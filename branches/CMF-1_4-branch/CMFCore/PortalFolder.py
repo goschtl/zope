@@ -192,7 +192,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
             return []
         filt['portal_type'] = pt
 
-        query = apply( ContentFilter, (), filt )
+        query = ContentFilter(**filt)
         result = []
         append = result.append
         get = self._getOb
@@ -364,10 +364,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
             if not myType.allowType( type_name ):
                 raise ValueError, 'Disallowed subobject type: %s' % type_name
 
-        apply( pt.constructContent
-             , (type_name, self, id, RESPONSE) + args
-             , kw
-             )
+        pt.constructContent(type_name, self, id, RESPONSE, *args, **kw)
 
     security.declareProtected(AddPortalContent, 'checkIdAvailable')
     def checkIdAvailable(self, id):
@@ -649,5 +646,5 @@ class ContentFilter:
         """
         return string.join( self.description, '; ' )
 
-manage_addPortalFolder = PortalFolder.manage_addPortalFolder
+manage_addPortalFolder = PortalFolder.manage_addPortalFolder.im_func
 manage_addPortalFolderForm = DTMLFile( 'folderAdd', globals() )

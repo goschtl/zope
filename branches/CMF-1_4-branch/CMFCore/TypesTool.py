@@ -119,7 +119,7 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
                 and kw.has_key('icon')):
                 kw['content_icon'] = kw['icon']
 
-            apply(self.manage_changeProperties, (), kw)
+            self.manage_changeProperties(**kw)
 
         actions = kw.get( 'actions', () )
         # make sure we have a copy
@@ -395,7 +395,7 @@ class FactoryTypeInformation (TypeInformation):
         else:
             args = ( id, ) + args
 
-        id = apply( m, args, kw ) or id  # allow factory to munge ID
+        id = m(*args, **kw) or id  # allow factory to munge ID
         ob = container._getOb( id )
 
         return self._finishConstruction(ob)
@@ -455,7 +455,7 @@ class ScriptableTypeInformation( TypeInformation ):
         constructor = aq_base(constructor).__of__( container )
 
         id = str(id)
-        ob = apply(constructor, (container, id) + args, kw)
+        ob = constructor(container, id, *args, **kw)
 
         return self._finishConstruction(ob)
 
@@ -602,9 +602,9 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
             fti = fti.copy()
             if fti.has_key('id'):
                 del fti['id']
-            ob = apply(klass, (id,), fti)
+            ob = klass(id, **fti)
         else:
-            ob = apply(klass, (id,))
+            ob = klass(id)
         self._setObject(id, ob)
         if RESPONSE is not None:
             RESPONSE.redirect('%s/manage_main' % self.absolute_url())
@@ -706,7 +706,7 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
         if not self._checkViewType(info):
             raise Unauthorized,info
 
-        ob = apply(info.constructInstance, (container, id) + args, kw)
+        ob = info.constructInstance(container, id, *args, **kw)
 
         if RESPONSE is not None:
             immediate_url = '%s/%s' % ( ob.absolute_url()

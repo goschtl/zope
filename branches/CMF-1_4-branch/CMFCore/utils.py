@@ -356,8 +356,8 @@ class SimpleItemWithProperties (PropertyManager, SimpleItem):
         'An override that makes the schema fixed.'
         my_kw = kw.copy()
         my_kw['property_extensible_schema__'] = 0
-        return apply(PropertyManager.manage_propertiesForm,
-                     (self, self, REQUEST,) + args, my_kw)
+        form = PropertyManager.manage_propertiesForm.__of__(self)
+        return form(self, self, REQUEST, *args, **my_kw)
 
     security.declarePublic('propertyLabel')
     def propertyLabel(self, id):

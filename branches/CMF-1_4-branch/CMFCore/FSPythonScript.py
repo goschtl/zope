@@ -157,7 +157,7 @@ class FSPythonScript (FSObject, Script):
         security=getSecurityManager()
         security.addContext(self)
         try:
-            result = apply(f, args, kw)
+            result = f(*args, **kw)
             if keyset is not None:
                 # Store the result in the cache.
                 self.ZCacheable_set(result, keywords=keyset)           
@@ -202,7 +202,7 @@ class FSPythonScript (FSObject, Script):
     def params(self): return self._params
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = PythonScript.manage_haveProxy
+    manage_haveProxy = PythonScript.manage_haveProxy.im_func
 
     security.declareProtected(ViewManagementScreens, 'body')
     def body(self): return self._body

@@ -131,14 +131,14 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         
             if client is None:
                 # Called as subtemplate, so don't need error propagation!
-                r=apply(Globals.HTML.__call__, (self, client, REQUEST), kw)
+                r=Globals.HTML.__call__(self, client, REQUEST, **kw)
                 if RESPONSE is None: result = r
                 else: result = decapitate(r, RESPONSE)
                 if not self._cache_namespace_keys:
                     self.ZCacheable_set(result)
                 return result
 
-            r=apply(Globals.HTML.__call__, (self, client, REQUEST), kw)
+            r=Globals.HTML.__call__(self, client, REQUEST, **kw)
             if type(r) is not type('') or RESPONSE is None:
                 if not self._cache_namespace_keys:
                     self.ZCacheable_set(r)
@@ -183,16 +183,16 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         return getSecurityManager().validate(inst, parent, name, value)
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
-    manage_FTPget = DTMLMethod.manage_FTPget
+    manage_FTPget = DTMLMethod.manage_FTPget.im_func
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource
+    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource.im_func
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = DTMLMethod.document_src
+    document_src = DTMLMethod.document_src.im_func
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = DTMLMethod.manage_haveProxy
+    manage_haveProxy = DTMLMethod.manage_haveProxy.im_func
 
 Globals.InitializeClass(FSDTMLMethod)
 

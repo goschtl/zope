@@ -80,7 +80,7 @@ def install(self):
     # and configure it in the types tool if it doesn't already exist
     for t in Event.factory_type_information:
         if t['id'] not in typestool.objectIds():
-            cfm = apply(ContentFactoryMetadata, (), t)
+            cfm = ContentFactoryMetadata(**t)
             typestool._setObject(t['id'], cfm)
             out.write('Registered with the types tool\n')
         else:

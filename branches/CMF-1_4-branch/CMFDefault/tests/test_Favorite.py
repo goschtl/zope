@@ -32,7 +32,7 @@ class FavoriteTests( TestCase ):
 
     def _makeOne( self, *args, **kw ):
 
-        f = apply( Favorite, args, kw )
+        f = Favorite(*args, **kw)
         return f.__of__( self.site )
 
     def test_Empty( self ):

@@ -221,7 +221,7 @@ class DCWorkflowDefinition (WorkflowUIMixin, Folder):
                             v = qdef.getVarMatch(k)
                             v_fmt = map(lambda x, info=info: x%info, v)
                             dict[k] = v_fmt
-                        searchres = apply(catalog.searchResults, (), dict)
+                        searchres = catalog.searchResults(**dict)
                         if not searchres:
                             continue
                     if fmt_data is None:
@@ -309,7 +309,7 @@ class DCWorkflowDefinition (WorkflowUIMixin, Folder):
                 % method_id)
         if not self._checkTransitionGuard(tdef, ob):
             raise Unauthorized
-        res = apply(func, args, kw)
+        res = func(*args, **kw)
         try:
             self._changeStateOf(ob, tdef)
         except ObjectDeleted:

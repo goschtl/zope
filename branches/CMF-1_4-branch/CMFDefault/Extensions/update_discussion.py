@@ -34,10 +34,8 @@ def update_discussion( self, split=string.split ):
     types_tool = self.portal_types
     if not getattr( types_tool, 'Discussion Item', None ):
 
-        fti = apply( FactoryTypeInformation
-                   , ()
-                   , DiscussionItem.factory_type_information[0]
-                   )
+        fti = FactoryTypeInformation(**DiscussionItem.factory_type_information[0])
+
         types_tool._setObject( 'Discussion Item', fti )
         a( 'Added type object for DiscussionItem' )
 

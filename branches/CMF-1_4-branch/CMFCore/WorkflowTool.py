@@ -343,7 +343,7 @@ class WorkflowTool (UniqueObject, Folder):
                         'Requested workflow definition not found.')
                 else:
                     return default
-        res = apply(wf.getInfoFor, (ob, name, default) + args, kw)
+        res = wf.getInfoFor(ob, name, default, *args, **kw)
         if res is _marker:
             raise WorkflowException('Could not get info: %s' % name)
         return res
@@ -589,7 +589,7 @@ class WorkflowTool (UniqueObject, Folder):
             wfs = ()
         if wf is None:
             # No workflow wraps this method.
-            return apply(func, args, kw)
+            return func(*args, **kw)
         return self._invokeWithNotification(
             wfs, ob, method_id, wf.wrapWorkflowMethod,
             (ob, method_id, func, args, kw), {})
@@ -618,7 +618,7 @@ class WorkflowTool (UniqueObject, Folder):
         for w in wfs:
             w.notifyBefore(ob, action)
         try:
-            res = apply(func, args, kw)
+            res = func(*args, **kw)
         except ObjectDeleted, ex:
             res = ex.getResult()
             reindex = 0

@@ -40,7 +40,7 @@ class AbstractCriterion( Persistent, Item, Implicit ):
             Apply 'command', which is expected to be a dictionary,
             to 'self.edit' (makes using Python Scripts easier).
         """
-        apply( self.edit, (), command )
+        self.edit(**command)
 
     security.declareProtected( ChangeTopics, 'editableAttributes' )
     def editableAttributes( self ):
