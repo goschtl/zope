@@ -4,10 +4,16 @@ Zope Road Map
   the compliment of CHANGES.txt. Over time, entries from this file
   will migrate to CHANGES.txt and then to HISTORY.txt.
 
-  Zope 3x.0.0 alpha 1
+  Zope 3x.0.0 alpha 2
 
-    The alpha 1 release will be the first Zope 3 release. The goals of
-    this release are to:
+    The second alpha release will probably happen around the begining
+    of February 2003. 
+
+    The goals of the second alpha release release are to:
+
+    - Evolve the Zope 3 UI.
+
+    - Flesh out through the web development and configuration.
 
     - Provide a relatively firm foundation for beginner Zope 3
       developers who want to start building Zope 3 products or to
@@ -21,92 +27,31 @@ Zope Road Map
     optimization to keep the code as clean as possible. Optimization
     will be performed prior to the first beta release.
 
-    Features
+    New Features
 
-      - An initial management interface including folders and various
-        content types such as files, images, DTML pages, ZPT pages,
-        and SQL scripts.
+      - A number of new services will be included:
 
-        It is likely that the default interface will be ugly. We
-        encourage folks to help us beautify it.
-
-      - A framework for configuring and installing file-system-based
-        products. 
-
-      - A through-the-web configuration and development system based
-        on services. Services are similar to CMF tools except that
-        they are managed in service managers, rather than in folders.
-
-        A number of predefined services will be included:
-
-        - Simple authentication service (similar to Zope 2's
-          original user folder).
-
-        - Event service.
-
-        - RDB Connection service. This is used to manage database
-          connection objects used by SQL scripts.
-
-        - Translation service, to manage software (as opposed to
-          content) translation services.
-
-        - Caching service.
-
-        - Site error reporting service (like Zope 2's site error log)
-
-        - Browser ID service
-
-        - Temporary Data service (similar to a Zope 2 temporary
-          folder)
-
-        - Session service
+        - A flexible and pluggable authentication service.
 
         - Virtual host service
 
-        - Role service
- 
         - Interface service, for browsing and changing configuration
           by interface.
 
-        - Adapter service
-
-        - View services
-
-        - Some of mail delivery service service
-
-        - Object Hub, which tracks object locations, allowing
-          location-independent object references
-
-        - Indexing service, supporting pluggable indexes and searching
-          and lightweight metadata for results
-
-        Through the web development will take place in packages, which
-        can contain:
-
-        - Persistent python modules
-
-        - Templates
-
-        - Component instances 
-
-        - Configuration objects
-
-        Configuration objects are used to configure component
-        instances and component factories and register with the
-        appropriate services.
+        - Some sort of mail delivery service service
 
       - A file-system synchronization system.  Initially, this will
         use a CVS-like command-line tool.  It allows objects to be checked out
         of Zope to the file system, modified and then checked back
         in. Objects can be added on the file systems and changes made
         in the database and on the file-system can be merged.
+
+      - WebDAV support would be nice.
+
+      - ...
   
   Later releases
 
     Features
-
-      - WebDAV support
-
-      - FTP support
 
       ...

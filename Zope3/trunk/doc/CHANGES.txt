@@ -3,3 +3,87 @@ Zope Changes
   This file contains change information for the current Zope release.
   Change information for previous versions of Zope can be found in the
   file HISTORY.txt.
+
+  For information on future releases, see ROADMAP.txt.
+
+  Zope 3x.0.0 Alpha 1
+
+    What is Zope 3x? It's Zope 3 "experimental". This is the release
+    that will provide the new features of Zope 3 without any Zope 2
+    support.   Zope 3.0 will provide support for Zope 2 content and
+    products, probably using conversion utilities of some sort. 
+
+    This release will be the first Zope 3 release. The goals of
+    this release are to:
+
+    - Provide a relatively firm foundation for beginner Zope 3
+      developers who want to start building Zope 3 products or to
+      contribute to development.  
+
+    - Provide wider exposure of Zope 3.
+
+    - Solicit input on features, current and missing.
+
+    The alpha release *will* be slow. We have intentionally avoided
+    optimization to keep the code as clean as possible. Optimization
+    will be performed prior to the first beta release.
+
+    Features
+
+      - An initial management interface including folders and various
+        content types such as files, images, DTML pages, ZPT pages,
+        and SQL scripts.
+
+        The initial user interface is a prototype. We welcome
+        feedback, ideas, and even code!
+
+      - A framework for configuring and installing file-system-based
+        products. 
+
+      - An initial through-the-web configuration and development system based
+        on services. Services are similar to CMF tools except that
+        they are managed in service managers, rather than in folders.
+
+        A number of predefined services will be included:
+
+        - Simple authentication service (similar to Zope 2's
+          original user folder).
+
+        - Event service.
+
+        - RDB Connection service. This is used to manage database
+          connection objects used by SQL scripts.
+
+        - Translation service, to manage software (as opposed to
+          content) translation services.
+
+        - Caching service.
+
+        - Site error reporting service (like Zope 2's site error log)
+
+        - Session service (uh, that nobody has tried to use yet :)
+
+        - Role service
+
+        - Adapter service
+
+        - View services
+
+        - Object Hub, which tracks object locations, allowing
+          location-independent object references
+
+        Through the web development will take place in packages, which
+        can contain:
+
+        - Persistent python modules (These might work now. Give em a
+          try. :)
+
+        - Templates
+
+        - Component instances 
+
+        - Configuration objects
+
+        Configuration objects are used to configure component
+        instances and component factories and register with the
+        appropriate services.
