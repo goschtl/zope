@@ -71,7 +71,7 @@ def _createRequest(body=None, headers=None, skip_headers=None,
         for prefix, ns in namespaces:
             nsAttrs += ' xmlns:%s="%s"' % (prefix, ns)
             
-        body = '''<?xml version="1.0"  ?>
+        body = '''<?xml version="1.0" encoding="utf-8"?>
 
         <propertyupdate xmlns="DAV:"%s>
         %s
@@ -235,7 +235,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         request = _createRequest(namespaces=ns, set=set, remove=rm, 
                                  extra=extra)
         resource_url = str(zapi.getView(obj, 'absolute_url', request))
-        expect = '''<?xml version="1.0" ?>
+        expect = '''<?xml version="1.0" encoding="utf-8"?>
             <multistatus xmlns="DAV:"><response>
             <href>%%(resource_url)s</href>
             %s

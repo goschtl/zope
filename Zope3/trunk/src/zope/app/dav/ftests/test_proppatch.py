@@ -138,7 +138,7 @@ class TestPROPPATCH(DAVTestCase):
                 ''.join(rm))
         for prefix, ns in namespaces:
             nsAttrs += ' xmlns:%s="%s"' % (prefix, ns)
-        body = """<?xml version="1.0" ?>
+        body = """<?xml version="1.0" encoding="utf-8"?>
         <propertyupdate xmlns="DAV:"%s>
         %s
         </propertyupdate>""" % (nsAttrs, setProps + removeProps)
@@ -147,7 +147,7 @@ class TestPROPPATCH(DAVTestCase):
                               request_body=body)
         self.assertEquals(result.getStatus(), 207)
         s1 = normalize_xml(result.getBody())
-        s2 = normalize_xml("""<?xml version="1.0" ?>
+        s2 = normalize_xml("""<?xml version="1.0" encoding="utf-8"?>
         <multistatus xmlns="DAV:">
         <response>
         <href>http://localhost/pt</href>

@@ -56,7 +56,7 @@ import zope.app.location
 
 def _createRequest(body=None, headers=None, skip_headers=None):
     if body is None:
-        body = '''<?xml version="1.0"  ?>
+        body = '''<?xml version="1.0" encoding="utf-8"?>
 
         <propfind xmlns="DAV:">
         <prop xmlns:R="http://www.foo.bar/boxschema/">
@@ -230,7 +230,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         if IReadContainer.providedBy(obj):
             resource_url += '/'
         if resp is None:
-            resp = '''<?xml version="1.0" ?>
+            resp = '''<?xml version="1.0" encoding="utf-8"?>
             <multistatus xmlns="DAV:"><response>
             <href>%%(resource_url)s</href>
             <propstat>%s
@@ -342,7 +342,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
             </propstat></response>
             ''' % {'path': '%(resource_url)s' + p, 'props_xml': props_xml}
 
-        resp = '''<?xml version="1.0" ?>
+        resp = '''<?xml version="1.0" encoding="utf-8"?>
         <multistatus xmlns="DAV:">%s</multistatus>'''
         self._checkPropfind(folder, req, expect, depth='1', resp=resp)
 
@@ -369,7 +369,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
             </propstat></response>
             ''' % {'path': '%(resource_url)s' + p, 'props_xml': props_xml}
 
-        resp = '''<?xml version="1.0" ?>
+        resp = '''<?xml version="1.0" encoding="utf-8"?>
         <multistatus xmlns="DAV:">%s</multistatus>'''
         self._checkPropfind(folder, req, expect, depth='infinity', resp=resp)
         

@@ -87,7 +87,7 @@ class PROPPATCH(object):
             return ''
         self._handlePropertyUpdate(resp, updates)
 
-        body = resp.toxml().encode('utf-8')
+        body = resp.toxml('utf-8')
         self.request.response.setBody(body)
         self.request.response.setStatus(207)
         return body

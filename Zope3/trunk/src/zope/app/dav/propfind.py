@@ -40,6 +40,17 @@ class PROPFIND(object):
             self.content_type = ct.lower()
             self.content_type_params = None
         self.default_ns = 'DAV:'
+        self.oprops = IDAVOpaqueNamespaces(self.context, None)
+
+        _avail_props = {}
+        # List all *registered* DAV interface namespaces and their properties
+        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
+            _avail_props[ns] = getFieldNamesInOrder(iface)    
+        # List all opaque DAV namespaces and the properties we know of
+        if self.oprops:
+            for ns, oprops in self.oprops.items():
+                _avail_props[ns] = list(oprops.keys())
+        self.avail_props = _avail_props
 
     def getDepth(self):
         return self._depth
@@ -69,25 +80,17 @@ class PROPFIND(object):
         ms.appendChild(resp.createElement('response'))
         ms.lastChild.appendChild(resp.createElement('href'))
         ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
-
-        _avail_props = {}
-        # List all *registered* DAV interface namespaces and their properties
-        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)    
-        # List all opaque DAV namespaces and the properties we know of
-        for ns, oprops in IDAVOpaqueNamespaces(self.context, {}).items():
-            _avail_props[ns] = oprops.keys()
         
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:
-            self._handlePropname(resp, _avail_props)
+            self._handlePropname(resp)
         else:
             source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-            self._handlePropvalues(source, resp, _avail_props)
+            self._handlePropvalues(source, resp)
 
         self._depthRecurse(ms)
 
-        body = resp.toxml().encode('utf-8')
+        body = resp.toxml('utf-8')
         self.request.response.setBody(body)
         self.request.response.setStatus(207)
         return body
@@ -122,25 +125,25 @@ class PROPFIND(object):
             props[ns] = value
         return props
 
-    def _handleAllprop(self, _avail_props):
+    def _handleAllprop(self):
         props = {}
-        for ns in _avail_props.keys():
+        for ns, props in self.avail_props.items():
             iface = zapi.queryUtility(IDAVNamespace, ns)
-            props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
+            props[ns] = {'iface': iface, 'props': props}
         return props
 
-    def _handlePropname(self, resp, _avail_props):
+    def _handlePropname(self, resp):
         re = resp.lastChild.lastChild
         re.appendChild(resp.createElement('propstat'))
         prop = resp.createElement('prop')
         re.lastChild.appendChild(prop)
         count = 0
-        for ns in _avail_props.keys():
+        for ns, props in self.avail_props.items():
             attr_name = 'a%s' % count
             if ns is not None and ns != self.default_ns:
                 count += 1
                 prop.setAttribute('xmlns:%s' % attr_name, ns)
-            for p in _avail_props.get(ns):
+            for p in props:
                 el = resp.createElement(p)
                 prop.appendChild(el)
                 if ns is not None and ns != self.default_ns:
@@ -149,9 +152,9 @@ class PROPFIND(object):
         re.lastChild.lastChild.appendChild(
             resp.createTextNode('HTTP/1.1 200 OK'))
 
-    def _handlePropvalues(self, source, resp, _avail_props):
+    def _handlePropvalues(self, source, resp):
         if not source:
-            _props = self._handleAllprop(_avail_props)
+            _props = self._handleAllprop()
         else:
             _props = self._handleProp(source)
 
@@ -164,34 +167,28 @@ class PROPFIND(object):
     def _propertyResolver(self, _props):
         avail = {}
         not_avail = {}
-        oprops = IDAVOpaqueNamespaces(self.context, {})
         for ns in _props.keys():
             iface = _props[ns]['iface']
             for p in _props[ns]['props']:
                 if iface is None:
-                    if oprops.get(ns, {}).get(p):
-                        l = avail.get(ns, [])
+                    # The opaque property case
+                    if (self.oprops is not None and 
+                        self.oprops.get(ns, {}).has_key(p)):
+                        l = avail.setdefault(ns, [])
                         l.append(p)
-                        avail[ns] = l
                     else:    
-                        l = not_avail.get(ns, [])
+                        l = not_avail.setdefault(ns, [])
                         l.append(p)
-                        not_avail[ns] = l
                     continue
+                # The registered namespace case
                 adapter = iface(self.context, None)
                 if adapter is None:
-                    l = not_avail.get(ns, [])
+                    # Registered interface but no adapter? Maybe log this?
+                    l = not_avail.setdefault(ns, [])
                     l.append(p)
-                    not_avail[ns] = l
                     continue
-                if hasattr(adapter, p):
-                    l = avail.get(ns, [])
-                    l.append(p)
-                    avail[ns] = l
-                else:
-                    l = not_avail.get(ns, [])
-                    l.append(p)
-                    not_avail[ns] = l
+                l = avail.setdefault(ns, [])
+                l.append(p)
 
         return avail, not_avail
     
@@ -204,7 +201,7 @@ class PROPFIND(object):
         re.lastChild.lastChild.appendChild(
             resp.createTextNode('HTTP/1.1 200 OK'))
         count = 0
-        for ns in avail.keys():
+        for ns, props in avail.items():
             attr_name = 'a%s' % count
             if ns is not None and ns != self.default_ns:
                 count += 1
@@ -213,9 +210,8 @@ class PROPFIND(object):
 
             if not iface:
                 # The opaque properties case, hand it off
-                oprops = IDAVOpaqueNamespaces(self.context, {})
-                for name in avail.get(ns):
-                    oprops.renderProperty(ns, attr_name, name, prop)
+                for name in props:
+                    self.oprops.renderProperty(ns, attr_name, name, prop)
                 continue
             
             # The registered namespace case
@@ -227,7 +223,7 @@ class PROPFIND(object):
             setUpWidgets(self, iface, IDAVWidget, ignoreStickyValues=True,
                          initial=initial, names=avail[ns])
                         
-            for p in avail.get(ns):
+            for p in props:
                 el = resp.createElement('%s' % p )
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
@@ -256,12 +252,12 @@ class PROPFIND(object):
         re.lastChild.lastChild.appendChild(
             resp.createTextNode('HTTP/1.1 404 Not Found'))
         count = 0
-        for ns in not_avail.keys():
+        for ns, props in not_avail.items():
             attr_name = 'a%s' % count
             if ns is not None and ns != self.default_ns:
                 count += 1
                 prop.setAttribute('xmlns:%s' % attr_name, ns)
-            for p in not_avail.get(ns):
+            for p in props:
                 el = resp.createElement('%s' % p )
                 prop.appendChild(el)
                 if ns is not None and ns != self.default_ns:
