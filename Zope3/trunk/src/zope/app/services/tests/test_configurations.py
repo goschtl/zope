@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
+$Id: test_configurations.py,v 1.9 2003/06/12 17:03:45 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -82,20 +82,20 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def test_getComponent(self):
         # set up a component
-        path, component = 'foo', object()
-        self.rootFolder.setObject(path, component)
+        name, component = 'foo', object()
+        self.rootFolder.setObject(name, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = ComponentConfiguration("/"+name)
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
         self.assertEquals(cfg.getComponent(), component)
 
     def test_getComponent_permission(self):
         # set up a component
-        path, component = 'foo', object()
-        self.rootFolder.setObject(path, component)
+        name, component = 'foo', object()
+        self.rootFolder.setObject(name, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path, 'zope.TopSecret')
+        cfg = ComponentConfiguration("/"+name, 'zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
@@ -105,10 +105,10 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def test_afterAddHook(self):
         # set up a component
-        path, component = 'foo', ComponentStub()
-        self.rootFolder.setObject(path, component)
+        name, component = 'foo', ComponentStub()
+        self.rootFolder.setObject(name, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = ComponentConfiguration("/"+name)
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IAddNotifiable
@@ -118,11 +118,11 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def test_beforeDeleteHook_dependents(self):
         # set up a component
-        path, component = 'foo', ComponentStub()
-        self.rootFolder.setObject(path, component)
+        name, component = 'foo', ComponentStub()
+        self.rootFolder.setObject(name, component)
         component.addDependent('/cfg')
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = ComponentConfiguration("/"+name)
         cfg.status = Unregistered
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')

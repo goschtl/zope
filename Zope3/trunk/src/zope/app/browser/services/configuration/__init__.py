@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.10 2003/06/06 20:44:28 stevea Exp $
+$Id: __init__.py,v 1.11 2003/06/12 17:03:43 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.configuration import IComponentConfiguration
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.traversing import getPath, traverse
+from zope.app.traversing import getPath, objectName, traverse
 from zope.component import getView, getServiceManager, getAdapter
 from zope.context import getWrapperContainer
 from zope.app.context import ContextWrapper
@@ -191,7 +191,7 @@ class ComponentPathWidget(BrowserWidget):
 
     The widget doesn't actually allow editing. Rather it gets the
     value by inspecting its field's context. If the context is an
-    IComponentConfiguration, then it just gets it's value from the
+    IComponentConfiguration, then it just gets its value from the
     component using the field's name. Otherwise, it uses the path to
     the context.
     """
@@ -204,13 +204,17 @@ class ComponentPathWidget(BrowserWidget):
         field = self.context
         context = field.context 
         if IComponentConfiguration.isImplementedBy(context):
-            # It's a configuration object. Just get the corresponsing attr
+            # It's a configuration object. Just get the corresponding attr
             path = getattr(context, field.__name__)
+            # The path may be relative; then interpret relative to ../..
+            if not path.startswith("/"):
+                context = traverse(context, "../..")
             component = traverse(context, path)
         else:
             # It must be a component that is about to be configured.
             component = context
-            path = getPath(context)
+            # Always use a relative path (just the component name)
+            path = objectName(context)
 
         url = getView(component, 'absolute_url', self.request)
 
@@ -226,12 +230,13 @@ class ComponentPathWidget(BrowserWidget):
         field = self.context
         context = field.context 
         if IComponentConfiguration.isImplementedBy(context):
-            # It's a configuration object. Just get the corresponsing attr
+            # It's a configuration object. Just get the corresponding attr
             # XXX this code has no unittests !!!
             path = getattr(context, field.__name__)
         else:
             # It must be a component that is about to be configured.
-            path = getPath(context)
+            # Always return a relative path (just the component name)
+            path = objectName(context)
 
         return path
 

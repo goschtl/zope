@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.27 2003/06/12 09:31:42 jim Exp $
+$Id: service.py,v 1.28 2003/06/12 17:03:42 gvanrossum Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -132,7 +132,7 @@ class AddServiceConfiguration(BrowserView):
         return lst
 
     def action(self, name=[], active=[]):
-        path = zapi.getPath(self.context)
+        path = zapi.objectName(self.context)
         configure = zapi.getWrapperContainer(
             self.context).getConfigurationManager()
         container = zapi.getAdapter(configure, IZopeContainer)

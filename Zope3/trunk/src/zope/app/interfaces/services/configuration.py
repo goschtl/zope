@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.14 2003/06/03 14:28:50 stevea Exp $
+$Id: configuration.py,v 1.15 2003/06/12 17:03:43 gvanrossum Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -118,7 +118,8 @@ class IComponentConfiguration(IConfiguration):
 
     componentPath = ComponentPath(
         title=u"Component path",
-        description=u"The physical path to the component",
+        description=u"The path to the component; this may be absolute, "
+                    u"or relative to the nearest site management folder",
         required=True)
 
     permission = PermissionField(

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.33 2003/06/11 17:25:02 gvanrossum Exp $
+$Id: configuration.py,v 1.34 2003/06/12 17:03:44 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -50,14 +50,14 @@ from zope.app.interfaces.services.configuration import NoLocalServiceError
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.traversing import getRoot, getPath, traverse
-from zope.app.traversing import canonicalPath
 from zope.component import getAdapter, queryAdapter
 from zope.component import getServiceManager
 from zope.app.context import ContextWrapper
-from zope.context import ContextMethod, ContextDescriptor
+from zope.context import ContextMethod, ContextDescriptor, getWrapperContainer
 from zope.proxy import removeAllProxies
 from zope.security.checker import InterfaceChecker
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.proxy import getProxiedObject
 
 class ConfigurationStatusProperty(ContextDescriptor):
 
@@ -355,10 +355,16 @@ class ComponentConfiguration(SimpleConfiguration):
         self.permission = permission
 
     def implementationSummary(self):
-        return canonicalPath(self.componentPath)
+        return self.componentPath
 
     def getComponent(wrapped_self):
         service_manager = getServiceManager(wrapped_self)
+
+        # The user of the configuration object may not have permission
+        # to traverse to the component.  Yet they should be able to
+        # get it by calling getComponent() on a configuration object
+        # for which they do have permission.  What they get will be
+        # wrapped in a security proxy of course.  Hence:
 
         # We have to be clever here. We need to do an honest to
         # god unrestricted traveral, which means we have to
@@ -369,9 +375,20 @@ class ComponentConfiguration(SimpleConfiguration):
         # traverses from there, so we need to make sure the
         # physical root isn't proxied.
 
-        # get the root and unproxy it.
+        path = wrapped_self.componentPath
+        # Get the root and unproxy it
         root = removeAllProxies(getRoot(service_manager))
-        component = traverse(root, wrapped_self.componentPath)
+        if path.startswith("/"):
+            # Absolute path
+            component = traverse(root, path)
+        else:
+            # Relative path.
+            # XXX We do a strange little dance because we want the
+            #     context to inherit the unproxied root, and this is
+            #     the only way to keep it.
+            ancestor = getWrapperContainer(getWrapperContainer(wrapped_self))
+            ancestor = traverse(root, getPath(ancestor))
+            component = traverse(ancestor, path)
 
         if wrapped_self.permission:
             if type(component) is Proxy:
@@ -712,11 +729,9 @@ class ComponentConfigurationAdapter(ObjectEntryAdapter):
 
     The file representation of a configuration object is an XML pickle
     for a modified version of the instance dict.  In this version of
-    the instance dict, the componentPath attribute is converted to a
-    path relative to the highest level site management folder
-    containing the configuration object, and the __annotations__
-    attribute is omitted, because annotations are already stored on
-    the filesystem in a different way (in @@Zope/Annotations/<file>).
+    the instance dict, the __annotations__ attribute is omitted,
+    because annotations are already stored on the filesystem in a
+    different way (in @@Zope/Annotations/<file>).
     """
 
     implements(IObjectFile)
@@ -731,9 +746,6 @@ class ComponentConfigurationAdapter(ObjectEntryAdapter):
         obj = removeAllProxies(self.context)
         ivars = {}
         ivars.update(obj.__getstate__())
-        cpname = "componentPath"
-        if cpname in ivars:
-            ivars[cpname] = self._make_relative_path(ivars[cpname])
         aname = "__annotations__"
         if aname in ivars:
             del ivars[aname]
@@ -743,32 +755,4 @@ class ComponentConfigurationAdapter(ObjectEntryAdapter):
         """See IObjectEntry."""
         obj = removeAllProxies(self.context)
         ivars = loads(body)
-        cpname = "componentPath"
-        if cpname in ivars:
-            ivars[cpname] = self._make_absolute_path(ivars[cpname])
         obj.__setstate__(ivars)
-
-    def _make_relative_path(self, apath):
-        if apath.startswith("/"):
-            prefix = self._get_prefix()
-            if prefix and apath.startswith(prefix):
-                apath = apath[len(prefix):]
-                while apath.startswith("/"):
-                    apath = apath[1:]
-        return apath
-
-    def _make_absolute_path(self, rpath):
-        if not rpath.startswith("/"):
-            prefix = self._get_prefix()
-            if prefix:
-                rpath = prefix + rpath
-        return rpath
-
-    def _get_prefix(self):
-        parts = getPath(self.context).split("/")
-        try:
-            i = parts.index("++etc++site")
-        except ValueError:
-            return None
-        else:
-            return "/".join(parts[:i+2]) + "/"

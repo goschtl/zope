@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.17 2003/06/04 14:57:57 stevea Exp $
+$Id: bootstrap.py,v 1.18 2003/06/12 17:03:45 gvanrossum Exp $
 """
 from transaction import get_transaction
 
@@ -121,8 +121,8 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
     package = traverse(root_folder, package_name)
     configuration_manager = package.getConfigurationManager()
     configuration =  ServiceConfiguration(service_type,
-                                          package_name + '/' + name,
-                                          root_folder)
+                                          name,
+                                          configuration_manager)
     key = configuration_manager.setObject("", configuration)
     configuration = traverseName(configuration_manager, key)
     configuration.status = initial_status
