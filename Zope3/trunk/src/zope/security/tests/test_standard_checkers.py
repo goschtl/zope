@@ -16,7 +16,7 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.4 2003/06/22 23:21:42 jim Exp $
+$Id: test_standard_checkers.py,v 1.5 2003/06/23 00:03:58 jim Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
@@ -420,6 +420,41 @@ def test_rocks():
     1
     """
 
+def test_iter_of_sequences():
+    """
+    >>> class X:
+    ...   d = 1, 2, 3
+    ...   def __getitem__(self, i):
+    ...      return self.d[i]
+    ... 
+    >>> x = X()
+
+    We can iterate over sequences
+    
+    >>> list(x)
+    [1, 2, 3]
+    >>> c = NamesChecker(['__getitem__'])
+    >>> p = ProxyFactory(x, c)
+
+    Even if they are proxied
+    
+    >>> list(p)
+    [1, 2, 3]
+
+    But if the class has an iter:
+
+    >>> X.__iter__ = lambda self: iter(self.d)
+    >>> list(x)
+    [1, 2, 3]
+
+    We shouldn't be able to iterate if we don't have an assertion:
+    
+    >>> list(p)
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: __iter__
+    """
+    
 
     
 from zope.testing.doctestunit import DocTestSuite
