@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.8 2004/03/15 13:10:54 srichter Exp $
+$Id: wikipage.py,v 1.9 2004/05/10 13:32:13 eckart Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -28,6 +28,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent
+from zope.app.mail.interfaces import IMailDelivery
 
 from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
 from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
@@ -259,10 +260,10 @@ class WikiMailer:
         if not emails:
             return
         msg = 'Subject: %s\n\n\n%s' %(subject, body)
-        server = smtplib.SMTP(self.host, self.port)
-        server.set_debuglevel(0)
-        server.sendmail('wiki@zope3.org', emails, msg)
-        server.quit()
+        mail_delivery = zapi.getUtility(None,
+                                       IMailDelivery,
+                                       'wiki-delivery')
+        mail_delivery.send('wiki@zope3.org' , emails, msg)
 
 # Create a global mailer object.
 mailer = WikiMailer()
