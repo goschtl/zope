@@ -8,10 +8,10 @@ class FakeRequest:
     implements(IBrowserRequest)
 
     debug = DebugFlags()
-    
+
     def getPresentationSkin(self):
         return None
-    
+
 class Viewable:
     """A mixin to make an object viewable using the Zope 3 system.
     """

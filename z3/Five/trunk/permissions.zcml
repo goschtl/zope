@@ -3,7 +3,7 @@
 
   <permission
     id="zope.ViewManagementScreens"
-    title="View Management Screens"
+    title="View management screens"
     />
 
 </configure>

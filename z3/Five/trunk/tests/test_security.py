@@ -23,29 +23,24 @@ from Testing import ZopeTestCase
 
 ZopeTestCase.installProduct('Five')
 
+from zope.configuration import xmlconfig
+from Products.Five import zcml
 from AccessControl import ClassSecurityInfo
+from Globals import InitializeClass
 
-class Dummy:
-
+class Dummy1:
     def foo(self): pass
     def bar(self): pass
     def baz(self): pass
     def keg(self): pass
     def wot(self): pass
 
-class Dummy1(Dummy):
-
-    security = ClassSecurityInfo()
-    security.declareProtected('View', 'foo')
-
-class Dummy2(Dummy):
-
+class Dummy2(Dummy1):
     security = ClassSecurityInfo()
     security.declarePublic('foo')
-    security.declareProtected('View', 'bar')
+    security.declareProtected('View management screens', 'bar')
     security.declarePrivate('baz')
-    security.declareProtected('Edit', 'keg')
-
+    security.declareProtected('View management screens', 'keg')
 
 class SecurityTestCase(ZopeTestCase.ZopeTestCase):
 
@@ -62,9 +57,58 @@ class SecurityTestCase(ZopeTestCase.ZopeTestCase):
     def test_initialize(self):
         pass
 
+class SecurityEquivalenceTestCase(ZopeTestCase.ZopeTestCase):
+
+    def setUp(self):
+        self.dummy1 = Dummy1
+        self.dummy2 = Dummy2
+        zcml.initialize()
+
+    def tearDown(self):
+        zcml.reset()
+
+    def test_equivalence(self):
+        self.failIf(hasattr(self.dummy1, '__ac_permissions__'))
+        self.failIf(hasattr(self.dummy2, '__ac_permissions__'))
+
+        decl = """
+        <configure xmlns="http://namespaces.zope.org/zope"
+            xmlns:five="http://namespaces.zope.org/five">
+
+        <five:content
+            class="Five.tests.test_security.Dummy1">
+
+          <allow attributes="foo" />
+
+          <deny attributes="baz" />
+
+          <require attributes="bar keg"
+	      permission="zope.ViewManagementScreens"
+	      />
+
+        </five:content>
+        </configure>
+        """
+        zcml.string(decl)
+        InitializeClass(self.dummy2)
+        import pdb
+        pdb.set_trace()
+        ac1 = getattr(self.dummy1, '__ac_permissions__')
+        ac2 = getattr(self.dummy2, '__ac_permissions__')
+        self.assertEquals(ac1, ac2)
+        foo_roles1 = getattr(self.dummy1, 'foo__roles__')
+        baz_roles1 = getattr(self.dummy1, 'baz__roles__')
+        self.assertEquals(foo_roles1, None)
+        self.assertEquals(baz_roles1, ())
+
+        foo_roles2 = getattr(self.dummy2, 'foo__roles__')
+        baz_roles2 = getattr(self.dummy2, 'baz__roles__')
+        self.assertEquals(foo_roles2, None)
+        self.assertEquals(baz_roles2, ())
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SecurityEquivalenceTestCase))
     suite.addTest(unittest.makeSuite(SecurityTestCase))
     return suite
 

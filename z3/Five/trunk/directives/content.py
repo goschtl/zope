@@ -92,3 +92,21 @@ class IAllowSubdirective(Interface):
         value_type=GlobalObject()
         )
 
+class IDenySubdirective(Interface):
+    """
+    Declare a part of the class to be private (that is,
+    can't be accessed through the web). Only one of the following
+    two attributes may be used.
+    """
+
+    attributes = Tokens(
+        title=u"Attributes",
+        required=False,
+        value_type=PythonIdentifier()
+        )
+
+    interface = Tokens(
+        title=u"Interface",
+        required=False,
+        value_type=GlobalObject()
+        )

@@ -11,6 +11,7 @@ from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
+from security.permission import getSecurityInfo
 
 #def handler(serviceName, methodName, *args, **kwargs):
 #    method=getattr(getService(serviceName), methodName)
@@ -22,7 +23,7 @@ def handler(serviceName, methodName, *args, **kwargs):
 
 def page(_context, name, for_,
          layer='default', template=None, class_=None,
-         attribute='__call__', menu=None, title=None, 
+         attribute='__call__', menu=None, title=None,
          ):
 
     try:
@@ -53,12 +54,18 @@ def page(_context, name, for_,
                 raise ConfigurationError(
                     "The provided class doesn't have the specified attribute "
                     )
+        cdict = getSecurityInfo(class_)
+        # XXX this is not working currently
+        # because by the time the metaclass is created,
+        # the security decls directives haven't been
+        # executed yet.
         if template:
             # class and template
             new_class = SimpleViewClass(
-                template, bases=(class_, ))
+                template, bases=(class_, ),
+                cdict=cdict)
         else:
-            cdict = {'__page_attribute__': attribute }
+            cdict.update({'__page_attribute__': attribute})
             new_class = makeClass(class_.__name__,
                              (class_, simple),
                              cdict)
@@ -83,7 +90,7 @@ def _handle_for(_context, for_):
             discriminator = None,
             callable = provideInterface,
             args = ('', for_)
-            )        
+            )
 
 def implements(_context, class_, interface):
     for interface in interface:
@@ -110,7 +117,7 @@ def viewable(_context, class_):
         callable = classViewable,
         args = (class_,)
         )
-        
+
 def layer(_context, name):
 
     _context.action(
@@ -153,15 +160,16 @@ import sys
 from zope.app.pagetemplate.simpleviewclass import simple as svc_simple
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-def SimpleViewClass(src, offering=None, used_for=None, bases=()):
+def SimpleViewClass(src, offering=None, used_for=None, bases=(), cdict=None):
     if offering is None:
         offering = sys._getframe(1).f_globals
-        
-    #bases += (svc_simple, )
 
-    class_ = makeClass("SimpleViewClass from %s" % src, bases,
-                       {'index': ViewPageTemplateFile(src, offering),
-                        })
+    #bases += (svc_simple, )
+    # XXX needs to deal with security from the bases?
+    if cdict is None:
+        cdict = {}
+    cdict.update({'index': ViewPageTemplateFile(src, offering)})
+    class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 
     if used_for is not None:
         class_.__used_for__ = used_for

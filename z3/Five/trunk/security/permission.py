@@ -3,6 +3,17 @@ from zope.component import queryUtility
 from Products.Five.security.interfaces import IPermission
 
 CheckerPublic = 'zope.Public'
+CheckerPrivate = 'zope.Private'
+
+def getSecurityInfo(klass):
+    sec = {}
+    info = vars(klass)
+    if info.has_key('__ac_permissions__'):
+        sec['__ac_permissions__'] = info['__ac_permissions__']
+    for k, v in info.items():
+        if k.endswith('__roles__'):
+            sec[k] = v
+    return sec
 
 def checkPermission(context, permission_id):
     """Check whether a given permission exists in the provided context.

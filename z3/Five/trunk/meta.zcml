@@ -92,6 +92,11 @@
           schema=".directives.content.IAllowSubdirective"
           />
 
+      <meta:subdirective
+          name="deny"
+          schema=".directives.content.IDenySubdirective"
+          />
+
     </meta:complexDirective>
 
     <!-- specific to Five -->

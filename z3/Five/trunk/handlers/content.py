@@ -25,7 +25,7 @@ from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 from Products.Five.metaconfigure import interface as provideInterface
 from Products.Five.security.interfaces import IPermission
-from Products.Five.security.permission import CheckerPublic
+from Products.Five.security.permission import CheckerPublic, CheckerPrivate
 
 def dottedName(klass):
     if klass is None:
@@ -76,6 +76,9 @@ class ContentDirective:
         """Like require, but with permission_id zope.Public"""
         return self.require(_context, CheckerPublic, attributes, interface)
 
+    def deny(self, _context, attributes=None, interface=None):
+        """Like require, but with permission_id zope.Private"""
+        return self.require(_context, CheckerPrivate, attributes, interface)
 
     def __protectByInterface(self, interface, permission_id):
         "Set a permission on names in an interface."
@@ -121,9 +124,14 @@ def _getSecurity(klass):
 def protectName(klass, name, permission_id):
     print klass, name, permission_id
     security = _getSecurity(klass)
+    # Zope 2 uses string, not unicode yet
+    name = str(name)
     if permission_id == CheckerPublic:
         security.declarePublic(name)
+    elif permission_id == CheckerPrivate:
+        security.declarePrivate(name)
     else:
         permission = getUtility(IPermission, name=permission_id)
-        security.declareProtected(permission.title, name)
-
+        # Zope 2 uses string, not unicode yet
+        perm = str(permission.title)
+        security.declareProtected(perm, name)
