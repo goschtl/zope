@@ -23,12 +23,12 @@
 
 <!-- Case-insensitive Folder Registration -->
 <factory
-    id="zope.CaseInsensitiveFolder"
+    id="book.CaseInsensitiveFolder"
     component=".caseInsensitiveFolderFactory"
     />
 
 <browser:addMenuItem
-    factory="zope.CaseInsensitiveFolder"
+    factory="book.CaseInsensitiveFolder"
     title="Case insensitive Folder" 
     description="A simple case insensitive Folder." 
     permission="zope.ManageContent"
