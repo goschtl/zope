@@ -6,6 +6,8 @@
 
   <addMenuItem
     title="Cookie Browser Id Manager"
+    description="Uses a cookie to uniquely identify a browser, allowing 
+      state to be maintained between requests"
     class="zope.app.utilities.session.CookieBrowserIdManager"
     permission="zope.ManageContent" />
 
@@ -29,6 +31,7 @@
 
   <addMenuItem
     title="Persistent Session Data Container"
+    description="Stores session data persistently in the ZODB"
     class="zope.app.utilities.session.PersistentSessionDataContainer"
     permission="zope.ManageContent" />
 
