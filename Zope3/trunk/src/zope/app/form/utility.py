@@ -14,7 +14,7 @@
 """Form utility functions
 
 In Zope 2's formulator, forms provide a basic mechanism for
-organizating collections of fields and providing unsert interfaces for
+organizating collections of fields and providing user interfaces for
 them, especially editing interfaces.
 
 In Zope 3, formulator's forms are replaced by Schema (See
@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.3 2003/01/09 14:13:08 jim Exp $
+$Id: utility.py,v 1.4 2003/01/25 05:19:10 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -66,7 +66,7 @@ def setUpWidget(view, name, field, value=None, prefix=None,
         setattr(view, name, widget)
 
     else:
-        # We have an attribute of the right name, it it really a widget
+        # We have an attribute of the right name, is it really a widget
         if IViewFactory.isImplementedBy(widget):
             # This is a view factory, probably a custom widget.
             # Try to make it into a widget.
