@@ -586,7 +586,7 @@ class date(basetime):
 
     def timetuple(self):
         "Return local time tuple compatible with time.localtime()."
-        return _time.localtime(self._mktime())
+        return _time.gmtime(self._mktime())
 
     def toordinal(self):
         """Return proleptic Gregorian ordinal for the year, month and day.
@@ -612,7 +612,7 @@ class date(basetime):
 
     # Formatting methods
 
-    # XXX These shouldn't depend on time.localtime(), because that
+    # XXX These shouldn't depend on time.gmtime(), because that
     # clips the usable dates to [1970 .. 2038).  At least ctime() is
     # easily done without using strftime() -- that's better too because
     # strftime("%c", ...) is locale specific.
@@ -623,7 +623,7 @@ class date(basetime):
 
     def strftime(self, fmt):
         "Format using strftime()."
-        return _time.strftime(fmt, _time.localtime(self._mktime()))
+        return _time.strftime(fmt, _time.gmtime(self._mktime()))
 
     # Computations
 
@@ -855,11 +855,6 @@ class datetime(date):
                      self.__microsecond))
 
     # Formatting methods
-
-    # XXX These shouldn't depend on time.localtime(), because that
-    # clips the usable dates to [1970 .. 2038).  At least ctime() is
-    # easily done without using strftime() -- that's better too because
-    # strftime("%c", ...) is locale specific.
 
     # XXX An additional question is whether ctime() should renormalize
     # to local time, or display the time as entered (which may be
