@@ -18,6 +18,11 @@ This is used by the tests.
 $Id$
 """
 
+import sys
+
 from zope.importtool.tests.test_hook import TestException
 
-raise TestException(__name__)
+try:
+    raise TestException(__name__)
+finally:
+    del sys.modules[__name__]
