@@ -114,7 +114,9 @@ class Test(BrowserTestCase):
             'field.s1' : 'foo' }) # not unicode
 
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists(
+        # XXX We don't have a invalid field value
+        # since we convert the value to unicode
+        self.assert_(not validationErrorExists(
             's1', 'Object is of wrong type.', response.getBody()))
 
 

@@ -259,6 +259,12 @@ class TextAreaWidget(SimpleInputWidget):
         if value:
             value = decode_html(value)
             value = value.replace("\r\n", "\n")
+            # Converting the value to unicode.
+            try:
+                value = unicode(value)
+            except ValueError, v:
+                raise ConversionError("Invalid integer data", v)
+
         return value
 
     def _toFormValue(self, value):
