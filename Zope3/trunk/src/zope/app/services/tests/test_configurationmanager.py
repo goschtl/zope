@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.10 2003/06/05 12:03:18 stevea Exp $
+$Id: test_configurationmanager.py,v 1.11 2003/06/05 12:23:37 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -28,6 +28,7 @@ from zope.component.adapter import provideAdapter
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
 from zope.interface import implements
+from zope.app.context import ContextWrapper
 
 class Undeletable:
 
@@ -334,6 +335,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     def test_manageBeforeDelete(self):
         container = []
         manager = ConfigurationManager()
+        manager = ContextWrapper(manager, None)  # decorate to IZopeContainer
         thingy = Undeletable()
         manager.setObject('xyzzy', thingy)
         manager.beforeDeleteHook(manager, container)
