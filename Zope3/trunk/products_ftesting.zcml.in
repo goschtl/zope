@@ -10,5 +10,11 @@
        <include package="zope.products.example.ftests"
                 file="test_setup.zcml" />
   -->
+<include package="zope.products.securitypolicy"/>
+
+<include package="zope.products.statictree"/>
+<include package="zope.products.apidoc"/>
+
+<include package="zope.products.demo.insensitivefolder"/>
 
 </configure>
