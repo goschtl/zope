@@ -19,6 +19,8 @@ import posixpath
 import re
 import shutil
 import tempfile
+import urllib
+import urlparse
 
 
 class CvsLoadingError(Exception):
@@ -221,6 +223,17 @@ class CvsLoader:
             try:
                 url = parse(url)
             except ValueError:
+                # XXX Hack to make this support file: URLs to ease
+                # testing with filesystem-based resources.  There
+                # really should be some sort of dispatch mechanism,
+                # but we won't do that right now.
+                parts = urlparse.urlparse(url)
+                if parts[0] == "file" and not parts[1]:
+                    fn = urllib.url2pathname(parts[2])
+                    if os.path.exists(fn):
+                        return fn
+                    raise ValueError(
+                        "file: URL refers to non-existant resource")
                 raise TypeError(
                     "load() requires a cvs or repository URL; received %r"
                     % url)
