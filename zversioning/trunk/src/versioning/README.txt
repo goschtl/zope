@@ -57,6 +57,7 @@ of the objects histories:
   ...                      storage.SimpleHistoryStorage())
   
   >>> histories_storage = zapi.getUtility(interfaces.IHistoryStorage)
+  >>> db_root['storage'] = histories_storage
 
 We also need a 'IVersionableAspects' multi adapter beeing responsible
 for the versioning policy (what is versioned and how (not storage)).

@@ -124,6 +124,9 @@ class CopyModifyMergeRepository(object):
             (obj, self.histories), interfaces.IVersionableAspects)
         versionable_state.updateAspects(specifier)
         
+    def getVersion(self, obj, selector):
+        return self.histories.getVersion(obj, selector)
+        
     def getVersionHistory(self, obj):
         return self.histories.getVersionHistory(obj)
         
