@@ -238,7 +238,9 @@ Zope objects, as long as two things are the case:
 
 * The object provides an Zope 3 interface, typically through its class.
 
-* The object (typically its class) is made viewable.
+* The object (typically its class) is made Zope 3 traversable. This
+  allows Zope 3 views, resources and other things to be attached to a
+  Zope 2 object.
 
 Typically you give your classes an interface using the ``implements``
 directive in the class body::
@@ -258,25 +260,23 @@ following in ZCML::
 ``five`` in this case refers to the XML namespace for Five,
 ``http://namespace.zope.org/five``.
 
-To make an object viewable through Five your object needs to mix in
-``Viewable``, which can be imported from Products.Five.api. For
-instance::
+We've provided another ZCML directive to make an object
+traversable. To make your MyClass traversable, let's assume it is in
+``mymodule``, in the same package as the zcml file we are editing::
 
-  from Products.Five.api import Viewable
+  <five:traversable class=".mymodule.MyClass" />
 
-  class MyClass(OFS.SimpleItem.Item, Viewable):
-      implements(ISomeInterface)
+To continue our example, to make Zope's ``Folder`` traversable through
+Five, you need to declare this in ZCML as well:
 
-For existing Zope objects, this is not easily possible. We've provided
-another ZCML directive however to take care of that. To continue our
-example, to make Zope's ``Folder`` viewable through Five, you need to
-declare this in ZCML as well:
+  <five:traversable class="OFS.Folder.Folder"/>
 
-  <five:viewable class="OFS.Folder.Folder"/>
-
-This makes Folder look up Zope 3 views first, and then if they cannot be
-found, fall back on the regular Zope 2 views. This allows the ZMI to work
-still, but new views can be added on the fly.
+This makes Folder traverse in the Zope 3 way first, looking up views
+and other things, and then if they cannot be found, fall back on the
+regular Zope 2 traversal. It does this by overriding the
+``__bobo_traverse__`` hook. Old hooks that are already in place in an
+object will be stored and become the secondary fallback. This allows
+the ZMI to work still, but new views can be added on the fly.
 
 Note that at the point of writing it is only possible to make an object
 viewable through ZCML if this object does not already provide its own
