@@ -42,7 +42,10 @@
         >
 
     <div id="global">
-       <img tal:attributes="src context/++resource++zope3logo.gif" />
+      <a href="#" name="top"
+         tal:attributes="href string:${request/URL/0}">
+        <img tal:attributes="src context/++resource++zope3logo.gif" />
+      </a>
     </div>
 
     <div id="personal">
