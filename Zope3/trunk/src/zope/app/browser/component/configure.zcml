@@ -4,30 +4,30 @@
 >
 
 <browser:page 
-	class = ".interfacewidget.InterfaceWidget"
-	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
-	name = "edit"
+    class=".interfacewidget.InterfaceWidget"
+    for="zope.app.interfaces.component.interfacefield.IInterfaceField"
+    name="edit"
     permission="zope.Public"
     />
 
 <browser:page 
-	class = ".interfacewidget.InterfaceDisplayWidget"
-	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
-	name = "display"
+    class=".interfacewidget.InterfaceDisplayWidget"
+    for="zope.app.interfaces.component.interfacefield.IInterfaceField"
+    name="display"
     permission="zope.Public"
     />
 
 <browser:page 
-    class = ".interfacewidget.MultiInterfaceWidget"
-    for = "zope.app.interfaces.component.interfacefield.IInterfacesField"
-    name = "edit"
+    class=".interfacewidget.MultiInterfaceWidget"
+    for="zope.app.interfaces.component.interfacefield.IInterfacesField"
+    name="edit"
     permission='zope.Public'
     />
 
 <browser:page 
-    class = ".interfacewidget.MultiInterfaceDisplayWidget"
-    for = "zope.app.interfaces.component.interfacefield.IInterfacesField"
-    name = "display"
-    permission = 'zope.Public'
+    class=".interfacewidget.MultiInterfaceDisplayWidget"
+    for="zope.app.interfaces.component.interfacefield.IInterfacesField"
+    name="display"
+    permission='zope.Public'
     />
 </zopeConfigure>
