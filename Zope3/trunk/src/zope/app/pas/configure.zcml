@@ -4,6 +4,8 @@
     i18n_domain="zope"
     >
 
+  <interface interface=".interfaces.IPrincipalSearchPlugin" />
+
   <localService class=".LocalPAS">
     <require
         permission="zope.ManageServices"
