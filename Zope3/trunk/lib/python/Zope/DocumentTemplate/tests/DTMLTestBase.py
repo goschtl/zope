@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2002 Zope Corporation and Contributors. All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -12,12 +12,12 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: DTMLTestBase.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: DTMLTestBase.py,v 1.2 2002/07/11 00:54:01 srichter Exp $
 """
 
 import os
 import unittest
-from Zope.DocumentTemplate.DT_HTML import HTML, String
+from Zope.DocumentTemplate.DT_HTML import HTML
 
 
 if __name__=='__main__':

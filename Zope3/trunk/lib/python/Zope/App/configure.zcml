@@ -5,6 +5,7 @@
   <include package=".ZMI" />
   <include package=".Formulator" />
   <include package=".OFS" />
+  <include package=".RDB" />
   <include package=".Security" />
   <include package=".Traversing" />
   <include package=".ZopePublication" />

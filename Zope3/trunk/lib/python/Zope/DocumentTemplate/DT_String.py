@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: DT_String.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: DT_String.py,v 1.2 2002/07/11 00:54:01 srichter Exp $
 """ 
 import re, thread
 
@@ -295,8 +295,7 @@ class String:
 
 
     def default(self, name=None, **kw):
-        """\
-        Change or query default values in a document template.
+        """Change or query default values in a document template.
 
         If a name is specified, the value of the named default value
         before the operation is returned.

@@ -12,11 +12,11 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pDocumentTemplate.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: pDocumentTemplate.py,v 1.2 2002/07/11 00:54:01 srichter Exp $
 """
 
 import sys
-from types import StringType, TupleType, ClassType
+from types import StringTypes, TupleType, ClassType
 ClassTypes = [ClassType]
 
 
@@ -182,7 +182,7 @@ def render_blocks(blocks, md):
             if l == 1:
                 # Simple var
                 section = section[0]
-                if type(section) is StringType:
+                if isinstance(section, StringTypes):
                     section = md[section]
                 else:
                     section = section(md)
@@ -196,7 +196,7 @@ def render_blocks(blocks, md):
                     m = l-1
                     while i < m:
                         cond = section[i]
-                        if type(cond) is StringType:
+                        if isinstance(cond, StringTypes):
                             n = cond
                             try:
                                 cond = md[cond]
@@ -224,7 +224,7 @@ def render_blocks(blocks, md):
 
                 finally: md._pop()
 
-        elif type(section) is not StringType:
+        elif not isinstance(section, StringTypes):
             section = section(md)
 
         if section:
