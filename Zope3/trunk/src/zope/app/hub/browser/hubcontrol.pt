@@ -28,9 +28,9 @@
     </p>
     <table>
       <tr>
-        <th>Path</th>
-        <th>Object ID</th>
-        <th>Status</th>
+        <th i18n:translate="">Path</th>
+        <th i18n:translate="">Object ID</th>
+        <th i18n:translate="">Status</th>
       </tr>
       <tr tal:repeat="object view/objects"
         tal:attributes="style python:not object['ok'] and 'color:red' or nothing">

@@ -47,7 +47,8 @@
       perform a specific function and is activated.
     </p>
 
-    <input type="submit" value="Register" name="activate" />
+    <input type="submit" value="Register" name="activate"
+      i18n:attributes="value register-button" />
   </div>
 
 </form>
