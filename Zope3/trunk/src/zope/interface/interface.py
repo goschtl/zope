@@ -598,8 +598,8 @@ class InterfaceClass(Element, Specification):
         # __call__ without resorting to a global marker.
         #
         # The evility of this trick is a reflection of the underlying
-        # evility of "optional" arguments, arguments whos presense or
-        # absense changes the behavior of the methos.
+        # evility of "optional" arguments, arguments whose presense or
+        # absense changes the behavior of the methods.
         # 
         # I think the evil is necessary, and perhaps desireable to
         # provide some consistencey with the PEP 246 adapt method.
