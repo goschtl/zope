@@ -13,7 +13,7 @@
 ##############################################################################
 """Setup for Placeful Worfklow Tests
 
-$Id: workflowsetup.py,v 1.9 2004/03/08 12:06:26 srichter Exp $
+$Id: workflowsetup.py,v 1.10 2004/03/11 12:38:25 srichter Exp $
 """
 from zope.interface import implements
 from zope.component.interfaces import IUtilityService
@@ -24,7 +24,7 @@ from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.services.servicenames import Authentication, Workflows, Utilities
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.utility import LocalUtilityService
+from zope.app.utility import LocalUtilityService
 from zope.app.tests import setup
 from zope.app.workflow.service import WorkflowService
 

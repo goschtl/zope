@@ -13,15 +13,12 @@
 ##############################################################################
 """Utility service tests
 
-XXX longer description goes here.
-
-$Id: test_interfaceutility.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
+$Id: test_interfaceutility.py,v 1.2 2004/03/11 12:38:16 srichter Exp $
 """
-
 import unittest
 from zope.app.tests import setup
 from zope.app.services.tests import placefulsetup
-from zope.app.services import utility
+from zope.app import utility
 from zope.app.services.servicenames import Utilities
 from zope.component.utility import utilityService as globalUtilityService
 from zope.app.component.interface import getInterface, searchInterface
@@ -34,7 +31,7 @@ from zope.app.interfaces.services.registration import IRegistrationStack
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.utility import ILocalUtility
+from zope.app.utility.interfaces import ILocalUtility
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.dependable import IDependable
 from zope.app.tests import setup

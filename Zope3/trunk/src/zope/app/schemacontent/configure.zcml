@@ -12,7 +12,7 @@
       description="A Persistent Content Component Definition" />
 
     <implements
-      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+      interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <implements
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
@@ -27,10 +27,10 @@
   <content class=".content.ContentComponentDefinitionRegistration">
     <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.utility.IUtilityRegistration
+      interface="zope.app.utility.interfaces.IUtilityRegistration
                  zope.app.container.interfaces.IAddNotifiable
                  zope.app.container.interfaces.IRemoveNotifiable"
-      set_schema="zope.app.interfaces.services.utility.IUtilityRegistration"
+      set_schema="zope.app.utility.interfaces.IUtilityRegistration"
       />
   </content>
 

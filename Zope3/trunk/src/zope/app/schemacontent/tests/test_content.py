@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.2 2004/03/10 23:10:46 srichter Exp $
+$Id: test_content.py,v 1.3 2004/03/11 12:38:18 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.container.interfaces import IAdding
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
-from zope.app.interfaces.services.utility import ILocalUtility
+from zope.app.utility.interfaces import ILocalUtility
 from zope.app.schemacontent.interfaces import \
      IContentComponentDefinition, IContentComponentMenuItem
 from zope.app.publisher.browser.globalbrowsermenuservice import \
@@ -29,7 +29,7 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 from zope.app.menu import LocalBrowserMenuService, LocalBrowserMenu
 from zope.app.menu.tests import addMenu
 from zope.app.services.servicenames import BrowserMenu, Utilities
-from zope.app.services.utility import LocalUtilityService
+from zope.app.utility import LocalUtilityService
 from zope.app.tests import setup
 from zope.app.schemacontent.content import \
      ContentComponentDefinition, ContentComponentDefinitionRegistration, \

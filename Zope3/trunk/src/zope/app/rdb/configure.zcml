@@ -33,7 +33,7 @@
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
     <implements
-      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+      interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <require
         permission="zope.Public"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.14 2004/03/08 12:06:25 srichter Exp $
+$Id: test_instance.py,v 1.15 2004/03/11 12:38:24 srichter Exp $
 """
 import unittest
 
@@ -50,7 +50,7 @@ from zope.app.workflow.stateful.instance \
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.container.contained import contained
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration
 
 
 # define and create ProcessDefinition (PD) for tests

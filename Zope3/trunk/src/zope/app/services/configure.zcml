@@ -132,10 +132,6 @@
     </content>
 
 
-<!-- Utility Service --> 
-<include file="utility.zcml" />
-
-
 <!-- Filesystem synchronization support -->
 
 <fssync:adapter
@@ -155,11 +151,6 @@
 
 <fssync:adapter
     class=".service.ServiceRegistration"
-    factory=".registration.ComponentRegistrationAdapter"
-    />
-
-<fssync:adapter
-    class=".utility.UtilityRegistration"
     factory=".registration.ComponentRegistrationAdapter"
     />
 

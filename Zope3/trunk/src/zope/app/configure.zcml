@@ -8,6 +8,7 @@
   <include file="meta.zcml" />
 
   <!-- Ordinary Application (non-view) configuration) -->
+  <include package="zope.app.interface" />
   <include package="zope.app.component" />
   <include package="zope.app.security" />
   <include package="zope.app.event" />
@@ -60,10 +61,11 @@
   <include package="zope.app.dav" />
 
   <!-- Services -->
-  <include package="zope.app.menu" />  
   <include package="zope.app.errorservice" />  
   <include package="zope.app.hub" />  
+  <include package="zope.app.menu" />  
   <include package="zope.app.pluggableauth" />  
+  <include package="zope.app.utility" />  
 
   <!-- Utilities -->
   <include package="zope.app.session" />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.2 2004/03/10 23:10:46 srichter Exp $
+$Id: content.py,v 1.3 2004/03/11 12:38:17 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -28,7 +28,7 @@ from zope.app.menu import \
      LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem
 from zope.app.services.service import ServiceRegistration
 from zope.app.services.servicenames import BrowserMenu
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields

@@ -57,7 +57,7 @@
         id="ProcessDefinition"
         />
     <implements
-        interface="zope.app.interfaces.services.utility.ILocalUtility" 
+        interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements 
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 

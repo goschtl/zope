@@ -13,7 +13,7 @@
 ##############################################################################
 """Role implementation
 
-$Id: role.py,v 1.3 2004/03/05 18:38:49 srichter Exp $
+$Id: role.py,v 1.4 2004/03/11 12:38:18 srichter Exp $
 """
 from persistence import Persistent
 from zope.interface import implements
@@ -21,7 +21,7 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.securitypolicy.interfaces import IRole
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration
 
 
 class Role(object):

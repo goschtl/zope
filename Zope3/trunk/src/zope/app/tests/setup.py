@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.16 2004/03/11 09:19:37 srichter Exp $
+$Id: setup.py,v 1.17 2004/03/11 12:38:22 srichter Exp $
 """
 
 import zope.component
@@ -152,7 +152,7 @@ def addService(servicemanager, name, service, suffix=''):
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration
 
 def addUtility(servicemanager, name, iface, utility, suffix=''):
     """Add a utility to a service manager
@@ -173,11 +173,10 @@ from zope.app.hub.interfaces import IObjectHub
 from zope.app.event.interfaces import ISubscriptionService
 from zope.app.event.localservice import EventService
 from zope.app.hub import ObjectHub
-from zope.app.interfaces.services.utility import ILocalUtilityService
-from zope.app.services.utility import LocalUtilityService
-from zope.app.services.servicenames import HubIds
+from zope.app.utility.interfaces import ILocalUtilityService
+from zope.app.utility import LocalUtilityService
+from zope.app.services.servicenames import HubIds, Utilities
 from zope.app.services.servicenames import EventPublication, EventSubscription
-from zope.app.services.servicenames import Utilities
 def createStandardServices(folder, hubids=None):
     '''Create a bunch of standard placeful services
 

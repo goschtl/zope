@@ -86,9 +86,6 @@
      title="Principal Annotation Service"
      description="Stores Annotations for Principals" />
 
-<!-- Utility Service --> 
-  <zope:include package=".utility" />
-
 <!-- "Add Utility" menu -->
 
   <view

@@ -20,7 +20,7 @@
         />
 
     <implements
-        interface="zope.app.interfaces.services.utility.ILocalUtility"
+        interface="zope.app.utility.interfaces.ILocalUtility"
         />
 
     <require 

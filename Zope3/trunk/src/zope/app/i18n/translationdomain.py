@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Domain for TTW development.
 
-$Id: translationdomain.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
+$Id: translationdomain.py,v 1.2 2004/03/11 12:38:11 srichter Exp $
 """
 import re
 from BTrees.OOBTree import OOBTree
@@ -29,7 +29,7 @@ from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.app.container.contained import Contained
 from zope.app.component.nextservice import getNextService
 from zope.component.servicenames import Utilities
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration
 
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):

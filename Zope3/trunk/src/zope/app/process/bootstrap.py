@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.26 2004/03/11 09:19:33 srichter Exp $
+$Id: bootstrap.py,v 1.27 2004/03/11 12:38:14 srichter Exp $
 """
 from transaction import get_transaction
 from zope.interface import implements
@@ -37,7 +37,6 @@ from zope.app.services.service import ServiceRegistration
 from zope.app.hub import ObjectHub, Registration
 from zope.app.event.localservice import EventService
 from zope.app.errorservice import RootErrorReportingService
-from zope.app.services.utility import LocalUtilityService
 from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.event import function
 from zope.app.hub.interfaces import ISubscriptionControl
@@ -46,7 +45,7 @@ from zope.app.session.interfaces import \
      IBrowserIdManager, ISessionDataContainer
 from zope.app.session import \
      CookieBrowserIdManager, PersistentSessionDataContainer
-from zope.app.services.utility import UtilityRegistration
+from zope.app.utility import UtilityRegistration, LocalUtilityService
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
