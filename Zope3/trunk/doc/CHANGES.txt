@@ -59,10 +59,13 @@ Zope Changes
         Later, when we create an index-id utility, we'll port the code, which
         will still be in the repository, back.
 
+      - Turned the OnlineHelp service into an utility.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
+      Eckart Hertzler
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
@@ -83,7 +86,8 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius, 
+      Eckart Hertzler
 
   ------------------------------------------------------------------
 
