@@ -96,24 +96,27 @@
 /Zope/utilities/ZODBTools                       /StandaloneZODB/Tools
 
 
-/StandaloneZODB/ZODB              /Packages/ZODB
-/StandaloneZODB/ZEO               /Packages/ZEO
-/StandaloneZODB/ZEO1              /Packages/ZEO1
-/StandaloneZODB/ExtensionClass    /Cruft/ExtensionClass
-/StandaloneZODB/BTrees            /Packages/BTrees
-/StandaloneZODB/bsddb3Storage     /Packages/bsddb3Storage
-/StandaloneZODB/Persistence       /Packages/Persistence
-/StandaloneZODB/ThreadedAsync     /Packages/ThreadedAsync
-/StandaloneZODB/zdaemon           /Packages/zdaemon
-/StandaloneZODB/zLOG              /Packages/zLOG
-/StandaloneZODB/logging           /Packages/logging
+# These are retired in favor of ZODB3
+/StandaloneZODB/ZODB
+/StandaloneZODB/ZEO
+/StandaloneZODB/ZEO1
+/StandaloneZODB/ExtensionClass
+/StandaloneZODB/BTrees
+/StandaloneZODB/bsddb3Storage
+/StandaloneZODB/Persistence
+/StandaloneZODB/ThreadedAsync
+/StandaloneZODB/zdaemon
+/StandaloneZODB/zLOG
+/StandaloneZODB/logging
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
 /ZODB3/ZEO1              /Packages/ZEO1
 /ZODB3/ExtensionClass    /Cruft/ExtensionClass
 /ZODB3/BTrees            /Packages/BTrees
-/ZODB3/bsddb3Storage     /Packages/bsddb3Storage
+# Keep the target of bsddb3Storage empty instead of removing the line
+/ZODB3/bsddb3Storage     
+/ZODB3/BDBStorage	 /Packages/bsddb3Storage/bsddb3Storage
 /ZODB3/Persistence       /Packages/Persistence
 /ZODB3/ThreadedAsync     /Packages/ThreadedAsync
 /ZODB3/zdaemon           /Packages/zdaemon
@@ -166,6 +169,7 @@
 /Zope3/lib/python/pre_python_2_2               /Packages3/pre_python_2_2
 /Zope3/lib/python/Zope/Publisher               /Packages3/Publisher
 /Zope3/lib/python/Zope/ContextWrapper          /Packages3/ContextWrapper
+/Zope3/lib/python/BDBStorage                   /Packages3/bsddb3Storage/bsddb3Storage
 
 /Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
 # Zope 3 products
