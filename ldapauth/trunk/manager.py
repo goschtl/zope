@@ -16,11 +16,19 @@
 $Id$
 """
 
+import ldap
+
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 
 from interfaces import ILDAPManager
 
+
+# This is a really crude hack. I really think we should use a way to
+# represent ldap connection as some sort of a database, using more
+# sophisticated methods than the ones here.
+#
+# I'm working on it.
 
 class LDAPManagerAdapter:
     """A LDAP manager adapter."""
@@ -30,17 +38,35 @@ class LDAPManagerAdapter:
     def __init__(self, source):
         self.context = source
     
+    # Lack the verification of the schema.
     def addPrincipal(self, ldap_principal):
-        # register the principal with the principal source
         source = trustedRemoveSecurityProxy(self.context)
+        l = self.__connect(source)
+        dn = self._createdn(ldap_principal, source)
+        modification = ldap.modlist.addModlist(
+                {source.login_attribute : ldap_principal.login,
+                 'userPassword' : ldap_principal.password})
+        l.add_s(dn, modification)
+        # register the principal with the principal source
         source[ldap_principal.login] = ldap_principal
         
     def editPrincipal(self, ldap_principal):
-        # register the principal with the principal source
         source = trustedRemoveSecurityProxy(self.context)
-        source[ldap_principal.login] = ldap_principal
 
     def deletePrincipal(self, login):
-        # unregister the principal with the principal source
         source = trustedRemoveSecurityProxy(self.context)
-        del source[login]
+
+    def _createdn(self, principal, ldapauth):
+        return '%s=%s,%s' % (ldapauth.login_attribute,
+                principal.login,
+                ldapauth.basedn)
+
+    def __connect(self, source):
+        conn = getattr(self, '_v_conn', None)
+        if conn is None:
+            connectstring = 'ldap://%s:%s' % (source.host, source.port)
+            connection = ldap.initialize(connectstring)
+            self._v_conn = connection
+            return connection
+        else:
+            return conn
