@@ -156,7 +156,7 @@ class Checker(object):
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name, permission=permission)
-        elif name in _always_available:
+        elif name in _available_by_default:
             return
 
         if name != '__iter__' or hasattr(object, name):
@@ -236,7 +236,7 @@ CheckerPublic = Proxy(CheckerPublic, Checker(d))
 d['__reduce__'] = CheckerPublic
 del d
 
-# XXX It's a bit scary above that we can pickle a proxy if access is
+# TODO: It's a bit scary above that we can pickle a proxy if access is
 # granted to __reduce__. We might want to bother to prevent this in
 # general and only allow it in this specific case.
 
@@ -308,7 +308,7 @@ def selectChecker(object):
     # we can't use the type.  OTOH, we might not be able to use the
     # __class__ either, since not everything has one.
 
-    # XXX we really need formal proxy introspection
+    # TODO: we really need formal proxy introspection
 
     #if type(object) is Proxy:
     #    # Is this already a security proxy?
@@ -363,7 +363,7 @@ NoProxy = object()
 _checkers = {}
 
 _defaultChecker = Checker({})
-_always_available = []
+_available_by_default = []
 
 # Get optimized versions
 try:
@@ -374,7 +374,7 @@ else:
     from zope.security._zope_security_checker import _checkers, selectChecker
     from zope.security._zope_security_checker import NoProxy, Checker
     from zope.security._zope_security_checker import _defaultChecker
-    from zope.security._zope_security_checker import _always_available
+    from zope.security._zope_security_checker import _available_by_default
     zope.interface.classImplements(Checker, INameBasedChecker)
 
 
@@ -449,7 +449,7 @@ class CheckerLoggingMixin:
         try:
             super(CheckerLoggingMixin, self).check(object, name)
             if self.verbosity > 1:
-                if name in _always_available:
+                if name in _available_by_default:
                     print >> sys.stderr, (
                         '[CHK] + Always available: %s on %r' % (name, object))
                 else:
@@ -468,7 +468,7 @@ class CheckerLoggingMixin:
         try:
             super(CheckerLoggingMixin, self).check(object, name)
             if self.verbosity > 1:
-                if name in _always_available:
+                if name in _available_by_default:
                     print >> sys.stderr, (
                         '[CHK] + Always available getattr: %s on %r'
                         % (name, object))
@@ -510,12 +510,12 @@ if WATCH_CHECKERS:
 def _instanceChecker(inst):
     checker = _checkers.get(inst.__class__, _defaultChecker)
     if checker is _defaultChecker and isinstance(inst, Exception):
-        return NoProxy # XXX we should be more careful
+        return NoProxy # TODO: we should be more careful
     return checker
 
 def _classChecker(class_):
     if issubclass(class_, Exception):
-        return NoProxy  # XXX we should be more careful
+        return NoProxy  # TODO: we should be more careful
 
     return _typeChecker
 
@@ -523,15 +523,12 @@ def moduleChecker(module):
     return _checkers.get(module)
 
 
-# The variable '_always_available' should really be called
-# '_available_by_default', as that would better reflect its meaning.
-# XXX: Fix the name.
-_always_available [:] = ['__lt__', '__le__', '__eq__',
-                         '__gt__', '__ge__', '__ne__',
-                         '__hash__', '__nonzero__',
-                         '__class__', '__providedBy__', '__implements__',
-                         '__repr__', '__conform__',
-                         ]
+_available_by_default[:] = ['__lt__', '__le__', '__eq__',
+                            '__gt__', '__ge__', '__ne__',
+                            '__hash__', '__nonzero__',
+                            '__class__', '__providedBy__', '__implements__',
+                            '__repr__', '__conform__',
+                            ]
 
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
 _typeChecker = NamesChecker(
@@ -632,7 +629,7 @@ _default_checkers = {
     type(Interface): InterfaceChecker(
         IInterface,
         __str__=CheckerPublic, _implied=CheckerPublic, subscribe=CheckerPublic,
-        # XXX Backward:
+        # TODO: Backward:
         isImplementedByInstancesOf=CheckerPublic,
         isImplementedBy=CheckerPublic,
         ),
