@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.10 2003/05/07 09:32:59 stevea Exp $
+$Id: test_wrapper.py,v 1.11 2003/05/08 09:40:11 stevea Exp $
 """
 import pickle
 import unittest
@@ -25,8 +25,10 @@ _marker = object()
 
 class WrapperTestCase(ProxyTestCase):
 
+    proxy_class = wrapper.Wrapper
+
     def new_proxy(self, o, c=None):
-        return wrapper.Wrapper(o, c)
+        return self.proxy_class(o, c)
 
     def test_constructor(self):
         o1 = object()
@@ -37,7 +39,7 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(wrapper.getcontext(w) is o3)
 
     def test_subclass_constructor(self):
-        class MyWrapper(wrapper.Wrapper):
+        class MyWrapper(self.proxy_class):
             def __init__(self, *args, **kwds):
                 super(MyWrapper, self).__init__('foo', **kwds)
 
@@ -73,7 +75,7 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(wrapper.getcontext(w) is c)
 
     def test_wrapper_subclass_attributes(self):
-        class MyWrapper(wrapper.Wrapper):
+        class MyWrapper(self.proxy_class):
             def __init__(self, ob):
                 super(MyWrapper, self).__init__(ob)
                 self.foo = 1
@@ -471,7 +473,7 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(wrapper.getdictcreate(w) is d)
         self.assert_(wrapper.getdict(w) is d)
 
-        w = wrapper.Wrapper(None, name="myobject")
+        w = self.proxy_class(None, name="myobject")
         d = wrapper.getdict(w)
         self.assert_(d is not None)
         self.assert_(wrapper.getdictcreate(w) is d)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.5 2003/04/09 12:50:31 stevea Exp $
+$Id: test_proxy.py,v 1.6 2003/05/08 09:40:11 stevea Exp $
 """
 import pickle
 import unittest
@@ -57,21 +57,24 @@ class Comparable:
 
 
 class ProxyTestCase(unittest.TestCase):
+
+    proxy_class = proxy.proxy
+
     def setUp(self):
         self.x = Thing()
         self.p = self.new_proxy(self.x)
 
     def new_proxy(self, o):
-        return proxy.proxy(o)
+        return self.proxy_class(o)
 
     def test_constructor(self):
         o = object()
-        self.assertRaises(TypeError, proxy.proxy, o, o)
-        self.assertRaises(TypeError, proxy.proxy, o, key='value')
-        self.assertRaises(TypeError, proxy.proxy, key='value')
+        self.assertRaises(TypeError, self.proxy_class, o, o)
+        self.assertRaises(TypeError, self.proxy_class, o, key='value')
+        self.assertRaises(TypeError, self.proxy_class, key='value')
 
     def test_subclass_constructor(self):
-        class MyProxy(proxy.proxy):
+        class MyProxy(self.proxy_class):
             def __new__(cls, *args, **kwds):
                 return super(MyProxy, cls).__new__(cls, *args, **kwds)
             def __init__(self, *args, **kwds):
@@ -88,7 +91,7 @@ class ProxyTestCase(unittest.TestCase):
 
         # Check that are passed to __init__() overrides what's passed
         # to __new__().
-        class MyProxy2(proxy.proxy):
+        class MyProxy2(self.proxy_class):
             def __new__(cls, *args, **kwds):
                 return super(MyProxy2, cls).__new__(cls, 'value')
 
