@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - Developed a generic browser:form directive. It is pretty much the same
+        as the browser:editform directive, except that the data is not stored
+        on some context or adapted context but sent as a dictionary to special
+        method (by default). By default these methods are named `getData()` and
+        `setData(data)`.
+ 
       - When raising the Unauthorized exception, the security checker
         now passes the object in question in addition to the attribute
         name and missing permission.  This should make debugging easier.

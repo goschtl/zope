@@ -34,6 +34,7 @@ from zope.app.form import CustomWidgetFactory
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
+from formview import FormView
 from addwizard import AddWizardView, AddWizardViewFactory
 from editwizard import EditWizardView, EditWizardViewFactory
 from schemadisplay import DisplayView, DisplayViewFactory
@@ -298,6 +299,20 @@ class EditFormDirective(EditFormDirectiveBase):
             args=self._args(),
             kw={'menu': self.menu},
         )
+
+class FormDirective(EditFormDirective):
+
+    view = FormView
+
+    def __init__(self, _context, **kwargs):
+        super(FormDirective, self).__init__(_context, **kwargs)
+        attrs = self.class_.__dict__.keys()
+        if 'template' not in kwargs.keys() and 'update' not in attrs and \
+               ('getData' not in attrs or 'setData' not in attrs):
+            raise ConfigurationError(
+                "You must specify a class that implements `getData()` "
+                "and `setData()`, if you do not overwrite `update()`.")
+
 
 class SubeditFormDirective(EditFormDirectiveBase):
 

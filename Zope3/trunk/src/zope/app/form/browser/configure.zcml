@@ -1,6 +1,6 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- Form Macros -->
 
@@ -418,6 +418,41 @@
       factory=".source.SourceListInputWidget"
       permission="zope.Public"
       />
-     
 
+  <!-- Register the form documentation with the apidoc tool -->   
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="form"
+        title="Widgets and Forms"
+        />
+    <apidoc:bookchapter
+        id="bwidget"
+        title="Basic Widgets"
+        doc_path="README.txt"
+        parent="form"
+        />
+    <apidoc:bookchapter
+        id="swidget"
+        title="Source Widgets"
+        doc_path="source.txt"
+        parent="form"
+        />
+    <apidoc:bookchapter
+        id="awidget"
+        title="Advanced Widgets"
+        doc_path="widgets.txt"
+        parent="form"
+        />
+    <apidoc:bookchapter
+        id="formdirective"
+        title="The browser:form Directive"
+        doc_path="form.txt"
+        parent="form"
+        />
+  </configure>
+  
 </configure>

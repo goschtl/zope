@@ -262,6 +262,24 @@ class IPaneSubdirective(Interface):
         value_type=PythonIdentifier()
         )
 
+class IFormDirective(ICommonFormInformation):
+    """
+    Define an automatically generated form.
+
+    The form directive does nto require the data to be stored in its context,
+    but leaves the storing procedure to the to a method.
+    """
+    class_ = GlobalObject(
+        title=u"Class",
+        description=u"""
+        A class to provide the `getData()` and `setData()` methods or
+        completely custom methods to be used by a custom template.
+
+        This class is used as a mix-in class. As a result, it needn't
+        subclass any special classes, such as BrowserView.""",
+        required=True
+        )
+
 class IEditFormDirective(ICommonFormInformation):
     """
     Define an automatically generated edit form

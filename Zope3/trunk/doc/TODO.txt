@@ -9,8 +9,6 @@ Features
 
 - Fix final issues relating the new PAS and related UIs
 
-- Develop a generic browser:form directive
-
 - Support for iterable sources
 
 - Issue 292: Add factory to browser:resource directive 
