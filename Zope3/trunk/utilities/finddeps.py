@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.13 2004/03/12 16:08:49 fdrake Exp $
+$Id: finddeps.py,v 1.14 2004/03/12 17:35:58 fdrake Exp $
 """
 import sys
 import getopt
@@ -104,16 +104,16 @@ def usage(code, msg=''):
 
 
 def makePythonPath(path):
-    """Make out of a patha  dotted Python path, using sys.path"""
+    """Convert a path to a dotted module name, using sys.path."""
     syspaths = sys.path[1:]
     syspaths.append(os.getcwd())
     for syspath in syspaths:
         if path.startswith(syspath):
-            cutPath = path.replace(syspath+'/', '')
-            dottedPath = '.'.join(cutPath.split('/'))
+            cutPath = path.replace(syspath+os.sep, '')
+            dottedPath = dotjoin(cutPath.split(os.sep))
             return dottedPath
 
-    raise ValueError, 'Cannot create dotted path.'
+    raise ValueError, 'Cannot create dotted name.'
 
 
 START = "<start>"
@@ -276,7 +276,7 @@ def getDependenciesOfPythonFile(path):
 def getDependenciesOfZCMLFile(path):
     """Get dependencies from ZCML file."""
     localModule = stripZopePrefix(os.path.dirname(path))
-    localModule = localModule.replace('/', '.')
+    localModule = localModule.replace(os.sep, '.')
     deps = []
     lineno = 0
     for line in open(path, 'r'):
@@ -398,7 +398,15 @@ def getDependencies(path, zcml=False):
                 deps += getDependencies(filePath)
 
     elif os.path.isfile(path):
-        deps = getDependenciesOfFile(path)
+        ext = os.path.splitext(path)[1]
+        if ext == ".py":
+            deps = getDependenciesOfPythonFile(path)
+        elif ext == ".zcml":
+            deps = getDependenciesOfZCMLFile(path)
+        else:
+            print >>sys.stderr, ("dependencies can only be"
+                                 " extracted from Python and ZCML files")
+            sys.exit(1)
 
     return deps
 
