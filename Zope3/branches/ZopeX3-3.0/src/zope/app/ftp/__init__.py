@@ -18,7 +18,6 @@ $Id$
 """
 from zope.interface import implements
 from zope.component import queryAdapter
-from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.ftp import IFTPPublisher
 
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
@@ -159,10 +158,10 @@ class FTPView(object):
     def _overwrite(self, name, instream, start=None, end=None, append=False):
         file = self._dir[name]
         if append:
-            reader = removeAllProxies(IReadFile(file, None))
+            reader = IReadFile(file, None)
             data = reader.read() + instream.read()
         elif start is not None or end is not None:
-            reader = removeAllProxies(IReadFile(file, None))
+            reader = IReadFile(file, None)
             data = reader.read()
             if start is not None:
                 prefix = data[:start]

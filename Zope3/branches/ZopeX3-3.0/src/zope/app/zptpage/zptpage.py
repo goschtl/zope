@@ -17,7 +17,6 @@ $Id$
 """
 from persistent import Persistent
 
-from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
@@ -62,8 +61,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
-        # we need removeAllProxies() to make super work
-        namespace = super(ZPTPage, removeAllProxies(self)).pt_getContext(**_kw)
+        namespace = super(ZPTPage, self).pt_getContext(**_kw)
         namespace['template'] = self
         namespace['request'] = request
         namespace['container'] = namespace['context'] = instance
