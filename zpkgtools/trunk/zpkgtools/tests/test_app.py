@@ -286,7 +286,6 @@ class ComponentTestCase(unittest.TestCase):
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
-            c.write_manifest()
             c.write_setup_cfg()
             c.write_setup_py(version='1.2.3')
             # done writing; make sure the expected metadata files are
@@ -316,7 +315,6 @@ class ComponentTestCase(unittest.TestCase):
         dest = tempfile.mkdtemp(prefix="test-app-dest-")
         try:
             c.write_package(dest)
-            c.write_manifest()
             c.write_setup_cfg()
             c.write_setup_py(version='1.2.3')
             # done writing; make sure the expected metadata files are

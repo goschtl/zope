@@ -71,6 +71,7 @@ class BuilderApplication(Application):
 
     def __init__(self, options):
         Application.__init__(self, options)
+        self.manifests = []
         self.ip = None
         self.resource = options.resource
         if not options.release_name:
@@ -133,10 +134,10 @@ class BuilderApplication(Application):
                 fullname = ("%s-%s-%s"
                             % (resource, top.name, self.options.version))
                 destination = os.path.join(depsdir, fullname)
+                self.add_manifest(destination)
                 component.write_package(destination)
                 component.write_setup_py()
                 component.write_setup_cfg()
-                component.write_manifest()
                 self.add_headers(component)
         if self.options.application:
             top.write_setup_py(filename="install.py",
@@ -145,7 +146,6 @@ class BuilderApplication(Application):
         else:
             top.write_setup_py(version=self.options.version)
         top.write_setup_cfg()
-        top.write_manifest()
 
     def get_component(self, resource, location):
         try:
@@ -168,6 +168,24 @@ class BuilderApplication(Application):
             if os.path.exists(path):
                 self.error("multiple headers with name %r" % name)
             self.ip.copy_file(src, path)
+
+    def add_manifest(self, destination):
+        self.ip.add_manifest(destination)
+        self.ip.add_output(os.path.join(destination, "MANIFEST"))
+        self.manifests.append(destination)
+
+    def write_manifests(self):
+        # We sort and reverse the list of destinations to make sure
+        # nested directories are handled before outer directories.
+        self.manifests.sort()
+        self.manifests.reverse()
+        for dest in self.manifests:
+            manifest = self.ip.drop_manifest(dest)
+            # XXX should check whether MANIFEST exists already; how to handle?
+            f = file(os.path.join(dest, "MANIFEST"), "w")
+            for name in manifest:
+                print >>f, name
+            f.close()
 
     def write_application_support(self, component):
         pubinfo = component.get_publication_info()
@@ -208,7 +226,9 @@ class BuilderApplication(Application):
         if self.options.revision_tag:
             # we really don't want the tagged version of the support code
             self.loader = loader.Loader()
-        os.mkdir(os.path.join(self.destination, "Support"))
+        supportdest = os.path.join(self.destination, "Support")
+        os.mkdir(supportdest)
+        self.add_manifest(supportdest)
         self.include_support_package(
             "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/trunk/"
                           "zpkgsetup"))
@@ -286,6 +306,7 @@ class BuilderApplication(Application):
         ``BuilderApplication`` object.
         """
         try:
+            self.add_manifest(self.destination)
             try:
                 # We have to include the support code first since
                 # build_distribution() is going to write out the
@@ -295,6 +316,7 @@ class BuilderApplication(Application):
                 self.build_distribution()
             except zpkgtools.LoadingError, e:
                 self.error(str(e), e.exitcode)
+            self.write_manifests()
             self.create_tarball()
             self.cleanup()
         except:
@@ -395,7 +417,6 @@ class Component:
         self.destination = destination
         if not os.path.exists(destination):
             os.mkdir(destination)
-        self.ip.add_manifest(destination)
         self.ip.addIncludes(destination, self.distribution)
         pkgdir = os.path.join(destination, self.name)
         self.ip.createDistributionTree(pkgdir, self.collection)
@@ -409,16 +430,6 @@ class Component:
             srcname = os.path.join(self.source, metafile)
             if os.path.exists(srcname) and not os.path.exists(dstname):
                 self.ip.copy_file(srcname, dstname)
-
-    def write_manifest(self):
-        manifest_path = os.path.join(self.destination, "MANIFEST")
-        self.ip.add_output(manifest_path)
-        manifest = self.ip.drop_manifest(self.destination)
-        # XXX should check whether MANIFEST exists already; how to handle?
-        f = file(manifest_path, "w")
-        for name in manifest:
-            print >>f, name
-        f.close()
 
     def write_setup_cfg(self):
         setup_cfg = os.path.join(self.destination, "setup.cfg")
