@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.5 2002/07/14 22:45:17 faassen Exp $
+$Id: Exceptions.py,v 1.6 2002/07/17 02:36:36 srichter Exp $
 """
 
 class StopValidation(Exception):
@@ -21,6 +21,7 @@ class StopValidation(Exception):
     Note that this exception should be always caught, since it is just a
     way for the validator to save time."""
     pass
+
 
 class ValidationError(Exception):
     """If some check during the Validation process fails, this exception is
@@ -33,6 +34,7 @@ class ValidationError(Exception):
     def __cmp__(self, other):
         return cmp(self.error_name, other.error_name)
 
+
 class ValidationErrorsAll(Exception):
     """This is a collection error that contains all exceptions that occured
     during the validation process."""
@@ -41,10 +43,20 @@ class ValidationErrorsAll(Exception):
         Exception.__init__(self)
         self.errors = list
 
+
 class ConversionError(Exception):
-    """If some conversion fails, this exception is raised.
-    """
+    """If some conversion fails, this exception is raised."""
+
     def __init__(self, error_name, original_exception=None):
         Exception.__init__(self)
         self.error_name = error_name
         self.original_exception = original_exception
+
+
+class ConversionErrorsAll(Exception):
+    """This is a collection error that contains all exceptions that occured
+    during the conversion process."""
+
+    def __init__(self, list):
+        Exception.__init__(self)
+        self.errors = list

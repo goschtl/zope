@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.6 2002/07/16 23:42:59 srichter Exp $
+$Id: testFormView.py,v 1.7 2002/07/17 02:36:37 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
@@ -35,7 +35,7 @@ class TestFormView(TestCase, PlacelessSetup):
         viewService = self.getViewService()
         viewService.provideView(IStr, 'widget', IBrowserView, [TextWidget])
         request = SchemaTestObject.TestBrowserRequest(
-            {'field_id': 1, 'field_title': 'Test New',
+            {'field_id': '1', 'field_title': 'Test New',
              'field_creator': 'srichter@cbu.edu', 'field_data': 'Data'})
         self._form = SchemaTestObject.EditFactory(request=request)
         
@@ -94,6 +94,47 @@ class TestFormView(TestCase, PlacelessSetup):
         self.assertEqual('<input name="field_creator" type="text" '
                          'value="srichter@cbu.edu" size="30"  />',
                          self._form.renderField(field))
+
+
+    def testGetAllRawFieldData(self):
+        data = self._form.getAllRawFieldData()
+        result = {'data': 'Data', 'id': '1', 'title': 'Test New',
+                  'creator': 'srichter@cbu.edu'}
+        for field in data.keys():
+            self.assertEqual(result[field.id], data[field])
+
+
+    def testConvertAllFieldData(self):
+        data = self._form.getAllRawFieldData()
+        data = self._form.convertAllFieldData(data)
+        result = {'data': 'Data', 'id': 1, 'title': 'Test New',
+                  'creator': 'srichter@cbu.edu'}
+        for field in data.keys():
+            self.assertEqual(result[field.id], data[field])
+
+
+    def testValidateAllFieldData(self):
+        data = self._form.getAllRawFieldData()
+        data = self._form.convertAllFieldData(data)
+        self.assertEqual(None, self._form.validateAllFieldData(data))
+
+
+    def testStoreAllDataInContext(self):
+        data = self._form.getAllRawFieldData()
+        data = self._form.convertAllFieldData(data)
+        self._form.storeAllDataInContext(data)
+        obj = self._form.context
+        for field in data.keys():
+            self.assertEqual(data[field], getattr(obj, field.id))
+
+
+    def testSaveValuesInContect(self):
+        data = self._form.getAllRawFieldData()
+        data = self._form.convertAllFieldData(data)
+        self._form.saveValuesInContext()
+        obj = self._form.context
+        for field in data.keys():
+            self.assertEqual(data[field], getattr(obj, field.id))
 
 
 def test_suite():

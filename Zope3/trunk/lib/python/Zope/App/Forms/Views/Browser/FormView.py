@@ -12,10 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.5 2002/07/16 23:42:58 srichter Exp $
+$Id: FormView.py,v 1.6 2002/07/17 02:36:37 srichter Exp $
 """
 from Interface.Implements import flattenInterfaces
 from Schema.IField import IField
+from Schema.Exceptions import StopValidation, ValidationError, \
+     ConversionError, ValidationErrorsAll, ConversionErrorsAll
 
 from Zope.ComponentArchitecture import getView
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -79,12 +81,11 @@ class FormView(BrowserView):
 
     def getAllRawFieldData(self):
         """Returns field data retrieved from request."""
-        interfaces = _flatten(self.context.__implements__)
         request = self.request
         data = {}
         for field in self.getFields():
-            raw_data = request.form.get('field_' + attr.get('id'))
-            data[attr] = raw_data
+            raw_data = request.form.get('field_' + field.id)
+            data[field] = raw_data
         return data
 
 
@@ -97,7 +98,7 @@ class FormView(BrowserView):
             try:
                 data[field] = widget.convert(mapping[field])
             except ConversionError, error:
-                errors.append((field.get('id'), error))
+                errors.append((field.id, error))
 
         if errors:
             raise ConversionErrorsAll, errors
@@ -112,7 +113,7 @@ class FormView(BrowserView):
             try:
                 field.validate(mapping[field])
             except ValidationError, error:
-                errors.append((field.get('id'), error))
+                errors.append((field.id, error))
 
         if errors:
             raise ValidationErrorsAll, errors
@@ -122,8 +123,8 @@ class FormView(BrowserView):
         """Store the data back into the context object."""
         for field in mapping:
             value = mapping[field]
-            if value != getattr(self, field.get('id')):
-                setattr(self, field.get('id'))
+            if value != getattr(self.context, field.id):
+                setattr(self.context, field.id, value)
 
 
     def saveValuesInContext(self):

@@ -12,9 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.2 2002/07/16 23:42:59 srichter Exp $
+$Id: SchemaTestObject.py,v 1.3 2002/07/17 02:36:37 srichter Exp $
 """
 import Schema
+from Schema.Converter import StrToIntConverter
 
 from Zope.Publisher.HTTP.tests.TestRequest import TestRequest
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
@@ -44,7 +45,7 @@ class Email(Schema.Str):
 class STestObject(Schema.Schema):
     """A simple Schema."""
 
-    id = Schema.Str(
+    id = Schema.Int(
         id="id",
         title="Id",
         required=1)
@@ -82,7 +83,9 @@ class TestObject(object):
 class Edit(FormView):
     """A simple Edit View"""
     form = ViewPageTemplateFile('testEditForm.pt')
-    custom_widgets = {'creator': CustomWidget(Widget.TextWidget,
+    custom_widgets = {'id': CustomWidget(Widget.TextWidget,
+                                         converter=StrToIntConverter()),
+                      'creator': CustomWidget(Widget.TextWidget,
                                               displayWidth=30),
                       'data': CustomWidget(Widget.FileWidget)}
 

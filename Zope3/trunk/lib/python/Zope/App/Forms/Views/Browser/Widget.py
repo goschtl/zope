@@ -12,10 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.3 2002/07/16 14:03:02 srichter Exp $
+$Id: Widget.py,v 1.4 2002/07/17 02:36:37 srichter Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
+from Schema import Converter
 from Zope.ComponentArchitecture import getAdapter
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
@@ -26,7 +27,7 @@ class BrowserWidget(Widget, BrowserView):
     """A field widget that knows how to display itself as HTML."""
 
     __implements__ = IBrowserWidget
-    converter = None
+    converter = Converter.NullConverter()
 
     propertyNames = Widget.propertyNames + \
                     ['tag', 'type', 'cssClass', 'hidden', 'extra']
@@ -36,6 +37,10 @@ class BrowserWidget(Widget, BrowserView):
     cssClass = ''
     hidden = 0
     extra = ''
+
+
+    def convert(self, value):
+        return self.converter.convert(value)
 
     def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
