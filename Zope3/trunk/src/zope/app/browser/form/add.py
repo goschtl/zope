@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.15 2003/03/26 11:56:24 jack-e Exp $
+$Id: add.py,v 1.16 2003/03/26 13:25:31 jack-e Exp $
 """
 
 import sys
@@ -104,7 +104,7 @@ class AddView(EditView):
         if errors:
             raise WidgetsError(*errors)
 
-        publish(content, ObjectCreatedEvent(content))
+        publish(self.context, ObjectCreatedEvent(content))
 
         content = self.add(content)
 
