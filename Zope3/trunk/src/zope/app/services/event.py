@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.23 2003/05/01 19:35:34 faassen Exp $
+$Id: event.py,v 1.24 2003/05/12 16:31:50 stevea Exp $
 """
 
 from __future__ import generators
@@ -386,26 +386,13 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         # we're unbound as EventSubscription
         if name == EventSubscription:
             clean_self = removeAllProxies(wrapped_self)
+
+            # This flag is used by the unsubscribedFrom method (below) to
+            # determine that it doesn't need to further unsubscribe beyond
+            # what we're already doing.
             clean_self._v_unbinding = True
             try:
                 ContextSuper(EventService, wrapped_self).unbound(name)
-
-            # this flag is used by the unsubscribedFrom method (below) to
-            # determine that it doesn't need to further unsubscribe beyond
-            # what we're already doing.
-
-            # Both of the following approaches have wrapper/security
-            # problems:
-            #
-            #  wrapped_self._unbound(name) # using _unbound above
-            # and
-            #  ServiceSubscriberEventChannel.unbound(wrapped_self, name)
-            #
-            # so we're doing a copy and paste from
-            # ServiceSubscriberEventChannel:
-            # 
-            # start copy/paste
-            # end copy/paste
             finally:
                 # unset flag
                 del clean_self._v_unbinding
