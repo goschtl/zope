@@ -340,7 +340,7 @@ def evolve(db, how=EVOLVE):
                     # An unguarded handler is intended here
                     get_transaction().abort()
                     logging.getLogger('zope.app.generations').exception(
-                        "Failed to evolve database to gneration %d for %s",
+                        "Failed to evolve database to generation %d for %s",
                         generation, key)
 
                     if generation < manager.minimum_generation:
