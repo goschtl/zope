@@ -30,7 +30,7 @@ def main(argv=None):
     try:
         options = Options(argv)
     except SystemExit:
-        print >>sys.stderr, "usage: %s script [args]"
+        print >>sys.stderr, "usage: %s script [args]" % argv[0]
         raise
     run(options)
 
