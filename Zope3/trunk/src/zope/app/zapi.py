@@ -15,11 +15,12 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.11 2003/09/21 17:30:15 jim Exp $
+$Id: zapi.py,v 1.12 2003/11/21 17:10:48 jim Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
 from zope.interface import moduleProvides
+from zope.app.services import servicenames
 
 moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)

@@ -13,8 +13,9 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.9 2003/09/21 17:32:26 jim Exp $
+$Id: zapi.py,v 1.10 2003/11/21 17:10:49 jim Exp $
 """
+from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
 from zope.app.interfaces.traversing import ITraversalAPI
 
@@ -57,4 +58,4 @@ class IZAPI(
         
         """
 
-        
+    servicenames = Attribute("Service Names")
