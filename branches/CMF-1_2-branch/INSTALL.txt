@@ -1,8 +1,10 @@
-Installing CMF 1.1beta
+Installing CMF 1.2
 
   Requirements
 
     - Zope v. 2.3.3, 2.4.3 or 2.5 and later (*not* 2.4.2 or 2.4.1)
+
+    - Zope PageTemplates
 
   Assumptions
 
@@ -13,7 +15,7 @@ Installing CMF 1.1beta
 
   Procedure
 
-    1. Unpack the CMF-1.1beta.tar.gz tarball into a working
+    1. Unpack the CMF-1.2.tar.gz tarball or CMF-1.2.zip file into a working
        directory. For instance::
 
         $ cd /usr/local/zope
@@ -49,17 +51,17 @@ Installing CMF 1.1beta
        Enjoy!
 
     *Note:* --
-          the optional 'CMFDecor' product **requires** that you have
+          CMFDecor has been merged into CMFDefault, it is not longer and
+          optional product. It requires that you have
           "Zope Page Templates", http://www.zope.org/Members/4am/ZPT
-          installed;  if you don't have it, then don't link/copy in
-          'CMFDecor'.
+          installed.
 
-Upgrading from CMF 1.0
+Upgrading from CMF 1.1
 
 
   Install the New Software.
 
-    0. "Download":CMF-1.1beta.tar.gz the tarball.
+    0. "Download":CMF-1.2.tar.gz the tarball.
 
     1. Copy your "working" products off to one side (in case
        you need / choose to revert).
@@ -69,6 +71,20 @@ Upgrading from CMF 1.0
        your INSTANCE_HOME.
 
     3. Restart Zope.
+
+    4.  **Note**
+
+        If your CMF instance was setup to use CMFDecor you will need to Create 
+        and run the external method Upgrade.py (upgrade_decor_skins) 
+        from the root of your CMF instance to upgrade your skin paths. 
+        This fixes breakage due to the merging of CMFDecor into CMFDefault.
+
+Upgrading from CMF 1.0
+ 
+  
+  Install the New Software.
+     
+    1.  Follow the procudures for upgrading from CMF 1.1
 
   Create and Configure New tools
 

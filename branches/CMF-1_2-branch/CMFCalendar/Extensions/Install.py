@@ -104,13 +104,12 @@ def install(self):
     
 
     # Setup the skins
-    # This is borrowed from CMFDefault/scripts/addImagesToSkinPaths.pys
-    if 'calendar' not in skinstool.objectIds():
+    if 'calendar' not in skinstool.objectIds() or 'zpt_calendar' not in skinstool.objectIds():
         # We need to add Filesystem Directory Views for any directories
         # in our skins/ directory.  These directories should already be
         # configured.
         addDirectoryViews(skinstool, 'skins', event_globals)
-        out.write("Added 'calendar' directory view to portal_skins\n")
+        out.write("Added 'calendar' directory views to portal_skins\n")
 
     # Now we need to go through the skin configurations and insert
     # 'calendar' into the configurations.  Preferably, this should be
@@ -120,17 +119,20 @@ def install(self):
     for skin in skins:
         path = skinstool.getSkinPath(skin)
         path = map(string.strip, string.split(path,','))
-        if 'calendar' not in path:
+        if 'calendar' not in path and 'zpt_calendar' not in path:
             try: path.insert(path.index('content'), 'calendar')
             except ValueError:
                 path.append('calendar')
-                
+            if skin == 'Basic':
+                try: path.insert(path.index('zpt_content'), 'zpt_calendar')
+                except ValueError:
+                    path.append('zpt_calendar')
             path = string.join(path, ', ')
             # addSkinSelection will replace exissting skins as well.
             skinstool.addSkinSelection(skin, path)
-            out.write("Added 'calendar' to %s skin\n" % skin)
+            out.write("Added 'calendar' to %s skins\n" % skin)
         else:
-            out.write("Skipping %s skin, 'calendar' is already set up\n" % (
+            out.write("Skipping %s skin, 'calendar skins' are already set up\n" % (
                 skin))
 
     return out.getvalue()
