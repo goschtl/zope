@@ -1,0 +1,53 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+<!-- Authentication Service  -->
+
+  <!-- XXX This is silly -->
+  <menu id="add_user" 
+      title="Menu for adding new User." />
+
+  <page
+     name="index.html" 
+     for="zope.app.services.auth.IAuthenticationService"
+     permission="zope.ManageServices" 
+     class="zope.app.browser.container.contents.Contents"
+     attribute="contents"
+     />
+
+  <view
+      name="+"  
+      menu="zmi_actions" title="Add"
+      for="zope.app.services.auth.IAuthenticationService"
+      permission="zope.ManageContent"
+      class="zope.app.browser.services.auth.AddUser" >
+
+    <page name="index.html"  template="adduser.pt" />
+    <page name="action.html" attribute="action" />
+
+    </view>
+
+  <menuItems
+      menu="zmi_views"
+      for="zope.app.services.auth.IAuthenticationService">
+      <menuItem title="Contents" action="@@index.html"/>
+  </menuItems>
+
+  <defaultView for="zope.app.interfaces.security.IPrincipal"
+                       name="editForm.html" />
+
+  <pages
+      for="zope.app.interfaces.security.IPrincipal"
+      permission="zope.View"
+      class="zope.app.browser.services.auth.EditUser">
+
+    <page name="editForm.html" template="edituser.pt" />
+    <page name="edit.html" attribute="action" />
+
+  </pages>
+
+  <menuItems menu="zmi_views"
+        for="zope.app.interfaces.security.IPrincipal">
+    <menuItem title="Edit" action="editForm.html"/>
+  </menuItems>
+
+</zopeConfigure>

@@ -115,67 +115,8 @@
     <menuItem title="Contents" action="@@index.html"/>
     </menuItems>
 
-<!-- Authentication Service  -->
-
-  <!-- XXX This is silly -->
-  <menu id="add_user" 
-      title="Menu for adding new User." />
-
-  <page
-     name="index.html" 
-     for="zope.app.services.auth.IAuthenticationService"
-     permission="zope.ManageServices" 
-     class="zope.app.browser.container.contents.Contents"
-     attribute="contents"
-     />
-
-  <view
-      name="+"  
-      menu="zmi_actions" title="Add"
-      for="zope.app.services.auth.IAuthenticationService"
-      permission="zope.ManageContent"
-      class="zope.app.browser.services.auth.AddUser" >
-
-    <page name="index.html"  template="adduser.pt" />
-    <page name="action.html" attribute="action" />
-
-    </view>
-
-  <menuItems
-      menu="zmi_views"
-      for="zope.app.services.auth.IAuthenticationService">
-      <menuItem title="Contents" action="@@index.html"/>
-  </menuItems>
-
-  <menuItem
-       menu="add_service"
-       for="zope.app.interfaces.container.IAdding"
-       action="AuthenticationService"
-       title="Simple Authentication Service"
-       description="A Persistent Authentication Service"
-       />
-
-  <defaultView for="zope.app.interfaces.security.IPrincipal"
-                       name="editForm.html" />
-
-  <pages
-      for="zope.app.interfaces.security.IPrincipal"
-      permission="zope.View"
-      class="zope.app.browser.services.auth.EditUser">
-
-    <page name="editForm.html" template="edituser.pt" />
-    <page name="edit.html" attribute="action" />
-
-  </pages>
-
-  <menuItems menu="zmi_views"
-        for="zope.app.interfaces.security.IPrincipal">
-    <menuItem title="Edit" action="editForm.html"/>
-  </menuItems>
-
-<!-- Pluggable Authentication Service -->
-
-<include package=".pluggableauth" />
+<!-- Deprecated Simple Authentication Service --> <include file="auth.zcml" />
+<!-- Pluggable Authentication Service --> <include package=".pluggableauth" />
 
 <!-- Component Location widget -->
 
