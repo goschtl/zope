@@ -16,7 +16,7 @@
       for=".ConnectionService.ILocalConnectionService."
       name="index.html"
       template="Views/Browser/Connections.pt"
-      class="Zope.App.OFS.Services.Browser.NameConfigurableView."
+      class="Zope.App.OFS.Services.Browser.NameComponentConfigurableView."
       permission="Zope.ManageServices" />
 
   <browser:menuItem

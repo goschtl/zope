@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testDirectives.py,v 1.6 2002/12/01 10:32:29 jim Exp $
+$Id: testDirectives.py,v 1.1 2002/12/18 23:36:58 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -27,7 +27,8 @@ from Zope.Event import subscribe, unsubscribe, publish
 from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.ObjectEvent import ObjectRemovedEvent
 from Zope.Event.ObjectEvent import ObjectModifiedEvent
-from testEventService import DummySubscriber, DummyFilter, DummyEvent
+from Zope.Event.tests.testEventService \
+     import DummySubscriber, DummyFilter, DummyEvent
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
 from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
@@ -51,7 +52,7 @@ class Test(PlacelessSetup, TestCase):
             '''<directive
                    name="subscribe"
                    attributes="subscriber event_types filter"
-                   handler="Zope.Event.metaConfigure.subscribe" />''',
+                   handler="Zope.App.Event.metaConfigure.subscribe" />''',
             '''<test:subscribe
                    subscriber="Zope.Event.tests.subscriber.subscriber"
                    event_types=

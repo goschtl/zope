@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event-metaConfigure.py,v 1.1 2002/12/18 19:27:02 poster Exp $
+$Id: metaConfigure.py,v 1.1 2002/12/18 23:36:58 jim Exp $
 """
 
 from Zope.Configuration.Action import Action

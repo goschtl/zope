@@ -3,7 +3,7 @@
   <directives namespace="http://namespaces.zope.org/event">
 
     <directive name="subscribe" attributes="subscriber event_types filter"
-       handler=".event-metaConfigure.subscribe" />
+       handler=".metaConfigure.subscribe" />
 
   </directives>
 

@@ -11,7 +11,7 @@
      for=".IServiceManager."
      name="index.html"
      template="Browser/Services.pt"
-     class="Zope.App.OFS.Services.Browser.NameConfigurableView."
+     class="Zope.App.OFS.Services.Browser.NameComponentConfigurableView."
      permission="Zope.ManageServices"
      />
 

@@ -60,7 +60,7 @@
       />
 
   <view
-      for=".ConfigurationInterfaces.IComponentConfiguration"
+      for=".ConfigurationInterfaces.INamedComponentConfiguration"
       name="ConfigurationSummary"
       template="Browser/ComponentConfigSummary.pt"
       class=".Browser.ComponentConfigURL."

@@ -4,11 +4,11 @@
 
     <directive name="registerTranslations"
                attributes="directory"
-               handler=".i18n-metaConfigure.registerTranslations" />
+               handler=".metaConfigure.registerTranslations" />
 
     <directive name="defaultLanguages"
                attributes="languages"
-               handler=".i18n-metaConfigure.defaultLanguages" />
+               handler=".metaConfigure.defaultLanguages" />
 
   </directives>
 </zopeConfigure>

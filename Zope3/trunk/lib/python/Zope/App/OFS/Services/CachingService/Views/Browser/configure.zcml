@@ -19,7 +19,7 @@
       for=".CachingService.ILocalCachingService"
       name="index.html"
       template="Views/Browser/Caches.pt"
-      class="Zope.App.OFS.Services.Browser.NameConfigurableView."
+      class="Zope.App.OFS.Services.Browser.NameComponentConfigurableView."
       permission="Zope.ManageServices" />
 
   <browser:menuItem

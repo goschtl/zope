@@ -3,8 +3,8 @@
   <include file="meta.zcml" />
 
   <include package=".ComponentArchitecture" />
-  <include file="event.zcml" />
-  <include file="i18n.zcml" />
+  <include package=".Event" />
+  <include package=".i18n" />
   <include package=".Security" />
   <include package=".Publisher" />
   <include package=".ZMI" />

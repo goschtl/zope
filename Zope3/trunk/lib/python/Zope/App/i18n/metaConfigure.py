@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: i18n-metaConfigure.py,v 1.1 2002/12/18 19:27:02 poster Exp $
+$Id: metaConfigure.py,v 1.1 2002/12/18 23:37:03 jim Exp $
 """
 
 import os
