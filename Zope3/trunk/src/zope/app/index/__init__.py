@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.7 2004/03/02 18:51:00 philikon Exp $
+$Id: __init__.py,v 1.8 2004/03/05 22:09:08 jim Exp $
 """
 
 from zope.interface import implements
@@ -66,12 +66,12 @@ class InterfaceIndexingSubscriber(object):
 
     def notify(self, event):
         """An event occurred.  Index or unindex the object in response."""
-        if (IObjectRegisteredHubEvent.isImplementedBy(event) or
-            IObjectModifiedHubEvent.isImplementedBy(event)):
+        if (IObjectRegisteredHubEvent.providedBy(event) or
+            IObjectModifiedHubEvent.providedBy(event)):
             value = self._getValue(event.object)
             if value is not None:
                 self.index_doc(event.hubid, value)
-        elif IObjectUnregisteredHubEvent.isImplementedBy(event):
+        elif IObjectUnregisteredHubEvent.providedBy(event):
             try:
                 self.unindex_doc(event.hubid)
             except KeyError:

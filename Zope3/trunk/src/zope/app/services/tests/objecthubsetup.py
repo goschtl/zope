@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.15 2004/03/03 10:38:53 philikon Exp $
+$Id: objecthubsetup.py,v 1.16 2004/03/05 22:09:17 jim Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -57,7 +57,7 @@ class LoggingSubscriber:
                 obj = None
                 hubid = None
             location = canonicalPath(location)
-            testcase.assert_(interface.isImplementedBy(event),
+            testcase.assert_(interface.providedBy(event),
                              'Interface %s' % interface.getName())
             testcase.assertEqual(canonicalPath(event.object), location)
 
@@ -79,7 +79,7 @@ class RegistrationSubscriber(LoggingSubscriber):
     def notify(self, event):
         LoggingSubscriber.notify(self, event)
         # The policy is to register on object adds and object copies.
-        if IObjectAddedEvent.isImplementedBy(event):
+        if IObjectAddedEvent.providedBy(event):
             self.hub.register(event.object)
 
 class ObjectHubSetup(EventSetup):

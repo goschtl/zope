@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.10 2004/03/02 18:50:59 philikon Exp $
+$Id: objectevent.py,v 1.11 2004/03/05 22:09:02 jim Exp $
 """
 
 __metaclass__ = type
@@ -79,7 +79,7 @@ class ObjectEventNotifier:
     implements(ISubscriber)
 
     def notify(self, event):
-        assert IObjectEvent.isImplementedBy(event)
+        assert IObjectEvent.providedBy(event)
         adapters = querySubscriptionMultiAdapter((event.object, event),
                                                  ISubscriber, context=None)
         for adapter in adapters:

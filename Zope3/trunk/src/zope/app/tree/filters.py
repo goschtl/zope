@@ -22,7 +22,7 @@ find machinery may be used with statictree just as well.
 Since commonly needed, this module provides two filters that filter by
 interface.
 
-$Id: filters.py,v 1.1 2004/02/19 20:43:04 philikon Exp $
+$Id: filters.py,v 1.2 2004/03/05 22:09:20 jim Exp $
 """
 
 from zope.interface import implements
@@ -42,7 +42,7 @@ class OnlyInterfacesFilter:
     def matches(self, obj):
         ifaces = self.ifaces
         for iface in ifaces:
-            if iface.isImplementedBy(obj):
+            if iface.providedBy(obj):
                 return self.only_interfaces
         return not self.only_interfaces
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Broken-object support
 
-$Id: broken.py,v 1.3 2004/03/04 22:41:47 jim Exp $
+$Id: broken.py,v 1.4 2004/03/05 22:08:52 jim Exp $
 """
 
 
@@ -97,10 +97,9 @@ def installBroken(event):
 
     It implements ILocation and IAnnotations::
 
-      >>> zope.app.location.interfaces.ILocation.isImplementedByInstancesOf(
-      ...       cls)
+      >>> zope.app.location.interfaces.ILocation.implementedBy(cls)
       True
-      >>> IAnnotations.isImplementedByInstancesOf(cls)
+      >>> IAnnotations.implementedBy(cls)
       True
 
     and it has a security checker that is the same as the checker that

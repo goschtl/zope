@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection View classes
 
-$Id: connection.py,v 1.21 2004/03/02 13:48:25 philikon Exp $
+$Id: connection.py,v 1.22 2004/03/05 22:08:55 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -52,7 +52,7 @@ class ConnectionAdding(ComponentAdding):
     menu_id = "add_connection"
 
     def add(self, content):
-        if not IZopeDatabaseAdapter.isImplementedBy(content):
+        if not IZopeDatabaseAdapter.providedBy(content):
             error = _("${object} is not a Zope database adapter.")
             error.mapping['object'] = str(content)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.34 2004/03/03 11:03:57 philikon Exp $
+$Id: contents.py,v 1.35 2004/03/05 22:08:53 jim Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -117,7 +117,8 @@ class Contents(BrowserView):
         self.supportsCopy = info
         self.supportsPaste = self.pasteable()
         self.supportsRename = (
-            self.supportsCut and not IContainerNamesContainer.isImplementedBy(self.context)
+            self.supportsCut and
+            not IContainerNamesContainer.providedBy(self.context)
             )
 
         return info
@@ -205,7 +206,7 @@ class Contents(BrowserView):
 
     def addObject(self):
         request = self.request
-        if IContainerNamesContainer.isImplementedBy(self.context):
+        if IContainerNamesContainer.providedBy(self.context):
             new = ""
         else:
             new = request["new_value"]

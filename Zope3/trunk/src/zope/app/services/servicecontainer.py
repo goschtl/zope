@@ -13,7 +13,7 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.8 2003/11/04 04:04:25 jeremy Exp $
+$Id: servicecontainer.py,v 1.9 2004/03/05 22:09:16 jim Exp $
 """
 
 import zope.interface
@@ -46,10 +46,10 @@ class ServiceManagerContainer(Contained):
             raise ComponentLookupError('no site manager defined')
 
     def setSiteManager(self, sm):
-        if ISite.isImplementedBy(self):
+        if ISite.providedBy(self):
             raise TypeError("Already a site")
 
-        if IServiceService.isImplementedBy(sm):
+        if IServiceService.providedBy(sm):
             self.__sm = sm
             sm.__name__ = '++etc++site'
             sm.__parent__ = self
@@ -65,7 +65,7 @@ def fixup(event):
         database = event.database
         connection = database.open()
         app = connection.root().get('Application')
-        if app is None or ISite.isImplementedBy(app):
+        if app is None or ISite.providedBy(app):
             # No old data
             return
         print "Fixing up sites that don't implement ISite"
@@ -76,7 +76,7 @@ def fixup(event):
 fixup = Subscriber(fixup)
 
 def fixfolder(folder):
-    if ISite.isImplementedBy(folder):
+    if ISite.providedBy(folder):
         # No need to do more, the conversion already happened!
         return
     try:
@@ -91,5 +91,5 @@ def fixfolder(folder):
             )
 
     for item in folder.values():
-        if IPossibleSite.isImplementedBy(item):
+        if IPossibleSite.providedBy(item):
             fixfolder(item)

@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.20 2004/03/05 15:55:33 eddala Exp $
+$Id: bootstrap.py,v 1.21 2004/03/05 22:09:11 jim Exp $
 """
 
 from transaction import get_transaction
@@ -100,7 +100,7 @@ class BootstrapSubscriberBase:
         package = getServiceManagerDefault(self.root_folder)
         valid_objects = [ name
                           for name in package
-                          if object_type.isImplementedBy(package[name]) ]
+                          if object_type.providedBy(package[name]) ]
         if valid_objects:
             return None
         name = object_name

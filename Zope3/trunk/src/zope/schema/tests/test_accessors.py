@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_accessors.py,v 1.4 2004/01/20 19:45:08 poster Exp $
+$Id: test_accessors.py,v 1.5 2004/03/05 22:09:31 jim Exp $
 """
 
 import unittest
@@ -62,10 +62,10 @@ class Test(unittest.TestCase):
         for attr in ('title', 'description', 'readonly'):
             self.assertEqual(getattr(I['getFoo'], attr), getattr(field, attr))
 
-        self.assert_(IText.isImplementedBy(I['getFoo']))
+        self.assert_(IText.providedBy(I['getFoo']))
         
-        self.assert_(IMethod.isImplementedBy(I['getFoo']))
-        self.assert_(IMethod.isImplementedBy(I['setFoo']))
+        self.assert_(IMethod.providedBy(I['getFoo']))
+        self.assert_(IMethod.providedBy(I['setFoo']))
 
         self.assertEqual(I['setFoo'].field, field)
         self.assertEqual(I['setFoo'].__name__, 'setFoo')

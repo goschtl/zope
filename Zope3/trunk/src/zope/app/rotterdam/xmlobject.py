@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.2 2004/03/03 10:38:50 philikon Exp $
+$Id: xmlobject.py,v 1.3 2004/03/05 22:09:16 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -71,7 +71,7 @@ class ReadContainerXmlObjectView(BrowserView):
                 continue
 
             iconUrl = self.getIconUrl(item)
-            if IReadContainer.isImplementedBy(item):
+            if IReadContainer.providedBy(item):
                 result.append(xmlEscape(
                     '<collection name=%s length=%s icon_url=%s/>',
                     name, len(item), iconUrl))
@@ -107,7 +107,7 @@ class ReadContainerXmlObjectView(BrowserView):
             #if item == oldItem:
             #        continue
             subItems = []
-            if IReadContainer.isImplementedBy(item):
+            if IReadContainer.providedBy(item):
                 keys = list(item.keys())
             else:
                 keys = []
@@ -118,7 +118,7 @@ class ReadContainerXmlObjectView(BrowserView):
             for name in keys:
                 # Only include items we can traverse to
                 subItem = traverse(item, name, None)
-                if IReadContainer.isImplementedBy(subItem):
+                if IReadContainer.providedBy(subItem):
                     iconUrl = self.getIconUrl(subItem)
 		    # the test below seems to be browken with the ++etc++site case
                     if subItem == oldItem:
@@ -156,7 +156,7 @@ class XmlObjectView(BrowserView):
     def singleBranchTree(self, root=''):
         parent = getParent(self.context)
         while parent is not None:
-                if IReadContainer.isImplementedBy(parent):
+                if IReadContainer.providedBy(parent):
                     view = zapi.queryView(parent,
                                           'singleBranchTree.xml',
                                           self.request)

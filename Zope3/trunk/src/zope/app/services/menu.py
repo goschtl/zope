@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.10 2004/03/02 17:40:52 philikon Exp $
+$Id: menu.py,v 1.11 2004/03/05 22:09:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -156,7 +156,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
         next = getNextService(self, BrowserMenu)
 
         # Check whether we deal with a Global Menu Service
-        if IGlobalBrowserMenuService.isImplementedBy(next):
+        if IGlobalBrowserMenuService.providedBy(next):
             return next._registry.get(menu_id, default)
 
         return next.queryInheritedMenu(menu_id, True, default)

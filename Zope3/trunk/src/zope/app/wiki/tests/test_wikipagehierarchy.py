@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipagehierarchy.py,v 1.2 2004/03/02 17:51:54 philikon Exp $
+$Id: test_wikipagehierarchy.py,v 1.3 2004/03/05 22:09:22 jim Exp $
 """
 import unittest
 
@@ -55,7 +55,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def test_Interface(self):
         hier = self.makeTestObject()
-        self.failUnless(IWikiPageHierarchy.isImplementedBy(hier))
+        self.failUnless(IWikiPageHierarchy.providedBy(hier))
 
     def test_parents(self):
         hier = self.makeTestObject()

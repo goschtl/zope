@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.9 2004/03/01 15:02:55 philikon Exp $
+$Id: xmlimportexport.py,v 1.10 2004/03/05 22:09:23 jim Exp $
 """
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
@@ -149,8 +149,8 @@ class XMLImportHandler:
     def canImport(self, context, data):
         checker = XMLFormatChecker()
         parse(data, checker)
-        return bool(IStatefulProcessDefinition.isImplementedBy(context)) \
-               and checker.isValid()
+        return (bool(IStatefulProcessDefinition.providedBy(context)) 
+                and checker.isValid())
 
     def doImport(self, context, data):
         # XXX Manually clean ProcessDefinition ??

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: globalservice.py,v 1.13 2004/03/02 18:50:59 philikon Exp $
+$Id: globalservice.py,v 1.14 2004/03/05 22:09:02 jim Exp $
 """
 
 __metaclass__ = type
@@ -198,7 +198,7 @@ class GlobalSubscribable:
 
 
 def globalNotifyOrPublish(self, event):
-    assert IEvent.isImplementedBy(event)
+    assert IEvent.providedBy(event)
     subscriptionsForEvent = self._registry.getAllForObject(event)
     for subscriptions in subscriptionsForEvent:
         for subscriber, filter in subscriptions:

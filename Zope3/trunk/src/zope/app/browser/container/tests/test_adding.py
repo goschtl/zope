@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.27 2004/03/03 10:38:34 philikon Exp $
+$Id: test_adding.py,v 1.28 2004/03/05 22:08:53 jim Exp $
 """
 
 import unittest
@@ -70,7 +70,7 @@ class Factory:
 class AbsoluteURL(BrowserView):
 
     def __str__(self):
-        if IContainmentRoot.isImplementedBy(self.context):
+        if IContainmentRoot.providedBy(self.context):
             return ''
         name = self.context.__name__
         url = str(zapi.getView(

@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.14 2004/03/02 18:50:55 philikon Exp $
+$Id: ram.py,v 1.15 2004/03/05 22:08:57 jim Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -152,7 +152,7 @@ class RAMCache(Persistent, Contained):
         cached entries for the objects that raise them.
         """
 
-        if IObjectModifiedEvent.isImplementedBy(event):
+        if IObjectModifiedEvent.providedBy(event):
             self._getStorage().invalidate(zapi.getPath(event.object))
 
 

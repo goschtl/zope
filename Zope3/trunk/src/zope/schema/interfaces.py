@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.40 2004/02/14 23:35:59 srichter Exp $
+$Id: interfaces.py,v 1.41 2004/03/05 22:09:31 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -343,7 +343,7 @@ class IEnumeratedDate(IEnumerated, IDate):
     """
 
 def _is_field(value):
-    if not IField.isImplementedBy(value):
+    if not IField.providedBy(value):
         return False
     return True
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache registry support classes.
 
-$Id: cache.py,v 1.17 2004/03/01 10:57:34 philikon Exp $
+$Id: cache.py,v 1.18 2004/03/05 22:08:55 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -51,7 +51,7 @@ class CacheAdding(ComponentAdding):
     menu_id = "add_cache"
 
     def add(self, content):
-        if not ICache.isImplementedBy(content):
+        if not ICache.providedBy(content):
             error = _("${object} is not a Cache.")
             error.mapping['object'] = str(content)
             raise TypeError(error)

@@ -20,7 +20,7 @@ Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 
-$Id: checker.py,v 1.44 2004/02/24 14:01:33 srichter Exp $
+$Id: checker.py,v 1.45 2004/03/05 22:09:32 jim Exp $
 """
 import os
 import sys
@@ -280,7 +280,7 @@ class DecoratedChecker(TrustedCheckerBase):
             setattr_permission_func = setattr_permission_func.get
         self._setattr_permission_func = setattr_permission_func
 
-        if INameBasedChecker.isImplementedBy(original_checker):
+        if INameBasedChecker.providedBy(original_checker):
             directlyProvides(self, INameBasedChecker)
 
     def permission_id(self, name):
@@ -544,7 +544,7 @@ def MultiChecker(specs):
     for spec in specs:
         if type(spec) is tuple:
             names, permission_id = spec
-            if IInterface.isImplementedBy(names):
+            if IInterface.providedBy(names):
                 names = names.names(all=True)
             for name in names:
                 if data.get(name, permission_id) is not permission_id:
@@ -744,10 +744,13 @@ _default_checkers = {
     type(iter({})): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
     type(f()): _iteratorChecker,
-    type(Interface): InterfaceChecker(IInterface,
-                                      __str__=CheckerPublic,
-                                      _implied=CheckerPublic,
-                                      subscribe=CheckerPublic),
+    type(Interface): InterfaceChecker(
+        IInterface,
+        __str__=CheckerPublic, _implied=CheckerPublic, subscribe=CheckerPublic,
+        # XXX Backward:
+        isImplementedByInstancesOf=CheckerPublic,
+        isImplementedBy=CheckerPublic,
+        ),
     zope.interface.interface.Method: InterfaceChecker(
                                         zope.interface.interfaces.IMethod),
     ProvidesClass: _Declaration_checker,

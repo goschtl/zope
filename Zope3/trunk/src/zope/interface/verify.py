@@ -40,9 +40,9 @@ def _verify(iface, candidate, tentative=0, vtype=None):
     """
 
     if vtype == 'c':
-        tester = iface.isImplementedByInstancesOf
+        tester = iface.implementedBy
     else:
-        tester = iface.isImplementedBy
+        tester = iface.providedBy
 
     if not tentative and not tester(candidate):
         raise DoesNotImplement(iface)

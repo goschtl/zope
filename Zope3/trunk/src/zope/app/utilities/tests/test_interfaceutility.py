@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.7 2004/03/05 15:56:50 eddala Exp $
+$Id: test_interfaceutility.py,v 1.8 2004/03/05 22:09:21 jim Exp $
 """
 
 import unittest
@@ -227,7 +227,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
             self.assertEqual(utilities.queryRegistrationsFor(registration),
                              None)
             registery = utilities.createRegistrationsFor(registration)
-            self.assert_(IRegistrationStack.isImplementedBy(registery))
+            self.assert_(IRegistrationStack.providedBy(registery))
             self.assertEqual(utilities.queryRegistrationsFor(registration),
                              registery)
 

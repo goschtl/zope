@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.3 2004/02/25 23:02:25 faassen Exp $
+$Id: fssync.py,v 1.4 2004/03/05 22:09:05 jim Exp $
 """
 
 from zope.fssync.server.entryadapter import DirectoryAdapter
@@ -37,12 +37,12 @@ class ReadDirectory:
 
     def keys(self):
         keys = self.context.keys()
-        if ISite.isImplementedBy(self.context):
+        if ISite.providedBy(self.context):
             return list(keys) + ['++etc++site']
         return keys
 
     def get(self, key, default=None):
-        if key == '++etc++site' and ISite.isImplementedBy(self.context):
+        if key == '++etc++site' and ISite.providedBy(self.context):
             return self.context.getSiteManager()
 
         return self.context.get(key, default)
@@ -61,7 +61,7 @@ class ReadDirectory:
 
     def __len__(self):
         l = len(self.context)
-        if ISite.isImplementedBy(self.context):
+        if ISite.providedBy(self.context):
             l += 1
         return l
 
@@ -78,7 +78,7 @@ class FolderAdapter(DirectoryAdapter):
 
     def contents(self):
         result = super(FolderAdapter, self).contents()
-        if ISite.isImplementedBy(self.context):
+        if ISite.providedBy(self.context):
             sm = self.context.getSiteManager()
             result.append(('++etc++site', sm))
         return result

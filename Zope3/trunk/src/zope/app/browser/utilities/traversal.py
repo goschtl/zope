@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.7 2004/03/02 17:51:50 philikon Exp $
+$Id: traversal.py,v 1.8 2004/03/05 22:08:57 jim Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
@@ -45,7 +45,7 @@ class SchemaFieldTraverser:
 
             view = queryView(self.context, name, request)
             if view is not None:
-                if ILocation.isImplementedBy(view):
+                if ILocation.providedBy(view):
                     view.__parent__ = self.context
                     view.__name__ = name
 

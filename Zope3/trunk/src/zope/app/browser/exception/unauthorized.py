@@ -13,7 +13,7 @@
 ##############################################################################
 """Unautorized Exception View Class
 
-$Id: unauthorized.py,v 1.6 2003/08/12 19:14:53 srichter Exp $
+$Id: unauthorized.py,v 1.7 2004/03/05 22:08:54 jim Exp $
 """
 from zope.app.traversing import getParent
 from zope.app.interfaces.security import IAuthenticationService
@@ -29,10 +29,10 @@ class Unauthorized:
         self.request.response.setStatus(403)
         principal = self.request.user
         prinreg = getParent(principal)
-        if not IAuthenticationService.isImplementedBy(prinreg):
+        if not IAuthenticationService.providedBy(prinreg):
             # With PluggableAuthenticationService, principals are
             # contained in the PrincipalSource, which is contained in
             # the service.
             prinreg = getParent(prinreg)
-        assert IAuthenticationService.isImplementedBy(prinreg)
+        assert IAuthenticationService.providedBy(prinreg)
         prinreg.unauthorized(principal.getId(), self.request)

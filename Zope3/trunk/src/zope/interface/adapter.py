@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.7 2003/11/21 17:11:43 jim Exp $
+$Id: adapter.py,v 1.8 2004/03/05 22:09:28 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -69,10 +69,10 @@ class AdapterRegistry:
 
     def register(self, require, provide, object):
 
-        if require is not None and not IInterface.isImplementedBy(require):
+        if require is not None and not IInterface.providedBy(require):
             raise TypeError(
                 "The require argument must be an interface (or None)")
-        if not IInterface.isImplementedBy(provide):
+        if not IInterface.providedBy(provide):
             raise TypeError(
                 "The provide argument must be an interface")
 
@@ -159,12 +159,12 @@ class AdapterRegistry:
         required_interfaces = required
         provided_interfaces = provided
 
-        if IInterface.isImplementedBy(required_interfaces):
+        if IInterface.providedBy(required_interfaces):
             required_interfaces = (required_interfaces, )
 
         if provided_interfaces:
 
-            if IInterface.isImplementedBy(provided_interfaces):
+            if IInterface.providedBy(provided_interfaces):
                 provided_interfaces = (provided_interfaces, )
 
             r = {}

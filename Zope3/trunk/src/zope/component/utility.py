@@ -13,7 +13,7 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.7 2004/01/29 17:36:49 srichter Exp $
+$Id: utility.py,v 1.8 2004/03/05 22:09:25 jim Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
@@ -39,7 +39,7 @@ class GlobalUtilityService:
     def provideUtility(self, providedInterface, component, name=''):
         """See IGlobalUtilityService interface"""
 
-        if not providedInterface.isImplementedBy(component):
+        if not providedInterface.providedBy(component):
             raise Invalid("The registered component doesn't implement "
                           "the promised interface.")
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.12 2004/03/03 20:20:35 srichter Exp $
+$Id: test_instance.py,v 1.13 2004/03/05 22:09:24 jim Exp $
 """
 import unittest
 
@@ -115,18 +115,18 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pi = self.pi
         data = pi.data
 
-        self.assert_(ITestDataSchema.isImplementedBy(data))
+        self.assert_(ITestDataSchema.providedBy(data))
 
         self.assertEqual(data.text, 'no text')
         self.assertEqual(data.value, 1)
 
         data.text = 'another text'
-        self.assert_(IBeforeRelevantDataChangeEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterRelevantDataChangeEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeRelevantDataChangeEvent.providedBy(events[0])) 
+        self.assert_(IAfterRelevantDataChangeEvent.providedBy(events[-1])) 
         clearEvents()
         data.value = 10
-        self.assert_(IBeforeRelevantDataChangeEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterRelevantDataChangeEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeRelevantDataChangeEvent.providedBy(events[0])) 
+        self.assert_(IAfterRelevantDataChangeEvent.providedBy(events[-1])) 
 
         self.assertEqual(data.text, 'another text')
         self.assertEqual(data.value, 10)
@@ -140,44 +140,44 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         clearEvents()
         pi.fireTransition('show')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['publish_direct', 'submit_pending'])
 
         clearEvents()
         pi.fireTransition('submit_pending')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'pending')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['publish_pending', 'retract_pending'])
 
         clearEvents()
         pi.fireTransition('publish_pending')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'published')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['retract_published'])
 
         clearEvents()
         pi.fireTransition('retract_published')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
 
         clearEvents()
         pi.fireTransition('submit_pending')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'pending')
 
         clearEvents()
         pi.fireTransition('retract_pending')
-        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
-        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
+        self.assert_(IBeforeTransitionEvent.providedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.providedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
 
 

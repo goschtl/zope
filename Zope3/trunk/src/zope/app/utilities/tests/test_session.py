@@ -13,7 +13,7 @@
 #
 ##############################################################################
 '''
-$Id: test_session.py,v 1.4 2004/02/23 01:02:56 Zen Exp $
+$Id: test_session.py,v 1.5 2004/03/05 22:09:21 jim Exp $
 '''
 
 import unittest, doctest, time, rfc822
@@ -46,9 +46,9 @@ def test_CookieBrowserIdManager():
     >>> id2 = bim.generateUniqueId()
     >>> id1 != id2
     True
-    >>> IBrowserId.isImplementedBy(id1)
+    >>> IBrowserId.providedBy(id1)
     True
-    >>> IBrowserId.isImplementedBy(id2)
+    >>> IBrowserId.providedBy(id2)
     True
 
     CookieBrowserIdManager.getRequestId pulls the IBrowserId from an
@@ -244,11 +244,11 @@ def test_localutilities():
 
     Make sure it returned sane values
 
-    >>> ISession.isImplementedBy(session1)
+    >>> ISession.providedBy(session1)
     True
-    >>> ISession.isImplementedBy(session2)
+    >>> ISession.providedBy(session2)
     True
-    >>> ISession.isImplementedBy(session3)
+    >>> ISession.providedBy(session3)
     True
 
     Make sure that product_ids don't share a namespace

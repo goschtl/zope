@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.1 2003/03/29 17:03:59 sidnei Exp $
+$Id: test_unauthorized.py,v 1.2 2004/03/05 22:09:07 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -34,7 +34,7 @@ class Test(TestCase):
         u = Unauthorized(exception, request)
 
         # Chech that we implement the right interface
-        self.failUnless(IHTTPException.isImplementedBy(u))
+        self.failUnless(IHTTPException.providedBy(u))
         
         # Call the view
         u()

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.7 2003/12/03 05:41:43 jim Exp $
+$Id: service.py,v 1.8 2004/03/05 22:09:25 jim Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -93,7 +93,7 @@ class GlobalServiceManager(object):
         if name not in self.__defs:
             raise UndefinedService(name)
 
-        if not self.__defs[name].isImplementedBy(component):
+        if not self.__defs[name].providedBy(component):
             raise InvalidService(name, component, self.__defs[name])
 
         if isinstance(component, GlobalService):

@@ -53,7 +53,7 @@ class RegistryTests(BaseTest):
 
     def test_getVocabularyRegistry(self):
         r = vocabulary.getVocabularyRegistry()
-        self.assert_(interfaces.IVocabularyRegistry.isImplementedBy(r))
+        self.assert_(interfaces.IVocabularyRegistry.providedBy(r))
 
     # XXX still need to test the default implementation
 
@@ -245,7 +245,7 @@ class SimpleVocabularyTests(unittest.TestCase):
         class IStupid(Interface):
             pass
         v = vocabulary.SimpleVocabulary.fromValues([1, 2, 3], IStupid)
-        self.failUnless(IStupid.isImplementedBy(v))
+        self.failUnless(IStupid.providedBy(v))
 
     def test_len(self):
         self.assertEqual(len(self.list_vocab), 3)

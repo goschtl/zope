@@ -13,7 +13,7 @@
 ##############################################################################
 """File content component
 
-$Id: file.py,v 1.3 2004/03/02 14:40:02 philikon Exp $
+$Id: file.py,v 1.4 2004/03/05 22:09:04 jim Exp $
 """
 from persistent import Persistent
 from transaction import get_transaction
@@ -117,7 +117,7 @@ class File(Persistent):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> IFile.isImplementedByInstancesOf(File)
+    >>> IFile.implementedBy(File)
     True
     >>> verifyClass(IFile, File)
     True

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.20 2004/01/20 21:17:41 poster Exp $
+$Id: interfaces.py,v 1.21 2004/03/05 22:09:28 jim Exp $
 """
 
 from zope.interface import Interface
@@ -193,7 +193,7 @@ class IInterface(ISpecification, IElement):
 
     """
 
-    def isImplementedBy(object):
+    def providedBy(object):
         """Test whether the interface is implemented by the object
 
         Return true of the object asserts that it implements the
@@ -201,7 +201,7 @@ class IInterface(ISpecification, IElement):
         interface.
         """
 
-    def isImplementedByInstancesOf(class_):
+    def implementedBy(class_):
         """Test whether the interface is implemented by instances of the class
 
         Return true of the class asserts that its instances implement the

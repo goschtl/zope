@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.12 2004/03/03 10:38:35 philikon Exp $
+$Id: bundle.py,v 1.13 2004/03/05 22:08:55 jim Exp $
 """
 import re
 from transaction import get_transaction
@@ -252,7 +252,7 @@ class BundleView(BrowserView):
 
     def findServiceRegistration(self, name):
         for path, obj in self.registrations:
-            if IServiceRegistration.isImplementedBy(obj):
+            if IServiceRegistration.providedBy(obj):
                 if obj.name == name:
                     return path
         return None
@@ -260,9 +260,9 @@ class BundleView(BrowserView):
     def findRegistrations(self, f, prefix):
         alist = []
         for name, obj in f.items():
-            if IRegistration.isImplementedBy(obj):
+            if IRegistration.providedBy(obj):
                 alist.append((prefix+name, obj))
-            elif IReadContainer.isImplementedBy(obj):
+            elif IReadContainer.providedBy(obj):
                 alist.extend(self.findRegistrations(obj, prefix+name+"/"))
         return alist
 

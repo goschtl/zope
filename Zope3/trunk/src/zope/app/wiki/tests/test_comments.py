@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_comments.py,v 1.1 2004/03/02 14:25:03 srichter Exp $
+$Id: test_comments.py,v 1.2 2004/03/05 22:09:22 jim Exp $
 """
 import unittest
 
@@ -26,7 +26,7 @@ class TestComment(unittest.TestCase):
         self.comment = Comment()
 
     def test_Interface(self):
-        self.failUnless(IComment.isImplementedBy(self.comment))
+        self.failUnless(IComment.providedBy(self.comment))
 
     def test_source(self):
         self.assertEqual('', self.comment.source)

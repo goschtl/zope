@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.4 2004/03/03 10:38:57 philikon Exp $
+$Id: wikipage.py,v 1.5 2004/03/05 22:09:22 jim Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -216,14 +216,14 @@ class WikiMailer:
 
     def notify(self, event):
         """See zope.app.event.interfaces.ISubscriber"""
-        if IWikiPage.isImplementedBy(event.object):
-            if IObjectAddedEvent.isImplementedBy(event):
+        if IWikiPage.providedBy(event.object):
+            if IObjectAddedEvent.providedBy(event):
                 self.handleAdded(event.object)
 
-            elif IObjectModifiedEvent.isImplementedBy(event):
+            elif IObjectModifiedEvent.providedBy(event):
                 self.handleModified(event.object)
 
-            elif IObjectRemovedEvent.isImplementedBy(event):
+            elif IObjectRemovedEvent.providedBy(event):
                 self.handleRemoved(event.object)
 
     def handleAdded(self, object):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.10 2004/03/03 09:15:43 srichter Exp $
+$Id: test_directives.py,v 1.11 2004/03/05 22:09:10 jim Exp $
 """
 import os
 import unittest
@@ -89,11 +89,11 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def testSendmailMailer(self):
         mailer = zapi.getUtility(None, IMailer, "Sendmail")
-        self.assert_(ISendmailMailer.isImplementedBy(mailer))
+        self.assert_(ISendmailMailer.providedBy(mailer))
 
     def testSMTPMailer(self):
         mailer = zapi.getUtility(None, IMailer, "smtp")
-        self.assert_(ISMTPMailer.isImplementedBy(mailer))
+        self.assert_(ISMTPMailer.providedBy(mailer))
 
 
 def test_suite():

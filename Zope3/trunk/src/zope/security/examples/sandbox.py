@@ -13,7 +13,7 @@
 ##############################################################################
 """A small sandbox application.
 
-$Id: sandbox.py,v 1.6 2004/02/20 20:39:07 srichter Exp $
+$Id: sandbox.py,v 1.7 2004/03/05 22:09:33 jim Exp $
 """
 import time, whrandom
 
@@ -138,7 +138,7 @@ class Sandbox(Identity):
 
     def addAgent(self, agent):
         if not self._agents.has_key(agent.getId()) \
-           and IAgent.isImplementedBy(agent):
+           and IAgent.providedBy(agent):
             self._agents[agent.getId()]=agent
             agent.setHome(self)
         else:
@@ -147,7 +147,7 @@ class Sandbox(Identity):
     def addService(self, service):
 
         if not self._services.has_key(service.getId()) \
-           and IService.isImplementedBy(service):
+           and IService.providedBy(service):
             self._services[service.getId()]=service
             service.setHome(self)
         else:
@@ -156,7 +156,7 @@ class Sandbox(Identity):
     def transportAgent(self, agent, destination):
         if self._agents.has_key(agent.getId()) \
             and destination is not self \
-            and ISandbox.isImplementedBy(destination):
+            and ISandbox.providedBy(destination):
             destination.addAgent(agent)
             del self._agents[agent.getId()]
         else:

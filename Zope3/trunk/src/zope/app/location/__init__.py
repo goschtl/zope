@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.1 2004/03/02 17:51:52 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/05 22:09:10 jim Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -111,7 +111,7 @@ class LocationPhysicallyLocatable:
         context = self.context
         max = 9999
         while context is not None:
-            if IContainmentRoot.isImplementedBy(context):
+            if IContainmentRoot.providedBy(context):
                 return context
             context = context.__parent__
             max -= 1
@@ -169,7 +169,7 @@ class LocationPhysicallyLocatable:
         context = self.context
         max = 9999
         while context is not None:
-            if IContainmentRoot.isImplementedBy(context):
+            if IContainmentRoot.providedBy(context):
                 if path:
                     path.append('')
                     path.reverse()
@@ -199,10 +199,10 @@ class LocationPhysicallyLocatable:
 
     def getNearestSite(self):
         "return the nearest site, see IPhysicallyLocatable"
-        if ISite.isImplementedBy(self.context):
+        if ISite.providedBy(self.context):
             return self.context
         for parent in zapi.getParents(self.context):
-            if ISite.isImplementedBy(parent):
+            if ISite.providedBy(parent):
                 return parent
         return self.getRoot()
 
@@ -354,7 +354,7 @@ class CopyPersistent:
         self.load = self.others_by_pid.get
 
     def id(self, object):
-        if ILocation.isImplementedBy(object):
+        if ILocation.providedBy(object):
             if not inside(object, self.location):
                 if id(object) in self.pids_by_id:
                     return self.pids_by_id[id(object)]
@@ -435,7 +435,7 @@ class PathPersistent:
         self.location = location
 
     def id(self, object):
-        if ILocation.isImplementedBy(object):
+        if ILocation.providedBy(object):
             if not inside(object, self.location):
                 return LocationPhysicallyLocatable(object).getPath()
 

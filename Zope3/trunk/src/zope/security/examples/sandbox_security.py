@@ -26,7 +26,7 @@ secure mode. There are several steps that are taken to set up the security
   
   5. proxy wrap as necessary
 
-$Id: sandbox_security.py,v 1.9 2004/02/20 20:39:07 srichter Exp $
+$Id: sandbox_security.py,v 1.10 2004/03/05 22:09:33 jim Exp $
 """
 import sandbox
 from zope.security.interfaces import ISecurityPolicy
@@ -148,7 +148,7 @@ def wire_security():
 
     def addAgent(self, agent):
         if not self._agents.has_key(agent.getId()) \
-           and sandbox.IAgent.isImplementedBy(agent):
+           and sandbox.IAgent.providedBy(agent):
             self._agents[agent.getId()]=agent
             agentChecker = checker.selectChecker(self)
             wrapped_home = agentChecker.proxy(self)

@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.44 2004/03/03 10:38:33 philikon Exp $
+$Id: adding.py,v 1.45 2004/03/05 22:08:53 jim Exp $
 """
 __metaclass__ = type
 
@@ -51,7 +51,7 @@ class BasicAdding(BrowserView):
         name = self.contentName
         chooser = zapi.getAdapter(container, INameChooser)
 
-        if IContainerNamesContainer.isImplementedBy(container):
+        if IContainerNamesContainer.providedBy(container):
             # The container pick's it's own names.
             # We need to ask it to pick one.
             name = chooser.chooseName(self.contentName or '', content)
@@ -93,7 +93,7 @@ class BasicAdding(BrowserView):
                                              context=self.request)
         add_button_label = translation.translate(add_button_label,
                                              context=self.request)
-        if IContainerNamesContainer.isImplementedBy(container):
+        if IContainerNamesContainer.providedBy(container):
             return " <input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % add_button_value
         else:
@@ -173,7 +173,7 @@ class BasicAdding(BrowserView):
         self.request.response.redirect(self.nextURL())
 
     def namesAccepted(self):
-        return not IContainerNamesContainer.isImplementedBy(self.context)
+        return not IContainerNamesContainer.providedBy(self.context)
 
 class Adding(BasicAdding):
 

@@ -275,12 +275,12 @@ static char Spec_extends__doc__[] =
 "Test whether a specification is or extends another"
 ;
 
-static char Spec_isImplementedBy__doc__[] = 
+static char Spec_providedBy__doc__[] = 
 "Test whether an interface is implemented by the specification"
 ;
 
 static PyObject *
-Spec_isImplementedBy(PyObject *self, PyObject *ob)
+Spec_providedBy(PyObject *self, PyObject *ob)
 {
   PyObject *decl, *item;
 
@@ -299,12 +299,12 @@ Spec_isImplementedBy(PyObject *self, PyObject *ob)
 }
 
 
-static char Spec_isImplementedByInstancesOf__doc__[] = 
+static char Spec_implementedBy__doc__[] = 
 "Test whether the specification is implemented by instances of a class"
 ;
 
 static PyObject *
-Spec_isImplementedByInstancesOf(PyObject *self, PyObject *cls)
+Spec_implementedBy(PyObject *self, PyObject *cls)
 {
   PyObject *decl, *item;
 
@@ -320,12 +320,12 @@ Spec_isImplementedByInstancesOf(PyObject *self, PyObject *cls)
 }
 
 static struct PyMethodDef Spec_methods[] = {
-	{"isImplementedBy",  
-         (PyCFunction)Spec_isImplementedBy,		METH_O,
-	 Spec_isImplementedBy__doc__},
-	{"isImplementedByInstancesOf", 
-         (PyCFunction)Spec_isImplementedByInstancesOf,	METH_O,
-	 Spec_isImplementedByInstancesOf__doc__},
+	{"providedBy",  
+         (PyCFunction)Spec_providedBy,		METH_O,
+	 Spec_providedBy__doc__},
+	{"implementedBy", 
+         (PyCFunction)Spec_implementedBy,	METH_O,
+	 Spec_implementedBy__doc__},
 	{"isOrExtends",	(PyCFunction)Spec_extends,	METH_O,
 	 Spec_extends__doc__},
 
@@ -533,7 +533,7 @@ init_zope_interface_coptimizations(void)
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
                      "C optimizations for zope.interface\n\n"
-                     "$Id: _zope_interface_coptimizations.c,v 1.3 2004/01/21 21:58:47 jim Exp $");  
+                     "$Id: _zope_interface_coptimizations.c,v 1.4 2004/03/05 22:09:28 jim Exp $");  
   if (m == NULL)
     return;
   

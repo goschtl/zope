@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.9 2004/03/03 10:38:56 philikon Exp $
+$Id: content.py,v 1.10 2004/03/05 22:09:21 jim Exp $
 """
 __metaclass__ = type
 
@@ -135,7 +135,7 @@ class ContentComponentDefinitionMenuItem:
             # Check whether the service really exists locally; if not, create
             # one for this service manager
             if (service is None or
-                not ILocalBrowserMenuService.isImplementedBy(service) or
+                not ILocalBrowserMenuService.providedBy(service) or
                 not zapi.name(service) in default):
 
                 service = self._createMenuService()
@@ -143,7 +143,7 @@ class ContentComponentDefinitionMenuItem:
             # Check whether the menu exists locally; if not create one.
             menu = service.queryInheritedMenu(self.menuId, True)
             if (menu is None or
-                not ILocalBrowserMenu.isImplementedBy(menu) or
+                not ILocalBrowserMenu.providedBy(menu) or
                 not zapi.name(menu) in default):
 
                 menu = self._createMenu()
@@ -151,12 +151,12 @@ class ContentComponentDefinitionMenuItem:
         else:
             # Find a browser menu service and make sure it is a local one.
             service = zapi.getService(self, BrowserMenu)
-            if not ILocalBrowserMenuService.isImplementedBy(service):
+            if not ILocalBrowserMenuService.providedBy(service):
                 raise ComponentLookupError, \
                       _('No local/peristent Browser Menu Service found.')
             # Find the browser menu and make sure it is a local one
             menu = service.queryInheritedMenu(self.menuId, True)
-            if menu is None or not ILocalBrowserMenu.isImplementedBy(menu):
+            if menu is None or not ILocalBrowserMenu.providedBy(menu):
                 error = _('No local Browser Menu called "${name}" found.')
                 error.mapping = {'name': self.menuId}
                 raise ComponentLookupError, error

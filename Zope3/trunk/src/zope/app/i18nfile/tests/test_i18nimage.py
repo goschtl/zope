@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_i18nimage.py,v 1.2 2004/02/24 16:50:09 philikon Exp $
+$Id: test_i18nimage.py,v 1.3 2004/03/05 22:09:08 jim Exp $
 """
 
 import unittest
@@ -139,13 +139,13 @@ class Test(TestII18nAware):
         from zope.app.i18nfile.interfaces import II18nFile
         from zope.i18n.interfaces import II18nAware
 
-        self.failUnless(IImage.isImplementedByInstancesOf(I18nImage))
+        self.failUnless(IImage.implementedBy(I18nImage))
         self.failUnless(verifyClass(IImage, I18nImage))
 
-        self.failUnless(II18nAware.isImplementedByInstancesOf(I18nImage))
+        self.failUnless(II18nAware.implementedBy(I18nImage))
         self.failUnless(verifyClass(II18nAware, I18nImage))
 
-        self.failUnless(II18nFile.isImplementedByInstancesOf(I18nImage))
+        self.failUnless(II18nFile.implementedBy(I18nImage))
         self.failUnless(verifyClass(II18nFile, I18nImage))
 
     def testSetDefaultLanguage(self):

@@ -58,7 +58,7 @@ the pickle unless it is stored in the object.
 >>> c4.__parent__ is c3
 1
 
-$Id: fspickle.py,v 1.4 2004/03/02 17:51:51 philikon Exp $
+$Id: fspickle.py,v 1.5 2004/03/05 22:09:06 jim Exp $
 """
 
 import cPickle
@@ -138,7 +138,7 @@ class ParentPersistentIdGenerator:
         self.root = location.LocationPhysicallyLocatable(top).getRoot()
 
     def id(self, object):
-        if ILocation.isImplementedBy(object):
+        if ILocation.providedBy(object):
             if location.inside(object, self.location):
                 return None
             elif object is self.parent:

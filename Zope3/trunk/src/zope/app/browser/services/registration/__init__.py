@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.15 2004/03/03 10:38:36 philikon Exp $
+$Id: __init__.py,v 1.16 2004/03/05 22:08:56 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -244,7 +244,7 @@ class ComponentPathWidget(BrowserWidget):
         # Render as a link to the component
         field = self.context
         context = field.context
-        if IRegistration.isImplementedBy(context):
+        if IRegistration.providedBy(context):
             # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.__name__)
             # The path may be relative; then interpret relative to ../..
@@ -274,7 +274,7 @@ class ComponentPathWidget(BrowserWidget):
         """See zope.app.interfaces.form.IWidget"""
         field = self.context
         context = field.context
-        if IRegistration.isImplementedBy(context):
+        if IRegistration.providedBy(context):
             # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.getName())
         else:

@@ -108,13 +108,13 @@ class Syncer:
                               mdannotations)
 
         # Handle data
-        if IObjectFile.isImplementedBy(adapter):
+        if IObjectFile.providedBy(adapter):
             # File
-            assert not IObjectDirectory.isImplementedBy(adapter)
+            assert not IObjectDirectory.providedBy(adapter)
             writeFile(adapter.getBody(), path)
         else:
             # Directory
-            assert IObjectDirectory.isImplementedBy(adapter)
+            assert IObjectDirectory.providedBy(adapter)
             if not os.path.exists(path):
                 os.mkdir(path)
             mdmanager = self._metadata.getmanager(path)

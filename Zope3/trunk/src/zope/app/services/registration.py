@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.22 2004/03/03 10:38:52 philikon Exp $
+$Id: registration.py,v 1.23 2004/03/05 22:09:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -697,10 +697,10 @@ class RegistrationManagerContainer(object):
         """Delete an item, but not if it's the last registration manager
         """
         item = self[name]
-        if interfaces.IRegistrationManager.isImplementedBy(item):
+        if interfaces.IRegistrationManager.providedBy(item):
             # Check to make sure it's not the last one
             if len([i for i in self.values()
-                    if interfaces.IRegistrationManager.isImplementedBy(i)
+                    if interfaces.IRegistrationManager.providedBy(i)
                     ]
                    ) < 2:
                 raise interfaces.NoRegistrationManagerError(
@@ -713,7 +713,7 @@ class RegistrationManagerContainer(object):
         # Get the registration manager for this folder
         for name in self:
             item = self[name]
-            if interfaces.IRegistrationManager.isImplementedBy(item):
+            if interfaces.IRegistrationManager.providedBy(item):
                 # We found one. Get it in context
                 return item
         else:
@@ -727,20 +727,20 @@ class RegistrationManagerContainer(object):
         manager = self.get(name+'.py')
         if manager is not None:
             # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.isImplementedBy(manager):
+            if IModuleManager.providedBy(manager):
                 return manager.getModule()
 
         # Look for the module in this folder:
         manager = self.get(name)
         if manager is not None:
             # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.isImplementedBy(manager):
+            if IModuleManager.providedBy(manager):
                 return manager.getModule()
 
 
         # See if out container is a RegistrationManagerContainer:
         c = self.__parent__
-        if interfaces.IRegistrationManagerContainer.isImplementedBy(c):
+        if interfaces.IRegistrationManagerContainer.providedBy(c):
             return c.findModule(name)
 
         # Use sys.modules in lieu of module service:

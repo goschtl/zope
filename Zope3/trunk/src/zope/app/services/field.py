@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.10 2003/07/04 10:59:16 ryzaja Exp $
+$Id: field.py,v 1.11 2004/03/05 22:09:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -45,6 +45,6 @@ class ComponentPath(Field):
         except NotFoundError:
             raise ValidationError("Path for non-existent object", value)
 
-        if not self.type.isImplementedBy(component):
+        if not self.type.providedBy(component):
             raise ValidationError("Wrong component type", value)
 

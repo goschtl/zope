@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: implementor.py,v 1.7 2003/11/21 17:11:43 jim Exp $
+$Id: implementor.py,v 1.8 2004/03/05 22:09:28 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -66,7 +66,7 @@ class ImplementorRegistry:
 
 
     def register(self, provide, object):
-        if not IInterface.isImplementedBy(provide):
+        if not IInterface.providedBy(provide):
             raise TypeError(
                 "The provide argument must be an interface (or None)")
 

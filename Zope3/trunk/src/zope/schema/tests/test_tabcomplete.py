@@ -40,11 +40,11 @@ class TabCompletionTests(unittest.TestCase):
 
     def test_query_interface(self):
         query = self.vocab.getQuery()
-        self.assert_(IVocabularyQuery.isImplementedBy(query))
+        self.assert_(IVocabularyQuery.providedBy(query))
 
     def test_getTerm(self):
         term = self.vocab.getTerm("abc")
-        self.assert_(ITerm.isImplementedBy(term))
+        self.assert_(ITerm.providedBy(term))
         self.assertEqual(term.value, "abc")
 
 

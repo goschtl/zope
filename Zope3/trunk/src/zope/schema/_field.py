@@ -14,7 +14,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.29 2004/03/02 14:27:14 srichter Exp $
+$Id: _field.py,v 1.30 2004/03/05 22:09:31 jim Exp $
 """
 __metaclass__ = type
 
@@ -187,7 +187,7 @@ class InterfaceField(Field):
 
     def _validate(self, value):
         super(InterfaceField, self)._validate(value)
-        if not IInterface.isImplementedBy(value):
+        if not IInterface.providedBy(value):
             raise ValidationError(WrongType)
 
 def _validate_sequence(value_type, value, errors=None):
@@ -223,7 +223,7 @@ class Sequence(MinMaxLen, Iterable, Field):
     def __init__(self, value_type=None, **kw):
         super(Sequence, self).__init__(**kw)
         # whine if value_type is not a field
-        if value_type is not None and not IField.isImplementedBy(value_type):
+        if value_type is not None and not IField.providedBy(value_type):
             raise ValueError, "'value_type' must be field instance."
         self.value_type = value_type
 
@@ -251,10 +251,10 @@ def _validate_fields(schema, value, errors=None):
     if errors is None:
         errors = []  
     for name in schema.names(all=True):
-        if not IMethod.isImplementedBy(schema[name]):
+        if not IMethod.providedBy(schema[name]):
             try:
                 attribute = schema[name]
-                if IField.isImplementedBy(attribute):
+                if IField.providedBy(attribute):
                     # validate attributes that are fields  
                     attribute.validate(getattr(value, name))
             except ValidationError, error:
@@ -271,7 +271,7 @@ class Object(Field):
     implements(IObject)
 
     def __init__(self, schema, **kw):
-        if not IInterface.isImplementedBy(schema):
+        if not IInterface.providedBy(schema):
             raise ValidationError(WrongType)
             
         self.schema = schema
@@ -281,7 +281,7 @@ class Object(Field):
         super(Object, self)._validate(value)
         
         # schema has to be implemented by value    
-        if not self.schema.isImplementedBy(value):
+        if not self.schema.providedBy(value):
             raise ValidationError(errornames.SchemaNotProvided)
             
         # check the value against  schema
@@ -300,9 +300,9 @@ class Dict(MinMaxLen, Iterable, Field):
     def __init__(self, key_type=None, value_type=None, **kw):
         super(Dict, self).__init__(**kw)
         # whine if key_type or value_type is not a field
-        if key_type is not None and not IField.isImplementedBy(key_type):
+        if key_type is not None and not IField.providedBy(key_type):
             raise ValueError, "'key_type' must be field instance."
-        if value_type is not None and not IField.isImplementedBy(value_type):
+        if value_type is not None and not IField.providedBy(value_type):
             raise ValueError, "'value_type' must be field instance."
         self.key_type = key_type
         self.value_type = value_type

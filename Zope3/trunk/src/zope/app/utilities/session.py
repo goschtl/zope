@@ -16,7 +16,7 @@
 This is more of a demonstration than a full implementation, but it should
 work.
 
-$Id: session.py,v 1.9 2004/03/03 10:38:56 philikon Exp $
+$Id: session.py,v 1.10 2004/03/05 22:09:21 jim Exp $
 """
 import sha, time, string, random, hmac, logging
 from UserDict import IterableUserDict
@@ -204,7 +204,7 @@ def getSession(context, request, product_id, session_data_container=None):
     '''
     if session_data_container is None:
         dc = zapi.getUtility(context, ISessionDataContainer, product_id)
-    elif ISessionDataContainer.isImplementedBy(session_data_container):
+    elif ISessionDataContainer.providedBy(session_data_container):
         dc = session_data_container
     else:
         dc = zapi.getUtility(

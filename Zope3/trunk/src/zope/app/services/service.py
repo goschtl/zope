@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.39 2004/03/03 10:38:52 philikon Exp $
+$Id: service.py,v 1.40 2004/03/05 22:09:16 jim Exp $
 """
 
 import sys
@@ -101,14 +101,14 @@ class SiteManager(
         """Find set the next service manager
         """
         while True:
-            if IContainmentRoot.isImplementedBy(site):
+            if IContainmentRoot.providedBy(site):
                 # we're the root site, use the global sm
                 self.next = zapi.getServiceManager(None)
                 return
             site = site.__parent__
             if site is None:
                 raise TypeError("Not enough context information")
-            if ISite.isImplementedBy(site):
+            if ISite.providedBy(site):
                 self.next = site.getSiteManager()
                 self.next.addSubsite(self)
                 return
@@ -220,7 +220,7 @@ class SiteManager(
             package = self[pkg_name]
             for name in package:
                 component = package[name]
-                if type is not None and not type.isImplementedBy(component):
+                if type is not None and not type.providedBy(component):
                     continue
                 if filter is not None and not filter(component):
                     continue
@@ -230,7 +230,7 @@ class SiteManager(
 
         if all:
             next_service_manager = getNextServiceManager(self)
-            if IComponentManager.isImplementedBy(next_service_manager):
+            if IComponentManager.providedBy(next_service_manager):
                 next_service_manager.queryComponent(type, filter, all)
 
             local += list(all)
@@ -282,7 +282,7 @@ class ServiceRegistration(NamedComponentRegistration):
             # Check that the object implements stuff we need
             self.__parent__ = context
             service = self.getComponent()
-            if not ILocalService.isImplementedBy(service):
+            if not ILocalService.providedBy(service):
                 raise TypeError("service %r doesn't implement ILocalService" %
                                 service)
         # Else, this must be a hopeful test invocation
@@ -294,13 +294,13 @@ class ServiceRegistration(NamedComponentRegistration):
 
     def activated(self):
         service = self.getComponent()
-        if IBindingAware.isImplementedBy(service):
+        if IBindingAware.providedBy(service):
             service.bound(self.name)
 
 
     def deactivated(self):
         service = self.getComponent()
-        if IBindingAware.isImplementedBy(service):
+        if IBindingAware.providedBy(service):
             service.unbound(self.name)
 
 
@@ -365,5 +365,5 @@ def fixfolder(folder):
                 del sm._bindings[name]
 
     for item in folder.values():
-        if IPossibleSite.isImplementedBy(item):
+        if IPossibleSite.providedBy(item):
             fixfolder(item)

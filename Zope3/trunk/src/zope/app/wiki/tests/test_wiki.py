@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wiki.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_wiki.py,v 1.2 2004/03/05 22:09:22 jim Exp $
 """
 import unittest
 
@@ -32,7 +32,7 @@ class Test(BaseTestIContainer, unittest.TestCase):
         return DefaultTestData()
 
     def test_interface(self):
-        self.assert_(IWiki.isImplementedBy(self.makeTestObject()))
+        self.assert_(IWiki.providedBy(self.makeTestObject()))
 
     def getUnknownKey(self):
         return '10'

@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.15 2003/11/21 17:11:32 jim Exp $
+$Id: field.py,v 1.16 2004/03/05 22:08:55 jim Exp $
 """
 
 from zope.app import zapi
@@ -52,7 +52,7 @@ def queryComponent(ob, type):
     """
     o = ob
     while 1:
-        if IRegistrationManagerContainer.isImplementedBy(o):
+        if IRegistrationManagerContainer.providedBy(o):
             break
         if o is None:
             raise ValueError(o, "is not in a service manager container")
@@ -61,7 +61,7 @@ def queryComponent(ob, type):
     result = []
     for name in o:
         value = o[name]
-        if type.isImplementedBy(value):
+        if type.providedBy(value):
             result.append({'path': zapi.getPath(value),
                            'component': value,
                            })

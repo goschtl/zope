@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.24 2004/03/03 10:38:43 philikon Exp $
+$Id: committer.py,v 1.25 2004/03/05 22:09:06 jim Exp $
 """
 
 import os
@@ -135,7 +135,7 @@ class Checker(object):
         """Helper to check a directory."""
         adapter = self.getSerializer(container)
         nameset = {}
-        if IObjectDirectory.isImplementedBy(adapter):
+        if IObjectDirectory.providedBy(adapter):
             for name, obj in adapter.contents():
                 nameset[name] = 1
         else:
@@ -179,7 +179,7 @@ class Checker(object):
                 self.conflict(fspath)
         obj = traverseName(container, name)
         adapter = self.getSerializer(obj)
-        if IObjectDirectory.isImplementedBy(adapter):
+        if IObjectDirectory.providedBy(adapter):
             if flag != "removed" or os.path.exists(fspath):
                 self.check_dir(obj, fspath)
         else:
@@ -276,7 +276,7 @@ class Committer(object):
         """Helper to synchronize a directory."""
         adapter = self.getSerializer(container)
         nameset = {} # name --> absolute path
-        if IObjectDirectory.isImplementedBy(adapter):
+        if IObjectDirectory.providedBy(adapter):
             for name, obj in adapter.contents():
                 nameset[name] = os.path.join(fspath, name)
         else:
@@ -309,7 +309,7 @@ class Committer(object):
                                context=context)
             obj = traverseName(container, name)
             adapter = self.getSerializer(obj)
-            if IObjectDirectory.isImplementedBy(adapter):
+            if IObjectDirectory.providedBy(adapter):
                 self.synch_dir(obj, fspath, context)
 
     def synch_old(self, container, name, fspath, context=None):
@@ -323,7 +323,7 @@ class Committer(object):
             return
         obj = traverseName(container, name)
         adapter = self.getSerializer(obj)
-        if IObjectDirectory.isImplementedBy(adapter):
+        if IObjectDirectory.providedBy(adapter):
             self.synch_dir(obj, fspath, context)
         else:
             if adapter.typeIdentifier() != entry.get("type"):
@@ -370,7 +370,7 @@ class Committer(object):
             obj = factory()
             obj = contained(obj, container, name=name)
             adapter = self.getSerializer(obj)
-            if IObjectFile.isImplementedBy(adapter):
+            if IObjectFile.providedBy(adapter):
                 data = read_file(fspath)
                 adapter.setBody(data)
         else:
@@ -425,7 +425,7 @@ class Committer(object):
 
 def set_item(container, name, obj, replace=False):
     """Helper to set an item in a container or mapping."""
-    if IContainer.isImplementedBy(container):
+    if IContainer.providedBy(container):
         if not replace:
             publish(container, ObjectCreatedEvent(obj))
         if replace:

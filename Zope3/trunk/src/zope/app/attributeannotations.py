@@ -13,7 +13,7 @@
 ##############################################################################
 """Attribute Annotations implementation 
 
-$Id: attributeannotations.py,v 1.10 2004/03/02 17:51:46 philikon Exp $
+$Id: attributeannotations.py,v 1.11 2004/03/05 22:08:51 jim Exp $
 """
 from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
@@ -46,7 +46,7 @@ class AttributeAnnotations:
 
     def __setitem__(self, key, value):
         """See zope.app.interfaces.annotation.IAnnotations"""
-        if ILocation.isImplementedBy(value):
+        if ILocation.providedBy(value):
             value.__parent__ = self.unwrapped_obj
 
         try:

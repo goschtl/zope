@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.14 2004/03/03 17:06:30 srichter Exp $
+$Id: propfind.py,v 1.15 2004/03/05 22:09:01 jim Exp $
 """
 from xml.dom import minidom
 from zope.proxy import removeAllProxies
@@ -42,7 +42,7 @@ class PROPFIND(object):
     def PROPFIND(self):
         request = self.request
         resource_url = str(zapi.getView(self.context, 'absolute_url', request))
-        if IReadContainer.isImplementedBy(self.context):
+        if IReadContainer.providedBy(self.context):
             resource_url = resource_url + '/'
         data = request.bodyFile
         data.seek(0)
@@ -164,7 +164,7 @@ class PROPFIND(object):
         if depth == 'infinity':
             subdepth = 'infinity'
         if depth != '0':
-            if IReadContainer.isImplementedBy(self.context):
+            if IReadContainer.providedBy(self.context):
                 for id, obj in self.context.items():
                     pfind = zapi.queryView(obj, 'PROPFIND', self.request, None)
                     if pfind is not None:

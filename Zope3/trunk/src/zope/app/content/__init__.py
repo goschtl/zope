@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.5 2004/03/02 18:16:12 philikon Exp $
+$Id: __init__.py,v 1.6 2004/03/05 22:09:00 jim Exp $
 """
 from zope.app.content.interfaces import IContentType
 from zope.interface.declarations import providedBy
@@ -70,7 +70,7 @@ def queryContentType(object):
     
     object_iro = providedBy(object).__iro__
     for iface in object_iro:
-        if IContentType.isImplementedBy(iface):
+        if IContentType.providedBy(iface):
             return iface
         
     return None

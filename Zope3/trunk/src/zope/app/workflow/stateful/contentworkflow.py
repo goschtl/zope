@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.11 2004/03/02 18:51:07 philikon Exp $
+$Id: contentworkflow.py,v 1.12 2004/03/05 22:09:23 jim Exp $
 """
 __metaclass__ = type
 
@@ -50,7 +50,7 @@ class ContentWorkflowsManager(Persistent, Contained):
 
         # check if it implements IProcessInstanceContainerAdaptable
         # This interface ensures that the object can store process instances. 
-        if not IProcessInstanceContainerAdaptable.isImplementedBy(obj):
+        if not IProcessInstanceContainerAdaptable.providedBy(obj):
             return
 
         pi_container = queryAdapter(obj, IProcessInstanceContainer)
@@ -60,7 +60,7 @@ class ContentWorkflowsManager(Persistent, Contained):
             # Object can't have associated PIs.
             return
 
-        if IObjectCreatedEvent.isImplementedBy(event):
+        if IObjectCreatedEvent.providedBy(event):
             wfs = getService(self, Workflows)
 
             # here we will lookup the configured processdefinitions

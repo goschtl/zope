@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.25 2004/01/23 17:00:20 poster Exp $
+$Id: utility.py,v 1.26 2004/03/05 22:09:06 jim Exp $
 """
 __metaclass__ = type
 
@@ -108,14 +108,14 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     if widget is None:
         widget = getattr(view, name, None)
         if widget is not None:
-            if IViewFactory.isImplementedBy(widget):
+            if IViewFactory.providedBy(widget):
                 # Old custom widget definition.
                 # We'll accept it, but we'll whine
                 _whine(view, name)
 
                 # we also need to remember to install the widget
                 installold = True
-            elif IWidget.isImplementedBy(widget):
+            elif IWidget.providedBy(widget):
                 # Old widget definition. We'll accept it, but we'll whine
                 _whine(view, name)
             else:
@@ -138,18 +138,18 @@ def setUpWidget(view, name, field, value=None, prefix=None,
 
     else:
         # We have an attribute of the right name, is it really a widget
-        if IViewFactory.isImplementedBy(widget):
+        if IViewFactory.providedBy(widget):
             # This is a view factory, probably a custom widget.
             # Try to make it into a widget.
             field = field.bind(context)
             widget = widget(field, view.request)
-            if IWidget.isImplementedBy(widget):
+            if IWidget.providedBy(widget):
                 # Yee ha! We have a widget now, save it
                 setattr(view, wname, widget)
                 if installold or not hasattr(view, name):
                     setattr(view, name, WhiningWidget(view, name, widget))
 
-        if not IWidget.isImplementedBy(widget):
+        if not IWidget.providedBy(widget):
             raise TypeError(
                 "The %s view attribute named, %s, should be a widget, "
                 "but isn't."

@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.22 2004/03/02 17:51:49 philikon Exp $
+$Id: editwizard.py,v 1.23 2004/03/05 22:08:55 jim Exp $
 """
 
 from zope.component import getAdapter
@@ -66,7 +66,7 @@ class EditWizardView(EditView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            if not ILocation.isImplementedBy(adapted):
+            if not ILocation.providedBy(adapted):
                 adapted = LocationProxy(adapted)
             adapted.__parent__ = self.context
         self.adapted = adapted

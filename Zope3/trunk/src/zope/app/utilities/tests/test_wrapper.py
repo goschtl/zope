@@ -206,16 +206,16 @@ class Test(unittest.TestCase):
 
 #     def testInterface(self):
 #         from persistent.interfaces import IPersistent
-#         self.assert_(IPersistent.isImplementedByInstancesOf(Persistent),
+#         self.assert_(IPersistent.implementedBy(Persistent),
 #                      "%s does not implement IPersistent" % Persistent)
 #         p = Persistent()
-#         self.assert_(IPersistent.isImplementedBy(p),
+#         self.assert_(IPersistent.providedBy(p),
 #                      "%s does not implement IPersistent" % p)
 
-#         self.assert_(IPersistent.isImplementedByInstancesOf(Struct),
+#         self.assert_(IPersistent.implementedBy(Struct),
 #                      "%s does not implement IPersistent" % Struct)
 #         p = self.klass()
-#         self.assert_(IPersistent.isImplementedBy(p),
+#         self.assert_(IPersistent.providedBy(p),
 #                      "%s does not implement IPersistent" % p)
 
     def testDataManagerAndAttributes(self):
@@ -340,9 +340,9 @@ class PersistentTest(Test):
 
     def testDirectlyProvides(self):
         p = self.klass()
-        self.failIf(IDummy.isImplementedBy(p))
+        self.failIf(IDummy.providedBy(p))
         directlyProvides(p, directlyProvidedBy(p), IDummy)
-        self.failUnless(IDummy.isImplementedBy(p))
+        self.failUnless(IDummy.providedBy(p))
 
 
 def test_suite():

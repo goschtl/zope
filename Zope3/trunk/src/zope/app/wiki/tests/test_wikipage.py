@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipage.py,v 1.2 2004/03/02 14:25:03 srichter Exp $
+$Id: test_wikipage.py,v 1.3 2004/03/05 22:09:22 jim Exp $
 """
 import unittest
 
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
 
     def test_Interface(self):
         page = self.makeTestObject()
-        self.failUnless(IWikiPage.isImplementedBy(page))
+        self.failUnless(IWikiPage.providedBy(page))
 
     def test_source(self):
         page = self.makeTestObject()

@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.11 2003/11/21 17:11:43 jim Exp $
+$Id: type.py,v 1.12 2004/03/05 22:09:29 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -47,7 +47,7 @@ class TypeRegistry:
         self._reg = data
 
     def register(self, interface, object):
-        if not (interface is None or IInterface.isImplementedBy(interface)):
+        if not (interface is None or IInterface.providedBy(interface)):
             if isinstance(interface, (type, types.ClassType)):
                 interface = zope.interface.implementedBy(interface)
             else:
@@ -57,7 +57,7 @@ class TypeRegistry:
         self._reg[interface] = object
         
     def unregister(self, interface):
-        if interface is None or IInterface.isImplementedBy(interface):
+        if interface is None or IInterface.providedBy(interface):
             if interface in self._reg:
                 del self._reg[interface]
         else:

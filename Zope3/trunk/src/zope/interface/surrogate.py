@@ -13,7 +13,7 @@
 ##############################################################################
 """Surrogate-specification registry implementation
 
-$Id: surrogate.py,v 1.6 2004/03/02 22:56:54 klm Exp $
+$Id: surrogate.py,v 1.7 2004/03/05 22:09:29 jim Exp $
 """
 
 # Implementation notes
@@ -678,7 +678,7 @@ class SurrogateRegistry(object):
                     matched_factories = None
                 for interfaces, factories in adapters.iteritems():
                     for iface, ob in zip(interfaces, obs):
-                        if not iface.isImplementedBy(ob):
+                        if not iface.providedBy(ob):
                             break # This one is no good
                     else:
                         if _subscription:

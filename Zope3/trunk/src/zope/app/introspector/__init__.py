@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: __init__.py,v 1.3 2004/03/05 15:54:39 eddala Exp $
+$Id: __init__.py,v 1.4 2004/03/05 22:09:09 jim Exp $
 """
 from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
@@ -38,7 +38,7 @@ class Introspector(object):
 
     def isInterface(self):
         "Checks if the context is class or interface"
-        return IInterface.isImplementedBy(self.context)
+        return IInterface.providedBy(self.context)
 
     def setRequest(self, request):
         """sets the request"""
@@ -170,7 +170,7 @@ class Introspector(object):
             markers = self.getDirectMarkersOf(interface)
             for interface in markers:
                 if (interface not in results
-                    and not interface.isImplementedBy(self.context)):
+                    and not interface.providedBy(self.context)):
                     results.append(interface)
             todo += markers
         results.sort()
@@ -184,7 +184,7 @@ class Introspector(object):
         for interface in interfaces:
             # There are things registered with the interface service
             # that are not interfaces. Yay!
-            if not IInterface.isImplementedBy(interface):
+            if not IInterface.providedBy(interface):
                 continue
             if base in interface.__bases__ and not interface.names():
                 results.append(interface)

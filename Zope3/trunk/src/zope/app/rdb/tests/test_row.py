@@ -13,7 +13,7 @@
 ##############################################################################
 """Row class tests.
 
-$Id: test_row.py,v 1.5 2003/06/09 15:36:09 stevea Exp $
+$Id: test_row.py,v 1.6 2004/03/05 22:09:15 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -60,7 +60,7 @@ class RowTests(TestCase):
         # Check __Security_checker__ directly
         self.assertRaises(AttributeError,
                           getattr, klass, '__Security_checker__')
-        self.assert_(IChecker.isImplementedBy(ob.__Security_checker__))
+        self.assert_(IChecker.providedBy(ob.__Security_checker__))
 
     def test__cmp__(self):
         from zope.app.rdb import RowClassFactory

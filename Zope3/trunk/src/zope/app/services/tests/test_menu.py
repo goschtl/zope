@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: test_menu.py,v 1.6 2004/03/02 17:40:53 philikon Exp $
+$Id: test_menu.py,v 1.7 2004/03/05 22:09:17 jim Exp $
 """
 import unittest
 
@@ -152,7 +152,7 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
 
 
     def test_VerifyInterfaceImplementation(self):
-        self.assert_(ILocalBrowserMenuService.isImplementedBy(
+        self.assert_(ILocalBrowserMenuService.providedBy(
             LocalBrowserMenuService()))
 
 

@@ -28,22 +28,22 @@ class InterfaceTests(unittest.TestCase):
         pass
 
     def testClassImplements(self):
-        self.assert_(IC.isImplementedByInstancesOf(C))
+        self.assert_(IC.implementedBy(C))
 
-        self.assert_(I1.isImplementedByInstancesOf(A))
-        self.assert_(I1.isImplementedByInstancesOf(B))
-        self.assert_(not I1.isImplementedByInstancesOf(C))
-        self.assert_(I1.isImplementedByInstancesOf(D))
-        self.assert_(I1.isImplementedByInstancesOf(E))
+        self.assert_(I1.implementedBy(A))
+        self.assert_(I1.implementedBy(B))
+        self.assert_(not I1.implementedBy(C))
+        self.assert_(I1.implementedBy(D))
+        self.assert_(I1.implementedBy(E))
 
-        self.assert_(not I2.isImplementedByInstancesOf(A))
-        self.assert_(I2.isImplementedByInstancesOf(B))
-        self.assert_(not I2.isImplementedByInstancesOf(C))
+        self.assert_(not I2.implementedBy(A))
+        self.assert_(I2.implementedBy(B))
+        self.assert_(not I2.implementedBy(C))
 
         # No longer after interfacegeddon
-        # self.assert_(not I2.isImplementedByInstancesOf(D))
+        # self.assert_(not I2.implementedBy(D))
 
-        self.assert_(not I2.isImplementedByInstancesOf(E))
+        self.assert_(not I2.implementedBy(E))
 
     def testUtil(self):
         self.assert_(IC in implementedBy(C))
@@ -60,22 +60,22 @@ class InterfaceTests(unittest.TestCase):
 
 
     def testObjectImplements(self):
-        self.assert_(IC.isImplementedBy(C()))
+        self.assert_(IC.providedBy(C()))
 
-        self.assert_(I1.isImplementedBy(A()))
-        self.assert_(I1.isImplementedBy(B()))
-        self.assert_(not I1.isImplementedBy(C()))
-        self.assert_(I1.isImplementedBy(D()))
-        self.assert_(I1.isImplementedBy(E()))
+        self.assert_(I1.providedBy(A()))
+        self.assert_(I1.providedBy(B()))
+        self.assert_(not I1.providedBy(C()))
+        self.assert_(I1.providedBy(D()))
+        self.assert_(I1.providedBy(E()))
 
-        self.assert_(not I2.isImplementedBy(A()))
-        self.assert_(I2.isImplementedBy(B()))
-        self.assert_(not I2.isImplementedBy(C()))
+        self.assert_(not I2.providedBy(A()))
+        self.assert_(I2.providedBy(B()))
+        self.assert_(not I2.providedBy(C()))
 
         # Not after interface geddon
-        # self.assert_(not I2.isImplementedBy(D()))
+        # self.assert_(not I2.providedBy(D()))
 
-        self.assert_(not I2.isImplementedBy(E()))
+        self.assert_(not I2.providedBy(E()))
 
     def testDeferredClass(self):
         a = A()
@@ -94,7 +94,7 @@ class InterfaceTests(unittest.TestCase):
     def testVerifyImplementation(self):
         from zope.interface.verify import verifyClass
         self.assert_(verifyClass(FooInterface, Foo))
-        self.assert_(Interface.isImplementedBy(I1))
+        self.assert_(Interface.providedBy(I1))
 
     def test_names(self):
         names = list(_I2.names()); names.sort()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.37 2004/03/02 18:51:03 philikon Exp $
+$Id: event.py,v 1.38 2004/03/05 22:09:16 jim Exp $
 """
 from zope.app import zapi
 
@@ -218,7 +218,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         #     this mix-in is used as part of a subscriptions service.
         #     The dependences of these mixins need to be documented and
         #     reevaluated.
-        if ISubscriptionService.isImplementedBy(wrapped_self):
+        if ISubscriptionService.providedBy(wrapped_self):
             real_unsubscribeAll = unsubscribeAll
             unsubscribeAll = lambda x: real_unsubscribeAll(x, local_only=True)
 
@@ -413,7 +413,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable,
             # from our subscriptions list and try to find another event
             # service to which to attach
             clean_subscribable = removeAllProxies(subscribable)
-            if ISubscriptionService.isImplementedBy(
+            if ISubscriptionService.providedBy(
                 removeAllProxies(clean_subscribable)):
                 try:
                     context = zapi.getService(self, EventSubscription)

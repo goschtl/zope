@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.11 2004/03/05 15:55:34 eddala Exp $
+$Id: test_bootstrap.py,v 1.12 2004/03/05 22:09:12 jim Exp $
 """
 
 import unittest
@@ -84,7 +84,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
             cx = self.db.open()
             root = cx.root()
             root_folder = root.get(ZopePublication.root_name, None)
-            self.assert_(IRootFolder.isImplementedBy(root_folder))
+            self.assert_(IRootFolder.providedBy(root_folder))
 
             package_name = '/++etc++site/default'
             package = traverse(root_folder, package_name)
@@ -112,7 +112,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
             package_name = '/++etc++site/default'
             package = traverse(root_folder, package_name)
 
-            self.assert_(IErrorReportingService.isImplementedBy(
+            self.assert_(IErrorReportingService.providedBy(
                 traverse(package, 'ErrorLogging')))
             get_transaction().commit()
             cx.close()
@@ -131,16 +131,16 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package_name = '/++etc++site/default'
         package = traverse(root_folder, package_name)
 
-        self.assert_(IEventService.isImplementedBy(
+        self.assert_(IEventService.providedBy(
             traverse(package, 'EventPublication')))
 
-        self.assert_(IObjectHub.isImplementedBy(
+        self.assert_(IObjectHub.providedBy(
             traverse(package, 'HubIds')))
 
-        self.assert_(IErrorReportingService.isImplementedBy(
+        self.assert_(IErrorReportingService.providedBy(
             traverse(package, 'ErrorLogging')))
 
-        self.assert_(IPrincipalAnnotationService.isImplementedBy(
+        self.assert_(IPrincipalAnnotationService.providedBy(
             traverse(package, 'PrincipalAnnotation')))
 
         cx.close()
@@ -164,22 +164,22 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package_name = '/++etc++site/default'
         package = traverse(root_folder, package_name)
 
-        self.assert_(IEventService.isImplementedBy(
+        self.assert_(IEventService.providedBy(
             traverse(package, 'EventPublication')))
 
-        self.assert_(IObjectHub.isImplementedBy(
+        self.assert_(IObjectHub.providedBy(
             traverse(package, 'HubIds')))
 
         self.assertRaises(NotFoundError, traverse, root_folder,
                           '/++etc++site/default/ErrorLogging')
 
-        self.assert_(IErrorReportingService.isImplementedBy(
+        self.assert_(IErrorReportingService.providedBy(
             traverse(package, 'Errors')))
 
-        self.assert_(IEventService.isImplementedBy(
+        self.assert_(IEventService.providedBy(
             traverse(package, 'EventPublication')))
 
-        self.assert_(IPrincipalAnnotationService.isImplementedBy(
+        self.assert_(IPrincipalAnnotationService.providedBy(
             traverse(package, 'PrincipalAnnotation')))
 
         cx.close()

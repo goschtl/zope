@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Global Wiki Source Type Service.
 
-$Id: test_vocabulary.py,v 1.3 2004/03/02 14:24:45 srichter Exp $
+$Id: test_vocabulary.py,v 1.4 2004/03/05 22:09:15 jim Exp $
 """
 import unittest
 
@@ -45,7 +45,7 @@ class SourceTypeTermTest(unittest.TestCase):
         self.term = SourceTypeTerm('zope.Foo', FactoryInfo('Foo', 'Foo Source'))
 
     def test_Interface(self):
-        self.failUnless(ITokenizedTerm.isImplementedBy(self.term))
+        self.failUnless(ITokenizedTerm.providedBy(self.term))
 
     def test_token(self):
         self.assertEqual(self.term.token, 'zope.Foo')
@@ -68,8 +68,8 @@ class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
         self.vocab = SourceTypeVocabulary(None)
 
     def test_Interface(self):
-        self.failUnless(IVocabulary.isImplementedBy(self.vocab))
-        self.failUnless(IVocabularyTokenized.isImplementedBy(self.vocab))
+        self.failUnless(IVocabulary.providedBy(self.vocab))
+        self.failUnless(IVocabularyTokenized.providedBy(self.vocab))
 
     def test_contains(self):
         self.assertEqual(self.vocab.__contains__('zope.source.Foo'), True)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Factory Service
 
-$Id: factory.py,v 1.7 2004/03/02 14:26:16 srichter Exp $
+$Id: factory.py,v 1.8 2004/03/05 22:09:25 jim Exp $
 """
 from zope.interface.verify import verifyObject
 from zope.interface import implements
@@ -52,7 +52,7 @@ class GlobalFactoryService:
         # arguments well. For example, I was not able to register any factory
         # that requires constructor arguments! (SR) 
         # verifyObject(IFactory, factory)
-        assert IFactory.isImplementedBy(factory)
+        assert IFactory.providedBy(factory)
         self.__factories[name] = factory
         if info is not None:
             self.__info[name] = info

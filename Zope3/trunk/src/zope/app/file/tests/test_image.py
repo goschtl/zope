@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.3 2004/03/03 11:04:00 philikon Exp $
+$Id: test_image.py,v 1.4 2004/03/05 22:09:04 jim Exp $
 """
 
 import unittest
@@ -75,7 +75,7 @@ class TestImage(unittest.TestCase):
         self.assertEqual(file.getData(), 'Blah')
 
     def testInterface(self):
-        self.failUnless(IImage.isImplementedByInstancesOf(Image))
+        self.failUnless(IImage.implementedBy(Image))
         self.failUnless(verifyClass(IImage, Image))
 
 class TestFileAdapters(unittest.TestCase):
@@ -138,7 +138,7 @@ class TestSized(unittest.TestCase):
 
     def testInterface(self):
         from zope.app.size.interfaces import ISized
-        self.failUnless(ISized.isImplementedByInstancesOf(ImageSized))
+        self.failUnless(ISized.implementedBy(ImageSized))
         self.failUnless(verifyClass(ISized, ImageSized))
 
     def test_zeroSized(self):

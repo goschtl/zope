@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.1 2004/02/27 16:50:37 philikon Exp $
+$Id: instance.py,v 1.2 2004/03/05 22:09:23 jim Exp $
 """
 from zope.component import getAdapter
 from zope.schema import getFieldNames
@@ -84,7 +84,7 @@ class InstanceContainerView:
         info['status'] = pi.status
 
         # temporary
-        if IStatefulProcessInstance.isImplementedBy(pi):
+        if IStatefulProcessInstance.providedBy(pi):
             info['outgoing_transitions'] = pi.getOutgoingTransitions()
 
         if pi.data is not None:

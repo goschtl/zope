@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     def testImplementsISized(self):
         from zope.app.size import DefaultSized
         sized = DefaultSized(object())
-        self.assert_(ISized.isImplementedBy(sized))
+        self.assert_(ISized.providedBy(sized))
 
     def testSizeWithBytes(self):
         from zope.app.size import DefaultSized

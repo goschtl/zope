@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikimail.py,v 1.2 2004/03/02 18:51:06 philikon Exp $
+$Id: test_wikimail.py,v 1.3 2004/03/05 22:09:22 jim Exp $
 """
 import unittest
 
@@ -49,7 +49,7 @@ class MailSubscriptionTest(PlacelessSetup):
         self._sub = MailSubscriptions(self.getTestObject())
 
     def test_Interface(self):
-        self.failUnless(IMailSubscriptions.isImplementedBy(self._sub))
+        self.failUnless(IMailSubscriptions.providedBy(self._sub))
 
     def test_getSubscriptions(self):
         self.assertEqual((), self._sub.getSubscriptions())
@@ -115,7 +115,7 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
                        AttributeAnnotations)
 
     def test_Interface(self):
-        self.failUnless(ISubscriber.isImplementedBy(mailer))
+        self.failUnless(ISubscriber.providedBy(mailer))
 
     def test_getAllSubscribers(self):
         wiki = Wiki()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Bug Tracker Mail Subscription and Mailer Tests
 
-$Id: tests.py,v 1.1 2004/03/02 17:28:45 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/05 22:08:52 jim Exp $
 """
 import unittest
 
@@ -27,7 +27,7 @@ class BatchTest(unittest.TestCase):
                 'seven', 'eight', 'nine', 'ten']
 
     def test_Interface(self):
-        self.failUnless(IBatch.isImplementedBy(Batch([], 0, 0)))
+        self.failUnless(IBatch.providedBy(Batch([], 0, 0)))
 
     def test_constructor(self):
         batch = Batch(self.getData(), 9, 3)

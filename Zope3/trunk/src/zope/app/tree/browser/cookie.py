@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful cookie tree
 
-$Id: cookie.py,v 1.2 2004/02/24 16:51:11 philikon Exp $
+$Id: cookie.py,v 1.3 2004/03/05 22:09:20 jim Exp $
 """
 
 from zope.app import zapi
@@ -55,7 +55,7 @@ class CookieTreeView(StatefulTreeView):
         """
         parent = self.context
         for parent in zapi.getParents(self.context):
-            if ISite.isImplementedBy(parent):
+            if ISite.providedBy(parent):
                 break
         return self.folderTree(parent)
 

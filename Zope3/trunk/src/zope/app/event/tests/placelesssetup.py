@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-$Id: placelesssetup.py,v 1.14 2004/03/02 18:50:59 philikon Exp $
+$Id: placelesssetup.py,v 1.15 2004/03/05 22:09:03 jim Exp $
 """
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
@@ -34,7 +34,7 @@ EventRecorder = EventRecorderClass()
 def getEvents(event_type=None, filter=None):
     r = []
     for event in events:
-        if event_type is not None and not event_type.isImplementedBy(event):
+        if event_type is not None and not event_type.providedBy(event):
             continue
         if filter is not None and not filter(event):
             continue

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface Service Tests
 
-$Id: test_interface.py,v 1.11 2004/02/20 22:02:25 fdrake Exp $
+$Id: test_interface.py,v 1.12 2004/03/05 22:09:17 jim Exp $
 """
 import unittest
 
@@ -56,7 +56,7 @@ class PersistentInterfaceTest(unittest.TestCase):
         class Foo:
             __implements__ = IFoo
 
-        self.assert_(IFoo.isImplementedBy(Foo()))
+        self.assert_(IFoo.providedBy(Foo()))
         self.assertEqual(IFoo._p_oid, None)
 
     def test_patch(self):
@@ -67,7 +67,7 @@ class PersistentInterfaceTest(unittest.TestCase):
         # test for a pickling bug
         self.assertEqual(imodule.Foo.__implements__, imodule.IFoo)
 
-        self.assert_(imodule.IFoo.isImplementedBy(imodule.aFoo))
+        self.assert_(imodule.IFoo.providedBy(imodule.aFoo))
         # the conversion should not affect Interface
         self.assert_(imodule.Interface is Interface)
 

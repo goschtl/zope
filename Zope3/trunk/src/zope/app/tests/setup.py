@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.13 2004/03/03 10:38:54 philikon Exp $
+$Id: setup.py,v 1.14 2004/03/05 22:09:18 jim Exp $
 """
 
 import zope.component
@@ -131,7 +131,7 @@ def buildSampleFolderTree():
 from zope.app.services.service import ServiceManager
 from zope.app.interfaces.services.service import ISite
 def createServiceManager(folder):
-    if not ISite.isImplementedBy(folder):
+    if not ISite.providedBy(folder):
         folder.setSiteManager(ServiceManager(folder))
 
     return zapi.traverse(folder, "++etc++site")

@@ -13,9 +13,10 @@
 ##############################################################################
 """Interface object implementation
 
-$Id: interface.py,v 1.20 2004/03/02 14:26:59 srichter Exp $
+$Id: interface.py,v 1.21 2004/03/05 22:09:28 jim Exp $
 """
 import sys
+import warnings
 import weakref
 from types import FunctionType
 from ro import ro
@@ -79,7 +80,7 @@ class Element(object):
 
 class SpecificationBasePy(object):
 
-    def isImplementedBy(self, ob):
+    def providedBy(self, ob):
         """Is the interface implemented by an object
 
           >>> from zope.interface import *
@@ -91,24 +92,24 @@ class SpecificationBasePy(object):
           >>> class X:
           ...     pass
           >>> x = X()
-          >>> I1.isImplementedBy(x)
+          >>> I1.providedBy(x)
           False
-          >>> I1.isImplementedBy(C)
+          >>> I1.providedBy(C)
           False
-          >>> I1.isImplementedBy(c)
+          >>> I1.providedBy(c)
           True
           >>> directlyProvides(x, I1)
-          >>> I1.isImplementedBy(x)
+          >>> I1.providedBy(x)
           True
           >>> directlyProvides(C, I1)
-          >>> I1.isImplementedBy(C)
+          >>> I1.providedBy(C)
           True
         
         """
         spec = providedBy(ob)
         return self in spec._implied
 
-    def isImplementedByInstancesOf(self, cls):
+    def implementedBy(self, cls):
         """Do instances of the given class implement the interface?"""
         spec = implementedBy(cls)
         return self in spec._implied
@@ -196,7 +197,25 @@ class Specification(SpecificationBase):
 
     # Copy some base class methods for speed
     isOrExtends = SpecificationBase.isOrExtends
-    isImplementedBy = SpecificationBase.isImplementedBy
+    providedBy = SpecificationBase.providedBy
+
+    #########################################################################
+    # XXX Backward Compat
+    def isImplementedByInstancesOf(self, cls):
+        warnings.warn(
+            "isImplementedByInstancesOf has been renamed to implementedBy",
+            DeprecationWarning, stacklevel=1,
+            )
+        return self.implementedBy(cls)
+
+    def isImplementedBy(self, ob):
+        warnings.warn(
+            "isImplementedBy has been renamed to providedBy",
+            DeprecationWarning, stacklevel=2,
+            )
+        return self.providedBy(ob)
+    #
+    #########################################################################
 
     def __init__(self, bases=()):
         self._implied = {}

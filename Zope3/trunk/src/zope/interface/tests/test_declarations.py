@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.10 2003/11/21 17:11:44 jim Exp $
+$Id: test_declarations.py,v 1.11 2004/03/05 22:09:30 jim Exp $
 """
 
 import unittest
@@ -187,13 +187,13 @@ def test_pickle_provides_specs():
     """
     >>> from pickle import dumps, loads
     >>> a = A()
-    >>> I2.isImplementedBy(a)
+    >>> I2.providedBy(a)
     0
     >>> directlyProvides(a, I2)
-    >>> I2.isImplementedBy(a)
+    >>> I2.providedBy(a)
     1
     >>> a2 = loads(dumps(a))
-    >>> I2.isImplementedBy(a2)
+    >>> I2.providedBy(a2)
     1
     
     """

@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.16 2004/03/02 17:51:49 philikon Exp $
+$Id: schemadisplay.py,v 1.17 2004/03/05 22:08:55 jim Exp $
 """
 from zope.app import zapi
 
@@ -51,7 +51,7 @@ class DisplayView(BrowserView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            if not ILocation.isImplementedBy(adapted):
+            if not ILocation.providedBy(adapted):
                 adapted = LocationProxy(adapted)
             adapted.__parent__ = self.context
         self.adapted = adapted

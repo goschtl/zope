@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.20 2004/03/03 10:38:51 philikon Exp $
+$Id: pagefolder.py,v 1.21 2004/03/05 22:09:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -125,15 +125,15 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
 
     def __setitem__(self, name, object):
-        if (IRegistrationManager.isImplementedBy(object) or
-            IZPTTemplate.isImplementedBy(object)):
+        if (IRegistrationManager.providedBy(object) or
+            IZPTTemplate.providedBy(object)):
             super(PageFolder, self).__setitem__(name, object)
         else:
             raise TypeError("Can only add templates", object)
 
 
         # If a template is added, we need to configure it too.
-        if IZPTTemplate.isImplementedBy(object):
+        if IZPTTemplate.providedBy(object):
             template = self[name]
             template = getPath(template)
             registration = PageRegistration(

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopeconnection.py,v 1.5 2004/03/02 13:48:29 philikon Exp $
+$Id: test_zopeconnection.py,v 1.6 2004/03/05 22:09:15 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -27,7 +27,7 @@ class ZopeConnectionTests(TestCase):
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         cursor = zc.cursor()
 
-        self.failUnless(IZopeCursor.isImplementedBy(cursor),
+        self.failUnless(IZopeCursor.providedBy(cursor),
                         "cursor is not what we expected")
 
     def test_connection_txn_registration(self):

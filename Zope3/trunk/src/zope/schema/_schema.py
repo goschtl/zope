@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: _schema.py,v 1.7 2003/05/12 10:02:41 ryzaja Exp $
+$Id: _schema.py,v 1.8 2004/03/05 22:09:31 jim Exp $
 """
 
 def getFieldNames(schema):
     """Return a list of all the Field names in a schema.
     """
     from zope.schema.interfaces import IField
-    return [ name for name in schema if IField.isImplementedBy(schema[name]) ]
+    return [name for name in schema if IField.providedBy(schema[name])]
 
 def getFields(schema):
     """Return a dictionary containing all the Fields in a schema.
@@ -28,7 +28,7 @@ def getFields(schema):
     fields = {}
     for name in schema:
         attr = schema[name]
-        if IField.isImplementedBy(attr):
+        if IField.providedBy(attr):
             fields[name] = attr
     return fields
 

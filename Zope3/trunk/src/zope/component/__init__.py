@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.18 2004/03/02 14:25:21 srichter Exp $
+$Id: __init__.py,v 1.19 2004/03/05 22:09:25 jim Exp $
 """
 import sys
 import warnings
@@ -95,7 +95,7 @@ def queryAdapter(object, interface, default=None, name='', context=None):
             if adapter is not None:
                 return adapter
 
-    if interface.isImplementedBy(object):
+    if interface.providedBy(object):
         return object
 
     return queryNamedAdapter(object, interface, name, default, context)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.15 2004/03/03 10:38:52 philikon Exp $
+$Id: __init__.py,v 1.16 2004/03/05 22:09:17 jim Exp $
 """
 import random
 import sys
@@ -174,7 +174,7 @@ class PluggableAuthenticationService(OrderedContainer):
         ['simple', 'not_quite_so_simple']
         """
 
-        if not IPrincipalSource.isImplementedBy(principal_source):
+        if not IPrincipalSource.providedBy(principal_source):
             raise TypeError("Source must implement IPrincipalSource")
         locate(principal_source, self, id)
         self[id] = principal_source        

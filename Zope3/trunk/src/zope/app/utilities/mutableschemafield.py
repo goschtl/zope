@@ -13,7 +13,7 @@
 ##############################################################################
 """Defines fields that are used in mutable schemas.
 
-$Id: mutableschemafield.py,v 1.3 2003/08/17 06:08:33 philikon Exp $
+$Id: mutableschemafield.py,v 1.4 2004/03/05 22:09:21 jim Exp $
 """
 
 from zope.interface import implements
@@ -46,7 +46,7 @@ class MutableSchemaField(InterfaceField):
         if basetype is None:
             basetype = IMutableSchema
 
-        if not IInterface.isImplementedBy(value):
+        if not IInterface.providedBy(value):
             raise ValidationError("Not an interface", value)
 
         if basetype in providedBy(value):
@@ -79,7 +79,7 @@ class MutableSchemasField(InterfacesField):
             basetype = IMutableSchema
 
         for v in value:
-            if not IInterface.isImplementedBy(v):
+            if not IInterface.providedBy(v):
                 raise ValidationError("Not an interface", v)
 
         for v in value:

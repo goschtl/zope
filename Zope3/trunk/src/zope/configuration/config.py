@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.19 2004/03/02 14:26:30 srichter Exp $
+$Id: config.py,v 1.20 2004/03/05 22:09:25 jim Exp $
 """
 
 import os.path
@@ -947,7 +947,7 @@ class DirectiveSchema(fields.GlobalObject):
 
     def _validate(self, value):
         super(fields.GlobalObject, self)._validate(value)
-        if not IInterface.isImplementedBy(value):
+        if not IInterface.providedBy(value):
             raise zope.schema.ValidationError(WrongType, value)
 
 

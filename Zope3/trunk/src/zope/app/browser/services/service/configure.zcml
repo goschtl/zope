@@ -28,7 +28,7 @@
       for="zope.app.interfaces.services.service.IPossibleSite"
       action="addServiceManager.html"
       filter="python:not modules['zope.app.interfaces.services.service'
-                  ].ISite.isImplementedBy(context)"
+                  ].ISite.providedBy(context)"
       permission="zope.ManageServices"
       />
 

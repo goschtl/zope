@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.6 2004/02/09 07:41:20 dunny Exp $
+$Id: presentation.py,v 1.7 2004/03/05 22:09:25 jim Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -364,7 +364,7 @@ class GlobalPresentationService(GlobalService):
 
         ifaces = []
         for context in contexts:
-            if not IInterface.isImplementedBy(context) and context is not None:
+            if not IInterface.providedBy(context) and context is not None:
                 if not isinstance(context, (type, ClassType)):
                     raise TypeError(context, IInterface)
                 context = zope.interface.implementedBy(context)

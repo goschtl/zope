@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.31 2004/03/03 10:38:51 philikon Exp $
+$Id: hub.py,v 1.32 2004/03/05 22:09:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -216,12 +216,12 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
         # check whether an IObjectMovedEvent event is a 'moved', 'added', or
         # 'removed'.
         
-        if IObjectMovedEvent.isImplementedBy(event) and \
-            not IObjectAddedEvent.isImplementedBy(event):
+        if IObjectMovedEvent.providedBy(event) and \
+            not IObjectAddedEvent.providedBy(event):
             pathslash = canonicalSlash(event.oldParent, event.oldName)
             hubid = self.__path_to_hubid.get(pathslash)      
             if hubid is not None:
-                if IObjectRemovedEvent.isImplementedBy(event):
+                if IObjectRemovedEvent.providedBy(event):
                     # Removed - update data and publish remove hub event
                     self._removeDescendants(pathslash)
                     event = ObjectRemovedHubEvent(
@@ -238,7 +238,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
                         userPath(new_pathslash), event.object)
                     self._notify(self, event)
 
-        elif IObjectModifiedEvent.isImplementedBy(event):
+        elif IObjectModifiedEvent.providedBy(event):
             # Modified - publish modified hub event
             pathslash = canonicalSlash(zapi.getPath(event.object))
             hubid = self.__path_to_hubid.get(pathslash)
@@ -524,7 +524,7 @@ class Registration(Persistent, Contained):
         # XXX Policy decision: only traverse into folders
         # XXX Ugh! direct dependency on folders
         # Can this be changed to IContentContainer?!?
-        if not IFolder.isImplementedBy(object):
+        if not IFolder.providedBy(object):
             return
         # Register subobjects
         names = object.keys()

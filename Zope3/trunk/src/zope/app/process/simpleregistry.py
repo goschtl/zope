@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.3 2003/08/16 00:43:41 srichter Exp $
+$Id: simpleregistry.py,v 1.4 2004/03/05 22:09:11 jim Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from types import ListType, TupleType
@@ -71,7 +71,7 @@ class SimpleRegistry:
         if name in self.objects.keys():
             raise ZopeDuplicateRegistryEntryError(name)
 
-        if self.interface.isImplementedBy(object):
+        if self.interface.providedBy(object):
             self.objects[name] = object
         else:
             raise ZopeIllegalInterfaceError(name, self.interface)

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.21 2004/03/05 15:49:55 eddala Exp $
+$Id: __init__.py,v 1.22 2004/03/05 22:08:56 jim Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -110,7 +110,7 @@ class ServiceAdding(ComponentAdding):
     def add(self, content):
         # Override so as to check the type of the new object.
         # XXX This wants to be generalized!
-        if not ILocalService.isImplementedBy(content):
+        if not ILocalService.providedBy(content):
             raise TypeError("%s is not a local service" % content)
 
         content = super(ServiceAdding, self).add(content)
@@ -119,7 +119,7 @@ class ServiceAdding(ComponentAdding):
         sm = zapi.getServiceManager(self.context)
         implements = []
         for type_name, interface in sm.getServiceDefinitions():
-            if interface.isImplementedBy(content):
+            if interface.providedBy(content):
                 implements.append(type_name)
 
         path = zapi.name(content)
@@ -147,7 +147,7 @@ class UtilityAdding(ComponentAdding):
     def add(self, content):
         # Override so as to check the type of the new object.
         # XXX This wants to be generalized!
-        if not ILocalUtility.isImplementedBy(content):
+        if not ILocalUtility.providedBy(content):
             raise TypeError("%s is not a local utility" % content)
         return super(UtilityAdding, self).add(content)
 
@@ -171,7 +171,7 @@ class AddServiceRegistration(BrowserView):
         sm = zapi.getServiceManager(self.context)
         lst = []
         for servicename, interface in sm.getServiceDefinitions():
-            if interface.isImplementedBy(self.context):
+            if interface.providedBy(self.context):
                 registry = sm.queryRegistrations(servicename)
                 checked = True
                 if registry and registry.active():
@@ -310,13 +310,13 @@ def gatherConfiguredServices(sm, request, items=None):
         items = {}
         # make sure no-one tries to use this starting at the global service
         # manager
-        assert ISiteManager.isImplementedBy(sm)
+        assert ISiteManager.providedBy(sm)
         manageable = True
     else:
         # don't want the "change registration" link for parent services
         manageable = False
 
-    if IGlobalServiceManager.isImplementedBy(sm):
+    if IGlobalServiceManager.providedBy(sm):
         # global service manager
         names = []
         for type_name, interface in sm.getServiceDefinitions():
@@ -460,7 +460,7 @@ class MakeSite(BrowserView):
 
         Now verify that we have a site:
 
-        >>> ISite.isImplementedBy(folder)
+        >>> ISite.providedBy(folder)
         1
 
         Note that we've also redirected the request:
@@ -480,7 +480,7 @@ class MakeSite(BrowserView):
 
 
         """
-        if ISite.isImplementedBy(self.context):
+        if ISite.providedBy(self.context):
             raise zapi.UserError('This is already a site')
 
         # we don't want to store security proxies (we can't,
@@ -552,7 +552,7 @@ class Detail:
     ...     def getInterface(self, id=None):
     ...         return TestInterface
     ...
-    >>> IInterface.isImplementedBy(TestInterface)
+    >>> IInterface.providedBy(TestInterface)
     True
     >>> provideInterface('', TestInterface, IContentType)
     >>> from zope.publisher.browser import TestRequest
@@ -600,10 +600,10 @@ class Detail:
 
         for name in self.iface:
             defn = self.iface[name]
-            if IMethod.isImplementedBy(defn):
+            if IMethod.providedBy(defn):
                 title = defn.__doc__.split('\n')[0].strip()
                 self.methods.append({'method': defn, 'title': title})
-            elif IField.isImplementedBy(defn):
+            elif IField.providedBy(defn):
                 self.schema.append(defn)
 
     def getServices(self):
