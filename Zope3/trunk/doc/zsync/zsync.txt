@@ -1,3 +1,8 @@
+=============================================
+zsync -- Zope filesystem synchronization tool
+=============================================
+
+
 Name
 ----
 
@@ -100,11 +105,11 @@ Synopsis
 Options
 +++++++
 
--f FACTORY, --factory FACTORY
+-f factory, --factory factory
   Specify the object factory to use for the object being added.
 
--t TYPE, --type TYPE           
-  The type of the object to be created.  Normally only *FACTORY* needs
+-t type, --type type           
+  The type of the object to be created.  Normally only *factory* needs
   to be specified.
 
 
@@ -137,12 +142,12 @@ filesystem.
 Options
 +++++++
 
--F FILE, --file FILE
+-F file, --file file
   Set the message used for the transaction note to the contents of the
-  file *FILE* (similar to the ``-F`` option for **cvs commit**).
+  file *file* (similar to the ``-F`` option for **cvs commit**).
 
--m MSG, --message MSG
-  Set the message used for the transaction note to *MSG* (similar to
+-m msg, --message msg
+  Set the message used for the transaction note to *msg* (similar to
   the ``-m`` option for **cvs commit**).
 
 
@@ -190,11 +195,11 @@ descendents are committed.
 Options
 +++++++
 
--F FILE, --file FILE
+-F file, --file file
   Set the message used for the transaction note to the contents of the
-  file *FILE* (similar to the ``-F`` option for **cvs commit**).
+  file *file* (similar to the ``-F`` option for **cvs commit**).
 
--m MSG, --message MSG
+-m msg, --message msg
   Set the message used for the transaction note (similar to the ``-m``
   option for **cvs commit**).
 
@@ -247,9 +252,9 @@ Options
 -c
   Generate a context diff.
 
--C NUM, --context NUM
+-C num, --context num
   Set the number of lines of context information included on each side
-  of changes to *NUM*.
+  of changes to *num*.
 
 -i
   Ignore changes in case; consider upper- andlower-case letters
@@ -263,9 +268,9 @@ Options
 -u
   Generate a unified diff.
 
--U NUM, --unified NUM
-  Use the unified output format, showing *NUM* (an integer) lines of
-  context, or three if *NUM* is not given.  For proper operation,
+-U num, --unified num
+  Use the unified output format, showing *num* (an integer) lines of
+  context, or three if *num* is not given.  For proper operation,
   **patch** typically needs at least two lines of context.
 
 
@@ -317,7 +322,7 @@ the username.
 Options
 +++++++
 
--u USER, --user USER
+-u user, --user user
   Use *USER* for the username.  This overrides the username given via
   the URL; this is mostly intended for people who don't know (or don't
   want to admit knowing!) the obscure URL syntax for encoding the
@@ -350,8 +355,8 @@ will require the user to enter their password interactively.
 Options
 +++++++
 
--u USER, --user USER
-  Use *USER* for the username.  This overrides the username given via
+-u user, --user user
+  Use *user* for the username.  This overrides the username given via
   the URL; this is mostly intended for people who don't know (or don't
   want to admit knowing!) the obscure URL syntax for encoding the
   username for a site.
@@ -531,20 +536,16 @@ Reporting Bugs
 --------------
 
 Bugs in **zsync** and the filesystem synchronization support in Zope 3
-should be reported via the `Zope 3 Development Issue Collector`__, an
+should be reported via the `Zope 3 Development Issue Collector`_, an
 online reporting tool that allows you to enter reports directly into
 our bug-tracking system.
-
-.. __: http://collector.zope.org/Zope3-dev
 
 
 See Also
 --------
 
 There are two interesting and directly relevant articles in the `Zope 3
-wiki`__:
-
-.. __: http://dev.zope.org/Zope3/
+wiki`_:
 
 * The |FSSYNC|_ is the initial proposal for a way to synchronize
   copies of a Zope-based website between a filesystem-based
@@ -556,22 +557,12 @@ wiki`__:
 The |zbundle|_ documentation provides support for managing bundles
 using a **zsync** checkout.
 
-.. |FSSYNC| replace::   Filesystem Synchronization Proposal
-.. |TTWSITE| replace::  Through the Web Site Development
-.. |zbundle| replace::  **zbundle**
-
-.. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
-.. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
-.. _zbundle: zbundle.html
-
 
 Copyright
 ---------
 
-Copyright (c) 2003 `Zope Corporation`__ and Contributors.
+Copyright (c) 2003 `Zope Corporation`_ and Contributors.
 All Rights Reserved.
-
-.. __:  http://www.zope.com/
 
 This software is subject to the provisions of the `Zope Public
 License`_, Version 2.0 (ZPL).  A copy of the ZPL should accompany
@@ -580,4 +571,4 @@ EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST
 INFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
 
-.. _Zope Public License:  http://www.zope.org/Resources/ZPL
+.. include:: links.rst

@@ -2,15 +2,13 @@
 Filesystem Synchronization
 ==========================
 
+
+Background
+----------
+
 For background and the original description by Jim Fulton, see the
 |FSSYNC|_.  Additional background material can be found in the
 |TTWSITE|_ proposal.
-
-.. |FSSYNC| replace::   Filesystem Synchronization Proposal
-.. |TTWSITE| replace::  Through the Web Site Development
-
-.. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
-.. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
 
 The "bundles" mentioned there are likely candidates for filesystem
 synchronization.  (See section `Working With Bundles`_ below.)
@@ -333,3 +331,5 @@ documentation for more information on authentication.)
   list.  Deleting an active bundle usually doesn't work because of the
   dependencies between the configuration records and the configured
   objects in the bundle.
+
+.. include:: links.rst
