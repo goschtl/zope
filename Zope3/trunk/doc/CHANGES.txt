@@ -286,6 +286,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #293 (SequenceWidget and CustomWidgetFactory).
+
       - TextWidgets set the value attribute to "value" when the field
         has a missing value set and was not required and when there
         was no input.

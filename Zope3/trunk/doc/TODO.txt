@@ -79,8 +79,6 @@ Bug Fixes
 
 * 288: IE xmltree.js line 225 error 
 
-* 293: SequenceWidget and CustomWidgetFactory 
-
 * 296: missing display widgets 
 
 * 298: Role/permission title and description should be messageids
