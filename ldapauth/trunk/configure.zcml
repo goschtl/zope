@@ -15,15 +15,13 @@
 
         <implements
             interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-        
-        <implements
-            interface="zope.app.cache.interfaces.ICacheable" />
-            
+
         <require
             permission="zope.ManageContent"
             set_schema=".interfaces.ILDAPBasedPrincipalSource" />
 
     </content>
+
 
     <!-- add browser views -->
     <include package=".browser" />

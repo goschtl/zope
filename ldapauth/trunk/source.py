@@ -168,20 +168,22 @@ class LDAPPrincipalSource(Contained, Persistent):
 
     def authenticate(self, uid, password):
         if password:
-            l = self.__connect()
-            dn = '%s=%s,' % (self.login_attribute, uid) + self.basedn
-            try:
-                l.simple_bind_s(dn, password)
-                principal = SimplePrincipal(login = uid, password = password)
-                try:
-                    self[uid] = principal
-                except DuplicationError, msg:
-                    # There is already a principal with this login in
-                    # the cache
-                    principal = self[uid]
+            principal = self[uid]
+            if principal and principal.password == password:
                 return principal
-            except ldap.INVALID_CREDENTIALS:
+            elif principal and principal.password != password:
                 return None
+            else:
+                l = self.__connect()
+                dn = '%s=%s,' % (self.login_attribute, uid) + self.basedn
+                try:
+                    l.simple_bind_s(dn, password)
+                    principal = SimplePrincipal(login = uid,
+                            password = password)
+                    self[uid] = principal
+                    return principal
+                except ldap.INVALID_CREDENTIALS:
+                    return None
         else:
             return None
 
