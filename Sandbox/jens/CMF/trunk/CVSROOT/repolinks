@@ -5,10 +5,9 @@
 # specified in this file are deleted.  Any links specified here that
 # wind up pointing outside the repository are also deleted.
 
-# Lines beginning with a '#' sign, like this, and blank lines are
-# ignored.
+# Blank lines and lines beginning with '#' are ignored.
 
-# The other lines should be white-space separated pairs of paths:
+# The other lines should contain one or two white-space separated paths:
 
 # - The first path indicates where the symlink is situated.  It is
 #   interepreted relative to the repository root, whether or not it
@@ -18,10 +17,12 @@
 #   interpreted relative to the repo root if it is absolute, otherwise
 #   it is used as is, for relative links within the repository.
 #
-#   To gracefully retire an existing symlink, include an entry but
-#   omit the second path.  This will cause a link to be created
-#   pointing to an empty directory - the CVS equivalent of a removed
-#   directory.
+#   The second path can be empty, to indicate retirement of an
+#   existing symlink.  You should not just remove entries for symlinks
+#   - their absence will break checkouts that included them, unless
+#   they're replaced by actual directories.  Not specifying the second
+#   path translates to a link that points to an empty directory
+#   (CVSROOT/Emptydir) - the CVS equivalent of a removed directory.
 
 /Zope/ZServer                                   /Packages/ZServer
 /Zope/lib/Components/ExtensionClass             /Cruft/ExtensionClass
