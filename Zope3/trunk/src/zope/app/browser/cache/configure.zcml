@@ -26,12 +26,16 @@
     <browser:menuItem title="Statistics" action="stats.html"/>
   </browser:menuItems>
 
-  <browser:pages for="zope.app.interfaces.annotation.IAnnotatable"
-                permission="zope.ManageBindings"
-                class="zope.app.browser.cache.cacheable.CacheableView">
+  <browser:pages 
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      permission="zope.ManageBindings"
+      class="zope.app.browser.cache.cacheable.CacheableView"
+      >
 
     <browser:page name="Caching.html"
-                  attribute="form" />
+                  attribute="form" 
+                  menu="zmi_views" title="Caching"
+                  />
     <browser:page name="ChangeCaching.html"
                   attribute="action" />
     <browser:page name="InvalidateCache.html"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.5 2003/04/08 20:58:02 gotcha Exp $
+$Id: cacheable.py,v 1.6 2003/04/08 21:43:45 gotcha Exp $
 """
 
 from zope.component import getService, getAdapter
@@ -30,9 +30,7 @@ from zope.app.interfaces.cache.cache import ICacheable
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-from zope.i18n.messageid import MessageIDFactory
-
-_ = MessageIDFactory("zope")
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class CacheableView(BrowserView):
 
