@@ -27,6 +27,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.schema.interfaces import IVocabulary, ITerm, IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
+from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema import vocabulary
 
 
@@ -223,6 +224,10 @@ class SingleSelectionViews:
                     "field-edit-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyEditWidget)
+        provideView(IIterableVocabularyQuery,
+                    "widget-query-helper",
+                    IBrowserPresentation,
+                    vocabularywidget.IterableVocabularyQueryView)
         # The following widget registration supports the specific
         # sample vocabulary we're using, used to demonstrate how to
         # override widget selection based on vocabulary:
@@ -255,6 +260,10 @@ class MultiSelectionViews:
                     "field-edit-multi-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiEditWidget)
+        provideView(IIterableVocabularyQuery,
+                    "widget-query-multi-helper",
+                    IBrowserPresentation,
+                    vocabularywidget.IterableVocabularyQueryMultiView)
         # The following widget registration supports the specific
         # sample vocabulary we're using, used to demonstrate how to
         # override widget selection based on vocabulary:

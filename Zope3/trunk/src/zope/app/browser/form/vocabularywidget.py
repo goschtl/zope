@@ -433,7 +433,7 @@ def _message(msgid, default):
     return msgid
 
 
-class IterableVocabularyQueryView(VocabularyQueryViewBase):
+class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     """Query view for IIterableVocabulary objects without more
     specific query views.
 
@@ -509,8 +509,8 @@ class IterableVocabularyQueryView(VocabularyQueryViewBase):
             have_more = False
         self.query_selections = QS
         L = ["<div class='results'>\n",
-             self.mkselectionlist("checkbox",
-                                  items, self.query_selections_name), "\n",
+             self.makeSelectionList(items, self.query_selections_name),
+             "\n",
              self._mkbutton(ADD_DONE), "\n",
              self._mkbutton(ADD_MORE, not have_more), "\n",
              self._mkbutton(MORE, not have_more), "\n"]
@@ -556,3 +556,17 @@ class IterableVocabularyQueryView(VocabularyQueryViewBase):
             if item not in value and item in self.context.vocabulary:
                 value.append(item)
         return value
+
+class IterableVocabularyQueryView(IterableVocabularyQueryViewBase):
+
+    def makeSelectionList(self, items, name):
+        return self.mkselectionlist("radio", items, name)
+
+    def renderQueryResults(self, results, value):
+        return IterableVocabularyQueryViewBase.renderQueryResults(
+            self, results, [value])
+
+class IterableVocabularyQueryMultiView(IterableVocabularyQueryViewBase):
+
+    def makeSelectionList(self, items, name):
+        return self.mkselectionlist("checkbox", items, name)
