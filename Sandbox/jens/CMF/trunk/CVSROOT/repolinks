@@ -131,7 +131,6 @@
 /ZODB3/Persistence       /Packages/Persistence
 /ZODB3/ThreadedAsync     /Packages/ThreadedAsync
 /ZODB3/zdaemon           /Packages/zdaemon
-/ZODB3/zLOG              /Packages/zLOG
 /ZODB3/Doc/ZEO		 /ZEO/docs
 /ZODB3/ZEO-NEWS.txt,v	 /ZEO/CHANGES.txt,v
 /ZODB3/ZopeUndo		 /Packages/ZopeUndo
