@@ -90,6 +90,7 @@
 
 /StandaloneZODB/ZODB              /Packages/ZODB
 /StandaloneZODB/ZEO               /Packages/ZEO
+/StandaloneZODB/ZEO1              /Packages/ZEO1
 /StandaloneZODB/ExtensionClass    /Cruft/ExtensionClass
 /StandaloneZODB/BTrees            /Packages/BTrees
 /StandaloneZODB/bsddb3Storage     /Packages/bsddb3Storage
@@ -100,6 +101,7 @@
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
+/ZODB3/ZEO1              /Packages/ZEO1
 /ZODB3/ExtensionClass    /Cruft/ExtensionClass
 /ZODB3/BTrees            /Packages/BTrees
 /ZODB3/bsddb3Storage     /Packages/bsddb3Storage
@@ -109,6 +111,7 @@
 /ZODB3/zLOG              /Packages/zLOG
 
 /ZODB4/ZODB		 /Packages3/ZODB
+/ZODB4/ZEO		 /Packages3/ZEO
 /ZODB4/Interface	 /Packages3/Interface
 /ZODB4/Persistence	 /Packages3/Persistence
 /ZODB4/Transaction	 /Zope3/lib/python/Transaction
@@ -126,7 +129,6 @@
 /CMF/DCWorkflow                   /Products/DCWorkflow
 
 /ZEO/ZEO                          /Packages/ZEO
-
 
 # Zope 3 layout.
 
