@@ -378,7 +378,7 @@ def do_sync(path, repo, remote, receiverid, subjs=None,
         complain("Sync for %s to %s; of %s/ %s / %s\n",
                  path, remote, os.environ["CVSROOT"], repo, fnames)
 
-    ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s"'
+    ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s -x"'
                     % (SSH_EXE, KNOWN_HOSTS_FILE, (VERBOSE and "-v") or "",
                        IDENTITY_FILE, receiverid))
     
