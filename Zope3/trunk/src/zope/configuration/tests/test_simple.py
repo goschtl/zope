@@ -97,6 +97,11 @@ arguments:
   callable. In function ``registerFile``, we pass a tuple containing a
   ``FileInfo`` object.
 
+  (Note that there's nothing special about the FileInfo class. It has
+   nothing to do with creating simple directives. It's just used in
+   this example to organize the application data.)
+
+
 The final step in implementing the simple directive is to register
 it. We do that with the zcml ``meta:directive`` directive.  This is
 given in the file simple.zcml.  Here we specify the name, namespace,
@@ -154,7 +159,7 @@ File "tests/simple.zcml", line 32.2-32.67
     <files:register path="__init__.py" title="Make this a package" />
 
 
-$Id: test_simple.py,v 1.2 2003/07/30 14:53:01 jim Exp $
+$Id: test_simple.py,v 1.3 2003/07/31 15:50:03 jim Exp $
 """
 
 file_registry = []
