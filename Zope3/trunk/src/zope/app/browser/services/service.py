@@ -13,11 +13,11 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.14 2003/03/19 19:57:22 alga Exp $
+$Id: service.py,v 1.15 2003/03/21 21:00:28 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
-from zope.component import getView, getAdapter
+from zope.component import getView, getAdapter, queryView
 from zope.proxy.context import ContextWrapper, ContextSuper
 from zope.app.interfaces.container import IZopeContainer
 from zope.component import getServiceManager
@@ -37,6 +37,19 @@ class ComponentAdding(Adding):
     """Adding subclass used for configurable components."""
 
     menu_id = "add_component"
+
+    def add(self, content):
+        # Override so as to save a reference to the added object
+        self.added_object = ContextSuper(ComponentAdding, self).add(content)
+        return self.added_object
+
+    def nextURL(self):        
+        v = queryView(self.added_object, "addConfiguration.html", self.request)
+        if v is not None:
+            url = getPath(self.added_object)
+            return url + "/@@addConfiguration.html"
+            
+        return ContextSuper(ComponentAdding, self).nextURL()
 
     def action(self, type_name, id):
         if type_name == "../AddService":
@@ -62,97 +75,18 @@ class ComponentAdding(Adding):
         # As a side effect, self.added_object is set by add() above.
         ContextSuper(ComponentAdding, self).action(type_name, id)
 
-
 class ServiceAdding(ComponentAdding):
     """Adding subclass used for adding services."""
 
     menu_id = "add_service"
 
     def add(self, content):
-        # Override so as to save a reference to the added object
-        self.added_object = ContextSuper(ComponentAdding, self).add(content)
-        return self.added_object
+        # Override so as to check the type of the new object.
+        # XXX This wants to be generalized!
+        if not ILocalService.isImplementedBy(content):
+            raise TypeError("%s is not a local service" % content)
 
-    def action(self, type_name, id):
-        # Call the superclass action() method.
-        # As a side effect, self.added_object is set by add() above.
-        ContextSuper(ServiceAdding, self).action(type_name, id)
-
-        if not ILocalService.isImplementedBy(self.added_object):
-            raise TypeError("%s is not a local service" % self.added_object)
-
-        url = getPath(self.added_object)
-        self.request.response.redirect(url + "/addConfiguration.html")
-
-
-class ConfigurationAdding(Adding):
-    """Adding subclass for adding configurations."""
-
-    menu_id = "add_configuration"
-
-    def nextURL(self):
-        return str(getView(self.context, "absolute_url", self.request))
-
-
-class EditConfiguration(BrowserView):
-    """A view on a configuration manager, used by configurations.pt."""
-
-    def __init__(self, context, request):
-        self.request = request
-        self.context = context
-
-    def update(self):
-        """Perform actions depending on user input."""
-
-        if 'keys' in self.request:
-            k = self.request['keys']
-        else:
-            k = []
-
-        msg = 'You must select at least one item to use this action'
-
-        if 'remove_submit' in self.request:
-            if not k: return msg
-            self.remove_objects(k)
-        elif 'top_submit' in self.request:
-            if not k: return msg
-            self.context.moveTop(k)
-        elif 'bottom_submit' in self.request:
-            if not k: return msg
-            self.context.moveBottom(k)
-        elif 'up_submit' in self.request:
-            if not k: return msg
-            self.context.moveUp(k)
-        elif 'down_submit' in self.request:
-            if not k: return msg
-            self.context.moveDown(k)
-        elif 'refresh_submit' in self.request:
-            pass # Nothing to do
-
-        return ''
-
-    def remove_objects(self, key_list):
-        """Remove the directives from the container."""
-        container = getAdapter(self.context, IZopeContainer)
-        for item in key_list:
-            del container[item]
-
-    def configInfo(self):
-        """Render View for each directives."""
-        result = []
-        for name, configobj in self.context.items():
-            configobj = ContextWrapper(configobj, self.context, name=name)
-            url = str(getView(configobj, 'absolute_url', self.request))
-            active = configobj.status == Active
-            summary1 = getattr(configobj, "usageSummary", None)
-            summary2 = getattr(configobj, "implementationSummary", None)
-            item = {'name': name, 'url': url, 'active': active}
-            if summary1:
-                item['line1'] = summary1()
-            if summary2:
-                item['line2'] = summary2()
-            result.append(item)
-        return result
+        return ContextSuper(ServiceAdding, self).add(content)
 
 
 class AddServiceConfiguration(BrowserView):
