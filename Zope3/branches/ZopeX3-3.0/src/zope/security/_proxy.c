@@ -262,7 +262,7 @@ proxy_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 
   if (checker == Py_None)
     {
-      PyErr_SetString(PyExc_ValueError, "None passed as checker proxy");
+      PyErr_SetString(PyExc_ValueError, "None passed as proxy checker");
       return NULL;
     }
 
