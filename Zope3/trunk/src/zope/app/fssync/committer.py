@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 import os
 
@@ -43,7 +44,7 @@ class SynchronizationError(Exception):
 class Checker(object):
     """Check that the filesystem is consistent with the object database.
 
-    The public API consists of __init__(), check() and errors() only.
+    The public API consists of `__init__()`, `check()` and `errors()` only.
     """
 
     def __init__(self,
@@ -78,7 +79,7 @@ class Checker(object):
     def conflict(self, fspath):
         """Helper to report a conflict.
 
-        Conflicts can be retrieved by calling errors().
+        Conflicts can be retrieved by calling `errors()`.
         """
         if self.raise_on_conflicts:
             raise SynchronizationError(fspath)
@@ -89,10 +90,10 @@ class Checker(object):
         """Compare an object or object tree from the filesystem.
 
         If the originals on the filesystem are not uptodate, errors
-        are reported by calling conflict().
+        are reported by calling `conflict()`.
 
         Invalid object names are reported by raising
-        SynchronizationError.
+        ``SynchronizationError``.
         """
 
         if (os.sep in name or
@@ -199,10 +200,10 @@ class Committer(object):
     """Commit changes from the filesystem to the object database.
 
     The filesystem's originals must consistent with the object
-    database; this should be checked beforehand by a Checker instance
+    database; this should be checked beforehand by a `Checker` instance
     with the same arguments.
 
-    The public API consists of __init__() and synch() only.
+    The public API consists of `__init__()` and `synch()` only.
     """
 
     def __init__(self, getSerializer, metadata=None,
@@ -231,7 +232,7 @@ class Committer(object):
     def synch(self, container, name, fspath, context=None):
         """Synchronize an object or object tree from the filesystem.
 
-        SynchronizationError is raised for errors that can't be
+        ``SynchronizationError`` is raised for errors that can't be
         corrected by a update operation, including invalid object
         names.
         """

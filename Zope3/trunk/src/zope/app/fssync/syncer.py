@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.component import getService
 from zope.fssync.server.syncer import Syncer

@@ -17,6 +17,7 @@ This acts as a global (placeless) service.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.exceptions import DuplicationError, NotFoundError
 from zope.interface import implements
@@ -41,7 +42,7 @@ class FSRegistry(object):
 
         If no factory is registered for the given class, return the
         default factory, if one has been registered.  If no default
-        factory has been registered, raise NotFoundError.
+        factory has been registered, raise ``NotFoundError``.
         """
 
         factory = self._class_factory_reg.get(object.__class__)
@@ -53,7 +54,7 @@ class FSRegistry(object):
 
 
     def provideSynchronizer(self,class_, factory):
-        """Set class_, factory into the dictionary."""
+        """Set `class_`, factory into the dictionary."""
         if class_ in self._class_factory_reg:
             raise DuplicationError
         else:

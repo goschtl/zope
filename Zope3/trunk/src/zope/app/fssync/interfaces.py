@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 
@@ -23,14 +24,14 @@ class IFSSyncService(Interface):
     """Lookup file-system representation adapters."""
 
     def getSynchronizer(object):
-        """Return an object that implements IObjectEntry for the argument.
+        """Return an object that implements `IObjectEntry` for the argument.
 
         The return value may be:
 
-        - An IDirectoryEntry adapter for the object is returned if the
+        - An `IDirectoryEntry` adapter for the object is returned if the
           object is represented as a directory on the file system.
 
-        - An IFileEntry adapter for the object is returned if the
+        - An `IFileEntry` adapter for the object is returned if the
           object is represented as a file on the file system.
 
         or

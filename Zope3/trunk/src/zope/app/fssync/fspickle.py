@@ -22,7 +22,7 @@ The parent of the outermost object is treated specially so that the
 pickle can be 'unpacked' with a new parent to create a copy in the new
 location; unpacking a pickle containing a parent reference requires
 passing an object to use as the parent as the second argument to the
-loads() function.  The name of the outermost object is not stored in
+`loads()` function.  The name of the outermost object is not stored in
 the pickle unless it is stored in the object.
 
 >>> from zope.app.location.tests import TLocation
@@ -61,6 +61,7 @@ the pickle unless it is stored in the object.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 import cPickle
 

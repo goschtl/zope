@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 import cgi
 import shutil
@@ -59,7 +61,7 @@ class SnarfFile(BrowserView):
                 shutil.rmtree(dirname)
 
 class NewMetadata(Metadata):
-    """Subclass of Metadata that sets the 'added' flag in all entries."""
+    """Subclass of Metadata that sets the ``added`` flag in all entries."""
 
     def getentry(self, file):
         entry = Metadata.getentry(self, file)

@@ -16,6 +16,7 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
+
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 

@@ -24,6 +24,7 @@ Command line syntax summary:
 """
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.fssync.command import Command, Usage
 
@@ -33,10 +34,10 @@ from zope.app.fssync.fsbundle import FSBundle
 def main():
     """Main program.
 
-    The return value is the suggested sys.exit() status code:
-    0 or None for success
-    2 for command line syntax errors
-    1 or other for later errors
+    The return value is the suggested `sys.exit()` status code:
+    ``0`` or ``None`` for success
+    ``2`` for command line syntax errors
+    ``1`` or other for later errors
     """
     cmd = Command(usage=__doc__)
     for func, aliases, short, long in command_table:
@@ -54,7 +55,7 @@ def create(opts, args):
 
     The contents of SOURCE are copied into the newly created bundle,
     and are scheduled for addition to the database.  The new bundle
-    can be manipulated using 'zsync add' and 'zsync revert' (and just
+    can be manipulated using ``zsync add`` and ``zsync revert`` (and just
     editing the contents) as needed before committing it to the
     database.
     """

@@ -15,10 +15,12 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.fssync.fsregistry import provideSynchronizer
 
 def registerFSRegistry(_context, class_=None, factory=None):
-    """registerFSRegistry method to register Class and Serializer factory
+    """`registerFSRegistry` method to register Class and Serializer factory
     associated with it.
     """
     _context.action(
