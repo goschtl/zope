@@ -196,13 +196,13 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
 
-        utility_service = getService(self.rootFolder, Utilities)
+        utility_service = getService(Utilities, self.rootFolder)
         self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.queryUtility(IInterface).foo(),
                          "foo global")
         self.assertEqual(
-            utility_service.queryUtility(IInterface, name="bob").foo(),
+            utility_service.queryUtility(IInterface, "bob").foo(),
             "foo global bob")
 
     def test_getUtility_delegates_to_global(self):
@@ -211,18 +211,18 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
 
-        utility_service = getService(self.rootFolder, Utilities)
+        utility_service = getService(Utilities, self.rootFolder)
         self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.getUtility(IInterface).foo(),
                          "foo global")
         self.assertEqual(
-            utility_service.getUtility(IInterface, name="bob").foo(),
+            utility_service.getUtility(IInterface, "bob").foo(),
             "foo global bob")
 
 
     def test_registrationsFor_methods(self):
-        utilities = getService(self.rootFolder, Utilities)
+        utilities = getService(Utilities, self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
@@ -243,7 +243,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
 
-        utilities = getService(self.rootFolder, Utilities)
+        utilities = getService(Utilities, self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
@@ -256,18 +256,17 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
             gout = name and "foo global "+name or "foo global"
 
-            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
+            self.assertEqual(utilities.getUtility(IInterface, name).foo(),
                              gout)
 
             registration.status = ActiveStatus
 
-            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
+            self.assertEqual(utilities.getUtility(IInterface, name).foo(),
                              "foo local")
 
             registration.status = RegisteredStatus
 
-            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
-                             gout)
+            self.assertEqual(utilities.getUtility(IInterface, name).foo(), gout)
 
 
 def test_suite():

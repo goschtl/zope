@@ -64,7 +64,7 @@ class TestRoleDirective(TestBase, unittest.TestCase):
         context = xmlconfig.file("role.zcml",
                                  zope.app.securitypolicy.tests)
 
-        role = zapi.getUtility(IRole, name="zope.Everyperson")
+        role = zapi.getUtility(IRole, "zope.Everyperson")
         self.failUnless(role.id.endswith('Everyperson'))
         self.assertEqual(role.title, 'Tout le monde')
         self.assertEqual(role.description,

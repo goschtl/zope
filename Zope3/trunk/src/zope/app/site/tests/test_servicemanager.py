@@ -56,7 +56,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         name = rm.addRegistration(registration)
         traverse(rm, name).status = ActiveStatus
 
-        testOb = getService(self.rootFolder, 'test_service')
+        testOb = getService('test_service', self.rootFolder)
         self.assertEqual(testOb.__parent__.__parent__.__parent__,
                          self.rootFolder)
         self.assertEqual(testOb, ts)
@@ -117,7 +117,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         name = rm.addRegistration(registration)
         traverse(rm, name).status = RegisteredStatus
 
-        testOb = getService(self.rootFolder, 'test_service')
+        testOb = getService('test_service', self.rootFolder)
         self.assertEqual(testOb, ts1)
 
 
@@ -133,12 +133,12 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         cm = traverse(sm, 'default').getRegistrationManager()
         traverse(cm, name).status = UnregisteredStatus
 
-        self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
+        self.assertEqual(getService('test_service', self.rootFolder), root_ts)
 
     def testContextServiceLookup(self):
         self.testGetService() # set up localservice
         sm = getServices(self.rootFolder)
-        self.assertEqual(getService(self.folder1_1, 'test_service'),
+        self.assertEqual(getService('test_service', self.folder1_1),
                          sm['default']['test_service1'])
 
     def testContextServiceLookupWithMultipleServiceManagers(self):
@@ -147,7 +147,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         sm2 = self.makeSite('folder1')
 
-        self.assertEqual(getService(self.folder1, 'test_service'),
+        self.assertEqual(getService('test_service', self.folder1),
                          sm['default']['test_service1'])
 
     def testComponentArchitectureServiceLookup(self):
@@ -159,7 +159,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         globsm = getGlobalServices()
         globsm.provideService('test_service', ts)
 
-        service = getService(self.folder1, 'test_service')
+        service = getService('test_service', self.folder1)
         self.assertEqual(service, ts)
 
     def donttest_resolve(self):

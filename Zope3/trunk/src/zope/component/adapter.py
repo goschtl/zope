@@ -58,10 +58,7 @@ class AdapterService(AdapterRegistry):
 
     implements(IAdapterService)
 
-    def queryAdapter(self, object, interface, default=None):
-        return self.queryNamedAdapter(object, interface, '', default)
-
-    def queryNamedAdapter(self, object, interface, name='', default=None):
+    def queryAdapter(self, object, interface, name='', default=None):
         factory = self.lookup1(providedBy(object), interface, name)
         if factory is not None:
             return factory(object)

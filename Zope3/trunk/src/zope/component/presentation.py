@@ -384,7 +384,7 @@ class GlobalPresentationService(GlobalService):
         """
         skin = request.getPresentationSkin() or self.defaultSkin
         for layer in self._skins[skin]:
-            r = layer.queryNamedAdapter(request, providing, name)
+            r = layer.queryAdapter(request, providing, name)
             if r is not None:
                 return r
         return default
@@ -471,13 +471,13 @@ def GL(presentation_service, layer_name):
 
 class Layer(zope.interface.adapter.AdapterRegistry):
 
-    def queryNamedAdapter(self, obj, interface, name, default=None):
+    def queryAdapter(self, obj, interface, name='', default=None):
         factory = self.lookup1(providedBy(obj), interface, name)
         if factory is not None:
             return factory(obj)
         return default
 
-    def queryMultiAdapter(self, objects, interface, name, default=None):
+    def queryMultiAdapter(self, objects, interface, name='', default=None):
         factory = self.lookup(map(providedBy, objects), interface, name)
         if factory is not None:
             return factory(*objects)

@@ -232,7 +232,7 @@ class UtilityToolView(SimpleView):
 
     def delete(self):
         for name in self.request.form['selected']:
-            utils = zapi.getService(self, Utilities)
+            utils = zapi.getService(Utilities)
             reg = utils.queryRegistrations(name, self.interface)
 
             del_objs = []
@@ -260,7 +260,7 @@ class UtilityToolView(SimpleView):
             newname = self.request.form['new_names'][
                 self.request.form['old_names'].index(name)]
             
-            utils = zapi.getService(self, 'Utilities')
+            utils = zapi.getService('Utilities')
             reg = utils.queryRegistrations(name, self.interface)
 
             # Rename registrations
@@ -273,7 +273,7 @@ class UtilityToolView(SimpleView):
 
     def activate(self):
         for name in self.request.form['selected']:
-            utils = zapi.getService(self, 'Utilities')
+            utils = zapi.getService('Utilities')
             reg = utils.queryRegistrations(name, self.interface)
 
             # Activate registrations
@@ -283,7 +283,7 @@ class UtilityToolView(SimpleView):
         
     def deactivate(self):
         for name in self.request.form['selected']:
-            utils = zapi.getService(self, 'Utilities')
+            utils = zapi.getService('Utilities')
             reg = utils.queryRegistrations(name, self.interface)
 
             # Deactivate registrations
@@ -318,7 +318,7 @@ class UtilityToolView(SimpleView):
         return status
     
     def getComponents(self):
-        utils = zapi.getService(self.context, Utilities)
+        utils = zapi.getService(Utilities)
         items = []
         for registration in [reg for reg in utils.registrations(localOnly=True)
                              if reg.provided == self.interface]:

@@ -75,8 +75,8 @@ class SQLExpr:
             # XXX: It is hard set that the connection name variable is called
             # 'sql_conn'
             conn_name = econtext.vars['sql_conn']
-            connection_service = getService(econtext.context,
-                                            "SQLDatabaseConnections")
+            connection_service = getService("SQLDatabaseConnections",
+                                            econtext.context)
             connection = connection_service.getConnection(conn_name)
         elif econtext.vars.has_key('rdb') and econtext.vars.has_key('dsn'):
             rdb = econtext.vars['rdb']

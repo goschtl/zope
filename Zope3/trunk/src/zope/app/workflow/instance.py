@@ -50,7 +50,7 @@ class ProcessInstance(Contained):
 def createProcessInstance(context, name):
     """Helper function to create a process instance from a process definition
     name."""
-    utils = zapi.getService(context, Utilities)
+    utils = zapi.getService(Utilities, context)
     pd = utils.getUtility(IProcessDefinition, name)
     return pd.createProcessInstance(name)
 

@@ -394,7 +394,7 @@ class Committer(object):
             else:
                 iface = IFileFactory
 
-            factory = as.queryNamedAdapter(location, iface, suffix)
+            factory = as.queryAdapter(location, iface, suffix)
             if factory is None:
                 factory = as.queryAdapter(location, iface)
 

@@ -104,16 +104,11 @@ class GlobalServiceManager(object):
 
     def getService(self, name):
         """see IServiceService interface"""
-        service = self.queryService(name)
+        service = self.__services.get(name)
         if service is None:
             raise ComponentLookupError(name)
 
         return service
-
-    def queryService(self, name, default=None):
-        """see IServiceService interface"""
-
-        return self.__services.get(name, default)
 
 
 def GS(service_manager, service_name):

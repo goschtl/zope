@@ -206,6 +206,5 @@ class PythonPage(Contained, Persistent):
         kw['context'] = zapi.getParent(self)
 
         service = zapi.getService(Utilities)
-        interpreter = service.queryUtility(IInterpreter,
-                                           name='text/server-python')
+        interpreter = service.queryUtility(IInterpreter, 'text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)

@@ -126,10 +126,8 @@ class BootstrapSubscriberBase:
         
         Returns the name added or None if nothing was added.
         """
-        utility_manager = zapi.getService(
-                self.root_folder, Utilities
-                )
-        utility = utility_manager.queryUtility(interface, name=name)
+        utility_manager = zapi.getService(Utilities, self.root_folder)
+        utility = utility_manager.queryUtility(interface, name)
         if utility is None:
             return addConfigureUtility(
                     self.root_folder, interface, utility_type, utility_factory,

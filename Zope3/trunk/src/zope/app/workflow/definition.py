@@ -110,7 +110,7 @@ class ProcessDefinitionVocabulary:
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        self.utilities = zapi.getService(context, Utilities)
+        self.utilities = zapi.getService(Utilities, context)
 
     def __names(self):
         return [name for name, util in self.utilities.getUtilitiesFor(

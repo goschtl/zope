@@ -123,7 +123,7 @@ class ChangeRegistrations(BrowserView):
 
         message = self.applyUpdates()
 
-        self.configBase = str(getView(getServices(self.context), 'absolute_url',
+        self.configBase = str(getView(getServices(), 'absolute_url',
                                       self.request))
 
         registrations = self.context.info()

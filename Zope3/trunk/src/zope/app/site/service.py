@@ -162,14 +162,6 @@ class SiteManager(
 
         return serviceDefs
 
-    def queryService(self, name, default=None):
-        """See IServiceService
-        """
-        try:
-            return self.getService(name)
-        except ComponentLookupError:
-            return default
-
     def getService(self, name):
         """See IServiceService
         """

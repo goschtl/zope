@@ -32,9 +32,8 @@ class PrincipalRoleView:
     def getAllPrincipals(self):
         principals = getattr(self, '_principals', None)
         if principals is None:
-            principals = self._principals = zapi.getService(
-                self.context, Authentication
-                ).getPrincipals('')
+            auth = zapi.getService(Authentication)
+            principals = self._principals = auth.getPrincipals('')
         return principals
 
     def getAllRoles(self):
@@ -52,7 +51,7 @@ class PrincipalRoleView:
                 principals = self.getAllPrincipals()
             else:
                 # Ugh, we have ids, but we want objects
-                auth_service = zapi.getService(self.context, Authentication)
+                auth_service = zapi.getService(Authentication)
                 principals = [auth_service.getPrincipal(principal)
                               for principal in principals]
 

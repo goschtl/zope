@@ -49,4 +49,4 @@ class WorkflowSetup(PlacefulSetup):
     def setupAuthService(self):
         self.root_sm.defineService(Authentication, IAuthenticationService)
         self.root_sm.provideService(Authentication, principalRegistry)
-        return zapi.getService(self.rootFolder, Authentication)
+        return zapi.getService(Authentication, self.rootFolder)

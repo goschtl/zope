@@ -38,12 +38,12 @@ class UtilityService(AdapterRegistry):
 
     def getUtility(self, interface, name=''):
         """See IUtilityService interface"""
-        c = self.queryUtility(interface, None, name)
+        c = self.queryUtility(interface, name)
         if c is not None:
             return c
         raise ComponentLookupError(interface, name)
 
-    def queryUtility(self, interface, default=None, name=''):
+    def queryUtility(self, interface, name='', default=None):
         """See IUtilityService interface"""
 
         byname = self._null.get(interface)

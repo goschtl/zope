@@ -72,8 +72,7 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         request = Request(I, '')
 
         T = WikiPageTraverser(page1, request)
-        getService(None, Presentation).provideView(
-            IWikiPage, 'viewfoo', I, View)
+        getService(Presentation).provideView(IWikiPage, 'viewfoo', I, View)
 
         self.failUnless(
             T.publishTraverse(request, 'viewfoo').__class__ is View )

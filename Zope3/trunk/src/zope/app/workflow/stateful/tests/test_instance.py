@@ -107,7 +107,7 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       name).status = ActiveStatus
 
-        utilities = zapi.getService(self.sm, Utilities)
+        utilities = zapi.getService(Utilities, self.sm)
         self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = createProcessInstance(self.sm, 'definition1')
@@ -219,7 +219,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(), n
                       ).status = ActiveStatus
 
-        utilities = zapi.getService(self.sm, Utilities)
+        utilities = zapi.getService(Utilities, self.sm)
         self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
@@ -306,7 +306,7 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
-        utilities = zapi.getService(self.sm, Utilities)
+        utilities = zapi.getService(Utilities, self.sm)
         self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the pi some context to find a service
         self.pi = contained(
@@ -392,7 +392,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
-        utilities = zapi.getService(self.sm, Utilities)
+        utilities = zapi.getService(Utilities, self.sm)
         self.pd = utilities.getUtility(IProcessDefinition, 'definition1')
         # give the process instance container (pic) some context to find a
         # service (while this is not correct, it resembles the current

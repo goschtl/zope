@@ -36,7 +36,7 @@ class PrincipalRegistry(object):
     # Methods implementing IAuthenticationService
 
     def authenticate(self, request):
-        a = zapi.queryAdapter(request, ILoginPassword, None)
+        a = zapi.queryAdapter(request, ILoginPassword)
         if a is not None:
             login = a.getLogin()
             if login is not None:

@@ -94,7 +94,7 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
     def test_activated(self):
         self.reg.activated()
         self.assertEqual(self.reg.getComponent().name, 'TestDoc')
-        service = zapi.getService(self.rootFolder, BrowserMenu)
+        service = zapi.getService(BrowserMenu, self.rootFolder)
         menu = service.getLocalMenu('add_content')
         self.assertEqual('TestDoc', menu['1'].title)
         mi = IContentComponentMenuItem(self.reg.getComponent())

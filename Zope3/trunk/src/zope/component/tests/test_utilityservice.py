@@ -64,21 +64,21 @@ class Test(TestCase, CleanUp):
         provideService('Utilities', GlobalUtilityService())
 
     def testGetUtility(self):
-        us = getService(None, Utilities)
+        us = getService(Utilities)
         self.assertRaises(
             ComponentLookupError, getUtility, IDummyUtility)
         us.provideUtility(IDummyUtility, dummyUtility)
         self.assertEqual(getUtility(IDummyUtility), dummyUtility)
 
     def testQueryUtility(self):
-        us = getService(None, Utilities)
+        us = getService(Utilities)
         self.assertEqual(queryUtility(IDummyUtility), None)
         self.assertEqual(queryUtility(IDummyUtility, default=self), self)
         us.provideUtility(IDummyUtility, dummyUtility)
         self.assertEqual(queryUtility(IDummyUtility), dummyUtility)
 
     def testgetUtilitiesFor(self):
-        us = getService(None, Utilities)
+        us = getService(Utilities)
         us.provideUtility(IDummyUtility, dummyUtility)
         self.assertEqual(list(getUtilitiesFor(IDummyUtility)),
                          [('',dummyUtility)])
@@ -86,14 +86,14 @@ class Test(TestCase, CleanUp):
                          [('',dummyUtility)])
 
     def testregistrations(self):
-        us = getService(None, Utilities)
+        us = getService(Utilities)
         us.provideUtility(IDummyUtility, dummyUtility)
         self.assertEqual(
             map(str, us.registrations()),
             ["UtilityRegistration('IDummyUtility', '', 'DummyUtility', '')"])
 
     def testOverrides(self):
-        us = getService(None, Utilities)
+        us = getService(Utilities)
 
         # fail if nothing registered:
         self.assertRaises(

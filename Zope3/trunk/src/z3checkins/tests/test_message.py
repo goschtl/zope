@@ -391,8 +391,7 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        getService(None, 'Utilities').provideUtility(IMessageParser,
-                                                     ParserStub())
+        getService('Utilities').provideUtility(IMessageParser, ParserStub())
 
     def test_createAndAdd(self):
         from z3checkins.message import MessageUpload
@@ -488,7 +487,7 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         from z3checkins.message import MessageContainerAdapter
-        getService(None, servicenames.Adapters).register(
+        getService(servicenames.Adapters).register(
                 [None], IMessageArchive, "", MessageContainerAdapter)
 
     def test_checkins(self):
@@ -689,7 +688,7 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
                         'c': MessageStub(date=3, log_message='yyy')}
         view.request = RequestStub()
         view.index = view
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
                 ICheckinMessage, 'html', IRequest, MessageTestView)
 
         res = view.renderCheckins()
@@ -707,9 +706,9 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         view.request = RequestStub()
         view.index = view
         view.bookmarks = lambda: [1]
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
                 ICheckinMessage, 'html', IRequest, MessageTestView)
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
                 IBookmark, 'html', IRequest, BookmarkTestView)
 
         res = view.renderCheckins()
@@ -747,7 +746,7 @@ class TestCheckinMessageView(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         from z3checkins.message import MessageContainerAdapter
-        getService(None, servicenames.Adapters).register(
+        getService(servicenames.Adapters).register(
                 [None], IMessageArchive, "", MessageContainerAdapter)
 
     def test_body_strange(self):

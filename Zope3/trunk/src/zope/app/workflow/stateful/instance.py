@@ -217,8 +217,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService."""
-        utils = zapi.getService(self, Utilities)
-        return utils.getUtility(IProcessDefinition, self.processDefinitionName)
+        return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
 
     # XXX this is not entirely tested
     def _getContext(self):

@@ -35,9 +35,9 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideInterface(self):
         utils = zapi.getGlobalService(Utilities)
-        self.assertEqual(utils.queryUtility(IDAVNamespace, name=ns), None)
+        self.assertEqual(utils.queryUtility(IDAVNamespace, ns), None)
         self.context = xmlconfig.file("dav.zcml", zope.app.dav.tests)
-        self.assertEqual(utils.queryUtility(IDAVNamespace, name=ns), ISchema)
+        self.assertEqual(utils.queryUtility(IDAVNamespace, ns), ISchema)
 
 def test_suite():
     return unittest.TestSuite((

@@ -141,7 +141,7 @@ class AddContentComponentInstanceView(AddView):
             type_name, content_name = name.split("=", 1)
             self.context.contentName = content_name
 
-        utilities = zapi.getService(self.context, Utilities)
+        utilities = zapi.getService(Utilities)
         matching = [util
                     for name, util in utilities.getUtilitiesFor(
                                                   IContentComponentDefinition)

@@ -132,8 +132,7 @@ class LocalPresentationService(
             if layer is None:
                 raise ValueError("Bad layer", layer)
 
-            r = layer.queryNamedAdapter(request, providing,
-                                        name)
+            r = layer.queryAdapter(request, providing, name)
             if r is not None:
                 return r
 

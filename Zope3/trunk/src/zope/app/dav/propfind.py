@@ -198,7 +198,7 @@ class PROPFIND(object):
                   if e.nodeType == e.ELEMENT_NODE]
         for node in childs:
             ns = node.namespaceURI
-            iface = zapi.queryUtility(IDAVNamespace, None, ns)
+            iface = zapi.queryUtility(IDAVNamespace, ns)
             value = _props.get(ns, {'iface': iface, 'props': []})
             value['props'].append(node.localName)
             _props[ns] = value
@@ -206,7 +206,7 @@ class PROPFIND(object):
 
     def _handleAllprop(self, _avail_props, _props):
         for ns in _avail_props.keys():
-            iface = zapi.queryUtility(IDAVNamespace, None, ns)
+            iface = zapi.queryUtility(IDAVNamespace, ns)
             _props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
         return _props
 

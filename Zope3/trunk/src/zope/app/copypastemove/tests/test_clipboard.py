@@ -45,7 +45,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
     def testAddItems(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService('PrincipalAnnotation', self)
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
@@ -61,7 +61,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
     def testSetContents(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService('PrincipalAnnotation', self)
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
 
@@ -77,7 +77,7 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
     def testClearContents(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService(self, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService('PrincipalAnnotation', self)
         annotations = annotationsvc.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()

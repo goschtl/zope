@@ -51,12 +51,6 @@ class TestingServiceManager:
             return self
         raise ComponentLookupError("Wrong service name", name)
 
-    def queryService(self, name, default=None):
-        if name in ("Services", "Utilities"):
-            return self
-        else:
-            return default
-
     def queryLocalService(self, name, default=None):
         if name == "Services":
             return self

@@ -129,10 +129,13 @@ class ContentComponentDefinitionMenuItem(object):
             # Get the servicem manager and the default package
             sm = zapi.getServices(self.context)
             default = zapi.traverse(sm, 'default')
-            service = sm.queryService(BrowserMenu)
+            try:
+                service = sm.getService(BrowserMenu)
+            except ComponentLookupError:
+                service = None
             # Check whether the service really exists locally; if not, create
             # one for this service manager
-            if (service is None or
+            if (service is None or 
                 not ILocalBrowserMenuService.providedBy(service) or
                 not zapi.name(service) in default):
 
@@ -148,7 +151,7 @@ class ContentComponentDefinitionMenuItem(object):
 
         else:
             # Find a browser menu service and make sure it is a local one.
-            service = zapi.getService(self, BrowserMenu)
+            service = zapi.getService(BrowserMenu, self)
             if not ILocalBrowserMenuService.providedBy(service):
                 raise ComponentLookupError, \
                       _('No local/peristent Browser Menu Service found.')

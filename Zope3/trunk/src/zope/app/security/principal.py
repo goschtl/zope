@@ -22,7 +22,7 @@ from zope.app.servicenames import Authentication
 def checkPrincipal(context, principal_id):
 
     try:
-        if zapi.getService(context, Authentication).getPrincipal(principal_id):
+        if zapi.getService(Authentication, context).getPrincipal(principal_id):
             return
     except NotFoundError:
         pass

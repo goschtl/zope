@@ -111,7 +111,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
     def getAllLocalMenus(self):
         """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
-        utilities = zapi.getService(self, Utilities)
+        utilities = zapi.getService(Utilities, self)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         return map(lambda m: m[1], menus)
 
@@ -126,7 +126,7 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
 
     def queryLocalMenu(self, menu_id, default=None):
         """See zope.app.interfaces.services.menu.ILocalBrowserMenuService"""
-        utilities = zapi.getService(self, Utilities)
+        utilities = zapi.getService(Utilities, self)
         menus = utilities.getLocalUtilitiesFor(ILocalBrowserMenu)
         for name, menu in menus:
             if name == menu_id:

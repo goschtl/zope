@@ -27,7 +27,6 @@ from zope.component import getServiceDefinitions, getService, getGlobalServices
 from zope.component.service import UndefinedService, InvalidService
 from zope.component.service import GlobalServiceManager, GlobalService
 from zope.component.exceptions import ComponentLookupError
-from zope.component import queryService
 from zope.component.interfaces import IServiceService
 
 class IOne(Interface):
@@ -49,11 +48,10 @@ class Test(CleanUp, unittest.TestCase):
         ss.defineService('one', IOne)
         c = ServiceOne()
         ss.provideService('one', c)
-        self.assertEqual(id(getService(None, 'one')), id(c))
+        self.assertEqual(id(getService('one')), id(c))
 
     def testFailedLookup(self):
-        self.assertRaises(ComponentLookupError, getService, None, 'two')
-        self.assertEqual(queryService(None, 'two'), None)
+        self.assertRaises(ComponentLookupError, getService, 'two')
 
     def testDup(self):
         getGlobalServices().defineService('one', IOne)
@@ -69,7 +67,7 @@ class Test(CleanUp, unittest.TestCase):
                           getGlobalServices().provideService,
                           'one', c2)
 
-        self.assertEqual(id(getService(None, 'one')), id(c))
+        self.assertEqual(id(getService('one')), id(c))
 
 
     def testUndefined(self):
@@ -104,7 +102,7 @@ class Test(CleanUp, unittest.TestCase):
         sm.defineService('two', ITwo)
         d = ServiceTwo()
         sm.provideService('two', d)
-        defs = getServiceDefinitions(None)
+        defs = getServiceDefinitions()
         defs.sort()
         self.assertEqual(defs,
             [('Services', IServiceService), ('one', IOne), ('two', ITwo)])

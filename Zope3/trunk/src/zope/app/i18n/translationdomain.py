@@ -83,7 +83,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
             # If nothing found, delegate to a translation server higher up the
             # tree.
             utils = getNextService(self, Utilities)
-            domain = utils.queryUtility(ITranslationDomain, name=self.domain)
+            domain = utils.queryUtility(ITranslationDomain, self.domain)
             if domain is not None:
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)

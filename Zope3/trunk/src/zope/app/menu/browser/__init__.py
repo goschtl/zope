@@ -56,7 +56,7 @@ class BrowserMenuServiceOverview:
 
     def getLocalMenus(self):
         menus_info = []
-        utilities = zapi.getService(self.context, Utilities)
+        utilities = zapi.getService(Utilities)
         for menu_id, menu in utilities.getLocalUtilitiesFor(ILocalBrowserMenu):
             menus_info.append(self._getInfoFromMenu(menu_id, menu))
         return menus_info

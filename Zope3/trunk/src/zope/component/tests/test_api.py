@@ -17,7 +17,6 @@ import unittest
 from zope import component
 from zope.component import servicenames
 from zope.component import getAdapter, queryAdapter
-from zope.component import getNamedAdapter, queryNamedAdapter
 from zope.component import getService
 from zope.component import getUtility, queryUtility
 from zope.component import getDefaultViewName
@@ -169,15 +168,15 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ComponentLookupError, getAdapter, Conforming, I2)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, Test), Test)
+        self.assertEquals(queryAdapter(ob, I2, '', Test), Test)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I2, Test), Test)
+        self.assertEquals(queryAdapter(Conforming, I2, '', Test), Test)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I3, Test), Test)
+        self.assertEquals(queryAdapter(Conforming, I3, '', Test), Test)
 
-        getService(None, Adapters).register([I1], I2, '', Comp)
+        getService(Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -196,15 +195,15 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ComponentLookupError, getAdapter, ob, I2)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, Test), Test)
+        self.assertEquals(queryAdapter(ob, I2, '', Test), Test)
 
-        getService(None, Adapters).register([I1], I2, '', Comp)
+        getService(Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
     def testInterfaceCall(self):
-        getService(None, Adapters).register([I1], I2, '', Comp)
+        getService(Adapters).register([I1], I2, '', Comp)
         c = I2(ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -223,9 +222,9 @@ class Test(PlacelessSetup, unittest.TestCase):
                           context=ob)
 
         # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, Test, context=ob), Test)
+        self.assertEquals(queryAdapter(ob, I2, '', Test, context=ob), Test)
 
-        getService(None, Adapters).register([I1], I2, '', Comp)
+        getService(Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2, context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -233,24 +232,17 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testNamedAdapter(self):
         self.testAdapter()
 
-        # If an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object UNLESS we are asking for a
-        # named adapter.
-        self.assertRaises(ComponentLookupError,
-                          getNamedAdapter, ob, I1, 'test')
-
         # If an adapter isn't registered for the given object and interface,
         # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError,
-                          getNamedAdapter, ob, I2, 'test')
+        self.assertRaises(ComponentLookupError, getAdapter, ob, I2, 'test')
 
         # ...otherwise, you get the default
-        self.assertEquals(queryNamedAdapter(ob, I2, 'test', Test), Test)
+        self.assertEquals(queryAdapter(ob, I2, 'test', Test), Test)
 
         class Comp2(Comp): pass
 
-        getService(None, Adapters).register([I1], I2, 'test', Comp2)
-        c = getNamedAdapter(ob, I2, 'test')
+        getService(Adapters).register([I1], I2, 'test', Comp2)
+        c = getAdapter(ob, I2, 'test')
         self.assertEquals(c.__class__, Comp2)
         self.assertEquals(c.context, ob)
 
@@ -265,7 +257,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             implements(I2)
         ob2 = Ob2()
         context = None
-        getService(context, Adapters).register([I1, I2], I3, '', DoubleAdapter)
+        getService(Adapters, context).register([I1, I2], I3, '', DoubleAdapter)
         c = queryMultiAdapter((ob, ob2), I3, context=context)
         self.assertEquals(c.__class__, DoubleAdapter)
         self.assertEquals(c.first, ob)
@@ -275,7 +267,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         # providing an adapter for None says that your adapter can
         # adapt anything to I2.
-        getService(None, Adapters).register([None], I2, '', Comp)
+        getService(Adapters).register([None], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -283,9 +275,9 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testUtility(self):
         self.assertRaises(ComponentLookupError, getUtility, I1, context=ob)
         self.assertRaises(ComponentLookupError, getUtility, I2, context=ob)
-        self.assertEquals(queryUtility(I2, Test, context=ob), Test)
+        self.assertEquals(queryUtility(I2, default=Test, context=ob), Test)
 
-        getService(None, 'Utilities').provideUtility(I2, comp)
+        getService('Utilities').provideUtility(I2, comp)
         self.assertEquals(id(getUtility(I2, context=ob)), id(comp))
 
     def testNamedUtility(self):
@@ -299,10 +291,10 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getUtility, I1, 'test', context=ob)
         self.assertRaises(ComponentLookupError,
                           getUtility, I2, 'test', context=ob)
-        self.assertEquals(queryUtility(I2, Test, name='test', context=ob),
+        self.assertEquals(queryUtility(I2, 'test', Test, context=ob),
                           Test)
 
-        getService(None, 'Utilities').provideUtility(I2, comp, 'test')
+        getService('Utilities').provideUtility(I2, comp, 'test')
         self.assertEquals(id(getUtility(I2, 'test', ob)), id(comp))
 
     def test_getAllUtilitiesRegisteredFor(self):
@@ -315,10 +307,10 @@ class Test(PlacelessSetup, unittest.TestCase):
         comp21 = Comp21('21')
         comp21bob = Comp21('21bob')
         
-        getService(None, 'Utilities').provideUtility(I2, comp)
-        getService(None, 'Utilities').provideUtility(I21, comp21)
-        getService(None, 'Utilities').provideUtility(I2, compbob, 'bob')
-        getService(None, 'Utilities').provideUtility(I21, comp21bob, 'bob')
+        getService('Utilities').provideUtility(I2, comp)
+        getService('Utilities').provideUtility(I21, comp21)
+        getService('Utilities').provideUtility(I2, compbob, 'bob')
+        getService('Utilities').provideUtility(I21, comp21bob, 'bob')
 
         comps = [comp, compbob, comp21, comp21bob]
         comps.sort()
@@ -341,7 +333,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getView, ob, 'foo', Request(I2))
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test), Test)
 
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
             I1, 'foo', I2, Comp)
         c = getView(ob, 'foo', Request(I2))
         self.assertEquals(c.__class__, Comp)
@@ -367,7 +359,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             queryView(ob, 'foo', Request(I2), Test, providing=I3),
             Test)
 
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
             I1, 'foo', I2, Comp)
 
         self.assertRaises(ComponentLookupError,
@@ -379,7 +371,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             Test)
 
 
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
             I1, 'foo', I2, Comp, providing=I3)
 
         c = getView(ob, 'foo', Request(I2), providing=I3)
@@ -408,7 +400,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(
             queryMultiView((ob, ob2), request, I3, 'foo', 42), 42)
 
-        getService(None, servicenames.Presentation).provideAdapter(
+        getService(servicenames.Presentation).provideAdapter(
             IRequest, MV, 'foo', (I1, I2), I3)
 
         view = queryMultiView((ob, ob2), request, I3, 'foo')
@@ -464,7 +456,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ComponentLookupError, getResource, 'foo', r2)
         self.assertEquals(queryResource('foo', r2, Test), Test)
 
-        getService(None, servicenames.Presentation).provideResource(
+        getService(servicenames.Presentation).provideResource(
             'foo', I2, Comp)
         c = getResource('foo', r2)
         self.assertEquals(c.__class__, Comp)
@@ -490,7 +482,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryResource('foo', r2, Test, providing=I3),
                           Test)
 
-        getService(None, servicenames.Presentation).provideResource(
+        getService(servicenames.Presentation).provideResource(
             'foo', I2, Comp)
 
         self.assertRaises(ComponentLookupError,
@@ -501,7 +493,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           Test)
 
 
-        getService(None, servicenames.Presentation).provideResource(
+        getService(servicenames.Presentation).provideResource(
             'foo', I2, Comp, providing=I3)
 
         c = getResource('foo', r2, providing=I3)
@@ -522,7 +514,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test, context=ob),
                           Test)
 
-        getService(None, servicenames.Presentation).provideView(
+        getService(servicenames.Presentation).provideView(
             I1, 'foo', I2, Comp)
         c = getView(ob, 'foo', Request(I2), context=ob)
         self.assertEquals(c.__class__, Comp)
@@ -543,7 +535,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testDefaultViewName(self):
         from zope.component import getService
         from zope.exceptions import NotFoundError
-        viewService = getService(None, servicenames.Presentation)
+        viewService = getService(servicenames.Presentation)
         self.assertRaises(NotFoundError,
                           getDefaultViewName,
                           ob, Request(I1))

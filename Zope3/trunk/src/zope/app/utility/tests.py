@@ -94,7 +94,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
-        utility_service = getService(self.rootFolder, "Utilities")
+        utility_service = getService("Utilities", self.rootFolder)
 
         # We changed the root (base) service. This doesn't normally
         # occur.  We have to notify the local service that the base
@@ -105,16 +105,16 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(utility_service.queryUtility(IFoo).foo(),
                          "foo global")
-        self.assertEqual(utility_service.queryUtility(IFoo, name="bob").foo(),
+        self.assertEqual(utility_service.queryUtility(IFoo, "bob").foo(),
                          "foo global bob")
         self.assertEqual(utility_service.queryUtility(IFo).foo(),
                          "foo global")
-        self.assertEqual(utility_service.queryUtility(IFo, name="bob").foo(),
+        self.assertEqual(utility_service.queryUtility(IFo, "bob").foo(),
                          "foo global bob")
 
         self.assertEqual(utility_service.queryUtility(IBar), None)
-        self.assertEqual(utility_service.queryUtility(IBar, name="bob"), None)
-        self.assertEqual(utility_service.queryUtility(IFoo, name="rob"), None)
+        self.assertEqual(utility_service.queryUtility(IBar, "bob"), None)
+        self.assertEqual(utility_service.queryUtility(IFoo, "rob"), None)
 
     def test_getUtility_delegates_to_global(self):
         utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
@@ -122,29 +122,29 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
-        utility_service = getService(self.rootFolder, "Utilities")
+        utility_service = getService("Utilities", self.rootFolder)
         self.assert_(utility_service != utilityService)
 
         self.assertEqual(utility_service.getUtility(IFoo).foo(),
                          "foo global")
-        self.assertEqual(utility_service.getUtility(IFoo, name="bob").foo(),
+        self.assertEqual(utility_service.getUtility(IFoo, "bob").foo(),
                          "foo global bob")
         self.assertEqual(utility_service.getUtility(IFo).foo(),
                          "foo global")
-        self.assertEqual(utility_service.getUtility(IFo, name="bob").foo(),
+        self.assertEqual(utility_service.getUtility(IFo, "bob").foo(),
                          "foo global bob")
 
 
         self.assertRaises(ComponentLookupError,
                           utility_service.getUtility, IBar)
         self.assertRaises(ComponentLookupError,
-                          utility_service.getUtility, IBar, name='bob')
+                          utility_service.getUtility, IBar, 'bob')
         self.assertRaises(ComponentLookupError,
-                          utility_service.getUtility, IFoo, name='rob')
+                          utility_service.getUtility, IFoo, 'rob')
 
 
     def test_registrationsFor_methods(self):
-        utilities = getService(self.rootFolder, "Utilities")
+        utilities = getService("Utilities", self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
@@ -165,7 +165,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
 
-        utilities = getService(self.rootFolder, "Utilities")
+        utilities = getService("Utilities", self.rootFolder)
 
         # We changed the root (base) service. This doesn't normally
         # occur.  We have to notify the local service that the base
@@ -184,16 +184,16 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
             gout = name and "foo global "+name or "foo global"
 
-            self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
+            self.assertEqual(utilities.getUtility(IFoo, name).foo(), gout)
 
             registration.status = ActiveStatus
 
-            self.assertEqual(utilities.getUtility(IFoo, name=name).foo(),
+            self.assertEqual(utilities.getUtility(IFoo, name).foo(),
                              "foo local")
 
             registration.status = RegisteredStatus
 
-            self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
+            self.assertEqual(utilities.getUtility(IFoo, name).foo(), gout)
 
 
     def test_local_overrides(self):
@@ -207,10 +207,10 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         setup.addUtility(sm2, 'u2', IFoo, Foo('u22'))
 
         # Make sure we acquire:
-        self.assertEqual(zapi.getUtility(IFoo, 'u1', context=sm2).name, 'u1')
+        self.assertEqual(zapi.getUtility(IFoo, 'u1', sm2).name, 'u1')
 
         # Make sure we override:
-        self.assertEqual(zapi.getUtility(IFoo, 'u2', context=sm2).name, 'u22')
+        self.assertEqual(zapi.getUtility(IFoo, 'u2', sm2).name, 'u22')
 
 
 def test_suite():

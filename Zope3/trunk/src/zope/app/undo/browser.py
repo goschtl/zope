@@ -51,7 +51,7 @@ class UndoView(BrowserView):
 
     def undoAllTransactions(self, ids):
         """Undo transactions specified in 'ids'."""
-        undo = zapi.getUtility(self.context, IUndoManager)
+        undo = zapi.getUtility(IUndoManager)
         undo.undoTransactions(ids)
         self._redirect()
 

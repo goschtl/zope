@@ -89,18 +89,10 @@ def getService(name, context=None):
     # Deprecated backwards-compatibility hack.
     if isinstance(context, basestring) and not isinstance(name, basestring):
         name, context = context, name
-        ##warnings.warn("getService(context, name) is deprecated."
-        ##              "  Use getService(name, context=context).",
-        ##              DeprecationWarning, warningLevel())
+        warnings.warn("getService(context, name) is deprecated."
+                      "  Use getService(name, context=context).",
+                      DeprecationWarning, warningLevel())
     return getServices(context).getService(name)
-
-def queryService(context, name, default=None):
-    # Leaving the API in the older style of context, name, default because
-    # this function is deprecated anyway.
-    ##warnings.warn("queryService is deprecated.  Client code should depend"
-    ##              "  on the service existing.  Use getService instead.",
-    ##              DeprecationWarning, warningLevel())
-    return getServices(context).queryService(name, default)
 
 def getServiceDefinitions(context=None):
     return getServices(context).getServiceDefinitions()
@@ -117,15 +109,16 @@ def getUtility(interface, name='', context=None):
                       DeprecationWarning, warningLevel())
     return getService(Utilities, context=context).getUtility(interface, name)
 
-def queryUtility(interface, default=None, name='', context=None):
+def queryUtility(interface, name='', default=None, context=None):
     ## XXX this check is for migration.  Remove soon.
     if (not IInterface.providedBy(interface) or
-        not isinstance(name, basestring)):
+        not isinstance(name, basestring) or
+        isinstance(default, basestring)):
         raise TypeError("queryUtility got nonsense arguments."
                         " Check that you are updated with the"
                         " component API change.")
     return getService(Utilities, context).queryUtility(
-        interface, default, name)
+        interface, name, default)
 
 def getUtilitiesFor(interface, context=None):
     if not IInterface.providedBy(interface):
@@ -143,17 +136,12 @@ def getAllUtilitiesRegisteredFor(interface, context=None):
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):
-    adapter = queryAdapter(object, interface, None, name, context)
+    adapter = queryAdapter(object, interface, name, None, context)
     if adapter is None:
         raise ComponentLookupError(object, interface)
     return adapter
 
-def queryAdapter(object, interface, default=None, name='', context=None):
-    if name:
-        warnings.warn("The name argument to queryAdapter is deprecated",
-                      DeprecationWarning, warningLevel())
-        return queryNamedAdapter(object, interface, name, default, context)
-
+def queryAdapter(object, interface, name='', default=None, context=None):
     conform = getattr(object, '__conform__', None)
     if conform is not None:
         try:
@@ -178,26 +166,8 @@ def queryAdapter(object, interface, default=None, name='', context=None):
     if interface.providedBy(object):
         return object
 
-    return queryNamedAdapter(object, interface, name, default, context)
-
-def getNamedAdapter(object, interface, name, context=None):
-    adapter = queryNamedAdapter(object, interface, name, context=context)
-    if adapter is None:
-        raise ComponentLookupError(object, interface)
-    return adapter
-
-def queryNamedAdapter(object, interface, name, default=None, context=None):
-    try:
-        adapters = getService(Adapters, context)
-    except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
-        #warnings.warn("There is no adapters service.  Returning the default.",
-        #              DeprecationWarning, warningLevel())
-        return default
-
-    return adapters.queryNamedAdapter(object, interface, name, default)
-
-queryNamedAdapter = hookable(queryNamedAdapter)
+    adapters = getService(Adapters, context)
+    return adapters.queryAdapter(object, interface, name, default)
 
 def interfaceAdapterHook(iface, ob):
     try:
@@ -209,7 +179,7 @@ def interfaceAdapterHook(iface, ob):
         #              DeprecationWarning, warningLevel())
         return None
 
-    return adapters.queryNamedAdapter(ob, iface, '')
+    return adapters.queryAdapter(ob, iface, '')
 
 from zope.interface.interface import adapter_hooks
 adapter_hooks.append(interfaceAdapterHook)

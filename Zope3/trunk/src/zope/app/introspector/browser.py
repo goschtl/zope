@@ -33,7 +33,7 @@ class IntrospectorView(BrowserView):
         return introspector
 
     def getInterfaceURL(self, name):
-        services = zapi.getService(self.context, Services)
+        services = zapi.getService(Services, self.context)
         try:
             getInterface(self.context, name)
             url = zapi.getView(services, 'absolute_url', self.request)

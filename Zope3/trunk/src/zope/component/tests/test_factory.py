@@ -66,7 +66,7 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(TestFactoryZAPIFunctions, self).setUp()
         self.factory = Factory(Klass, 'Klass', 'Klassier')
-        utilityService = getService(None, servicenames.Utilities)
+        utilityService = getService(servicenames.Utilities)
         utilityService.provideUtility(IFactory, self.factory, 'klass')
 
     def testCreateObject(self):

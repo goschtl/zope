@@ -19,7 +19,7 @@ $Id$
 __metaclass__ = type
 
 from zope.interface import implements
-from zope.component import queryNamedAdapter
+from zope.component import queryAdapter
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.ftp import IFTPPublisher
 
@@ -208,7 +208,7 @@ class FTPView:
 
         dir = IWriteDirectory(self.context, None)
 
-        factory = queryNamedAdapter(self.context, IFileFactory, ext)
+        factory = queryAdapter(self.context, IFileFactory, ext)
         if factory is None:
             factory = IFileFactory(self.context)
 

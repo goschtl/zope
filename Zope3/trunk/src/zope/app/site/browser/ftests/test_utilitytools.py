@@ -103,8 +103,7 @@ class TestUtilityTool(BrowserTestCase):
                   'APPLY_RENAME': 'Rename'})
 
         root = self.getRootFolder()
-        util = zapi.queryUtility(ITranslationDomain, name='newzope',
-                                 context=root)
+        util = zapi.queryUtility(ITranslationDomain, 'newzope', context=root)
         self.assert_(util is not None)
 
     def testDeactivate(self):
@@ -126,7 +125,7 @@ class TestUtilityTool(BrowserTestCase):
                   'DEACTIVATE': 'Rename'})
 
         root = self.getRootFolder()
-        utils = zapi.getService(root, 'Utilities')
+        utils = zapi.getService('Utilities', root)
         reg = utils.queryRegistrations('zope', ITranslationDomain)
 
         for info in reg.info():
@@ -157,7 +156,7 @@ class TestUtilityTool(BrowserTestCase):
                   'ACTIVATE': 'Rename'})
 
         root = self.getRootFolder()
-        utils = zapi.getService(root, 'Utilities')
+        utils = zapi.getService('Utilities', root)
         reg = utils.queryRegistrations('zope', ITranslationDomain)
 
         for info in reg.info():

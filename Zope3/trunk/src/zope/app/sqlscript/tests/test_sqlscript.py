@@ -16,7 +16,6 @@ $Id$
 """
 import unittest
 from zope.interface import implements, classImplements
-from zope.component import getService
 from zope.component.service import serviceManager as sm
 
 from zope.app.tests import ztapi

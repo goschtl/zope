@@ -34,9 +34,7 @@ class PrincipalPermissionView(BrowserView):
     index = ViewPageTemplateFile('principal_permission_edit.pt')
 
     def get_principal(self, principal_id):
-        return zapi.getService(self.context,
-                          Authentication
-                          ).getPrincipal(principal_id)
+        return zapi.getService(Authentication).getPrincipal(principal_id)
 
     def unsetPermissions(self, principal_id, permission_ids, REQUEST=None):
         """Form action unsetting a principals permissions"""

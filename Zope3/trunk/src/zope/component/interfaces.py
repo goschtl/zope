@@ -82,7 +82,7 @@ class IComponentArchitecture(Interface):
         ComponentLookupError.
         """
 
-    def queryUtility(interface, default=None, name='', context=None):
+    def queryUtility(interface, name='', default=None, context=None):
         """Look for the utility that provides interface
 
         Returns the nearest utility to the context that implements
@@ -125,23 +125,6 @@ class IComponentArchitecture(Interface):
         returned.
         """
 
-    def getNamedAdapter(object, interface, name, context=None):
-        """Get a named adapter to an interface for an object
-
-        Returns a named adapter that can adapt object to interface.  If a
-        matching adapter cannot be found, raises ComponentLookupError.
-
-        If context is None, an application-defined policy is used to choose
-        an appropriate service manager from which to get an 'Adapters' service.
-
-        If 'context' is not None, context is adapted to IServiceService,
-        and this adapter's 'Adapters' service is used.
-
-        The name consisting of an empty string is reserved for unnamed
-        adapters. The unnamed adapter methods will often call the
-        named adapter methods with an empty string for a name.
-        """
-
     def getMultiAdapter(objects, interface, name='', context=None):
         """Look for a multi-adapter to an interface for an objects
 
@@ -176,25 +159,6 @@ class IComponentArchitecture(Interface):
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
         returned.
-        """
-
-    def queryNamedAdapter(object, interface, name, default=None,
-                          context=None):
-        """Look for a named adapter to an interface for an object
-
-        Returns a named adapter that can adapt object to interface.  If a
-        matching adapter cannot be found, returns the default.
-
-        If context is None, an application-defined policy is used to choose
-        an appropriate service manager from which to get an 'Adapters'
-        service.
-
-        If 'context' is not None, context is adapted to IServiceService,
-        and this adapter's 'Adapters' service is used.
-
-        The name consisting of an empty string is reserved for unnamed
-        adapters. The unnamed adapter methods will often call the
-        named adapter methods with an empty string for a name.
         """
 
     def queryMultiAdapter(objects, interface, name='', default=None,
@@ -417,12 +381,6 @@ class IServiceService(Interface):
         Raises ComponentLookupError if the service can't be found.
         """
 
-    def queryService(name, default=None):
-        """Look for a named service.
-
-        Return the default if the service can't be found.
-        """
-
 
 class IFactory(Interface):
     """A factory is responsible for creating other components."""
@@ -453,7 +411,7 @@ class IUtilityService(Interface):
         If one is not found, raises ComponentLookupError.
         """
 
-    def queryUtility(interface, default=None, name=''):
+    def queryUtility(interface, name='', default=None):
         """Look up a utility that provides an interface.
 
         If one is not found, returns default.
@@ -493,13 +451,7 @@ class IContextDependent(Interface):
 class IAdapterService(Interface):
     """A service to manage Adapters."""
 
-    def queryAdapter(object, interface, default=None):
-        """Look for an adapter to an interface for an object
-
-        If a matching adapter cannot be found, returns the default.
-        """
-
-    def queryNamedAdapter(object, interface, name, default=None):
+    def queryAdapter(object, interface, name='', default=None):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
@@ -509,7 +461,7 @@ class IAdapterService(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryMultiAdapter(objects, interface, name, default=None):
+    def queryMultiAdapter(objects, interface, name='', default=None):
         """Look for a multi-adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.

@@ -31,6 +31,7 @@ from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.site.service import SiteManager
 from zope.app.component.localservice import getNextServices
 from zope.component.service import IGlobalServiceManager
+from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
@@ -75,6 +76,7 @@ class ComponentAdding(Adding):
         super(ComponentAdding, self).action(type_name, id)
 
     _addFilterInterface = None
+
     def addingInfo(self):
         # A site management folder can have many things. We only want 
         # things that implement a particular interface
@@ -87,8 +89,7 @@ class ComponentAdding(Adding):
             if extra:
                 factoryname = extra.get('factory')
                 if factoryname:
-                    factory = zapi.getUtility(self.context, IFactory,
-                                              factoryname)
+                    factory = zapi.getUtility(IFactory, factoryname)
                     intf = factory.getInterfaces()
                     if not intf.extends(self._addFilterInterface):
                         # We only skip new addMenuItem style objects
@@ -117,7 +118,7 @@ class ServiceAdding(ComponentAdding):
         content = super(ServiceAdding, self).add(content)
 
         # figure out the interfaces that this service implements
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         implements = []
         for type_name, interface in sm.getServiceDefinitions():
             if interface.providedBy(content):
@@ -169,7 +170,7 @@ class AddServiceRegistration(BrowserView):
     def listServiceTypes(self):
 
         # Collect all defined services interfaces that it implements.
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         lst = []
         for servicename, interface in sm.getServiceDefinitions():
             if interface.providedBy(self.context):
@@ -324,7 +325,11 @@ def gatherConfiguredServices(sm, request, items=None):
             if items.has_key(type_name):
                 # a child has already supplied one of these
                 continue
-            if sm.queryService(type_name) is not None:
+            try:
+                sm.getService(type_name)
+            except ComponentLookupError:
+                pass
+            else:
                 names.append(type_name)
                 items[type_name] = {'name': type_name, 'url': '',
                     'parent': _('global'), 'disabled': False,
@@ -366,12 +371,12 @@ class ServiceActivation(BrowserView):
     'type' determines which service is to be configured."""
 
     def isDisabled(self):
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         registry = sm.queryRegistrations(self.request.get('type'))
         return not (registry and registry.active())
 
     def listRegistry(self):
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return []
@@ -405,7 +410,7 @@ class ServiceActivation(BrowserView):
         if not active:
             return ""
 
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return _("Invalid service type specified")
@@ -609,17 +614,19 @@ class Detail:
         where the service dicts contains keys "name" and "registrations."
         registrations is a list of IRegistrations.
         """
-        sm = zapi.getServices(self.context)
+        sm = zapi.getServices()
         for name, iface in sm.getServiceDefinitions():
-            service = sm.queryService(name)
-            if service is None:
-                continue
-            registry = IInterfaceBasedRegistry(service, None)
-            if registry is None:
-                continue
-            regs = list(registry.getRegistrationsForInterface(self.iface))
-            if regs:
-                yield {"name": name, "registrations": regs}
+            try:
+                service = sm.getService(name)
+            except ComponentLookupError:
+                pass
+            else:
+                registry = IInterfaceBasedRegistry(service, None)
+                if registry is not None:
+                    regs = list(registry.getRegistrationsForInterface(
+                        self.iface))
+                    if regs:
+                        yield {"name": name, "registrations": regs}
             
 
 class MethodDetail:

@@ -13,7 +13,7 @@
 
 $Id$
 """
-from zope.component import queryNamedAdapter
+from zope.component import queryAdapter
 from zope.app.http.interfaces import INullResource
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
@@ -66,7 +66,7 @@ class NullPUT(object):
         dir = IWriteDirectory(container, None)
 
         # Now try to get a custom factory for he container
-        factory = queryNamedAdapter(container, IFileFactory, ext)
+        factory = queryAdapter(container, IFileFactory, ext)
 
         # Fall back to a non-custom one
         if factory is None:

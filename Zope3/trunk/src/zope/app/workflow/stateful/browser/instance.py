@@ -123,7 +123,7 @@ class ManagementView(BrowserView):
 
 
     def _getProcessDefinition(self, processInstance):
-        utils = zapi.getService(self.context, Utilities)
+        utils = zapi.getService(Utilities)
         return utils.getUtility(IProcessDefinition,
                                 processInstance.processDefinitionName)
 

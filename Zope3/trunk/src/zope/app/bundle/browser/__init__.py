@@ -151,7 +151,7 @@ class BundleView(BrowserView):
 
     def getServiceStatus(self, name):
         try:
-            svc = zapi.getService(self.context, name)
+            svc = zapi.getService(name)
         except:
             svc = None
         path = ""
