@@ -98,13 +98,19 @@ class Application:
     def build_package_distribution(self):
         pkgname = self.metadata.name
         pkgdest = os.path.join(self.destination, pkgname)
+        spec, dist = include.load(self.source)
         try:
-            self.ip.createDistributionTree(pkgdest)
+            self.ip.createDistributionTree(pkgdest, spec)
         except cvsloader.CvsLoadingError, e:
             self.error(str(e))
+        for relpath, src in dist.includes.iteritems():
+            self.ip.addSingleInclude(relpath, src, self.destination)
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
-        self.generate_setup_cfg(self.destination, pkginfo)
+        setup_cfg = os.path.join(self.destination, "setup.cfg")
+        if not os.path.exists(setup_cfg):
+            # only generate setup.cfg if it doesn't exist already
+            self.generate_setup_cfg(self.destination, pkginfo)
         self.generate_package_setup(self.destination, self.resource_name)
         deps_path = os.path.join(self.source, "DEPENDENCIES.cfg")
         if os.path.isfile(deps_path):
@@ -152,7 +158,8 @@ class Application:
         # Build the destination directory:
         deps = self.add_component("collection",
                                   self.resource_name,
-                                  self.source)
+                                  self.source,
+                                  distribution=True)
         remaining = deps - self.handled_resources
         collections = []
         packages = []
@@ -200,7 +207,7 @@ class Application:
             f.close()
         return packages, collections
 
-    def add_component(self, type, name, source):
+    def add_component(self, type, name, source, distribution=False):
         """Add a single component to a collection.
 
         :return: Set of dependencies for the added component.
@@ -226,6 +233,10 @@ class Application:
             self.add_package_component(name, destination, spec)
         elif type == "collection":
             self.add_collection_component(name, destination, spec)
+
+        if distribution:
+            for relpath, src in dist.includes.iteritems():
+                self.ip.addSingleInclude(relpath, src, self.destination)
 
         self.create_manifest(destination)
         deps_file = os.path.join(source, "DEPENDENCIES.cfg")
