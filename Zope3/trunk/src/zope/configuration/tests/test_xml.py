@@ -28,8 +28,8 @@ class TempFile:
     # this actually becomes the remove() method
     from os import remove
 
-    def __init__(self):
-        self.file = open(tempfile.mktemp(), 'w')
+    def __init__(self, suffix=''):
+        self.file = open(tempfile.mktemp(suffix), 'w')
         self.closed = 0
     def write(self,buffer):
         self.file.write(buffer)
@@ -72,6 +72,30 @@ class Test(CleanUp, unittest.TestCase):
                      package="zope.configuration.tests.*"
                      file="contact.zcml" />
                </zopeConfigure>""")
+
+    def testIncludeIn(self):
+        self.checkZCMLText(
+            """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+                 <include
+                     package="zope.configuration.tests.contact"
+                     file="alternate.zcml" />
+               </zopeConfigure>""")
+
+    def testToplevelIn(self):
+        file = TempFile('.in')
+        name = file.name
+        assert name.endswith('.in')
+        file.write(
+            """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+                 <include
+                     package="zope.configuration.tests.contact"
+                     file="contact.zcml" />
+               </zopeConfigure>""")
+        file.flush()
+        from zope.configuration.xmlconfig import XMLConfig
+        x = XMLConfig(name[:-3])
+        x()
+        file.close()
 
     def testIncludeNoSiteManagementFolder(self):
         file = TempFile()

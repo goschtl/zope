@@ -12,9 +12,10 @@
 #
 ##############################################################################
 """
-$Id: xmlconfig.py,v 1.8 2003/06/22 19:00:58 jeremy Exp $
+$Id: xmlconfig.py,v 1.9 2003/06/23 14:44:13 fdrake Exp $
 """
 
+import errno
 import os
 import sys
 import logging
@@ -72,7 +73,7 @@ class ZopeSAXParseException(ConfigurationError):
             return 'File "%s", line %s.%s, %s' % s
         else:
             return str(v)
-        
+
 class ConfigurationExecutionError(ZopeXMLConfigurationError):
     """An error occurred during execution of a configuration action
     """
@@ -297,6 +298,26 @@ class ZopeConfigurationConflictError(ZopeXMLConfigurationError):
         return "\n".join(r)
 
 
+def inopen(filename):
+    # XXX I don't really like the name of this function
+    """Open a file, falling back to filename.in.
+
+    If the requested file does not exist and filename.in does, fall
+    back to filename.in.  If opening the original filename fails for
+    any other reason, allow the failure to propogate.
+    """
+    try:
+        fp = open(filename)
+    except IOError, (code, msg):
+        if code == errno.ENOENT:
+            fn = filename + ".in"
+            if os.path.exists(fn):
+                fp = open(fn)
+            else:
+                raise
+    return fp
+
+
 class XMLConfig:
 
     def __init__(self, file_name, module=_NO_MODULE_GIVEN):
@@ -308,7 +329,7 @@ class XMLConfig:
         self._directives = {('*', 'include'):
                             (self.include, {})}
 
-        f = open(file_name)
+        f = inopen(file_name)
         self._stack = [file_name]
         xmlconfig(f, self._actions,
                   Context(self._stack, module=module),
@@ -359,7 +380,7 @@ class XMLConfig:
 
     def _include(self, file_name, package):
         logger.debug("include %s" % file_name)
-        f = open(file_name)
+        f = inopen(file_name)
         self._stack.append(file_name)
         xmlconfig(f, self._actions, Context(self._stack, package),
                   self._directives)
