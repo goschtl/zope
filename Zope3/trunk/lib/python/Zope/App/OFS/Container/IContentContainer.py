@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: IContentContainer.py,v 1.1 2002/06/20 20:00:20 jim Exp $
+$Id: IContentContainer.py,v 1.2 2002/12/05 13:45:52 bavarian Exp $
 """
 
 from IContainer import IWriteContainer
 
 class IContentContainer(IWriteContainer):
-    """Containers (like folders) that contain ordinaty content"""
+    """Containers (like folders) that contain ordinary content"""
