@@ -44,7 +44,7 @@ optional fields (optional fields have default values described)
    happening.)
 """
 
-# Default is *no* remote - people explicitly propagation if they want it.
+# Default is *no* remote - explicitly specify propagation if you want it.
 remote = None
 public_remote = None
 products_remote = None
@@ -81,6 +81,10 @@ def init_table():
 ##       {'path': "test",
 ##        'remote': None,
 ##        'addrs': "klm@digicool.com"},
+
+        # Catchall for when *no other entry* matches:
+        {'path': None,
+         'addrs': zopeaddr},
 
         {'path': "Operations",
          'addrs': "support@digicool.com"},

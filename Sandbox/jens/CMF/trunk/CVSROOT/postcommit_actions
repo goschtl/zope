@@ -243,13 +243,16 @@ def main(args):
             receiverid = remote.get('receiverid', IDENTITY_ACCT)
         else:
             receiverid = None
+
         if addrs and not only_sync:
-                do_mail(path, remote, repo, addrs, subjs, msgfilenm=msgfilenm,
-                        doing_directory=doing_directory, no_files=no_files)
+            do_mail(path, remote, repo, addrs, subjs, msgfilenm=msgfilenm,
+                    doing_directory=doing_directory, no_files=no_files)
+
         if remote:
             do_sync(path, repo, remote, receiverid, subjs, excludes,
                     recurse=RECURSE, 
                     doing_directory=doing_directory, no_files=no_files)
+
         VERBOSE = wasVerbose
     if not entries and only_sync:
             note_failure("*** --syncrepo invalid - no repository"
@@ -305,32 +308,48 @@ def all_entries():
 def find_entries(repo=None, all=None):
     """Return dictionary of traffic_table entries qualified by repo regexp.
 
-    all == 1 means return all entries, regardless of repo arg."""
+    all == 1 means return all entries, regardless of repo arg.
+
+    Iff no entries match, we return the catchall entry - the one with path ==
+    None."""
     entries = []
+    catchall = None
     for t in traffic_table.get_table():
-        if all:
+        if t['path'] == None:
+            catchall = t
+            is_match = 0
+        elif all:
             is_match = 1
         elif got_re:
-            is_match = re.match(t['path'], repo)
+            try:
+                is_match = re.match(t['path'], repo)
+            except TypeError:
+                complain("Whoops - t: %s, repo: %s\n" % (t, repo))
+                raise
         else:
             is_match = (regex.match(t['path'], repo) != -1)
         if is_match:
-            if not t.has_key('excludes'):
-                t['excludes'] = []
-            if not t.has_key('remote'):
-                try:
-                    t['remote'] = traffic_table.remote
-                except AttributeError:
-                    raise AttributeError, ("traffic_table must have default"
-                                           " repo setting or explicit repo"
-                                           " values on all entries")
-            if t.has_key('addrs'):
-                if type(t['addrs']) == type(""):
-                    # Be lenient - listify string args.
-                    t['addrs'] = [t['addrs']]
             entries.append(t)
-    if VERBOSE > 1:
-        complain("Resolved table entry:\n  %s\n", entries)
+
+    if entries:
+        if VERBOSE > 1:
+            complain("Resolved table entry:\n  %s\n", entries)
+    elif catchall:
+        entries.append(catchall)
+        if VERBOSE > 1:
+            complain("No matches, so using catchall:\n  %s\n", entries)
+    elif VERBOSE > 1:
+        complain("No matches, no catchall - no actions\n")
+
+    for e in entries:
+        if not e.has_key('excludes'): e['excludes'] = []
+        if not e.has_key('remote'):
+            e['remote'] = traffic_table.get('remote', None)
+        if e.has_key('addrs'):
+            if type(e['addrs']) == type(""):
+                # Be lenient - listify string args.
+                e['addrs'] = [e['addrs']]
+
     return entries
 
 def do_mail(name, remote, repo, addrs, subjs,
