@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.22 2003/05/28 15:46:08 jim Exp $
+$Id: syncer.py,v 1.23 2003/05/28 17:29:50 gvanrossum Exp $
 """
 
 import os
@@ -133,12 +133,13 @@ def toFS(ob, name, location):
     else:
         # Directory
         assert IObjectDirectory.isImplementedBy(adapter)
-        if os.path.exists(path):
-            dir_entries = os.path.join(path, '@@Zope', 'Entries.xml')
-            if os.path.exists(dir_entries):
-                dumpFile({}, dir_entries)
-        else:
+        if not os.path.exists(path):
             os.mkdir(path)
+        admin_dir = os.path.join(path, '@@Zope')
+        if not os.path.exists(admin_dir):
+            os.mkdir(admin_dir)
+        dir_entries = os.path.join(admin_dir, 'Entries.xml')
+        dumpFile({}, dir_entries)
 
         for cname, cob in adapter.contents():
             toFS(cob, cname, path)
