@@ -1,6 +1,9 @@
 CMF 1.4.1 (unreleased)
 
   Bug Fixes
+  
+    - Skinnable: Fix acquisition wrapping so that getPhysicalPath is not
+      spoofed during funny traversals.
 
     - ScriptableTypeInformation: Fixed ownership of constructor scripts.
       (Collector #165)
