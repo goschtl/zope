@@ -16,7 +16,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Fri Apr 23 17:17:45 2004\n"
+"POT-Creation-Date: Wed May 12 16:39:19 2004\n"
 "PO-Revision-Date: 2004-03-19 18:20+0000\n"
 "Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -26,43 +26,43 @@ msgstr ""
 "Generated-By: zope/app/translation_files/extract.py\n"
 "X-Generator: KBabel 1.0\n"
 
-#: src/zope/app/adapter/adapter.py:280
-#: src/zope/app/presentation/pagefolder.py:56
-#: src/zope/app/presentation/presentation.py:300
+#: src/zope/app/adapter/adapter.py:278
+#: src/zope/app/presentation/pagefolder.py:54
+#: src/zope/app/presentation/presentation.py:293
 msgid "For interface"
 msgstr "Для интерфейса"
 
-#: src/zope/app/adapter/adapter.py:281
+#: src/zope/app/adapter/adapter.py:279
 msgid "The interface of the objects being adapted"
 msgstr "Интерфейс объекта для адаптации"
 
-#: src/zope/app/adapter/adapter.py:287 src/zope/app/utility/interfaces.py:50
+#: src/zope/app/adapter/adapter.py:284 src/zope/app/utility/interfaces.py:48
 msgid "Provided interface"
 msgstr "Предоставляемый интерфейс"
 
-#: src/zope/app/adapter/adapter.py:288
+#: src/zope/app/adapter/adapter.py:285
 msgid "The interface provided"
 msgstr "Предоставляемый интерфейс"
 
-#: src/zope/app/adapter/adapter.py:294 src/zope/app/site/interfaces.py:161
-#: src/zope/app/container/browser/contents.pt:32
-#: src/zope/app/container/browser/index.pt:26
-#: src/zope/app/schema/browser/schema_edit.pt:36
+#: src/zope/app/adapter/adapter.py:291 src/zope/app/site/interfaces.py:161
 #: src/zope/app/site/browser/tool.pt:40
+#: src/zope/app/schema/browser/schema_edit.pt:36
 #: src/zope/app/workflow/browser/instancecontainer_index.pt:19
 #: src/zope/app/workflow/browser/instancecontainer_main.pt:18
+#: src/zope/app/container/browser/contents.pt:32
+#: src/zope/app/container/browser/index.pt:26
 msgid "Name"
 msgstr "Название"
 
-#: src/zope/app/adapter/adapter.py:300
+#: src/zope/app/adapter/adapter.py:297
 msgid "The dotted name of a factory for creating the adapter"
 msgstr "Разделенное '.' имя фабрики для создания адаптера"
 
-#: src/zope/app/adapter/adapter.py:306
+#: src/zope/app/adapter/adapter.py:303
 msgid "The permission required for use"
 msgstr "Права необходимые для использования"
 
-#: src/zope/app/adapter/adapter.py:312
+#: src/zope/app/adapter/adapter.py:310
 msgid "Factory to be called to construct the component"
 msgstr "Фабрика вызываемая для создания компонента"
 
@@ -93,7 +93,7 @@ msgstr "$file (строка $line)"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:10
 msgid "Server Control"
-msgstr "Управление сервером"
+msgstr "Управление"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:15
 msgid "Runtime Information"
@@ -101,11 +101,11 @@ msgstr "Информация сервера"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:24
 msgid "ZODB Control"
-msgstr "Управление ZODB"
+msgstr "ZODB"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:32
 msgid "Translation Domain Control"
-msgstr "Управление сервисом переводов"
+msgstr "Cервис переводов"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:41
 msgid "Manage Process"
@@ -200,13 +200,6 @@ msgstr "Вы остановили сервер"
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:15
 msgid "Domain"
 msgstr "Домен"
-
-#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:16
-#: src/zope/app/i18n/browser/synchronize.pt:88
-#: src/zope/app/i18nfile/browser/file_edit.pt:54
-#: src/zope/app/i18nfile/browser/image_edit.pt:55
-msgid "Language"
-msgstr "Язык"
 
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:17
 msgid "Files"
@@ -304,13 +297,6 @@ msgstr "Нажмите \"Активировать пакет\" для выпол
 msgid "activate-bundle-button"
 msgstr "Активировать пакет"
 
-# Default: "Reset"
-#: src/zope/app/bundle/browser/bundle.pt:130
-#: src/zope/app/cache/browser/ramedit.pt:53
-#: src/zope/app/site/browser/add_svc_config.pt:35
-msgid "reset-button"
-msgstr "Сбросить"
-
 #: src/zope/app/bundle/browser/bundle.pt:137
 msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr "Нажмите \"Деактивировать пакет\" для отмены всех регистраций в данном пакете."
@@ -356,12 +342,6 @@ msgstr "Для данного пакета нет необходимых сер�
 #: src/zope/app/bundle/browser/bundle.pt:47
 msgid "Registrations in this bundle"
 msgstr "Регистрации для данного пакета"
-
-#: src/zope/app/bundle/browser/bundle.pt:53
-#: src/zope/app/site/browser/services.pt:15
-#: src/zope/app/utility/browser/utilities.pt:11
-msgid "(click to clear message)"
-msgstr "(нажмите для сброса сообщения)"
 
 #: src/zope/app/bundle/browser/bundle.pt:63
 msgid "For ${service_name} service"
@@ -415,19 +395,6 @@ msgstr "На данный момент объект использует ${cache
 msgid "Cache name"
 msgstr "Название кэша"
 
-# Default: "Save Changes"
-#: src/zope/app/cache/browser/cacheableedit.pt:45
-#: src/zope/app/cache/browser/ramedit.pt:51
-#: src/zope/app/dublincore/browser/edit.pt:33
-#: src/zope/app/errorservice/browser/error_config.pt:46
-#: src/zope/app/i18nfile/browser/file_edit.pt:87
-#: src/zope/app/i18nfile/browser/image_edit.pt:101
-#: src/zope/app/rdb/browser/rdbconnection.pt:28
-#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:86
-#: src/zope/app/securitypolicy/browser/manage_roleform.pt:63
-msgid "save-changes-button"
-msgstr "Сохранить"
-
 # Default: "Invalidate Cached Value"
 #: src/zope/app/cache/browser/cacheableedit.pt:47
 msgid "invalidate-cache-button"
@@ -442,12 +409,12 @@ msgid "Currently there is no cache associated with the object."
 msgstr "В данный момент нет кэша ассоциированного с данным объектом."
 
 #: src/zope/app/cache/browser/configure.zcml:12
-msgid "A RAM cache is a volatile (in memory) cache"
-msgstr "Данные кэша в памяти не сохраняются при перезапуске"
-
-#: src/zope/app/cache/browser/configure.zcml:12
 msgid "RAM Cache"
 msgstr "Кэш в памяти"
+
+#: src/zope/app/cache/browser/configure.zcml:12
+msgid "A RAM cache is a volatile (in memory) cache"
+msgstr "Данные кэша в памяти не сохраняются при перезапуске"
 
 #: src/zope/app/cache/browser/configure.zcml:26
 msgid "Statistics"
@@ -506,47 +473,9 @@ msgstr "Статистика кэша в памяти"
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr "В данный момент каталог <strong>подписан</strong> концентратором объектов."
 
-# Default: "Unsubscribe"
-#: src/zope/app/catalog/browser/advanced.pt:16
-#: src/zope/app/hub/browser/subscription_control.pt:30
-#: src/zope/app/index/browser/field/control.pt:52
-#: src/zope/app/index/browser/text/control.pt:47
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
-msgstr "Отписаться"
-
-# Default: "Subscribe"
-#: src/zope/app/catalog/browser/advanced.pt:28
-#: src/zope/app/hub/browser/subscription_control.pt:35
-#: src/zope/app/index/browser/field/control.pt:57
-#: src/zope/app/index/browser/text/control.pt:52
-msgid "subscribe-button"
-msgstr "Подписаться"
-
 #: src/zope/app/catalog/browser/advanced.pt:31
 msgid "(and reindex all objects, if checked)"
 msgstr "(и переиндексировать все объекты, если отмечен)"
-
-# Default: "Refresh"
-#: src/zope/app/catalog/browser/advanced.pt:52
-#: src/zope/app/dublincore/browser/edit.pt:31
-#: src/zope/app/errorservice/browser/error.pt:52
-#: src/zope/app/form/browser/add.pt:60 src/zope/app/form/browser/edit.pt:58
-#: src/zope/app/pythonpage/edit.pt:72
-#: src/zope/app/registration/browser/editregistration.pt:49
-#: src/zope/app/schemacontent/browser/permission_edit.pt:36
-#: src/zope/app/site/browser/services.pt:74
-#: src/zope/app/site/browser/tool.pt:105
-#: src/zope/app/utility/browser/utilities.pt:50
-#: src/zope/app/wiki/browser/subscriptions.pt:35
-#: src/zope/app/wiki/browser/wiki_add.pt:29
-#: src/zope/app/workflow/browser/stateful/definition_edit.pt:21
-#: src/zope/app/workflow/browser/stateful/definition_edit.pt:50
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:77
-#: src/zope/app/zptpage/browser/inlinecode.pt:68
-msgid "refresh-button"
-msgstr "Обновить"
 
 #: src/zope/app/catalog/browser/advanced.pt:6
 msgid "Advanced Catalog Thingies"
@@ -581,12 +510,12 @@ msgid "Field Index"
 msgstr "Индекс по полям"
 
 #: src/zope/app/catalog/browser/configure.zcml:79
-msgid "A keyword index of a specific field"
-msgstr "Индекс по ключевым словам для указанного поля"
-
-#: src/zope/app/catalog/browser/configure.zcml:79
 msgid "Keyword Index"
 msgstr "Индекс по ключевым словам"
+
+#: src/zope/app/catalog/browser/configure.zcml:79
+msgid "A keyword index of a specific field"
+msgstr "Индекс по ключевым словам для указанного поля"
 
 #: src/zope/app/catalog/browser/configure.zcml:8
 msgid "Catalog"
@@ -601,43 +530,9 @@ msgstr "Каталог позволяет индексировать и иска
 msgid "Advanced"
 msgstr "Настройки"
 
-#: src/zope/app/component/browser/interfacewidget.py:240
-msgid "Use refresh to enter more interfaces"
-msgstr "Используйте обновление для ввода большего количества интерфейсов"
-
-#: src/zope/app/component/browser/interfacewidget.py:293
-msgid "---select interface---"
-msgstr "---выберите интерфейс---"
-
-# Default: "Anything"
-#: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:265
-#: src/zope/app/presentation/presentation.py:346
-msgid "any-interface"
-msgstr "Любой интерфейс"
-
-#: src/zope/app/container/browser/adding.py:134
+#: src/zope/app/container/browser/adding.py:117
 msgid "You must select the type of object to add."
 msgstr "Вы должны выбрать тип объекта для добавления."
-
-# Default: "Add"
-#: src/zope/app/container/browser/adding.py:89
-#: src/zope/app/container/browser/add.pt:38
-#: src/zope/app/i18n/browser/translate.pt:48
-#: src/zope/app/introspector/marker.pt:133
-#: src/zope/app/schema/browser/schema_add.pt:39
-#: src/zope/app/site/browser/tool.pt:95
-#: src/zope/app/wiki/browser/subscriptions.pt:37
-#: src/zope/app/workflow/browser/stateful/add.pt:65
-#: src/zope/app/workflow/browser/stateful/addstate.pt:20
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:55
-msgid "add-button"
-msgstr "Добавить"
-
-# Default: "Object Name"
-#: src/zope/app/container/browser/adding.py:90
-msgid "add-button-label"
-msgstr "Добавить"
 
 #: src/zope/app/container/browser/configure.zcml:18
 msgid "Find"
@@ -663,12 +558,6 @@ msgstr "Копировать"
 msgid "container-paste-button"
 msgstr "Вставить"
 
-# Default: "Delete"
-#: src/zope/app/container/browser/contents.pt:135
-#: src/zope/app/menu/browser/menu_contents.pt:78
-msgid "container-delete-button"
-msgstr "Удалить"
-
 # Default: "Apply"
 #: src/zope/app/container/browser/contents.pt:162
 msgid "container-apply-button"
@@ -678,31 +567,6 @@ msgstr "Применить"
 #: src/zope/app/container/browser/contents.pt:165
 msgid "container-cancel-button"
 msgstr "Отказаться"
-
-#: src/zope/app/container/browser/contents.pt:26
-#: src/zope/app/container/browser/index.pt:18
-#: src/zope/app/menu/browser/menu_contents.pt:25
-#: src/zope/app/schema/browser/schema_edit.pt:30
-msgid "Content listing"
-msgstr "Контент"
-
-#: src/zope/app/container/browser/contents.pt:34
-#: src/zope/app/file/browser/image_edit.pt:11
-msgid "Size"
-msgstr "Размер"
-
-#: src/zope/app/container/browser/contents.pt:35
-#: src/zope/app/container/browser/index.pt:28
-#: src/zope/app/dublincore/browser/edit.pt:39
-#: src/zope/app/menu/browser/menu_contents.pt:33
-msgid "Created"
-msgstr "Создан"
-
-#: src/zope/app/container/browser/contents.pt:36
-#: src/zope/app/container/browser/index.pt:29
-#: src/zope/app/menu/browser/menu_contents.pt:34
-msgid "Modified"
-msgstr "Изменен"
 
 #: src/zope/app/container/browser/contents.py:232
 msgid "You didn't specify any ids to remove."
@@ -725,7 +589,7 @@ msgstr "Вы не выбрали элементы для переименова�
 msgid "find-button"
 msgstr "Искать"
 
-#: src/zope/app/container/browser/metaconfigure.py:59
+#: src/zope/app/container/browser/metaconfigure.py:62
 #: src/zope/app/menu/browser/configure.zcml:63
 #: src/zope/app/bundle/browser/configure.zcml:11
 #: src/zope/app/workflow/browser/configure.zcml:35
@@ -734,13 +598,13 @@ msgstr "Искать"
 msgid "Contents"
 msgstr "Содержимое"
 
-#: src/zope/app/container/browser/metaconfigure.py:67
+#: src/zope/app/container/browser/metaconfigure.py:70
 #: src/zope/app/schema/browser/configure.zcml:15
-#: src/zope/app/workflow/browser/stateful/configure.zcml:55
-#: src/zope/app/workflow/browser/stateful/configure.zcml:92
+#: src/zope/app/workflow/stateful/browser/configure.zcml:48
+#: src/zope/app/workflow/stateful/browser/configure.zcml:85
 #: src/zope/app/catalog/browser/configure.zcml:40
 #: src/zope/app/container/browser/configure.zcml:5
-#: src/zope/app/registration/browser/configure.zcml:50
+#: src/zope/app/registration/browser/configure.zcml:42
 #: src/zope/app/site/browser/configure.zcml:27
 msgid "Add"
 msgstr "Добавить"
@@ -802,30 +666,30 @@ msgstr "Имя файла"
 msgid "File name of the data file."
 msgstr "Имя файла данных."
 
-#: src/zope/app/dtmlpage/configure.zcml:102
-msgid "A simple, content-based DTML page"
-msgstr "DTML страница"
-
-#: src/zope/app/dtmlpage/configure.zcml:29
+#: src/zope/app/dtmlpage/configure.zcml:14
 msgid "A simple, content-based DTML Page"
 msgstr "DTML страница"
 
-#: src/zope/app/dtmlpage/configure.zcml:29
-#: src/zope/app/dtmlpage/configure.zcml:102
+#: src/zope/app/dtmlpage/configure.zcml:14
+#: src/zope/app/dtmlpage/configure.zcml:87
 msgid "DTML Page"
 msgstr "DTML страница"
 
-#: src/zope/app/dtmlpage/configure.zcml:80
+#: src/zope/app/dtmlpage/configure.zcml:65
 msgid "Edit a DTML page"
 msgstr "Редактировать DTML страницу"
 
-#: src/zope/app/dtmlpage/configure.zcml:94
+#: src/zope/app/dtmlpage/configure.zcml:79
 msgid "Add a DTML Page"
 msgstr "Добавить DTML страницу"
 
+#: src/zope/app/dtmlpage/configure.zcml:87
+msgid "A simple, content-based DTML page"
+msgstr "DTML страница"
+
 #: src/zope/app/dtmlpage/interfaces.py:31
 #: src/zope/app/pythonpage/__init__.py:39
-#: src/zope/app/sqlscript/interfaces.py:62
+#: src/zope/app/sqlscript/interfaces.py:45
 #: src/zope/app/zptpage/interfaces.py:36
 msgid "Source"
 msgstr "Исходный код"
@@ -864,8 +728,8 @@ msgstr "Просмотр мета-данных Dublin-Core"
 #: src/zope/app/errorservice/browser/configure.zcml:13
 #: src/zope/app/errorservice/browser/configure.zcml:26
 #: src/zope/app/cache/browser/cacheableedit.pt:23
-#: src/zope/app/cache/browser/ramedit.pt:9
 #: src/zope/app/cache/browser/ramstats.pt:10
+#: src/zope/app/cache/browser/ramedit.pt:9
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -874,12 +738,12 @@ msgid "Configure"
 msgstr "Настройки"
 
 #: src/zope/app/errorservice/browser/configure.zcml:35
-msgid "Error Reporting Service for Logging Errors"
-msgstr "Сервис для сбора сообщений об ошибках"
-
-#: src/zope/app/errorservice/browser/configure.zcml:35
 msgid "Error Logging Service"
 msgstr "Сервис лога ошибок"
+
+#: src/zope/app/errorservice/browser/configure.zcml:35
+msgid "Error Reporting Service for Logging Errors"
+msgstr "Сервис для сбора сообщений об ошибках"
 
 #: src/zope/app/errorservice/browser/error.pt:10
 msgid "This page lists the exceptions that have occurred in this site recently."
@@ -1001,7 +865,7 @@ msgstr "Вы могли запросить страницу которая не 
 msgid "The page that you are trying to access is not available"
 msgstr "Страница, которую Вы запрашивали, недоступна"
 
-#: src/zope/app/file/browser/configure.zcml:115
+#: src/zope/app/file/browser/configure.zcml:120
 msgid "Add a Image"
 msgstr "Добавить изображение"
 
@@ -1009,51 +873,56 @@ msgstr "Добавить изображение"
 msgid "Change a file"
 msgstr "Изменить файл"
 
-#: src/zope/app/file/browser/configure.zcml:33
+#: src/zope/app/file/browser/configure.zcml:38
 msgid "Upload a file"
 msgstr "Загрузить файл"
 
-#: src/zope/app/file/browser/configure.zcml:33
-#: src/zope/app/file/browser/configure.zcml:83
+#: src/zope/app/file/browser/configure.zcml:38
+#: src/zope/app/file/browser/configure.zcml:88
 #: src/zope/app/i18nfile/browser/configure.zcml:34
 #: src/zope/app/i18nfile/browser/configure.zcml:76
 msgid "Upload"
 msgstr "Загрузить"
 
-#: src/zope/app/file/browser/configure.zcml:57
+#: src/zope/app/file/browser/configure.zcml:62
 msgid "Add a File"
 msgstr "Добавить файл"
 
-#: src/zope/app/file/browser/configure.zcml:71
+#: src/zope/app/file/browser/configure.zcml:76
 msgid "File Upload Screen"
 msgstr "Загрузка файла"
 
-#: src/zope/app/file/browser/configure.zcml:83
+#: src/zope/app/file/browser/configure.zcml:88
 msgid "Upload an image"
 msgstr "Загрузить изображение"
 
+#: src/zope/app/file/browser/image_edit.pt:11
+#: src/zope/app/container/browser/contents.pt:34
+msgid "Size"
+msgstr "Размер"
+
 # Default: "Add Images"
-#: src/zope/app/file/configure.zcml:43
+#: src/zope/app/file/configure.zcml:20
 msgid "add-images-permission"
 msgstr "Добавить изображения"
 
-#: src/zope/app/file/configure.zcml:52
-#: src/zope/app/file/browser/configure.zcml:49
+#: src/zope/app/file/configure.zcml:29
+#: src/zope/app/file/browser/configure.zcml:54
 msgid "File"
 msgstr "Файл"
 
-#: src/zope/app/file/configure.zcml:52
-#: src/zope/app/file/browser/configure.zcml:49
+#: src/zope/app/file/configure.zcml:29
+#: src/zope/app/file/browser/configure.zcml:54
 msgid "A File"
 msgstr "Файл"
 
-#: src/zope/app/file/configure.zcml:74
-#: src/zope/app/file/browser/configure.zcml:107
+#: src/zope/app/file/configure.zcml:51
+#: src/zope/app/file/browser/configure.zcml:112
 msgid "An Image"
 msgstr "Изображение"
 
-#: src/zope/app/file/configure.zcml:74
-#: src/zope/app/file/browser/configure.zcml:107
+#: src/zope/app/file/configure.zcml:51
+#: src/zope/app/file/browser/configure.zcml:112
 msgid "Image"
 msgstr "Изображение"
 
@@ -1082,30 +951,28 @@ msgid "The actual content of the object."
 msgstr "Содержимое объекта."
 
 #: src/zope/app/folder/browser/configure.zcml:40
-#: src/zope/app/file/browser/configure.zcml:128
-#: src/zope/app/file/browser/configure.zcml:136
+#: src/zope/app/file/browser/configure.zcml:133
+#: src/zope/app/file/browser/configure.zcml:141
 #: src/zope/app/zptpage/browser/configure.zcml:70
 #: src/zope/app/pythonpage/configure.zcml:72
-#: src/zope/app/dtmlpage/configure.zcml:114
+#: src/zope/app/dtmlpage/configure.zcml:99
 msgid "Preview"
 msgstr "Просмотр"
 
-#: src/zope/app/folder/configure.zcml:26
+#: src/zope/app/folder/configure.zcml:13
 #: src/zope/app/folder/browser/configure.zcml:13
 msgid "Folder"
 msgstr "Папка"
 
-#: src/zope/app/folder/configure.zcml:26
+#: src/zope/app/folder/configure.zcml:13
 #: src/zope/app/folder/browser/configure.zcml:13
 msgid "Minimal folder"
 msgstr "Простая папка"
 
-#: src/zope/app/form/browser/add.pt:22 src/zope/app/form/browser/edit.pt:23
-#: src/zope/app/pythonpage/edit.pt:23
-#: src/zope/app/schema/browser/schema_edit.pt:20
-#: src/zope/app/zptpage/browser/inlinecode.pt:49
-msgid "There are ${num_errors} input errors."
-msgstr "Обнаружено ошибок при вводе: ${num_errors}"
+#: src/zope/app/form/browser/add.pt:55
+#: src/zope/app/wiki/browser/wiki_add.pt:34
+msgid "Object Name"
+msgstr "Название объекта"
 
 #: src/zope/app/form/browser/add.py:61
 #: src/zope/app/form/browser/editview.py:106
@@ -1115,30 +982,17 @@ msgstr "Обнаружено ошибок при вводе: ${num_errors}"
 msgid "An error occured."
 msgstr "Ошибка"
 
-# Default: "Previous"
-#: src/zope/app/form/browser/addwizard.pt:59
-#: src/zope/app/form/browser/editwizard.pt:55
-msgid "previous-button"
-msgstr "Предыдущий"
+#: src/zope/app/form/browser/boolwidgets.py:84
+#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:96
+msgid "off"
+msgstr "выкл."
 
-# Default: "Submit"
-#: src/zope/app/form/browser/addwizard.pt:62
-#: src/zope/app/form/browser/edit.pt:60
-#: src/zope/app/form/browser/editwizard.pt:58
-#: src/zope/app/pythonpage/edit.pt:74
-#: src/zope/app/registration/browser/editregistration.pt:51
-#: src/zope/app/site/browser/add_svc_config.pt:37
-#: src/zope/app/site/browser/serviceactivation.pt:54
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:79
-#: src/zope/app/zptpage/browser/inlinecode.pt:70
-msgid "submit-button"
-msgstr "Изменить"
-
-# Default: "Next"
-#: src/zope/app/form/browser/addwizard.pt:65
-#: src/zope/app/form/browser/editwizard.pt:61
-msgid "next-button"
-msgstr "Следующий"
+#: src/zope/app/form/browser/boolwidgets.py:84
+#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:96
+msgid "on"
+msgstr "вкл."
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:45
 msgid "sampleWidget-button-move-up"
@@ -1197,17 +1051,18 @@ msgid "sampleWidget-label-inaccessable-object"
 msgstr "(недоступный или отсутствующий объект)"
 
 #: src/zope/app/form/browser/complexsample/interfaces.py:29
-#: src/zope/app/publisher/interfaces/browser.py:45
+#: src/zope/app/publisher/interfaces/browser.py:44
 #: src/zope/app/publisher/interfaces/browser.py:87
-#: src/zope/app/security/interfaces/__init__.py:45
-#: src/zope/app/security/interfaces/__init__.py:198
-#: src/zope/app/wiki/interfaces.py:39 src/zope/schema/interfaces.py:95
+#: src/zope/app/security/interfaces/__init__.py:44
+#: src/zope/app/security/interfaces/__init__.py:197
+#: src/zope/app/wiki/interfaces.py:38 src/zope/schema/interfaces.py:100
+#: src/zope/schema/interfaces.py:484
+#: src/zope/app/site/browser/interfacebrowse.pt:11
+#: src/zope/app/menu/browser/menu_contents.pt:31
+#: src/zope/app/dublincore/browser/edit.pt:14
+#: src/zope/app/schema/browser/schema_edit.pt:38
 #: src/zope/app/container/browser/contents.pt:33
 #: src/zope/app/container/browser/index.pt:27
-#: src/zope/app/dublincore/browser/edit.pt:14
-#: src/zope/app/menu/browser/menu_contents.pt:31
-#: src/zope/app/schema/browser/schema_edit.pt:38
-#: src/zope/app/site/browser/interfacebrowse.pt:11
 msgid "Title"
 msgstr "Заголовок"
 
@@ -1223,6 +1078,18 @@ msgstr "(нет значений)"
 msgid "Updated on ${date_time}"
 msgstr "Обновлено ${date_time}"
 
+# Default: "Previous"
+#: src/zope/app/form/browser/editwizard.pt:47
+#: src/zope/app/form/browser/addwizard.pt:55
+msgid "previous-button"
+msgstr "Предыдущий"
+
+# Default: "Next"
+#: src/zope/app/form/browser/editwizard.pt:53
+#: src/zope/app/form/browser/addwizard.pt:61
+msgid "next-button"
+msgstr "Следующий"
+
 #: src/zope/app/form/browser/editwizard.py:149
 msgid "No changes to save"
 msgstr "Нет изменений для сохранения"
@@ -1231,48 +1098,49 @@ msgstr "Нет изменений для сохранения"
 msgid "Changes saved"
 msgstr "Изменения сохранены"
 
-# Default: "Remove selected items"
-#: src/zope/app/form/browser/sequencewidget.py:82
-msgid "remove-selected-items"
-msgstr "Удалить выбранные элементы"
-
-#: src/zope/app/form/browser/sequencewidget.py:88
-msgid "Add %s"
-msgstr "Добавить %s"
-
-#: src/zope/app/form/browser/vocabularywidget.py:273
-msgid "vocabulary-missing-single-value-for-display"
+#: src/zope/app/form/browser/itemswidgets.py:228
+msgid "item-missing-single-value-for-display"
 msgstr "(нет значения)"
 
-#: src/zope/app/form/browser/vocabularywidget.py:275
+#: src/zope/app/form/browser/itemswidgets.py:244
 msgid "vocabulary-missing-multiple-value-for-display"
 msgstr "(нет значений)"
 
-#: src/zope/app/form/browser/vocabularywidget.py:278
+#: src/zope/app/form/browser/itemswidgets.py:425
+#: src/zope/app/form/browser/itemswidgets.py:469
 msgid "vocabulary-missing-single-value-for-edit"
 msgstr "(нет значения)"
 
-#: src/zope/app/form/browser/vocabularywidget.py:280
+#: src/zope/app/form/browser/itemswidgets.py:543
 msgid "vocabulary-missing-multiple-value-for-edit"
 msgstr "(нет значений)"
 
-#: src/zope/app/form/browser/vocabularywidget.py:709
+# Default: "Remove selected items"
+#: src/zope/app/form/browser/sequencewidget.py:83
+msgid "remove-selected-items"
+msgstr "Удалить выбранные элементы"
+
+#: src/zope/app/form/browser/sequencewidget.py:89
+msgid "Add %s"
+msgstr "Добавить %s"
+
+#: src/zope/app/form/browser/vocabularyquery.py:165
 msgid "vocabulary-query-button-add-done"
 msgstr "Добавить и завершить"
 
-#: src/zope/app/form/browser/vocabularywidget.py:711
+#: src/zope/app/form/browser/vocabularyquery.py:167
 msgid "vocabulary-query-button-add-more"
 msgstr "Добавить и продолжить"
 
-#: src/zope/app/form/browser/vocabularywidget.py:713
+#: src/zope/app/form/browser/vocabularyquery.py:169
 msgid "vocabulary-query-button-more"
 msgstr "Еще"
 
-#: src/zope/app/form/browser/vocabularywidget.py:715
+#: src/zope/app/form/browser/vocabularyquery.py:171
 msgid "vocabulary-query-message-no-results"
 msgstr "Нет результатов"
 
-#: src/zope/app/form/browser/vocabularywidget.py:717
+#: src/zope/app/form/browser/vocabularyquery.py:173
 msgid "vocabulary-query-header-results"
 msgstr "Результаты поиска"
 
@@ -1305,6 +1173,46 @@ msgstr "Загрузить"
 msgid "Commit Action"
 msgstr "Загрузить изменения"
 
+#: src/zope/app/generations/browser/configure.zcml:6
+msgid "Database Schemas"
+msgstr "Схемы базы данных"
+
+#: src/zope/app/generations/browser/managers.pt:18
+msgid "The database was updated to generation ${generation} for ${application}."
+msgstr "База данных была обновлена к поколению ${generation} для ${application}."
+
+#: src/zope/app/generations/browser/managers.pt:23
+msgid "The database is up to date for ${application}."
+msgstr "Не нужно обновление базы данных для ${application}."
+
+#: src/zope/app/generations/browser/managers.pt:32
+msgid "Application"
+msgstr "Приложение"
+
+#: src/zope/app/generations/browser/managers.pt:33
+msgid "Minimum Generation"
+msgstr "Минимальное поколение"
+
+#: src/zope/app/generations/browser/managers.pt:34
+msgid "Maximum Generation"
+msgstr "Максимальное поколение"
+
+#: src/zope/app/generations/browser/managers.pt:35
+msgid "Current Database Generation"
+msgstr "Текущее поколение"
+
+#: src/zope/app/generations/browser/managers.pt:36
+msgid "Evolve?"
+msgstr "Нужно обновление?"
+
+#: src/zope/app/generations/browser/managers.pt:48
+msgid "No, up to date"
+msgstr "Обновление не нужно"
+
+#: src/zope/app/generations/browser/managers.pt:8
+msgid "Database generations"
+msgstr "Поколения базы данных"
+
 #: src/zope/app/hub/browser/__init__.py:47
 msgid "OK"
 msgstr "Ок"
@@ -1326,12 +1234,12 @@ msgid "HubIds Service"
 msgstr "Концентратор объектов"
 
 #: src/zope/app/hub/browser/configure.zcml:27
-msgid "Registration subscriber"
-msgstr "Подписчик регистрации"
-
-#: src/zope/app/hub/browser/configure.zcml:27
 msgid "An event subscriber that registers content with the objecthub"
 msgstr "Подписчик сообщений регистрирующий контент для концентратора объектов"
+
+#: src/zope/app/hub/browser/configure.zcml:27
+msgid "Registration subscriber"
+msgstr "Подписчик регистрации"
 
 #: src/zope/app/hub/browser/configure.zcml:5
 #: src/zope/app/hub/browser/configure.zcml:36
@@ -1355,12 +1263,6 @@ msgstr "Скрыть регистрацию объектов"
 msgid "Object ID"
 msgstr "Идентификатор"
 
-#: src/zope/app/hub/browser/hubcontrol.pt:33
-#: src/zope/app/i18n/browser/synchronize.pt:89
-#: src/zope/app/site/browser/interfacedetail.pt:79
-msgid "Status"
-msgstr "Статус"
-
 #: src/zope/app/hub/browser/hubcontrol.pt:44
 msgid "Unregister Missing Objects"
 msgstr "Снять регистрацию для отсутствующих объектов"
@@ -1368,11 +1270,6 @@ msgstr "Снять регистрацию для отсутствующих об
 #: src/zope/app/hub/browser/hubcontrol.pt:7
 msgid "${missing_num} object(s) unregistered."
 msgstr "снята регистрация с ${missing_num} объекта(ов)."
-
-#: src/zope/app/hub/browser/subscription_control.pt:11
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:11
-msgid "Subscription control"
-msgstr "Контроль подписки"
 
 #: src/zope/app/hub/browser/subscription_control.pt:16
 #: src/zope/app/index/browser/field/control.pt:26
@@ -1390,24 +1287,13 @@ msgstr "Успешно отписан."
 msgid "Registration done."
 msgstr "Зарегистрирован."
 
-#: src/zope/app/hub/browser/subscription_control.pt:29
-#: src/zope/app/index/browser/field/control.pt:51
-#: src/zope/app/index/browser/text/control.pt:46
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:23
-msgid "Subscription state: ON"
-msgstr "Состояние подписки: Подписан"
-
-#: src/zope/app/hub/browser/subscription_control.pt:3
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:3
-msgid "Registration \"Service\" Control Page"
-msgstr "Контроль сервиса регистраций"
-
-#: src/zope/app/hub/browser/subscription_control.pt:34
-#: src/zope/app/index/browser/field/control.pt:56
-#: src/zope/app/index/browser/text/control.pt:51
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:28
-msgid "Subscription state: OFF"
-msgstr "Состояние подписки: Не подписан"
+# Default: "Subscribe"
+#: src/zope/app/hub/browser/subscription_control.pt:35
+#: src/zope/app/index/browser/field/control.pt:57
+#: src/zope/app/index/browser/text/control.pt:52
+#: src/zope/app/catalog/browser/advanced.pt:28
+msgid "subscribe-button"
+msgstr "Подписаться"
 
 #: src/zope/app/hub/browser/subscription_control.pt:41
 msgid "Register Existing Objects"
@@ -1458,37 +1344,14 @@ msgstr "Импортирование и экспортирование сооб�
 msgid "Here you can export and import messages from your Translation Domain."
 msgstr "Здесь Вы можете загружать и сохранять сообщения для Вашего домена переводов."
 
-#: src/zope/app/i18n/browser/exportimport.pt:20
-#: src/zope/app/i18n/browser/synchronize.pt:43
-#: src/zope/app/i18n/browser/translate.pt:15
-msgid "Select Languages:"
-msgstr "Выберите языки:"
-
-#: src/zope/app/i18n/browser/exportimport.pt:3
-#: src/zope/app/i18n/browser/translate.pt:3
-msgid "Translation Domain - Translate"
-msgstr "Сервис переводов - Перевести"
-
 #: src/zope/app/i18n/browser/exportimport.pt:32
 msgid "Import File Name:"
 msgstr "Имя файла для загрузки:"
-
-# Default: "Import"
-#: src/zope/app/i18n/browser/exportimport.pt:37
-#: src/zope/app/workflow/browser/importexport_index.pt:17
-msgid "import-button"
-msgstr "Загрузить"
 
 # Default: "Export"
 #: src/zope/app/i18n/browser/exportimport.pt:39
 msgid "export-button"
 msgstr "Сохранить"
-
-# Default: "Update"
-#: src/zope/app/i18n/browser/synchronize.pt:117
-#: src/zope/app/utility/browser/configureutility.pt:29
-msgid "update-button"
-msgstr "Обновить"
 
 #: src/zope/app/i18n/browser/synchronize.pt:122
 msgid "No connection could be made to remote data source."
@@ -1511,12 +1374,6 @@ msgstr "Записать настройки"
 #: src/zope/app/i18n/browser/synchronize.pt:70
 msgid "synchronize-button"
 msgstr "Синхронизировать"
-
-#: src/zope/app/i18n/browser/synchronize.pt:87
-#: src/zope/app/i18n/browser/translate.pt:76
-#: src/zope/app/i18n/browser/translatemessage.pt:16
-msgid "Message Id"
-msgstr "Идентификатор сообщения"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Up to Date"
@@ -1550,20 +1407,22 @@ msgstr "Редактировать сообщения"
 msgid "Delete Messages"
 msgstr "Удалить сообщения"
 
+#: src/zope/app/i18n/browser/translate.pt:15
+#: src/zope/app/i18n/browser/synchronize.pt:43
+#: src/zope/app/i18n/browser/exportimport.pt:20
+msgid "Select Languages:"
+msgstr "Выберите языки:"
+
+#: src/zope/app/i18n/browser/translate.pt:3
+#: src/zope/app/i18n/browser/exportimport.pt:3
+msgid "Translation Domain - Translate"
+msgstr "Сервис переводов - Перевести"
+
 # Default: "Edit"
 #: src/zope/app/i18n/browser/translate.pt:34
 #: src/zope/app/module/browser/edit_module.pt:15
 msgid "edit-button"
 msgstr "Редактировать"
-
-# Default: "Delete"
-#: src/zope/app/i18n/browser/translate.pt:37
-#: src/zope/app/site/browser/services.pt:71
-#: src/zope/app/site/browser/tool.pt:98
-#: src/zope/app/utility/browser/utilities.pt:47
-#: src/zope/app/workflow/browser/instancecontainer_main.pt:47
-msgid "delete-button"
-msgstr "Удалить"
 
 #: src/zope/app/i18n/browser/translate.pt:45
 msgid "New Language:"
@@ -1578,6 +1437,12 @@ msgstr "Фильтр (% - маска):"
 #: src/zope/app/securitypolicy/browser/principal_role_association.pt:31
 msgid "filter-button"
 msgstr "Фильтр"
+
+#: src/zope/app/i18n/browser/translate.pt:76
+#: src/zope/app/i18n/browser/translatemessage.pt:16
+#: src/zope/app/i18n/browser/synchronize.pt:87
+msgid "Message Id"
+msgstr "Идентификатор сообщения"
 
 #: src/zope/app/i18n/browser/translatemessage.pt:3
 msgid "Translation Service - Translate"
@@ -1600,6 +1465,13 @@ msgstr "Изображение содержащее изображения дл�
 msgid "Default Language"
 msgstr "Язык по-умолчанию"
 
+#: src/zope/app/i18nfile/browser/file_edit.pt:54
+#: src/zope/app/i18nfile/browser/image_edit.pt:55
+#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:16
+#: src/zope/app/i18n/browser/synchronize.pt:88
+msgid "Language"
+msgstr "Язык"
+
 # Default: "Show"
 #: src/zope/app/i18nfile/browser/file_edit.pt:66
 #: src/zope/app/i18nfile/browser/image_edit.pt:67
@@ -1610,8 +1482,8 @@ msgstr "Показать"
 #: src/zope/app/i18nfile/browser/file_edit.pt:68
 #: src/zope/app/i18nfile/browser/image_edit.pt:69
 #: src/zope/app/introspector/marker.pt:118
-#: src/zope/app/registration/browser/editregistration.pt:53
 #: src/zope/app/wiki/browser/subscriptions.pt:19
+#: src/zope/app/registration/browser/editregistration.pt:53
 msgid "remove-button"
 msgstr "Удалить"
 
@@ -1619,6 +1491,19 @@ msgstr "Удалить"
 #: src/zope/app/i18nfile/browser/image_edit.pt:72
 msgid "Add new language"
 msgstr "Добавить новый язык"
+
+# Default: "Save Changes"
+#: src/zope/app/i18nfile/browser/file_edit.pt:87
+#: src/zope/app/i18nfile/browser/image_edit.pt:101
+#: src/zope/app/cache/browser/cacheableedit.pt:45
+#: src/zope/app/cache/browser/ramedit.pt:51
+#: src/zope/app/dublincore/browser/edit.pt:33
+#: src/zope/app/rdb/browser/rdbconnection.pt:28
+#: src/zope/app/errorservice/browser/error_config.pt:46
+#: src/zope/app/securitypolicy/browser/manage_roleform.pt:63
+#: src/zope/app/securitypolicy/browser/manage_permissionform.pt:86
+msgid "save-changes-button"
+msgstr "Сохранить"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:27
 msgid "Edit Form"
@@ -1635,20 +1520,20 @@ msgstr ""
 msgid "Dimensions"
 msgstr "Размеры"
 
-#: src/zope/app/i18nfile/configure.zcml:47
+#: src/zope/app/i18nfile/configure.zcml:22
 msgid "An Internationalized File"
 msgstr "Мультиязыковой файл"
 
-#: src/zope/app/i18nfile/configure.zcml:47
+#: src/zope/app/i18nfile/configure.zcml:22
 #: src/zope/app/i18nfile/browser/configure.zcml:39
 msgid "I18n File"
 msgstr "Мультиязыковой файл"
 
-#: src/zope/app/i18nfile/configure.zcml:74
+#: src/zope/app/i18nfile/configure.zcml:49
 msgid "An Internationalized Image"
 msgstr "Мультиязыковое изображение"
 
-#: src/zope/app/i18nfile/configure.zcml:74
+#: src/zope/app/i18nfile/configure.zcml:49
 #: src/zope/app/i18nfile/browser/configure.zcml:81
 msgid "I18n Image"
 msgstr "Мультиязыковое изображение"
@@ -1746,27 +1631,6 @@ msgstr "title=${title}; url=${url}; score=${score}"
 msgid "Introspector"
 msgstr "Информация"
 
-#: src/zope/app/introspector/introspector.pt:121
-#: src/zope/app/introspector/marker.pt:27
-msgid "Class Browser"
-msgstr "Просмотр классов"
-
-# Default: "Class"
-#: src/zope/app/introspector/introspector.pt:126
-#: src/zope/app/introspector/marker.pt:32
-msgid "class-component"
-msgstr "Класс"
-
-#: src/zope/app/introspector/introspector.pt:166
-#: src/zope/app/introspector/marker.pt:74
-msgid "Interfaces from Class"
-msgstr "Интерфейсы класса"
-
-#: src/zope/app/introspector/introspector.pt:185
-#: src/zope/app/introspector/marker.pt:92
-msgid "Interfaces from Object"
-msgstr "Интерфейсы объекта"
-
 # Default: "Modify"
 #: src/zope/app/introspector/introspector.pt:203
 msgid "modify-button"
@@ -1776,23 +1640,10 @@ msgstr "Изменить"
 msgid "Interface Browser"
 msgstr "Просмотр интерфейсов"
 
-# Default: "Bases"
-#: src/zope/app/introspector/introspector.pt:38
-#: src/zope/app/introspector/introspector.pt:140
-#: src/zope/app/introspector/marker.pt:39
-msgid "class-bases"
-msgstr "Базовые классы"
-
 # Default: "Attributes"
 #: src/zope/app/introspector/introspector.pt:66
 msgid "class-attributes"
 msgstr "Атрибуты"
-
-# Default: "Methods"
-#: src/zope/app/introspector/introspector.pt:83
-#: src/zope/app/site/browser/interfacedetail.pt:16
-msgid "class-methods"
-msgstr "Методы"
 
 #: src/zope/app/introspector/marker.pt:109
 msgid "Remove Interfaces:"
@@ -1802,10 +1653,38 @@ msgstr "Удалить интерфейсы:"
 msgid "Add Interfaces:"
 msgstr "Добавить интерфейсы:"
 
+#: src/zope/app/introspector/marker.pt:27
+#: src/zope/app/introspector/introspector.pt:121
+msgid "Class Browser"
+msgstr "Просмотр классов"
+
+# Default: "Class"
+#: src/zope/app/introspector/marker.pt:32
+#: src/zope/app/introspector/introspector.pt:126
+msgid "class-component"
+msgstr "Класс"
+
+# Default: "Bases"
+#: src/zope/app/introspector/marker.pt:39
+#: src/zope/app/introspector/introspector.pt:38
+#: src/zope/app/introspector/introspector.pt:140
+msgid "class-bases"
+msgstr "Базовые классы"
+
 # Default: "Module"
 #: src/zope/app/introspector/marker.pt:56
 msgid "python-module"
 msgstr "Модуль Python"
+
+#: src/zope/app/introspector/marker.pt:74
+#: src/zope/app/introspector/introspector.pt:166
+msgid "Interfaces from Class"
+msgstr "Интерфейсы класса"
+
+#: src/zope/app/introspector/marker.pt:92
+#: src/zope/app/introspector/introspector.pt:185
+msgid "Interfaces from Object"
+msgstr "Интерфейсы объекта"
 
 # Default: "Send out mail with arbitrary from and to addresses"
 #: src/zope/app/mail/configure.zcml:7
@@ -1884,7 +1763,7 @@ msgid "A Service For Persistent Browser Menus"
 msgstr "Сервис хранимых меню"
 
 #: src/zope/app/menu/browser/configure.zcml:21
-#: src/zope/app/workflow/browser/stateful/configure.zcml:135
+#: src/zope/app/workflow/stateful/browser/configure.zcml:129
 msgid "Overview"
 msgstr "Описание"
 
@@ -1916,23 +1795,18 @@ msgstr "Редактировать меню браузера"
 #: src/zope/app/schema/fieldforms.zcml:99
 #: src/zope/app/schema/fieldforms.zcml:125
 #: src/zope/app/schema/fieldforms.zcml:151
-#: src/zope/app/schema/fieldforms.zcml:180
-#: src/zope/app/schema/fieldforms.zcml:207
-#: src/zope/app/schema/fieldforms.zcml:234
-#: src/zope/app/schema/fieldforms.zcml:261
-#: src/zope/app/schema/fieldforms.zcml:288
 #: src/zope/app/module/browser/configure.zcml:6
 #: src/zope/app/schemacontent/browser/configure.zcml:46
 #: src/zope/app/schemacontent/browser/configure.zcml:88
 #: src/zope/app/cache/browser/configure.zcml:24
 #: src/zope/app/rdb/browser/configure.zcml:27
 #: src/zope/app/securitypolicy/browser/configure.zcml:25
-#: src/zope/app/file/browser/configure.zcml:25
+#: src/zope/app/file/browser/configure.zcml:30
 #: src/zope/app/i18nfile/browser/configure.zcml:31
 #: src/zope/app/i18nfile/browser/configure.zcml:73
 #: src/zope/app/zptpage/browser/configure.zcml:39
 #: src/zope/app/pythonpage/configure.zcml:57
-#: src/zope/app/utility/browser/configure.zcml:77
+#: src/zope/app/utility/browser/configure.zcml:85
 #: src/zope/app/wiki/browser/configure.zcml:76
 #: src/zope/app/wiki/browser/configure.zcml:160
 msgid "Edit"
@@ -1946,9 +1820,35 @@ msgstr "Добавить пункт меню"
 msgid "Add Browser Menu Item"
 msgstr "Добавить пункт меню"
 
+#: src/zope/app/menu/browser/menu_contents.pt:25
+#: src/zope/app/schema/browser/schema_edit.pt:30
+#: src/zope/app/container/browser/contents.pt:26
+#: src/zope/app/container/browser/index.pt:18
+msgid "Content listing"
+msgstr "Контент"
+
 #: src/zope/app/menu/browser/menu_contents.pt:32
 msgid "Action"
 msgstr "Действие"
+
+#: src/zope/app/menu/browser/menu_contents.pt:33
+#: src/zope/app/dublincore/browser/edit.pt:39
+#: src/zope/app/container/browser/contents.pt:35
+#: src/zope/app/container/browser/index.pt:28
+msgid "Created"
+msgstr "Создан"
+
+#: src/zope/app/menu/browser/menu_contents.pt:34
+#: src/zope/app/container/browser/contents.pt:36
+#: src/zope/app/container/browser/index.pt:29
+msgid "Modified"
+msgstr "Изменен"
+
+# Default: "Delete"
+#: src/zope/app/menu/browser/menu_contents.pt:78
+#: src/zope/app/container/browser/contents.pt:135
+msgid "container-delete-button"
+msgstr "Удалить"
 
 #: src/zope/app/menu/browser/menu_overview.pt:13
 msgid "Local Items"
@@ -2087,11 +1987,6 @@ msgstr "Справка"
 msgid "Menu for displaying help actions to be performed with popup"
 msgstr "Меню для показа справочной информации в виде popup"
 
-#: src/zope/app/onlinehelp/browser/skin/template.pt:100
-#: src/zope/app/zopetop/widget_macros.pt:176
-msgid "Location:"
-msgstr "Путь:"
-
 #: src/zope/app/onlinehelp/browser/skin/template.pt:43
 #: src/zope/app/onlinehelp/browser/skin/template.pt:54
 #: src/zope/app/rotterdam/template.pt:87
@@ -2153,11 +2048,11 @@ msgstr "Добро пожаловать"
 msgid "Online help system"
 msgstr "Встроенная система справки"
 
-#: src/zope/app/pagetemplate/engine.py:100
+#: src/zope/app/pagetemplate/engine.py:102
 msgid "No interpreter named \"${lang_name}\" was found."
 msgstr "Не было найдено интерпретатора с именем \"${lang_name}\"."
 
-#: src/zope/app/pagetemplate/engine.py:94
+#: src/zope/app/pagetemplate/engine.py:93
 msgid ""
 "Inline Code Evaluation is deactivated, which means that you cannot have "
 "inline code snippets in your Page Template. Activate Inline Code Evaluation "
@@ -2184,14 +2079,14 @@ msgid "Edit User Information"
 msgstr "Редактировать информацию пользователя"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:7
-msgid "Authentication Service"
-msgstr "Сервис аутентификации"
-
-#: src/zope/app/pluggableauth/browser/configure.zcml:7
 msgid "A Pluggable Authentication uses plug-in principal sources."
 msgstr ""
 "Подключаемая аутентификация использует подключаемые исходные каналы для "
 "субъектов."
+
+#: src/zope/app/pluggableauth/browser/configure.zcml:7
+msgid "Authentication Service"
+msgstr "Сервис аутентификации"
 
 #: src/zope/app/pluggableauth/interfaces.py:30
 msgid "Login"
@@ -2240,32 +2135,32 @@ msgstr "Папка страницы"
 msgid "Register a view ZPT"
 msgstr "Зарегистрировать ZPT представление"
 
-#: src/zope/app/presentation/pagefolder.py:57
-#: src/zope/app/presentation/presentation.py:301
+#: src/zope/app/presentation/pagefolder.py:55
+#: src/zope/app/presentation/presentation.py:294
 msgid "The interface of the objects being viewed"
 msgstr "Интерфейс данных объектов"
 
-#: src/zope/app/presentation/pagefolder.py:62
+#: src/zope/app/presentation/pagefolder.py:61
 msgid "The dotted name of a factory for creating the view"
 msgstr "Разделенное '.' имя фабрики для создания предсталения"
 
-#: src/zope/app/presentation/pagefolder.py:67
-#: src/zope/app/presentation/presentation.py:315
+#: src/zope/app/presentation/pagefolder.py:66
+#: src/zope/app/presentation/presentation.py:309
 msgid "Layer"
 msgstr "Слой"
 
-#: src/zope/app/presentation/pagefolder.py:68
-#: src/zope/app/presentation/presentation.py:316
+#: src/zope/app/presentation/pagefolder.py:67
+#: src/zope/app/presentation/presentation.py:310
 msgid "The skin layer the view is registered for"
 msgstr "Слой скина для которого зарегистрировано представление"
 
-#: src/zope/app/presentation/pagefolder.py:75
+#: src/zope/app/presentation/pagefolder.py:74
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:46
 #: src/zope/app/securitypolicy/browser/manage_access.pt:28
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:46
 msgid "Permission"
 msgstr "Права"
 
-#: src/zope/app/presentation/pagefolder.py:76
+#: src/zope/app/presentation/pagefolder.py:75
 msgid "The permission required to use the view"
 msgstr "Права необходимые для использования представления"
 
@@ -2277,58 +2172,64 @@ msgstr "Применить изменения к существующим стр
 msgid "View Folder"
 msgstr "Папка представлений"
 
-#: src/zope/app/presentation/presentation.py:268
+# Default: "Anything"
+#: src/zope/app/presentation/presentation.py:260
+#: src/zope/app/presentation/presentation.py:338
+msgid "any-interface"
+msgstr "Любой интерфейс"
+
+#: src/zope/app/presentation/presentation.py:263
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr "${view_name} ${ptype} представление для ${iface_name}"
 
-#: src/zope/app/presentation/presentation.py:270
+#: src/zope/app/presentation/presentation.py:265
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr "${view_name} ${ptype} представление для ${iface_name} на слое ${layer}"
 
-#: src/zope/app/presentation/presentation.py:281
+#: src/zope/app/presentation/presentation.py:276
 msgid "Registered by ZCML"
 msgstr "Зарегистрирован через ZCML"
 
-#: src/zope/app/presentation/presentation.py:308
+#: src/zope/app/presentation/presentation.py:301
 msgid "Request type"
 msgstr "Тип запроса"
 
-#: src/zope/app/presentation/presentation.py:309
+#: src/zope/app/presentation/presentation.py:302
 msgid "The type of requests the view works with"
 msgstr "Тип запроса работающего с данным представлением"
 
 # Default: "View"
-#: src/zope/app/presentation/presentation.py:332
+#: src/zope/app/presentation/presentation.py:324
 msgid "view-component"
 msgstr "Просмотр"
 
-#: src/zope/app/presentation/presentation.py:351
-msgid "${view_name} for ${pname} {what} {iface_name}"
-msgstr "${view_name} для ${pname} {what} {iface_name}"
+#: src/zope/app/presentation/presentation.py:343
+msgid "${view_name} for ${pname} ${what} ${iface_name}"
+msgstr "${view_name} для ${pname} ${what} ${iface_name}"
 
-#: src/zope/app/presentation/presentation.py:353
+#: src/zope/app/presentation/presentation.py:345
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr "${view_name} для ${pname} ${what} ${iface_name} на слое ${layer}"
 
-#: src/zope/app/presentation/presentation.py:376
+#: src/zope/app/presentation/presentation.py:368
 msgid "Page class"
 msgstr "Класс страницы"
 
-#: src/zope/app/presentation/presentation.py:381
+#: src/zope/app/presentation/presentation.py:373
 msgid "Page template"
 msgstr "Шаблон страницы"
 
 # Default: "Attributes"
-#: src/zope/app/presentation/presentation.py:386
+#: src/zope/app/presentation/presentation.py:378
 msgid "Class attribute"
 msgstr "Атрибут класса"
 
-#: src/zope/app/presentation/presentation.py:391
+#: src/zope/app/presentation/presentation.py:383
 msgid "Factory to be called to construct an adapter"
-msgstr ""
+msgstr "Фабрика которая будет вызвана для создания адаптера"
 
 # Default: "Page"
-#: src/zope/app/presentation/presentation.py:408
+#: src/zope/app/presentation/presentation.py:399
 msgid "page-component"
 msgstr "Страница"
 
@@ -2342,43 +2243,43 @@ msgstr "Шаблон страницы"
 msgid "ZPT Template"
 msgstr "Шаблон ZPT"
 
-#: src/zope/app/principalannotation/configure.zcml:35
+#: src/zope/app/principalannotation/configure.zcml:22
 msgid "Stores Annotations for Principals"
 msgstr ""
 
-#: src/zope/app/principalannotation/configure.zcml:35
+#: src/zope/app/principalannotation/configure.zcml:22
 msgid "Principal Annotation Service"
 msgstr ""
 
 # Default: "Interface"
-#: src/zope/app/publisher/interfaces/browser.py:34
-#: src/zope/app/schemacontent/interfaces.py:39
+#: src/zope/app/publisher/interfaces/browser.py:32
+#: src/zope/app/schemacontent/interfaces.py:38
 #: src/zope/app/introspector/introspector.pt:31
 msgid "interface-component"
 msgstr "Интерфейс"
 
-#: src/zope/app/publisher/interfaces/browser.py:35
-#: src/zope/app/schemacontent/interfaces.py:40
+#: src/zope/app/publisher/interfaces/browser.py:33
+#: src/zope/app/schemacontent/interfaces.py:39
 msgid "Specifies the interface this menu item is for."
 msgstr "Определяет интерфейс для которого предназначен данный пункт меню."
 
-#: src/zope/app/publisher/interfaces/browser.py:39
+#: src/zope/app/publisher/interfaces/browser.py:38
 msgid "The relative url to use if the item is selected"
 msgstr "Относительный URL используемый когда пункт выбран"
 
-#: src/zope/app/publisher/interfaces/browser.py:40
+#: src/zope/app/publisher/interfaces/browser.py:39
 msgid "The url is relative to the object the menu is being displayed for."
 msgstr "URL относителен к объекту для которого будет показываться меню."
 
-#: src/zope/app/publisher/interfaces/browser.py:46
+#: src/zope/app/publisher/interfaces/browser.py:45
 msgid "The text to be displayed for the menu item"
 msgstr "Текст для пункта меню"
 
-#: src/zope/app/publisher/interfaces/browser.py:50
+#: src/zope/app/publisher/interfaces/browser.py:49
 msgid "A longer explanation of the menu item"
 msgstr "Описание пункта меню"
 
-#: src/zope/app/publisher/interfaces/browser.py:51
+#: src/zope/app/publisher/interfaces/browser.py:50
 #: src/zope/app/publisher/interfaces/browser.py:93
 msgid ""
 "A UI may display this with the item or display it when the user requests "
@@ -2387,11 +2288,11 @@ msgstr ""
 "Интерфейс пользователя может показывать данный текст с пунктом меню или по "
 "запросу пользователя."
 
-#: src/zope/app/publisher/interfaces/browser.py:56
+#: src/zope/app/publisher/interfaces/browser.py:55
 msgid "The permission needed access the item"
 msgstr "Права необходимые для доступа к пункту"
 
-#: src/zope/app/publisher/interfaces/browser.py:57
+#: src/zope/app/publisher/interfaces/browser.py:56
 msgid ""
 "This can usually be inferred by the system, however, doing so may be "
 "expensive. When displaying a menu, the system tries to traverse to the URLs "
@@ -2561,19 +2462,19 @@ msgid ""
 "dbi://user:passwd@host:port/dbname;param1=value...\n"
 msgstr ""
 
-#: src/zope/app/registration/browser/__init__.py:113
+#: src/zope/app/registration/browser/__init__.py:111
 #: src/zope/app/site/browser/serviceactivation.pt:37
 msgid "Disabled"
 msgstr "Заблокирован"
 
-#: src/zope/app/registration/browser/__init__.py:119
+#: src/zope/app/registration/browser/__init__.py:117
 msgid "Updated"
 msgstr ""
 
-#: src/zope/app/registration/browser/configure.zcml:40
-#: src/zope/app/registration/browser/configure.zcml:88
-#: src/zope/app/site/browser/serviceactivation.pt:27
+#: src/zope/app/registration/browser/configure.zcml:32
+#: src/zope/app/registration/browser/configure.zcml:80
 #: src/zope/app/site/browser/tool.pt:41
+#: src/zope/app/site/browser/serviceactivation.pt:27
 msgid "Registration"
 msgstr "Регистрация"
 
@@ -2629,26 +2530,9 @@ msgstr "(изменить)"
 msgid "This object is currently active."
 msgstr "Данный объект в активном состоянии"
 
-# Default: "Deactivate"
-#: src/zope/app/registration/browser/registration.pt:25
-#: src/zope/app/site/browser/services.pt:68
-#: src/zope/app/site/browser/tool.pt:92
-#: src/zope/app/utility/browser/utilities.pt:44
-msgid "deactivate-button"
-msgstr "Деактивировать"
-
 #: src/zope/app/registration/browser/registration.pt:29
 msgid "This object is currently inactive."
 msgstr "Данный объект в неактивном состоянии"
-
-# Default: "Activate"
-#: src/zope/app/registration/browser/registration.pt:30
-#: src/zope/app/site/browser/add_svc_config.pt:16
-#: src/zope/app/site/browser/services.pt:66
-#: src/zope/app/site/browser/tool.pt:90
-#: src/zope/app/utility/browser/utilities.pt:42
-msgid "activate-button"
-msgstr "Активировать"
 
 #: src/zope/app/registration/browser/registration.pt:36
 msgid "Advanced Options"
@@ -2666,69 +2550,63 @@ msgstr ""
 "Данный объект не будет использоваться до тех пор пока не будет "
 "зарегистрирован для предоставления указанной функциональности и активирован."
 
-# Default: "Register"
-#: src/zope/app/registration/browser/registration.pt:50
-#: src/zope/app/site/browser/add_svc_config.pt:14
-msgid "register-button"
-msgstr "Зарегистрировать"
-
-#: src/zope/app/registration/configure.zcml:36
+#: src/zope/app/registration/configure.zcml:24
 #: src/zope/app/registration/browser/editregistration.pt:10
 msgid "Registration Manager"
 msgstr "Менеджер регистрации"
 
-#: src/zope/app/registration/interfaces.py:131
-#: src/zope/app/utility/interfaces.py:57
+#: src/zope/app/registration/interfaces.py:119
+#: src/zope/app/utility/interfaces.py:56
 msgid "Component path"
 msgstr "Путь к компоненту"
 
-#: src/zope/app/registration/interfaces.py:132
+#: src/zope/app/registration/interfaces.py:120
 msgid ""
 "The path to the component; this may be absolute, or relative to the nearest "
 "site management folder"
 msgstr ""
 
-#: src/zope/app/registration/interfaces.py:137
+#: src/zope/app/registration/interfaces.py:125
 msgid "The permission needed to use the component"
 msgstr "Права необходимые для использования компонента"
 
-#: src/zope/app/registration/interfaces.py:31
+#: src/zope/app/registration/interfaces.py:30
 msgid "Unregistered"
 msgstr "Незарегистрирован"
 
-#: src/zope/app/registration/interfaces.py:32
+#: src/zope/app/registration/interfaces.py:31
 msgid "Registered"
 msgstr "Зарегистрирован"
 
-#: src/zope/app/registration/interfaces.py:33
+#: src/zope/app/registration/interfaces.py:32
 msgid "Active"
 msgstr "Активен"
 
-#: src/zope/app/registration/interfaces.py:80
+#: src/zope/app/registration/interfaces.py:66
 msgid "Registration status"
 msgstr "Статус регистрации"
 
-#: src/zope/app/renderer/configure.zcml:24
+#: src/zope/app/renderer/configure.zcml:13
 msgid "Plain Text Source"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:24
+#: src/zope/app/renderer/configure.zcml:13
 msgid "Plain Text"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:38
+#: src/zope/app/renderer/configure.zcml:27
 msgid "Structured Text (STX)"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:38
+#: src/zope/app/renderer/configure.zcml:27
 msgid "Structured Text (STX) Source"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:52
+#: src/zope/app/renderer/configure.zcml:41
 msgid "ReStructured Text (ReST)"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:52
+#: src/zope/app/renderer/configure.zcml:41
 msgid "ReStructured Text (ReST) Source"
 msgstr ""
 
@@ -2740,11 +2618,6 @@ msgstr ""
 #: src/zope/app/rotterdam/template.pt:208
 msgid "Tip"
 msgstr ""
-
-#: src/zope/app/rotterdam/navigation_macros.pt:26
-#: src/zope/app/tree/browser/navigation_macros.pt:16
-msgid "Navigation"
-msgstr "Навигация"
 
 #: src/zope/app/rotterdam/navigation_macros.pt:27
 msgid "Loading..."
@@ -2810,12 +2683,6 @@ msgstr "Хранимые локальные схемы"
 msgid "Edit Schema"
 msgstr "Редактировать схему"
 
-#: src/zope/app/schema/browser/schema_edit.pt:37
-#: src/zope/app/site/browser/interfacedetail.pt:47
-#: src/zope/app/sqlscript/browser/test.pt:15
-msgid "Type"
-msgstr "Тип"
-
 #: src/zope/app/schema/browser/schema_edit.pt:40
 msgid "Read-Only"
 msgstr "Только для чтения"
@@ -2863,89 +2730,9 @@ msgstr "Поле для даты и времени"
 msgid "Edit Datetime Field"
 msgstr "Редактировать поле для даты и времени"
 
-#: src/zope/app/schema/fieldforms.zcml:166
-msgid "An Enumerated TextLine Field"
-msgstr "Перечисляемое поле для текстовых строк"
-
-#: src/zope/app/schema/fieldforms.zcml:166
-msgid "Enumerated TextLine Field"
-msgstr "Перечисляемое поле для текстовых строк"
-
-#: src/zope/app/schema/fieldforms.zcml:166
-msgid "Add Enumerated TextLine Field"
-msgstr "Добавить перечисляемое поле для текстовых строк"
-
-#: src/zope/app/schema/fieldforms.zcml:180
-msgid "Edit Enumerated TextLine Field"
-msgstr "Редактировать перечисляемое поле для текстовых строк"
-
-#: src/zope/app/schema/fieldforms.zcml:193
-msgid "An Enumerated Integer Field"
-msgstr "Перечисляемое поле для  целых чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:193
-msgid "Add Enumerated Integer Field"
-msgstr "Добавить перечисляемое поле для  целых чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:193
-msgid "Enumerated Integer Field"
-msgstr "Перечисляемое поле для целых чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:207
-msgid "Edit Enumerated Integer Field"
-msgstr "Редактировать перечисляемое поле для целых чисел"
-
 #: src/zope/app/schema/fieldforms.zcml:21
 msgid "Edit Text Field"
 msgstr "Редактировать поле для текста"
-
-#: src/zope/app/schema/fieldforms.zcml:220
-msgid "Enumerated Float Field"
-msgstr "Перечисляемое поле для вещественных чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:220
-msgid "Add Enumerated Float Field"
-msgstr "Добавить перечисляемое поле для вещественных чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:220
-msgid "An Enumerated Float Field"
-msgstr "Перечисляемое поле для вещественных чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:234
-msgid "Edit Enumerated Float Field"
-msgstr "Редактировать перечисляемое поле для вещественных чисел"
-
-#: src/zope/app/schema/fieldforms.zcml:247
-msgid "An Enumerated Datetime Field"
-msgstr "Перечисляемое поле для даты и времени"
-
-#: src/zope/app/schema/fieldforms.zcml:247
-msgid "Add Enumerated Datetime Field"
-msgstr "Добавить перечисляемое поле для даты и времени"
-
-#: src/zope/app/schema/fieldforms.zcml:247
-msgid "Enumerated Datetime Field"
-msgstr "Перечисляемое поле для даты и времени"
-
-#: src/zope/app/schema/fieldforms.zcml:261
-msgid "Edit Enumerated Datetime Field"
-msgstr "Редактировать перечисляемое поле для даты и времени"
-
-#: src/zope/app/schema/fieldforms.zcml:274
-msgid "An Enumerated Date Field"
-msgstr "Перечисляемое поле для даты"
-
-#: src/zope/app/schema/fieldforms.zcml:274
-msgid "Add Enumerated Date Field"
-msgstr "Добавить перечисляемое поле для даты"
-
-#: src/zope/app/schema/fieldforms.zcml:274
-msgid "Enumerated Date Field"
-msgstr "Перечисляемое поле для даты"
-
-#: src/zope/app/schema/fieldforms.zcml:288
-msgid "Edit Enumerated Date Field"
-msgstr "Редактировать перечисляемое поле для даты"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "TextLine Field"
@@ -2995,87 +2782,71 @@ msgstr "Поле для целого числа"
 msgid "Edit Integer Field"
 msgstr "Редактировать поле для целого числа"
 
-#: src/zope/app/schema/fields.zcml:105
-msgid "Sequence Field"
-msgstr "Поле для последовательности"
-
-#: src/zope/app/schema/fields.zcml:116
-msgid "Bytes Field"
-msgstr "Поле для байта"
-
-#: src/zope/app/schema/fields.zcml:129
+#: src/zope/app/schema/fields.zcml:102
 msgid "BytesLine Field"
 msgstr "Поле для байтовой строки"
 
-#: src/zope/app/schema/fields.zcml:142 src/zope/app/schema/fieldforms.zcml:7
+#: src/zope/app/schema/fields.zcml:114 src/zope/app/schema/fieldforms.zcml:7
 msgid "Text Field"
 msgstr "Поле для текста"
 
-#: src/zope/app/schema/fields.zcml:157
+#: src/zope/app/schema/fields.zcml:128
 msgid "Text Line Field"
 msgstr "Поле для текстовой строки"
 
-#: src/zope/app/schema/fields.zcml:170 src/zope/app/schema/fieldforms.zcml:59
+#: src/zope/app/schema/fields.zcml:140 src/zope/app/schema/fieldforms.zcml:59
 msgid "Boolean Field"
 msgstr "Поле для булевского значения"
 
-#: src/zope/app/schema/fields.zcml:181 src/zope/app/schema/fieldforms.zcml:85
+#: src/zope/app/schema/fields.zcml:151 src/zope/app/schema/fieldforms.zcml:85
 msgid "Integer Field"
 msgstr "Поле для целого числа"
 
-#: src/zope/app/schema/fields.zcml:194 src/zope/app/schema/fieldforms.zcml:111
+#: src/zope/app/schema/fields.zcml:163 src/zope/app/schema/fieldforms.zcml:111
 msgid "Float Field"
 msgstr "Поле для вещественного числа"
 
-#: src/zope/app/schema/fields.zcml:207
+#: src/zope/app/schema/fields.zcml:175
 msgid "Tuple Field"
 msgstr "Поле для кортежа"
 
-#: src/zope/app/schema/fields.zcml:218
+#: src/zope/app/schema/fields.zcml:186
 msgid "List Field"
 msgstr "Поле для списка"
 
-#: src/zope/app/schema/fields.zcml:229
+#: src/zope/app/schema/fields.zcml:197
+msgid "Set Field"
+msgstr "Поле для набора"
+
+#: src/zope/app/schema/fields.zcml:208
 msgid "Password Field"
 msgstr "Поле для пароля"
 
-#: src/zope/app/schema/fields.zcml:242
+#: src/zope/app/schema/fields.zcml:220
 msgid "Dict Field"
 msgstr "Поле для словаря"
 
-#: src/zope/app/schema/fields.zcml:254 src/zope/app/schema/fieldforms.zcml:137
+#: src/zope/app/schema/fields.zcml:232 src/zope/app/schema/fieldforms.zcml:137
 msgid "Datetime Field"
 msgstr "Поле для даты и времени"
 
-#: src/zope/app/schema/fields.zcml:267
+#: src/zope/app/schema/fields.zcml:244
 msgid "SourceText Field"
 msgstr "Поле для исходного текста"
 
-#: src/zope/app/schema/fields.zcml:280
+#: src/zope/app/schema/fields.zcml:256
 msgid "Object Field"
 msgstr "Поле для объекта"
 
-#: src/zope/app/schema/fields.zcml:293
+#: src/zope/app/schema/fields.zcml:269
 msgid "URI Field"
 msgstr "Поле для URI"
 
-#: src/zope/app/schema/fields.zcml:306
+#: src/zope/app/schema/fields.zcml:281
 msgid "Id Field"
 msgstr "Поле для идентификатора"
 
-#: src/zope/app/schema/fields.zcml:319
-msgid "EnumeratedTextLine Field"
-msgstr "Перечисляемое поле для текстовых строк"
-
-#: src/zope/app/schema/fields.zcml:332
-msgid "EnumeratedInt Field"
-msgstr "Перечисляемое поле для целых чисел"
-
-#: src/zope/app/schema/fields.zcml:345
-msgid "EnumeratedFloat Field"
-msgstr "Перечисляемое поле для вещественных чисел"
-
-#: src/zope/app/schema/fields.zcml:358
+#: src/zope/app/schema/fields.zcml:293
 msgid "Interface Field"
 msgstr "Поле для интерфейса"
 
@@ -3100,8 +2871,8 @@ msgid "MinMaxLen Field"
 msgstr "Поле с ограничением длины"
 
 #: src/zope/app/schema/fields.zcml:90
-msgid "Enumerated Field"
-msgstr "Перечисляемое поле"
+msgid "Bytes Field"
+msgstr "Поле для байта"
 
 #: src/zope/app/schemacontent/browser/configure.zcml:106
 msgid "Schema-based Content Component Instance"
@@ -3134,13 +2905,13 @@ msgid "New Content Component Instance"
 msgstr "Новый экземпляр компонента контента"
 
 #: src/zope/app/schemacontent/browser/permission_edit.pt:14
-#: src/zope/app/workflow/browser/stateful/definition_edit.pt:29
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:32
 msgid "Map permissions to Schema fields"
 msgstr ""
 
 # Default: "Change"
-#: src/zope/app/schemacontent/browser/permission_edit.pt:38
-#: src/zope/app/workflow/browser/stateful/definition_edit.pt:52
+#: src/zope/app/schemacontent/browser/permission_edit.pt:35
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:52
 msgid "change-button"
 msgstr ""
 
@@ -3187,32 +2958,32 @@ msgid ""
 msgstr ""
 
 #: src/zope/app/schemacontent/interfaces.py:73
-#: src/zope/app/schemacontent/interfaces.py:104
+#: src/zope/app/schemacontent/interfaces.py:105
 msgid "Name of Content Component Type"
 msgstr "Имя типа компонента контента"
 
 #: src/zope/app/schemacontent/interfaces.py:74
-#: src/zope/app/schemacontent/interfaces.py:105
+#: src/zope/app/schemacontent/interfaces.py:106
 msgid "This is the name of the document type."
 msgstr ""
 
 # Default: "Schema"
 #: src/zope/app/schemacontent/interfaces.py:78
-#: src/zope/app/schemacontent/interfaces.py:109
+#: src/zope/app/schemacontent/interfaces.py:110
 #: src/zope/app/site/browser/interfacedetail.pt:42
 msgid "schema-component"
 msgstr "Схема"
 
 #: src/zope/app/schemacontent/interfaces.py:79
-#: src/zope/app/schemacontent/interfaces.py:110
+#: src/zope/app/schemacontent/interfaces.py:111
 msgid "Specifies the schema that characterizes the document."
 msgstr ""
 
-#: src/zope/app/schemacontent/interfaces.py:83
+#: src/zope/app/schemacontent/interfaces.py:84
 msgid "Copy Schema"
 msgstr ""
 
-#: src/zope/app/schemacontent/interfaces.py:84
+#: src/zope/app/schemacontent/interfaces.py:85
 msgid ""
 "If this field is set to True, a copied version of the schema will be used in "
 "the Content Component instance. This has the advantage that an existing "
@@ -3250,10 +3021,6 @@ msgstr "Вы успешно вышли из системы!"
 msgid "You are now logged out."
 msgstr "Вы вышли из системы."
 
-#: src/zope/app/security/browser/permissionwidget.py:72
-msgid "---select permission---"
-msgstr "---выберите права доступа---"
-
 #: src/zope/app/security/browser/redirect.pt:11
 msgid "You are being redirected!"
 msgstr "Ваш запрос был перенаправлен!"
@@ -3263,102 +3030,102 @@ msgid "If you you see this screen for more than 5 seconds, click here."
 msgstr "Если вы видите данную страницу больше чем 5 секунд, идите по данной ссылке."
 
 # Default: "Change security settings"
-#: src/zope/app/security/configure.zcml:43
+#: src/zope/app/security/configure.zcml:47
 msgid "change-security-settings-permission"
 msgstr ""
 
 # Default: "Manage Content"
-#: src/zope/app/security/configure.zcml:48
+#: src/zope/app/security/configure.zcml:52
 msgid "manage-content-permission"
 msgstr ""
 
 # Default: "Manage Service Bindings"
-#: src/zope/app/security/configure.zcml:53
+#: src/zope/app/security/configure.zcml:57
 msgid "manage-service-bindings-permission"
-msgstr ""
-
-#: src/zope/app/security/configure.zcml:58
-msgid "Manage executable code, including Python, SQL, ZPT, etc."
-msgstr ""
-
-# Default: "Manage Code"
-#: src/zope/app/security/configure.zcml:58
-msgid "manage-code-permission"
 msgstr ""
 
 #: src/zope/app/security/configure.zcml:6
 msgid ""
-"Special permission indicating unconditional access Public resources are "
-"always accessable. "
+"Special permission indicating unconditional access.                    "
+"Public resources are always accessable."
 msgstr ""
 
 # Default: "View"
 #: src/zope/app/security/configure.zcml:6
-#: src/zope/app/security/configure.zcml:38
+#: src/zope/app/security/configure.zcml:42
 msgid "view-permission"
 msgstr ""
 
+#: src/zope/app/security/configure.zcml:62
+msgid "Manage executable code, including Python, SQL, ZPT, etc."
+msgstr ""
+
+# Default: "Manage Code"
+#: src/zope/app/security/configure.zcml:62
+msgid "manage-code-permission"
+msgstr ""
+
 # Default: "Manage Services"
-#: src/zope/app/security/configure.zcml:64
+#: src/zope/app/security/configure.zcml:68
 msgid "manage-services-permission"
 msgstr ""
 
 # Default: "Manage Principals"
-#: src/zope/app/security/configure.zcml:69
+#: src/zope/app/security/configure.zcml:73
 msgid "manage-principal-permission"
 msgstr ""
 
-#: src/zope/app/security/configure.zcml:74
+#: src/zope/app/security/configure.zcml:78
 msgid ""
 "Manage the Zope Application, such as Restart/Shutdown or                    "
 "packing the ZODB."
 msgstr ""
 
 # Default: "Manage Application"
-#: src/zope/app/security/configure.zcml:74
+#: src/zope/app/security/configure.zcml:78
 msgid "manage-application-permission"
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:193
+#: src/zope/app/security/interfaces/__init__.py:192
 msgid "Id as which this permission will be known and used."
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:199
+#: src/zope/app/security/interfaces/__init__.py:198
 msgid "Provides a title for the permission."
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:204
+#: src/zope/app/security/interfaces/__init__.py:203
 msgid "Provides a description for the permission."
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:39
-#: src/zope/app/security/interfaces/__init__.py:192
-#: src/zope/app/workflow/browser/stateful/addstate.pt:12
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:12
+#: src/zope/app/security/interfaces/__init__.py:38
+#: src/zope/app/security/interfaces/__init__.py:191
+#: src/zope/app/workflow/stateful/browser/addstate.pt:12
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:12
 msgid "Id"
 msgstr "Идентификатор"
 
-#: src/zope/app/security/interfaces/__init__.py:40
+#: src/zope/app/security/interfaces/__init__.py:39
 msgid "The unique identification of the principal."
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:46
+#: src/zope/app/security/interfaces/__init__.py:45
 msgid "The title of the principal. This is usually used in the UI."
 msgstr ""
 
-#: src/zope/app/security/interfaces/__init__.py:51
-#: src/zope/app/security/interfaces/__init__.py:203
-#: src/zope/schema/interfaces.py:102
-#: src/zope/app/dublincore/browser/edit.pt:22
-#: src/zope/app/introspector/introspector.pt:52
-#: src/zope/app/introspector/introspector.pt:155
-#: src/zope/app/introspector/marker.pt:63
+#: src/zope/app/security/interfaces/__init__.py:50
+#: src/zope/app/security/interfaces/__init__.py:202
+#: src/zope/schema/interfaces.py:107
 #: src/zope/app/site/browser/interfacedetail.pt:21
 #: src/zope/app/site/browser/interfacedetail.pt:48
+#: src/zope/app/dublincore/browser/edit.pt:22
+#: src/zope/app/introspector/marker.pt:63
+#: src/zope/app/introspector/introspector.pt:52
+#: src/zope/app/introspector/introspector.pt:155
 msgid "Description"
 msgstr "Описание"
 
-#: src/zope/app/security/interfaces/__init__.py:52
+#: src/zope/app/security/interfaces/__init__.py:51
 msgid "A detailed description of the principal."
 msgstr ""
 
@@ -3466,12 +3233,6 @@ msgstr "Субъект(ы)"
 msgid "Role(s)"
 msgstr "Роль(и)"
 
-# Default: "Up"
-#: src/zope/app/securitypolicy/browser/principal_role_association.pt:98
-#: src/zope/app/site/browser/tool.pt:109
-msgid "apply-button"
-msgstr "Установить"
-
 #: src/zope/app/securitypolicy/browser/principalroleview.py:93
 #: src/zope/app/securitypolicy/browser/rolepermissionview.py:140
 msgid "Settings changed at ${date_time}"
@@ -3492,19 +3253,19 @@ msgstr "Разрешить"
 msgid "permission-deny"
 msgstr "Зпретить"
 
-#: src/zope/app/securitypolicy/configure.zcml:77
+#: src/zope/app/securitypolicy/configure.zcml:65
 msgid "All users have this role implicitly"
 msgstr "Все пользователи неявно имею эту роль"
 
-#: src/zope/app/securitypolicy/configure.zcml:77
+#: src/zope/app/securitypolicy/configure.zcml:65
 msgid "Everybody"
 msgstr "Любой пользователь"
 
-#: src/zope/app/securitypolicy/configure.zcml:79
+#: src/zope/app/securitypolicy/configure.zcml:67
 msgid "Site Manager"
 msgstr "Менеджер сайта"
 
-#: src/zope/app/securitypolicy/configure.zcml:80
+#: src/zope/app/securitypolicy/configure.zcml:68
 msgid "Site Member"
 msgstr "Участник сайта"
 
@@ -3636,9 +3397,22 @@ msgstr "Сервис деактивирован"
 msgid "${active_services} activated"
 msgstr ""
 
+# Default: "Register"
+#: src/zope/app/site/browser/add_svc_config.pt:14
+#: src/zope/app/registration/browser/registration.pt:50
+msgid "register-button"
+msgstr "Зарегистрировать"
+
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
 msgstr "Название сервиса"
+
+# Default: "Reset"
+#: src/zope/app/site/browser/add_svc_config.pt:35
+#: src/zope/app/cache/browser/ramedit.pt:53
+#: src/zope/app/bundle/browser/bundle.pt:130
+msgid "reset-button"
+msgstr "Сбросить"
 
 #: src/zope/app/site/browser/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
@@ -3724,6 +3498,12 @@ msgstr "Интерфейсы зарегистрированные через с�
 msgid "Documentation"
 msgstr "Документация"
 
+# Default: "Methods"
+#: src/zope/app/site/browser/interfacedetail.pt:16
+#: src/zope/app/introspector/introspector.pt:83
+msgid "class-methods"
+msgstr "Методы"
+
 #: src/zope/app/site/browser/interfacedetail.pt:20
 msgid "Method Signature"
 msgstr "Определение метода"
@@ -3731,6 +3511,12 @@ msgstr "Определение метода"
 #: src/zope/app/site/browser/interfacedetail.pt:46
 msgid "Field Name"
 msgstr "Название поля"
+
+#: src/zope/app/site/browser/interfacedetail.pt:47
+#: src/zope/app/sqlscript/browser/test.pt:15
+#: src/zope/app/schema/browser/schema_edit.pt:37
+msgid "Type"
+msgstr "Тип"
 
 #: src/zope/app/site/browser/interfacedetail.pt:67
 msgid "* indicates required fields."
@@ -3744,6 +3530,12 @@ msgstr "Интерфейс ${iface_name}"
 msgid "Registrations for ${service_name} service"
 msgstr "Регистрация для ${service_name} сервиса"
 
+#: src/zope/app/site/browser/interfacedetail.pt:79
+#: src/zope/app/hub/browser/hubcontrol.pt:33
+#: src/zope/app/i18n/browser/synchronize.pt:89
+msgid "Status"
+msgstr "Статус"
+
 #: src/zope/app/site/browser/interfacedetail.pt:80
 msgid "Usage Summary"
 msgstr ""
@@ -3755,6 +3547,25 @@ msgstr ""
 #: src/zope/app/site/browser/serviceactivation.pt:13
 msgid "Registrations for service ${service_type}"
 msgstr "Регистрация для сервиса ${service_type}"
+
+# Default: "Submit"
+#: src/zope/app/site/browser/serviceactivation.pt:54
+#: src/zope/app/site/browser/add_svc_config.pt:37
+#: src/zope/app/zptpage/browser/inlinecode.pt:65
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:76
+#: src/zope/app/pythonpage/edit.pt:71
+#: src/zope/app/form/browser/editwizard.pt:50
+#: src/zope/app/form/browser/addwizard.pt:58
+#: src/zope/app/form/browser/edit.pt:52
+#: src/zope/app/registration/browser/editregistration.pt:51
+msgid "submit-button"
+msgstr "Изменить"
+
+#: src/zope/app/site/browser/services.pt:15
+#: src/zope/app/utility/browser/utilities.pt:11
+#: src/zope/app/bundle/browser/bundle.pt:53
+msgid "(click to clear message)"
+msgstr "(нажмите для сброса сообщения)"
 
 #: src/zope/app/site/browser/services.pt:18
 msgid "No services are registered."
@@ -3859,6 +3670,32 @@ msgstr ""
 msgid "rename-button"
 msgstr "Переименовать"
 
+# Default: "Refresh"
+#: src/zope/app/site/browser/tool.pt:105
+#: src/zope/app/site/browser/services.pt:74
+#: src/zope/app/utility/browser/utilities.pt:50
+#: src/zope/app/zptpage/browser/inlinecode.pt:63
+#: src/zope/app/dublincore/browser/edit.pt:31
+#: src/zope/app/schemacontent/browser/permission_edit.pt:33
+#: src/zope/app/errorservice/browser/error.pt:52
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:24
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:50
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:74
+#: src/zope/app/pythonpage/edit.pt:69 src/zope/app/form/browser/add.pt:50
+#: src/zope/app/form/browser/edit.pt:50
+#: src/zope/app/wiki/browser/subscriptions.pt:35
+#: src/zope/app/wiki/browser/wiki_add.pt:29
+#: src/zope/app/catalog/browser/advanced.pt:52
+#: src/zope/app/registration/browser/editregistration.pt:49
+msgid "refresh-button"
+msgstr "Обновить"
+
+# Default: "Up"
+#: src/zope/app/site/browser/tool.pt:109
+#: src/zope/app/securitypolicy/browser/principal_role_association.pt:98
+msgid "apply-button"
+msgstr "Установить"
+
 # Default: "Pack"
 #: src/zope/app/site/browser/tool.pt:112
 msgid "cancel-button"
@@ -3886,6 +3723,46 @@ msgstr "Активен"
 msgid "disabled"
 msgstr "Заблокирован"
 
+# Default: "Activate"
+#: src/zope/app/site/browser/tool.pt:90
+#: src/zope/app/site/browser/services.pt:66
+#: src/zope/app/site/browser/add_svc_config.pt:16
+#: src/zope/app/utility/browser/utilities.pt:42
+#: src/zope/app/registration/browser/registration.pt:30
+msgid "activate-button"
+msgstr "Активировать"
+
+# Default: "Deactivate"
+#: src/zope/app/site/browser/tool.pt:92
+#: src/zope/app/site/browser/services.pt:68
+#: src/zope/app/utility/browser/utilities.pt:44
+#: src/zope/app/registration/browser/registration.pt:25
+msgid "deactivate-button"
+msgstr "Деактивировать"
+
+# Default: "Add"
+#: src/zope/app/site/browser/tool.pt:95
+#: src/zope/app/schema/browser/schema_add.pt:39
+#: src/zope/app/workflow/stateful/browser/addstate.pt:20
+#: src/zope/app/workflow/stateful/browser/add.pt:65
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:55
+#: src/zope/app/i18n/browser/translate.pt:48
+#: src/zope/app/container/browser/add.pt:38
+#: src/zope/app/introspector/marker.pt:133 src/zope/app/form/browser/add.pt:52
+#: src/zope/app/wiki/browser/subscriptions.pt:37
+#: src/zope/app/wiki/browser/wiki_add.pt:31
+msgid "add-button"
+msgstr "Добавить"
+
+# Default: "Delete"
+#: src/zope/app/site/browser/tool.pt:98
+#: src/zope/app/site/browser/services.pt:71
+#: src/zope/app/utility/browser/utilities.pt:47
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:47
+#: src/zope/app/i18n/browser/translate.pt:37
+msgid "delete-button"
+msgstr "Удалить"
+
 #: src/zope/app/site/browser/tools.pt:5
 msgid "Available Tools"
 msgstr "Доступный инструментарий"
@@ -3910,7 +3787,7 @@ msgstr "Регистрации активированны."
 msgid "Deactivated registrations."
 msgstr "Регистрации деактивированны."
 
-#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:44
+#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:42
 msgid "The name that is registered"
 msgstr "Зарегистрированное имя"
 
@@ -3972,47 +3849,52 @@ msgid "An Error occurred"
 msgstr "Ошибка"
 
 # Default: "Add SQL Scripts"
-#: src/zope/app/sqlscript/configure.zcml:21
+#: src/zope/app/sqlscript/configure.zcml:12
 msgid "add-sql-scripts-permission"
 msgstr "Добавить SQL Скрипт"
 
-#: src/zope/app/sqlscript/configure.zcml:32
+#: src/zope/app/sqlscript/configure.zcml:23
 #: src/zope/app/sqlscript/browser/configure.zcml:7
 msgid "A content-based script to execute dyanmic SQL."
 msgstr "Скрипт для выполнения SQL запросов."
 
-#: src/zope/app/sqlscript/configure.zcml:32
+#: src/zope/app/sqlscript/configure.zcml:23
 #: src/zope/app/sqlscript/browser/configure.zcml:7
 msgid "SQL Script"
 msgstr "SQL скрипт"
 
-#: src/zope/app/sqlscript/interfaces.py:48
+#: src/zope/app/sqlscript/interfaces.py:30
 msgid "Connection Name"
 msgstr "Название соединения"
 
-#: src/zope/app/sqlscript/interfaces.py:49
+#: src/zope/app/sqlscript/interfaces.py:31
 msgid "The Connection Name for the connection to be used."
 msgstr "Название соединения которое будет использоваться."
 
-#: src/zope/app/sqlscript/interfaces.py:53
+#: src/zope/app/sqlscript/interfaces.py:36
 msgid "Arguments"
 msgstr "Аргументы"
 
-#: src/zope/app/sqlscript/interfaces.py:54
+#: src/zope/app/sqlscript/interfaces.py:37
 msgid ""
 "A set of attributes that can be used during the SQL command rendering "
 "process to provide dynamic data."
 msgstr ""
 
-#: src/zope/app/sqlscript/interfaces.py:63
+#: src/zope/app/sqlscript/interfaces.py:46
 msgid "The SQL command to be run."
 msgstr ""
 
-#: src/zope/app/traversing/browser/__init__.py:26
+#: src/zope/app/traversing/browser/absoluteurl.py:27
 msgid ""
 "There isn't enough context to get URL information. This is probably due to a "
 "bug in setting up location information."
 msgstr ""
+
+#: src/zope/app/tree/browser/navigation_macros.pt:16
+#: src/zope/app/rotterdam/navigation_macros.pt:26
+msgid "Navigation"
+msgstr "Навигация"
 
 #: src/zope/app/undo/configure.zcml:100
 msgid "Undo!"
@@ -4137,34 +4019,34 @@ msgstr ""
 "Данная форма позволит Вам отменить ваши транзакции. Показаны только "
 "транзакции инициированные Вами."
 
-#: src/zope/app/utility/browser/__init__.py:105
-msgid "Activated: ${activated_utilities}"
-msgstr "Активированы: ${activated_utilities}"
-
-#: src/zope/app/utility/browser/__init__.py:109
-msgid "All of the checked utilities were already active"
-msgstr ""
-
-#: src/zope/app/utility/browser/__init__.py:120
+#: src/zope/app/utility/browser/__init__.py:100
 msgid "Deactivated: ${deactivated_utilities}"
 msgstr ""
 
-#: src/zope/app/utility/browser/__init__.py:124
+#: src/zope/app/utility/browser/__init__.py:104
 msgid "None of the checked utilities were active"
 msgstr ""
 
-#: src/zope/app/utility/browser/__init__.py:136
+#: src/zope/app/utility/browser/__init__.py:116
 msgid ""
 "Can't delete active utility/utilites: ${utility_names}; use the Deactivate "
 "button to deactivate"
 msgstr ""
 
-#: src/zope/app/utility/browser/__init__.py:168
+#: src/zope/app/utility/browser/__init__.py:148
 msgid "Deleted: ${utility_names}"
 msgstr ""
 
-#: src/zope/app/utility/browser/__init__.py:79
+#: src/zope/app/utility/browser/__init__.py:59
 msgid "Please select at least one checkbox"
+msgstr ""
+
+#: src/zope/app/utility/browser/__init__.py:85
+msgid "Activated: ${activated_utilities}"
+msgstr "Активированы: ${activated_utilities}"
+
+#: src/zope/app/utility/browser/__init__.py:89
+msgid "All of the checked utilities were already active"
 msgstr ""
 
 #: src/zope/app/utility/browser/configure.zcml:23
@@ -4183,17 +4065,23 @@ msgstr "Утилиты"
 msgid "New Utility Registration"
 msgstr "Регистрация новой утилиты"
 
-#: src/zope/app/utility/browser/configure.zcml:77
+#: src/zope/app/utility/browser/configure.zcml:85
 msgid "Edit Utility Registration"
 msgstr "Редактирование регистрации утилиты"
 
-#: src/zope/app/utility/browser/configure.zcml:89
+#: src/zope/app/utility/browser/configure.zcml:97
 msgid "Add utility"
 msgstr "Добавить утилиту"
 
 #: src/zope/app/utility/browser/configureutility.pt:14
 msgid "Utility registrations for interface ${interface}"
 msgstr "Регистрация утилиты для интерфейса ${interface}"
+
+# Default: "Update"
+#: src/zope/app/utility/browser/configureutility.pt:29
+#: src/zope/app/i18n/browser/synchronize.pt:117
+msgid "update-button"
+msgstr "Обновить"
 
 #: src/zope/app/utility/browser/configureutility.pt:9
 msgid "Utility registrations for interface ${interface} with name ${utility_name}"
@@ -4207,15 +4095,15 @@ msgstr "изменить регистрацию"
 msgid "Utilities registered in this utility service"
 msgstr "Утилиты зарегистрированные в данном сервисе утилит"
 
-#: src/zope/app/utility/interfaces.py:43
+#: src/zope/app/utility/interfaces.py:41
 msgid "Register As"
 msgstr "Зарегистрирован как"
 
-#: src/zope/app/utility/interfaces.py:51
-msgid "The interface provided by the adapter"
-msgstr "Интерфейс предоставляемый адаптером"
+#: src/zope/app/utility/interfaces.py:49
+msgid "The interface provided by the utility"
+msgstr "Интерфейс предоставляемый утилитой"
 
-#: src/zope/app/utility/interfaces.py:58
+#: src/zope/app/utility/interfaces.py:57
 msgid "The physical path to the component"
 msgstr "Физический путь к компоненту"
 
@@ -4320,126 +4208,126 @@ msgstr ""
 msgid "Wiki Table of Contents"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:126
+#: src/zope/app/wiki/configure.zcml:10
+msgid "Wiki User"
+msgstr "Пользователь Wiki"
+
+#: src/zope/app/wiki/configure.zcml:10
+msgid "Wiki visitors, which can only view and comment on wikis."
+msgstr ""
+
+#: src/zope/app/wiki/configure.zcml:127
 #: src/zope/app/wiki/browser/configure.zcml:69
 msgid "A Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:126
+#: src/zope/app/wiki/configure.zcml:127
 #: src/zope/app/wiki/browser/configure.zcml:69
 msgid "Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:14
-msgid "Wiki Editor"
-msgstr "Редактор Wiki"
-
-#: src/zope/app/wiki/configure.zcml:14
+#: src/zope/app/wiki/configure.zcml:15
 msgid "The Wiki Editor can create and edit wikis."
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:156
+#: src/zope/app/wiki/configure.zcml:15
+msgid "Wiki Editor"
+msgstr "Редактор Wiki"
+
+#: src/zope/app/wiki/configure.zcml:157
 msgid "A Wiki Page Comment"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:156
+#: src/zope/app/wiki/configure.zcml:157
 msgid "Wiki Page Comment"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:19
+#: src/zope/app/wiki/configure.zcml:20
 msgid "Wiki Administrator"
 msgstr "Администратор Wiki"
 
-#: src/zope/app/wiki/configure.zcml:19
+#: src/zope/app/wiki/configure.zcml:20
 msgid "The Wiki Admin can fully manage wiki pages."
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:24
+#: src/zope/app/wiki/configure.zcml:25
 msgid "View Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:24
+#: src/zope/app/wiki/configure.zcml:25
 msgid "View a Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:33
+#: src/zope/app/wiki/configure.zcml:34
 msgid "Comment on Wiki Page"
 msgstr "Комментировать страницу Wiki"
 
-#: src/zope/app/wiki/configure.zcml:33
+#: src/zope/app/wiki/configure.zcml:34
 msgid "Make a comment on Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:42
+#: src/zope/app/wiki/configure.zcml:43
 #: src/zope/app/wiki/browser/configure.zcml:60
 msgid "Add Wiki Page"
 msgstr "Добавить страницу Wiki"
 
-#: src/zope/app/wiki/configure.zcml:51
+#: src/zope/app/wiki/configure.zcml:52
 msgid "Edit Wiki Page"
 msgstr "Редактировать страницу Wiki"
 
-#: src/zope/app/wiki/configure.zcml:60
+#: src/zope/app/wiki/configure.zcml:61
 msgid "Delete Wiki Page"
 msgstr "Удалить страницу Wiki"
 
-#: src/zope/app/wiki/configure.zcml:69
+#: src/zope/app/wiki/configure.zcml:70
 msgid "Reparent Wiki Page"
 msgstr "Перерисовать страницу Wiki"
 
-#: src/zope/app/wiki/configure.zcml:69
+#: src/zope/app/wiki/configure.zcml:70
 msgid "Reparent a Wiki Page"
 msgstr ""
 
-#: src/zope/app/wiki/configure.zcml:9
-msgid "Wiki User"
-msgstr "Пользователь Wiki"
-
-#: src/zope/app/wiki/configure.zcml:9
-msgid "Wiki visitors, which can only view and comment on wikis."
-msgstr ""
-
-#: src/zope/app/wiki/configure.zcml:93
+#: src/zope/app/wiki/configure.zcml:94
 msgid "Minimal Wiki Page Container implementation "
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:40
+#: src/zope/app/wiki/interfaces.py:39
 msgid "Comment Title"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:45 src/zope/app/wiki/interfaces.py:71
+#: src/zope/app/wiki/interfaces.py:44 src/zope/app/wiki/interfaces.py:70
 msgid "Source Text"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:46
+#: src/zope/app/wiki/interfaces.py:45
 msgid "Renderable source text of the comment."
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:51 src/zope/app/wiki/interfaces.py:77
+#: src/zope/app/wiki/interfaces.py:50 src/zope/app/wiki/interfaces.py:76
 msgid "Source Type"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:52 src/zope/app/wiki/interfaces.py:78
+#: src/zope/app/wiki/interfaces.py:51 src/zope/app/wiki/interfaces.py:77
 msgid "Type of the source text, e.g. structured text"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:72
+#: src/zope/app/wiki/interfaces.py:71
 msgid "Renderable source text of the Wiki Page."
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:96
+#: src/zope/app/wiki/interfaces.py:95
 msgid "Wiki Page Parents"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:97
+#: src/zope/app/wiki/interfaces.py:96
 msgid "Parents of a a Wiki"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:98
+#: src/zope/app/wiki/interfaces.py:97
 msgid "Parent Name"
 msgstr ""
 
-#: src/zope/app/wiki/interfaces.py:99
+#: src/zope/app/wiki/interfaces.py:98
 msgid "Name of the parent wiki page."
 msgstr ""
 
@@ -4449,17 +4337,12 @@ msgid ""
 "object."
 msgstr "Определяют потоки управления для объекта."
 
-#: src/zope/app/workflow/browser/configure.zcml:6
-#: src/zope/app/workflow/browser/stateful/configure.zcml:158
-msgid "Workflows"
-msgstr "Потоки управления"
-
 #: src/zope/app/workflow/browser/definition_index.pt:11
 msgid "Process Definition: ${pd_name}"
 msgstr "Определение процесса: ${pd_name}"
 
 #: src/zope/app/workflow/browser/definition_index.pt:3
-#: src/zope/app/workflow/browser/stateful/definition_index.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:3
 msgid "Process Definition"
 msgstr "Определение процесса"
 
@@ -4470,6 +4353,12 @@ msgstr "Импорт / Экспорт определений процессов:
 #: src/zope/app/workflow/browser/importexport_index.pt:13
 msgid "Import:"
 msgstr "Импорт:"
+
+# Default: "Import"
+#: src/zope/app/workflow/browser/importexport_index.pt:17
+#: src/zope/app/i18n/browser/exportimport.pt:37
+msgid "import-button"
+msgstr "Загрузить"
 
 #: src/zope/app/workflow/browser/importexport_index.pt:21
 msgid "Export: <a href=\"@@export.html\">save as file</a>"
@@ -4491,190 +4380,6 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: src/zope/app/workflow/browser/stateful/add.pt:8
-msgid "Add Content"
-msgstr "Добавить"
-
-#: src/zope/app/workflow/browser/stateful/addstate.pt:3
-msgid "Add State"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:19
-msgid "Source Satte"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:29
-msgid "Destination Satte"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:3
-msgid "Add Transition"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:39
-msgid "Condition"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:108
-msgid "Edit a Transition"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:115
-msgid "Stateful Transition"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "Content Workflows Manager"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "An utility to manage content and workflow interaction."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:14
-msgid "A stateful workflow process definition"
-msgstr "Определение процесса имеющее состояние"
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:14
-msgid "Stateful Process Definition"
-msgstr "Определение процесса имеющее состояние"
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:143
-msgid "Content/Process Registry"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:28
-msgid "Relevant Data Schema"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:40
-msgid "Manage States"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:42
-msgid "Manage Transitions"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:49
-msgid "State Items"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:5
-msgid "Workflow Process Definitions"
-msgstr "Поток управления определений процессов"
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:5
-msgid "Process Definitions are used to define the way a workflow       will behave."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:50
-msgid "Transition Items"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:79
-msgid "Stateful State"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:87
-msgid "Mapping(s) added."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:95
-msgid "Mapping(s) removed."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:15
-msgid ""
-"This screen let's you specify which content types (by interface) can receive "
-"which workflows (process definitions)."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:20
-msgid "Available Mappings"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:3
-#: src/zope/app/workflow/browser/stateful/definition_edit.pt:3
-msgid "Process Definition <-> Content Type Registry"
-msgstr ""
-
-# Default: "Switch View"
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:48
-msgid "switch-view-button"
-msgstr ""
-
-# Default: "Remove Mappings"
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:50
-msgid "remove-mappings-button"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:55
-msgid "Add new Mapping"
-msgstr ""
-
-# Default: "Add Mappings"
-#: src/zope/app/workflow/browser/stateful/contentworkflow_registry.pt:62
-msgid "add-mappings-button"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/definition_index.pt:13
-msgid "Process Definition: ${name}"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/definition_states.pt:10
-msgid "States"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/definition_states.pt:3
-msgid "Process Definition States"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/definition_transitions.pt:10
-msgid "Transitions"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/definition_transitions.pt:3
-msgid "Process Definition Transitions"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance.py:147
-msgid "Updated Workflow Data."
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:16
-msgid "Workflow:"
-msgstr ""
-
-# Default: "Choose"
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:22
-msgid "choose-button"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:28
-msgid "Workflow: ${wf_title}"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:42
-msgid "Current Status:"
-msgstr "Текущий статус:"
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:45
-msgid "Possible State Changes:"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:5
-msgid "Workflow Options"
-msgstr ""
-
-# Default: "Make Transition"
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:57
-msgid "make-transition-button"
-msgstr ""
-
-#: src/zope/app/workflow/browser/stateful/instance_manage.pt:62
-msgid "Workflow-relevant Data"
-msgstr ""
-
 # Default: "Create Workflow ProcessInstances"
 #: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
@@ -4690,6 +4395,221 @@ msgstr ""
 msgid "manage-workflow-processdefinitions-permission"
 msgstr ""
 
+#: src/zope/app/workflow/stateful/browser/add.pt:8
+msgid "Add Content"
+msgstr "Добавить"
+
+#: src/zope/app/workflow/stateful/browser/addstate.pt:3
+msgid "Add State"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:19
+msgid "Source Satte"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:29
+msgid "Destination Satte"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:3
+msgid "Add Transition"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:39
+msgid "Condition"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:101
+msgid "Edit a Transition"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:108
+msgid "Stateful Transition"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:121
+msgid "An utility to manage content and workflow interaction."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:121
+msgid "Content Workflows Manager"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:137
+msgid "Content/Process Registry"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:152
+#: src/zope/app/workflow/browser/configure.zcml:6
+msgid "Workflows"
+msgstr "Потоки управления"
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:21
+msgid "Relevant Data Schema"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:33
+msgid "Manage States"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:35
+msgid "Manage Transitions"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:42
+msgid "State Items"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:43
+msgid "Transition Items"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:7
+msgid "A stateful workflow process definition"
+msgstr "Определение процесса имеющее состояние"
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:7
+msgid "Stateful Process Definition"
+msgstr "Определение процесса имеющее состояние"
+
+#: src/zope/app/workflow/stateful/browser/configure.zcml:72
+msgid "Stateful State"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow.py:87
+msgid "Mapping(s) added."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow.py:95
+msgid "Mapping(s) removed."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:11
+#: src/zope/app/hub/browser/subscription_control.pt:11
+msgid "Subscription control"
+msgstr "Контроль подписки"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:23
+#: src/zope/app/hub/browser/subscription_control.pt:29
+#: src/zope/app/index/browser/field/control.pt:51
+#: src/zope/app/index/browser/text/control.pt:46
+msgid "Subscription state: ON"
+msgstr "Состояние подписки: Подписан"
+
+# Default: "Unsubscribe"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:24
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:29
+#: src/zope/app/hub/browser/subscription_control.pt:30
+#: src/zope/app/index/browser/field/control.pt:52
+#: src/zope/app/index/browser/text/control.pt:47
+#: src/zope/app/catalog/browser/advanced.pt:16
+msgid "unsubscribe-button"
+msgstr "Отписаться"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:28
+#: src/zope/app/hub/browser/subscription_control.pt:34
+#: src/zope/app/index/browser/field/control.pt:56
+#: src/zope/app/index/browser/text/control.pt:51
+msgid "Subscription state: OFF"
+msgstr "Состояние подписки: Не подписан"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:3
+#: src/zope/app/hub/browser/subscription_control.pt:3
+msgid "Registration \"Service\" Control Page"
+msgstr "Контроль сервиса регистраций"
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:15
+msgid ""
+"This screen let's you specify which content types (by interface) can receive "
+"which workflows (process definitions)."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:20
+msgid "Available Mappings"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
+msgid "Process Definition <-> Content Type Registry"
+msgstr ""
+
+# Default: "Switch View"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:48
+msgid "switch-view-button"
+msgstr ""
+
+# Default: "Remove Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:50
+msgid "remove-mappings-button"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:55
+msgid "Add new Mapping"
+msgstr ""
+
+# Default: "Add Mappings"
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:67
+msgid "add-mappings-button"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_index.pt:13
+msgid "Process Definition: ${name}"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:10
+msgid "States"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_states.pt:3
+msgid "Process Definition States"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:10
+msgid "Transitions"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_transitions.pt:3
+msgid "Process Definition Transitions"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance.py:150
+msgid "Updated Workflow Data."
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:16
+msgid "Workflow:"
+msgstr ""
+
+# Default: "Choose"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:22
+msgid "choose-button"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:28
+msgid "Workflow: ${wf_title}"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:42
+msgid "Current Status:"
+msgstr "Текущий статус:"
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:45
+msgid "Possible State Changes:"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:5
+msgid "Workflow Options"
+msgstr ""
+
+# Default: "Make Transition"
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:57
+msgid "make-transition-button"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/instance_manage.pt:62
+msgid "Workflow-relevant Data"
+msgstr ""
+
 #: src/zope/app/zopetop/widget_macros.pt:13
 msgid "Logged in as ${user_title}"
 msgstr ""
@@ -4701,6 +4621,11 @@ msgstr ""
 #: src/zope/app/zopetop/widget_macros.pt:149
 msgid "Actions"
 msgstr ""
+
+#: src/zope/app/zopetop/widget_macros.pt:176
+#: src/zope/app/onlinehelp/browser/skin/template.pt:100
+msgid "Location:"
+msgstr "Путь:"
 
 #: src/zope/app/zopetop/widget_macros.pt:26
 msgid "Common Tasks"
@@ -4773,11 +4698,18 @@ msgid ""
 "technologies like PHP and it fits their brain, which is very important."
 msgstr ""
 
-#: src/zope/app/zptpage/configure.zcml:28
+#: src/zope/app/zptpage/browser/inlinecode.pt:49
+#: src/zope/app/schema/browser/schema_edit.pt:20
+#: src/zope/app/pythonpage/edit.pt:23 src/zope/app/form/browser/add.pt:22
+#: src/zope/app/form/browser/edit.pt:23
+msgid "There are ${num_errors} input errors."
+msgstr "Обнаружено ошибок при вводе: ${num_errors}"
+
+#: src/zope/app/zptpage/configure.zcml:13
 msgid "ZPT Page"
 msgstr ""
 
-#: src/zope/app/zptpage/configure.zcml:28
+#: src/zope/app/zptpage/configure.zcml:13
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "A simple, content-based Page Template"
 msgstr "Шаблон страницы"
@@ -4865,34 +4797,38 @@ msgstr "Не является контейнером"
 msgid "Not an iterator"
 msgstr "Не является итератором"
 
-#: src/zope/schema/interfaces.py:103
+#: src/zope/schema/interfaces.py:101
+msgid "A short summary or label"
+msgstr "Краткое описание"
+
+#: src/zope/schema/interfaces.py:108
 msgid "A description of the field"
 msgstr "Описание поля"
 
-#: src/zope/schema/interfaces.py:109
+#: src/zope/schema/interfaces.py:114
 #: src/zope/app/schema/browser/schema_edit.pt:39
 msgid "Required"
 msgstr "Необходим"
 
-#: src/zope/schema/interfaces.py:111
+#: src/zope/schema/interfaces.py:116
 msgid "Tells whether a field requires its value to exist."
 msgstr "Описывает если значение поля необходимо."
 
-#: src/zope/schema/interfaces.py:115
+#: src/zope/schema/interfaces.py:120
 msgid "Read Only"
 msgstr "Только для чтения"
 
-#: src/zope/schema/interfaces.py:116
+#: src/zope/schema/interfaces.py:121
 msgid "If true, the field's value cannot be changed."
 msgstr "Если установлено, то значение поля не может быть изменено."
 
-#: src/zope/schema/interfaces.py:121 src/zope/schema/interfaces.py:272
-#: src/zope/schema/interfaces.py:327
+#: src/zope/schema/interfaces.py:126 src/zope/schema/interfaces.py:266
+#: src/zope/schema/interfaces.py:315
 msgid "Default Value"
 msgstr "Значение по-умолчанию"
 
-#: src/zope/schema/interfaces.py:122 src/zope/schema/interfaces.py:273
-#: src/zope/schema/interfaces.py:328
+#: src/zope/schema/interfaces.py:127 src/zope/schema/interfaces.py:267
+#: src/zope/schema/interfaces.py:316
 msgid ""
 "The field default value may be None or a legal\n"
 "                        field value"
@@ -4900,11 +4836,11 @@ msgstr ""
 "Значение по-умолчанию может быть None\n"
 "            или допустимое для поля значение"
 
-#: src/zope/schema/interfaces.py:127
+#: src/zope/schema/interfaces.py:132
 msgid "Missing Value"
 msgstr "Отсутствует значение"
 
-#: src/zope/schema/interfaces.py:128
+#: src/zope/schema/interfaces.py:133
 msgid ""
 "If input for this Field is missing, and that's ok,\n"
 "                          then this is the value to use"
@@ -4912,11 +4848,11 @@ msgstr ""
 "Если ввод для данного поля отсутствует и это нормально\n"
 "                    тогда данное значение будет использоваться"
 
-#: src/zope/schema/interfaces.py:133
+#: src/zope/schema/interfaces.py:138
 msgid "Field Order"
 msgstr "Порядок полей"
 
-#: src/zope/schema/interfaces.py:134
+#: src/zope/schema/interfaces.py:139
 msgid ""
 "        The order attribute can be used to determine the order in\n"
 "        which fields in a schema were defined. If one field is created\n"
@@ -4927,19 +4863,19 @@ msgid ""
 "        "
 msgstr ""
 
-#: src/zope/schema/interfaces.py:215 src/zope/schema/interfaces.py:315
+#: src/zope/schema/interfaces.py:220 src/zope/schema/interfaces.py:303
 msgid "Start of the range"
 msgstr "Начало диапазона"
 
-#: src/zope/schema/interfaces.py:221 src/zope/schema/interfaces.py:321
+#: src/zope/schema/interfaces.py:226 src/zope/schema/interfaces.py:309
 msgid "End of the range (excluding the value itself)"
 msgstr "Конец диапазона (включая данное значение)"
 
-#: src/zope/schema/interfaces.py:231
+#: src/zope/schema/interfaces.py:236
 msgid "Minimum length"
 msgstr "Минимальная длина"
 
-#: src/zope/schema/interfaces.py:232
+#: src/zope/schema/interfaces.py:237
 msgid ""
 "        Value after whitespace processing cannot have less than\n"
 "        min_length characters (if a string type) or elements (if\n"
@@ -4947,82 +4883,99 @@ msgid ""
 "        no minimum.\n"
 "        "
 msgstr ""
+"        Значение после удаления пустых символов не может быть меньше\n"
+"        min_length символов (для строкового типа) или элементов (для\n"
+"        последовательностей). Если min_length равен None, ограничение\n"
+"        для минимального значения отсутствует.\n"
+"        "
 
-#: src/zope/schema/interfaces.py:243
+#: src/zope/schema/interfaces.py:248
 msgid "Maximum length"
 msgstr "Максимальная длина"
 
-#: src/zope/schema/interfaces.py:244
+#: src/zope/schema/interfaces.py:249
 msgid ""
 "        Value after whitespace processing cannot have greater\n"
 "        or equal than max_length characters (if a string type) or \n"
 "        elements (if another sequence type). If max_length is\n"
 "        None, there is no maximum."
 msgstr ""
-
-#: src/zope/schema/interfaces.py:257
-msgid "Allowed Values"
-msgstr "Допустимые значения"
-
-#: src/zope/schema/interfaces.py:258
-msgid ""
-"        Only values specified here can be values of this field.\n"
-"        If the list is empty, then there are no further\n"
-"        restictions."
-msgstr ""
+"        Значение после удаления пустых символов не может быть больше\n"
+"        или равно чем max_length символов (для строкового типа) или \n"
+"        элементов (для последовательностей). Если max_length равен\n"
+"        None, ограничение для максимального значения отсутствует."
 
 #: src/zope/schema/interfaces.py:38
 msgid "Wrong contained type"
 msgstr "Неверный тип содержимого"
 
-#: src/zope/schema/interfaces.py:397
-msgid ""
-"Field value items must conform to the given type, expressed\n"
-"           via a Field.\n"
-"        "
-msgstr ""
+#: src/zope/schema/interfaces.py:384
+msgid "Value Type"
+msgstr "Тип значения"
+
+#: src/zope/schema/interfaces.py:385
+msgid "Field value items must conform to the given type, expressed via a Field."
+msgstr "Значение поля должно соответствовать типу, заданному для поля."
+
+#: src/zope/schema/interfaces.py:389
+msgid "Unique Members"
+msgstr "Уникальные элементы"
+
+#: src/zope/schema/interfaces.py:390
+msgid "Specifies whether the members of the collection must be unique."
+msgstr "Определяет должны ли элементы коллекции быть уникальными."
 
 #: src/zope/schema/interfaces.py:41
-msgid "Schema not fully implemented"
-msgstr "Схема не полностью реализована"
+msgid "One or more entries of sequence are not unique."
+msgstr "Один или несколько элементов последовательности не уникальны."
 
-#: src/zope/schema/interfaces.py:411
+#: src/zope/schema/interfaces.py:422
 msgid "The Interface that defines the Fields comprising the Object."
-msgstr ""
+msgstr "Интерфейс определяющий поля составляющие объект."
 
-#: src/zope/schema/interfaces.py:421
+#: src/zope/schema/interfaces.py:432
 msgid ""
 "Field keys must conform to the given type, expressed\n"
 "           via a Field.\n"
 "        "
 msgstr ""
+"Идентификаторы поля должны соответствовать типу, заданному\n"
+"           для поля.\n"
+"        "
 
-#: src/zope/schema/interfaces.py:426
+#: src/zope/schema/interfaces.py:437
 msgid ""
 "Field values must conform to the given type, expressed\n"
 "           via a Field.\n"
 "        "
 msgstr ""
+"Значения поля должны соответствовать типу, заданному\n"
+"           для поля.\n"
+"        "
 
 #: src/zope/schema/interfaces.py:44
+msgid "Schema not fully implemented"
+msgstr "Схема не полностью реализована"
+
+#: src/zope/schema/interfaces.py:47
 msgid "Schema not provided"
 msgstr "Схема не предоставлена"
 
-#: src/zope/schema/interfaces.py:47
+#: src/zope/schema/interfaces.py:50
 msgid "The specified URI is not valid."
 msgstr "Указанный URI не верен."
 
-#: src/zope/schema/interfaces.py:50
+#: src/zope/schema/interfaces.py:53
 msgid "The specified id is not valid."
 msgstr "Указанный идентификатор не верен."
 
-#: src/zope/schema/interfaces.py:53
+#: src/zope/schema/interfaces.py:56
 msgid "The specified dotted name is not valid."
 msgstr "Указанное разделенное '.' имя не верно."
 
-#: src/zope/schema/interfaces.py:96
-msgid "A short summary or label"
-msgstr "Краткое описание"
+#: src/zope/schema/interfaces.py:59
+msgid "The field is not bound."
+msgstr "Поле не связано."
 
 #: src/zope/schema/tests/test_objectfield.py:38
 msgid "Foo"
@@ -5030,7 +4983,7 @@ msgstr "Foo"
 
 #: src/zope/schema/tests/test_objectfield.py:39
 msgid "Foo description"
-msgstr "Описание"
+msgstr "Описание foo"
 
 #: src/zope/schema/tests/test_objectfield.py:44
 msgid "Bar"
@@ -5038,4 +4991,5 @@ msgstr "Bar"
 
 #: src/zope/schema/tests/test_objectfield.py:45
 msgid "Bar description"
-msgstr "Описание"
+msgstr "Описание bar"
+
