@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope's Dunlin Core Implementation
+"""Zope's Dublin Core Implementation
 
 $Id$
 """
@@ -105,7 +105,7 @@ class ZopeDublinCore(object):
         self._mapping = mapping
 
     def _changed(self):
-        self._p_changed = 1
+        self._p_changed = True
 
     title = ScalarProperty(u'Title')
 
