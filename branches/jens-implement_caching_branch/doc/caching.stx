@@ -25,6 +25,11 @@ Caching
     cached values if needed. However, cache invalidation should be handled
     by the plugins itself if it is possible.
 
+    The PluggableAuthService itself is also cacheable this way. Caching PAS
+    itself is the easiest way to achieve caching. In PAS, the _findUsers and
+    _verifyUser methods, being a suitably central spot for caching, have 
+    been enhanced to use the PAS RAM Cache Manager if so configured.
+
 
   How does a plugin programmer use it?
 
