@@ -39,9 +39,9 @@
    reference and/or overwrite the results of previous assignments,
    as desired.
 
-$Id: DT_Let.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: DT_Let.py,v 1.2 2002/10/18 12:24:19 jim Exp $
 """
-from DT_Util import render_blocks, Eval, expr_globals, ParseError
+from DT_Util import render_blocks, Eval, ParseError
 from DT_Util import str # Probably needed due to hysterical pickles.
 
 from types import StringType
@@ -63,7 +63,7 @@ class Let:
                 # expr shorthand
                 expr = expr[1:-1]
                 try:
-                    args[i] = name, Eval(expr, expr_globals).eval
+                    args[i] = name, Eval(expr).eval
                 except SyntaxError, v:
                     m,(huh,l,c,src) = v
                     raise ParseError, (
