@@ -41,6 +41,20 @@ interrupt-check-interval 200
   </filestorage>
 </zodb>
 
+<accesslog>
+  # This sets up logging to both a file (access.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path $LOGDIR/access.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</accesslog>
+
 <eventlog>
   # This sets up logging to both a file and to standard output
   # (STDOUT).  The "path" setting can be a relative or absolute
