@@ -11,11 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: interfaces.py,v 1.2 2004/03/18 14:31:49 philikon Exp $
+"""
 
 from zope.interface import Interface
 
 class IUndoManager(Interface):
-    " Interface for the Undo Manager "
+    """Interface for the Undo Manager"""
 
     def getUndoInfo(first=0, last=-20, user_name=None):
         """
@@ -42,7 +45,6 @@ class IUndoManager(Interface):
           datetime    -> datetime object of time
           description -> transaction description
         """
-
 
     def undoTransaction(id_list):
         """
