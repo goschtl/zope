@@ -6,9 +6,25 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  Zope X3.0.0 Alpha 2
+
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
+      Stephan Richter, Dmitry Vasiliev
+
+      Note: If you are not listed and contributed, please add yourself. This
+      note will be deleted before the release.
+
+  ------------------------------------------------------------------
+
+
   Zope X3.0.0 Alpha 1
 
     New features
+
+    - Distribution, packaging an installation system.
 
     - It is now possible to use a sub-directive called 'browser:widget' inside
       'browser:addform' and 'browser:editform' to specify custom widgets and
@@ -473,9 +489,6 @@ Zope Changes
       Stephan Richter, Chris McDonough, Garrett Smith, Roger Ineichen, Gary
       Poster, Martijn Faassen, Dominik Huber, Bjorn Tillenius, Nathan Yergler,
       Dmitry Vasiliev, Michael Bernstein, Eckart Hertzler, Suresh Babu Eddala
-
-      Note: If you are not listed and contributed, please add yourself. This
-      note will be deleted before the release.
 
   ------------------------------------------------------------------
 

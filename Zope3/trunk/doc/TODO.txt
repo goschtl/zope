@@ -2,10 +2,6 @@
 Things to do for the next release (sorted by importance)
 ============================================================
 
-- Distribution, packaging an installation system.  Fred is working on
-  a prototype. This will eventually include Zope-2 style installation,
-  configuration and process management.
-
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
 
 - http://dev.zope.org/Zope3/SupportingConstraintMaintainingSubscriptions
@@ -29,8 +25,3 @@ Things to do for the next release (sorted by importance)
   specifically, handling events on containers.  
 
   See: http://dev.zope.org/Zope3/LocationRelatedEvents
-
-- Persistent interfaces cannot be provided as providedBy or implementedBy
-  interfaces anymore. This functionality was broken during some interface and
-  adapter refactorings. Originally this was out of scope, but I think it is
-  too important and fundamental to be left out.
