@@ -13,12 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_principalpermissionview.py,v 1.2 2002/12/25 14:12:35 jim Exp $
+$Id: test_principalpermissionview.py,v 1.3 2003/02/06 06:49:09 seanb Exp $
 """
 
 import unittest
 
 from zope.component import getService, getServiceManager
+from zope.component.servicenames import Permissions, Adapters
+from zope.component.servicenames import Authentication
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
@@ -140,20 +142,20 @@ class Test(PlacefulSetup, unittest.TestCase):
         provideService=getServiceManager(None).provideService
 
         defineService(
-                 'Permissions', IPermissionService)
-        provideService('Permissions',
+                 Permissions, IPermissionService)
+        provideService(Permissions,
                  DummyPermissionService(self._permissions))
 
-        defineService('Authentication',
+        defineService(Authentication,
                  IAuthenticationService)
 
         self._principals = []
         self._principals.append(DummyObject('foo', 'Foo'))
         self._principals.append(DummyObject('bar', 'Bar'))
 
-        provideService('Authentication',
+        provideService(Authentication,
             DummyAuthenticationService(principals = self._principals))
-        provideAdapter=getService(None,'Adapters').provideAdapter
+        provideAdapter=getService(None,Adapters).provideAdapter
         provideAdapter(IAttributeAnnotatable,
                        IPrincipalPermissionManager, DummyAdapter)
         provideAdapter(

@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.2 2002/12/25 14:12:41 jim Exp $
+$Id: test_standardmacros.py,v 1.3 2003/02/06 06:49:14 seanb Exp $
 """
 
 import unittest, sys
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getService
+from zope.component.servicenames import Views
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.interface import Interface
@@ -77,7 +78,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideView = getService(None,"Views").provideView
+        provideView = getService(None,Views).provideView
         provideView(I, 'page1', IBrowserPresentation, [page1])
         provideView(I, 'collides_with_page1', IBrowserPresentation,
                     [collides_with_page1])

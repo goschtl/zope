@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: rolepermissionview.py,v 1.3 2002/12/26 18:50:45 jim Exp $
+$Id: rolepermissionview.py,v 1.4 2003/02/06 06:49:06 seanb Exp $
 """
 import time
 
@@ -23,6 +23,7 @@ from zope.app.security.grants.permissionroles import PermissionRoles
 from zope.app.security.grants.rolepermission import RolePermissions
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.component import getService, getAdapter
+from zope.component.servicenames import Roles, Permissions
 from zope.publisher.browser import BrowserView
 
 
@@ -36,7 +37,7 @@ class RolePermissionView(BrowserView):
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = self._roles = getService(
-                self.context, 'Roles'
+                self.context, Roles
                 ).getRoles()
         return roles
 
@@ -44,7 +45,7 @@ class RolePermissionView(BrowserView):
         permissions = getattr(self, '_permissions', None)
         if permissions is None:
             permissions = self._permissions = getService(
-                self.context, 'Permissions'
+                self.context, Permissions
                 ).getPermissions()
         return permissions
 
@@ -67,14 +68,14 @@ class RolePermissionView(BrowserView):
     def permissionForID(self, pid):
         context = self.context
         roles = self.roles()
-        perm = getService(context, 'Permissions'
+        perm = getService(context, Permissions
                           ).getPermission(pid)
         return PermissionRoles(perm, context, roles)
 
     def roleForID(self, rid):
         context = self.context
         permissions = self.permissions()
-        role = getService(context, 'Roles'
+        role = getService(context, Roles
                           ).getRole(rid)
         return RolePermissions(role, context, permissions)
 

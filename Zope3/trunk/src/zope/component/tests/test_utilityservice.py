@@ -15,13 +15,14 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: test_utilityservice.py,v 1.3 2003/02/06 06:50:08 seanb Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component import \
      getUtility, getService, queryUtility, getServiceManager
 from zope.component.exceptions import ComponentLookupError
+from zope.component.servicenames import Utilities
 from zope.interface import Interface
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
@@ -46,14 +47,14 @@ class Test(TestCase, CleanUp):
         provideService('Utilities', utilityService)
 
     def testGetUtility(self):
-        us = getService(None, "Utilities")
+        us = getService(None, Utilities)
         self.assertRaises(
             ComponentLookupError, getUtility, None, IDummyService)
         us.provideUtility(IDummyService, dummyService)
         self.assertEqual(getUtility(None, IDummyService), dummyService)
 
     def testQueryUtility(self):
-        us = getService(None, "Utilities")
+        us = getService(None, Utilities)
         self.assertEqual(queryUtility(None, IDummyService), None)
         self.assertEqual(queryUtility(None, IDummyService, self), self)
         us.provideUtility(IDummyService, dummyService)

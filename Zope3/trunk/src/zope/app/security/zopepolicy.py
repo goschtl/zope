@@ -13,12 +13,12 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.2 2003/01/16 15:11:02 rdmurray Exp $
+$Id: zopepolicy.py,v 1.3 2003/02/06 06:49:48 seanb Exp $
 """
-__version__='$Revision: 1.2 $'[11:-2]
+__version__='$Revision: 1.3 $'[11:-2]
 
 from zope.component import queryAdapter, getService
-
+from zope.component.servicenames import Authentication
 from zope.proxy.context import ContainmentIterator
 
 from zope.exceptions import Unauthorized, Forbidden
@@ -51,7 +51,7 @@ globalContext = object()
 
 
 def _computeBasePrincipalRoles(principalid, object):
-    auth = getService(object, "Authentication")
+    auth = getService(object, Authentication)
     p = auth.getPrincipal(principalid)
     roles = tuple(p.getRoles()) + ('Anonymous',)
     roledict = {}

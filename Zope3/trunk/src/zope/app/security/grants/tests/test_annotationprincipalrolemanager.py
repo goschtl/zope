@@ -18,6 +18,7 @@ import unittest
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.component import getService
+from zope.component.servicenames import Adapters
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.registries.roleregistry import roleRegistry as rregistry
@@ -36,7 +37,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        getService(None, "Adapters").provideAdapter(
+        getService(None, Adapters).provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
 

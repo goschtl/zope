@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_resources.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: test_resources.py,v 1.3 2003/02/06 06:50:08 seanb Exp $
 """
 
 import unittest, sys
@@ -22,6 +22,7 @@ from zope.component import getService
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getResource, queryResource
 from zope.component.exceptions import ComponentLookupError
+from zope.component.servicenames import Skins, ResourceService
 from zope.interface import Interface
 from zope.component.tests.request import Request
 
@@ -34,13 +35,13 @@ class Test(PlacelessSetup, unittest.TestCase):
             __implements__ = I2
         class C2(C1): pass
 
-        getService(None,'Resources').provideResource('test', I2, C1)
+        getService(None,ResourceService).provideResource('test', I2, C1)
         self.assertEqual(getResource(None, 'test', Request(I2)).__class__, C1)
-        getService(None,'Skins').defineSkin('foo', I2, ('foo', 'default'))
+        getService(None,Skins).defineSkin('foo', I2, ('foo', 'default'))
         self.assertEqual(
             getResource(None, 'test', Request(I2, 'foo')).__class__,
             C1)
-        getService(None,'Resources').provideResource('test', I2, C2,
+        getService(None,ResourceService).provideResource('test', I2, C2,
                                                      layer='foo')
         self.assertEqual(
             getResource(None, 'test', Request(I2, 'foo')).__class__,
@@ -55,15 +56,15 @@ class Test(PlacelessSetup, unittest.TestCase):
         class C2(C1): pass
 
 
-        getService(None,'Resources').provideResource('test', I2, C1)
+        getService(None,ResourceService).provideResource('test', I2, C1)
         self.assertEqual(
             getResource(None, 'test', Request(I2, 'default') ).__class__,
             C1)
-        getService(None,'Skins').defineSkin('foo', I2, ('foo', 'default'))
+        getService(None,Skins).defineSkin('foo', I2, ('foo', 'default'))
         self.assertEqual(
             getResource(None, 'test', Request(I2, 'foo')).__class__,
             C1)
-        getService(None,'Resources').provideResource('test', I2, C2,
+        getService(None,ResourceService).provideResource('test', I2, C2,
                                                      layer='foo')
         self.assertEqual(
             getResource(None, 'test', Request(I2, 'foo')).__class__,

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.4 2003/01/10 14:06:28 mgedmin Exp $
+$Id: test_directives.py,v 1.5 2003/02/06 06:49:33 seanb Exp $
 """
 
 import unittest
@@ -31,6 +31,7 @@ import zope.app.security
 import zope.app.contentdirective
 from zope.app.security.exceptions import UndefinedPermissionError
 from zope.component import getService
+from zope.component.servicenames import Factories
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.
@@ -159,7 +160,7 @@ class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
 </content>
             """)
         xmlconfig(f)
-        factory = getService(None, 'Factories').getFactory('Example')
+        factory = getService(None, Factories).getFactory('Example')
         self.failUnless(type(factory) is Proxy)
 
 

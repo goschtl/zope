@@ -17,6 +17,7 @@ import sys
 import unittest
 
 from zope.component.service import serviceManager as services
+from zope.component.servicenames import Permissions, Roles
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
@@ -36,11 +37,11 @@ class Test(CleanUp, unittest.TestCase):
     def setUp(self):
         CleanUp.setUp(self)
 
-        services.defineService('Permissions', IPermissionService)
-        services.provideService('Permissions', pregistry)
+        services.defineService(Permissions, IPermissionService)
+        services.provideService(Permissions, pregistry)
 
-        services.defineService('Roles', IRoleService)
-        services.provideService('Roles', rregistry)
+        services.defineService(Roles, IRoleService)
+        services.provideService(Roles, rregistry)
 
     def testUnboundRolePermission(self):
         permission = pregistry.definePermission('APerm', 'aPerm title').getId()

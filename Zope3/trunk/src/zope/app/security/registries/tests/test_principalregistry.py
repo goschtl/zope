@@ -20,6 +20,7 @@ from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
+from zope.component.servicenames import Adapters
 
 class Request:
 
@@ -44,7 +45,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         from zope.component import getService
         from zope.app.security.basicauthadapter import BasicAuthAdapter
         from zope.app.interfaces.security import ILoginPassword
-        getService(None,"Adapters").provideAdapter(
+        getService(None,Adapters).provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         self.reg = PrincipalRegistry()

@@ -17,6 +17,7 @@ import sys
 import unittest
 
 from zope.component.service import serviceManager as services
+from zope.component.servicenames import Authentication
 
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
@@ -37,8 +38,8 @@ class Test(CleanUp, unittest.TestCase):
         services.defineService('Roles', IRoleService)
         services.provideService('Roles', rregistry)
 
-        services.defineService('Authentication', IAuthenticationService)
-        services.provideService('Authentication', pregistry)
+        services.defineService(Authentication, IAuthenticationService)
+        services.provideService(Authentication, pregistry)
 
     def _make_principal(self, id=None, title=None):
         p = pregistry.definePrincipal(

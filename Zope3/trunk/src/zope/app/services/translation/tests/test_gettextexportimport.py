@@ -14,11 +14,13 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_gettextexportimport.py,v 1.3 2002/12/31 02:52:06 jim Exp $
+$Id: test_gettextexportimport.py,v 1.4 2003/02/06 06:49:58 seanb Exp $
 """
 import unittest, time
 
 from cStringIO import StringIO
+
+from zope.component.servicenames import Factories
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.component.metaconfigure import \
@@ -78,7 +80,7 @@ msgstr "hallo"
         managerHandler('defineService', 'LanguageNegotiation', INegotiator)
         provideService('LanguageNegotiation', negotiator, 'zope.Public')
         self._service = TranslationService('default')
-        handler('Factories', 'provideFactory', 'Message Catalog',
+        handler(Factories, 'provideFactory', 'Message Catalog',
                 MessageCatalog)
 
 

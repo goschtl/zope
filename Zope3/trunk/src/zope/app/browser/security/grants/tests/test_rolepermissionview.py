@@ -15,6 +15,7 @@ import unittest, sys
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getServiceManager
+from zope.component.servicenames import Roles, Permissions
 from zope.app.interfaces.security import IRoleService
 from zope.app.browser.security.grants.tests.roleservice import RoleService
 from zope.app.browser.security.grants.tests.permissionservice import PermissionService
@@ -29,11 +30,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
-        defineService('Roles', IRoleService)
-        provideService('Roles', RoleService(
+        defineService(Roles, IRoleService)
+        provideService(Roles, RoleService(
             manager='Manager', member='Member'))
-        defineService('Permissions', IPermissionService)
-        provideService('Permissions', PermissionService(
+        defineService(Permissions, IPermissionService)
+        provideService(Permissions, PermissionService(
             read='Read', write='Write'))
         self.view = RolePermissionView(RolePermissionManager(), None)
 

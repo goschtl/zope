@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.5 2003/01/28 21:03:10 jeremy Exp $
+$Id: sitedefinition.py,v 1.6 2003/02/06 06:50:00 seanb Exp $
 """
 
 import logging
@@ -38,6 +38,7 @@ from zope.app.interfaces.undo import IUndoManager
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.browser.undo import ZODBUndoManager
 from zope.component import getService
+from zope.component.servicenames import Utilities
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 from zodb.code.module import PersistentModuleImporter
@@ -175,7 +176,7 @@ class SiteDefinition:
         sys.setcheckinterval(120)
 
         # setup undo fnctionality
-        getService(None,"Utilities").provideUtility(
+        getService(None,Utilities).provideUtility(
             IUndoManager,
             ZODBUndoManager(self._zodb)
             )

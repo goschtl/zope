@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.3 2002/12/28 14:13:24 stevea Exp $
+$Id: test_sqlscript.py,v 1.4 2003/02/06 06:49:29 seanb Exp $
 """
 
 import unittest
@@ -21,6 +21,7 @@ from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeCursor
 from zope.component import getService
+from zope.component.servicenames import Adapters
 from zope.app.component import nextservice
 from zope.component.service import serviceManager as sm
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -133,13 +134,13 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
         self.caching_service = CachingServiceStub()
         sm.defineService('Caching', ICachingService)
         sm.provideService('Caching', self.caching_service)
-        getService(None, "Adapters").provideAdapter(
+        getService(None, Adapters).provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
-        getService(None, "Adapters").provideAdapter(
+        getService(None, Adapters).provideAdapter(
             ISQLScript, IPhysicallyLocatable,
             LocatableStub)
-        getService(None, "Adapters").provideAdapter(
+        getService(None, Adapters).provideAdapter(
             IAnnotatable, ICacheable,
             AnnotationCacheable)
 

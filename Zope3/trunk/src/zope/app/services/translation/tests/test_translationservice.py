@@ -13,9 +13,11 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.2 2002/12/25 14:13:23 jim Exp $
+$Id: test_translationservice.py,v 1.3 2003/02/06 06:49:58 seanb Exp $
 """
 import unittest, sys
+
+from zope.component.servicenames import Factories
 
 from zope.app.component.metaconfigure import handler
 
@@ -40,7 +42,7 @@ class TestTranslationService(TestIReadTranslationService,
         TestISyncTranslationService.setUp(self)
         TestIReadTranslationService.setUp(self)
         TestIWriteTranslationService.setUp(self)
-        handler('Factories', 'provideFactory', 'Message Catalog',
+        handler(Factories, 'provideFactory', 'Message Catalog',
                 MessageCatalog)
 
 

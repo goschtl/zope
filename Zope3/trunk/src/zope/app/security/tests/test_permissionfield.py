@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.4 2003/01/21 21:21:47 jim Exp $
+$Id: test_permissionfield.py,v 1.5 2003/02/06 06:49:54 seanb Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,13 +24,15 @@ from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.interfaces.security import IPermissionService
 from zope.component.service \
      import serviceManager, defineService
+from zope.component.servicenames import Permissions
+
 from zope.app.security.registries.permissionregistry import Permission
 
 class TestPermissionField(PlacelessSetup, TestCase):
 
     def test_validate(self):
-        defineService("Permissions", IPermissionService)
-        serviceManager.provideService("Permissions", permissionRegistry)
+        defineService(Permissions, IPermissionService)
+        serviceManager.provideService(Permissions, permissionRegistry)
         dummy = Permission('dummy', 'Dummy', 'Dummy permission')
         field = PermissionField()
         self.assertRaises(ValidationError, field.validate, dummy)

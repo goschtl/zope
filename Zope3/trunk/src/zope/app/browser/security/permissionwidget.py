@@ -13,12 +13,13 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.3 2003/01/21 21:22:00 jim Exp $
+$Id: permissionwidget.py,v 1.4 2003/02/06 06:49:04 seanb Exp $
 """
 
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.browser.form import widget
 from zope.component import getService
+from zope.component.servicenames import Permissions
 
 class BaseWidget:
 
@@ -37,7 +38,7 @@ class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
         search_name = self.name + ".search"
         search_string = self.request.form.get(search_name, '')
 
-        service = getService(self.context.context, "Permissions")
+        service = getService(self.context.context, Permissions)
         permissions = [p.getId() for p in service.getPermissions()]
         permissions.sort()
         if search_string:

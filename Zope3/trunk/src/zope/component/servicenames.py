@@ -14,10 +14,20 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.1 2003/02/06 04:30:59 seanb Exp $
+$Id: servicenames.py,v 1.2 2003/02/06 06:50:06 seanb Exp $
 """
 
 HubIds = 'HubIds'
 Events = 'Events'
 Subscription = 'Subscription'
 ErrorReports = 'ErrorReportingService'
+Roles = 'Roles'
+Permissions = 'Permissions'
+Adapters = 'Adapters'
+Authentication = 'Authentication'
+Interfaces = 'Interfaces'
+Utilities = 'Utilities'
+Skins = 'Skins'
+Views = 'Views'
+ResourceService = 'Resources'
+Factories = 'Factories'

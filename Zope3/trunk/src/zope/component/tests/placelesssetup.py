@@ -14,13 +14,15 @@
 """
 
 Revision information:
-$Id: placelesssetup.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: placelesssetup.py,v 1.3 2003/02/06 06:50:08 seanb Exp $
 """
 
 # A mix-in class inheriting from CleanUp that also connects the CA services
 
 from zope.testing.cleanup import CleanUp
 from zope.component import getServiceManager
+from zope.component.servicenames import Adapters, Skins, Utilities
+from zope.component.servicenames import ResourceService, Factories
 
 class PlacelessSetup(CleanUp):
     def setUp(self):
@@ -30,29 +32,29 @@ class PlacelessSetup(CleanUp):
         provideService=sm.provideService
         # factory service
         from zope.component.interfaces import IFactoryService
-        defineService('Factories',IFactoryService)
+        defineService(Factories,IFactoryService)
         from zope.component.factory import factoryService
-        provideService('Factories', factoryService)
+        provideService(Factories, factoryService)
         # utility service
         from zope.component.interfaces import IUtilityService
-        defineService('Utilities',IUtilityService)
+        defineService(Utilities,IUtilityService)
         from zope.component.utility import utilityService
-        provideService('Utilities', utilityService)
+        provideService(Utilities, utilityService)
         # adapter service
         from zope.component.interfaces import IAdapterService
-        defineService('Adapters',IAdapterService)
+        defineService(Adapters,IAdapterService)
         from zope.component.adapter import adapterService
-        provideService('Adapters', adapterService)
+        provideService(Adapters, adapterService)
         # resource service
         from zope.component.interfaces import IResourceService
-        defineService('Resources',IResourceService)
+        defineService(ResourceService,IResourceService)
         from zope.component.resource import resourceService
-        provideService('Resources', resourceService)
+        provideService(ResourceService, resourceService)
         # skin service
         from zope.component.interfaces import ISkinService
-        defineService('Skins',ISkinService)
+        defineService(Skins,ISkinService)
         from zope.component.skin import skinService
-        provideService('Skins', skinService)
+        provideService(Skins, skinService)
         # view service
         from zope.component.interfaces import IViewService
         defineService('Views',IViewService)

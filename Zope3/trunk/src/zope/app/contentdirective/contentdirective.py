@@ -13,13 +13,14 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.5 2003/01/21 21:35:22 jim Exp $
+$Id: contentdirective.py,v 1.6 2003/02/06 06:49:31 seanb Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 from zope.component import getService
+from zope.component.servicenames import Interfaces, Factories
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.action import Action
 from zope.app.component.classfactory import ClassFactory
@@ -73,7 +74,7 @@ class ContentDirective:
             Action(
                discriminator = None,
                callable = handler,
-               args = ('Interfaces', 'provideInterface',
+               args = (Interfaces, 'provideInterface',
                        resolved_interface.__module__+
                        '.'+
                        resolved_interface.__name__,
@@ -207,4 +208,4 @@ def provideClass(id, _class, permission=None,
                                NamesChecker(('getInterfaces',),
                                             __call__=permission))
 
-    getService(None, 'Factories').provideFactory(id, factory)
+    getService(None, Factories).provideFactory(id, factory)

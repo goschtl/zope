@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.1 2002/12/31 03:35:12 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.2 2003/02/06 06:49:54 seanb Exp $
 """
 
 import unittest
@@ -27,6 +27,8 @@ from zope.app.interfaces.security import IAuthenticationService
 
 from zope.proxy.context import ContextWrapper
 from zope.component import getService
+from zope.component.servicenames import Roles, Permissions, Adapters
+from zope.component.servicenames import Authentication
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.registries.principalregistry import principalRegistry
@@ -76,18 +78,18 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
 
     
-        services.defineService('Permissions', IPermissionService)
-        services.provideService('Permissions', permissionRegistry)
+        services.defineService(Permissions, IPermissionService)
+        services.provideService(Permissions, permissionRegistry)
         
-        services.defineService('Roles', IRoleService)
-        services.provideService('Roles', roleRegistry)
+        services.defineService(Roles, IRoleService)
+        services.provideService(Roles, roleRegistry)
         
-        services.defineService('Authentication', IAuthenticationService)
-        services.provideService('Authentication', principalRegistry)
+        services.defineService(Authentication, IAuthenticationService)
+        services.provideService(Authentication, principalRegistry)
 
 
 
-        getService(None,"Adapters").provideAdapter(
+        getService(None,Adapters).provideAdapter(
                        IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)
 
@@ -195,14 +197,14 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
     def testUserWithRoles(self):
-        services.provideService('Authentication', AuthService(),force=True)
+        services.provideService(Authentication, AuthService(),force=True)
         self.failUnless(
             self.policy.checkPermission(self.write, None, Context(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
 
     def testPlayfulPrincipalRole(self):
-        getService(None,"Adapters").provideAdapter(
+        getService(None,Adapters).provideAdapter(
             ITest,
             IPrincipalRoleManager, AnnotationPrincipalRoleManager)
 
@@ -221,7 +223,7 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testPlayfulRolePermissions(self):
 
         ARPM = AnnotationRolePermissionManager
-        getService(None,"Adapters").provideAdapter(ITest,
+        getService(None,Adapters).provideAdapter(ITest,
                             IRolePermissionManager, ARPM)
         test = permissionRegistry.definePermission('test', 'Test', '')
         test = test.getId()
@@ -278,7 +280,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testPlayfulPrinciplePermissions(self):
         APPM = AnnotationPrincipalPermissionManager
-        getService(None,"Adapters").provideAdapter(ITest,
+        getService(None,Adapters).provideAdapter(ITest,
                        IPrincipalPermissionManager, APPM)
 
         ob1 = TestClass()

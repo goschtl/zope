@@ -16,6 +16,7 @@ import unittest, sys
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getView, getService, queryView
 from zope.component.exceptions import ComponentLookupError
+from zope.component.servicenames import Skins
 from zope.interface import Interface
 from zope.component.tests.request import Request
 
@@ -37,7 +38,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         getService(None, 'Views').provideView(I1, 'test', I2, [C1])
         self.assertEqual(getView(O(), 'test', Request(I2)).__class__, C1)
-        getService(None, 'Skins').defineSkin('foo', I2, ('foo', 'default'))
+        getService(None, Skins).defineSkin('foo', I2, ('foo', 'default'))
         self.assertEqual(getView(O(), 'test', Request(I2, 'foo')).__class__,
                          C1)
         getService(None, 'Views').provideView(None, 'test', I2, [C2])
@@ -72,7 +73,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         getService(None, 'Views').provideView(I1, 'test', I2, [C1])
         self.assertEqual(getView(O(), 'test',
             Request(I2,'') ).__class__, C1)
-        getService(None, 'Skins').defineSkin('foo', I2, ('foo', 'default'))
+        getService(None, Skins).defineSkin('foo', I2, ('foo', 'default'))
 
         self.assertEqual(getView(O(), 'test',
             Request(I2, 'foo')).__class__, C1)

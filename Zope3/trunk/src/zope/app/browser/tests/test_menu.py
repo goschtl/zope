@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.3 2002/12/31 03:35:06 jim Exp $
+$Id: test_menu.py,v 1.4 2003/02/06 06:49:16 seanb Exp $
 """
 
 import unittest
 from zope.interface import Interface
 
 from zope.component import getService, getServiceManager
+from zope.component.servicenames import Views
 from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
 
@@ -79,9 +80,9 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         defineService('BrowserMenu', IBrowserMenuService)
         provideService('BrowserMenu', Service())
-        getService(None,"Views").provideView(
+        getService(None,Views).provideView(
             I, 'a3', IBrowserPresentation, [V])
-        getService(None, "Views").provideView(None, '_traverse',
+        getService(None, Views).provideView(None, '_traverse',
                             IBrowserPresentation, [TestTraverser])
         defineChecker(C, NamesChecker(['a1', 'a2', 'a3', '__call__'],
                                       CheckerPublic,

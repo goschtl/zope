@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.24 2003/02/03 19:00:21 jim Exp $
+$Id: interfacewidget.py,v 1.25 2003/02/06 06:48:54 seanb Exp $
 """
 
 import sys
@@ -23,6 +23,7 @@ from zope.app.interfaces.form import WidgetInputError, ConversionError
 from zope.app.form.widget import Widget
 from zope.publisher.browser import BrowserView
 from zope.component import getService
+from zope.component.servicenames import Interfaces
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 from xml.sax.saxutils import quoteattr
@@ -70,7 +71,7 @@ class InterfaceWidget(Widget, BrowserView):
         search_string = self.request.form.get(search_name, '')
 
         field = self.context
-        service = getService(field.context, "Interfaces")
+        service = getService(field.context, Interfaces)
         base = field.basetype
         include_none = base is None
         if base == Interface:
@@ -195,7 +196,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
         name_i = name+'.i'
         name_search_i = name+'.search.i'
 
-        service = getService(field.context, "Interfaces")
+        service = getService(field.context, Interfaces)
         base = field.basetype
         include_none = base is None
         if base == Interface:
@@ -364,7 +365,7 @@ def renderInterfaceSelect(
 def nameToInterface(context, name):
     if name == 'None':
         return None
-    service = getService(context, "Interfaces")
+    service = getService(context, Interfaces)
     return service.getInterface(name)
 
 def interfaceToName(interface):

@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.3 2002/12/26 18:49:09 jim Exp $
+$Id: test_securitydirectives.py,v 1.4 2003/02/06 06:49:54 seanb Exp $
 """
 
 import unittest
 from StringIO import StringIO
 
 from zope.component.service import serviceManager as services
-
+from zope.component.servicenames import Roles, Permissions, Authentication
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
@@ -54,14 +54,14 @@ def configfile(s):
 def setUp(self):
     CleanUp.setUp(self)
     
-    services.defineService('Permissions', IPermissionService)
-    services.provideService('Permissions', pregistry)
+    services.defineService(Permissions, IPermissionService)
+    services.provideService(Permissions, pregistry)
     
-    services.defineService('Roles', IRoleService)
-    services.provideService('Roles', rregistry)
+    services.defineService(Roles, IRoleService)
+    services.provideService(Roles, rregistry)
     
-    services.defineService('Authentication', IAuthenticationService)
-    services.provideService('Authentication', principalRegistry)
+    services.defineService(Authentication, IAuthenticationService)
+    services.provideService(Authentication, principalRegistry)
     
 
 class TestPrincipalDirective(CleanUp, unittest.TestCase):

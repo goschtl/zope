@@ -17,6 +17,7 @@ import sys
 import unittest
 
 from zope.component.service import serviceManager as services
+from zope.component.servicenames import Permissions, Authentication
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IAuthenticationService
@@ -35,11 +36,11 @@ class Test(CleanUp, unittest.TestCase):
     def setUp(self):
         CleanUp.setUp(self)
 
-        services.defineService('Permissions', IPermissionService)
-        services.provideService('Permissions', permregistry)
+        services.defineService(Permissions, IPermissionService)
+        services.provideService(Permissions, permregistry)
 
-        services.defineService('Authentication', IAuthenticationService)
-        services.provideService('Authentication', prinregistry)
+        services.defineService(Authentication, IAuthenticationService)
+        services.provideService(Authentication, prinregistry)
 
 
     def _make_principal(self, id=None, title=None):

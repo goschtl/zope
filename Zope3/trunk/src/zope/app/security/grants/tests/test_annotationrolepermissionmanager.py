@@ -18,6 +18,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.component \
      import getServiceManager, getService
+from zope.component.servicenames import Permissions, Adapters
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.roleregistry import roleRegistry
@@ -38,10 +39,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
         defineService('Roles', IRoleService)
-        defineService('Permissions', IPermissionService)
+        defineService(Permissions, IPermissionService)
         provideService('Roles', roleRegistry)
-        provideService('Permissions', permissionRegistry)
-        provideAdapter=getService(None,"Adapters").provideAdapter
+        provideService(Permissions, permissionRegistry)
+        provideAdapter=getService(None,Adapters).provideAdapter
         provideAdapter(IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)
 

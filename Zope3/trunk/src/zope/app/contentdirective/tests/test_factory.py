@@ -20,6 +20,7 @@ from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from zope.configuration.xmlconfig import XMLConfig
+from zope.component.servicenames import Factories
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.management import newSecurityManager, system_user
 
@@ -62,7 +63,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 </content>
                        """)
         xmlconfig(f)
-        obj = getService(None, "Factories").createObject('Example')
+        obj = getService(None, Factories).createObject('Example')
         obj = removeAllProxies(obj)
         self.failUnless(isinstance(obj, ExampleClass))
 
@@ -80,7 +81,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 </content>
                        """)
         xmlconfig(f)
-        obj = getService(None, "Factories").createObject(
+        obj = getService(None, Factories).createObject(
             'zope.app.contentdirective.tests.exampleclass.ExampleClass')
         obj = removeAllProxies(obj)
         self.failUnless(isinstance(obj, ExampleClass))

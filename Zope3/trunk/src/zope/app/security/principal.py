@@ -13,16 +13,17 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: principal.py,v 1.1 2002/12/26 18:49:06 jim Exp $
+$Id: principal.py,v 1.2 2003/02/06 06:49:48 seanb Exp $
 """
 
 from zope.exceptions import NotFoundError
 from zope.component import getService
+from zope.component.servicenames import Authentication
 
 def checkPrincipal(context, principal_id):
 
     try:
-        if getService(context, 'Authentication').getPrincipal(principal_id):
+        if getService(context, Authentication).getPrincipal(principal_id):
             return
     except NotFoundError:
         pass

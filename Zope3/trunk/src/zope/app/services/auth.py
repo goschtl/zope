@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.9 2003/02/03 15:08:48 jim Exp $
+$Id: auth.py,v 1.10 2003/02/06 06:49:56 seanb Exp $
 """
 
 from types import TupleType
@@ -23,6 +23,7 @@ from zodb.btrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter
+from zope.component.servicenames import Authentication
 
 from zope.app.interfaces.container import IContainer
 
@@ -76,7 +77,7 @@ class AuthenticationService(Persistent):
                         return p
                     else:
                         return None
-        next = getNextService(self, 'Authentication')
+        next = getNextService(self, Authentication)
         return next.authenticate(request)
 
     authenticate = ContextMethod(authenticate)
@@ -97,7 +98,7 @@ class AuthenticationService(Persistent):
         try:
             return self._usersbyid[id]
         except KeyError:
-            next = getNextService(self, 'Authentication')
+            next = getNextService(self, Authentication)
             return next.getPrincipal(id)
 
     getPrincipal = ContextMethod(getPrincipal)

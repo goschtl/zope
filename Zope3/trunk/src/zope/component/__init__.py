@@ -13,12 +13,14 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.3 2003/02/03 17:43:29 stevea Exp $
+$Id: __init__.py,v 1.4 2003/02/06 06:50:06 seanb Exp $
 """
 
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
+from zope.component.servicenames import Adapters, Skins, ResourceService
+from zope.component.servicenames import Factories
 
 __implements__ = IComponentArchitecture
 
@@ -60,14 +62,14 @@ def queryUtility(context, interface, default=None, name=''):
 def getAdapter(object, interface, name='', context=None):
     if context is None:
         context = object
-    return getService(context, 'Adapters').getAdapter(
+    return getService(context, Adapters).getAdapter(
         object, interface, name)
 
 def queryAdapter(object, interface, default=None, name='', context=None):
     if context is None:
         context = object
     try:
-        adapters = getService(context, 'Adapters')
+        adapters = getService(context, Adapters)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running from a test
         return default
@@ -78,22 +80,22 @@ def queryAdapter(object, interface, default=None, name='', context=None):
 # Factory service
 
 def createObject(context, name, *args, **kwargs):
-    return getService(context, 'Factories').createObject(name, *args, **kwargs)
+    return getService(context, Factories).createObject(name, *args, **kwargs)
 
 def getFactory(context, name):
-    return getService(context, 'Factories').getFactory(name)
+    return getService(context, Factories).getFactory(name)
 
 def queryFactory(context, name, default=None):
-    return getService(context, 'Factories').queryFactory(name, default)
+    return getService(context, Factories).queryFactory(name, default)
 
 def getFactoryInterfaces(context, name):
-    return getService(context, 'Factories').getInterfaces(name)
+    return getService(context, Factories).getInterfaces(name)
 
 # Skin service
 
 def getSkin(wrapped_object, name, view_type):
     return getService(wrapped_object,
-                      'Skins').getSkin(wrapped_object, name, view_type)
+                      Skins).getSkin(wrapped_object, name, view_type)
 
 # View service
 
@@ -128,12 +130,12 @@ def queryDefaultViewName(wrapped_object, request, default=None, context=None):
 
 def getResource(wrapped_object, name, request):
     return getService(wrapped_object,
-                      'Resources').getResource(
+                      ResourceService).getResource(
         wrapped_object, name, request)
 
 def queryResource(wrapped_object, name, request, default=None):
     return getService(wrapped_object,
-                      'Resources').queryResource(
+                      ResourceService).queryResource(
         wrapped_object, name, request, default)
 
 

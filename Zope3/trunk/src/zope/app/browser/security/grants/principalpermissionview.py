@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalpermissionview.py,v 1.2 2002/12/25 14:12:34 jim Exp $
+$Id: principalpermissionview.py,v 1.3 2003/02/06 06:49:06 seanb Exp $
 """
 import time
 
@@ -22,6 +22,7 @@ from zope.app.interfaces.security import IPrincipalPermissionMap
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.component import getService, getAdapter
+from zope.component.servicenames import Permissions, Authentication
 from zope.publisher.browser import BrowserView
 
 
@@ -30,11 +31,11 @@ class PrincipalPermissionView(BrowserView):
     index = ViewPageTemplateFile('pt/principal_permission_edit.pt')
 
     def get_permission_service(self):
-        return getService(self.context, 'Permissions')
+        return getService(self.context, Permissions)
 
     def get_principal(self, principal_id):
         return getService(self.context,
-                          'Authentication'
+                          Authentication
                           ).getPrincipal(principal_id)
 
     def unsetPermissions(self, principal_id, permission_ids, REQUEST=None):
@@ -83,7 +84,7 @@ class PrincipalPermissionView(BrowserView):
 
         ppmap = getAdapter(self.context, IPrincipalPermissionMap)
         principal = self.get_principal(principal_id)
-        perm_serv = getService(self.context, 'Permissions')
+        perm_serv = getService(self.context, Permissions)
         result = []
         for perm in perm_serv.getPermissions():
             if ppmap.getSetting(perm, principal) == Unset:

@@ -17,6 +17,7 @@ import unittest
 
 from zope.testing.cleanup import CleanUp
 from zope.component import getService
+from zope.component.servicenames import Views
 from zope.interface import Interface
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -66,7 +67,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         def ViewMaker(*args, **kw):
             return the_view
 
-        getService(None,"Views").provideView(I1,
+        getService(None,Views).provideView(I1,
                     name=the_view_name,
                     type=the_view_type,
                     maker=[ViewMaker])

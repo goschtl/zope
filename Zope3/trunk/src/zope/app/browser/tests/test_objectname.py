@@ -14,13 +14,14 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_objectname.py,v 1.3 2002/12/31 02:51:56 jim Exp $
+$Id: test_objectname.py,v 1.4 2003/02/06 06:49:16 seanb Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService, getView, getAdapter
+from zope.component.servicenames import Adapters, Views
 
 from zope.i18n.interfaces import IUserPreferredCharsets
 
@@ -46,13 +47,13 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideView = getService(None, "Views").provideView
+        provideView = getService(None, Views).provideView
         provideView(None, 'object_name', IBrowserPresentation,
                     [ObjectNameView])
         provideView(IRoot, 'object_name', IBrowserPresentation,
                     [SiteObjectNameView])
 
-        provideAdapter = getService(None, "Adapters").provideAdapter
+        provideAdapter = getService(None, Adapters).provideAdapter
         provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
 
     def testViewBadObject(self):

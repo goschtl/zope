@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalroleview.py,v 1.2 2002/12/25 14:12:35 jim Exp $
+$Id: test_principalroleview.py,v 1.3 2003/02/06 06:49:09 seanb Exp $
 """
 
 import unittest
@@ -21,6 +21,7 @@ import unittest
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getServiceManager
+from zope.component.servicenames import Roles, Authentication
 
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
@@ -83,17 +84,17 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
 
-        defineService('Roles', IRoleService)
-        provideService('Roles'
+        defineService(Roles, IRoleService)
+        provideService(Roles
                       , DummyRoleService(roles = self._roles))
 
-        defineService('Authentication', IAuthenticationService)
+        defineService(Authentication, IAuthenticationService)
 
         self._principals = []
         self._principals.append(DummyObject('foo', 'Foo'))
         self._principals.append(DummyObject('bar', 'Bar'))
 
-        provideService('Authentication',
+        provideService(Authentication,
             DummyAuthenticationService(principals = self._principals))
 
     def _makeOne(self):

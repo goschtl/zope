@@ -14,7 +14,7 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: principalroleview.py,v 1.2 2002/12/25 14:12:34 jim Exp $
+$Id: principalroleview.py,v 1.3 2003/02/06 06:49:06 seanb Exp $
 """
 import time
 
@@ -26,6 +26,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.settings import Unset, Deny, Allow
 from zope.component import getService, getAdapter
 from zope.component.contextdependent import ContextDependent
+from zope.component.servicenames import Authentication, Roles
 from zope.publisher.browser import BrowserView
 
 
@@ -37,14 +38,14 @@ class PrincipalRoleView(BrowserView):
         principals = getattr(self, '_principals', None)
         if principals is None:
             principals = self._principals = getService(
-                self.context, 'Authentication'
+                self.context, Authentication
                 ).getPrincipals('')
         return principals
 
     def getAllRoles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
-            roles = self._roles = getService(self.context, 'Roles'
+            roles = self._roles = getService(self.context, Roles
                 ).getRoles()
         return roles
 
@@ -55,7 +56,7 @@ class PrincipalRoleView(BrowserView):
                 principals = self.getAllPrincipals()
             else:
                 # Ugh, we have ids, but we want objects
-                auth_service = getService(self.context, 'Authentication')
+                auth_service = getService(self.context, Authentication)
                 principals = [auth_service.getPrincipal(principal)
                               for principal in principals]
 
@@ -66,7 +67,7 @@ class PrincipalRoleView(BrowserView):
                 roles = self.getAllRoles()
             else:
                 # Ugh, we have ids, but we want objects
-                role_service = getService(self.context, 'Roles')
+                role_service = getService(self.context, Roles)
                 roles = [role_service.getRole(role)
                          for role in roles]
 

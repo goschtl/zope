@@ -22,6 +22,7 @@ from zope.app.browser.applicationcontrol.servercontrol import ServerControlView
 from zope.app.applicationcontrol.servercontrol import \
   ServerControl
 from zope.component import getService
+from zope.component.servicenames import Utilities
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 
@@ -31,7 +32,7 @@ class Test(PlacefulSetup, TestCase):
         return ServerControlView(container, request)
 
     def test_ServerControlView(self):
-        getService(None,"Utilities").provideUtility(
+        getService(None,Utilities).provideUtility(
               IServerControl, ServerControl())
 
         test_serverctrl = self._TestView__newView(

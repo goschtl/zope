@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.6 2003/01/16 12:00:00 alga Exp $
+$Id: adapter.py,v 1.7 2003/02/06 06:49:56 seanb Exp $
 """
 __metaclass__ = type
 
@@ -23,6 +23,7 @@ from persistence.dict import PersistentDict
 from zope.component.interfaces import IAdapterService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
+from zope.component.servicenames import Adapters
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import SimpleConfiguration
@@ -125,7 +126,7 @@ class AdapterService(Persistent):
                 adapter = registry.active().getAdapter(object)
                 return adapter
 
-        adapters = getNextService(self, 'Adapters')
+        adapters = getNextService(self, Adapters)
 
         return adapters.queryAdapter(object, interface, default)
 
@@ -147,7 +148,7 @@ class AdapterConfiguration(SimpleConfiguration):
 
     __implements__ = IAdapterConfiguration, SimpleConfiguration.__implements__
 
-    status = ConfigurationStatusProperty('Adapters')
+    status = ConfigurationStatusProperty(Adapters)
 
     # XXX These should be positional arguments, except that forInterface
     #     isn't passed in if it is omitted. To fix this, we need a

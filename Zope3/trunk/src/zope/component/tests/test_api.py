@@ -14,6 +14,7 @@
 import unittest, sys
 from zope.interface import Interface
 from zope.component.tests.request import Request
+from zope.component.servicenames import Adapters
 
 
 class I1(Interface): pass
@@ -68,7 +69,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test), Test)
 
-        getService(None, 'Adapters').provideAdapter(I1, I2, Comp)
+        getService(None, Adapters).provideAdapter(I1, I2, Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -91,7 +92,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test, context=ob), Test)
 
-        getService(None, 'Adapters').provideAdapter(I1, I2, Comp)
+        getService(None, Adapters).provideAdapter(I1, I2, Comp)
         c = getAdapter(ob, I2, context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -117,7 +118,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Comp2(Comp): pass
 
-        getService(None, 'Adapters').provideAdapter(I1, I2, Comp2, name='test')
+        getService(None, Adapters).provideAdapter(I1, I2, Comp2, name='test')
         c = getAdapter(ob, I2, name='test')
         self.assertEquals(c.__class__, Comp2)
         self.assertEquals(c.context, ob)
@@ -127,7 +128,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         # Basically, this represents a 2-stage adaptation. You can get
         # from I1 to I2 by way of adapter Comp adapting Comp2
-        getService(None, 'Adapters').provideAdapter(I1, I2, [Comp2, Comp])
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp2, Comp])
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context.context, ob)
@@ -137,7 +138,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         # providing an adapter for None says that your adapter can
         # adapt anything to I2.
-        getService(None, 'Adapters').provideAdapter(None, I2, Comp)
+        getService(None, Adapters).provideAdapter(None, I2, Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)

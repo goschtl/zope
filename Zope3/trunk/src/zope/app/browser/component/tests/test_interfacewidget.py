@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.16 2003/01/25 13:09:57 jim Exp $
+$Id: test_interfacewidget.py,v 1.17 2003/02/06 06:49:00 seanb Exp $
 """
 
 __metaclass__ = type
@@ -28,6 +28,7 @@ from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
 from zope.component.service import serviceManager, defineService
+from zope.component.servicenames import Interfaces
 from zope.app.interfaces.form import ConversionError
 
 class I(Interface):
@@ -51,8 +52,8 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
 
     def setUp(self):
         service = InterfaceService()
-        defineService('Interfaces', IInterfaceService)
-        serviceManager.provideService('Interfaces', service)
+        defineService(Interfaces, IInterfaceService)
+        serviceManager.provideService(Interfaces, service)
         service.provideInterface(I.__module__+'.'+I.__name__, I)
         service.provideInterface(I2.__module__+'.'+I2.__name__, I2)
         service.provideInterface(I3.__module__+'.'+I3.__name__, I3)

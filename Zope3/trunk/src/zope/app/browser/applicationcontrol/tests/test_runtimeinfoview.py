@@ -23,6 +23,7 @@ from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
 from zope.app.browser.applicationcontrol.runtimeinfo \
   import RuntimeInfoView
 from zope.component import getService
+from zope.component.servicenames import Adapters
 from types import DictType
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
@@ -33,7 +34,7 @@ class Test(PlacefulSetup, TestCase):
         return RuntimeInfoView(container, None)
 
     def test_RuntimeInfoView(self):
-        getService(None,'Adapters').provideAdapter(
+        getService(None,Adapters).provideAdapter(
               IApplicationControl, IRuntimeInfo, RuntimeInfo)
         test_runtimeinfoview = self._TestView__newView(applicationController)
 
