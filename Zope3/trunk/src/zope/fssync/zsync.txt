@@ -227,6 +227,11 @@ Options
   Ignore changes in case; consider upper- andlower-case letters
   equivalent.
 
+-N
+  When the files to be diffed include files being added or deleted,
+  perform comparisons between those files and ``/dev/null`` instead of
+  complaining about them.
+
 -u
   Generate a unified diff.
 
