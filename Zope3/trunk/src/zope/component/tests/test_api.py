@@ -14,10 +14,12 @@
 
 import unittest
 
+from zope.component import servicenames
 from zope.component import getAdapter, queryAdapter
 from zope.component import getNamedAdapter, queryNamedAdapter
 from zope.component import getService
 from zope.component import getUtility, queryUtility
+from zope.component import getDefaultViewName
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Adapters
 from zope.component.tests.placelesssetup import PlacelessSetup
@@ -75,46 +77,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(Conforming, I3, Test), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, Comp)
-        c = getAdapter(ob, I2)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context, ob)
-
-        c = getAdapter(ob, I3)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context, ob)
-
-    def testAdapter_via_conform_in_globalAdapterServiceDirectly(self):
-
-        from zope.component.adapter import adapterService
-        provideAdapter = adapterService.provideAdapter
-        getAdapter = adapterService.getAdapter
-        queryAdapter = adapterService.queryAdapter
-
-        ob = Conforming()
-
-        # If an object implements the interface you want to adapt to,
-        # getAdapter should simply return the object.
-        self.assertEquals(getAdapter(ob, I1), ob)
-
-        # If an adapter isn't registered for the given object and interface,
-        # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, ob, I2)
-
-        # If an adapter isn't registered for the given object and interface,
-        # and you provide no default, raise ComponentLookupError...
-        self.assertRaises(ComponentLookupError, getAdapter, Conforming, I2)
-
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(ob, I2, Test), Test)
-
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I2, Test), Test)
-
-        # ...otherwise, you get the default
-        self.assertEquals(queryAdapter(Conforming, I3, Test), Test)
-
-        provideAdapter(I1, I2, Comp)
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -135,7 +98,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, Comp)
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -156,7 +119,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test, context=ob), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, Comp)
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
         c = getAdapter(ob, I2, context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -182,7 +145,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Comp2(Comp): pass
 
-        getService(None, Adapters).provideAdapter(I1, I2, Comp2, name='test')
+        getService(None, Adapters).provideAdapter(I1, I2, [Comp2], name='test')
         c = getNamedAdapter(ob, I2, 'test')
         self.assertEquals(c.__class__, Comp2)
         self.assertEquals(c.context, ob)
@@ -200,7 +163,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         # providing an adapter for None says that your adapter can
         # adapt anything to I2.
-        getService(None, Adapters).provideAdapter(None, I2, Comp)
+        getService(None, Adapters).provideAdapter(None, I2, [Comp])
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -238,7 +201,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getView, ob, 'foo', Request(I2))
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test), Test)
 
-        getService(None, 'Views').provideView(I1, 'foo', I2, [Comp])
+        getService(None, servicenames.Presentation).provideView(I1, 'foo', I2, [Comp])
         c = getView(ob, 'foo', Request(I2))
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -265,7 +228,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test, context=ob),
                           Test)
 
-        getService(None, 'Views').provideView(I1, 'foo', I2, [Comp])
+        getService(None, servicenames.Presentation).provideView(I1, 'foo', I2, [Comp])
         c = getView(ob, 'foo', Request(I2), context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -285,15 +248,15 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testDefaultViewName(self):
         from zope.component import getService
         from zope.exceptions import NotFoundError
-        viewService = getService(None, 'Views')
+        viewService = getService(None, servicenames.Presentation)
         self.assertRaises(NotFoundError,
-                          viewService.getDefaultViewName,
+                          getDefaultViewName,
                           ob, Request(I1))
         viewService.setDefaultViewName(I1, I2, 'sample_name')
-        self.assertEquals(viewService.getDefaultViewName(ob, Request(I2)),
+        self.assertEquals(getDefaultViewName(ob, Request(I2)),
                           'sample_name')
         self.assertRaises(NotFoundError,
-                          viewService.getDefaultViewName,
+                          getDefaultViewName,
                           ob, Request(I1))
 
 def test_suite():
