@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: tests.py,v 1.5 2004/03/13 23:55:10 srichter Exp $
+$Id: tests.py,v 1.6 2004/03/23 22:09:40 srichter Exp $
 """
 import unittest
 
@@ -57,12 +57,11 @@ class TestObject:
         return self.f
 
 
-def addMenu(servicemanager, menu_id, title, inherit, usage=''):
+def addMenu(servicemanager, menu_id, title, inherit):
     """Add a menu to the service manager's default package."""
     menu = LocalBrowserMenu()
     menu.title = title
     menu.inherit = inherit
-    menu.usage = usage
 
     default = zapi.traverse(servicemanager, 'default')
     default[menu_id] = menu
@@ -98,13 +97,10 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         
         # Create Placeless Components
         ps = zapi.getService(None, zapi.servicenames.Presentation)
-        ps.defineUsage('usage')
-        ps.defineUsage('usage 2')
-        ps.defineUsage('usage 3')
         ms = zapi.getService(None, BrowserMenu)
-        ms.menu('test_id', 'test menu', usage='usage')
-        ms.menu('test_id2', 'test menu 2', usage='usage 2')
-        ms.menu('test_id3', 'test menu 3', usage='usage 3')
+        ms.menu('test_id', 'test menu')
+        ms.menu('test_id2', 'test menu 2')
+        ms.menu('test_id3', 'test menu 3')
         ms.menuItem('test_id', Interface, 'a0', 't0', 'd0')
         ms.menuItem('test_id',   I1, 'a1', 't1', 'd1')
         ms.menuItem('test_id',  I11, 'a2', 't2', 'd2')
@@ -121,11 +117,11 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         setup.addService(mgr, Utilities, LocalUtilityService())
         self.root_ms = setup.addService(mgr, BrowserMenu,
                                         LocalBrowserMenuService())
-        menu = addMenu(mgr, 'test_id', 'test menu r', True, 'usage r')
+        menu = addMenu(mgr, 'test_id', 'test menu r', True)
         addMenuItem(menu, I1,  'ar1', 'tr1')
         addMenuItem(menu, I11, 'ar2', 'tr2')
         addMenuItem(menu, I12, 'ar3', 'tr3')
-        menu = addMenu(mgr, 'test_id2', 'test menu 2 r', False, 'usage 2 r')
+        menu = addMenu(mgr, 'test_id2', 'test menu 2 r', False)
         addMenuItem(menu, I1,  'ar4', 'tr4')
         addMenuItem(menu, I11, 'ar5', 'tr5')
         addMenuItem(menu, I12, 'ar6', 'tr6')
@@ -136,11 +132,11 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         setup.addService(mgr, Utilities, LocalUtilityService())
         self.folder_ms = setup.addService(mgr, BrowserMenu,
                                           LocalBrowserMenuService())
-        menu = addMenu(mgr, 'test_id', 'test menu f', True, 'usage f')
+        menu = addMenu(mgr, 'test_id', 'test menu f', True)
         addMenuItem(menu, I1,  'af1', 'tf1')
         addMenuItem(menu, I11, 'af2', 'tf2')
         addMenuItem(menu, I12, 'af3', 'tf3')
-        menu = addMenu(mgr, 'test_id3', 'test menu 3 f', True, 'usage 3 f')
+        menu = addMenu(mgr, 'test_id3', 'test menu 3 f', True)
         addMenuItem(menu, I1,  'af7', 'tf7')
         addMenuItem(menu, I11, 'af8', 'tf8')
         addMenuItem(menu, I12, 'af9', 'tf9')
@@ -308,22 +304,7 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
 
         self.assertRaises(KeyError, self.folder_ms.getFirstMenuItem,
                           'test_id', None, TestRequest())
-
-
-    def test_getMenuUsage(self):
-        for ms, menu_id, usage in [
-            (self.root_ms, 'test_id', 'usage r'),
-            (self.root_ms, 'test_id2', 'usage 2 r'),
-            (self.root_ms, 'test_id3', 'usage 3'),
-            (self.folder_ms, 'test_id', 'usage f'),
-            (self.folder_ms, 'test_id2', 'usage 2 r'),
-            (self.folder_ms, 'test_id3', 'usage 3 f'),
-            ]:
-            self.assertEqual(ms.getMenuUsage(menu_id), usage)
-
-        self.assertRaises(KeyError, self.root_ms.getMenuUsage, 'test_id4')
-        self.assertRaises(KeyError, self.folder_ms.getMenuUsage, 'test_id4')
-        
+       
         
 
 def test_suite():

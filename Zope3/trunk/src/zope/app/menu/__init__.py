@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: __init__.py,v 1.3 2004/03/13 23:55:10 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/23 22:09:40 srichter Exp $
 """
 from persistent import Persistent
 from zope.interface import implements, providedBy
@@ -71,9 +71,6 @@ class LocalBrowserMenu(OrderedContainer):
 
     # See zope.app.publisher.interfaces.browser.IBrowserMenu
     description = u''
-
-    # See zope.app.publisher.interfaces.browser.IBrowserMenu
-    usage = u''
 
     # See zope.app.publisher.interfaces.browser.IBrowserMenu
     inherit = True
@@ -189,9 +186,4 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent, Contained):
         """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
         return super(LocalBrowserMenuService,
                      self).getFirstMenuItem(menu_id, object, request)
-
-
-    def getMenuUsage(self, menu_id):
-        """See zope.app.publisher.interfaces.browser.IBrowserMenuService"""
-        return self.getInheritedMenu(menu_id, True).usage
 
