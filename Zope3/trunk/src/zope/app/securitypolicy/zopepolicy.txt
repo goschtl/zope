@@ -75,7 +75,7 @@ are grants:
   >>> interaction.checkPermission('P1', ob)
   False
 
-But CheckerPublic permission id always have a permission:
+Note, however, that we always have the CheckerPublic permission:
 
   >>> from zope.security.checker import CheckerPublic
   >>> interaction.checkPermission(CheckerPublic, ob)
