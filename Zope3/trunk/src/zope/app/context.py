@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.8 2003/06/03 14:20:31 stevea Exp $
+$Id: context.py,v 1.9 2003/06/11 08:56:22 stevea Exp $
 """
 
 from pickle import PicklingError
@@ -113,6 +113,7 @@ class DecoratedSecurityCheckerDescriptor:
 class Wrapper(BaseWrapper):
     """Zope-specific context wrapper
     """
+    __slots__ = ()
 
     def __reduce_ex__(self, proto=None):
         raise PicklingError, "Zope context wrappers cannot be pickled"
