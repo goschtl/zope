@@ -217,8 +217,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams
 
 
-d = FSPageTemplate.__dict__
-d['source.xml'] = d['source.html'] = Src()
+s = Src()
+setattr(FSPageTemplate, 'source.xml', s)
+setattr(FSPageTemplate, 'source.html', s)
+del s
 
 Globals.InitializeClass(FSPageTemplate)
 
