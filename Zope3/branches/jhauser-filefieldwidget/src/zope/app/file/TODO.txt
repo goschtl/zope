@@ -1,0 +1,26 @@
+====
+TODO
+====
+
+- Check constructor and mutator
+
+- Implement Mime widgets
+
+- Add new widget tests
+
+- Refactor IImage, I didn't look at it till now, but the test runs well. ;-)
+
+- Check external editor, they use the class FileReadFile for 
+  the adapter ReadFileAdapter. The class FileReadFile isn't used
+  anymore for the File implementation.
+
+- Add Mime field tests in zope.schema.tests.test_mimefield.py
+  Just copy/paste old test.
+
+- Check and add backward compatibility
+
+- Move old tests to own section and mark them for BBB
+
+- Write a TODO for removing BBB, check if all BBB methods are marked with comments
+
+- Add deprication warnings

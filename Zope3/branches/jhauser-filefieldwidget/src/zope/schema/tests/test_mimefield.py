@@ -13,7 +13,7 @@
 ##############################################################################
 """String field tests
 
-$Id$
+$Id: test_strfield.py 28865 2005-01-18 22:29:04Z jhauser $
 """
 from unittest import TestSuite, main, makeSuite
 from zope.schema import Bytes, Mime, BytesLine, Text, TextLine
@@ -22,8 +22,18 @@ from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooShort, TooLong, ConstraintNotSatisfied
 from zope.schema.tests.test_field import FieldTestBase
 
-class StrTest(FieldTestBase):
-    """Test the Str Field."""
+
+#class MimeTest(StrTest, MultiLine):
+#    _Field_Factory = Mime
+#    _convert = str
+#    dummy_file = open('__init__.py','r')
+#
+#    def testValidateFile(self):
+#        field = self._Field_Factory()
+#        field.validate(self.dummy_file)
+
+class MimeTest(FieldTestBase):
+    """Test the Mime Field."""
 
     def testValidate(self):
         field = self._Field_Factory(title=u'Str field', description=u'',
@@ -86,51 +96,10 @@ class StrTest(FieldTestBase):
         self.assertRaises(TooLong, field.validate, self._convert('999999999'))
 
 
-class MultiLine(object):
-
-    def test_newlines(self):
-        field = self._Field_Factory(title=u'Str field')
-        field.validate(self._convert('hello\nworld'))
-
-
-class BytesTest(StrTest, MultiLine):
-    _Field_Factory = Bytes
-    _convert = str
-
-    def testBadStringType(self):
-        field = self._Field_Factory()
-        self.assertRaises(ValidationError, field.validate, u'hello')
-
-class TextTest(StrTest, MultiLine):
-    _Field_Factory = Text
-    def _convert(self, v):
-        return unicode(v, 'ascii')
-
-    def testBadStringType(self):
-        field = self._Field_Factory()
-        self.assertRaises(ValidationError, field.validate, 'hello')
-
-class SingleLine(object):
-
-    def test_newlines(self):
-        field = self._Field_Factory(title=u'Str field')
-        self.assertRaises(ConstraintNotSatisfied,
-                                    field.validate,
-                                    self._convert('hello\nworld'))
-
-class LineTest(SingleLine, BytesTest):
-    _Field_Factory = BytesLine
-
-class TextLineTest(SingleLine, TextTest):
-    _Field_Factory = TextLine
-
 
 def test_suite():
     return TestSuite((
-        makeSuite(BytesTest),
-        makeSuite(TextTest),
-        makeSuite(LineTest),
-        makeSuite(TextLineTest),
+        makeSuite(MimeTest),
         ))
 
 if __name__ == '__main__':

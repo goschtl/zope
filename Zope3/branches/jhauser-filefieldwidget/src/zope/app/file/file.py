@@ -19,92 +19,105 @@ __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 from transaction import get_transaction
-from zope.interface import implements
 
+from zope.interface import implements
 from zope.publisher.browser import FileUpload
-from interfaces import IMime, IFile, IFileContent
+
+from zope.app.file.interfaces import IMime, IFile, IFileStorage, IFileContent
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
-class Mime(Persistent):
-    """A persistent content component storing binary file data
 
+class FileChunk(Persistent):
+    """Wrapper for possibly large data"""
+
+    next = None
+
+    def __init__(self, data):
+        self._data = data
+
+    def __getslice__(self, i, j):
+        return self._data[i:j]
+
+    def __len__(self):
+        data = str(self)
+        return len(data)
+
+    def __str__(self):
+        next = self.next
+        if next is None:
+            return self._data
+
+        result = [self._data]
+        while next is not None:
+            self = next
+            result.append(self._data)
+            next = self.next
+
+        return ''.join(result)
+
+
+class FileStorage(Persistent):
+    """A persistent storage storing binary file data
     Let's test the constructor:
 
-    >>> file = Mime()
-    >>> file.contentType
-    ''
-    >>> file.data
+    >>> storage = FileStorage()
+    >>> str(storage._data)
     ''
 
-    >>> file = Mime('Foobar')
-    >>> file.contentType
-    ''
-    >>> file.data
+    >>> storage = FileStorage('Foobar')
+    >>> str(storage._data)
     'Foobar'
 
-    >>> file = Mime('Foobar', 'text/plain')
-    >>> file.contentType
-    'text/plain'
-    >>> file.data
-    'Foobar'
-
-    >>> file = Mime(data='Foobar', contentType='text/plain')
-    >>> file.contentType
-    'text/plain'
-    >>> file.data
-    'Foobar'
-
-
-    Let's test the mutators:
-
-    >>> file = Mime()
-    >>> file.contentType = 'text/plain'
-    >>> file.contentType
-    'text/plain'
-
-    >>> file.data = 'Foobar'
-    >>> file.data
-    'Foobar'
-
-    >>> file.data = None
+    >>> storage = FileStorage(None)
     Traceback (most recent call last):
     ...
     TypeError: Cannot set None data on a file.
 
+    Let's test read method:
+
+    >>> storage = FileStorage('Foobar')
+    >>> storage.read()
+    'Foobar'
+
+    Let's test write method:
+
+    >>> storage.write('Foobar'*2)
+    >>> str(storage._data)
+    'FoobarFoobar'
 
     Let's test large data input:
 
-    >>> file = Mime()
+    >>> storage = FileStorage()
 
     Insert as string:
 
-    >>> file.data = 'Foobar'*60000
-    >>> file.getSize()
+    >>> storage.write('Foobar'*60000)
+    >>> storage.getSize()
     360000
-    >>> file.data == 'Foobar'*60000
+    >>> str(storage._data) == 'Foobar'*60000
     True
 
     Insert data as FileChunk:
 
     >>> fc = FileChunk('Foobar'*4000)
-    >>> file.data = fc
-    >>> file.getSize()
+    >>> storage.write(fc)
+    >>> storage.getSize()
     24000
-    >>> file.data == 'Foobar'*4000
+    >>> str(storage._data) == 'Foobar'*4000
     True
 
-    Insert data from file object:
+    Insert data from storage object:
 
     >>> import cStringIO
     >>> sio = cStringIO.StringIO()
     >>> sio.write('Foobar'*100000)
     >>> sio.seek(0)
-    >>> file.data = sio
-    >>> file.getSize()
+    >>> storage.write(sio)
+    >>> storage.getSize()
     600000
-    >>> file.data == 'Foobar'*100000
+    >>> str(storage._data) == 'Foobar'*100000
     True
 
 
@@ -116,21 +129,21 @@ class Mime(Persistent):
     >>> verifyClass(IMime, Mime)
     True
     """
-    
-    implements(IMime)
 
-    def __init__(self, data='', contentType=''):
-        self.data = data
-        self.contentType = contentType
+    implements(IFileStorage)    
 
-    def _getData(self):
+    def __init__(self, data=''):
+        self._data = None
+        self._size = None
+        self.write(data)
+
+    def read(self):
         if isinstance(self._data, FileChunk):
             return str(self._data)
         else:
             return self._data
 
-    def _setData(self, data):
-        # XXX can probably be removed
+    def write(self, data):
         # Handle case when data is a string
         if isinstance(data, unicode):
             data = data.encode('UTF-8')
@@ -211,13 +224,196 @@ class Mime(Persistent):
         return
 
     def getSize(self):
-        '''See `IFile`'''
         return self._size
 
-    def open(self, mode='r'):
-        pass
+
+class Mime(Persistent):
+    """A persistent content component storing binary file data
+
+    Let's test the constructor:
+
+    >>> mime = Mime()
+    >>> mime.data
+    ''
+    >>> mime.contentType
+    ''
+    >>> mime.encoding == None
+    True
+
+    >>> mime = Mime('Foobar')
+    >>> mime.data
+    'Foobar'
+    >>> mime.contentType
+    ''
+    >>> mime.encoding == None
+    True
+
+    >>> mime = Mime('Foobar', 'text/plain')
+    >>> mime.data
+    'Foobar'
+    >>> mime.contentType
+    'text/plain'
+    >>> mime.encoding == None
+    True
+
+    >>> mime = Mime(data='Foobar', contentType='text/plain')
+    >>> mime.data
+    'Foobar'
+    >>> mime.encoding == None
+    True
+
+    >>> mime = Mime('Foobar', 'text/plain', 'UTF-8')
+    >>> mime.data
+    'Foobar'
+    >>> mime.contentType
+    'text/plain'
+    >>> mime.encoding
+    'UTF-8'
+
+    >>> mime = Mime(data='Foobar', contentType='text/plain', encoding='UTF-8')
+    >>> mime.data
+    'Foobar'
+    >>> mime.contentType
+    'text/plain'
+    >>> mime.encoding
+    'UTF-8'
+
+
+    Let's test the mutators:
+
+    >>> mime.data = 'Foobar'
+    >>> mime.data
+    'Foobar'
+
+    >>> mime = Mime()
+    >>> mime.contentType = 'text/plain'
+    >>> mime.contentType
+    'text/plain'
+
+    >>> mime = Mime()
+    >>> mime.encoding = 'UTF-8'
+    >>> mime.encoding
+    'UTF-8'
+
+    >>> mime.data = None
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot set None data on a file.
+
+
+    Let's test large data input:
+
+    >>> mime = Mime()
+
+    Insert as string:
+
+    >>> mime.data = 'Foobar'*60000
+    >>> mime.getSize()
+    360000
+    >>> mime.data == 'Foobar'*60000
+    True
+
+    Insert data as FileChunk:
+
+    >>> fc = FileChunk('Foobar'*4000)
+    >>> mime.data = fc
+    >>> mime.getSize()
+    24000
+    >>> mime.data == 'Foobar'*4000
+    True
+
+    Insert data from file object:
+
+    >>> import cStringIO
+    >>> sio = cStringIO.StringIO()
+    >>> sio.write('Foobar'*100000)
+    >>> sio.seek(0)
+    >>> mime.data = sio
+    >>> mime.getSize()
+    600000
+    >>> mime.data == 'Foobar'*100000
+    True
+
+
+    Test open(mode='r') method:
+    
+    >>> mime = Mime('Foobar')
+    >>> file = mime.open('r')
+    >>> file.read()
+    'Foobar'
+
+    >>> file.size()
+    6
+    
+    >>> file.write('sometext')
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'ReadFileStorage' object has no attribute 'write'
+
+    >>> file = mime.open(mode='w')
+    >>> file.write('Foobar'*2)
+    >>> mime.data
+    'FoobarFoobar'
+
+    >>> file.read()
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'WriteFileStorage' object has no attribute 'read'
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IMime.implementedBy(Mime)
+    True
+    >>> verifyClass(IMime, Mime)
+    True
+    """
+    
+    implements(IMime)
+
+    def __init__(self, data='', contentType='', encoding=None):
+        self._data = FileStorage()
+        self._data.write(data)
+        self._contentType = contentType
+        self._encoding = encoding
+
+    def _getData(self):
+        # TODO: shold we read via the open() method, not really? ri
+        return self._data.read()
+
+    def _setData(self, data):
+        # TODO: shold we write via the open() method, not really? ri
+        self._data.write(data)
 
     data = property(_getData, _setData)
+
+    def _getContentType(self):
+        return self._contentType
+
+    def _setContentType(self, contentType):
+        self._contentType = contentType
+
+    contentType = property(_getContentType, _setContentType)
+
+    def _getEncoding(self):
+        return self._encoding
+
+    def _setEncoding(self, encoding):
+        self._encoding = encoding
+
+    encoding = property(_getEncoding, _setEncoding)
+
+    def getSize(self):
+        return self._data.getSize()
+
+    def open(self, mode='r'):
+        if mode == 'r':
+            return ReadFileStorage(self._data)
+        if mode == 'w':
+            return WriteFileStorage(self._data)
+        else:
+            pass
+            # TODO: raise wrong file open attribute error
     
 
 class File(Persistent):
@@ -315,72 +511,80 @@ class File(Persistent):
         self.contentType = contentType
 
     # old compatibility methods
-    def _getData(self):
-        if isinstance(self.contents._data, FileChunk):
-            # XXX here we loose our memory efficient handling
-            return str(self.contents._data)
-        else:
-            return self.contents._data
+    def _getContents(self):
+        return self.contents.data
 
-    def _setData(self, data):
+    def _setContents(self, data):
         self.contents.data = data
 
     def open(self, mode='r'):
         """return a file-like object for reading or updating the file value.
         """
-        pass
-
-## Leads to maximum recursion erro ?
-##     # new access to file data
-##     def _getContents(self):
-##         return self.contents.open()
-
-##     def _setContents(self, data):
-##         self.contents = Mime()
-##         contents = getattr(self, 'contents')
-##         contents.data = data
-##         return
-
-##    contents = property(_getContents, _setContents)
+        if mode == 'r':
+            return self.contents.open(mode='r')
+        if mode == 'w':
+            return self.contents.open(mode='w')
+        else:
+            pass
+            # TODO: raise wrong file open attribute error
 
     def getSize(self):
         return self.contents.getSize()
     
     # See IFile.
-    data = property(_getData, _setData)
+    content = property(_getContents, _setContents)
+    
+    # BBB: remove it after removing BBB
+    # old compatibility methods
+    def _getData(self):
+        return self.contents.data
+
+    def _setData(self, data):
+        self.contents.data = data
+
+    data = property(_getContents, _setContents)
 
 
-class FileChunk(Persistent):
-    """Wrapper for possibly large data"""
 
-    next = None
+class ReadFileStorage(object):
+    """Adapter for file-system style read access.
 
-    def __init__(self, data):
-        self._data = data
+    >>> content = "This is some file\\ncontent."
+    >>> filestorage = FileStorage(content)
+    >>> filestorage._data = content
+    >>> ReadFileStorage(filestorage).read() == content
+    True
+    >>> ReadFileStorage(filestorage).size() == len(content)
+    True
+    """
+    def __init__(self, context):
+        self.__context = context
 
-    def __getslice__(self, i, j):
-        return self._data[i:j]
+    def read(self):
+        return self.__context.read()
 
-    def __len__(self):
-        data = str(self)
-        return len(data)
+    def size(self):
+        return len(self.__context.read())
 
-    def __str__(self):
-        next = self.next
-        if next is None:
-            return self._data
 
-        result = [self._data]
-        while next is not None:
-            self = next
-            result.append(self._data)
-            next = self.next
+class WriteFileStorage(object):
+    """Adapter for file-system style write access.
 
-        return ''.join(result)
+    >>> content = "This is some file\\ncontent."
+    >>> filestorage = FileStorage(content)
+    >>> WriteFileStorage(filestorage).write(content)
+    >>> str(filestorage._data) == content
+    True
+    """
+    def __init__(self, context):
+        self.__context = context
+
+    def write(self, data):
+        self.__context.write(data)
 
 
 class FileReadFile(object):
-    '''Adapter for file-system style read access.
+    """Adapter for file-system style read access.
 
     >>> file = File()
     >>> content = "This is some file\\ncontent."
@@ -390,7 +594,7 @@ class FileReadFile(object):
     True
     >>> FileReadFile(file).size() == len(content)
     True
-    '''
+    """
     def __init__(self, context):
         self.context = context
 

@@ -22,6 +22,29 @@ from zope.schema import Mime, MimeData, MimeDataEncoding, MimeType
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 
+# BBB:
+from zope.schema import BytesLine
+
+
+class IFileStorage(Interface):
+    """IFileStorage provides a read and write method for file-based objects.
+    
+    Objects implementing this interface handle the storage of the file
+    data. Actually we provide a string implementation for smaller files
+    and a FileChunk for larger files. Other storage for store a file
+    blob to a SQL-Server are possible implementations.
+    """
+
+    def read():
+        """Read the file data."""
+
+    def write(data):
+        """Write the file data."""
+
+    def getSize():
+        """Returns the size of the file data."""
+
+
 class IMime(Interface):
 
     # TODO: remove the line below
@@ -48,7 +71,7 @@ class IMime(Interface):
     #data = Bytes(
     data = MimeData (
         title=_(u'Data'),
-        description=_(u'The actual content of the object.'),
+        description=_(u'The actual content of the file.'),
         default='',
         missing_value='',
         required=False,
@@ -64,11 +87,12 @@ class IMime(Interface):
         """
 
 
-class IFile(IMime):
+class IFile(Interface):
 
-    contents = Mime(
-        title = _(u'The mime data'),
-        description = _(u'The mime data, which can be read as a file.'),
+    content = Mime(
+        title = _(u'The file data'),
+        description = _(u'The mime information and file data, which can be '
+                         'read as a file.'),
         default=None,
         missing_value=None,
         required=False,
@@ -81,6 +105,17 @@ class IFile(IMime):
         default='',
         missing_value='',
         required=False,
+        )
+
+    # BBB: remove contentType
+    # this is explicit requiered for permission reason, old classes use the 
+    # interface IFile for permission settings  
+    contentType = BytesLine(
+        title = _(u'Content Type'),
+        description=_(u'The content type identifies the type of data.'),
+        default='',
+        required=False,
+        missing_value=''
         )
 
     def getSize():
