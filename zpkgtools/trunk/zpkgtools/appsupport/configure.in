@@ -21,7 +21,7 @@ prefix="$DEFAULT_PREFIX"
 
 # Place the optimal target version number (as returned by sys.version)
 # below
-TARGET="2.3.3"
+TARGET="2.3.4"
 
 # Order a list of "acceptable" python version numbers (as returned by
 # sys.version) below in "best" to "worst" order, not including the
