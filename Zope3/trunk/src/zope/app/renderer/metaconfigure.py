@@ -13,12 +13,12 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metaconfigure.py,v 1.1 2003/07/31 17:59:36 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2003/08/01 15:36:25 philikon Exp $
 """
 from zope.app.component.metaconfigure import handler
 from zope.app.renderer.sourcetype import SourceTypes 
 from zope.configuration.fields import GlobalObject
-from zope.interface import Interface, implements, classProvides
+from zope.interface import Interface
 from zope.schema import TextLine
 
 class ISourceTypeDirective(Interface):
@@ -41,7 +41,6 @@ class ISourceTypeDirective(Interface):
         title=u"Title",
         description=u"Provides a title for the source type.",
         required=False)
-
 
 class IRendererDirective(Interface):
     """Register a renderer for a paricular output interface, such as
