@@ -620,11 +620,14 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     _msg_results_header = message(_("vocabulary-query-header-results"),
                                  "Search results")
 
-    def setName(self, name):
-        VocabularyQueryViewBase.setName(self, name)
+    def __init__(self, *args, **kw):
+        super(IterableVocabularyQueryViewBase, self).__init__(*args, **kw)
         self.addAction(ADD_DONE, self._msg_add_done)
         self.addAction(ADD_MORE, self._msg_add_more)
         self.addAction(MORE,     self._msg_more)
+
+    def setName(self, name):
+        VocabularyQueryViewBase.setName(self, name)
         name = self.name
         self.query_index_name = name + ".start"
         self.query_selections_name = name + ".picks"
