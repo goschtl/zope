@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.16 2003/05/12 10:02:41 ryzaja Exp $
+$Id: _bootstrapfields.py,v 1.17 2003/05/19 20:24:09 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -205,7 +205,7 @@ class Orderable:
         if self.max is not None and value > self.max:
             raise ValidationError(errornames.TooBig, value, self.max)
 
-_int_types = int, long
+
 class MinMaxLen:
     """Expresses constraints on the length of a field.
 
