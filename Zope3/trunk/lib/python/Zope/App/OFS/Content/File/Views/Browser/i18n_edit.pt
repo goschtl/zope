@@ -5,7 +5,7 @@
       .ContentIcon {
 	  width: 20px;
       }
-      
+
       .ContentTitle {
 	  text-align: left;
       }
@@ -16,7 +16,6 @@
   <body>
     <div metal:fill-slot="body">
 
- 
       <p tal:content="context/msg"
          tal:condition="python: hasattr(context, 'msg')">
         Message will go here.
@@ -36,6 +35,7 @@
               <td class="EditAttributeValue">
                 <input name="contentType" type="text" size=20
                        tal:attributes="value context/getContentType" />
+              </td>
             </tr>
             <tr>
               <th class="EditAttributeName">Default Language</th>
@@ -53,6 +53,7 @@
                           tal:content="lang" />
                  </span>
                 </select>
+              </td>
             </tr>
             <tr>
               <td colspan=2>
@@ -85,6 +86,7 @@
                 <input type="submit" name="addLanguage"
                        value="Add new language" />
                 <input type="text" name="newLanguage" size=10 />
+              </td>
             </tr>
             <tr>
               <th class="EditAttributeName">Data</th>
@@ -92,8 +94,9 @@
                 <textarea name="data" cols=70 rows=10
                  tal:content="python:context.getData(request.get('language'))">
                 </textarea>
+              </td>
             </tr>
- 
+
 	  </tbody>
       </table>
 
